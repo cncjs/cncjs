@@ -14,14 +14,14 @@ import WidgetConfig from 'app/widgets/WidgetConfig';
 import {
     // Grbl
     GRBL,
-    GRBL_ACTIVE_STATE_IDLE,
-    GRBL_ACTIVE_STATE_RUN,
+    GRBL_MACHINE_STATE_IDLE,
+    GRBL_MACHINE_STATE_RUN,
     // Marlin
     MARLIN,
     // Smoothie
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_IDLE,
-    SMOOTHIE_ACTIVE_STATE_RUN,
+    SMOOTHIE_MACHINE_STATE_IDLE,
+    SMOOTHIE_MACHINE_STATE_RUN,
     // TinyG
     TINYG,
     TINYG_MACHINE_STATE_READY,
@@ -292,8 +292,8 @@ class MacroWidget extends PureComponent {
         if (controllerType === GRBL) {
             const activeState = get(controllerState, 'status.activeState');
             const states = [
-                GRBL_ACTIVE_STATE_IDLE,
-                GRBL_ACTIVE_STATE_RUN
+                GRBL_MACHINE_STATE_IDLE,
+                GRBL_MACHINE_STATE_RUN
             ];
             if (!includes(states, activeState)) {
                 return false;
@@ -305,8 +305,8 @@ class MacroWidget extends PureComponent {
         if (controllerType === SMOOTHIE) {
             const activeState = get(controllerState, 'status.activeState');
             const states = [
-                SMOOTHIE_ACTIVE_STATE_IDLE,
-                SMOOTHIE_ACTIVE_STATE_RUN
+                SMOOTHIE_MACHINE_STATE_IDLE,
+                SMOOTHIE_MACHINE_STATE_RUN
             ];
             if (!includes(states, activeState)) {
                 return false;

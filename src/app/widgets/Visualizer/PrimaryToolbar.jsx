@@ -13,25 +13,25 @@ import * as WebGL from 'app/lib/three/WebGL';
 import {
     // Grbl
     GRBL,
-    GRBL_ACTIVE_STATE_IDLE,
-    GRBL_ACTIVE_STATE_RUN,
-    GRBL_ACTIVE_STATE_HOLD,
-    GRBL_ACTIVE_STATE_DOOR,
-    GRBL_ACTIVE_STATE_HOME,
-    GRBL_ACTIVE_STATE_SLEEP,
-    GRBL_ACTIVE_STATE_ALARM,
-    GRBL_ACTIVE_STATE_CHECK,
+    GRBL_MACHINE_STATE_IDLE,
+    GRBL_MACHINE_STATE_RUN,
+    GRBL_MACHINE_STATE_HOLD,
+    GRBL_MACHINE_STATE_DOOR,
+    GRBL_MACHINE_STATE_HOME,
+    GRBL_MACHINE_STATE_SLEEP,
+    GRBL_MACHINE_STATE_ALARM,
+    GRBL_MACHINE_STATE_CHECK,
     // Marlin
     MARLIN,
     // Smoothie
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_IDLE,
-    SMOOTHIE_ACTIVE_STATE_RUN,
-    SMOOTHIE_ACTIVE_STATE_HOLD,
-    SMOOTHIE_ACTIVE_STATE_DOOR,
-    SMOOTHIE_ACTIVE_STATE_HOME,
-    SMOOTHIE_ACTIVE_STATE_ALARM,
-    SMOOTHIE_ACTIVE_STATE_CHECK,
+    SMOOTHIE_MACHINE_STATE_IDLE,
+    SMOOTHIE_MACHINE_STATE_RUN,
+    SMOOTHIE_MACHINE_STATE_HOLD,
+    SMOOTHIE_MACHINE_STATE_DOOR,
+    SMOOTHIE_MACHINE_STATE_HOME,
+    SMOOTHIE_MACHINE_STATE_ALARM,
+    SMOOTHIE_MACHINE_STATE_CHECK,
     // TinyG
     TINYG,
     TINYG_MACHINE_STATE_INITIALIZING,
@@ -98,25 +98,25 @@ class PrimaryToolbar extends PureComponent {
             const activeState = _.get(controllerState, 'status.activeState');
 
             stateStyle = {
-                [GRBL_ACTIVE_STATE_IDLE]: 'controller-state-default',
-                [GRBL_ACTIVE_STATE_RUN]: 'controller-state-primary',
-                [GRBL_ACTIVE_STATE_HOLD]: 'controller-state-warning',
-                [GRBL_ACTIVE_STATE_DOOR]: 'controller-state-warning',
-                [GRBL_ACTIVE_STATE_HOME]: 'controller-state-primary',
-                [GRBL_ACTIVE_STATE_SLEEP]: 'controller-state-success',
-                [GRBL_ACTIVE_STATE_ALARM]: 'controller-state-danger',
-                [GRBL_ACTIVE_STATE_CHECK]: 'controller-state-info'
+                [GRBL_MACHINE_STATE_IDLE]: 'controller-state-default',
+                [GRBL_MACHINE_STATE_RUN]: 'controller-state-primary',
+                [GRBL_MACHINE_STATE_HOLD]: 'controller-state-warning',
+                [GRBL_MACHINE_STATE_DOOR]: 'controller-state-warning',
+                [GRBL_MACHINE_STATE_HOME]: 'controller-state-primary',
+                [GRBL_MACHINE_STATE_SLEEP]: 'controller-state-success',
+                [GRBL_MACHINE_STATE_ALARM]: 'controller-state-danger',
+                [GRBL_MACHINE_STATE_CHECK]: 'controller-state-info'
             }[activeState];
 
             stateText = {
-                [GRBL_ACTIVE_STATE_IDLE]: i18n.t('controller:Grbl.activeState.idle'),
-                [GRBL_ACTIVE_STATE_RUN]: i18n.t('controller:Grbl.activeState.run'),
-                [GRBL_ACTIVE_STATE_HOLD]: i18n.t('controller:Grbl.activeState.hold'),
-                [GRBL_ACTIVE_STATE_DOOR]: i18n.t('controller:Grbl.activeState.door'),
-                [GRBL_ACTIVE_STATE_HOME]: i18n.t('controller:Grbl.activeState.home'),
-                [GRBL_ACTIVE_STATE_SLEEP]: i18n.t('controller:Grbl.activeState.sleep'),
-                [GRBL_ACTIVE_STATE_ALARM]: i18n.t('controller:Grbl.activeState.alarm'),
-                [GRBL_ACTIVE_STATE_CHECK]: i18n.t('controller:Grbl.activeState.check')
+                [GRBL_MACHINE_STATE_IDLE]: i18n.t('controller:Grbl.activeState.idle'),
+                [GRBL_MACHINE_STATE_RUN]: i18n.t('controller:Grbl.activeState.run'),
+                [GRBL_MACHINE_STATE_HOLD]: i18n.t('controller:Grbl.activeState.hold'),
+                [GRBL_MACHINE_STATE_DOOR]: i18n.t('controller:Grbl.activeState.door'),
+                [GRBL_MACHINE_STATE_HOME]: i18n.t('controller:Grbl.activeState.home'),
+                [GRBL_MACHINE_STATE_SLEEP]: i18n.t('controller:Grbl.activeState.sleep'),
+                [GRBL_MACHINE_STATE_ALARM]: i18n.t('controller:Grbl.activeState.alarm'),
+                [GRBL_MACHINE_STATE_CHECK]: i18n.t('controller:Grbl.activeState.check')
             }[activeState];
         }
 
@@ -128,23 +128,23 @@ class PrimaryToolbar extends PureComponent {
             const activeState = _.get(controllerState, 'status.activeState');
 
             stateStyle = {
-                [SMOOTHIE_ACTIVE_STATE_IDLE]: 'controller-state-default',
-                [SMOOTHIE_ACTIVE_STATE_RUN]: 'controller-state-primary',
-                [SMOOTHIE_ACTIVE_STATE_HOLD]: 'controller-state-warning',
-                [SMOOTHIE_ACTIVE_STATE_DOOR]: 'controller-state-warning',
-                [SMOOTHIE_ACTIVE_STATE_HOME]: 'controller-state-primary',
-                [SMOOTHIE_ACTIVE_STATE_ALARM]: 'controller-state-danger',
-                [SMOOTHIE_ACTIVE_STATE_CHECK]: 'controller-state-info'
+                [SMOOTHIE_MACHINE_STATE_IDLE]: 'controller-state-default',
+                [SMOOTHIE_MACHINE_STATE_RUN]: 'controller-state-primary',
+                [SMOOTHIE_MACHINE_STATE_HOLD]: 'controller-state-warning',
+                [SMOOTHIE_MACHINE_STATE_DOOR]: 'controller-state-warning',
+                [SMOOTHIE_MACHINE_STATE_HOME]: 'controller-state-primary',
+                [SMOOTHIE_MACHINE_STATE_ALARM]: 'controller-state-danger',
+                [SMOOTHIE_MACHINE_STATE_CHECK]: 'controller-state-info'
             }[activeState];
 
             stateText = {
-                [SMOOTHIE_ACTIVE_STATE_IDLE]: i18n.t('controller:Smoothie.activeState.idle'),
-                [SMOOTHIE_ACTIVE_STATE_RUN]: i18n.t('controller:Smoothie.activeState.run'),
-                [SMOOTHIE_ACTIVE_STATE_HOLD]: i18n.t('controller:Smoothie.activeState.hold'),
-                [SMOOTHIE_ACTIVE_STATE_DOOR]: i18n.t('controller:Smoothie.activeState.door'),
-                [SMOOTHIE_ACTIVE_STATE_HOME]: i18n.t('controller:Smoothie.activeState.home'),
-                [SMOOTHIE_ACTIVE_STATE_ALARM]: i18n.t('controller:Smoothie.activeState.alarm'),
-                [SMOOTHIE_ACTIVE_STATE_CHECK]: i18n.t('controller:Smoothie.activeState.check')
+                [SMOOTHIE_MACHINE_STATE_IDLE]: i18n.t('controller:Smoothie.activeState.idle'),
+                [SMOOTHIE_MACHINE_STATE_RUN]: i18n.t('controller:Smoothie.activeState.run'),
+                [SMOOTHIE_MACHINE_STATE_HOLD]: i18n.t('controller:Smoothie.activeState.hold'),
+                [SMOOTHIE_MACHINE_STATE_DOOR]: i18n.t('controller:Smoothie.activeState.door'),
+                [SMOOTHIE_MACHINE_STATE_HOME]: i18n.t('controller:Smoothie.activeState.home'),
+                [SMOOTHIE_MACHINE_STATE_ALARM]: i18n.t('controller:Smoothie.activeState.alarm'),
+                [SMOOTHIE_MACHINE_STATE_CHECK]: i18n.t('controller:Smoothie.activeState.check')
             }[activeState];
         }
 

@@ -34,12 +34,12 @@ import {
     METRIC_UNITS,
     // Grbl
     GRBL,
-    GRBL_ACTIVE_STATE_RUN,
+    GRBL_MACHINE_STATE_RUN,
     // Marlin
     MARLIN,
     // Smoothie
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_RUN,
+    SMOOTHIE_MACHINE_STATE_RUN,
     // TinyG
     TINYG,
     TINYG_MACHINE_STATE_RUN,
@@ -979,7 +979,7 @@ class VisualizerWidget extends PureComponent {
         }
         if (controllerType === GRBL) {
             const activeState = get(controllerState, 'status.activeState');
-            if (activeState !== GRBL_ACTIVE_STATE_RUN) {
+            if (activeState !== GRBL_MACHINE_STATE_RUN) {
                 return false;
             }
         }
@@ -989,7 +989,7 @@ class VisualizerWidget extends PureComponent {
         }
         if (controllerType === SMOOTHIE) {
             const activeState = get(controllerState, 'status.activeState');
-            if (activeState !== SMOOTHIE_ACTIVE_STATE_RUN) {
+            if (activeState !== SMOOTHIE_MACHINE_STATE_RUN) {
                 return false;
             }
         }

@@ -26,7 +26,7 @@ import {
     GRBL,
     MARLIN,
     SMOOTHIE,
-    TINYG
+    TINYG,
 } from 'app/constants';
 
 class Connection extends Component {

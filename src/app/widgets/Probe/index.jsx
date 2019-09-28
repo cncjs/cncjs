@@ -13,12 +13,12 @@ import {
     METRIC_UNITS,
     // Grbl
     GRBL,
-    GRBL_ACTIVE_STATE_IDLE,
+    GRBL_MACHINE_STATE_IDLE,
     // Marlin
     MARLIN,
     // Smoothie
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_IDLE,
+    SMOOTHIE_MACHINE_STATE_IDLE,
     // TinyG
     TINYG,
     TINYG_MACHINE_STATE_READY,
@@ -428,7 +428,7 @@ class ProbeWidget extends PureComponent {
         if (controllerType === GRBL) {
             const activeState = get(controllerState, 'status.activeState');
             const states = [
-                GRBL_ACTIVE_STATE_IDLE
+                GRBL_MACHINE_STATE_IDLE
             ];
             if (!includes(states, activeState)) {
                 return false;
@@ -440,7 +440,7 @@ class ProbeWidget extends PureComponent {
         if (controllerType === SMOOTHIE) {
             const activeState = get(controllerState, 'status.activeState');
             const states = [
-                SMOOTHIE_ACTIVE_STATE_IDLE
+                SMOOTHIE_MACHINE_STATE_IDLE
             ];
             if (!includes(states, activeState)) {
                 return false;

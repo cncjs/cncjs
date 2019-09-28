@@ -11,12 +11,12 @@ import log from 'app/lib/log';
 import {
     // Grbl
     GRBL,
-    GRBL_ACTIVE_STATE_ALARM,
+    GRBL_MACHINE_STATE_ALARM,
     // Marlin
     MARLIN,
     // Smoothie
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_ALARM,
+    SMOOTHIE_MACHINE_STATE_ALARM,
     // TinyG
     TINYG,
     TINYG_MACHINE_STATE_ALARM,
@@ -98,7 +98,7 @@ class WorkflowControl extends PureComponent {
         if (controllerType === GRBL) {
             const activeState = get(controllerState, 'status.activeState');
             const states = [
-                GRBL_ACTIVE_STATE_ALARM
+                GRBL_MACHINE_STATE_ALARM
             ];
             if (includes(states, activeState)) {
                 return false;
@@ -110,7 +110,7 @@ class WorkflowControl extends PureComponent {
         if (controllerType === SMOOTHIE) {
             const activeState = get(controllerState, 'status.activeState');
             const states = [
-                SMOOTHIE_ACTIVE_STATE_ALARM
+                SMOOTHIE_MACHINE_STATE_ALARM
             ];
             if (includes(states, activeState)) {
                 return false;

@@ -9,6 +9,9 @@ import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
+import {
+    CONNECTION_TYPE_SERIAL,
+} from 'app/constants/connection';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
@@ -122,7 +125,7 @@ class ConnectionWidget extends Component {
         'connection:open': (options) => {
             const { type, settings } = options;
 
-            if (type === 'serial') {
+            if (type === CONNECTION_TYPE_SERIAL) {
                 log.debug(`A new connection was established: type=${type}, settings=${settings}`);
 
                 this.setState(state => ({
@@ -141,7 +144,7 @@ class ConnectionWidget extends Component {
         'connection:close': (options) => {
             const { type, settings } = options;
 
-            if (type === 'serial') {
+            if (type === CONNECTION_TYPE_SERIAL) {
                 log.debug(`The connection was closed: type=${type}, settings=${settings}`);
 
                 this.setState(state => ({
@@ -162,7 +165,7 @@ class ConnectionWidget extends Component {
         'connection:change': (options, isOpen) => {
             const { type, settings } = options;
 
-            if (type === 'serial') {
+            if (type === CONNECTION_TYPE_SERIAL) {
                 this.setState(state => ({
                     ports: state.ports.map(port => {
                         if (port.comName !== settings.path) {
@@ -176,7 +179,7 @@ class ConnectionWidget extends Component {
         'connection:error': (options, err) => {
             const { type, settings } = options;
 
-            if (type === 'serial') {
+            if (type === CONNECTION_TYPE_SERIAL) {
                 log.error(`Error opening serial port: type=${type}, settings=${settings}`);
 
                 this.setState(state => ({

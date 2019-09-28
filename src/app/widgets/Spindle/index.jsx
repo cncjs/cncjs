@@ -12,14 +12,14 @@ import WidgetConfig from 'app/widgets/WidgetConfig';
 import {
     // Grbl
     GRBL,
-    GRBL_ACTIVE_STATE_IDLE,
-    GRBL_ACTIVE_STATE_HOLD,
+    GRBL_MACHINE_STATE_IDLE,
+    GRBL_MACHINE_STATE_HOLD,
     // Marlin
     MARLIN,
     // Smoothie
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_IDLE,
-    SMOOTHIE_ACTIVE_STATE_HOLD,
+    SMOOTHIE_MACHINE_STATE_IDLE,
+    SMOOTHIE_MACHINE_STATE_HOLD,
     // TinyG
     TINYG,
     TINYG_MACHINE_STATE_READY,
@@ -227,8 +227,8 @@ class SpindleWidget extends PureComponent {
         if (controllerType === GRBL) {
             const activeState = get(controllerState, 'status.activeState');
             const states = [
-                GRBL_ACTIVE_STATE_IDLE,
-                GRBL_ACTIVE_STATE_HOLD
+                GRBL_MACHINE_STATE_IDLE,
+                GRBL_MACHINE_STATE_HOLD
             ];
             if (!includes(states, activeState)) {
                 return false;
@@ -240,8 +240,8 @@ class SpindleWidget extends PureComponent {
         if (controllerType === SMOOTHIE) {
             const activeState = get(controllerState, 'status.activeState');
             const states = [
-                SMOOTHIE_ACTIVE_STATE_IDLE,
-                SMOOTHIE_ACTIVE_STATE_HOLD
+                SMOOTHIE_MACHINE_STATE_IDLE,
+                SMOOTHIE_MACHINE_STATE_HOLD
             ];
             if (!includes(states, activeState)) {
                 return false;
