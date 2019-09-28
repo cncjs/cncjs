@@ -1,6 +1,10 @@
 import ensureArray from 'ensure-array';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
+import {
+    CONNECTION_TYPE_SERIAL,
+    CONNECTION_TYPE_SOCKET,
+} from '../../constants/connection';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
 import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/Sender';
@@ -62,7 +66,7 @@ class GrblController {
         close: (err) => {
             this.ready = false;
             if (err) {
-                log.error(`The connection was closed unexpectedly: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(`The connection was closed unexpectedly: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
                 log.error(err);
             }
 
@@ -79,7 +83,7 @@ class GrblController {
         error: (err) => {
             this.ready = false;
             if (err) {
-                log.error(`An unexpected error occurred: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(`An unexpected error occurred: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
                 log.error(err);
             }
         }
@@ -131,11 +135,11 @@ class GrblController {
     // Workflow
     workflow = null;
 
-    get connectionOptions() {
+    get connectionState() {
         return {
             ident: this.connection.ident,
             type: this.connection.type,
-            settings: this.connection.settings
+            options: this.connection.options,
         };
     }
 
@@ -166,20 +170,20 @@ class GrblController {
         };
     }
 
-    constructor(engine, connectionType = 'serial', options) {
+    constructor(engine, connectionType = CONNECTION_TYPE_SERIAL, connectionOptions) {
         if (!engine) {
             throw new TypeError(`"engine" must be specified: ${engine}`);
         }
 
-        if (!_.includes(['serial', 'socket'], connectionType)) {
+        if (!_.includes([CONNECTION_TYPE_SERIAL, CONNECTION_TYPE_SOCKET], connectionType)) {
             throw new TypeError(`"connectionType" is invalid: ${connectionType}`);
         }
 
         // Engine
         this.engine = engine;
 
-        options = {
-            ...options,
+        connectionOptions = {
+            ...connectionOptions,
             writeFilter: (data) => {
                 const line = data.trim();
 
@@ -210,10 +214,10 @@ class GrblController {
         };
 
         // Connection
-        if (connectionType === 'serial') {
-            this.connection = new SerialConnection(options);
-        } else if (connectionType === 'socket') {
-            this.connection = new SocketConnection(options);
+        if (connectionType === CONNECTION_TYPE_SERIAL) {
+            this.connection = new SerialConnection(connectionOptions);
+        } else if (connectionType === CONNECTION_TYPE_SOCKET) {
+            this.connection = new SocketConnection(connectionOptions);
         }
 
         // Event Trigger
@@ -281,7 +285,7 @@ class GrblController {
         });
         this.feeder.on('data', (line = '', context = {}) => {
             if (this.isClose) {
-                log.error(`Unable to write data to the connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(`Unable to write data to the connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
                 return;
             }
 
@@ -296,7 +300,7 @@ class GrblController {
                 return;
             }
 
-            this.emit('connection:write', this.connectionOptions, line + '\n', {
+            this.emit('connection:write', this.connectionState, line + '\n', {
                 ...context,
                 source: WRITE_SOURCE_FEEDER
             });
@@ -363,7 +367,7 @@ class GrblController {
         });
         this.sender.on('data', (line = '', context = {}) => {
             if (this.isClose) {
-                log.error(`Unable to write data to the connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(`Unable to write data to the connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
                 return;
             }
 
@@ -431,7 +435,7 @@ class GrblController {
 
             if (this.actionMask.replyStatusReport) {
                 this.actionMask.replyStatusReport = false;
-                this.emit('connection:read', this.connectionOptions, res.raw);
+                this.emit('connection:read', this.connectionState, res.raw);
             }
 
             // Check if the receive buffer is available in the status report
@@ -466,7 +470,7 @@ class GrblController {
             if (this.actionMask.queryParserState.reply) {
                 if (this.actionMask.replyParserState) {
                     this.actionMask.replyParserState = false;
-                    this.emit('connection:read', this.connectionOptions, res.raw);
+                    this.emit('connection:read', this.connectionState, res.raw);
                 }
                 this.actionMask.queryParserState.reply = false;
                 return;
@@ -496,7 +500,7 @@ class GrblController {
                 return;
             }
 
-            this.emit('connection:read', this.connectionOptions, res.raw);
+            this.emit('connection:read', this.connectionState, res.raw);
 
             // Feeder
             this.feeder.next();
@@ -512,17 +516,17 @@ class GrblController {
                 const { lines, received } = this.sender.state;
                 const line = lines[received] || '';
 
-                this.emit('connection:read', this.connectionOptions, `> ${line.trim()} (line=${received + 1})`);
+                this.emit('connection:read', this.connectionState, `> ${line.trim()} (line=${received + 1})`);
                 if (error) {
                     // Grbl v1.1
-                    this.emit('connection:read', this.connectionOptions, `error:${code} (${error.message})`);
+                    this.emit('connection:read', this.connectionState, `error:${code} (${error.message})`);
 
                     if (pauseError) {
                         this.workflow.pause({ err: `error:${code} (${error.message})` });
                     }
                 } else {
                     // Grbl v0.9
-                    this.emit('connection:read', this.connectionOptions, res.raw);
+                    this.emit('connection:read', this.connectionState, res.raw);
 
                     if (pauseError) {
                         this.workflow.pause({ err: res.raw });
@@ -537,10 +541,10 @@ class GrblController {
 
             if (error) {
                 // Grbl v1.1
-                this.emit('connection:read', this.connectionOptions, `error:${code} (${error.message})`);
+                this.emit('connection:read', this.connectionState, `error:${code} (${error.message})`);
             } else {
                 // Grbl v0.9
-                this.emit('connection:read', this.connectionOptions, res.raw);
+                this.emit('connection:read', this.connectionState, res.raw);
             }
 
             // Feeder
@@ -553,10 +557,10 @@ class GrblController {
 
             if (alarm) {
                 // Grbl v1.1
-                this.emit('connection:read', this.connectionOptions, `ALARM:${code} (${alarm.message})`);
+                this.emit('connection:read', this.connectionState, `ALARM:${code} (${alarm.message})`);
             } else {
                 // Grbl v0.9
-                this.emit('connection:read', this.connectionOptions, res.raw);
+                this.emit('connection:read', this.connectionState, res.raw);
             }
         });
 
@@ -565,16 +569,16 @@ class GrblController {
             this.actionMask.queryParserState.reply = true;
 
             if (this.actionMask.replyParserState) {
-                this.emit('connection:read', this.connectionOptions, res.raw);
+                this.emit('connection:read', this.connectionState, res.raw);
             }
         });
 
         this.runner.on('parameters', (res) => {
-            this.emit('connection:read', this.connectionOptions, res.raw);
+            this.emit('connection:read', this.connectionState, res.raw);
         });
 
         this.runner.on('feedback', (res) => {
-            this.emit('connection:read', this.connectionOptions, res.raw);
+            this.emit('connection:read', this.connectionState, res.raw);
         });
 
         this.runner.on('settings', (res) => {
@@ -582,15 +586,15 @@ class GrblController {
 
             if (!res.message && setting) {
                 // Grbl v1.1
-                this.emit('connection:read', this.connectionOptions, `${res.name}=${res.value} (${setting.message}, ${setting.units})`);
+                this.emit('connection:read', this.connectionState, `${res.name}=${res.value} (${setting.message}, ${setting.units})`);
             } else {
                 // Grbl v0.9
-                this.emit('connection:read', this.connectionOptions, res.raw);
+                this.emit('connection:read', this.connectionState, res.raw);
             }
         });
 
         this.runner.on('startup', (res) => {
-            this.emit('connection:read', this.connectionOptions, res.raw);
+            this.emit('connection:read', this.connectionState, res.raw);
 
             // The startup message always prints upon startup, after a reset, or at program end.
             // Setting the initial state when Grbl has completed re-initializing all systems.
@@ -608,7 +612,7 @@ class GrblController {
         });
 
         this.runner.on('others', (res) => {
-            this.emit('connection:read', this.connectionOptions, res.raw);
+            this.emit('connection:read', this.connectionState, res.raw);
         });
 
         const queryStatusReport = () => {
@@ -884,7 +888,7 @@ class GrblController {
     open(callback = noop) {
         // Assertion check
         if (this.isOpen) {
-            log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+            log.error(`Cannot open connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
             return;
         }
 
@@ -894,23 +898,23 @@ class GrblController {
 
         this.connection.open(err => {
             if (err) {
-                log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(`Cannot open connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
                 log.error(err);
-                this.emit('connection:error', this.connectionOptions, err);
+                this.emit('connection:error', this.connectionState, err);
                 callback && callback(err);
                 return;
             }
 
-            this.emit('connection:open', this.connectionOptions);
+            this.emit('connection:open', this.connectionState);
 
             // Emit a change event to all connected sockets
             if (this.engine.io) {
-                this.engine.io.emit('connection:change', this.connectionOptions, true);
+                this.engine.io.emit('connection:change', this.connectionState, true);
             }
 
-            callback && callback();
+            callback && callback(null);
 
-            log.debug(`Connection established: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+            log.debug(`Connection established: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
 
             this.workflow.stop();
 
@@ -931,11 +935,11 @@ class GrblController {
         // Clear initialized flag
         this.initialized = false;
 
-        this.emit('connection:close', this.connectionOptions);
+        this.emit('connection:close', this.connectionState);
 
         // Emit a change event to all connected sockets
         if (this.engine.io) {
-            this.engine.io.emit('connection:change', this.connectionOptions, false);
+            this.engine.io.emit('connection:change', this.connectionState, false);
         }
 
         this.connection.removeAllListeners();
@@ -956,7 +960,7 @@ class GrblController {
 
         // Connection
         if (this.isOpen) {
-            socket.emit('connection:open', this.connectionOptions);
+            socket.emit('connection:open', this.connectionState);
         }
 
         // Controller settings
@@ -1311,7 +1315,7 @@ class GrblController {
     write(data, context) {
         // Assertion check
         if (this.isClose) {
-            log.error(`Unable to write data to the connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+            log.error(`Unable to write data to the connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
             return;
         }
 
@@ -1319,7 +1323,7 @@ class GrblController {
         this.actionMask.replyStatusReport = (cmd === '?') || this.actionMask.replyStatusReport;
         this.actionMask.replyParserState = (cmd === '$G') || this.actionMask.replyParserState;
 
-        this.emit('connection:write', this.connectionOptions, data, {
+        this.emit('connection:write', this.connectionState, data, {
             ...context,
             source: WRITE_SOURCE_CLIENT
         });

@@ -9,7 +9,7 @@ const STOPBITS = Object.freeze([1, 2]);
 const PARITY = Object.freeze(['none', 'even', 'mark', 'odd', 'space']);
 const FLOWCONTROLS = Object.freeze(['rtscts', 'xon', 'xoff', 'xany']);
 
-const defaultSettings = Object.freeze({
+const defaultOptions = Object.freeze({
     baudRate: 115200,
     dataBits: 8,
     stopBits: 1,
@@ -50,10 +50,10 @@ class SerialConnection extends EventEmitter {
         }
     };
 
-    constructor(options) {
+    constructor(props) {
         super();
 
-        const { writeFilter, ...rest } = { ...options };
+        const { writeFilter, ...rest } = { ...props };
 
         if (writeFilter) {
             if (typeof writeFilter !== 'function') {
@@ -63,53 +63,53 @@ class SerialConnection extends EventEmitter {
             this.writeFilter = writeFilter;
         }
 
-        const settings = Object.assign({}, defaultSettings, rest);
+        const options = Object.assign({}, defaultOptions, rest);
 
-        if (settings.port) {
+        if (options.port) {
             throw new TypeError('"port" is an unknown option, did you mean "path"?');
         }
 
-        if (!settings.path) {
-            throw new TypeError(`"path" is not defined: ${settings.path}`);
+        if (!options.path) {
+            throw new TypeError(`"path" is not defined: ${options.path}`);
         }
 
-        if (settings.baudrate) {
+        if (options.baudrate) {
             throw new TypeError('"baudrate" is an unknown option, did you mean "baudRate"?');
         }
 
-        if (typeof settings.baudRate !== 'number') {
-            throw new TypeError(`"baudRate" must be a number: ${settings.baudRate}`);
+        if (typeof options.baudRate !== 'number') {
+            throw new TypeError(`"baudRate" must be a number: ${options.baudRate}`);
         }
 
-        if (DATABITS.indexOf(settings.dataBits) < 0) {
-            throw new TypeError(`"databits" is invalid: ${settings.dataBits}`);
+        if (DATABITS.indexOf(options.dataBits) < 0) {
+            throw new TypeError(`"databits" is invalid: ${options.dataBits}`);
         }
 
-        if (STOPBITS.indexOf(settings.stopBits) < 0) {
-            throw new TypeError(`"stopbits" is invalid: ${settings.stopbits}`);
+        if (STOPBITS.indexOf(options.stopBits) < 0) {
+            throw new TypeError(`"stopbits" is invalid: ${options.stopbits}`);
         }
 
-        if (PARITY.indexOf(settings.parity) < 0) {
-            throw new TypeError(`"parity" is invalid: ${settings.parity}`);
+        if (PARITY.indexOf(options.parity) < 0) {
+            throw new TypeError(`"parity" is invalid: ${options.parity}`);
         }
 
         FLOWCONTROLS.forEach((control) => {
-            if (typeof settings[control] !== 'boolean') {
-                throw new TypeError(`"${control}" is not boolean: ${settings[control]}`);
+            if (typeof options[control] !== 'boolean') {
+                throw new TypeError(`"${control}" is not boolean: ${options[control]}`);
             }
         });
 
         Object.defineProperties(this, {
-            settings: {
+            options: {
                 enumerable: true,
-                value: settings,
+                value: options,
                 writable: false
             }
         });
     }
 
     get ident() {
-        return toIdent(this.settings);
+        return toIdent(this.options);
     }
 
     get isOpen() {
@@ -123,12 +123,12 @@ class SerialConnection extends EventEmitter {
     // @param {function} callback The error-first callback.
     open(callback) {
         if (this.port) {
-            const err = new Error(`Cannot open serial port "${this.settings.path}"`);
+            const err = new Error(`Cannot open serial port "${this.options.path}"`);
             callback(err);
             return;
         }
 
-        const { path, ...rest } = this.settings;
+        const { path, ...rest } = this.options;
 
         this.port = new SerialPort(path, {
             ...rest,
@@ -147,7 +147,7 @@ class SerialConnection extends EventEmitter {
     // @param {function} callback The error-first callback.
     close(callback) {
         if (!this.port) {
-            const err = new Error(`Cannot close serial port "${this.settings.path}"`);
+            const err = new Error(`Cannot close serial port "${this.options.path}"`);
             callback && callback(err);
             return;
         }

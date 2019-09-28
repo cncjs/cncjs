@@ -219,11 +219,11 @@ class Connection extends Component {
                                 name="port"
                                 noOptionsMessage={() => i18n._('No ports available')}
                                 onChange={actions.onChangePortOption}
-                                options={ensureArray(ports).map(o => ({
-                                    value: o.port,
-                                    label: o.port,
-                                    manufacturer: o.manufacturer,
-                                    inuse: o.inuse
+                                options={ensureArray(ports).map(port => ({
+                                    value: port.comName,
+                                    label: port.comName,
+                                    manufacturer: port.manufacturer,
+                                    isOpen: port.isOpen,
                                 }))}
                                 placeholder={i18n._('Choose a port')}
                             />

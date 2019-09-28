@@ -1,6 +1,10 @@
 import ensureArray from 'ensure-array';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
+import {
+    CONNECTION_TYPE_SERIAL,
+    CONNECTION_TYPE_SOCKET,
+} from '../../constants/connection';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
 import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/Sender';
@@ -60,7 +64,7 @@ class MarlinController {
         close: (err) => {
             this.ready = false;
             if (err) {
-                log.error(`The connection was closed unexpectedly: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(`The connection was closed unexpectedly: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
                 log.error(err);
             }
 
@@ -77,7 +81,7 @@ class MarlinController {
         error: (err) => {
             this.ready = false;
             if (err) {
-                log.error(`An unexpected error occurred: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(`An unexpected error occurred: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
                 log.error(err);
             }
         }
@@ -214,11 +218,11 @@ class MarlinController {
         }, 1000);
     })();
 
-    get connectionOptions() {
+    get connectionState() {
         return {
             ident: this.connection.ident,
             type: this.connection.type,
-            settings: this.connection.settings
+            options: this.connection.options,
         };
     }
 
@@ -249,20 +253,20 @@ class MarlinController {
         };
     }
 
-    constructor(engine, connectionType = 'serial', options) {
+    constructor(engine, connectionType = CONNECTION_TYPE_SERIAL, connectionOptions) {
         if (!engine) {
             throw new TypeError(`"engine" must be specified: ${engine}`);
         }
 
-        if (!_.includes(['serial', 'socket'], connectionType)) {
+        if (!_.includes([CONNECTION_TYPE_SERIAL, CONNECTION_TYPE_SOCKET], connectionType)) {
             throw new TypeError(`"connectionType" is invalid: ${connectionType}`);
         }
 
         // Engine
         this.engine = engine;
 
-        options = {
-            ...options,
+        connectionOptions = {
+            ...connectionOptions,
             writeFilter: (data, context) => {
                 const { source = null } = { ...context };
                 const line = data.trim();
@@ -367,10 +371,10 @@ class MarlinController {
         };
 
         // Connection
-        if (connectionType === 'serial') {
-            this.connection = new SerialConnection(options);
-        } else if (connectionType === 'socket') {
-            this.connection = new SocketConnection(options);
+        if (connectionType === CONNECTION_TYPE_SERIAL) {
+            this.connection = new SerialConnection(connectionOptions);
+        } else if (connectionType === CONNECTION_TYPE_SOCKET) {
+            this.connection = new SocketConnection(connectionOptions);
         }
 
         // Event Trigger
@@ -460,7 +464,7 @@ class MarlinController {
                 return;
             }
 
-            this.emit('connection:write', this.connectionOptions, line + '\n', {
+            this.emit('connection:write', this.connectionState, line + '\n', {
                 ...context,
                 source: WRITE_SOURCE_FEEDER
             });
@@ -607,7 +611,7 @@ class MarlinController {
         this.runner.on('raw', noop);
 
         this.runner.on('start', (res) => {
-            this.emit('connection:read', this.connectionOptions, res.raw);
+            this.emit('connection:read', this.connectionState, res.raw);
             // Marlin sends 'start' as the first message after
             // power-on, but not when the serial port is closed and
             // then re-opened.  Marlin has no software-initiated
@@ -623,11 +627,11 @@ class MarlinController {
         });
 
         this.runner.on('echo', (res) => {
-            this.emit('connection:read', this.connectionOptions, res.raw);
+            this.emit('connection:read', this.connectionState, res.raw);
         });
 
         this.runner.on('firmware', (res) => {
-            this.emit('connection:read', this.connectionOptions, res.raw);
+            this.emit('connection:read', this.connectionState, res.raw);
             if (!this.ready) {
                 this.ready = true;
                 // Initialize controller
@@ -639,7 +643,7 @@ class MarlinController {
             log.silly(`controller.on('pos'): source=${this.history.writeSource}, line=${JSON.stringify(this.history.writeLine)}, res=${JSON.stringify(res)}`);
 
             if (_.includes([WRITE_SOURCE_CLIENT, WRITE_SOURCE_FEEDER], this.history.writeSsource)) {
-                this.emit('connection:read', this.connectionOptions, res.raw);
+                this.emit('connection:read', this.connectionState, res.raw);
             }
         });
 
@@ -647,7 +651,7 @@ class MarlinController {
             log.silly(`controller.on('temperature'): source=${this.history.writeSource}, line=${JSON.stringify(this.history.writeLine)}, res=${JSON.stringify(res)}`);
 
             if (_.includes([WRITE_SOURCE_CLIENT, WRITE_SOURCE_FEEDER], this.history.writeSource)) {
-                this.emit('connection:read', this.connectionOptions, res.raw);
+                this.emit('connection:read', this.connectionState, res.raw);
             }
         });
 
@@ -656,9 +660,9 @@ class MarlinController {
 
             if (res) {
                 if (_.includes([WRITE_SOURCE_CLIENT, WRITE_SOURCE_FEEDER], this.history.writeSource)) {
-                    this.emit('connection:read', this.connectionOptions, res.raw);
+                    this.emit('connection:read', this.connectionState, res.raw);
                 } else if (!this.history.writeSource) {
-                    this.emit('connection:read', this.connectionOptions, res.raw);
+                    this.emit('connection:read', this.connectionState, res.raw);
                     log.error('"history.writeSource" should not be empty');
                 }
             }
@@ -714,8 +718,8 @@ class MarlinController {
                 const { lines, received } = this.sender.state;
                 const line = lines[received] || '';
 
-                this.emit('connection:read', this.connectionOptions, `> ${line.trim()} (line=${received + 1})`);
-                this.emit('connection:read', this.connectionOptions, res.raw);
+                this.emit('connection:read', this.connectionState, `> ${line.trim()} (line=${received + 1})`);
+                this.emit('connection:read', this.connectionState, res.raw);
 
                 if (pauseError) {
                     this.workflow.pause({ err: res.raw });
@@ -727,14 +731,14 @@ class MarlinController {
                 return;
             }
 
-            this.emit('connection:read', this.connectionOptions, res.raw);
+            this.emit('connection:read', this.connectionState, res.raw);
 
             // Feeder
             this.feeder.next();
         });
 
         this.runner.on('others', (res) => {
-            this.emit('connection:read', this.connectionOptions, res.raw);
+            this.emit('connection:read', this.connectionState, res.raw);
         });
 
         this.queryTimer = setInterval(() => {
@@ -906,7 +910,7 @@ class MarlinController {
     open(callback = noop) {
         // Assertion check
         if (this.isOpen) {
-            log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+            log.error(`Cannot open connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
             return;
         }
 
@@ -916,23 +920,23 @@ class MarlinController {
 
         this.connection.open(err => {
             if (err) {
-                log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(`Cannot open connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
                 log.error(err);
-                this.emit('connection:error', this.connectionOptions, err);
+                this.emit('connection:error', this.connectionState, err);
                 callback && callback(err);
                 return;
             }
 
-            this.emit('connection:open', this.connectionOptions);
+            this.emit('connection:open', this.connectionState);
 
             // Emit a change event to all connected sockets
             if (this.engine.io) {
-                this.engine.io.emit('connection:change', this.connectionOptions, true);
+                this.engine.io.emit('connection:change', this.connectionState, true);
             }
 
-            callback && callback();
+            callback && callback(null);
 
-            log.debug(`Connection established: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+            log.debug(`Connection established: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
 
             // M115: Get firmware version and capabilities
             // The response to this will take us to the ready state
@@ -953,11 +957,11 @@ class MarlinController {
         // Stop status query
         this.ready = false;
 
-        this.emit('connection:close', this.connectionOptions);
+        this.emit('connection:close', this.connectionState);
 
         // Emit a change event to all connected sockets
         if (this.engine.io) {
-            this.engine.io.emit('connection:change', this.connectionOptions, false);
+            this.engine.io.emit('connection:change', this.connectionState, false);
         }
 
         this.connection.removeAllListeners();
@@ -978,7 +982,7 @@ class MarlinController {
 
         // Connection
         if (this.isOpen) {
-            socket.emit('connection:open', this.connectionOptions);
+            socket.emit('connection:open', this.connectionState);
         }
 
         // Controller settings
@@ -1312,11 +1316,11 @@ class MarlinController {
     write(data, context) {
         // Assertion check
         if (this.isClose) {
-            log.error(`Unable to write data to the connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+            log.error(`Unable to write data to the connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
             return;
         }
 
-        this.emit('connection:write', this.connectionOptions, data, {
+        this.emit('connection:write', this.connectionState, data, {
             ...context,
             source: WRITE_SOURCE_CLIENT
         });

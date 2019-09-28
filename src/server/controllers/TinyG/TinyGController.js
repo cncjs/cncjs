@@ -1,6 +1,10 @@
 import ensureArray from 'ensure-array';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
+import {
+    CONNECTION_TYPE_SERIAL,
+    CONNECTION_TYPE_SOCKET,
+} from '../../constants/connection';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
 import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/Sender';
@@ -65,7 +69,7 @@ class TinyGController {
         close: (err) => {
             this.ready = false;
             if (err) {
-                log.error(`The connection was closed unexpectedly: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(`The connection was closed unexpectedly: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
                 log.error(err);
             }
 
@@ -82,7 +86,7 @@ class TinyGController {
         error: (err) => {
             this.ready = false;
             if (err) {
-                log.error(`An unexpected error occurred: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(`An unexpected error occurred: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
                 log.error(err);
             }
         }
@@ -158,11 +162,11 @@ class TinyGController {
     // Workflow
     workflow = null;
 
-    get connectionOptions() {
+    get connectionState() {
         return {
             ident: this.connection.ident,
             type: this.connection.type,
-            settings: this.connection.settings
+            options: this.connection.options,
         };
     }
 
@@ -194,12 +198,12 @@ class TinyGController {
         };
     }
 
-    constructor(engine, connectionType = 'serial', options) {
+    constructor(engine, connectionType = CONNECTION_TYPE_SERIAL, connectionOptions) {
         if (!engine) {
             throw new TypeError(`"engine" must be specified: ${engine}`);
         }
 
-        if (!_.includes(['serial', 'socket'], connectionType)) {
+        if (!_.includes([CONNECTION_TYPE_SERIAL, CONNECTION_TYPE_SOCKET], connectionType)) {
             throw new TypeError(`"connectionType" is invalid: ${connectionType}`);
         }
 
@@ -207,14 +211,14 @@ class TinyGController {
         this.engine = engine;
 
         // Connection
-        if (connectionType === 'serial') {
+        if (connectionType === CONNECTION_TYPE_SERIAL) {
             this.connection = new SerialConnection({
-                ...options,
+                ...connectionOptions,
                 writeFilter: (data) => data
             });
-        } else if (connectionType === 'socket') {
+        } else if (connectionType === CONNECTION_TYPE_SOCKET) {
             this.connection = new SocketConnection({
-                ...options,
+                ...connectionOptions,
                 writeFilter: (data) => data
             });
         }
@@ -279,7 +283,7 @@ class TinyGController {
         });
         this.feeder.on('data', (line = '', context = {}) => {
             if (this.isClose) {
-                log.error(`Unable to write data to the connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(`Unable to write data to the connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
                 return;
             }
 
@@ -294,7 +298,7 @@ class TinyGController {
                 return;
             }
 
-            this.emit('connection:write', this.connectionOptions, line + '\n', {
+            this.emit('connection:write', this.connectionState, line + '\n', {
                 ...context,
                 source: WRITE_SOURCE_FEEDER
             });
@@ -357,7 +361,7 @@ class TinyGController {
         });
         this.sender.on('data', (line = '', context = {}) => {
             if (this.isClose) {
-                log.error(`Unable to write data to the connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(`Unable to write data to the connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
                 return;
             }
 
@@ -430,7 +434,7 @@ class TinyGController {
 
         this.runner.on('raw', (res) => {
             if (this.workflow.state === WORKFLOW_STATE_IDLE) {
-                this.emit('connection:read', this.connectionOptions, res.raw);
+                this.emit('connection:read', this.connectionState, res.raw);
             }
         });
 
@@ -590,8 +594,8 @@ class TinyGController {
                     const { lines, received } = this.sender.state;
                     const line = lines[received - 1] || '';
 
-                    this.emit('connection:read', this.connectionOptions, `> ${line}`);
-                    this.emit('connection:read', this.connectionOptions, JSON.stringify({
+                    this.emit('connection:read', this.connectionState, `> ${line}`);
+                    this.emit('connection:read', this.connectionState, JSON.stringify({
                         err: {
                             code: code,
                             msg: err.msg,
@@ -614,7 +618,7 @@ class TinyGController {
                     return;
                 }
 
-                this.emit('connection:read', this.connectionOptions, JSON.stringify({
+                this.emit('connection:read', this.connectionState, JSON.stringify({
                     err: {
                         code: code,
                         msg: err.msg
@@ -898,7 +902,7 @@ class TinyGController {
     open(callback = noop) {
         // Assertion check
         if (this.isOpen) {
-            log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+            log.error(`Cannot open connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
             return;
         }
 
@@ -908,23 +912,23 @@ class TinyGController {
 
         this.connection.open(async (err) => {
             if (err) {
-                log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(`Cannot open connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
                 log.error(err);
-                this.emit('connection:error', this.connectionOptions, err);
+                this.emit('connection:error', this.connectionState, err);
                 callback && callback(err);
                 return;
             }
 
-            this.emit('connection:open', this.connectionOptions);
+            this.emit('connection:open', this.connectionState);
 
             // Emit a change event to all connected sockets
             if (this.engine.io) {
-                this.engine.io.emit('connection:change', this.connectionOptions, true);
+                this.engine.io.emit('connection:change', this.connectionState, true);
             }
 
-            callback && callback();
+            callback && callback(null);
 
-            log.debug(`Connection established: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+            log.debug(`Connection established: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
 
             this.workflow.stop();
 
@@ -951,11 +955,11 @@ class TinyGController {
         // Stop status query
         this.ready = false;
 
-        this.emit('connection:close', this.connectionOptions);
+        this.emit('connection:close', this.connectionState);
 
         // Emit a change event to all connected sockets
         if (this.engine.io) {
-            this.engine.io.emit('connection:change', this.connectionOptions, false);
+            this.engine.io.emit('connection:change', this.connectionState, false);
         }
 
         this.connection.removeAllListeners();
@@ -976,7 +980,7 @@ class TinyGController {
 
         // Connection
         if (this.isOpen) {
-            socket.emit('connection:open', this.connectionOptions);
+            socket.emit('connection:open', this.connectionState);
         }
 
         // Controller settings
@@ -1362,11 +1366,11 @@ class TinyGController {
     write(data, context) {
         // Assertion check
         if (this.isClose) {
-            log.error(`Unable to write data to the connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+            log.error(`Unable to write data to the connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
             return;
         }
 
-        this.emit('connection:write', this.connectionOptions, data, {
+        this.emit('connection:write', this.connectionState, data, {
             ...context,
             source: WRITE_SOURCE_CLIENT
         });

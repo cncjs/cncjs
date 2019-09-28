@@ -5,7 +5,7 @@ import log from './logger';
 
 const Readline = SerialPort.parsers.Readline;
 
-const defaultSettings = Object.freeze({
+const defaultOptions = Object.freeze({
     port: 23
 });
 
@@ -32,7 +32,7 @@ class SocketConnection extends EventEmitter {
         },
         close: (err) => {
             if (err) {
-                log.warn(`The socket connection "${this.settings.host}:${this.settings.port}" was closed due to a transmission error`);
+                log.warn(`The socket connection "${this.options.host}:${this.options.port}" was closed due to a transmission error`);
             }
 
             this.emit('close', err);
@@ -42,10 +42,10 @@ class SocketConnection extends EventEmitter {
         }
     };
 
-    constructor(options) {
+    constructor(props) {
         super();
 
-        const { writeFilter } = { ...options };
+        const { writeFilter, ...rest } = { ...props };
 
         if (writeFilter) {
             if (typeof writeFilter !== 'function') {
@@ -55,31 +55,31 @@ class SocketConnection extends EventEmitter {
             this.writeFilter = writeFilter;
         }
 
-        const settings = Object.assign({}, defaultSettings, options);
+        const options = Object.assign({}, defaultOptions, rest);
 
-        if (!settings.host) {
-            throw new TypeError(`"host" is not defined: ${settings.host}`);
+        if (!options.host) {
+            throw new TypeError(`"host" is not defined: ${options.host}`);
         }
 
-        if (!settings.port) {
-            throw new TypeError(`"port" is not defined: ${settings.port}`);
+        if (!options.port) {
+            throw new TypeError(`"port" is not defined: ${options.port}`);
         }
 
-        if (typeof settings.port !== 'number') {
-            throw new TypeError(`"port" must be a number: ${settings.port}`);
+        if (typeof options.port !== 'number') {
+            throw new TypeError(`"port" must be a number: ${options.port}`);
         }
 
         Object.defineProperties(this, {
-            settings: {
+            options: {
                 enumerable: true,
-                value: settings,
+                value: options,
                 writable: false
             }
         });
     }
 
     get ident() {
-        return toIdent(this.settings);
+        return toIdent(this.options);
     }
 
     get isOpen() {
@@ -92,7 +92,7 @@ class SocketConnection extends EventEmitter {
 
     open(callback) {
         if (this.socket) {
-            const err = new Error(`Cannot open socket connection: ${this.settings.host}:${this.settings.port}`);
+            const err = new Error(`Cannot open socket connection: ${this.options.host}:${this.options.port}`);
             callback && callback(err);
             return;
         }
@@ -116,7 +116,7 @@ class SocketConnection extends EventEmitter {
             this.socket.once('connect', connectCallback);
         }
 
-        this.socket = net.connect(this.settings.port, this.settings.host);
+        this.socket = net.connect(this.options.port, this.options.host);
         this.socket.on('connect', this.eventListener.open);
         this.socket.on('close', this.eventListener.close);
         this.socket.on('error', this.eventListener.error);

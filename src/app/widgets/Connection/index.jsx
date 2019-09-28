@@ -122,18 +122,18 @@ class ConnectionWidget extends Component {
     };
 
     controllerEvents = {
-        'connection:open': (options) => {
-            const { type, settings } = options;
+        'connection:open': (connectionState) => {
+            const { type, options } = connectionState;
 
             if (type === CONNECTION_TYPE_SERIAL) {
-                log.debug(`A new connection was established: type=${type}, settings=${settings}`);
+                log.debug(`A new connection was established: type=${type}, options=${JSON.stringify(options)}`);
 
                 this.setState(state => ({
                     alertMessage: '',
                     connecting: false,
                     connected: true,
                     ports: state.ports.map(port => {
-                        if (port.comName !== settings.path) {
+                        if (port.comName !== options.path) {
                             return port;
                         }
                         return { ...port, isOpen: true };
@@ -141,18 +141,18 @@ class ConnectionWidget extends Component {
                 }));
             }
         },
-        'connection:close': (options) => {
-            const { type, settings } = options;
+        'connection:close': (connectionState) => {
+            const { type, options } = connectionState;
 
             if (type === CONNECTION_TYPE_SERIAL) {
-                log.debug(`The connection was closed: type=${type}, settings=${settings}`);
+                log.debug(`The connection was closed: type=${type}, options=${JSON.stringify(options)}`);
 
                 this.setState(state => ({
                     alertMessage: '',
                     connecting: false,
                     connected: false,
                     ports: state.ports.map(port => {
-                        if (port.comName !== settings.path) {
+                        if (port.comName !== options.path) {
                             return port;
                         }
                         return { ...port, isOpen: false };
@@ -162,13 +162,13 @@ class ConnectionWidget extends Component {
                 this.refresh();
             }
         },
-        'connection:change': (options, isOpen) => {
-            const { type, settings } = options;
+        'connection:change': (connectionState, isOpen) => {
+            const { type, options } = connectionState;
 
             if (type === CONNECTION_TYPE_SERIAL) {
                 this.setState(state => ({
                     ports: state.ports.map(port => {
-                        if (port.comName !== settings.path) {
+                        if (port.comName !== options.path) {
                             return port;
                         }
                         return { ...port, isOpen: isOpen };
@@ -176,14 +176,14 @@ class ConnectionWidget extends Component {
                 }));
             }
         },
-        'connection:error': (options, err) => {
-            const { type, settings } = options;
+        'connection:error': (connectionState, err) => {
+            const { type, options } = connectionState;
 
             if (type === CONNECTION_TYPE_SERIAL) {
-                log.error(`Error opening serial port: type=${type}, settings=${settings}`);
+                log.error(`Error opening serial port: type=${type}, options=${JSON.stringify(options)}`);
 
                 this.setState(state => ({
-                    alertMessage: i18n._('Error opening serial port: {{-path}}', { path: settings.path }),
+                    alertMessage: i18n._('Error opening serial port: {{-path}}', { path: options.path }),
                     connecting: false,
                     connected: false
                 }));
@@ -368,7 +368,7 @@ class ConnectionWidget extends Component {
     openPort(path, baudRate) {
         const controllerType = this.state.controller.type;
         const connectionType = this.state.connection.type;
-        const options = {
+        const connectionOptions = {
             path: path || this.state.connection.serial.path,
             baudRate: baudRate || this.state.connection.serial.baudRate,
             rtscts: this.state.connection.serial.rtscts
@@ -378,11 +378,11 @@ class ConnectionWidget extends Component {
             connecting: true
         }));
 
-        controller.open(controllerType, connectionType, options, (err) => {
+        controller.open(controllerType, connectionType, connectionOptions, (err) => {
             if (err) {
                 log.error(err);
                 this.setState(state => ({
-                    alertMessage: i18n._('Error opening serial port: {{-path}}', { path: options.path }),
+                    alertMessage: i18n._('Error opening serial port: {{-path}}', { path: connectionOptions.path }),
                     connecting: false,
                     connected: false
                 }));

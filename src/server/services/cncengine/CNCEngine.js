@@ -1,4 +1,5 @@
 import ensureArray from 'ensure-array';
+import _cloneDeep from 'lodash/cloneDeep';
 import noop from 'lodash/noop';
 import reverse from 'lodash/reverse';
 import sortBy from 'lodash/sortBy';
@@ -7,6 +8,10 @@ import SerialPort from 'serialport';
 import socketIO from 'socket.io';
 import socketioJwt from 'socketio-jwt';
 import settings from '../../config/settings';
+import {
+    CONNECTION_TYPE_SERIAL,
+    CONNECTION_TYPE_SOCKET,
+} from '../../constants/connection';
 import EventTrigger from '../../lib/EventTrigger';
 import logger from '../../lib/logger';
 import { toIdent as toSerialIdent } from '../../lib/SerialConnection';
@@ -15,7 +20,7 @@ import {
     GrblController,
     MarlinController,
     SmoothieController,
-    TinyGController
+    TinyGController,
 } from '../../controllers';
 import { GRBL } from '../../controllers/Grbl/constants';
 import { MARLIN } from '../../controllers/Marlin/constants';
@@ -248,21 +253,21 @@ class CNCEngine {
                 callback(null, baudRates);
             });
 
-            socket.on('open', (controllerType = GRBL, connectionType = 'serial', options, callback = noop) => {
+            socket.on('open', (controllerType = GRBL, connectionType = CONNECTION_TYPE_SERIAL, connectionOptions, callback = noop) => {
                 if (typeof callback !== 'function') {
                     callback = noop;
                 }
 
-                options = { ...options };
+                connectionOptions = { ...connectionOptions };
 
-                log.debug(`socket.open("${controllerType}", "${connectionType}", ${JSON.stringify(options)}): id=${socket.id}`);
+                log.debug(`socket.open("${controllerType}", "${connectionType}", ${JSON.stringify(connectionOptions)}): id=${socket.id}`);
 
                 let ident = '';
 
-                if (connectionType === 'serial') {
-                    ident = toSerialIdent(options);
-                } else if (connectionType === 'socket') {
-                    ident = toSocketIdent(options);
+                if (connectionType === CONNECTION_TYPE_SERIAL) {
+                    ident = toSerialIdent(connectionOptions);
+                } else if (connectionType === CONNECTION_TYPE_SOCKET) {
+                    ident = toSocketIdent(connectionOptions);
                 }
 
                 if (!ident) {
@@ -274,11 +279,6 @@ class CNCEngine {
 
                 let controller = controllers[ident];
                 if (!controller) {
-                    if (controllerType === 'TinyG2') {
-                        // TinyG2 is deprecated and will be removed in a future release
-                        controllerType = TINYG;
-                    }
-
                     const Controller = this.controllerClass[controllerType];
                     if (!Controller) {
                         const err = `Not supported controller: ${controllerType}`;
@@ -288,7 +288,7 @@ class CNCEngine {
                     }
 
                     const engine = this;
-                    controller = new Controller(engine, connectionType, options);
+                    controller = new Controller(engine, connectionType, connectionOptions);
                 }
 
                 controller.addSocket(socket);
@@ -297,11 +297,13 @@ class CNCEngine {
                     // Join the room
                     socket.join(ident);
 
-                    callback(null, ident);
+                    // Call the callback with connection state
+                    const connectionState = _cloneDeep(controller.connectionState);
+                    callback(null, connectionState);
                     return;
                 }
 
-                controller.open((err = null) => {
+                controller.open(err => {
                     if (err) {
                         callback(err);
                         return;
@@ -319,7 +321,9 @@ class CNCEngine {
                     // Join the room
                     socket.join(ident);
 
-                    callback(null, ident);
+                    // Call the callback with connection state
+                    const connectionState = _cloneDeep(controller.connectionState);
+                    callback(null, connectionState);
                 });
             });
 
@@ -348,10 +352,12 @@ class CNCEngine {
                     delete controllers[ident];
                     controllers[ident] = undefined;
 
+                    // Call the callback with connection state
+                    const connectionState = _cloneDeep(controller.connectionState);
+                    callback(null, connectionState);
+
                     // Destroy controller
                     controller.destroy();
-
-                    callback();
                 });
             });
 
