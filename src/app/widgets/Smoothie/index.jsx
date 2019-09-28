@@ -341,14 +341,12 @@ class SmoothieWidget extends PureComponent {
                             }}
                         >
                             <Widget.DropdownMenuItem eventKey="fullscreen" disabled={!isReady}>
-                                <i
-                                    className={classNames(
-                                        'fa',
-                                        'fa-fw',
-                                        { 'fa-expand': !isFullscreen },
-                                        { 'fa-compress': isFullscreen }
-                                    )}
-                                />
+                                {!isFullscreen && (
+                                    <FontAwesomeIcon icon="expand" fixedWidth />
+                                )}
+                                {isFullscreen && (
+                                    <FontAwesomeIcon icon="compress" fixedWidth />
+                                )}
                                 <Space width={8} />
                                 {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                             </Widget.DropdownMenuItem>

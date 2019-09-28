@@ -6,13 +6,14 @@ import includes from 'lodash/includes';
 import map from 'lodash/map';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import promisify from 'app/lib/promisify';
-import WidgetConfig from '../WidgetConfig';
+import WidgetConfig from 'app/widgets/WidgetConfig';
 import Connection from './Connection';
 import styles from './index.styl';
 
@@ -419,11 +420,11 @@ class ConnectionWidget extends Component {
                 <Widget.Header>
                     <Widget.Title>
                         <Widget.Sortable className={this.props.sortable.handleClassName}>
-                            <i className="fa fa-bars" />
-                            <Space width="8" />
+                            <FontAwesomeIcon icon="bars" fixedWidth />
+                            <Space width={4} />
                         </Widget.Sortable>
                         {isForkedWidget &&
-                        <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
+                        <FontAwesomeIcon icon="code-branch" fixedWidth />
                         }
                         {i18n._('Connection')}
                     </Widget.Title>
@@ -433,18 +434,18 @@ class ConnectionWidget extends Component {
                             title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                             onClick={actions.toggleMinimized}
                         >
-                            <i
-                                className={cx(
-                                    'fa',
-                                    'fa-fw',
-                                    { 'fa-chevron-up': !minimized },
-                                    { 'fa-chevron-down': minimized }
-                                )}
-                            />
+                            {minimized &&
+                            <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                            }
+                            {!minimized &&
+                            <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                            }
                         </Widget.Button>
                         <Widget.DropdownButton
                             title={i18n._('More')}
-                            toggle={<i className="fa fa-ellipsis-v" />}
+                            toggle={(
+                                <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
+                            )}
                             onSelect={(eventKey) => {
                                 if (eventKey === 'fullscreen') {
                                     actions.toggleFullscreen();
@@ -452,15 +453,13 @@ class ConnectionWidget extends Component {
                             }}
                         >
                             <Widget.DropdownMenuItem eventKey="fullscreen">
-                                <i
-                                    className={cx(
-                                        'fa',
-                                        'fa-fw',
-                                        { 'fa-expand': !isFullscreen },
-                                        { 'fa-compress': isFullscreen }
-                                    )}
-                                />
-                                <Space width="4" />
+                                {!isFullscreen && (
+                                    <FontAwesomeIcon icon="expand" fixedWidth />
+                                )}
+                                {isFullscreen && (
+                                    <FontAwesomeIcon icon="compress" fixedWidth />
+                                )}
+                                <Space width="8" />
                                 {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                             </Widget.DropdownMenuItem>
                         </Widget.DropdownButton>
