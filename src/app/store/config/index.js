@@ -198,6 +198,15 @@ const migrateStore = () => {
         log.info(`Migrate config from v${cnc.version} to v1.9.16`);
         config.unset('widgets.axes.jog.step');
     }
+
+    // 1.10.0
+    // Removed "widgets.connection.port"
+    // Removed "widgets.connection.baudrate"
+    if (semver.lt(cnc.version, '1.10.0')) {
+        log.info(`Migrate config from v${cnc.version} to v1.10.0`);
+        config.unset('widgets.connection.port');
+        config.unset('widgets.connection.baudrate');
+    }
 };
 
 try {

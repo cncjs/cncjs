@@ -60,13 +60,17 @@ const defaultState = Object.freeze({ // Freezes the default state
             controller: {
                 type: 'Grbl' // Grbl|Marlin|Smoothie|TinyG
             },
-            port: '', // will be deprecated in v2
-            baudrate: 115200, // will be deprecated in v2
             connection: {
-                type: 'serial',
+                type: 'serial', // serial|socket
                 serial: {
+                    path: '',
+                    baudRate: 115200,
                     // Hardware flow control (RTS/CTS)
                     rtscts: false
+                },
+                socket: {
+                    host: '',
+                    port: 23
                 }
             },
             autoReconnect: true
