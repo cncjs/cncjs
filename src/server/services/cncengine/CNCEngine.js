@@ -16,12 +16,10 @@ import EventTrigger from '../../lib/EventTrigger';
 import logger from '../../lib/logger';
 import { toIdent as toSerialIdent } from '../../lib/SerialConnection';
 import { toIdent as toSocketIdent } from '../../lib/SocketConnection';
-import {
-    GrblController,
-    MarlinController,
-    SmoothieController,
-    TinyGController,
-} from '../../controllers';
+import GrblController from '../../controllers/Grbl/GrblController';
+import MarlinController from '../../controllers/Marlin/MarlinController';
+import SmoothieController from '../../controllers/Smoothie/SmoothieController';
+import TinyGController from '../../controllers/TinyG/TinyGController';
 import { GRBL } from '../../controllers/Grbl/constants';
 import { MARLIN } from '../../controllers/Marlin/constants';
 import { SMOOTHIE } from '../../controllers/Smoothie/constants';
