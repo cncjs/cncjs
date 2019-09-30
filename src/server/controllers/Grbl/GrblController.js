@@ -137,8 +137,8 @@ class GrblController {
 
     get connectionState() {
         return {
-            ident: this.connection.ident,
             type: this.connection.type,
+            ident: this.connection.ident,
             options: this.connection.options,
         };
     }
@@ -914,7 +914,7 @@ class GrblController {
 
             callback && callback(null);
 
-            log.debug(`Connection established: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
+            log.debug(`Connection established: type=${JSON.stringify(this.connection.type)}, options=${JSON.stringify(this.connection.options)}`);
 
             this.workflow.stop();
 

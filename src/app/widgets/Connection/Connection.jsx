@@ -17,6 +17,8 @@ import Margin from 'app/components/Margin';
 import { ToastNotification } from 'app/components/Notifications';
 import Space from 'app/components/Space';
 import {
+    CONNECTION_TYPE_SERIAL,
+    CONNECTION_TYPE_SOCKET,
     CONNECTION_STATE_CONNECTING,
     CONNECTION_STATE_CONNECTED,
 } from 'app/constants/connection';
@@ -112,17 +114,35 @@ class Connection extends Component {
     render() {
         const {
             connectionError,
-            connecting,
-            connected,
+            connectionType,
+            connectionState,
+            connectionOptions,
         } = this.props;
+        const alertMessage = (() => {
+            // serial
+            if (connectionError && connectionType === CONNECTION_TYPE_SERIAL) {
+                const path = _get(connectionOptions, 'path');
+                return i18n._('Error opening serial port: {{-path}}', { path });
+            }
+
+            // socket
+            if (connectionError && connectionType === CONNECTION_TYPE_SOCKET) {
+                const host = _get(connectionOptions, 'host');
+                const port = _get(connectionOptions, 'port');
+                return i18n._('Error opening socket connection: {{host}}:{{port}}', { host, port });
+            }
+
+            return null;
+        })();
         const { state, actions } = this.props;
         const {
             connection,
             loading,
             ports, baudRates,
             autoReconnect,
-            alertMessage,
         } = state;
+        const connected = connectionState === CONNECTION_STATE_CONNECTED;
+        const connecting = connectionState === CONNECTION_STATE_CONNECTING;
         const enableHardwareFlowControl = _get(connection, 'serial.rtscts', false);
         const controllerType = _get(state, 'controller.type');
         const canSelectControllers = (controller.availableControllers.length > 1);
@@ -320,14 +340,15 @@ class Connection extends Component {
 }
 
 export default connect(store => {
-    const connectionState = _get(store, 'connection.state');
     const connectionError = _get(store, 'connection.error');
-    const connected = connectionState === CONNECTION_STATE_CONNECTED;
-    const connecting = connectionState === CONNECTION_STATE_CONNECTING;
+    const connectionType = _get(store, 'connection.type');
+    const connectionState = _get(store, 'connection.state');
+    const connectionOptions = _get(store, 'connection.options');
 
     return {
         connectionError,
-        connected,
-        connecting,
+        connectionType,
+        connectionState,
+        connectionOptions,
     };
 })(Connection);

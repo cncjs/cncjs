@@ -6,6 +6,8 @@ import includes from 'lodash/includes';
 import map from 'lodash/map';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as connectionActions from 'app/actions/connection';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
@@ -129,9 +131,11 @@ class ConnectionWidget extends Component {
                 log.debug(`A new connection was established: type=${type}, options=${JSON.stringify(options)}`);
 
                 this.setState(state => ({
+                    /*
                     alertMessage: '',
                     connecting: false,
                     connected: true,
+                    */
                     ports: state.ports.map(port => {
                         if (port.comName !== options.path) {
                             return port;
@@ -148,9 +152,11 @@ class ConnectionWidget extends Component {
                 log.debug(`The connection was closed: type=${type}, options=${JSON.stringify(options)}`);
 
                 this.setState(state => ({
+                /*
                     alertMessage: '',
                     connecting: false,
                     connected: false,
+                */
                     ports: state.ports.map(port => {
                         if (port.comName !== options.path) {
                             return port;
@@ -176,6 +182,7 @@ class ConnectionWidget extends Component {
                 }));
             }
         },
+        /*
         'connection:error': (connectionState, err) => {
             const { type, options } = connectionState;
 
@@ -189,6 +196,7 @@ class ConnectionWidget extends Component {
                 }));
             }
         }
+        */
     };
 
     componentDidMount() {
@@ -365,7 +373,8 @@ class ConnectionWidget extends Component {
         }));
     }
 
-    openPort(path, baudRate) {
+    openPort = (path, baudRate) => {
+        const { openConnection } = this.props;
         const controllerType = this.state.controller.type;
         const connectionType = this.state.connection.type;
         const connectionOptions = {
@@ -374,6 +383,9 @@ class ConnectionWidget extends Component {
             rtscts: this.state.connection.serial.rtscts
         };
 
+        openConnection({ controllerType, connectionType, connectionOptions });
+
+        /*
         this.setState(state => ({
             connecting: true
         }));
@@ -389,9 +401,15 @@ class ConnectionWidget extends Component {
                 return;
             }
         });
+        */
     }
 
-    closePort() {
+    closePort = () => {
+        const { closeConnection } = this.props;
+
+        closeConnection();
+
+        /*
         this.setState(state => ({
             connecting: false,
             connected: false
@@ -405,6 +423,7 @@ class ConnectionWidget extends Component {
 
             this.refresh();
         });
+        */
     }
 
     render() {
@@ -481,4 +500,7 @@ class ConnectionWidget extends Component {
     }
 }
 
-export default ConnectionWidget;
+export default connect(null, {
+    openConnection: connectionActions.openConnection,
+    closeConnection: connectionActions.closeConnection,
+})(ConnectionWidget);

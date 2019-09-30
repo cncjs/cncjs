@@ -220,8 +220,8 @@ class MarlinController {
 
     get connectionState() {
         return {
-            ident: this.connection.ident,
             type: this.connection.type,
+            ident: this.connection.ident,
             options: this.connection.options,
         };
     }
@@ -936,7 +936,7 @@ class MarlinController {
 
             callback && callback(null);
 
-            log.debug(`Connection established: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
+            log.debug(`Connection established: type=${JSON.stringify(this.connection.type)}, options=${JSON.stringify(this.connection.options)}`);
 
             // M115: Get firmware version and capabilities
             // The response to this will take us to the ready state

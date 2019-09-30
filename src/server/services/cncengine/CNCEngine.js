@@ -91,7 +91,7 @@ class CNCEngine {
 
     // Event Trigger
     event = new EventTrigger((event, trigger, commands) => {
-        log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
+        log.debug(`EventTrigger: event=${JSON.stringify(event)}, trigger=${JSON.stringify(trigger)}, commands=${JSON.stringify(commands)}`);
         if (trigger === 'system') {
             taskRunner.run(commands);
         }
@@ -258,7 +258,7 @@ class CNCEngine {
 
                 connectionOptions = { ...connectionOptions };
 
-                log.debug(`socket.open("${controllerType}", "${connectionType}", ${JSON.stringify(connectionOptions)}): id=${socket.id}`);
+                log.debug(`socket.open(${JSON.stringify(controllerType)}, ${JSON.stringify(connectionType)}, ${JSON.stringify(connectionOptions)}): id=${socket.id}`);
 
                 let ident = '';
 
@@ -269,9 +269,9 @@ class CNCEngine {
                 }
 
                 if (!ident) {
-                    const err = new Error('Invalid connection identifier');
-                    log.error(err);
-                    callback(err);
+                    const error = 'Invalid connection identifier';
+                    log.error(error);
+                    callback(new Error(error));
                     return;
                 }
 
@@ -279,9 +279,9 @@ class CNCEngine {
                 if (!controller) {
                     const Controller = this.controllerClass[controllerType];
                     if (!Controller) {
-                        const err = `Not supported controller: ${controllerType}`;
-                        log.error(err);
-                        callback(new Error(err));
+                        const error = `Not supported controller: ${controllerType}`;
+                        log.error(error);
+                        callback(new Error(error));
                         return;
                     }
 
@@ -311,7 +311,7 @@ class CNCEngine {
                     this.event.trigger('connection:open');
 
                     if (controllers[ident]) {
-                        log.error(`The connection was not properly closed: ident=${ident}`);
+                        log.error(`The connection was not properly closed: ident=${JSON.stringify(ident)}`);
                         delete controllers[ident];
                     }
                     controllers[ident] = controller;
@@ -330,12 +330,13 @@ class CNCEngine {
                     callback = noop;
                 }
 
-                log.debug(`socket.close("${ident}"): id=${socket.id}`);
+                log.debug(`socket.close(${JSON.stringify(ident)}): id=${socket.id}`);
 
                 const controller = controllers[ident];
                 if (!controller) {
-                    log.error(`The connection is not accessible: ident=${ident}`);
-                    callback(new Error(`The connection is not accessible: ident=${ident}`));
+                    const error = `The connection is not accessible: ident=${JSON.stringify(ident)}`;
+                    log.error(error);
+                    callback(new Error(error));
                     return;
                 }
 
@@ -360,11 +361,11 @@ class CNCEngine {
             });
 
             socket.on('command', (ident, cmd, ...args) => {
-                log.debug(`socket.command("${ident}", "${cmd}"): id=${socket.id}`);
+                log.debug(`socket.command(${JSON.stringify(ident)}, ${JSON.stringify(cmd)}): id=${socket.id}`);
 
                 const controller = controllers[ident];
                 if (!controller || controller.isClose) {
-                    log.error(`The connection is not accessible: ident=${ident}`);
+                    log.error(`The connection is not accessible: ident=${JSON.stringify(ident)}`);
                     return;
                 }
 
@@ -372,11 +373,11 @@ class CNCEngine {
             });
 
             socket.on('write', (ident, data, context = {}) => {
-                log.debug(`socket.write("${ident}", "${data}", ${JSON.stringify(context)}): id=${socket.id}`);
+                log.debug(`socket.write(${JSON.stringify(ident)}, ${JSON.stringify(data)}, ${JSON.stringify(context)}): id=${socket.id}`);
 
                 const controller = controllers[ident];
                 if (!controller || controller.isClose) {
-                    log.error(`The connection is not accessible: ${ident}`);
+                    log.error(`The connection is not accessible: ident=${JSON.stringify(ident)}`);
                     return;
                 }
 
@@ -384,11 +385,11 @@ class CNCEngine {
             });
 
             socket.on('writeln', (ident, data, context = {}) => {
-                log.debug(`socket.writeln("${ident}", "${data}", ${JSON.stringify(context)}): id=${socket.id}`);
+                log.debug(`socket.writeln(${JSON.stringify(ident)}, ${JSON.stringify(data)}, ${JSON.stringify(context)}): id=${socket.id}`);
 
                 const controller = controllers[ident];
                 if (!controller || controller.isClose) {
-                    log.error(`The connection is not accessible: ${ident}`);
+                    log.error(`The connection is not accessible: ident=${JSON.stringify(ident)}`);
                     return;
                 }
 

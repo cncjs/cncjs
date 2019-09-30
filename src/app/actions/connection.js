@@ -2,15 +2,14 @@ import constants from 'namespace-constants';
 import { createAction } from 'redux-action';
 
 const NS = 'connection';
-const asyncTypes = ['REQUEST', 'SUCCESS', 'FAILURE'];
 
 export const {
     OPEN_CONNECTION,
     CLOSE_CONNECTION,
     UPDATE_CONNECTION,
 } = constants(NS, {
-    'OPEN_CONNECTION': asyncTypes,
-    'CLOSE_CONNECTION': asyncTypes,
+    'OPEN_CONNECTION': ['REQUEST'],
+    'CLOSE_CONNECTION': ['REQUEST'],
     'UPDATE_CONNECTION': 'UPDATE_CONNECTION',
 });
 
