@@ -88,7 +88,7 @@ class Marlin extends PureComponent {
                                     <Col>{i18n._('Heater Control')}</Col>
                                     <Col width="auto">
                                         <FontAwesomeIcon
-                                            icon={panel.heaterControl.expanded ? 'chevron-up' : 'chevron-down' }
+                                            icon={panel.heaterControl.expanded ? 'chevron-up' : 'chevron-down'}
                                             fixedWidth
                                             style={{
                                                 color: '#222',
@@ -317,7 +317,7 @@ class Marlin extends PureComponent {
                                     <Col>{i18n._('Status Reports')}</Col>
                                     <Col width="auto">
                                         <FontAwesomeIcon
-                                            icon={panel.statusReports.expanded ? 'chevron-up' : 'chevron-down' }
+                                            icon={panel.statusReports.expanded ? 'chevron-up' : 'chevron-down'}
                                             fixedWidth
                                             style={{
                                                 color: '#222',
@@ -369,7 +369,7 @@ class Marlin extends PureComponent {
                                     <Col>{i18n._('Modal Groups')}</Col>
                                     <Col width="auto">
                                         <FontAwesomeIcon
-                                            icon={panel.modalGroups.expanded ? 'chevron-up' : 'chevron-down' }
+                                            icon={panel.modalGroups.expanded ? 'chevron-up' : 'chevron-down'}
                                             fixedWidth
                                             style={{
                                                 color: '#222',

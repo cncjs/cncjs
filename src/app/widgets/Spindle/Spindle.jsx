@@ -65,7 +65,7 @@ class Spindle extends Component {
                                     title={i18n._('Spindle On, CCW (M4)', { ns: 'gcode' })}
                                     disabled={!canClick}
                                 >
-                                    <FontAwesomeIcon icon="undo-alt" spinReverse={spindle === 'M4' } />
+                                    <FontAwesomeIcon icon="undo-alt" spinReverse={spindle === 'M4'} />
                                     <Space width={8} />
                                     M4
                                 </Button>
