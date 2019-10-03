@@ -696,7 +696,7 @@ class TinyGController {
     // https://github.com/synthetos/TinyG/wiki/TinyG-Configuration-for-Firmware-Version-0.97
     async initController() {
         const send = (cmd = '') => {
-            if (this.isClose()) {
+            if (this.isClose) {
                 // Serial port is closed
                 return;
             }
