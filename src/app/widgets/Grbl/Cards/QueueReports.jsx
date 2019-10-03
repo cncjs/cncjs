@@ -29,10 +29,6 @@ const QueueReports = ({
     plannerBufferSize = 0,
     receiveBufferSize = 0,
 }) => {
-    if (!plannerBufferSize && !receiveBufferSize) {
-        return null;
-    }
-
     const config = useContext(WidgetConfigContext);
     const expanded = config.get('panel.queueReports.expanded');
     const collapsed = !expanded;
@@ -56,6 +52,10 @@ const QueueReports = ({
             setReceiveBufferMax(nextReceiveBufferMax);
         }
     });
+
+    if (!plannerBufferSize && !receiveBufferSize) {
+        return null;
+    }
 
     return (
         <CollapsibleCard
