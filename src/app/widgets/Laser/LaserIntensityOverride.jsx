@@ -17,7 +17,13 @@ const none = '–';
 
 const LaserIntensityOverride = ({ value, ...props }) => (
     <Center vertical>
-        <ImageIcon src={laserBeamIcon} />
+        <ImageIcon
+            src={laserBeamIcon}
+            style={{
+                width: '16px',
+                height: '16px',
+            }}
+        />
         <Space width={8} />
         <OverrideReadout>
             {(value >= 0) ? `${value}%` : none}
