@@ -4,7 +4,7 @@ import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import _set from 'lodash/set';
 import _uniqueId from 'lodash/uniqueId';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
 import Select from 'react-select';
@@ -35,9 +35,7 @@ import {
     CONNECTION_STATE_DISCONNECTED,
     CONNECTION_STATE_DISCONNECTING,
 } from 'app/constants/connection';
-import useEffectOnce from 'app/hooks/useEffectOnce';
 import useMount from 'app/hooks/useMount';
-import usePrevious from 'app/hooks/usePrevious';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import { WidgetConfigContext } from 'app/widgets/context';
@@ -103,9 +101,15 @@ const Connection = ({
     }
 
     { // Auto reconnect
-        const prevIsFetchingPorts = usePrevious(isFetchingPorts);
-        useEffectOnce(() => {
-            if (prevIsFetchingPorts === true && isFetchingPorts === false) {
+        const autoReconnectRef = useRef(false);
+
+        useEffect(() => {
+            const autoReconnect = config.get('autoReconnect');
+            const autoReconnected = autoReconnectRef.current;
+
+            if (autoReconnect && (!autoReconnected) && ports.length > 0 && baudRates.length > 0) {
+                autoReconnectRef.current = true;
+
                 const controllerType = config.get('controller.type');
                 const connectionType = config.get('connection.type');
 
