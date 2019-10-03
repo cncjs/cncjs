@@ -4,7 +4,7 @@ import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import _set from 'lodash/set';
 import _uniqueId from 'lodash/uniqueId';
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
 import Select from 'react-select';
@@ -36,18 +36,44 @@ import {
     CONNECTION_STATE_DISCONNECTING,
 } from 'app/constants/connection';
 import useMount from 'app/hooks/useMount';
+import usePrevious from 'app/hooks/usePrevious';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import { WidgetConfigContext } from 'app/widgets/context';
 
+// @param {string} options.path
+// @param {number} options.baudRate
+// @param {boolean} options.rtscts
 const validateSerialConnectionOptions = (options) => {
     const { path, baudRate, rtscts } = { ...options };
     return (!!path) && (baudRate > 0) && (rtscts !== undefined);
 };
 
+// @param {string} options.host
+// @param {number} options.port
 const validateSocketConnectionOptions = (options) => {
     const { host, port } = { ...options };
     return !!host && (port > 0);
+};
+
+// The useReadyToConnect hook returns a boolean value that indicates whether it is ready to connect.
+// @param {array} ports
+// @param {array} baudRates
+const useReadyToConnect = ({ ports, baudRates }) => {
+    const refPorts = useRef({ isReady: false });
+    const refBaudRates = useRef({ isReady: false });
+    const prevPorts = usePrevious(ports, []);
+    const prevBaudRates = usePrevious(baudRates, []);
+    if (prevPorts.length === 0 && ports.length > 0) {
+        refPorts.current.isReady = true;
+    }
+    if (prevBaudRates.length === 0 && baudRates.length > 0) {
+        refBaudRates.current.isReady = true;
+    }
+
+    const isReadyToConnect = refPorts.current.isReady && refBaudRates.current.isReady;
+
+    return isReadyToConnect;
 };
 
 const Connection = ({
@@ -95,15 +121,7 @@ const Connection = ({
     const isDisconnecting = (connectionState === CONNECTION_STATE_DISCONNECTING);
     const canRefreshPorts = isDisconnected && !isFetchingPorts;
     const canRefreshBaudRates = isDisconnected && !isFetchingBaudRates;
-
-    const handleRefreshPorts = useCallback(() => {
-        fetchPorts();
-    }, []);
-
-    const handleRefreshBaudRates = useCallback(() => {
-        fetchBaudRates();
-    }, []);
-
+    const isReadyToConnect = useReadyToConnect({ ports, baudRates });
 
     { // Fetch ports and baud rates only after the initial render
         useMount(() => {
@@ -113,52 +131,48 @@ const Connection = ({
     }
 
     { // Auto reconnect
-        const autoReconnectRef = useRef(false);
-
         useEffect(() => {
             const autoReconnect = config.get('autoReconnect');
-            const autoReconnected = autoReconnectRef.current;
-
-            if (autoReconnect && (!autoReconnected) && ports.length > 0 && baudRates.length > 0) {
-                autoReconnectRef.current = true;
-
-                const controllerType = config.get('controller.type');
-                const connectionType = config.get('connection.type');
-
-                const options = {};
-                _set(options, 'controller.type', controllerType);
-                _set(options, 'connection.type', connectionType);
-
-                if (connectionType === CONNECTION_TYPE_SERIAL) {
-                    const { path, baudRate, rtscts } = config.get('connection.serial');
-
-                    if (!validateSerialConnectionOptions({ path, baudRate, rtscts })) {
-                        return;
-                    }
-
-                    _set(options, 'connection.options.path', path);
-                    _set(options, 'connection.options.baudRate', baudRate);
-                    _set(options, 'connection.options.rtscts', rtscts);
-
-                    openConnection(options);
-                    return;
-                }
-
-                if (connectionType === CONNECTION_TYPE_SOCKET) {
-                    const { host, port } = config.get('connection.socket');
-
-                    if (!validateSocketConnectionOptions({ host, port })) {
-                        return;
-                    }
-
-                    _set(options, 'connection.options.host', host);
-                    _set(options, 'connection.options.port', port);
-
-                    openConnection(options);
-                    return;
-                }
+            if (!autoReconnect) {
+                return;
             }
-        });
+
+            const controllerType = config.get('controller.type');
+            const connectionType = config.get('connection.type');
+
+            const options = {};
+            _set(options, 'controller.type', controllerType);
+            _set(options, 'connection.type', connectionType);
+
+            if (connectionType === CONNECTION_TYPE_SERIAL) {
+                const { path, baudRate, rtscts } = config.get('connection.serial');
+
+                if (!validateSerialConnectionOptions({ path, baudRate, rtscts })) {
+                    return;
+                }
+
+                _set(options, 'connection.options.path', path);
+                _set(options, 'connection.options.baudRate', baudRate);
+                _set(options, 'connection.options.rtscts', rtscts);
+
+                openConnection(options);
+                return;
+            }
+
+            if (connectionType === CONNECTION_TYPE_SOCKET) {
+                const { host, port } = config.get('connection.socket');
+
+                if (!validateSocketConnectionOptions({ host, port })) {
+                    return;
+                }
+
+                _set(options, 'connection.options.host', host);
+                _set(options, 'connection.options.port', port);
+
+                openConnection(options);
+                return;
+            }
+        }, [isReadyToConnect]);
     }
 
     return (
@@ -185,7 +199,7 @@ const Connection = ({
             <Form
                 initialValues={initialValues}
                 onSubmit={(values) => {
-                    // FIXME
+                    // No submit handler required
                 }}
             >
                 {({ form }) => {
@@ -355,7 +369,9 @@ const Connection = ({
                                                 <Space width={12} />
                                                 <Clickable
                                                     disabled={!canRefreshPorts}
-                                                    onClick={handleRefreshPorts}
+                                                    onClick={() => {
+                                                        fetchPorts();
+                                                    }}
                                                     title={i18n._('Refresh')}
                                                 >
                                                     {({ hovered }) => (
@@ -410,7 +426,9 @@ const Connection = ({
                                                 <Space width={12} />
                                                 <Clickable
                                                     disabled={!canRefreshBaudRates}
-                                                    onClick={handleRefreshBaudRates}
+                                                    onClick={() => {
+                                                        fetchBaudRates();
+                                                    }}
                                                     title={i18n._('Refresh')}
                                                 >
                                                     {({ hovered }) => (
