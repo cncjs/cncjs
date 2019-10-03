@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import app from 'app/containers/App/reducers';
 import connection from './connection';
 import controller from './controller';
+import serialport from './serialport';
 
 const rootReducer = combineReducers({
     container: combineReducers({
@@ -10,6 +11,7 @@ const rootReducer = combineReducers({
     }),
     connection,
     controller,
+    serialport,
     routing: routerReducer
 });
 

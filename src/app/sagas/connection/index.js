@@ -1,3 +1,4 @@
+import _get from 'lodash/get';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import {
     OPEN_CONNECTION,
@@ -14,11 +15,13 @@ import controller from 'app/lib/controller';
 import log from 'app/lib/log';
 import reduxStore from 'app/store/redux';
 
+const x = JSON.stringify;
+
 export function* init() {
     controller.addListener('connection:open', (connectionState) => {
         const { type, ident, options } = { ...connectionState };
 
-        log.debug(`A new connection was established: type=${JSON.stringify(type)}, options=${JSON.stringify(options)}`);
+        log.debug(`A new connection was established: type=${x(type)}, ident=${x(ident)}, options=${x(options)}`);
 
         reduxStore.dispatch({
             type: UPDATE_CONNECTION,
@@ -33,12 +36,17 @@ export function* init() {
     });
 
     controller.addListener('connection:error', (connectionState, error) => {
-        const { type, options } = { ...connectionState };
+        const { type, ident, options } = { ...connectionState };
+
+        log.debug(`A connection error occurred: type=${x(type)}, ident=${x(ident)}, options=${x(options)}`);
 
         if (type === CONNECTION_TYPE_SERIAL) {
-            log.error(`Error opening serial port: ${options.path}`);
+            const path = _get(options, 'path');
+            log.error(`Error opening serial port: ${path}`);
         } else if (type === CONNECTION_TYPE_SOCKET) {
-            log.error(`Error opening socket connection: ${options.host}:${options.port}`);
+            const host = _get(options, 'host');
+            const port = _get(options, 'port');
+            log.error(`Error opening socket connection: ${host}:${port}`);
         }
 
         reduxStore.dispatch({
@@ -46,26 +54,26 @@ export function* init() {
             payload: {
                 error,
                 state: CONNECTION_STATE_DISCONNECTED,
-                type: null,
-                ident: null,
-                options: null,
+                type,
+                ident,
+                options,
             }
         });
     });
 
     controller.addListener('connection:close', (connectionState) => {
-        const { type, options } = { ...connectionState };
+        const { type, ident, options } = { ...connectionState };
 
-        log.debug(`The connection was closed: type=${JSON.stringify(type)}, options=${JSON.stringify(options)}`);
+        log.debug(`The connection was closed: type=${x(type)}, ident=${x(ident)}, options=${x(options)}`);
 
         reduxStore.dispatch({
             type: UPDATE_CONNECTION,
             payload: {
                 error: null,
                 state: CONNECTION_STATE_DISCONNECTED,
-                type: null,
-                ident: null,
-                options: null,
+                type,
+                ident,
+                options,
             }
         });
     });
@@ -80,8 +88,11 @@ export function* process() {
 
 function* openConnection(action) {
     try {
-        const { controllerType, connectionType, connectionOptions } = action.payload;
-        const { type, options } = yield call(() => new Promise((resolve, reject) => {
+        const controllerType = _get(action.payload, 'controller.type');
+        const connectionType = _get(action.payload, 'connection.type');
+        const connectionOptions = _get(action.payload, 'connection.options');
+
+        yield call(() => new Promise((resolve, reject) => {
             controller.open(controllerType, connectionType, connectionOptions, (err, ...args) => {
                 if (err) {
                     reject(err);
@@ -90,8 +101,6 @@ function* openConnection(action) {
                 resolve(...args);
             });
         }));
-
-        log.debug(`openConnection: type=${type}, options=${JSON.stringify(options)}`);
     } catch (e) {
         const error = new Error(e.message);
         log.error('openConnection:', error);
@@ -100,9 +109,6 @@ function* openConnection(action) {
             payload: {
                 error,
                 state: CONNECTION_STATE_DISCONNECTED,
-                type: null,
-                ident: null,
-                options: null,
             }
         });
     }
@@ -110,7 +116,7 @@ function* openConnection(action) {
 
 function* closeConnection(action) {
     try {
-        const { type, options } = yield call(() => new Promise((resolve, reject) => {
+        yield call(() => new Promise((resolve, reject) => {
             controller.close((err, ...args) => {
                 if (err) {
                     reject(err);
@@ -119,8 +125,6 @@ function* closeConnection(action) {
                 resolve(...args);
             });
         }));
-
-        log.debug(`closeConnection: type=${type}, options=${JSON.stringify(options)}`);
     } catch (e) {
         const error = new Error(e.message);
         log.error('closeConnection:', error);
@@ -129,9 +133,6 @@ function* closeConnection(action) {
             payload: {
                 error,
                 state: CONNECTION_STATE_DISCONNECTED,
-                type: null,
-                ident: null,
-                options: null,
             }
         });
     }

@@ -166,7 +166,7 @@ const migrateStore = () => {
     // * Renamed "widgets.probe.tlo" to "widgets.probe.touchPlateHeight"
     // * Removed "widgets.webcam.scale"
     if (semver.lt(cnc.version, '1.9.0')) {
-        log.info(`Migrate config from v${cnc.version} to v1.9.0`);
+        log.info(`Migrating configuration settings from v${cnc.version} to v1.9.0`);
         // Probe widget
         const tlo = config.get('widgets.probe.tlo');
         if (tlo !== undefined) {
@@ -184,7 +184,7 @@ const migrateStore = () => {
     // Removed "widgets.axes.jog.customDistance"
     // Removed "widgets.axes.jog.selectedDistance"
     if (semver.lt(cnc.version, '1.9.13')) {
-        log.info(`Migrate config from v${cnc.version} to v1.9.13`);
+        log.info(`Migrating configuration settings from v${cnc.version} to v1.9.13`);
         // Axes widget
         config.unset('widgets.axes.wzero');
         config.unset('widgets.axes.mzero');
@@ -195,17 +195,19 @@ const migrateStore = () => {
     // 1.9.16
     // Removed "widgets.axes.jog.step"
     if (semver.lt(cnc.version, '1.9.16')) {
-        log.info(`Migrate config from v${cnc.version} to v1.9.16`);
+        log.info(`Migrating configration settings from v${cnc.version} to v1.9.16`);
         config.unset('widgets.axes.jog.step');
     }
 
     // 1.10.0
     // Removed "widgets.connection.port"
     // Removed "widgets.connection.baudrate"
-    if (semver.lt(cnc.version, '1.10.0')) {
-        log.info(`Migrate config from v${cnc.version} to v1.10.0`);
+    if (semver.lte(cnc.version, '1.10.0')) {
         config.unset('widgets.connection.port');
         config.unset('widgets.connection.baudrate');
+    }
+    if (semver.lt(cnc.version, '1.10.0')) {
+        log.info(`Migrating configuration settings from v${cnc.version} to v1.10.0`);
     }
 };
 
