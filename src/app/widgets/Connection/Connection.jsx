@@ -40,6 +40,16 @@ import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import { WidgetConfigContext } from 'app/widgets/context';
 
+const validateSerialConnectionOptions = (options) => {
+    const { path, baudRate, rtscts } = { ...options };
+    return (!!path) && (baudRate > 0) && (rtscts !== undefined);
+};
+
+const validateSocketConnectionOptions = (options) => {
+    const { host, port } = { ...options };
+    return !!host && (port > 0);
+};
+
 const Connection = ({
     connectionError,
     connectionType,
@@ -55,10 +65,6 @@ const Connection = ({
     fetchBaudRates,
 }) => {
     const config = useContext(WidgetConfigContext);
-    const isConnected = (connectionState === CONNECTION_STATE_CONNECTED);
-    const isConnecting = (connectionState === CONNECTION_STATE_CONNECTING);
-    const isDisconnected = (connectionState === CONNECTION_STATE_DISCONNECTED);
-    const isDisconnecting = (connectionState === CONNECTION_STATE_DISCONNECTING);
     const initialValues = {
         controller: {
             type: config.get('controller.type'),
@@ -83,6 +89,12 @@ const Connection = ({
         },
         autoReconnect: config.get('autoReconnect'),
     };
+    const isConnected = (connectionState === CONNECTION_STATE_CONNECTED);
+    const isConnecting = (connectionState === CONNECTION_STATE_CONNECTING);
+    const isDisconnected = (connectionState === CONNECTION_STATE_DISCONNECTED);
+    const isDisconnecting = (connectionState === CONNECTION_STATE_DISCONNECTING);
+    const canRefreshPorts = isDisconnected && !isFetchingPorts;
+    const canRefreshBaudRates = isDisconnected && !isFetchingBaudRates;
 
     const handleRefreshPorts = useCallback(() => {
         fetchPorts();
@@ -116,99 +128,38 @@ const Connection = ({
                 const options = {};
                 _set(options, 'controller.type', controllerType);
                 _set(options, 'connection.type', connectionType);
-                _set(options, 'connection.options', ({
-                    [CONNECTION_TYPE_SERIAL]: {
-                        path: config.get('connection.serial.path'),
-                        baudRate: config.get('connection.serial.baudRate'),
-                        rtscts: config.get('connection.serial.rtscts'),
-                    },
-                    [CONNECTION_TYPE_SOCKET]: {
-                        host: config.get('connection.socket.host'),
-                        port: config.get('connection.socket.port'),
-                    },
-                }[connectionType]));
 
-                openConnection(options);
+                if (connectionType === CONNECTION_TYPE_SERIAL) {
+                    const { path, baudRate, rtscts } = config.get('connection.serial');
+
+                    if (!validateSerialConnectionOptions({ path, baudRate, rtscts })) {
+                        return;
+                    }
+
+                    _set(options, 'connection.options.path', path);
+                    _set(options, 'connection.options.baudRate', baudRate);
+                    _set(options, 'connection.options.rtscts', rtscts);
+
+                    openConnection(options);
+                    return;
+                }
+
+                if (connectionType === CONNECTION_TYPE_SOCKET) {
+                    const { host, port } = config.get('connection.socket');
+
+                    if (!validateSocketConnectionOptions({ host, port })) {
+                        return;
+                    }
+
+                    _set(options, 'connection.options.host', host);
+                    _set(options, 'connection.options.port', port);
+
+                    openConnection(options);
+                    return;
+                }
             }
         });
     }
-
-    /*
-    const isPortOpen = (path) => {
-        const port = _find(ports, { comName: path }) || {};
-        return !!(port.isOpen);
-    };
-
-    const renderPortOption = (option) => {
-        const { label, isOpen, manufacturer } = option;
-        const styles = {
-            option: {
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden'
-            }
-        };
-
-        return (
-            <div style={styles.option} title={label}>
-                <div>
-                    {isOpen && (
-                        <Fragment>
-                            <FontAwesomeIcon icon="lock" />
-                            <Space width={8} />
-                        </Fragment>
-                    )}
-                    {label}
-                </div>
-                {manufacturer && (
-                    <i>{i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}</i>
-                )}
-            </div>
-        );
-    };
-
-    const renderPortValue = (option) => {
-        const { state } = this.props;
-        const { label, isOpen } = option;
-        const canChangePort = !isFetching;
-        const style = {
-            color: canChangePort ? '#333' : '#ccc',
-            textOverflow: 'ellipsis',
-            overflow: 'hidden'
-        };
-
-        return (
-            <div style={style} title={label}>
-                {isOpen && (
-                    <Fragment>
-                        <FontAwesomeIcon icon="lock" />
-                        <Space width={8} />
-                    </Fragment>
-                )}
-                {label}
-            </div>
-        );
-    };
-
-    const renderBaudRateValue = (option) => {
-        const { state } = this.props;
-        const { connection, loading, connected } = state;
-        const notLoading = !loading;
-        const notConnected = !connected;
-        const canChangeBaudRate = notLoading && notConnected && !this.isPortOpen(connection.serial.path); // FIXME
-        const style = {
-            color: canChangeBaudRate ? '#333' : '#ccc',
-            textOverflow: 'ellipsis',
-            overflow: 'hidden',
-        };
-
-        return (
-            <div style={style} title={option.label}>{option.label}</div>
-        );
-    };
-    */
-    const canRefreshPorts = isDisconnected && !isFetchingPorts;
-    const canRefreshBaudRates = isDisconnected && !isFetchingBaudRates;
 
     return (
         <Container>
@@ -596,14 +547,14 @@ const Connection = ({
                                             const baudRate = _get(values, 'connection.serial.baudRate');
                                             const rtscts = _get(values, 'connection.serial.rtscts');
 
-                                            return !!path && !!baudRate && (rtscts !== undefined);
+                                            return validateSerialConnectionOptions({ path, baudRate, rtscts });
                                         }
 
                                         if (connectionType === CONNECTION_TYPE_SOCKET) {
                                             const host = _get(values, 'connection.socket.host');
                                             const port = _get(values, 'connection.socket.port');
 
-                                            return !!host && (port > 0);
+                                            return validateSocketConnectionOptions({ host, port });
                                         }
 
                                         return false;
