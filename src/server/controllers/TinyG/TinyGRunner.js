@@ -451,7 +451,7 @@ class TinyGRunner extends events.EventEmitter {
         return _.get(state, 'wpos', {});
     }
 
-    getModalState(state = this.state) {
+    getModalGroup(state = this.state) {
         return _.get(state, 'modal', {});
     }
 
