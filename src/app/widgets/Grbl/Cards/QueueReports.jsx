@@ -1,5 +1,5 @@
 import _get from 'lodash/get';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useRef } from 'react';
 import { connect } from 'react-redux';
 import i18n from 'app/lib/i18n';
 import { ensurePositiveNumber } from 'app/lib/ensure-type';
@@ -25,6 +25,34 @@ const mapReceiveBufferSizeToColor = (rx) => {
     return '#dc3545';
 };
 
+// Hook
+const usePlannerBufferMax = (plannerBufferSize) => {
+    const ref = useRef(0);
+
+    let plannerBufferMax = ref.current;
+    const nextPlannerBufferMax = Math.max(plannerBufferMax, plannerBufferSize) || plannerBufferMax;
+    if (nextPlannerBufferMax > plannerBufferMax) {
+        plannerBufferMax = nextPlannerBufferMax;
+    }
+    ref.current = plannerBufferMax;
+
+    return plannerBufferMax;
+};
+
+// Hook
+const useReceiveBufferMax = (receiveBufferSize) => {
+    const ref = useRef(128);
+
+    let receiveBufferMax = ref.current;
+    const nextReceiveBufferMax = Math.max(receiveBufferMax, receiveBufferSize) || receiveBufferMax;
+    if (nextReceiveBufferMax > receiveBufferMax) {
+        receiveBufferMax = nextReceiveBufferMax;
+    }
+    ref.current = receiveBufferMax;
+
+    return receiveBufferMax;
+};
+
 const QueueReports = ({
     plannerBufferSize = 0,
     receiveBufferSize = 0,
@@ -38,20 +66,8 @@ const QueueReports = ({
     // Grbl v1.1: BLOCK_BUFFER_SIZE (16), RX_BUFFER_SIZE (128)
     const plannerBufferMin = 0;
     const receiveBufferMin = 0;
-    const [plannerBufferMax, setPlannerBufferMax] = useState(0);
-    const [receiveBufferMax, setReceiveBufferMax] = useState(128);
-
-    useEffect(() => {
-        const nextPlannerBufferMax = Math.max(plannerBufferMax, plannerBufferSize) || plannerBufferMax;
-        const nextReceiveBufferMax = Math.max(receiveBufferMax, receiveBufferSize) || receiveBufferMax;
-
-        if (nextPlannerBufferMax > plannerBufferMax) {
-            setPlannerBufferMax(nextPlannerBufferMax);
-        }
-        if (nextReceiveBufferMax > receiveBufferMax) {
-            setReceiveBufferMax(nextReceiveBufferMax);
-        }
-    });
+    const plannerBufferMax = usePlannerBufferMax(plannerBufferSize);
+    const receiveBufferMax = useReceiveBufferMax(receiveBufferSize);
 
     if (!plannerBufferSize && !receiveBufferSize) {
         return null;

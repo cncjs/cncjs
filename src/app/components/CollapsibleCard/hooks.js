@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 
-export const useStateFromProps = (initialValue) => {
-    const [value, setValue] = useState(initialValue);
+export const useStateFromProps = (props) => {
+    const [value, setValue] = useState(props);
 
     useEffect(() => {
-        if (initialValue !== value) {
-            setValue(value);
+        if (value !== props) {
+            setValue(props);
         }
-    }, [initialValue]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props]);
 
     return [value, setValue];
 };

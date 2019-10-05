@@ -132,6 +132,10 @@ const Connection = ({
 
     { // Auto reconnect
         useEffect(() => {
+            if (!isReadyToConnect) {
+                return;
+            }
+
             const autoReconnect = config.get('autoReconnect');
             if (!autoReconnect) {
                 return;
@@ -172,7 +176,7 @@ const Connection = ({
                 openConnection(options);
                 return;
             }
-        }, [isReadyToConnect]);
+        }, [isReadyToConnect, config, openConnection]);
     }
 
     return (
@@ -330,7 +334,7 @@ const Connection = ({
                             {(connectionType === CONNECTION_TYPE_SERIAL) && (
                                 <>
                                     <FormGroup>
-                                        <Label>{i18n._('Port')}</Label>
+                                        <Label>{i18n._('Serial port')}</Label>
                                         <Row style={{ alignItems: 'center' }}>
                                             <Col>
                                                 <Field name="connection.serial.path">
