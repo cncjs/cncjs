@@ -27,9 +27,9 @@ module.exports = {
     ],
     rules: {
         'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
-        'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
+        'react-hooks/exhaustive-deps': 'error', // Checks effect dependencies
         'max-lines-per-function': [1, {
-            max: 512,
+            max: 1024,
             skipBlankLines: true,
             skipComments: true
         }],
@@ -37,6 +37,7 @@ module.exports = {
             allowArrowFunctions: true
         }],
         'react/prefer-stateless-function': 0,
-        'react/no-access-state-in-setstate': 0
+        'react/no-access-state-in-setstate': 0,
+        'react/prop-types': 0,
     }
 };
