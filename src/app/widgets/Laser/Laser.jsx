@@ -148,7 +148,7 @@ class Laser extends PureComponent {
                                                     <InputGroup sm>
                                                         <InputGroup.Prepend>
                                                             <InputGroup.Text>
-                                                                {i18n._('S')}
+                                                                S
                                                             </InputGroup.Text>
                                                         </InputGroup.Prepend>
                                                         <Input
