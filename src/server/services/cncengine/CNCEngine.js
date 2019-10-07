@@ -1,9 +1,11 @@
 import ensureArray from 'ensure-array';
 import _cloneDeep from 'lodash/cloneDeep';
-import noop from 'lodash/noop';
-import reverse from 'lodash/reverse';
-import sortBy from 'lodash/sortBy';
-import uniq from 'lodash/uniq';
+import _find from 'lodash/find';
+import _get from 'lodash/get';
+import _noop from 'lodash/noop';
+import _reverse from 'lodash/reverse';
+import _sortBy from 'lodash/sortBy';
+import _uniq from 'lodash/uniq';
 import SerialPort from 'serialport';
 import socketIO from 'socket.io';
 import socketioJwt from 'socketio-jwt';
@@ -197,31 +199,41 @@ class CNCEngine {
 
             // Gets a list of available serial ports
             // @param {function} callback The error-first callback.
-            socket.on('getPorts', async (callback = noop) => {
+            socket.on('getPorts', async (callback = _noop) => {
                 if (typeof callback !== 'function') {
-                    callback = noop;
+                    callback = _noop;
                 }
 
                 log.debug(`socket.getPorts(): id=${socket.id}`);
 
                 try {
-                    const activeControllers = Object.keys(controllers)
-                        .filter(ident => {
-                            const controller = controllers[ident];
-                            return controller && controller.isOpen;
-                        });
                     const availablePorts = ensureArray(await SerialPort.list());
-                    const customPorts = ensureArray(config.get('ports', []));
-                    const ports = [].concat(availablePorts).concat(customPorts)
+                    const userDefinedPorts = ensureArray(config.get('ports', []));
+                    const occupiedPorts = [];
+
+                    for (let controller of controllers) {
+                        const connectionType = _get(controller, 'connection.type');
+                        const path = _get(controller, 'connection.options.path');
+
+                        if ((connectionType !== CONNECTION_TYPE_SERIAL) || !path) {
+                            continue;
+                        }
+
+                        occupiedPorts.push({ comName: path });
+                    }
+
+                    const ports = [].concat(availablePorts).concat(userDefinedPorts)
+                        .filter(port => !!port.comName)
                         .map(port => {
                             const { comName, manufacturer } = { ...port };
+                            const connected = !!_find(occupiedPorts, { comName });
+
                             return {
-                                comName: comName,
-                                manufacturer: manufacturer,
-                                isOpen: activeControllers.indexOf(comName) >= 0
+                                comName,
+                                manufacturer,
+                                connected,
                             };
-                        })
-                        .filter(port => !!(port.comName));
+                        });
 
                     callback(null, ports);
                 } catch (err) {
@@ -232,9 +244,9 @@ class CNCEngine {
 
             // Gets a list of supported baud rates
             // @param {function} callback The error-first callback.
-            socket.on('getBaudRates', (callback = noop) => {
+            socket.on('getBaudRates', (callback = _noop) => {
                 if (typeof callback !== 'function') {
-                    callback = noop;
+                    callback = _noop;
                 }
 
                 const defaultBaudRates = [
@@ -244,16 +256,16 @@ class CNCEngine {
                     38400,
                     19200,
                     9600,
-                    2400
+                    2400,
                 ];
                 const customBaudRates = ensureArray(config.get('baudRates', []));
-                const baudRates = reverse(sortBy(uniq(customBaudRates.concat(defaultBaudRates))));
+                const baudRates = _reverse(_sortBy(_uniq(customBaudRates.concat(defaultBaudRates))));
                 callback(null, baudRates);
             });
 
-            socket.on('open', (controllerType = GRBL, connectionType = CONNECTION_TYPE_SERIAL, connectionOptions, callback = noop) => {
+            socket.on('open', (controllerType = GRBL, connectionType = CONNECTION_TYPE_SERIAL, connectionOptions, callback = _noop) => {
                 if (typeof callback !== 'function') {
-                    callback = noop;
+                    callback = _noop;
                 }
 
                 connectionOptions = { ...connectionOptions };
@@ -325,9 +337,9 @@ class CNCEngine {
                 });
             });
 
-            socket.on('close', (ident, callback = noop) => {
+            socket.on('close', (ident, callback = _noop) => {
                 if (typeof callback !== 'function') {
-                    callback = noop;
+                    callback = _noop;
                 }
 
                 log.debug(`socket.close(${JSON.stringify(ident)}): id=${socket.id}`);

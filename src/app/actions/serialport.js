@@ -12,5 +12,12 @@ export const {
     'FETCH_BAUD_RATES': asyncTypes,
 });
 
+export const {
+    UPDATE_CONNECTION_STATUS,
+} = constants(NS, [
+    'UPDATE_CONNECTION_STATUS',
+]);
+
 export const fetchPorts = createAction(FETCH_PORTS.REQUEST);
 export const fetchBaudRates = createAction(FETCH_BAUD_RATES.REQUEST);
+export const updateConnectionStatus = createAction(UPDATE_CONNECTION_STATUS);

@@ -5,6 +5,7 @@ import {
     CLOSE_CONNECTION,
     UPDATE_CONNECTION,
 } from 'app/actions/connection';
+import * as SERIALPORT from 'app/actions/serialport';
 import {
     CONNECTION_TYPE_SERIAL,
     CONNECTION_TYPE_SOCKET,
@@ -59,6 +60,24 @@ export function* init() {
                 options,
             }
         });
+    });
+
+    controller.addListener('connection:change', (connectionState, connected) => {
+        const { type, ident, options } = { ...connectionState };
+
+        log.debug(`The connection status was changed: type=${x(type)}, ident=${x(ident)}, options=${x(options)}`);
+
+        if (type === CONNECTION_TYPE_SERIAL) {
+            const comName = _get(options, 'path');
+
+            reduxStore.dispatch({
+                type: SERIALPORT.UPDATE_CONNECTION_STATUS,
+                payload: {
+                    comName,
+                    connected,
+                }
+            });
+        }
     });
 
     controller.addListener('connection:close', (connectionState) => {

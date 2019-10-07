@@ -3,6 +3,7 @@ import { createReducer } from 'redux-action';
 import {
     FETCH_PORTS,
     FETCH_BAUD_RATES,
+    UPDATE_CONNECTION_STATUS,
 } from 'app/actions/serialport';
 
 const initialState = {
@@ -35,6 +36,17 @@ const reducer = createReducer(initialState, {
     }),
     [FETCH_BAUD_RATES.FAILURE]: (error) => ({
         isFetchingBaudRates: false,
+    }),
+    [UPDATE_CONNECTION_STATUS]: ({ comName, connected }, state) => ({
+        ports: ensureArray(state.ports).map(port => {
+            if (port.comName === comName) {
+                return {
+                    ...port,
+                    connected,
+                };
+            }
+            return port;
+        })
     }),
 });
 

@@ -237,10 +237,7 @@ class MarlinController {
     get status() {
         return {
             type: this.type,
-            connection: {
-                type: _.get(this.connection, 'type', ''),
-                settings: _.get(this.connection, 'settings', {})
-            },
+            connection: this.connectionState,
             sockets: Object.keys(this.sockets).length,
             ready: this.ready,
             settings: this.settings,
@@ -931,7 +928,8 @@ class MarlinController {
 
             // Emit a change event to all connected sockets
             if (this.engine.io) {
-                this.engine.io.emit('connection:change', this.connectionState, true);
+                const connected = true;
+                this.engine.io.emit('connection:change', this.connectionState, connected);
             }
 
             callback && callback(null);
@@ -961,7 +959,8 @@ class MarlinController {
 
         // Emit a change event to all connected sockets
         if (this.engine.io) {
-            this.engine.io.emit('connection:change', this.connectionState, false);
+            const connected = false;
+            this.engine.io.emit('connection:change', this.connectionState, connected);
         }
 
         this.connection.removeAllListeners();

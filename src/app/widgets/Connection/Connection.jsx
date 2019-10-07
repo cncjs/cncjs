@@ -7,7 +7,7 @@ import _uniqueId from 'lodash/uniqueId';
 import React, { useContext, useEffect, useRef } from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
-import Select from 'react-select';
+import Select, { components as SelectComponents } from 'react-select';
 import * as connectionActions from 'app/actions/connection';
 import * as serialportActions from 'app/actions/serialport';
 import { Button, ButtonGroup } from 'app/components/Buttons';
@@ -74,6 +74,25 @@ const useReadyToConnect = ({ ports, baudRates }) => {
     const isReadyToConnect = refPorts.current.isReady && refBaudRates.current.isReady;
 
     return isReadyToConnect;
+};
+
+const SerialPortValue = ({
+    children,
+    ...innerProps,
+}) => {
+    const connected = !!_get(innerProps, 'data.connected');
+
+    return (
+        <SelectComponents.SingleValue {...innerProps}>
+            {connected && (
+                <>
+                    <FontAwesomeIcon icon="lock" fixedWidth />
+                    <Space width={8} />
+                </>
+            )}
+            {children}
+        </SelectComponents.SingleValue>
+    );
 };
 
 const Connection = ({
@@ -178,6 +197,8 @@ const Connection = ({
             }
         }, [isReadyToConnect, config, openConnection]);
     }
+
+    console.log('### ports:', ports);
 
     return (
         <Container>
@@ -345,12 +366,15 @@ const Connection = ({
                                                             value: port.comName,
                                                             label: port.comName,
                                                             manufacturer: port.manufacturer,
-                                                            isOpen: port.isOpen,
+                                                            connected: port.connected,
                                                         }));
                                                         const value = _find(options, { value: input.value }) || null;
 
                                                         return (
                                                             <Select
+                                                                components={{
+                                                                    SingleValue: SerialPortValue,
+                                                                }}
                                                                 value={value}
                                                                 onChange={(option) => {
                                                                     const { value } = option;
