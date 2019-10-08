@@ -6,6 +6,7 @@ import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
+import { WidgetConfigContext } from 'app/widgets/context';
 import WidgetConfig from 'app/widgets/WidgetConfig';
 import Custom from './Custom';
 import Settings from './Settings';
@@ -171,132 +172,134 @@ class CustomWidget extends PureComponent {
         const buttonCount = 5; // [Disabled] [Refresh] [Edit] [Toggle] [More]
 
         return (
-            <Widget fullscreen={isFullscreen}>
-                <Widget.Header>
-                    <Widget.Title
-                        style={{ width: `calc(100% - ${buttonWidth * buttonCount}px)` }}
-                        title={title}
-                    >
-                        <Widget.Sortable className={this.props.sortable.handleClassName}>
-                            <FontAwesomeIcon icon="bars" fixedWidth />
-                            <Space width={4} />
-                        </Widget.Sortable>
-                        {isForkedWidget &&
-                        <FontAwesomeIcon icon="code-branch" fixedWidth />
-                        }
-                        {title}
-                    </Widget.Title>
-                    <Widget.Controls className={this.props.sortable.filterClassName}>
-                        <Widget.Button
-                            disabled={!state.url}
-                            title={disabled ? i18n._('Enable') : i18n._('Disable')}
-                            type="default"
-                            onClick={action.toggleDisabled}
+            <WidgetConfigContext.Provider value={this.config}>
+                <Widget fullscreen={isFullscreen}>
+                    <Widget.Header>
+                        <Widget.Title
+                            style={{ width: `calc(100% - ${buttonWidth * buttonCount}px)` }}
+                            title={title}
                         >
-                            {disabled &&
-                            <FontAwesomeIcon icon="toggle-off" fixedWidth />
+                            <Widget.Sortable className={this.props.sortable.handleClassName}>
+                                <FontAwesomeIcon icon="bars" fixedWidth />
+                                <Space width={4} />
+                            </Widget.Sortable>
+                            {isForkedWidget &&
+                            <FontAwesomeIcon icon="code-branch" fixedWidth />
                             }
-                            {!disabled &&
-                            <FontAwesomeIcon icon="toggle-on" fixedWidth />
-                            }
-                        </Widget.Button>
-                        <Widget.Button
-                            disabled={disabled}
-                            title={i18n._('Refresh')}
-                            onClick={action.refreshContent}
-                        >
-                            <FontAwesomeIcon icon="redo-alt" fixedWidth />
-                        </Widget.Button>
-                        <Widget.Button
-                            title={i18n._('Edit')}
-                            onClick={() => {
-                                action.openModal(MODAL_SETTINGS);
-                            }}
-                        >
-                            <FontAwesomeIcon icon="cog" fixedWidth />
-                        </Widget.Button>
-                        <Widget.Button
-                            disabled={isFullscreen}
-                            title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                            onClick={action.toggleMinimized}
-                        >
-                            {minimized &&
-                            <FontAwesomeIcon icon="chevron-down" fixedWidth />
-                            }
-                            {!minimized &&
-                            <FontAwesomeIcon icon="chevron-up" fixedWidth />
-                            }
-                        </Widget.Button>
-                        <Widget.DropdownButton
-                            title={i18n._('More')}
-                            toggle={(
-                                <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
-                            )}
-                            onSelect={(eventKey) => {
-                                if (eventKey === 'fullscreen') {
-                                    action.toggleFullscreen();
-                                } else if (eventKey === 'fork') {
-                                    this.props.onFork();
-                                } else if (eventKey === 'remove') {
-                                    this.props.onRemove();
+                            {title}
+                        </Widget.Title>
+                        <Widget.Controls className={this.props.sortable.filterClassName}>
+                            <Widget.Button
+                                disabled={!state.url}
+                                title={disabled ? i18n._('Enable') : i18n._('Disable')}
+                                type="default"
+                                onClick={action.toggleDisabled}
+                            >
+                                {disabled &&
+                                <FontAwesomeIcon icon="toggle-off" fixedWidth />
                                 }
+                                {!disabled &&
+                                <FontAwesomeIcon icon="toggle-on" fixedWidth />
+                                }
+                            </Widget.Button>
+                            <Widget.Button
+                                disabled={disabled}
+                                title={i18n._('Refresh')}
+                                onClick={action.refreshContent}
+                            >
+                                <FontAwesomeIcon icon="redo-alt" fixedWidth />
+                            </Widget.Button>
+                            <Widget.Button
+                                title={i18n._('Edit')}
+                                onClick={() => {
+                                    action.openModal(MODAL_SETTINGS);
+                                }}
+                            >
+                                <FontAwesomeIcon icon="cog" fixedWidth />
+                            </Widget.Button>
+                            <Widget.Button
+                                disabled={isFullscreen}
+                                title={minimized ? i18n._('Expand') : i18n._('Collapse')}
+                                onClick={action.toggleMinimized}
+                            >
+                                {minimized &&
+                                <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                                }
+                                {!minimized &&
+                                <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                                }
+                            </Widget.Button>
+                            <Widget.DropdownButton
+                                title={i18n._('More')}
+                                toggle={(
+                                    <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
+                                )}
+                                onSelect={(eventKey) => {
+                                    if (eventKey === 'fullscreen') {
+                                        action.toggleFullscreen();
+                                    } else if (eventKey === 'fork') {
+                                        this.props.onFork();
+                                    } else if (eventKey === 'remove') {
+                                        this.props.onRemove();
+                                    }
+                                }}
+                            >
+                                <Widget.DropdownMenuItem eventKey="fullscreen">
+                                    {!isFullscreen && (
+                                        <FontAwesomeIcon icon="expand" fixedWidth />
+                                    )}
+                                    {isFullscreen && (
+                                        <FontAwesomeIcon icon="compress" fixedWidth />
+                                    )}
+                                    <Space width={8} />
+                                    {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem eventKey="fork">
+                                    <FontAwesomeIcon icon="code-branch" fixedWidth />
+                                    <Space width={8} />
+                                    {i18n._('Fork Widget')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem eventKey="remove">
+                                    <FontAwesomeIcon icon="times" fixedWidth />
+                                    <Space width={8} />
+                                    {i18n._('Remove Widget')}
+                                </Widget.DropdownMenuItem>
+                            </Widget.DropdownButton>
+                        </Widget.Controls>
+                    </Widget.Header>
+                    <Widget.Content
+                        className={cx(styles.widgetContent, {
+                            [styles.hidden]: minimized,
+                            [styles.fullscreen]: isFullscreen
+                        })}
+                    >
+                        {state.modal.name === MODAL_SETTINGS && (
+                            <Settings
+                                config={config}
+                                onSave={() => {
+                                    const title = config.get('title');
+                                    const url = config.get('url');
+                                    this.setState({
+                                        title: title,
+                                        url: url
+                                    });
+                                    action.closeModal();
+                                }}
+                                onCancel={action.closeModal}
+                            />
+                        )}
+                        <Custom
+                            ref={node => {
+                                this.content = node;
                             }}
-                        >
-                            <Widget.DropdownMenuItem eventKey="fullscreen">
-                                {!isFullscreen && (
-                                    <FontAwesomeIcon icon="expand" fixedWidth />
-                                )}
-                                {isFullscreen && (
-                                    <FontAwesomeIcon icon="compress" fixedWidth />
-                                )}
-                                <Space width={8} />
-                                {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem eventKey="fork">
-                                <FontAwesomeIcon icon="code-branch" fixedWidth />
-                                <Space width={8} />
-                                {i18n._('Fork Widget')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem eventKey="remove">
-                                <FontAwesomeIcon icon="times" fixedWidth />
-                                <Space width={8} />
-                                {i18n._('Remove Widget')}
-                            </Widget.DropdownMenuItem>
-                        </Widget.DropdownButton>
-                    </Widget.Controls>
-                </Widget.Header>
-                <Widget.Content
-                    className={cx(styles.widgetContent, {
-                        [styles.hidden]: minimized,
-                        [styles.fullscreen]: isFullscreen
-                    })}
-                >
-                    {state.modal.name === MODAL_SETTINGS && (
-                        <Settings
                             config={config}
-                            onSave={() => {
-                                const title = config.get('title');
-                                const url = config.get('url');
-                                this.setState({
-                                    title: title,
-                                    url: url
-                                });
-                                action.closeModal();
-                            }}
-                            onCancel={action.closeModal}
+                            disabled={state.disabled}
+                            url={state.url}
+                            port={state.port}
                         />
-                    )}
-                    <Custom
-                        ref={node => {
-                            this.content = node;
-                        }}
-                        config={config}
-                        disabled={state.disabled}
-                        url={state.url}
-                        port={state.port}
-                    />
-                </Widget.Content>
-            </Widget>
+                    </Widget.Content>
+                </Widget>
+            </WidgetConfigContext.Provider>
         );
     }
 }

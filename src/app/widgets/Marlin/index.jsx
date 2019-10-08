@@ -11,6 +11,7 @@ import {
 import i18n from 'app/lib/i18n';
 import controller from 'app/lib/controller';
 import { ensurePositiveNumber } from 'app/lib/ensure-type';
+import { WidgetConfigContext } from 'app/widgets/context';
 import WidgetConfig from 'app/widgets/WidgetConfig';
 import Marlin from './Marlin';
 import Controller from './Controller';
@@ -295,119 +296,121 @@ class MarlinWidget extends PureComponent {
         };
 
         return (
-            <Widget fullscreen={isFullscreen}>
-                <Widget.Header>
-                    <Widget.Title>
-                        <Widget.Sortable className={this.props.sortable.handleClassName}>
-                            <FontAwesomeIcon icon="bars" fixedWidth />
-                            <Space width={4} />
-                        </Widget.Sortable>
-                        {isForkedWidget &&
-                        <FontAwesomeIcon icon="code-branch" fixedWidth />
-                        }
-                        Marlin
-                    </Widget.Title>
-                    <Widget.Controls className={this.props.sortable.filterClassName}>
-                        {isReady && (
-                            <Widget.Button
-                                onClick={(event) => {
-                                    actions.openModal(MODAL_CONTROLLER);
+            <WidgetConfigContext.Provider value={this.config}>
+                <Widget fullscreen={isFullscreen}>
+                    <Widget.Header>
+                        <Widget.Title>
+                            <Widget.Sortable className={this.props.sortable.handleClassName}>
+                                <FontAwesomeIcon icon="bars" fixedWidth />
+                                <Space width={4} />
+                            </Widget.Sortable>
+                            {isForkedWidget &&
+                            <FontAwesomeIcon icon="code-branch" fixedWidth />
+                            }
+                            Marlin
+                        </Widget.Title>
+                        <Widget.Controls className={this.props.sortable.filterClassName}>
+                            {isReady && (
+                                <Widget.Button
+                                    onClick={(event) => {
+                                        actions.openModal(MODAL_CONTROLLER);
+                                    }}
+                                >
+                                    <i className="fa fa-info" />
+                                </Widget.Button>
+                            )}
+                            {isReady && (
+                                <Widget.DropdownButton
+                                    toggle={<i className="fa fa-th-large" />}
+                                >
+                                    <Widget.DropdownMenuItem
+                                        onSelect={() => controller.writeln('M105')}
+                                        disabled={!state.canClick}
+                                    >
+                                        {i18n._('Get Extruder Temperature (M105)')}
+                                    </Widget.DropdownMenuItem>
+                                    <Widget.DropdownMenuItem
+                                        onSelect={() => controller.writeln('M114')}
+                                        disabled={!state.canClick}
+                                    >
+                                        {i18n._('Get Current Position (M114)')}
+                                    </Widget.DropdownMenuItem>
+                                    <Widget.DropdownMenuItem
+                                        onSelect={() => controller.writeln('M115')}
+                                        disabled={!state.canClick}
+                                    >
+                                        {i18n._('Get Firmware Version and Capabilities (M115)')}
+                                    </Widget.DropdownMenuItem>
+                                </Widget.DropdownButton>
+                            )}
+                            {isReady && (
+                                <Widget.Button
+                                    disabled={isFullscreen}
+                                    title={minimized ? i18n._('Expand') : i18n._('Collapse')}
+                                    onClick={actions.toggleMinimized}
+                                >
+                                    {minimized &&
+                                    <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                                    }
+                                    {!minimized &&
+                                    <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                                    }
+                                </Widget.Button>
+                            )}
+                            <Widget.DropdownButton
+                                title={i18n._('More')}
+                                toggle={(<FontAwesomeIcon icon="ellipsis-v" fixedWidth />)}
+                                onSelect={(eventKey) => {
+                                    if (eventKey === 'fullscreen') {
+                                        actions.toggleFullscreen();
+                                    } else if (eventKey === 'fork') {
+                                        this.props.onFork();
+                                    } else if (eventKey === 'remove') {
+                                        this.props.onRemove();
+                                    }
                                 }}
                             >
-                                <i className="fa fa-info" />
-                            </Widget.Button>
-                        )}
-                        {isReady && (
-                            <Widget.DropdownButton
-                                toggle={<i className="fa fa-th-large" />}
-                            >
-                                <Widget.DropdownMenuItem
-                                    onSelect={() => controller.writeln('M105')}
-                                    disabled={!state.canClick}
-                                >
-                                    {i18n._('Get Extruder Temperature (M105)')}
+                                <Widget.DropdownMenuItem eventKey="fullscreen" disabled={!isReady}>
+                                    {!isFullscreen && (
+                                        <FontAwesomeIcon icon="expand" fixedWidth />
+                                    )}
+                                    {isFullscreen && (
+                                        <FontAwesomeIcon icon="compress" fixedWidth />
+                                    )}
+                                    <Space width={8} />
+                                    {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                                 </Widget.DropdownMenuItem>
-                                <Widget.DropdownMenuItem
-                                    onSelect={() => controller.writeln('M114')}
-                                    disabled={!state.canClick}
-                                >
-                                    {i18n._('Get Current Position (M114)')}
+                                <Widget.DropdownMenuItem eventKey="fork">
+                                    <FontAwesomeIcon icon="code-branch" fixedWidth />
+                                    <Space width={8} />
+                                    {i18n._('Fork Widget')}
                                 </Widget.DropdownMenuItem>
-                                <Widget.DropdownMenuItem
-                                    onSelect={() => controller.writeln('M115')}
-                                    disabled={!state.canClick}
-                                >
-                                    {i18n._('Get Firmware Version and Capabilities (M115)')}
+                                <Widget.DropdownMenuItem eventKey="remove">
+                                    <FontAwesomeIcon icon="times" fixedWidth />
+                                    <Space width={8} />
+                                    {i18n._('Remove Widget')}
                                 </Widget.DropdownMenuItem>
                             </Widget.DropdownButton>
-                        )}
-                        {isReady && (
-                            <Widget.Button
-                                disabled={isFullscreen}
-                                title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                                onClick={actions.toggleMinimized}
-                            >
-                                {minimized &&
-                                <FontAwesomeIcon icon="chevron-down" fixedWidth />
-                                }
-                                {!minimized &&
-                                <FontAwesomeIcon icon="chevron-up" fixedWidth />
-                                }
-                            </Widget.Button>
-                        )}
-                        <Widget.DropdownButton
-                            title={i18n._('More')}
-                            toggle={(<FontAwesomeIcon icon="ellipsis-v" fixedWidth />)}
-                            onSelect={(eventKey) => {
-                                if (eventKey === 'fullscreen') {
-                                    actions.toggleFullscreen();
-                                } else if (eventKey === 'fork') {
-                                    this.props.onFork();
-                                } else if (eventKey === 'remove') {
-                                    this.props.onRemove();
-                                }
-                            }}
+                        </Widget.Controls>
+                    </Widget.Header>
+                    {isReady && (
+                        <Widget.Content
+                            className={classNames(
+                                styles['widget-content'],
+                                { [styles.hidden]: minimized }
+                            )}
                         >
-                            <Widget.DropdownMenuItem eventKey="fullscreen" disabled={!isReady}>
-                                {!isFullscreen && (
-                                    <FontAwesomeIcon icon="expand" fixedWidth />
-                                )}
-                                {isFullscreen && (
-                                    <FontAwesomeIcon icon="compress" fixedWidth />
-                                )}
-                                <Space width={8} />
-                                {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem eventKey="fork">
-                                <FontAwesomeIcon icon="code-branch" fixedWidth />
-                                <Space width={8} />
-                                {i18n._('Fork Widget')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem eventKey="remove">
-                                <FontAwesomeIcon icon="times" fixedWidth />
-                                <Space width={8} />
-                                {i18n._('Remove Widget')}
-                            </Widget.DropdownMenuItem>
-                        </Widget.DropdownButton>
-                    </Widget.Controls>
-                </Widget.Header>
-                {isReady && (
-                    <Widget.Content
-                        className={classNames(
-                            styles['widget-content'],
-                            { [styles.hidden]: minimized }
-                        )}
-                    >
-                        {state.modal.name === MODAL_CONTROLLER &&
-                        <Controller state={state} actions={actions} />
-                        }
-                        <Marlin
-                            state={state}
-                            actions={actions}
-                        />
-                    </Widget.Content>
-                )}
-            </Widget>
+                            {state.modal.name === MODAL_CONTROLLER &&
+                            <Controller state={state} actions={actions} />
+                            }
+                            <Marlin
+                                state={state}
+                                actions={actions}
+                            />
+                        </Widget.Content>
+                    )}
+                </Widget>
+            </WidgetConfigContext.Provider>
         );
     }
 }

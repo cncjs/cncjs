@@ -6,6 +6,7 @@ import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
 import portal from 'app/lib/portal';
+import { WidgetConfigContext } from 'app/widgets/context';
 import WidgetConfig from 'app/widgets/WidgetConfig';
 import Webcam from './Webcam';
 import Settings from './Settings';
@@ -141,127 +142,129 @@ class WebcamWidget extends PureComponent {
         };
 
         return (
-            <Widget fullscreen={isFullscreen}>
-                <Widget.Header>
-                    <Widget.Title>
-                        <Widget.Sortable className={this.props.sortable.handleClassName}>
-                            <FontAwesomeIcon icon="bars" fixedWidth />
-                            <Space width={4} />
-                        </Widget.Sortable>
-                        {isForkedWidget &&
-                        <FontAwesomeIcon icon="code-branch" fixedWidth />
-                        }
-                        {i18n._('Webcam')}
-                    </Widget.Title>
-                    <Widget.Controls className={this.props.sortable.filterClassName}>
-                        <Widget.Button
-                            title={disabled ? i18n._('Enable') : i18n._('Disable')}
-                            type="default"
-                            onClick={(event) => this.setState({ disabled: !disabled })}
-                        >
-                            {disabled &&
-                            <FontAwesomeIcon icon="toggle-off" fixedWidth />
+            <WidgetConfigContext.Provider value={this.config}>
+                <Widget fullscreen={isFullscreen}>
+                    <Widget.Header>
+                        <Widget.Title>
+                            <Widget.Sortable className={this.props.sortable.handleClassName}>
+                                <FontAwesomeIcon icon="bars" fixedWidth />
+                                <Space width={4} />
+                            </Widget.Sortable>
+                            {isForkedWidget &&
+                            <FontAwesomeIcon icon="code-branch" fixedWidth />
                             }
-                            {!disabled &&
-                            <FontAwesomeIcon icon="toggle-on" fixedWidth />
-                            }
-                        </Widget.Button>
-                        <Widget.Button
-                            disabled={disabled}
-                            title={i18n._('Refresh')}
-                            onClick={(event) => this.webcam.refresh()}
-                        >
-                            <FontAwesomeIcon icon="redo-alt" fixedWidth />
-                        </Widget.Button>
-                        <Widget.Button
-                            title={i18n._('Edit')}
-                            onClick={(event) => {
-                                const { mediaSource, deviceId, url } = this.state;
-
-                                portal(({ onClose }) => (
-                                    <Settings
-                                        mediaSource={mediaSource}
-                                        deviceId={deviceId}
-                                        url={url}
-                                        onSave={(data) => {
-                                            const { mediaSource, deviceId, url } = data;
-                                            this.setState({ mediaSource, deviceId, url });
-                                            onClose();
-                                        }}
-                                        onCancel={() => {
-                                            onClose();
-                                        }}
-                                    />
-                                ));
-                            }}
-                        >
-                            <FontAwesomeIcon icon="cog" fixedWidth />
-                        </Widget.Button>
-                        <Widget.Button
-                            disabled={isFullscreen}
-                            title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                            onClick={actions.toggleMinimized}
-                        >
-                            {minimized &&
-                            <FontAwesomeIcon icon="chevron-down" fixedWidth />
-                            }
-                            {!minimized &&
-                            <FontAwesomeIcon icon="chevron-up" fixedWidth />
-                            }
-                        </Widget.Button>
-                        <Widget.DropdownButton
-                            title={i18n._('More')}
-                            toggle={(
-                                <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
-                            )}
-                            onSelect={(eventKey) => {
-                                if (eventKey === 'fullscreen') {
-                                    actions.toggleFullscreen();
-                                } else if (eventKey === 'fork') {
-                                    this.props.onFork();
-                                } else if (eventKey === 'remove') {
-                                    this.props.onRemove();
+                            {i18n._('Webcam')}
+                        </Widget.Title>
+                        <Widget.Controls className={this.props.sortable.filterClassName}>
+                            <Widget.Button
+                                title={disabled ? i18n._('Enable') : i18n._('Disable')}
+                                type="default"
+                                onClick={(event) => this.setState({ disabled: !disabled })}
+                            >
+                                {disabled &&
+                                <FontAwesomeIcon icon="toggle-off" fixedWidth />
                                 }
+                                {!disabled &&
+                                <FontAwesomeIcon icon="toggle-on" fixedWidth />
+                                }
+                            </Widget.Button>
+                            <Widget.Button
+                                disabled={disabled}
+                                title={i18n._('Refresh')}
+                                onClick={(event) => this.webcam.refresh()}
+                            >
+                                <FontAwesomeIcon icon="redo-alt" fixedWidth />
+                            </Widget.Button>
+                            <Widget.Button
+                                title={i18n._('Edit')}
+                                onClick={(event) => {
+                                    const { mediaSource, deviceId, url } = this.state;
+
+                                    portal(({ onClose }) => (
+                                        <Settings
+                                            mediaSource={mediaSource}
+                                            deviceId={deviceId}
+                                            url={url}
+                                            onSave={(data) => {
+                                                const { mediaSource, deviceId, url } = data;
+                                                this.setState({ mediaSource, deviceId, url });
+                                                onClose();
+                                            }}
+                                            onCancel={() => {
+                                                onClose();
+                                            }}
+                                        />
+                                    ));
+                                }}
+                            >
+                                <FontAwesomeIcon icon="cog" fixedWidth />
+                            </Widget.Button>
+                            <Widget.Button
+                                disabled={isFullscreen}
+                                title={minimized ? i18n._('Expand') : i18n._('Collapse')}
+                                onClick={actions.toggleMinimized}
+                            >
+                                {minimized &&
+                                <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                                }
+                                {!minimized &&
+                                <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                                }
+                            </Widget.Button>
+                            <Widget.DropdownButton
+                                title={i18n._('More')}
+                                toggle={(
+                                    <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
+                                )}
+                                onSelect={(eventKey) => {
+                                    if (eventKey === 'fullscreen') {
+                                        actions.toggleFullscreen();
+                                    } else if (eventKey === 'fork') {
+                                        this.props.onFork();
+                                    } else if (eventKey === 'remove') {
+                                        this.props.onRemove();
+                                    }
+                                }}
+                            >
+                                <Widget.DropdownMenuItem eventKey="fullscreen">
+                                    {!isFullscreen && (
+                                        <FontAwesomeIcon icon="expand" fixedWidth />
+                                    )}
+                                    {isFullscreen && (
+                                        <FontAwesomeIcon icon="compress" fixedWidth />
+                                    )}
+                                    <Space width={8} />
+                                    {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem eventKey="fork">
+                                    <FontAwesomeIcon icon="code-branch" fixedWidth />
+                                    <Space width={8} />
+                                    {i18n._('Fork Widget')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem eventKey="remove">
+                                    <FontAwesomeIcon icon="times" fixedWidth />
+                                    <Space width={8} />
+                                    {i18n._('Remove Widget')}
+                                </Widget.DropdownMenuItem>
+                            </Widget.DropdownButton>
+                        </Widget.Controls>
+                    </Widget.Header>
+                    <Widget.Content
+                        className={cx(styles.widgetContent, {
+                            [styles.hidden]: minimized,
+                            [styles.fullscreen]: isFullscreen
+                        })}
+                    >
+                        <Webcam
+                            ref={node => {
+                                this.webcam = node;
                             }}
-                        >
-                            <Widget.DropdownMenuItem eventKey="fullscreen">
-                                {!isFullscreen && (
-                                    <FontAwesomeIcon icon="expand" fixedWidth />
-                                )}
-                                {isFullscreen && (
-                                    <FontAwesomeIcon icon="compress" fixedWidth />
-                                )}
-                                <Space width={8} />
-                                {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem eventKey="fork">
-                                <FontAwesomeIcon icon="code-branch" fixedWidth />
-                                <Space width={8} />
-                                {i18n._('Fork Widget')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem eventKey="remove">
-                                <FontAwesomeIcon icon="times" fixedWidth />
-                                <Space width={8} />
-                                {i18n._('Remove Widget')}
-                            </Widget.DropdownMenuItem>
-                        </Widget.DropdownButton>
-                    </Widget.Controls>
-                </Widget.Header>
-                <Widget.Content
-                    className={cx(styles.widgetContent, {
-                        [styles.hidden]: minimized,
-                        [styles.fullscreen]: isFullscreen
-                    })}
-                >
-                    <Webcam
-                        ref={node => {
-                            this.webcam = node;
-                        }}
-                        state={state}
-                        actions={actions}
-                    />
-                </Widget.Content>
-            </Widget>
+                            state={state}
+                            actions={actions}
+                        />
+                    </Widget.Content>
+                </Widget>
+            </WidgetConfigContext.Provider>
         );
     }
 }

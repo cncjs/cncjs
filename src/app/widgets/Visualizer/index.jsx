@@ -18,7 +18,8 @@ import log from 'app/lib/log';
 import portal from 'app/lib/portal';
 import * as WebGL from 'app/lib/three/WebGL';
 import { in2mm } from 'app/lib/units';
-import WidgetConfig from '../WidgetConfig';
+import { WidgetConfigContext } from 'app/widgets/context';
+import WidgetConfig from 'app/widgets/WidgetConfig';
 import PrimaryToolbar from './PrimaryToolbar';
 import SecondaryToolbar from './SecondaryToolbar';
 import WorkflowControl from './WorkflowControl';
@@ -1020,75 +1021,77 @@ class VisualizerWidget extends PureComponent {
         const showNotifications = showVisualizer && !!state.notification.type;
 
         return (
-            <Widget borderless>
-                <Widget.Header className={styles.widgetHeader} fixed>
-                    <PrimaryToolbar
-                        state={state}
-                        actions={actions}
-                    />
-                </Widget.Header>
-                <Widget.Content
-                    ref={node => {
-                        this.widgetContent = node;
-                    }}
-                    className={classNames(
-                        styles.widgetContent,
-                        { [styles.view3D]: capable.view3D }
-                    )}
-                >
-                    {state.gcode.loading &&
-                    <Loading />
-                    }
-                    {state.gcode.rendering &&
-                    <Rendering />
-                    }
-                    {state.modal.name === MODAL_WATCH_DIRECTORY && (
-                        <WatchDirectory
+            <WidgetConfigContext.Provider value={this.config}>
+                <Widget borderless>
+                    <Widget.Header className={styles.widgetHeader} fixed>
+                        <PrimaryToolbar
                             state={state}
                             actions={actions}
                         />
-                    )}
-                    <WorkflowControl
-                        state={state}
-                        actions={actions}
-                    />
-                    <Dashboard
-                        show={showDashboard}
-                        state={state}
-                    />
-                    {WebGL.isWebGLAvailable() && (
-                        <Visualizer
-                            show={showVisualizer}
-                            cameraPosition={state.cameraPosition}
-                            ref={node => {
-                                this.visualizer = node;
-                            }}
+                    </Widget.Header>
+                    <Widget.Content
+                        ref={node => {
+                            this.widgetContent = node;
+                        }}
+                        className={classNames(
+                            styles.widgetContent,
+                            { [styles.view3D]: capable.view3D }
+                        )}
+                    >
+                        {state.gcode.loading &&
+                        <Loading />
+                        }
+                        {state.gcode.rendering &&
+                        <Rendering />
+                        }
+                        {state.modal.name === MODAL_WATCH_DIRECTORY && (
+                            <WatchDirectory
+                                state={state}
+                                actions={actions}
+                            />
+                        )}
+                        <WorkflowControl
+                            state={state}
+                            actions={actions}
+                        />
+                        <Dashboard
+                            show={showDashboard}
                             state={state}
                         />
-                    )}
-                    {(showVisualizer && state.gcode.displayName) && (
-                        <GCodeName
-                            name={state.gcode.name}
+                        {WebGL.isWebGLAvailable() && (
+                            <Visualizer
+                                show={showVisualizer}
+                                cameraPosition={state.cameraPosition}
+                                ref={node => {
+                                    this.visualizer = node;
+                                }}
+                                state={state}
+                            />
+                        )}
+                        {(showVisualizer && state.gcode.displayName) && (
+                            <GCodeName
+                                name={state.gcode.name}
+                            />
+                        )}
+                        {showNotifications && (
+                            <Notifications
+                                show={showNotifications}
+                                type={state.notification.type}
+                                data={state.notification.data}
+                                onDismiss={actions.dismissNotification}
+                            />
+                        )}
+                    </Widget.Content>
+                    <Widget.Footer className={styles.widgetFooter}>
+                        <SecondaryToolbar
+                            is3DView={capable.view3D}
+                            cameraMode={state.cameraMode}
+                            cameraPosition={state.cameraPosition}
+                            camera={actions.camera}
                         />
-                    )}
-                    {showNotifications && (
-                        <Notifications
-                            show={showNotifications}
-                            type={state.notification.type}
-                            data={state.notification.data}
-                            onDismiss={actions.dismissNotification}
-                        />
-                    )}
-                </Widget.Content>
-                <Widget.Footer className={styles.widgetFooter}>
-                    <SecondaryToolbar
-                        is3DView={capable.view3D}
-                        cameraMode={state.cameraMode}
-                        cameraPosition={state.cameraPosition}
-                        camera={actions.camera}
-                    />
-                </Widget.Footer>
-            </Widget>
+                    </Widget.Footer>
+                </Widget>
+            </WidgetConfigContext.Provider>
         );
     }
 }
