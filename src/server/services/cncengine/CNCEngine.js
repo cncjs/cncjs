@@ -211,16 +211,21 @@ class CNCEngine {
                     const userDefinedPorts = ensureArray(config.get('ports', []));
                     const occupiedPorts = [];
 
-                    for (let controller of controllers) {
-                        const connectionType = _get(controller, 'connection.type');
-                        const path = _get(controller, 'connection.options.path');
+                    Object.keys(controllers).forEach(ident => {
+                        const controller = controllers[ident];
 
-                        if ((connectionType !== CONNECTION_TYPE_SERIAL) || !path) {
-                            continue;
+                        const connectionType = _get(controller, 'connection.type');
+                        if (connectionType !== CONNECTION_TYPE_SERIAL) {
+                            return;
+                        }
+
+                        const path = _get(controller, 'connection.options.path');
+                        if (!path) {
+                            return;
                         }
 
                         occupiedPorts.push({ comName: path });
-                    }
+                    });
 
                     const ports = [].concat(availablePorts).concat(userDefinedPorts)
                         .filter(port => !!port.comName)
