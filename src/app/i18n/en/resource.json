@@ -542,5 +542,6 @@
     "Probe Axis {{axis}}": "Probe Axis {{axis}}",
     "Connect to an IP camera": "Connect to an IP camera",
     "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.",
-    "Serial port": "Serial port"
+    "Serial port": "Serial port",
+    "Are you sure you want to close the connection?": "Are you sure you want to close the connection?"
 }

@@ -15,8 +15,16 @@ const FeederWait = (props) => (
     >
         <Modal.Body>
             <ModalTemplate type="warning">
-                <h5>{props.title}</h5>
-                <p>{i18n._('Waiting for the planner to empty...')}</p>
+                {({ PrimaryMessage, DescriptiveMessage }) => (
+                    <>
+                        <PrimaryMessage>
+                            {props.title}
+                        </PrimaryMessage>
+                        <DescriptiveMessage>
+                            {i18n._('Waiting for the planner to empty...')}
+                        </DescriptiveMessage>
+                    </>
+                )}
             </ModalTemplate>
         </Modal.Body>
         <Modal.Footer>

@@ -15,8 +15,16 @@ const FeederPaused = (props) => (
     >
         <Modal.Body>
             <ModalTemplate type="warning">
-                <h5>{props.title}</h5>
-                <p>{i18n._('Click the Continue button to resume execution.')}</p>
+                {({ PrimaryMessage, DescriptiveMessage }) => (
+                    <>
+                        <PrimaryMessage>
+                            {props.title}
+                        </PrimaryMessage>
+                        <DescriptiveMessage>
+                            {i18n._('Click the Continue button to resume execution.')}
+                        </DescriptiveMessage>
+                    </>
+                )}
             </ModalTemplate>
         </Modal.Body>
         <Modal.Footer>

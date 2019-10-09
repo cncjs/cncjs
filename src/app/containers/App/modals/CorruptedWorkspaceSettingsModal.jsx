@@ -22,18 +22,27 @@ const CorruptedWorkspaceSettingsModal = (props) => {
         >
             <Modal.Body>
                 <ModalTemplate type="error">
-                    <h5>{i18n._('Corrupted workspace settings')}</h5>
-                    <p>{i18n._('The workspace settings have become corrupted or invalid. Click Restore Defaults to restore default settings and continue.')}</p>
-                    <div>
-                        <Anchor
-                            href={url}
-                            download={filename}
-                        >
-                            <FontAwesomeIcon icon="download" />
-                            <Space width={8} />
-                            {i18n._('Download workspace settings')}
-                        </Anchor>
-                    </div>
+                    {({ PrimaryMessage, DescriptiveMessage }) => (
+                        <>
+                            <PrimaryMessage>
+                                {i18n._('Corrupted workspace settings')}
+                            </PrimaryMessage>
+                            <DescriptiveMessage>
+                                {i18n._('The workspace settings have become corrupted or invalid. Click Restore Defaults to restore default settings and continue.')}
+                                <br />
+                                <div>
+                                    <Anchor
+                                        href={url}
+                                        download={filename}
+                                    >
+                                        <FontAwesomeIcon icon="download" />
+                                        <Space width={8} />
+                                        {i18n._('Download workspace settings')}
+                                    </Anchor>
+                                </div>
+                            </DescriptiveMessage>
+                        </>
+                    )}
                 </ModalTemplate>
             </Modal.Body>
             <Modal.Footer>

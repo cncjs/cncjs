@@ -64,8 +64,16 @@ class Workspace extends PureComponent {
                         </Modal.Header>
                         <Modal.Body>
                             <ModalTemplate type="error">
-                                <div><strong>{i18n._('Import Error')}</strong></div>
-                                <p>{i18n._('Invalid file format.')}</p>
+                                {({ PrimaryMessage, DescriptiveMessage }) => (
+                                    <>
+                                        <PrimaryMessage>
+                                            {i18n._('Import Error')}
+                                        </PrimaryMessage>
+                                        <DescriptiveMessage>
+                                            {i18n._('Invalid file format.')}
+                                        </DescriptiveMessage>
+                                    </>
+                                )}
                             </ModalTemplate>
                         </Modal.Body>
                         <Modal.Footer>

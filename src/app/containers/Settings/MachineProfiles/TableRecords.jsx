@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Anchor from 'app/components/Anchor';
 import { Button } from 'app/components/Buttons';
-import FormGroup from 'app/components/FormGroup';
 import { FlexContainer, Row, Col } from 'app/components/GridSystem';
 import Modal from 'app/components/Modal';
 import ModalTemplate from 'app/components/ModalTemplate';
@@ -205,12 +204,16 @@ class TableRecords extends PureComponent {
                                                 <Modal disableOverlayClick onClose={onClose}>
                                                     <Modal.Body>
                                                         <ModalTemplate type="warning">
-                                                            <FormGroup>
-                                                                <strong>{i18n._('Delete machine profile')}</strong>
-                                                            </FormGroup>
-                                                            <div>
-                                                                {row.name}
-                                                            </div>
+                                                            {({ PrimaryMessage, DescriptiveMessage }) => (
+                                                                <>
+                                                                    <PrimaryMessage>
+                                                                        {i18n._('Delete machine profile')}
+                                                                    </PrimaryMessage>
+                                                                    <DescriptiveMessage>
+                                                                        {row.name}
+                                                                    </DescriptiveMessage>
+                                                                </>
+                                                            )}
                                                         </ModalTemplate>
                                                     </Modal.Body>
                                                     <Modal.Footer>
