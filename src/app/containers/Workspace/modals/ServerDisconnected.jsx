@@ -17,8 +17,16 @@ const ServerDisconnected = (props) => (
     >
         <Modal.Body>
             <ModalTemplate type="error">
-                <h5>{i18n._('Server has stopped working')}</h5>
-                <p>{i18n._('A problem caused the server to stop working correctly. Check out the server status and try again.')}</p>
+                {({ PrimaryMessage, DescriptiveMessage }) => (
+                    <>
+                        <PrimaryMessage>
+                            {i18n._('Server has stopped working')}
+                        </PrimaryMessage>
+                        <DescriptiveMessage>
+                            {i18n._('A problem caused the server to stop working correctly. Check out the server status and try again.')}
+                        </DescriptiveMessage>
+                    </>
+                )}
             </ModalTemplate>
         </Modal.Body>
         <Modal.Footer>

@@ -650,7 +650,11 @@ const Connection = ({
                                             <Modal onClose={onClose}>
                                                 <Modal.Body>
                                                     <ModalTemplate type="warning">
-                                                        {i18n._('Are you sure you want to close the connection?')}
+                                                        {({ PrimaryMessage, DescriptiveMessage }) => (
+                                                            <DescriptiveMessage>
+                                                                {i18n._('Are you sure you want to close the connection?')}
+                                                            </DescriptiveMessage>
+                                                        )}
                                                     </ModalTemplate>
                                                 </Modal.Body>
                                                 <Modal.Footer>

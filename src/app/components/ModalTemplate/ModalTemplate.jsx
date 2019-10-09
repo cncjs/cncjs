@@ -32,6 +32,17 @@ const Success = styled(Icon)`
     background-image: url(${iconSuccess});
 `;
 
+const PrimaryMessage = styled.div`
+    font-weight: bold;
+    font-size: 1rem;
+    padding-bottom: .25rem;
+`;
+
+const DescriptiveMessage = styled.div`
+    font-weight: normal;
+    font-size: 1rem;
+`;
+
 const ModalTemplate = ({ type, children, style }) => (
     <Container>
         <Row>
@@ -43,7 +54,10 @@ const ModalTemplate = ({ type, children, style }) => (
                 <Space width={16} />
             </Col>
             <Col style={{ paddingTop: 4, ...style }}>
-                {children}
+                {(typeof children === 'function')
+                    ? children({ PrimaryMessage, DescriptiveMessage })
+                    : children
+                }
             </Col>
         </Row>
     </Container>
