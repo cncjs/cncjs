@@ -20,11 +20,12 @@ import {
     // TinyG
     TINYG,
     TINYG_MACHINE_STATE_ALARM,
-    // Workflow
+} from 'app/constants/controller';
+import {
     WORKFLOW_STATE_IDLE,
     WORKFLOW_STATE_PAUSED,
-    WORKFLOW_STATE_RUNNING
-} from 'app/constants';
+    WORKFLOW_STATE_RUNNING,
+} from 'app/constants/workflow';
 import {
     MODAL_WATCH_DIRECTORY
 } from './constants';
@@ -96,11 +97,11 @@ class WorkflowControl extends PureComponent {
             return false;
         }
         if (controllerType === GRBL) {
-            const activeState = get(controllerState, 'status.activeState');
+            const machineState = get(controllerState, 'status.machineState');
             const states = [
                 GRBL_MACHINE_STATE_ALARM
             ];
-            if (includes(states, activeState)) {
+            if (includes(states, machineState)) {
                 return false;
             }
         }
@@ -108,11 +109,11 @@ class WorkflowControl extends PureComponent {
             // Marlin does not have machine state
         }
         if (controllerType === SMOOTHIE) {
-            const activeState = get(controllerState, 'status.activeState');
+            const machineState = get(controllerState, 'status.machineState');
             const states = [
                 SMOOTHIE_MACHINE_STATE_ALARM
             ];
-            if (includes(states, activeState)) {
+            if (includes(states, machineState)) {
                 return false;
             }
         }

@@ -10,15 +10,15 @@ import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import RepeatableButton from 'app/components/RepeatableButton';
 import Space from 'app/components/Space';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import Fraction from './components/Fraction';
 import {
     IMPERIAL_UNITS,
     IMPERIAL_STEPS,
     METRIC_UNITS,
     METRIC_STEPS
-} from '../../constants';
+} from 'app/constants';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
+import Fraction from './components/Fraction';
 import styles from './index.styl';
 
 const KeypadText = styled.span`

@@ -18,7 +18,7 @@ const Overrides = (props) => {
                 <DigitalReadout label="F" value={ovF + '%'}>
                     <RepeatableButton
                         onClick={() => {
-                            controller.command('feedOverride', -10);
+                            controller.command('override:feed', -10);
                         }}
                     >
                         <i className="fa fa-arrow-down" style={{ fontSize: 14 }} />
@@ -28,7 +28,7 @@ const Overrides = (props) => {
                     </RepeatableButton>
                     <RepeatableButton
                         onClick={() => {
-                            controller.command('feedOverride', -1);
+                            controller.command('override:feed', -1);
                         }}
                     >
                         <i className="fa fa-arrow-down" style={{ fontSize: 10 }} />
@@ -38,7 +38,7 @@ const Overrides = (props) => {
                     </RepeatableButton>
                     <RepeatableButton
                         onClick={() => {
-                            controller.command('feedOverride', 1);
+                            controller.command('override:feed', 1);
                         }}
                     >
                         <i className="fa fa-arrow-up" style={{ fontSize: 10 }} />
@@ -48,7 +48,7 @@ const Overrides = (props) => {
                     </RepeatableButton>
                     <RepeatableButton
                         onClick={() => {
-                            controller.command('feedOverride', 10);
+                            controller.command('override:feed', 10);
                         }}
                     >
                         <i className="fa fa-arrow-up" style={{ fontSize: 14 }} />
@@ -61,7 +61,7 @@ const Overrides = (props) => {
                         className="btn btn-default"
                         style={{ padding: 5 }}
                         onClick={() => {
-                            controller.command('feedOverride', 0);
+                            controller.command('override:feed', 0);
                         }}
                     >
                         <i className="fa fa-undo fa-fw" />
@@ -72,7 +72,7 @@ const Overrides = (props) => {
                 <DigitalReadout label="E" value={ovS + '%'}>
                     <RepeatableButton
                         onClick={() => {
-                            controller.command('spindleOverride', -10);
+                            controller.command('override:spindle', -10);
                         }}
                     >
                         <i className="fa fa-arrow-down" style={{ fontSize: 14 }} />
@@ -82,7 +82,7 @@ const Overrides = (props) => {
                     </RepeatableButton>
                     <RepeatableButton
                         onClick={() => {
-                            controller.command('spindleOverride', -1);
+                            controller.command('override:spindle', -1);
                         }}
                     >
                         <i className="fa fa-arrow-down" style={{ fontSize: 10 }} />
@@ -92,7 +92,7 @@ const Overrides = (props) => {
                     </RepeatableButton>
                     <RepeatableButton
                         onClick={() => {
-                            controller.command('spindleOverride', 1);
+                            controller.command('override:spindle', 1);
                         }}
                     >
                         <i className="fa fa-arrow-up" style={{ fontSize: 10 }} />
@@ -102,7 +102,7 @@ const Overrides = (props) => {
                     </RepeatableButton>
                     <RepeatableButton
                         onClick={() => {
-                            controller.command('spindleOverride', 10);
+                            controller.command('override:spindle', 10);
                         }}
                     >
                         <i className="fa fa-arrow-up" style={{ fontSize: 14 }} />
@@ -115,7 +115,7 @@ const Overrides = (props) => {
                         className="btn btn-default"
                         style={{ padding: 5 }}
                         onClick={() => {
-                            controller.command('spindleOverride', 0);
+                            controller.command('override:spindle', 0);
                         }}
                     >
                         <i className="fa fa-undo fa-fw" />

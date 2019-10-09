@@ -1,6 +1,8 @@
-import classNames from 'classnames';
+import cx from 'classnames';
+import _get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
@@ -12,8 +14,11 @@ import portal from 'app/lib/portal';
 import { WidgetConfigContext } from 'app/widgets/context';
 import WidgetConfig from 'app/widgets/WidgetConfig';
 import {
-    GRBL
-} from 'app/constants';
+    GRBL,
+} from 'app/constants/controller';
+import {
+    CONNECTION_STATE_CONNECTED,
+} from 'app/constants/connection';
 import QueueReports from './Cards/QueueReports';
 import StatusReports from './Cards/StatusReports';
 import ModalGroups from './Cards/ModalGroups';
@@ -44,20 +49,20 @@ class GrblWidget extends PureComponent {
 
     state = this.getInitialState();
 
-    actions = {
-        toggleFullscreen: () => {
-            const { minimized, isFullscreen } = this.state;
-            this.setState({
-                minimized: isFullscreen ? minimized : false,
-                isFullscreen: !isFullscreen
-            });
-        },
-        toggleMinimized: () => {
-            const { minimized } = this.state;
-            this.setState({ minimized: !minimized });
-        },
+    toggleFullscreen = () => {
+        const { minimized, isFullscreen } = this.state;
+        this.setState({
+            minimized: isFullscreen ? minimized : false,
+            isFullscreen: !isFullscreen
+        });
     };
 
+    toggleMinimized = () => {
+        const { minimized } = this.state;
+        this.setState({ minimized: !minimized });
+    };
+
+    /*
     controllerEvents = {
         'serialport:open': (options) => {
             const { port, controllerType } = options;
@@ -101,6 +106,7 @@ class GrblWidget extends PureComponent {
     componentWillUnmount() {
         this.removeControllerEvents();
     }
+    */
 
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -114,17 +120,20 @@ class GrblWidget extends PureComponent {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            isReady: (controller.availableControllers.length === 1) || (controller.type === GRBL),
-            canClick: true, // Defaults to true
+            /*
+            //isReady: (controller.availableControllers.length === 1) || (controller.type === GRBL),
+            //canClick: true, // Defaults to true
             port: controller.port,
             controller: {
                 type: controller.type,
                 settings: controller.settings,
                 state: controller.state
             },
+            */
         };
     }
 
+    /*
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
@@ -152,18 +161,15 @@ class GrblWidget extends PureComponent {
 
         return true;
     }
+    */
 
     render() {
-        const { widgetId } = this.props;
-        const { minimized, isFullscreen, isReady } = this.state;
+        const {
+            widgetId,
+            isReady,
+        } = this.props;
+        const { minimized, isFullscreen } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
-        const state = {
-            ...this.state,
-            canClick: this.canClick()
-        };
-        const actions = {
-            ...this.actions
-        };
 
         return (
             <WidgetConfigContext.Provider value={this.config}>
@@ -195,68 +201,57 @@ class GrblWidget extends PureComponent {
                                 >
                                     <Widget.DropdownMenuItem
                                         onSelect={() => controller.write('?')}
-                                        disabled={!state.canClick}
                                     >
                                         {i18n._('Status Report (?)')}
                                     </Widget.DropdownMenuItem>
                                     <Widget.DropdownMenuItem
                                         onSelect={() => controller.writeln('$C')}
-                                        disabled={!state.canClick}
                                     >
                                         {i18n._('Check G-code Mode ($C)')}
                                     </Widget.DropdownMenuItem>
                                     <Widget.DropdownMenuItem
                                         onSelect={() => controller.command('homing')}
-                                        disabled={!state.canClick}
                                     >
                                         {i18n._('Homing ($H)')}
                                     </Widget.DropdownMenuItem>
                                     <Widget.DropdownMenuItem
                                         onSelect={() => controller.command('unlock')}
-                                        disabled={!state.canClick}
                                     >
                                         {i18n._('Kill Alarm Lock ($X)')}
                                     </Widget.DropdownMenuItem>
                                     <Widget.DropdownMenuItem
                                         onSelect={() => controller.command('sleep')}
-                                        disabled={!state.canClick}
                                     >
                                         {i18n._('Sleep ($SLP)')}
                                     </Widget.DropdownMenuItem>
                                     <Widget.DropdownMenuItem divider />
                                     <Widget.DropdownMenuItem
                                         onSelect={() => controller.writeln('$')}
-                                        disabled={!state.canClick}
                                     >
                                         {i18n._('Help ($)')}
                                     </Widget.DropdownMenuItem>
                                     <Widget.DropdownMenuItem
                                         onSelect={() => controller.writeln('$$')}
-                                        disabled={!state.canClick}
                                     >
                                         {i18n._('Settings ($$)')}
                                     </Widget.DropdownMenuItem>
                                     <Widget.DropdownMenuItem
                                         onSelect={() => controller.writeln('$#')}
-                                        disabled={!state.canClick}
                                     >
                                         {i18n._('View G-code Parameters ($#)')}
                                     </Widget.DropdownMenuItem>
                                     <Widget.DropdownMenuItem
                                         onSelect={() => controller.writeln('$G')}
-                                        disabled={!state.canClick}
                                     >
                                         {i18n._('View G-code Parser State ($G)')}
                                     </Widget.DropdownMenuItem>
                                     <Widget.DropdownMenuItem
                                         onSelect={() => controller.writeln('$I')}
-                                        disabled={!state.canClick}
                                     >
                                         {i18n._('View Build Info ($I)')}
                                     </Widget.DropdownMenuItem>
                                     <Widget.DropdownMenuItem
                                         onSelect={() => controller.writeln('$N')}
-                                        disabled={!state.canClick}
                                     >
                                         {i18n._('View Startup Blocks ($N)')}
                                     </Widget.DropdownMenuItem>
@@ -266,7 +261,7 @@ class GrblWidget extends PureComponent {
                                 <Widget.Button
                                     disabled={isFullscreen}
                                     title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                                    onClick={actions.toggleMinimized}
+                                    onClick={this.toggleMinimized}
                                 >
                                     {minimized &&
                                     <FontAwesomeIcon icon="chevron-down" fixedWidth />
@@ -283,7 +278,7 @@ class GrblWidget extends PureComponent {
                                 )}
                                 onSelect={(eventKey) => {
                                     if (eventKey === 'fullscreen') {
-                                        actions.toggleFullscreen();
+                                        this.toggleFullscreen();
                                     } else if (eventKey === 'fork') {
                                         this.props.onFork();
                                     } else if (eventKey === 'remove') {
@@ -316,7 +311,7 @@ class GrblWidget extends PureComponent {
                     </Widget.Header>
                     {isReady && (
                         <Widget.Content
-                            className={classNames(
+                            className={cx(
                                 styles['widget-content'],
                                 { [styles.hidden]: minimized }
                             )}
@@ -339,7 +334,15 @@ class GrblWidget extends PureComponent {
     }
 }
 
-export default GrblWidget;
+export default connect(store => {
+    const controllerType = _get(store, 'controller.type');
+    const connectionState = _get(store, 'connection.state');
+    const isReady = (controllerType === GRBL) && (connectionState === CONNECTION_STATE_CONNECTED);
+
+    return {
+        isReady,
+    };
+})(GrblWidget);
 
 const Accordion = styled.div`
     > :not(:first-child) {

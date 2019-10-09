@@ -12,8 +12,8 @@ import { Row, Col } from 'app/components/GridSystem';
 import Margin from 'app/components/Margin';
 import Space from 'app/components/Space';
 import {
-    WORKFLOW_STATE_IDLE
-} from 'app/constants';
+    WORKFLOW_STATE_IDLE,
+} from 'app/constants/workflow';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';

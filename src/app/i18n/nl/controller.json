@@ -18,7 +18,7 @@
         }
     },
     "Grbl": {
-        "activeState": {
+        "machineState": {
             "idle": "stationair",
             "run": "bezig",
             "hold": "pauze",
@@ -30,7 +30,7 @@
         }
     },
     "Smoothie": {
-        "activeState": {
+        "machineState": {
             "idle": "stationair",
             "run": "bezig",
             "hold": "pauze",

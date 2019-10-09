@@ -23,7 +23,7 @@ class Smoothie extends PureComponent {
         const panel = state.panel;
         const controllerState = state.controller.state || {};
         const parserState = _.get(controllerState, 'parserstate', {});
-        const activeState = _.get(controllerState, 'status.activeState', none);
+        const machineState = _.get(controllerState, 'status.machineState', none);
         const ovF = _.get(controllerState, 'status.ovF', 0);
         const ovS = _.get(controllerState, 'status.ovS', 0);
         const feedrate = _.get(parserState, 'feedrate', none);
@@ -67,7 +67,7 @@ class Smoothie extends PureComponent {
                                 </div>
                                 <div className="col col-xs-8">
                                     <div className={styles.well}>
-                                        {activeState}
+                                        {machineState}
                                     </div>
                                 </div>
                             </div>

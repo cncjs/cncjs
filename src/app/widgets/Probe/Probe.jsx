@@ -13,7 +13,7 @@ import Space from 'app/components/Space';
 import Infotip from 'app/components/Infotip';
 import i18n from 'app/lib/i18n';
 import {
-    METRIC_UNITS
+    METRIC_UNITS,
 } from 'app/constants';
 import {
     MODAL_PREVIEW

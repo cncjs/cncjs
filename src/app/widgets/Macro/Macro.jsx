@@ -9,10 +9,9 @@ import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 import portal from 'app/lib/portal';
 import {
-    // Workflow
     WORKFLOW_STATE_IDLE,
-    WORKFLOW_STATE_PAUSED
-} from 'app/constants';
+    WORKFLOW_STATE_PAUSED,
+} from 'app/constants/workflow';
 import styles from './index.styl';
 
 class Macro extends PureComponent {

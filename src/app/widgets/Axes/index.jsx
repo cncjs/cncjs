@@ -19,11 +19,12 @@ import { limit } from 'app/lib/normalize-range';
 import { WidgetConfigContext } from 'app/widgets/context';
 import WidgetConfig from 'app/widgets/WidgetConfig';
 import {
-    // Units
     IMPERIAL_UNITS,
     IMPERIAL_STEPS,
     METRIC_UNITS,
     METRIC_STEPS,
+} from 'app/constants';
+import {
     // Grbl
     GRBL,
     GRBL_MACHINE_STATE_IDLE,
@@ -40,9 +41,10 @@ import {
     TINYG_MACHINE_STATE_STOP,
     TINYG_MACHINE_STATE_END,
     TINYG_MACHINE_STATE_RUN,
-    // Workflow
-    WORKFLOW_STATE_RUNNING
-} from 'app/constants';
+} from 'app/constants/controller';
+import {
+    WORKFLOW_STATE_RUNNING,
+} from 'app/constants/workflow';
 import Axes from './Axes';
 import KeypadOverlay from './KeypadOverlay';
 import Settings from './Settings';
@@ -751,12 +753,12 @@ class AxesWidget extends PureComponent {
             return false;
         }
         if (controllerType === GRBL) {
-            const activeState = get(controllerState, 'status.activeState');
+            const machineState = get(controllerState, 'status.machineState');
             const states = [
                 GRBL_MACHINE_STATE_IDLE,
                 GRBL_MACHINE_STATE_RUN
             ];
-            if (!includes(states, activeState)) {
+            if (!includes(states, machineState)) {
                 return false;
             }
         }
@@ -764,12 +766,12 @@ class AxesWidget extends PureComponent {
             // Ignore
         }
         if (controllerType === SMOOTHIE) {
-            const activeState = get(controllerState, 'status.activeState');
+            const machineState = get(controllerState, 'status.machineState');
             const states = [
                 SMOOTHIE_MACHINE_STATE_IDLE,
                 SMOOTHIE_MACHINE_STATE_RUN
             ];
-            if (!includes(states, activeState)) {
+            if (!includes(states, machineState)) {
                 return false;
             }
         }

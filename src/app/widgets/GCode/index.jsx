@@ -12,14 +12,15 @@ import { mapPositionToUnits } from 'app/lib/units';
 import { WidgetConfigContext } from 'app/widgets/context';
 import WidgetConfig from 'app/widgets/WidgetConfig';
 import {
+    IMPERIAL_UNITS,
+    METRIC_UNITS
+} from 'app/constants';
+import {
     GRBL,
     MARLIN,
     SMOOTHIE,
     TINYG,
-    // Units
-    IMPERIAL_UNITS,
-    METRIC_UNITS
-} from 'app/constants';
+} from 'app/constants/controller';
 import GCode from './GCode';
 import styles from './index.styl';
 

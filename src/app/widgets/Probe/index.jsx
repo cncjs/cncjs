@@ -11,6 +11,8 @@ import {
     // Units
     IMPERIAL_UNITS,
     METRIC_UNITS,
+} from 'app/constants';
+import {
     // Grbl
     GRBL,
     GRBL_MACHINE_STATE_IDLE,
@@ -24,9 +26,10 @@ import {
     TINYG_MACHINE_STATE_READY,
     TINYG_MACHINE_STATE_STOP,
     TINYG_MACHINE_STATE_END,
-    // Workflow
-    WORKFLOW_STATE_IDLE
-} from 'app/constants';
+} from 'app/constants/controller';
+import {
+    WORKFLOW_STATE_IDLE,
+} from 'app/constants/workflow';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import { in2mm, mapValueToUnits } from 'app/lib/units';
@@ -427,11 +430,11 @@ class ProbeWidget extends PureComponent {
             return false;
         }
         if (controllerType === GRBL) {
-            const activeState = get(controllerState, 'status.activeState');
+            const machineState = get(controllerState, 'status.machineState');
             const states = [
                 GRBL_MACHINE_STATE_IDLE
             ];
-            if (!includes(states, activeState)) {
+            if (!includes(states, machineState)) {
                 return false;
             }
         }
@@ -439,11 +442,11 @@ class ProbeWidget extends PureComponent {
             // Marlin does not have machine state
         }
         if (controllerType === SMOOTHIE) {
-            const activeState = get(controllerState, 'status.activeState');
+            const machineState = get(controllerState, 'status.machineState');
             const states = [
                 SMOOTHIE_MACHINE_STATE_IDLE
             ];
-            if (!includes(states, activeState)) {
+            if (!includes(states, machineState)) {
                 return false;
             }
         }

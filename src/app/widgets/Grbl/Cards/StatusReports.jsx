@@ -11,7 +11,7 @@ import OverflowEllipsis from './OverflowEllipsis';
 import Readout from './Readout';
 
 const StatusReports = ({
-    activeState,
+    machineState,
     feedrate,
     spindle,
     tool,
@@ -52,7 +52,7 @@ const StatusReports = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <Readout>{nonblankValue(activeState)}</Readout>
+                                                <Readout>{nonblankValue(machineState)}</Readout>
                                             </FormCol>
                                         </FormRow>
                                         <FormRow>
@@ -99,13 +99,13 @@ const StatusReports = ({
 export default connect(store => {
     const controllerState = _get(store, 'controller.state');
     const parserstate = _get(controllerState, 'parserstate');
-    const activeState = _get(controllerState, 'status.activeState');
+    const machineState = _get(controllerState, 'status.machineState');
     const feedrate = _get(controllerState, 'status.feedrate', _get(parserstate, 'feedrate'));
     const spindle = _get(controllerState, 'status.spindle', _get(parserstate, 'spindle'));
     const tool = _get(parserstate, 'tool');
 
     return {
-        activeState,
+        machineState,
         feedrate,
         spindle,
         tool,

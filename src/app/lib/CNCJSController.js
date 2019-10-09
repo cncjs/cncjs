@@ -1,15 +1,15 @@
 import ensureArray from 'ensure-array';
 import _mapValues from 'lodash/mapValues';
 import {
-    // Units
     IMPERIAL_UNITS,
     METRIC_UNITS,
-    // Controller
+} from 'app/constants';
+import {
     GRBL,
     MARLIN,
     SMOOTHIE,
-    TINYG
-} from 'app/constants';
+    TINYG,
+} from 'app/constants/controller';
 import { in2mm } from 'app/lib/units';
 
 const noop = () => {};

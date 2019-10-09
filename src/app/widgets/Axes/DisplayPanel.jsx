@@ -16,7 +16,7 @@ import {
     AXIS_B,
     AXIS_C,
     IMPERIAL_UNITS,
-    METRIC_UNITS
+    METRIC_UNITS,
 } from 'app/constants';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';

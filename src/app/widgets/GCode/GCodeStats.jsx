@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import i18n from 'app/lib/i18n';
 import {
-    METRIC_UNITS
+    METRIC_UNITS,
 } from 'app/constants';
 import styles from './index.styl';
 

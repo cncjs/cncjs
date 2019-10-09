@@ -34,7 +34,7 @@ const FeedOverride = ({
             <ButtonGroup sm>
                 <RepeatableButton
                     onClick={() => {
-                        controller.command('feedOverride', -10);
+                        controller.command('override:feed', -10);
                     }}
                     style={{ fontSize: '.75rem' }}
                 >
@@ -43,7 +43,7 @@ const FeedOverride = ({
                 </RepeatableButton>
                 <RepeatableButton
                     onClick={() => {
-                        controller.command('feedOverride', -1);
+                        controller.command('override:feed', -1);
                     }}
                     style={{ fontSize: '.66rem' }}
                 >
@@ -52,7 +52,7 @@ const FeedOverride = ({
                 </RepeatableButton>
                 <RepeatableButton
                     onClick={() => {
-                        controller.command('feedOverride', 1);
+                        controller.command('override:feed', 1);
                     }}
                     style={{ fontSize: '.66rem' }}
                 >
@@ -61,7 +61,7 @@ const FeedOverride = ({
                 </RepeatableButton>
                 <RepeatableButton
                     onClick={() => {
-                        controller.command('feedOverride', 10);
+                        controller.command('override:feed', 10);
                     }}
                     style={{ fontSize: '.75rem' }}
                 >
@@ -72,7 +72,7 @@ const FeedOverride = ({
             <Space width={8} />
             <Clickable
                 onClick={() => {
-                    controller.command('feedOverride', 0);
+                    controller.command('override:feed', 0);
                 }}
             >
                 {({ hovered }) => (

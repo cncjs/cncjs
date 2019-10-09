@@ -18,7 +18,7 @@
         }
     },
     "Grbl": {
-        "activeState": {
+        "machineState": {
             "idle": "Készenlét",
             "run": "Futtatás",
             "hold": "Tartás",
@@ -30,7 +30,7 @@
         }
     },
     "Smoothie": {
-        "activeState": {
+        "machineState": {
             "idle": "Készenlét",
             "run": "Futtatás",
             "hold": "Tartás",

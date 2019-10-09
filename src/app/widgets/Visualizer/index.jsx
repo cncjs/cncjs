@@ -12,6 +12,28 @@ import { Button } from 'app/components/Buttons';
 import ModalTemplate from 'app/components/ModalTemplate';
 import Modal from 'app/components/Modal';
 import Widget from 'app/components/Widget';
+import {
+    IMPERIAL_UNITS,
+    METRIC_UNITS,
+} from 'app/constants';
+import {
+    // Grbl
+    GRBL,
+    GRBL_MACHINE_STATE_RUN,
+    // Marlin
+    MARLIN,
+    // Smoothie
+    SMOOTHIE,
+    SMOOTHIE_MACHINE_STATE_RUN,
+    // TinyG
+    TINYG,
+    TINYG_MACHINE_STATE_RUN,
+} from 'app/constants/controller';
+import {
+    WORKFLOW_STATE_RUNNING,
+    WORKFLOW_STATE_PAUSED,
+    WORKFLOW_STATE_IDLE,
+} from 'app/constants/workflow';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
@@ -29,26 +51,6 @@ import Notifications from './Notifications';
 import Loading from './Loading';
 import Rendering from './Rendering';
 import WatchDirectory from './WatchDirectory';
-import {
-    // Units
-    IMPERIAL_UNITS,
-    METRIC_UNITS,
-    // Grbl
-    GRBL,
-    GRBL_MACHINE_STATE_RUN,
-    // Marlin
-    MARLIN,
-    // Smoothie
-    SMOOTHIE,
-    SMOOTHIE_MACHINE_STATE_RUN,
-    // TinyG
-    TINYG,
-    TINYG_MACHINE_STATE_RUN,
-    // Workflow
-    WORKFLOW_STATE_RUNNING,
-    WORKFLOW_STATE_PAUSED,
-    WORKFLOW_STATE_IDLE
-} from '../../constants';
 import {
     CAMERA_MODE_PAN,
     CAMERA_MODE_ROTATE,
@@ -979,8 +981,8 @@ class VisualizerWidget extends PureComponent {
             return false;
         }
         if (controllerType === GRBL) {
-            const activeState = get(controllerState, 'status.activeState');
-            if (activeState !== GRBL_MACHINE_STATE_RUN) {
+            const machineState = get(controllerState, 'status.machineState');
+            if (machineState !== GRBL_MACHINE_STATE_RUN) {
                 return false;
             }
         }
@@ -989,8 +991,8 @@ class VisualizerWidget extends PureComponent {
             return false;
         }
         if (controllerType === SMOOTHIE) {
-            const activeState = get(controllerState, 'status.activeState');
-            if (activeState !== SMOOTHIE_MACHINE_STATE_RUN) {
+            const machineState = get(controllerState, 'status.machineState');
+            if (machineState !== SMOOTHIE_MACHINE_STATE_RUN) {
                 return false;
             }
         }

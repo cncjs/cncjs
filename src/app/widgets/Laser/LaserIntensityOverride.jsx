@@ -32,7 +32,7 @@ const LaserIntensityOverride = ({ value, ...props }) => (
         <ButtonGroup sm>
             <RepeatableButton
                 onClick={() => {
-                    controller.command('spindleOverride', -10);
+                    controller.command('override:spindle', -10);
                 }}
                 style={{ fontSize: '.75rem' }}
             >
@@ -41,7 +41,7 @@ const LaserIntensityOverride = ({ value, ...props }) => (
             </RepeatableButton>
             <RepeatableButton
                 onClick={() => {
-                    controller.command('spindleOverride', -1);
+                    controller.command('override:spindle', -1);
                 }}
                 style={{ fontSize: '.66rem' }}
             >
@@ -50,7 +50,7 @@ const LaserIntensityOverride = ({ value, ...props }) => (
             </RepeatableButton>
             <RepeatableButton
                 onClick={() => {
-                    controller.command('spindleOverride', 1);
+                    controller.command('override:spindle', 1);
                 }}
                 style={{ fontSize: '.66rem' }}
             >
@@ -59,7 +59,7 @@ const LaserIntensityOverride = ({ value, ...props }) => (
             </RepeatableButton>
             <RepeatableButton
                 onClick={() => {
-                    controller.command('spindleOverride', 10);
+                    controller.command('override:spindle', 10);
                 }}
                 style={{ fontSize: '.75rem' }}
             >
@@ -70,7 +70,7 @@ const LaserIntensityOverride = ({ value, ...props }) => (
         <Space width={8} />
         <Clickable
             onClick={() => {
-                controller.command('spindleOverride', 0);
+                controller.command('override:spindle', 0);
             }}
         >
             {({ hovered }) => (
