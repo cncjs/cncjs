@@ -28,7 +28,7 @@ class SmoothieLineParserResultStatus {
 
         { // Supported states: Alarm, Home, Hold, Idle, Run
             const states = (params.shift() || '').split(':');
-            payload.activeState = states[0] || '';
+            payload.machineState = states[0] || '';
         }
 
         for (let param of params) {
@@ -62,7 +62,7 @@ class SmoothieLineParserResultStatus {
 
         // feedrate
         if (_.has(result, 'F')) {
-            if (_.includes(['Home', 'Run'], payload.activeState)) {
+            if (_.includes(['Home', 'Run'], payload.machineState)) {
                 // F:current_feedrate,requested_feedrate,override
                 const [currentFeedrate, feedrate, feedrateOverride] = ensureArray(result.F);
                 payload.currentFeedrate = ensureNumber(currentFeedrate) || 0;
