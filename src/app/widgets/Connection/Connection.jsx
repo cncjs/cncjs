@@ -756,7 +756,7 @@ export default connect(store => {
 
 const SerialPortSingleValue = ({
     children,
-    ...innerProps,
+    ...innerProps
 }) => {
     const data = _get(innerProps, 'data');
     const connected = !!data.connected;
