@@ -24,6 +24,7 @@ import Modal from 'app/components/Modal';
 import ModalTemplate from 'app/components/ModalTemplate';
 import { ToastNotification } from 'app/components/Notifications';
 import Space from 'app/components/Space';
+import Text from 'app/components/Text';
 import {
     GRBL,
     MARLIN,
@@ -391,6 +392,7 @@ const Connection = ({
                                                         return (
                                                             <Select
                                                                 components={{
+                                                                    Option: SerialPortOption,
                                                                     SingleValue: SerialPortSingleValue,
                                                                 }}
                                                                 value={value}
@@ -754,15 +756,47 @@ export default connect(store => {
     fetchSerialBaudRates: serialportActions.fetchBaudRates,
 })(Connection);
 
+const SerialPortOption = ({
+    children,
+    ...props
+}) => {
+    const data = _get(props, 'data');
+    const connected = !!data.connected;
+    const manufacturer = data.manufacturer;
+
+    return (
+        <SelectComponents.Option {...props}>
+            <Container fluid>
+                <Row>
+                    <Col style={{ wordBreak: 'break-all' }}>
+                        {children}
+                    </Col>
+                    <Col width="auto">
+                        <Space width={8} />
+                        <FontAwesomeIcon icon="lock" fixedWidth style={{ opacity: (connected ? 1 : 0) }}/>
+                    </Col>
+                </Row>
+            </Container>
+            {manufacturer && (
+                <Margin left={24}>
+                    <Text color="#888" size="0.875em">
+                        {i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}
+                    </Text>
+                </Margin>
+            )}
+        </SelectComponents.Option>
+    );
+};
+
 const SerialPortSingleValue = ({
     children,
-    ...innerProps
+    ...props
 }) => {
-    const data = _get(innerProps, 'data');
+    const data = _get(props, 'data');
     const connected = !!data.connected;
 
     return (
-        <SelectComponents.SingleValue {...innerProps}>
+        <SelectComponents.SingleValue {...props}>
             {connected && (
                 <>
                     <FontAwesomeIcon icon="lock" fixedWidth />
