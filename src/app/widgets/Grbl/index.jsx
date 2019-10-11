@@ -1,4 +1,3 @@
-import cx from 'classnames';
 import _get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
@@ -6,6 +5,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
+import { Container } from 'app/components/GridSystem';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
@@ -26,7 +26,6 @@ import ControllerModal from './modals/ControllerModal';
 import FeedOverride from './Overrides/FeedOverride';
 import SpindleOverride from './Overrides/SpindleOverride';
 import RapidOverride from './Overrides/RapidOverride';
-import styles from './index.styl';
 
 class GrblWidget extends PureComponent {
     static propTypes = {
@@ -311,21 +310,27 @@ class GrblWidget extends PureComponent {
                     </Widget.Header>
                     {isReady && (
                         <Widget.Content
-                            className={cx(
-                                styles['widget-content'],
-                                { [styles.hidden]: minimized }
-                            )}
+                            style={{
+                                display: (minimized ? 'none' : 'block'),
+                            }}
                         >
-                            <FormGroup>
-                                <FeedOverride />
-                                <SpindleOverride />
-                                <RapidOverride />
-                            </FormGroup>
-                            <Accordion>
-                                <QueueReports />
-                                <StatusReports />
-                                <ModalGroups />
-                            </Accordion>
+                            <Container
+                                fluid
+                                style={{
+                                    padding: '.75rem',
+                                }}
+                            >
+                                <FormGroup>
+                                    <FeedOverride />
+                                    <SpindleOverride />
+                                    <RapidOverride />
+                                </FormGroup>
+                                <Accordion>
+                                    <QueueReports />
+                                    <StatusReports />
+                                    <ModalGroups />
+                                </Accordion>
+                            </Container>
                         </Widget.Content>
                     )}
                 </Widget>

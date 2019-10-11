@@ -70,7 +70,7 @@ class TinyGController {
             this.ready = false;
             if (err) {
                 log.error(`The connection was closed unexpectedly: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
-                log.error(err);
+                log.error(err.message);
             }
 
             this.close(err => {
@@ -87,7 +87,7 @@ class TinyGController {
             this.ready = false;
             if (err) {
                 log.error(`An unexpected error occurred: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
-                log.error(err);
+                log.error(err.message);
             }
         }
     };
@@ -910,8 +910,8 @@ class TinyGController {
         this.connection.open(async (err) => {
             if (err) {
                 log.error(`Cannot open connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
-                log.error(err);
-                this.emit('connection:error', this.connectionState, err);
+                log.error(err.message);
+                this.emit('connection:error', this.connectionState, err.message);
                 callback && callback(err);
                 return;
             }

@@ -1,5 +1,6 @@
 import _get from 'lodash/get';
-import { call, put, takeLatest } from 'redux-saga/effects';
+import _noop from 'lodash/noop';
+import { call, takeLatest } from 'redux-saga/effects';
 import {
     OPEN_CONNECTION,
     CLOSE_CONNECTION,
@@ -44,10 +45,12 @@ export function* init() {
         if (type === CONNECTION_TYPE_SERIAL) {
             const path = _get(options, 'path');
             log.error(`Error opening serial port: ${path}`);
+            log.error(error);
         } else if (type === CONNECTION_TYPE_SOCKET) {
             const host = _get(options, 'host');
             const port = _get(options, 'port');
             log.error(`Error opening socket connection: ${host}:${port}`);
+            log.error(error);
         }
 
         reduxStore.dispatch({
@@ -106,53 +109,23 @@ export function* process() {
 }
 
 function* openConnection(action) {
-    try {
-        const controllerType = _get(action.payload, 'controller.type');
-        const connectionType = _get(action.payload, 'connection.type');
-        const connectionOptions = _get(action.payload, 'connection.options');
+    const controllerType = _get(action.payload, 'controller.type');
+    const connectionType = _get(action.payload, 'connection.type');
+    const connectionOptions = _get(action.payload, 'connection.options');
+    const openConnectionCallback = _noop; // Callback is not required
 
-        yield call(() => new Promise((resolve, reject) => {
-            controller.open(controllerType, connectionType, connectionOptions, (err, ...args) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-                resolve(...args);
-            });
-        }));
-    } catch (e) {
-        const error = new Error(e.message);
-        log.error('openConnection:', error);
-        yield put({
-            type: UPDATE_CONNECTION,
-            payload: {
-                error,
-                state: CONNECTION_STATE_DISCONNECTED,
-            }
-        });
-    }
+    yield call({ context: controller, fn: controller.open },
+        controllerType,
+        connectionType,
+        connectionOptions,
+        openConnectionCallback,
+    );
 }
 
 function* closeConnection(action) {
-    try {
-        yield call(() => new Promise((resolve, reject) => {
-            controller.close((err, ...args) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-                resolve(...args);
-            });
-        }));
-    } catch (e) {
-        const error = new Error(e.message);
-        log.error('closeConnection:', error);
-        yield put({
-            type: UPDATE_CONNECTION,
-            payload: {
-                error,
-                state: CONNECTION_STATE_DISCONNECTED,
-            }
-        });
-    }
+    const closeConnectionCallback = _noop; // Callback is not required
+
+    yield call({ context: controller, fn: controller.close },
+        closeConnectionCallback,
+    );
 }

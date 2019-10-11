@@ -1,4 +1,3 @@
-import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
@@ -8,7 +7,6 @@ import i18n from 'app/lib/i18n';
 import { WidgetConfigContext } from 'app/widgets/context';
 import WidgetConfig from 'app/widgets/WidgetConfig';
 import Connection from './Connection';
-import styles from './index.styl';
 
 class ConnectionWidget extends Component {
     static propTypes = {
@@ -114,10 +112,9 @@ class ConnectionWidget extends Component {
                         </Widget.Controls>
                     </Widget.Header>
                     <Widget.Content
-                        className={cx(
-                            styles['widget-content'],
-                            { [styles.hidden]: minimized }
-                        )}
+                        style={{
+                            display: (minimized ? 'none' : 'block'),
+                        }}
                     >
                         <Connection />
                     </Widget.Content>
