@@ -6,8 +6,8 @@ import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import {
-    MARLIN
-} from 'app/constants';
+    MARLIN,
+} from 'app/constants/controller';
 import i18n from 'app/lib/i18n';
 import controller from 'app/lib/controller';
 import { ensurePositiveNumber } from 'app/lib/ensure-type';

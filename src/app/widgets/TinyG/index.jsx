@@ -5,8 +5,8 @@ import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import {
-    TINYG
-} from 'app/constants';
+    TINYG,
+} from 'app/constants/controller';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import { WidgetConfigContext } from 'app/widgets/context';
@@ -15,7 +15,7 @@ import TinyG from './TinyG';
 import Controller from './Controller';
 import {
     MODAL_NONE,
-    MODAL_CONTROLLER
+    MODAL_CONTROLLER,
 } from './constants';
 import styles from './index.styl';
 

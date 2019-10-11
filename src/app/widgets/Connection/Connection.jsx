@@ -30,7 +30,7 @@ import {
     MARLIN,
     SMOOTHIE,
     TINYG,
-} from 'app/constants';
+} from 'app/constants/controller';
 import {
     CONNECTION_TYPE_SERIAL,
     CONNECTION_TYPE_SOCKET,

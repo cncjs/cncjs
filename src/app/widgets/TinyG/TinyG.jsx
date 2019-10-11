@@ -27,8 +27,8 @@ import {
     TINYG_MACHINE_STATE_JOG,
     TINYG_MACHINE_STATE_INTERLOCK,
     TINYG_MACHINE_STATE_SHUTDOWN,
-    TINYG_MACHINE_STATE_PANIC
-} from 'app/constants';
+    TINYG_MACHINE_STATE_PANIC,
+} from 'app/constants/controller';
 import Overrides from './Overrides';
 import styles from './index.styl';
 

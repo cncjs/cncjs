@@ -3,7 +3,12 @@ import get from 'lodash/get';
 import includes from 'lodash/includes';
 import union from 'lodash/union';
 import React from 'react';
-import { GRBL, MARLIN, SMOOTHIE, TINYG } from 'app/constants';
+import {
+    GRBL,
+    MARLIN,
+    SMOOTHIE,
+    TINYG,
+} from 'app/constants/controller';
 import controller from 'app/lib/controller';
 import portal from 'app/lib/portal';
 import config from 'app/store/config';

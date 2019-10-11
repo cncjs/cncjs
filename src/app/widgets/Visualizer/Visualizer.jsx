@@ -11,7 +11,7 @@ import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import {
     IMPERIAL_UNITS,
-    METRIC_UNITS
+    METRIC_UNITS,
 } from 'app/constants';
 import CombinedCamera from 'app/lib/three/CombinedCamera';
 import TrackballControls from 'app/lib/three/TrackballControls';
@@ -29,7 +29,7 @@ import TextSprite from './TextSprite';
 import GCodeVisualizer from './GCodeVisualizer';
 import {
     CAMERA_MODE_PAN,
-    CAMERA_MODE_ROTATE
+    CAMERA_MODE_ROTATE,
 } from './constants';
 
 const IMPERIAL_GRID_COUNT = 32; // 32 in

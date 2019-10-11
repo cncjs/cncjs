@@ -9,8 +9,8 @@ import i18n from 'app/lib/i18n';
 import { WidgetConfigContext } from 'app/widgets/context';
 import WidgetConfig from 'app/widgets/WidgetConfig';
 import {
-    SMOOTHIE
-} from 'app/constants';
+    SMOOTHIE,
+} from 'app/constants/controller';
 import Smoothie from './Smoothie';
 import Controller from './Controller';
 import {

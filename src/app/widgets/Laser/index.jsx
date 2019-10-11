@@ -12,15 +12,11 @@ import i18n from 'app/lib/i18n';
 import { WidgetConfigContext } from 'app/widgets/context';
 import WidgetConfig from 'app/widgets/WidgetConfig';
 import {
-    // Grbl
     GRBL,
-    // Marlin
     MARLIN,
-    // Smoothie
     SMOOTHIE,
-    // TinyG
-    TINYG
-} from 'app/constants';
+    TINYG,
+} from 'app/constants/controller';
 import Laser from './Laser';
 import styles from './index.styl';
 

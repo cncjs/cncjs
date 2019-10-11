@@ -1,6 +1,6 @@
 import {
     IMPERIAL_STEPS,
-    METRIC_STEPS
+    METRIC_STEPS,
 } from 'app/constants';
 
 const defaultState = Object.freeze({ // Freezes the default state

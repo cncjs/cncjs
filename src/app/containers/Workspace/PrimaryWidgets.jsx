@@ -9,7 +9,12 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Sortable from 'react-sortablejs';
 import uuid from 'uuid';
-import { GRBL, MARLIN, SMOOTHIE, TINYG } from 'app/constants';
+import {
+    GRBL,
+    MARLIN,
+    SMOOTHIE,
+    TINYG,
+} from 'app/constants/controller';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
 import controller from 'app/lib/controller';

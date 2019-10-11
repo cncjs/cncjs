@@ -6,7 +6,12 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
-import { GRBL, MARLIN, SMOOTHIE, TINYG } from 'app/constants';
+import {
+    GRBL,
+    MARLIN,
+    SMOOTHIE,
+    TINYG,
+} from 'app/constants/controller';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import config from 'app/store/config';
