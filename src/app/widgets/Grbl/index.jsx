@@ -49,63 +49,17 @@ class GrblWidget extends PureComponent {
     state = this.getInitialState();
 
     toggleFullscreen = () => {
-        const { minimized, isFullscreen } = this.state;
-        this.setState({
-            minimized: isFullscreen ? minimized : false,
-            isFullscreen: !isFullscreen
-        });
+        this.setState(state => ({
+            minimized: state.isFullscreen ? state.minimized : false,
+            isFullscreen: !state.isFullscreen,
+        }));
     };
 
     toggleMinimized = () => {
-        const { minimized } = this.state;
-        this.setState({ minimized: !minimized });
+        this.setState(state => ({
+            minimized: !state.minimized,
+        }));
     };
-
-    /*
-    controllerEvents = {
-        'serialport:open': (options) => {
-            const { port, controllerType } = options;
-            this.setState({
-                isReady: controllerType === GRBL,
-                port: port
-            });
-        },
-        'serialport:close': (options) => {
-            const initialState = this.getInitialState();
-            this.setState({ ...initialState });
-        },
-        'controller:settings': (type, controllerSettings) => {
-            if (type === GRBL) {
-                this.setState(state => ({
-                    controller: {
-                        ...state.controller,
-                        type: type,
-                        settings: controllerSettings
-                    }
-                }));
-            }
-        },
-        'controller:state': (type, controllerState) => {
-            if (type === GRBL) {
-                this.setState(state => ({
-                    controller: {
-                        ...state.controller,
-                        type: type,
-                        state: controllerState
-                    }
-                }));
-            }
-        }
-    };
-
-    componentDidMount() {
-        this.addControllerEvents();
-    }
-
-    componentWillUnmount() {
-        this.removeControllerEvents();
-    }
-    */
 
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -119,48 +73,8 @@ class GrblWidget extends PureComponent {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            /*
-            //isReady: (controller.availableControllers.length === 1) || (controller.type === GRBL),
-            //canClick: true, // Defaults to true
-            port: controller.port,
-            controller: {
-                type: controller.type,
-                settings: controller.settings,
-                state: controller.state
-            },
-            */
         };
     }
-
-    /*
-    addControllerEvents() {
-        Object.keys(this.controllerEvents).forEach(eventName => {
-            const callback = this.controllerEvents[eventName];
-            controller.addListener(eventName, callback);
-        });
-    }
-
-    removeControllerEvents() {
-        Object.keys(this.controllerEvents).forEach(eventName => {
-            const callback = this.controllerEvents[eventName];
-            controller.removeListener(eventName, callback);
-        });
-    }
-
-    canClick() {
-        const { port } = this.state;
-        const { type } = this.state.controller;
-
-        if (!port) {
-            return false;
-        }
-        if (type !== GRBL) {
-            return false;
-        }
-
-        return true;
-    }
-    */
 
     render() {
         const {
@@ -268,6 +182,14 @@ class GrblWidget extends PureComponent {
                                     {!minimized &&
                                     <FontAwesomeIcon icon="chevron-up" fixedWidth />
                                     }
+                                </Widget.Button>
+                            )}
+                            {isFullscreen && (
+                                <Widget.Button
+                                    title={i18n._('Exit Full Screen')}
+                                    onClick={this.toggleFullscreen}
+                                >
+                                    <FontAwesomeIcon icon="compress" fixedWidth />
                                 </Widget.Button>
                             )}
                             <Widget.DropdownButton

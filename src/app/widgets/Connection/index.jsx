@@ -30,17 +30,15 @@ class ConnectionWidget extends Component {
     state = this.getInitialState();
 
     toggleFullscreen = () => {
-        const { minimized, isFullscreen } = this.state;
         this.setState(state => ({
-            minimized: isFullscreen ? minimized : false,
-            isFullscreen: !isFullscreen
+            minimized: state.isFullscreen ? state.minimized : false,
+            isFullscreen: !state.isFullscreen,
         }));
     };
 
     toggleMinimized = () => {
-        const { minimized } = this.state;
         this.setState(state => ({
-            minimized: !minimized
+            minimized: !state.minimized,
         }));
     };
 
@@ -87,6 +85,14 @@ class ConnectionWidget extends Component {
                                 <FontAwesomeIcon icon="chevron-up" fixedWidth />
                                 }
                             </Widget.Button>
+                            {isFullscreen && (
+                                <Widget.Button
+                                    title={i18n._('Exit Full Screen')}
+                                    onClick={this.toggleFullscreen}
+                                >
+                                    <FontAwesomeIcon icon="compress" fixedWidth />
+                                </Widget.Button>
+                            )}
                             <Widget.DropdownButton
                                 title={i18n._('More')}
                                 toggle={(

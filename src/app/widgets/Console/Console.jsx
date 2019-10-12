@@ -1,45 +1,161 @@
-import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import color from 'cli-color';
+import _get from 'lodash/get';
+import pubsub from 'pubsub-js';
+import React, { useEffect, useRef } from 'react';
+import { connect } from 'react-redux';
+import uuid from 'uuid/v4';
+import settings from 'app/config/settings';
+import {
+    CONNECTION_STATE_CONNECTED,
+    CONNECTION_TYPE_SERIAL,
+    CONNECTION_TYPE_SOCKET,
+} from 'app/constants/connection';
+import useEffectOnce from 'app/hooks/useEffectOnce';
+import usePrevious from 'app/hooks/usePrevious';
+import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import Terminal from './Terminal';
 import styles from './index.styl';
 
-class Console extends PureComponent {
-    static propTypes = {
-        state: PropTypes.object,
-        actions: PropTypes.object
-    };
+const Console = ({
+    isFullscreen,
+    connectionState,
+}) => {
+    const isConnected = (connectionState === CONNECTION_STATE_CONNECTED);
+    const prevIsFullscreen = usePrevious(isFullscreen);
+    const terminalRef = useRef();
+    const sender = useRef(uuid());
 
-    terminal = null;
+    useEffectOnce(() => {
+        const onConnectionOpen = ({ type, options }) => {
+            const { current: term } = terminalRef;
+            if (!term) {
+                return;
+            }
 
-    render() {
-        const { state, actions } = this.props;
-        const { port } = state;
+            const { productName, version } = settings;
+            term.writeln(color.white.bold(`${productName} ${version} [${controller.type}]`));
 
-        if (!port) {
-            return (
-                <div className={styles.noSerialConnection}>
-                    {i18n._('No serial connection')}
-                </div>
-            );
+            if (type === CONNECTION_TYPE_SERIAL) {
+                const { path, baudRate } = options;
+                const line = i18n._('Connected to {{-path}} with a baud rate of {{baudRate}}', {
+                    path: color.yellowBright(path),
+                    baudRate: color.blueBright(baudRate),
+                });
+                term.writeln(color.white(line));
+            } else if (type === CONNECTION_TYPE_SOCKET) {
+                const { host, port } = options;
+                const line = i18n._('Connected to {{host}}:{{port}}', {
+                    host: color.blueBright(host),
+                    port: color.blueBright(port),
+                });
+                term.writeln(color.white(line));
+            }
+        };
+
+        const onConnectionClose = ({ type, options }) => {
+            const { current: term } = terminalRef;
+            if (!term) {
+                return;
+            }
+
+            term.current.clear();
+        };
+
+        const onConnectionWrite = ({ type, options }, data, { context }) => {
+            const { source, __sender__ } = { ...context };
+            const { current: term } = terminalRef;
+
+            if (__sender__ === sender.current) {
+                // Do not write to the terminal console if the sender is the widget itself
+                return;
+            }
+
+            if (!term) {
+                return;
+            }
+
+            data = String(data).trim();
+
+            if (source) {
+                term.writeln(color.blackBright(source) + color.white(term.prompt + data));
+            } else {
+                term.writeln(color.white(term.prompt + data));
+            }
+        };
+
+        const onConnectionRead = ({ type, options }, data) => {
+            const { current: term } = terminalRef;
+            if (!term) {
+                return;
+            }
+
+            term.writeln(data);
+        };
+
+        controller.addListener('connection:open', onConnectionOpen);
+        controller.addListener('connection:close', onConnectionClose);
+        controller.addListener('connection:write', onConnectionWrite);
+        controller.addListener('connection:read', onConnectionRead);
+
+        const onResizeEventHandler = pubsub.subscribe('resize', (msg) => {
+            const { current: term } = terminalRef;
+            if (!term) {
+                return;
+            }
+
+            term.resize();
+        });
+
+        return () => {
+            controller.removeListener('connection:open', onConnectionOpen);
+            controller.removeListener('connection:close', onConnectionClose);
+            controller.removeListener('connection:write', onConnectionWrite);
+            controller.removeListener('connection:read', onConnectionRead);
+
+            pubsub.unsubscribe(onResizeEventHandler);
+        };
+    });
+
+    useEffect(() => {
+        const { current: term } = terminalRef;
+
+        if ((prevIsFullscreen !== isFullscreen) && !!term) {
+            term.resize();
         }
+    });
 
+    if (!isConnected) {
         return (
-            <Terminal
-                ref={node => {
-                    if (node) {
-                        this.terminal = node;
-                    }
-                }}
-                cols={state.terminal.cols}
-                rows={state.terminal.rows}
-                cursorBlink={state.terminal.cursorBlink}
-                scrollback={state.terminal.scrollback}
-                tabStopWidth={state.terminal.tabStopWidth}
-                onData={actions.onTerminalData}
-            />
+            <div className={styles.noSerialConnection}>
+                {i18n._('No serial connection')}
+            </div>
         );
     }
-}
 
-export default Console;
+    return (
+        <Terminal
+            ref={terminalRef}
+            // The buffer starts with 254 bytes free. The terminating <LF> or <CR> counts as a byte.
+            cols={254}
+            rows={isFullscreen ? 'auto' : 15}
+            cursorBlink={true}
+            scrollback={1000}
+            tabStopWidth={4}
+            onData={(data) => {
+                const context = {
+                    __sender__: sender.current,
+                };
+                controller.write(data, context);
+            }}
+        />
+    );
+};
+
+export default connect(store => {
+    const connectionState = _get(store, 'connection.state');
+
+    return {
+        connectionState,
+    };
+})(Console);

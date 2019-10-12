@@ -704,7 +704,7 @@ const Connection = ({
                                             <>
                                                 {(isDisconnected || isConnecting) && (
                                                     <Button
-                                                        btnStyle="primary"
+                                                        btnStyle={canOpenConnection ? 'primary' : 'secondary'}
                                                         disabled={!canOpenConnection}
                                                         onClick={handleOpenConnection}
                                                         style={{
@@ -793,7 +793,7 @@ const SerialPortOption = ({
                     </Col>
                     <Col width="auto">
                         <Space width={8} />
-                        <FontAwesomeIcon icon="lock" fixedWidth style={{ opacity: (connected ? 1 : 0) }}/>
+                        <FontAwesomeIcon icon="lock" fixedWidth style={{ opacity: (connected ? 1 : 0) }} />
                     </Col>
                 </Row>
             </Container>

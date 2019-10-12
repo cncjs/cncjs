@@ -41,18 +41,20 @@ class LaserWidget extends PureComponent {
 
     state = this.getInitialState();
 
+    toggleFullscreen = () => {
+        this.setState(state => ({
+            minimized: state.isFullscreen ? state.minimized : false,
+            isFullscreen: !state.isFullscreen,
+        }));
+    };
+
+    toggleMinimized = () => {
+        this.setState(state => ({
+            minimized: !state.minimized,
+        }));
+    };
+
     actions = {
-        toggleFullscreen: () => {
-            const { minimized, isFullscreen } = this.state;
-            this.setState({
-                minimized: isFullscreen ? minimized : false,
-                isFullscreen: !isFullscreen
-            });
-        },
-        toggleMinimized: () => {
-            const { minimized } = this.state;
-            this.setState({ minimized: !minimized });
-        },
         toggleLaserTest: () => {
             const expanded = this.state.panel.laserTest.expanded;
 
@@ -262,7 +264,7 @@ class LaserWidget extends PureComponent {
                             <Widget.Button
                                 disabled={isFullscreen}
                                 title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                                onClick={actions.toggleMinimized}
+                                onClick={this.toggleMinimized}
                             >
                                 {minimized &&
                                 <FontAwesomeIcon icon="chevron-down" fixedWidth />
@@ -271,6 +273,14 @@ class LaserWidget extends PureComponent {
                                 <FontAwesomeIcon icon="chevron-up" fixedWidth />
                                 }
                             </Widget.Button>
+                            {isFullscreen && (
+                                <Widget.Button
+                                    title={i18n._('Exit Full Screen')}
+                                    onClick={this.toggleFullscreen}
+                                >
+                                    <FontAwesomeIcon icon="compress" fixedWidth />
+                                </Widget.Button>
+                            )}
                             <Widget.DropdownButton
                                 title={i18n._('More')}
                                 toggle={(
@@ -278,7 +288,7 @@ class LaserWidget extends PureComponent {
                                 )}
                                 onSelect={(eventKey) => {
                                     if (eventKey === 'fullscreen') {
-                                        actions.toggleFullscreen();
+                                        this.toggleFullscreen();
                                     } else if (eventKey === 'fork') {
                                         this.props.onFork();
                                     } else if (eventKey === 'remove') {
