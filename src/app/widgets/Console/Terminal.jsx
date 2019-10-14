@@ -1,19 +1,16 @@
 import cx from 'classnames';
 import color from 'cli-color';
-import trimEnd from 'lodash/trimEnd';
+import _trimEnd from 'lodash/trimEnd';
 import PerfectScrollbar from 'perfect-scrollbar';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
+import React, { Component } from 'react';
 import { Terminal } from 'xterm';
-import * as fit from 'xterm/lib/addons/fit/fit';
+import { FitAddon } from 'xterm-addon-fit';
 import log from 'app/lib/log';
 import History from './History';
 import styles from './index.styl';
 
-Terminal.applyAddon(fit);
-
-class TerminalWrapper extends PureComponent {
+class TerminalWrapper extends Component {
     static propTypes = {
         cols: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         rows: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -38,13 +35,13 @@ class TerminalWrapper extends PureComponent {
 
     verticalScrollbar = null;
 
-    terminalContainer = null;
+    terminalRef = React.createRef();
 
     term = null;
+    fitAddon = null;
 
     eventHandler = {
-        onResize: () => {
-            const { rows, cols } = this.term;
+        onResize: (cols, rows) => {
             log.debug(`Resizing the terminal to ${rows} rows and ${cols} cols`);
 
             if (this.verticalScrollbar) {
@@ -54,49 +51,126 @@ class TerminalWrapper extends PureComponent {
         onKey: (() => {
             let historyCommand = '';
 
-            return (key, event) => {
+            return (e) => {
+                const { key, domEvent } = e;
                 const { onData } = this.props;
                 const term = this.term;
-                const line = term.buffer.lines.get(term.buffer.ybase + term.buffer.y);
-                const nonPrintableKey = (event.altKey || event.altGraphKey || event.ctrlKey || event.metaKey);
+                const printable = !domEvent.altKey && !domEvent.altGraphKey && !domEvent.ctrlKey && !domEvent.metaKey;
+                // https://github.com/xtermjs/xterm.js/blob/master/src/common/buffer/BufferLine.ts
+                const currentLineIndex = term._core.buffer.ybase + term._core.buffer.y;
+                const currentBufferLine = term._core.buffer.lines.get(currentLineIndex);
+                const bufferX = term._core.buffer.x;
+                const bufferY = term._core.buffer.y;
+                const nullCell = term._core.buffer.getNullCell();
 
+                const line = _trimEnd(currentBufferLine.translateToString());
                 if (!line) {
                     return;
                 }
 
-                // Home
-                if (event.key === 'Home' || (event.metaKey && event.key === 'ArrowLeft')) {
-                    term.buffer.x = this.prompt.length;
+                // ArrowDown, PageDown
+                if (domEvent.key === 'ArrowDown' || domEvent.key === 'PageDown') {
+                    historyCommand = this.history.forward() || '';
+
+                    for (let index = this.prompt.length; index < currentBufferLine.length; ++index) {
+                        currentBufferLine.setCell(index, nullCell);
+                    }
+
+                    term.write('\r');
+                    term.write(this.prompt);
+                    term.write(historyCommand);
+                    return;
+                }
+
+                // ArrowUp, PageUp
+                if (domEvent.key === 'ArrowUp' || domEvent.key === 'PageUp') {
+                    if (!historyCommand) {
+                        historyCommand = this.history.current() || '';
+                    } else if (this.history.index > 0) {
+                        historyCommand = this.history.back() || '';
+                    }
+
+                    for (let index = this.prompt.length; index < currentBufferLine.length; ++index) {
+                        currentBufferLine.setCell(index, nullCell);
+                    }
+
+                    term.write('\r');
+                    term.write(this.prompt);
+                    term.write(historyCommand);
+                    return;
+                }
+
+                // ArrowLeft
+                if (domEvent.key === 'ArrowLeft') {
+                    if (bufferX > this.prompt.length) {
+                        term.write(key);
+                    }
+                    return;
+                }
+
+                // ArrowRight
+                if (domEvent.key === 'ArrowRight') {
+                    const x = line.length - 1;
+                    if (bufferX <= x) {
+                        term.write(key);
+                    }
+                    return;
+                }
+
+                // Backspace
+                if (domEvent.key === 'Backspace') {
+                    // Do not delete the prompt
+                    if (bufferX <= this.prompt.length) {
+                        return;
+                    }
+
+                    if (bufferX === 0) {
+                        return;
+                    }
+
+                    for (let index = bufferX - 1; index < currentBufferLine.length - 1; ++index) {
+                        const nextSiblingCell = {};
+                        currentBufferLine.loadCell(index + 1, nextSiblingCell);
+                        currentBufferLine.setCell(index, nextSiblingCell);
+                    }
+                    currentBufferLine.setCell(currentBufferLine.length - 1, nullCell);
+
+                    term.write('\b');
+
+                    return;
+                }
+
+                // Delete
+                if (domEvent.key === 'Delete') {
+                    if (bufferX === 0) {
+                        return;
+                    }
+
+                    for (let index = bufferX; index < currentBufferLine.length - 1; ++index) {
+                        const nextSiblingCell = {};
+                        currentBufferLine.loadCell(index + 1, nextSiblingCell);
+                        currentBufferLine.setCell(index, nextSiblingCell);
+                    }
+                    currentBufferLine.setCell(currentBufferLine.length - 1, nullCell);
+
+                    term._core.refresh(bufferY, bufferY);
+
                     return;
                 }
 
                 // End
-                if (event.key === 'End' || (event.metaKey && event.key === 'ArrowRight')) {
-                    let x = line.length - 1;
-                    for (; x > this.prompt.length; --x) {
-                        const c = line[x][1].trim();
-                        if (c) {
-                            break;
-                        }
+                if (domEvent.key === 'End' || (domEvent.metaKey && domEvent.key === 'ArrowRight')) {
+                    if (bufferX < line.length) {
+                        term._core.buffer.x = line.length;
                     }
-
-                    if ((x + 1) < (line.length - 1)) {
-                        term.buffer.x = (x + 1);
-                    }
-
+                    term._core.refresh(bufferY, bufferY);
                     return;
                 }
 
                 // Enter
-                if (event.key === 'Enter') {
-                    let buffer = '';
-                    for (let x = this.prompt.length; x < line.length; ++x) {
-                        const c = line[x][1] || '';
-                        buffer += c;
-                    }
-                    buffer = trimEnd(buffer);
-
-                    if (buffer.length > 0) {
+                if (domEvent.key === 'Enter') {
+                    let command = line.slice(this.prompt.length);
+                    if (command.length > 0) {
                         // Clear history command
                         historyCommand = '';
 
@@ -104,133 +178,46 @@ class TerminalWrapper extends PureComponent {
                         this.history.resetIndex();
 
                         // Push the buffer to the history list, not including the [Enter] key
-                        this.history.push(buffer);
+                        this.history.push(command);
                     }
 
-                    buffer += key;
+                    command += key;
+                    log.debug('xterm>', command);
 
-                    log.debug('xterm>', buffer);
-
-                    onData(buffer);
+                    onData(command);
                     term.prompt();
                     return;
                 }
 
-                // Backspace
-                if (event.key === 'Backspace') {
-                    // Do not delete the prompt
-                    if (term.buffer.x <= this.prompt.length) {
-                        return;
-                    }
-
-                    for (let x = term.buffer.x; x < line.length; ++x) {
-                        line[x - 1] = line[x];
-                    }
-                    line[line.length - 1] = [term.eraseAttr(), ' ', 1];
-                    term.updateRange(term.buffer.y);
-                    term.refresh(term.buffer.y, term.buffer.y);
-                    term.write('\b');
-
-                    return;
-                }
-
-                // Delete
-                if (event.key === 'Delete') {
-                    for (let x = term.buffer.x + 1; x < line.length; ++x) {
-                        line[x - 1] = line[x];
-                    }
-                    line[line.length - 1] = [term.eraseAttr(), ' ', 1, 32];
-                    term.updateRange(term.buffer.y);
-                    term.refresh(term.buffer.y, term.buffer.y);
-
-                    return;
-                }
-
                 // Escape
-                if (event.key === 'Escape') {
-                    term.eraseLine(term.buffer.y);
-                    term.buffer.x = 0;
-                    term.write(color.white(this.prompt));
-                    return;
-                }
-
-                // ArrowLeft
-                if (event.key === 'ArrowLeft') {
-                    if (term.buffer.x <= this.prompt.length) {
-                        return;
+                if (domEvent.key === 'Escape') {
+                    for (let index = this.prompt.length; index < currentBufferLine.length; ++index) {
+                        currentBufferLine.setCell(index, nullCell);
                     }
-                    term.buffer.x--;
+                    term.write('\r');
+                    term.write(this.prompt);
                     return;
                 }
 
-                // ArrowRight
-                if (event.key === 'ArrowRight') {
-                    let x = line.length - 1;
-                    for (; x > 0; --x) {
-                        const c = line[x][1].trim();
-                        if (c) {
-                            break;
-                        }
-                    }
-                    if (term.buffer.x <= x) {
-                        term.buffer.x++;
-                    }
-
+                // Home
+                if (domEvent.key === 'Home' || (domEvent.metaKey && domEvent.key === 'ArrowLeft')) {
+                    term.write('\r');
+                    term.write(this.prompt);
                     return;
                 }
 
-                // ArrowUp
-                if (event.key === 'ArrowUp') {
-                    if (!historyCommand) {
-                        historyCommand = this.history.current() || '';
-                    } else if (this.history.index > 0) {
-                        historyCommand = this.history.back() || '';
-                    }
-                    term.eraseLine(term.buffer.y);
-                    term.buffer.x = 0;
-                    term.write(color.white(this.prompt));
-                    term.write(color.white(historyCommand));
-                    return;
-                }
-
-                // ArrowDown
-                if (event.key === 'ArrowDown') {
-                    historyCommand = this.history.forward() || '';
-                    term.eraseLine(term.buffer.y);
-                    term.buffer.x = 0;
-                    term.write(color.white(this.prompt));
-                    term.write(color.white(historyCommand));
-                    return;
-                }
-
-                // PageUp
-                if (event.key === 'PageUp') {
-                    // Unsupported
-                    return;
-                }
-
-                // PageDown
-                if (event.key === 'PageDown') {
-                    // Unsupported
-                    return;
-                }
-
-                // Non-printable keys (e.g. ctrl-x)
-                if (nonPrintableKey) {
+                if (!printable) {
                     onData(key);
                     return;
                 }
 
-                // Make sure the cursor position will not exceed the number of columns
-                if (term.buffer.x < term.cols) {
-                    let x = line.length - 1;
-                    for (; x > term.buffer.x; --x) {
-                        line[x] = line[x - 1];
-                    }
-                    term.write(color.white(key));
+                if (bufferX < (term.cols - 1)) {
+                    term.write(key);
                 }
             };
         })(),
+
+        /* FIXME
         onPaste: (data, event) => {
             const { onData } = this.props;
             const lines = String(data).replace(/(\r\n|\r|\n)/g, '\n').split('\n');
@@ -241,6 +228,7 @@ class TerminalWrapper extends PureComponent {
                 this.term.prompt();
             }
         }
+        */
     };
 
     componentDidMount() {
@@ -248,21 +236,26 @@ class TerminalWrapper extends PureComponent {
         this.term = new Terminal({
             cursorBlink,
             scrollback,
-            tabStopWidth
+            tabStopWidth,
         });
+        this.fitAddon = new FitAddon();
+        this.term.loadAddon(this.fitAddon);
         this.term.prompt = () => {
             this.term.write('\r\n');
             this.term.write(color.white(this.prompt));
         };
-        this.term.on('resize', this.eventHandler.onResize);
-        this.term.on('key', this.eventHandler.onKey);
-        this.term.on('paste', this.eventHandler.onPaste);
 
-        const el = ReactDOM.findDOMNode(this.terminalContainer);
+        this.term.onResize(this.eventHandler.onResize);
+        this.term.onKey(this.eventHandler.onKey);
+        //this.term.on('paste', this.eventHandler.onPaste); // FIXME
+
+        const el = this.terminalRef.current;
         this.term.open(el);
-        this.term.fit();
-        this.term.focus(false);
 
+        // Make the terminal's size and geometry fit the size of the container element
+        this.fitAddon.fit();
+
+        this.term.focus(false);
         this.term.setOption('fontFamily', 'Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif');
 
         const xtermElement = el.querySelector('.xterm');
@@ -279,11 +272,17 @@ class TerminalWrapper extends PureComponent {
             this.verticalScrollbar.destroy();
             this.verticalScrollbar = null;
         }
+
         if (this.term) {
+            /* FIXME
             this.term.off('resize', this.eventHandler.onResize);
             this.term.off('key', this.eventHandler.onKey);
             this.term.off('paste', this.eventHandler.onPaste);
+            */
             this.term = null;
+        }
+        if (this.fitAddon) {
+            this.fitAddon = null;
         }
     }
 
@@ -336,7 +335,7 @@ class TerminalWrapper extends PureComponent {
             return;
         }
 
-        const geometry = fit.proposeGeometry(this.term);
+        const geometry = this.fitAddon && this.fitAddon.proposeDimensions();
         if (!geometry) {
             return;
         }
@@ -363,10 +362,17 @@ class TerminalWrapper extends PureComponent {
     }
 
     writeln(data) {
-        this.term.eraseRight(0, this.term.buffer.y);
-        this.term.write('\r');
-        this.term.write(data);
-        this.term.prompt();
+        const term = this.term;
+        const currentLineIndex = term._core.buffer.ybase + term._core.buffer.y;
+        const currentBufferLine = term._core.buffer.lines.get(currentLineIndex);
+        const nullCell = term._core.buffer.getNullCell();
+        for (let index = this.prompt.length; index < currentBufferLine.length; ++index) {
+            currentBufferLine.setCell(index, nullCell);
+        }
+
+        term.write('\r');
+        term.write(data);
+        term.prompt();
     }
 
     render() {
@@ -374,9 +380,7 @@ class TerminalWrapper extends PureComponent {
 
         return (
             <div
-                ref={node => {
-                    this.terminalContainer = node;
-                }}
+                ref={this.terminalRef}
                 className={cx(className, styles.terminalContainer)}
                 style={style}
             />
