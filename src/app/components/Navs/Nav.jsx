@@ -1,10 +1,10 @@
 import chainedFunction from 'chained-function';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { cloneElement, PureComponent } from 'react';
+import React, { cloneElement, Component } from 'react';
 import styles from './index.styl';
 
-class Nav extends PureComponent {
+class Nav extends Component {
     static propTypes = {
         /** Marks the child NavItem with a matching `href` prop as active. */
         activeHref: PropTypes.string,

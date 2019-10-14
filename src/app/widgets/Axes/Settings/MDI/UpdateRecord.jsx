@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import Slider from 'rc-slider';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
 import Space from 'app/components/Space';
@@ -13,7 +13,7 @@ import i18n from 'app/lib/i18n';
 import * as validations from 'app/lib/validations';
 import styles from '../form.styl';
 
-class UpdateRecord extends PureComponent {
+class UpdateRecord extends Component {
     static propTypes = {
         state: PropTypes.object,
         action: PropTypes.object

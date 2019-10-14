@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import AxesWidget from 'app/widgets/Axes';
 import ConnectionWidget from 'app/widgets/Connection';
 import ConsoleWidget from 'app/widgets/Console';
@@ -36,7 +36,7 @@ const getWidgetByName = (name) => {
     }[name] || null;
 };
 
-class WidgetWrapper extends PureComponent {
+class WidgetWrapper extends Component {
     widget = null;
 
     render() {

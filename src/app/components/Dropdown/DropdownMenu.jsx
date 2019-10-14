@@ -2,7 +2,7 @@
 import chainedFunction from 'chained-function';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent, cloneElement } from 'react';
+import React, { Component, cloneElement } from 'react';
 import ReactDOM from 'react-dom';
 import RootCloseWrapper from 'app/components/RootCloseWrapper';
 import {
@@ -10,7 +10,7 @@ import {
 } from './helpers';
 import styles from './index.styl';
 
-class DropdownMenu extends PureComponent {
+class DropdownMenu extends Component {
     static propTypes = {
         componentType: PropTypes.any,
 

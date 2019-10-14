@@ -2,7 +2,7 @@ import get from 'lodash/get';
 import includes from 'lodash/includes';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Form, Select, Textarea } from 'app/components/Validation';
 import Modal from 'app/components/Modal';
 import { ToastNotification } from 'app/components/Notifications';
@@ -19,7 +19,7 @@ const SYSTEM_EVENTS = [
     'port:close'
 ];
 
-class UpdateRecord extends PureComponent {
+class UpdateRecord extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

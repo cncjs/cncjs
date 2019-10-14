@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import i18n from 'app/lib/i18n';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
 
-class RunMacro extends PureComponent {
+class RunMacro extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

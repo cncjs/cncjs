@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import uncontrollable from 'uncontrollable';
 import Clock from './Clock';
 import isTwelveHourTime from './lib/is-twelve-hour-time';
@@ -14,7 +14,7 @@ import styles from './index.styl';
 
 const SILHOUETTE = '00:00:00:000 AM';
 
-class TimeInput extends PureComponent {
+class TimeInput extends Component {
     static propTypes = {
         className: PropTypes.string,
         value: PropTypes.string,

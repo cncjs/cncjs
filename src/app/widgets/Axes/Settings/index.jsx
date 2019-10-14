@@ -2,7 +2,7 @@ import ensureArray from 'ensure-array';
 import styled from 'styled-components';
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import api from 'app/api';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
@@ -24,7 +24,7 @@ const TabPane = styled.div`
     display: ${props => (props.active ? 'block' : 'none')};
 `;
 
-class Settings extends PureComponent {
+class Settings extends Component {
     static propTypes = {
         config: PropTypes.object.isRequired,
         onSave: PropTypes.func,

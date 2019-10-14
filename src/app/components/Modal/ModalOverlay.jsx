@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import styles from './index.styl';
 
 const isModifiedEvent = (event) => {
@@ -11,7 +11,7 @@ const isLeftClickEvent = (event) => {
     return event.button === 0;
 };
 
-class ModalOverlay extends PureComponent {
+class ModalOverlay extends Component {
     static propTypes = {
         disableOverlayClick: PropTypes.bool,
         onClose: PropTypes.func

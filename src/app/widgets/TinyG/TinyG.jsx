@@ -3,7 +3,7 @@ import get from 'lodash/get';
 import map from 'lodash/map';
 import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import controller from 'app/lib/controller';
 import mapGCodeToText from 'app/lib/gcode-text';
@@ -32,7 +32,7 @@ import {
 import Overrides from './Overrides';
 import styles from './index.styl';
 
-class TinyG extends PureComponent {
+class TinyG extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

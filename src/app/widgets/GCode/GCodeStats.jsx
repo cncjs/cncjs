@@ -1,6 +1,6 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import i18n from 'app/lib/i18n';
 import {
     METRIC_UNITS,
@@ -27,7 +27,7 @@ const formatRemainingTime = (remainingTime) => {
     return moment(d._data).format('HH:mm:ss');
 };
 
-class GCodeStats extends PureComponent {
+class GCodeStats extends Component {
     static propTypes = {
         state: PropTypes.object
     };

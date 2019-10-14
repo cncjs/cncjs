@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button } from '../Buttons';
 import Dropdown from '../Dropdown';
 import styles from './index.styl';
 
-class DropdownButton extends PureComponent {
+class DropdownButton extends Component {
     static propTypes = {
         ...Dropdown.propTypes,
 

@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
@@ -10,7 +10,7 @@ import WidgetConfig from 'app/widgets/WidgetConfig';
 import Console from './Console';
 import styles from './index.styl';
 
-class ConsoleWidget extends PureComponent {
+class ConsoleWidget extends Component {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,
@@ -118,6 +118,8 @@ class ConsoleWidget extends PureComponent {
                                         this.terminal.selectAll();
                                     } else if (eventKey === 'clearSelection') {
                                         this.terminal.clearSelection();
+                                    } else if (eventKey === 'fullscreen') {
+                                        this.toggleFullscreen();
                                     } if (eventKey === 'fork') {
                                         this.props.onFork();
                                     } else if (eventKey === 'remove') {
@@ -140,6 +142,16 @@ class ConsoleWidget extends PureComponent {
                                     <FontAwesomeIcon icon="eraser" fixedWidth />
                                     <Space width={8} />
                                     {i18n._('Clear Selection')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem eventKey="fullscreen">
+                                    {!isFullscreen && (
+                                        <FontAwesomeIcon icon="expand" fixedWidth />
+                                    )}
+                                    {isFullscreen && (
+                                        <FontAwesomeIcon icon="compress" fixedWidth />
+                                    )}
+                                    <Space width={8} />
+                                    {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                                 </Widget.DropdownMenuItem>
                                 <Widget.DropdownMenuItem eventKey="fork">
                                     <FontAwesomeIcon icon="code-branch" fixedWidth />

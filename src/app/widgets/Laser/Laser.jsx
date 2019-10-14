@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Slider from 'rc-slider';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
 import Clickable from 'app/components/Clickable';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
@@ -27,7 +27,7 @@ import {
 import LaserIntensityOverride from './LaserIntensityOverride';
 import styles from './index.styl';
 
-class Laser extends PureComponent {
+class Laser extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

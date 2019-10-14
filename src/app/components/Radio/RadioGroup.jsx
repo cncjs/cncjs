@@ -1,11 +1,11 @@
 import chainedFunction from 'chained-function';
-import React, { cloneElement, PureComponent } from 'react';
+import React, { cloneElement, Component } from 'react';
 import PropTypes from 'prop-types';
 import RadioButton from './RadioButton';
 
 const getComponentType = (Component) => (Component ? (<Component />).type : undefined);
 
-class RadioGroup extends PureComponent {
+class RadioGroup extends Component {
     static propTypes = {
         disabled: PropTypes.bool,
         name: PropTypes.string,

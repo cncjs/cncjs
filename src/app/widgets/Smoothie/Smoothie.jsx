@@ -1,7 +1,7 @@
 import ensureArray from 'ensure-array';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import mapGCodeToText from 'app/lib/gcode-text';
 import i18n from 'app/lib/i18n';
 import Clickable from 'app/components/Clickable';
@@ -11,7 +11,7 @@ import Panel from 'app/components/Panel';
 import Overrides from './Overrides';
 import styles from './index.styl';
 
-class Smoothie extends PureComponent {
+class Smoothie extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

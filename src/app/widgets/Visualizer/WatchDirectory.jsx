@@ -1,6 +1,6 @@
 import path from 'path';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import InfiniteTree from 'react-infinite-tree';
 import api from 'app/api';
@@ -9,7 +9,7 @@ import i18n from 'app/lib/i18n';
 import renderer from './renderer';
 import styles from './renderer.styl';
 
-class WatchDirectory extends PureComponent {
+class WatchDirectory extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

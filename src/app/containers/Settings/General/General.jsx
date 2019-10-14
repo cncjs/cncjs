@@ -1,13 +1,13 @@
 import classNames from 'classnames';
 import get from 'lodash/get';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import FacebookLoading from 'react-facebook-loading';
 import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 import styles from './index.styl';
 
-class General extends PureComponent {
+class General extends Component {
     static propTypes = {
         initialState: PropTypes.object,
         state: PropTypes.object,

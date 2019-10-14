@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import cx from 'classnames';
 import styles from './index.styl';
 
-class Loader extends PureComponent {
+class Loader extends Component {
     static propTypes = {
         size: PropTypes.oneOf([
             'lg',

@@ -1,10 +1,10 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import Anchor from '../Anchor';
 import styles from './index.styl';
 
-class Button extends PureComponent {
+class Button extends Component {
     static propTypes = {
         ...Anchor.propTypes,
         inverted: PropTypes.bool

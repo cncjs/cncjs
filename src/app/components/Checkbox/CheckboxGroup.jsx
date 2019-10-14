@@ -1,12 +1,12 @@
 import chainedFunction from 'chained-function';
 import ensureArray from 'ensure-array';
 import PropTypes from 'prop-types';
-import React, { cloneElement, PureComponent } from 'react';
+import React, { cloneElement, Component } from 'react';
 import Checkbox from './Checkbox';
 
 const getComponentType = (Component) => (Component ? (<Component />).type : undefined);
 
-class CheckboxGroup extends PureComponent {
+class CheckboxGroup extends Component {
     static propTypes = {
         /** If true, the checkbox group will be displayed as disabled. */
         disabled: PropTypes.bool,

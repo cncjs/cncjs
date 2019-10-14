@@ -1,12 +1,12 @@
 import cx from 'classnames';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import DatePicker from 'react-datepicker';
 import uncontrollable from 'uncontrollable';
 import styles from './index.styl';
 
-class DatePickerWrapper extends PureComponent {
+class DatePickerWrapper extends Component {
     static propTypes = {
         locale: PropTypes.string,
 

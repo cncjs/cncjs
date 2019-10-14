@@ -1,10 +1,10 @@
 import ensureArray from 'ensure-array';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 const noop = () => {};
 
-const createForm = (options) => (WrappedComponent) => class Form extends PureComponent {
+const createForm = (options) => (WrappedComponent) => class Form extends Component {
     static displayName = `Form(${WrappedComponent.name})`;
 
     static childContextTypes = {

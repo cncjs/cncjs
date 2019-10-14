@@ -5,7 +5,7 @@ import includes from 'lodash/includes';
 import map from 'lodash/map';
 import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import api from 'app/api';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
@@ -56,7 +56,7 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-class AxesWidget extends PureComponent {
+class AxesWidget extends Component {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,

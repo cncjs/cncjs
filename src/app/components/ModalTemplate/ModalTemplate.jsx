@@ -34,13 +34,11 @@ const Success = styled(Icon)`
 
 const PrimaryMessage = styled.div`
     font-weight: bold;
-    font-size: 1rem;
     padding-bottom: .25rem;
 `;
 
 const DescriptiveMessage = styled.div`
     font-weight: normal;
-    font-size: 1rem;
 `;
 
 const ModalTemplate = ({ type, children, style }) => (

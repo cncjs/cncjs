@@ -1,9 +1,9 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styles from './index.styl';
 import TableRow from './TableRow';
 
-class TableBody extends PureComponent {
+class TableBody extends Component {
     static propTypes = {
         columns: PropTypes.array,
         hoveredRowKey: PropTypes.any,

@@ -1,6 +1,6 @@
 import _get from 'lodash/get';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
@@ -27,7 +27,7 @@ import FeedOverride from './Overrides/FeedOverride';
 import SpindleOverride from './Overrides/SpindleOverride';
 import RapidOverride from './Overrides/RapidOverride';
 
-class GrblWidget extends PureComponent {
+class GrblWidget extends Component {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,

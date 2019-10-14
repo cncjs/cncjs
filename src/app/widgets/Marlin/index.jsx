@@ -1,7 +1,7 @@
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
@@ -21,7 +21,7 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-class MarlinWidget extends PureComponent {
+class MarlinWidget extends Component {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,

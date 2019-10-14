@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import cx from 'classnames';
 import Trigger from 'rc-trigger';
 import { placements } from './placements';
 import styles from './tooltip.styl';
 
-class Tooltip extends PureComponent {
+class Tooltip extends Component {
     static propTypes = {
         placement: PropTypes.oneOf([
             'top',

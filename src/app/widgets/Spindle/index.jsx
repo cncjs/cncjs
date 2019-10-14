@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import includes from 'lodash/includes';
 import get from 'lodash/get';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
@@ -34,7 +34,7 @@ import {
 import Spindle from './Spindle';
 import styles from './index.styl';
 
-class SpindleWidget extends PureComponent {
+class SpindleWidget extends Component {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,

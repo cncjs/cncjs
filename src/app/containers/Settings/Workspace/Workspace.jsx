@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
 import ModalTemplate from 'app/components/ModalTemplate';
 import Modal from 'app/components/Modal';
@@ -17,7 +17,7 @@ import {
     MODAL_IMPORT_SETTINGS
 } from './constants';
 
-class Workspace extends PureComponent {
+class Workspace extends Component {
     static propTypes = {
         initialState: PropTypes.object,
         state: PropTypes.object,

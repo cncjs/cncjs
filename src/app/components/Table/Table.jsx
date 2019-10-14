@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Provider, create } from 'mini-store';
 import isEqual from 'lodash/isEqual';
 import PropTypes from 'prop-types';
@@ -10,7 +10,7 @@ import uniqueid from './uniqueid';
 import styles from './index.styl';
 import TableTemplate from './TableTemplate';
 
-class Table extends PureComponent {
+class Table extends Component {
     static propTypes = {
         bordered: PropTypes.bool,
         justified: PropTypes.bool,

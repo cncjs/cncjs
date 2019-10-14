@@ -28,16 +28,20 @@ module.exports = {
     rules: {
         'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
         'react-hooks/exhaustive-deps': 'error', // Checks effect dependencies
-        'max-lines-per-function': [1, {
+        'max-lines-per-function': ['warning', {
             max: 1024,
             skipBlankLines: true,
             skipComments: true
         }],
-        'react/jsx-no-bind': [1, {
+        'react/jsx-no-bind': ['warning', {
             allowArrowFunctions: true
         }],
         'react/prefer-stateless-function': 0,
         'react/no-access-state-in-setstate': 0,
         'react/prop-types': 0,
+        "react/jsx-curly-brace-presence": ['error', {
+            'props': 'always',
+            'children': 'ignore',
+        }],
     }
 };

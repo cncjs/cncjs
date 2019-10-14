@@ -1,9 +1,9 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import styles from './index.styl';
 
-class BreadcrumbsItem extends PureComponent {
+class BreadcrumbsItem extends Component {
     static propTypes = {
         active: PropTypes.bool
     };

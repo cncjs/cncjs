@@ -2,7 +2,7 @@ import get from 'lodash/get';
 import includes from 'lodash/includes';
 import pick from 'lodash/pick';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import { ButtonToolbar, ButtonGroup, Button } from 'app/components/Buttons';
 import Space from 'app/components/Space';
@@ -31,7 +31,7 @@ import {
 } from './constants';
 import styles from './workflow-control.styl';
 
-class WorkflowControl extends PureComponent {
+class WorkflowControl extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

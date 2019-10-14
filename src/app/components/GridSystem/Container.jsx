@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import ensureArray from 'ensure-array';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import {
     LAYOUT_FLEXBOX,
     LAYOUT_FLOATS,
@@ -15,7 +15,7 @@ import Resolver from './Resolver';
 import { ConfigurationContext } from './context';
 import styles from './index.styl';
 
-class Container extends PureComponent {
+class Container extends Component {
     static propTypes = {
         // True makes the container full-width, false fixed-width.
         fluid: PropTypes.bool,

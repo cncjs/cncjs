@@ -1,11 +1,11 @@
 import cx from 'classnames';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styles from './index.styl';
 
 const noop = () => {};
 
-class RadioButton extends PureComponent {
+class RadioButton extends Component {
     static propTypes = {
         /** Label for the radio button. */
         label: PropTypes.oneOfType([

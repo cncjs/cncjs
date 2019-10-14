@@ -1,10 +1,10 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import Anchor from 'app/components/Anchor';
 import styles from './index.styl';
 
-class ToggleSwitch extends PureComponent {
+class ToggleSwitch extends Component {
     static propTypes = {
         checked: PropTypes.bool,
         disabled: PropTypes.bool,

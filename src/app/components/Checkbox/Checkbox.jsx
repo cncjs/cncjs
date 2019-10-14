@@ -1,12 +1,12 @@
 import cx from 'classnames';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import chainedFunction from 'chained-function';
 import styles from './index.styl';
 
 const noop = () => {};
 
-class Checkbox extends PureComponent {
+class Checkbox extends Component {
     static propTypes = {
         /** Text label to attach next to the checkbox element. */
         label: PropTypes.oneOfType([

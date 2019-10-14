@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import {
     LAYOUT_FLEXBOX,
     LAYOUT_FLOATS,
@@ -7,7 +7,7 @@ import {
 import Resolver from './Resolver';
 import styles from './index.styl';
 
-class Row extends PureComponent {
+class Row extends Component {
     getStyle = ({ gutterWidth }) => {
         const style = {
             marginLeft: -(gutterWidth / 2),

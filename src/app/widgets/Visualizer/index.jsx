@@ -6,7 +6,7 @@ import get from 'lodash/get';
 import mapValues from 'lodash/mapValues';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import Anchor from 'app/components/Anchor';
 import { Button } from 'app/components/Buttons';
 import ModalTemplate from 'app/components/ModalTemplate';
@@ -160,7 +160,7 @@ const GCodeName = ({ name, style, ...props }) => {
     );
 };
 
-class VisualizerWidget extends PureComponent {
+class VisualizerWidget extends Component {
     static propTypes = {
         widgetId: PropTypes.string.isRequired
     };

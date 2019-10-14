@@ -1,7 +1,7 @@
 import ensureArray from 'ensure-array';
 import _throttle from 'lodash/throttle';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import {
     LAYOUTS,
     SCREEN_CLASSES,
@@ -14,7 +14,7 @@ import {
 import { ConfigurationContext, ScreenClassContext } from './context';
 import { getScreenClass } from './utils';
 
-class Provider extends PureComponent {
+class Provider extends Component {
     static propTypes = {
         // The breakpoints (minimum width) of devices in screen class sm, md, lg, xl, and xxl.
         breakpoints: PropTypes.arrayOf(PropTypes.number),

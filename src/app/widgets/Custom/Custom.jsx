@@ -2,7 +2,7 @@ import get from 'lodash/get';
 import Uri from 'jsuri';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 import settings from 'app/config/settings';
 import config from 'app/store/config';
@@ -12,7 +12,7 @@ import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import styles from './index.styl';
 
-class Custom extends PureComponent {
+class Custom extends Component {
     static propTypes = {
         config: PropTypes.object,
         disabled: PropTypes.bool,

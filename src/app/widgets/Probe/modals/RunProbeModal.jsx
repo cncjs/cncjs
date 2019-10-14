@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
 import FormGroup from 'app/components/FormGroup';
 import Modal from 'app/components/Modal';
@@ -7,7 +7,7 @@ import PrismCode from 'app/components/PrismCode';
 import ToggleSwitch from 'app/components/ToggleSwitch';
 import i18n from 'app/lib/i18n';
 
-class RunProbeModal extends PureComponent {
+class RunProbeModal extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

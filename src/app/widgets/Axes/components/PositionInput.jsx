@@ -1,9 +1,9 @@
 import cx from 'classnames';
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 
-class PositionInput extends PureComponent {
+class PositionInput extends Component {
     static propTypes = {
         defaultValue: PropTypes.string,
         onSave: PropTypes.func.isRequired,

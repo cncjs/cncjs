@@ -3,7 +3,7 @@ import _includes from 'lodash/includes';
 import _set from 'lodash/set';
 import PropTypes from 'prop-types';
 import _uniqueId from 'lodash/uniqueId';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import ForEach from 'react-foreach';
 import { Button } from 'app/components/Buttons';
 import { Checkbox } from 'app/components/Checkbox';
@@ -17,7 +17,7 @@ import i18n from 'app/lib/i18n';
 const IMPERIAL_JOG_DISTANCES_MAX = 5;
 const METRIC_JOG_DISTANCES_MAX = 5;
 
-class General extends PureComponent {
+class General extends Component {
     static propTypes = {
         axes: PropTypes.array.isRequired,
         imperialJogDistances: PropTypes.array.isRequired,

@@ -1,11 +1,11 @@
 import chainedFunction from 'chained-function';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import Anchor from 'app/components/Anchor';
 import styles from './index.styl';
 
-class NavItem extends PureComponent {
+class NavItem extends Component {
     static propTypes = {
         /** Highlight the nav item as active. */
         active: PropTypes.bool,

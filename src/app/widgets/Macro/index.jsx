@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import includes from 'lodash/includes';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import api from 'app/api';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
@@ -45,7 +45,7 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-class MacroWidget extends PureComponent {
+class MacroWidget extends Component {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,

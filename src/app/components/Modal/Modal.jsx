@@ -1,12 +1,12 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import Portal from 'app/components/Portal';
 import ModalOverlay from './ModalOverlay';
 import ModalContent from './ModalContent';
 import styles from './index.styl';
 
-class Modal extends PureComponent {
+class Modal extends Component {
     static propTypes = {
         // A callback fired on clicking the overlay or the close button (x).
         onClose: PropTypes.func,

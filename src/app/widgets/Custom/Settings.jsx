@@ -1,11 +1,11 @@
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
 import i18n from 'app/lib/i18n';
 
-class Settings extends PureComponent {
+class Settings extends Component {
     static propTypes = {
         config: PropTypes.object,
         onCancel: PropTypes.func,

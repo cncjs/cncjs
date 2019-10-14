@@ -2,7 +2,7 @@ import chainedFunction from 'chained-function';
 import ensureArray from 'ensure-array';
 import includes from 'lodash/includes';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
 import Space from 'app/components/Space';
@@ -14,7 +14,7 @@ import {
 } from 'app/constants/workflow';
 import styles from './index.styl';
 
-class Macro extends PureComponent {
+class Macro extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

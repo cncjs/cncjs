@@ -2,7 +2,7 @@
 import chainedFunction from 'chained-function';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import Anchor from 'app/components/Anchor';
 import { Button } from 'app/components/Buttons';
 import FormGroup from 'app/components/FormGroup';
@@ -19,7 +19,7 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-class TableRecords extends PureComponent {
+class TableRecords extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button, ButtonGroup } from 'app/components/Buttons';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Input from 'app/components/FormControl/Input';
@@ -26,7 +26,7 @@ const mapProbeCommandToDescription = (probeCommand) => ({
     'G38.5': i18n._('G38.5 probe away from workpiece, stop on loss of contact'),
 }[probeCommand] || '');
 
-class Probe extends PureComponent {
+class Probe extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

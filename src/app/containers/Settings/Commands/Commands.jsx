@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import CreateRecord from './CreateRecord';
 import UpdateRecord from './UpdateRecord';
 import TableRecords from './TableRecords';
@@ -8,7 +8,7 @@ import {
     MODAL_UPDATE_RECORD
 } from './constants';
 
-class Commands extends PureComponent {
+class Commands extends Component {
     static propTypes = {
         initialState: PropTypes.object,
         state: PropTypes.object,

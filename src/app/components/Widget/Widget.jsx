@@ -1,9 +1,9 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import styles from './index.styl';
 
-class Widget extends PureComponent {
+class Widget extends Component {
     static propTypes = {
         borderless: PropTypes.bool,
         fullscreen: PropTypes.bool

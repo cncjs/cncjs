@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import uncontrollable from 'uncontrollable';
 import i18next from 'app/i18next';
 import DatePicker from '../DatePicker';
@@ -7,7 +7,7 @@ import TimeInput from '../TimeInput';
 import DateInput from '../DateInput';
 import styles from './index.styl';
 
-class DateTimeRangePicker extends PureComponent {
+class DateTimeRangePicker extends Component {
     static propTypes = {
         locale: PropTypes.string,
         minDate: PropTypes.object,

@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import mapValues from 'lodash/mapValues';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
@@ -24,7 +24,7 @@ import {
 import GCode from './GCode';
 import styles from './index.styl';
 
-class GCodeWidget extends PureComponent {
+class GCodeWidget extends Component {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,

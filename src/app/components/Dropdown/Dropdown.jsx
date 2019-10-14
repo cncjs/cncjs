@@ -3,7 +3,7 @@ import cx from 'classnames';
 import activeElement from 'dom-helpers/activeElement';
 import contains from 'dom-helpers/query/contains';
 import PropTypes from 'prop-types';
-import React, { PureComponent, cloneElement } from 'react';
+import React, { Component, cloneElement } from 'react';
 import ReactDOM from 'react-dom';
 import uncontrollable from 'uncontrollable';
 import warning from 'warning';
@@ -18,7 +18,7 @@ import {
 } from './helpers';
 import styles from './index.styl';
 
-class Dropdown extends PureComponent {
+class Dropdown extends Component {
     static propTypes = {
         componentType: PropTypes.any,
 

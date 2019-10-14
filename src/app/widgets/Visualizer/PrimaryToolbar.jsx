@@ -2,7 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import colornames from 'colornames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import I18n from 'app/components/I18n';
@@ -54,7 +54,7 @@ import {
 } from 'app/constants/workflow';
 import styles from './index.styl';
 
-class PrimaryToolbar extends PureComponent {
+class PrimaryToolbar extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

@@ -1,7 +1,7 @@
 import get from 'lodash/get';
 import take from 'lodash/take';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button, ButtonGroup } from 'app/components/Buttons';
 import Space from 'app/components/Space';
 import Table from 'app/components/Table';
@@ -11,7 +11,7 @@ import {
     MODAL_UPDATE_RECORD
 } from './constants';
 
-class TableRecords extends PureComponent {
+class TableRecords extends Component {
     static propTypes = {
         state: PropTypes.object,
         action: PropTypes.object

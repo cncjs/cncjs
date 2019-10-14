@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import Slider from 'rc-slider';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Anchor from 'app/components/Anchor';
 import Tooltip from 'app/components/Tooltip';
@@ -32,7 +32,7 @@ const mapMetaAddressToHostname = (url) => {
     });
 };
 
-class Webcam extends PureComponent {
+class Webcam extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

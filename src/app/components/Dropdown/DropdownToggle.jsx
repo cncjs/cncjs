@@ -1,10 +1,10 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
 import styles from './index.styl';
 
-class DropdownToggle extends PureComponent {
+class DropdownToggle extends Component {
     static propTypes = {
         componentType: PropTypes.any,
 

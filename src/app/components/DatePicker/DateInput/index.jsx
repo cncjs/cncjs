@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import uncontrollable from 'uncontrollable';
 import Calendar from './Calendar';
 import styles from './index.styl';
@@ -44,7 +44,7 @@ const isValidDate = (date) => {
     return moment(date).isValid();
 };
 
-class DateInput extends PureComponent {
+class DateInput extends Component {
     static propTypes = {
         value: PropTypes.string,
 

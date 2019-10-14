@@ -1,6 +1,6 @@
 import _get from 'lodash/get';
 import qs from 'qs';
-import React, { Fragment, PureComponent } from 'react';
+import React, { Fragment, Component } from 'react';
 import { Form, Field } from 'react-final-form';
 import { withRouter, Redirect } from 'react-router-dom';
 import Anchor from 'app/components/Anchor';
@@ -19,7 +19,7 @@ import * as user from 'app/lib/user';
 import config from 'app/store/config';
 import styles from './index.styl';
 
-class Login extends PureComponent {
+class Login extends Component {
     static propTypes = {
         ...withRouter.propTypes
     };

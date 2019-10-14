@@ -1,7 +1,7 @@
 import _max from 'lodash/max';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import i18n from 'app/lib/i18n';
@@ -45,7 +45,7 @@ const mapPeriodToString = (period) => {
     return '';
 };
 
-class DateTimeRangePickerDropdown extends PureComponent {
+class DateTimeRangePickerDropdown extends Component {
     static propTypes = {
         locale: PropTypes.string,
         startDate: PropTypes.string,

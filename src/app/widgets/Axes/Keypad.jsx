@@ -4,7 +4,7 @@ import frac from 'frac';
 import _includes from 'lodash/includes';
 import _uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
@@ -37,7 +37,7 @@ const KeypadSubscriptText = styled(KeypadText)`
     line-height: 0;
 `;
 
-class Keypad extends PureComponent {
+class Keypad extends Component {
     static propTypes = {
         canClick: PropTypes.bool,
         units: PropTypes.oneOf([IMPERIAL_UNITS, METRIC_UNITS]),

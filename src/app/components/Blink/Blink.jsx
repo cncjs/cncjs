@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-class Blink extends PureComponent {
+class Blink extends Component {
     static propTypes = {
         children: PropTypes.node.isRequired,
 

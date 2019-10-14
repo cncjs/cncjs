@@ -5,7 +5,7 @@ import _isEqual from 'lodash/isEqual';
 import ensureArray from 'ensure-array';
 import PropTypes from 'prop-types';
 import pubsub from 'pubsub-js';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Button, ButtonToolbar, ButtonGroup } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
@@ -84,7 +84,7 @@ const IconButton = styled(Button)`
     }
 `;
 
-class SecondaryToolbar extends PureComponent {
+class SecondaryToolbar extends Component {
     static propTypes = {
         is3DView: PropTypes.bool,
         cameraMode: PropTypes.oneOf([

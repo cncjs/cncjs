@@ -3,7 +3,7 @@ import chainedFunction from 'chained-function';
 import take from 'lodash/take';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
 import Space from 'app/components/Space';
@@ -18,7 +18,7 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-class TableRecords extends PureComponent {
+class TableRecords extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

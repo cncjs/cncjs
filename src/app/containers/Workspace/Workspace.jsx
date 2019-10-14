@@ -2,7 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 import api from 'app/api';
@@ -46,7 +46,7 @@ const stopWaiting = () => {
     root.classList.remove('wait');
 };
 
-class Workspace extends PureComponent {
+class Workspace extends Component {
     static propTypes = {
         ...withRouter.propTypes
     };

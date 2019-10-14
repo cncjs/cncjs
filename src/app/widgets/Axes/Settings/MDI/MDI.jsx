@@ -1,5 +1,5 @@
 import findIndex from 'lodash/findIndex';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import uuid from 'uuid';
 import api from 'app/api';
 import CreateRecord from './CreateRecord';
@@ -10,7 +10,7 @@ import {
     MODAL_UPDATE_RECORD
 } from './constants';
 
-class MDI extends PureComponent {
+class MDI extends Component {
     state = {
         api: {
             err: false,

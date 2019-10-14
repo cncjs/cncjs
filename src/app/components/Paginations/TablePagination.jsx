@@ -1,7 +1,7 @@
 /* eslimt react/no-set-state: 0 */
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import Anchor from 'app/components/Anchor';
 import AutosizeInput from './AutosizeInput';
 import styles from './index.styl';
@@ -14,7 +14,7 @@ const limit = (value, min, max) => {
     return Math.max(min, Math.min(max, value));
 };
 
-class TablePagination extends PureComponent {
+class TablePagination extends Component {
     static propTypes = {
         type: PropTypes.oneOf(['full', 'reduced', 'minor']),
         page: PropTypes.number,

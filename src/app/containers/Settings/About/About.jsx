@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import AboutContainer from './AboutContainer';
 import HelpContainer from './HelpContainer';
 import UpdateStatusContainer from './UpdateStatusContainer';
 
-class About extends PureComponent {
+class About extends Component {
     static propTypes = {
         initialState: PropTypes.object,
         state: PropTypes.object,

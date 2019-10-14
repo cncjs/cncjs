@@ -1,12 +1,12 @@
 import cx from 'classnames';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'mini-store';
 import PropTypes from 'prop-types';
 import styles from './index.styl';
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
 
-class TableTemplate extends PureComponent {
+class TableTemplate extends Component {
     static propTypes = {
         columns: PropTypes.array,
         hoveredRowKey: PropTypes.any,

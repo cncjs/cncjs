@@ -1,7 +1,7 @@
 import _get from 'lodash/get';
 import chainedFunction from 'chained-function';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import Anchor from 'app/components/Anchor';
 import { Button } from 'app/components/Buttons';
 import { FlexContainer, Row, Col } from 'app/components/GridSystem';
@@ -19,7 +19,7 @@ import {
 import styles from './index.styl';
 import Axis from './Axis';
 
-class TableRecords extends PureComponent {
+class TableRecords extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

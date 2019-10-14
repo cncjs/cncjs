@@ -1,6 +1,6 @@
 import Slider from 'rc-slider';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import i18n from 'app/lib/i18n';
 import FormGroup from 'app/components/FormGroup';
 import Label from 'app/components/Label';
@@ -10,7 +10,7 @@ const FEEDRATE_STEP = 50;
 const OVERSHOOT_RANGE = [1, 1.5];
 const OVERSHOOT_STEP = 0.01;
 
-class ShuttleXpress extends PureComponent {
+class ShuttleXpress extends Component {
     static propTypes = {
         feedrateMin: PropTypes.number,
         feedrateMax: PropTypes.number,

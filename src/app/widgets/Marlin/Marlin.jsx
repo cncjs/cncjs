@@ -3,7 +3,7 @@ import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import controller from 'app/lib/controller';
 import mapGCodeToText from 'app/lib/gcode-text';
@@ -20,7 +20,7 @@ import styles from './index.styl';
 import IconExtruder from './icons/extruder';
 import IconHeatedBed from './icons/heated-bed';
 
-class Marlin extends PureComponent {
+class Marlin extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

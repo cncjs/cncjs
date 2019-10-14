@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 
 const isTrivialHref = (href) => {
     return (!href || href.trim() === '#');
 };
 
-class Anchor extends PureComponent {
+class Anchor extends Component {
     static propTypes = {
         componentClass: PropTypes.oneOfType([
             PropTypes.func,

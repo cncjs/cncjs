@@ -8,7 +8,7 @@ import _findIndex from 'lodash/findIndex';
 import _get from 'lodash/get';
 import _isEqual from 'lodash/isEqual';
 import pubsub from 'pubsub-js';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import api from 'app/api';
 import {
@@ -33,7 +33,7 @@ const mapSectionPathToId = (path = '') => {
     return _camelCase(path.split('/')[0] || '');
 };
 
-class Settings extends PureComponent {
+class Settings extends Component {
     static propTypes = {
         ...withRouter.propTypes
     };

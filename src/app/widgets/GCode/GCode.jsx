@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import GCodeStats from './GCodeStats';
 
-class GCode extends PureComponent {
+class GCode extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

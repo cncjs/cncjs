@@ -3,7 +3,7 @@ import ensureArray from 'ensure-array';
 import includes from 'lodash/includes';
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import Image from 'app/components/Image';
 import Tooltip from 'app/components/Tooltip';
@@ -34,7 +34,7 @@ import iconPin from './images/pin.svg';
 import iconPencil from './images/pencil.svg';
 import styles from './index.styl';
 
-class DisplayPanel extends PureComponent {
+class DisplayPanel extends Component {
     static propTypes = {
         canClick: PropTypes.bool,
         units: PropTypes.oneOf([IMPERIAL_UNITS, METRIC_UNITS]),

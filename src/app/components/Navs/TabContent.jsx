@@ -1,12 +1,12 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { cloneElement, PureComponent } from 'react';
+import React, { cloneElement, Component } from 'react';
 import TabPane from './TabPane';
 import styles from './index.styl';
 
 const getComponentType = (Component) => (Component ? (<Component />).type : undefined);
 
-class TabContent extends PureComponent {
+class TabContent extends Component {
     static propTypes = {
         activeKey: PropTypes.any
     };

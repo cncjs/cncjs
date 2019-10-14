@@ -2,7 +2,7 @@ import chainedFunction from 'chained-function';
 import get from 'lodash/get';
 import uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import { Button } from 'app/components/Buttons';
@@ -15,7 +15,7 @@ import * as validations from 'app/lib/validations';
 import insertAtCaret from './insertAtCaret';
 import variables from './variables';
 
-class EditMacro extends PureComponent {
+class EditMacro extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

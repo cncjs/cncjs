@@ -3,7 +3,7 @@ import includes from 'lodash/includes';
 import map from 'lodash/map';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
@@ -48,7 +48,7 @@ const gcode = (cmd, params) => {
     return (s.length > 0) ? (cmd + ' ' + s) : cmd;
 };
 
-class ProbeWidget extends PureComponent {
+class ProbeWidget extends Component {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,

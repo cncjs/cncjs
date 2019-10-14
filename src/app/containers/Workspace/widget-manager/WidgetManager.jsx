@@ -3,7 +3,7 @@ import _find from 'lodash/find';
 import _includes from 'lodash/includes';
 import _union from 'lodash/union';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
 import {
@@ -17,7 +17,7 @@ import i18n from 'app/lib/i18n';
 import config from 'app/store/config';
 import WidgetList from './WidgetList';
 
-class WidgetManager extends PureComponent {
+class WidgetManager extends Component {
     static propTypes = {
         onSave: PropTypes.func,
         onClose: PropTypes.func.isRequired
