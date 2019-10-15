@@ -1,14 +1,104 @@
 import { test } from 'tap';
 import trim from 'lodash/trim';
 import GrblLineParser from '../src/server/controllers/Grbl/GrblLineParser';
+import GrblLineParserResultHelp from '../src/server/controllers/Grbl/GrblLineParserResultHelp';
+import GrblLineParserResultVersion from '../src/server/controllers/Grbl/GrblLineParserResultVersion';
+import GrblLineParserResultOption from '../src/server/controllers/Grbl/GrblLineParserResultOption';
 import GrblLineParserResultEcho from '../src/server/controllers/Grbl/GrblLineParserResultEcho';
 import GrblRunner from '../src/server/controllers/Grbl/GrblRunner';
 
+/**
+ * Response Messages:
+ * - `ok` indicates the command line received was parsed and executed (or set to be executed).
+ * - `error:x` indicates the command line received contained an error, with an error code x, and was purged. See error code section below for definitions.
+ *
+ * Push Messages:
+ * - `< >` contains status report data.
+ * - `Grbl X.Xx ['$' for help]` contains welcome message indicates initialization.
+ * - `ALARM:x` indicates an alarm has been thrown. Grbl is now in an alarm state.
+ * - `$x=val` and `$Nx=line` indicate a settings printout from a $ and $N user query, respectively.
+ * - `[MSG:]` indicates a non-queried feedback message.
+ * - `[GC:]` indicates a queried $G g-code state message.
+ * - `[HLP:`] indicates the help message.
+ * - `[G54:]`, `[G55:]`, `[G56:]`, `[G57:]`, `[G58:]`, `[G59:]`, `[G28:]`, `[G30:]`, `[G92:]`, `[TLO:]`, and `[PRB:]` messages indicate the parameter data printout from a $# user query.
+ * - `[VER:]` contains build info and string from a $I user query.
+ * - `[OPT:]` contains character codes for compile-time options that were either enabled or disabled.
+ * - `[echo:]` indicates an automated line echo from a pre-parsed string prior to g-code parsing. Enabled by config.h option.
+ * - `>G54G20:ok` indicates startup line execution. The :ok suffix shows it executed correctly without adding an unmatched ok response on a new line.
+ */
+
 test('GrblLineParser', (t) => {
-    test('GrblLineParserResultEcho', (t) => {
-        const parser = new GrblLineParser();
+    const parser = new GrblLineParser();
+
+    t.test('GrblLineParserResultHelp#1', (t) => {
+        const line = '[HLP:$$ $# $G $I $N $x=val $Nx=line $J=line $C $X $H ~ ! ? ctrl-x]';
+        const result = parser.parse(line) || {};
+        t.plan(1);
+        t.same(result, {
+            type: GrblLineParserResultHelp,
+            payload: {
+                raw: '[HLP:$$ $# $G $I $N $x=val $Nx=line $J=line $C $X $H ~ ! ? ctrl-x]',
+                message: '$$ $# $G $I $N $x=val $Nx=line $J=line $C $X $H ~ ! ? ctrl-x',
+            }
+        });
+    });
+
+    t.test('GrblLineParserResultVersion#1', (t) => {
+        const line = '[VER:1.1d.20161014:]';
+        const result = parser.parse(line) || {};
+        t.plan(1);
+        t.same(result, {
+            type: GrblLineParserResultVersion,
+            payload: {
+                raw: '[VER:1.1d.20161014:]',
+                message: '1.1d.20161014:',
+            }
+        });
+    });
+
+    t.test('GrblLineParserResultVersion#2', (t) => {
+        const line = '[VER:1.1d.20161014:Some string]';
+        const result = parser.parse(line) || {};
+        t.plan(1);
+        t.same(result, {
+            type: GrblLineParserResultVersion,
+            payload: {
+                raw: '[VER:1.1d.20161014:Some string]',
+                message: '1.1d.20161014:Some string',
+            }
+        });
+    });
+
+    t.test('GrblLineParserResultOption#1', (t) => {
+        const line = '[OPT:,15,128]';
+        const result = parser.parse(line) || {};
+        t.plan(1);
+        t.same(result, {
+            type: GrblLineParserResultOption,
+            payload: {
+                raw: '[OPT:,15,128]',
+                message: ',15,128',
+            }
+        });
+    });
+
+    t.test('GrblLineParserResultOption#2', (t) => {
+        const line = '[OPT:VL,15,128]';
+        const result = parser.parse(line) || {};
+        t.plan(1);
+        t.same(result, {
+            type: GrblLineParserResultOption,
+            payload: {
+                raw: '[OPT:VL,15,128]',
+                message: 'VL,15,128',
+            }
+        });
+    });
+
+    t.test('GrblLineParserResultEcho#1', (t) => {
         const line = '[echo:G1X0.540Y10.4F100]';
         const result = parser.parse(line) || {};
+        t.plan(1);
         t.same(result, {
             type: GrblLineParserResultEcho,
             payload: {
@@ -16,7 +106,6 @@ test('GrblLineParser', (t) => {
                 message: 'G1X0.540Y10.4F100',
             }
         });
-        t.end();
     });
 
     t.end();
