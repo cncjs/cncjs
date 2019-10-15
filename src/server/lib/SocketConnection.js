@@ -11,12 +11,8 @@ const defaultOptions = Object.freeze({
 
 const toIdent = (options) => {
     const { host, port } = { ...options };
-    const str = JSON.stringify({
-        type: 'socket',
-        host,
-        port,
-    });
-    return Buffer.from(str).toString('base64');
+    const str = `socket|${host}:${port}`;
+    return Buffer.from(str).toString('hex');
 };
 
 class SocketConnection extends EventEmitter {

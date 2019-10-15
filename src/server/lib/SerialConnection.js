@@ -22,12 +22,8 @@ const defaultOptions = Object.freeze({
 
 const toIdent = (options) => {
     const { path, baudRate } = { ...options };
-    const str = JSON.stringify({
-        type: 'serial',
-        path,
-        baudRate,
-    });
-    return Buffer.from(str).toString('base64');
+    const str = `serial|${path}|${baudRate}`;
+    return Buffer.from(str).toString('hex');
 };
 
 class SerialConnection extends EventEmitter {
