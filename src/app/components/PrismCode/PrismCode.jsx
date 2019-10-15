@@ -1,3 +1,4 @@
+/* eslint react/no-danger: 0 */
 import Prism from 'prismjs';
 import PropTypes from 'prop-types';
 import React from 'react';

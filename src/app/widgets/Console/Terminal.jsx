@@ -38,6 +38,7 @@ class TerminalWrapper extends Component {
     terminalRef = React.createRef();
 
     term = null;
+
     fitAddon = null;
 
     eventHandler = {

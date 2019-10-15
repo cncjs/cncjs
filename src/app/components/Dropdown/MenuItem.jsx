@@ -151,7 +151,7 @@ class MenuItem extends Component {
                     {...props}
                     className={styles.menuItem}
                     disabled={disabled}
-                    role="menuitem"
+                    role="presentation"
                     tabIndex="-1"
                     onClick={chainedFunction(
                         onClick,

@@ -114,18 +114,11 @@ function* openConnection(action) {
     const connectionOptions = _get(action.payload, 'connection.options');
     const openConnectionCallback = _noop; // Callback is not required
 
-    yield call({ context: controller, fn: controller.open },
-        controllerType,
-        connectionType,
-        connectionOptions,
-        openConnectionCallback,
-    );
+    yield call({ context: controller, fn: controller.open }, controllerType, connectionType, connectionOptions, openConnectionCallback);
 }
 
 function* closeConnection(action) {
     const closeConnectionCallback = _noop; // Callback is not required
 
-    yield call({ context: controller, fn: controller.close },
-        closeConnectionCallback,
-    );
+    yield call({ context: controller, fn: controller.close }, closeConnectionCallback);
 }
