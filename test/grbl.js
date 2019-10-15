@@ -9,22 +9,22 @@ import GrblRunner from '../src/server/controllers/Grbl/GrblRunner';
 
 /**
  * Response Messages:
- * - `ok` indicates the command line received was parsed and executed (or set to be executed).
- * - `error:x` indicates the command line received contained an error, with an error code x, and was purged. See error code section below for definitions.
+ * - `ok`: Indicates the command line received was parsed and executed (or set to be executed).
+ * - `error:x`: Indicates the command line received contained an error, with an error code x, and was purged. See error code section below for definitions.
  *
  * Push Messages:
- * - `< >` contains status report data.
- * - `Grbl X.Xx ['$' for help]` contains welcome message indicates initialization.
- * - `ALARM:x` indicates an alarm has been thrown. Grbl is now in an alarm state.
- * - `$x=val` and `$Nx=line` indicate a settings printout from a $ and $N user query, respectively.
- * - `[MSG:]` indicates a non-queried feedback message.
- * - `[GC:]` indicates a queried $G g-code state message.
- * - `[HLP:`] indicates the help message.
- * - `[G54:]`, `[G55:]`, `[G56:]`, `[G57:]`, `[G58:]`, `[G59:]`, `[G28:]`, `[G30:]`, `[G92:]`, `[TLO:]`, and `[PRB:]` messages indicate the parameter data printout from a $# user query.
- * - `[VER:]` contains build info and string from a $I user query.
- * - `[OPT:]` contains character codes for compile-time options that were either enabled or disabled.
- * - `[echo:]` indicates an automated line echo from a pre-parsed string prior to g-code parsing. Enabled by config.h option.
- * - `>G54G20:ok` indicates startup line execution. The :ok suffix shows it executed correctly without adding an unmatched ok response on a new line.
+ * - `< >`: Enclosed chevrons contains status report data.
+ * - `Grbl X.Xx ['$' for help]`: Welcome message indicates initialization.
+ * - `ALARM:x`: Indicates an alarm has been thrown. Grbl is now in an alarm state.
+ * - `$x=val` and `$Nx=line` indicate a settings printout from a `$` and `$N` user query, respectively.
+ * - `[MSG:]`: Indicates a non-queried feedback message.
+ * - `[GC:]`: Indicates a queried `$G` g-code state message.
+ * - `[HLP:`]: Indicates the help message.
+ * - `[G54:]`, `[G55:]`, `[G56:]`, `[G57:]`, `[G58:]`, `[G59:]`, `[G28:]`, `[G30:]`, `[G92:]`, `[TLO:]`, and `[PRB:]` messages indicate the parameter data printout from a `$#` user query.
+ * - `[VER:]`: Indicates build info and string from a `$I` user query.
+ * - `[OPT:]`: Contains character codes for compile-time options that were either enabled or disabled.
+ * - `[echo:]`: Indicates an automated line echo from a pre-parsed string prior to g-code parsing. Enabled by config.h option.
+ * - `>G54G20:ok`: The open chevron indicates startup line execution. The `:ok` suffix shows it executed correctly without adding an unmatched `ok` response on a new line.
  */
 
 test('GrblLineParser', (t) => {

@@ -108,7 +108,7 @@ class Probe extends Component {
                             </Infotip>
                         </div>
                         <ButtonGroup
-                            btnSize="sm"
+                            sm
                             style={{
                                 minWidth: '80%',
                             }}

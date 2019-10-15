@@ -140,7 +140,10 @@ class CreateRecord extends Component {
         const { alertMessage } = this.props.state.modal.params;
 
         return (
-            <Modal disableOverlayClick onClose={closeModal}>
+            <Modal
+                disableOverlayClick
+                onClose={closeModal}
+            >
                 <Form
                     initialValues={this.state.values}
                     onSubmit={this.onSubmit}

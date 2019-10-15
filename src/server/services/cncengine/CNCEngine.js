@@ -241,9 +241,9 @@ class CNCEngine {
                         });
 
                     callback(null, ports);
-                } catch (err) {
-                    log.error(err);
-                    callback(err);
+                } catch (e) {
+                    log.error(e.message);
+                    callback(e);
                 }
             });
 

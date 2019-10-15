@@ -15,9 +15,6 @@ class DropdownToggle extends Component {
             PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
         ]),
 
-        // One of: 'lg', 'md', 'sm', 'xs'
-        btnSize: Button.propTypes.btnSize,
-
         // One of: 'default', 'primary', 'secondary', 'danger', 'warning', 'info', 'success', 'light', 'dark', 'link'
         btnStyle: Button.propTypes.btnStyle,
 
@@ -54,7 +51,6 @@ class DropdownToggle extends Component {
 
         if (Component === Button) {
             props.btnStyle = props.btnStyle || 'default';
-            props.btnSize = props.btnSize || Button.defaultProps.btnSize;
             props.dropdownToggle = true;
         }
 
@@ -70,10 +66,10 @@ class DropdownToggle extends Component {
                 className={cx(className, {
                     [styles.dropdownToggle]: true,
                     [styles.btnLink]: props.btnStyle === 'link', // CSS selector ".btn-link:hover .caret"
-                    [styles.btnLg]: props.btnSize === 'lg' || props.btnSize === 'large',
-                    [styles.btnMd]: props.btnSize === 'md' || props.btnSize === 'medium',
-                    [styles.btnSm]: props.btnSize === 'sm' || props.btnSize === 'small',
-                    [styles.btnXs]: props.btnSize === 'xs' || props.btnSize === 'extra-small',
+                    [styles.btnLg]: !!props.lg,
+                    [styles.btnMd]: !!props.md,
+                    [styles.btnSm]: !!props.sm,
+                    [styles.btnXs]: !!props.xs,
                     [styles.empty]: empty
                 })}
             >

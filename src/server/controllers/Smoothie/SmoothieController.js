@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import ensureArray from 'ensure-array';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
@@ -896,15 +897,16 @@ class SmoothieController {
 
             const {
                 name,
-                gcode: content,
+                content,
                 context
             } = this.sender.state;
 
             if (content) {
-                socket.emit('sender:load', {
-                    name: name,
-                    content: content
-                }, context);
+                const meta = {
+                    name,
+                    content,
+                };
+                socket.emit('sender:load', meta, context);
             }
         }
 
@@ -935,7 +937,7 @@ class SmoothieController {
     command(cmd, ...args) {
         const handler = {
             'sender:load': () => {
-                let [name, content, context = {}, callback = noop] = args;
+                let [meta, context = {}, callback = noop] = args;
                 if (typeof context === 'function') {
                     callback = context;
                     context = {};
@@ -945,25 +947,27 @@ class SmoothieController {
                 // respond with an ok when the dwell is complete. At that instant, there will
                 // be no queued motions, as long as no more commands were sent after the G4.
                 // This is the fastest way to do it without having to check the status reports.
+                const { name, content } = { ...meta };
                 const dwell = '%wait ; Wait for the planner to empty';
-                const ok = this.sender.load(name, content + '\n' + dwell, context);
+                const ok = this.sender.load({
+                    name,
+                    content: `${content}\n${dwell}`,
+                }, context);
                 if (!ok) {
                     callback(new Error(`Invalid G-code: name=${name}`));
                     return;
                 }
 
-                this.emit('sender:load', {
-                    name: name,
-                    content: content
-                }, context);
+                this.emit('sender:load', meta, context);
 
                 this.event.trigger('sender:load');
 
-                log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
-
                 this.workflow.stop();
 
-                callback(null, this.sender.toJSON());
+                const senderState = this.sender.toJSON();
+                callback(null, senderState);
+
+                log.debug(`sender: sp=${senderState.sp}, name=${chalk.yellow(JSON.stringify(senderState.name))}, size=${senderState.size}, total=${senderState.total}, context=${JSON.stringify(senderState.context)}`);
             },
             'sender:unload': () => {
                 this.workflow.stop();
@@ -1189,7 +1193,11 @@ class SmoothieController {
 
                 this.event.trigger('macro:load');
 
-                this.command('sender:load', macro.name, macro.content, context, callback);
+                const meta = {
+                    name: macro.name,
+                    content: macro.content,
+                };
+                this.command('sender:load', meta, context, callback);
             },
             'watchdir:load': () => {
                 const [file, callback = noop] = args;
@@ -1201,7 +1209,11 @@ class SmoothieController {
                         return;
                     }
 
-                    this.command('sender:load', file, data, context, callback);
+                    const meta = {
+                        name: file,
+                        content: data,
+                    };
+                    this.command('sender:load', meta, context, callback);
                 });
             }
         }[cmd];

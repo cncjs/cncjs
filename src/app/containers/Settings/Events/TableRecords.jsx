@@ -5,18 +5,38 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
+import FormGroup from 'app/components/FormGroup';
 import Modal from 'app/components/Modal';
+import { TablePagination } from 'app/components/Paginations';
 import Space from 'app/components/Space';
 import Table from 'app/components/Table';
 import ToggleSwitch from 'app/components/ToggleSwitch';
 import portal from 'app/lib/portal';
 import i18n from 'app/lib/i18n';
-import TablePagination from '../components/TablePagination';
 import {
     MODAL_CREATE_RECORD,
     MODAL_UPDATE_RECORD
 } from './constants';
 import styles from './index.styl';
+
+const mapEventToTextString = (event) => ({
+    'startup': i18n._('Startup'),
+    'connection:open': i18n._('Open'),
+    'connection:close': i18n._('Close'),
+    'controller:ready': i18n._('Ready to start'),
+    'sender:load': i18n._('G-code: Load'),
+    'sender:unload': i18n._('G-code: Unload'),
+    'sender:start': i18n._('G-code: Start'),
+    'sender:stop': i18n._('G-code: Stop'),
+    'sender:pause': i18n._('G-code: Pause'),
+    'sender:resume': i18n._('G-code: Resume'),
+    'feedhold': i18n._('Feed Hold'),
+    'cyclestart': i18n._('Cycle Start'),
+    'homing': i18n._('Homing'),
+    'sleep': i18n._('Sleep'),
+    'macro:run': i18n._('Run Macro'),
+    'macro:load': i18n._('Load Macro')
+}[event] || '');
 
 class TableRecords extends Component {
     static propTypes = {
@@ -67,7 +87,7 @@ class TableRecords extends Component {
                         >
                             <i className="fa fa-plus" />
                             <Space width="8" />
-                            {i18n._('New')}
+                            {i18n._('Add')}
                         </button>
                         <TablePagination
                             style={{
@@ -111,26 +131,7 @@ class TableRecords extends Component {
                         className: 'text-nowrap',
                         key: 'event',
                         render: (value, row, index) => {
-                            const eventText = {
-                                'startup': i18n._('Startup (System only)'),
-                                'port:open': i18n._('Open a serial port (System only)'),
-                                'port:close': i18n._('Close a serial port (System only)'),
-                                'controller:ready': i18n._('Ready to start'),
-                                'gcode:load': i18n._('G-code: Load'),
-                                'gcode:unload': i18n._('G-code: Unload'),
-                                'gcode:start': i18n._('G-code: Start'),
-                                'gcode:stop': i18n._('G-code: Stop'),
-                                'gcode:pause': i18n._('G-code: Pause'),
-                                'gcode:resume': i18n._('G-code: Resume'),
-                                'feedhold': i18n._('Feed Hold'),
-                                'cyclestart': i18n._('Cycle Start'),
-                                'homing': i18n._('Homing'),
-                                'sleep': i18n._('Sleep'),
-                                'macro:run': i18n._('Run Macro'),
-                                'macro:load': i18n._('Load Macro')
-                            }[row.event] || '';
-
-                            return eventText;
+                            return mapEventToTextString(row.event);
                         }
                     },
                     {
@@ -198,8 +199,6 @@ class TableRecords extends Component {
                         className: 'text-nowrap',
                         key: 'action',
                         render: (value, row, index) => {
-                            const { id } = row;
-
                             return (
                                 <div>
                                     <button
@@ -218,7 +217,10 @@ class TableRecords extends Component {
                                         title={i18n._('Delete')}
                                         onClick={(event) => {
                                             portal(({ onClose }) => (
-                                                <Modal size="xs" onClose={onClose}>
+                                                <Modal
+                                                    disableOverlayClick={false}
+                                                    onClose={onClose}
+                                                >
                                                     <Modal.Header>
                                                         <Modal.Title>
                                                             {i18n._('Settings')}
@@ -229,7 +231,12 @@ class TableRecords extends Component {
                                                         </Modal.Title>
                                                     </Modal.Header>
                                                     <Modal.Body>
-                                                        {i18n._('Are you sure you want to delete this item?')}
+                                                        <FormGroup>
+                                                            {i18n._('Are you sure you want to delete this item?')}
+                                                        </FormGroup>
+                                                        <FormGroup>
+                                                            {mapEventToTextString(row.event)}
+                                                        </FormGroup>
                                                     </Modal.Body>
                                                     <Modal.Footer>
                                                         <Button
@@ -241,7 +248,7 @@ class TableRecords extends Component {
                                                             btnStyle="primary"
                                                             onClick={chainedFunction(
                                                                 () => {
-                                                                    actions.deleteRecord(id);
+                                                                    actions.deleteRecord(row.id);
                                                                 },
                                                                 onClose
                                                             )}

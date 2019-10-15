@@ -1,6 +1,8 @@
+import _get from 'lodash/get';
 import ensureArray from 'ensure-array';
 import superagent from 'superagent';
 import superagentUse from 'superagent-use';
+import controller from 'app/lib/controller';
 import config from 'app/store/config';
 
 const bearer = (request) => {
@@ -111,12 +113,12 @@ const unsetState = (options) => new Promise((resolve, reject) => {
 //
 // G-code
 //
-const loadGCode = (options) => new Promise((resolve, reject) => {
-    const { port = '', name = '', gcode = '', context = {} } = { ...options };
+const loadGCode = (meta, context) => new Promise((resolve, reject) => {
+    const ident = _get(controller, 'connection.ident');
 
     authrequest
         .post('/api/gcode')
-        .send({ port, name, gcode, context })
+        .send({ ident, meta, context })
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -126,12 +128,12 @@ const loadGCode = (options) => new Promise((resolve, reject) => {
         });
 });
 
-const fetchGCode = (options) => new Promise((resolve, reject) => {
-    const { port = '' } = { ...options };
+const fetchGCode = () => new Promise((resolve, reject) => {
+    const ident = _get(controller, 'connection.ident');
 
     authrequest
         .get('/api/gcode')
-        .query({ port: port })
+        .query({ ident })
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -141,8 +143,8 @@ const fetchGCode = (options) => new Promise((resolve, reject) => {
         });
 });
 
-const downloadGCode = (options) => {
-    const { port = '' } = { ...options };
+const downloadGCode = () => {
+    const ident = _get(controller, 'connection.ident');
 
     const $form = document.createElement('form');
     $form.setAttribute('id', 'export');
@@ -150,15 +152,15 @@ const downloadGCode = (options) => {
     $form.setAttribute('enctype', 'multipart/form-data');
     $form.setAttribute('action', 'api/gcode/download');
 
-    const $port = document.createElement('input');
-    $port.setAttribute('name', 'port');
-    $port.setAttribute('value', port);
+    const $ident = document.createElement('input');
+    $ident.setAttribute('name', 'ident');
+    $ident.setAttribute('value', ident);
 
     const $token = document.createElement('input');
     $token.setAttribute('name', 'token');
     $token.setAttribute('value', config.get('session.token'));
 
-    $form.appendChild($port);
+    $form.appendChild($ident);
     $form.appendChild($token);
 
     document.body.append($form);

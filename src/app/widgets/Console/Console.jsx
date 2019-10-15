@@ -27,7 +27,8 @@ const Console = ({
     const sender = useRef(uuid());
 
     useEffectOnce(() => {
-        const onConnectionOpen = ({ type, options }) => {
+        const onConnectionOpen = (state) => {
+            const { type, options } = state;
             const { current: term } = terminalRef;
             if (!term) {
                 return;
@@ -53,7 +54,7 @@ const Console = ({
             }
         };
 
-        const onConnectionClose = ({ type, options }) => {
+        const onConnectionClose = (state) => {
             const { current: term } = terminalRef;
             if (!term) {
                 return;
@@ -62,7 +63,7 @@ const Console = ({
             term.current.clear();
         };
 
-        const onConnectionWrite = ({ type, options }, data, { context }) => {
+        const onConnectionWrite = (state, data, context) => {
             const { source, __sender__ } = { ...context };
             const { current: term } = terminalRef;
 
@@ -84,7 +85,7 @@ const Console = ({
             }
         };
 
-        const onConnectionRead = ({ type, options }, data) => {
+        const onConnectionRead = (state, data) => {
             const { current: term } = terminalRef;
             if (!term) {
                 return;
@@ -146,6 +147,7 @@ const Console = ({
                 const context = {
                     __sender__: sender.current,
                 };
+
                 controller.write(data, context);
             }}
         />

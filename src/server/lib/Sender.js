@@ -1,4 +1,6 @@
 /* eslint max-classes-per-file: 0 */
+import _get from 'lodash/get';
+import _size from 'lodash/size';
 import events from 'events';
 
 export const SP_TYPE_SEND_RESPONSE = 0;
@@ -127,7 +129,7 @@ class Sender extends events.EventEmitter {
         hold: false,
         holdReason: null,
         name: '',
-        gcode: '',
+        content: '',
         context: {},
         lines: [],
         total: 0,
@@ -229,14 +231,14 @@ class Sender extends events.EventEmitter {
             holdReason: this.state.holdReason,
             name: this.state.name,
             context: this.state.context,
-            size: this.state.gcode.length,
+            size: _size(this.state.content),
             total: this.state.total,
             sent: this.state.sent,
             received: this.state.received,
             startTime: this.state.startTime,
             finishTime: this.state.finishTime,
             elapsedTime: this.state.elapsedTime,
-            remainingTime: this.state.remainingTime
+            remainingTime: this.state.remainingTime,
         };
     }
 
@@ -261,12 +263,22 @@ class Sender extends events.EventEmitter {
     }
 
     // @return {boolean} Returns true on success, false otherwise.
-    load(name, gcode = '', context = {}) {
-        if (typeof gcode !== 'string' || !gcode) {
+    load(meta, context = {}) {
+        let name = '';
+        let content = '';
+
+        if (typeof meta === 'string') {
+            content = meta;
+        } else {
+            name = _get(meta, 'name');
+            content = _get(meta, 'content');
+        }
+
+        if (typeof content !== 'string' || !content) {
             return false;
         }
 
-        const lines = gcode.split('\n')
+        const lines = content.split('\n')
             .filter(line => (line.trim().length > 0));
 
         if (this.sp) {
@@ -275,7 +287,7 @@ class Sender extends events.EventEmitter {
         this.state.hold = false;
         this.state.holdReason = null;
         this.state.name = name;
-        this.state.gcode = gcode;
+        this.state.content = content;
         this.state.context = context;
         this.state.lines = lines;
         this.state.total = this.state.lines.length;
@@ -286,7 +298,7 @@ class Sender extends events.EventEmitter {
         this.state.elapsedTime = 0;
         this.state.remainingTime = 0;
 
-        this.emit('load', name, gcode, context);
+        this.emit('load', this.toJSON());
         this.emit('change');
 
         return true;
@@ -299,7 +311,7 @@ class Sender extends events.EventEmitter {
         this.state.hold = false;
         this.state.holdReason = null;
         this.state.name = '';
-        this.state.gcode = '';
+        this.state.content = '';
         this.state.context = {};
         this.state.lines = [];
         this.state.total = 0;
@@ -317,7 +329,7 @@ class Sender extends events.EventEmitter {
     // Tells the sender an acknowledgement has received.
     // @return {boolean} Returns true on success, false otherwise.
     ack() {
-        if (!this.state.gcode) {
+        if (!this.state.content) {
             return false;
         }
 
@@ -334,7 +346,7 @@ class Sender extends events.EventEmitter {
     // Tells the sender to send more data.
     // @return {boolean} Returns true on success, false otherwise.
     next() {
-        if (!this.state.gcode) {
+        if (!this.state.content) {
             return false;
         }
 
@@ -377,7 +389,7 @@ class Sender extends events.EventEmitter {
     // Rewinds the internal array pointer.
     // @return {boolean} Returns true on success, false otherwise.
     rewind() {
-        if (!this.state.gcode) {
+        if (!this.state.content) {
             return false;
         }
 

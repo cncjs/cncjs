@@ -201,7 +201,10 @@ class TableRecords extends Component {
                                         title={i18n._('Delete')}
                                         onClick={(event) => {
                                             portal(({ onClose }) => (
-                                                <Modal disableOverlayClick onClose={onClose}>
+                                                <Modal
+                                                    disableOverlayClick
+                                                    onClose={onClose}
+                                                >
                                                     <Modal.Body>
                                                         <ModalTemplate type="warning">
                                                             {({ PrimaryMessage, DescriptiveMessage }) => (

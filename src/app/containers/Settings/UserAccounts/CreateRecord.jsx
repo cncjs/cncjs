@@ -41,7 +41,10 @@ class CreateRecord extends Component {
         const { alertMessage } = modal.params;
 
         return (
-            <Modal disableOverlayClick size="sm" onClose={actions.closeModal}>
+            <Modal
+                disableOverlayClick
+                onClose={actions.closeModal}
+            >
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('New Account')}

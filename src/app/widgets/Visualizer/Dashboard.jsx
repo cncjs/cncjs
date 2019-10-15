@@ -111,7 +111,7 @@ class Dashboard extends Component {
                             {state.gcode.ready && (
                                 <Anchor
                                     onClick={() => {
-                                        api.downloadGCode({ port: state.port });
+                                        api.downloadGCode();
                                     }}
                                 >
                                     <strong>{filename}</strong>

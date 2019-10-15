@@ -243,7 +243,7 @@ class PrimaryToolbar extends Component {
                         pullRight
                     >
                         <Dropdown.Toggle
-                            btnSize="sm"
+                            sm
                             btnStyle="default"
                             title={i18n._('Work Coordinate System')}
                         >
@@ -310,7 +310,7 @@ class PrimaryToolbar extends Component {
                         pullRight
                     >
                         <Button
-                            btnSize="sm"
+                            sm
                             btnStyle="default"
                             title={(!WebGL.isWebGLAvailable() || disabled)
                                 ? i18n._('Enable 3D View')
@@ -326,7 +326,7 @@ class PrimaryToolbar extends Component {
                             {i18n._('3D View')}
                         </Button>
                         <Dropdown.Toggle
-                            btnSize="sm"
+                            sm
                             btnStyle="default"
                         />
                         <Dropdown.Menu>

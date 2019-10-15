@@ -8,9 +8,6 @@ class DropdownButton extends Component {
     static propTypes = {
         ...Dropdown.propTypes,
 
-        // One of: 'lg', 'md', 'sm', 'xs'
-        btnSize: Button.propTypes.btnSize,
-
         // One of: 'default', 'primary', 'emphasis', 'flat', 'link'
         btnStyle: Button.propTypes.btnStyle,
 
@@ -30,7 +27,7 @@ class DropdownButton extends Component {
     };
 
     render() {
-        const { btnSize, toggle, style, children, ...props } = this.props;
+        const { toggle, style, children, ...props } = this.props;
 
         // Split component props
         const dropdownProps = {};
@@ -51,7 +48,6 @@ class DropdownButton extends Component {
                     ...style,
                     float: 'left'
                 }}
-                btnSize={btnSize}
             >
                 <Dropdown.Toggle
                     {...toggleProps}

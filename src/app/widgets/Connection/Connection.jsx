@@ -300,7 +300,7 @@ const Connection = ({
                                         return (
                                             <FormGroup>
                                                 <ButtonGroup
-                                                    btnSize="sm"
+                                                    sm
                                                     style={{
                                                         width: '100%',
                                                     }}
@@ -362,7 +362,7 @@ const Connection = ({
 
                                             return (
                                                 <ButtonGroup
-                                                    btnSize="sm"
+                                                    sm
                                                     style={{
                                                         width: '50%',
                                                     }}

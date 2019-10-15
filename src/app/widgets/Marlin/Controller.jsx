@@ -40,7 +40,7 @@ const Controller = (props) => {
                     {activeTab === 'settings' && (
                         <div>
                             <Button
-                                btnSize="xs"
+                                xs
                                 btnStyle="default"
                                 style={{
                                     position: 'absolute',

@@ -955,13 +955,13 @@ class Visualizer extends Component {
         this.updateScene();
     }
 
-    load(name, gcode, callback) {
+    load(content, callback) {
         // Remove previous G-code object
         this.unload();
 
         this.visualizer = new GCodeVisualizer();
 
-        const obj = this.visualizer.render(gcode);
+        const obj = this.visualizer.render(content);
         obj.name = 'Visualizer';
         this.group.add(obj);
 

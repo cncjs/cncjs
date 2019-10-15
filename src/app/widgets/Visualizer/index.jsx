@@ -235,10 +235,7 @@ class VisualizerWidget extends Component {
                 log.debug(data); // TODO
             });
         },
-        uploadFile: (gcode, meta) => {
-            const { name } = { ...meta };
-            const context = {};
-
+        uploadFile: (meta) => {
             this.setState((state) => ({
                 gcode: {
                     ...state.gcode,
@@ -248,7 +245,8 @@ class VisualizerWidget extends Component {
                 }
             }));
 
-            controller.command('gcode:load', name, gcode, context, (err, data) => {
+            const context = {};
+            controller.command('sender:load', meta, context, (err, data) => {
                 if (err) {
                     this.setState((state) => ({
                         gcode: {
@@ -266,7 +264,7 @@ class VisualizerWidget extends Component {
                 log.debug(data); // TODO
             });
         },
-        loadGCode: (name, gcode) => {
+        loadGCode: ({ name, content }) => {
             const capable = {
                 view3D: !!this.visualizer
             };
@@ -277,7 +275,7 @@ class VisualizerWidget extends Component {
                     loading: false,
                     rendering: capable.view3D,
                     ready: !capable.view3D,
-                    content: gcode,
+                    content: content,
                     bbox: {
                         min: {
                             x: 0,
@@ -309,7 +307,7 @@ class VisualizerWidget extends Component {
                 }
 
                 setTimeout(() => {
-                    this.visualizer.load(name, gcode, ({ bbox }) => {
+                    this.visualizer.load(content, ({ bbox }) => {
                         // Set gcode bounding box
                         controller.context = {
                             ...controller.context,
@@ -382,7 +380,7 @@ class VisualizerWidget extends Component {
             console.assert(includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflow.state));
 
             if (workflow.state === WORKFLOW_STATE_IDLE) {
-                controller.command('gcode:start');
+                controller.command('sender:start');
                 return;
             }
 
@@ -409,7 +407,7 @@ class VisualizerWidget extends Component {
                                     btnStyle="primary"
                                     onClick={chainedFunction(
                                         () => {
-                                            controller.command('gcode:resume');
+                                            controller.command('sender:resume');
                                         },
                                         onClose
                                     )}
@@ -423,28 +421,28 @@ class VisualizerWidget extends Component {
                     return;
                 }
 
-                controller.command('gcode:resume');
+                controller.command('sender:resume');
             }
         },
         handlePause: () => {
             const { workflow } = this.state;
             console.assert(includes([WORKFLOW_STATE_RUNNING], workflow.state));
 
-            controller.command('gcode:pause');
+            controller.command('sender:pause');
         },
         handleStop: () => {
             const { workflow } = this.state;
             console.assert(includes([WORKFLOW_STATE_PAUSED], workflow.state));
 
-            controller.command('gcode:stop', { force: true });
+            controller.command('sender:stop', { force: true });
         },
         handleClose: () => {
             const { workflow } = this.state;
             console.assert(includes([WORKFLOW_STATE_IDLE], workflow.state));
 
-            controller.command('gcode:unload');
+            controller.command('sender:unload');
 
-            pubsub.publish('gcode:unload'); // Unload the G-code
+            pubsub.publish('sender:unload'); // Unload the G-code
         },
         setBoundingBox: (bbox) => {
             this.setState((state) => ({
@@ -606,11 +604,12 @@ class VisualizerWidget extends Component {
             const initialState = this.getInitialState();
             this.setState((state) => ({ ...initialState }));
         },
-        'gcode:load': (name, gcode, context) => {
-            gcode = translateExpression(gcode, context); // e.g. xmin,xmax,ymin,ymax,zmin,zmax
-            this.actions.loadGCode(name, gcode);
+        'sender:load': (meta, context) => {
+            const { name, content } = meta;
+            const modifiedContent = translateExpression(content, context); // e.g. xmin,xmax,ymin,ymax,zmin,zmax
+            this.actions.loadGCode({ name, content: modifiedContent });
         },
-        'gcode:unload': () => {
+        'sender:unload': () => {
             this.actions.unloadGCode();
         },
         'sender:status': (data) => {

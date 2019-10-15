@@ -2,21 +2,22 @@ import get from 'lodash/get';
 import controllers from '../store/controllers';
 import {
     ERR_BAD_REQUEST,
-    ERR_INTERNAL_SERVER_ERROR
+    ERR_INTERNAL_SERVER_ERROR,
 } from '../constants';
 
 export const upload = (req, res) => {
-    const { ident, name, gcode, context = {} } = req.body;
+    const { ident, meta, context = {} } = req.body;
 
     if (!ident) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'No connection ident specified'
+            msg: 'The connection ident is not specified.',
         });
         return;
     }
-    if (!gcode) {
+
+    if (!meta) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'Empty G-code'
+            msg: 'Malformed metadata.',
         });
         return;
     }
@@ -24,16 +25,16 @@ export const upload = (req, res) => {
     const controller = controllers[ident];
     if (!controller) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'Controller not found'
+            msg: 'No controller available.',
         });
         return;
     }
 
     // Load G-code
-    controller.command('gcode:load', name, gcode, context, (err, state) => {
+    controller.command('sender:load', meta, context, (err, state) => {
         if (err) {
             res.status(ERR_INTERNAL_SERVER_ERROR).send({
-                msg: 'Failed to load G-code: ' + err
+                msg: 'Failed to load the file: ' + err
             });
             return;
         }
@@ -47,7 +48,7 @@ export const fetch = (req, res) => {
 
     if (!ident) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'No connection ident specified'
+            msg: 'The connection ident is not specified.',
         });
         return;
     }
@@ -55,17 +56,19 @@ export const fetch = (req, res) => {
     const controller = controllers[ident];
     if (!controller) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'Controller not found'
+            msg: 'No controller available.',
         });
         return;
     }
 
     const { sender } = controller;
-
-    res.send({
+    const content = sender.state.content || '';
+    const data = {
         ...sender.toJSON(),
-        data: sender.state.gcode
-    });
+        content,
+    };
+
+    res.send(data);
 };
 
 export const download = (req, res) => {
@@ -73,7 +76,7 @@ export const download = (req, res) => {
 
     if (!ident) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'No connection ident specified'
+            msg: 'The connection ident is not specified.',
         });
         return;
     }
@@ -81,7 +84,7 @@ export const download = (req, res) => {
     const controller = controllers[ident];
     if (!controller) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'Controller not found'
+            msg: 'No controller available.',
         });
         return;
     }
@@ -89,7 +92,7 @@ export const download = (req, res) => {
     const { sender } = controller;
 
     const filename = sender.state.name || 'noname.txt';
-    const content = sender.state.gcode || '';
+    const content = sender.state.content || '';
 
     res.setHeader('Content-Disposition', 'attachment; filename=' + encodeURIComponent(filename));
     res.setHeader('Connection', 'close');

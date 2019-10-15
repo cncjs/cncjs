@@ -43,14 +43,14 @@ class RunProbeModal extends Component {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
-                        btnSize="sm"
+                        sm
                         btnStyle="default"
                         onClick={actions.closeModal}
                     >
                         {i18n._('Cancel')}
                     </Button>
                     <Button
-                        btnSize="sm"
+                        sm
                         btnStyle="primary"
                         onClick={() => {
                             actions.closeModal();

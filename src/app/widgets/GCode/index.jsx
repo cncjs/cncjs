@@ -67,7 +67,7 @@ class GCodeWidget extends Component {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'gcode:unload': () => {
+        'sender:unload': () => {
             this.setState({
                 bbox: {
                     min: {

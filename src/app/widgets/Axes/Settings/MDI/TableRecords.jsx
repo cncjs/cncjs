@@ -73,9 +73,8 @@ class TableRecords extends Component {
                         render: (value, row, rowIndex) => (
                             <ButtonGroup>
                                 <Button
-                                    btnSize="xs"
+                                    xs
                                     btnStyle="default"
-                                    compact
                                     disabled={rowIndex === 0}
                                     title={i18n._('Move Up')}
                                     onClick={() => {
@@ -89,9 +88,8 @@ class TableRecords extends Component {
                                     <i className="fa fa-fw fa-chevron-up" />
                                 </Button>
                                 <Button
-                                    btnSize="xs"
+                                    xs
                                     btnStyle="default"
-                                    compact
                                     disabled={rowIndex === (state.records.length - 1)}
                                     title={i18n._('Move Down')}
                                     onClick={() => {
@@ -172,9 +170,8 @@ class TableRecords extends Component {
                         render: (value, row, rowIndex) => (
                             <div>
                                 <Button
-                                    btnSize="xs"
+                                    xs
                                     btnStyle="default"
-                                    compact
                                     title={i18n._('Update')}
                                     onClick={(event) => {
                                         action.openModal(MODAL_UPDATE_RECORD, row);
@@ -183,9 +180,8 @@ class TableRecords extends Component {
                                     <i className="fa fa-fw fa-edit" />
                                 </Button>
                                 <Button
-                                    btnSize="xs"
+                                    xs
                                     btnStyle="default"
-                                    compact
                                     title={i18n._('Remove')}
                                     onClick={(event) => {
                                         action.removeRecord(row.id);

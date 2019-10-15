@@ -268,7 +268,7 @@ class CNCJSController {
     // @param {string} cmd The command to execute.
     // @example Example Usage
     // - Load G-code
-    //   controller.command('sender:load', name, gcode, [context], [callback])
+    //   controller.command('sender:load', meta, [context], [callback])
     // - Unload G-code
     //   controller.command('sender:unload')
     // - Start sending G-code

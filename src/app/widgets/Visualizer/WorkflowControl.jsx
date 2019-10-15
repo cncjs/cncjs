@@ -69,9 +69,10 @@ class WorkflowControl extends Component {
 
             const meta = {
                 name: file.name,
-                size: file.size
+                content: result,
             };
-            actions.uploadFile(result, meta);
+
+            actions.uploadFile(meta);
         };
 
         try {

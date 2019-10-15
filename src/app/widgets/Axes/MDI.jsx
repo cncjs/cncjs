@@ -29,7 +29,7 @@ class MDI extends Component {
             return (
                 <Col {...grid} key={c.id} style={{ padding: '0 4px', marginTop: 5 }}>
                     <Button
-                        btnSize="sm"
+                        sm
                         btnStyle="default"
                         style={{
                             minWidth: 'auto',

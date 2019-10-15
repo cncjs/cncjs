@@ -185,7 +185,7 @@ class SecondaryToolbar extends Component {
                     <Col width="auto">
                         {is3DView && (
                             <ButtonToolbar>
-                                <ButtonGroup btnSize="sm">
+                                <ButtonGroup sm>
                                     <IconButton
                                         className={cx({
                                             'highlight': cameraPosition === 'top'

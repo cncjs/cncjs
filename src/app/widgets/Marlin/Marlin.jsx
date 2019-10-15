@@ -137,8 +137,7 @@ class Marlin extends Component {
                                     </div>
                                     <div className="table-form-col">
                                         <Button
-                                            compact
-                                            btnSize="xs"
+                                            xs
                                             btnStyle="danger"
                                             disabled={!canSetExtruderTemperature}
                                             onClick={this.setExtruderTemperature(state.heater.extruder)}
@@ -155,8 +154,7 @@ class Marlin extends Component {
                                     </div>
                                     <div className="table-form-col">
                                         <Button
-                                            compact
-                                            btnSize="xs"
+                                            xs
                                             btnStyle="default"
                                             title={i18n._('Cancel')}
                                             onClick={this.setExtruderTemperature(0)}
@@ -197,8 +195,7 @@ class Marlin extends Component {
                                     </div>
                                     <div className="table-form-col">
                                         <Button
-                                            compact
-                                            btnSize="xs"
+                                            xs
                                             btnStyle="danger"
                                             disabled={!canSetHeatedBedTemperature}
                                             onClick={this.setHeatedBedTemperature(state.heater.heatedBed)}
@@ -215,8 +212,7 @@ class Marlin extends Component {
                                     </div>
                                     <div className="table-form-col">
                                         <Button
-                                            compact
-                                            btnSize="xs"
+                                            xs
                                             btnStyle="default"
                                             onClick={this.setHeatedBedTemperature(0)}
                                             title={i18n._('Cancel')}

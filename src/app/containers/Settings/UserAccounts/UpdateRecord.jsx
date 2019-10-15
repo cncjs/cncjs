@@ -44,7 +44,10 @@ class UpdateRecord extends Component {
         const { alertMessage, changePassword = false, enabled, name } = modal.params;
 
         return (
-            <Modal disableOverlayClick size="sm" onClose={actions.closeModal}>
+            <Modal
+                disableOverlayClick
+                onClose={actions.closeModal}
+            >
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Edit Account')}

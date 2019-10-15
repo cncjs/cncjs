@@ -21,7 +21,7 @@ const whitelist = [
     // IPv6 reserved space
     '::1/128', // loopback address to the local host
     'fc00::/7', // Unique local address
-    'fe80::/10' // Link-local address
+    'fe80::/10', // Link-local address
 ];
 
 export const authorizeIPAddress = (ipaddr) => new Promise((resolve, reject) => {

@@ -1,16 +1,29 @@
-import _ from 'lodash';
-import classNames from 'classnames';
+import _difference from 'lodash/difference';
+import _get from 'lodash/get';
+import _includes from 'lodash/includes';
+import _pick from 'lodash/pick';
+import _pullAll from 'lodash/pullAll';
+import _size from 'lodash/size';
+import _throttle from 'lodash/throttle';
+import cx from 'classnames';
 import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import compose from 'recompose/compose';
+import styled from 'styled-components';
 import api from 'app/api';
 import { Button, ButtonGroup } from 'app/components/Buttons';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Row, Col } from 'app/components/GridSystem';
 import Margin from 'app/components/Margin';
 import Space from 'app/components/Space';
+import Text from 'app/components/Text';
+import {
+    CONNECTION_STATE_CONNECTED,
+} from 'app/constants/connection';
 import {
     WORKFLOW_STATE_IDLE,
 } from 'app/constants/workflow';
@@ -47,23 +60,16 @@ const stopWaiting = () => {
 };
 
 class Workspace extends Component {
-    static propTypes = {
-        ...withRouter.propTypes
-    };
-
     state = {
-        mounted: false,
-        port: '',
         modal: {
             name: MODAL_NONE,
             params: {}
         },
-        isDraggingFile: false,
         isDraggingWidget: false,
         isUploading: false,
         showPrimaryContainer: config.get('workspace.container.primary.show'),
         showSecondaryContainer: config.get('workspace.container.secondary.show'),
-        inactiveCount: _.size(widgetManager.getInactiveWidgets())
+        inactiveCount: _size(widgetManager.getInactiveWidgets())
     };
 
     action = {
@@ -137,19 +143,12 @@ class Workspace extends Component {
                 this.action.openModal(MODAL_SERVER_DISCONNECTED);
             }
         },
-        'serialport:open': (options) => {
-            const { port } = options;
-            this.setState({ port: port });
-        },
-        'serialport:close': (options) => {
-            this.setState({ port: '' });
-        },
         'feeder:status': (status) => {
             const { modal } = this.state;
             const { hold, holdReason } = { ...status };
 
             if (!hold) {
-                if (_.includes([MODAL_FEEDER_PAUSED, MODAL_FEEDER_WAIT], modal.name)) {
+                if (_includes([MODAL_FEEDER_PAUSED, MODAL_FEEDER_WAIT], modal.name)) {
                     this.action.closeModal();
                 }
                 return;
@@ -265,12 +264,6 @@ class Workspace extends Component {
     };
 
     onDrop = (files) => {
-        const { port } = this.state;
-
-        if (!port) {
-            return;
-        }
-
         let file = files[0];
         let reader = new FileReader();
 
@@ -282,7 +275,7 @@ class Workspace extends Component {
                 return;
             }
 
-            log.debug('FileReader:', _.pick(file, [
+            log.debug('FileReader:', _pick(file, [
                 'lastModified',
                 'lastModifiedDate',
                 'meta',
@@ -294,13 +287,15 @@ class Workspace extends Component {
             startWaiting();
             this.setState({ isUploading: true });
 
-            const name = file.name;
-            const gcode = result;
+            const meta = {
+                name: file.name,
+                content: result,
+            };
 
-            api.loadGCode({ port, name, gcode })
+            api.loadGCode(meta)
                 .then((res) => {
-                    const { name = '', gcode = '' } = { ...res.body };
-                    pubsub.publish('gcode:load', { name, gcode });
+                    const { name } = { ...res.body };
+                    log.debug(`Loaded a G-code file: name=${name}`);
                 })
                 .catch((res) => {
                     log.error('Failed to upload G-code file');
@@ -324,24 +319,24 @@ class Workspace extends Component {
                 .filter(widgetId => {
                     // e.g. "webcam" or "webcam:d8e6352f-80a9-475f-a4f5-3e9197a48a23"
                     const name = widgetId.split(':')[0];
-                    return _.includes(activeWidgets, name);
+                    return _includes(activeWidgets, name);
                 });
 
             const defaultWidgets = config.get('workspace.container.default.widgets');
-            const sortableWidgets = _.difference(widgets, defaultWidgets);
+            const sortableWidgets = _difference(widgets, defaultWidgets);
             let primaryWidgets = config.get('workspace.container.primary.widgets');
             let secondaryWidgets = config.get('workspace.container.secondary.widgets');
 
             primaryWidgets = sortableWidgets.slice();
-            _.pullAll(primaryWidgets, secondaryWidgets);
+            _pullAll(primaryWidgets, secondaryWidgets);
             pubsub.publish('updatePrimaryWidgets', primaryWidgets);
 
             secondaryWidgets = sortableWidgets.slice();
-            _.pullAll(secondaryWidgets, primaryWidgets);
+            _pullAll(secondaryWidgets, primaryWidgets);
             pubsub.publish('updateSecondaryWidgets', secondaryWidgets);
 
             // Update inactive count
-            this.setState({ inactiveCount: _.size(inactiveWidgets) });
+            this.setState({ inactiveCount: _size(inactiveWidgets) });
         });
     };
 
@@ -351,24 +346,24 @@ class Workspace extends Component {
                 .filter(widgetId => {
                     // e.g. "webcam" or "webcam:d8e6352f-80a9-475f-a4f5-3e9197a48a23"
                     const name = widgetId.split(':')[0];
-                    return _.includes(activeWidgets, name);
+                    return _includes(activeWidgets, name);
                 });
 
             const defaultWidgets = config.get('workspace.container.default.widgets');
-            const sortableWidgets = _.difference(widgets, defaultWidgets);
+            const sortableWidgets = _difference(widgets, defaultWidgets);
             let primaryWidgets = config.get('workspace.container.primary.widgets');
             let secondaryWidgets = config.get('workspace.container.secondary.widgets');
 
             secondaryWidgets = sortableWidgets.slice();
-            _.pullAll(secondaryWidgets, primaryWidgets);
+            _pullAll(secondaryWidgets, primaryWidgets);
             pubsub.publish('updateSecondaryWidgets', secondaryWidgets);
 
             primaryWidgets = sortableWidgets.slice();
-            _.pullAll(primaryWidgets, secondaryWidgets);
+            _pullAll(primaryWidgets, secondaryWidgets);
             pubsub.publish('updatePrimaryWidgets', primaryWidgets);
 
             // Update inactive count
-            this.setState({ inactiveCount: _.size(inactiveWidgets) });
+            this.setState({ inactiveCount: _size(inactiveWidgets) });
         });
     };
 
@@ -377,8 +372,7 @@ class Workspace extends Component {
         this.addResizeEventListener();
 
         setTimeout(() => {
-            // A workaround solution to trigger componentDidUpdate on initial render
-            this.setState({ mounted: true });
+            this.resizeDefaultContainer();
         }, 0);
     }
 
@@ -409,7 +403,7 @@ class Workspace extends Component {
     }
 
     addResizeEventListener() {
-        this.onResizeThrottled = _.throttle(this.resizeDefaultContainer, 50);
+        this.onResizeThrottled = _throttle(this.resizeDefaultContainer, 50);
         window.addEventListener('resize', this.onResizeThrottled);
     }
 
@@ -419,11 +413,13 @@ class Workspace extends Component {
     }
 
     render() {
-        const { style, className } = this.props;
         const {
-            port,
+            isConnected,
+            className,
+            ...props
+        } = this.props;
+        const {
             modal,
-            isDraggingFile,
             isDraggingWidget,
             showPrimaryContainer,
             showSecondaryContainer,
@@ -433,7 +429,7 @@ class Workspace extends Component {
         const hideSecondaryContainer = !showSecondaryContainer;
 
         return (
-            <div style={style} className={classNames(className, styles.workspace)}>
+            <div className={cx(className, styles.workspace)} {...props}>
                 {modal.name === MODAL_FEEDER_PAUSED && (
                     <FeederPaused
                         title={modal.params.title}
@@ -449,240 +445,264 @@ class Workspace extends Component {
                 {modal.name === MODAL_SERVER_DISCONNECTED &&
                 <ServerDisconnected />
                 }
-                <div
-                    className={classNames(
-                        styles.dropzoneOverlay,
-                        { [styles.hidden]: !(port && isDraggingFile) }
-                    )}
-                >
-                    <div className={styles.textBlock}>
-                        {i18n._('Drop G-code file here')}
-                    </div>
-                </div>
                 <Dropzone
-                    className={styles.dropzone}
                     disabled={controller.workflow.state !== WORKFLOW_STATE_IDLE}
-                    disableClick={true}
-                    disablePreview={true}
+                    noClick={true}
                     multiple={false}
-                    onDragStart={(event) => {
-                    }}
-                    onDragEnter={(event) => {
-                        if (controller.workflow.state !== WORKFLOW_STATE_IDLE) {
-                            return;
-                        }
-                        if (isDraggingWidget) {
-                            return;
-                        }
-                        if (!isDraggingFile) {
-                            this.setState({ isDraggingFile: true });
-                        }
-                    }}
-                    onDragLeave={(event) => {
-                        if (controller.workflow.state !== WORKFLOW_STATE_IDLE) {
-                            return;
-                        }
-                        if (isDraggingWidget) {
-                            return;
-                        }
-                        if (isDraggingFile) {
-                            this.setState({ isDraggingFile: false });
-                        }
-                    }}
                     onDrop={(acceptedFiles, rejectedFiles) => {
+                        if (!isConnected) {
+                            return;
+                        }
                         if (controller.workflow.state !== WORKFLOW_STATE_IDLE) {
                             return;
                         }
                         if (isDraggingWidget) {
                             return;
                         }
-                        if (isDraggingFile) {
-                            this.setState({ isDraggingFile: false });
-                        }
+
                         this.onDrop(acceptedFiles);
                     }}
                 >
-                    <div className={styles.workspaceTable}>
-                        <div className={styles.workspaceTableRow}>
-                            <div
-                                ref={node => {
-                                    this.primaryContainer = node;
-                                }}
-                                className={classNames(
-                                    styles.primaryContainer,
-                                    { [styles.hidden]: hidePrimaryContainer }
-                                )}
-                            >
-                                <Margin top={10} bottom={10}>
-                                    <Row>
-                                        <Col width="auto">
+                    {({
+                        getRootProps,
+                        isDragActive,
+                    }) => (
+                        <div {...getRootProps()}>
+                            {isDragActive && (
+                                <DropzoneOverlay disabled={!isConnected}>
+                                    <Text
+                                        color="#666"
+                                        size={32}
+                                        style={{
+                                            position: 'absolute',
+                                            top: '50%',
+                                            left: '50%',
+                                            transform: 'translate(-50%, -50%)',
+                                        }}
+                                    >
+                                        {isConnected && (
+                                            <>
+                                                <FontAwesomeIcon icon="file-upload" size="2x" />
+                                                <div>{i18n._('Drop file here')}</div>
+                                            </>
+                                        )}
+                                        {!isConnected && (
+                                            <>
+                                                <FontAwesomeIcon icon="times-circle" color="#db3d44" size="2x" />
+                                                <div>{i18n._('You cannot upload files to the workspace when the connection is not established.')}</div>
+                                            </>
+                                        )}
+                                    </Text>
+                                </DropzoneOverlay>
+                            )}
+                            <div className={styles.workspaceTable}>
+                                <div className={styles.workspaceTableRow}>
+                                    <div
+                                        ref={node => {
+                                            this.primaryContainer = node;
+                                        }}
+                                        className={cx(
+                                            styles.primaryContainer,
+                                            { [styles.hidden]: hidePrimaryContainer }
+                                        )}
+                                    >
+                                        <Margin top={10} bottom={10}>
+                                            <Row>
+                                                <Col width="auto">
+                                                    <Button
+                                                        sm
+                                                        onClick={this.togglePrimaryContainer}
+                                                    >
+                                                        <FontAwesomeIcon icon="chevron-left" fixedWidth />
+                                                    </Button>
+                                                    <Space width={10} />
+                                                </Col>
+                                                <Col>
+                                                    <Button
+                                                        block
+                                                        sm
+                                                        onClick={this.updateWidgetsForPrimaryContainer}
+                                                    >
+                                                        <FontAwesomeIcon icon="list-alt" />
+                                                        <Space width={8} />
+                                                        {i18n._('Manage Widgets ({{inactiveCount}})', {
+                                                            inactiveCount: inactiveCount
+                                                        })}
+                                                    </Button>
+                                                </Col>
+                                                <Col width="auto">
+                                                    <Space width={10} />
+                                                    <ButtonGroup sm>
+                                                        <Button
+                                                            title={i18n._('Collapse All')}
+                                                            onClick={event => {
+                                                                this.primaryWidgets.collapseAll();
+                                                            }}
+                                                        >
+                                                            <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                                                        </Button>
+                                                        <Button
+                                                            title={i18n._('Expand All')}
+                                                            onClick={event => {
+                                                                this.primaryWidgets.expandAll();
+                                                            }}
+                                                        >
+                                                            <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                                                        </Button>
+                                                    </ButtonGroup>
+                                                </Col>
+                                            </Row>
+                                        </Margin>
+                                        <PrimaryWidgets
+                                            ref={node => {
+                                                this.primaryWidgets = node;
+                                            }}
+                                            onForkWidget={this.widgetEventHandler.onForkWidget}
+                                            onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
+                                            onDragStart={this.widgetEventHandler.onDragStart}
+                                            onDragEnd={this.widgetEventHandler.onDragEnd}
+                                        />
+                                    </div>
+                                    {hidePrimaryContainer && (
+                                        <div
+                                            ref={node => {
+                                                this.primaryToggler = node;
+                                            }}
+                                            className={styles.primaryToggler}
+                                        >
                                             <Button
-                                                btnSize="sm"
+                                                sm
                                                 onClick={this.togglePrimaryContainer}
-                                            >
-                                                <FontAwesomeIcon icon="chevron-left" fixedWidth />
-                                            </Button>
-                                            <Space width={10} />
-                                        </Col>
-                                        <Col>
-                                            <Button
-                                                block
-                                                btnSize="sm"
-                                                onClick={this.updateWidgetsForPrimaryContainer}
-                                            >
-                                                <FontAwesomeIcon icon="list-alt" />
-                                                <Space width={8} />
-                                                {i18n._('Manage Widgets ({{inactiveCount}})', {
-                                                    inactiveCount: inactiveCount
-                                                })}
-                                            </Button>
-                                        </Col>
-                                        <Col width="auto">
-                                            <Space width={10} />
-                                            <ButtonGroup btnSize="sm">
-                                                <Button
-                                                    title={i18n._('Collapse All')}
-                                                    onClick={event => {
-                                                        this.primaryWidgets.collapseAll();
-                                                    }}
-                                                >
-                                                    <FontAwesomeIcon icon="chevron-up" fixedWidth />
-                                                </Button>
-                                                <Button
-                                                    title={i18n._('Expand All')}
-                                                    onClick={event => {
-                                                        this.primaryWidgets.expandAll();
-                                                    }}
-                                                >
-                                                    <FontAwesomeIcon icon="chevron-down" fixedWidth />
-                                                </Button>
-                                            </ButtonGroup>
-                                        </Col>
-                                    </Row>
-                                </Margin>
-                                <PrimaryWidgets
-                                    ref={node => {
-                                        this.primaryWidgets = node;
-                                    }}
-                                    onForkWidget={this.widgetEventHandler.onForkWidget}
-                                    onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
-                                    onDragStart={this.widgetEventHandler.onDragStart}
-                                    onDragEnd={this.widgetEventHandler.onDragEnd}
-                                />
-                            </div>
-                            {hidePrimaryContainer && (
-                                <div
-                                    ref={node => {
-                                        this.primaryToggler = node;
-                                    }}
-                                    className={styles.primaryToggler}
-                                >
-                                    <Button
-                                        btnSize="sm"
-                                        onClick={this.togglePrimaryContainer}
-                                    >
-                                        <FontAwesomeIcon icon="chevron-right" fixedWidth />
-                                    </Button>
-                                </div>
-                            )}
-                            <div
-                                ref={node => {
-                                    this.defaultContainer = node;
-                                }}
-                                className={classNames(
-                                    styles.defaultContainer,
-                                    styles.fixed
-                                )}
-                            >
-                                <DefaultWidgets />
-                            </div>
-                            {hideSecondaryContainer && (
-                                <div
-                                    ref={node => {
-                                        this.secondaryToggler = node;
-                                    }}
-                                    className={styles.secondaryToggler}
-                                >
-                                    <Button
-                                        btnSize="sm"
-                                        onClick={this.toggleSecondaryContainer}
-                                    >
-                                        <FontAwesomeIcon icon="chevron-left" fixedWidth />
-                                    </Button>
-                                </div>
-                            )}
-                            <div
-                                ref={node => {
-                                    this.secondaryContainer = node;
-                                }}
-                                className={classNames(
-                                    styles.secondaryContainer,
-                                    { [styles.hidden]: hideSecondaryContainer }
-                                )}
-                            >
-                                <Margin top={10} bottom={10}>
-                                    <Row>
-                                        <Col width="auto">
-                                            <ButtonGroup btnSize="sm">
-                                                <Button
-                                                    title={i18n._('Collapse All')}
-                                                    onClick={event => {
-                                                        this.secondaryWidgets.collapseAll();
-                                                    }}
-                                                >
-                                                    <FontAwesomeIcon icon="chevron-up" fixedWidth />
-                                                </Button>
-                                                <Button
-                                                    title={i18n._('Expand All')}
-                                                    onClick={event => {
-                                                        this.secondaryWidgets.expandAll();
-                                                    }}
-                                                >
-                                                    <FontAwesomeIcon icon="chevron-down" fixedWidth />
-                                                </Button>
-                                            </ButtonGroup>
-                                            <Space width={10} />
-                                        </Col>
-                                        <Col>
-                                            <Button
-                                                block
-                                                btnSize="sm"
-                                                onClick={this.updateWidgetsForSecondaryContainer}
-                                            >
-                                                <FontAwesomeIcon icon="list-alt" />
-                                                <Space width={8} />
-                                                {i18n._('Manage Widgets ({{inactiveCount}})', {
-                                                    inactiveCount: inactiveCount
-                                                })}
-                                            </Button>
-                                        </Col>
-                                        <Col width="auto">
-                                            <Space width={10} />
-                                            <Button
-                                                btnSize="sm"
-                                                onClick={this.toggleSecondaryContainer}
                                             >
                                                 <FontAwesomeIcon icon="chevron-right" fixedWidth />
                                             </Button>
-                                        </Col>
-                                    </Row>
-                                </Margin>
-                                <SecondaryWidgets
-                                    ref={node => {
-                                        this.secondaryWidgets = node;
-                                    }}
-                                    onForkWidget={this.widgetEventHandler.onForkWidget}
-                                    onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
-                                    onDragStart={this.widgetEventHandler.onDragStart}
-                                    onDragEnd={this.widgetEventHandler.onDragEnd}
-                                />
+                                        </div>
+                                    )}
+                                    <div
+                                        ref={node => {
+                                            this.defaultContainer = node;
+                                        }}
+                                        className={cx(
+                                            styles.defaultContainer,
+                                            styles.fixed
+                                        )}
+                                    >
+                                        <DefaultWidgets />
+                                    </div>
+                                    {hideSecondaryContainer && (
+                                        <div
+                                            ref={node => {
+                                                this.secondaryToggler = node;
+                                            }}
+                                            className={styles.secondaryToggler}
+                                        >
+                                            <Button
+                                                sm
+                                                onClick={this.toggleSecondaryContainer}
+                                            >
+                                                <FontAwesomeIcon icon="chevron-left" fixedWidth />
+                                            </Button>
+                                        </div>
+                                    )}
+                                    <div
+                                        ref={node => {
+                                            this.secondaryContainer = node;
+                                        }}
+                                        className={cx(
+                                            styles.secondaryContainer,
+                                            { [styles.hidden]: hideSecondaryContainer }
+                                        )}
+                                    >
+                                        <Margin top={10} bottom={10}>
+                                            <Row>
+                                                <Col width="auto">
+                                                    <ButtonGroup sm>
+                                                        <Button
+                                                            title={i18n._('Collapse All')}
+                                                            onClick={event => {
+                                                                this.secondaryWidgets.collapseAll();
+                                                            }}
+                                                        >
+                                                            <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                                                        </Button>
+                                                        <Button
+                                                            title={i18n._('Expand All')}
+                                                            onClick={event => {
+                                                                this.secondaryWidgets.expandAll();
+                                                            }}
+                                                        >
+                                                            <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                                                        </Button>
+                                                    </ButtonGroup>
+                                                    <Space width={10} />
+                                                </Col>
+                                                <Col>
+                                                    <Button
+                                                        block
+                                                        sm
+                                                        onClick={this.updateWidgetsForSecondaryContainer}
+                                                    >
+                                                        <FontAwesomeIcon icon="list-alt" />
+                                                        <Space width={8} />
+                                                        {i18n._('Manage Widgets ({{inactiveCount}})', {
+                                                            inactiveCount: inactiveCount
+                                                        })}
+                                                    </Button>
+                                                </Col>
+                                                <Col width="auto">
+                                                    <Space width={10} />
+                                                    <Button
+                                                        sm
+                                                        onClick={this.toggleSecondaryContainer}
+                                                    >
+                                                        <FontAwesomeIcon icon="chevron-right" fixedWidth />
+                                                    </Button>
+                                                </Col>
+                                            </Row>
+                                        </Margin>
+                                        <SecondaryWidgets
+                                            ref={node => {
+                                                this.secondaryWidgets = node;
+                                            }}
+                                            onForkWidget={this.widgetEventHandler.onForkWidget}
+                                            onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
+                                            onDragStart={this.widgetEventHandler.onDragStart}
+                                            onDragEnd={this.widgetEventHandler.onDragEnd}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </Dropzone>
             </div>
         );
     }
 }
 
-export default withRouter(Workspace);
+export default compose(
+    withRouter,
+    connect(store => {
+        const connectionState = _get(store, 'connection.state');
+        const isConnected = (connectionState === CONNECTION_STATE_CONNECTED);
+
+        return {
+            isConnected,
+        };
+    }),
+)(Workspace);
+
+const DropzoneOverlay = styled(
+    ({ disabled, ...props }) => <div {...props} />
+)`
+    position: fixed;
+    top: 60px;
+    bottom: 0;
+    left: 60px;
+    right: 0;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, .7);
+    border: 4px dashed ${props => (props.disabled ? 'rgba(0, 0, 0, .2)' : '#1e90ff')};
+    text-align: center;
+    pointer-events: none;
+`;

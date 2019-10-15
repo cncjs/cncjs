@@ -59,17 +59,6 @@ export function* init() {
             }
         }, false);
 
-        { // Prevent browser from loading a drag-and-dropped file
-            // @see http://stackoverflow.com/questions/6756583/prevent-browser-from-loading-a-drag-and-dropped-file
-            window.addEventListener('dragover', (e) => {
-                e.preventDefault();
-            }, false);
-
-            window.addEventListener('drop', (e) => {
-                e.preventDefault();
-            }, false);
-        }
-
         { // Hide loading
             const loading = document.getElementById('loading');
             loading && loading.remove();

@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Modal from 'app/components/Modal';
-import Space from 'app/components/Space';
 import { ToastNotification } from 'app/components/Notifications';
 import ToggleSwitch from 'app/components/ToggleSwitch';
 import { Form, Select, Textarea } from 'app/components/Validation';
@@ -15,8 +14,8 @@ import styles from '../form.styl';
 const SYSTEM_EVENTS = [
     // The following events are only available with system trigger (i.e. scripts)
     'startup',
-    'port:open',
-    'port:close'
+    'connection:open',
+    'connection:close'
 ];
 
 class CreateRecord extends Component {
@@ -65,14 +64,13 @@ class CreateRecord extends Component {
         }
 
         return (
-            <Modal size="sm" onClose={actions.closeModal}>
+            <Modal
+                disableOverlayClick
+                onClose={actions.closeModal}
+            >
                 <Modal.Header>
                     <Modal.Title>
-                        {i18n._('Events')}
-                        <Space width="8" />
-                        &rsaquo;
-                        <Space width="8" />
-                        {i18n._('New')}
+                        {i18n._('Event')}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -133,15 +131,15 @@ class CreateRecord extends Component {
                                 >
                                     <option value="">{i18n._('Choose an event')}</option>
                                     <option value="startup">{i18n._('Startup (System only)')}</option>
-                                    <option value="port:open">{i18n._('Open a serial port (System only)')}</option>
-                                    <option value="port:close">{i18n._('Close a serial port (System only)')}</option>
+                                    <option value="connection:open">{i18n._('Open (System only)')}</option>
+                                    <option value="connection:close">{i18n._('Close (System only)')}</option>
                                     <option value="controller:ready">{i18n._('Ready to start')}</option>
-                                    <option value="gcode:load">{i18n._('G-code: Load')}</option>
-                                    <option value="gcode:unload">{i18n._('G-code: Unload')}</option>
-                                    <option value="gcode:start">{i18n._('G-code: Start')}</option>
-                                    <option value="gcode:stop">{i18n._('G-code: Stop')}</option>
-                                    <option value="gcode:pause">{i18n._('G-code: Pause')}</option>
-                                    <option value="gcode:resume">{i18n._('G-code: Resume')}</option>
+                                    <option value="sender:load">{i18n._('G-code: Load')}</option>
+                                    <option value="sender:unload">{i18n._('G-code: Unload')}</option>
+                                    <option value="sender:start">{i18n._('G-code: Start')}</option>
+                                    <option value="sender:stop">{i18n._('G-code: Stop')}</option>
+                                    <option value="sender:pause">{i18n._('G-code: Pause')}</option>
+                                    <option value="sender:resume">{i18n._('G-code: Resume')}</option>
                                     <option value="feedhold">{i18n._('Feed Hold')}</option>
                                     <option value="cyclestart">{i18n._('Cycle Start')}</option>
                                     <option value="homing">{i18n._('Homing')}</option>
