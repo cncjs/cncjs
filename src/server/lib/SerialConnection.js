@@ -21,9 +21,13 @@ const defaultOptions = Object.freeze({
 });
 
 const toIdent = (options) => {
-    // Only the path option is required for generating the ident property
-    const { path } = { ...options };
-    return JSON.stringify({ type: 'serial', path: path });
+    const { path, baudRate } = { ...options };
+    const str = JSON.stringify({
+        type: 'serial',
+        path,
+        baudRate,
+    });
+    return Buffer.from(str).toString('base64');
 };
 
 class SerialConnection extends EventEmitter {
