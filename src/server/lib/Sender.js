@@ -298,7 +298,7 @@ class Sender extends events.EventEmitter {
         this.state.elapsedTime = 0;
         this.state.remainingTime = 0;
 
-        this.emit('load', this.toJSON());
+        this.emit('load');
         this.emit('change');
 
         return true;
@@ -400,6 +400,7 @@ class Sender extends events.EventEmitter {
         this.state.holdReason = null;
         this.state.sent = 0;
         this.state.received = 0;
+        this.emit('rewind');
         this.emit('change');
 
         return true;
