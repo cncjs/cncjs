@@ -19,9 +19,8 @@ import styles from './index.styl';
 
 const Console = ({
     isFullscreen,
-    connectionState,
+    isConnected,
 }) => {
-    const isConnected = (connectionState === CONNECTION_STATE_CONNECTED);
     const prevIsFullscreen = usePrevious(isFullscreen);
     const terminalRef = useRef();
     const sender = useRef(uuid());
@@ -156,8 +155,9 @@ const Console = ({
 
 export default connect(store => {
     const connectionState = _get(store, 'connection.state');
+    const isConnected = (connectionState === CONNECTION_STATE_CONNECTED);
 
     return {
-        connectionState,
+        isConnected,
     };
 })(Console);

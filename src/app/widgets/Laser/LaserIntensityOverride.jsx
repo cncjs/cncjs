@@ -1,29 +1,29 @@
-import PropTypes from 'prop-types';
+import _get from 'lodash/get';
 import React from 'react';
+import { connect } from 'react-redux';
 import { ButtonGroup } from 'app/components/Buttons';
 import Center from 'app/components/Center';
 import Clickable from 'app/components/Clickable';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
-import ImageIcon from 'app/components/ImageIcon';
 import RepeatableButton from 'app/components/RepeatableButton';
 import Space from 'app/components/Space';
 import Text from 'app/components/Text';
+import {
+    GRBL,
+    MARLIN,
+    SMOOTHIE,
+    TINYG,
+} from 'app/constants/controller';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import OverrideReadout from './OverrideReadout';
-import laserBeamIcon from './laser-beam.svg';
+import { none } from 'app/lib/utils';
+import OverrideReadout from './components/OverrideReadout';
 
-const none = '–';
-
-const LaserIntensityOverride = ({ value, ...props }) => (
+const LaserIntensityOverride = ({
+    value,
+}) => (
     <Center vertical>
-        <ImageIcon
-            src={laserBeamIcon}
-            style={{
-                width: '16px',
-                height: '16px',
-            }}
-        />
+        <FontAwesomeIcon icon="bolt" fixedWidth />
         <Space width={8} />
         <OverrideReadout>
             {(value >= 0) ? `${value}%` : none}
@@ -87,8 +87,30 @@ const LaserIntensityOverride = ({ value, ...props }) => (
     </Center>
 );
 
-LaserIntensityOverride.propTypes = {
-    value: PropTypes.number,
-};
+export default connect(store => {
+    const controllerType = _get(store, 'controller.type');
+    const controllerState = _get(store, 'controller.state');
+    const controllerSettings = _get(store, 'controller.settings');
 
-export default LaserIntensityOverride;
+    let value = 0;
+    if (controllerType === GRBL) {
+        const ovS = _get(controllerState, 'ov[2]');
+        value = Number(ovS) || 0;
+    }
+    if (controllerType === MARLIN) {
+        const ovS = _get(controllerState, 'ovS');
+        value = Number(ovS) || 0;
+    }
+    if (controllerType === SMOOTHIE) {
+        const ovS = _get(controllerState, 'ovS');
+        value = Number(ovS) || 0;
+    }
+    if (controllerType === TINYG) {
+        const ovS = _get(controllerSettings, 'sso');
+        value = Math.round((Number(ovS) || 0) * 100);
+    }
+
+    return {
+        value,
+    };
+})(LaserIntensityOverride);

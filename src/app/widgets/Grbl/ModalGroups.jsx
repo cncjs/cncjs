@@ -10,8 +10,8 @@ import { Container, Row, Col } from 'app/components/GridSystem';
 import HorizontalForm from 'app/components/HorizontalForm';
 import { nonblankValue } from 'app/lib/utils';
 import { WidgetConfigContext } from 'app/widgets/context';
-import OverflowEllipsis from './OverflowEllipsis';
-import Readout from './Readout';
+import OverflowEllipsis from './components/OverflowEllipsis';
+import Readout from './components/Readout';
 
 const ModalGroups = ({
     modal,

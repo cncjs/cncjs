@@ -12,7 +12,7 @@ import controller from 'app/lib/controller';
 import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import { none } from 'app/lib/utils';
-import OverrideReadout from './OverrideReadout';
+import OverrideReadout from './components/OverrideReadout';
 
 const FeedOverride = ({
     value,

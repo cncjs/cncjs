@@ -9,7 +9,7 @@ import HorizontalForm from 'app/components/HorizontalForm';
 import Progress from 'app/components/Progress';
 import Text from 'app/components/Text';
 import { WidgetConfigContext } from 'app/widgets/context';
-import OverflowEllipsis from './OverflowEllipsis';
+import OverflowEllipsis from './components/OverflowEllipsis';
 
 const mapReceiveBufferSizeToColor = (rx) => {
     // danger: 0-7

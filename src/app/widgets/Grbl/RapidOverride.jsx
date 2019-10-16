@@ -12,9 +12,9 @@ import controller from 'app/lib/controller';
 import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import { none } from 'app/lib/utils';
-import OverrideReadout from './OverrideReadout';
+import OverrideReadout from './components/OverrideReadout';
 
-const SpindleOverride = ({
+const RapidOverride = ({
     value,
 }) => {
     if (!value) {
@@ -24,7 +24,7 @@ const SpindleOverride = ({
     return (
         <Center vertical>
             <Text fixedWidth size={24}>
-                S
+                R
             </Text>
             <Space width={8} />
             <OverrideReadout>
@@ -34,45 +34,33 @@ const SpindleOverride = ({
             <ButtonGroup sm>
                 <RepeatableButton
                     onClick={() => {
-                        controller.command('override:spindle', -10);
+                        controller.command('override:rapid', 25);
                     }}
                     style={{ fontSize: '.75rem' }}
                 >
-                    <FontAwesomeIcon icon="arrow-down" fixedWidth />
-                    <Text>{i18n._('-10%')}</Text>
+                    <Text>{i18n._('25%')}</Text>
                 </RepeatableButton>
                 <RepeatableButton
                     onClick={() => {
-                        controller.command('override:spindle', -1);
-                    }}
-                    style={{ fontSize: '.66rem' }}
-                >
-                    <FontAwesomeIcon icon="arrow-down" fixedWidth />
-                    <Text>{i18n._('-1%')}</Text>
-                </RepeatableButton>
-                <RepeatableButton
-                    onClick={() => {
-                        controller.command('override:spindle', 1);
-                    }}
-                    style={{ fontSize: '.66rem' }}
-                >
-                    <FontAwesomeIcon icon="arrow-up" fixedWidth />
-                    <Text>{i18n._('1%')}</Text>
-                </RepeatableButton>
-                <RepeatableButton
-                    onClick={() => {
-                        controller.command('override:spindle', 10);
+                        controller.command('override:rapid', 50);
                     }}
                     style={{ fontSize: '.75rem' }}
                 >
-                    <FontAwesomeIcon icon="arrow-up" fixedWidth />
-                    <Text>{i18n._('10%')}</Text>
+                    <Text>{i18n._('50%')}</Text>
+                </RepeatableButton>
+                <RepeatableButton
+                    onClick={() => {
+                        controller.command('override:rapid', 100);
+                    }}
+                    style={{ fontSize: '.75rem' }}
+                >
+                    <Text>{i18n._('100%')}</Text>
                 </RepeatableButton>
             </ButtonGroup>
             <Space width={8} />
             <Clickable
                 onClick={() => {
-                    controller.command('override:spindle', 0);
+                    controller.command('override:rapid', 0);
                 }}
             >
                 {({ hovered }) => (
@@ -92,9 +80,9 @@ const SpindleOverride = ({
 
 export default connect(store => {
     const controllerState = _get(store, 'controller.state');
-    const value = ensurePositiveNumber(_get(controllerState, 'status.ov[2]')); // [ovF, ovR, ovS]
+    const value = ensurePositiveNumber(_get(controllerState, 'status.ov[1]')); // [ovF, ovR, ovS]
 
     return {
         value,
     };
-})(SpindleOverride);
+})(RapidOverride);

@@ -1,24 +1,16 @@
-import includes from 'lodash/includes';
-import isNumber from 'lodash/isNumber';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import { Container } from 'app/components/GridSystem';
+import FormGroup from 'app/components/FormGroup';
+import Label from 'app/components/Label';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
-import controller from 'app/lib/controller';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import { WidgetConfigContext } from 'app/widgets/context';
 import WidgetConfig from 'app/widgets/WidgetConfig';
-import {
-    GRBL,
-    MARLIN,
-    SMOOTHIE,
-    TINYG,
-} from 'app/constants/controller';
-import Laser from './Laser';
-import styles from './index.styl';
+import LaserIntensityOverride from './LaserIntensityOverride';
+import LaserTest from './LaserTest';
 
 class LaserWidget extends Component {
     static propTypes = {
@@ -54,197 +46,25 @@ class LaserWidget extends Component {
         }));
     };
 
-    actions = {
-        toggleLaserTest: () => {
-            const expanded = this.state.panel.laserTest.expanded;
-
-            this.setState({
-                panel: {
-                    ...this.state.panel,
-                    laserTest: {
-                        ...this.state.panel.laserTest,
-                        expanded: !expanded
-                    }
-                }
-            });
-        },
-        changeLaserTestPower: (value) => {
-            const power = Number(value) || 0;
-            this.setState({
-                test: {
-                    ...this.state.test,
-                    power
-                }
-            });
-        },
-        changeLaserTestDuration: (event) => {
-            const value = event.target.value;
-            if (typeof value === 'string' && value.trim() === '') {
-                this.setState({
-                    test: {
-                        ...this.state.test,
-                        duration: ''
-                    }
-                });
-            } else {
-                this.setState({
-                    test: {
-                        ...this.state.test,
-                        duration: ensurePositiveNumber(value)
-                    }
-                });
-            }
-        },
-        changeLaserTestMaxS: (event) => {
-            const value = event.target.value;
-            if (typeof value === 'string' && value.trim() === '') {
-                this.setState({
-                    test: {
-                        ...this.state.test,
-                        maxS: ''
-                    }
-                });
-            } else {
-                this.setState({
-                    test: {
-                        ...this.state.test,
-                        maxS: ensurePositiveNumber(value)
-                    }
-                });
-            }
-        },
-        laserTestOn: () => {
-            const { power, duration, maxS } = this.state.test;
-            controller.command('lasertest:on', power, duration, maxS);
-        },
-        laserTestOff: () => {
-            controller.command('lasertest:off');
-        }
-    };
-
-    controllerEvents = {
-        'serialport:open': (options) => {
-            const { port } = options;
-            this.setState({ port: port });
-        },
-        'serialport:close': (options) => {
-            const initialState = this.getInitialState();
-            this.setState({ ...initialState });
-        },
-        'controller:settings': (type, controllerSettings) => {
-            this.setState(state => ({
-                controller: {
-                    ...state.controller,
-                    type: type,
-                    settings: controllerSettings
-                }
-            }));
-        },
-        'controller:state': (type, controllerState) => {
-            this.setState(state => ({
-                controller: {
-                    ...state.controller,
-                    type: type,
-                    state: controllerState
-                }
-            }));
-        }
-    };
-
-    componentDidMount() {
-        this.addControllerEvents();
-    }
-
-    componentWillUnmount() {
-        this.removeControllerEvents();
-    }
-
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized,
-            panel,
-            test
         } = this.state;
 
         this.config.set('minimized', minimized);
-        this.config.set('panel.laserTest.expanded', panel.laserTest.expanded);
-        if (isNumber(test.power)) {
-            this.config.set('test.power', test.power);
-        }
-        if (isNumber(test.duration)) {
-            this.config.set('test.duration', test.duration);
-        }
-        if (isNumber(test.maxS)) {
-            this.config.set('test.maxS', test.maxS);
-        }
     }
 
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            canClick: true, // Defaults to true
-            port: controller.port,
-            controller: {
-                type: controller.type,
-                settings: controller.settings,
-                state: controller.state
-            },
-            panel: {
-                laserTest: {
-                    expanded: this.config.get('panel.laserTest.expanded')
-                }
-            },
-            test: {
-                power: this.config.get('test.power', 0),
-                duration: this.config.get('test.duration', 0),
-                maxS: this.config.get('test.maxS', 1000)
-            }
         };
-    }
-
-    addControllerEvents() {
-        Object.keys(this.controllerEvents).forEach(eventName => {
-            const callback = this.controllerEvents[eventName];
-            controller.addListener(eventName, callback);
-        });
-    }
-
-    removeControllerEvents() {
-        Object.keys(this.controllerEvents).forEach(eventName => {
-            const callback = this.controllerEvents[eventName];
-            controller.removeListener(eventName, callback);
-        });
-    }
-
-    canClick() {
-        const { port, controller, test } = this.state;
-        const controllerType = controller.type;
-
-        if (!port) {
-            return false;
-        }
-        if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {
-            return false;
-        }
-        if (!(isNumber(test.power) && isNumber(test.duration) && isNumber(test.maxS))) {
-            return false;
-        }
-
-        return true;
     }
 
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
-        const state = {
-            ...this.state,
-            canClick: this.canClick()
-        };
-        const actions = {
-            ...this.actions
-        };
 
         return (
             <WidgetConfigContext.Provider value={this.config}>
@@ -320,15 +140,24 @@ class LaserWidget extends Component {
                         </Widget.Controls>
                     </Widget.Header>
                     <Widget.Content
-                        className={classNames(
-                            styles.widgetContent,
-                            { [styles.hidden]: minimized }
-                        )}
+                        style={{
+                            display: (minimized ? 'none' : 'block'),
+                        }}
                     >
-                        <Laser
-                            state={state}
-                            actions={actions}
-                        />
+                        <Container
+                            fluid
+                            style={{
+                                padding: '.75rem',
+                            }}
+                        >
+                            <FormGroup>
+                                <Label>
+                                    {i18n._('Laser Intensity Control')}
+                                </Label>
+                                <LaserIntensityOverride />
+                            </FormGroup>
+                            <LaserTest />
+                        </Container>
                     </Widget.Content>
                 </Widget>
             </WidgetConfigContext.Provider>

@@ -86,8 +86,10 @@ const useSerialConnectivity = ({ ports, baudRates }) => {
 const Connection = ({
     connectionError,
     connectionType,
-    connectionState,
-    connectionOptions,
+    isConnected,
+    isConnecting,
+    isDisconnected,
+    isDisconnecting,
     isFetchingSerialPorts,
     isFetchingSerialBaudRates,
     serialPorts,
@@ -122,10 +124,6 @@ const Connection = ({
         },
         autoReconnect: config.get('autoReconnect'),
     };
-    const isConnected = (connectionState === CONNECTION_STATE_CONNECTED);
-    const isConnecting = (connectionState === CONNECTION_STATE_CONNECTING);
-    const isDisconnected = (connectionState === CONNECTION_STATE_DISCONNECTED);
-    const isDisconnecting = (connectionState === CONNECTION_STATE_DISCONNECTING);
     const canRefreshSerialPorts = isDisconnected && !isFetchingSerialPorts;
     const canRefreshSerialBaudRates = isDisconnected && !isFetchingSerialBaudRates;
     const autoReconnectedRef = useRef(false);
@@ -753,7 +751,10 @@ export default connect(store => {
     const connectionError = _get(store, 'connection.error');
     const connectionType = _get(store, 'connection.type');
     const connectionState = _get(store, 'connection.state');
-    const connectionOptions = _get(store, 'connection.options');
+    const isConnected = (connectionState === CONNECTION_STATE_CONNECTED);
+    const isConnecting = (connectionState === CONNECTION_STATE_CONNECTING);
+    const isDisconnected = (connectionState === CONNECTION_STATE_DISCONNECTED);
+    const isDisconnecting = (connectionState === CONNECTION_STATE_DISCONNECTING);
     const isFetchingSerialPorts = _get(store, 'serialport.isFetchingPorts');
     const isFetchingSerialBaudRates = _get(store, 'serialport.isFetchingBaudRates');
     const serialPorts = ensureArray(_get(store, 'serialport.ports'));
@@ -762,8 +763,10 @@ export default connect(store => {
     return {
         connectionError,
         connectionType,
-        connectionState,
-        connectionOptions,
+        isConnected,
+        isConnecting,
+        isDisconnected,
+        isDisconnecting,
         isFetchingSerialPorts,
         isFetchingSerialBaudRates,
         serialPorts,

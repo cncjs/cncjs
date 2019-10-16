@@ -19,13 +19,13 @@ import {
 import {
     CONNECTION_STATE_CONNECTED,
 } from 'app/constants/connection';
-import QueueReports from './Cards/QueueReports';
-import StatusReports from './Cards/StatusReports';
-import ModalGroups from './Cards/ModalGroups';
+import QueueReports from './QueueReports';
+import StatusReports from './StatusReports';
+import ModalGroups from './ModalGroups';
+import FeedOverride from './FeedOverride';
+import SpindleOverride from './SpindleOverride';
+import RapidOverride from './RapidOverride';
 import ControllerModal from './modals/ControllerModal';
-import FeedOverride from './Overrides/FeedOverride';
-import SpindleOverride from './Overrides/SpindleOverride';
-import RapidOverride from './Overrides/RapidOverride';
 
 class GrblWidget extends Component {
     static propTypes = {
