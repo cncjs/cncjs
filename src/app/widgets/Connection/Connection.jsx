@@ -5,10 +5,11 @@ import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import _isEqual from 'lodash/isEqual';
 import _set from 'lodash/set';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
 import Select, { components as SelectComponents } from 'react-select';
+import { Transition, TransitionGroup } from 'react-transition-group';
 import * as connectionActions from 'app/actions/connection';
 import * as serialportActions from 'app/actions/serialport';
 import { Button, ButtonGroup } from 'app/components/Buttons';
@@ -25,6 +26,7 @@ import ModalTemplate from 'app/components/ModalTemplate';
 import { Notification } from 'app/components/Notifications';
 import Space from 'app/components/Space';
 import Text from 'app/components/Text';
+import { useToast } from 'app/components/Toast';
 import {
     GRBL,
     MARLIN,
@@ -133,11 +135,37 @@ const Connection = ({
     });
     const isSocketConnectionReady = true;
 
-    // Notification error
-    const [notificationError, setNotificationError] = useState(null);
-    const clearNotificationError = () => setNotificationError(null);
+    // Toast notification
+    const {
+        add: addToast,
+        remove: removeToast,
+        clear: clearToast,
+        toasts,
+    } = useToast();
+
     useEffect(() => {
-        setNotificationError(connection.error);
+        if (!connection.error) {
+            return;
+        }
+
+        if (toasts.length > 0) {
+            clearToast();
+        }
+
+        if (connection.type === CONNECTION_TYPE_SERIAL) {
+            addToast({
+                type: 'error',
+                title: (<strong>{i18n._('Error opening serial port')}</strong>),
+                message: connection.error,
+            });
+        } else if (connection.type === CONNECTION_TYPE_SOCKET) {
+            addToast({
+                type: 'error',
+                title: (<strong>{i18n._('Error opening socket')}</strong>),
+                message: connection.error,
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [connection.error]);
 
     { // Fetch ports and baud rates only after the initial render
@@ -225,32 +253,34 @@ const Connection = ({
 
     return (
         <>
-            <Notification
-                show={!!notificationError}
-                type="error"
-                onDismiss={clearNotificationError}
-            >
-                {(connection.type === CONNECTION_TYPE_SERIAL) && (
-                    <>
-                        <div>
-                            <strong>{i18n._('Error opening serial port')}</strong>
-                        </div>
-                        <div>
-                            {notificationError}
-                        </div>
-                    </>
-                )}
-                {(connection.type === CONNECTION_TYPE_SOCKET) && (
-                    <>
-                        <div>
-                            <strong>{i18n._('Error opening socket')}</strong>
-                        </div>
-                        <div>
-                            {notificationError}
-                        </div>
-                    </>
-                )}
-            </Notification>
+            <TransitionGroup>
+                {toasts.map(toast => {
+                    const { id, meta } = toast;
+                    const { type, title, message } = { ...meta };
+                    const onDismiss = () => removeToast(id);
+                    const duration = 150; // in ms
+
+                    return (
+                        <Transition key={id} in={true} timeout={duration}>
+                            {state => {
+                                const show = (state === 'entered');
+
+                                return (
+                                    <Notification
+                                        show={show}
+                                        type={type}
+                                        autoDismiss={5000}
+                                        onDismiss={onDismiss}
+                                    >
+                                        <div>{title}</div>
+                                        <div>{message}</div>
+                                    </Notification>
+                                );
+                            }}
+                        </Transition>
+                    );
+                })}
+            </TransitionGroup>
             <Container
                 fluid
                 style={{

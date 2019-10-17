@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
+import { ToastProvider } from 'app/components/Toast';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
 import { WidgetConfigContext } from 'app/widgets/context';
@@ -122,7 +123,9 @@ class ConnectionWidget extends Component {
                             display: (minimized ? 'none' : 'block'),
                         }}
                     >
-                        <Connection />
+                        <ToastProvider>
+                            <Connection />
+                        </ToastProvider>
                     </Widget.Content>
                 </Widget>
             </WidgetConfigContext.Provider>
