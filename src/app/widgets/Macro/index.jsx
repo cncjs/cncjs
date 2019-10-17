@@ -10,8 +10,8 @@ import Widget from 'app/components/Widget';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
-import { WidgetConfigContext } from 'app/widgets/context';
-import WidgetConfig from 'app/widgets/WidgetConfig';
+import WidgetConfig from 'app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import {
     // Grbl
     GRBL,
@@ -345,7 +345,7 @@ class MacroWidget extends Component {
         };
 
         return (
-            <WidgetConfigContext.Provider value={this.config}>
+            <WidgetConfigProvider config={this.config}>
                 <Widget fullscreen={isFullscreen}>
                     <Widget.Header>
                         <Widget.Title>
@@ -441,7 +441,7 @@ class MacroWidget extends Component {
                         <Macro state={state} actions={actions} />
                     </Widget.Content>
                 </Widget>
-            </WidgetConfigContext.Provider>
+            </WidgetConfigProvider>
         );
     }
 }

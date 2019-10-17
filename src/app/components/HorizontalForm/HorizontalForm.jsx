@@ -1,7 +1,7 @@
 import ensureArray from 'ensure-array';
 import React from 'react';
 import styled from 'styled-components';
-import withContextConsumer from 'app/lib/withContextConsumer';
+import withContextConsumer from './withContextConsumer';
 
 const HorizontalFormContext = React.createContext();
 

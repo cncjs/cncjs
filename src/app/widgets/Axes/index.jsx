@@ -16,8 +16,8 @@ import { preventDefault } from 'app/lib/dom-events';
 import i18n from 'app/lib/i18n';
 import { in2mm, mapPositionToUnits } from 'app/lib/units';
 import { limit } from 'app/lib/normalize-range';
-import { WidgetConfigContext } from 'app/widgets/context';
-import WidgetConfig from 'app/widgets/WidgetConfig';
+import WidgetConfig from 'app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import {
     IMPERIAL_UNITS,
     IMPERIAL_STEPS,
@@ -817,7 +817,7 @@ class AxesWidget extends Component {
         };
 
         return (
-            <WidgetConfigContext.Provider value={this.config}>
+            <WidgetConfigProvider config={this.config}>
                 <Widget fullscreen={isFullscreen}>
                     <Widget.Header>
                         <Widget.Title>
@@ -954,7 +954,7 @@ class AxesWidget extends Component {
                         <Axes config={config} state={state} actions={actions} />
                     </Widget.Content>
                 </Widget>
-            </WidgetConfigContext.Provider>
+            </WidgetConfigProvider>
         );
     }
 }

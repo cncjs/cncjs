@@ -1,6 +1,6 @@
 import _get from 'lodash/get';
 import _trim from 'lodash/trim';
-import React, { useContext } from 'react';
+import React from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
 import Slider from 'rc-slider';
@@ -17,13 +17,13 @@ import {
 import controller from 'app/lib/controller';
 import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
-import { WidgetConfigContext } from 'app/widgets/context';
+import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import OverflowEllipsis from './components/OverflowEllipsis';
 
 const LaserTest = ({
     isConnected,
 }) => {
-    const config = useContext(WidgetConfigContext);
+    const config = useWidgetConfig();
     const initialValues = {
         test: {
             power: ensurePositiveNumber(config.get('test.power', 0)),

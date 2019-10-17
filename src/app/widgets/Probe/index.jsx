@@ -33,8 +33,8 @@ import {
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import { in2mm, mapValueToUnits } from 'app/lib/units';
-import { WidgetConfigContext } from 'app/widgets/context';
-import WidgetConfig from 'app/widgets/WidgetConfig';
+import WidgetConfig from 'app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import Probe from './Probe';
 import RunProbeModal from './modals/RunProbeModal';
 import {
@@ -480,7 +480,7 @@ class ProbeWidget extends Component {
         };
 
         return (
-            <WidgetConfigContext.Provider value={this.config}>
+            <WidgetConfigProvider config={this.config}>
                 <Widget fullscreen={isFullscreen}>
                     <Widget.Header>
                         <Widget.Title>
@@ -567,7 +567,7 @@ class ProbeWidget extends Component {
                         />
                     </Widget.Content>
                 </Widget>
-            </WidgetConfigContext.Provider>
+            </WidgetConfigProvider>
         );
     }
 }

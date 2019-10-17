@@ -5,8 +5,8 @@ import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
-import { WidgetConfigContext } from 'app/widgets/context';
-import WidgetConfig from 'app/widgets/WidgetConfig';
+import WidgetConfig from 'app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import Console from './Console';
 import styles from './index.styl';
 
@@ -65,7 +65,7 @@ class ConsoleWidget extends Component {
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
 
         return (
-            <WidgetConfigContext.Provider value={this.config}>
+            <WidgetConfigProvider config={this.config}>
                 <Widget fullscreen={isFullscreen}>
                     <Widget.Header>
                         <Widget.Title>
@@ -176,7 +176,7 @@ class ConsoleWidget extends Component {
                         <Console isFullscreen={isFullscreen} />
                     </Widget.Content>
                 </Widget>
-            </WidgetConfigContext.Provider>
+            </WidgetConfigProvider>
         );
     }
 }

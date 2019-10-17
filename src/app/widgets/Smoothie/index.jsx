@@ -6,8 +6,8 @@ import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import { WidgetConfigContext } from 'app/widgets/context';
-import WidgetConfig from 'app/widgets/WidgetConfig';
+import WidgetConfig from 'app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import {
     SMOOTHIE,
 } from 'app/constants/controller';
@@ -249,7 +249,7 @@ class SmoothieWidget extends Component {
         };
 
         return (
-            <WidgetConfigContext.Provider value={this.config}>
+            <WidgetConfigProvider config={this.config}>
                 <Widget fullscreen={isFullscreen}>
                     <Widget.Header>
                         <Widget.Title>
@@ -392,7 +392,7 @@ class SmoothieWidget extends Component {
                         </Widget.Content>
                     )}
                 </Widget>
-            </WidgetConfigContext.Provider>
+            </WidgetConfigProvider>
         );
     }
 }

@@ -1,10 +1,13 @@
 import React from 'react';
 import { ToastContext } from './context';
 
-const ToastConsumer = ({ children }) => (
-    <ToastContext.Consumer>
+const ToastRenderer = ({
+    context: Context = ToastContext,
+    children,
+}) => (
+    <Context.Consumer>
         {context => ((typeof children === 'function') ? children(context) : children)}
-    </ToastContext.Consumer>
+    </Context.Consumer>
 );
 
-export default ToastConsumer;
+export default ToastRenderer;

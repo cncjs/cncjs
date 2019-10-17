@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { Component } from 'react';
 import uuid from 'uuid/v4';
 import { ToastContext } from './context';
 
 const noop = () => {};
 
-class ToastProvider extends React.Component {
+class ToastManager extends Component {
     state = {
         toasts: [],
     };
 
-    add = (meta, options, callback = noop) => {
+    addToast = (meta, options, callback = noop) => {
         const id = uuid();
 
         this.setState(state => {
@@ -26,7 +26,7 @@ class ToastProvider extends React.Component {
         }, () => callback(id));
     };
 
-    remove = (id, callback = noop) => {
+    removeToast = (id, callback = noop) => {
         this.setState(state => {
             const toasts = state.toasts.filter(toast => (toast.id !== id));
 
@@ -34,7 +34,7 @@ class ToastProvider extends React.Component {
         }, () => callback(id));
     };
 
-    clear = (callback = noop) => {
+    clearToasts = (callback = noop) => {
         this.setState(state => ({
             toasts: [],
         }), () => callback());
@@ -46,16 +46,19 @@ class ToastProvider extends React.Component {
     };
 
     render() {
-        const { children } = this.props;
-        const { add, remove, clear } = this;
+        const {
+            context: Context = ToastContext,
+            children,
+        } = this.props;
+        const { addToast, removeToast, clearToasts } = this;
         const toasts = Object.freeze(this.state.toasts);
 
         return (
-            <ToastContext.Provider value={{ add, remove, clear, toasts }}>
+            <Context.Provider value={{ addToast, removeToast, clearToasts, toasts }}>
                 {children}
-            </ToastContext.Provider>
+            </Context.Provider>
         );
     }
 }
 
-export default ToastProvider;
+export default ToastManager;

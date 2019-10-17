@@ -5,7 +5,7 @@ import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import _isEqual from 'lodash/isEqual';
 import _set from 'lodash/set';
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
 import Select, { components as SelectComponents } from 'react-select';
@@ -26,7 +26,7 @@ import ModalTemplate from 'app/components/ModalTemplate';
 import { Notification } from 'app/components/Notifications';
 import Space from 'app/components/Space';
 import Text from 'app/components/Text';
-import { useToast } from 'app/components/Toast';
+import { useToast } from 'app/components/ToastManager';
 import {
     GRBL,
     MARLIN,
@@ -46,7 +46,7 @@ import usePrevious from 'app/hooks/usePrevious';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import portal from 'app/lib/portal';
-import { WidgetConfigContext } from 'app/widgets/context';
+import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 
 // @param {string} options.path
 // @param {number} options.baudRate
@@ -101,7 +101,7 @@ const Connection = ({
     fetchSerialPorts,
     fetchSerialBaudRates,
 }) => {
-    const config = useContext(WidgetConfigContext);
+    const config = useWidgetConfig();
     const initialValues = {
         controller: {
             type: config.get('controller.type'),
@@ -137,9 +137,9 @@ const Connection = ({
 
     // Toast notification
     const {
-        add: addToast,
-        remove: removeToast,
-        clear: clearToast,
+        addToast,
+        removeToast,
+        clearToasts,
         toasts,
     } = useToast();
 
@@ -149,7 +149,7 @@ const Connection = ({
         }
 
         if (toasts.length > 0) {
-            clearToast();
+            clearToasts();
         }
 
         if (connection.type === CONNECTION_TYPE_SERIAL) {

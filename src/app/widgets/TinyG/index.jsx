@@ -9,8 +9,8 @@ import {
 } from 'app/constants/controller';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import { WidgetConfigContext } from 'app/widgets/context';
-import WidgetConfig from 'app/widgets/WidgetConfig';
+import WidgetConfig from 'app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import TinyG from './TinyG';
 import Controller from './Controller';
 import {
@@ -266,7 +266,7 @@ class TinyGWidget extends Component {
         };
 
         return (
-            <WidgetConfigContext.Provider value={this.config}>
+            <WidgetConfigProvider config={this.config}>
                 <Widget fullscreen={isFullscreen}>
                     <Widget.Header>
                         <Widget.Title>
@@ -431,7 +431,7 @@ class TinyGWidget extends Component {
                         </Widget.Content>
                     )}
                 </Widget>
-            </WidgetConfigContext.Provider>
+            </WidgetConfigProvider>
         );
     }
 }

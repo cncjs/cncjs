@@ -40,8 +40,8 @@ import log from 'app/lib/log';
 import portal from 'app/lib/portal';
 import * as WebGL from 'app/lib/three/WebGL';
 import { in2mm } from 'app/lib/units';
-import { WidgetConfigContext } from 'app/widgets/context';
-import WidgetConfig from 'app/widgets/WidgetConfig';
+import WidgetConfig from 'app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import PrimaryToolbar from './PrimaryToolbar';
 import SecondaryToolbar from './SecondaryToolbar';
 import WorkflowControl from './WorkflowControl';
@@ -1022,7 +1022,7 @@ class VisualizerWidget extends Component {
         const showNotifications = showVisualizer && !!state.notification.type;
 
         return (
-            <WidgetConfigContext.Provider value={this.config}>
+            <WidgetConfigProvider config={this.config}>
                 <Widget borderless>
                     <Widget.Header className={styles.widgetHeader} fixed>
                         <PrimaryToolbar
@@ -1092,7 +1092,7 @@ class VisualizerWidget extends Component {
                         />
                     </Widget.Footer>
                 </Widget>
-            </WidgetConfigContext.Provider>
+            </WidgetConfigProvider>
         );
     }
 }

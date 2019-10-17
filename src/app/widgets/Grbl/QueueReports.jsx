@@ -1,5 +1,5 @@
 import _get from 'lodash/get';
-import React, { useContext, useRef } from 'react';
+import React, { useRef } from 'react';
 import { connect } from 'react-redux';
 import i18n from 'app/lib/i18n';
 import { ensurePositiveNumber } from 'app/lib/ensure-type';
@@ -8,7 +8,7 @@ import { Container, Row, Col } from 'app/components/GridSystem';
 import HorizontalForm from 'app/components/HorizontalForm';
 import Progress from 'app/components/Progress';
 import Text from 'app/components/Text';
-import { WidgetConfigContext } from 'app/widgets/context';
+import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import OverflowEllipsis from './components/OverflowEllipsis';
 
 const mapReceiveBufferSizeToColor = (rx) => {
@@ -57,7 +57,7 @@ const QueueReports = ({
     plannerBufferSize = 0,
     receiveBufferSize = 0,
 }) => {
-    const config = useContext(WidgetConfigContext);
+    const config = useWidgetConfig();
     const expanded = config.get('panel.queueReports.expanded');
     const collapsed = !expanded;
 

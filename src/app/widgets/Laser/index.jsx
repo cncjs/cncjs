@@ -7,8 +7,8 @@ import Label from 'app/components/Label';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
-import { WidgetConfigContext } from 'app/widgets/context';
-import WidgetConfig from 'app/widgets/WidgetConfig';
+import WidgetConfig from 'app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import LaserIntensityOverride from './LaserIntensityOverride';
 import LaserTest from './LaserTest';
 
@@ -67,7 +67,7 @@ class LaserWidget extends Component {
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
 
         return (
-            <WidgetConfigContext.Provider value={this.config}>
+            <WidgetConfigProvider config={this.config}>
                 <Widget fullscreen={isFullscreen}>
                     <Widget.Header>
                         <Widget.Title>
@@ -160,7 +160,7 @@ class LaserWidget extends Component {
                         </Container>
                     </Widget.Content>
                 </Widget>
-            </WidgetConfigContext.Provider>
+            </WidgetConfigProvider>
         );
     }
 }

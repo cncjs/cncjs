@@ -1,12 +1,12 @@
 import _get from 'lodash/get';
-import React, { useContext } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import i18n from 'app/lib/i18n';
 import CollapsibleCard from 'app/components/CollapsibleCard';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import HorizontalForm from 'app/components/HorizontalForm';
 import { nonblankValue } from 'app/lib/utils';
-import { WidgetConfigContext } from 'app/widgets/context';
+import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import OverflowEllipsis from './components/OverflowEllipsis';
 import Readout from './components/Readout';
 
@@ -16,7 +16,7 @@ const StatusReports = ({
     spindle,
     tool,
 }) => {
-    const config = useContext(WidgetConfigContext);
+    const config = useWidgetConfig();
     const expanded = config.get('panel.statusReports.expanded');
     const collapsed = !expanded;
 

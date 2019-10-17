@@ -11,8 +11,8 @@ import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
 import controller from 'app/lib/controller';
 import portal from 'app/lib/portal';
-import { WidgetConfigContext } from 'app/widgets/context';
-import WidgetConfig from 'app/widgets/WidgetConfig';
+import WidgetConfig from 'app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import {
     GRBL,
 } from 'app/constants/controller';
@@ -85,7 +85,7 @@ class GrblWidget extends Component {
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
 
         return (
-            <WidgetConfigContext.Provider value={this.config}>
+            <WidgetConfigProvider config={this.config}>
                 <Widget fullscreen={isFullscreen}>
                     <Widget.Header>
                         <Widget.Title>
@@ -256,7 +256,7 @@ class GrblWidget extends Component {
                         </Widget.Content>
                     )}
                 </Widget>
-            </WidgetConfigContext.Provider>
+            </WidgetConfigProvider>
         );
     }
 }

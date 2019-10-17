@@ -1,7 +1,7 @@
 import ensureArray from 'ensure-array';
 import _get from 'lodash/get';
 import _mapValues from 'lodash/mapValues';
-import React, { useContext } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import mapGCodeToText from 'app/lib/gcode-text';
 import i18n from 'app/lib/i18n';
@@ -9,14 +9,14 @@ import CollapsibleCard from 'app/components/CollapsibleCard';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import HorizontalForm from 'app/components/HorizontalForm';
 import { nonblankValue } from 'app/lib/utils';
-import { WidgetConfigContext } from 'app/widgets/context';
+import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import OverflowEllipsis from './components/OverflowEllipsis';
 import Readout from './components/Readout';
 
 const ModalGroups = ({
     modal,
 }) => {
-    const config = useContext(WidgetConfigContext);
+    const config = useWidgetConfig();
     const expanded = config.get('panel.modalGroups.expanded');
     const collapsed = !expanded;
 

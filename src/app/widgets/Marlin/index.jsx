@@ -11,8 +11,8 @@ import {
 import i18n from 'app/lib/i18n';
 import controller from 'app/lib/controller';
 import { ensurePositiveNumber } from 'app/lib/ensure-type';
-import { WidgetConfigContext } from 'app/widgets/context';
-import WidgetConfig from 'app/widgets/WidgetConfig';
+import WidgetConfig from 'app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import Marlin from './Marlin';
 import Controller from './Controller';
 import {
@@ -298,7 +298,7 @@ class MarlinWidget extends Component {
         };
 
         return (
-            <WidgetConfigContext.Provider value={this.config}>
+            <WidgetConfigProvider config={this.config}>
                 <Widget fullscreen={isFullscreen}>
                     <Widget.Header>
                         <Widget.Title>
@@ -420,7 +420,7 @@ class MarlinWidget extends Component {
                         </Widget.Content>
                     )}
                 </Widget>
-            </WidgetConfigContext.Provider>
+            </WidgetConfigProvider>
         );
     }
 }
