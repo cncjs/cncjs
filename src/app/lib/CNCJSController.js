@@ -386,11 +386,11 @@ class CNCJSController {
         let machineState;
 
         if (this.type === GRBL) {
-            machineState = this.state.machineState;
+            machineState = this.state.status.machineState;
         } else if (this.type === MARLIN) {
             machineState = this.state.machineState;
         } else if (this.type === SMOOTHIE) {
-            machineState = this.state.machineState;
+            machineState = this.state.status.machineState;
         } else if (this.type === TINYG) {
             machineState = this.state.machineState;
         }
@@ -407,19 +407,19 @@ class CNCJSController {
             z: '0.000',
             a: '0.000',
             b: '0.000',
-            c: '0.000'
+            c: '0.000',
         };
 
         // Grbl
         if (this.type === GRBL) {
-            const { mpos } = this.state;
+            const { mpos } = this.state.status;
             let { $13 = 0 } = { ...this.settings.settings };
             $13 = Number($13) || 0;
 
             // Machine position is reported in mm ($13=0) or inches ($13=1)
             return _mapValues({
                 ...defaultMachinePosition,
-                ...mpos
+                ...mpos,
             }, (val) => {
                 return ($13 > 0) ? in2mm(val) : val;
             });
@@ -432,22 +432,22 @@ class CNCJSController {
             // Machine position is reported in mm regardless of the current units
             return {
                 ...defaultMachinePosition,
-                ...pos
+                ...pos,
             };
         }
 
         // Smoothieware
         if (this.type === SMOOTHIE) {
-            const { mpos, modal = {} } = this.state;
+            const { mpos, modal = {} } = this.state.status;
             const units = {
                 'G20': IMPERIAL_UNITS,
-                'G21': METRIC_UNITS
+                'G21': METRIC_UNITS,
             }[modal.units];
 
             // Machine position is reported in current units
             return _mapValues({
                 ...defaultMachinePosition,
-                ...mpos
+                ...mpos,
             }, (val) => {
                 return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
             });
@@ -461,7 +461,7 @@ class CNCJSController {
             // Canonical machine position are always reported in millimeters with no offsets.
             return {
                 ...defaultMachinePosition,
-                ...mpos
+                ...mpos,
             };
         }
 
@@ -477,19 +477,19 @@ class CNCJSController {
             z: '0.000',
             a: '0.000',
             b: '0.000',
-            c: '0.000'
+            c: '0.000',
         };
 
         // Grbl
         if (this.type === GRBL) {
-            const { wpos } = this.state;
+            const { wpos } = this.state.status;
             let { $13 = 0 } = { ...this.settings.settings };
             $13 = Number($13) || 0;
 
             // Work position is reported in mm ($13=0) or inches ($13=1)
             return _mapValues({
                 ...defaultWorkPosition,
-                ...wpos
+                ...wpos,
             }, val => {
                 return ($13 > 0) ? in2mm(val) : val;
             });
@@ -502,22 +502,22 @@ class CNCJSController {
             // Work position is reported in mm regardless of the current units
             return {
                 ...defaultWorkPosition,
-                ...pos
+                ...pos,
             };
         }
 
         // Smoothieware
         if (this.type === SMOOTHIE) {
-            const { wpos, modal = {} } = this.state;
+            const { wpos, modal = {} } = this.state.status;
             const units = {
                 'G20': IMPERIAL_UNITS,
-                'G21': METRIC_UNITS
+                'G21': METRIC_UNITS,
             }[modal.units];
 
             // Work position is reported in current units
             return _mapValues({
                 ...defaultWorkPosition,
-                ...wpos
+                ...wpos,
             }, (val) => {
                 return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
             });
@@ -528,13 +528,13 @@ class CNCJSController {
             const { wpos, modal = {} } = this.state;
             const units = {
                 'G20': IMPERIAL_UNITS,
-                'G21': METRIC_UNITS
+                'G21': METRIC_UNITS,
             }[modal.units];
 
             // Work position is reported in current units, and also apply any offsets.
             return _mapValues({
                 ...defaultWorkPosition,
-                ...wpos
+                ...wpos,
             }, (val) => {
                 return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
             });
@@ -556,34 +556,34 @@ class CNCJSController {
             feedrate: '', // G93: Inverse time mode, G94: Units per minute
             program: '', // M0, M1, M2, M30
             spindle: '', // M3: Spindle (cw), M4: Spindle (ccw), M5: Spindle off
-            coolant: '' // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
+            coolant: '', // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
         };
 
         if (this.type === GRBL) {
             return {
                 ...defaultModalState,
-                ...this.state.modal
+                ...this.state.parserstate.modal,
             };
         }
 
         if (this.type === MARLIN) {
             return {
                 ...defaultModalState,
-                ...this.state.modal
+                ...this.state.modal,
             };
         }
 
         if (this.type === SMOOTHIE) {
             return {
                 ...defaultModalState,
-                ...this.state.modal
+                ...this.state.parserstate.modal,
             };
         }
 
         if (this.type === TINYG) {
             return {
                 ...defaultModalState,
-                ...this.state.modal
+                ...this.state.modal,
             };
         }
 

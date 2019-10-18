@@ -4,6 +4,7 @@ import app from 'app/containers/App/reducers';
 import connection from './connection';
 import controller from './controller';
 import serialport from './serialport';
+import workflow from './workflow';
 
 const rootReducer = combineReducers({
     container: combineReducers({
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
     connection,
     controller,
     serialport,
+    workflow,
     routing: routerReducer
 });
 

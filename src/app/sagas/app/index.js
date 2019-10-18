@@ -6,10 +6,6 @@ import pubsub from 'pubsub-js';
 import qs from 'qs';
 import { all, call, delay, fork, put, race } from 'redux-saga/effects';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
-import {
-    UPDATE_CONTROLLER_SETTINGS,
-    UPDATE_CONTROLLER_STATE,
-} from 'app/actions/controller';
 import settings from 'app/config/settings';
 import {
     appInit,
@@ -20,7 +16,6 @@ import i18next from 'app/i18next';
 import controller from 'app/lib/controller';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
-import reduxStore from 'app/store/redux';
 import configStore from 'app/store/config';
 
 export function* init() {
@@ -68,20 +63,6 @@ export function* init() {
             const body = document.querySelector('body');
             body.style.backgroundColor = '#222'; // sidebar background color
         }
-
-        controller.addListener('controller:settings', (type, settings) => {
-            reduxStore.dispatch({
-                type: UPDATE_CONTROLLER_SETTINGS,
-                payload: { type, settings },
-            });
-        });
-
-        controller.addListener('controller:state', (type, state) => {
-            reduxStore.dispatch({
-                type: UPDATE_CONTROLLER_STATE,
-                payload: { type, state },
-            });
-        });
 
         yield put(appInitSuccess());
     } catch (error) {
