@@ -1,38 +1,13 @@
-import classNames from 'classnames';
-import includes from 'lodash/includes';
-import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import { Container } from 'app/components/GridSystem';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
-import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import WidgetConfig from 'app/widgets/shared/WidgetConfig';
 import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
-import {
-    // Grbl
-    GRBL,
-    GRBL_MACHINE_STATE_IDLE,
-    GRBL_MACHINE_STATE_HOLD,
-    // Marlin
-    MARLIN,
-    // Smoothie
-    SMOOTHIE,
-    SMOOTHIE_MACHINE_STATE_IDLE,
-    SMOOTHIE_MACHINE_STATE_HOLD,
-    // TinyG
-    TINYG,
-    TINYG_MACHINE_STATE_READY,
-    TINYG_MACHINE_STATE_STOP,
-    TINYG_MACHINE_STATE_END,
-    TINYG_MACHINE_STATE_HOLD,
-} from 'app/constants/controller';
-import {
-    WORKFLOW_STATE_RUN,
-} from 'app/constants/workflow';
 import Spindle from './Spindle';
-import styles from './index.styl';
 
 class SpindleWidget extends Component {
     static propTypes = {
@@ -68,216 +43,25 @@ class SpindleWidget extends Component {
         }));
     };
 
-    actions = {
-        handleSpindleSpeedChange: (event) => {
-            const spindleSpeed = Number(event.target.value) || 0;
-            this.setState({ spindleSpeed: spindleSpeed });
-        }
-    };
-
-    controllerEvents = {
-        'serialport:open': (options) => {
-            const { port } = options;
-            this.setState({ port: port });
-        },
-        'serialport:close': (options) => {
-            const initialState = this.getInitialState();
-            this.setState({ ...initialState });
-        },
-        'workflow:state': (workflowState) => {
-            this.setState(state => ({
-                workflow: {
-                    state: workflowState
-                }
-            }));
-        },
-        'controller:state': (type, state) => {
-            // Grbl
-            if (type === GRBL) {
-                const { parserstate } = { ...state };
-                const { modal = {} } = { ...parserstate };
-
-                this.setState({
-                    controller: {
-                        type: type,
-                        state: state,
-                        modal: {
-                            spindle: modal.spindle || '',
-                            coolant: modal.coolant || ''
-                        }
-                    }
-                });
-            }
-
-            // Marlin
-            if (type === MARLIN) {
-                const { modal = {} } = { ...state };
-
-                this.setState({
-                    controller: {
-                        type: type,
-                        state: state,
-                        modal: {
-                            spindle: modal.spindle || '',
-                            coolant: modal.coolant || ''
-                        }
-                    }
-                });
-            }
-
-            // Smoothie
-            if (type === SMOOTHIE) {
-                const { parserstate } = { ...state };
-                const { modal = {} } = { ...parserstate };
-
-                this.setState({
-                    controller: {
-                        type: type,
-                        state: state,
-                        modal: {
-                            spindle: modal.spindle || '',
-                            coolant: modal.coolant || ''
-                        }
-                    }
-                });
-            }
-
-            // TinyG
-            if (type === TINYG) {
-                const { sr } = { ...state };
-                const { modal = {} } = { ...sr };
-
-                this.setState({
-                    controller: {
-                        type: type,
-                        state: state,
-                        modal: {
-                            spindle: modal.spindle || '',
-                            coolant: modal.coolant || ''
-                        }
-                    }
-                });
-            }
-        }
-    };
-
-    componentDidMount() {
-        this.addControllerEvents();
-    }
-
-    componentWillUnmount() {
-        this.removeControllerEvents();
-    }
-
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized,
-            spindleSpeed
         } = this.state;
 
         this.config.set('minimized', minimized);
-        this.config.set('speed', spindleSpeed);
     }
 
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            canClick: true, // Defaults to true
-            port: controller.port,
-            controller: {
-                type: controller.type,
-                state: controller.state,
-                modal: {
-                    spindle: '',
-                    coolant: ''
-                }
-            },
-            workflow: {
-                state: controller.workflow.state
-            },
-            spindleSpeed: this.config.get('speed', 1000)
         };
-    }
-
-    addControllerEvents() {
-        Object.keys(this.controllerEvents).forEach(eventName => {
-            const callback = this.controllerEvents[eventName];
-            controller.addListener(eventName, callback);
-        });
-    }
-
-    removeControllerEvents() {
-        Object.keys(this.controllerEvents).forEach(eventName => {
-            const callback = this.controllerEvents[eventName];
-            controller.removeListener(eventName, callback);
-        });
-    }
-
-    canClick() {
-        const { port, workflow } = this.state;
-        const controllerType = this.state.controller.type;
-        const controllerState = this.state.controller.state;
-
-        if (!port) {
-            return false;
-        }
-        if (workflow.state === WORKFLOW_STATE_RUN) {
-            return false;
-        }
-        if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {
-            return false;
-        }
-        if (controllerType === GRBL) {
-            const machineState = get(controllerState, 'status.machineState');
-            const states = [
-                GRBL_MACHINE_STATE_IDLE,
-                GRBL_MACHINE_STATE_HOLD
-            ];
-            if (!includes(states, machineState)) {
-                return false;
-            }
-        }
-        if (controllerType === MARLIN) {
-            // Marlin does not have machine state
-        }
-        if (controllerType === SMOOTHIE) {
-            const machineState = get(controllerState, 'status.machineState');
-            const states = [
-                SMOOTHIE_MACHINE_STATE_IDLE,
-                SMOOTHIE_MACHINE_STATE_HOLD
-            ];
-            if (!includes(states, machineState)) {
-                return false;
-            }
-        }
-        if (controllerType === TINYG) {
-            const machineState = get(controllerState, 'sr.machineState');
-            const states = [
-                TINYG_MACHINE_STATE_READY,
-                TINYG_MACHINE_STATE_STOP,
-                TINYG_MACHINE_STATE_END,
-                TINYG_MACHINE_STATE_HOLD
-            ];
-            if (!includes(states, machineState)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
-        const state = {
-            ...this.state,
-            canClick: this.canClick()
-        };
-        const actions = {
-            ...this.actions
-        };
 
         return (
             <WidgetConfigProvider config={this.config}>
@@ -353,15 +137,18 @@ class SpindleWidget extends Component {
                         </Widget.Controls>
                     </Widget.Header>
                     <Widget.Content
-                        className={classNames(
-                            styles['widget-content'],
-                            { [styles.hidden]: minimized }
-                        )}
+                        style={{
+                            display: (minimized ? 'none' : 'block'),
+                        }}
                     >
-                        <Spindle
-                            state={state}
-                            actions={actions}
-                        />
+                        <Container
+                            fluid
+                            style={{
+                                padding: '.75rem',
+                            }}
+                        >
+                            <Spindle />
+                        </Container>
                     </Widget.Content>
                 </Widget>
             </WidgetConfigProvider>
