@@ -2,8 +2,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Container } from 'app/components/GridSystem';
-import FormGroup from 'app/components/FormGroup';
-import Label from 'app/components/Label';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
@@ -150,12 +148,7 @@ class LaserWidget extends Component {
                                 padding: '.75rem',
                             }}
                         >
-                            <FormGroup>
-                                <Label>
-                                    {i18n._('Laser Intensity Control')}
-                                </Label>
-                                <LaserIntensityOverride />
-                            </FormGroup>
+                            <LaserIntensityOverride />
                             <LaserTest />
                         </Container>
                     </Widget.Content>

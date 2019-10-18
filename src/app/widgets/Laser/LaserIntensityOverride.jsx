@@ -5,6 +5,8 @@ import { ButtonGroup } from 'app/components/Buttons';
 import Center from 'app/components/Center';
 import Clickable from 'app/components/Clickable';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import FormGroup from 'app/components/FormGroup';
+import Label from 'app/components/Label';
 import RepeatableButton from 'app/components/RepeatableButton';
 import Space from 'app/components/Space';
 import Text from 'app/components/Text';
@@ -22,69 +24,76 @@ import OverrideReadout from './components/OverrideReadout';
 const LaserIntensityOverride = ({
     value,
 }) => (
-    <Center vertical>
-        <FontAwesomeIcon icon="bolt" fixedWidth />
-        <Space width={8} />
-        <OverrideReadout>
-            {(value >= 0) ? `${value}%` : none}
-        </OverrideReadout>
-        <Space width={8} />
-        <ButtonGroup sm>
-            <RepeatableButton
-                onClick={() => {
-                    controller.command('override:spindle', -10);
-                }}
-                style={{ fontSize: '.75rem' }}
-            >
-                <FontAwesomeIcon icon="arrow-down" fixedWidth />
-                <Text>{i18n._('-10%')}</Text>
-            </RepeatableButton>
-            <RepeatableButton
-                onClick={() => {
-                    controller.command('override:spindle', -1);
-                }}
-                style={{ fontSize: '.66rem' }}
-            >
-                <FontAwesomeIcon icon="arrow-down" fixedWidth />
-                <Text>{i18n._('-1%')}</Text>
-            </RepeatableButton>
-            <RepeatableButton
-                onClick={() => {
-                    controller.command('override:spindle', 1);
-                }}
-                style={{ fontSize: '.66rem' }}
-            >
-                <FontAwesomeIcon icon="arrow-up" fixedWidth />
-                <Text>{i18n._('1%')}</Text>
-            </RepeatableButton>
-            <RepeatableButton
-                onClick={() => {
-                    controller.command('override:spindle', 10);
-                }}
-                style={{ fontSize: '.75rem' }}
-            >
-                <FontAwesomeIcon icon="arrow-up" fixedWidth />
-                <Text>{i18n._('10%')}</Text>
-            </RepeatableButton>
-        </ButtonGroup>
-        <Space width={8} />
-        <Clickable
-            onClick={() => {
-                controller.command('override:spindle', 0);
-            }}
-        >
-            {({ hovered }) => (
-                <FontAwesomeIcon
-                    icon="undo"
-                    fixedWidth
-                    style={{
-                        color: '#222',
-                        opacity: hovered ? 1 : 0.5,
+    <>
+        <FormGroup>
+            <Label>
+                {i18n._('Laser Intensity Control')}
+            </Label>
+        </FormGroup>
+        <Center vertical>
+            <FontAwesomeIcon icon="bolt" fixedWidth />
+            <Space width={8} />
+            <OverrideReadout>
+                {(value >= 0) ? `${value}%` : none}
+            </OverrideReadout>
+            <Space width={8} />
+            <ButtonGroup sm>
+                <RepeatableButton
+                    onClick={() => {
+                        controller.command('override:spindle', -10);
                     }}
-                />
-            )}
-        </Clickable>
-    </Center>
+                    style={{ fontSize: '.75rem' }}
+                >
+                    <FontAwesomeIcon icon="arrow-down" fixedWidth />
+                    <Text>{i18n._('-10%')}</Text>
+                </RepeatableButton>
+                <RepeatableButton
+                    onClick={() => {
+                        controller.command('override:spindle', -1);
+                    }}
+                    style={{ fontSize: '.66rem' }}
+                >
+                    <FontAwesomeIcon icon="arrow-down" fixedWidth />
+                    <Text>{i18n._('-1%')}</Text>
+                </RepeatableButton>
+                <RepeatableButton
+                    onClick={() => {
+                        controller.command('override:spindle', 1);
+                    }}
+                    style={{ fontSize: '.66rem' }}
+                >
+                    <FontAwesomeIcon icon="arrow-up" fixedWidth />
+                    <Text>{i18n._('1%')}</Text>
+                </RepeatableButton>
+                <RepeatableButton
+                    onClick={() => {
+                        controller.command('override:spindle', 10);
+                    }}
+                    style={{ fontSize: '.75rem' }}
+                >
+                    <FontAwesomeIcon icon="arrow-up" fixedWidth />
+                    <Text>{i18n._('10%')}</Text>
+                </RepeatableButton>
+            </ButtonGroup>
+            <Space width={8} />
+            <Clickable
+                onClick={() => {
+                    controller.command('override:spindle', 0);
+                }}
+            >
+                {({ hovered }) => (
+                    <FontAwesomeIcon
+                        icon="undo"
+                        fixedWidth
+                        style={{
+                            color: '#222',
+                            opacity: hovered ? 1 : 0.5,
+                        }}
+                    />
+                )}
+            </Clickable>
+        </Center>
+    </>
 );
 
 export default connect(store => {

@@ -7,6 +7,7 @@ import Slider from 'rc-slider';
 import { Button } from 'app/components/Buttons';
 import CollapsibleCard from 'app/components/CollapsibleCard';
 import Input from 'app/components/FormControl/Input';
+import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import HorizontalForm from 'app/components/HorizontalForm';
 import InputGroup from 'app/components/InputGroup';
@@ -65,114 +66,116 @@ const LaserTest = ({
                             >
                                 {({ form }) => (
                                     <>
-                                        <HorizontalForm spacing={['.75rem', '.75rem']}>
-                                            {({ FormContainer, FormRow, FormCol }) => (
-                                                <FormContainer style={{ width: '100%', marginBottom: '1rem' }}>
-                                                    <FormRow>
-                                                        <FormCol>
-                                                            <OverflowEllipsis title={i18n._('Power (%)')}>
-                                                                {i18n._('Power (%)')}
-                                                            </OverflowEllipsis>
-                                                        </FormCol>
-                                                        <FormCol style={{ wordBreak: 'break-all', textAlign: 'center' }}>
-                                                            <Field name="test.power">
-                                                                {({ input, meta }) => (
-                                                                    <>
-                                                                        <Text>{input.value}%</Text>
-                                                                        <Slider
-                                                                            style={{ padding: 0 }}
-                                                                            value={input.value}
-                                                                            min={0}
-                                                                            max={100}
-                                                                            step={1}
-                                                                            onChange={(value) => {
-                                                                                const power = ensurePositiveNumber(value);
-                                                                                config.set('test.power', power);
-                                                                                input.onChange(power);
-                                                                            }}
-                                                                        />
-                                                                    </>
-                                                                )}
-                                                            </Field>
-                                                        </FormCol>
-                                                    </FormRow>
-                                                    <FormRow>
-                                                        <FormCol>
-                                                            <OverflowEllipsis title={i18n._('Test duration')}>
-                                                                {i18n._('Test duration')}
-                                                            </OverflowEllipsis>
-                                                        </FormCol>
-                                                        <FormCol style={{ wordBreak: 'break-all' }}>
-                                                            <Field name="test.duration">
-                                                                {({ input, meta }) => (
-                                                                    <InputGroup sm>
-                                                                        <Input
-                                                                            type="number"
-                                                                            value={input.value}
-                                                                            min={0}
-                                                                            step={1}
-                                                                            onChange={(event) => {
-                                                                                const value = _trim(event.target.value);
-                                                                                if (value === '') { // empty string
-                                                                                    input.onChange(undefined);
-                                                                                    return;
-                                                                                }
+                                        <FormGroup>
+                                            <HorizontalForm spacing={['.75rem', '.75rem']}>
+                                                {({ FormContainer, FormRow, FormCol }) => (
+                                                    <FormContainer style={{ width: '100%' }}>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <OverflowEllipsis title={i18n._('Power (%)')}>
+                                                                    {i18n._('Power (%)')}
+                                                                </OverflowEllipsis>
+                                                            </FormCol>
+                                                            <FormCol style={{ wordBreak: 'break-all', textAlign: 'center' }}>
+                                                                <Field name="test.power">
+                                                                    {({ input, meta }) => (
+                                                                        <>
+                                                                            <Text>{input.value}%</Text>
+                                                                            <Slider
+                                                                                style={{ padding: 0 }}
+                                                                                value={input.value}
+                                                                                min={0}
+                                                                                max={100}
+                                                                                step={1}
+                                                                                onChange={(value) => {
+                                                                                    const power = ensurePositiveNumber(value);
+                                                                                    config.set('test.power', power);
+                                                                                    input.onChange(power);
+                                                                                }}
+                                                                            />
+                                                                        </>
+                                                                    )}
+                                                                </Field>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <OverflowEllipsis title={i18n._('Test duration')}>
+                                                                    {i18n._('Test duration')}
+                                                                </OverflowEllipsis>
+                                                            </FormCol>
+                                                            <FormCol style={{ wordBreak: 'break-all' }}>
+                                                                <Field name="test.duration">
+                                                                    {({ input, meta }) => (
+                                                                        <InputGroup sm>
+                                                                            <Input
+                                                                                type="number"
+                                                                                value={input.value}
+                                                                                min={0}
+                                                                                step={1}
+                                                                                onChange={(event) => {
+                                                                                    const value = _trim(event.target.value);
+                                                                                    if (value === '') { // empty string
+                                                                                        input.onChange(undefined);
+                                                                                        return;
+                                                                                    }
 
-                                                                                const duration = ensurePositiveNumber(value);
-                                                                                config.set('test.duration', duration);
-                                                                                input.onChange(duration);
-                                                                            }}
-                                                                        />
-                                                                        <InputGroup.Append>
-                                                                            <InputGroup.Text>
-                                                                                {i18n._('ms')}
-                                                                            </InputGroup.Text>
-                                                                        </InputGroup.Append>
-                                                                    </InputGroup>
-                                                                )}
-                                                            </Field>
-                                                        </FormCol>
-                                                    </FormRow>
-                                                    <FormRow>
-                                                        <FormCol>
-                                                            <OverflowEllipsis title={i18n._('Maximum value')}>
-                                                                {i18n._('Maximum value')}
-                                                            </OverflowEllipsis>
-                                                        </FormCol>
-                                                        <FormCol style={{ wordBreak: 'break-all' }}>
-                                                            <Field name="test.maxS">
-                                                                {({ input, meta }) => (
-                                                                    <InputGroup sm>
-                                                                        <InputGroup.Prepend>
-                                                                            <InputGroup.Text>
-                                                                                S
-                                                                            </InputGroup.Text>
-                                                                        </InputGroup.Prepend>
-                                                                        <Input
-                                                                            type="number"
-                                                                            value={input.value}
-                                                                            min={0}
-                                                                            step={1}
-                                                                            onChange={(event) => {
-                                                                                const value = _trim(event.target.value);
-                                                                                if (value === '') { // empty string
-                                                                                    input.onChange(undefined);
-                                                                                    return;
-                                                                                }
+                                                                                    const duration = ensurePositiveNumber(value);
+                                                                                    config.set('test.duration', duration);
+                                                                                    input.onChange(duration);
+                                                                                }}
+                                                                            />
+                                                                            <InputGroup.Append>
+                                                                                <InputGroup.Text>
+                                                                                    {i18n._('ms')}
+                                                                                </InputGroup.Text>
+                                                                            </InputGroup.Append>
+                                                                        </InputGroup>
+                                                                    )}
+                                                                </Field>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <OverflowEllipsis title={i18n._('Maximum value')}>
+                                                                    {i18n._('Maximum value')}
+                                                                </OverflowEllipsis>
+                                                            </FormCol>
+                                                            <FormCol style={{ wordBreak: 'break-all' }}>
+                                                                <Field name="test.maxS">
+                                                                    {({ input, meta }) => (
+                                                                        <InputGroup sm>
+                                                                            <InputGroup.Prepend>
+                                                                                <InputGroup.Text>
+                                                                                    S
+                                                                                </InputGroup.Text>
+                                                                            </InputGroup.Prepend>
+                                                                            <Input
+                                                                                type="number"
+                                                                                value={input.value}
+                                                                                min={0}
+                                                                                step={1}
+                                                                                onChange={(event) => {
+                                                                                    const value = _trim(event.target.value);
+                                                                                    if (value === '') { // empty string
+                                                                                        input.onChange(undefined);
+                                                                                        return;
+                                                                                    }
 
-                                                                                const maxS = ensurePositiveNumber(value);
-                                                                                config.set('test.maxS', maxS);
-                                                                                input.onChange(maxS);
-                                                                            }}
-                                                                        />
-                                                                    </InputGroup>
-                                                                )}
-                                                            </Field>
-                                                        </FormCol>
-                                                    </FormRow>
-                                                </FormContainer>
-                                            )}
-                                        </HorizontalForm>
+                                                                                    const maxS = ensurePositiveNumber(value);
+                                                                                    config.set('test.maxS', maxS);
+                                                                                    input.onChange(maxS);
+                                                                                }}
+                                                                            />
+                                                                        </InputGroup>
+                                                                    )}
+                                                                </Field>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                    </FormContainer>
+                                                )}
+                                            </HorizontalForm>
+                                        </FormGroup>
                                         <FormSpy
                                             subscription={{
                                                 values: true,
