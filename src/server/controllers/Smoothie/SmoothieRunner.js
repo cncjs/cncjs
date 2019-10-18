@@ -10,7 +10,7 @@ import SmoothieLineParserResultParameters from './SmoothieLineParserResultParame
 import SmoothieLineParserResultVersion from './SmoothieLineParserResultVersion';
 import {
     SMOOTHIE_MACHINE_STATE_IDLE,
-    SMOOTHIE_MACHINE_STATE_ALARM
+    SMOOTHIE_MACHINE_STATE_ALARM,
 } from './constants';
 
 class SmoothieRunner extends events.EventEmitter {
@@ -20,12 +20,12 @@ class SmoothieRunner extends events.EventEmitter {
             mpos: {
                 x: '0.0000',
                 y: '0.0000',
-                z: '0.0000'
+                z: '0.0000',
             },
             wpos: {
                 x: '0.0000',
                 y: '0.0000',
-                z: '0.0000'
+                z: '0.0000',
             },
         },
         parserstate: {
@@ -38,22 +38,22 @@ class SmoothieRunner extends events.EventEmitter {
                 feedrate: 'G94', // G93: Inverse time mode, G94: Units per minute
                 program: 'M0', // M0, M1, M2, M30
                 spindle: 'M5', // M3: Spindle (cw), M4: Spindle (ccw), M5: Spindle off
-                coolant: 'M9' // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
+                coolant: 'M9', // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
             },
             tool: '',
             feedrate: '',
-            spindle: ''
+            spindle: '',
         }
     };
 
     settings = {
         build: {
             version: '',
-            date: ''
+            date: '',
         },
         hardware: {
             mcu: '',
-            sysclk: ''
+            sysclk: '',
         },
         parameters: {
         }

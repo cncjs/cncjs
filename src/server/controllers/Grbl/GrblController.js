@@ -14,7 +14,7 @@ import SocketConnection from '../../lib/SocketConnection';
 import Workflow, {
     WORKFLOW_STATE_IDLE,
     WORKFLOW_STATE_PAUSED,
-    WORKFLOW_STATE_RUNNING
+    WORKFLOW_STATE_RUNNING,
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
@@ -38,7 +38,7 @@ import {
     GRBL_REALTIME_COMMANDS,
     GRBL_ALARMS,
     GRBL_ERRORS,
-    GRBL_SETTINGS
+    GRBL_SETTINGS,
 } from './constants';
 
 // % commands

@@ -64,12 +64,12 @@ class TinyGRunner extends events.EventEmitter {
         mpos: {
             x: '0.000',
             y: '0.000',
-            z: '0.000'
+            z: '0.000',
         },
         wpos: {
             x: '0.000',
             y: '0.000',
-            z: '0.000'
+            z: '0.000',
         },
         modal: {
             motion: '', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
@@ -80,7 +80,7 @@ class TinyGRunner extends events.EventEmitter {
             feedrate: '', // G93: Inverse time mode, G94: Units per minute
             path: '', // G61: Exact path mode, G61.1: Exact stop mode, G64: Continuous mode
             spindle: '', // M3: Spindle (cw), M4: Spindle (ccw), M5: Spindle off
-            coolant: '' // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
+            coolant: '', // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
         },
         tool: 0,
         spe: 0, // [edge-082.10] Spindle enable
@@ -89,7 +89,7 @@ class TinyGRunner extends events.EventEmitter {
         sps: 0, // [edge-082.10] Spindle speed
         mt: 0, // Motor timeout
         pwr: {}, // Power management: { "1": 0, "2": 0, "3": 0, "4": 0 }
-        qr: 0 // Queue reports
+        qr: 0, // Queue reports
     };
 
     settings = {
@@ -105,13 +105,13 @@ class TinyGRunner extends events.EventEmitter {
 
         mfo: 1, // manual feedrate override
         mto: 1, // manual traverse override
-        sso: 1 // spindle speed override
+        sso: 1, // spindle speed override
     };
 
     footer = {
         revision: 0,
         statusCode: 0, // https://github.com/synthetos/g2/wiki/Status-Codes
-        rxBufferInfo: 0
+        rxBufferInfo: 0,
     };
 
     plannerBufferPoolSize = 0; // Suggest 12 min. Limit is 255
