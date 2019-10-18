@@ -42,9 +42,9 @@ import iconFan from './images/fan.svg';
 
 const Spindle = ({
     isFrozenState,
-    spindle,
     mistCoolant,
     floodCoolant,
+    spindle,
 }) => {
     const config = useWidgetConfig();
     const initialValues = {
@@ -62,59 +62,6 @@ const Spindle = ({
         >
             {({ form }) => (
                 <Container fluid>
-                    <FormGroup>
-                        <Label>{i18n._('Spindle')}</Label>
-                        <Row>
-                            <Col width={8}>
-                                <ButtonGroup
-                                    sm
-                                    style={{ width: '100%' }}
-                                >
-                                    <Button
-                                        onClick={() => {
-                                            const speed = config.get('speed');
-                                            if (speed > 0) {
-                                                controller.command('gcode', 'M3 S' + speed);
-                                            } else {
-                                                controller.command('gcode', 'M3');
-                                            }
-                                        }}
-                                        title={i18n._('Spindle On, CW (M3)', { ns: 'gcode' })}
-                                        disabled={isDisabled}
-                                    >
-                                        <FontAwesomeIcon icon="redo-alt" spin={spindle === 'M3'} fixedWidth />
-                                        <Space width={8} />
-                                        M3
-                                    </Button>
-                                    <Button
-                                        onClick={() => {
-                                            const speed = config.get('speed');
-                                            if (speed > 0) {
-                                                controller.command('gcode', 'M4 S' + speed);
-                                            } else {
-                                                controller.command('gcode', 'M4');
-                                            }
-                                        }}
-                                        title={i18n._('Spindle On, CCW (M4)', { ns: 'gcode' })}
-                                        disabled={isDisabled}
-                                    >
-                                        <FontAwesomeIcon icon="undo-alt" spinReverse={spindle === 'M4'} fixedWidth />
-                                        <Space width={8} />
-                                        M4
-                                    </Button>
-                                    <Button
-                                        onClick={() => controller.command('gcode', 'M5')}
-                                        title={i18n._('Spindle Off (M5)', { ns: 'gcode' })}
-                                        disabled={isDisabled}
-                                    >
-                                        <FontAwesomeIcon icon="power-off" fixedWidth />
-                                        <Space width={8} />
-                                        M5
-                                    </Button>
-                                </ButtonGroup>
-                            </Col>
-                        </Row>
-                    </FormGroup>
                     <FormGroup>
                         <Label>{i18n._('Coolant')}</Label>
                         <Row>
@@ -175,6 +122,69 @@ const Spindle = ({
                         </Row>
                     </FormGroup>
                     <FormGroup>
+                        <Label>{i18n._('Spindle')}</Label>
+                        <Row>
+                            <Col width={8}>
+                                <Field name="speed">
+                                    {({ input }) => {
+                                        const invalidSpeed = !Number.isFinite(input.value);
+                                        const isM3Disabled = isDisabled || invalidSpeed;
+                                        const isM4Disabled = isDisabled || invalidSpeed;
+
+                                        return (
+                                            <ButtonGroup
+                                                sm
+                                                style={{ width: '100%' }}
+                                            >
+                                                <Button
+                                                    disabled={isM3Disabled}
+                                                    onClick={() => {
+                                                        const speed = config.get('speed');
+                                                        if (speed > 0) {
+                                                            controller.command('gcode', 'M3 S' + speed);
+                                                        } else {
+                                                            controller.command('gcode', 'M3');
+                                                        }
+                                                    }}
+                                                    title={i18n._('Spindle On, CW (M3)', { ns: 'gcode' })}
+                                                >
+                                                    <FontAwesomeIcon icon="redo-alt" spin={spindle === 'M3'} fixedWidth />
+                                                    <Space width={8} />
+                                                    M3
+                                                </Button>
+                                                <Button
+                                                    disabled={isM4Disabled}
+                                                    onClick={() => {
+                                                        const speed = config.get('speed');
+                                                        if (speed > 0) {
+                                                            controller.command('gcode', 'M4 S' + speed);
+                                                        } else {
+                                                            controller.command('gcode', 'M4');
+                                                        }
+                                                    }}
+                                                    title={i18n._('Spindle On, CCW (M4)', { ns: 'gcode' })}
+                                                >
+                                                    <FontAwesomeIcon icon="undo-alt" spinReverse={spindle === 'M4'} fixedWidth />
+                                                    <Space width={8} />
+                                                    M4
+                                                </Button>
+                                                <Button
+                                                    onClick={() => controller.command('gcode', 'M5')}
+                                                    title={i18n._('Spindle Off (M5)', { ns: 'gcode' })}
+                                                    disabled={isDisabled}
+                                                >
+                                                    <FontAwesomeIcon icon="power-off" fixedWidth />
+                                                    <Space width={8} />
+                                                    M5
+                                                </Button>
+                                            </ButtonGroup>
+                                        );
+                                    }}
+                                </Field>
+                            </Col>
+                        </Row>
+                    </FormGroup>
+                    <FormGroup>
                         <Label>{i18n._('Spindle Speed')}</Label>
                         <Row>
                             <Col width={8}>
@@ -185,7 +195,6 @@ const Spindle = ({
                                                 <Input
                                                     type="number"
                                                     value={input.value}
-                                                    placeholder="0"
                                                     min={0}
                                                     step={1}
                                                     onChange={(event) => {
@@ -233,8 +242,7 @@ export default connect(store => {
         }
 
         const controllerType = _get(store, 'controller.type');
-        const controllerState = _get(store, 'controller.state');
-        const machineState = _get(controllerState, 'machineState');
+        const machineState = _get(store, 'controller.machineState');
         const expectedStates = ({
             [GRBL]: [
                 GRBL_MACHINE_STATE_IDLE,
@@ -258,15 +266,15 @@ export default connect(store => {
         const isFrozenState = !isExpectedState;
         return isFrozenState;
     })();
-    const spindle = _get(store, 'controller.modal.spindle');
     const coolant = ensureArray(_get(store, 'controller.modal.coolant'));
+    const spindle = _get(store, 'controller.modal.spindle');
     const mistCoolant = coolant.indexOf('M7') >= 0;
     const floodCoolant = coolant.indexOf('M8') >= 0;
 
     return {
         isFrozenState,
-        spindle,
         mistCoolant,
         floodCoolant,
+        spindle,
     };
 })(Spindle);

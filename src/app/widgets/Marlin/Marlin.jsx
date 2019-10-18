@@ -1,7 +1,6 @@
 import ensureArray from 'ensure-array';
-import get from 'lodash/get';
-import isNumber from 'lodash/isNumber';
-import mapValues from 'lodash/mapValues';
+import _get from 'lodash/get';
+import _mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ProgressBar } from 'react-bootstrap';
@@ -47,12 +46,12 @@ class Marlin extends Component {
         const none = '–';
         const panel = state.panel;
         const controllerState = state.controller.state || {};
-        const ovF = get(controllerState, 'ovF', 0);
-        const ovS = get(controllerState, 'ovS', 0);
-        const feedrate = get(controllerState, 'feedrate') || none;
-        const spindle = get(controllerState, 'spindle') || none;
-        const extruder = get(controllerState, 'extruder') || {};
-        const heatedBed = get(controllerState, 'heatedBed') || {};
+        const ovF = _get(controllerState, 'ovF', 0);
+        const ovS = _get(controllerState, 'ovS', 0);
+        const feedrate = _get(controllerState, 'feedrate') || none;
+        const spindle = _get(controllerState, 'spindle') || none;
+        const extruder = _get(controllerState, 'extruder') || {};
+        const heatedBed = _get(controllerState, 'heatedBed') || {};
         const showExtruderTemperature = (extruder.deg !== undefined && extruder.degTarget !== undefined);
         const showExtruderPower = (extruder.power !== undefined);
         const showHeatedBedTemperature = (heatedBed.deg !== undefined && heatedBed.degTarget !== undefined);
@@ -63,9 +62,9 @@ class Marlin extends Component {
             showHeatedBedTemperature,
             showHeatedBedPower
         ].some(x => !!x);
-        const canSetExtruderTemperature = isNumber(state.heater.extruder);
-        const canSetHeatedBedTemperature = isNumber(state.heater.heatedBed);
-        const modal = mapValues(controllerState.modal || {}, mapGCodeToText);
+        const canSetExtruderTemperature = Number.isFinite(state.heater.extruder);
+        const canSetHeatedBedTemperature = Number.isFinite(state.heater.heatedBed);
+        const modal = _mapValues(controllerState.modal || {}, mapGCodeToText);
         const extruderIsHeating = (Number(extruder.degTarget) > Number(extruder.deg));
         const heatedBedIsHeating = (Number(heatedBed.degTarget) > Number(heatedBed.deg));
         const extruderPower = Number(extruder.power) || 0;

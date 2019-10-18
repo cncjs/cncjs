@@ -1,4 +1,3 @@
-import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -215,10 +214,10 @@ class MarlinWidget extends Component {
         this.config.set('panel.heaterControl.expanded', panel.heaterControl.expanded);
         this.config.set('panel.statusReports.expanded', panel.statusReports.expanded);
         this.config.set('panel.modalGroups.expanded', panel.modalGroups.expanded);
-        if (isNumber(heater.extruder)) {
+        if (Number.isFinite(heater.extruder)) {
             this.config.set('heater.extruder', heater.extruder);
         }
-        if (isNumber(heater.heatedBed)) {
+        if (Number.isFinite(heater.heatedBed)) {
             this.config.set('heater.heatedBed', heater.heatedBed);
         }
     }

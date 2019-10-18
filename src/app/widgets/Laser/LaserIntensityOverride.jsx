@@ -24,12 +24,10 @@ import OverrideReadout from './components/OverrideReadout';
 const LaserIntensityOverride = ({
     value,
 }) => (
-    <>
-        <FormGroup>
-            <Label>
-                {i18n._('Laser Intensity Control')}
-            </Label>
-        </FormGroup>
+    <FormGroup>
+        <Label>
+            {i18n._('Laser Intensity Control')}
+        </Label>
         <Center vertical>
             <FontAwesomeIcon icon="bolt" fixedWidth />
             <Space width={8} />
@@ -93,7 +91,7 @@ const LaserIntensityOverride = ({
                 )}
             </Clickable>
         </Center>
-    </>
+    </FormGroup>
 );
 
 export default connect(store => {

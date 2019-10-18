@@ -196,15 +196,15 @@ const LaserTest = ({
                                                         return false;
                                                     }
 
-                                                    if (power === undefined) {
+                                                    if (!Number.isFinite(power)) {
                                                         return false;
                                                     }
 
-                                                    if (duration === undefined) {
+                                                    if (!Number.isFinite(duration)) {
                                                         return false;
                                                     }
 
-                                                    if (maxS === undefined) {
+                                                    if (!Number.isFinite(maxS)) {
                                                         return false;
                                                     }
 
