@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-    DEFAULT_SPACER_X,
-    DEFAULT_SPACER_Y,
+    DEFAULT_SPACING_X,
+    DEFAULT_SPACING_Y,
 } from './constants';
 import { CardContext } from './context';
 
@@ -9,16 +9,16 @@ const Provider = ({
     borderColor,
     borderRadius,
     borderWidth,
-    spacerX = DEFAULT_SPACER_X, // need to specify the default value
-    spacerY = DEFAULT_SPACER_Y, // need to specify the default value
+    spacingX = DEFAULT_SPACING_X, // need to specify the default value
+    spacingY = DEFAULT_SPACING_Y, // need to specify the default value
     children,
 }) => {
     const value = {
         borderColor,
         borderRadius,
         borderWidth,
-        spacerX,
-        spacerY,
+        spacingX,
+        spacingY,
     };
 
     return (

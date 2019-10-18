@@ -12,9 +12,9 @@ const CardBody = ({
 }) => (
     <Resolver>
         {value => {
-            const { spacerX } = value;
+            const { spacingX } = value;
             style = {
-                padding: `${spacerX}`,
+                padding: `${spacingX}`,
                 ...style,
             };
 

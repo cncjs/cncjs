@@ -18,8 +18,8 @@ export const GlobalProvider = ({ children }) => (
         >
             <CardProvider
                 borderRadius={0}
-                spacerX=".75rem"
-                spacerY=".375rem"
+                spacingX=".75rem"
+                spacingY=".375rem"
             >
                 <I18nextProvider i18n={i18next}>
                     <HashRouter>
