@@ -18,13 +18,15 @@ export const isWebGLAvailable = moize(() => {
 });
 
 // Memoize the result to mitigate the issue of WebGL context lost and restored
-export const isWebGL2Available = memoize(() => {
+export const isWebGL2Available = moize(() => {
     try {
         const canvas = document.createElement('canvas');
         return !!(window.WebGL2RenderingContext && canvas.getContext('webgl2'));
     } catch (e) {
         return false;
     }
+}, {
+    maxSize: 1, // maximum size of cache for this method
 });
 
 export const getWebGLErrorMessage = () => {
