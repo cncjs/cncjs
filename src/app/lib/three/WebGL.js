@@ -1,4 +1,4 @@
-import memoize from 'memoize-one';
+import moize from 'moize';
 
 /**
  * @author alteredq / http://alteredqualia.com/
@@ -6,13 +6,15 @@ import memoize from 'memoize-one';
  */
 
 // Memoize the result to mitigate the issue of WebGL context lost and restored
-export const isWebGLAvailable = memoize(() => {
+export const isWebGLAvailable = moize(() => {
     try {
         let canvas = document.createElement('canvas');
         return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
     } catch (e) {
         return false;
     }
+}, {
+    maxSize: 1, // maximum size of cache for this method
 });
 
 // Memoize the result to mitigate the issue of WebGL context lost and restored

@@ -5,6 +5,7 @@ import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import _isEqual from 'lodash/isEqual';
 import _set from 'lodash/set';
+import moize from 'moize';
 import React, { useEffect, useRef } from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
@@ -86,6 +87,45 @@ const useSerialConnectivity = ({ ports, baudRates }) => {
     return isReady;
 };
 
+const getMemoizedInitialValues = moize.deep((options) => {
+    const {
+        config,
+        serialPorts,
+        serialBaudRates,
+    } = { ...options };
+
+    const initialValues = {
+        controller: {
+            type: config.get('controller.type'),
+        },
+        connection: {
+            type: config.get('connection.type'),
+            serial: {
+                path: config.get('connection.serial.path'),
+                baudRate: config.get('connection.serial.baudRate'),
+                rtscts: config.get('connection.serial.rtscts'),
+            },
+            socket: {
+                host: config.get('connection.socket.host'),
+                port: config.get('connection.socket.port'),
+            },
+        },
+        autoReconnect: config.get('autoReconnect'),
+    };
+
+    if (!_find(serialPorts, { comName: _get(initialValues, 'connection.serial.path') })) {
+        _set(initialValues, 'connection.serial.path', null);
+    }
+
+    if (!_includes(serialBaudRates, _get(initialValues, 'connection.serial.baudRate'))) {
+        _set(initialValues, 'connection.serial.baudRate', null);
+    }
+
+    return initialValues;
+}, {
+    maxSize: 1, // maximum size of cache for this method
+});
+
 const Connection = ({
     connection,
     isConnected,
@@ -102,30 +142,7 @@ const Connection = ({
     fetchSerialBaudRates,
 }) => {
     const config = useWidgetConfig();
-    const initialValues = {
-        controller: {
-            type: config.get('controller.type'),
-        },
-        connection: {
-            type: config.get('connection.type'),
-            serial: {
-                path: (() => {
-                    const path = config.get('connection.serial.path');
-                    return _find(serialPorts, { comName: path }) ? path : null;
-                })(),
-                baudRate: (() => {
-                    const baudRate = config.get('connection.serial.baudRate');
-                    return _includes(serialBaudRates, baudRate) ? baudRate : null;
-                })(),
-                rtscts: config.get('connection.serial.rtscts'),
-            },
-            socket: {
-                host: config.get('connection.socket.host'),
-                port: config.get('connection.socket.port'),
-            },
-        },
-        autoReconnect: config.get('autoReconnect'),
-    };
+    const initialValues = getMemoizedInitialValues({ config, serialPorts, serialBaudRates });
     const canRefreshSerialPorts = isDisconnected && !isFetchingSerialPorts;
     const canRefreshSerialBaudRates = isDisconnected && !isFetchingSerialBaudRates;
     const autoReconnectedRef = useRef(false);
