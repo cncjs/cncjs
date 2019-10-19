@@ -29,6 +29,7 @@ import {
     TINYG_MACHINE_STATE_SHUTDOWN,
     TINYG_MACHINE_STATE_PANIC,
 } from 'app/constants/controller';
+import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import Overrides from './Overrides';
 import styles from './index.styl';
 
@@ -91,7 +92,7 @@ class TinyG extends Component {
         const modal = mapValues(get(controllerState, 'sr.modal', {}), mapGCodeToText);
         const panel = state.panel;
 
-        this.plannerBufferMax = Math.max(this.plannerBufferMax, Number(plannerBuffer) || 0);
+        this.plannerBufferMax = Math.max(this.plannerBufferMax, ensurePositiveNumber(plannerBuffer));
 
         return (
             <Container fluid>

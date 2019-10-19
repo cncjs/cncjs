@@ -2,6 +2,7 @@ import {
     IMPERIAL_UNITS,
     METRIC_UNITS,
 } from 'app/constants';
+import { ensureFiniteNumber } from 'app/lib/ensure-type';
 
 // Converts value from millimeters to inches
 export const mm2in = (val = 0) => val / 25.4;
@@ -11,13 +12,13 @@ export const in2mm = (val = 0) => val * 25.4;
 
 // Maps value to imperial units
 export const mapValueToImperialUnits = (val) => {
-    val = Number(val) || 0;
+    val = ensureFiniteNumber(val);
     return mm2in(val).toFixed(4) * 1;
 };
 
 // Maps value to metric units
 export const mapValueToMetricUnits = (val) => {
-    val = Number(val) || 0;
+    val = ensureFiniteNumber(val);
     return val.toFixed(3) * 1;
 };
 

@@ -35,6 +35,7 @@ import {
     WORKFLOW_STATE_IDLE,
 } from 'app/constants/workflow';
 import controller from 'app/lib/controller';
+import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import portal from 'app/lib/portal';
@@ -691,7 +692,7 @@ class VisualizerWidget extends Component {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
                 }[modal.units] || this.state.units;
-                const $13 = Number(get(controller.settings, 'settings.$13', 0)) || 0;
+                const $13 = ensurePositiveNumber(get(controller.settings, 'settings.$13', 0));
 
                 this.setState(state => ({
                     units: units,

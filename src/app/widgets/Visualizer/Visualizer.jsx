@@ -13,6 +13,7 @@ import {
     IMPERIAL_UNITS,
     METRIC_UNITS,
 } from 'app/constants';
+import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import CombinedCamera from 'app/lib/three/CombinedCamera';
 import TrackballControls from 'app/lib/three/TrackballControls';
 import * as WebGL from 'app/lib/three/WebGL';
@@ -385,8 +386,8 @@ class Visualizer extends Component {
     getVisibleWidth() {
         const el = ReactDOM.findDOMNode(this.node);
         const visibleWidth = Math.max(
-            Number(el && el.parentNode && el.parentNode.clientWidth) || 0,
-            360
+            ensurePositiveNumber(el && el.parentNode && el.parentNode.clientWidth),
+            360,
         );
 
         return visibleWidth;
@@ -806,7 +807,9 @@ class Visualizer extends Component {
 
     createPerspectiveCamera(width, height) {
         const fov = PERSPECTIVE_FOV;
-        const aspect = (width > 0 && height > 0) ? Number(width) / Number(height) : 1;
+        const aspect = (width > 0 && height > 0)
+            ? ensurePositiveNumber(width) / ensurePositiveNumber(height)
+            : 1;
         const near = PERSPECTIVE_NEAR;
         const far = PERSPECTIVE_FAR;
         const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);

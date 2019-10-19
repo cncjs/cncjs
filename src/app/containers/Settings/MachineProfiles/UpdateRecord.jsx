@@ -10,6 +10,7 @@ import Modal from 'app/components/Modal';
 import { ToastNotification } from 'app/components/Notifications';
 import SectionGroup from 'app/components/SectionGroup';
 import SectionTitle from 'app/components/SectionTitle';
+import { ensureFiniteNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import Error from '../common/Error';
 import * as validations from '../common/validations';
@@ -30,12 +31,12 @@ class UpdateRecord extends Component {
             values: {
                 name: _get(values, 'name', ''),
                 limits: {
-                    xmin: Number(_get(values, 'limits.xmin')) || 0,
-                    xmax: Number(_get(values, 'limits.xmax')) || 0,
-                    ymin: Number(_get(values, 'limits.ymin')) || 0,
-                    ymax: Number(_get(values, 'limits.ymax')) || 0,
-                    zmin: Number(_get(values, 'limits.zmin')) || 0,
-                    zmax: Number(_get(values, 'limits.zmax')) || 0,
+                    xmin: ensureFiniteNumber(_get(values, 'limits.xmin')),
+                    xmax: ensureFiniteNumber(_get(values, 'limits.xmax')),
+                    ymin: ensureFiniteNumber(_get(values, 'limits.ymin')),
+                    ymax: ensureFiniteNumber(_get(values, 'limits.ymax')),
+                    zmin: ensureFiniteNumber(_get(values, 'limits.zmin')),
+                    zmax: ensureFiniteNumber(_get(values, 'limits.zmax')),
                 }
             }
         };
@@ -49,12 +50,12 @@ class UpdateRecord extends Component {
         updateRecord(id, {
             name: _get(values, 'name', ''),
             limits: {
-                xmin: Number(_get(values, 'limits.xmin')) || 0,
-                xmax: Number(_get(values, 'limits.xmax')) || 0,
-                ymin: Number(_get(values, 'limits.ymin')) || 0,
-                ymax: Number(_get(values, 'limits.ymax')) || 0,
-                zmin: Number(_get(values, 'limits.zmin')) || 0,
-                zmax: Number(_get(values, 'limits.zmax')) || 0,
+                xmin: ensureFiniteNumber(_get(values, 'limits.xmin')),
+                xmax: ensureFiniteNumber(_get(values, 'limits.xmax')),
+                ymin: ensureFiniteNumber(_get(values, 'limits.ymin')),
+                ymax: ensureFiniteNumber(_get(values, 'limits.ymax')),
+                zmin: ensureFiniteNumber(_get(values, 'limits.zmin')),
+                zmax: ensureFiniteNumber(_get(values, 'limits.zmax')),
             }
         }, forceReload);
     };

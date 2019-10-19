@@ -8,6 +8,7 @@ import _merge from 'lodash/merge';
 import _uniq from 'lodash/uniq';
 import semver from 'semver';
 import settings from 'app/config/settings';
+import { ensureFiniteNumber } from 'app/lib/ensure-type';
 import log from 'app/lib/log';
 import reduxStore from 'app/store/redux';
 import { promptUserForCorruptedWorkspaceSettings } from 'app/containers/App/actions';
@@ -170,7 +171,7 @@ const migrateStore = () => {
         // Probe widget
         const tlo = config.get('widgets.probe.tlo');
         if (tlo !== undefined) {
-            config.set('widgets.probe.touchPlateHeight', Number(tlo));
+            config.set('widgets.probe.touchPlateHeight', ensureFiniteNumber(tlo));
             config.unset('widgets.probe.tlo');
         }
 

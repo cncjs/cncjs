@@ -13,6 +13,7 @@ import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Panel from 'app/components/Panel';
 import Space from 'app/components/Space';
+import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import FadeInOut from './FadeInOut';
 import Overrides from './Overrides';
 import styles from './index.styl';
@@ -65,10 +66,10 @@ class Marlin extends Component {
         const canSetExtruderTemperature = Number.isFinite(state.heater.extruder);
         const canSetHeatedBedTemperature = Number.isFinite(state.heater.heatedBed);
         const modal = _mapValues(controllerState.modal || {}, mapGCodeToText);
-        const extruderIsHeating = (Number(extruder.degTarget) > Number(extruder.deg));
-        const heatedBedIsHeating = (Number(heatedBed.degTarget) > Number(heatedBed.deg));
-        const extruderPower = Number(extruder.power) || 0;
-        const heatedBedPower = Number(heatedBed.power) || 0;
+        const extruderIsHeating = (ensurePositiveNumber(extruder.degTarget) > ensurePositiveNumber(extruder.deg));
+        const heatedBedIsHeating = (ensurePositiveNumber(heatedBed.degTarget) > ensurePositiveNumber(heatedBed.deg));
+        const extruderPower = ensurePositiveNumber(extruder.power);
+        const heatedBedPower = ensurePositiveNumber(heatedBed.power);
 
         this.extruderPowerMax = Math.max(this.extruderPowerMax, extruderPower);
         this.heatedBedPowerMax = Math.max(this.heatedBedPowerMax, heatedBedPower);

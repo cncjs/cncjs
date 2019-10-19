@@ -8,6 +8,7 @@ import settings from 'app/config/settings';
 import config from 'app/store/config';
 import Iframe from 'app/components/Iframe';
 import controller from 'app/lib/controller';
+import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import styles from './index.styl';
@@ -112,8 +113,8 @@ class Custom extends Component {
         }
 
         let { width = 0, height = 0 } = { ...options };
-        width = Number(width) || 0;
-        height = Number(height) || 0;
+        width = ensurePositiveNumber(width);
+        height = ensurePositiveNumber(height);
 
         if (!height) {
             try {

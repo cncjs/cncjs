@@ -10,6 +10,7 @@ import {
     SMOOTHIE,
     TINYG,
 } from 'app/constants/controller';
+import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import { in2mm } from 'app/lib/units';
 
 const noop = () => {};
@@ -414,7 +415,7 @@ class CNCJSController {
         if (this.type === GRBL) {
             const { mpos } = this.state.status;
             let { $13 = 0 } = { ...this.settings.settings };
-            $13 = Number($13) || 0;
+            $13 = ensurePositiveNumber($13);
 
             // Machine position is reported in mm ($13=0) or inches ($13=1)
             return _mapValues({

@@ -31,6 +31,7 @@ import {
     WORKFLOW_STATE_IDLE,
 } from 'app/constants/workflow';
 import controller from 'app/lib/controller';
+import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import { in2mm, mapValueToUnits } from 'app/lib/units';
 import WidgetConfig from 'app/widgets/shared/WidgetConfig';
@@ -345,10 +346,10 @@ class ProbeWidget extends Component {
             touchPlateHeight = in2mm(touchPlateHeight);
             retractionDistance = in2mm(retractionDistance);
         }
-        this.config.set('probeDepth', Number(probeDepth));
-        this.config.set('probeFeedrate', Number(probeFeedrate));
-        this.config.set('touchPlateHeight', Number(touchPlateHeight));
-        this.config.set('retractionDistance', Number(retractionDistance));
+        this.config.set('probeDepth', ensurePositiveNumber(probeDepth));
+        this.config.set('probeFeedrate', ensurePositiveNumber(probeFeedrate));
+        this.config.set('touchPlateHeight', ensurePositiveNumber(touchPlateHeight));
+        this.config.set('retractionDistance', ensurePositiveNumber(retractionDistance));
     }
 
     getInitialState() {
@@ -372,10 +373,10 @@ class ProbeWidget extends Component {
             probeAxis: this.config.get('probeAxis', 'Z'),
             probeCommand: this.config.get('probeCommand', 'G38.2'),
             useTLO: this.config.get('useTLO'),
-            probeDepth: Number(this.config.get('probeDepth') || 0).toFixed(3) * 1,
-            probeFeedrate: Number(this.config.get('probeFeedrate') || 0).toFixed(3) * 1,
-            touchPlateHeight: Number(this.config.get('touchPlateHeight') || 0).toFixed(3) * 1,
-            retractionDistance: Number(this.config.get('retractionDistance') || 0).toFixed(3) * 1
+            probeDepth: ensurePositiveNumber(this.config.get('probeDepth')).toFixed(3) * 1,
+            probeFeedrate: ensurePositiveNumber(this.config.get('probeFeedrate')).toFixed(3) * 1,
+            touchPlateHeight: ensurePositiveNumber(this.config.get('touchPlateHeight')).toFixed(3) * 1,
+            retractionDistance: ensurePositiveNumber(this.config.get('retractionDistance')).toFixed(3) * 1
         };
     }
 

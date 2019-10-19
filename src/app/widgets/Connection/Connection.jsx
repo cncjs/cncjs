@@ -44,6 +44,7 @@ import {
 } from 'app/constants/connection';
 import useMount from 'app/hooks/useMount';
 import usePrevious from 'app/hooks/usePrevious';
+import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import portal from 'app/lib/portal';
@@ -512,8 +513,8 @@ const Connection = ({
                                                                     const canSelectSerialBaudRate = isDisconnected && !isFetchingSerialBaudRates;
                                                                     const isDisabled = !canSelectSerialBaudRate;
                                                                     const options = serialBaudRates.map(value => ({
-                                                                        value,
-                                                                        label: Number(value).toString(),
+                                                                        value: ensurePositiveNumber(value),
+                                                                        label: ensurePositiveNumber(value).toString(),
                                                                     }));
                                                                     const value = _find(options, { value: input.value }) || null;
 

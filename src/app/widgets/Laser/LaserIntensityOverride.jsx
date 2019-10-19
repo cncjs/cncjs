@@ -17,6 +17,7 @@ import {
     TINYG,
 } from 'app/constants/controller';
 import controller from 'app/lib/controller';
+import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import { none } from 'app/lib/utils';
 import OverrideReadout from './components/OverrideReadout';
@@ -102,19 +103,19 @@ export default connect(store => {
     let value = 0;
     if (controllerType === GRBL) {
         const ovS = _get(controllerState, 'ov[2]');
-        value = Number(ovS) || 0;
+        value = ensurePositiveNumber(ovS);
     }
     if (controllerType === MARLIN) {
         const ovS = _get(controllerState, 'ovS');
-        value = Number(ovS) || 0;
+        value = ensurePositiveNumber(ovS);
     }
     if (controllerType === SMOOTHIE) {
         const ovS = _get(controllerState, 'ovS');
-        value = Number(ovS) || 0;
+        value = ensurePositiveNumber(ovS);
     }
     if (controllerType === TINYG) {
         const ovS = _get(controllerSettings, 'sso');
-        value = Math.round((Number(ovS) || 0) * 100);
+        value = Math.round(ensurePositiveNumber(ovS) * 100);
     }
 
     return {

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { ensurePositiveNumber } from 'app/lib/ensure-type';
 
 class CuttingPointer {
     constructor(options) {
@@ -12,7 +13,7 @@ class CuttingPointer {
             thetaStart = 0,
             thetaLength = Math.PI
         } = { ...options };
-        const radius = Number(diameter / 2) || 1;
+        const radius = ensurePositiveNumber(diameter / 2) || 1;
 
         const geometry = new THREE.SphereGeometry(
             radius,
