@@ -1,6 +1,7 @@
 import events from 'events';
 import ensureArray from 'ensure-array';
 import _ from 'lodash';
+import { ensureFiniteNumber } from '../../lib/ensure-type';
 import TinyGLineParser from './TinyGLineParser';
 import TinyGLineParserResultMotorTimeout from './TinyGLineParserResultMotorTimeout';
 import TinyGLineParserResultOverrides from './TinyGLineParserResultOverrides';
@@ -456,7 +457,7 @@ class TinyGRunner extends events.EventEmitter {
     }
 
     getTool(state = this.state) {
-        return Number(_.get(state, 'tool')) || 0;
+        return ensureFiniteNumber(_.get(state, 'tool'));
     }
 
     isAlarm() {

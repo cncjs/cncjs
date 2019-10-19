@@ -3,6 +3,7 @@ import find from 'lodash/find';
 import isPlainObject from 'lodash/isPlainObject';
 import uuid from 'uuid';
 import settings from '../config/settings';
+import { ensureFiniteNumber } from '../lib/ensure-type';
 import logger from '../lib/logger';
 import config from '../services/configstore';
 import { getPagingRange } from './paging';
@@ -54,9 +55,9 @@ export const fetch = (req, res) => {
 
         res.send({
             pagination: {
-                page: Number(page),
-                pageLength: Number(pageLength),
-                totalRecords: Number(totalRecords)
+                page: ensureFiniteNumber(page),
+                pageLength: ensureFiniteNumber(pageLength),
+                totalRecords: ensureFiniteNumber(totalRecords)
             },
             records: pagedRecords.map(record => {
                 const { id, name, command, grid = {} } = { ...record };

@@ -1,6 +1,7 @@
 import events from 'events';
 import _ from 'lodash';
 import decimalPlaces from '../../lib/decimal-places';
+import { ensureFiniteNumber } from '../../lib/ensure-type';
 import GrblLineParser from './GrblLineParser';
 import GrblLineParserResultStatus from './GrblLineParserResultStatus';
 import GrblLineParserResultOk from './GrblLineParserResultOk';
@@ -81,14 +82,14 @@ class GrblRunner extends events.EventEmitter {
                 _.each(payload.mpos, (mpos, axis) => {
                     const digits = decimalPlaces(mpos);
                     const wco = _.get((payload.wco || this.state.status.wco), axis, 0);
-                    payload.wpos[axis] = (Number(mpos) - Number(wco)).toFixed(digits);
+                    payload.wpos[axis] = (ensureFiniteNumber(mpos) - ensureFiniteNumber(wco)).toFixed(digits);
                 });
             } else if (_.has(payload, 'wpos') && !_.has(payload, 'mpos')) {
                 payload.mpos = payload.mpos || {};
                 _.each(payload.wpos, (wpos, axis) => {
                     const digits = decimalPlaces(wpos);
                     const wco = _.get((payload.wco || this.state.status.wco), axis, 0);
-                    payload.mpos[axis] = (Number(wpos) + Number(wco)).toFixed(digits);
+                    payload.mpos[axis] = (ensureFiniteNumber(wpos) + ensureFiniteNumber(wco)).toFixed(digits);
                 });
             }
 
@@ -205,7 +206,7 @@ class GrblRunner extends events.EventEmitter {
     }
 
     getTool(state = this.state) {
-        return Number(_.get(state, 'parserstate.tool')) || 0;
+        return ensureFiniteNumber(_.get(state, 'parserstate.tool'));
     }
 
     isAlarm() {

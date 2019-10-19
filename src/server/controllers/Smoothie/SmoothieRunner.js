@@ -1,5 +1,6 @@
 import events from 'events';
 import _ from 'lodash';
+import { ensureFiniteNumber } from '../../lib/ensure-type';
 import SmoothieLineParser from './SmoothieLineParser';
 import SmoothieLineParserResultStatus from './SmoothieLineParserResultStatus';
 import SmoothieLineParserResultOk from './SmoothieLineParserResultOk';
@@ -171,7 +172,7 @@ class SmoothieRunner extends events.EventEmitter {
     }
 
     getTool(state = this.state) {
-        return Number(_.get(state, 'parserstate.tool')) || 0;
+        return ensureFiniteNumber(_.get(state, 'parserstate.tool'));
     }
 
     isAlarm() {

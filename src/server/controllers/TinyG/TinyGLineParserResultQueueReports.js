@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { ensureFiniteNumber } from '../../lib/ensure-type';
 
 class TinyGLineParserResultQueueReports {
     static parse(data) {
@@ -11,14 +12,14 @@ class TinyGLineParserResultQueueReports {
         }
 
         const payload = {
-            qr: Number(qr) || 0,
-            qi: Number(qi) || 0,
-            qo: Number(qo) || 0
+            qr: ensureFiniteNumber(qr),
+            qi: ensureFiniteNumber(qi),
+            qo: ensureFiniteNumber(qo),
         };
 
         return {
             type: TinyGLineParserResultQueueReports,
-            payload: payload
+            payload: payload,
         };
     }
 }

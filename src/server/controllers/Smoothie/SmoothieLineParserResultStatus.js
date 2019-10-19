@@ -1,7 +1,7 @@
 /* eslint no-bitwise: ["error", { "allow": ["&", "<<"] }] */
 import ensureArray from 'ensure-array';
 import _ from 'lodash';
-import { ensureNumber } from '../../lib/ensure-type';
+import { ensureFiniteNumber } from '../../lib/ensure-type';
 
 const floatPointNumber = '[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)';
 const pattern = new RegExp(`[a-zA-Z]+(:${floatPointNumber}(,${floatPointNumber}){0,5})?`, 'g');
@@ -65,34 +65,34 @@ class SmoothieLineParserResultStatus {
             if (_.includes(['Home', 'Run'], payload.machineState)) {
                 // F:current_feedrate,requested_feedrate,override
                 const [currentFeedrate, feedrate, feedrateOverride] = ensureArray(result.F);
-                payload.currentFeedrate = ensureNumber(currentFeedrate) || 0;
-                payload.feedrate = ensureNumber(feedrate) || 0;
-                payload.feedrateOverride = ensureNumber(feedrateOverride) || 0;
+                payload.currentFeedrate = ensureFiniteNumber(currentFeedrate);
+                payload.feedrate = ensureFiniteNumber(feedrate);
+                payload.feedrateOverride = ensureFiniteNumber(feedrateOverride);
             } else {
                 // F:requested_feedrate,override
                 const [feedrate, feedrateOverride] = ensureArray(result.F);
-                payload.feedrate = ensureNumber(feedrate) || 0;
-                payload.feedrateOverride = ensureNumber(feedrateOverride) || 0;
+                payload.feedrate = ensureFiniteNumber(feedrate);
+                payload.feedrateOverride = ensureFiniteNumber(feedrateOverride);
             }
         }
 
         // laser power
         if (_.has(result, 'L')) {
             const [laserPower] = ensureArray(result.L);
-            payload.laserPower = ensureNumber(laserPower) || 0;
+            payload.laserPower = ensureFiniteNumber(laserPower);
         }
 
         // laser intensity
         if (_.has(result, 'S')) {
             const [laserIntensity] = ensureArray(result.S);
-            payload.laserIntensity = ensureNumber(laserIntensity) || 0;
+            payload.laserIntensity = ensureFiniteNumber(laserIntensity);
         }
 
         // temperature
         if (_.has(result, 'T')) {
             const [currentTemperature, targetTemperature] = ensureArray(result.T);
-            payload.currentTemperature = ensureNumber(currentTemperature) || 0;
-            payload.targetTemperature = ensureNumber(targetTemperature) || 0;
+            payload.currentTemperature = ensureFiniteNumber(currentTemperature);
+            payload.targetTemperature = ensureFiniteNumber(targetTemperature);
         }
 
         return {

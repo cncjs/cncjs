@@ -5,7 +5,7 @@ import _castArray from 'lodash/castArray';
 import _isPlainObject from 'lodash/isPlainObject';
 import uuid from 'uuid';
 import settings from '../config/settings';
-import { ensureNumber, ensureString } from '../lib/ensure-type';
+import { ensureFiniteNumber, ensureString } from '../lib/ensure-type';
 import logger from '../lib/logger';
 import config from '../services/configstore';
 import { getPagingRange } from './paging';
@@ -53,12 +53,12 @@ const ensureMachineProfile = (payload) => {
         id,
         name: ensureString(name),
         limits: {
-            xmin: ensureNumber(xmin) || 0,
-            xmax: ensureNumber(xmax) || 0,
-            ymin: ensureNumber(ymin) || 0,
-            ymax: ensureNumber(ymax) || 0,
-            zmin: ensureNumber(zmin) || 0,
-            zmax: ensureNumber(zmax) || 0,
+            xmin: ensureFiniteNumber(xmin),
+            xmax: ensureFiniteNumber(xmax),
+            ymin: ensureFiniteNumber(ymin),
+            ymax: ensureFiniteNumber(ymax),
+            zmin: ensureFiniteNumber(zmin),
+            zmax: ensureFiniteNumber(zmax),
         }
     };
 };
@@ -75,9 +75,9 @@ export const fetch = (req, res) => {
 
         res.send({
             pagination: {
-                page: Number(page),
-                pageLength: Number(pageLength),
-                totalRecords: Number(totalRecords)
+                page: ensureFiniteNumber(page),
+                pageLength: ensureFiniteNumber(pageLength),
+                totalRecords: ensureFiniteNumber(totalRecords)
             },
             records: pagedRecords.map(record => ensureMachineProfile(record))
         });
@@ -143,12 +143,12 @@ export const update = (req, res) => {
 
         [ // [key, ensureType]
             ['name', ensureString],
-            ['limits.xmin', ensureNumber],
-            ['limits.xmax', ensureNumber],
-            ['limits.ymin', ensureNumber],
-            ['limits.ymax', ensureNumber],
-            ['limits.zmin', ensureNumber],
-            ['limits.zmax', ensureNumber],
+            ['limits.xmin', ensureFiniteNumber],
+            ['limits.xmax', ensureFiniteNumber],
+            ['limits.ymin', ensureFiniteNumber],
+            ['limits.ymax', ensureFiniteNumber],
+            ['limits.zmin', ensureFiniteNumber],
+            ['limits.zmax', ensureFiniteNumber],
         ].forEach(it => {
             const [key, ensureType] = it;
             const defaultValue = _get(record, key);

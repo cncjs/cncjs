@@ -17,8 +17,7 @@ import Workflow, {
     WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
-import ensurePositiveNumber from '../../lib/ensure-positive-number';
-import { ensureNumber } from '../../lib/ensure-type';
+import { ensureFiniteNumber, ensurePositiveNumber } from '../../lib/ensure-type';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
@@ -583,7 +582,7 @@ class TinyGController {
             const statusCode = f[1] || 0;
 
             if (statusCode !== 0) {
-                const code = Number(statusCode);
+                const code = ensureFiniteNumber(statusCode);
                 const err = _.find(TINYG_STATUS_CODES, { code: code }) || {};
 
                 if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
@@ -814,28 +813,28 @@ class TinyGController {
             global: this.sharedContext,
 
             // Bounding box
-            xmin: Number(context.xmin) || 0,
-            xmax: Number(context.xmax) || 0,
-            ymin: Number(context.ymin) || 0,
-            ymax: Number(context.ymax) || 0,
-            zmin: Number(context.zmin) || 0,
-            zmax: Number(context.zmax) || 0,
+            xmin: ensureFiniteNumber(context.xmin),
+            xmax: ensureFiniteNumber(context.xmax),
+            ymin: ensureFiniteNumber(context.ymin),
+            ymax: ensureFiniteNumber(context.ymax),
+            zmin: ensureFiniteNumber(context.zmin),
+            zmax: ensureFiniteNumber(context.zmax),
 
             // Machine position
-            mposx: Number(mposx) || 0,
-            mposy: Number(mposy) || 0,
-            mposz: Number(mposz) || 0,
-            mposa: Number(mposa) || 0,
-            mposb: Number(mposb) || 0,
-            mposc: Number(mposc) || 0,
+            mposx: ensureFiniteNumber(mposx),
+            mposy: ensureFiniteNumber(mposy),
+            mposz: ensureFiniteNumber(mposz),
+            mposa: ensureFiniteNumber(mposa),
+            mposb: ensureFiniteNumber(mposb),
+            mposc: ensureFiniteNumber(mposc),
 
             // Work position
-            posx: Number(posx) || 0,
-            posy: Number(posy) || 0,
-            posz: Number(posz) || 0,
-            posa: Number(posa) || 0,
-            posb: Number(posb) || 0,
-            posc: Number(posc) || 0,
+            posx: ensureFiniteNumber(posx),
+            posy: ensureFiniteNumber(posy),
+            posz: ensureFiniteNumber(posz),
+            posa: ensureFiniteNumber(posa),
+            posb: ensureFiniteNumber(posb),
+            posc: ensureFiniteNumber(posc),
 
             // Modal group
             modal: {
@@ -852,7 +851,7 @@ class TinyGController {
             },
 
             // Tool
-            tool: Number(tool) || 0,
+            tool: ensureFiniteNumber(tool),
 
             // Global objects
             ...globalObjects,
@@ -1115,7 +1114,7 @@ class TinyGController {
                 const [options] = args;
                 const { force = false } = { ...options };
                 if (force) {
-                    const firmwareBuild = ensureNumber(_.get(this.settings, 'fb'));
+                    const firmwareBuild = ensureFiniteNumber(_.get(this.settings, 'fb'));
 
                     if (firmwareBuild >= 101) {
                         // https://github.com/synthetos/g2/releases/tag/101.02
@@ -1244,7 +1243,7 @@ class TinyGController {
             // @param {number} [value] Enable the motors with a specified timeout value in seconds. Defaults to 3600 seconds.
             'motor:enable': () => {
                 let [mt = this.state.mt] = args;
-                mt = Number(mt) || 0;
+                mt = ensureFiniteNumber(mt);
 
                 if (mt <= 0) {
                     this.command('motor:disable');
@@ -1264,7 +1263,7 @@ class TinyGController {
             // @param {number} value The default timeout in seconds.
             'motor:timeout': () => {
                 let [mt] = args;
-                mt = Number(mt) || 0;
+                mt = ensureFiniteNumber(mt);
 
                 if (mt >= 0) {
                     this.command('gcode', `{mt:${mt}}`);

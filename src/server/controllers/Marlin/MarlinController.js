@@ -6,6 +6,7 @@ import {
     CONNECTION_TYPE_SERIAL,
     CONNECTION_TYPE_SOCKET,
 } from '../../constants/connection';
+import { ensureFiniteNumber, ensurePositiveNumber } from '../../lib/ensure-type';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
 import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/Sender';
@@ -16,7 +17,6 @@ import Workflow, {
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
-import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
@@ -836,18 +836,18 @@ class MarlinController {
             global: this.sharedContext,
 
             // Bounding box
-            xmin: Number(context.xmin) || 0,
-            xmax: Number(context.xmax) || 0,
-            ymin: Number(context.ymin) || 0,
-            ymax: Number(context.ymax) || 0,
-            zmin: Number(context.zmin) || 0,
-            zmax: Number(context.zmax) || 0,
+            xmin: ensureFiniteNumber(context.xmin),
+            xmax: ensureFiniteNumber(context.xmax),
+            ymin: ensureFiniteNumber(context.ymin),
+            ymax: ensureFiniteNumber(context.ymax),
+            zmin: ensureFiniteNumber(context.zmin),
+            zmax: ensureFiniteNumber(context.zmax),
 
             // Work position
-            posx: Number(posx) || 0,
-            posy: Number(posy) || 0,
-            posz: Number(posz) || 0,
-            pose: Number(pose) || 0,
+            posx: ensureFiniteNumber(posx),
+            posy: ensureFiniteNumber(posy),
+            posz: ensureFiniteNumber(posz),
+            pose: ensureFiniteNumber(pose),
 
             // Modal group
             modal: {
@@ -864,7 +864,7 @@ class MarlinController {
             },
 
             // Tool
-            tool: Number(tool) || 0,
+            tool: ensureFiniteNumber(tool),
 
             // Global objects
             ...globalObjects,

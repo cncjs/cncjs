@@ -1,4 +1,5 @@
 import decimalPlaces from '../../lib/decimal-places';
+import { ensureFiniteNumber } from '../../lib/ensure-type';
 
 class MarlinLineParserResultPosition {
     // X:0.00 Y:0.00 Z:0.00 E:0.00 Count X:0 Y:0 Z:0
@@ -9,7 +10,7 @@ class MarlinLineParserResultPosition {
         }
 
         const payload = {
-            pos: {}
+            pos: {},
         };
         const pattern = /((X|Y|Z|E):[0-9\.\-]+)+/gi;
         const params = r[0].match(pattern);
@@ -20,13 +21,13 @@ class MarlinLineParserResultPosition {
                 const axis = nv[1].toLowerCase();
                 const pos = nv[2];
                 const digits = decimalPlaces(pos);
-                payload.pos[axis] = Number(pos).toFixed(digits);
+                payload.pos[axis] = ensureFiniteNumber(pos).toFixed(digits);
             }
         }
 
         return {
             type: MarlinLineParserResultPosition,
-            payload: payload
+            payload: payload,
         };
     }
 }

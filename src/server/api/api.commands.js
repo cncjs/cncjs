@@ -3,6 +3,7 @@ import castArray from 'lodash/castArray';
 import isPlainObject from 'lodash/isPlainObject';
 import uuid from 'uuid';
 import settings from '../config/settings';
+import { ensureFiniteNumber } from '../lib/ensure-type';
 import logger from '../lib/logger';
 import taskRunner from '../services/taskrunner';
 import config from '../services/configstore';
@@ -66,9 +67,9 @@ export const fetch = (req, res) => {
 
         res.send({
             pagination: {
-                page: Number(page),
-                pageLength: Number(pageLength),
-                totalRecords: Number(totalRecords)
+                page: ensureFiniteNumber(page),
+                pageLength: ensureFiniteNumber(pageLength),
+                totalRecords: ensureFiniteNumber(totalRecords)
             },
             records: pagedRecords.map(record => {
                 const { id, mtime, enabled, title, commands } = { ...record };

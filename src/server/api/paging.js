@@ -1,6 +1,8 @@
+import { ensureFiniteNumber } from '../lib/ensure-type';
+
 export const getPagingRange = ({ page = 1, pageLength = 10, totalRecords = 0 }) => {
-    page = Number(page);
-    pageLength = Number(pageLength);
+    page = ensureFiniteNumber(page);
+    pageLength = ensureFiniteNumber(pageLength);
 
     if (!page || page < 1) {
         page = 1;

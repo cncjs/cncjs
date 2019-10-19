@@ -6,6 +6,7 @@ import {
     CONNECTION_TYPE_SERIAL,
     CONNECTION_TYPE_SOCKET,
 } from '../../constants/connection';
+import { ensureFiniteNumber, ensurePositiveNumber } from '../../lib/ensure-type';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
 import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/Sender';
@@ -17,7 +18,6 @@ import Workflow, {
     WORKFLOW_STATE_RUNNING,
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
-import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
@@ -193,7 +193,7 @@ class GrblController {
                     const r = line.match(/^(\$\d{1,3})=([\d\.]+)$/);
                     if (r) {
                         const name = r[1];
-                        const value = Number(r[2]);
+                        const value = ensureFiniteNumber(r[2]);
                         if ((name === '$13') && (value >= 0) && (value <= 65535)) {
                             const nextSettings = {
                                 ...this.runner.settings,
@@ -439,7 +439,7 @@ class GrblController {
             // Check if the receive buffer is available in the status report
             // @see https://github.com/cncjs/cncjs/issues/115
             // @see https://github.com/cncjs/cncjs/issues/133
-            const rx = Number(_.get(res, 'buf.rx', 0)) || 0;
+            const rx = ensureFiniteNumber(_.get(res, 'buf.rx', 0));
             if (rx > 0) {
                 // Do not modify the buffer size when running a G-code program
                 if (this.workflow.state !== WORKFLOW_STATE_IDLE) {
@@ -505,7 +505,7 @@ class GrblController {
         });
 
         this.runner.on('error', (res) => {
-            const code = Number(res.message) || undefined;
+            const code = ensureFiniteNumber(res.message);
             const error = _.find(GRBL_ERRORS, { code: code });
 
             if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
@@ -550,7 +550,7 @@ class GrblController {
         });
 
         this.runner.on('alarm', (res) => {
-            const code = Number(res.message) || undefined;
+            const code = ensureFiniteNumber(res.message);
             const alarm = _.find(GRBL_ALARMS, { code: code });
 
             if (alarm) {
@@ -793,28 +793,28 @@ class GrblController {
             global: this.sharedContext,
 
             // Bounding box
-            xmin: Number(context.xmin) || 0,
-            xmax: Number(context.xmax) || 0,
-            ymin: Number(context.ymin) || 0,
-            ymax: Number(context.ymax) || 0,
-            zmin: Number(context.zmin) || 0,
-            zmax: Number(context.zmax) || 0,
+            xmin: ensureFiniteNumber(context.xmin),
+            xmax: ensureFiniteNumber(context.xmax),
+            ymin: ensureFiniteNumber(context.ymin),
+            ymax: ensureFiniteNumber(context.ymax),
+            zmin: ensureFiniteNumber(context.zmin),
+            zmax: ensureFiniteNumber(context.zmax),
 
             // Machine position
-            mposx: Number(mposx) || 0,
-            mposy: Number(mposy) || 0,
-            mposz: Number(mposz) || 0,
-            mposa: Number(mposa) || 0,
-            mposb: Number(mposb) || 0,
-            mposc: Number(mposc) || 0,
+            mposx: ensureFiniteNumber(mposx),
+            mposy: ensureFiniteNumber(mposy),
+            mposz: ensureFiniteNumber(mposz),
+            mposa: ensureFiniteNumber(mposa),
+            mposb: ensureFiniteNumber(mposb),
+            mposc: ensureFiniteNumber(mposc),
 
             // Work position
-            posx: Number(posx) || 0,
-            posy: Number(posy) || 0,
-            posz: Number(posz) || 0,
-            posa: Number(posa) || 0,
-            posb: Number(posb) || 0,
-            posc: Number(posc) || 0,
+            posx: ensureFiniteNumber(posx),
+            posy: ensureFiniteNumber(posy),
+            posz: ensureFiniteNumber(posz),
+            posa: ensureFiniteNumber(posa),
+            posb: ensureFiniteNumber(posb),
+            posc: ensureFiniteNumber(posc),
 
             // Modal group
             modal: {
@@ -831,7 +831,7 @@ class GrblController {
             },
 
             // Tool
-            tool: Number(tool) || 0,
+            tool: ensureFiniteNumber(tool),
 
             // Global objects
             ...globalObjects,

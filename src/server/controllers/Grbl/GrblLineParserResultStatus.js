@@ -1,5 +1,6 @@
 /* eslint no-bitwise: ["error", { "allow": ["&", "<<"] }] */
 import _ from 'lodash';
+import { ensureFiniteNumber } from '../../lib/ensure-type';
 
 //https://github.com/grbl/grbl/blob/master/grbl/report.c
 class GrblLineParserResultStatus {
@@ -38,7 +39,7 @@ class GrblLineParserResultStatus {
             //   - Door:3 Door closed and resuming. Restoring from park, if applicable. Reset will throw an alarm.
             const states = (params.shift() || '').split(':');
             payload.machineState = states[0] || '';
-            payload.subState = Number(states[1] || '');
+            payload.subState = ensureFiniteNumber(states[1] || '');
         }
 
         for (let param of params) {
@@ -83,41 +84,41 @@ class GrblLineParserResultStatus {
         // Planner Buffer (v0.9)
         if (_.has(result, 'Buf')) {
             payload.buf = payload.buf || {};
-            payload.buf.planner = Number(_.get(result, 'Buf[0]', 0));
+            payload.buf.planner = ensureFiniteNumber(_.get(result, 'Buf[0]', 0));
         }
 
         // RX Buffer (v0.9)
         if (_.has(result, 'RX')) {
             payload.buf = payload.buf || {};
-            payload.buf.rx = Number(_.get(result, 'RX[0]', 0));
+            payload.buf.rx = ensureFiniteNumber(_.get(result, 'RX[0]', 0));
         }
 
         // Buffer State (v1.1)
         // Bf:15,128. The first value is the number of available blocks in the planner buffer and the second is number of available bytes in the serial RX buffer.
         if (_.has(result, 'Bf')) {
             payload.buf = payload.buf || {};
-            payload.buf.planner = Number(_.get(result, 'Bf[0]', 0));
-            payload.buf.rx = Number(_.get(result, 'Bf[1]', 0));
+            payload.buf.planner = ensureFiniteNumber(_.get(result, 'Bf[0]', 0));
+            payload.buf.rx = ensureFiniteNumber(_.get(result, 'Bf[1]', 0));
         }
 
-        // Line Number (v0.9, v1.1)
+        // Line ensureFiniteNumber (v0.9, v1.1)
         // Ln:99999 indicates line 99999 is currently being executed.
         if (_.has(result, 'Ln')) {
-            payload.ln = Number(_.get(result, 'Ln[0]', 0));
+            payload.ln = ensureFiniteNumber(_.get(result, 'Ln[0]', 0));
         }
 
         // Feed Rate (v0.9, v1.1)
         // F:500 contains real-time feed rate data as the value.
         // This appears only when VARIABLE_SPINDLE is disabled.
         if (_.has(result, 'F')) {
-            payload.feedrate = Number(_.get(result, 'F[0]', 0));
+            payload.feedrate = ensureFiniteNumber(_.get(result, 'F[0]', 0));
         }
 
         // Current Feed and Speed (v1.1)
         // FS:500,8000 contains real-time feed rate, followed by spindle speed, data as the values.
         if (_.has(result, 'FS')) {
-            payload.feedrate = Number(_.get(result, 'FS[0]', 0));
-            payload.spindle = Number(_.get(result, 'FS[1]', 0));
+            payload.feedrate = ensureFiniteNumber(_.get(result, 'FS[0]', 0));
+            payload.spindle = ensureFiniteNumber(_.get(result, 'FS[1]', 0));
         }
 
         // Limit Pins (v0.9)
@@ -125,7 +126,7 @@ class GrblLineParserResultStatus {
         // Y_AXIS is (1<<1) or bit 1
         // Z_AXIS is (1<<2) or bit 2
         if (_.has(result, 'Lim')) {
-            const value = Number(_.get(result, 'Lim[0]', 0));
+            const value = ensureFiniteNumber(_.get(result, 'Lim[0]', 0));
             payload.pinState = [
                 (value & (1 << 0)) ? 'X' : '',
                 (value & (1 << 1)) ? 'Y' : '',
@@ -149,7 +150,7 @@ class GrblLineParserResultStatus {
         // Override Values (v1.1)
         // Ov:100,100,100 indicates current override values in percent of programmed values for feed, rapids, and spindle speed, respectively.
         if (_.has(result, 'Ov')) {
-            payload.ov = _.get(result, 'Ov', []).map(v => Number(v));
+            payload.ov = _.get(result, 'Ov', []).map(v => ensureFiniteNumber(v));
         }
 
         // Accessory State (v1.1)

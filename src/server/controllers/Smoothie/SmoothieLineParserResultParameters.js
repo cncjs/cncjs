@@ -1,3 +1,5 @@
+import { ensureFiniteNumber } from '../../lib/ensure-type';
+
 class SmoothieLineParserResultParameters {
     static parse(line) {
         const r = line.match(/^\[(G54|G55|G56|G57|G58|G59|G59.1|G59.2|G59.3|G28|G30|G92|TLO|PRB):(.+)\]$/);
@@ -34,7 +36,7 @@ class SmoothieLineParserResultParameters {
             const [str, result] = value.split(':');
             const list = str.split(',');
             payload.value = {};
-            payload.value.result = Number(result);
+            payload.value.result = ensureFiniteNumber(result);
             for (let i = 0; i < list.length; ++i) {
                 payload.value[axes[i]] = list[i];
             }

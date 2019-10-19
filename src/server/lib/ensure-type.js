@@ -22,6 +22,12 @@ export const ensureNumber = (value, defaultValue = 0) => {
     return (typeof value === 'number') ? value : Number(value);
 };
 
+export const ensureFiniteNumber = (value, defaultValue = 0) => {
+    value = ensureNumber(value);
+
+    return Number.isFinite(value) ? value : defaultValue;
+};
+
 export const ensurePositiveNumber = (value, minimumValue = 0) => {
     // In comparison to the global isFinite() function, the Number.isFinite() method doesn't forcibly convert the parameter to a number.
     if (!Number.isFinite(minimumValue) || (minimumValue < 0)) {
