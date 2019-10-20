@@ -6,7 +6,7 @@ React state hook that returns the previous state as described in the [React hook
 
 ```jsx
 const Demo = () => {
-    const [count, setCount] = React.useState(defaultValue);
+    const [count, setCount] = React.useState(0);
     const prevCount = usePrevious(count, 0 /* an optional default value for prevCount */);
 
     return (
