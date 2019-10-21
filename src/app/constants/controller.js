@@ -4,7 +4,16 @@ export const MARLIN = 'Marlin';
 export const SMOOTHIE = 'Smoothie';
 export const TINYG = 'TinyG';
 
-// Grbl Machine State
+export const MACHINE_STATE_NONE = '';
+
+// Reformed machine state
+export const REFORMED_MACHINE_STATE_IDLE = 'IDLE';
+export const REFORMED_MACHINE_STATE_RUN = 'RUN';
+export const REFORMED_MACHINE_STATE_HOLD = 'HOLD';
+export const REFORMED_MACHINE_STATE_ALARM = 'ALARM';
+export const REFORMED_MACHINE_STATE_NA = 'NA'; // not available
+
+// Grbl machine state
 export const GRBL_MACHINE_STATE_IDLE = 'Idle';
 export const GRBL_MACHINE_STATE_RUN = 'Run';
 export const GRBL_MACHINE_STATE_HOLD = 'Hold';
@@ -14,7 +23,7 @@ export const GRBL_MACHINE_STATE_SLEEP = 'Sleep';
 export const GRBL_MACHINE_STATE_ALARM = 'Alarm';
 export const GRBL_MACHINE_STATE_CHECK = 'Check';
 
-// Smoothie Machine State
+// Smoothie machine state
 export const SMOOTHIE_MACHINE_STATE_IDLE = 'Idle';
 export const SMOOTHIE_MACHINE_STATE_RUN = 'Run';
 export const SMOOTHIE_MACHINE_STATE_HOLD = 'Hold';
@@ -23,7 +32,7 @@ export const SMOOTHIE_MACHINE_STATE_HOME = 'Home';
 export const SMOOTHIE_MACHINE_STATE_ALARM = 'Alarm';
 export const SMOOTHIE_MACHINE_STATE_CHECK = 'Check';
 
-// TinyG Machine State
+// TinyG machine state
 // https://github.com/synthetos/g2/wiki/Status-Reports#stat-values
 export const TINYG_MACHINE_STATE_INITIALIZING = 0; // Machine is initializing
 export const TINYG_MACHINE_STATE_READY = 1; // Machine is ready for use

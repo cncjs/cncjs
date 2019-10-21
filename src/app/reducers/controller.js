@@ -10,10 +10,30 @@ import {
     METRIC_UNITS,
 } from 'app/constants';
 import {
+    MACHINE_STATE_NONE,
+    REFORMED_MACHINE_STATE_IDLE,
+    REFORMED_MACHINE_STATE_RUN,
+    REFORMED_MACHINE_STATE_HOLD,
+    REFORMED_MACHINE_STATE_ALARM,
+    REFORMED_MACHINE_STATE_NA,
     GRBL,
+    GRBL_MACHINE_STATE_IDLE,
+    GRBL_MACHINE_STATE_RUN,
+    GRBL_MACHINE_STATE_HOLD,
+    GRBL_MACHINE_STATE_ALARM,
     MARLIN,
     SMOOTHIE,
+    SMOOTHIE_MACHINE_STATE_IDLE,
+    SMOOTHIE_MACHINE_STATE_RUN,
+    SMOOTHIE_MACHINE_STATE_HOLD,
+    SMOOTHIE_MACHINE_STATE_ALARM,
     TINYG,
+    TINYG_MACHINE_STATE_READY,
+    TINYG_MACHINE_STATE_STOP,
+    TINYG_MACHINE_STATE_END,
+    TINYG_MACHINE_STATE_RUN,
+    TINYG_MACHINE_STATE_HOLD,
+    TINYG_MACHINE_STATE_ALARM,
 } from 'app/constants/controller';
 import {
     ensurePositiveNumber,
@@ -27,40 +47,81 @@ const initialState = {
     settings: {},
     state: {},
 
-    machineState: '',
+    machineState: MACHINE_STATE_NONE,
+    reformedMachineState: MACHINE_STATE_NONE,
     mpos: {},
     wpos: {},
     modal: {},
 };
 
-const mapContextToMachineState = (context) => {
+const mapContextToMachineStates = (context) => {
     const { type, state } = context;
 
     // Grbl
     if (type === GRBL) {
         const machineState = _get(state, 'status.machineState');
-        return machineState;
+        const reformedMachineState = ({
+            [GRBL_MACHINE_STATE_IDLE]: REFORMED_MACHINE_STATE_IDLE,
+            [GRBL_MACHINE_STATE_RUN]: REFORMED_MACHINE_STATE_RUN,
+            [GRBL_MACHINE_STATE_HOLD]: REFORMED_MACHINE_STATE_HOLD,
+            [GRBL_MACHINE_STATE_ALARM]: REFORMED_MACHINE_STATE_ALARM,
+        }[machineState]) || REFORMED_MACHINE_STATE_NA;
+
+        return {
+            machineState,
+            reformedMachineState,
+        };
     }
 
     // Marlin
     if (type === MARLIN) {
         const machineState = _get(state, 'machineState');
-        return machineState;
+        const reformedMachineState = MACHINE_STATE_NONE;
+
+        return {
+            machineState,
+            reformedMachineState,
+        };
     }
 
     // Smoothieware
     if (type === SMOOTHIE) {
         const machineState = _get(state, 'status.machineState');
-        return machineState;
+        const reformedMachineState = ({
+            [SMOOTHIE_MACHINE_STATE_IDLE]: REFORMED_MACHINE_STATE_IDLE,
+            [SMOOTHIE_MACHINE_STATE_RUN]: REFORMED_MACHINE_STATE_RUN,
+            [SMOOTHIE_MACHINE_STATE_HOLD]: REFORMED_MACHINE_STATE_HOLD,
+            [SMOOTHIE_MACHINE_STATE_ALARM]: REFORMED_MACHINE_STATE_ALARM,
+        }[machineState]) || REFORMED_MACHINE_STATE_NA;
+
+        return {
+            machineState,
+            reformedMachineState,
+        };
     }
 
     // TinyG
     if (type === TINYG) {
         const machineState = _get(state, 'machineState');
-        return machineState;
+        const reformedMachineState = ({
+            [TINYG_MACHINE_STATE_READY]: REFORMED_MACHINE_STATE_IDLE,
+            [TINYG_MACHINE_STATE_STOP]: REFORMED_MACHINE_STATE_IDLE,
+            [TINYG_MACHINE_STATE_END]: REFORMED_MACHINE_STATE_IDLE,
+            [TINYG_MACHINE_STATE_RUN]: REFORMED_MACHINE_STATE_RUN,
+            [TINYG_MACHINE_STATE_HOLD]: REFORMED_MACHINE_STATE_HOLD,
+            [TINYG_MACHINE_STATE_ALARM]: REFORMED_MACHINE_STATE_ALARM,
+        }[machineState]) || REFORMED_MACHINE_STATE_NA;
+
+        return {
+            machineState,
+            reformedMachineState,
+        };
     }
 
-    return '';
+    return {
+        machineState: MACHINE_STATE_NONE,
+        reformedMachineState: MACHINE_STATE_NONE,
+    };
 };
 
 // Gets the machine position.
@@ -295,7 +356,10 @@ const reducer = createReducer(initialState, {
         const { type, state } = payload;
         const settings = _get(state, 'settings'); // from previous state
         const context = { type, settings, state };
-        const machineState = mapContextToMachineState(context);
+        const {
+            machineState,
+            reformedMachineState,
+        } = mapContextToMachineStates(context);
         const mpos = mapContextToMachinePosition(context);
         const wpos = mapContextToWorkPosition(context);
         const modal = mapContextToModalGroup(context);
@@ -304,6 +368,7 @@ const reducer = createReducer(initialState, {
             type,
             state,
             machineState,
+            reformedMachineState,
             mpos,
             wpos,
             modal,
