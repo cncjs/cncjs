@@ -32,7 +32,7 @@ import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import iconFan from './images/fan.svg';
 
 const Spindle = ({
-    isFrozenState,
+    isActionable,
     mistCoolant,
     floodCoolant,
     spindle,
@@ -41,7 +41,7 @@ const Spindle = ({
     const initialValues = {
         speed: ensurePositiveNumber(config.get('speed', 1000)),
     };
-    const isDisabled = isFrozenState;
+    const isDisabled = !isActionable;
 
     return (
         <Form
@@ -219,17 +219,17 @@ const Spindle = ({
 };
 
 export default connect(store => {
-    const connectionState = _get(store, 'connection.state');
-    const isFrozenState = (() => {
+    const isActionable = (() => {
+        const connectionState = _get(store, 'connection.state');
         const isConnected = (connectionState === CONNECTION_STATE_CONNECTED);
         if (!isConnected) {
-            return true;
+            return false;
         }
 
         const workflowState = _get(store, 'workflow.state');
-        const isRunning = (workflowState === WORKFLOW_STATE_RUNNING);
-        if (isRunning) {
-            return true;
+        const isWorkflowRunning = (workflowState === WORKFLOW_STATE_RUNNING);
+        if (isWorkflowRunning) {
+            return false;
         }
 
         const reformedMachineState = _get(store, 'controller.reformedMachineState');
@@ -239,8 +239,7 @@ export default connect(store => {
             REFORMED_MACHINE_STATE_HOLD,
         ];
         const isExpectedState = _includes(expectedStates, reformedMachineState);
-        const isFrozenState = !isExpectedState;
-        return isFrozenState;
+        return isExpectedState;
     })();
     const coolant = ensureArray(_get(store, 'controller.modal.coolant'));
     const spindle = _get(store, 'controller.modal.spindle');
@@ -248,7 +247,7 @@ export default connect(store => {
     const floodCoolant = coolant.indexOf('M8') >= 0;
 
     return {
-        isFrozenState,
+        isActionable,
         mistCoolant,
         floodCoolant,
         spindle,
