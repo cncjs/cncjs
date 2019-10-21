@@ -18,18 +18,9 @@ import {
     CONNECTION_STATE_CONNECTED,
 } from 'app/constants/connection';
 import {
-    GRBL,
-    GRBL_MACHINE_STATE_IDLE,
-    GRBL_MACHINE_STATE_HOLD,
-    MARLIN,
-    SMOOTHIE,
-    SMOOTHIE_MACHINE_STATE_IDLE,
-    SMOOTHIE_MACHINE_STATE_HOLD,
-    TINYG,
-    TINYG_MACHINE_STATE_READY,
-    TINYG_MACHINE_STATE_STOP,
-    TINYG_MACHINE_STATE_END,
-    TINYG_MACHINE_STATE_HOLD,
+    MACHINE_STATE_NONE,
+    REFORMED_MACHINE_STATE_IDLE,
+    REFORMED_MACHINE_STATE_HOLD,
 } from 'app/constants/controller';
 import {
     WORKFLOW_STATE_RUNNING,
@@ -241,28 +232,13 @@ export default connect(store => {
             return true;
         }
 
-        const controllerType = _get(store, 'controller.type');
-        const machineState = _get(store, 'controller.machineState');
-        const expectedStates = ({
-            [GRBL]: [
-                GRBL_MACHINE_STATE_IDLE,
-                GRBL_MACHINE_STATE_HOLD,
-            ],
-            [MARLIN]: [
-                '', // empty string
-            ],
-            [SMOOTHIE]: [
-                SMOOTHIE_MACHINE_STATE_IDLE,
-                SMOOTHIE_MACHINE_STATE_HOLD,
-            ],
-            [TINYG]: [
-                TINYG_MACHINE_STATE_READY,
-                TINYG_MACHINE_STATE_STOP,
-                TINYG_MACHINE_STATE_END,
-                TINYG_MACHINE_STATE_HOLD,
-            ],
-        }[controllerType]);
-        const isExpectedState = _includes(expectedStates, machineState);
+        const reformedMachineState = _get(store, 'controller.reformedMachineState');
+        const expectedStates = [
+            MACHINE_STATE_NONE, // No machine state reported (e.g. Marlin).
+            REFORMED_MACHINE_STATE_IDLE,
+            REFORMED_MACHINE_STATE_HOLD,
+        ];
+        const isExpectedState = _includes(expectedStates, reformedMachineState);
         const isFrozenState = !isExpectedState;
         return isFrozenState;
     })();
