@@ -1,7 +1,7 @@
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import _trim from 'lodash/trim';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
 import { Button, ButtonGroup } from 'app/components/Buttons';
@@ -32,6 +32,7 @@ import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import { in2mm, mapValueToUnits } from 'app/lib/units';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
+import ProbeModal from './modals/ProbeModal';
 
 const mapProbeCommandToDescription = (probeCommand) => ({
     'G38.2': i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure'),
@@ -43,6 +44,7 @@ const mapProbeCommandToDescription = (probeCommand) => ({
 const Probe = ({
     isActionable,
     units,
+    wcs,
 }) => {
     const config = useWidgetConfig();
     const initialValues = {
@@ -54,6 +56,8 @@ const Probe = ({
         retractionDistance: mapValueToUnits(config.get('retractionDistance'), units),
         useTLO: config.get('useTLO'),
     };
+    const probeDataRef = useRef(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
     const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
     const step = (units === METRIC_UNITS) ? 1 : 0.1;
@@ -62,12 +66,39 @@ const Probe = ({
         <Form
             initialValues={initialValues}
             onSubmit={(values) => {
-                // No submit handler required
+                const {
+                    probeAxis,
+                    probeCommand,
+                    probeDepth,
+                    probeFeedrate,
+                    touchPlateHeight,
+                    retractionDistance,
+                } = values;
+
+                probeDataRef.current = {
+                    probeAxis,
+                    probeCommand,
+                    probeDepth,
+                    probeFeedrate,
+                    touchPlateHeight,
+                    retractionDistance,
+                    wcs,
+                };
+
+                setIsModalOpen(true);
             }}
             subscription={{}}
         >
             {({ form }) => (
                 <>
+                    {isModalOpen && (
+                        <ProbeModal
+                            onClose={() => {
+                                setIsModalOpen(false);
+                            }}
+                            probeData={probeDataRef.current}
+                        />
+                    )}
                     <Field name="probeAxis">
                         {({ input, meta }) => {
                             const changeValueByProbeAxis = (probeAxis) => (event) => {
@@ -399,9 +430,11 @@ export default connect(store => {
         'G20': IMPERIAL_UNITS,
         'G21': METRIC_UNITS,
     }[modalUnits];
+    const wcs = _get(store, 'controller.modal.wcs') || 'G54';
 
     return {
         isActionable,
         units,
+        wcs,
     };
 })(Probe);
