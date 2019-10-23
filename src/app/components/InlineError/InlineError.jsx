@@ -1,23 +1,19 @@
-import cx from 'classnames';
 import React from 'react';
-import styles from './InlineError.styl';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import Space from 'app/components/Space';
 
-const InlineError = ({ className, children, ...props }) => (
+const InlineError = ({ children, style, ...props }) => (
     <div
         {...props}
-        className={cx(
-            className,
-            styles['help-block'],
-            styles['help-block-invalid']
-        )}
+        style={{
+            display: 'inline-block',
+            color: '#db3d44',
+            marginTop: '.25rem',
+            ...style,
+        }}
     >
-        <i
-            className={cx(
-                'tmicon',
-                'tmicon-warning-circle',
-                styles.icon
-            )}
-        />
+        <FontAwesomeIcon icon="exclamation-circle" fixedWidth />
+        <Space width=".25rem" />
         {children}
     </div>
 );
