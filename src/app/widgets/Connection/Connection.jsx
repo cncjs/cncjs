@@ -17,6 +17,7 @@ import { Button, ButtonGroup } from 'app/components/Buttons';
 import { Checkbox } from 'app/components/Checkbox';
 import Clickable from 'app/components/Clickable';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import InlineError from 'app/components/InlineError';
 import Input from 'app/components/FormControl/Input';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
@@ -64,6 +65,11 @@ const validateSocketConnectionOptions = (options) => {
     const { host, port } = { ...options };
     return !!host && (port > 0);
 };
+
+const required = value => (value ? undefined : i18n._('Required field.'));
+const minValue = min => value => ((Number.isNaN(value) || value >= min) ? undefined : `Should be greater than or equal to ${min}`);
+const maxValue = max => value => ((Number.isNaN(value) || value <= max) ? undefined : `Should be less than or equal to ${max}`);
+const composeValidators = (...validators) => value => validators.reduce((error, validator) => error || validator(value), undefined);
 
 // [Hook] The useReady hook returns a boolean value that indicates whether it is ready to connect.
 // @param {array} ports
@@ -594,21 +600,30 @@ const Connection = ({
                                                 <FormGroup>
                                                     <Label>{i18n._('Host')}</Label>
                                                     <div>
-                                                        <Field name="connection.socket.host">
+                                                        <Field
+                                                            name="connection.socket.host"
+                                                            validate={required}
+                                                        >
                                                             {({ input, meta }) => {
                                                                 const canChange = isDisconnected;
                                                                 const isDisabled = !canChange;
 
                                                                 return (
-                                                                    <Input
-                                                                        value={input.value}
-                                                                        disabled={isDisabled}
-                                                                        onChange={(event) => {
-                                                                            const value = event.target.value;
-                                                                            config.set('connection.socket.host', value);
-                                                                            input.onChange(value);
-                                                                        }}
-                                                                    />
+                                                                    <>
+                                                                        <Input
+                                                                            {...input}
+                                                                            type="text"
+                                                                            disabled={isDisabled}
+                                                                            onChange={(event) => {
+                                                                                const value = event.target.value;
+                                                                                config.set('connection.socket.host', value);
+                                                                                input.onChange(value);
+                                                                            }}
+                                                                        />
+                                                                        {(meta.error && meta.touched) && (
+                                                                            <InlineError>{meta.error}</InlineError>
+                                                                        )}
+                                                                    </>
                                                                 );
                                                             }}
                                                         </Field>
@@ -617,27 +632,35 @@ const Connection = ({
                                                 <FormGroup>
                                                     <Label>{i18n._('Port')}</Label>
                                                     <div>
-                                                        <Field name="connection.socket.port">
+                                                        <Field
+                                                            name="connection.socket.port"
+                                                            validate={composeValidators(required, minValue(0), maxValue(65535))}
+                                                        >
                                                             {({ input, meta }) => {
                                                                 const canChange = isDisconnected;
                                                                 const isDisabled = !canChange;
 
                                                                 return (
-                                                                    <Input
-                                                                        type="number"
-                                                                        min={0}
-                                                                        max={65535}
-                                                                        step={1}
-                                                                        value={input.value}
-                                                                        disabled={isDisabled}
-                                                                        onChange={(event) => {
-                                                                            const value = event.target.value;
-                                                                            if (value > 0) {
-                                                                                config.set('connection.socket.port', value);
-                                                                            }
-                                                                            input.onChange(value);
-                                                                        }}
-                                                                    />
+                                                                    <>
+                                                                        <Input
+                                                                            {...input}
+                                                                            type="number"
+                                                                            min={0}
+                                                                            max={65535}
+                                                                            step={1}
+                                                                            disabled={isDisabled}
+                                                                            onChange={(event) => {
+                                                                                const value = event.target.value;
+                                                                                if (value > 0) {
+                                                                                    config.set('connection.socket.port', value);
+                                                                                }
+                                                                                input.onChange(value);
+                                                                            }}
+                                                                        />
+                                                                        {(meta.error && meta.touched) && (
+                                                                            <InlineError>{meta.error}</InlineError>
+                                                                        )}
+                                                                    </>
                                                                 );
                                                             }}
                                                         </Field>

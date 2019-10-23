@@ -9,6 +9,7 @@ import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Input from 'app/components/FormControl/Input';
 import FormGroup from 'app/components/FormGroup';
 import Hoverable from 'app/components/Hoverable';
+import InlineError from 'app/components/InlineError';
 import InputGroup from 'app/components/InputGroup';
 import Label from 'app/components/Label';
 import Margin from 'app/components/Margin';
@@ -253,8 +254,8 @@ const Probe = ({
                                         <Label>{i18n._('Probe Depth')}</Label>
                                         <InputGroup sm>
                                             <Input
+                                                {...input}
                                                 type="number"
-                                                value={input.value}
                                                 min={0}
                                                 step={step}
                                                 onChange={changeValue}
@@ -265,7 +266,9 @@ const Probe = ({
                                                 </InputGroup.Text>
                                             </InputGroup.Append>
                                         </InputGroup>
-                                        {meta.error && meta.touched && <span>{meta.error}</span>}
+                                        {(meta.error && meta.touched) && (
+                                            <InlineError>{meta.error}</InlineError>
+                                        )}
                                     </FormGroup>
                                 );
                             }}
@@ -289,8 +292,8 @@ const Probe = ({
                                         <Label>{i18n._('Probe Feedrate')}</Label>
                                         <InputGroup sm>
                                             <Input
+                                                {...input}
                                                 type="number"
-                                                value={input.value}
                                                 min={0}
                                                 step={step}
                                                 onChange={changeValue}
@@ -301,7 +304,9 @@ const Probe = ({
                                                 </InputGroup.Text>
                                             </InputGroup.Append>
                                         </InputGroup>
-                                        {meta.error && meta.touched && <span>{meta.error}</span>}
+                                        {(meta.error && meta.touched) && (
+                                            <InlineError>{meta.error}</InlineError>
+                                        )}
                                     </FormGroup>
                                 );
                             }}
@@ -325,8 +330,8 @@ const Probe = ({
                                         <Label>{i18n._('Touch Plate Thickness')}</Label>
                                         <InputGroup sm>
                                             <Input
+                                                {...input}
                                                 type="number"
-                                                value={input.value}
                                                 min={0}
                                                 step={step}
                                                 onChange={changeValue}
@@ -337,7 +342,9 @@ const Probe = ({
                                                 </InputGroup.Text>
                                             </InputGroup.Append>
                                         </InputGroup>
-                                        {meta.error && meta.touched && <span>{meta.error}</span>}
+                                        {(meta.error && meta.touched) && (
+                                            <InlineError>{meta.error}</InlineError>
+                                        )}
                                     </FormGroup>
                                 );
                             }}
@@ -361,8 +368,8 @@ const Probe = ({
                                         <Label>{i18n._('Retraction Distance')}</Label>
                                         <InputGroup sm>
                                             <Input
+                                                {...input}
                                                 type="number"
-                                                value={input.value}
                                                 min={0}
                                                 step={step}
                                                 onChange={changeValue}
@@ -373,7 +380,9 @@ const Probe = ({
                                                 </InputGroup.Text>
                                             </InputGroup.Append>
                                         </InputGroup>
-                                        {meta.error && meta.touched && <span>{meta.error}</span>}
+                                        {(meta.error && meta.touched) && (
+                                            <InlineError>{meta.error}</InlineError>
+                                        )}
                                     </FormGroup>
                                 );
                             }}
