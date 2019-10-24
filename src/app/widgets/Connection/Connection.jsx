@@ -50,6 +50,7 @@ import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import portal from 'app/lib/portal';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
+import { composeValidators, required, minValue, maxValue } from 'app/widgets/shared/validations';
 
 // @param {string} options.path
 // @param {number} options.baudRate
@@ -65,11 +66,6 @@ const validateSocketConnectionOptions = (options) => {
     const { host, port } = { ...options };
     return !!host && (port > 0);
 };
-
-const required = value => (value ? undefined : i18n._('Required field.'));
-const minValue = min => value => ((Number.isNaN(value) || value >= min) ? undefined : `Should be greater than or equal to ${min}`);
-const maxValue = max => value => ((Number.isNaN(value) || value <= max) ? undefined : `Should be less than or equal to ${max}`);
-const composeValidators = (...validators) => value => validators.reduce((error, validator) => error || validator(value), undefined);
 
 // [Hook] The useReady hook returns a boolean value that indicates whether it is ready to connect.
 // @param {array} ports

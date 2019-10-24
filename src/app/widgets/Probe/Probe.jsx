@@ -30,10 +30,10 @@ import {
     WORKFLOW_STATE_IDLE,
 } from 'app/constants/workflow';
 import useToggle from 'app/hooks/useToggle';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import { in2mm, mapValueToUnits } from 'app/lib/units';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
+import { composeValidators, required, minValue } from 'app/widgets/shared/validations';
 import ProbeModal from './modals/ProbeModal';
 
 const mapProbeCommandToDescription = (probeCommand) => ({
@@ -85,6 +85,13 @@ const Probe = ({
                         retractionDistance,
                     } = values;
 
+                    config.set('probeAxis', probeAxis);
+                    config.set('probeCommand', probeCommand);
+                    config.set('probeDepth', probeDepth);
+                    config.set('probeFeedrate', probeFeedrate);
+                    config.set('touchPlateHeight', touchPlateHeight);
+                    config.set('retractionDistance', retractionDistance);
+
                     probeDataRef.current = {
                         probeAxis,
                         probeCommand,
@@ -98,29 +105,12 @@ const Probe = ({
                     toggleModalState(true);
                 }}
                 subscription={{}}
-                validate={values => {
-                    const errors = {};
-                    if (values.probeDepth === undefined) {
-                        errors.probeDepth = i18n._('Required field.');
-                    }
-                    if (values.probeFeedrate === undefined) {
-                        errors.probeFeedrate = i18n._('Required field.');
-                    }
-                    if (values.touchPlateHeight === undefined) {
-                        errors.touchPlateHeight = i18n._('Required field.');
-                    }
-                    if (values.retractionDistance === undefined) {
-                        errors.retractionDistance = i18n._('Required field.');
-                    }
-                    return errors;
-                }}
             >
                 {({ form }) => (
                     <>
                         <Field name="probeAxis">
                             {({ input, meta }) => {
                                 const changeValueByProbeAxis = (probeAxis) => (event) => {
-                                    config.set('probeAxis', probeAxis);
                                     input.onChange(probeAxis);
                                 };
                                 const probeAxis = input.value;
@@ -167,7 +157,6 @@ const Probe = ({
                         <Field name="probeCommand">
                             {({ input, meta }) => {
                                 const changeValueByProbeCommand = (probeCommand) => (event) => {
-                                    config.set('probeCommand', probeCommand);
                                     input.onChange(probeCommand);
                                 };
                                 const probeCommand = input.value;
@@ -235,7 +224,10 @@ const Probe = ({
                                 );
                             }}
                         </Field>
-                        <Field name="probeDepth">
+                        <Field
+                            name="probeDepth"
+                            validate={composeValidators(required, minValue(0))}
+                        >
                             {({ input, meta }) => {
                                 const changeValue = (event) => {
                                     const value = _trim(event.target.value);
@@ -244,8 +236,7 @@ const Probe = ({
                                         return;
                                     }
 
-                                    const probeDepth = ensurePositiveNumber(units === IMPERIAL_UNITS ? in2mm(value) : value); // in mm
-                                    config.set('probeDepth', probeDepth);
+                                    const probeDepth = (units === IMPERIAL_UNITS) ? in2mm(value) : value; // in mm
                                     input.onChange(probeDepth);
                                 };
 
@@ -273,7 +264,10 @@ const Probe = ({
                                 );
                             }}
                         </Field>
-                        <Field name="probeFeedrate">
+                        <Field
+                            name="probeFeedrate"
+                            validate={composeValidators(required, minValue(0))}
+                        >
                             {({ input, meta }) => {
                                 const changeValue = (event) => {
                                     const value = _trim(event.target.value);
@@ -282,8 +276,7 @@ const Probe = ({
                                         return;
                                     }
 
-                                    const probeFeedrate = ensurePositiveNumber(units === IMPERIAL_UNITS ? in2mm(value) : value); // in mm
-                                    config.set('probeFeedrate', probeFeedrate);
+                                    const probeFeedrate = (units === IMPERIAL_UNITS) ? in2mm(value) : value; // in mm
                                     input.onChange(probeFeedrate);
                                 };
 
@@ -311,7 +304,10 @@ const Probe = ({
                                 );
                             }}
                         </Field>
-                        <Field name="touchPlateHeight">
+                        <Field
+                            name="touchPlateHeight"
+                            validate={composeValidators(required, minValue(0))}
+                        >
                             {({ input, meta }) => {
                                 const changeValue = (event) => {
                                     const value = _trim(event.target.value);
@@ -320,8 +316,7 @@ const Probe = ({
                                         return;
                                     }
 
-                                    const touchPlateHeight = ensurePositiveNumber(units === IMPERIAL_UNITS ? in2mm(value) : value); // in mm
-                                    config.set('touchPlateHeight', touchPlateHeight);
+                                    const touchPlateHeight = (units === IMPERIAL_UNITS) ? in2mm(value) : value; // in mm
                                     input.onChange(touchPlateHeight);
                                 };
 
@@ -349,7 +344,10 @@ const Probe = ({
                                 );
                             }}
                         </Field>
-                        <Field name="retractionDistance">
+                        <Field
+                            name="retractionDistance"
+                            validate={composeValidators(required, minValue(0))}
+                        >
                             {({ input, meta }) => {
                                 const changeValue = (event) => {
                                     const value = _trim(event.target.value);
@@ -358,8 +356,7 @@ const Probe = ({
                                         return;
                                     }
 
-                                    const retractionDistance = ensurePositiveNumber(units === IMPERIAL_UNITS ? in2mm(value) : value); // in mm
-                                    config.set('retractionDistance', retractionDistance);
+                                    const retractionDistance = (units === IMPERIAL_UNITS) ? in2mm(value) : value; // in mm
                                     input.onChange(retractionDistance);
                                 };
 
