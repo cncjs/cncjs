@@ -1,7 +1,6 @@
 import ensureArray from 'ensure-array';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
-import _trim from 'lodash/trim';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Form, Field } from 'react-final-form';
@@ -189,15 +188,11 @@ const Spindle = ({
                                                     min={0}
                                                     step={1}
                                                     onChange={(event) => {
-                                                        const value = _trim(event.target.value);
-                                                        if (value === '') { // empty string
-                                                            input.onChange(undefined);
-                                                            return;
-                                                        }
+                                                        const value = event.target.value;
+                                                        input.onChange(value);
 
                                                         const speed = ensurePositiveNumber(value);
                                                         config.set('speed', speed);
-                                                        input.onChange(speed);
                                                     }}
                                                 />
                                                 <InputGroup.Append>

@@ -1,6 +1,5 @@
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
-import _trim from 'lodash/trim';
 import React, { useRef } from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
@@ -85,13 +84,6 @@ const Probe = ({
                         retractionDistance,
                     } = values;
 
-                    config.set('probeAxis', probeAxis);
-                    config.set('probeCommand', probeCommand);
-                    config.set('probeDepth', probeDepth);
-                    config.set('probeFeedrate', probeFeedrate);
-                    config.set('touchPlateHeight', touchPlateHeight);
-                    config.set('retractionDistance', retractionDistance);
-
                     probeDataRef.current = {
                         probeAxis,
                         probeCommand,
@@ -112,6 +104,8 @@ const Probe = ({
                             {({ input, meta }) => {
                                 const changeValueByProbeAxis = (probeAxis) => (event) => {
                                     input.onChange(probeAxis);
+
+                                    config.set('probeAxis', probeAxis);
                                 };
                                 const probeAxis = input.value;
 
@@ -158,6 +152,8 @@ const Probe = ({
                             {({ input, meta }) => {
                                 const changeValueByProbeCommand = (probeCommand) => (event) => {
                                     input.onChange(probeCommand);
+
+                                    config.set('probeCommand', probeCommand);
                                 };
                                 const probeCommand = input.value;
 
@@ -230,14 +226,13 @@ const Probe = ({
                         >
                             {({ input, meta }) => {
                                 const changeValue = (event) => {
-                                    const value = _trim(event.target.value);
-                                    if (value === '') { // empty string
-                                        input.onChange(undefined);
-                                        return;
-                                    }
+                                    const value = event.target.value;
+                                    input.onChange(value);
 
-                                    const probeDepth = (units === IMPERIAL_UNITS) ? in2mm(value) : value; // in mm
-                                    input.onChange(probeDepth);
+                                    const probeDepth = Number(units === IMPERIAL_UNITS ? in2mm(value) : value); // in mm
+                                    if (Number.isFinite(probeDepth) && probeDepth >= 0) {
+                                        config.set('probeDepth', probeDepth);
+                                    }
                                 };
 
                                 return (
@@ -270,14 +265,13 @@ const Probe = ({
                         >
                             {({ input, meta }) => {
                                 const changeValue = (event) => {
-                                    const value = _trim(event.target.value);
-                                    if (value === '') { // empty string
-                                        input.onChange(undefined);
-                                        return;
-                                    }
+                                    const value = event.target.value;
+                                    input.onChange(value);
 
-                                    const probeFeedrate = (units === IMPERIAL_UNITS) ? in2mm(value) : value; // in mm
-                                    input.onChange(probeFeedrate);
+                                    const probeFeedrate = Number(units === IMPERIAL_UNITS ? in2mm(value) : value); // in mm
+                                    if (Number.isFinite(probeFeedrate) && probeFeedrate >= 0) {
+                                        config.set('probeFeedrate', probeFeedrate);
+                                    }
                                 };
 
                                 return (
@@ -310,14 +304,13 @@ const Probe = ({
                         >
                             {({ input, meta }) => {
                                 const changeValue = (event) => {
-                                    const value = _trim(event.target.value);
-                                    if (value === '') { // empty string
-                                        input.onChange(undefined);
-                                        return;
-                                    }
+                                    const value = event.target.value;
+                                    input.onChange(value);
 
-                                    const touchPlateHeight = (units === IMPERIAL_UNITS) ? in2mm(value) : value; // in mm
-                                    input.onChange(touchPlateHeight);
+                                    const touchPlateHeight = Number(units === IMPERIAL_UNITS ? in2mm(value) : value); // in mm
+                                    if (Number.isFinite(touchPlateHeight) && touchPlateHeight >= 0) {
+                                        config.set('touchPlateHeight', touchPlateHeight);
+                                    }
                                 };
 
                                 return (
@@ -350,14 +343,13 @@ const Probe = ({
                         >
                             {({ input, meta }) => {
                                 const changeValue = (event) => {
-                                    const value = _trim(event.target.value);
-                                    if (value === '') { // empty string
-                                        input.onChange(undefined);
-                                        return;
-                                    }
+                                    const value = event.target.value;
+                                    input.onChange(value);
 
-                                    const retractionDistance = (units === IMPERIAL_UNITS) ? in2mm(value) : value; // in mm
-                                    input.onChange(retractionDistance);
+                                    const retractionDistance = Number(units === IMPERIAL_UNITS ? in2mm(value) : value); // in mm
+                                    if (Number.isFinite(retractionDistance) && retractionDistance >= 0) {
+                                        config.set('retractionDistance', retractionDistance);
+                                    }
                                 };
 
                                 return (

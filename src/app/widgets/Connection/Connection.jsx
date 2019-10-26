@@ -50,7 +50,7 @@ import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import portal from 'app/lib/portal';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
-import { composeValidators, required, minValue, maxValue } from 'app/widgets/shared/validations';
+import { composeValidators, required } from 'app/widgets/shared/validations';
 
 // @param {string} options.path
 // @param {number} options.baudRate
@@ -88,6 +88,14 @@ const useSerialConnectivity = ({ ports, baudRates }) => {
     const isReady = (isPortReady && isBaudRateReady);
 
     return isReady;
+};
+
+const validatePortNumber = (min = 1, max = 65535) => value => {
+    const port = Number(value);
+
+    return Number.isFinite(port) && port >= min && port <= max
+        ? undefined
+        : i18n._('Invalid port number. Specify a port number from {{min}} to {{max}}.', { min, max });
 };
 
 const getMemoizedInitialValues = moize.deep((options) => {
@@ -336,10 +344,11 @@ const Connection = ({
                                     const isSmoothieSelected = input.value === SMOOTHIE;
                                     const isTinyGSelected = input.value === TINYG;
                                     const handleChangeByValue = (value) => (e) => {
+                                        input.onChange(value);
+
                                         if (!!value) {
                                             config.set('controller.type', value);
                                         }
-                                        input.onChange(value);
                                     };
 
                                     return (
@@ -399,10 +408,11 @@ const Connection = ({
                                         const isSerialSelected = input.value === CONNECTION_TYPE_SERIAL;
                                         const isSocketSelected = input.value === CONNECTION_TYPE_SOCKET;
                                         const handleChangeByValue = (value) => (e) => {
+                                            input.onChange(value);
+
                                             if (!!value) {
                                                 config.set('connection.type', value);
                                             }
-                                            input.onChange(value);
                                         };
 
                                         return (
@@ -467,8 +477,9 @@ const Connection = ({
                                                                             value={value}
                                                                             onChange={(option) => {
                                                                                 const { value } = option;
-                                                                                config.set('connection.serial.path', value);
                                                                                 input.onChange(value);
+
+                                                                                config.set('connection.serial.path', value);
                                                                             }}
                                                                             isClearable={false}
                                                                             isDisabled={isDisabled}
@@ -525,8 +536,9 @@ const Connection = ({
                                                                             value={value}
                                                                             onChange={(option) => {
                                                                                 const { value } = option;
-                                                                                config.set('connection.serial.baudRate', value);
                                                                                 input.onChange(value);
+
+                                                                                config.set('connection.serial.baudRate', value);
                                                                             }}
                                                                             isClearable={false}
                                                                             isDisabled={isDisabled}
@@ -575,8 +587,9 @@ const Connection = ({
                                                                     disabled={isDisabled}
                                                                     onChange={(event) => {
                                                                         const checked = !!event.target.checked;
-                                                                        config.set('connection.serial.rtscts', checked);
                                                                         input.onChange(checked);
+
+                                                                        config.set('connection.serial.rtscts', checked);
                                                                     }}
                                                                 >
                                                                     <Space width={8} />
@@ -612,8 +625,9 @@ const Connection = ({
                                                                             disabled={isDisabled}
                                                                             onChange={(event) => {
                                                                                 const value = event.target.value;
-                                                                                config.set('connection.socket.host', value);
                                                                                 input.onChange(value);
+
+                                                                                config.set('connection.socket.host', value);
                                                                             }}
                                                                         />
                                                                         {(meta.error && meta.touched) && (
@@ -630,7 +644,7 @@ const Connection = ({
                                                     <div>
                                                         <Field
                                                             name="connection.socket.port"
-                                                            validate={composeValidators(required, minValue(0), maxValue(65535))}
+                                                            validate={composeValidators(required, validatePortNumber(1, 65535))}
                                                         >
                                                             {({ input, meta }) => {
                                                                 const canChange = isDisconnected;
@@ -647,10 +661,12 @@ const Connection = ({
                                                                             disabled={isDisabled}
                                                                             onChange={(event) => {
                                                                                 const value = event.target.value;
-                                                                                if (value > 0) {
-                                                                                    config.set('connection.socket.port', value);
-                                                                                }
                                                                                 input.onChange(value);
+
+                                                                                const port = Number(value);
+                                                                                if (Number.isFinite(port) && port >= 1 && port <= 65535) {
+                                                                                    config.set('connection.socket.port', port);
+                                                                                }
                                                                             }}
                                                                         />
                                                                         {(meta.error && meta.touched) && (
@@ -681,8 +697,9 @@ const Connection = ({
                                                 disabled={isDisabled}
                                                 onChange={(event) => {
                                                     const checked = !!event.target.checked;
-                                                    config.set('autoReconnect', checked);
                                                     input.onChange(checked);
+
+                                                    config.set('autoReconnect', checked);
                                                 }}
                                             >
                                                 <Space width={8} />

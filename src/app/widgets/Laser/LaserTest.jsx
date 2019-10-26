@@ -1,5 +1,4 @@
 import _get from 'lodash/get';
-import _trim from 'lodash/trim';
 import React from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
@@ -88,9 +87,10 @@ const LaserTest = ({
                                                                                 max={100}
                                                                                 step={1}
                                                                                 onChange={(value) => {
+                                                                                    input.onChange(value);
+
                                                                                     const power = ensurePositiveNumber(value);
                                                                                     config.set('test.power', power);
-                                                                                    input.onChange(power);
                                                                                 }}
                                                                             />
                                                                         </>
@@ -114,15 +114,11 @@ const LaserTest = ({
                                                                                 min={0}
                                                                                 step={1}
                                                                                 onChange={(event) => {
-                                                                                    const value = _trim(event.target.value);
-                                                                                    if (value === '') { // empty string
-                                                                                        input.onChange(undefined);
-                                                                                        return;
-                                                                                    }
+                                                                                    const value = event.target.value;
+                                                                                    input.onChange(value);
 
                                                                                     const duration = ensurePositiveNumber(value);
                                                                                     config.set('test.duration', duration);
-                                                                                    input.onChange(duration);
                                                                                 }}
                                                                             />
                                                                             <InputGroup.Append>
@@ -156,15 +152,11 @@ const LaserTest = ({
                                                                                 min={0}
                                                                                 step={1}
                                                                                 onChange={(event) => {
-                                                                                    const value = _trim(event.target.value);
-                                                                                    if (value === '') { // empty string
-                                                                                        input.onChange(undefined);
-                                                                                        return;
-                                                                                    }
+                                                                                    const value = event.target.value;
+                                                                                    input.onChange(value);
 
                                                                                     const maxS = ensurePositiveNumber(value);
                                                                                     config.set('test.maxS', maxS);
-                                                                                    input.onChange(maxS);
                                                                                 }}
                                                                             />
                                                                         </InputGroup>

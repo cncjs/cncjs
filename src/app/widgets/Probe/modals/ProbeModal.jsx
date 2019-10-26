@@ -55,9 +55,13 @@ const ProbeModal = ({
                                 {({ input }) => {
                                     const handleClickTLO = (event) => {
                                         input.onChange(PROBE_SETTER_TLO);
+
+                                        config.set('useTLO', true);
                                     };
                                     const handleClickWCS = (event) => {
                                         input.onChange(PROBE_SETTER_WCS);
+
+                                        config.set('useTLO', false);
                                     };
                                     const probeSetter = input.value;
 
