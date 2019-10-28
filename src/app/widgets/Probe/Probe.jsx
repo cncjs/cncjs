@@ -28,7 +28,7 @@ import {
 import {
     WORKFLOW_STATE_IDLE,
 } from 'app/constants/workflow';
-import useToggle from 'app/hooks/useToggle';
+import useModal from 'app/hooks/useModal';
 import i18n from 'app/lib/i18n';
 import { in2mm, mapValueToUnits } from 'app/lib/units';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
@@ -48,7 +48,7 @@ const Probe = ({
     wcs,
 }) => {
     const probeDataRef = useRef(null);
-    const [modalState, toggleModalState] = useToggle(false);
+    const { isModalOpen, openModal, closeModal } = useModal();
     const config = useWidgetConfig();
     const initialValues = {
         probeAxis: config.get('probeAxis', 'Z'),
@@ -64,11 +64,9 @@ const Probe = ({
 
     return (
         <>
-            {modalState && (
+            {isModalOpen && (
                 <ProbeModal
-                    onClose={() => {
-                        toggleModalState(false);
-                    }}
+                    onClose={closeModal}
                     probeData={probeDataRef.current}
                 />
             )}
@@ -94,7 +92,7 @@ const Probe = ({
                         wcs,
                     };
 
-                    toggleModalState(true);
+                    openModal();
                 }}
                 subscription={{}}
             >
