@@ -322,6 +322,7 @@
     "progress": "~2.0.3",
     "react-hot-loader": "~4.12.15",
     "run-sequence": "~2.2.1",
+    "schema-utils": "~2.5.0",
     "sinon": "~7.5.0",
     "style-loader": "~1.0.0",
     "stylint": "~2.0.0",
