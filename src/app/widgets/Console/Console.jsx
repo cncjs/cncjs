@@ -14,6 +14,7 @@ import useEffectOnce from 'app/hooks/useEffectOnce';
 import usePrevious from 'app/hooks/usePrevious';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
+import useWidgetEvent from 'app/widgets/shared/useWidgetEvent';
 import Terminal from './Terminal';
 import styles from './index.styl';
 
@@ -21,6 +22,7 @@ const Console = ({
     isFullscreen,
     isConnected,
 }) => {
+    const emitter = useWidgetEvent();
     const prevIsFullscreen = usePrevious(isFullscreen);
     const terminalRef = useRef();
     const sender = useRef(uuid());
@@ -98,7 +100,16 @@ const Console = ({
         controller.addListener('connection:write', onConnectionWrite);
         controller.addListener('connection:read', onConnectionRead);
 
-        const onResizeEventHandler = pubsub.subscribe('resize', (msg) => {
+        return () => {
+            controller.removeListener('connection:open', onConnectionOpen);
+            controller.removeListener('connection:close', onConnectionClose);
+            controller.removeListener('connection:write', onConnectionWrite);
+            controller.removeListener('connection:read', onConnectionRead);
+        };
+    });
+
+    useEffectOnce(() => {
+        const onResizeToken = pubsub.subscribe('resize', (msg) => {
             const { current: term } = terminalRef;
             if (!term) {
                 return;
@@ -108,19 +119,45 @@ const Console = ({
         });
 
         return () => {
-            controller.removeListener('connection:open', onConnectionOpen);
-            controller.removeListener('connection:close', onConnectionClose);
-            controller.removeListener('connection:write', onConnectionWrite);
-            controller.removeListener('connection:read', onConnectionRead);
-
-            pubsub.unsubscribe(onResizeEventHandler);
+            pubsub.unsubscribe(onResizeToken);
         };
     });
 
     useEffect(() => {
-        const { current: term } = terminalRef;
+        const onSelectAll = () => {
+            const { current: term } = terminalRef;
+            if (!term) {
+                return;
+            }
 
-        if ((prevIsFullscreen !== isFullscreen) && !!term) {
+            term.selectAll();
+        };
+        const onClearSelection = () => {
+            const { current: term } = terminalRef;
+            if (!term) {
+                return;
+            }
+
+            term.clearSelection();
+        };
+
+        emitter.on('terminal:selectAll', onSelectAll);
+        emitter.on('terminal:clearSelection', onClearSelection);
+
+        return () => {
+            emitter.off('terminal:selectAll', onSelectAll);
+            emitter.off('terminal:clearSelection', onClearSelection);
+        };
+    }, [emitter]);
+
+    // Run the effect after every render
+    useEffect(() => {
+        const { current: term } = terminalRef;
+        if (!term) {
+            return;
+        }
+
+        if (prevIsFullscreen !== isFullscreen) {
             term.resize();
         }
     });

@@ -287,22 +287,22 @@ class TerminalWrapper extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.cursorBlink !== this.props.cursorBlink) {
-            this.term.setOption('cursorBlink', nextProps.cursorBlink);
-        }
-        if (nextProps.scrollback !== this.props.scrollback) {
-            this.term.setOption('scrollback', nextProps.scrollback);
-        }
-        if (nextProps.tabStopWidth !== this.props.tabStopWidth) {
-            this.term.setOption('tabStopWidth', nextProps.tabStopWidth);
-        }
-    }
-
     componentDidUpdate(prevProps) {
         if (this.props.cols !== prevProps.cols || this.props.rows !== prevProps.rows) {
             const { cols, rows } = this.props;
             this.resize(cols, rows);
+        }
+
+        if (prevProps.cursorBlink !== this.props.cursorBlink) {
+            this.term.setOption('cursorBlink', this.props.cursorBlink);
+        }
+
+        if (prevProps.scrollback !== this.props.scrollback) {
+            this.term.setOption('scrollback', this.props.scrollback);
+        }
+
+        if (prevProps.tabStopWidth !== this.props.tabStopWidth) {
+            this.term.setOption('tabStopWidth', this.props.tabStopWidth);
         }
     }
 
