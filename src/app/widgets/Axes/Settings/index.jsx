@@ -87,9 +87,9 @@ class Settings extends Component {
             metricJogDistances
         } = this.node.general.value;
 
-        this.config.replace('axes', ensureArray(axes));
-        this.config.replace('jog.imperial.distances', ensureArray(imperialJogDistances));
-        this.config.replace('jog.metric.distances', ensureArray(metricJogDistances));
+        this.config.set('axes', ensureArray(axes));
+        this.config.set('jog.imperial.distances', ensureArray(imperialJogDistances));
+        this.config.set('jog.metric.distances', ensureArray(metricJogDistances));
 
         // ShuttleXpress
         const { feedrateMin, feedrateMax, hertz, overshoot } = this.node.shuttleXpress.state;

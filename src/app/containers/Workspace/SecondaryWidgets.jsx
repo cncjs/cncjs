@@ -146,9 +146,7 @@ class SecondaryWidgets extends Component {
     componentDidUpdate() {
         const { widgets } = this.state;
 
-        // Calling config.set() will merge two different arrays into one.
-        // Remove the property first to avoid duplication.
-        config.replace('workspace.container.secondary.widgets', widgets);
+        config.set('workspace.container.secondary.widgets', widgets);
     }
 
     subscribe() {

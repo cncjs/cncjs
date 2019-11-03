@@ -482,7 +482,7 @@ class Settings extends Component {
                                     const matchedMachineProfile = _find(machineProfiles, { id: currentMachineProfileId });
 
                                     if (matchedMachineProfile) {
-                                        config.replace('workspace.machineProfile', matchedMachineProfile);
+                                        config.set('workspace.machineProfile', matchedMachineProfile);
                                     }
                                 });
                         } catch (err) {
@@ -513,7 +513,7 @@ class Settings extends Component {
                                     const currentMachineProfile = config.get('workspace.machineProfile');
                                     const currentMachineProfileId = _get(currentMachineProfile, 'id');
                                     if (currentMachineProfileId === id) {
-                                        config.replace('workspace.machineProfile', { id: null });
+                                        config.set('workspace.machineProfile', { id: null });
                                     }
                                 });
                         } catch (err) {

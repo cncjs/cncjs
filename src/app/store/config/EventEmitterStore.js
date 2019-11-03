@@ -1,6 +1,5 @@
 import events from 'events';
 import _get from 'lodash/get';
-import _merge from 'lodash/merge';
 import _set from 'lodash/set';
 import _unset from 'lodash/unset';
 import _isEqual from 'lodash/isEqual';
@@ -39,7 +38,7 @@ class EventEmitterStore extends events.EventEmitter {
             return this._state;
         }
 
-        _merge(this._state, _set({}, key, value));
+        _set(this._state, key, value);
         this.emit('change', this._state);
         return this._state;
     }
@@ -47,21 +46,6 @@ class EventEmitterStore extends events.EventEmitter {
     unset(key) {
         _unset(this._state, key);
         this.emit('change', this._state);
-        return this._state;
-    }
-
-    replace(key, value) {
-        log.trace(`replace(key=${JSON.stringify(key)}, value=${JSON.stringify(value)})`);
-
-        const prevValue = this.get(key);
-        if (typeof value === 'object' && _isEqual(value, prevValue)) {
-            return this._state;
-        }
-        if (value === prevValue) {
-            return this._state;
-        }
-        this.unset(key);
-        this.set(key, value);
         return this._state;
     }
 

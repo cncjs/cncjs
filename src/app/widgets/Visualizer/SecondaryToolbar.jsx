@@ -133,7 +133,7 @@ class SecondaryToolbar extends Component {
     changeMachineProfileById = (id) => {
         const machineProfile = _find(this.state.machineProfiles, { id });
         if (machineProfile) {
-            config.replace('workspace.machineProfile', machineProfile);
+            config.set('workspace.machineProfile', machineProfile);
         }
     };
 

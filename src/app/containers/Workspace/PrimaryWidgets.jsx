@@ -146,9 +146,7 @@ class PrimaryWidgets extends Component {
     componentDidUpdate() {
         const { widgets } = this.state;
 
-        // Calling config.set() will merge two different arrays into one.
-        // Remove the property first to avoid duplication.
-        config.replace('workspace.container.primary.widgets', widgets);
+        config.set('workspace.container.primary.widgets', widgets);
     }
 
     subscribe() {

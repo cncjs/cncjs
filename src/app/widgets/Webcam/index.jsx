@@ -52,16 +52,10 @@ class WebcamWidget extends Component {
         const {
             disabled,
             minimized,
-            mediaSource,
-            deviceId,
-            url,
         } = this.state;
 
         this.config.set('disabled', disabled);
         this.config.set('minimized', minimized);
-        this.config.set('mediaSource', mediaSource);
-        this.config.set('deviceId', deviceId);
-        this.config.set('url', url);
     }
 
     getInitialState() {
@@ -159,6 +153,9 @@ class WebcamWidget extends Component {
                                                         url={url}
                                                         onSave={(data) => {
                                                             const { mediaSource, deviceId, url } = data;
+                                                            this.config.set('mediaSource', mediaSource);
+                                                            this.config.set('deviceId', deviceId);
+                                                            this.config.set('url', url);
                                                             this.setState({ mediaSource, deviceId, url });
                                                             onClose();
                                                         }}
