@@ -40,14 +40,6 @@ class WidgetConfig {
         key = this.translateKey(key);
         return config.unset(key);
     }
-
-    replace(key, value) {
-        if (!this.widgetId) {
-            throw new Error('The widget id cannot be an empty string');
-        }
-        key = this.translateKey(key);
-        return config.replace(key, value);
-    }
 }
 
 export default WidgetConfig;
