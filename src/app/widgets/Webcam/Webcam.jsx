@@ -1,11 +1,9 @@
 import cx from 'classnames';
-import _get from 'lodash/get';
 import Slider from 'rc-slider';
 import React, { useEffect, useRef } from 'react';
 import Anchor from 'app/components/Anchor';
 import Tooltip from 'app/components/Tooltip';
 import WebcamComponent from 'app/components/Webcam';
-import useStateWithEffect from 'app/hooks/useStateWithEffect';
 import i18n from 'app/lib/i18n';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import useWidgetEvent from 'app/widgets/shared/useWidgetEvent';
@@ -44,23 +42,12 @@ const Webcam = ({
 }) => {
     const config = useWidgetConfig();
     const emitter = useWidgetEvent();
-    const [state, setState] = useStateWithEffect({
-        geometry: {
-            scale: config.get('geometry.scale', 1.0),
-            rotation: config.get('geometry.rotation', 0),
-            flipHorizontally: config.get('geometry.flipHorizontally', false),
-            flipVertically: config.get('geometry.flipVertically', false),
-        },
-        crosshair: config.get('crosshair', false),
-        muted: config.get('muted', false),
-    }, (state) => {
-        config.set('geometry.scale', _get(state, 'geometry.scale'));
-        config.set('geometry.rotation', _get(state, 'geometry.rotation'));
-        config.set('geometry.flipHorizontally', _get(state, 'geometry.flipHorizontally'));
-        config.set('geometry.flipVertically', _get(state, 'geometry.flipVertically'));
-        config.set('crosshair', _get(state, 'crosshair'));
-        config.set('muted', _get(state, 'muted'));
-    });
+    const scale = config.get('geometry.scale', 1.0);
+    const rotation = config.get('geometry.rotation', 0);
+    const flipHorizontally = config.get('geometry.flipHorizontally', false);
+    const flipVertically = config.get('geometry.flipVertically', false);
+    const crosshair = config.get('crosshair', false);
+    const muted = config.get('muted', false);
     const imageSourceRef = useRef();
 
     useEffect(() => {
@@ -81,89 +68,39 @@ const Webcam = ({
     });
 
     const changeImageScale = (value) => {
-        setState(state => ({
-            ...state,
-            geometry: {
-                ...state.geometry,
-                scale: value,
-            }
-        }));
+        config.set('geometry.scale', value);
     };
 
     const rotateLeft = () => {
-        const {
-            geometry: {
-                flipHorizontally,
-                flipVertically,
-                rotation,
-            },
-        } = state;
         const rotateLeft = (flipHorizontally && flipVertically) || (!flipHorizontally && !flipVertically);
         const modulus = 4;
         const i = rotateLeft ? -1 : 1;
 
-        setState(state => ({
-            ...state,
-            geometry: {
-                ...state.geometry,
-                rotation: (Math.abs(Number(rotation || 0)) + modulus + i) % modulus,
-            }
-        }));
+        config.set('geometry.rotation', (Math.abs(Number(rotation || 0)) + modulus + i) % modulus);
     };
 
     const rotateRight = () => {
-        const {
-            geometry: {
-                flipHorizontally,
-                flipVertically,
-                rotation,
-            },
-        } = state;
         const rotateRight = (flipHorizontally && flipVertically) || (!flipHorizontally && !flipVertically);
         const modulus = 4;
         const i = rotateRight ? 1 : -1;
 
-        setState(state => ({
-            ...state,
-            geometry: {
-                ...state.geometry,
-                rotation: (Math.abs(Number(rotation || 0)) + modulus + i) % modulus,
-            }
-        }));
+        config.set('geometry.rotation', (Math.abs(Number(rotation || 0)) + modulus + i) % modulus);
     };
 
     const toggleFlipHorizontally = () => {
-        setState(state => ({
-            ...state,
-            geometry: {
-                ...state.geometry,
-                flipHorizontally: !state.geometry.flipHorizontally,
-            },
-        }));
+        config.set('geometry.flipHorizontally', !flipHorizontally);
     };
 
     const toggleFlipVertically = () => {
-        setState(state => ({
-            ...state,
-            geometry: {
-                ...state.geometry,
-                flipVertically: !state.geometry.flipVertically,
-            },
-        }));
+        config.set('geometry.flipVertically', !flipVertically);
     };
 
     const toggleCrosshair = () => {
-        setState(state => ({
-            ...state,
-            crosshair: !state.crosshair,
-        }));
+        config.set('crosshair', !crosshair);
     };
 
     const toggleMuted = () => {
-        setState(state => ({
-            ...state,
-            muted: !state.muted,
-        }));
+        config.set('muted', !muted);
     };
 
     if (disabled) {
@@ -175,12 +112,6 @@ const Webcam = ({
         );
     }
 
-    const scale = _get(state, 'geometry.scale');
-    const rotation = _get(state, 'geometry.rotation');
-    const flipHorizontally = _get(state, 'geometry.flipHorizontally');
-    const flipVertically = _get(state, 'geometry.flipVertically');
-    const crosshair = _get(state, 'crosshair');
-    const muted = _get(state, 'muted');
     const transformStyle = [
         'translate(-50%, -50%)',
         `rotateX(${flipVertically ? 180 : 0}deg)`,

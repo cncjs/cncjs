@@ -185,6 +185,7 @@
     "i18next-express-middleware": "~1.8.2",
     "i18next-node-fs-backend": "~2.1.3",
     "i18next-xhr-backend": "~3.2.0",
+    "immer": "~5.0.0",
     "infinite-tree": "~1.16.2",
     "is-electron": "~2.2.0",
     "jimp": "~0.8.5",

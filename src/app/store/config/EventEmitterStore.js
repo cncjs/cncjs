@@ -1,9 +1,14 @@
 import events from 'events';
+import produce from 'immer';
 import _get from 'lodash/get';
 import _set from 'lodash/set';
 import _unset from 'lodash/unset';
-import _isEqual from 'lodash/isEqual';
+import _isObject from 'lodash/isObject';
 import log from 'app/lib/log';
+
+const strval = (value) => {
+    return _isObject(value) ? JSON.stringify(value) : value;
+};
 
 class EventEmitterStore extends events.EventEmitter {
     _state = {};
@@ -21,31 +26,47 @@ class EventEmitterStore extends events.EventEmitter {
         return { ...this._state };
     }
 
-    get(key, defaultValue) {
-        log.trace(`get(key=${JSON.stringify(key)}, defaultValue=${JSON.stringify(defaultValue)})`);
+    get(path, defaultValue) {
+        if (defaultValue !== undefined) {
+            log.trace(`get(path=${JSON.stringify(path)}, defaultValue=${strval(defaultValue)})`);
+        } else {
+            log.trace(`get(path=${JSON.stringify(path)})`);
+        }
 
-        return (key === undefined) ? this._state : _get(this._state, key, defaultValue);
+        return (path === undefined) ? this._state : _get(this._state, path, defaultValue);
     }
 
-    set(key, value) {
-        log.trace(`set(key=${JSON.stringify(key)}, value=${JSON.stringify(value)})`);
+    set(path, value) {
+        const baseState = this._state;
+        const nextState = produce(baseState, draftState => {
+            _set(draftState, path, value);
+        });
+        const changed = (baseState !== nextState);
 
-        const prevValue = this.get(key);
-        if (typeof value === 'object' && _isEqual(value, prevValue)) {
-            return this._state;
-        }
-        if (value === prevValue) {
-            return this._state;
+        log.trace(`set(path=${JSON.stringify(path)}, value=${strval(value)}): changed=${changed}`);
+
+        if (changed) {
+            this._state = nextState;
+            this.emit('change', this._state);
         }
 
-        _set(this._state, key, value);
-        this.emit('change', this._state);
         return this._state;
     }
 
-    unset(key) {
-        _unset(this._state, key);
-        this.emit('change', this._state);
+    unset(path) {
+        const baseState = this._state;
+        const nextState = produce(baseState, draftState => {
+            _unset(draftState, path);
+        });
+        const changed = (baseState !== nextState);
+
+        log.trace(`unset(path=${JSON.stringify(path)}): changed=${changed}`);
+
+        if (changed) {
+            this._state = nextState;
+            this.emit('change', this._state);
+        }
+
         return this._state;
     }
 
