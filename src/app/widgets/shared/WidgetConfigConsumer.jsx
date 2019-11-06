@@ -21,14 +21,20 @@ const WidgetConfigConsumer = ({
         get: (path, defaultValue) => _get(state, path, defaultValue),
         set: (path, value) => {
             dispatch({ type: 'set', payload: { path, value } });
+
+            // TODO: side effect
             config.set(translatePath(path), value);
         },
         unset: (path) => {
             dispatch({ type: 'unset', payload: { path } });
+
+            // TODO: side effect
             config.unset(translatePath(path));
         },
         update: (path, updater) => {
             dispatch({ type: 'updater', payload: { path, updater } });
+
+            // TODO: side effect
             config.update(translatePath(path), updater);
         },
     });
