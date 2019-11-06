@@ -24,7 +24,7 @@ const Demo = () => {
         return () => {
             // do something on unmount
         };
-    }); // you can include deps array if necessary
+    }); // you can include dependencies array if necessary
 
     return (
         <div>Count: {count}</div>

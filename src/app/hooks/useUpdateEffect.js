@@ -1,7 +1,7 @@
 /* eslint consistent-return: 0 */
 import { useEffect, useRef } from 'react';
 
-const useUpdateEffect = (effect, deps) => {
+const useUpdateEffect = (effect, dependencies) => {
     const isInitialMount = useRef(true);
     useEffect(() => {
         if (isInitialMount.current) {
@@ -13,7 +13,7 @@ const useUpdateEffect = (effect, deps) => {
             return effect();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, deps);
+    }, dependencies);
 };
 
 export default useUpdateEffect;
