@@ -1,20 +1,22 @@
 import cx from 'classnames';
 import Slider from 'rc-slider';
 import React, { useEffect, useRef } from 'react';
+import compose from 'recompose/compose';
 import Anchor from 'app/components/Anchor';
 import Tooltip from 'app/components/Tooltip';
 import WebcamComponent from 'app/components/Webcam';
 import i18n from 'app/lib/i18n';
+import withDeepMemo from 'app/lib/withDeepMemo';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import useWidgetEvent from 'app/widgets/shared/useWidgetEvent';
-import Image from './Image';
-import Line from './Line';
-import Circle from './Circle';
-import styles from './index.styl';
+import Image from './components/Image';
+import Line from './components/Line';
+import Circle from './components/Circle';
 import {
     MEDIA_SOURCE_LOCAL,
     MEDIA_SOURCE_MJPEG,
 } from './constants';
+import styles from './index.styl';
 
 // | Before                | After                   |
 // |-----------------------|-------------------------|
@@ -34,14 +36,14 @@ const mapMetaAddressToHostname = (url) => {
 
 const Webcam = ({
     disabled,
-    mediaSource,
-    deviceId,
-    url,
     className,
-    ...props
 }) => {
+    const count = useRef(0);
     const config = useWidgetConfig();
     const emitter = useWidgetEvent();
+    const mediaSource = config.get('mediaSource');
+    const deviceId = config.get('deviceId');
+    const url = config.get('url');
     const scale = config.get('geometry.scale', 1.0);
     const rotation = config.get('geometry.rotation', 0);
     const flipHorizontally = config.get('geometry.flipHorizontally', false);
@@ -121,7 +123,6 @@ const Webcam = ({
 
     return (
         <div
-            {...props}
             className={cx(className, styles['webcam-on-container'])}
         >
             {mediaSource === MEDIA_SOURCE_LOCAL && (
@@ -311,4 +312,6 @@ const Webcam = ({
     );
 };
 
-export default Webcam;
+export default compose(
+    withDeepMemo(),
+)(Webcam);

@@ -4,15 +4,15 @@ import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
-import portal from 'app/lib/portal';
-import WidgetConfig from 'app/widgets/shared/WidgetConfig';
+import WidgetConfig from 'app/widgets/shared/WidgetConfig'; // deprecated
+import WidgetConfigConsumer from 'app/widgets/shared/WidgetConfigConsumer';
 import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import WidgetEventEmitter from 'app/widgets/shared/WidgetEventEmitter';
-import Webcam from './Webcam';
-import Settings from './Settings';
+import SettingsModal from './modals/SettingsModal';
 import {
     MEDIA_SOURCE_LOCAL,
 } from './constants';
+import Webcam from './Webcam';
 
 class WebcamWidget extends Component {
     static propTypes = {
@@ -48,6 +48,12 @@ class WebcamWidget extends Component {
         }));
     };
 
+    toggleSettingsModal = () => {
+        this.setState(state => ({
+            isSettingsModalVisible: !state.isSettingsModalVisible,
+        }));
+    };
+
     componentDidUpdate(prevProps, prevState) {
         const {
             disabled,
@@ -63,9 +69,7 @@ class WebcamWidget extends Component {
             disabled: this.config.get('disabled', true),
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            mediaSource: this.config.get('mediaSource', MEDIA_SOURCE_LOCAL),
-            deviceId: this.config.get('deviceId', ''),
-            url: this.config.get('url', ''),
+            isSettingsModalVisible: false,
         };
     }
 
@@ -75,14 +79,12 @@ class WebcamWidget extends Component {
             disabled,
             minimized,
             isFullscreen,
-            mediaSource,
-            deviceId,
-            url,
+            isSettingsModalVisible,
         } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
 
         return (
-            <WidgetConfigProvider config={this.config}>
+            <WidgetConfigProvider widgetId={widgetId}>
                 <WidgetEventEmitter>
                     {(emitter) => (
                         <Widget fullscreen={isFullscreen}>
@@ -113,7 +115,9 @@ class WebcamWidget extends Component {
                                     <Widget.Button
                                         disabled={disabled}
                                         title={i18n._('Refresh')}
-                                        onClick={(event) => this.webcam.refresh()}
+                                        onClick={() => {
+                                            emitter.emit('refresh');
+                                        }}
                                     >
                                         <FontAwesomeIcon icon="redo-alt" fixedWidth />
                                     </Widget.Button>
@@ -144,26 +148,7 @@ class WebcamWidget extends Component {
                                         )}
                                         onSelect={(eventKey) => {
                                             if (eventKey === 'settings') {
-                                                const { mediaSource, deviceId, url } = this.state;
-
-                                                portal(({ onClose }) => (
-                                                    <Settings
-                                                        mediaSource={mediaSource}
-                                                        deviceId={deviceId}
-                                                        url={url}
-                                                        onSave={(data) => {
-                                                            const { mediaSource, deviceId, url } = data;
-                                                            this.config.set('mediaSource', mediaSource);
-                                                            this.config.set('deviceId', deviceId);
-                                                            this.config.set('url', url);
-                                                            this.setState({ mediaSource, deviceId, url });
-                                                            onClose();
-                                                        }}
-                                                        onCancel={() => {
-                                                            onClose();
-                                                        }}
-                                                    />
-                                                ));
+                                                this.toggleSettingsModal();
                                             } else if (eventKey === 'fullscreen') {
                                                 this.toggleFullscreen();
                                             } else if (eventKey === 'fork') {
@@ -206,11 +191,35 @@ class WebcamWidget extends Component {
                                     display: (minimized ? 'none' : 'block'),
                                 }}
                             >
+                                {isSettingsModalVisible && (
+                                    <WidgetConfigConsumer>
+                                        {(config) => {
+                                            const mediaSource = config.get('mediaSource', MEDIA_SOURCE_LOCAL);
+                                            const deviceId = config.get('deviceId');
+                                            const url = config.get('url');
+
+                                            return (
+                                                <SettingsModal
+                                                    mediaSource={mediaSource}
+                                                    deviceId={deviceId}
+                                                    url={url}
+                                                    onSave={(data) => {
+                                                        const { mediaSource, deviceId, url } = data;
+                                                        config.set('mediaSource', mediaSource);
+                                                        config.set('deviceId', deviceId);
+                                                        config.set('url', url);
+                                                        this.toggleSettingsModal();
+                                                    }}
+                                                    onCancel={() => {
+                                                        this.toggleSettingsModal();
+                                                    }}
+                                                />
+                                            );
+                                        }}
+                                    </WidgetConfigConsumer>
+                                )}
                                 <Webcam
                                     disabled={disabled}
-                                    mediaSource={mediaSource}
-                                    deviceId={deviceId}
-                                    url={url}
                                     style={{
                                         minHeight: isFullscreen ? '100%' : 240,
                                     }}

@@ -11,13 +11,13 @@ import Modal from 'app/components/Modal';
 import { RadioButton } from 'app/components/Radio';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
-import MutedText from './MutedText';
+import MutedText from '../components/MutedText';
 import {
     MEDIA_SOURCE_LOCAL,
     MEDIA_SOURCE_MJPEG,
-} from './constants';
+} from '../constants';
 
-class Settings extends Component {
+class SettingsModal extends Component {
     static propTypes = {
         mediaSource: PropTypes.string,
         deviceId: PropTypes.string,
@@ -186,4 +186,4 @@ class Settings extends Component {
     }
 }
 
-export default Settings;
+export default SettingsModal;
