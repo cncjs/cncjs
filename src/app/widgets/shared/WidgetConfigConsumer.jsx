@@ -32,7 +32,7 @@ const WidgetConfigConsumer = ({
             config.unset(translatePath(path));
         },
         update: (path, updater) => {
-            dispatch({ type: 'updater', payload: { path, updater } });
+            dispatch({ type: 'update', payload: { path, updater } });
 
             // TODO: side effect
             config.update(translatePath(path), updater);
