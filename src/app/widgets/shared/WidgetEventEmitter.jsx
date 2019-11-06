@@ -6,7 +6,11 @@ const WidgetEventEmitter = ({
     context: Context = WidgetEventContext,
     children,
 }) => {
-    const emitterRef = useRef(new events.EventEmitter());
+    const emitterRef = useRef(null);
+
+    if (emitterRef.current === null) {
+        emitterRef.current = new events.EventEmitter();
+    }
 
     return (
         <Context.Provider value={emitterRef.current}>
