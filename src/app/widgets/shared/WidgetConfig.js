@@ -1,44 +1,32 @@
 import config from 'app/store/config';
+import { translatePathByWidgetId } from './utils';
 
 class WidgetConfig {
     widgetId = '';
 
-    translateKey = (key) => {
-        const widgetId = this.widgetId;
-        if (typeof key !== 'undefined') {
-            key = `widgets["${widgetId}"].${key}`;
-        } else {
-            key = `widgets["${widgetId}"]`;
-        }
-        return key;
-    };
-
     constructor(widgetId) {
+        if (!widgetId) {
+            throw new TypeError(`"widgetId" is not defined: ${widgetId}`);
+        }
+
         this.widgetId = widgetId;
+        this.translatePath = translatePathByWidgetId(this.widgetId);
     }
 
-    get(key, defaultValue) {
-        if (!this.widgetId) {
-            throw new Error('The widget id cannot be an empty string');
-        }
-        key = this.translateKey(key);
-        return config.get(key, defaultValue);
+    get(path, defaultValue) {
+        return config.get(this.translatePath(path), defaultValue);
     }
 
-    set(key, value) {
-        if (!this.widgetId) {
-            throw new Error('The widget id cannot be an empty string');
-        }
-        key = this.translateKey(key);
-        return config.set(key, value);
+    set(path, value) {
+        return config.set(this.translatePath(path), value);
     }
 
-    unset(key) {
-        if (!this.widgetId) {
-            throw new Error('The widget id cannot be an empty string');
-        }
-        key = this.translateKey(key);
-        return config.unset(key);
+    unset(path) {
+        return config.unset(this.translatePath(path));
+    }
+
+    update(path, updater) {
+        return config.updater(this.translatePath(path), updater);
     }
 }
 

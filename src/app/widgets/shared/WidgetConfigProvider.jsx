@@ -1,13 +1,13 @@
 import produce from 'immer';
-import _cloneDeep from 'lodash/cloneDeep';
 import _isPlainObject from 'lodash/isPlainObject';
 import _set from 'lodash/set';
 import _unset from 'lodash/unset';
 import _update from 'lodash/update';
 import moize from 'moize';
-import React, { useReducer } from 'react';
-import log from 'app/lib/log';
+import React from 'react';
+import config from 'app/store/config';
 import { WidgetConfigContext } from './context';
+import { Provider as TrackedProvider } from './tracked';
 
 const enhancedReducer = (state, action) => {
     if (typeof action === 'function') {
@@ -45,26 +45,29 @@ const enhancedReducer = (state, action) => {
     return state;
 };
 
-const getMemoizedInitialState = moize.deep(({ config }) => {
-    return _cloneDeep(config.get());
+const getMemoizedInitialState = moize.deep(({ widgetId }) => {
+    return config.get(['widgets', widgetId]);
 }, {
     maxSize: 1, // maximum size of cache for this method
 });
 
 const WidgetConfigProvider = ({
     context: Context = WidgetConfigContext,
-    config,
+    widgetId,
     children,
 }) => {
-    const initialState = getMemoizedInitialState({ config });
-    const [state, dispatch] = useReducer(enhancedReducer, initialState);
+    if (!widgetId) {
+        throw new TypeError(`"widgetId" is not defined: ${widgetId}`);
+    }
 
-    log.trace(`WidgetConfigProvider: widgetId=${config.widgetId}`, state);
+    const initialState = getMemoizedInitialState({ widgetId });
 
     return (
-        <Context.Provider value={{ config, state, dispatch }}>
-            {children}
-        </Context.Provider>
+        <WidgetConfigContext.Provider value={widgetId}>
+            <TrackedProvider reducer={enhancedReducer} initialState={initialState}>
+                {children}
+            </TrackedProvider>
+        </WidgetConfigContext.Provider>
     );
 };
 
