@@ -38,7 +38,6 @@ const Webcam = ({
     disabled,
     className,
 }) => {
-    const count = useRef(0);
     const config = useWidgetConfig();
     const emitter = useWidgetEvent();
     const mediaSource = config.get('mediaSource');
