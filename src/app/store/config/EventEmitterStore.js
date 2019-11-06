@@ -3,6 +3,7 @@ import produce from 'immer';
 import _get from 'lodash/get';
 import _set from 'lodash/set';
 import _unset from 'lodash/unset';
+import _update from 'lodash/update';
 import _isObject from 'lodash/isObject';
 import log from 'app/lib/log';
 
@@ -68,6 +69,21 @@ class EventEmitterStore extends events.EventEmitter {
         }
 
         return this._state;
+    }
+
+    update(path, updater) {
+        const baseState = this._state;
+        const nextState = produce(baseState, draftState => {
+            _update(draftState, path, updater);
+        });
+        const changed = (baseState !== nextState);
+
+        log.trace(`update(path=${JSON.stringify(path)}, updater=${updater}): changed=${changed}`);
+
+        if (changed) {
+            this._state = nextState;
+            this.emit('change', this._state);
+        }
     }
 
     clear() {

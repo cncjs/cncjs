@@ -25,17 +25,17 @@ const enhancedReducer = (state, action) => {
             });
         }
 
-        if (action.type === 'update') {
-            const { path, updater } = { ...action.payload };
-            return produce(state, draft => {
-                _update(draft, path, updater);
-            });
-        }
-
         if (action.type === 'unset') {
             const { path } = { ...action.payload };
             return produce(state, draft => {
                 _unset(draft, path);
+            });
+        }
+
+        if (action.type === 'update') {
+            const { path, updater } = { ...action.payload };
+            return produce(state, draft => {
+                _update(draft, path, updater);
             });
         }
 
