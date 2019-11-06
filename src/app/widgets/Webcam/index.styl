@@ -15,64 +15,14 @@
     }
 }
 
-.webcam-on-container {
-    background-color: #000;
-    min-height: 240px;
-    text-align: center;
-    overflow: hidden;
-    position: relative;
-
-    .line-shadow {
-        box-shadow: 0 0 2px #333;
-    }
-
-    .toolbar,
-    .image-scale-slider {
-        opacity: 0;
-        transition: all 200ms ease-in; // use "ease-in" when things are moving out
-    }
+.btn-icon {
+    color: #f5f5f5;
+    font-size: 18px;
+    text-shadow: 0 0 5px #333;
+    margin-left: 10px;
 
     &:hover {
-        .toolbar,
-        .image-scale-slider {
-            opacity: 1;
-            transition: all 250ms ease-out; // use "ease-out" when things are moving in
-        }
-    }
-
-    .toolbar {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 5px 20px;
-        line-height: 18px;
-        background-color: #000;
-
-        .scale-text {
-            float: left;
-            color: #f5f5f5;
-            font-size: 14px;
-            text-shadow: 0 0 5px #333;
-        }
-
-        .btn-icon {
-            color: #f5f5f5;
-            font-size: 18px;
-            text-shadow: 0 0 5px #333;
-            margin-left: 10px;
-
-            &:hover {
-                color: #fff;
-            }
-        }
-    }
-
-    .image-scale-slider {
-        position: absolute;
-        bottom: 30px;
-        left: 15px;
-        right: 15px;
+        color: #fff;
     }
 }
 
