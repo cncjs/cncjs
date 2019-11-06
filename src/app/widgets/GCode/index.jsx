@@ -287,7 +287,7 @@ class GCodeWidget extends Component {
         };
 
         return (
-            <WidgetConfigProvider config={this.config}>
+            <WidgetConfigProvider widgetId={widgetId}>
                 <Widget fullscreen={isFullscreen}>
                     <Widget.Header>
                         <Widget.Title>

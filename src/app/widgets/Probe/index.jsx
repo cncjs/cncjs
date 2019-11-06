@@ -64,7 +64,7 @@ class ProbeWidget extends Component {
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
 
         return (
-            <WidgetConfigProvider config={this.config}>
+            <WidgetConfigProvider widgetId={widgetId}>
                 <Widget fullscreen={isFullscreen}>
                     <Widget.Header>
                         <Widget.Title>

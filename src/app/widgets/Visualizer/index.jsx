@@ -1007,6 +1007,7 @@ class VisualizerWidget extends Component {
     }
 
     render() {
+        const { widgetId } = this.props;
         const state = {
             ...this.state,
             isAgitated: this.isAgitated()
@@ -1023,7 +1024,7 @@ class VisualizerWidget extends Component {
         const showNotifications = showVisualizer && !!state.notification.type;
 
         return (
-            <WidgetConfigProvider config={this.config}>
+            <WidgetConfigProvider widgetId={widgetId}>
                 <Widget borderless>
                     <Widget.Header className={styles.widgetHeader} fixed>
                         <PrimaryToolbar

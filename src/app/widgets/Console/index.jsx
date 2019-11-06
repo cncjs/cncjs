@@ -66,7 +66,7 @@ class ConsoleWidget extends Component {
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
 
         return (
-            <WidgetConfigProvider config={this.config}>
+            <WidgetConfigProvider widgetId={widgetId}>
                 <WidgetEventEmitter>
                     {(emitter) => (
                         <Widget fullscreen={isFullscreen}>
