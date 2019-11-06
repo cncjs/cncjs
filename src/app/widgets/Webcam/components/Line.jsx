@@ -21,9 +21,10 @@ class Line extends Component {
 
     render() {
         const { style, vertical, color, opacity, length, width, ...props } = this.props;
-        const componentStyle = {
-            ...style,
-            opacity: opacity
+
+        let componentStyle = {
+            boxShadow: '0 0 2px #333',
+            opacity: opacity,
         };
 
         if (vertical) {
@@ -37,6 +38,8 @@ class Line extends Component {
             componentStyle.borderTopWidth = width;
             componentStyle.width = length;
         }
+
+        componentStyle = { ...componentStyle, ...style };
 
         return (
             <div {...props} style={componentStyle} />
