@@ -6,7 +6,7 @@ import Settings from 'app/containers/Settings';
 import SideNav from 'app/containers/SideNav';
 import TopNav from 'app/containers/TopNav';
 import Workspace from 'app/containers/Workspace';
-import { trackPage } from 'app/lib/analytics';
+import analytics from 'app/lib/analytics';
 import {
     TOPNAV_HEIGHT,
     SIDENAV_WIDTH,
@@ -45,7 +45,7 @@ const ProtectedPage = ({
         );
     }
 
-    trackPage(location.pathname);
+    analytics.pageview(location.pathname);
 
     return (
         <Fragment>
