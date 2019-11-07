@@ -9,9 +9,11 @@ import Margin from 'app/components/Margin';
 import Tooltip from 'app/components/Tooltip';
 import WebcamComponent from 'app/components/Webcam';
 import withDeepMemo from 'app/hocs/withDeepMemo';
+import useModal from 'app/hooks/useModal';
 import i18n from 'app/lib/i18n';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import useWidgetEvent from 'app/widgets/shared/useWidgetEvent';
+import SettingsModal from './modals/SettingsModal';
 import Image from './components/Image';
 import Line from './components/Line';
 import Circle from './components/Circle';
@@ -52,6 +54,35 @@ const Webcam = ({
     const flipVertically = config.get('geometry.flipVertically', false);
     const crosshair = config.get('crosshair', false);
     const muted = config.get('muted', false);
+
+    // SettingsModal
+    const {
+        isModalOpen: isSettingsModalOpen,
+        closeModal: closeSettingsModal,
+        toggleModal: toggleSettingsModal,
+    } = useModal();
+    const onSaveSettingsModal = (data) => {
+        const { mediaSource, deviceId, url } = data;
+        config.set('mediaSource', mediaSource);
+        config.set('deviceId', deviceId);
+        config.set('url', url);
+        closeSettingsModal();
+    };
+    const onCancelSettingsModal = () => {
+        closeSettingsModal();
+    };
+    useEffect(() => {
+        const onToggleSettingsModal = (options) => {
+            const { isVisible } = { ...options };
+            toggleSettingsModal(isVisible);
+        };
+
+        emitter.on('toggleSettingsModal', onToggleSettingsModal);
+
+        return () => {
+            emitter.off('toggleSettingsModal', onToggleSettingsModal);
+        };
+    }, [emitter, toggleSettingsModal]);
 
     // Image source
     const imageSourceRef = useRef();
@@ -125,203 +156,214 @@ const Webcam = ({
     ].join(' ');
 
     return (
-        <WebcamContainer
-            style={{
-                minHeight: isFullscreen ? '100%' : 240,
-            }}
-        >
-            {mediaSource === MEDIA_SOURCE_LOCAL && (
-                <div style={{ width: '100%' }}>
-                    <WebcamComponent
-                        className={styles.center}
-                        style={{
-                            transform: transformStyle,
-                        }}
-                        width={(100 * scale).toFixed(0) + '%'}
-                        height="auto"
-                        muted={muted}
-                        video={!!deviceId ? deviceId : true}
-                    />
-                </div>
-            )}
-            {mediaSource === MEDIA_SOURCE_MJPEG && (
-                <Image
-                    ref={imageSourceRef}
-                    src={mapMetaAddressToHostname(url)}
-                    style={{
-                        width: (100 * scale).toFixed(0) + '%',
-                        transform: transformStyle,
-                    }}
-                    className={styles.center}
+        <>
+            {isSettingsModalOpen && (
+                <SettingsModal
+                    mediaSource={mediaSource}
+                    deviceId={deviceId}
+                    url={url}
+                    onSave={onSaveSettingsModal}
+                    onCancel={onCancelSettingsModal}
                 />
             )}
-            {crosshair && (
-                <div>
-                    <Line
-                        className={cx(
-                            styles.center
-                        )}
-                        length="100%"
+            <WebcamContainer
+                style={{
+                    minHeight: isFullscreen ? '100%' : 240,
+                }}
+            >
+                {mediaSource === MEDIA_SOURCE_LOCAL && (
+                    <div style={{ width: '100%' }}>
+                        <WebcamComponent
+                            className={styles.center}
+                            style={{
+                                transform: transformStyle,
+                            }}
+                            width={(100 * scale).toFixed(0) + '%'}
+                            height="auto"
+                            muted={muted}
+                            video={!!deviceId ? deviceId : true}
+                        />
+                    </div>
+                )}
+                {mediaSource === MEDIA_SOURCE_MJPEG && (
+                    <Image
+                        ref={imageSourceRef}
+                        src={mapMetaAddressToHostname(url)}
+                        style={{
+                            width: (100 * scale).toFixed(0) + '%',
+                            transform: transformStyle,
+                        }}
+                        className={styles.center}
                     />
-                    <Line
-                        className={cx(
-                            styles.center,
-                        )}
-                        length="100%"
-                        vertical
-                    />
-                    <Circle
-                        className={cx(
-                            styles.center,
-                        )}
-                        diameter={20}
-                    />
-                    <Circle
-                        className={cx(
-                            styles.center,
-                        )}
-                        diameter={40}
-                    />
-                </div>
-            )}
-            <ControlBar>
-                <Margin left=".75rem" right=".75rem" bottom=".25rem">
-                    <Slider
-                        defaultValue={scale}
-                        min={0.1}
-                        max={10}
-                        step={0.1}
-                        tipFormatter={null}
-                        onChange={changeImageScale}
-                    />
-                </Margin>
-                <Container
-                    fluid
-                    style={{
-                        backgroundColor: '#000',
-                        padding: '.125rem .75rem',
-                    }}
-                >
-                    <Row>
-                        <Col width="auto">
-                            <ScaleText>{scale}x</ScaleText>
-                        </Col>
-                        <Col>
-                            {mediaSource === MEDIA_SOURCE_LOCAL && (
-                                <Anchor
-                                    className={styles.btnIcon}
-                                    onClick={toggleMuted}
-                                >
-                                    <i
-                                        className={cx(
-                                            styles.icon,
-                                            styles.inverted,
-                                            { [styles.iconUnmute]: !muted },
-                                            { [styles.iconMute]: muted }
-                                        )}
-                                    />
-                                </Anchor>
+                )}
+                {crosshair && (
+                    <div>
+                        <Line
+                            className={cx(
+                                styles.center
                             )}
-                            <Tooltip
-                                content={i18n._('Rotate Left')}
-                                enterDelay={500}
-                                hideOnClick
-                                placement="top"
-                            >
-                                <Anchor
-                                    className={styles.btnIcon}
-                                    onClick={rotateLeft}
+                            length="100%"
+                        />
+                        <Line
+                            className={cx(
+                                styles.center,
+                            )}
+                            length="100%"
+                            vertical
+                        />
+                        <Circle
+                            className={cx(
+                                styles.center,
+                            )}
+                            diameter={20}
+                        />
+                        <Circle
+                            className={cx(
+                                styles.center,
+                            )}
+                            diameter={40}
+                        />
+                    </div>
+                )}
+                <ControlBar>
+                    <Margin left=".75rem" right=".75rem" bottom=".25rem">
+                        <Slider
+                            defaultValue={scale}
+                            min={0.1}
+                            max={10}
+                            step={0.1}
+                            tipFormatter={null}
+                            onChange={changeImageScale}
+                        />
+                    </Margin>
+                    <Container
+                        fluid
+                        style={{
+                            backgroundColor: '#000',
+                            padding: '.125rem .75rem',
+                        }}
+                    >
+                        <Row>
+                            <Col width="auto">
+                                <ScaleText>{scale}x</ScaleText>
+                            </Col>
+                            <Col>
+                                {mediaSource === MEDIA_SOURCE_LOCAL && (
+                                    <Anchor
+                                        className={styles.btnIcon}
+                                        onClick={toggleMuted}
+                                    >
+                                        <i
+                                            className={cx(
+                                                styles.icon,
+                                                styles.inverted,
+                                                { [styles.iconUnmute]: !muted },
+                                                { [styles.iconMute]: muted }
+                                            )}
+                                        />
+                                    </Anchor>
+                                )}
+                                <Tooltip
+                                    content={i18n._('Rotate Left')}
+                                    enterDelay={500}
+                                    hideOnClick
+                                    placement="top"
                                 >
-                                    <i
-                                        className={cx(
-                                            styles.icon,
-                                            styles.inverted,
-                                            styles.iconRotateLeft
-                                        )}
-                                    />
-                                </Anchor>
-                            </Tooltip>
-                            <Tooltip
-                                content={i18n._('Rotate Right')}
-                                enterDelay={500}
-                                hideOnClick
-                                placement="top"
-                            >
-                                <Anchor
-                                    className={styles.btnIcon}
-                                    onClick={rotateRight}
+                                    <Anchor
+                                        className={styles.btnIcon}
+                                        onClick={rotateLeft}
+                                    >
+                                        <i
+                                            className={cx(
+                                                styles.icon,
+                                                styles.inverted,
+                                                styles.iconRotateLeft
+                                            )}
+                                        />
+                                    </Anchor>
+                                </Tooltip>
+                                <Tooltip
+                                    content={i18n._('Rotate Right')}
+                                    enterDelay={500}
+                                    hideOnClick
+                                    placement="top"
                                 >
-                                    <i
-                                        className={cx(
-                                            styles.icon,
-                                            styles.inverted,
-                                            styles.iconRotateRight
-                                        )}
-                                    />
-                                </Anchor>
-                            </Tooltip>
-                            <Tooltip
-                                content={i18n._('Flip Horizontally')}
-                                enterDelay={500}
-                                hideOnClick
-                                placement="top"
-                            >
-                                <Anchor
-                                    className={styles.btnIcon}
-                                    onClick={toggleFlipHorizontally}
+                                    <Anchor
+                                        className={styles.btnIcon}
+                                        onClick={rotateRight}
+                                    >
+                                        <i
+                                            className={cx(
+                                                styles.icon,
+                                                styles.inverted,
+                                                styles.iconRotateRight
+                                            )}
+                                        />
+                                    </Anchor>
+                                </Tooltip>
+                                <Tooltip
+                                    content={i18n._('Flip Horizontally')}
+                                    enterDelay={500}
+                                    hideOnClick
+                                    placement="top"
                                 >
-                                    <i
-                                        className={cx(
-                                            styles.icon,
-                                            styles.inverted,
-                                            styles.iconFlipHorizontally
-                                        )}
-                                    />
-                                </Anchor>
-                            </Tooltip>
-                            <Tooltip
-                                content={i18n._('Flip Vertically')}
-                                enterDelay={500}
-                                hideOnClick
-                                placement="top"
-                            >
-                                <Anchor
-                                    className={styles.btnIcon}
-                                    onClick={toggleFlipVertically}
+                                    <Anchor
+                                        className={styles.btnIcon}
+                                        onClick={toggleFlipHorizontally}
+                                    >
+                                        <i
+                                            className={cx(
+                                                styles.icon,
+                                                styles.inverted,
+                                                styles.iconFlipHorizontally
+                                            )}
+                                        />
+                                    </Anchor>
+                                </Tooltip>
+                                <Tooltip
+                                    content={i18n._('Flip Vertically')}
+                                    enterDelay={500}
+                                    hideOnClick
+                                    placement="top"
                                 >
-                                    <i
-                                        className={cx(
-                                            styles.icon,
-                                            styles.inverted,
-                                            styles.iconFlipVertically
-                                        )}
-                                    />
-                                </Anchor>
-                            </Tooltip>
-                            <Tooltip
-                                content={i18n._('Crosshair')}
-                                enterDelay={500}
-                                hideOnClick
-                                placement="top"
-                            >
-                                <Anchor
-                                    className={styles.btnIcon}
-                                    onClick={toggleCrosshair}
+                                    <Anchor
+                                        className={styles.btnIcon}
+                                        onClick={toggleFlipVertically}
+                                    >
+                                        <i
+                                            className={cx(
+                                                styles.icon,
+                                                styles.inverted,
+                                                styles.iconFlipVertically
+                                            )}
+                                        />
+                                    </Anchor>
+                                </Tooltip>
+                                <Tooltip
+                                    content={i18n._('Crosshair')}
+                                    enterDelay={500}
+                                    hideOnClick
+                                    placement="top"
                                 >
-                                    <i
-                                        className={cx(
-                                            styles.icon,
-                                            styles.inverted,
-                                            styles.iconCrosshair
-                                        )}
-                                    />
-                                </Anchor>
-                            </Tooltip>
-                        </Col>
-                    </Row>
-                </Container>
-            </ControlBar>
-        </WebcamContainer>
+                                    <Anchor
+                                        className={styles.btnIcon}
+                                        onClick={toggleCrosshair}
+                                    >
+                                        <i
+                                            className={cx(
+                                                styles.icon,
+                                                styles.inverted,
+                                                styles.iconCrosshair
+                                            )}
+                                        />
+                                    </Anchor>
+                                </Tooltip>
+                            </Col>
+                        </Row>
+                    </Container>
+                </ControlBar>
+            </WebcamContainer>
+        </>
     );
 };
 

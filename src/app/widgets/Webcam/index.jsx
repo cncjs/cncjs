@@ -5,13 +5,8 @@ import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
 import WidgetConfig from 'app/widgets/shared/WidgetConfig'; // deprecated
-import WidgetConfigConsumer from 'app/widgets/shared/WidgetConfigConsumer';
 import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import WidgetEventEmitter from 'app/widgets/shared/WidgetEventEmitter';
-import SettingsModal from './modals/SettingsModal';
-import {
-    MEDIA_SOURCE_LOCAL,
-} from './constants';
 import Webcam from './Webcam';
 
 class WebcamWidget extends Component {
@@ -48,12 +43,6 @@ class WebcamWidget extends Component {
         }));
     };
 
-    toggleSettingsModal = () => {
-        this.setState(state => ({
-            isSettingsModalVisible: !state.isSettingsModalVisible,
-        }));
-    };
-
     componentDidUpdate(prevProps, prevState) {
         const {
             disabled,
@@ -69,7 +58,6 @@ class WebcamWidget extends Component {
             disabled: this.config.get('disabled', true),
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            isSettingsModalVisible: false,
         };
     }
 
@@ -79,7 +67,6 @@ class WebcamWidget extends Component {
             disabled,
             minimized,
             isFullscreen,
-            isSettingsModalVisible,
         } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
 
@@ -148,7 +135,7 @@ class WebcamWidget extends Component {
                                         )}
                                         onSelect={(eventKey) => {
                                             if (eventKey === 'settings') {
-                                                this.toggleSettingsModal();
+                                                emitter.emit('toggleSettingsModal', { isVisible: true });
                                             } else if (eventKey === 'fullscreen') {
                                                 this.toggleFullscreen();
                                             } else if (eventKey === 'fork') {
@@ -191,33 +178,6 @@ class WebcamWidget extends Component {
                                     display: (minimized ? 'none' : 'block'),
                                 }}
                             >
-                                {isSettingsModalVisible && (
-                                    <WidgetConfigConsumer>
-                                        {(config) => {
-                                            const mediaSource = config.get('mediaSource', MEDIA_SOURCE_LOCAL);
-                                            const deviceId = config.get('deviceId');
-                                            const url = config.get('url');
-
-                                            return (
-                                                <SettingsModal
-                                                    mediaSource={mediaSource}
-                                                    deviceId={deviceId}
-                                                    url={url}
-                                                    onSave={(data) => {
-                                                        const { mediaSource, deviceId, url } = data;
-                                                        config.set('mediaSource', mediaSource);
-                                                        config.set('deviceId', deviceId);
-                                                        config.set('url', url);
-                                                        this.toggleSettingsModal();
-                                                    }}
-                                                    onCancel={() => {
-                                                        this.toggleSettingsModal();
-                                                    }}
-                                                />
-                                            );
-                                        }}
-                                    </WidgetConfigConsumer>
-                                )}
                                 <Webcam
                                     disabled={disabled}
                                     isFullscreen={isFullscreen}

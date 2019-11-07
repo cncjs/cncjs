@@ -47,8 +47,6 @@ const Probe = ({
     units,
     wcs,
 }) => {
-    const probeDataRef = useRef(null);
-    const { isModalOpen, openModal, closeModal } = useModal();
     const config = useWidgetConfig();
     const initialValues = {
         probeAxis: config.get('probeAxis', 'Z'),
@@ -62,11 +60,19 @@ const Probe = ({
     const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
     const step = (units === METRIC_UNITS) ? 1 : 0.1;
 
+    // ProbeModal
+    const {
+        isModalOpen: isProbeModalOpen,
+        openModal: openProbeModal,
+        closeModal: closeProbeModal,
+    } = useModal();
+    const probeDataRef = useRef(null);
+
     return (
         <>
-            {isModalOpen && (
+            {isProbeModalOpen && (
                 <ProbeModal
-                    onClose={closeModal}
+                    onClose={closeProbeModal}
                     probeData={probeDataRef.current}
                 />
             )}
@@ -92,7 +98,7 @@ const Probe = ({
                         wcs,
                     };
 
-                    openModal();
+                    openProbeModal();
                 }}
                 subscription={{}}
             >
