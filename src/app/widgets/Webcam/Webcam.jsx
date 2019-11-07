@@ -39,6 +39,7 @@ const mapMetaAddressToHostname = (url) => {
 
 const Webcam = ({
     disabled,
+    isFullscreen,
 }) => {
     const config = useWidgetConfig();
     const emitter = useWidgetEvent();
@@ -124,7 +125,11 @@ const Webcam = ({
     ].join(' ');
 
     return (
-        <WebcamContainer>
+        <WebcamContainer
+            style={{
+                minHeight: isFullscreen ? '100%' : 240,
+            }}
+        >
             {mediaSource === MEDIA_SOURCE_LOCAL && (
                 <div style={{ width: '100%' }}>
                     <WebcamComponent

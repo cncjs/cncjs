@@ -220,9 +220,7 @@ class WebcamWidget extends Component {
                                 )}
                                 <Webcam
                                     disabled={disabled}
-                                    style={{
-                                        minHeight: isFullscreen ? '100%' : 240,
-                                    }}
+                                    isFullscreen={isFullscreen}
                                 />
                             </Widget.Content>
                         </Widget>
