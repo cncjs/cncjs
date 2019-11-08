@@ -5,7 +5,9 @@ import compose from 'recompose/compose';
 import styled from 'styled-components';
 import Anchor from 'app/components/Anchor';
 import { Container, Row, Col } from 'app/components/GridSystem';
+import Image from 'app/components/Image';
 import Margin from 'app/components/Margin';
+import Text from 'app/components/Text';
 import Tooltip from 'app/components/Tooltip';
 import WebcamComponent from 'app/components/Webcam';
 import withDeepMemo from 'app/hocs/withDeepMemo';
@@ -14,9 +16,9 @@ import i18n from 'app/lib/i18n';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import useWidgetEvent from 'app/widgets/shared/useWidgetEvent';
 import SettingsModal from './modals/SettingsModal';
-import Image from './components/Image';
 import Line from './components/Line';
 import Circle from './components/Circle';
+import webcamIcon from './images/webcam.svg';
 import {
     MEDIA_SOURCE_LOCAL,
     MEDIA_SOURCE_MJPEG,
@@ -139,15 +141,6 @@ const Webcam = ({
         config.set('muted', !muted);
     };
 
-    if (disabled) {
-        return (
-            <div className={styles['webcam-off-container']}>
-                <h4><i className={styles['icon-webcam']} /></h4>
-                <h5>{i18n._('Webcam is off')}</h5>
-            </div>
-        );
-    }
-
     const transformStyle = [
         'translate(-50%, -50%)',
         `rotateX(${flipVertically ? 180 : 0}deg)`,
@@ -166,8 +159,17 @@ const Webcam = ({
                     onCancel={onCancelSettingsModal}
                 />
             )}
+            {disabled && (
+                <WebcamDisabledContainer>
+                    <Image src={webcamIcon} width={128} height={128} />
+                    <Margin top="1rem">
+                        <Text size={24}>{i18n._('Webcam is off')}</Text>
+                    </Margin>
+                </WebcamDisabledContainer>
+            )}
             <WebcamContainer
                 style={{
+                    display: disabled ? 'none' : 'block',
                     minHeight: isFullscreen ? '100%' : 240,
                 }}
             >
@@ -386,6 +388,11 @@ const ScaleText = styled.div`
     color: #f5f5f5;
     font-size: 14px;
     text-shadow: 0 0 5px #333;
+`;
+
+const WebcamDisabledContainer = styled.div`
+    padding: 1rem;
+    text-align: center;
 `;
 
 const WebcamContainer = styled.div`
