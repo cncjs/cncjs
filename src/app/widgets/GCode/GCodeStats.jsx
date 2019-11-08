@@ -1,11 +1,16 @@
+import _get from 'lodash/get';
+import _mapValues from 'lodash/mapValues';
 import moment from 'moment';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
+import { Container, Row, Col } from 'app/components/GridSystem';
+import HorizontalForm from 'app/components/HorizontalForm';
 import i18n from 'app/lib/i18n';
+import { mapPositionToUnits } from 'app/lib/units';
 import {
-    METRIC_UNITS,
+    IMPERIAL_UNITS,
+    METRIC_UNITS
 } from 'app/constants';
-import styles from './index.styl';
 
 const formatISODateTime = (time) => {
     return time > 0 ? moment.unix(time / 1000).format('YYYY-MM-DD HH:mm:ss') : '–';
@@ -27,89 +32,130 @@ const formatRemainingTime = (remainingTime) => {
     return moment(d._data).format('HH:mm:ss');
 };
 
-class GCodeStats extends Component {
-    static propTypes = {
-        state: PropTypes.object
+const GCodeStats = ({
+    units,
+    total,
+    sent,
+    received,
+    bbox,
+    startTime,
+    finishTime,
+    elapsedTime,
+    remainingTime,
+}) => {
+    const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
+    bbox = _mapValues(bbox, (position) => {
+        return _mapValues(position, (pos, axis) => {
+            return mapPositionToUnits(pos, units);
+        });
+    });
+
+    return (
+        <Container fluid>
+            <HorizontalForm spacing={['.75rem', '.5rem']}>
+                {({ FormContainer, FormRow, FormCol }) => (
+                    <FormContainer style={{ width: '100%' }}>
+                        <FormRow>
+                            <FormCol style={{ width: '1%' }}>
+                                {i18n._('Axis')}
+                            </FormCol>
+                            <FormCol>
+                                {i18n._('Min')}
+                            </FormCol>
+                            <FormCol>
+                                {i18n._('Max')}
+                            </FormCol>
+                            <FormCol>
+                                {i18n._('Dimension')}
+                            </FormCol>
+                        </FormRow>
+                        <FormRow>
+                            <FormCol>
+                                X
+                            </FormCol>
+                            <FormCol>
+                                {bbox.min.x} {displayUnits}
+                            </FormCol>
+                            <FormCol>
+                                {bbox.max.x} {displayUnits}
+                            </FormCol>
+                            <FormCol>
+                                {bbox.delta.x} {displayUnits}
+                            </FormCol>
+                        </FormRow>
+                        <FormRow>
+                            <FormCol>
+                                Y
+                            </FormCol>
+                            <FormCol>
+                                {bbox.min.y} {displayUnits}
+                            </FormCol>
+                            <FormCol>
+                                {bbox.max.y} {displayUnits}
+                            </FormCol>
+                            <FormCol>
+                                {bbox.delta.y} {displayUnits}
+                            </FormCol>
+                        </FormRow>
+                        <FormRow>
+                            <FormCol>
+                                Z
+                            </FormCol>
+                            <FormCol>
+                                {bbox.min.z} {displayUnits}
+                            </FormCol>
+                            <FormCol>
+                                {bbox.max.z} {displayUnits}
+                            </FormCol>
+                            <FormCol>
+                                {bbox.delta.z} {displayUnits}
+                            </FormCol>
+                        </FormRow>
+                    </FormContainer>
+                )}
+            </HorizontalForm>
+            <Row>
+                <Col>
+                    <div>{i18n._('Sent')}</div>
+                    <div>{total > 0 ? `${sent} / ${total}` : '–'}</div>
+                </Col>
+                <Col>
+                    <div>{i18n._('Received')}</div>
+                    <div>{total > 0 ? `${received} / ${total}` : '–'}</div>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <div>{i18n._('Start Time')}</div>
+                    <div>{formatISODateTime(startTime)}</div>
+                </Col>
+                <Col>
+                    <div>{i18n._('Elapsed Time')}</div>
+                    <div>{formatElapsedTime(elapsedTime)}</div>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <div>{i18n._('Finish Time')}</div>
+                    <div>{formatISODateTime(finishTime)}</div>
+                </Col>
+                <Col>
+                    <div>{i18n._('Remaining Time')}</div>
+                    <div>{formatRemainingTime(remainingTime)}</div>
+                </Col>
+            </Row>
+        </Container>
+    );
+};
+
+export default connect(store => {
+    const modalUnits = _get(store, 'controller.modal.units');
+    const units = {
+        'G20': IMPERIAL_UNITS,
+        'G21': METRIC_UNITS,
+    }[modalUnits];
+
+    return {
+        units,
     };
-
-    render() {
-        const { state } = this.props;
-        const { units, total, sent, received, bbox } = state;
-        const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
-        const startTime = formatISODateTime(state.startTime);
-        const finishTime = formatISODateTime(state.finishTime);
-        const elapsedTime = formatElapsedTime(state.elapsedTime);
-        const remainingTime = formatRemainingTime(state.remainingTime);
-
-        return (
-            <div className={styles['gcode-stats']}>
-                <div className="row no-gutters" style={{ marginBottom: 10 }}>
-                    <div className="col-xs-12">
-                        <table className="table-bordered" data-table="dimension">
-                            <thead>
-                                <tr>
-                                    <th className={styles.axis}>{i18n._('Axis')}</th>
-                                    <th>{i18n._('Min')}</th>
-                                    <th>{i18n._('Max')}</th>
-                                    <th>{i18n._('Dimension')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td className={styles.axis}>X</td>
-                                    <td>{bbox.min.x} {displayUnits}</td>
-                                    <td>{bbox.max.x} {displayUnits}</td>
-                                    <td>{bbox.delta.x} {displayUnits}</td>
-                                </tr>
-                                <tr>
-                                    <td className={styles.axis}>Y</td>
-                                    <td>{bbox.min.y} {displayUnits}</td>
-                                    <td>{bbox.max.y} {displayUnits}</td>
-                                    <td>{bbox.delta.y} {displayUnits}</td>
-                                </tr>
-                                <tr>
-                                    <td className={styles.axis}>Z</td>
-                                    <td>{bbox.min.z} {displayUnits}</td>
-                                    <td>{bbox.max.z} {displayUnits}</td>
-                                    <td>{bbox.delta.z} {displayUnits}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div className="row no-gutters" style={{ marginBottom: 10 }}>
-                    <div className="col-xs-6">
-                        <div>{i18n._('Sent')}</div>
-                        <div>{total > 0 ? `${sent} / ${total}` : '–'}</div>
-                    </div>
-                    <div className="col-xs-6">
-                        <div>{i18n._('Received')}</div>
-                        <div>{total > 0 ? `${received} / ${total}` : '–'}</div>
-                    </div>
-                </div>
-                <div className="row no-gutters" style={{ marginBottom: 10 }}>
-                    <div className="col-xs-6">
-                        <div>{i18n._('Start Time')}</div>
-                        <div>{startTime}</div>
-                    </div>
-                    <div className="col-xs-6">
-                        <div>{i18n._('Elapsed Time')}</div>
-                        <div>{elapsedTime}</div>
-                    </div>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col-xs-6">
-                        <div>{i18n._('Finish Time')}</div>
-                        <div>{finishTime}</div>
-                    </div>
-                    <div className="col-xs-6">
-                        <div>{i18n._('Remaining Time')}</div>
-                        <div>{remainingTime}</div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-}
-
-export default GCodeStats;
+})(GCodeStats);

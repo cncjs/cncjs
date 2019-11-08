@@ -1,5 +1,3 @@
-import classNames from 'classnames';
-import mapValues from 'lodash/mapValues';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -8,21 +6,8 @@ import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import { mapPositionToUnits } from 'app/lib/units';
 import WidgetConfig from 'app/widgets/shared/WidgetConfig';
 import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
-import {
-    IMPERIAL_UNITS,
-    METRIC_UNITS
-} from 'app/constants';
-import {
-    GRBL,
-    MARLIN,
-    SMOOTHIE,
-    TINYG,
-} from 'app/constants/controller';
-import GCode from './GCode';
-import styles from './index.styl';
 
 class GCodeWidget extends Component {
     static propTypes = {
@@ -59,14 +44,6 @@ class GCodeWidget extends Component {
     };
 
     controllerEvents = {
-        'serialport:open': (options) => {
-            const { port } = options;
-            this.setState({ port: port });
-        },
-        'serialport:close': (options) => {
-            const initialState = this.getInitialState();
-            this.setState({ ...initialState });
-        },
         'sender:unload': () => {
             this.setState({
                 bbox: {
@@ -101,62 +78,6 @@ class GCodeWidget extends Component {
                 remainingTime
             });
         },
-        'controller:state': (type, state) => {
-            // Grbl
-            if (type === GRBL) {
-                const { parserstate } = { ...state };
-                const { modal = {} } = { ...parserstate };
-                const units = {
-                    'G20': IMPERIAL_UNITS,
-                    'G21': METRIC_UNITS
-                }[modal.units] || this.state.units;
-
-                if (this.state.units !== units) {
-                    this.setState({ units: units });
-                }
-            }
-
-            // Marlin
-            if (type === MARLIN) {
-                const { modal = {} } = { ...state };
-                const units = {
-                    'G20': IMPERIAL_UNITS,
-                    'G21': METRIC_UNITS
-                }[modal.units] || this.state.units;
-
-                if (this.state.units !== units) {
-                    this.setState({ units: units });
-                }
-            }
-
-            // Smoothie
-            if (type === SMOOTHIE) {
-                const { parserstate } = { ...state };
-                const { modal = {} } = { ...parserstate };
-                const units = {
-                    'G20': IMPERIAL_UNITS,
-                    'G21': METRIC_UNITS
-                }[modal.units] || this.state.units;
-
-                if (this.state.units !== units) {
-                    this.setState({ units: units });
-                }
-            }
-
-            // TinyG
-            if (type === TINYG) {
-                const { sr } = { ...state };
-                const { modal = {} } = { ...sr };
-                const units = {
-                    'G20': IMPERIAL_UNITS,
-                    'G21': METRIC_UNITS
-                }[modal.units] || this.state.units;
-
-                if (this.state.units !== units) {
-                    this.setState({ units: units });
-                }
-            }
-        }
     };
 
     pubsubTokens = [];
@@ -183,9 +104,6 @@ class GCodeWidget extends Component {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-
-            port: controller.port,
-            units: METRIC_UNITS,
 
             // G-code Status (from server)
             total: 0,
@@ -272,19 +190,7 @@ class GCodeWidget extends Component {
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;
-        const { units, bbox } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
-        const state = {
-            ...this.state,
-            bbox: mapValues(bbox, (position) => {
-                return mapValues(position, (pos, axis) => {
-                    return mapPositionToUnits(pos, units);
-                });
-            })
-        };
-        const actions = {
-            ...this.actions
-        };
 
         return (
             <WidgetConfigProvider widgetId={widgetId}>
@@ -360,15 +266,11 @@ class GCodeWidget extends Component {
                         </Widget.Controls>
                     </Widget.Header>
                     <Widget.Content
-                        className={classNames(
-                            styles['widget-content'],
-                            { [styles.hidden]: minimized }
-                        )}
+                        style={{
+                            display: (minimized ? 'none' : 'block'),
+                        }}
                     >
-                        <GCode
-                            state={state}
-                            actions={actions}
-                        />
+                        TODO
                     </Widget.Content>
                 </Widget>
             </WidgetConfigProvider>
