@@ -1,29 +1,38 @@
 /* eslint import/no-dynamic-require: 0 */
 import _get from 'lodash/get';
-import _values from 'lodash/values';
-import moment from 'moment';
 import pubsub from 'pubsub-js';
-import qs from 'qs';
 import { all, call, delay, fork, put, race } from 'redux-saga/effects';
-import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
 import settings from 'app/config/settings';
 import {
     appInit,
     appInitSuccess,
     appInitFailure,
 } from 'app/containers/App/actions';
-import i18next from 'app/i18next';
-import controller from 'app/lib/controller';
 import log from 'app/lib/log';
-import * as user from 'app/lib/user';
 import configStore from 'app/store/config';
+import * as bootstrapSaga from './bootstrap';
+import * as connectionSaga from './connection';
+import * as controllerSaga from './controller';
+import * as feederSaga from './feeder';
+import * as senderSaga from './sender';
+import * as workflowSaga from './workflow';
+
+const sagas = [
+    bootstrapSaga,
+    connectionSaga,
+    controllerSaga,
+    feederSaga,
+    senderSaga,
+    workflowSaga,
+];
 
 export function* init() {
-    yield put(appInit());
     try {
+        yield put(appInit());
+
         const { timeout } = yield race({
-            init: call(initAll),
-            timeout: delay(30000),
+            init: all(sagas.map(saga => call(saga.init))),
+            timeout: delay(60 * 1000),
         });
 
         if (timeout) {
@@ -74,71 +83,5 @@ export function* init() {
 }
 
 export function* process() {
-    yield all(_values({}).map(it => fork(it)));
+    yield all(sagas.map(saga => fork(saga.process)));
 }
-
-function* initAll() {
-    try {
-        // sequential
-        yield call(configureLogLevel);
-
-        // parallel
-        yield all([
-            call(configureMomentLocale),
-            call(configureSessionToken),
-        ]);
-    } catch (error) {
-        throw new Error(error);
-    }
-}
-
-const configureLogLevel = () => {
-    const obj = qs.parse(window.location.search.slice(1));
-    const level = {
-        trace: TRACE,
-        debug: DEBUG,
-        info: INFO,
-        warn: WARN,
-        error: ERROR
-    }[obj.log_level || settings.log.level];
-    log.setLevel(level);
-};
-
-const configureMomentLocale = () => new Promise(resolve => {
-    const lng = i18next.language;
-
-    if (!lng || lng === 'en') {
-        log.debug(`moment: lng=${lng}`);
-        resolve();
-        return;
-    }
-
-    const bundle = require('bundle-loader!moment/locale/' + lng);
-    bundle(() => {
-        log.debug(`moment: lng=${lng}`);
-        moment().locale(lng);
-
-        resolve();
-    });
-});
-
-const configureSessionToken = () => new Promise(resolve => {
-    const token = configStore.get('session.token');
-    user.signin({ token: token })
-        .then(({ authenticated, token }) => {
-            if (authenticated) {
-                log.debug('Create and establish a WebSocket connection');
-
-                const host = '';
-                const options = {
-                    query: 'token=' + token
-                };
-                controller.connect(host, options, () => {
-                    // @see "app/containers/Login/Login.jsx"
-                    resolve();
-                });
-                return;
-            }
-            resolve();
-        });
-});
