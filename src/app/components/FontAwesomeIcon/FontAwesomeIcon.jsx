@@ -3,13 +3,18 @@ import cx from 'classnames';
 import React from 'react';
 import styles from './FontAwesomeIcon.styl';
 
-const FontAwesomeIcon = ({ className, spinReverse, ...props }) => (
+const FontAwesomeIcon = React.forwardRef(({
+    className,
+    spinReverse,
+    ...props
+}, ref) => (
     <Component
+        {...props}
+        ref={ref}
         className={cx(className, {
             [styles.spinReverse]: !!spinReverse,
         })}
-        {...props}
     />
-);
+));
 
 export default FontAwesomeIcon;

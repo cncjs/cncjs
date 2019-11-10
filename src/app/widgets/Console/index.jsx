@@ -7,7 +7,7 @@ import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
 import WidgetConfig from 'app/widgets/shared/WidgetConfig';
 import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
-import WidgetEventEmitter from 'app/widgets/shared/WidgetEventEmitter';
+import WidgetEventProvider from 'app/widgets/shared/WidgetEventProvider';
 import Console from './Console';
 import styles from './index.styl';
 
@@ -67,7 +67,7 @@ class ConsoleWidget extends Component {
 
         return (
             <WidgetConfigProvider widgetId={widgetId}>
-                <WidgetEventEmitter>
+                <WidgetEventProvider>
                     {(emitter) => (
                         <Widget fullscreen={isFullscreen}>
                             <Widget.Header>
@@ -192,7 +192,7 @@ class ConsoleWidget extends Component {
                             </Widget.Content>
                         </Widget>
                     )}
-                </WidgetEventEmitter>
+                </WidgetEventProvider>
             </WidgetConfigProvider>
         );
     }
