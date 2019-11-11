@@ -4,9 +4,11 @@ import ExpressionEvaluator from 'expr-eval';
 import includes from 'lodash/includes';
 import get from 'lodash/get';
 import mapValues from 'lodash/mapValues';
-import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import {
+    UPDATE_BOUNDING_BOX,
+} from 'app/actions/sender';
 import Anchor from 'app/components/Anchor';
 import { Button } from 'app/components/Buttons';
 import ModalTemplate from 'app/components/ModalTemplate';
@@ -41,6 +43,7 @@ import log from 'app/lib/log';
 import portal from 'app/lib/portal';
 import * as WebGL from 'app/lib/three/WebGL';
 import { in2mm } from 'app/lib/units';
+import reduxStore from 'app/store/redux';
 import WidgetConfig from 'app/widgets/shared/WidgetConfig';
 import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import PrimaryToolbar from './PrimaryToolbar';
@@ -281,12 +284,12 @@ class VisualizerWidget extends Component {
                         min: {
                             x: 0,
                             y: 0,
-                            z: 0
+                            z: 0,
                         },
                         max: {
                             x: 0,
                             y: 0,
-                            z: 0
+                            z: 0,
                         }
                     }
                 }
@@ -300,7 +303,7 @@ class VisualizerWidget extends Component {
                     ymin: 0,
                     ymax: 0,
                     zmin: 0,
-                    zmax: 0
+                    zmax: 0,
                 };
 
                 if (!capable.view3D) {
@@ -317,10 +320,15 @@ class VisualizerWidget extends Component {
                             ymin: bbox.min.y,
                             ymax: bbox.max.y,
                             zmin: bbox.min.z,
-                            zmax: bbox.max.z
+                            zmax: bbox.max.z,
                         };
 
-                        pubsub.publish('gcode:bbox', bbox);
+                        reduxStore.dispatch({
+                            type: UPDATE_BOUNDING_BOX,
+                            payload: {
+                                boundingBox: bbox,
+                            }
+                        });
 
                         this.setState((state) => ({
                             gcode: {
@@ -328,7 +336,7 @@ class VisualizerWidget extends Component {
                                 loading: false,
                                 rendering: false,
                                 ready: true,
-                                bbox: bbox
+                                bbox: bbox,
                             }
                         }));
                     });
@@ -351,7 +359,7 @@ class VisualizerWidget extends Component {
                 ymin: 0,
                 ymax: 0,
                 zmin: 0,
-                zmax: 0
+                zmax: 0,
             };
 
             this.setState((state) => ({
@@ -365,12 +373,12 @@ class VisualizerWidget extends Component {
                         min: {
                             x: 0,
                             y: 0,
-                            z: 0
+                            z: 0,
                         },
                         max: {
                             x: 0,
                             y: 0,
-                            z: 0
+                            z: 0,
                         }
                     }
                 }
@@ -442,8 +450,6 @@ class VisualizerWidget extends Component {
             console.assert(includes([WORKFLOW_STATE_IDLE], workflow.state));
 
             controller.command('sender:unload');
-
-            pubsub.publish('sender:unload'); // Unload the G-code
         },
         setBoundingBox: (bbox) => {
             this.setState((state) => ({

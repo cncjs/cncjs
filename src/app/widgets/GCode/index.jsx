@@ -1,13 +1,13 @@
-import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import { Container } from 'app/components/GridSystem';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
-import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import WidgetConfig from 'app/widgets/shared/WidgetConfig';
 import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
+import GCodeStats from './GCodeStats';
 
 class GCodeWidget extends Component {
     static propTypes = {
@@ -43,55 +43,6 @@ class GCodeWidget extends Component {
         }));
     };
 
-    controllerEvents = {
-        'sender:unload': () => {
-            this.setState({
-                bbox: {
-                    min: {
-                        x: 0,
-                        y: 0,
-                        z: 0
-                    },
-                    max: {
-                        x: 0,
-                        y: 0,
-                        z: 0
-                    },
-                    delta: {
-                        x: 0,
-                        y: 0,
-                        z: 0
-                    }
-                }
-            });
-        },
-        'sender:status': (data) => {
-            const { total, sent, received, startTime, finishTime, elapsedTime, remainingTime } = data;
-
-            this.setState({
-                total,
-                sent,
-                received,
-                startTime,
-                finishTime,
-                elapsedTime,
-                remainingTime
-            });
-        },
-    };
-
-    pubsubTokens = [];
-
-    componentDidMount() {
-        this.subscribe();
-        this.addControllerEvents();
-    }
-
-    componentWillUnmount() {
-        this.removeControllerEvents();
-        this.unsubscribe();
-    }
-
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized
@@ -104,87 +55,7 @@ class GCodeWidget extends Component {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-
-            // G-code Status (from server)
-            total: 0,
-            sent: 0,
-            received: 0,
-            startTime: 0,
-            finishTime: 0,
-            elapsedTime: 0,
-            remainingTime: 0,
-
-            // Bounding box
-            bbox: {
-                min: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-                max: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-                delta: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                }
-            }
         };
-    }
-
-    subscribe() {
-        const tokens = [
-            pubsub.subscribe('gcode:bbox', (msg, bbox) => {
-                const dX = bbox.max.x - bbox.min.x;
-                const dY = bbox.max.y - bbox.min.y;
-                const dZ = bbox.max.z - bbox.min.z;
-
-                this.setState({
-                    bbox: {
-                        min: {
-                            x: bbox.min.x,
-                            y: bbox.min.y,
-                            z: bbox.min.z
-                        },
-                        max: {
-                            x: bbox.max.x,
-                            y: bbox.max.y,
-                            z: bbox.max.z
-                        },
-                        delta: {
-                            x: dX,
-                            y: dY,
-                            z: dZ
-                        }
-                    }
-                });
-            })
-        ];
-        this.pubsubTokens = this.pubsubTokens.concat(tokens);
-    }
-
-    unsubscribe() {
-        this.pubsubTokens.forEach((token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
-    }
-
-    addControllerEvents() {
-        Object.keys(this.controllerEvents).forEach(eventName => {
-            const callback = this.controllerEvents[eventName];
-            controller.addListener(eventName, callback);
-        });
-    }
-
-    removeControllerEvents() {
-        Object.keys(this.controllerEvents).forEach(eventName => {
-            const callback = this.controllerEvents[eventName];
-            controller.removeListener(eventName, callback);
-        });
     }
 
     render() {
@@ -270,7 +141,14 @@ class GCodeWidget extends Component {
                             display: (minimized ? 'none' : 'block'),
                         }}
                     >
-                        TODO
+                        <Container
+                            fluid
+                            style={{
+                                padding: '.75rem',
+                            }}
+                        >
+                            <GCodeStats />
+                        </Container>
                     </Widget.Content>
                 </Widget>
             </WidgetConfigProvider>

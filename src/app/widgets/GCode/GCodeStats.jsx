@@ -1,10 +1,11 @@
 import _get from 'lodash/get';
-import _mapValues from 'lodash/mapValues';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'react-redux';
+import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import HorizontalForm from 'app/components/HorizontalForm';
+import { ensureFiniteNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import { mapPositionToUnits } from 'app/lib/units';
 import {
@@ -34,86 +35,95 @@ const formatRemainingTime = (remainingTime) => {
 
 const GCodeStats = ({
     units,
+    boundingBox,
+    loaded,
     total,
     sent,
     received,
-    bbox,
     startTime,
     finishTime,
     elapsedTime,
     remainingTime,
 }) => {
     const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
-    bbox = _mapValues(bbox, (position) => {
-        return _mapValues(position, (pos, axis) => {
-            return mapPositionToUnits(pos, units);
-        });
-    });
+    const minX = ensureFiniteNumber(_get(boundingBox, 'min.x'));
+    const minY = ensureFiniteNumber(_get(boundingBox, 'min.y'));
+    const minZ = ensureFiniteNumber(_get(boundingBox, 'min.z'));
+    const maxX = ensureFiniteNumber(_get(boundingBox, 'max.x'));
+    const maxY = ensureFiniteNumber(_get(boundingBox, 'max.y'));
+    const maxZ = ensureFiniteNumber(_get(boundingBox, 'max.z'));
+    const dX = maxX - minX;
+    const dY = maxY - minY;
+    const dZ = maxZ - minZ;
 
     return (
         <Container fluid>
-            <HorizontalForm spacing={['.75rem', '.5rem']}>
-                {({ FormContainer, FormRow, FormCol }) => (
-                    <FormContainer style={{ width: '100%' }}>
-                        <FormRow>
-                            <FormCol style={{ width: '1%' }}>
-                                {i18n._('Axis')}
-                            </FormCol>
-                            <FormCol>
-                                {i18n._('Min')}
-                            </FormCol>
-                            <FormCol>
-                                {i18n._('Max')}
-                            </FormCol>
-                            <FormCol>
-                                {i18n._('Dimension')}
-                            </FormCol>
-                        </FormRow>
-                        <FormRow>
-                            <FormCol>
-                                X
-                            </FormCol>
-                            <FormCol>
-                                {bbox.min.x} {displayUnits}
-                            </FormCol>
-                            <FormCol>
-                                {bbox.max.x} {displayUnits}
-                            </FormCol>
-                            <FormCol>
-                                {bbox.delta.x} {displayUnits}
-                            </FormCol>
-                        </FormRow>
-                        <FormRow>
-                            <FormCol>
-                                Y
-                            </FormCol>
-                            <FormCol>
-                                {bbox.min.y} {displayUnits}
-                            </FormCol>
-                            <FormCol>
-                                {bbox.max.y} {displayUnits}
-                            </FormCol>
-                            <FormCol>
-                                {bbox.delta.y} {displayUnits}
-                            </FormCol>
-                        </FormRow>
-                        <FormRow>
-                            <FormCol>
-                                Z
-                            </FormCol>
-                            <FormCol>
-                                {bbox.min.z} {displayUnits}
-                            </FormCol>
-                            <FormCol>
-                                {bbox.max.z} {displayUnits}
-                            </FormCol>
-                            <FormCol>
-                                {bbox.delta.z} {displayUnits}
-                            </FormCol>
-                        </FormRow>
-                    </FormContainer>
-                )}
-            </HorizontalForm>
+            <FormGroup>
+                <HorizontalForm
+                    spacing={['.75rem', '.5rem']}
+                >
+                    {({ FormContainer, FormRow, FormCol }) => (
+                        <FormContainer>
+                            <FormRow>
+                                <FormCol style={{ width: '1%' }}>
+                                    {i18n._('Axis')}
+                                </FormCol>
+                                <FormCol>
+                                    {i18n._('Min')}
+                                </FormCol>
+                                <FormCol>
+                                    {i18n._('Max')}
+                                </FormCol>
+                                <FormCol>
+                                    {i18n._('Dimension')}
+                                </FormCol>
+                            </FormRow>
+                            <FormRow>
+                                <FormCol>
+                                    X
+                                </FormCol>
+                                <FormCol>
+                                    {mapPositionToUnits(minX, units)} {displayUnits}
+                                </FormCol>
+                                <FormCol>
+                                    {mapPositionToUnits(maxX, units)} {displayUnits}
+                                </FormCol>
+                                <FormCol>
+                                    {mapPositionToUnits(dX, units)} {displayUnits}
+                                </FormCol>
+                            </FormRow>
+                            <FormRow>
+                                <FormCol>
+                                    Y
+                                </FormCol>
+                                <FormCol>
+                                    {mapPositionToUnits(minY)} {displayUnits}
+                                </FormCol>
+                                <FormCol>
+                                    {mapPositionToUnits(maxY)} {displayUnits}
+                                </FormCol>
+                                <FormCol>
+                                    {mapPositionToUnits(dY)} {displayUnits}
+                                </FormCol>
+                            </FormRow>
+                            <FormRow>
+                                <FormCol>
+                                    Z
+                                </FormCol>
+                                <FormCol>
+                                    {mapPositionToUnits(minZ)} {displayUnits}
+                                </FormCol>
+                                <FormCol>
+                                    {mapPositionToUnits(maxZ)} {displayUnits}
+                                </FormCol>
+                                <FormCol>
+                                    {mapPositionToUnits(dZ)} {displayUnits}
+                                </FormCol>
+                            </FormRow>
+                        </FormContainer>
+                    )}
+                </HorizontalForm>
+            </FormGroup>
             <Row>
                 <Col>
                     <div>{i18n._('Sent')}</div>
@@ -154,8 +164,25 @@ export default connect(store => {
         'G20': IMPERIAL_UNITS,
         'G21': METRIC_UNITS,
     }[modalUnits];
+    const senderStatus = _get(store, 'sender.status');
+    const boundingBox = _get(store, 'sender.boundingBox');
+    const total = _get(senderStatus, 'total');
+    const sent = _get(senderStatus, 'sent');
+    const received = _get(senderStatus, 'received');
+    const startTime = _get(senderStatus, 'startTime');
+    const finishTime = _get(senderStatus, 'finishTime');
+    const elapsedTime = _get(senderStatus, 'elapsedTime');
+    const remainingTime = _get(senderStatus, 'remainingTime');
 
     return {
         units,
+        boundingBox,
+        total,
+        sent,
+        received,
+        startTime,
+        finishTime,
+        elapsedTime,
+        remainingTime,
     };
 })(GCodeStats);

@@ -97,7 +97,7 @@ const QueueReports = ({
                         <Body>
                             <HorizontalForm spacing={['.75rem', '.5rem']}>
                                 {({ FormContainer, FormRow, FormCol }) => (
-                                    <FormContainer style={{ width: '100%' }}>
+                                    <FormContainer>
                                         <FormRow>
                                             <FormCol>
                                                 <OverflowEllipsis title={i18n._('Planner Buffer')}>
