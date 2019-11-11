@@ -126,6 +126,7 @@ class Sender extends events.EventEmitter {
     sp = null;
 
     state = {
+        loaded: false,
         hold: false,
         holdReason: null,
         name: '',
@@ -227,6 +228,7 @@ class Sender extends events.EventEmitter {
     toJSON() {
         return {
             sp: this.sp.type,
+            loaded: this.state.loaded,
             hold: this.state.hold,
             holdReason: this.state.holdReason,
             name: this.state.name,
@@ -284,6 +286,7 @@ class Sender extends events.EventEmitter {
         if (this.sp) {
             this.sp.clear();
         }
+        this.state.loaded = true;
         this.state.hold = false;
         this.state.holdReason = null;
         this.state.name = name;
@@ -308,6 +311,7 @@ class Sender extends events.EventEmitter {
         if (this.sp) {
             this.sp.clear();
         }
+        this.state.loaded = false;
         this.state.hold = false;
         this.state.holdReason = null;
         this.state.name = '';
