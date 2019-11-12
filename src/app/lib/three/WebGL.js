@@ -1,4 +1,4 @@
-import moize from 'moize';
+import memoize from 'micro-memoize';
 
 /**
  * @author alteredq / http://alteredqualia.com/
@@ -6,27 +6,23 @@ import moize from 'moize';
  */
 
 // Memoize the result to mitigate the issue of WebGL context lost and restored
-export const isWebGLAvailable = moize(() => {
+export const isWebGLAvailable = memoize(() => {
     try {
         let canvas = document.createElement('canvas');
         return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
     } catch (e) {
         return false;
     }
-}, {
-    maxSize: 1, // maximum size of cache for this method
 });
 
 // Memoize the result to mitigate the issue of WebGL context lost and restored
-export const isWebGL2Available = moize(() => {
+export const isWebGL2Available = memoize(() => {
     try {
         const canvas = document.createElement('canvas');
         return !!(window.WebGL2RenderingContext && canvas.getContext('webgl2'));
     } catch (e) {
         return false;
     }
-}, {
-    maxSize: 1, // maximum size of cache for this method
 });
 
 export const getWebGLErrorMessage = () => {
