@@ -1,37 +1,35 @@
 import React, { Component } from 'react';
 
-export const ModalContext = React.createContext({
-    modals: [],
-    openModal: () => {},
-    closeModal: () => {},
-});
+export const ModalStateContext = React.createContext();
+export const ModalActionContext = React.createContext();
 
 export class ModalProvider extends Component {
-    openModal = (component, props = {}) => {
-        this.setState(state => ({
-            modals: state.modals.concat({ component, props }),
-        }));
-    };
-
-    closeModal = () => {
-        this.setState(state => ({
-            modals: state.modals.slice(0, state.modals.length - 1),
-        }));
-    };
-
     state = {
         modals: [],
-        openModal: this.openModal,
-        closeModal: this.closeModal,
     };
+
+    action = Object.freeze({
+        openModal: (component, props = {}) => {
+            this.setState(state => ({
+                modals: state.modals.concat({ component, props }),
+            }));
+        },
+        closeModal: () => {
+            this.setState(state => ({
+                modals: state.modals.slice(0, state.modals.length - 1),
+            }));
+        },
+    });
 
     render() {
         return (
-            <ModalContext.Provider value={this.state}>
-                {this.props.children}
-            </ModalContext.Provider>
+            <ModalStateContext.Provider value={this.state}>
+                <ModalActionContext.Provider value={this.action}>
+                    {this.props.children}
+                </ModalActionContext.Provider>
+            </ModalStateContext.Provider>
         );
     }
 }
 
-export const ModalConsumer = ModalContext.Consumer;
+export const ModalConsumer = ModalActionContext.Consumer;

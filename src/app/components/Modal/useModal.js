@@ -1,10 +1,15 @@
 import { useContext } from 'react';
-import { ModalContext } from './ModalContext';
+import { ModalActionContext } from './ModalContext';
 
 const useModal = (initialState = false) => {
-    const { modals, openModal, closeModal } = useContext(ModalContext);
+    const context = useContext(ModalActionContext);
+    if (!context) {
+        throw Error('The `useModal` hook must be called from a descendent of the `ModalProvider`.');
+    }
 
-    return { modals, openModal, closeModal };
+    const { openModal, closeModal } = context;
+
+    return { openModal, closeModal };
 };
 
 export default useModal;

@@ -1,23 +1,27 @@
 import React from 'react';
-import { ModalContext } from './ModalContext';
+import { ModalStateContext, ModalActionContext } from './ModalContext';
 
 const ModalRoot = () => (
-    <ModalContext.Consumer>
-        {({ modals, closeModal }) => modals.map((modal, key) => {
-            const {
-                component: Component,
-                props,
-            } = modal;
+    <ModalStateContext.Consumer>
+        {({ modals }) => (
+            <ModalActionContext.Consumer>
+                {({ closeModal }) => modals.map((modal, key) => {
+                    const {
+                        component: Component,
+                        props,
+                    } = modal;
 
-            return (
-                <Component
-                    {...props}
-                    key={`modal:${key}`}
-                    onClose={closeModal}
-                />
-            );
-        })}
-    </ModalContext.Consumer>
+                    return (
+                        <Component
+                            {...props}
+                            key={`modal:${key}`}
+                            onClose={closeModal}
+                        />
+                    );
+                })}
+            </ModalActionContext.Consumer>
+        )}
+    </ModalStateContext.Consumer>
 );
 
 export default ModalRoot;
