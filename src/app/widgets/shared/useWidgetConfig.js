@@ -12,7 +12,7 @@ const useWidgetConfig = (options) => {
     const [state, dispatch] = useTracked();
 
     if (!widgetId) {
-        throw Error('The `useWidgetConfig` hook must be called from a descendent of the `WidgetConfigProvider`.');
+        throw new Error('The `useWidgetConfig` hook must be called from a descendent of the `WidgetConfigProvider`.');
     }
 
     return Object.freeze({
