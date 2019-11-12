@@ -1,9 +1,10 @@
 import produce from 'immer';
+import _isEqual from 'lodash/isEqual';
 import _isPlainObject from 'lodash/isPlainObject';
 import _set from 'lodash/set';
 import _unset from 'lodash/unset';
 import _update from 'lodash/update';
-import moize from 'moize';
+import memoize from 'micro-memoize';
 import React from 'react';
 import config from 'app/store/config';
 import { WidgetConfigContext } from './context';
@@ -45,10 +46,10 @@ const enhancedReducer = (state, action) => {
     return state;
 };
 
-const getMemoizedInitialState = moize.deep(({ widgetId }) => {
+const getMemoizedInitialState = memoize(({ widgetId }) => {
     return config.get(['widgets', widgetId]);
 }, {
-    maxSize: 1, // maximum size of cache for this method
+    isEqual: _isEqual,
 });
 
 const WidgetConfigProvider = ({

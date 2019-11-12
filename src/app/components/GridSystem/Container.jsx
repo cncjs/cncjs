@@ -1,7 +1,10 @@
 import cx from 'classnames';
 import ensureArray from 'ensure-array';
+import _isEqual from 'lodash/isEqual';
+import memoize from 'micro-memoize';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import withDeepMemo from 'app/hocs/withDeepMemo';
 import {
     LAYOUT_FLEXBOX,
     LAYOUT_FLOATS,
@@ -14,6 +17,24 @@ import {
 import Resolver from './Resolver';
 import { ConfigurationContext } from './context';
 import styles from './index.styl';
+
+const getMemoizedConfig = memoize(config => {
+    const {
+        containerWidths,
+        columns,
+        gutterWidth,
+        layout,
+    } = { ...config };
+
+    return {
+        containerWidths,
+        columns,
+        gutterWidth,
+        layout,
+    };
+}, {
+    isEqual: _isEqual,
+});
 
 class Container extends Component {
     static propTypes = {
@@ -129,18 +150,17 @@ class Container extends Component {
                         const { layout = config.layout } = this.props;
                         return (LAYOUTS.indexOf(layout) >= 0) ? layout : DEFAULT_LAYOUT;
                     })();
+                    const memoizedConfig = getMemoizedConfig({
+                        ...config,
+                        containerWidths,
+                        columns,
+                        gutterWidth,
+                        layout,
+                    });
                     const containerStyle = this.getStyle({ containerWidths, gutterWidth, screenClass });
 
                     return (
-                        <ConfigurationContext.Provider
-                            value={{
-                                ...config,
-                                containerWidths,
-                                columns,
-                                gutterWidth,
-                                layout,
-                            }}
-                        >
+                        <ConfigurationContext.Provider value={memoizedConfig}>
                             <div
                                 {...props}
                                 className={cx(className, {
@@ -162,4 +182,4 @@ class Container extends Component {
     }
 }
 
-export default Container;
+export default withDeepMemo()(Container);

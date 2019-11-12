@@ -5,7 +5,7 @@ import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import _isEqual from 'lodash/isEqual';
 import _set from 'lodash/set';
-import moize from 'moize';
+import memoize from 'micro-memoize';
 import React, { useEffect, useRef } from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
@@ -98,7 +98,7 @@ const validatePortNumber = (min = 1, max = 65535) => value => {
         : i18n._('Invalid port number. Specify a port number from {{min}} to {{max}}.', { min, max });
 };
 
-const getMemoizedInitialValues = moize.deep((options) => {
+const getMemoizedInitialValues = memoize((options) => {
     const {
         config,
         serialPorts,
@@ -134,7 +134,7 @@ const getMemoizedInitialValues = moize.deep((options) => {
 
     return initialValues;
 }, {
-    maxSize: 1, // maximum size of cache for this method
+    isEqual: _isEqual,
 });
 
 const Connection = ({
