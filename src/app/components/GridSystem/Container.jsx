@@ -1,10 +1,7 @@
 import cx from 'classnames';
 import ensureArray from 'ensure-array';
-import _isEqual from 'lodash/isEqual';
-import memoize from 'micro-memoize';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import withDeepMemo from 'app/hocs/withDeepMemo';
+import React, { PureComponent } from 'react';
 import {
     LAYOUT_FLEXBOX,
     LAYOUT_FLOATS,
@@ -16,27 +13,10 @@ import {
 } from './constants';
 import Resolver from './Resolver';
 import { ConfigurationContext } from './context';
+import { getMemoizedConfig } from './utils';
 import styles from './index.styl';
 
-const getMemoizedConfig = memoize(config => {
-    const {
-        containerWidths,
-        columns,
-        gutterWidth,
-        layout,
-    } = { ...config };
-
-    return {
-        containerWidths,
-        columns,
-        gutterWidth,
-        layout,
-    };
-}, {
-    isEqual: _isEqual,
-});
-
-class Container extends Component {
+class Container extends PureComponent {
     static propTypes = {
         // True makes the container full-width, false fixed-width.
         fluid: PropTypes.bool,
@@ -150,13 +130,7 @@ class Container extends Component {
                         const { layout = config.layout } = this.props;
                         return (LAYOUTS.indexOf(layout) >= 0) ? layout : DEFAULT_LAYOUT;
                     })();
-                    const memoizedConfig = getMemoizedConfig({
-                        ...config,
-                        containerWidths,
-                        columns,
-                        gutterWidth,
-                        layout,
-                    });
+                    const memoizedConfig = getMemoizedConfig({ containerWidths, columns, gutterWidth, layout });
                     const containerStyle = this.getStyle({ containerWidths, gutterWidth, screenClass });
 
                     return (
@@ -182,4 +156,4 @@ class Container extends Component {
     }
 }
 
-export default withDeepMemo()(Container);
+export default Container;

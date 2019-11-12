@@ -1,4 +1,6 @@
 import ensureArray from 'ensure-array';
+import _isEqual from 'lodash.isequal';
+import memoize from 'micro-memoize';
 import {
     DEFAULT_BREAKPOINTS
 } from './constants';
@@ -9,6 +11,24 @@ export const getViewportWidth = () => {
     }
     return null;
 };
+
+export const getMemoizedConfig = memoize(config => {
+    const {
+        containerWidths,
+        columns,
+        gutterWidth,
+        layout,
+    } = { ...config };
+
+    return {
+        containerWidths,
+        columns,
+        gutterWidth,
+        layout,
+    };
+}, {
+    isEqual: _isEqual,
+});
 
 export const getScreenClass = ({ breakpoints }) => {
     breakpoints = ensureArray(breakpoints);
