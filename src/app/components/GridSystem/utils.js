@@ -1,5 +1,5 @@
 import ensureArray from 'ensure-array';
-import _isEqual from 'lodash.isequal';
+import _isEqual from 'lodash/isEqual';
 import memoize from 'micro-memoize';
 import {
     DEFAULT_BREAKPOINTS

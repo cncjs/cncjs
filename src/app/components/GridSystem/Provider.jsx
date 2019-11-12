@@ -1,5 +1,5 @@
 import ensureArray from 'ensure-array';
-import _throttle from 'lodash.throttle';
+import _throttle from 'lodash/throttle';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import {
