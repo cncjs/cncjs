@@ -11,11 +11,9 @@ import Text from 'app/components/Text';
 import Tooltip from 'app/components/Tooltip';
 import WebcamComponent from 'app/components/Webcam';
 import withDeepMemo from 'app/hocs/withDeepMemo';
-import useModal from 'app/hooks/useModal';
 import i18n from 'app/lib/i18n';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import useWidgetEvent from 'app/widgets/shared/useWidgetEvent';
-import SettingsModal from './modals/SettingsModal';
 import Line from './components/Line';
 import Circle from './components/Circle';
 import webcamIcon from './images/webcam.svg';
@@ -56,35 +54,6 @@ const Webcam = ({
     const flipVertically = config.get('geometry.flipVertically', false);
     const crosshair = config.get('crosshair', false);
     const muted = config.get('muted', false);
-
-    // SettingsModal
-    const {
-        isModalOpen: isSettingsModalOpen,
-        closeModal: closeSettingsModal,
-        toggleModal: toggleSettingsModal,
-    } = useModal();
-    const onSaveSettingsModal = (data) => {
-        const { mediaSource, deviceId, url } = data;
-        config.set('mediaSource', mediaSource);
-        config.set('deviceId', deviceId);
-        config.set('url', url);
-        closeSettingsModal();
-    };
-    const onCancelSettingsModal = () => {
-        closeSettingsModal();
-    };
-    useEffect(() => {
-        const onToggleSettingsModal = (options) => {
-            const { isVisible } = { ...options };
-            toggleSettingsModal(isVisible);
-        };
-
-        emitter.on('toggleSettingsModal', onToggleSettingsModal);
-
-        return () => {
-            emitter.off('toggleSettingsModal', onToggleSettingsModal);
-        };
-    }, [emitter, toggleSettingsModal]);
 
     // Image source
     const imageSourceRef = useRef();
@@ -150,15 +119,6 @@ const Webcam = ({
 
     return (
         <>
-            {isSettingsModalOpen && (
-                <SettingsModal
-                    mediaSource={mediaSource}
-                    deviceId={deviceId}
-                    url={url}
-                    onSave={onSaveSettingsModal}
-                    onCancel={onCancelSettingsModal}
-                />
-            )}
             {disabled && (
                 <WebcamDisabledContainer>
                     <Image src={webcamIcon} width={128} height={128} />

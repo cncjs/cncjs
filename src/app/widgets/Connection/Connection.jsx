@@ -23,7 +23,7 @@ import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Label from 'app/components/Label';
 import Margin from 'app/components/Margin';
-import Modal from 'app/components/Modal';
+import Modal, { useModal } from 'app/components/Modal';
 import ModalTemplate from 'app/components/ModalTemplate';
 import { Notification } from 'app/components/Notifications';
 import Space from 'app/components/Space';
@@ -48,7 +48,6 @@ import usePrevious from 'app/hooks/usePrevious';
 import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import portal from 'app/lib/portal';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import { composeValidators, required } from 'app/widgets/shared/validations';
 
@@ -153,6 +152,7 @@ const Connection = ({
     fetchSerialBaudRates,
 }) => {
     const config = useWidgetConfig();
+    const { openModal } = useModal();
     const initialValues = getMemoizedInitialValues({ config, serialPorts, serialBaudRates });
     const canRefreshSerialPorts = isDisconnected && !isFetchingSerialPorts;
     const canRefreshSerialBaudRates = isDisconnected && !isFetchingSerialBaudRates;
@@ -759,7 +759,7 @@ const Connection = ({
                                         openConnection(options);
                                     };
                                     const confirmCloseConnection = (e) => {
-                                        portal(({ onClose }) => (
+                                        openModal(({ onClose }) => (
                                             <Modal onClose={onClose}>
                                                 <Modal.Body>
                                                     <ModalTemplate type="warning">

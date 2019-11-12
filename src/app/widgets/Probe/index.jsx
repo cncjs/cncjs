@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Container } from 'app/components/GridSystem';
+import { ModalProvider, ModalRoot } from 'app/components/Modal';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
@@ -65,92 +66,95 @@ class ProbeWidget extends Component {
 
         return (
             <WidgetConfigProvider widgetId={widgetId}>
-                <Widget fullscreen={isFullscreen}>
-                    <Widget.Header>
-                        <Widget.Title>
-                            <Widget.Sortable className={this.props.sortable.handleClassName}>
-                                <FontAwesomeIcon icon="bars" fixedWidth />
-                                <Space width={4} />
-                            </Widget.Sortable>
-                            {isForkedWidget &&
-                            <FontAwesomeIcon icon="code-branch" fixedWidth />
-                            }
-                            {i18n._('Probe')}
-                        </Widget.Title>
-                        <Widget.Controls className={this.props.sortable.filterClassName}>
-                            <Widget.Button
-                                disabled={isFullscreen}
-                                title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                                onClick={this.toggleMinimized}
-                            >
-                                {minimized &&
-                                <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                <ModalProvider>
+                    <ModalRoot />
+                    <Widget fullscreen={isFullscreen}>
+                        <Widget.Header>
+                            <Widget.Title>
+                                <Widget.Sortable className={this.props.sortable.handleClassName}>
+                                    <FontAwesomeIcon icon="bars" fixedWidth />
+                                    <Space width={4} />
+                                </Widget.Sortable>
+                                {isForkedWidget &&
+                                <FontAwesomeIcon icon="code-branch" fixedWidth />
                                 }
-                                {!minimized &&
-                                <FontAwesomeIcon icon="chevron-up" fixedWidth />
-                                }
-                            </Widget.Button>
-                            {isFullscreen && (
+                                {i18n._('Probe')}
+                            </Widget.Title>
+                            <Widget.Controls className={this.props.sortable.filterClassName}>
                                 <Widget.Button
-                                    title={i18n._('Exit Full Screen')}
-                                    onClick={this.toggleFullscreen}
+                                    disabled={isFullscreen}
+                                    title={minimized ? i18n._('Expand') : i18n._('Collapse')}
+                                    onClick={this.toggleMinimized}
                                 >
-                                    <FontAwesomeIcon icon="compress" fixedWidth />
-                                </Widget.Button>
-                            )}
-                            <Widget.DropdownButton
-                                title={i18n._('More')}
-                                toggle={(
-                                    <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
-                                )}
-                                onSelect={(eventKey) => {
-                                    if (eventKey === 'fullscreen') {
-                                        this.toggleFullscreen();
-                                    } else if (eventKey === 'fork') {
-                                        this.props.onFork();
-                                    } else if (eventKey === 'remove') {
-                                        this.props.onRemove();
+                                    {minimized &&
+                                    <FontAwesomeIcon icon="chevron-down" fixedWidth />
                                     }
-                                }}
-                            >
-                                <Widget.DropdownMenuItem eventKey="fullscreen">
-                                    {!isFullscreen && (
-                                        <FontAwesomeIcon icon="expand" fixedWidth />
-                                    )}
-                                    {isFullscreen && (
+                                    {!minimized &&
+                                    <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                                    }
+                                </Widget.Button>
+                                {isFullscreen && (
+                                    <Widget.Button
+                                        title={i18n._('Exit Full Screen')}
+                                        onClick={this.toggleFullscreen}
+                                    >
                                         <FontAwesomeIcon icon="compress" fixedWidth />
+                                    </Widget.Button>
+                                )}
+                                <Widget.DropdownButton
+                                    title={i18n._('More')}
+                                    toggle={(
+                                        <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
                                     )}
-                                    <Space width={8} />
-                                    {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
-                                </Widget.DropdownMenuItem>
-                                <Widget.DropdownMenuItem eventKey="fork">
-                                    <FontAwesomeIcon icon="code-branch" fixedWidth />
-                                    <Space width={8} />
-                                    {i18n._('Fork Widget')}
-                                </Widget.DropdownMenuItem>
-                                <Widget.DropdownMenuItem eventKey="remove">
-                                    <FontAwesomeIcon icon="times" fixedWidth />
-                                    <Space width={8} />
-                                    {i18n._('Remove Widget')}
-                                </Widget.DropdownMenuItem>
-                            </Widget.DropdownButton>
-                        </Widget.Controls>
-                    </Widget.Header>
-                    <Widget.Content
-                        style={{
-                            display: (minimized ? 'none' : 'block'),
-                        }}
-                    >
-                        <Container
-                            fluid
+                                    onSelect={(eventKey) => {
+                                        if (eventKey === 'fullscreen') {
+                                            this.toggleFullscreen();
+                                        } else if (eventKey === 'fork') {
+                                            this.props.onFork();
+                                        } else if (eventKey === 'remove') {
+                                            this.props.onRemove();
+                                        }
+                                    }}
+                                >
+                                    <Widget.DropdownMenuItem eventKey="fullscreen">
+                                        {!isFullscreen && (
+                                            <FontAwesomeIcon icon="expand" fixedWidth />
+                                        )}
+                                        {isFullscreen && (
+                                            <FontAwesomeIcon icon="compress" fixedWidth />
+                                        )}
+                                        <Space width={8} />
+                                        {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
+                                    </Widget.DropdownMenuItem>
+                                    <Widget.DropdownMenuItem eventKey="fork">
+                                        <FontAwesomeIcon icon="code-branch" fixedWidth />
+                                        <Space width={8} />
+                                        {i18n._('Fork Widget')}
+                                    </Widget.DropdownMenuItem>
+                                    <Widget.DropdownMenuItem eventKey="remove">
+                                        <FontAwesomeIcon icon="times" fixedWidth />
+                                        <Space width={8} />
+                                        {i18n._('Remove Widget')}
+                                    </Widget.DropdownMenuItem>
+                                </Widget.DropdownButton>
+                            </Widget.Controls>
+                        </Widget.Header>
+                        <Widget.Content
                             style={{
-                                padding: '.75rem',
+                                display: (minimized ? 'none' : 'block'),
                             }}
                         >
-                            <Probe />
-                        </Container>
-                    </Widget.Content>
-                </Widget>
+                            <Container
+                                fluid
+                                style={{
+                                    padding: '.75rem',
+                                }}
+                            >
+                                <Probe />
+                            </Container>
+                        </Widget.Content>
+                    </Widget>
+                </ModalProvider>
             </WidgetConfigProvider>
         );
     }
