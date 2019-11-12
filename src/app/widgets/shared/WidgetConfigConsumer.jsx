@@ -14,7 +14,7 @@ const WidgetConfigConsumer = ({
     const [state, dispatch] = useTracked();
 
     if (!widgetId) {
-        throw Error('The `useWidgetConfig` hook must be called from a descendent of the `WidgetConfigProvider`.');
+        throw Error('The `WidgetConfigConsumer` must be called from a descendent of the `WidgetConfigProvider`.');
     }
 
     const value = Object.freeze({

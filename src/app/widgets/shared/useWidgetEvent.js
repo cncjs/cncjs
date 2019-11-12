@@ -6,7 +6,7 @@ const useWidgetEvent = (options) => {
     const emitter = useContext(Context);
 
     if (!emitter) {
-        throw Error('The `useWidgetEvent` hook must be called from a descendent of the `WidgetConfigEmitter`.');
+        throw Error('The `useWidgetEvent` hook must be called from a descendent of the `WidgetEventProvider`.');
     }
 
     return emitter;
