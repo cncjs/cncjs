@@ -5,7 +5,6 @@ import { ModalProvider, ModalConsumer, ModalRoot } from 'app/components/Modal';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
-import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import WidgetConfig from 'app/widgets/shared/WidgetConfig'; // deprecated
 import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import WidgetEventProvider from 'app/widgets/shared/WidgetEventProvider';
@@ -142,33 +141,7 @@ class WebcamWidget extends Component {
                                                     )}
                                                     onSelect={(eventKey) => {
                                                         if (eventKey === 'settings') {
-                                                            openModal(({ onClose }) => {
-                                                                const config = useWidgetConfig();
-                                                                const mediaSource = config.get('mediaSource');
-                                                                const deviceId = config.get('deviceId');
-                                                                const url = config.get('url');
-                                                                const onSave = (data) => {
-                                                                    const { mediaSource, deviceId, url } = data;
-                                                                    config.set('mediaSource', mediaSource);
-                                                                    config.set('deviceId', deviceId);
-                                                                    config.set('url', url);
-
-                                                                    onClose();
-                                                                };
-                                                                const onCancel = () => {
-                                                                    onClose();
-                                                                };
-
-                                                                return (
-                                                                    <SettingsModal
-                                                                        mediaSource={mediaSource}
-                                                                        deviceId={deviceId}
-                                                                        url={url}
-                                                                        onSave={onSave}
-                                                                        onCancel={onCancel}
-                                                                    />
-                                                                );
-                                                            });
+                                                            openModal(SettingsModal);
                                                         } else if (eventKey === 'fullscreen') {
                                                             this.toggleFullscreen();
                                                         } else if (eventKey === 'fork') {
