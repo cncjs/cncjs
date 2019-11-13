@@ -5,10 +5,6 @@ import { ToastContext } from './context';
 const noop = () => {};
 
 class ToastManager extends Component {
-    state = {
-        toasts: [],
-    };
-
     addToast = (meta, options, callback = noop) => {
         const id = uuid();
 
@@ -40,9 +36,11 @@ class ToastManager extends Component {
         }), () => callback());
     };
 
-    onDismiss = (id, callback = noop) => {
-        callback(id);
-        this.remove(id);
+    state = {
+        toasts: [],
+        addToast: this.addToast,
+        removeToast: this.removeToast,
+        clearToasts: this.clearToasts,
     };
 
     render() {
@@ -50,11 +48,9 @@ class ToastManager extends Component {
             context: Context = ToastContext,
             children,
         } = this.props;
-        const { addToast, removeToast, clearToasts } = this;
-        const toasts = Object.freeze(this.state.toasts);
 
         return (
-            <Context.Provider value={{ addToast, removeToast, clearToasts, toasts }}>
+            <Context.Provider value={this.state}>
                 {children}
             </Context.Provider>
         );

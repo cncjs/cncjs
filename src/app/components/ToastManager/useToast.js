@@ -9,13 +9,13 @@ const useToast = (options) => {
         throw new Error('The `useToast` hook must be called from a descendent of the `ToastManager`.');
     }
 
-    const { addToast, removeToast, clearToasts, toasts } = context;
+    const { toasts, addToast, removeToast, clearToasts } = context;
 
     return {
+        toasts,
         addToast,
         removeToast,
         clearToasts,
-        toasts,
     };
 };
 
