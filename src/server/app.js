@@ -35,11 +35,8 @@ import settings from './config/settings';
 import {
     isAllowedIPAddress,
 } from './lib/access-control';
-import errclient from './lib/middleware/errclient';
-import errlog from './lib/middleware/errlog';
-import errnotfound from './lib/middleware/errnotfound';
-import errserver from './lib/middleware/errserver';
 import { createAPIRouter } from './routes/api';
+import { createExceptionRouter } from './routes/exception';
 import { createViewRouter } from './routes/view';
 import {
     ERR_FORBIDDEN,
@@ -269,20 +266,8 @@ const appMain = () => {
     const viewRouter = createViewRouter();
     app.use(settings.route, viewRouter);
 
-    { // Error handling
-        app.use(errlog());
-        app.use(errclient({
-            error: 'XHR error'
-        }));
-        app.use(errnotfound({
-            view: path.join('common', '404.hogan'),
-            error: 'Not found'
-        }));
-        app.use(errserver({
-            view: path.join('common', '500.hogan'),
-            error: 'Internal server error'
-        }));
-    }
+    const exceptionRouter = createExceptionRouter();
+    app.use(settings.route, exceptionRouter);
 
     return app;
 };
