@@ -1,4 +1,6 @@
-import config from '../services/configstore';
+import serviceContainer from '../service-container';
+
+const config = serviceContainer.resolve('config');
 
 const noop = () => {};
 

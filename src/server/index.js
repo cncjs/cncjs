@@ -14,14 +14,16 @@ import set from 'lodash/set';
 import size from 'lodash/size';
 import trimEnd from 'lodash/trimEnd';
 import webappengine from 'webappengine';
-import settings from './config/settings';
 import app from './app';
-import cncengine from './services/cncengine';
-import monitor from './services/monitor';
-import config from './services/configstore';
+import settings from './config/settings';
+import serviceContainer from './service-container';
+import serviceEngine from './service-engine';
 import { ensureString } from './lib/ensure-type';
 import logger, { setLevel } from './lib/logger';
 import urljoin from './lib/urljoin';
+
+const config = serviceContainer.resolve('config');
+const watcher = serviceContainer.resolve('watcher');
 
 const log = logger('init');
 
@@ -48,8 +50,8 @@ const createServer = (options, callback) => {
 
     const rcfile = path.resolve(options.configFile || settings.rcfile);
 
-    // configstore service
     log.info(`Loading configuration from ${chalk.yellow(JSON.stringify(rcfile))}`);
+
     config.load(rcfile);
 
     // rcfile
@@ -72,8 +74,7 @@ const createServer = (options, callback) => {
             if (fs.existsSync(watchDirectory)) {
                 log.info(`Watching ${chalk.yellow(JSON.stringify(watchDirectory))} for file changes`);
 
-                // monitor service
-                monitor.start({ watchDirectory: watchDirectory });
+                watcher.watch(watchDirectory);
             } else {
                 log.error(`The directory ${chalk.yellow(JSON.stringify(watchDirectory))} does not exist.`);
             }
@@ -230,8 +231,7 @@ const createServer = (options, callback) => {
 
     webappengine({ port, host, backlog, routes })
         .on('ready', (server) => {
-            // cncengine service
-            cncengine.start(server, options.controller || config.get('controller', ''));
+            serviceEngine.start(server, options.controller || config.get('controller', ''));
 
             const address = server.address().address;
             const port = server.address().port;

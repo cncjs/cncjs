@@ -1,12 +1,12 @@
 import events from 'events';
+import _without from 'lodash/without';
 import defaultShell from 'spawn-default-shell';
-import without from 'lodash/without';
 import shortid from 'shortid';
-import logger from '../../lib/logger';
+import logger from '../lib/logger';
 
-const log = logger('service:taskrunner');
+const log = logger('service:task');
 
-class TaskRunner extends events.EventEmitter {
+class TaskService extends events.EventEmitter {
     tasks = [];
 
     run(command, title, options) {
@@ -35,7 +35,7 @@ class TaskRunner extends events.EventEmitter {
             // Listen for error event can prevent from throwing an unhandled exception
             log.error(`Failed to start a child process: err=${JSON.stringify(err)}`);
 
-            this.tasks = without(this.tasks, taskId);
+            this.tasks = _without(this.tasks, taskId);
             this.emit('error', taskId, err);
         });
         // The 'exit' event is emitted after the child process ends.
@@ -43,7 +43,7 @@ class TaskRunner extends events.EventEmitter {
         // It is important to guard against accidentally invoking handler functions multiple times.
         child.on('exit', (code) => {
             if (this.contains(taskId)) {
-                this.tasks = without(this.tasks, taskId);
+                this.tasks = _without(this.tasks, taskId);
                 this.emit('finish', taskId, code);
             }
         });
@@ -56,4 +56,4 @@ class TaskRunner extends events.EventEmitter {
     }
 }
 
-export default TaskRunner;
+export default TaskService;

@@ -2,7 +2,9 @@ import ensureArray from 'ensure-array';
 import _ from 'lodash';
 import rangeCheck from 'range_check';
 import settings from './config/settings';
-import config from './services/configstore';
+import serviceContainer from './service-container';
+
+const config = serviceContainer.resolve('config');
 
 const whitelist = [
     // IPv4 reserved space

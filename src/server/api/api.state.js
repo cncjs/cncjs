@@ -1,9 +1,11 @@
 import deepKeys from 'deep-keys';
 import _ from 'lodash';
-import config from '../services/configstore';
+import serviceContainer from '../service-container';
 import {
     ERR_NOT_FOUND
 } from '../constants';
+
+const config = serviceContainer.resolve('config');
 
 export const get = (req, res) => {
     const query = req.query || {};

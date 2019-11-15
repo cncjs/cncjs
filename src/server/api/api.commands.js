@@ -5,14 +5,16 @@ import uuid from 'uuid';
 import settings from '../config/settings';
 import { ensureFiniteNumber } from '../lib/ensure-type';
 import logger from '../lib/logger';
-import taskRunner from '../services/taskrunner';
-import config from '../services/configstore';
+import serviceContainer from '../service-container';
 import { getPagingRange } from './paging';
 import {
     ERR_BAD_REQUEST,
     ERR_NOT_FOUND,
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
+
+const config = serviceContainer.resolve('config');
+const task = serviceContainer.resolve('task');
 
 const log = logger('api:commands');
 const CONFIG_KEY = 'commands';
@@ -228,7 +230,7 @@ export const run = (req, res) => {
 
     log.info(`run: title="${title}", commands="${commands}"`);
 
-    const taskId = taskRunner.run(commands, title);
+    const taskId = task.run(commands, title);
 
     res.send({ taskId: taskId });
 };

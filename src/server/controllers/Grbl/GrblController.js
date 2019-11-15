@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import chalk from 'chalk';
 import ensureArray from 'ensure-array';
 import * as parser from 'gcode-parser';
@@ -21,9 +23,7 @@ import delay from '../../lib/delay';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
-import config from '../../services/configstore';
-import monitor from '../../services/monitor';
-import taskRunner from '../../services/taskrunner';
+import serviceContainer from '../../service-container';
 import controllers from '../../store/controllers';
 import {
     GLOBAL_OBJECTS as globalObjects,
@@ -40,6 +40,10 @@ import {
     GRBL_ERRORS,
     GRBL_SETTINGS,
 } from './constants';
+
+const config = serviceContainer.resolve('config');
+const task = serviceContainer.resolve('task');
+const watcher = serviceContainer.resolve('watcher');
 
 // % commands
 const WAIT = '%wait';
@@ -222,7 +226,7 @@ class GrblController {
         this.event = new EventTrigger((event, trigger, commands) => {
             log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
             if (trigger === 'system') {
-                taskRunner.run(commands);
+                task.run(commands);
             } else {
                 this.command('gcode', commands);
             }
@@ -1299,8 +1303,9 @@ class GrblController {
             'watchdir:load': () => {
                 const [name, callback = noop] = args;
                 const context = {}; // empty context
+                const filepath = path.join(watcher.root, name);
 
-                monitor.readFile(name, (err, content) => {
+                fs.readFile(filepath, 'utf8', (err, content) => {
                     if (err) {
                         callback(err);
                         return;

@@ -9,32 +9,34 @@ import _uniq from 'lodash/uniq';
 import SerialPort from 'serialport';
 import socketIO from 'socket.io';
 import socketioJwt from 'socketio-jwt';
-import settings from '../../config/settings';
+import settings from './config/settings';
 import {
     CONNECTION_TYPE_SERIAL,
     CONNECTION_TYPE_SOCKET,
-} from '../../constants/connection';
-import EventTrigger from '../../lib/EventTrigger';
-import logger from '../../lib/logger';
-import { toIdent as toSerialIdent } from '../../lib/SerialConnection';
-import { toIdent as toSocketIdent } from '../../lib/SocketConnection';
-import GrblController from '../../controllers/Grbl/GrblController';
-import MarlinController from '../../controllers/Marlin/MarlinController';
-import SmoothieController from '../../controllers/Smoothie/SmoothieController';
-import TinyGController from '../../controllers/TinyG/TinyGController';
-import { GRBL } from '../../controllers/Grbl/constants';
-import { MARLIN } from '../../controllers/Marlin/constants';
-import { SMOOTHIE } from '../../controllers/Smoothie/constants';
-import { G2CORE, TINYG } from '../../controllers/TinyG/constants';
-import controllers from '../../store/controllers';
-import config from '../configstore';
-import taskRunner from '../taskrunner';
+} from './constants/connection';
+import EventTrigger from './lib/EventTrigger';
+import logger from './lib/logger';
+import { toIdent as toSerialIdent } from './lib/SerialConnection';
+import { toIdent as toSocketIdent } from './lib/SocketConnection';
+import GrblController from './controllers/Grbl/GrblController';
+import MarlinController from './controllers/Marlin/MarlinController';
+import SmoothieController from './controllers/Smoothie/SmoothieController';
+import TinyGController from './controllers/TinyG/TinyGController';
+import { GRBL } from './controllers/Grbl/constants';
+import { MARLIN } from './controllers/Marlin/constants';
+import { SMOOTHIE } from './controllers/Smoothie/constants';
+import { G2CORE, TINYG } from './controllers/TinyG/constants';
+import controllers from './store/controllers';
+import serviceContainer from './service-container';
 import {
     authorizeIPAddress,
     validateUser
-} from '../../access-control';
+} from './access-control';
 
-const log = logger('service:cncengine');
+const config = serviceContainer.resolve('config');
+const task = serviceContainer.resolve('task');
+
+const log = logger('service-engine');
 
 // Case-insensitive equality checker.
 // @param {string} str1 First string to check.
@@ -59,7 +61,7 @@ const isValidController = (controller) => (
     caseInsensitiveEquals(TINYG, controller)
 );
 
-class CNCEngine {
+class ServiceEngine {
     controllerClass = {};
 
     listener = {
@@ -95,7 +97,7 @@ class CNCEngine {
     event = new EventTrigger((event, trigger, commands) => {
         log.debug(`EventTrigger: event=${JSON.stringify(event)}, trigger=${JSON.stringify(trigger)}, commands=${JSON.stringify(commands)}`);
         if (trigger === 'system') {
-            taskRunner.run(commands);
+            task.run(commands);
         }
     });
 
@@ -133,9 +135,9 @@ class CNCEngine {
 
         this.stop();
 
-        taskRunner.on('start', this.listener.taskStart);
-        taskRunner.on('finish', this.listener.taskFinish);
-        taskRunner.on('error', this.listener.taskError);
+        task.on('start', this.listener.taskStart);
+        task.on('finish', this.listener.taskFinish);
+        task.on('error', this.listener.taskError);
         config.on('change', this.listener.configChange);
 
         // System Trigger: Startup
@@ -423,11 +425,13 @@ class CNCEngine {
         this.sockets = [];
         this.server = null;
 
-        taskRunner.removeListener('start', this.listener.taskStart);
-        taskRunner.removeListener('finish', this.listener.taskFinish);
-        taskRunner.removeListener('error', this.listener.taskError);
+        task.removeListener('start', this.listener.taskStart);
+        task.removeListener('finish', this.listener.taskFinish);
+        task.removeListener('error', this.listener.taskError);
         config.removeListener('change', this.listener.configChange);
     }
 }
 
-export default CNCEngine;
+const serviceEngine = new ServiceEngine();
+
+export default serviceEngine;

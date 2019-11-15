@@ -1,10 +1,14 @@
 import events from 'events';
 import fs from 'fs';
-import _ from 'lodash';
+import _get from 'lodash/get';
+import _has from 'lodash/has';
+import _isPlainObject from 'lodash/isPlainObject';
+import _set from 'lodash/set';
+import _unset from 'lodash/unset';
 import chalk from 'chalk';
-import logger from '../../lib/logger';
+import logger from '../lib/logger';
 
-const log = logger('service:configstore');
+const log = logger('service:config');
 
 const defaultState = { // default state
     checkForUpdates: true,
@@ -15,7 +19,7 @@ const defaultState = { // default state
     }
 };
 
-class ConfigStore extends events.EventEmitter {
+class ConfigService extends events.EventEmitter {
     file = '';
 
     config = {};
@@ -70,7 +74,7 @@ class ConfigStore extends events.EventEmitter {
             return false;
         }
 
-        if (!_.isPlainObject(this.config)) {
+        if (!_isPlainObject(this.config)) {
             log.error(`"${this.file}" does not contain valid JSON`);
             this.config = {};
         }
@@ -97,7 +101,7 @@ class ConfigStore extends events.EventEmitter {
     }
 
     has(key) {
-        return _.has(this.config, key);
+        return _has(this.config, key);
     }
 
     get(key, defaultValue) {
@@ -106,7 +110,7 @@ class ConfigStore extends events.EventEmitter {
         }
 
         return (key !== undefined)
-            ? _.get(this.config, key, defaultValue)
+            ? _get(this.config, key, defaultValue)
             : this.config;
     }
 
@@ -118,7 +122,7 @@ class ConfigStore extends events.EventEmitter {
         }
 
         const ok = this.reload(); // reload before making changes
-        _.set(this.config, key, value);
+        _set(this.config, key, value);
         ok && !silent && this.sync(); // it is ok to write
     }
 
@@ -128,11 +132,9 @@ class ConfigStore extends events.EventEmitter {
         }
 
         const ok = this.reload(); // reload before making changes
-        _.unset(this.config, key);
+        _unset(this.config, key);
         ok && this.sync(); // it is ok to write
     }
 }
 
-const configstore = new ConfigStore();
-
-export default configstore;
+export default ConfigService;

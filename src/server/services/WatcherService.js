@@ -1,6 +1,6 @@
 import watch from 'watch';
 
-class FSMonitor {
+class WatcherService {
     root = '';
 
     monitor = null;
@@ -35,4 +35,4 @@ class FSMonitor {
     }
 }
 
-export default FSMonitor;
+export default WatcherService;

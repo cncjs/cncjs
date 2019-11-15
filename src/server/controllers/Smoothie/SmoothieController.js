@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import chalk from 'chalk';
 import ensureArray from 'ensure-array';
 import * as parser from 'gcode-parser';
@@ -21,9 +23,7 @@ import delay from '../../lib/delay';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
-import config from '../../services/configstore';
-import monitor from '../../services/monitor';
-import taskRunner from '../../services/taskrunner';
+import serviceContainer from '../../service-container';
 import controllers from '../../store/controllers';
 import {
     GLOBAL_OBJECTS as globalObjects,
@@ -36,6 +36,10 @@ import {
     SMOOTHIE_MACHINE_STATE_HOLD,
     SMOOTHIE_REALTIME_COMMANDS
 } from './constants';
+
+const config = serviceContainer.resolve('config');
+const task = serviceContainer.resolve('task');
+const watcher = serviceContainer.resolve('watcher');
 
 // % commands
 const WAIT = '%wait';
@@ -195,7 +199,7 @@ class SmoothieController {
         this.event = new EventTrigger((event, trigger, commands) => {
             log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
             if (trigger === 'system') {
-                taskRunner.run(commands);
+                task.run(commands);
             } else {
                 this.command('gcode', commands);
             }
@@ -1200,18 +1204,19 @@ class SmoothieController {
                 this.command('sender:load', meta, context, callback);
             },
             'watchdir:load': () => {
-                const [file, callback = noop] = args;
+                const [name, callback = noop] = args;
                 const context = {}; // empty context
+                const filepath = path.join(watcher.root, name);
 
-                monitor.readFile(file, (err, data) => {
+                fs.readFile(filepath, 'utf8', (err, content) => {
                     if (err) {
                         callback(err);
                         return;
                     }
 
                     const meta = {
-                        name: file,
-                        content: data,
+                        name,
+                        content,
                     };
                     this.command('sender:load', meta, context, callback);
                 });
