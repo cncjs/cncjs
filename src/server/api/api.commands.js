@@ -6,7 +6,7 @@ import settings from '../config/settings';
 import { ensureFiniteNumber } from '../lib/ensure-type';
 import logger from '../lib/logger';
 import serviceContainer from '../service-container';
-import { getPagingRange } from './paging';
+import { getPagingRange } from './shared/paging';
 import {
     ERR_BAD_REQUEST,
     ERR_NOT_FOUND,
@@ -17,6 +17,7 @@ const config = serviceContainer.resolve('config');
 const task = serviceContainer.resolve('task');
 
 const log = logger('api:commands');
+
 const CONFIG_KEY = 'commands';
 
 const getSanitizedRecords = () => {

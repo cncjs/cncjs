@@ -6,7 +6,7 @@ import settings from '../config/settings';
 import { ensureFiniteNumber } from '../lib/ensure-type';
 import logger from '../lib/logger';
 import serviceContainer from '../service-container';
-import { getPagingRange } from './paging';
+import { getPagingRange } from './shared/paging';
 import {
     ERR_BAD_REQUEST,
     ERR_NOT_FOUND,
@@ -14,7 +14,9 @@ import {
 } from '../constants';
 
 const config = serviceContainer.resolve('config');
+
 const log = logger('api:macros');
+
 const CONFIG_KEY = 'macros';
 
 const getSanitizedRecords = () => {

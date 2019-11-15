@@ -2,6 +2,7 @@ import ensureArray from 'ensure-array';
 import _cloneDeep from 'lodash/cloneDeep';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
+import _isPlainObject from 'lodash/isPlainObject';
 import _noop from 'lodash/noop';
 import _reverse from 'lodash/reverse';
 import _sortBy from 'lodash/sortBy';
@@ -14,6 +15,9 @@ import {
     CONNECTION_TYPE_SERIAL,
     CONNECTION_TYPE_SOCKET,
 } from './constants/connection';
+import {
+    isAllowedIPAddress,
+} from './lib/access-control';
 import EventTrigger from './lib/EventTrigger';
 import logger from './lib/logger';
 import { toIdent as toSerialIdent } from './lib/SerialConnection';
@@ -28,10 +32,6 @@ import { SMOOTHIE } from './controllers/Smoothie/constants';
 import { G2CORE, TINYG } from './controllers/TinyG/constants';
 import controllers from './store/controllers';
 import serviceContainer from './service-container';
-import {
-    authorizeIPAddress,
-    validateUser
-} from './access-control';
 
 const config = serviceContainer.resolve('config');
 const task = serviceContainer.resolve('task');
@@ -154,15 +154,32 @@ class ServiceEngine {
             handshake: true
         }));
 
-        this.io.use(async (socket, next) => {
+        this.io.use((socket, next) => {
             try {
-                // IP Address Access Control
                 const ipaddr = socket.handshake.address;
-                await authorizeIPAddress(ipaddr);
-
-                // User Validation
                 const user = socket.decoded_token || {};
-                await validateUser(user);
+
+                { // IP address access control
+                    const pass = isAllowedIPAddress(ipaddr);
+                    if (!pass) {
+                        throw new Error(`Client with IP address '${ipaddr}' is not allowed to access the server.`);
+                    }
+                }
+
+                { // Validate the user
+                    const { id = null, name = null } = { ...user };
+                    const users = ensureArray(config.get('users'))
+                        .filter(user => _isPlainObject(user))
+                        .map(user => ({
+                            ...user,
+                            // Defaults to true if not explicitly initialized
+                            enabled: (user.enabled !== false)
+                        }));
+                    const enabledUsers = users.filter(user => user.enabled);
+                    if ((enabledUsers.length > 0) && !_find(enabledUsers, { id: id, name: name })) {
+                        throw new Error(`Unauthorized user: user.id=${id}, user.name=${name}`);
+                    }
+                }
             } catch (err) {
                 log.warn(err);
                 next(err);

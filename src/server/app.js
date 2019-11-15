@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import multiparty from 'connect-multiparty';
 import connectRestreamer from 'connect-restreamer';
 import engines from 'consolidate';
+import ensureArray from 'ensure-array';
 import errorhandler from 'errorhandler';
 import express from 'express';
 import expressJwt from 'express-jwt';
@@ -20,42 +21,34 @@ import morgan from 'morgan';
 import favicon from 'serve-favicon';
 import serveStatic from 'serve-static';
 import sessionFileStore from 'session-file-store';
+import _find from 'lodash/find';
 import _get from 'lodash/get';
-import _noop from 'lodash/noop';
+import _isPlainObject from 'lodash/isPlainObject';
 import rimraf from 'rimraf';
 import {
     LanguageDetector as i18nextLanguageDetector,
-    handle as i18nextHandle
+    handle as i18nextHandle,
 } from 'i18next-express-middleware';
 import urljoin from './lib/urljoin';
 import logger from './lib/logger';
 import settings from './config/settings';
-import * as api from './api';
+import {
+    isAllowedIPAddress,
+} from './lib/access-control';
 import errclient from './lib/middleware/errclient';
 import errlog from './lib/middleware/errlog';
 import errnotfound from './lib/middleware/errnotfound';
 import errserver from './lib/middleware/errserver';
+import { createAPIRouter } from './routes/api';
+import { createViewRouter } from './routes/view';
 import {
-    authorizeIPAddress,
-    validateUser
-} from './access-control';
-import {
-    ERR_FORBIDDEN
+    ERR_FORBIDDEN,
 } from './constants';
 import serviceContainer from './service-container';
 
 const config = serviceContainer.resolve('config');
 
 const log = logger('app');
-
-const renderPage = (view = 'index', cb = _noop) => (req, res, next) => {
-    // Override IE's Compatibility View Settings
-    // http://stackoverflow.com/questions/6156639/x-ua-compatible-is-set-to-ie-edge-but-it-still-doesnt-stop-compatibility-mode
-    res.set({ 'X-UA-Compatible': 'IE=edge' });
-
-    const locals = { ...cb(req, res) };
-    res.render(view, locals);
-};
 
 const appMain = () => {
     const app = express();
@@ -104,11 +97,16 @@ const appMain = () => {
         .use(i18nextLanguageDetector)
         .init(settings.i18next);
 
-    app.use(async (req, res, next) => {
+    app.use((req, res, next) => {
         try {
-            // IP Address Access Control
             const ipaddr = req.ip || req.connection.remoteAddress;
-            await authorizeIPAddress(ipaddr);
+
+            { // IP address access control
+                const pass = isAllowedIPAddress(ipaddr);
+                if (!pass) {
+                    throw new Error(`Client with IP address '${ipaddr}' is not allowed to access the server.`);
+                }
+            }
         } catch (err) {
             log.warn(err);
             res.status(ERR_FORBIDDEN).end('Forbidden Access');
@@ -212,7 +210,7 @@ const appMain = () => {
             credentialsRequired: true
         }));
 
-        app.use(async (err, req, res, next) => {
+        app.use((err, req, res, next) => {
             let bypass = !(err && (err.name === 'UnauthorizedError'));
 
             // Check whether the app is running in development mode
@@ -231,9 +229,23 @@ const appMain = () => {
                 // Check whether the provided credential is correct
                 const token = _get(req, 'query.token') || _get(req, 'body.token');
                 try {
-                    // User Validation
                     const user = jwt.verify(token, settings.secret) || {};
-                    await validateUser(user);
+
+                    { // Validate the user
+                        const { id = null, name = null } = { ...user };
+                        const users = ensureArray(config.get('users'))
+                            .filter(user => _isPlainObject(user))
+                            .map(user => ({
+                                ...user,
+                                // Defaults to true if not explicitly initialized
+                                enabled: (user.enabled !== false)
+                            }));
+                        const enabledUsers = users.filter(user => user.enabled);
+                        if ((enabledUsers.length > 0) && !_find(enabledUsers, { id: id, name: name })) {
+                            throw new Error(`Unauthorized user: user.id=${id}, user.name=${name}`);
+                        }
+                    }
+
                     bypass = true;
                 } catch (err) {
                     log.warn(err);
@@ -251,93 +263,11 @@ const appMain = () => {
         });
     }
 
-    { // Register API routes with public access
-        // Also see "src/app/app.js"
-        app.post(urljoin(settings.route, 'api/signin'), api.users.signin);
-    }
+    const apiRouter = createAPIRouter();
+    app.use(settings.route, apiRouter);
 
-    { // Register API routes with authorized access
-        // Version
-        app.get(urljoin(settings.route, 'api/version/latest'), api.version.getLatestVersion);
-
-        // State
-        app.get(urljoin(settings.route, 'api/state'), api.state.get);
-        app.post(urljoin(settings.route, 'api/state'), api.state.set);
-        app.delete(urljoin(settings.route, 'api/state'), api.state.unset);
-
-        // G-code
-        app.get(urljoin(settings.route, 'api/gcode'), api.gcode.fetch);
-        app.post(urljoin(settings.route, 'api/gcode'), api.gcode.upload);
-        app.get(urljoin(settings.route, 'api/gcode/download'), api.gcode.download);
-        app.post(urljoin(settings.route, 'api/gcode/download'), api.gcode.download); // Alias
-
-        // Controllers
-        app.get(urljoin(settings.route, 'api/controllers'), api.controllers.get);
-
-        // Commands
-        app.get(urljoin(settings.route, 'api/commands'), api.commands.fetch);
-        app.post(urljoin(settings.route, 'api/commands'), api.commands.create);
-        app.get(urljoin(settings.route, 'api/commands/:id'), api.commands.read);
-        app.put(urljoin(settings.route, 'api/commands/:id'), api.commands.update);
-        app.delete(urljoin(settings.route, 'api/commands/:id'), api.commands.__delete);
-        app.post(urljoin(settings.route, 'api/commands/run/:id'), api.commands.run);
-
-        // Events
-        app.get(urljoin(settings.route, 'api/events'), api.events.fetch);
-        app.post(urljoin(settings.route, 'api/events/'), api.events.create);
-        app.get(urljoin(settings.route, 'api/events/:id'), api.events.read);
-        app.put(urljoin(settings.route, 'api/events/:id'), api.events.update);
-        app.delete(urljoin(settings.route, 'api/events/:id'), api.events.__delete);
-
-        // Machines
-        app.get(urljoin(settings.route, 'api/machines'), api.machines.fetch);
-        app.post(urljoin(settings.route, 'api/machines'), api.machines.create);
-        app.get(urljoin(settings.route, 'api/machines/:id'), api.machines.read);
-        app.put(urljoin(settings.route, 'api/machines/:id'), api.machines.update);
-        app.delete(urljoin(settings.route, 'api/machines/:id'), api.machines.__delete);
-
-        // Macros
-        app.get(urljoin(settings.route, 'api/macros'), api.macros.fetch);
-        app.post(urljoin(settings.route, 'api/macros'), api.macros.create);
-        app.get(urljoin(settings.route, 'api/macros/:id'), api.macros.read);
-        app.put(urljoin(settings.route, 'api/macros/:id'), api.macros.update);
-        app.delete(urljoin(settings.route, 'api/macros/:id'), api.macros.__delete);
-
-        // MDI
-        app.get(urljoin(settings.route, 'api/mdi'), api.mdi.fetch);
-        app.post(urljoin(settings.route, 'api/mdi'), api.mdi.create);
-        app.put(urljoin(settings.route, 'api/mdi'), api.mdi.bulkUpdate);
-        app.get(urljoin(settings.route, 'api/mdi/:id'), api.mdi.read);
-        app.put(urljoin(settings.route, 'api/mdi/:id'), api.mdi.update);
-        app.delete(urljoin(settings.route, 'api/mdi/:id'), api.mdi.__delete);
-
-        // Users
-        app.get(urljoin(settings.route, 'api/users'), api.users.fetch);
-        app.post(urljoin(settings.route, 'api/users/'), api.users.create);
-        app.get(urljoin(settings.route, 'api/users/:id'), api.users.read);
-        app.put(urljoin(settings.route, 'api/users/:id'), api.users.update);
-        app.delete(urljoin(settings.route, 'api/users/:id'), api.users.__delete);
-
-        // Watch
-        app.get(urljoin(settings.route, 'api/watch/files'), api.watch.getFiles);
-        app.post(urljoin(settings.route, 'api/watch/files'), api.watch.getFiles);
-        app.get(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
-        app.post(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
-    }
-
-    // page
-    app.get(urljoin(settings.route, '/'), renderPage('index.hbs', (req, res) => {
-        const webroot = _get(settings, 'assets.app.routes[0]', ''); // with trailing slash
-        const lng = req.language;
-        const t = req.t;
-
-        return {
-            webroot: webroot,
-            lang: lng,
-            title: `${t('title')} ${settings.version}`,
-            loading: t('loading')
-        };
-    }));
+    const viewRouter = createViewRouter();
+    app.use(settings.route, viewRouter);
 
     { // Error handling
         app.use(errlog());
