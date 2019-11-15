@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Anchor from 'app/components/Anchor';
 import { Button } from 'app/components/Buttons';
-import { FlexContainer, Row, Col } from 'app/components/GridSystem';
+import { Container, Row, Col } from 'app/components/GridSystem';
 import Modal from 'app/components/Modal';
 import ModalTemplate from 'app/components/ModalTemplate';
 import Space from 'app/components/Space';
@@ -110,7 +110,7 @@ class TableRecords extends Component {
                         key: 'limits',
                         render: (value, row, index) => {
                             return (
-                                <FlexContainer fluid gutterWidth={0}>
+                                <Container fluid>
                                     <Row>
                                         <Col width="auto">
                                             <div>
@@ -142,42 +142,10 @@ class TableRecords extends Component {
                                             </div>
                                         </Col>
                                     </Row>
-                                </FlexContainer>
+                                </Container>
                             );
                         }
                     },
-                    /*
-                    {
-                            title: (<Axis value="X" sub="min" />),
-                            key: 'xmin',
-                            render: (value, row, index) => row.xmin
-                    },
-                    {
-                        title: (<Axis value="X" sub="max" />),
-                        key: 'xmax',
-                        render: (value, row, index) => row.xmax
-                    },
-                    {
-                        title: (<Axis value="Y" sub="min" />),
-                        key: 'ymin',
-                        render: (value, row, index) => row.ymin
-                    },
-                    {
-                        title: (<Axis value="Y" sub="max" />),
-                        key: 'ymax',
-                        render: (value, row, index) => row.ymax
-                    },
-                    {
-                        title: (<Axis value="Z" sub="min" />),
-                        key: 'zmin',
-                        render: (value, row, index) => row.zmin
-                    },
-                    {
-                        title: (<Axis value="Z" sub="max" />),
-                        key: 'zmax',
-                        render: (value, row, index) => row.zmax
-                    },
-                    */
                     {
                         title: i18n._('Action'),
                         className: 'text-nowrap',
