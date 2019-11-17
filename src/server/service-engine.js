@@ -15,9 +15,7 @@ import {
     CONNECTION_TYPE_SERIAL,
     CONNECTION_TYPE_SOCKET,
 } from './constants/connection';
-import {
-    isAllowedIPAddress,
-} from './lib/access-control';
+import * as accessControl from './lib/access-control';
 import EventTrigger from './lib/EventTrigger';
 import logger from './lib/logger';
 import { toIdent as toSerialIdent } from './lib/SerialConnection';
@@ -160,24 +158,25 @@ class ServiceEngine {
                 const user = socket.decoded_token || {};
 
                 { // IP address access control
-                    const pass = isAllowedIPAddress(ipaddr);
+                    const pass = accessControl.isAllowedIPAddress(ipaddr);
                     if (!pass) {
-                        throw new Error(`Client with IP address '${ipaddr}' is not allowed to access the server.`);
+                        throw new Error(`Unauthorized Error: Client with IP address ${ipaddr} is not allowed to access the server`);
                     }
                 }
 
-                { // Validate the user
+                { // validate the user
                     const { id = null, name = null } = { ...user };
-                    const users = ensureArray(config.get('users'))
+                    const users = ensureArray(config.get('users'));
+                    const enabledUsers = users
                         .filter(user => _isPlainObject(user))
                         .map(user => ({
                             ...user,
-                            // Defaults to true if not explicitly initialized
+                            // defaults to true if not explicitly initialized
                             enabled: (user.enabled !== false)
-                        }));
-                    const enabledUsers = users.filter(user => user.enabled);
+                        }))
+                        .filter(user => user.enabled);
                     if ((enabledUsers.length > 0) && !_find(enabledUsers, { id: id, name: name })) {
-                        throw new Error(`Unauthorized user: user.id=${id}, user.name=${name}`);
+                        throw new Error('Unauthorized Error: User is not available');
                     }
                 }
             } catch (err) {

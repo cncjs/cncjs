@@ -253,7 +253,7 @@ const createServer = (options, callback) => {
             });
 
             if (address !== '0.0.0.0') {
-                log.info('Starting the server at ' + chalk.yellow(`http://${address}:${port}`));
+                log.info('Starting the server at ' + chalk.cyan(`http://${address}:${port}`));
                 return;
             }
 
@@ -264,7 +264,7 @@ const createServer = (options, callback) => {
                 }
 
                 addresses.forEach(({ address, family }) => {
-                    log.info('Starting the server at ' + chalk.yellow(`http://${address}:${port}`));
+                    log.info('Starting the server at ' + chalk.cyan(`http://${address}:${port}`));
                 });
             });
         })

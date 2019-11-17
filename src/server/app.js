@@ -2,6 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import bodyParser from 'body-parser';
+import chalk from 'chalk';
 import compress from 'compression';
 import cookieParser from 'cookie-parser';
 import multiparty from 'connect-multiparty';
@@ -10,12 +11,11 @@ import engines from 'consolidate';
 import ensureArray from 'ensure-array';
 import errorhandler from 'errorhandler';
 import express from 'express';
-import expressJwt from 'express-jwt';
+import jwt from 'express-jwt';
 import session from 'express-session';
 import 'hogan.js'; // required by consolidate
 import i18next from 'i18next';
 import i18nextBackend from 'i18next-node-fs-backend';
-import jwt from 'jsonwebtoken';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
 import favicon from 'serve-favicon';
@@ -32,20 +32,103 @@ import {
 import urljoin from './lib/urljoin';
 import logger from './lib/logger';
 import settings from './config/settings';
-import {
-    isAllowedIPAddress,
-} from './lib/access-control';
-import { createAPIRouter } from './routes/api';
+import * as accessControl from './lib/access-control';
+import { createPublicApiRouter, createProtectedApiRouter } from './routes/api';
 import { createExceptionRouter } from './routes/exception';
-import { createViewRouter } from './routes/view';
+import { createPublicViewRouter } from './routes/view';
 import {
-    ERR_FORBIDDEN,
+    ERR_UNAUTHORIZED,
 } from './constants';
 import serviceContainer from './service-container';
 
 const config = serviceContainer.resolve('config');
 
 const log = logger('app');
+
+const ipAddressAccessControlMiddleware = () => (req, res, next) => {
+    const ipaddr = req.ip || req.connection.remoteAddress;
+    const pass = accessControl.isAllowedIPAddress(ipaddr);
+    if (!pass) {
+        const err = {
+            message: `Client with IP address ${ipaddr} is not allowed to access the server`,
+            code: 'unauthorized_ip_address',
+            status: ERR_UNAUTHORIZED,
+        };
+        log.warn(`${chalk.redBright('Unauthorized Error')}: ipaddr=${chalk.yellow(ipaddr)}, message=${chalk.yellow(JSON.stringify(err.message))}, code=${chalk.yellow(err.code)}, status=${chalk.yellow(err.status)}`);
+        res.status(err.status).end(`Unauthorized Error: ${err.message}`);
+        return;
+    }
+
+    next();
+};
+
+const jwtAuthenticationMiddleware = () => {
+    const secret = config.get('secret');
+
+    return jwt({
+        secret,
+        credentialsRequired: true,
+        getToken: (req) => {
+            if (req.headers && req.headers.authorization) {
+                const parts = req.headers.authorization.split(' ');
+                const [scheme, credentials] = parts;
+
+                if (/^Bearer$/i.test(scheme)) {
+                    const token = credentials;
+                    return token;
+                }
+            }
+
+            if (req.query && req.query.token) {
+                const token = req.query.token;
+                return token;
+            }
+
+            if (req.body && req.body.token) {
+                const token = req.body.token;
+                return token;
+            }
+
+            return null;
+        },
+        requestProperty: 'user',
+    });
+};
+
+const jwtAuthorizationMiddleware = () => (err, req, res, next) => {
+    try {
+        if (err && (err instanceof jwt.UnauthorizedError)) {
+            throw err;
+        }
+
+        if (!req.user) {
+            throw new jwt.UnauthorizedError('missing_decoded_token', { message: 'The decoded token is not attached to the result object' });
+        }
+
+        { // validate the user
+            const { id = null, name = null } = { ...req.user };
+            const users = ensureArray(config.get('users'));
+            const enabledUsers = users
+                .filter(user => _isPlainObject(user))
+                .map(user => ({
+                    ...user,
+                    // defaults to true if not explicitly initialized
+                    enabled: (user.enabled !== false)
+                }))
+                .filter(user => user.enabled);
+            if ((enabledUsers.length > 0) && !_find(enabledUsers, { id: id, name: name })) {
+                throw new jwt.UnauthorizedError('user_not_found', { message: 'User not found' });
+            }
+        }
+    } catch (err) {
+        const ipaddr = req.ip || req.connection.remoteAddress;
+        log.warn(`${chalk.redBright('Unauthorized Error')}: ipaddr=${chalk.yellow(ipaddr)}, message=${chalk.yellow(JSON.stringify(err.message))}, code=${chalk.yellow(err.code)}, status=${chalk.yellow(err.status)}`);
+        res.status(err.status).end(`Unauthorized Error: ${err.message}`);
+        return;
+    }
+
+    next();
+};
 
 const appMain = () => {
     const app = express();
@@ -94,24 +177,8 @@ const appMain = () => {
         .use(i18nextLanguageDetector)
         .init(settings.i18next);
 
-    app.use((req, res, next) => {
-        try {
-            const ipaddr = req.ip || req.connection.remoteAddress;
-
-            { // IP address access control
-                const pass = isAllowedIPAddress(ipaddr);
-                if (!pass) {
-                    throw new Error(`Client with IP address '${ipaddr}' is not allowed to access the server.`);
-                }
-            }
-        } catch (err) {
-            log.warn(err);
-            res.status(ERR_FORBIDDEN).end('Forbidden Access');
-            return;
-        }
-
-        next();
-    });
+    // IP address access control
+    app.use(ipAddressAccessControlMiddleware());
 
     // Removes the 'X-Powered-By' header in earlier versions of Express
     app.use((req, res, next) => {
@@ -152,16 +219,17 @@ const appMain = () => {
     }
 
     app.use(favicon(path.join(_get(settings, 'assets.app.path', ''), 'favicon.ico')));
-    app.use(cookieParser());
 
     // Connect's body parsing middleware. This only handles urlencoded and json bodies.
     // https://github.com/expressjs/body-parser
     app.use(bodyParser.json(settings.middleware['body-parser'].json));
     app.use(bodyParser.urlencoded(settings.middleware['body-parser'].urlencoded));
 
-    // For multipart bodies, please use the following modules:
-    // - [busboy](https://github.com/mscdex/busboy) and [connect-busboy](https://github.com/mscdex/connect-busboy)
-    // - [multiparty](https://github.com/andrewrk/node-multiparty) and [connect-multiparty](https://github.com/andrewrk/connect-multiparty)
+    app.use(cookieParser());
+
+    // multipart bodies
+    // - [multiparty](https://github.com/andrewrk/node-multiparty)
+    // - [connect-multiparty](https://github.com/andrewrk/connect-multiparty)
     app.use(multiparty(settings.middleware.multiparty));
 
     // https://github.com/dominictarr/connect-restreamer
@@ -171,6 +239,7 @@ const appMain = () => {
 
     // https://github.com/expressjs/method-override
     app.use(methodOverride());
+
     if (settings.verbosity > 0) {
         // https://github.com/expressjs/morgan#use-custom-token-formats
         // Add an ID to all requests and displays it using the :id token
@@ -179,7 +248,10 @@ const appMain = () => {
         });
         app.use(morgan(settings.middleware.morgan.format));
     }
+
     app.use(compress(settings.middleware.compression));
+
+    app.use(i18nextHandle(i18next, {}));
 
     Object.keys(settings.assets).forEach((name) => {
         const asset = settings.assets[name];
@@ -199,72 +271,16 @@ const appMain = () => {
         });
     });
 
-    app.use(i18nextHandle(i18next, {}));
+    const apiPrefix = urljoin(settings.route, 'api');
 
-    { // Secure API Access
-        app.use(urljoin(settings.route, 'api'), expressJwt({
-            secret: config.get('secret'),
-            credentialsRequired: true
-        }));
+    const publicApiRouter = createPublicApiRouter();
+    app.use(apiPrefix, publicApiRouter);
 
-        app.use((err, req, res, next) => {
-            let bypass = !(err && (err.name === 'UnauthorizedError'));
+    const protectedApiRouter = createProtectedApiRouter();
+    app.use(apiPrefix, jwtAuthenticationMiddleware(), jwtAuthorizationMiddleware(), protectedApiRouter);
 
-            // Check whether the app is running in development mode
-            bypass = bypass || (process.env.NODE_ENV === 'development');
-
-            // Check whether the request path is not restricted
-            const whitelist = [
-                // Also see "src/app/api/index.js"
-                urljoin(settings.route, 'api/signin')
-            ];
-            bypass = bypass || whitelist.some(path => {
-                return req.path.indexOf(path) === 0;
-            });
-
-            if (!bypass) {
-                // Check whether the provided credential is correct
-                const token = _get(req, 'query.token') || _get(req, 'body.token');
-                try {
-                    const user = jwt.verify(token, settings.secret) || {};
-
-                    { // Validate the user
-                        const { id = null, name = null } = { ...user };
-                        const users = ensureArray(config.get('users'))
-                            .filter(user => _isPlainObject(user))
-                            .map(user => ({
-                                ...user,
-                                // Defaults to true if not explicitly initialized
-                                enabled: (user.enabled !== false)
-                            }));
-                        const enabledUsers = users.filter(user => user.enabled);
-                        if ((enabledUsers.length > 0) && !_find(enabledUsers, { id: id, name: name })) {
-                            throw new Error(`Unauthorized user: user.id=${id}, user.name=${name}`);
-                        }
-                    }
-
-                    bypass = true;
-                } catch (err) {
-                    log.warn(err);
-                }
-            }
-
-            if (!bypass) {
-                const ipaddr = req.ip || req.connection.remoteAddress;
-                log.warn(`Forbidden: ipaddr=${ipaddr}, code="${err.code}", message="${err.message}"`);
-                res.status(ERR_FORBIDDEN).end('Forbidden Access');
-                return;
-            }
-
-            next();
-        });
-    }
-
-    const apiRouter = createAPIRouter();
-    app.use(settings.route, apiRouter);
-
-    const viewRouter = createViewRouter();
-    app.use(settings.route, viewRouter);
+    const publicViewRouter = createPublicViewRouter();
+    app.use(settings.route, publicViewRouter);
 
     const exceptionRouter = createExceptionRouter();
     app.use(settings.route, exceptionRouter);

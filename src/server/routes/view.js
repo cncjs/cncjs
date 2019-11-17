@@ -2,7 +2,7 @@ import express from 'express';
 import _get from 'lodash/get';
 import settings from '../config/settings';
 
-const createViewRouter = () => {
+const createPublicViewRouter = () => {
     const router = express.Router();
     const view = 'index.hbs';
 
@@ -26,4 +26,4 @@ const createViewRouter = () => {
     return router;
 };
 
-export { createViewRouter };
+export { createPublicViewRouter };
