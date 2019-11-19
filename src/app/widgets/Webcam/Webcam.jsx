@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import _isEqual from 'lodash/isEqual';
 import Slider from 'rc-slider';
 import React, { useEffect, useRef } from 'react';
 import compose from 'recompose/compose';
@@ -10,7 +11,7 @@ import Margin from 'app/components/Margin';
 import Text from 'app/components/Text';
 import Tooltip from 'app/components/Tooltip';
 import WebcamComponent from 'app/components/Webcam';
-import withDeepMemo from 'app/hocs/withDeepMemo';
+import withMemo from 'app/hocs/withMemo';
 import i18n from 'app/lib/i18n';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import useWidgetEvent from 'app/widgets/shared/useWidgetEvent';
@@ -330,7 +331,7 @@ const Webcam = ({
 };
 
 export default compose(
-    withDeepMemo(),
+    withMemo(_isEqual),
 )(Webcam);
 
 const ControlBar = styled.div`
