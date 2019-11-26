@@ -117,7 +117,9 @@ class ConsoleWidget extends Component {
                                             <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
                                         )}
                                         onSelect={(eventKey) => {
-                                            if (eventKey === 'selectAll') {
+                                            if (eventKey === 'refresh') {
+                                                emitter.emit('terminal:refresh');
+                                            } else if (eventKey === 'selectAll') {
                                                 emitter.emit('terminal:selectAll');
                                             } else if (eventKey === 'copySelection') {
                                                 if (typeof document.execCommand === 'function') {
@@ -134,6 +136,11 @@ class ConsoleWidget extends Component {
                                             }
                                         }}
                                     >
+                                        <Widget.DropdownMenuItem eventKey="refresh">
+                                            <FontAwesomeIcon icon="undo-alt" fixedWidth />
+                                            <Space width={8} />
+                                            {i18n._('Refresh')}
+                                        </Widget.DropdownMenuItem>
                                         <Widget.DropdownMenuItem eventKey="selectAll">
                                             <i
                                                 className={cx(

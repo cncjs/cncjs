@@ -1,7 +1,7 @@
 import color from 'cli-color';
 import _get from 'lodash/get';
 import pubsub from 'pubsub-js';
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import uuid from 'uuid/v4';
 import settings from 'app/config/settings';
@@ -124,29 +124,29 @@ const Console = ({
     });
 
     useEffect(() => {
-        const onSelectAll = () => {
-            const { current: term } = terminalRef;
-            if (!term) {
-                return;
-            }
-
-            term.selectAll();
-        };
         const onClearSelection = () => {
             const { current: term } = terminalRef;
-            if (!term) {
-                return;
-            }
-
-            term.clearSelection();
+            term && term.clearSelection();
         };
 
-        emitter.on('terminal:selectAll', onSelectAll);
+        const onRefresh = () => {
+            const { current: term } = terminalRef;
+            term && term.refresh();
+        };
+
+        const onSelectAll = () => {
+            const { current: term } = terminalRef;
+            term && term.selectAll();
+        };
+
         emitter.on('terminal:clearSelection', onClearSelection);
+        emitter.on('terminal:refresh', onRefresh);
+        emitter.on('terminal:selectAll', onSelectAll);
 
         return () => {
-            emitter.off('terminal:selectAll', onSelectAll);
             emitter.off('terminal:clearSelection', onClearSelection);
+            emitter.off('terminal:refresh', onRefresh);
+            emitter.off('terminal:selectAll', onSelectAll);
         };
     }, [emitter]);
 
@@ -161,6 +161,14 @@ const Console = ({
             term.resize();
         }
     });
+
+    const onData = useCallback((data) => {
+        const context = {
+            __sender__: sender.current,
+        };
+
+        controller.write(data, context);
+    }, [sender]);
 
     if (!isConnected) {
         return (
@@ -178,14 +186,8 @@ const Console = ({
             rows={isFullscreen ? 'auto' : 15}
             cursorBlink={true}
             scrollback={1000}
-            tabStopWidth={4}
-            onData={(data) => {
-                const context = {
-                    __sender__: sender.current,
-                };
-
-                controller.write(data, context);
-            }}
+            tabStopWidth={2}
+            onData={onData}
         />
     );
 };
