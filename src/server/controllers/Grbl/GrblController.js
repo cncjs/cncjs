@@ -41,9 +41,9 @@ import {
     GRBL_SETTINGS,
 } from './constants';
 
-const config = serviceContainer.resolve('config');
-const task = serviceContainer.resolve('task');
-const watcher = serviceContainer.resolve('watcher');
+const userStore = serviceContainer.resolve('userStore');
+const directoryWatcher = serviceContainer.resolve('directoryWatcher');
+const shellCommand = serviceContainer.resolve('shellCommand');
 
 // % commands
 const WAIT = '%wait';
@@ -226,7 +226,7 @@ class GrblController {
         this.event = new EventTrigger((event, trigger, commands) => {
             log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
             if (trigger === 'system') {
-                task.run(commands);
+                shellCommand.spawn(commands);
             } else {
                 this.command('gcode', commands);
             }
@@ -513,7 +513,7 @@ class GrblController {
             const error = _.find(GRBL_ERRORS, { code: code });
 
             if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
-                const ignoreErrors = config.get('state.controller.exception.ignoreErrors');
+                const ignoreErrors = userStore.get('state.controller.exception.ignoreErrors');
                 const pauseError = !ignoreErrors;
                 const { lines, received } = this.sender.state;
                 const line = lines[received] || '';
@@ -1264,7 +1264,7 @@ class GrblController {
                     context = {};
                 }
 
-                const macros = config.get('macros');
+                const macros = userStore.get('macros');
                 const macro = _.find(macros, { id: id });
 
                 if (!macro) {
@@ -1284,7 +1284,7 @@ class GrblController {
                     context = {};
                 }
 
-                const macros = config.get('macros');
+                const macros = userStore.get('macros');
                 const macro = _.find(macros, { id: id });
 
                 if (!macro) {
@@ -1303,7 +1303,7 @@ class GrblController {
             'watchdir:load': () => {
                 const [name, callback = noop] = args;
                 const context = {}; // empty context
-                const filepath = path.join(watcher.root, name);
+                const filepath = path.join(directoryWatcher.root, name);
 
                 fs.readFile(filepath, 'utf8', (err, content) => {
                     if (err) {

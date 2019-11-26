@@ -41,7 +41,7 @@ import {
 } from './constants';
 import serviceContainer from './service-container';
 
-const config = serviceContainer.resolve('config');
+const userStore = serviceContainer.resolve('userStore');
 
 const log = logger('app');
 
@@ -63,7 +63,7 @@ const ipAddressAccessControlMiddleware = () => (req, res, next) => {
 };
 
 const jwtAuthenticationMiddleware = () => {
-    const secret = config.get('secret');
+    const secret = userStore.get('secret');
 
     return jwt({
         secret,
@@ -107,7 +107,7 @@ const jwtAuthorizationMiddleware = () => (err, req, res, next) => {
 
         { // validate the user
             const { id = null, name = null } = { ...req.user };
-            const users = ensureArray(config.get('users'));
+            const users = ensureArray(userStore.get('users'));
             const enabledUsers = users
                 .filter(user => _isPlainObject(user))
                 .map(user => ({

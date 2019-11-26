@@ -1,29 +1,29 @@
 import deepKeys from 'deep-keys';
-import _ from 'lodash';
+import _get from 'lodash/get';
 import serviceContainer from '../service-container';
 import {
     ERR_NOT_FOUND
 } from '../constants';
 
-const config = serviceContainer.resolve('config');
+const userStore = serviceContainer.resolve('userStore');
 
 export const get = (req, res) => {
     const query = req.query || {};
 
     if (!query.key) {
-        res.send(config.get('state'));
+        res.send(userStore.get('state'));
         return;
     }
 
     const key = `state.${query.key}`;
-    if (!config.has(key)) {
+    if (!userStore.has(key)) {
         res.status(ERR_NOT_FOUND).send({
             msg: 'Not found'
         });
         return;
     }
 
-    const value = config.get(key);
+    const value = userStore.get(key);
     res.send(value);
 };
 
@@ -31,19 +31,19 @@ export const unset = (req, res) => {
     const query = req.query || {};
 
     if (!query.key) {
-        res.send(config.get('state'));
+        res.send(userStore.get('state'));
         return;
     }
 
     const key = `state.${query.key}`;
-    if (!config.has(key)) {
+    if (!userStore.has(key)) {
         res.status(ERR_NOT_FOUND).send({
             msg: 'Not found'
         });
         return;
     }
 
-    config.unset(key);
+    userStore.unset(key);
     res.send({ err: false });
 };
 
@@ -52,22 +52,22 @@ export const set = (req, res) => {
     const data = { ...req.body };
 
     if (query.key) {
-        config.set(`state.${query.key}`, data);
+        userStore.set(`state.${query.key}`, data);
         res.send({ err: false });
         return;
     }
 
     deepKeys(data).forEach((key) => {
-        const oldValue = config.get(`state.${key}`);
-        const newValue = _.get(data, key);
+        const oldValue = userStore.get(`state.${key}`);
+        const newValue = _get(data, key);
 
         if (typeof oldValue === 'object' && typeof newValue === 'object') {
-            config.set(`state.${key}`, {
+            userStore.set(`state.${key}`, {
                 ...oldValue,
                 ...newValue
             });
         } else {
-            config.set(`state.${key}`, newValue);
+            userStore.set(`state.${key}`, newValue);
         }
     });
 

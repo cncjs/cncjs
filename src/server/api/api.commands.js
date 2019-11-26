@@ -1,6 +1,6 @@
-import find from 'lodash/find';
-import castArray from 'lodash/castArray';
-import isPlainObject from 'lodash/isPlainObject';
+import ensureArray from 'ensure-array';
+import _find from 'lodash/find';
+import _isPlainObject from 'lodash/isPlainObject';
 import uuid from 'uuid';
 import settings from '../config/settings';
 import { ensureFiniteNumber } from '../lib/ensure-type';
@@ -13,19 +13,19 @@ import {
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
-const config = serviceContainer.resolve('config');
-const task = serviceContainer.resolve('task');
+const shellCommand = serviceContainer.resolve('shellCommand');
+const userStore = serviceContainer.resolve('userStore');
 
 const log = logger('api:commands');
 
 const CONFIG_KEY = 'commands';
 
 const getSanitizedRecords = () => {
-    const records = castArray(config.get(CONFIG_KEY, []));
+    const records = ensureArray(userStore.get(CONFIG_KEY));
 
     let shouldUpdate = false;
     for (let i = 0; i < records.length; ++i) {
-        if (!isPlainObject(records[i])) {
+        if (!_isPlainObject(records[i])) {
             records[i] = {};
         }
 
@@ -52,7 +52,7 @@ const getSanitizedRecords = () => {
         log.debug(`update sanitized records: ${JSON.stringify(records)}`);
 
         // Pass `{ silent changes }` will suppress the change event
-        config.set(CONFIG_KEY, records, { silent: true });
+        userStore.set(CONFIG_KEY, records, { silent: true });
     }
 
     return records;
@@ -121,7 +121,7 @@ export const create = (req, res) => {
         };
 
         records.push(record);
-        config.set(CONFIG_KEY, records);
+        userStore.set(CONFIG_KEY, records);
 
         res.send({ id: record.id, mtime: record.mtime });
     } catch (err) {
@@ -134,7 +134,7 @@ export const create = (req, res) => {
 export const read = (req, res) => {
     const id = req.params.id;
     const records = getSanitizedRecords();
-    const record = find(records, { id: id });
+    const record = _find(records, { id: id });
 
     if (!record) {
         res.status(ERR_NOT_FOUND).send({
@@ -150,7 +150,7 @@ export const read = (req, res) => {
 export const update = (req, res) => {
     const id = req.params.id;
     const records = getSanitizedRecords();
-    const record = find(records, { id: id });
+    const record = _find(records, { id: id });
 
     if (!record) {
         res.status(ERR_NOT_FOUND).send({
@@ -178,7 +178,7 @@ export const update = (req, res) => {
             delete record.command;
         }
 
-        config.set(CONFIG_KEY, records);
+        userStore.set(CONFIG_KEY, records);
 
         res.send({ id: record.id, mtime: record.mtime });
     } catch (err) {
@@ -191,7 +191,7 @@ export const update = (req, res) => {
 export const __delete = (req, res) => {
     const id = req.params.id;
     const records = getSanitizedRecords();
-    const record = find(records, { id: id });
+    const record = _find(records, { id: id });
 
     if (!record) {
         res.status(ERR_NOT_FOUND).send({
@@ -204,7 +204,7 @@ export const __delete = (req, res) => {
         const filteredRecords = records.filter(record => {
             return record.id !== id;
         });
-        config.set(CONFIG_KEY, filteredRecords);
+        userStore.set(CONFIG_KEY, filteredRecords);
 
         res.send({ id: record.id });
     } catch (err) {
@@ -217,7 +217,7 @@ export const __delete = (req, res) => {
 export const run = (req, res) => {
     const id = req.params.id;
     const records = getSanitizedRecords();
-    const record = find(records, { id: id });
+    const record = _find(records, { id: id });
 
     if (!record) {
         res.status(ERR_NOT_FOUND).send({
@@ -231,7 +231,7 @@ export const run = (req, res) => {
 
     log.info(`run: title="${title}", commands="${commands}"`);
 
-    const taskId = task.run(commands, title);
+    const taskId = shellCommand.spawn(commands);
 
     res.send({ taskId: taskId });
 };

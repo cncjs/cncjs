@@ -22,8 +22,8 @@ import { ensureString } from './lib/ensure-type';
 import logger, { setLevel } from './lib/logger';
 import urljoin from './lib/urljoin';
 
-const config = serviceContainer.resolve('config');
-const watcher = serviceContainer.resolve('watcher');
+const userStore = serviceContainer.resolve('userStore');
+const directoryWatcher = serviceContainer.resolve('directoryWatcher');
 
 const log = logger('init');
 
@@ -52,29 +52,29 @@ const createServer = (options, callback) => {
 
     log.info(`Loading configuration from ${chalk.yellow(JSON.stringify(rcfile))}`);
 
-    config.load(rcfile);
+    userStore.load(rcfile);
 
     // rcfile
     settings.rcfile = rcfile;
 
     { // secret
-        if (!config.get('secret')) {
+        if (!userStore.get('secret')) {
             // generate a secret key
             const secret = bcrypt.genSaltSync(); // TODO: use a strong secret
-            config.set('secret', secret);
+            userStore.set('secret', secret);
         }
 
-        settings.secret = config.get('secret', settings.secret);
+        settings.secret = userStore.get('secret', settings.secret);
     }
 
     { // watchDirectory
-        const watchDirectory = options.watchDirectory || config.get('watchDirectory');
+        const watchDirectory = options.watchDirectory || userStore.get('watchDirectory');
 
         if (watchDirectory) {
             if (fs.existsSync(watchDirectory)) {
                 log.info(`Watching ${chalk.yellow(JSON.stringify(watchDirectory))} for file changes`);
 
-                watcher.watch(watchDirectory);
+                directoryWatcher.watch(watchDirectory);
             } else {
                 log.error(`The directory ${chalk.yellow(JSON.stringify(watchDirectory))} does not exist.`);
             }
@@ -82,7 +82,7 @@ const createServer = (options, callback) => {
     }
 
     { // accessTokenLifetime
-        const accessTokenLifetime = options.accessTokenLifetime || config.get('accessTokenLifetime');
+        const accessTokenLifetime = options.accessTokenLifetime || userStore.get('accessTokenLifetime');
 
         if (accessTokenLifetime) {
             set(settings, 'accessTokenLifetime', accessTokenLifetime);
@@ -90,10 +90,10 @@ const createServer = (options, callback) => {
     }
 
     { // allowRemoteAccess
-        const allowRemoteAccess = options.allowRemoteAccess || config.get('allowRemoteAccess', false);
+        const allowRemoteAccess = options.allowRemoteAccess || userStore.get('allowRemoteAccess', false);
 
         if (allowRemoteAccess) {
-            if (size(config.get('users')) === 0) {
+            if (size(userStore.get('users')) === 0) {
                 log.warn('You\'ve enabled remote access to the server. It\'s recommended to create an user account to protect against malicious attacks.');
             }
 
@@ -104,7 +104,7 @@ const createServer = (options, callback) => {
     const { port = 0, host, backlog } = options;
     const mountPoints = [
         ...ensureArray(options.mountPoints),
-        ...ensureArray(config.get('mountPoints'))
+        ...ensureArray(userStore.get('mountPoints'))
     ];
     const routes = [];
 
@@ -231,7 +231,7 @@ const createServer = (options, callback) => {
 
     webappengine({ port, host, backlog, routes })
         .on('ready', (server) => {
-            serviceEngine.start(server, options.controller || config.get('controller', ''));
+            serviceEngine.start(server, options.controller || userStore.get('controller', ''));
 
             const address = server.address().address;
             const port = server.address().port;

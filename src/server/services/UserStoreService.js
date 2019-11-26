@@ -1,14 +1,14 @@
 import events from 'events';
 import fs from 'fs';
+import chalk from 'chalk';
 import _get from 'lodash/get';
 import _has from 'lodash/has';
 import _isPlainObject from 'lodash/isPlainObject';
 import _set from 'lodash/set';
 import _unset from 'lodash/unset';
-import chalk from 'chalk';
 import logger from '../lib/logger';
 
-const log = logger('service:config');
+const log = logger('user-store-service');
 
 const defaultState = { // default state
     checkForUpdates: true,
@@ -19,7 +19,7 @@ const defaultState = { // default state
     }
 };
 
-class ConfigService extends events.EventEmitter {
+class UserStoreService extends events.EventEmitter {
     file = '';
 
     config = {};
@@ -81,7 +81,7 @@ class ConfigService extends events.EventEmitter {
 
         this.config.state = {
             ...defaultState,
-            ...this.config.state
+            ...this.config.state,
         };
 
         return true;
@@ -137,4 +137,4 @@ class ConfigService extends events.EventEmitter {
     }
 }
 
-export default ConfigService;
+export default UserStoreService;

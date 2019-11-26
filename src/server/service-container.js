@@ -1,14 +1,14 @@
 import * as awilix from 'awilix';
-import ConfigService from './services/ConfigService';
-import TaskService from './services/TaskService';
-import WatcherService from './services/WatcherService';
+import DirectoryWatcherService from './services/DirectoryWatcherService';
+import ShellCommandService from './services/ShellCommandService';
+import UserStoreService from './services/UserStoreService';
 
 const container = awilix.createContainer();
 
 container.register({
-    config: awilix.asClass(ConfigService).singleton(),
-    task: awilix.asClass(TaskService).singleton(),
-    watcher: awilix.asClass(WatcherService).singleton(),
+    directoryWatcher: awilix.asClass(DirectoryWatcherService).singleton(),
+    shellCommand: awilix.asClass(ShellCommandService).singleton(),
+    userStore: awilix.asClass(UserStoreService).singleton(),
 });
 
 export default container;

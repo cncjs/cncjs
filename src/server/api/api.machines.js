@@ -1,7 +1,7 @@
+import ensureArray from 'ensure-array';
 import _get from 'lodash/get';
 import _set from 'lodash/set';
 import _find from 'lodash/find';
-import _castArray from 'lodash/castArray';
 import _isPlainObject from 'lodash/isPlainObject';
 import uuid from 'uuid';
 import settings from '../config/settings';
@@ -15,14 +15,14 @@ import {
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
-const config = serviceContainer.resolve('config');
+const userStore = serviceContainer.resolve('userStore');
 
 const log = logger('api:machines');
 
 const CONFIG_KEY = 'machines';
 
 const getSanitizedRecords = () => {
-    const records = _castArray(config.get(CONFIG_KEY, []));
+    const records = ensureArray(userStore.get(CONFIG_KEY));
 
     let shouldUpdate = false;
     for (let i = 0; i < records.length; ++i) {
@@ -42,7 +42,7 @@ const getSanitizedRecords = () => {
         log.debug(`update sanitized records: ${JSON.stringify(records)}`);
 
         // Pass `{ silent changes }` will suppress the change event
-        config.set(CONFIG_KEY, records, { silent: true });
+        userStore.set(CONFIG_KEY, records, { silent: true });
     }
 
     return records;
@@ -104,7 +104,7 @@ export const create = (req, res) => {
     try {
         const records = getSanitizedRecords();
         records.push(ensureMachineProfile(record));
-        config.set(CONFIG_KEY, records);
+        userStore.set(CONFIG_KEY, records);
 
         res.send({ id: record.id });
     } catch (err) {
@@ -160,7 +160,7 @@ export const update = (req, res) => {
             _set(record, key, (typeof ensureType === 'function') ? ensureType(value) : value);
         });
 
-        config.set(CONFIG_KEY, records);
+        userStore.set(CONFIG_KEY, records);
 
         res.send({ id: record.id });
     } catch (err) {
@@ -186,7 +186,7 @@ export const __delete = (req, res) => {
         const filteredRecords = records.filter(record => {
             return record.id !== id;
         });
-        config.set(CONFIG_KEY, filteredRecords);
+        userStore.set(CONFIG_KEY, filteredRecords);
 
         res.send({ id: record.id });
     } catch (err) {

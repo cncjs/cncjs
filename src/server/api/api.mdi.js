@@ -1,6 +1,6 @@
 import ensureArray from 'ensure-array';
-import find from 'lodash/find';
-import isPlainObject from 'lodash/isPlainObject';
+import _find from 'lodash/find';
+import _isPlainObject from 'lodash/isPlainObject';
 import uuid from 'uuid';
 import settings from '../config/settings';
 import { ensureFiniteNumber } from '../lib/ensure-type';
@@ -13,18 +13,18 @@ import {
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
-const config = serviceContainer.resolve('config');
+const userStore = serviceContainer.resolve('userStore');
 
 const log = logger('api:mdi');
 
 const CONFIG_KEY = 'mdi';
 
 const getSanitizedRecords = () => {
-    const records = ensureArray(config.get(CONFIG_KEY, []));
+    const records = ensureArray(userStore.get(CONFIG_KEY));
 
     let shouldUpdate = false;
     for (let i = 0; i < records.length; ++i) {
-        if (!isPlainObject(records[i])) {
+        if (!_isPlainObject(records[i])) {
             records[i] = {};
         }
 
@@ -40,7 +40,7 @@ const getSanitizedRecords = () => {
         log.debug(`update sanitized records: ${JSON.stringify(records)}`);
 
         // Pass `{ silent changes }` will suppress the change event
-        config.set(CONFIG_KEY, records, { silent: true });
+        userStore.set(CONFIG_KEY, records, { silent: true });
     }
 
     return records;
@@ -104,7 +104,7 @@ export const create = (req, res) => {
         };
 
         records.push(record);
-        config.set(CONFIG_KEY, records);
+        userStore.set(CONFIG_KEY, records);
 
         res.send({ err: null });
     } catch (err) {
@@ -117,7 +117,7 @@ export const create = (req, res) => {
 export const read = (req, res) => {
     const id = req.params.id;
     const records = getSanitizedRecords();
-    const record = find(records, { id: id });
+    const record = _find(records, { id: id });
 
     if (!record) {
         res.status(ERR_NOT_FOUND).send({
@@ -133,7 +133,7 @@ export const read = (req, res) => {
 export const update = (req, res) => {
     const id = req.params.id;
     const records = getSanitizedRecords();
-    const record = find(records, { id: id });
+    const record = _find(records, { id: id });
 
     if (!record) {
         res.status(ERR_NOT_FOUND).send({
@@ -167,9 +167,9 @@ export const update = (req, res) => {
     try {
         record.name = String(name || '');
         record.command = String(command || '');
-        record.grid = isPlainObject(grid) ? grid : {};
+        record.grid = _isPlainObject(grid) ? grid : {};
 
-        config.set(CONFIG_KEY, records);
+        userStore.set(CONFIG_KEY, records);
 
         res.send({ err: null });
     } catch (err) {
@@ -190,7 +190,7 @@ export const bulkUpdate = (req, res) => {
     }
 
     const filteredRecords = ensureArray(records)
-        .filter(record => isPlainObject(record));
+        .filter(record => _isPlainObject(record));
 
     for (let i = 0; i < filteredRecords.length; ++i) {
         const record = filteredRecords[i];
@@ -201,11 +201,11 @@ export const bulkUpdate = (req, res) => {
         }
         record.name = String(name || '');
         record.command = String(command || '');
-        record.grid = isPlainObject(grid) ? grid : {};
+        record.grid = _isPlainObject(grid) ? grid : {};
     }
 
     try {
-        config.set(CONFIG_KEY, filteredRecords);
+        userStore.set(CONFIG_KEY, filteredRecords);
         res.send({ err: null });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
@@ -217,7 +217,7 @@ export const bulkUpdate = (req, res) => {
 export const __delete = (req, res) => {
     const id = req.params.id;
     const records = getSanitizedRecords();
-    const record = find(records, { id: id });
+    const record = _find(records, { id: id });
 
     if (!record) {
         res.status(ERR_NOT_FOUND).send({
@@ -230,7 +230,7 @@ export const __delete = (req, res) => {
         const filteredRecords = records.filter(record => {
             return record.id !== id;
         });
-        config.set(CONFIG_KEY, filteredRecords);
+        userStore.set(CONFIG_KEY, filteredRecords);
 
         res.send({ err: null });
     } catch (err) {

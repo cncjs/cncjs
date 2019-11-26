@@ -39,9 +39,9 @@ import {
     TINYG_STATUS_CODES
 } from './constants';
 
-const config = serviceContainer.resolve('config');
-const task = serviceContainer.resolve('task');
-const watcher = serviceContainer.resolve('watcher');
+const userStore = serviceContainer.resolve('userStore');
+const directoryWatcher = serviceContainer.resolve('directoryWatcher');
+const shellCommand = serviceContainer.resolve('shellCommand');
 
 const SENDER_STATUS_NONE = 'none';
 const SENDER_STATUS_NEXT = 'next';
@@ -228,7 +228,7 @@ class TinyGController {
         this.event = new EventTrigger((event, trigger, commands) => {
             log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
             if (trigger === 'system') {
-                task.run(commands);
+                shellCommand.spawn(commands);
             } else {
                 this.command('gcode', commands);
             }
@@ -590,7 +590,7 @@ class TinyGController {
                 const err = _.find(TINYG_STATUS_CODES, { code: code }) || {};
 
                 if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
-                    const ignoreErrors = config.get('state.controller.exception.ignoreErrors');
+                    const ignoreErrors = userStore.get('state.controller.exception.ignoreErrors');
                     const pauseError = !ignoreErrors;
                     const { lines, received } = this.sender.state;
                     const line = lines[received - 1] || '';
@@ -1314,7 +1314,7 @@ class TinyGController {
                     context = {};
                 }
 
-                const macros = config.get('macros');
+                const macros = userStore.get('macros');
                 const macro = _.find(macros, { id: id });
 
                 if (!macro) {
@@ -1334,7 +1334,7 @@ class TinyGController {
                     context = {};
                 }
 
-                const macros = config.get('macros');
+                const macros = userStore.get('macros');
                 const macro = _.find(macros, { id: id });
 
                 if (!macro) {
@@ -1353,7 +1353,7 @@ class TinyGController {
             'watchdir:load': () => {
                 const [name, callback = noop] = args;
                 const context = {}; // empty context
-                const filepath = path.join(watcher.root, name);
+                const filepath = path.join(directoryWatcher.root, name);
 
                 fs.readFile(filepath, 'utf8', (err, content) => {
                     if (err) {

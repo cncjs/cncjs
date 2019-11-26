@@ -31,8 +31,8 @@ import { G2CORE, TINYG } from './controllers/TinyG/constants';
 import controllers from './store/controllers';
 import serviceContainer from './service-container';
 
-const config = serviceContainer.resolve('config');
-const task = serviceContainer.resolve('task');
+const shellCommand = serviceContainer.resolve('shellCommand');
+const userStore = serviceContainer.resolve('userStore');
 
 const log = logger('service-engine');
 
@@ -95,7 +95,7 @@ class ServiceEngine {
     event = new EventTrigger((event, trigger, commands) => {
         log.debug(`EventTrigger: event=${JSON.stringify(event)}, trigger=${JSON.stringify(trigger)}, commands=${JSON.stringify(commands)}`);
         if (trigger === 'system') {
-            task.run(commands);
+            shellCommand.spawn(commands);
         }
     });
 
@@ -133,10 +133,11 @@ class ServiceEngine {
 
         this.stop();
 
-        task.on('start', this.listener.taskStart);
-        task.on('finish', this.listener.taskFinish);
-        task.on('error', this.listener.taskError);
-        config.on('change', this.listener.configChange);
+        userStore.on('change', this.listener.configChange);
+
+        shellCommand.on('start', this.listener.taskStart);
+        shellCommand.on('finish', this.listener.taskFinish);
+        shellCommand.on('error', this.listener.taskError);
 
         // System Trigger: Startup
         this.event.trigger('startup');
@@ -166,7 +167,7 @@ class ServiceEngine {
 
                 { // validate the user
                     const { id = null, name = null } = { ...user };
-                    const users = ensureArray(config.get('users'));
+                    const users = ensureArray(userStore.get('users'));
                     const enabledUsers = users
                         .filter(user => _isPlainObject(user))
                         .map(user => ({
@@ -226,7 +227,7 @@ class ServiceEngine {
 
                 try {
                     const availablePorts = ensureArray(await SerialPort.list());
-                    const userDefinedPorts = ensureArray(config.get('ports', []));
+                    const userDefinedPorts = ensureArray(userStore.get('ports', []));
                     const occupiedPorts = [];
 
                     Object.keys(controllers).forEach(ident => {
@@ -281,7 +282,7 @@ class ServiceEngine {
                     9600,
                     2400,
                 ];
-                const customBaudRates = ensureArray(config.get('baudRates', []));
+                const customBaudRates = ensureArray(userStore.get('baudRates'));
                 const baudRates = _reverse(_sortBy(_uniq(customBaudRates.concat(defaultBaudRates))));
                 callback(null, baudRates);
             });
@@ -441,10 +442,11 @@ class ServiceEngine {
         this.sockets = [];
         this.server = null;
 
-        task.removeListener('start', this.listener.taskStart);
-        task.removeListener('finish', this.listener.taskFinish);
-        task.removeListener('error', this.listener.taskError);
-        config.removeListener('change', this.listener.configChange);
+        userStore.removeListener('change', this.listener.configChange);
+
+        shellCommand.removeListener('start', this.listener.taskStart);
+        shellCommand.removeListener('finish', this.listener.taskFinish);
+        shellCommand.removeListener('error', this.listener.taskError);
     }
 }
 

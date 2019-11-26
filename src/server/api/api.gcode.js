@@ -1,4 +1,4 @@
-import get from 'lodash/get';
+import _get from 'lodash/get';
 import controllers from '../store/controllers';
 import {
     ERR_BAD_REQUEST,
@@ -72,7 +72,7 @@ export const fetch = (req, res) => {
 };
 
 export const download = (req, res) => {
-    const ident = get(req, 'query.ident') || get(req, 'body.ident');
+    const ident = _get(req, 'query.ident') || _get(req, 'body.ident');
 
     if (!ident) {
         res.status(ERR_BAD_REQUEST).send({

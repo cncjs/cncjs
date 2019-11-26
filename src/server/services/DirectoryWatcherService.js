@@ -1,6 +1,10 @@
+import chalk from 'chalk';
 import watch from 'watch';
+import logger from '../lib/logger';
 
-class WatcherService {
+const log = logger('directory-watcher-service');
+
+class DirectoryWatcherService {
     root = '';
 
     monitor = null;
@@ -15,13 +19,18 @@ class WatcherService {
             this.files = { ...monitor.files };
 
             monitor.on('created', (f, stat) => {
+                log.trace(`New file has been created (${chalk.yellow(JSON.stringify(f))}).`);
                 this.files[f] = stat;
             });
-            monitor.on('changed', (f, curr, prev) => {
-                this.files[f] = curr;
-            });
+
             monitor.on('removed', (f, stat) => {
+                log.trace(`A file has been moved or deleted (${chalk.yellow(JSON.stringify(f))}).`);
                 delete this.files[f];
+            });
+
+            monitor.on('changed', (f, curr, prev) => {
+                log.trace(`A file has been changed (${chalk.yellow(JSON.stringify(f))}).`);
+                this.files[f] = curr;
             });
         });
     }
@@ -35,4 +44,4 @@ class WatcherService {
     }
 }
 
-export default WatcherService;
+export default DirectoryWatcherService;

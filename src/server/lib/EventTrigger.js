@@ -1,6 +1,7 @@
+import ensureArray from 'ensure-array';
 import serviceContainer from '../service-container';
 
-const config = serviceContainer.resolve('config');
+const userStore = serviceContainer.resolve('userStore');
 
 const noop = () => {};
 
@@ -14,7 +15,7 @@ class EventTrigger {
             return;
         }
 
-        const events = config.get('events', []);
+        const events = ensureArray(userStore.get('events'));
 
         events
             .filter(event => event && event.event === eventKey)

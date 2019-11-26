@@ -7,22 +7,22 @@ import {
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
-const watcher = serviceContainer.resolve('watcher');
+const directoryWatcher = serviceContainer.resolve('directoryWatcher');
 
 const searchFiles = (searchPath) => {
-    if (!watcher.root) {
+    if (!directoryWatcher.root) {
         return [];
     }
 
-    const pattern = path.join(watcher.root, searchPath, '*');
-    if (pattern.indexOf(watcher.root) !== 0) {
+    const pattern = path.join(directoryWatcher.root, searchPath, '*');
+    if (pattern.indexOf(directoryWatcher.root) !== 0) {
         return [];
     }
 
     return minimatch
-        .match(Object.keys(watcher.files), pattern, { matchBase: true })
+        .match(Object.keys(directoryWatcher.files), pattern, { matchBase: true })
         .map(file => {
-            const stat = watcher.files[file] || {};
+            const stat = directoryWatcher.files[file] || {};
 
             return {
                 name: path.basename(file),
@@ -67,7 +67,7 @@ export const getFiles = (req, res) => {
 
 export const readFile = (req, res) => {
     const file = req.body.file || req.query.file || '';
-    const filepath = path.join(watcher.root, file);
+    const filepath = path.join(directoryWatcher.root, file);
 
     fs.readFile(filepath, 'utf8', (err, data) => {
         if (err) {
