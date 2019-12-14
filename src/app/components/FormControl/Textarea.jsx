@@ -12,9 +12,9 @@ const defaultProps = {
     tag: 'textarea',
 };
 
-const Textarea = ({ className, ...props }) => (
-    <FormControl {...props} className={cx(className, styles.textarea)} />
-);
+const Textarea = React.forwardRef(({ className, ...props }, ref) => (
+    <FormControl ref={ref} {...props} className={cx(className, styles.textarea)} />
+));
 
 Textarea.propTypes = propTypes;
 Textarea.defaultProps = defaultProps;

@@ -15,14 +15,14 @@ const defaultProps = {
     tag: 'div',
 };
 
-const FormControl = ({
+const FormControl = React.forwardRef(({
     className,
     tag: Tag,
     lg,
     md,
     sm,
     ...props
-}) => {
+}, ref) => {
     if (lg) {
         md = false;
         sm = false;
@@ -36,6 +36,7 @@ const FormControl = ({
 
     return (
         <Tag
+            ref={ref}
             {...props}
             className={cx(className, styles.formControl, {
                 [styles.formControlLg]: lg,
@@ -44,7 +45,7 @@ const FormControl = ({
             })}
         />
     );
-};
+});
 
 FormControl.propTypes = propTypes;
 FormControl.defaultProps = defaultProps;

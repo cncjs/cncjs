@@ -12,9 +12,9 @@ const defaultProps = {
     tag: 'select',
 };
 
-const Select = ({ className, ...props }) => (
-    <FormControl {...props} className={cx(className, styles.select)} />
-);
+const Select = React.forwardRef(({ className, ...props }, ref) => (
+    <FormControl ref={ref} {...props} className={cx(className, styles.select)} />
+));
 
 Select.propTypes = propTypes;
 Select.defaultProps = defaultProps;

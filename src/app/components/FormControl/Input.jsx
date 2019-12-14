@@ -10,9 +10,9 @@ const defaultProps = {
     tag: 'input',
 };
 
-const Input = (props) => (
-    <FormControl {...props} />
-);
+const Input = React.forwardRef((props, ref) => (
+    <FormControl ref={ref} {...props} />
+));
 
 Input.propTypes = propTypes;
 Input.defaultProps = defaultProps;
