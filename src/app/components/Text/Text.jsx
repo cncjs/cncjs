@@ -1,21 +1,15 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import Box from 'app/components/Box';
 
-const fixedWidthFontFamily = 'Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif';
+const Text = React.forwardRef((props, ref) => (
+    <Box
+        ref={ref}
+        as="div"
+        display="inline-block"
+        {...props}
+    />
+));
 
-const TextBase = ({ bold, color, fixedWidth, size, ...others }) => (<div {...others} />);
-
-const Text = styled(TextBase)`${({
-    bold,
-    color,
-    fixedWidth,
-    size = 'inherit',
-}) => css`
-    display: inline-block;
-    color: ${!!color ? color : 'inherit'};
-    font-family: ${fixedWidth ? fixedWidthFontFamily : 'inherit'};
-    font-size: ${Number(size) > 0 ? `${size}px` : size};
-    font-weight: ${!!bold ? 'bold' : 'inherit'};
-`}`;
+Text.displayName = 'Text';
 
 export default Text;

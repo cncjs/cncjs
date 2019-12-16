@@ -1,52 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import Box from 'app/components/Box';
 
-const Space = ({ tag: Component, width, height, ...props }) => {
-    if ((typeof width === 'string') && width.match(/^\d+$/)) {
-        width += 'px';
-    }
-    if ((typeof height === 'string') && height.match(/^\d+$/)) {
-        height += 'px';
-    }
+const Space = React.forwardRef((props, ref) => (
+    <Box
+        ref={ref}
+        as="div"
+        display="inline-block"
+        {...props}
+    />
+));
 
-    props.style = {
-        display: 'inline-block',
-        ...props.style,
-    };
-
-    if (width !== undefined) {
-        props.style.width = width;
-    }
-
-    if (height !== undefined) {
-        props.style.height = height;
-    }
-
-    return (
-        <Component {...props} />
-    );
-};
-
-Space.propTypes = {
-    tag: PropTypes.oneOfType([
-        PropTypes.func,
-        PropTypes.string,
-        PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
-    ]),
-    width: PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string
-    ]),
-    height: PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string
-    ]),
-};
-
-Space.defaultProps = {
-    tag: 'div',
-    width: 0,
-    height: 0,
-};
+Space.displayName = 'Space';
 
 export default Space;
