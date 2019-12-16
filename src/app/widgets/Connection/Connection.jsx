@@ -905,7 +905,7 @@ const SerialPortOption = ({
             </Container>
             {manufacturer && (
                 <Margin left={24}>
-                    <Text color="#888" size="0.875em">
+                    <Text color="#888" fontSize="0.875em">
                         {i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}
                     </Text>
                 </Margin>

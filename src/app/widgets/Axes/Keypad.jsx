@@ -463,7 +463,7 @@ class Keypad extends Component {
                                         }}
                                     >
                                         {imperialJogSteps[jog.imperial.step]}
-                                        <Space width="4" />
+                                        <Space width={4} />
                                         <sub>{i18n._('in')}</sub>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu
@@ -499,7 +499,7 @@ class Keypad extends Component {
                                         }}
                                     >
                                         {metricJogSteps[jog.metric.step]}
-                                        <Space width="4" />
+                                        <Space width={4} />
                                         <sub>{i18n._('mm')}</sub>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu

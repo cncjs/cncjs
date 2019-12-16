@@ -124,7 +124,7 @@ const Webcam = ({
                 <WebcamDisabledContainer>
                     <Image src={webcamIcon} width={128} height={128} />
                     <Margin top="1rem">
-                        <Text size={24}>{i18n._('Webcam is off')}</Text>
+                        <Text fontSize="1.5rem">{i18n._('Webcam is off')}</Text>
                     </Margin>
                 </WebcamDisabledContainer>
             )}

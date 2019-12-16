@@ -52,9 +52,9 @@ class UpdateRecord extends Component {
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Commands')}
-                        <Space width="8" />
+                        <Space width={8} />
                         &rsaquo;
-                        <Space width="8" />
+                        <Space width={8} />
                         {i18n._('Update')}
                     </Modal.Title>
                 </Modal.Header>

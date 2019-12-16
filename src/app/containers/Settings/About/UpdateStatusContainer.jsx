@@ -51,7 +51,7 @@ const UpdateStatusContainer = (props) => {
                     >
                         <span className={styles.label}>
                             {i18n._('Latest version')}
-                            <Space width="8" />
+                            <Space width={8} />
                             <i className="fa fa-external-link fa-fw" />
                         </span>
                     </Anchor>

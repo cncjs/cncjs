@@ -115,7 +115,7 @@ class ConnectionWidget extends Component {
                                         {isFullscreen && (
                                             <FontAwesomeIcon icon="compress" fixedWidth />
                                         )}
-                                        <Space width="8" />
+                                        <Space width={8} />
                                         {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                                     </Widget.DropdownMenuItem>
                                 </Widget.DropdownButton>

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { ButtonGroup } from 'app/components/Buttons';
 import Center from 'app/components/Center';
 import Clickable from 'app/components/Clickable';
+import FixedWidthText from 'app/components/FixedWidthText';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import RepeatableButton from 'app/components/RepeatableButton';
 import Space from 'app/components/Space';
@@ -23,9 +24,9 @@ const FeedOverride = ({
 
     return (
         <Center vertical>
-            <Text fixedWidth size={24}>
+            <FixedWidthText fontSize="1.5rem">
                 F
-            </Text>
+            </FixedWidthText>
             <Space width={8} />
             <OverrideReadout>
                 {(value >= 0) ? `${value}%` : none}

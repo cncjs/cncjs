@@ -446,7 +446,7 @@ class TopNav extends Component {
                                                 }}
                                             >
                                                 <FontAwesomeIcon icon="user" fixedWidth />
-                                                <Space width="8" />
+                                                <Space width={8} />
                                                 {i18n._('Account')}
                                             </MenuItem>
                                             <MenuItem
@@ -463,7 +463,7 @@ class TopNav extends Component {
                                                 }}
                                             >
                                                 <FontAwesomeIcon icon="sign-out-alt" fixedWidth />
-                                                <Space width="8" />
+                                                <Space width={8} />
                                                 {i18n._('Sign Out')}
                                             </MenuItem>
                                         </Dropdown.Menu>

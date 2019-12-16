@@ -20,9 +20,9 @@ class RestoreDefaults extends Component {
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Workspace')}
-                        <Space width="8" />
+                        <Space width={8} />
                         &rsaquo;
-                        <Space width="8" />
+                        <Space width={8} />
                         {i18n._('Restore Defaults')}
                     </Modal.Title>
                 </Modal.Header>

@@ -37,7 +37,7 @@ class QuickAccessToolbar extends Component {
                         title={i18n._('Cycle Start')}
                     >
                         <FontAwesomeIcon icon="redo-alt" />
-                        <Space width="8" />
+                        <Space width={8} />
                         {i18n._('Cycle Start')}
                     </Button>
                     <Button
@@ -46,7 +46,7 @@ class QuickAccessToolbar extends Component {
                         title={i18n._('Feedhold')}
                     >
                         <FontAwesomeIcon icon="hand-paper" />
-                        <Space width="8" />
+                        <Space width={8} />
                         {i18n._('Feedhold')}
                     </Button>
                 </ButtonGroup>
@@ -58,7 +58,7 @@ class QuickAccessToolbar extends Component {
                         title={i18n._('Homing')}
                     >
                         <FontAwesomeIcon icon="home" />
-                        <Space width="8" />
+                        <Space width={8} />
                         {i18n._('Homing')}
                     </Button>
                     <Button
@@ -67,7 +67,7 @@ class QuickAccessToolbar extends Component {
                         title={i18n._('Sleep')}
                     >
                         <FontAwesomeIcon icon="bed" />
-                        <Space width="8" />
+                        <Space width={8} />
                         {i18n._('Sleep')}
                     </Button>
                     <Button
@@ -76,7 +76,7 @@ class QuickAccessToolbar extends Component {
                         title={i18n._('Unlock')}
                     >
                         <FontAwesomeIcon icon="unlock-alt" />
-                        <Space width="8" />
+                        <Space width={8} />
                         {i18n._('Unlock')}
                     </Button>
                     <Button
@@ -85,7 +85,7 @@ class QuickAccessToolbar extends Component {
                         title={i18n._('Reset')}
                     >
                         <FontAwesomeIcon icon="undo" />
-                        <Space width="8" />
+                        <Space width={8} />
                         {i18n._('Reset')}
                     </Button>
                 </ButtonGroup>

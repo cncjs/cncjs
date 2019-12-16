@@ -68,7 +68,7 @@ class TableRecords extends Component {
                         return (
                             <span>
                                 <i className="fa fa-fw fa-spin fa-circle-o-notch" />
-                                <Space width="8" />
+                                <Space width={8} />
                                 {i18n._('Loading...')}
                             </span>
                         );
@@ -86,7 +86,7 @@ class TableRecords extends Component {
                             }}
                         >
                             <i className="fa fa-plus" />
-                            <Space width="8" />
+                            <Space width={8} />
                             {i18n._('Add')}
                         </button>
                         <TablePagination
@@ -224,9 +224,9 @@ class TableRecords extends Component {
                                                     <Modal.Header>
                                                         <Modal.Title>
                                                             {i18n._('Settings')}
-                                                            <Space width="8" />
+                                                            <Space width={8} />
                                                             &rsaquo;
-                                                            <Space width="8" />
+                                                            <Space width={8} />
                                                             {i18n._('Events')}
                                                         </Modal.Title>
                                                     </Modal.Header>

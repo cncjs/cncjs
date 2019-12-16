@@ -56,9 +56,9 @@ class Workspace extends Component {
                         <Modal.Header>
                             <Modal.Title>
                                 {i18n._('Settings')}
-                                <Space width="8" />
+                                <Space width={8} />
                                 &rsaquo;
-                                <Space width="8" />
+                                <Space width={8} />
                                 {i18n._('Workspace')}
                             </Modal.Title>
                         </Modal.Header>

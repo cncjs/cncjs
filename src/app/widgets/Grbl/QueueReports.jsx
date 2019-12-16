@@ -111,7 +111,7 @@ const QueueReports = ({
                                                         max={plannerBufferMax}
                                                         value={plannerBufferSize}
                                                     >
-                                                        <Text style={{ padding: '0 10px' }}>
+                                                        <Text px="10px" py="0">
                                                             {plannerBufferSize}
                                                         </Text>
                                                     </Progress.Bar>
