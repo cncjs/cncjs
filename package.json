@@ -136,6 +136,7 @@
     "socket.io"
   ],
   "dependencies": {
+    "@emotion/styled": "~10.0.23",
     "@fortawesome/fontawesome-free": "~5.11.2",
     "@fortawesome/fontawesome-svg-core": "~1.2.25",
     "@fortawesome/free-brands-svg-icons": "~5.11.2",
@@ -264,6 +265,7 @@
     "sortablejs": "~1.10.1",
     "spawn-default-shell": "~2.0.0",
     "styled-components": "~4.4.0",
+    "styled-system": "~5.1.4",
     "superagent": "~5.1.0",
     "superagent-use": "~0.1.0",
     "three": "~0.109.0",
