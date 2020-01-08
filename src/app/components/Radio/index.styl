@@ -1,8 +1,11 @@
 @import "reset-context";
+@import "visually-hidden";
 
 .control-radio {
     reset-context();
 
+    display: flex;
+    align-items: center;
     cursor: pointer;
     position: relative;
 
@@ -12,16 +15,21 @@
     }
 
     .control-indicator {
+        position: relative;
+        display: flex;
+        align-items: center;
         pointer-events: none;
+        // XXX: due to IE11 issue, it needs min-width to prevent width compression
+        min-width: 22px; // 14px + 8px = 22px
+    }
+
+    .text-label {  // deprecated
+        display: inline-block;
     }
 }
 
-.control-radio + .control-radio {
-    margin-left: 16px;
-}
-
 .input-radio {
-    display: none;
+    visually-hidden();
 }
 
 .input-radio + .control-indicator::before {
@@ -31,12 +39,10 @@
     border: 1px solid #999999;
     border-radius: 50%;
     margin-right: 8px;
-    margin-top: 3px;
     width: 14px;
     height: 14px;
     vertical-align: top;
 }
-
 
 // Radio button checked
 .input-radio:checked + .control-indicator::before {
@@ -48,8 +54,9 @@
 .input-radio:checked + .control-indicator::after {
     content: "";
     position: absolute;
-    left: 4px;
-    top: 7px;
+    // XXX: due to IE11 issue, it needs to set top to correct position of ::after
+    top: calc(50% - 3px);
+    left: 4px; // 14px - 6px - 4px = 4px
     height: 6px;
     width: 6px;
     background-color: #fff;
