@@ -26,7 +26,10 @@ const parseMountPoint = (val, acc) => {
         mount.target = r[2];
     }
 
-    mount.route = path.join('/', mount.route || '').trim(); // path.join('/', 'pendant') => '/pendant'
+    // mount.route is interpreted by cncjs code that uses posix syntax
+    // where the separator is / , so we perform this join in posix mode
+    // mode to avoid introducing \ separators when running on Windows.
+    mount.route = path.posix.join('/', mount.route || '').trim(); // path.join('/', 'pendant') => '/pendant'
     mount.target = (mount.target || '').trim();
 
     acc.push(mount);
