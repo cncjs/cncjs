@@ -6,7 +6,8 @@ import _get from 'lodash/get';
 import _set from 'lodash/set';
 import _merge from 'lodash/merge';
 import _uniq from 'lodash/uniq';
-import semver from 'semver';
+import semverLt from 'semver/functions/lt';
+import semverLte from 'semver/functions/lte';
 import settings from 'app/config/settings';
 import { ensureFiniteNumber } from 'app/lib/ensure-type';
 import log from 'app/lib/log';
@@ -166,7 +167,7 @@ const migrateStore = () => {
     // 1.9.0
     // * Renamed "widgets.probe.tlo" to "widgets.probe.touchPlateHeight"
     // * Removed "widgets.webcam.scale"
-    if (semver.lt(cnc.version, '1.9.0')) {
+    if (semverLt(cnc.version, '1.9.0')) {
         log.info(`Migrating configuration settings from v${cnc.version} to v1.9.0`);
         // Probe widget
         const tlo = config.get('widgets.probe.tlo');
@@ -184,7 +185,7 @@ const migrateStore = () => {
     // Removed "widgets.axes.mzero"
     // Removed "widgets.axes.jog.customDistance"
     // Removed "widgets.axes.jog.selectedDistance"
-    if (semver.lt(cnc.version, '1.9.13')) {
+    if (semverLt(cnc.version, '1.9.13')) {
         log.info(`Migrating configuration settings from v${cnc.version} to v1.9.13`);
         // Axes widget
         config.unset('widgets.axes.wzero');
@@ -195,7 +196,7 @@ const migrateStore = () => {
 
     // 1.9.16
     // Removed "widgets.axes.jog.step"
-    if (semver.lt(cnc.version, '1.9.16')) {
+    if (semverLt(cnc.version, '1.9.16')) {
         log.info(`Migrating configration settings from v${cnc.version} to v1.9.16`);
         config.unset('widgets.axes.jog.step');
     }
@@ -203,11 +204,11 @@ const migrateStore = () => {
     // 1.10.0
     // Removed "widgets.connection.port"
     // Removed "widgets.connection.baudrate"
-    if (semver.lte(cnc.version, '1.10.0')) {
+    if (semverLte(cnc.version, '1.10.0')) {
         config.unset('widgets.connection.port');
         config.unset('widgets.connection.baudrate');
     }
-    if (semver.lt(cnc.version, '1.10.0')) {
+    if (semverLt(cnc.version, '1.10.0')) {
         log.info(`Migrating configuration settings from v${cnc.version} to v1.10.0`);
     }
 };

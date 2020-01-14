@@ -2,7 +2,7 @@ import moment from 'moment';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import semver from 'semver';
+import semverLt from 'semver/functions/lt';
 import Anchor from 'app/components/Anchor';
 import Space from 'app/components/Space';
 import settings from 'app/config/settings';
@@ -11,7 +11,7 @@ import styles from './index.styl';
 
 const UpdateStatusContainer = (props) => {
     const { checking, current, latest, lastUpdate } = props;
-    const newUpdateAvailable = (checking === false) && semver.lt(current, latest);
+    const newUpdateAvailable = (checking === false) && semverLt(current, latest);
 
     if (checking) {
         return (

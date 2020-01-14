@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import semver from 'semver';
+import semverLt from 'semver/functions/lt';
 import styled from 'styled-components';
 import _without from 'lodash/without';
 import Push from 'push.js';
@@ -336,7 +336,7 @@ class TopNav extends Component {
     render() {
         const { history, location } = this.props;
         const { commands, currentVersion, latestVersion } = this.state;
-        const newUpdateAvailable = semver.lt(currentVersion, latestVersion);
+        const newUpdateAvailable = semverLt(currentVersion, latestVersion);
         const sessionEnabled = config.get('session.enabled');
         const signedInName = config.get('session.name');
 
