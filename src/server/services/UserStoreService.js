@@ -1,6 +1,6 @@
 import events from 'events';
 import fs from 'fs';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import _get from 'lodash/get';
 import _has from 'lodash/has';
 import _isPlainObject from 'lodash/isPlainObject';
