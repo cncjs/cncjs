@@ -208,8 +208,8 @@ class GrblRunner extends events.EventEmitter {
         return Number(_.get(state, 'parserstate.tool')) || 0;
     }
 
-    getProbe(parameters = this.settings.parameters) {
-        return _.get(parameters, 'PRB', {});
+    getParameters() {
+        return _.get(this.settings, 'parameters', {});
     }
 
     isAlarm() {

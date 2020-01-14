@@ -746,16 +746,8 @@ class GrblController {
         // Tool
         const tool = this.runner.getTool();
 
-        // Probe
-        const {
-            x: probex,
-            y: probey,
-            z: probez,
-            a: probea,
-            b: probeb,
-            c: probec,
-            result: probesuccess
-        } = this.runner.getProbe();
+        // G-code parameters
+        const parameters = this.runner.getParameters();
 
         return Object.assign(context || {}, {
             // User-defined global variables
@@ -785,15 +777,6 @@ class GrblController {
             posb: Number(posb) || 0,
             posc: Number(posc) || 0,
 
-            // Probe result position
-            probex: Number(probex) || 0,
-            probey: Number(probey) || 0,
-            probez: Number(probez) || 0,
-            probea: Number(probea) || 0,
-            probeb: Number(probeb) || 0,
-            probec: Number(probec) || 0,
-            probesuccess: Number(probesuccess) || 0,
-
             // Modal group
             modal: {
                 motion: modal.motion,
@@ -810,6 +793,9 @@ class GrblController {
 
             // Tool
             tool: Number(tool) || 0,
+
+            // G-code parameters
+            params: parameters,
 
             // Global objects
             ...globalObjects,
