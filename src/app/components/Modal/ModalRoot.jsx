@@ -5,16 +5,17 @@ const ModalRoot = () => (
     <ModalStateContext.Consumer>
         {({ modals }) => (
             <ModalActionContext.Consumer>
-                {({ closeModal }) => modals.map((modal, key) => {
+                {({ closeModal }) => modals.map((modal, idx) => {
                     const {
                         component: Component,
                         props,
                     } = modal;
+                    const key = `modal:${idx}`;
 
                     return (
                         <Component
                             {...props}
-                            key={`modal:${key}`}
+                            key={key}
                             onClose={closeModal}
                         />
                     );
