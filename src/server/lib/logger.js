@@ -1,5 +1,5 @@
 import util from 'util';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import winston from 'winston';
 import settings from '../config/settings';
 
