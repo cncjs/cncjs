@@ -243,17 +243,17 @@ class ServiceEngine {
                             return;
                         }
 
-                        occupiedPorts.push({ comName: path });
+                        occupiedPorts.push({ path: path });
                     });
 
                     const ports = [].concat(availablePorts).concat(userDefinedPorts)
-                        .filter(port => !!port.comName)
+                        .filter(port => !!port.path)
                         .map(port => {
-                            const { comName, manufacturer } = { ...port };
-                            const connected = !!_find(occupiedPorts, { comName });
+                            const { path, manufacturer } = { ...port };
+                            const connected = !!_find(occupiedPorts, { path: path });
 
                             return {
-                                comName,
+                                path,
                                 manufacturer,
                                 connected,
                             };

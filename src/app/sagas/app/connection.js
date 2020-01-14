@@ -71,12 +71,12 @@ export function* init() {
         log.debug(`The connection status was changed: type=${x(type)}, ident=${x(ident)}, options=${x(options)}`);
 
         if (type === CONNECTION_TYPE_SERIAL) {
-            const comName = _get(options, 'path');
+            const path = _get(options, 'path');
 
             reduxStore.dispatch({
                 type: SERIALPORT.UPDATE_CONNECTION_STATUS,
                 payload: {
-                    comName,
+                    path,
                     connected,
                 }
             });
