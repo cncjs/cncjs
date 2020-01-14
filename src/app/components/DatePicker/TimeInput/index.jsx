@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import uncontrollable from 'uncontrollable';
+import { uncontrollable } from 'uncontrollable';
 import Clock from './Clock';
 import isTwelveHourTime from './lib/is-twelve-hour-time';
 import replaceCharAt from './lib/replace-char-at';

@@ -3,7 +3,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import DatePicker from 'react-datepicker';
-import uncontrollable from 'uncontrollable';
+import { uncontrollable } from 'uncontrollable';
 import styles from './index.styl';
 
 class DatePickerWrapper extends Component {

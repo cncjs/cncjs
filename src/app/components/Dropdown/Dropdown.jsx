@@ -5,7 +5,7 @@ import contains from 'dom-helpers/query/contains';
 import PropTypes from 'prop-types';
 import React, { Component, cloneElement } from 'react';
 import ReactDOM from 'react-dom';
-import uncontrollable from 'uncontrollable';
+import { uncontrollable } from 'uncontrollable';
 import warning from 'warning';
 import { ButtonGroup } from 'app/components/Buttons';
 import DropdownToggle from './DropdownToggle';
