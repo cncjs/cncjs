@@ -123,7 +123,7 @@ const getMemoizedInitialValues = memoize((options) => {
         autoReconnect: config.get('autoReconnect'),
     };
 
-    if (!_find(serialPorts, { comName: _get(initialValues, 'connection.serial.path') })) {
+    if (!_find(serialPorts, { path: _get(initialValues, 'connection.serial.path') })) {
         _set(initialValues, 'connection.serial.path', null);
     }
 
@@ -461,8 +461,8 @@ const Connection = ({
                                                                     const canSelectSerialPort = isDisconnected && !isFetchingSerialPorts;
                                                                     const isDisabled = !canSelectSerialPort;
                                                                     const options = serialPorts.map(port => ({
-                                                                        value: port.comName,
-                                                                        label: port.comName,
+                                                                        value: port.path,
+                                                                        label: port.path,
                                                                         manufacturer: port.manufacturer,
                                                                         connected: port.connected,
                                                                     }));

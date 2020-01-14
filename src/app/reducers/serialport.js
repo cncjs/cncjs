@@ -37,9 +37,9 @@ const reducer = createReducer(initialState, {
     [FETCH_BAUD_RATES.FAILURE]: (error) => ({
         isFetchingBaudRates: false,
     }),
-    [UPDATE_CONNECTION_STATUS]: ({ comName, connected }, state) => ({
+    [UPDATE_CONNECTION_STATUS]: ({ path, connected }, state) => ({
         ports: ensureArray(state.ports).map(port => {
-            if (port.comName === comName) {
+            if (port.path === path) {
                 return {
                     ...port,
                     connected,
