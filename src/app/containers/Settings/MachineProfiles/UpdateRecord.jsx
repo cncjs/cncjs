@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { Form, Field } from 'react-final-form';
 import Input from 'app/components/FormControl/Input';
 import FormGroup from 'app/components/FormGroup';
-import { FlexContainer, Row, Col } from 'app/components/GridSystem';
+import { Container, Row, Col } from 'app/components/GridSystem';
 import Margin from 'app/components/Margin';
 import Modal from 'app/components/Modal';
 import { ToastNotification } from 'app/components/Notifications';
@@ -61,7 +61,7 @@ class UpdateRecord extends Component {
     };
 
     renderLimits = () => (
-        <FlexContainer fluid gutterWidth={0}>
+        <Container fluid gutterWidth={0}>
             <Row>
                 <Col>
                     <Field name="limits.xmin">
@@ -137,7 +137,7 @@ class UpdateRecord extends Component {
                     </Field>
                 </Col>
             </Row>
-        </FlexContainer>
+        </Container>
     );
 
     render() {
