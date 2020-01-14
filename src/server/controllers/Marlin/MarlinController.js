@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import ensureArray from 'ensure-array';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
