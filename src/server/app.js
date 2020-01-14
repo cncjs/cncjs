@@ -2,7 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import bodyParser from 'body-parser';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import compress from 'compression';
 import cookieParser from 'cookie-parser';
 import multiparty from 'connect-multiparty';

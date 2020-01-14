@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import watch from 'watch';
 import logger from '../lib/logger';
 

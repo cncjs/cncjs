@@ -148,7 +148,7 @@
     "bcryptjs": "~2.4.3",
     "body-parser": "~1.19.0",
     "chained-function": "~0.5.0",
-    "chalk": "~2.4.2",
+    "chalk": "~3.0.0",
     "classnames": "~2.2.6",
     "cli-color": "~2.0.0",
     "cncjs-controller": "~2.0.0-alpha.2",
