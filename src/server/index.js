@@ -4,7 +4,7 @@ import os from 'os';
 import path from 'path';
 import url from 'url';
 import bcrypt from 'bcryptjs';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import ensureArray from 'ensure-array';
 import expandTilde from 'expand-tilde';
 import express from 'express';
