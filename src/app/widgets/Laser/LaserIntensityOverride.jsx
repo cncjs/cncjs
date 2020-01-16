@@ -102,7 +102,7 @@ export default connect(store => {
 
     let value = 0;
     if (controllerType === GRBL) {
-        const ovS = _get(controllerState, 'ov[2]');
+        const ovS = _get(controllerState, 'status.ov[2]');
         value = ensurePositiveNumber(ovS);
     }
     if (controllerType === MARLIN) {
@@ -110,7 +110,7 @@ export default connect(store => {
         value = ensurePositiveNumber(ovS);
     }
     if (controllerType === SMOOTHIE) {
-        const ovS = _get(controllerState, 'ovS');
+        const ovS = _get(controllerState, 'status.ovS');
         value = ensurePositiveNumber(ovS);
     }
     if (controllerType === TINYG) {
