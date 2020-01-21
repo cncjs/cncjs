@@ -8,7 +8,7 @@ const WidgetEventConsumer = ({
     const emitter = useWidgetEvent(Context);
 
     if (!emitter) {
-        throw new Error('The `WidgetEventConsumer` must be called from a descendent of the `WidgetEventProvider`.');
+        throw new Error('WidgetEventConsumer must be used within WidgetEventProvider');
     }
 
     return typeof children === 'function'

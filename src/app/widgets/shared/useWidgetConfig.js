@@ -6,13 +6,17 @@ import { useTracked } from './tracked';
 import { translatePathByWidgetId } from './utils';
 
 const useWidgetConfig = (options) => {
+    if (!useContext) {
+        throw new Error('The useContext hook is not available with your React version');
+    }
+
     const { context: Context = WidgetConfigContext } = { ...options };
     const widgetId = useContext(Context);
     const translatePath = translatePathByWidgetId(widgetId);
     const [state, dispatch] = useTracked();
 
     if (!widgetId) {
-        throw new Error('The `useWidgetConfig` hook must be called from a descendent of the `WidgetConfigProvider`.');
+        throw new Error('useWidgetConfig must be called within WidgetConfigProvider');
     }
 
     return Object.freeze({

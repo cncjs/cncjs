@@ -9,12 +9,16 @@ const WidgetConfigConsumer = ({
     context: Context = WidgetConfigContext,
     children,
 }) => {
+    if (!useContext) {
+        throw new Error('The useContext hook is not available with your React version');
+    }
+
     const widgetId = useContext(Context);
     const translatePath = translatePathByWidgetId(widgetId);
     const [state, dispatch] = useTracked();
 
     if (!widgetId) {
-        throw new Error('The `WidgetConfigConsumer` must be called from a descendent of the `WidgetConfigProvider`.');
+        throw new Error('WidgetConfigConsumer must be used within WidgetConfigProvider');
     }
 
     const value = Object.freeze({
