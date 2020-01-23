@@ -144,6 +144,7 @@
     "@fortawesome/free-regular-svg-icons": "~5.12.0",
     "@fortawesome/free-solid-svg-icons": "~5.12.0",
     "@fortawesome/react-fontawesome": "~0.1.8",
+    "@xstate/react": "~0.8.1",
     "awilix": "~4.2.3",
     "awilix-express": "~3.0.0",
     "bcryptjs": "~2.4.3",
@@ -276,6 +277,7 @@
     "watch": "~1.0.2",
     "webappengine": "~1.2.0",
     "winston": "~3.2.1",
+    "xstate": "~4.7.6",
     "xterm": "~4.3.0",
     "xterm-addon-fit": "~0.3.0"
   },
