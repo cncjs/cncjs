@@ -1,3 +1,5 @@
+import chainedFunction from 'chained-function';
+import get from 'lodash/get';
 import uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -8,11 +10,12 @@ import Modal from 'app/components/Modal';
 import Space from 'app/components/Space';
 import { Form, Input, Textarea } from 'app/components/Validation';
 import i18n from 'app/lib/i18n';
+import portal from 'app/lib/portal';
 import * as validations from 'app/lib/validations';
+import variables from '../shared/variables';
 import insertAtCaret from './insertAtCaret';
-import variables from './variables';
 
-class AddMacro extends Component {
+class EditMacro extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -37,13 +40,13 @@ class AddMacro extends Component {
 
     render() {
         const { state, actions } = this.props;
-        const { content = '' } = { ...state.modal.params };
+        const { id, name, content } = { ...state.modal.params };
 
         return (
             <Modal size="md" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
-                        {i18n._('New Macro')}
+                        {i18n._('Edit Macro')}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -64,7 +67,7 @@ class AddMacro extends Component {
                                 type="text"
                                 className="form-control"
                                 name="name"
-                                value=""
+                                value={name}
                                 validations={[validations.required]}
                             />
                         </div>
@@ -72,7 +75,7 @@ class AddMacro extends Component {
                             <div>
                                 <label>{i18n._('Macro Commands')}</label>
                                 <Dropdown
-                                    id="add-macro-dropdown"
+                                    id="edit-macro-dropdown"
                                     className="pull-right"
                                     onSelect={(eventKey) => {
                                         const textarea = ReactDOM.findDOMNode(this.fields.content).querySelector('textarea');
@@ -141,7 +144,49 @@ class AddMacro extends Component {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
-                        onClick={actions.closeModal}
+                        btnStyle="danger"
+                        className="pull-left"
+                        onClick={() => {
+                            const name = get(this.fields.name, 'value');
+
+                            portal(({ onClose }) => (
+                                <Modal size="xs" onClose={onClose}>
+                                    <Modal.Header>
+                                        <Modal.Title>
+                                            {i18n._('Delete Macro')}
+                                        </Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        {i18n._('Are you sure you want to delete this macro?')}
+                                        <p><strong>{name}</strong></p>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button onClick={onClose}>
+                                            {i18n._('No')}
+                                        </Button>
+                                        <Button
+                                            btnStyle="danger"
+                                            onClick={chainedFunction(
+                                                () => {
+                                                    actions.deleteMacro(id);
+                                                    actions.closeModal();
+                                                },
+                                                onClose
+                                            )}
+                                        >
+                                            {i18n._('Yes')}
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
+                            ));
+                        }}
+                    >
+                        {i18n._('Delete')}
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            actions.closeModal();
+                        }}
                     >
                         {i18n._('Cancel')}
                     </Button>
@@ -155,12 +200,12 @@ class AddMacro extends Component {
 
                                 const { name, content } = this.value;
 
-                                actions.addMacro({ name, content });
+                                actions.updateMacro(id, { name, content });
                                 actions.closeModal();
                             });
                         }}
                     >
-                        {i18n._('OK')}
+                        {i18n._('Save Changes')}
                     </Button>
                 </Modal.Footer>
             </Modal>
@@ -168,4 +213,4 @@ class AddMacro extends Component {
     }
 }
 
-export default AddMacro;
+export default EditMacro;
