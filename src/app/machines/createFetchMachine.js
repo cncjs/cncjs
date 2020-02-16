@@ -5,13 +5,18 @@ const createFetchMachine = () => {
         id: 'fetchMachine',
         initial: 'idle',
         context: {
+            isFetchedOnce: false,
+            isLoading: false,
             data: null,
             error: null,
         },
         states: {
             idle: {
                 on: {
-                    FETCH: 'loading',
+                    FETCH: {
+                        target: 'loading',
+                        actions: ['onLoading'],
+                    },
                 },
             },
             loading: {
@@ -19,11 +24,11 @@ const createFetchMachine = () => {
                     src: 'fetch',
                     onDone: {
                         target: 'success',
-                        actions: ['setData', 'notifyData'],
+                        actions: ['onSuccess'],
                     },
                     onError: {
                         target: 'failure',
-                        actions: ['setError', 'notifyError'],
+                        actions: ['onFailure'],
                     },
                 },
             },
@@ -46,14 +51,18 @@ const createFetchMachine = () => {
         },
     }, {
         actions: {
-            setData: assign({
+            onLoading: assign({
+                isLoading: true,
+            }),
+            onSuccess: assign({
+                isFetchedOnce: true,
+                isLoading: false,
                 data: (context, event) => event.data,
             }),
-            notifyData: () => {},
-            setError: assign({
+            onFailure: assign({
+                isLoading: false,
                 error: (context, event) => new Error(event.data?.message),
             }),
-            notifyError: () => {},
             resetContext: assign((context, event) => ({ ...fetchMachine.initialState.context })),
         },
         services: {

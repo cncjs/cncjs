@@ -112,7 +112,7 @@ class WebcamWidget extends Component {
                                                         emitter.emit('refresh');
                                                     }}
                                                 >
-                                                    <FontAwesomeIcon icon="redo-alt" fixedWidth />
+                                                    <FontAwesomeIcon icon="sync-alt" fixedWidth />
                                                 </Widget.Button>
                                                 <Widget.Button
                                                     disabled={isFullscreen}

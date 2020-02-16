@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from 'app/containers/App';
+import CSSBaseline from 'app/components/CSSBaseline';
 import rootSaga from 'app/sagas';
 import sagaMiddleware from 'app/store/redux/sagaMiddleware';
 import { GlobalProvider } from 'app/context';
@@ -15,6 +16,7 @@ sagaMiddleware.run(rootSaga);
 
 ReactDOM.render(
     <GlobalProvider>
+        <CSSBaseline />
         <App />
     </GlobalProvider>,
     container

@@ -4,8 +4,8 @@ import Box from 'app/components/Box';
 const Text = React.forwardRef((props, ref) => (
     <Box
         ref={ref}
-        as="div"
         display="inline-block"
+        fontFamily="base"
         {...props}
     />
 ));

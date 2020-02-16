@@ -87,11 +87,9 @@ const SettingsModal = ({
                             </Modal.Header>
                             <Modal.Body>
                                 <FormGroup>
-                                    <div>
-                                        <Label>
-                                            {i18n._('Media Source')}
-                                        </Label>
-                                    </div>
+                                    <Label>
+                                        {i18n._('Media Source')}
+                                    </Label>
                                     <Margin bottom={8}>
                                         <Margin bottom={4}>
                                             <Field name="mediaSource" type="radio" value={MEDIA_SOURCE_LOCAL}>
