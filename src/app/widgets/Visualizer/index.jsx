@@ -115,16 +115,16 @@ const displayWebGLErrorMessage = () => {
                 <ModalTemplate type="warning">
                     {window.WebGLRenderingContext && (
                         <div>
-                        Your graphics card does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
+                            Your graphics card does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
                             <br />
-                        Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
+                            Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
                         </div>
                     )}
                     {!window.WebGLRenderingContext && (
                         <div>
-                        Your browser does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
+                            Your browser does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
                             <br />
-                        Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
+                            Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
                         </div>
                     )}
                 </ModalTemplate>

@@ -3,7 +3,7 @@ import get from 'lodash/get';
 import uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+//import ReactDOM from 'react-dom';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
@@ -13,7 +13,7 @@ import i18n from 'app/lib/i18n';
 import portal from 'app/lib/portal';
 import * as validations from 'app/lib/validations';
 import variables from '../shared/variables';
-import insertAtCaret from './insertAtCaret';
+//import insertAtCaret from './insertAtCaret';
 
 class EditMacro extends Component {
     static propTypes = {
@@ -78,6 +78,7 @@ class EditMacro extends Component {
                                     id="edit-macro-dropdown"
                                     className="pull-right"
                                     onSelect={(eventKey) => {
+                                        /*
                                         const textarea = ReactDOM.findDOMNode(this.fields.content).querySelector('textarea');
                                         if (textarea) {
                                             insertAtCaret(textarea, eventKey);
@@ -86,6 +87,7 @@ class EditMacro extends Component {
                                         actions.updateModalParams({
                                             content: textarea.value
                                         });
+                                        */
                                     }}
                                     pullRight
                                 >

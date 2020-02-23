@@ -23,7 +23,7 @@ const Overrides = (props) => {
                     >
                         <i className="fa fa-arrow-down" style={{ fontSize: 14 }} />
                         <span style={{ marginLeft: 5 }}>
-                        -10%
+                            -10%
                         </span>
                     </RepeatableButton>
                     <RepeatableButton
@@ -33,7 +33,7 @@ const Overrides = (props) => {
                     >
                         <i className="fa fa-arrow-down" style={{ fontSize: 10 }} />
                         <span style={{ marginLeft: 5 }}>
-                        -1%
+                            -1%
                         </span>
                     </RepeatableButton>
                     <RepeatableButton
@@ -43,7 +43,7 @@ const Overrides = (props) => {
                     >
                         <i className="fa fa-arrow-up" style={{ fontSize: 10 }} />
                         <span style={{ marginLeft: 5 }}>
-                        1%
+                            1%
                         </span>
                     </RepeatableButton>
                     <RepeatableButton
@@ -53,7 +53,7 @@ const Overrides = (props) => {
                     >
                         <i className="fa fa-arrow-up" style={{ fontSize: 14 }} />
                         <span style={{ marginLeft: 5 }}>
-                        10%
+                            10%
                         </span>
                     </RepeatableButton>
                     <button
@@ -77,7 +77,7 @@ const Overrides = (props) => {
                     >
                         <i className="fa fa-arrow-down" style={{ fontSize: 14 }} />
                         <span style={{ marginLeft: 5 }}>
-                        -10%
+                            -10%
                         </span>
                     </RepeatableButton>
                     <RepeatableButton
@@ -87,7 +87,7 @@ const Overrides = (props) => {
                     >
                         <i className="fa fa-arrow-down" style={{ fontSize: 10 }} />
                         <span style={{ marginLeft: 5 }}>
-                        -1%
+                            -1%
                         </span>
                     </RepeatableButton>
                     <RepeatableButton
@@ -97,7 +97,7 @@ const Overrides = (props) => {
                     >
                         <i className="fa fa-arrow-up" style={{ fontSize: 10 }} />
                         <span style={{ marginLeft: 5 }}>
-                        1%
+                            1%
                         </span>
                     </RepeatableButton>
                     <RepeatableButton
@@ -107,7 +107,7 @@ const Overrides = (props) => {
                     >
                         <i className="fa fa-arrow-up" style={{ fontSize: 14 }} />
                         <span style={{ marginLeft: 5 }}>
-                        10%
+                            10%
                         </span>
                     </RepeatableButton>
                     <button

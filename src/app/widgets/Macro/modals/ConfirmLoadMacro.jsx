@@ -1,7 +1,9 @@
 import chainedFunction from 'chained-function';
 import api from 'app/api';
 import { Button } from 'app/components/Buttons';
-import Macro from 'app/components/Macro';
+import Box from 'app/components/Box';
+import Modal from 'app/components/Modal';
+import Text from 'app/components/Text';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
@@ -26,6 +28,7 @@ const loadMacroById = async (id) => {
 
 const ConfirmLoadMacro = ({
     id,
+    name,
     onClose,
 }) => {
     return (
