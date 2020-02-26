@@ -25,7 +25,7 @@ const NewMacro = ({
     };
 
     return (
-        <Modal md onClose={onClose}>
+        <Modal size="md" onClose={onClose}>
             <Form
                 initialValues={initialValues}
                 onSubmit={(values) => {
@@ -62,7 +62,7 @@ const NewMacro = ({
                                                 <Col>
                                                     <Label>{i18n._('Macro Commands')}</Label>
                                                 </Col>
-                                                <Col>
+                                                <Col width="auto">
                                                     <Dropdown
                                                         sm
                                                         pullRight
@@ -143,7 +143,6 @@ const NewMacro = ({
                                 {i18n._('Cancel')}
                             </Button>
                             <Button
-                                sm
                                 btnStyle="primary"
                                 onClick={() => form.submit()}
                             >

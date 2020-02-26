@@ -28,7 +28,9 @@ import {
     WORKFLOW_STATE_RUNNING,
 } from 'app/constants/workflow';
 import fetchMacrosMachine from './machines/fetchMacrosMachine';
+import EditMacro from './modals/EditMacro';
 import NewMacro from './modals/NewMacro';
+import RunMacro from './modals/RunMacro';
 
 /*
     handleRunMacro = (macro) => (event) => {
@@ -99,13 +101,15 @@ const Macro = ({
         // FIXME
     };
     const handleRunMacro = (macro) => () => {
-        // FIXME
+        const { id, name, content } = macro;
+        openModal(RunMacro, { id, name, content });
     };
     const handleLoadMacro = (macro) => () => {
         // FIXME
     };
     const handleEditMacro = (macro) => () => {
-        // FIXME
+        const { id, name, content } = macro;
+        openModal(EditMacro, { id, name, content });
     };
 
     return (
@@ -233,7 +237,7 @@ export default connect(store => {
     const canRunMacro = isActionable && _includes([
         WORKFLOW_STATE_IDLE,
         WORKFLOW_STATE_PAUSED,
-    ], workflowState);
+    ], workflowState) || true;
 
     return {
         canLoadMacro,
