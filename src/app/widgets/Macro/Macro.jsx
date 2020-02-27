@@ -6,8 +6,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Box from 'app/components/Box';
 import { Button } from 'app/components/Buttons';
+import Flex from 'app/components/Flex';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
-import { Container, Row, Col } from 'app/components/GridSystem';
 import useModal from 'app/components/Modal/useModal';
 import RenderChildren from 'app/components/RenderChildren';
 import Space from 'app/components/Space';
@@ -28,16 +28,12 @@ import {
     WORKFLOW_STATE_RUNNING,
 } from 'app/constants/workflow';
 import fetchMacrosMachine from './machines/fetchMacrosMachine';
+import ConfirmLoadMacro from './modals/ConfirmLoadMacro';
 import EditMacro from './modals/EditMacro';
 import NewMacro from './modals/NewMacro';
 import RunMacro from './modals/RunMacro';
 
 /*
-    handleRunMacro = (macro) => (event) => {
-        const { actions } = this.props;
-        actions.openRunMacroModal(macro.id);
-    };
-
     handleLoadMacro = (macro) => (event) => {
         const { id, name } = macro;
         portal(({ onClose }) => (
@@ -73,11 +69,6 @@ import RunMacro from './modals/RunMacro';
             </Modal>
         ));
     };
-
-    handleEditMacro = (macro) => (event) => {
-        const { actions } = this.props;
-        actions.openEditMacroModal(macro.id);
-    };
 */
 
 const Macro = ({
@@ -100,12 +91,13 @@ const Macro = ({
     const handleExportMacros = () => {
         // FIXME
     };
+    const handleLoadMacro = (macro) => () => {
+        const { id, name } = macro;
+        openModal(ConfirmLoadMacro, { id, name });
+    };
     const handleRunMacro = (macro) => () => {
         const { id, name, content } = macro;
         openModal(RunMacro, { id, name, content });
-    };
-    const handleLoadMacro = (macro) => () => {
-        // FIXME
     };
     const handleEditMacro = (macro) => () => {
         const { id, name, content } = macro;
@@ -113,9 +105,12 @@ const Macro = ({
     };
 
     return (
-        <Container fluid>
-            <Row>
-                <Col>
+        <Box>
+            <Flex
+                align="center"
+                justify="space-between"
+            >
+                <Box>
                     <Button
                         sm
                         onClick={handleNewMacro}
@@ -124,8 +119,8 @@ const Macro = ({
                         <Space width={8} />
                         {i18n._('New')}
                     </Button>
-                </Col>
-                <Col width="auto">
+                </Box>
+                <Box>
                     <Button
                         sm
                         onClick={handleExportMacros}
@@ -141,8 +136,8 @@ const Macro = ({
                     >
                         <FontAwesomeIcon icon="sync-alt" fixedWidth />
                     </Button>
-                </Col>
-            </Row>
+                </Box>
+            </Flex>
             <RenderChildren>
                 {() => {
                     const macros = ensureArray(_get(current.context, 'data.records'));
@@ -168,42 +163,47 @@ const Macro = ({
                     return (
                         <Box>
                             {macros.map((macro, index) => (
-                                <Row key={macro.id}>
-                                    <Col>
+                                <Flex
+                                    key={macro.id}
+                                    align="center"
+                                    borderBottom={1}
+                                    borderColor="gray.20"
+                                >
+                                    <Box flex="auto">
                                         <Button
                                             sm
                                             disabled={!canRunMacro}
                                             onClick={handleRunMacro(macro)}
                                             title={i18n._('Run Macro')}
                                         >
-                                            <i className="fa fa-play" />
+                                            <FontAwesomeIcon icon="play" fixedWidth />
                                         </Button>
                                         <Space width={8} />
                                         {macro.name}
-                                    </Col>
-                                    <Col width="auto">
+                                    </Box>
+                                    <Box>
                                         <Button
                                             sm
                                             disabled={!canLoadMacro}
                                             onClick={handleLoadMacro(macro)}
                                             title={i18n._('Load Macro')}
                                         >
-                                            <i className="fa fa-chevron-up" />
+                                            <FontAwesomeIcon icon="chevron-up" fixedWidth />
                                         </Button>
                                         <Button
                                             sm
                                             onClick={handleEditMacro(macro)}
                                         >
-                                            <i className="fa fa-edit" />
+                                            <FontAwesomeIcon icon="edit" fixedWidth />
                                         </Button>
-                                    </Col>
-                                </Row>
+                                    </Box>
+                                </Flex>
                             ))}
                         </Box>
                     );
                 }}
             </RenderChildren>
-        </Container>
+        </Box>
     );
 };
 
@@ -237,7 +237,7 @@ export default connect(store => {
     const canRunMacro = isActionable && _includes([
         WORKFLOW_STATE_IDLE,
         WORKFLOW_STATE_PAUSED,
-    ], workflowState) || true;
+    ], workflowState);
 
     return {
         canLoadMacro,

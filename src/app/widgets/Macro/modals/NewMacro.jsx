@@ -1,6 +1,7 @@
 import _uniqueId from 'lodash/uniqueId';
 import React, { useRef } from 'react';
 import { Form, Field } from 'react-final-form';
+import api from 'app/api';
 import Box from 'app/components/Box';
 import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
@@ -9,11 +10,21 @@ import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Input from 'app/components/FormControl/Input';
 import Textarea from 'app/components/FormControl/Textarea';
 import FormGroup from 'app/components/FormGroup';
+import InlineError from 'app/components/InlineError';
 import Label from 'app/components/Label';
 import Modal from 'app/components/Modal';
 import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
+import { composeValidators, required } from 'app/widgets/shared/validations';
 import variables from '../shared/variables';
+
+const addMacro = async ({ name, content }) => {
+    try {
+        await api.macros.create({ name, content });
+    } catch (err) {
+        // Ignore error
+    }
+};
 
 const NewMacro = ({
     onClose,
@@ -28,8 +39,9 @@ const NewMacro = ({
         <Modal size="md" onClose={onClose}>
             <Form
                 initialValues={initialValues}
-                onSubmit={(values) => {
-                    // FIXME
+                onSubmit={async (values) => {
+                    const { name, content } = values;
+                    await addMacro({ name, content });
                     onClose();
                 }}
                 subscription={{}}
@@ -42,7 +54,10 @@ const NewMacro = ({
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <Field name="name">
+                            <Field
+                                name="name"
+                                validate={composeValidators(required)}
+                            >
                                 {({ input, meta }) => {
                                     return (
                                         <FormGroup>
@@ -50,11 +65,17 @@ const NewMacro = ({
                                             <Box>
                                                 <Input {...input} />
                                             </Box>
+                                            {(meta.error && meta.touched) && (
+                                                <InlineError>{meta.error}</InlineError>
+                                            )}
                                         </FormGroup>
                                     );
                                 }}
                             </Field>
-                            <Field name="content">
+                            <Field
+                                name="content"
+                                validate={composeValidators(required)}
+                            >
                                 {({ input, meta }) => {
                                     return (
                                         <FormGroup>
@@ -130,6 +151,9 @@ const NewMacro = ({
                                                 ref={contentRef}
                                                 rows={10}
                                             />
+                                            {(meta.error && meta.touched) && (
+                                                <InlineError>{meta.error}</InlineError>
+                                            )}
                                         </FormGroup>
                                     );
                                 }}
