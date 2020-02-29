@@ -221,7 +221,7 @@ export default connect(store => {
             return false;
         }
 
-        const workflowState = _get(store, 'workflow.state');
+        const workflowState = _get(store, 'controller.workflow.state');
         const isWorkflowRunning = (workflowState === WORKFLOW_STATE_RUNNING);
         if (isWorkflowRunning) {
             return false;

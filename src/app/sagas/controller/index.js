@@ -1,11 +1,8 @@
 import _get from 'lodash/get';
 import _noop from 'lodash/noop';
 import { call, takeLatest } from 'redux-saga/effects';
-import {
-    OPEN_CONNECTION,
-    CLOSE_CONNECTION,
-    UPDATE_CONNECTION,
-} from 'app/actions/connection';
+import * as CONNECTION from 'app/actions/connection';
+import * as CONTROLLER from 'app/actions/controller';
 import * as SERIALPORT from 'app/actions/serialport';
 import {
     CONNECTION_TYPE_SERIAL,
@@ -20,13 +17,16 @@ import reduxStore from 'app/store/redux';
 const x = JSON.stringify;
 
 export function* init() {
+    /**
+     * connection
+     */
     controller.addListener('connection:open', (connectionState) => {
         const { type, ident, options } = { ...connectionState };
 
         log.debug(`A new connection was established: type=${x(type)}, ident=${x(ident)}, options=${x(options)}`);
 
         reduxStore.dispatch({
-            type: UPDATE_CONNECTION,
+            type: CONNECTION.UPDATE_CONNECTION,
             payload: {
                 error: null,
                 state: CONNECTION_STATE_CONNECTED,
@@ -54,7 +54,7 @@ export function* init() {
         }
 
         reduxStore.dispatch({
-            type: UPDATE_CONNECTION,
+            type: CONNECTION.UPDATE_CONNECTION,
             payload: {
                 error,
                 state: CONNECTION_STATE_DISCONNECTED,
@@ -89,7 +89,7 @@ export function* init() {
         log.debug(`The connection was closed: type=${x(type)}, ident=${x(ident)}, options=${x(options)}`);
 
         reduxStore.dispatch({
-            type: UPDATE_CONNECTION,
+            type: CONNECTION.UPDATE_CONNECTION,
             payload: {
                 error: null,
                 state: CONNECTION_STATE_DISCONNECTED,
@@ -100,12 +100,72 @@ export function* init() {
         });
     });
 
+    /**
+     * controller
+     */
+    controller.addListener('controller:settings', (type, settings) => {
+        reduxStore.dispatch({
+            type: CONTROLLER.UPDATE_CONTROLLER_SETTINGS,
+            payload: { type, settings },
+        });
+    });
+
+    controller.addListener('controller:state', (type, state) => {
+        reduxStore.dispatch({
+            type: CONTROLLER.UPDATE_CONTROLLER_STATE,
+            payload: { type, state },
+        });
+    });
+
+    /**
+     * feeder
+     */
+    controller.addListener('feeder:status', (status) => {
+        reduxStore.dispatch({
+            type: CONTROLLER.UPDATE_FEEDER_STATUS,
+            payload: { status },
+        });
+    });
+
+    /**
+     * sender
+     */
+    controller.addListener('sender:status', (status) => {
+        reduxStore.dispatch({
+            type: CONTROLLER.UPDATE_SENDER_STATUS,
+            payload: { status },
+        });
+    });
+
+    // TODO: Compute the bounding box from backend controller
+    controller.addListener('sender:unload', (status) => {
+        const boundingBox = {
+            min: { x: 0, y: 0, z: 0 },
+            max: { x: 0, y: 0, z: 0 },
+        };
+
+        reduxStore.dispatch({
+            type: CONTROLLER.UPDATE_BOUNDING_BOX,
+            payload: { boundingBox },
+        });
+    });
+
+    /**
+     * workflow
+     */
+    controller.addListener('workflow:state', (state) => {
+        reduxStore.dispatch({
+            type: CONTROLLER.UPDATE_WORKFLOW_STATE,
+            payload: { state },
+        });
+    });
+
     yield null;
 }
 
 export function* process() {
-    yield takeLatest(OPEN_CONNECTION.REQUEST, openConnection);
-    yield takeLatest(CLOSE_CONNECTION.REQUEST, closeConnection);
+    yield takeLatest(CONNECTION.OPEN_CONNECTION.REQUEST, openConnection);
+    yield takeLatest(CONNECTION.CLOSE_CONNECTION.REQUEST, closeConnection);
 }
 
 function* openConnection(action) {

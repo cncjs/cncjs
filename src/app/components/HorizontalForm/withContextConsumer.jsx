@@ -3,16 +3,16 @@ import setDisplayName from 'recompose/setDisplayName';
 import wrapDisplayName from 'recompose/wrapDisplayName';
 
 const withContextConsumer = ({ context: Context }) => BaseComponent => {
-    const factory = React.createFactory(BaseComponent);
-
     class WithContextConsumer extends React.Component {
         render() {
             return (
                 <Context.Consumer>
-                    {(contextProps) => factory({
-                        ...contextProps,
-                        ...this.props
-                    })}
+                    {(contextProps) => (
+                        <BaseComponent
+                            {...contextProps}
+                            {...this.props}
+                        />
+                    )}
                 </Context.Consumer>
             );
         }

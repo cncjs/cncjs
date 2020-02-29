@@ -1,5 +1,6 @@
 /* eslint import/no-dynamic-require: 0 */
 import moment from 'moment';
+import pubsub from 'pubsub-js';
 import qs from 'qs';
 import { all, call } from 'redux-saga/effects';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
@@ -12,12 +13,13 @@ import configStore from 'app/store/config';
 
 export function* init() {
     // sequential
-    yield call(configureLogLevel);
+    yield call(changeLogLevel);
 
     // parallel
     yield all([
-        call(configureMomentLocale),
-        call(configureSessionToken),
+        call(changeLocale),
+        call(authenticateSessionToken),
+        call(enableCrossOriginCommunication),
     ]);
 }
 
@@ -25,7 +27,7 @@ export function* process() {
     yield null;
 }
 
-const configureLogLevel = () => {
+const changeLogLevel = () => {
     const obj = qs.parse(window.location.search.slice(1));
     const level = {
         trace: TRACE,
@@ -37,7 +39,7 @@ const configureLogLevel = () => {
     log.setLevel(level);
 };
 
-const configureMomentLocale = () => new Promise(resolve => {
+const changeLocale = () => new Promise(resolve => {
     const lng = i18next.language;
 
     if (!lng || lng === 'en') {
@@ -55,7 +57,7 @@ const configureMomentLocale = () => new Promise(resolve => {
     });
 });
 
-const configureSessionToken = () => new Promise(resolve => {
+const authenticateSessionToken = () => new Promise(resolve => {
     const token = configStore.get('session.token');
     user.signin({ token: token })
         .then(({ authenticated, token }) => {
@@ -75,3 +77,27 @@ const configureSessionToken = () => new Promise(resolve => {
             resolve();
         });
 });
+
+const enableCrossOriginCommunication = () => {
+    // Cross-origin communication
+    window.addEventListener('message', (event) => {
+        // TODO: event.origin
+
+        const { token = '', action } = { ...event.data };
+
+        // Token authentication
+        if (token !== configStore.get('session.token')) {
+            log.warn(`Received a message with an unauthorized token (${token}).`);
+            return;
+        }
+
+        const { type, payload } = { ...action };
+        if (type === 'connect') {
+            pubsub.publish('message:connect', payload);
+        } else if (type === 'resize') {
+            pubsub.publish('message:resize', payload);
+        } else {
+            log.warn(`No valid action type (${type}) specified in the message.`);
+        }
+    }, false);
+};

@@ -215,7 +215,7 @@ export default connect(store => {
             return false;
         }
 
-        const workflowState = _get(store, 'workflow.state');
+        const workflowState = _get(store, 'controller.workflow.state');
         const isWorkflowRunning = (workflowState === WORKFLOW_STATE_RUNNING);
         if (isWorkflowRunning) {
             return false;
@@ -230,7 +230,7 @@ export default connect(store => {
         const isExpectedState = _includes(expectedStates, reformedMachineState);
         return isExpectedState;
     })();
-    const workflowState = _get(store, 'workflow.state');
+    const workflowState = _get(store, 'controller.workflow.state');
     const canLoadMacro = isActionable && _includes([
         WORKFLOW_STATE_IDLE,
     ], workflowState);

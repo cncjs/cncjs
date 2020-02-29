@@ -164,8 +164,8 @@ export default connect(store => {
         'G20': IMPERIAL_UNITS,
         'G21': METRIC_UNITS,
     }[modalUnits];
-    const senderStatus = _get(store, 'sender.status');
-    const boundingBox = _get(store, 'sender.boundingBox');
+    const boundingBox = _get(store, 'controller.boundingBox');
+    const senderStatus = _get(store, 'controller.sender.status');
     const total = _get(senderStatus, 'total');
     const sent = _get(senderStatus, 'sent');
     const received = _get(senderStatus, 'received');

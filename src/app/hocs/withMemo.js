@@ -3,13 +3,13 @@ import setDisplayName from 'recompose/setDisplayName';
 import wrapDisplayName from 'recompose/wrapDisplayName';
 
 const withMemo = (areEqual) => BaseComponent => {
-    const factory = React.createFactory(React.memo(BaseComponent, areEqual));
+    const MemoizedComponent = React.memo(BaseComponent, areEqual);
 
     class WithMemo extends React.Component {
         render() {
-            return factory({
-                ...this.props,
-            });
+            return (
+                <MemoizedComponent {...this.props} />
+            );
         }
     }
 

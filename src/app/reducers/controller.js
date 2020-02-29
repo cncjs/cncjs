@@ -2,8 +2,12 @@ import _get from 'lodash/get';
 import _mapValues from 'lodash/mapValues';
 import { createReducer } from 'redux-action';
 import {
+    UPDATE_BOUNDING_BOX,
     UPDATE_CONTROLLER_SETTINGS,
     UPDATE_CONTROLLER_STATE,
+    UPDATE_FEEDER_STATUS,
+    UPDATE_SENDER_STATUS,
+    UPDATE_WORKFLOW_STATE,
 } from 'app/actions/controller';
 import {
     IMPERIAL_UNITS,
@@ -36,6 +40,9 @@ import {
     TINYG_MACHINE_STATE_ALARM,
 } from 'app/constants/controller';
 import {
+    WORKFLOW_STATE_IDLE,
+} from 'app/constants/workflow';
+import {
     ensurePositiveNumber,
 } from 'app/lib/ensure-type';
 import {
@@ -52,6 +59,23 @@ const initialState = {
     mpos: {},
     wpos: {},
     modal: {},
+
+    boundingBox: {
+        min: { x: 0, y: 0, z: 0 },
+        max: { x: 0, y: 0, z: 0 },
+    },
+
+    feeder: {
+        status: null,
+    },
+
+    sender: {
+        status: null,
+    },
+
+    workflow: {
+        state: WORKFLOW_STATE_IDLE,
+    },
 };
 
 const mapContextToMachineStates = (context) => {
@@ -352,6 +376,7 @@ const reducer = createReducer(initialState, {
             settings: payload.settings,
         };
     },
+
     [UPDATE_CONTROLLER_STATE]: (payload, reducerState) => {
         const { type, state } = payload;
         const settings = _get(state, 'settings'); // from previous state
@@ -374,6 +399,32 @@ const reducer = createReducer(initialState, {
             modal,
         };
     },
+
+    [UPDATE_BOUNDING_BOX]: (payload, state) => ({
+        boundingBox: {
+            ...state.boundingBox,
+            ..._get(payload, 'boundingBox'),
+        }
+    }),
+
+    [UPDATE_FEEDER_STATUS]: (payload, state) => ({
+        feeder: {
+            status: _get(payload, 'status', _get(state, 'status')),
+        },
+    }),
+
+    [UPDATE_SENDER_STATUS]: (payload, state) => ({
+        sender: {
+            status: _get(payload, 'status', _get(state, 'status')),
+        },
+    }),
+
+    // @param {string} [payload.state] The workflow state. One of: 'idle, 'paused', 'running'
+    [UPDATE_WORKFLOW_STATE]: (payload, state) => ({
+        workflow: {
+            state: _get(payload, 'state', _get(state, 'state')) || initialState.state, // 'state' is required and cannot be null
+        },
+    }),
 });
 
 export default reducer;

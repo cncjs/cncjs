@@ -45,10 +45,10 @@ const SideNav = ({
             <li
                 className={classNames(
                     'text-center',
-                    { [styles.active]: pathname.indexOf('/settings') === 0 }
+                    { [styles.active]: pathname.indexOf('/administration') === 0 }
                 )}
             >
-                <Link to="/settings" title={i18n._('Settings')}>
+                <Link to="/administration" title={i18n._('Administration')}>
                     <Image
                         className={styles.invert}
                         src={iconGear}

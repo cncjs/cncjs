@@ -1204,7 +1204,7 @@ class Settings extends Component {
         };
         const { pathname = '' } = this.props.location;
         const initialSectionPath = this.sections[0].path;
-        const sectionPath = pathname.replace(/^\/settings(\/)?/, ''); // TODO
+        const sectionPath = pathname.replace(/^\/administration(\/)?/, ''); // TODO
         const id = mapSectionPathToId(sectionPath || initialSectionPath);
         const activeSection = _find(this.sections, { id: id }) || this.sections[0];
         const sectionItems = this.sections.map((section, index) => (
@@ -1214,7 +1214,7 @@ class Settings extends Component {
                     { [styles.active]: activeSection.id === section.id }
                 )}
             >
-                <Link to={`/settings/${section.path}`}>
+                <Link to={`/administration/${section.path}`}>
                     {section.title}
                 </Link>
             </li>

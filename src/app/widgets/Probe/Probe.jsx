@@ -424,7 +424,7 @@ export default connect(store => {
             return false;
         }
 
-        const workflowState = _get(store, 'workflow.state');
+        const workflowState = _get(store, 'controller.workflow.state');
         const isWorkflowIdle = (workflowState === WORKFLOW_STATE_IDLE);
         if (!isWorkflowIdle) {
             return false;

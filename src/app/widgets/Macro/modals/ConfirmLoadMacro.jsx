@@ -1,4 +1,5 @@
 import chainedFunction from 'chained-function';
+import React from 'react';
 import api from 'app/api';
 import { Button } from 'app/components/Buttons';
 import Box from 'app/components/Box';

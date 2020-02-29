@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 import compose from 'recompose/compose';
 import styled from 'styled-components';
-import Settings from 'app/containers/Settings';
+import Administration from 'app/containers/Administration';
 import SideNav from 'app/containers/SideNav';
 import TopNav from 'app/containers/TopNav';
 import Workspace from 'app/containers/Workspace';
@@ -21,15 +21,15 @@ const ProtectedPage = ({
 }) => {
     const accepted = ([
         '/workspace',
-        '/settings',
-        '/settings/general',
-        '/settings/workspace',
-        '/settings/machine-profiles',
-        '/settings/user-accounts',
-        '/settings/controller',
-        '/settings/commands',
-        '/settings/events',
-        '/settings/about'
+        '/administration',
+        '/administration/general',
+        '/administration/workspace',
+        '/administration/machine-profiles',
+        '/administration/user-accounts',
+        '/administration/controller',
+        '/administration/commands',
+        '/administration/events',
+        '/administration/about'
     ].indexOf(location.pathname) >= 0);
 
     if (!accepted) {
@@ -62,8 +62,8 @@ const ProtectedPage = ({
                             display: (location.pathname !== '/workspace') ? 'none' : 'block'
                         }}
                     />
-                    {location.pathname.indexOf('/settings') === 0 &&
-                        <Settings />
+                    {location.pathname.indexOf('/administration') === 0 &&
+                        <Administration />
                     }
                 </Content>
             </Main>
