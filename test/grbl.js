@@ -410,6 +410,20 @@ test('GrblLineParserResultStartup', (t) => {
         runner.parse(line);
     });
 
+  test('Grbl 1.1h: LongMill build', (t) => {
+        const runner = new GrblRunner();
+        runner.on('startup', ({ raw, firmware, version, message }) => {
+            t.equal(raw, 'Grbl 1.1h: LongMill build [\'$\' for help]');
+            t.equal(firmware, 'Grbl');
+            t.equal(version, '1.1h: LongMill build');
+            t.equal(message, '[\'$\' for help]');
+            t.end();
+        });
+
+        const line = 'Grbl 1.1h: LongMill build [\'$\' for help]';
+        runner.parse(line);
+    });
+
     test('vCarvin 2.0.0', (t) => {
         const runner = new GrblRunner();
         runner.on('startup', ({ raw, firmware, version, message }) => {
