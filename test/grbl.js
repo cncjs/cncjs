@@ -410,7 +410,7 @@ test('GrblLineParserResultStartup', (t) => {
         runner.parse(line);
     });
 
-  test('Grbl 1.1h: LongMill build', (t) => {
+    test('Grbl 1.1h: LongMill build', (t) => {
         const runner = new GrblRunner();
         runner.on('startup', ({ raw, firmware, version, message }) => {
             t.equal(raw, 'Grbl 1.1h: LongMill build [\'$\' for help]');
