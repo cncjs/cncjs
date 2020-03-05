@@ -13,8 +13,8 @@ init:
 
 environment:
   matrix:
-    - nodejs_version: "8"
     - nodejs_version: "10"
+    - nodejs_version: "12"
   global:
     CI_BUILD_NUMBER: $(appveyor_build_number)
     GH_TOKEN:
@@ -116,4 +116,4 @@ deploy:
     prerelease: false
     on:
       appveyor_repo_tag: true  # deploy on tag push only
-      nodejs_version: "10"
+      nodejs_version: "12"
