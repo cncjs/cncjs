@@ -27,7 +27,7 @@ import {
     TINYG_MACHINE_STATE_END,
     TINYG_MACHINE_STATE_HOLD,
     // Workflow
-    WORKFLOW_STATE_RUN
+    WORKFLOW_STATE_RUNNING,
 } from '../../constants';
 import styles from './index.styl';
 
@@ -217,7 +217,7 @@ class SpindleWidget extends PureComponent {
         if (!port) {
             return false;
         }
-        if (workflow.state === WORKFLOW_STATE_RUN) {
+        if (workflow.state === WORKFLOW_STATE_RUNNING) {
             return false;
         }
         if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {
