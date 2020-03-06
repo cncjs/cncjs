@@ -146,7 +146,7 @@ test('GrblLineParserResultAlarm', (t) => {
 });
 
 test('GrblLineParserResultParserState', (t) => {
-    test('#1', (t) => {
+    t.test('#1', (t) => {
         const runner = new GrblRunner();
         runner.on('parserstate', ({ raw, ...parserstate }) => {
             t.equal(raw, '[G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 F2540. S0.]');
@@ -174,7 +174,7 @@ test('GrblLineParserResultParserState', (t) => {
         runner.parse(line);
     });
 
-    test('#2', (t) => {
+    t.test('#2', (t) => {
         const runner = new GrblRunner();
         runner.on('parserstate', ({ raw, ...parserstate }) => {
             t.equal(raw, '[G0 G54 G17 G21 G90 G94 M0 M5 M7 M8 T2 F2540. S0.]');
@@ -382,7 +382,7 @@ test('GrblLineParserResultSettings', (t) => {
 });
 
 test('GrblLineParserResultStartup', (t) => {
-    test('Grbl 0.9j', (t) => {
+    t.test('Grbl 0.9j', (t) => {
         const runner = new GrblRunner();
         runner.on('startup', ({ raw, firmware, version, message }) => {
             t.equal(raw, 'Grbl 0.9j [\'$\' for help]');
@@ -396,7 +396,7 @@ test('GrblLineParserResultStartup', (t) => {
         runner.parse(line);
     });
 
-    test('Grbl 1.1f', (t) => {
+    t.test('Grbl 1.1f', (t) => {
         const runner = new GrblRunner();
         runner.on('startup', ({ raw, firmware, version, message }) => {
             t.equal(raw, 'Grbl 1.1f [\'$\' for help]');
@@ -410,7 +410,49 @@ test('GrblLineParserResultStartup', (t) => {
         runner.parse(line);
     });
 
-    test('vCarvin 2.0.0', (t) => {
+    t.test('Custom firmware build', (t) => {
+        const runner = new GrblRunner();
+        runner.on('startup', ({ raw, firmware, version, message }) => {
+            t.equal(raw, 'Grbl 1.2.3');
+            t.equal(firmware, 'Grbl');
+            t.equal(version, '1.2.3');
+            t.equal(message, '');
+            t.end();
+        });
+
+        const line = 'Grbl 1.2.3';
+        runner.parse(line);
+    });
+
+    t.test('Custom firmware build: LongMill build #1', (t) => {
+        const runner = new GrblRunner();
+        runner.on('startup', ({ raw, firmware, version, message }) => {
+            t.equal(raw, 'Grbl 1.1h: LongMill build [\'$\' for help]');
+            t.equal(firmware, 'Grbl');
+            t.equal(version, '1.1h');
+            t.equal(message, ': LongMill build [\'$\' for help]');
+            t.end();
+        });
+
+        const line = 'Grbl 1.1h: LongMill build [\'$\' for help]';
+        runner.parse(line);
+    });
+
+    t.test('Custom firmware build: LongMill build #2', (t) => {
+        const runner = new GrblRunner();
+        runner.on('startup', ({ raw, firmware, version, message }) => {
+            t.equal(raw, 'Grbl 1.1h [\'$\' for help] LongMill build Feb 25, 2020');
+            t.equal(firmware, 'Grbl');
+            t.equal(version, '1.1h');
+            t.equal(message, '[\'$\' for help] LongMill build Feb 25, 2020');
+            t.end();
+        });
+
+        const line = 'Grbl 1.1h [\'$\' for help] LongMill build Feb 25, 2020';
+        runner.parse(line);
+    });
+
+    t.test('Custom firmware build: vCarvin', (t) => {
         const runner = new GrblRunner();
         runner.on('startup', ({ raw, firmware, version, message }) => {
             t.equal(raw, 'vCarvin 2.0.0 [\'$\' for help]');

@@ -74,13 +74,14 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
  4       | Dropped support
  6       | Supported
  8       | Supported
- 10      | Supported
+ 10      | Recommended
+ 12      | Recommended
 
 ## Getting Started
 
 ### Node.js Installation
 
-Node.js 6 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
+Node.js 8 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
 ```
 git clone https://github.com/creationix/nvm.git ~/.nvm
 cd ~/.nvm

@@ -14,9 +14,8 @@ os:
 osx_image: xcode8.3
 
 node_js:
-  - '6'
-  - '8'
-  - '10'
+  - "10"
+  - "12"
 
 env:
   global:
@@ -39,6 +38,7 @@ addons:
       - graphicsmagick
       - gcc-multilib
       - g++-multilib
+      - rpm
 
 before_install:
   - git --version
@@ -121,8 +121,9 @@ after_success:
     if [[ "$TRAVIS_NODE_VERSION" == "10" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run build:linux-ia32;
       ls -al output output/*;
-      cp -af "output/${PRODUCT_NAME} ${PACKAGE_VERSION} i386.AppImage" "releases/${RELEASE}-linux-i386.AppImage";
+      cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-i386.AppImage" "releases/${RELEASE}-linux-i386.AppImage";
       cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_i386.deb" "releases/${RELEASE}-linux-i386.deb";
+      cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.i686.rpm" "releases/${RELEASE}-linux.i686.rpm";
       pushd releases;
       ln -sf ../output/linux-ia32-unpacked "${RELEASE}-linux-ia32";
       tar zcfh "${RELEASE}-linux-ia32.tar.gz" "${RELEASE}-linux-ia32";
@@ -137,6 +138,7 @@ after_success:
           --name="${TRAVIS_BRANCH}" \
           "*-linux-i386.AppImage" \
           "*-linux-i386.deb" \
+          "*-linux.i686.rpm" \
           "*-linux-ia32.tar.gz";
         npm run github-release -- upload \
           --owner=cncjs \
@@ -146,9 +148,11 @@ after_success:
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-linux-i386.AppImage" \
           "releases/${RELEASE}-linux-i386.deb" \
+          "releases/${RELEASE}-linux.i686.rpm" \
           "releases/${RELEASE}-linux-ia32.tar.gz";
         rm -f "releases/${RELEASE}-linux-i386.AppImage";
         rm -f "releases/${RELEASE}-linux-i386.deb";
+        rm -f "releases/${RELEASE}-linux.i686.rpm";
         rm -f "releases/${RELEASE}-linux-ia32.tar.gz";
       fi
     fi
@@ -157,8 +161,9 @@ after_success:
     if [[ "$TRAVIS_NODE_VERSION" == "10" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run build:linux-x64;
       ls -al output output/*;
-      cp -af "output/${PRODUCT_NAME} ${PACKAGE_VERSION}.AppImage" "releases/${RELEASE}-linux-x86_64.AppImage";
+      cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.AppImage" "releases/${RELEASE}-linux-x86_64.AppImage";
       cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/${RELEASE}-linux-amd64.deb";
+      cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.x86_64.rpm" "releases/${RELEASE}-linux.x86_64.rpm";
       pushd releases;
       ln -sf ../output/linux-unpacked "${RELEASE}-linux-x64";
       tar zcfh "${RELEASE}-linux-x64.tar.gz" "${RELEASE}-linux-x64";
@@ -173,6 +178,7 @@ after_success:
           --name="${TRAVIS_BRANCH}" \
           "*-linux-x86_64.AppImage" \
           "*-linux-amd64.deb" \
+          "*-linux.x86_64.rpm" \
           "*-linux-x64.tar.gz";
         npm run github-release -- upload \
           --owner=cncjs \
@@ -182,9 +188,11 @@ after_success:
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-linux-x86_64.AppImage" \
           "releases/${RELEASE}-linux-amd64.deb" \
+          "releases/${RELEASE}-linux.x86_64.rpm" \
           "releases/${RELEASE}-linux-x64.tar.gz";
         rm -f "releases/${RELEASE}-linux-x86_64.AppImage";
         rm -f "releases/${RELEASE}-linux-amd64.deb";
+        rm -f "releases/${RELEASE}-linux.x86_64.rpm";
         rm -f "releases/${RELEASE}-linux-x64.tar.gz";
       fi
     fi
@@ -202,10 +210,10 @@ deploy:
     secure: "nIhLqo+6i/uI0FgneK5nPvzYMEGO0ch7K1kbae/W/DqInqoT+moEAa16vHko3NR4SouICAEuT2GwiP/NdL7V3LZNOBOHmGa9iysBlxH8JU2AgDJiv2daXMTgGmVV7hl2sII5a8utVRFecVjZNJ+EecbU067y9S3gHbsrFlWwdUbLIpVM5+jr0YuXpV949OW8770MKLqvSONL4QoDJD7exNJ77TcHIFZURsr0VSK7rEhCDJhcUzrcn/mXLtVbAJwpBJXPMSj0lObMt1NvaQ6/iQL/rNCv5LYBOhRc0tZaBNRq8xJGR71mA35Vcrt50EP/fFakqdg3n59yO4K26C7GCHEiddlhjFKO1j9ul/98PZ4okw2FBFy1pChNuzme02tguLN85wzKSFERaCbBiNvWvR5MMEWlSuewFKojkbEqSDpZTRvyc6ct/KkvXBr1JXemfH3Uc3ANwNKcuB7566NtN29ogzOJHF/P3OEUy7ny19CZp55kVOKEeCCO3LtubaBwn+S9fP0aKCUC0Q8uHWy1Pfi8iG4XZs+jhPmwj+8OFP4DTBZMR9evk7Iq8/rMYL0WfsDuvbFygyEPWpduJ2YIl31z+7kN0OxQdCwHbNZcxP0n3ieIuNa0K74qfpL6mn0ZaLB1wA7fW/dTc9tF9lMsS577hKGcDwoZPm9VfQ+sVic="
   file_glob: true
   file:
-    - 'releases/*.*'
+    - "releases/*.*"
   overwrite: true
   skip_cleanup: true
   on:
     # https://docs.travis-ci.com/user/deployment#Conditional-Releases-with-on
     tags: true  # Deploy app only when a tag is applied to the commit
-    node: '10'
+    node: "10"

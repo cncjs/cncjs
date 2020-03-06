@@ -1,6 +1,6 @@
 {
   "name": "cncjs",
-  "version": "1.10.0",
+  "version": "1.9.21",
   "description": "A web-based interface for CNC milling controller running Grbl, Marlin, Smoothieware, or TinyG",
   "homepage": "https://github.com/cncjs/cncjs",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -45,7 +45,8 @@
     "postbuild-prod-app": "bash -c 'mkdir -p dist/cncjs/app; cp -af src/app/{favicon.ico,i18n,images,assets} dist/cncjs/app/'",
     "clean": "bash -c 'rm -rf ./dist ./output'",
     "electron": "electron",
-    "electron-builder": "build",
+    "electron-builder": "electron-builder",
+    "electron-builder:debug": "cross-env DEBUG=electron-builder electron-builder",
     "electron-rebuild": "electron-rebuild",
     "github-release": "github-release",
     "package-sync": "node scripts/package-sync.js",
@@ -116,7 +117,8 @@
       "category": "Utility",
       "target": [
         "AppImage",
-        "deb"
+        "deb",
+        "rpm"
       ]
     }
   },
@@ -254,7 +256,7 @@
     "registry-url": "~5.1.0",
     "rimraf": "~2.6.3",
     "semver": "~6.0.0",
-    "serialport": "~7.1.4",
+    "serialport": "~7.1.5",
     "serve-favicon": "~2.5.0",
     "serve-static": "~1.13.2",
     "session-file-store": "~1.2.0",
@@ -298,9 +300,9 @@
     "css-loader": "~2.1.1",
     "css-split-webpack-plugin": "~0.2.6",
     "dotenv": "~7.0.0",
-    "electron": "~4.1.4",
-    "electron-builder": "~20.39.0",
-    "electron-rebuild": "~1.8.4",
+    "electron": "~4.2.12",
+    "electron-builder": "~22.4.0",
+    "electron-rebuild": "~1.10.0",
     "eslint": "~5.16.0",
     "eslint-config-trendmicro": "~1.4.1",
     "eslint-import-resolver-webpack": "~0.11.1",

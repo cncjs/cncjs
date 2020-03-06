@@ -32,15 +32,15 @@
 
 import * as THREE from 'three';
 
-THREE.STLLoader = function ( manager ) {
+const STLLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-THREE.STLLoader.prototype = {
+STLLoader.prototype = {
 
-	constructor: THREE.STLLoader,
+	constructor: STLLoader,
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
@@ -278,7 +278,7 @@ THREE.STLLoader.prototype = {
 
 				if ( normalCountPerFace !== 1 ) {
 
-					console.error( 'THREE.STLLoader: Something isn\'t right with the normal of face number ' + faceCounter );
+					console.error( 'STLLoader: Something isn\'t right with the normal of face number ' + faceCounter );
 
 				}
 
@@ -286,7 +286,7 @@ THREE.STLLoader.prototype = {
 
 				if ( vertexCountPerFace !== 3 ) {
 
-					console.error( 'THREE.STLLoader: Something isn\'t right with the vertices of face number ' + faceCounter );
+					console.error( 'STLLoader: Something isn\'t right with the vertices of face number ' + faceCounter );
 
 				}
 
@@ -342,4 +342,4 @@ THREE.STLLoader.prototype = {
 	}
 };
 
-export default THREE.STLLoader;
+export default STLLoader;
