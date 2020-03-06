@@ -45,7 +45,8 @@
     "postbuild-prod-app": "bash -c 'mkdir -p dist/cncjs/app; cp -af src/app/{favicon.ico,i18n,images,assets} dist/cncjs/app/'",
     "clean": "bash -c 'rm -rf ./dist ./output'",
     "electron": "electron",
-    "electron-builder": "build",
+    "electron-builder": "electron-builder",
+    "electron-builder:debug": "cross-env DEBUG=electron-builder electron-builder",
     "electron-rebuild": "electron-rebuild",
     "github-release": "github-release",
     "package-sync": "node scripts/package-sync.js",
@@ -116,7 +117,8 @@
       "category": "Utility",
       "target": [
         "AppImage",
-        "deb"
+        "deb",
+        "rpm"
       ]
     }
   },
@@ -298,7 +300,7 @@
     "css-loader": "~2.1.1",
     "css-split-webpack-plugin": "~0.2.6",
     "dotenv": "~7.0.0",
-    "electron": "~8.0.3",
+    "electron": "~4.2.12",
     "electron-builder": "~22.4.0",
     "electron-rebuild": "~1.10.0",
     "eslint": "~5.16.0",

@@ -116,4 +116,4 @@ deploy:
     prerelease: false
     on:
       appveyor_repo_tag: true  # deploy on tag push only
-      nodejs_version: "12"
+      nodejs_version: "10"
