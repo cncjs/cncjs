@@ -38,6 +38,7 @@ addons:
       - graphicsmagick
       - gcc-multilib
       - g++-multilib
+      - rpm
 
 before_install:
   - git --version
