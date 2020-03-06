@@ -520,7 +520,49 @@ test('GrblRunner', (t) => {
             runner.parse(line);
         });
 
-        t.test('vCarvin 2.0.0', (t) => {
+        t.test('Custom firmware build', (t) => {
+            const runner = new GrblRunner();
+            runner.on('startup', ({ raw, firmware, version, message }) => {
+                t.equal(raw, 'Grbl 1.2.3');
+                t.equal(firmware, 'Grbl');
+                t.equal(version, '1.2.3');
+                t.equal(message, '');
+                t.end();
+            });
+
+            const line = 'Grbl 1.2.3';
+            runner.parse(line);
+        });
+
+        t.test('Custom firmware build: LongMill build #1', (t) => {
+            const runner = new GrblRunner();
+            runner.on('startup', ({ raw, firmware, version, message }) => {
+                t.equal(raw, 'Grbl 1.1h: LongMill build [\'$\' for help]');
+                t.equal(firmware, 'Grbl');
+                t.equal(version, '1.1h');
+                t.equal(message, ': LongMill build [\'$\' for help]');
+                t.end();
+            });
+
+            const line = 'Grbl 1.1h: LongMill build [\'$\' for help]';
+            runner.parse(line);
+        });
+
+        t.test('Custom firmware build: LongMill build #2', (t) => {
+            const runner = new GrblRunner();
+            runner.on('startup', ({ raw, firmware, version, message }) => {
+                t.equal(raw, 'Grbl 1.1h [\'$\' for help] LongMill build Feb 25, 2020');
+                t.equal(firmware, 'Grbl');
+                t.equal(version, '1.1h');
+                t.equal(message, '[\'$\' for help] LongMill build Feb 25, 2020');
+                t.end();
+            });
+
+            const line = 'Grbl 1.1h [\'$\' for help] LongMill build Feb 25, 2020';
+            runner.parse(line);
+        });
+
+        t.test('Custom firmware build: vCarvin', (t) => {
             const runner = new GrblRunner();
             runner.on('startup', ({ raw, firmware, version, message }) => {
                 t.equal(raw, 'vCarvin 2.0.0 [\'$\' for help]');

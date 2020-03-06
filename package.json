@@ -1,6 +1,6 @@
 {
   "name": "cncjs",
-  "version": "1.10.0",
+  "version": "1.9.21",
   "description": "A web-based interface for CNC milling controller running Grbl, Marlin, Smoothieware, or TinyG",
   "homepage": "https://github.com/cncjs/cncjs",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -45,7 +45,8 @@
     "postbuild-prod-app": "bash -c 'mkdir -p dist/cncjs/app; cp -af src/app/{favicon.ico,i18n,images,assets} dist/cncjs/app/'",
     "clean": "bash -c 'rm -rf ./dist ./output'",
     "electron": "electron",
-    "electron-builder": "build",
+    "electron-builder": "electron-builder",
+    "electron-builder:debug": "cross-env DEBUG=electron-builder electron-builder",
     "electron-rebuild": "electron-rebuild",
     "github-release": "github-release",
     "package-sync": "node scripts/package-sync.js",
@@ -116,7 +117,8 @@
       "category": "Utility",
       "target": [
         "AppImage",
-        "deb"
+        "deb",
+        "rpm"
       ]
     }
   },
@@ -305,7 +307,7 @@
     "css-split-webpack-plugin": "~0.2.6",
     "dotenv": "~8.2.0",
     "electron": "~7.1.9",
-    "electron-builder": "~22.3.2",
+    "electron-builder": "~22.4.0",
     "electron-rebuild": "~1.10.0",
     "enzyme": "~3.11.0",
     "enzyme-adapter-react-16": "~1.15.2",
