@@ -103,7 +103,7 @@ const createServer = (options, callback) => {
     }
 
     const { port = 0, host, backlog } = options;
-    const mountPoints = _uniqWith([
+    const mountPoints = uniqWith([
         ...ensureArray(options.mountPoints),
         ...ensureArray(config.get('mountPoints'))
     ], isEqual).filter(mount => {
@@ -239,16 +239,6 @@ const createServer = (options, callback) => {
 
             const address = server.address().address;
             const port = server.address().port;
-            const filteredRoutes = routes.reduce((acc, r) => {
-                const { type, route, directory } = r;
-                if (type === 'static') {
-                    acc.push({
-                        path: route,
-                        directory: directory
-                    });
-                }
-                return acc;
-            }, []);
 
             callback && callback(null, {
                 address,
