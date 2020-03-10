@@ -239,11 +239,11 @@ See https://github.com/cncjs/cncjs/issues/242#issuecomment-352294549 for a detai
   "commands": [
     {
       "title": "Update (root user)",
-      "commands": "sudo npm install -g cncjs@latest --unsafe-perm; pkill -a -f cncjs"
+      "commands": "sudo npm install -g cncjs@latest --unsafe-perm; pkill -f cncjs"
     },
     {
       "title": "Update (non-root user)",
-      "commands": "npm install -g cncjs@latest; pkill -a -f cncjs"
+      "commands": "npm install -g cncjs@latest; pkill -f cncjs"
     },
     {
       "title": "Reboot",
