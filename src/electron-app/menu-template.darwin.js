@@ -10,14 +10,23 @@ export default (options) => {
     //   }
     // ]
     const { address, port, mountPoints = [] } = { ...options };
-    const menuItems = mountPoints.map(mountPoint => ({
-        label: `View In Browser (${mountPoint.route})`,
-        click: () => {
-            const routePath = trimStart(mountPoint.route, '/');
-            const url = `http://${address}:${port}/${routePath}`;
-            shell.openExternal(url);
-        }
-    }));
+    let menuItems = [];
+
+    if (mountPoints.length > 0) {
+        menuItems = [
+            { type: 'separator' },
+            { label: 'Mount Points', enabled: false },
+        ].concat(
+            mountPoints.map(mountPoint => ({
+                label: `  ${mountPoint.route}`,
+                click: () => {
+                    const routePath = trimStart(mountPoint.route, '/');
+                    const url = `http://${address}:${port}/${routePath}`;
+                    shell.openExternal(url);
+                }
+            }))
+        );
+    }
 
     const template = [
         {
