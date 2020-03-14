@@ -11,7 +11,7 @@ export default (options) => {
     // ]
     const { address, port, mountPoints = [] } = { ...options };
     const menuItems = mountPoints.map(mountPoint => ({
-        label: `${mountPoint.route} (${mountPoint.target})`,
+        label: `View In Browser (${mountPoint.route})`,
         click: () => {
             const routePath = trimStart(mountPoint.route, '/');
             const url = `http://${address}:${port}/${routePath}`;
