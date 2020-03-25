@@ -63,13 +63,13 @@ const main = () => {
     app.on('ready', async () => {
         try {
             const res = await launchServer();
-            const { address, port, routes } = { ...res };
+            const { address, port, mountPoints } = { ...res };
             if (!(address && port)) {
                 console.error('Unable to start the server at ' + chalk.cyan(`http://${address}:${port}`));
                 return;
             }
 
-            const menu = Menu.buildFromTemplate(menuTemplate({ address, port, routes }));
+            const menu = Menu.buildFromTemplate(menuTemplate({ address, port, mountPoints }));
             Menu.setApplicationMenu(menu);
 
             windowManager = new WindowManager();
