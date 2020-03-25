@@ -3,21 +3,30 @@ import trimStart from 'lodash/trimStart';
 
 // https://github.com/electron/electron/blob/master/docs/api/menu/
 export default (options) => {
-    // routes = [
+    // mountPoints = [
     //   {
-    //     path: '/widget',
-    //     directory: '~+/widget'
+    //     route: '/widget',
+    //     target: '~+/widget'
     //   }
     // ]
-    const { address, port, routes = [] } = { ...options };
-    const menuItems = routes.map(route => ({
-        label: `${route.path}: ${route.directory}`,
-        click: () => {
-            const path = trimStart(route.path, '/');
-            const url = `http://${address}:${port}/${path}`;
-            shell.openExternal(url);
-        }
-    }));
+    const { address, port, mountPoints = [] } = { ...options };
+    let menuItems = [];
+
+    if (mountPoints.length > 0) {
+        menuItems = [
+            { type: 'separator' },
+            { label: 'Mount Points', enabled: false },
+        ].concat(
+            mountPoints.map(mountPoint => ({
+                label: `  ${mountPoint.route}`,
+                click: () => {
+                    const routePath = trimStart(mountPoint.route, '/');
+                    const url = `http://${address}:${port}/${routePath}`;
+                    shell.openExternal(url);
+                }
+            }))
+        );
+    }
 
     const template = [
         {
