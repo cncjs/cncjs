@@ -223,6 +223,337 @@ class MarlinController {
         }, 1000);
     })();
 
+    deprecatedCommandHandler = {
+        'start': () => {
+            this.command('sender:start');
+        },
+        'stop': (...args) => {
+            this.command('sender:stop', ...args);
+        },
+        'pause': () => {
+            this.command('sender:pause');
+        },
+        'resume': () => {
+            this.command('sender:resume');
+        },
+        'gcode:load': (...args) => {
+            let [name, gcode, context = {}, callback = noop] = args;
+            const meta = {
+                name: name,
+                content: gcode,
+            };
+            this.command('sender:load', meta, context, callback);
+        },
+        'gcode:unload': () => {
+            this.command('sender:unload');
+        },
+        'gcode:start': () => {
+            this.command('sender:start');
+        },
+        'gcode:stop': (...args) => {
+            this.command('sender:stop', ...args);
+        },
+        'gcode:pause': () => {
+            this.command('sender:pause');
+        },
+        'gcode:resume': () => {
+            this.command('sender:resume');
+        },
+        'feeder:feed': (...args) => {
+            this.command('gcode', ...args);
+        },
+        'feedOverride': (...args) => {
+            this.command('override:feed', ...args);
+        },
+        'spindleOverride': (...args) => {
+            this.command('override:spindle', ...args);
+        },
+        'rapidOverride': (...args) => {
+            this.command('override:rapid', ...args);
+        },
+        'lasertest:on': (...args) => {
+            this.command('lasertest', ...args);
+        },
+        'lasertest:off': () => {
+            const power = 0;
+            this.command('lasertest', power);
+        },
+    };
+
+    commandHandler = {
+        'sender:load': (...args) => {
+            let [meta, context = {}, callback = noop] = args;
+            if (typeof context === 'function') {
+                callback = context;
+                context = {};
+            }
+
+            // G4 P0 or P with a very small value will empty the planner queue and then
+            // respond with an ok when the dwell is complete. At that instant, there will
+            // be no queued motions, as long as no more commands were sent after the G4.
+            // This is the fastest way to do it without having to check the status reports.
+            const { name, content } = { ...meta };
+            const dwell = '%wait ; Wait for the planner to empty';
+            const ok = this.sender.load({
+                name,
+                content: `${content}\n${dwell}`,
+            }, context);
+            if (!ok) {
+                callback(new Error(`Invalid G-code: name=${name}`));
+                return;
+            }
+
+            this.emit('sender:load', meta, context);
+
+            this.event.trigger('sender:load');
+
+            this.workflow.stop();
+
+            const senderState = this.sender.toJSON();
+            callback(null, senderState);
+
+            log.debug(`sender: sp=${senderState.sp}, name=${chalk.yellow(JSON.stringify(senderState.name))}, size=${senderState.size}, total=${senderState.total}, context=${JSON.stringify(senderState.context)}`);
+        },
+        'sender:unload': () => {
+            this.workflow.stop();
+
+            // Sender
+            this.sender.unload();
+
+            this.emit('sender:unload');
+            this.event.trigger('sender:unload');
+        },
+        'sender:start': () => {
+            this.event.trigger('sender:start');
+
+            this.workflow.start();
+
+            // Feeder
+            this.feeder.reset();
+
+            // Sender
+            this.sender.next();
+        },
+        // @param {object} options The options object.
+        // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
+        'sender:stop': () => {
+            this.event.trigger('sender:stop');
+
+            this.workflow.stop();
+        },
+        'sender:pause': () => {
+            this.event.trigger('sender:pause');
+
+            this.workflow.pause();
+        },
+        'sender:resume': () => {
+            this.event.trigger('sender:resume');
+
+            this.workflow.resume();
+        },
+        'feeder:start': () => {
+            if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
+                return;
+            }
+            this.feeder.unhold();
+            this.feeder.next();
+        },
+        'feeder:stop': () => {
+            this.feeder.reset();
+        },
+        'feedhold': () => {
+            this.event.trigger('feedhold');
+        },
+        'cyclestart': () => {
+            this.event.trigger('cyclestart');
+        },
+        'homing': () => {
+            this.event.trigger('homing');
+
+            this.writeln('G28.2 X Y Z');
+        },
+        'sleep': () => {
+            this.event.trigger('sleep');
+
+            // Unupported
+        },
+        'unlock': () => {
+            // Unsupported
+        },
+        'reset': () => {
+            this.workflow.stop();
+
+            this.feeder.reset();
+
+            // M112: Emergency Stop
+            this.writeln('M112');
+        },
+        // Feed Overrides
+        // @param {number} value A percentage value between 10 and 500. A value of zero will reset to 100%.
+        'override:feed': (...args) => {
+            const [value] = args;
+            let feedOverride = this.runner.state.ovF;
+
+            if (value === 0) {
+                feedOverride = 100;
+            } else if ((feedOverride + value) > 500) {
+                feedOverride = 500;
+            } else if ((feedOverride + value) < 10) {
+                feedOverride = 10;
+            } else {
+                feedOverride += value;
+            }
+            // M220: Set speed factor override percentage
+            this.command('gcode', 'M220S' + feedOverride);
+
+            // enforce state change
+            this.runner.state = {
+                ...this.runner.state,
+                ovF: feedOverride
+            };
+        },
+        // Spindle Speed Overrides
+        // @param {number} value A percentage value between 10 and 500. A value of zero will reset to 100%.
+        'override:spindle': (...args) => {
+            const [value] = args;
+            let spindleOverride = this.runner.state.ovS;
+
+            if (value === 0) {
+                spindleOverride = 100;
+            } else if ((spindleOverride + value) > 500) {
+                spindleOverride = 500;
+            } else if ((spindleOverride + value) < 10) {
+                spindleOverride = 10;
+            } else {
+                spindleOverride += value;
+            }
+            // M221: Set extruder factor override percentage
+            this.command('gcode', 'M221S' + spindleOverride);
+
+            // enforce state change
+            this.runner.state = {
+                ...this.runner.state,
+                ovS: spindleOverride
+            };
+        },
+        'override:rapid': () => {
+            // Unsupported
+        },
+        'motor:enable': () => {
+            // M17 Enable all stepper motors
+            this.command('gcode', 'M17');
+        },
+        'motor:disable': () => {
+            // M18/M84 Disable steppers immediately (until the next move)
+            this.command('gcode', 'M18');
+        },
+        // @param {number} power
+        // @param {number} duration
+        // @param {number} maxS
+        'lasertest': (...args) => {
+            const [power = 0, duration = 0, maxS = 255] = args;
+
+            if (!power) {
+                this.command('gcode', 'M5');
+            }
+
+            this.command('gcode', 'M3S' + ensurePositiveNumber(maxS * (power / 100)));
+
+            if (duration > 0) {
+                // G4 [P<time in ms>] [S<time in sec>]
+                // If both S and P are included, S takes precedence.
+                this.command('gcode', 'G4 P' + ensurePositiveNumber(duration));
+                this.command('gcode', 'M5');
+            }
+        },
+        'gcode': (...args) => {
+            const [commands, context] = args;
+            const data = ensureArray(commands)
+                .join('\n')
+                .split(/\r?\n/)
+                .filter(line => {
+                    if (typeof line !== 'string') {
+                        return false;
+                    }
+
+                    return line.trim().length > 0;
+                });
+
+            this.feeder.feed(data, context);
+
+            { // The following criteria must be met to trigger the feeder
+                const notBusy = !(this.history.writeSource);
+                const senderIdle = (this.sender.state.sent === this.sender.state.received);
+                const feederIdle = !(this.feeder.isPending());
+
+                if (notBusy && senderIdle && feederIdle) {
+                    this.feeder.next();
+                }
+            }
+        },
+        'macro:run': (...args) => {
+            let [id, context = {}, callback = noop] = args;
+            if (typeof context === 'function') {
+                callback = context;
+                context = {};
+            }
+
+            const macros = userStore.get('macros');
+            const macro = _.find(macros, { id: id });
+
+            if (!macro) {
+                log.error(`Cannot find the macro: id=${id}`);
+                return;
+            }
+
+            this.event.trigger('macro:run');
+
+            this.command('gcode', macro.content, context);
+            callback(null);
+        },
+        'macro:load': (...args) => {
+            let [id, context = {}, callback = noop] = args;
+            if (typeof context === 'function') {
+                callback = context;
+                context = {};
+            }
+
+            const macros = userStore.get('macros');
+            const macro = _.find(macros, { id: id });
+
+            if (!macro) {
+                log.error(`Cannot find the macro: id=${id}`);
+                return;
+            }
+
+            this.event.trigger('macro:load');
+
+            const meta = {
+                name: macro.name,
+                content: macro.content,
+            };
+            this.command('sender:load', meta, context, callback);
+        },
+        'watchdir:load': (...args) => {
+            const [name, callback = noop] = args;
+            const context = {}; // empty context
+            const filepath = path.join(directoryWatcher.root, name);
+
+            fs.readFile(filepath, 'utf8', (err, content) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+
+                const meta = {
+                    name,
+                    content,
+                };
+                this.command('sender:load', meta, context, callback);
+            });
+        },
+    };
+
     get connectionState() {
         return {
             type: this.connection.type,
@@ -1050,283 +1381,20 @@ class MarlinController {
     }
 
     command(cmd, ...args) {
-        const handler = {
-            'sender:load': () => {
-                let [meta, context = {}, callback = noop] = args;
-                if (typeof context === 'function') {
-                    callback = context;
-                    context = {};
-                }
-
-                // G4 P0 or P with a very small value will empty the planner queue and then
-                // respond with an ok when the dwell is complete. At that instant, there will
-                // be no queued motions, as long as no more commands were sent after the G4.
-                // This is the fastest way to do it without having to check the status reports.
-                const { name, content } = { ...meta };
-                const dwell = '%wait ; Wait for the planner to empty';
-                const ok = this.sender.load({
-                    name,
-                    content: `${content}\n${dwell}`,
-                }, context);
-                if (!ok) {
-                    callback(new Error(`Invalid G-code: name=${name}`));
-                    return;
-                }
-
-                this.emit('sender:load', meta, context);
-
-                this.event.trigger('sender:load');
-
-                this.workflow.stop();
-
-                const senderState = this.sender.toJSON();
-                callback(null, senderState);
-
-                log.debug(`sender: sp=${senderState.sp}, name=${chalk.yellow(JSON.stringify(senderState.name))}, size=${senderState.size}, total=${senderState.total}, context=${JSON.stringify(senderState.context)}`);
-            },
-            'sender:unload': () => {
-                this.workflow.stop();
-
-                // Sender
-                this.sender.unload();
-
-                this.emit('sender:unload');
-                this.event.trigger('sender:unload');
-            },
-            'sender:start': () => {
-                this.event.trigger('sender:start');
-
-                this.workflow.start();
-
-                // Feeder
-                this.feeder.reset();
-
-                // Sender
-                this.sender.next();
-            },
-            // @param {object} options The options object.
-            // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
-            'sender:stop': () => {
-                this.event.trigger('sender:stop');
-
-                this.workflow.stop();
-            },
-            'sender:pause': () => {
-                this.event.trigger('sender:pause');
-
-                this.workflow.pause();
-            },
-            'sender:resume': () => {
-                this.event.trigger('sender:resume');
-
-                this.workflow.resume();
-            },
-            'feeder:start': () => {
-                if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
-                    return;
-                }
-                this.feeder.unhold();
-                this.feeder.next();
-            },
-            'feeder:stop': () => {
-                this.feeder.reset();
-            },
-            'feedhold': () => {
-                this.event.trigger('feedhold');
-            },
-            'cyclestart': () => {
-                this.event.trigger('cyclestart');
-            },
-            'homing': () => {
-                this.event.trigger('homing');
-
-                this.writeln('G28.2 X Y Z');
-            },
-            'sleep': () => {
-                this.event.trigger('sleep');
-
-                // Unupported
-            },
-            'unlock': () => {
-                // Unsupported
-            },
-            'reset': () => {
-                this.workflow.stop();
-
-                this.feeder.reset();
-
-                // M112: Emergency Stop
-                this.writeln('M112');
-            },
-            // Feed Overrides
-            // @param {number} value A percentage value between 10 and 500. A value of zero will reset to 100%.
-            'override:feed': () => {
-                const [value] = args;
-                let feedOverride = this.runner.state.ovF;
-
-                if (value === 0) {
-                    feedOverride = 100;
-                } else if ((feedOverride + value) > 500) {
-                    feedOverride = 500;
-                } else if ((feedOverride + value) < 10) {
-                    feedOverride = 10;
-                } else {
-                    feedOverride += value;
-                }
-                // M220: Set speed factor override percentage
-                this.command('gcode', 'M220S' + feedOverride);
-
-                // enforce state change
-                this.runner.state = {
-                    ...this.runner.state,
-                    ovF: feedOverride
-                };
-            },
-            // Spindle Speed Overrides
-            // @param {number} value A percentage value between 10 and 500. A value of zero will reset to 100%.
-            'override:spindle': () => {
-                const [value] = args;
-                let spindleOverride = this.runner.state.ovS;
-
-                if (value === 0) {
-                    spindleOverride = 100;
-                } else if ((spindleOverride + value) > 500) {
-                    spindleOverride = 500;
-                } else if ((spindleOverride + value) < 10) {
-                    spindleOverride = 10;
-                } else {
-                    spindleOverride += value;
-                }
-                // M221: Set extruder factor override percentage
-                this.command('gcode', 'M221S' + spindleOverride);
-
-                // enforce state change
-                this.runner.state = {
-                    ...this.runner.state,
-                    ovS: spindleOverride
-                };
-            },
-            'override:rapid': () => {
-                // Unsupported
-            },
-            'motor:enable': () => {
-                // M17 Enable all stepper motors
-                this.command('gcode', 'M17');
-            },
-            'motor:disable': () => {
-                // M18/M84 Disable steppers immediately (until the next move)
-                this.command('gcode', 'M18');
-            },
-            'lasertest': () => {
-                const [power = 0, duration = 0, maxS = 255] = args;
-
-                if (!power) {
-                    this.command('gcode', 'M5');
-                }
-
-                this.command('gcode', 'M3S' + ensurePositiveNumber(maxS * (power / 100)));
-
-                if (duration > 0) {
-                    // G4 [P<time in ms>] [S<time in sec>]
-                    // If both S and P are included, S takes precedence.
-                    this.command('gcode', 'G4 P' + ensurePositiveNumber(duration));
-                    this.command('gcode', 'M5');
-                }
-            },
-            'gcode': () => {
-                const [commands, context] = args;
-                const data = ensureArray(commands)
-                    .join('\n')
-                    .split(/\r?\n/)
-                    .filter(line => {
-                        if (typeof line !== 'string') {
-                            return false;
-                        }
-
-                        return line.trim().length > 0;
-                    });
-
-                this.feeder.feed(data, context);
-
-                { // The following criteria must be met to trigger the feeder
-                    const notBusy = !(this.history.writeSource);
-                    const senderIdle = (this.sender.state.sent === this.sender.state.received);
-                    const feederIdle = !(this.feeder.isPending());
-
-                    if (notBusy && senderIdle && feederIdle) {
-                        this.feeder.next();
-                    }
-                }
-            },
-            'macro:run': () => {
-                let [id, context = {}, callback = noop] = args;
-                if (typeof context === 'function') {
-                    callback = context;
-                    context = {};
-                }
-
-                const macros = userStore.get('macros');
-                const macro = _.find(macros, { id: id });
-
-                if (!macro) {
-                    log.error(`Cannot find the macro: id=${id}`);
-                    return;
-                }
-
-                this.event.trigger('macro:run');
-
-                this.command('gcode', macro.content, context);
-                callback(null);
-            },
-            'macro:load': () => {
-                let [id, context = {}, callback = noop] = args;
-                if (typeof context === 'function') {
-                    callback = context;
-                    context = {};
-                }
-
-                const macros = userStore.get('macros');
-                const macro = _.find(macros, { id: id });
-
-                if (!macro) {
-                    log.error(`Cannot find the macro: id=${id}`);
-                    return;
-                }
-
-                this.event.trigger('macro:load');
-
-                const meta = {
-                    name: macro.name,
-                    content: macro.content,
-                };
-                this.command('sender:load', meta, context, callback);
-            },
-            'watchdir:load': () => {
-                const [name, callback = noop] = args;
-                const context = {}; // empty context
-                const filepath = path.join(directoryWatcher.root, name);
-
-                fs.readFile(filepath, 'utf8', (err, content) => {
-                    if (err) {
-                        callback(err);
-                        return;
-                    }
-
-                    const meta = {
-                        name,
-                        content,
-                    };
-                    this.command('sender:load', meta, context, callback);
-                });
-            },
-        }[cmd];
-
-        if (!handler) {
-            log.error(`Unknown command: ${cmd}`);
+        const deprecatedHandler = this.deprecatedCommandHandler[cmd];
+        if (deprecatedHandler) {
+            log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
+            deprecatedHandler();
             return;
         }
 
-        handler();
+        const handler = this.commandHandler[cmd];
+        if (handler) {
+            handler();
+            return;
+        }
+
+        log.error(`Unknown command: ${cmd}`);
     }
 
     write(data, context) {

@@ -166,6 +166,382 @@ class TinyGController {
     // Workflow
     workflow = null;
 
+    deprecatedCommandHandler = {
+        'start': () => {
+            this.command('sender:start');
+        },
+        'stop': (...args) => {
+            this.command('sender:stop', ...args);
+        },
+        'pause': () => {
+            this.command('sender:pause');
+        },
+        'resume': () => {
+            this.command('sender:resume');
+        },
+        'gcode:load': (...args) => {
+            let [name, gcode, context = {}, callback = noop] = args;
+            const meta = {
+                name: name,
+                content: gcode,
+            };
+            this.command('sender:load', meta, context, callback);
+        },
+        'gcode:unload': () => {
+            this.command('sender:unload');
+        },
+        'gcode:start': () => {
+            this.command('sender:start');
+        },
+        'gcode:stop': (...args) => {
+            this.command('sender:stop', ...args);
+        },
+        'gcode:pause': () => {
+            this.command('sender:pause');
+        },
+        'gcode:resume': () => {
+            this.command('sender:resume');
+        },
+        'feeder:feed': (...args) => {
+            this.command('gcode', ...args);
+        },
+        'feedOverride': (...args) => {
+            this.command('override:feed', ...args);
+        },
+        'spindleOverride': (...args) => {
+            this.command('override:spindle', ...args);
+        },
+        'rapidOverride': (...args) => {
+            this.command('override:rapid', ...args);
+        },
+        'lasertest:on': (...args) => {
+            this.command('lasertest', ...args);
+        },
+        'lasertest:off': () => {
+            const power = 0;
+            this.command('lasertest', power);
+        },
+    };
+
+    commandHandler = {
+        'sender:load': (...args) => {
+            let [meta, context = {}, callback = noop] = args;
+            if (typeof context === 'function') {
+                callback = context;
+                context = {};
+            }
+
+            // G4 P0 or P with a very small value will empty the planner queue and then
+            // respond with an ok when the dwell is complete. At that instant, there will
+            // be no queued motions, as long as no more commands were sent after the G4.
+            // This is the fastest way to do it without having to check the status reports.
+            const { name, content } = { ...meta };
+            const dwell = '%wait ; Wait for the planner to empty';
+            const ok = this.sender.load({
+                name,
+                content: `${content}\n${dwell}`,
+            }, context);
+            if (!ok) {
+                callback(new Error(`Invalid G-code: name=${name}`));
+                return;
+            }
+
+            this.emit('sender:load', meta, context);
+
+            this.event.trigger('sender:load');
+
+            this.workflow.stop();
+
+            const senderState = this.sender.toJSON();
+            callback(null, senderState);
+
+            log.debug(`sender: sp=${senderState.sp}, name=${chalk.yellow(JSON.stringify(senderState.name))}, size=${senderState.size}, total=${senderState.total}, context=${JSON.stringify(senderState.context)}`);
+        },
+        'sender:unload': () => {
+            this.workflow.stop();
+
+            // Sender
+            this.sender.unload();
+
+            this.emit('sender:unload');
+            this.event.trigger('sender:unload');
+        },
+        'sender:start': () => {
+            this.event.trigger('sender:start');
+
+            this.workflow.start();
+
+            // Feeder
+            this.feeder.reset();
+
+            // Sender
+            this.sender.next();
+        },
+        // @param {object} options The options object.
+        // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
+        'sender:stop': (...args) => {
+            this.event.trigger('sender:stop');
+
+            this.workflow.stop();
+
+            const [options] = args;
+            const { force = false } = { ...options };
+            if (force) {
+                const firmwareBuild = ensureFiniteNumber(_.get(this.settings, 'fb'));
+
+                if (firmwareBuild >= 101) {
+                    // https://github.com/synthetos/g2/releases/tag/101.02
+                    // * Added explicit Job Kill ^d - has the effect of an M30 (program end)
+                    this.writeln('\x04'); // kill job (^d)
+                } else if (firmwareBuild >= 100) {
+                    this.writeln('\x04'); // kill job (^d)
+                    this.writeln('M30'); // end of program
+                } else {
+                    // https://github.com/synthetos/g2/wiki/Feedhold,-Resume,-and-Other-Simple-Commands#jogging-using-feedhold-and-queue-flush
+                    // Send a ! to stop movement immediately.
+                    // Send a % to flush remaining moves from planner buffer.
+                    this.writeln('!'); // feedhold
+                    this.writeln('%'); // queue flush
+                    this.writeln('M30'); // end of program
+                }
+            }
+
+            this.writeln('{"qr":""}'); // queue report
+        },
+        'sender:pause': () => {
+            this.event.trigger('sender:pause');
+
+            this.workflow.pause();
+            this.writeln('!'); // feedhold
+            this.writeln('{"qr":""}'); // queue report
+        },
+        'sender:resume': () => {
+            this.event.trigger('sender:resume');
+
+            this.writeln('~'); // cycle start
+            this.workflow.resume();
+            this.writeln('{"qr":""}'); // queue report
+        },
+        'feeder:start': () => {
+            if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
+                return;
+            }
+            this.writeln('~'); // cycle start
+            this.writeln('{"qr":""}'); // queue report
+            this.feeder.unhold();
+            this.feeder.next();
+        },
+        'feeder:stop': () => {
+            this.feeder.reset();
+        },
+        'feedhold': () => {
+            this.event.trigger('feedhold');
+
+            this.writeln('!'); // feedhold
+            this.writeln('{"qr":""}'); // queue report
+        },
+        'cyclestart': () => {
+            this.event.trigger('cyclestart');
+
+            this.writeln('~'); // cycle start
+            this.writeln('{"qr":""}'); // queue report
+        },
+        'homing': () => {
+            this.event.trigger('homing');
+
+            this.writeln('G28.2 X0 Y0 Z0');
+        },
+        'sleep': () => {
+            this.event.trigger('sleep');
+
+            // Not supported
+        },
+        'unlock': () => {
+            this.writeln('{clear:null}'); // alarm clear
+        },
+        'reset': () => {
+            this.workflow.stop();
+            this.feeder.reset();
+            this.write('\x18'); // reset board (^x)
+        },
+        // Feed Overrides
+        // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
+        'override:feed': (...args) => {
+            const [value] = args;
+            let mfo = this.runner.settings.mfo;
+
+            if (value === 0) {
+                mfo = 1;
+            } else if ((mfo * 100 + value) > 200) {
+                mfo = 2;
+            } else if ((mfo * 100 + value) < 5) {
+                mfo = 0.05;
+            } else {
+                mfo = (mfo * 100 + value) / 100;
+            }
+
+            this.command('gcode', `{mfo:${mfo}}`);
+        },
+        // Spindle Speed Overrides
+        // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
+        'override:spindle': (...args) => {
+            const [value] = args;
+            let sso = this.runner.settings.sso;
+
+            if (value === 0) {
+                sso = 1;
+            } else if ((sso * 100 + value) > 200) {
+                sso = 2;
+            } else if ((sso * 100 + value) < 5) {
+                sso = 0.05;
+            } else {
+                sso = (sso * 100 + value) / 100;
+            }
+
+            this.command('gcode', `{sso:${sso}}`);
+        },
+        // Rapid Overrides
+        'override:rapid': (...args) => {
+            const [value] = args;
+
+            if (value === 0 || value === 100) {
+                this.command('gcode', '{mto:1}');
+            } else if (value === 50) {
+                this.command('gcode', '{mto:0.5}');
+            } else if (value === 25) {
+                this.command('gcode', '{mto:0.25}');
+            }
+        },
+        // Turn on any motor that is not disabled.
+        // @param {number} [value] Enable the motors with a specified timeout value in seconds. Defaults to 3600 seconds.
+        'motor:enable': (...args) => {
+            let [mt = this.state.mt] = args;
+            mt = ensureFiniteNumber(mt);
+
+            if (mt <= 0) {
+                this.command('motor:disable');
+                return;
+            }
+
+            // Providing {me:0} will enable the motors for the timeout specified in the mt value.
+            this.command('gcode', `{me:${mt}}`);
+            this.command('gcode', '{pwr:n}');
+        },
+        // Disable all motors that are not permanently enabled.
+        'motor:disable': () => {
+            this.command('gcode', '{md:0}');
+            this.command('gcode', '{pwr:n}');
+        },
+        // Sets the number of seconds before a motor will shut off automatically.
+        // @param {number} value The default timeout in seconds.
+        'motor:timeout': (...args) => {
+            let [mt] = args;
+            mt = ensureFiniteNumber(mt);
+
+            if (mt >= 0) {
+                this.command('gcode', `{mt:${mt}}`);
+            }
+        },
+        // @param {number} power
+        // @param {number} duration
+        // @param {number} maxS
+        'lasertest': (...args) => {
+            const [power = 0, duration = 0, maxS = 1000] = args;
+
+            if (!power) {
+                this.command('gcode', 'M5S0');
+                return;
+            }
+
+            this.command('gcode', 'M3S' + ensurePositiveNumber(maxS * (power / 100)));
+
+            if (duration > 0) {
+                this.command('gcode', 'G4P' + ensurePositiveNumber(duration / 1000));
+                this.command('gcode', 'M5S0');
+            }
+        },
+        'gcode': (...args) => {
+            const [commands, context] = args;
+            const data = ensureArray(commands)
+                .join('\n')
+                .split(/\r?\n/)
+                .filter(line => {
+                    if (typeof line !== 'string') {
+                        return false;
+                    }
+
+                    return line.trim().length > 0;
+                });
+
+            this.feeder.feed(data, context);
+
+            if (!this.feeder.isPending()) {
+                this.feeder.next();
+            }
+        },
+        'macro:run': (...args) => {
+            let [id, context = {}, callback = noop] = args;
+            if (typeof context === 'function') {
+                callback = context;
+                context = {};
+            }
+
+            const macros = userStore.get('macros');
+            const macro = _.find(macros, { id: id });
+
+            if (!macro) {
+                log.error(`Cannot find the macro: id=${id}`);
+                return;
+            }
+
+            this.event.trigger('macro:run');
+
+            this.command('gcode', macro.content, context);
+            callback(null);
+        },
+        'macro:load': (...args) => {
+            let [id, context = {}, callback = noop] = args;
+            if (typeof context === 'function') {
+                callback = context;
+                context = {};
+            }
+
+            const macros = userStore.get('macros');
+            const macro = _.find(macros, { id: id });
+
+            if (!macro) {
+                log.error(`Cannot find the macro: id=${id}`);
+                return;
+            }
+
+            this.event.trigger('macro:load');
+
+            const meta = {
+                name: macro.name,
+                content: macro.content,
+            };
+            this.command('sender:load', meta, context, callback);
+        },
+        'watchdir:load': (...args) => {
+            const [name, callback = noop] = args;
+            const context = {}; // empty context
+            const filepath = path.join(directoryWatcher.root, name);
+
+            fs.readFile(filepath, 'utf8', (err, content) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+
+                const meta = {
+                    name,
+                    content,
+                };
+                this.command('sender:load', meta, context, callback);
+            });
+        },
+    };
+
     get connectionState() {
         return {
             type: this.connection.type,
@@ -1054,328 +1430,20 @@ class TinyGController {
     // ^d           Kill Job        Trigger ALARM to kill current job. Send {clear:n}, M2 or M30 to end ALARM state
     // ^x           Reset Board     Perform hardware reset to restart the board
     command(cmd, ...args) {
-        const handler = {
-            'sender:load': () => {
-                let [meta, context = {}, callback = noop] = args;
-                if (typeof context === 'function') {
-                    callback = context;
-                    context = {};
-                }
-
-                // G4 P0 or P with a very small value will empty the planner queue and then
-                // respond with an ok when the dwell is complete. At that instant, there will
-                // be no queued motions, as long as no more commands were sent after the G4.
-                // This is the fastest way to do it without having to check the status reports.
-                const { name, content } = { ...meta };
-                const dwell = '%wait ; Wait for the planner to empty';
-                const ok = this.sender.load({
-                    name,
-                    content: `${content}\n${dwell}`,
-                }, context);
-                if (!ok) {
-                    callback(new Error(`Invalid G-code: name=${name}`));
-                    return;
-                }
-
-                this.emit('sender:load', meta, context);
-
-                this.event.trigger('sender:load');
-
-                this.workflow.stop();
-
-                const senderState = this.sender.toJSON();
-                callback(null, senderState);
-
-                log.debug(`sender: sp=${senderState.sp}, name=${chalk.yellow(JSON.stringify(senderState.name))}, size=${senderState.size}, total=${senderState.total}, context=${JSON.stringify(senderState.context)}`);
-            },
-            'sender:unload': () => {
-                this.workflow.stop();
-
-                // Sender
-                this.sender.unload();
-
-                this.emit('sender:unload');
-                this.event.trigger('sender:unload');
-            },
-            'sender:start': () => {
-                this.event.trigger('sender:start');
-
-                this.workflow.start();
-
-                // Feeder
-                this.feeder.reset();
-
-                // Sender
-                this.sender.next();
-            },
-            // @param {object} options The options object.
-            // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
-            'sender:stop': () => {
-                this.event.trigger('sender:stop');
-
-                this.workflow.stop();
-
-                const [options] = args;
-                const { force = false } = { ...options };
-                if (force) {
-                    const firmwareBuild = ensureFiniteNumber(_.get(this.settings, 'fb'));
-
-                    if (firmwareBuild >= 101) {
-                        // https://github.com/synthetos/g2/releases/tag/101.02
-                        // * Added explicit Job Kill ^d - has the effect of an M30 (program end)
-                        this.writeln('\x04'); // kill job (^d)
-                    } else if (firmwareBuild >= 100) {
-                        this.writeln('\x04'); // kill job (^d)
-                        this.writeln('M30'); // end of program
-                    } else {
-                        // https://github.com/synthetos/g2/wiki/Feedhold,-Resume,-and-Other-Simple-Commands#jogging-using-feedhold-and-queue-flush
-                        // Send a ! to stop movement immediately.
-                        // Send a % to flush remaining moves from planner buffer.
-                        this.writeln('!'); // feedhold
-                        this.writeln('%'); // queue flush
-                        this.writeln('M30'); // end of program
-                    }
-                }
-
-                this.writeln('{"qr":""}'); // queue report
-            },
-            'sender:pause': () => {
-                this.event.trigger('sender:pause');
-
-                this.workflow.pause();
-                this.writeln('!'); // feedhold
-                this.writeln('{"qr":""}'); // queue report
-            },
-            'sender:resume': () => {
-                this.event.trigger('sender:resume');
-
-                this.writeln('~'); // cycle start
-                this.workflow.resume();
-                this.writeln('{"qr":""}'); // queue report
-            },
-            'feeder:start': () => {
-                if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
-                    return;
-                }
-                this.writeln('~'); // cycle start
-                this.writeln('{"qr":""}'); // queue report
-                this.feeder.unhold();
-                this.feeder.next();
-            },
-            'feeder:stop': () => {
-                this.feeder.reset();
-            },
-            'feedhold': () => {
-                this.event.trigger('feedhold');
-
-                this.writeln('!'); // feedhold
-                this.writeln('{"qr":""}'); // queue report
-            },
-            'cyclestart': () => {
-                this.event.trigger('cyclestart');
-
-                this.writeln('~'); // cycle start
-                this.writeln('{"qr":""}'); // queue report
-            },
-            'homing': () => {
-                this.event.trigger('homing');
-
-                this.writeln('G28.2 X0 Y0 Z0');
-            },
-            'sleep': () => {
-                this.event.trigger('sleep');
-
-                // Not supported
-            },
-            'unlock': () => {
-                this.writeln('{clear:null}'); // alarm clear
-            },
-            'reset': () => {
-                this.workflow.stop();
-                this.feeder.reset();
-                this.write('\x18'); // reset board (^x)
-            },
-            // Feed Overrides
-            // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
-            'override:feed': () => {
-                const [value] = args;
-                let mfo = this.runner.settings.mfo;
-
-                if (value === 0) {
-                    mfo = 1;
-                } else if ((mfo * 100 + value) > 200) {
-                    mfo = 2;
-                } else if ((mfo * 100 + value) < 5) {
-                    mfo = 0.05;
-                } else {
-                    mfo = (mfo * 100 + value) / 100;
-                }
-
-                this.command('gcode', `{mfo:${mfo}}`);
-            },
-            // Spindle Speed Overrides
-            // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
-            'override:spindle': () => {
-                const [value] = args;
-                let sso = this.runner.settings.sso;
-
-                if (value === 0) {
-                    sso = 1;
-                } else if ((sso * 100 + value) > 200) {
-                    sso = 2;
-                } else if ((sso * 100 + value) < 5) {
-                    sso = 0.05;
-                } else {
-                    sso = (sso * 100 + value) / 100;
-                }
-
-                this.command('gcode', `{sso:${sso}}`);
-            },
-            // Rapid Overrides
-            'override:rapid': () => {
-                const [value] = args;
-
-                if (value === 0 || value === 100) {
-                    this.command('gcode', '{mto:1}');
-                } else if (value === 50) {
-                    this.command('gcode', '{mto:0.5}');
-                } else if (value === 25) {
-                    this.command('gcode', '{mto:0.25}');
-                }
-            },
-            // Turn on any motor that is not disabled.
-            // @param {number} [value] Enable the motors with a specified timeout value in seconds. Defaults to 3600 seconds.
-            'motor:enable': () => {
-                let [mt = this.state.mt] = args;
-                mt = ensureFiniteNumber(mt);
-
-                if (mt <= 0) {
-                    this.command('motor:disable');
-                    return;
-                }
-
-                // Providing {me:0} will enable the motors for the timeout specified in the mt value.
-                this.command('gcode', `{me:${mt}}`);
-                this.command('gcode', '{pwr:n}');
-            },
-            // Disable all motors that are not permanently enabled.
-            'motor:disable': () => {
-                this.command('gcode', '{md:0}');
-                this.command('gcode', '{pwr:n}');
-            },
-            // Sets the number of seconds before a motor will shut off automatically.
-            // @param {number} value The default timeout in seconds.
-            'motor:timeout': () => {
-                let [mt] = args;
-                mt = ensureFiniteNumber(mt);
-
-                if (mt >= 0) {
-                    this.command('gcode', `{mt:${mt}}`);
-                }
-            },
-            'lasertest': () => {
-                const [power = 0, duration = 0, maxS = 1000] = args;
-
-                if (!power) {
-                    this.command('gcode', 'M5S0');
-                    return;
-                }
-
-                this.command('gcode', 'M3S' + ensurePositiveNumber(maxS * (power / 100)));
-
-                if (duration > 0) {
-                    this.command('gcode', 'G4P' + ensurePositiveNumber(duration / 1000));
-                    this.command('gcode', 'M5S0');
-                }
-            },
-            'gcode': () => {
-                const [commands, context] = args;
-                const data = ensureArray(commands)
-                    .join('\n')
-                    .split(/\r?\n/)
-                    .filter(line => {
-                        if (typeof line !== 'string') {
-                            return false;
-                        }
-
-                        return line.trim().length > 0;
-                    });
-
-                this.feeder.feed(data, context);
-
-                if (!this.feeder.isPending()) {
-                    this.feeder.next();
-                }
-            },
-            'macro:run': () => {
-                let [id, context = {}, callback = noop] = args;
-                if (typeof context === 'function') {
-                    callback = context;
-                    context = {};
-                }
-
-                const macros = userStore.get('macros');
-                const macro = _.find(macros, { id: id });
-
-                if (!macro) {
-                    log.error(`Cannot find the macro: id=${id}`);
-                    return;
-                }
-
-                this.event.trigger('macro:run');
-
-                this.command('gcode', macro.content, context);
-                callback(null);
-            },
-            'macro:load': () => {
-                let [id, context = {}, callback = noop] = args;
-                if (typeof context === 'function') {
-                    callback = context;
-                    context = {};
-                }
-
-                const macros = userStore.get('macros');
-                const macro = _.find(macros, { id: id });
-
-                if (!macro) {
-                    log.error(`Cannot find the macro: id=${id}`);
-                    return;
-                }
-
-                this.event.trigger('macro:load');
-
-                const meta = {
-                    name: macro.name,
-                    content: macro.content,
-                };
-                this.command('sender:load', meta, context, callback);
-            },
-            'watchdir:load': () => {
-                const [name, callback = noop] = args;
-                const context = {}; // empty context
-                const filepath = path.join(directoryWatcher.root, name);
-
-                fs.readFile(filepath, 'utf8', (err, content) => {
-                    if (err) {
-                        callback(err);
-                        return;
-                    }
-
-                    const meta = {
-                        name,
-                        content,
-                    };
-                    this.command('sender:load', meta, context, callback);
-                });
-            },
-        }[cmd];
-
-        if (!handler) {
-            log.error(`Unknown command: ${cmd}`);
+        const deprecatedHandler = this.deprecatedCommandHandler[cmd];
+        if (deprecatedHandler) {
+            log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
+            deprecatedHandler();
             return;
         }
 
-        handler();
+        const handler = this.commandHandler[cmd];
+        if (handler) {
+            handler();
+            return;
+        }
+
+        log.error(`Unknown command: ${cmd}`);
     }
 
     write(data, context) {
