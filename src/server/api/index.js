@@ -1,11 +1,25 @@
-export * as version from './api.version';
-export * as state from './api.state';
-export * as gcode from './api.gcode';
-export * as controllers from './api.controllers';
-export * as watch from './api.watch';
-export * as commands from './api.commands';
-export * as events from './api.events';
-export * as machines from './api.machines';
-export * as macros from './api.macros';
-export * as mdi from './api.mdi';
-export * as users from './api.users';
+import * as version from './api.version';
+import * as state from './api.state';
+import * as gcode from './api.gcode';
+import * as controllers from './api.controllers';
+import * as watch from './api.watch';
+import * as commands from './api.commands';
+import * as events from './api.events';
+import * as machines from './api.machines';
+import * as macros from './api.macros';
+import * as mdi from './api.mdi';
+import * as users from './api.users';
+
+export {
+    version,
+    state,
+    gcode,
+    controllers,
+    watch,
+    commands,
+    events,
+    machines,
+    macros,
+    mdi,
+    users,
+};
