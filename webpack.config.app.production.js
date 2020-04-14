@@ -16,7 +16,7 @@ const buildConfig = require('./build.config');
 const pkg = require('./package.json');
 
 dotenv.config({
-    path: path.resolve('webpack.config.app.production.env')
+    path: path.resolve('webpack.config.app.production.env'),
 });
 
 const USE_ESLINT_LOADER = boolean(process.env.USE_ESLINT_LOADER);
@@ -41,7 +41,7 @@ module.exports = {
     devtool: 'cheap-module-source-map',
     entry: {
         polyfill: [
-            path.resolve(__dirname, 'src/app/polyfill/index.js')
+            path.resolve(__dirname, 'src/app/polyfill/index.js'),
         ],
         vendor: findImports([
             'src/app/**/*.{js,jsx}',
@@ -49,14 +49,14 @@ module.exports = {
             '!src/app/**/*.development.js'
         ], { flatten: true }),
         app: [
-            path.resolve(__dirname, 'src/app/index.jsx')
-        ]
+            path.resolve(__dirname, 'src/app/index.jsx'),
+        ],
     },
     output: {
         path: path.resolve(__dirname, 'dist/cncjs/app'),
-        chunkFilename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
+        chunkFilename: `[name].[chunkhash].chunk.js?_=${timestamp}`,
         filename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
-        publicPath: publicPath
+        publicPath: publicPath,
     },
     module: {
         rules: [
@@ -64,13 +64,13 @@ module.exports = {
                 test: /\.jsx?$/,
                 loader: 'eslint-loader',
                 enforce: 'pre',
-                exclude: /node_modules/
+                exclude: /node_modules/,
             },
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',
                 options: babelConfig,
-                exclude: /node_modules/
+                exclude: /node_modules/,
             },
             {
                 test: /\.styl$/,
@@ -86,10 +86,10 @@ module.exports = {
                             localsConvention: 'camelCase',
                         }
                     },
-                    'stylus-loader'
+                    'stylus-loader',
                 ],
                 exclude: [
-                    path.resolve(__dirname, 'src/app/styles')
+                    path.resolve(__dirname, 'src/app/styles'),
                 ]
             },
             {
@@ -103,44 +103,44 @@ module.exports = {
                             localsConvention: 'camelCase',
                         }
                     },
-                    'stylus-loader'
+                    'stylus-loader',
                 ],
                 include: [
-                    path.resolve(__dirname, 'src/app/styles')
-                ]
+                    path.resolve(__dirname, 'src/app/styles'),
+                ],
             },
             {
                 test: /\.css$/,
                 use: [
                     'style-loader',
-                    'css-loader'
-                ]
+                    'css-loader',
+                ],
             },
             {
                 test: /\.(png|jpg|svg)$/,
                 loader: 'url-loader',
                 options: {
-                    limit: 8192
-                }
+                    limit: 8192,
+                },
             },
             {
                 test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: 'url-loader',
                 options: {
                     limit: 10000,
-                    mimetype: 'application/font-woff'
-                }
+                    mimetype: 'application/font-woff',
+                },
             },
             {
                 test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader: 'file-loader'
-            }
-        ].filter(Boolean)
+                loader: 'file-loader',
+            },
+        ].filter(Boolean),
     },
     node: {
         fs: 'empty',
         net: 'empty',
-        tls: 'empty'
+        tls: 'empty',
     },
     optimization: {
         minimizer: [
@@ -158,38 +158,38 @@ module.exports = {
                 NODE_ENV: JSON.stringify('production'),
                 BUILD_VERSION: JSON.stringify(buildVersion),
                 LANGUAGES: JSON.stringify(buildConfig.languages),
-                TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId)
+                TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId),
             }
         }),
         new webpack.ContextReplacementPlugin(
             /moment[\/\\]locale$/,
-            new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$')
+            new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$'),
         ),
         // Generates a manifest.json file in your root output directory with a mapping of all source file names to their corresponding output file.
         new ManifestPlugin({
-            fileName: 'manifest.json'
+            fileName: 'manifest.json',
         }),
         new MiniCssExtractPlugin({
             filename: `[name].css?_=${timestamp}`,
-            chunkFilename: `[id].css?_=${timestamp}`
+            chunkFilename: `[id].css?_=${timestamp}`,
         }),
         new CSSSplitWebpackPlugin({
             size: 4000,
             imports: '[name].[ext]?[hash]',
             filename: '[name]-[part].[ext]?[hash]',
-            preserve: false
+            preserve: false,
         }),
         new HtmlWebpackPlugin({
             filename: 'index.hbs',
             template: path.resolve(__dirname, 'index.hbs'),
-            chunksSortMode: 'dependency' // Sort chunks by dependency
-        })
-    ],
+            chunksSortMode: 'dependency', // Sort chunks by dependency
+        }),
+    ].filter(Boolean),
     resolve: {
         modules: [
             path.resolve(__dirname, 'src'),
-            'node_modules'
+            'node_modules',
         ],
-        extensions: ['.js', '.jsx']
-    }
+        extensions: ['.js', '.jsx'],
+    },
 };
