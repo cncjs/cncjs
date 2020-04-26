@@ -16,7 +16,7 @@ import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
-import config from 'app/store/config';
+import configStore from 'app/store/config';
 import styles from './index.styl';
 
 class Login extends Component {
@@ -58,7 +58,7 @@ class Login extends Component {
 
                 log.debug('Create and establish a WebSocket connection');
 
-                const token = config.get('session.token');
+                const token = configStore.get('session.token');
                 const host = '';
                 const options = {
                     query: 'token=' + token

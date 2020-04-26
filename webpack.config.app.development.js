@@ -31,14 +31,14 @@ module.exports = {
         app: [
             path.resolve(__dirname, 'src/app/index.jsx'),
             'webpack-hot-middleware/client?path=/__webpack_hmr&reload=true',
-        ]
+        ],
     },
     output: {
         path: path.resolve(__dirname, 'output/app'),
-        chunkFilename: `[name].[hash].bundle.js?_=${timestamp}`,
-        filename: `[name].[hash].bundle.js?_=${timestamp}`,
+        chunkFilename: `[name].[chunkhash].chunk.js?_=${timestamp}`,
+        filename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
         pathinfo: true,
-        publicPath: publicPath
+        publicPath: publicPath,
     },
     module: {
         rules: [
@@ -92,44 +92,44 @@ module.exports = {
                             localsConvention: 'camelCase',
                         }
                     },
-                    'stylus-loader'
+                    'stylus-loader',
                 ],
                 include: [
-                    path.resolve(__dirname, 'src/app/styles')
-                ]
+                    path.resolve(__dirname, 'src/app/styles'),
+                ],
             },
             {
                 test: /\.css$/,
                 use: [
                     'style-loader',
-                    'css-loader'
-                ]
+                    'css-loader',
+                ],
             },
             {
                 test: /\.(png|jpg|svg)$/,
                 loader: 'url-loader',
                 options: {
-                    limit: 8192
-                }
+                    limit: 8192,
+                },
             },
             {
                 test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: 'url-loader',
                 options: {
                     limit: 10000,
-                    mimetype: 'application/font-woff'
-                }
+                    mimetype: 'application/font-woff',
+                },
             },
             {
                 test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader: 'file-loader'
-            }
-        ]
+                loader: 'file-loader',
+            },
+        ].filter(Boolean),
     },
     node: {
         fs: 'empty',
         net: 'empty',
-        tls: 'empty'
+        tls: 'empty',
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
@@ -138,44 +138,44 @@ module.exports = {
                 NODE_ENV: JSON.stringify('development'),
                 BUILD_VERSION: JSON.stringify(buildVersion),
                 LANGUAGES: JSON.stringify(buildConfig.languages),
-                TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId)
+                TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId),
             }
         }),
         new webpack.LoaderOptionsPlugin({
-            debug: true
+            debug: true,
         }),
         // https://github.com/gajus/write-file-webpack-plugin
         // Forces webpack-dev-server to write bundle files to the file system.
         new WriteFileWebpackPlugin(),
         new webpack.ContextReplacementPlugin(
             /moment[\/\\]locale$/,
-            new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$')
+            new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$'),
         ),
         // Generates a manifest.json file in your root output directory with a mapping of all source file names to their corresponding output file.
         new ManifestPlugin({
-            fileName: 'manifest.json'
+            fileName: 'manifest.json',
         }),
         new MiniCssExtractPlugin({
             filename: `[name].css?_=${timestamp}`,
-            chunkFilename: `[id].css?_=${timestamp}`
+            chunkFilename: `[id].css?_=${timestamp}`,
         }),
         new CSSSplitWebpackPlugin({
             size: 4000,
             imports: '[name].[ext]?[hash]',
             filename: '[name]-[part].[ext]?[hash]',
-            preserve: false
+            preserve: false,
         }),
         new HtmlWebpackPlugin({
             filename: 'index.hbs',
             template: path.resolve(__dirname, 'index.hbs'),
-            chunksSortMode: 'dependency' // Sort chunks by dependency
-        })
-    ],
+            chunksSortMode: 'dependency', // Sort chunks by dependency
+        }),
+    ].filter(Boolean),
     resolve: {
         modules: [
             path.resolve(__dirname, 'src'),
-            'node_modules'
+            'node_modules',
         ],
-        extensions: ['.js', '.jsx']
-    }
+        extensions: ['.js', '.jsx'],
+    },
 };
