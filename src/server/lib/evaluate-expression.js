@@ -200,7 +200,7 @@ const evaluateExpression = (src, vars) => {
             return walk(node.argument);
         }
 
-        if (node.type === 'FunctionExpression') {
+        if (node.type === 'FunctionExpression' || node.type === 'ArrowFunctionExpression') {
             const bodies = node.body.body;
 
             // Create a "scope" for our arguments
