@@ -22,8 +22,14 @@ class Macro extends PureComponent {
     };
 
     handleRunMacro = (macro) => (event) => {
-        const { actions } = this.props;
-        actions.openRunMacroModal(macro.id);
+        global.runMacroNow = true; //FIX with global setting in Macro or other
+        if (typeof global.runMacroNow !== 'undefined' && global.runMacroNow === true) {
+            const { actions } = this.props;
+            actions.openRunMacroNow(macro.id, macro.name);
+        } else {
+            const { actions } = this.props;
+            actions.openRunMacroModal(macro.id);
+        }
     };
 
     handleLoadMacro = (macro) => (event) => {
