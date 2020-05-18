@@ -170,6 +170,9 @@ class MacroWidget extends PureComponent {
                     this.actions.openModal(MODAL_RUN_MACRO, { id, name, content });
                 });
         },
+        openRunMacroNow: (id, name) => {
+            this.actions.runMacro(id, { name });
+        },        
         openEditMacroModal: (id) => {
             api.macros.read(id)
                 .then((res) => {
