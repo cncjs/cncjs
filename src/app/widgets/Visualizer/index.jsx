@@ -153,7 +153,7 @@ const GCodeMessage = ({ message, style, ...props }) => {
             }}
             {...props}
         >
-            Program Message: {message}
+            {i18n._('Program Message')}: {message}
         </div>
     );
 };
