@@ -136,7 +136,8 @@ class Sender extends events.EventEmitter {
         startTime: 0,
         finishTime: 0,
         elapsedTime: 0,
-        remainingTime: 0
+        remainingTime: 0,
+        message: ''
     };
 
     stateChanged = false;
@@ -168,6 +169,11 @@ class Sender extends events.EventEmitter {
 
                     if (this.dataFilter) {
                         sp.line = this.dataFilter(sp.line, this.state.context) || '';
+                    }
+
+                    if (sp.line.toUpperCase().startsWith('(MSG,')) {
+                        const msg = sp.line.substring(5, sp.line.length - 1).trim();
+                        this.state.message = msg;
                     }
 
                     // The newline character (\n) consumed the RX buffer space
@@ -203,6 +209,11 @@ class Sender extends events.EventEmitter {
                         line = this.dataFilter(line, this.state.context) || '';
                     }
 
+                    if (line.toUpper().startsWith('(MSG,')) {
+                        const msg = line.substring(5, line.length - 1).trim();
+                        this.state.message = msg;
+                    }
+
                     this.state.sent++;
                     this.emit('change');
 
@@ -236,7 +247,8 @@ class Sender extends events.EventEmitter {
             startTime: this.state.startTime,
             finishTime: this.state.finishTime,
             elapsedTime: this.state.elapsedTime,
-            remainingTime: this.state.remainingTime
+            remainingTime: this.state.remainingTime,
+            message: this.state.message
         };
     }
 
@@ -285,6 +297,7 @@ class Sender extends events.EventEmitter {
         this.state.finishTime = 0;
         this.state.elapsedTime = 0;
         this.state.remainingTime = 0;
+        this.state.message = '';
 
         this.emit('load', name, gcode, context);
         this.emit('change');
@@ -309,6 +322,7 @@ class Sender extends events.EventEmitter {
         this.state.finishTime = 0;
         this.state.elapsedTime = 0;
         this.state.remainingTime = 0;
+        this.state.message = '';
 
         this.emit('unload');
         this.emit('change');
