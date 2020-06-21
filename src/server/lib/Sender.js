@@ -171,8 +171,9 @@ class Sender extends events.EventEmitter {
                         sp.line = this.dataFilter(sp.line, this.state.context) || '';
                     }
 
-                    if (sp.line.toUpperCase().startsWith('(MSG,')) {
-                        const msg = sp.line.substring(5, sp.line.length - 1).trim();
+                    if (sp.line.toUpperCase().startsWith('(MSG')) {
+                        let startChar = (sp.line[4] === ',' ? 5 : 4);
+                        const msg = sp.line.substring(startChar, sp.line.length - 1).trim();
                         this.state.message = msg;
                     }
 
@@ -210,7 +211,8 @@ class Sender extends events.EventEmitter {
                     }
 
                     if (line.toUpper().startsWith('(MSG,')) {
-                        const msg = line.substring(5, line.length - 1).trim();
+                        let startChar = (line[4] === ',' ? 5 : 4);
+                        const msg = line.substring(startChar, line.length - 1).trim();
                         this.state.message = msg;
                     }
 
