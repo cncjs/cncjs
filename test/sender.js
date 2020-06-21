@@ -43,7 +43,8 @@ test('send-response streaming protocol', (t) => {
         startTime: sender.state.startTime,
         finishTime: sender.state.finishTime,
         elapsedTime: sender.state.elapsedTime,
-        remainingTime: sender.state.remainingTime
+        remainingTime: sender.state.remainingTime,
+        message: ''
     });
 
     sender.on('data', () => {
@@ -65,7 +66,8 @@ test('send-response streaming protocol', (t) => {
             startTime: sender.state.startTime,
             finishTime: sender.state.finishTime,
             elapsedTime: sender.state.elapsedTime,
-            remainingTime: sender.state.remainingTime
+            remainingTime: sender.state.remainingTime,
+            message: 'jsdc.gcode Program Start'
         });
 
         sender.unload();
@@ -84,7 +86,8 @@ test('send-response streaming protocol', (t) => {
             startTime: 0,
             finishTime: 0,
             elapsedTime: 0,
-            remainingTime: 0
+            remainingTime: 0,
+            message: ''
         });
         t.same(sender.toJSON(), {
             sp: SP_TYPE_SEND_RESPONSE,
@@ -99,7 +102,8 @@ test('send-response streaming protocol', (t) => {
             startTime: 0,
             finishTime: 0,
             elapsedTime: 0,
-            remainingTime: 0
+            remainingTime: 0,
+            message: ''
         });
 
         t.end();
@@ -171,7 +175,8 @@ test('character-counting streaming protocol', (t) => {
         startTime: sender.state.startTime,
         finishTime: sender.state.finishTime,
         elapsedTime: sender.state.elapsedTime,
-        remainingTime: sender.state.remainingTime
+        remainingTime: sender.state.remainingTime,
+        message: ''
     });
 
     sender.on('data', () => {
@@ -193,7 +198,8 @@ test('character-counting streaming protocol', (t) => {
             startTime: sender.state.startTime,
             finishTime: sender.state.finishTime,
             elapsedTime: sender.state.elapsedTime,
-            remainingTime: sender.state.remainingTime
+            remainingTime: sender.state.remainingTime,
+            message: 'jsdc.gcode Program Start'
         });
 
         sender.unload();
@@ -212,7 +218,8 @@ test('character-counting streaming protocol', (t) => {
             startTime: 0,
             finishTime: 0,
             elapsedTime: 0,
-            remainingTime: 0
+            remainingTime: 0,
+            message: ''
         });
         t.same(sender.toJSON(), {
             sp: SP_TYPE_CHAR_COUNTING,
@@ -227,7 +234,8 @@ test('character-counting streaming protocol', (t) => {
             startTime: 0,
             finishTime: 0,
             elapsedTime: 0,
-            remainingTime: 0
+            remainingTime: 0,
+            message: ''
         });
 
         t.end();
