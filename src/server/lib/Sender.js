@@ -359,6 +359,7 @@ class Sender extends events.EventEmitter {
             this.state.finishTime = 0;
             this.state.elapsedTime = 0;
             this.state.remainingTime = 0;
+            this.state.message = '';
             this.emit('start', this.state.startTime);
             this.emit('change');
         }
