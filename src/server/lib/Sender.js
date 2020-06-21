@@ -210,7 +210,7 @@ class Sender extends events.EventEmitter {
                         line = this.dataFilter(line, this.state.context) || '';
                     }
 
-                    if (line.toUpper().startsWith('(MSG,')) {
+                    if (line.toUpperCase().startsWith('(MSG')) {
                         let startChar = (line[4] === ',' ? 5 : 4);
                         const msg = line.substring(startChar, line.length - 1).trim();
                         this.state.message = msg;
