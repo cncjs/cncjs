@@ -124,6 +124,11 @@ class Dashboard extends PureComponent {
                         </div>
                     </div>
                     <div style={{ marginBottom: 10 }}>
+                        <div className="text-nowrap">
+                            {i18n._('Program Message')}: {state.gcode.message || (<i>({i18n._('none')})</i>)}
+                        </div>
+                    </div>
+                    <div style={{ marginBottom: 10 }}>
                         <ProgressBar
                             style={{ marginBottom: 0 }}
                             bsStyle="info"
