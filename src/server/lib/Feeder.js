@@ -6,7 +6,8 @@ class Feeder extends events.EventEmitter {
         holdReason: null,
         queue: [],
         pending: false,
-        changed: false
+        changed: false,
+        message: ''
     };
 
     dataFilter = null;
@@ -31,7 +32,8 @@ class Feeder extends events.EventEmitter {
             holdReason: this.state.holdReason,
             queue: this.state.queue.length,
             pending: this.state.pending,
-            changed: this.state.changed
+            changed: this.state.changed,
+            message: this.state.message
         };
     }
 
@@ -73,6 +75,7 @@ class Feeder extends events.EventEmitter {
     clear() {
         this.state.queue = [];
         this.state.pending = false;
+        this.state.message = '';
         this.emit('change');
     }
 
@@ -81,6 +84,7 @@ class Feeder extends events.EventEmitter {
         this.state.holdReason = null;
         this.state.queue = [];
         this.state.pending = false;
+        this.state.message = '';
         this.emit('change');
     }
 
@@ -97,6 +101,12 @@ class Feeder extends events.EventEmitter {
                 if (!command) { // Ignore blank lines
                     continue;
                 }
+            }
+
+            if (command.toUpperCase().startsWith('(MSG')) {
+                let startChar = (command[4] === ',' ? 5 : 4);
+                const msg = command.substring(startChar, command.length - 1).trim();
+                this.state.message = msg;
             }
 
             this.state.pending = true;

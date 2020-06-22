@@ -696,6 +696,17 @@ class VisualizerWidget extends PureComponent {
                 }
             }));
         },
+        'feeder:status': (data) => {
+            const { message } = data;
+            if (message) {
+                this.setState(state => ({
+                    gcode: {
+                        ...state.gcode,
+                        message
+                    }
+                }));
+            }
+        },
         'workflow:state': (workflowState) => {
             this.setState(state => ({
                 workflow: {
