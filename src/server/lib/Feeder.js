@@ -7,7 +7,7 @@ class Feeder extends events.EventEmitter {
         queue: [],
         pending: false,
         changed: false,
-        message: ''
+        message: null
     };
 
     dataFilter = null;
@@ -27,13 +27,16 @@ class Feeder extends events.EventEmitter {
     }
 
     toJSON() {
+        const sendMessage = this.state.message;
+        this.state.message = null;
+
         return {
             hold: this.state.hold,
             holdReason: this.state.holdReason,
             queue: this.state.queue.length,
             pending: this.state.pending,
             changed: this.state.changed,
-            message: this.state.message
+            message: sendMessage
         };
     }
 
@@ -75,7 +78,7 @@ class Feeder extends events.EventEmitter {
     clear() {
         this.state.queue = [];
         this.state.pending = false;
-        this.state.message = '';
+        this.state.message = null;
         this.emit('change');
     }
 
@@ -84,7 +87,7 @@ class Feeder extends events.EventEmitter {
         this.state.holdReason = null;
         this.state.queue = [];
         this.state.pending = false;
-        this.state.message = '';
+        this.state.message = null;
         this.emit('change');
     }
 

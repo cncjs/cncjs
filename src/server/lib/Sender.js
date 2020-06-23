@@ -137,7 +137,7 @@ class Sender extends events.EventEmitter {
         finishTime: 0,
         elapsedTime: 0,
         remainingTime: 0,
-        message: ''
+        message: null
     };
 
     stateChanged = false;
@@ -236,6 +236,9 @@ class Sender extends events.EventEmitter {
     }
 
     toJSON() {
+        const sendMessage = this.state.message;
+        this.state.message = null;
+
         return {
             sp: this.sp.type,
             hold: this.state.hold,
@@ -250,7 +253,7 @@ class Sender extends events.EventEmitter {
             finishTime: this.state.finishTime,
             elapsedTime: this.state.elapsedTime,
             remainingTime: this.state.remainingTime,
-            message: this.state.message
+            message: sendMessage
         };
     }
 

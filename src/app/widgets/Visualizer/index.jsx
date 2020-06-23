@@ -680,25 +680,32 @@ class VisualizerWidget extends PureComponent {
                 }
             }
 
-            this.setState(state => ({
-                gcode: {
-                    ...state.gcode,
-                    name,
-                    size,
-                    total,
-                    sent,
-                    received,
-                    message
-                },
-                notification: {
-                    ...state.notification,
-                    ...notification
+            this.setState((state) => {
+                let newState = {
+                    gcode: {
+                        ...state.gcode,
+                        name,
+                        size,
+                        total,
+                        sent,
+                        received
+                    },
+                    notification: {
+                        ...state.notification,
+                        ...notification
+                    }
+                };
+
+                if (message !== null) {
+                    newState.gcode.message = message;
                 }
-            }));
+
+                return newState;
+            });
         },
         'feeder:status': (data) => {
             const { message } = data;
-            if (message) {
+            if (message !== null) {
                 this.setState(state => ({
                     gcode: {
                         ...state.gcode,
