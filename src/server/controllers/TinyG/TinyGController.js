@@ -1100,13 +1100,14 @@ class TinyGController {
                 // be no queued motions, as long as no more commands were sent after the G4.
                 // This is the fastest way to do it without having to check the status reports.
                 const dwell = '%wait ; Wait for the planner to empty';
-                const ok = this.sender.load(name, gcode + '\n' + dwell, context);
+                const gcodeWithDwell = gcode + '\n' + dwell;
+                const ok = this.sender.load(name, gcodeWithDwell, context);
                 if (!ok) {
                     callback(new Error(`Invalid G-code: name=${name}`));
                     return;
                 }
 
-                this.emit('gcode:load', name, gcode, context);
+                this.emit('gcode:load', name, gcodeWithDwell, context);
                 this.event.trigger('gcode:load');
 
                 log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
