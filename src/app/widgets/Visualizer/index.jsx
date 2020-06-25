@@ -1017,7 +1017,7 @@ class VisualizerWidget extends PureComponent {
         };
         const showDashboard = !capable.view3D && !showLoader;
         const showVisualizer = capable.view3D && !showLoader;
-        const showNotifications = showVisualizer && !!state.notification.type;
+        const showNotifications = !!state.notification.type;
 
         return (
             <Widget borderless>
