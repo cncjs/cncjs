@@ -7,3 +7,7 @@ package-lock.json
 /dist
 /output
 /releases
+
+# Ignore Apple hidden files
+.DS_Store
+._*
