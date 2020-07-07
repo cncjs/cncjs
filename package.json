@@ -300,7 +300,7 @@
     "css-loader": "~2.1.1",
     "css-split-webpack-plugin": "~0.2.6",
     "dotenv": "~7.0.0",
-    "electron": "~4.2.12",
+    "electron": "~9.1.0",
     "electron-builder": "~22.4.0",
     "electron-rebuild": "~1.10.0",
     "eslint": "~5.16.0",
