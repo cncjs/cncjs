@@ -1,4 +1,4 @@
-import events from 'events';
+import { EventEmitter } from 'events';
 import fs from 'fs';
 import chalk from 'chalk';
 import _get from 'lodash/get';
@@ -19,19 +19,29 @@ const defaultState = { // default state
     }
 };
 
-class UserStoreService extends events.EventEmitter {
+class UserStoreService {
     file = '';
 
     config = {};
 
     watcher = null;
 
+    emitter = new EventEmitter({ captureRejections: true });
+
+    on(eventName, listener) {
+        this.emitter.on(eventName, listener);
+    }
+
+    off(eventName, listener) {
+        this.emitter.off(eventName, listener);
+    }
+
     // @param {string} file The path to a filename.
     // @return {object} The config object.
     load(file) {
         this.file = file;
         this.reload();
-        this.emit('load', this.config); // emit load event
+        this.emitter.emit('load', this.config); // emit load event
 
         if (this.watcher) {
             // Stop watching for changes
@@ -51,12 +61,12 @@ class UserStoreService extends events.EventEmitter {
                 if (eventType === 'change') {
                     log.debug(`"${filename}" has been changed`);
                     const ok = this.reload();
-                    ok && this.emit('change', this.config); // it is ok to emit change event
+                    ok && this.emitter.emit('change', this.config); // it is ok to emit change event
                 }
             });
         } catch (err) {
             log.error(err);
-            this.emit('error', err); // emit error event
+            this.emitter.emit('error', err); // emit error event
         }
 
         return this.config;
@@ -70,7 +80,7 @@ class UserStoreService extends events.EventEmitter {
         } catch (err) {
             err.fileName = this.file;
             log.error(`Unable to load data from ${chalk.yellow(JSON.stringify(this.file))}: err=${err}`);
-            this.emit('error', err); // emit error event
+            this.emitter.emit('error', err); // emit error event
             return false;
         }
 
@@ -93,7 +103,7 @@ class UserStoreService extends events.EventEmitter {
             fs.writeFileSync(this.file, content, 'utf8');
         } catch (err) {
             log.error(`Unable to write data to "${this.file}"`);
-            this.emit('error', err); // emit error event
+            this.emitter.emit('error', err); // emit error event
             return false;
         }
 

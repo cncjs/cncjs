@@ -1,7 +1,7 @@
 /* eslint max-classes-per-file: 0 */
 import _get from 'lodash/get';
 import _size from 'lodash/size';
-import events from 'events';
+import { EventEmitter } from 'events';
 
 export const SP_TYPE_SEND_RESPONSE = 0;
 export const SP_TYPE_CHAR_COUNTING = 1;
@@ -121,7 +121,7 @@ class SPCharCounting {
     }
 }
 
-class Sender extends events.EventEmitter {
+class Sender extends EventEmitter {
     // streaming protocol
     sp = null;
 

@@ -1,11 +1,11 @@
-import events from 'events';
+import { EventEmitter } from 'events';
 
 // Workflow State
 export const WORKFLOW_STATE_RUNNING = 'running';
 export const WORKFLOW_STATE_PAUSED = 'paused';
 export const WORKFLOW_STATE_IDLE = 'idle';
 
-class Workflow extends events.EventEmitter {
+class Workflow extends EventEmitter {
     state = WORKFLOW_STATE_IDLE;
 
     isRunning() {
