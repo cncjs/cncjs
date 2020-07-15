@@ -442,11 +442,11 @@ class ServiceEngine {
         this.sockets = [];
         this.server = null;
 
-        userStore.removeListener('change', this.listener.configChange);
+        userStore.off('change', this.listener.configChange);
 
-        shellCommand.removeListener('start', this.listener.taskStart);
-        shellCommand.removeListener('finish', this.listener.taskFinish);
-        shellCommand.removeListener('error', this.listener.taskError);
+        shellCommand.off('start', this.listener.taskStart);
+        shellCommand.off('finish', this.listener.taskFinish);
+        shellCommand.off('error', this.listener.taskError);
     }
 }
 

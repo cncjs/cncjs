@@ -1,6 +1,6 @@
-import events from 'events';
+import { EventEmitter } from 'events';
 
-class Feeder extends events.EventEmitter {
+class Feeder extends EventEmitter {
     state = {
         hold: false,
         holdReason: null,

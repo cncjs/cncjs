@@ -1,4 +1,4 @@
-import events from 'events';
+import { EventEmitter } from 'events';
 import _without from 'lodash/without';
 import defaultShell from 'spawn-default-shell';
 import shortid from 'shortid';
@@ -6,8 +6,18 @@ import logger from '../lib/logger';
 
 const log = logger('shell-command-service');
 
-class ShellCommandService extends events.EventEmitter {
+class ShellCommandService {
     tasks = [];
+
+    emitter = new EventEmitter({ captureRejections: true });
+
+    on(eventName, listener) {
+        this.emitter.on(eventName, listener);
+    }
+
+    off(eventName, listener) {
+        this.emitter.off(eventName, listener);
+    }
 
     spawn(command, options) {
         const taskId = shortid.generate(); // task id
@@ -18,7 +28,7 @@ class ShellCommandService extends events.EventEmitter {
         child.unref();
 
         this.tasks.push(taskId);
-        this.emit('start', taskId);
+        this.emitter.emit('start', taskId);
 
         child.stdout.on('data', (data) => {
             process.stdout.write(`PID:${child.pid}> ${data}`);
@@ -31,7 +41,7 @@ class ShellCommandService extends events.EventEmitter {
             log.error(`Failed to start a child process: err=${JSON.stringify(err)}`);
 
             this.tasks = _without(this.tasks, taskId);
-            this.emit('error', taskId, err);
+            this.emitter.emit('error', taskId, err);
         });
         // The 'exit' event is emitted after the child process ends.
         // Note that the 'exit' event may or may not fire after an error has occurred.
@@ -39,7 +49,7 @@ class ShellCommandService extends events.EventEmitter {
         child.on('exit', (code) => {
             if (this.tasks.indexOf(taskId) >= 0) {
                 this.tasks = _without(this.tasks, taskId);
-                this.emit('finish', taskId, code);
+                this.emitter.emit('finish', taskId, code);
             }
         });
 

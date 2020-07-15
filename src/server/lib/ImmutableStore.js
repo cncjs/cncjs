@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import events from 'events';
+import { EventEmitter } from 'events';
 
-class ImmutableStore extends events.EventEmitter {
+class ImmutableStore extends EventEmitter {
     state = {};
 
     constructor(state = {}) {
