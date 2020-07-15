@@ -7,12 +7,29 @@ const log = logger('evaluate-expression');
 
 const UNRESOLVED = Symbol('unresolved');
 
-const evaluateExpression = (src, vars) => {
+const evaluateExpression = (ast, vars) => {
     if (!vars || typeof vars !== 'object') {
         vars = { ...vars };
     }
 
     const walk = (node) => {
+        if (node.type === 'VariableDeclaration') {
+            node.declarations.forEach(declaration => {
+                if (declaration.type !== 'VariableDeclarator') {
+                    return;
+                }
+
+                const { id, init } = declaration;
+                if (id.type !== 'Identifier') {
+                    return;
+                }
+
+                vars[id.name] = walk(init);
+            });
+
+            return undefined;
+        }
+
         if (node.type === 'Literal') {
             return node.value;
         }
@@ -264,17 +281,16 @@ const evaluateExpression = (src, vars) => {
     let result = UNRESOLVED;
 
     try {
-        let ast;
+        if (typeof ast === 'string') {
+            ast = parse(ast)?.body[0]?.expression;
+        }
 
-        if (typeof src === 'string') {
-            ast = parse(src).body[0].expression;
-        } else {
-            ast = src;
+        if (!ast) {
+            throw new Error(`Unable to parse expression: ast=${ast}, vars=${JSON.stringify(vars)}`);
         }
 
         result = walk(ast);
     } catch (e) {
-        log.error(`src="${src}", vars=${JSON.stringify(vars)}`);
         log.error(e);
     }
 
