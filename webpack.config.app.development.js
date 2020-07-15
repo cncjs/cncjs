@@ -36,7 +36,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'output/app'),
         chunkFilename: `[name].[chunkhash].chunk.js?_=${timestamp}`,
-        filename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
+        filename: `[name].[hash].bundle.js?_=${timestamp}`,
         pathinfo: true,
         publicPath: publicPath,
     },
