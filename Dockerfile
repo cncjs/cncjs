@@ -23,5 +23,10 @@ RUN [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
 
 ADD bin/docker-entrypoint /bin/docker-entrypoint
 
+RUN groupadd --gid 1000 cncjs \
+    && useradd --uid 1000 --gid cncjs --shell /bin/bash --create-home cncjs
+USER cncjs
+WORKDIR /home/cncjs
+
 EXPOSE 8000
 CMD ["/bin/docker-entrypoint"]
