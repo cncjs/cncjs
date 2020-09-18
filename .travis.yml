@@ -41,7 +41,8 @@ before_install:
   - npm --version
   - npm install -g yarn
 
-install: travis_wait 40 yarn install
+install:
+  - yarn install
 
 before_script:
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
