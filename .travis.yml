@@ -1,5 +1,3 @@
-sudo: required
-
 language: node_js
 
 os:
@@ -194,7 +192,7 @@ deploy:
   file:
     - "releases/*.*"
   overwrite: true
-  skip_cleanup: true
+  cleanup: false
   on:
     # https://docs.travis-ci.com/user/deployment#Conditional-Releases-with-on
     tags: true  # Deploy app only when a tag is applied to the commit
