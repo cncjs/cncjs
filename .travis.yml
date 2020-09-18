@@ -55,9 +55,9 @@ before_install:
   # To build app in distributable format for Linux on OS X:
   # $ brew install ruby gnu-tar libicns graphicsmagick
   #
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      brew update;
-    fi
+  #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+  #    brew update;
+  #  fi
   - npm install -g npm
   - npm --version
 
