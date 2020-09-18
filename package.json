@@ -67,6 +67,7 @@
     "eslint:debug": "echo \"Checking code style...\"; DEBUG=eslint:cli-engine eslint --ext .js --ext .jsx *.js src scripts test",
     "stylint": "stylint src/app",
     "test": "tap test/*.js --no-timeout --node-arg=--require --node-arg=@babel/register",
+    "test:jest": "jest",
     "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=@babel/register | coveralls",
     "postinstall": "opencollective postinstall"
   },
@@ -217,7 +218,7 @@
     "normalize.css": "~8.0.1",
     "opencollective": "~1.0.3",
     "perfect-scrollbar": "~1.5.0",
-    "prismjs": "~1.19.0",
+    "prismjs": "~1.20.0",
     "prop-types": "~15.7.2",
     "pubsub-js": "~1.8.0",
     "push.js": "~1.0.12",
@@ -288,18 +289,22 @@
     "xterm-addon-fit": "~0.3.0"
   },
   "devDependencies": {
-    "@babel/cli": "~7.8.4",
-    "@babel/core": "~7.8.6",
-    "@babel/node": "~7.8.4",
-    "@babel/preset-env": "~7.8.6",
-    "@babel/preset-react": "~7.8.3",
-    "@babel/register": "~7.8.6",
+    "@babel/cli": "~7.10.1",
+    "@babel/core": "~7.10.2",
+    "@babel/node": "~7.10.1",
+    "@babel/plugin-transform-runtime": "~7.10.1",
+    "@babel/preset-env": "~7.10.2",
+    "@babel/preset-react": "~7.10.1",
+    "@babel/register": "~7.10.1",
+    "@commitlint/cli": "~8.3.5",
+    "@commitlint/config-conventional": "~8.3.4",
     "@emotion/babel-preset-css-prop": "~10.0.27",
     "@trendmicro/babel-config": "~1.0.0-alpha",
     "babel-core": "~7.0.0-bridge.0",
     "babel-eslint": "~10.1.0",
     "babel-loader": "~8.0.6",
     "babel-plugin-lodash": "~3.3.4",
+    "babel-plugin-module-resolver": "~4.0.0",
     "babel-plugin-prismjs": "~2.0.1",
     "boolean": "~3.0.1",
     "bundle-loader": "~0.5.6",
@@ -316,9 +321,11 @@
     "enzyme-adapter-react-16": "~1.15.2",
     "eslint": "~5.16.0",
     "eslint-config-trendmicro": "~1.4.1",
+    "eslint-import-resolver-node": "~0.3.4",
     "eslint-import-resolver-webpack": "~0.12.1",
     "eslint-loader": "~3.0.3",
     "eslint-plugin-import": "~2.20.1",
+    "eslint-plugin-jest": "~23.13.2",
     "eslint-plugin-jsx-a11y": "~6.2.3",
     "eslint-plugin-react": "~7.18.3",
     "eslint-plugin-react-hooks": "~2.4.0",
@@ -327,10 +334,11 @@
     "find-imports": "~1.1.0",
     "github-release-cli": "~1.3.1",
     "glob": "~7.1.6",
-    "html-webpack-plugin": "~3.2.0",
-    "i18next-scanner": "~2.10.3",
+    "html-webpack-plugin": "~4.3.0",
+    "husky": "~4.2.5",
+    "i18next-scanner": "~2.11.0",
     "imports-loader": "~0.8.0",
-    "jest": "~25.1.0",
+    "jest": "~26.0.1",
     "json-loader": "~0.5.7",
     "mini-css-extract-plugin": "~0.9.0",
     "optimize-css-assets-webpack-plugin": "~5.0.3",
@@ -357,6 +365,25 @@
     "webpack-manifest-plugin": "~2.2.0",
     "webpack-node-externals": "~1.7.2",
     "write-file-webpack-plugin": "~4.5.1"
+  },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/jest.env-setup.js"
+    ],
+    "testMatch": [
+      "<rootDir>/test/**/*.js"
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "<rootDir>/src/**/*.js"
+    ],
+    "coverageReporters": [
+      "lcov",
+      "text",
+      "html"
+    ],
+    "testTimeout": 10000,
+    "testEnvironment": "node"
   },
   "pre-push": [
     "eslint:debug"

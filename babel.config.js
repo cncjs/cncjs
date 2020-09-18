@@ -1,24 +1,38 @@
-module.exports = {
+module.exports = (api) => {
+  const { env } = { ...api };
+  const plugins = [
+    'lodash',
+    ['prismjs', {
+      'languages': ['javascript', 'css', 'markup', 'gcode'],
+      'plugins': [],
+      'theme': 'twilight',
+      'css': true
+    }],
+    [require.resolve('babel-plugin-module-resolver'), {
+      alias: {
+        'server': './src/server',
+      },
+    }],
+  ];
+
+  if (typeof env === 'function' && env('test')) {
+    // Enable async/await for jest
+    plugins.push('@babel/plugin-transform-runtime');
+  }
+
+  return {
     extends: '@trendmicro/babel-config',
     presets: [
-        // https://github.com/zloirock/core-js/blob/master/docs/2019-03-19-core-js-3-babel-and-a-look-into-the-future.md#usebuiltins-entry-with-corejs-3
-        [
-            '@babel/preset-env',
-            {
-                useBuiltIns: 'entry',
-                corejs: 3,
-            }
-        ],
-        '@babel/preset-react',
-        '@emotion/babel-preset-css-prop',
+      [
+        '@babel/preset-env',
+        {
+          useBuiltIns: 'entry',
+          corejs: 3,
+        }
+      ],
+      '@babel/preset-react',
+      '@emotion/babel-preset-css-prop',
     ],
-    plugins: [
-        'lodash',
-        ['prismjs', {
-            'languages': ['javascript', 'css', 'markup', 'gcode'],
-            'plugins': [],
-            'theme': 'twilight',
-            'css': true
-        }],
-    ]
+    plugins,
+  };
 };
