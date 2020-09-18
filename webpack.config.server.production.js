@@ -65,7 +65,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        options: babelConfig,
+        options: babelConfig(),
         exclude: /node_modules/
       }
     ].filter(Boolean)

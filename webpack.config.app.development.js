@@ -52,7 +52,7 @@ module.exports = {
         test: /\.jsx?$/,
         loader: 'babel-loader',
         options: {
-          ...babelConfig,
+          ...babelConfig(),
           env: {
             development: {
               plugins: ['react-hot-loader/babel']
