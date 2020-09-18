@@ -10,20 +10,20 @@ const PARITY = Object.freeze(['none', 'even', 'mark', 'odd', 'space']);
 const FLOWCONTROLS = Object.freeze(['rtscts', 'xon', 'xoff', 'xany']);
 
 const defaultOptions = Object.freeze({
-    baudRate: 115200,
-    dataBits: 8,
-    stopBits: 1,
-    parity: 'none',
-    rtscts: false,
-    xon: false,
-    xoff: false,
-    xany: false
+  baudRate: 115200,
+  dataBits: 8,
+  stopBits: 1,
+  parity: 'none',
+  rtscts: false,
+  xon: false,
+  xoff: false,
+  xany: false
 });
 
 const toIdent = (options) => {
-    const { path, baudRate } = { ...options };
-    const str = `serial|${path}|${baudRate}`;
-    return Buffer.from(str).toString('hex');
+  const { path, baudRate } = { ...options };
+  const str = `serial|${path}|${baudRate}`;
+  return Buffer.from(str).toString('hex');
 };
 
 class SerialConnection extends EventEmitter {
@@ -36,141 +36,141 @@ class SerialConnection extends EventEmitter {
     writeFilter = (data) => data;
 
     eventListener = {
-        data: (data) => {
-            this.emit('data', data);
-        },
-        open: () => {
-            this.emit('open');
-        },
-        close: (err) => {
-            this.emit('close', err);
-        },
-        error: (err) => {
-            this.emit('error', err);
-        }
+      data: (data) => {
+        this.emit('data', data);
+      },
+      open: () => {
+        this.emit('open');
+      },
+      close: (err) => {
+        this.emit('close', err);
+      },
+      error: (err) => {
+        this.emit('error', err);
+      }
     };
 
     constructor(props) {
-        super();
+      super();
 
-        const { writeFilter, ...rest } = { ...props };
+      const { writeFilter, ...rest } = { ...props };
 
-        if (writeFilter) {
-            if (typeof writeFilter !== 'function') {
-                throw new TypeError(`"writeFilter" must be a function: ${writeFilter}`);
-            }
-
-            this.writeFilter = writeFilter;
+      if (writeFilter) {
+        if (typeof writeFilter !== 'function') {
+          throw new TypeError(`"writeFilter" must be a function: ${writeFilter}`);
         }
 
-        const options = Object.assign({}, defaultOptions, rest);
+        this.writeFilter = writeFilter;
+      }
 
-        if (options.port) {
-            throw new TypeError('"port" is an unknown option, did you mean "path"?');
+      const options = Object.assign({}, defaultOptions, rest);
+
+      if (options.port) {
+        throw new TypeError('"port" is an unknown option, did you mean "path"?');
+      }
+
+      if (!options.path) {
+        throw new TypeError(`"path" is not defined: ${options.path}`);
+      }
+
+      if (options.baudrate) {
+        throw new TypeError('"baudrate" is an unknown option, did you mean "baudRate"?');
+      }
+
+      if (typeof options.baudRate !== 'number') {
+        throw new TypeError(`"baudRate" must be a number: ${options.baudRate}`);
+      }
+
+      if (DATABITS.indexOf(options.dataBits) < 0) {
+        throw new TypeError(`"databits" is invalid: ${options.dataBits}`);
+      }
+
+      if (STOPBITS.indexOf(options.stopBits) < 0) {
+        throw new TypeError(`"stopbits" is invalid: ${options.stopbits}`);
+      }
+
+      if (PARITY.indexOf(options.parity) < 0) {
+        throw new TypeError(`"parity" is invalid: ${options.parity}`);
+      }
+
+      FLOWCONTROLS.forEach((control) => {
+        if (typeof options[control] !== 'boolean') {
+          throw new TypeError(`"${control}" is not boolean: ${options[control]}`);
         }
+      });
 
-        if (!options.path) {
-            throw new TypeError(`"path" is not defined: ${options.path}`);
+      Object.defineProperties(this, {
+        options: {
+          enumerable: true,
+          value: options,
+          writable: false
         }
-
-        if (options.baudrate) {
-            throw new TypeError('"baudrate" is an unknown option, did you mean "baudRate"?');
-        }
-
-        if (typeof options.baudRate !== 'number') {
-            throw new TypeError(`"baudRate" must be a number: ${options.baudRate}`);
-        }
-
-        if (DATABITS.indexOf(options.dataBits) < 0) {
-            throw new TypeError(`"databits" is invalid: ${options.dataBits}`);
-        }
-
-        if (STOPBITS.indexOf(options.stopBits) < 0) {
-            throw new TypeError(`"stopbits" is invalid: ${options.stopbits}`);
-        }
-
-        if (PARITY.indexOf(options.parity) < 0) {
-            throw new TypeError(`"parity" is invalid: ${options.parity}`);
-        }
-
-        FLOWCONTROLS.forEach((control) => {
-            if (typeof options[control] !== 'boolean') {
-                throw new TypeError(`"${control}" is not boolean: ${options[control]}`);
-            }
-        });
-
-        Object.defineProperties(this, {
-            options: {
-                enumerable: true,
-                value: options,
-                writable: false
-            }
-        });
+      });
     }
 
     get ident() {
-        return toIdent(this.options);
+      return toIdent(this.options);
     }
 
     get isOpen() {
-        return this.port && this.port.isOpen;
+      return this.port && this.port.isOpen;
     }
 
     get isClose() {
-        return !this.isOpen;
+      return !this.isOpen;
     }
 
     // @param {function} callback The error-first callback.
     open(callback) {
-        if (this.port) {
-            const err = new Error(`Cannot open serial port "${this.options.path}"`);
-            callback(err);
-            return;
-        }
+      if (this.port) {
+        const err = new Error(`Cannot open serial port "${this.options.path}"`);
+        callback(err);
+        return;
+      }
 
-        const { path, ...rest } = this.options;
+      const { path, ...rest } = this.options;
 
-        this.port = new SerialPort(path, {
-            ...rest,
-            autoOpen: false
-        });
-        this.port.on('open', this.eventListener.open);
-        this.port.on('close', this.eventListener.close);
-        this.port.on('error', this.eventListener.error);
+      this.port = new SerialPort(path, {
+        ...rest,
+        autoOpen: false
+      });
+      this.port.on('open', this.eventListener.open);
+      this.port.on('close', this.eventListener.close);
+      this.port.on('error', this.eventListener.error);
 
-        this.parser = this.port.pipe(new Readline({ delimiter: '\n' }));
-        this.parser.on('data', this.eventListener.data);
+      this.parser = this.port.pipe(new Readline({ delimiter: '\n' }));
+      this.parser.on('data', this.eventListener.data);
 
-        this.port.open(callback);
+      this.port.open(callback);
     }
 
     // @param {function} callback The error-first callback.
     close(callback) {
-        if (!this.port) {
-            const err = new Error(`Cannot close serial port "${this.options.path}"`);
-            callback && callback(err);
-            return;
-        }
+      if (!this.port) {
+        const err = new Error(`Cannot close serial port "${this.options.path}"`);
+        callback && callback(err);
+        return;
+      }
 
-        this.port.removeListener('open', this.eventListener.open);
-        this.port.removeListener('close', this.eventListener.close);
-        this.port.removeListener('error', this.eventListener.error);
-        this.parser.removeListener('data', this.eventListener.data);
+      this.port.removeListener('open', this.eventListener.open);
+      this.port.removeListener('close', this.eventListener.close);
+      this.port.removeListener('error', this.eventListener.error);
+      this.parser.removeListener('data', this.eventListener.data);
 
-        this.port.close(callback);
+      this.port.close(callback);
 
-        this.port = null;
-        this.parser = null;
+      this.port = null;
+      this.parser = null;
     }
 
     write(data, context) {
-        if (!this.port) {
-            return;
-        }
+      if (!this.port) {
+        return;
+      }
 
-        data = this.writeFilter(data, context);
+      data = this.writeFilter(data, context);
 
-        this.port.write(data);
+      this.port.write(data);
     }
 }
 

@@ -3,15 +3,15 @@ import FormControl from './FormControl';
 import * as sharedPropTypes from './shared/prop-types';
 
 const propTypes = {
-    tag: sharedPropTypes.tag,
+  tag: sharedPropTypes.tag,
 };
 
 const defaultProps = {
-    tag: 'input',
+  tag: 'input',
 };
 
 const Input = React.forwardRef((props, ref) => (
-    <FormControl ref={ref} {...props} />
+  <FormControl ref={ref} {...props} />
 ));
 
 Input.propTypes = propTypes;

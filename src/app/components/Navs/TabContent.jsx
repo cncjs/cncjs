@@ -8,30 +8,30 @@ const getComponentType = (Component) => (Component ? (<Component />).type : unde
 
 class TabContent extends Component {
     static propTypes = {
-        activeKey: PropTypes.any
+      activeKey: PropTypes.any
     };
 
     render() {
-        const { activeKey, className, children, ...props } = this.props;
+      const { activeKey, className, children, ...props } = this.props;
 
-        return (
-            <div
-                {...props}
-                className={cx(className, styles.tabContent)}
-            >
-                {React.Children.map(children, child => {
-                    if (React.isValidElement(child) && child.type === getComponentType(TabPane)) {
-                        const active = (child.props.eventKey === activeKey);
+      return (
+        <div
+          {...props}
+          className={cx(className, styles.tabContent)}
+        >
+          {React.Children.map(children, child => {
+            if (React.isValidElement(child) && child.type === getComponentType(TabPane)) {
+              const active = (child.props.eventKey === activeKey);
 
-                        return cloneElement(child, {
-                            active
-                        });
-                    }
+              return cloneElement(child, {
+                active
+              });
+            }
 
-                    return child;
-                })}
-            </div>
-        );
+            return child;
+          })}
+        </div>
+      );
     }
 }
 

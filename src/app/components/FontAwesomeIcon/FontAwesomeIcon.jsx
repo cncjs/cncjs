@@ -4,17 +4,17 @@ import React from 'react';
 import styles from './FontAwesomeIcon.styl';
 
 const FontAwesomeIcon = React.forwardRef(({
-    className,
-    spinReverse,
-    ...props
+  className,
+  spinReverse,
+  ...props
 }, ref) => (
-    <Component
-        {...props}
-        ref={ref}
-        className={cx(className, {
-            [styles.spinReverse]: !!spinReverse,
-        })}
-    />
+  <Component
+    {...props}
+    ref={ref}
+    className={cx(className, {
+      [styles.spinReverse]: !!spinReverse,
+    })}
+  />
 ));
 
 export default FontAwesomeIcon;

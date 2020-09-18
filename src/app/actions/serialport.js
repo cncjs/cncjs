@@ -5,17 +5,17 @@ const NS = 'serialport';
 const asyncTypes = ['REQUEST', 'SUCCESS', 'FAILURE'];
 
 export const {
-    FETCH_PORTS,
-    FETCH_BAUD_RATES,
+  FETCH_PORTS,
+  FETCH_BAUD_RATES,
 } = constants(NS, {
-    'FETCH_PORTS': asyncTypes,
-    'FETCH_BAUD_RATES': asyncTypes,
+  'FETCH_PORTS': asyncTypes,
+  'FETCH_BAUD_RATES': asyncTypes,
 });
 
 export const {
-    UPDATE_CONNECTION_STATUS,
+  UPDATE_CONNECTION_STATUS,
 } = constants(NS, [
-    'UPDATE_CONNECTION_STATUS',
+  'UPDATE_CONNECTION_STATUS',
 ]);
 
 export const fetchPorts = createAction(FETCH_PORTS.REQUEST);

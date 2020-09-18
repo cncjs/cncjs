@@ -5,28 +5,28 @@ import Resolver from './Resolver';
 import styles from './styles/index.styl';
 
 const CardDeck = ({
-    className,
-    tag: Component,
-    ...props
+  className,
+  tag: Component,
+  ...props
 }) => (
-    <Resolver>
-        {value => {
-            return (
-                <Component
-                    {...props}
-                    className={cx(className, styles.cardDeck)}
-                />
-            );
-        }}
-    </Resolver>
+  <Resolver>
+    {value => {
+      return (
+        <Component
+          {...props}
+          className={cx(className, styles.cardDeck)}
+        />
+      );
+    }}
+  </Resolver>
 );
 
 CardDeck.propTypes = {
-    tag: tagPropType,
+  tag: tagPropType,
 };
 
 CardDeck.defaultProps = {
-    tag: 'div',
+  tag: 'div',
 };
 
 export default CardDeck;

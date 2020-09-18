@@ -4,18 +4,18 @@ import Notification from './Notification';
 import styles from './index.styl';
 
 const ToastNotification = ({ className, ...props }) => (
-    <Notification
-        {...props}
-        className={cx(className, styles.toastNotification)}
-    />
+  <Notification
+    {...props}
+    className={cx(className, styles.toastNotification)}
+  />
 );
 
 ToastNotification.propTypes = {
-    ...Notification.propTypes
+  ...Notification.propTypes
 };
 
 ToastNotification.defaultProps = {
-    ...Notification.defaultProps
+  ...Notification.defaultProps
 };
 
 export default ToastNotification;

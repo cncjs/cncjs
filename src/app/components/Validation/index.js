@@ -7,10 +7,10 @@ import Select from './components/Select';
 import Textarea from './components/Textarea';
 
 export {
-    createForm,
-    createFormControl,
-    Form,
-    Input,
-    Select,
-    Textarea,
+  createForm,
+  createFormControl,
+  Form,
+  Input,
+  Select,
+  Textarea,
 };

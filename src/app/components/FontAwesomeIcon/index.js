@@ -9,9 +9,9 @@ library.add(far);
 library.add(fas);
 
 export {
-    fab,
-    far,
-    fas,
+  fab,
+  far,
+  fas,
 };
 
 export default FontAwesomeIcon;

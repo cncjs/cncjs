@@ -8,71 +8,71 @@ import TopNav from 'app/containers/TopNav';
 import Workspace from 'app/containers/Workspace';
 import analytics from 'app/lib/analytics';
 import {
-    TOPNAV_HEIGHT,
-    SIDENAV_WIDTH,
-    CONTENT_FONT_SIZE,
-    CONTENT_BACKGROUND_COLOR,
-    CONTENT_MIN_WIDTH,
+  TOPNAV_HEIGHT,
+  SIDENAV_WIDTH,
+  CONTENT_FONT_SIZE,
+  CONTENT_BACKGROUND_COLOR,
+  CONTENT_MIN_WIDTH,
 } from 'app/config/styles';
 
 const ProtectedPage = ({
-    location,
-    history
+  location,
+  history
 }) => {
-    const accepted = ([
-        '/workspace',
-        '/administration',
-        '/administration/general',
-        '/administration/workspace',
-        '/administration/machine-profiles',
-        '/administration/user-accounts',
-        '/administration/controller',
-        '/administration/commands',
-        '/administration/events',
-        '/administration/about'
-    ].indexOf(location.pathname) >= 0);
+  const accepted = ([
+    '/workspace',
+    '/administration',
+    '/administration/general',
+    '/administration/workspace',
+    '/administration/machine-profiles',
+    '/administration/user-accounts',
+    '/administration/controller',
+    '/administration/commands',
+    '/administration/events',
+    '/administration/about'
+  ].indexOf(location.pathname) >= 0);
 
-    if (!accepted) {
-        return (
-            <Redirect
-                to={{
-                    pathname: '/workspace',
-                    state: {
-                        from: location
-                    }
-                }}
-            />
-        );
-    }
-
-    analytics.pageview(location.pathname);
-
+  if (!accepted) {
     return (
-        <Fragment>
-            <TopBar>
-                <TopNav />
-            </TopBar>
-            <SideBar id="sidebar">
-                <SideNav />
-            </SideBar>
-            <Main>
-                <Content>
-                    <Workspace
-                        style={{
-                            display: (location.pathname !== '/workspace') ? 'none' : 'block'
-                        }}
-                    />
-                    {location.pathname.indexOf('/administration') === 0 &&
-                        <Administration />
-                    }
-                </Content>
-            </Main>
-        </Fragment>
+      <Redirect
+        to={{
+          pathname: '/workspace',
+          state: {
+            from: location
+          }
+        }}
+      />
     );
+  }
+
+  analytics.pageview(location.pathname);
+
+  return (
+    <Fragment>
+      <TopBar>
+        <TopNav />
+      </TopBar>
+      <SideBar id="sidebar">
+        <SideNav />
+      </SideBar>
+      <Main>
+        <Content>
+          <Workspace
+            style={{
+              display: (location.pathname !== '/workspace') ? 'none' : 'block'
+            }}
+          />
+          {location.pathname.indexOf('/administration') === 0 &&
+          <Administration />
+          }
+        </Content>
+      </Main>
+    </Fragment>
+  );
 };
 
 export default compose(
-    withRouter
+  withRouter
 )(ProtectedPage);
 
 const TopBar = styled.div`

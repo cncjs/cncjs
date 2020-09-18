@@ -4,64 +4,64 @@ import { RadioGroupContext } from './context';
 
 class RadioGroup extends React.Component {
     static propTypes = {
-        disabled: PropTypes.bool,
-        name: PropTypes.string,
-        value: PropTypes.any,
-        defaultValue: PropTypes.any,
-        onChange: PropTypes.func,
+      disabled: PropTypes.bool,
+      name: PropTypes.string,
+      value: PropTypes.any,
+      defaultValue: PropTypes.any,
+      onChange: PropTypes.func,
     };
 
     static defaultProps = {
-        disabled: false,
+      disabled: false,
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        let updatedState = null;
-        if (nextProps.value !== undefined && nextProps.value !== prevState.value) {
-            // Controlled component, value is controlled by parent
-            updatedState = {
-                ...updatedState,
-                value: nextProps.value
-            };
-        }
-        if (nextProps.disabled !== undefined && nextProps.disabled !== prevState.disabled) {
-            updatedState = {
-                ...updatedState,
-                disabled: nextProps.disabled
-            };
-        }
+      let updatedState = null;
+      if (nextProps.value !== undefined && nextProps.value !== prevState.value) {
+        // Controlled component, value is controlled by parent
+        updatedState = {
+          ...updatedState,
+          value: nextProps.value
+        };
+      }
+      if (nextProps.disabled !== undefined && nextProps.disabled !== prevState.disabled) {
+        updatedState = {
+          ...updatedState,
+          disabled: nextProps.disabled
+        };
+      }
 
-        return updatedState;
+      return updatedState;
     }
 
     handleChange = (event) => {
-        if (this.props.value !== undefined) {
-            // Controlled component
-            const value = this.props.value;
-            this.setState({ value });
-        } else {
-            // Uncontrolled component
-            const value = event.target.value;
-            this.setState({ value });
-        }
+      if (this.props.value !== undefined) {
+        // Controlled component
+        const value = this.props.value;
+        this.setState({ value });
+      } else {
+        // Uncontrolled component
+        const value = event.target.value;
+        this.setState({ value });
+      }
 
-        if (typeof this.props.onChange === 'function') {
-            this.props.onChange(event);
-        }
+      if (typeof this.props.onChange === 'function') {
+        this.props.onChange(event);
+      }
     };
 
     state = {
-        value: (this.props.value !== undefined) ? this.props.value : this.props.defaultValue,
-        disabled: (this.props.disabled !== undefined) ? this.props.disabled : false,
-        onChange: this.handleChange,
+      value: (this.props.value !== undefined) ? this.props.value : this.props.defaultValue,
+      disabled: (this.props.disabled !== undefined) ? this.props.disabled : false,
+      onChange: this.handleChange,
     };
 
     render() {
-        return (
-            <RadioGroupContext.Provider value={this.state}>
-                {this.props.children}
-            </RadioGroupContext.Provider>
-        );
+      return (
+        <RadioGroupContext.Provider value={this.state}>
+          {this.props.children}
+        </RadioGroupContext.Provider>
+      );
     }
 }
 

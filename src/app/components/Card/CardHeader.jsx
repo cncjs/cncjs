@@ -5,44 +5,44 @@ import Resolver from './Resolver';
 import styles from './styles/index.styl';
 
 const CardHeader = ({
-    className,
-    style,
-    tag: Component,
-    ...props
+  className,
+  style,
+  tag: Component,
+  ...props
 }) => (
-    <Resolver>
-        {value => {
-            const { borderColor, borderWidth, spacingX, spacingY } = value;
+  <Resolver>
+    {value => {
+      const { borderColor, borderWidth, spacingX, spacingY } = value;
 
-            if (borderColor !== undefined) {
-                style = { borderBottomColor: borderColor, ...style };
-            }
-            if (borderWidth !== undefined) {
-                style = { borderBottomWidth: borderWidth, ...style };
-            }
+      if (borderColor !== undefined) {
+        style = { borderBottomColor: borderColor, ...style };
+      }
+      if (borderWidth !== undefined) {
+        style = { borderBottomWidth: borderWidth, ...style };
+      }
 
-            style = {
-                padding: `${spacingY} ${spacingX}`,
-                ...style,
-            };
+      style = {
+        padding: `${spacingY} ${spacingX}`,
+        ...style,
+      };
 
-            return (
-                <Component
-                    {...props}
-                    style={style}
-                    className={cx(className, styles.cardHeader)}
-                />
-            );
-        }}
-    </Resolver>
+      return (
+        <Component
+          {...props}
+          style={style}
+          className={cx(className, styles.cardHeader)}
+        />
+      );
+    }}
+  </Resolver>
 );
 
 CardHeader.propTypes = {
-    tag: tagPropType,
+  tag: tagPropType,
 };
 
 CardHeader.defaultProps = {
-    tag: 'div',
+  tag: 'div',
 };
 
 export default CardHeader;

@@ -12,153 +12,153 @@ import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import OverflowEllipsis from './components/OverflowEllipsis';
 
 const mapReceiveBufferSizeToColor = (rx) => {
-    // danger: 0-7
-    // warning: 8-15
-    // info: >=16
-    rx = ensurePositiveNumber(rx);
-    if (rx >= 16) {
-        return '#17a2b8';
-    }
-    if (rx >= 8) {
-        return '#ffc107';
-    }
-    return '#dc3545';
+  // danger: 0-7
+  // warning: 8-15
+  // info: >=16
+  rx = ensurePositiveNumber(rx);
+  if (rx >= 16) {
+    return '#17a2b8';
+  }
+  if (rx >= 8) {
+    return '#ffc107';
+  }
+  return '#dc3545';
 };
 
 // Hook
 const usePlannerBufferMax = (plannerBufferSize) => {
-    const ref = useRef(0);
+  const ref = useRef(0);
 
-    let plannerBufferMax = ref.current;
-    const nextPlannerBufferMax = Math.max(plannerBufferMax, plannerBufferSize) || plannerBufferMax;
-    if (nextPlannerBufferMax > plannerBufferMax) {
-        plannerBufferMax = nextPlannerBufferMax;
-    }
-    ref.current = plannerBufferMax;
+  let plannerBufferMax = ref.current;
+  const nextPlannerBufferMax = Math.max(plannerBufferMax, plannerBufferSize) || plannerBufferMax;
+  if (nextPlannerBufferMax > plannerBufferMax) {
+    plannerBufferMax = nextPlannerBufferMax;
+  }
+  ref.current = plannerBufferMax;
 
-    return plannerBufferMax;
+  return plannerBufferMax;
 };
 
 // Hook
 const useReceiveBufferMax = (receiveBufferSize) => {
-    const ref = useRef(128);
+  const ref = useRef(128);
 
-    let receiveBufferMax = ref.current;
-    const nextReceiveBufferMax = Math.max(receiveBufferMax, receiveBufferSize) || receiveBufferMax;
-    if (nextReceiveBufferMax > receiveBufferMax) {
-        receiveBufferMax = nextReceiveBufferMax;
-    }
-    ref.current = receiveBufferMax;
+  let receiveBufferMax = ref.current;
+  const nextReceiveBufferMax = Math.max(receiveBufferMax, receiveBufferSize) || receiveBufferMax;
+  if (nextReceiveBufferMax > receiveBufferMax) {
+    receiveBufferMax = nextReceiveBufferMax;
+  }
+  ref.current = receiveBufferMax;
 
-    return receiveBufferMax;
+  return receiveBufferMax;
 };
 
 const QueueReports = ({
-    plannerBufferSize = 0,
-    receiveBufferSize = 0,
+  plannerBufferSize = 0,
+  receiveBufferSize = 0,
 }) => {
-    const config = useWidgetConfig();
-    const expanded = config.get('panel.queueReports.expanded');
-    const collapsed = !expanded;
+  const config = useWidgetConfig();
+  const expanded = config.get('panel.queueReports.expanded');
+  const collapsed = !expanded;
 
-    // https://github.com/grbl/grbl/wiki/Interfacing-with-Grbl
-    // Grbl v0.9: BLOCK_BUFFER_SIZE (18), RX_BUFFER_SIZE (128)
-    // Grbl v1.1: BLOCK_BUFFER_SIZE (16), RX_BUFFER_SIZE (128)
-    const plannerBufferMin = 0;
-    const receiveBufferMin = 0;
-    const plannerBufferMax = usePlannerBufferMax(plannerBufferSize);
-    const receiveBufferMax = useReceiveBufferMax(receiveBufferSize);
+  // https://github.com/grbl/grbl/wiki/Interfacing-with-Grbl
+  // Grbl v0.9: BLOCK_BUFFER_SIZE (18), RX_BUFFER_SIZE (128)
+  // Grbl v1.1: BLOCK_BUFFER_SIZE (16), RX_BUFFER_SIZE (128)
+  const plannerBufferMin = 0;
+  const receiveBufferMin = 0;
+  const plannerBufferMax = usePlannerBufferMax(plannerBufferSize);
+  const receiveBufferMax = useReceiveBufferMax(receiveBufferSize);
 
-    if (!plannerBufferSize && !receiveBufferSize) {
-        return null;
-    }
+  if (!plannerBufferSize && !receiveBufferSize) {
+    return null;
+  }
 
-    return (
-        <CollapsibleCard
-            easing="ease-out"
-            collapsed={collapsed}
-        >
-            {({ collapsed, ToggleIcon, Header, Body }) => {
-                const expanded = !collapsed;
-                config.set('panel.queueReports.expanded', expanded);
+  return (
+    <CollapsibleCard
+      easing="ease-out"
+      collapsed={collapsed}
+    >
+      {({ collapsed, ToggleIcon, Header, Body }) => {
+        const expanded = !collapsed;
+        config.set('panel.queueReports.expanded', expanded);
 
-                return (
-                    <Container fluid style={{ width: '100%' }}>
-                        <Header>
-                            {({ hovered }) => (
-                                <Row>
-                                    <Col>{i18n._('Queue Reports')}</Col>
-                                    <Col width="auto">
-                                        <ToggleIcon style={{ opacity: hovered ? 1 : 0.5 }} />
-                                    </Col>
-                                </Row>
-                            )}
-                        </Header>
-                        <Body>
-                            <HorizontalForm spacing={['.75rem', '.5rem']}>
-                                {({ FormContainer, FormRow, FormCol }) => (
-                                    <FormContainer>
-                                        <FormRow>
-                                            <FormCol>
-                                                <OverflowEllipsis title={i18n._('Planner Buffer')}>
-                                                    {i18n._('Planner Buffer')}
-                                                </OverflowEllipsis>
-                                            </FormCol>
-                                            <FormCol style={{ width: '50%' }}>
-                                                <Progress style={{ height: '1.25rem' }}>
-                                                    <Progress.Bar
-                                                        min={plannerBufferMin}
-                                                        max={plannerBufferMax}
-                                                        value={plannerBufferSize}
-                                                    >
-                                                        <Text px="10px" py="0">
-                                                            {plannerBufferSize}
-                                                        </Text>
-                                                    </Progress.Bar>
-                                                </Progress>
-                                            </FormCol>
-                                        </FormRow>
-                                        <FormRow>
-                                            <FormCol>
-                                                <OverflowEllipsis title={i18n._('Receive Buffer')}>
-                                                    {i18n._('Receive Buffer')}
-                                                </OverflowEllipsis>
-                                            </FormCol>
-                                            <FormCol style={{ width: '50%' }}>
-                                                <Progress style={{ height: '1.25rem' }}>
-                                                    <Progress.Bar
-                                                        min={receiveBufferMin}
-                                                        max={receiveBufferMax}
-                                                        value={receiveBufferSize}
-                                                        style={{
-                                                            backgroundColor: mapReceiveBufferSizeToColor(receiveBufferSize),
-                                                        }}
-                                                    >
-                                                        <Text style={{ padding: '0 10px' }}>
-                                                            {receiveBufferSize}
-                                                        </Text>
-                                                    </Progress.Bar>
-                                                </Progress>
-                                            </FormCol>
-                                        </FormRow>
-                                    </FormContainer>
-                                )}
-                            </HorizontalForm>
-                        </Body>
-                    </Container>
-                );
-            }}
-        </CollapsibleCard>
-    );
+        return (
+          <Container fluid style={{ width: '100%' }}>
+            <Header>
+              {({ hovered }) => (
+                <Row>
+                  <Col>{i18n._('Queue Reports')}</Col>
+                  <Col width="auto">
+                    <ToggleIcon style={{ opacity: hovered ? 1 : 0.5 }} />
+                  </Col>
+                </Row>
+              )}
+            </Header>
+            <Body>
+              <HorizontalForm spacing={['.75rem', '.5rem']}>
+                {({ FormContainer, FormRow, FormCol }) => (
+                  <FormContainer>
+                    <FormRow>
+                      <FormCol>
+                        <OverflowEllipsis title={i18n._('Planner Buffer')}>
+                          {i18n._('Planner Buffer')}
+                        </OverflowEllipsis>
+                      </FormCol>
+                      <FormCol style={{ width: '50%' }}>
+                        <Progress style={{ height: '1.25rem' }}>
+                          <Progress.Bar
+                            min={plannerBufferMin}
+                            max={plannerBufferMax}
+                            value={plannerBufferSize}
+                          >
+                            <Text px="10px" py="0">
+                              {plannerBufferSize}
+                            </Text>
+                          </Progress.Bar>
+                        </Progress>
+                      </FormCol>
+                    </FormRow>
+                    <FormRow>
+                      <FormCol>
+                        <OverflowEllipsis title={i18n._('Receive Buffer')}>
+                          {i18n._('Receive Buffer')}
+                        </OverflowEllipsis>
+                      </FormCol>
+                      <FormCol style={{ width: '50%' }}>
+                        <Progress style={{ height: '1.25rem' }}>
+                          <Progress.Bar
+                            min={receiveBufferMin}
+                            max={receiveBufferMax}
+                            value={receiveBufferSize}
+                            style={{
+                              backgroundColor: mapReceiveBufferSizeToColor(receiveBufferSize),
+                            }}
+                          >
+                            <Text style={{ padding: '0 10px' }}>
+                              {receiveBufferSize}
+                            </Text>
+                          </Progress.Bar>
+                        </Progress>
+                      </FormCol>
+                    </FormRow>
+                  </FormContainer>
+                )}
+              </HorizontalForm>
+            </Body>
+          </Container>
+        );
+      }}
+    </CollapsibleCard>
+  );
 };
 
 export default connect(store => {
-    const controllerState = _get(store, 'controller.state');
-    const plannerBufferSize = ensurePositiveNumber(_get(controllerState, 'status.buf.planner'));
-    const receiveBufferSize = ensurePositiveNumber(_get(controllerState, 'status.buf.rx'));
+  const controllerState = _get(store, 'controller.state');
+  const plannerBufferSize = ensurePositiveNumber(_get(controllerState, 'status.buf.planner'));
+  const receiveBufferSize = ensurePositiveNumber(_get(controllerState, 'status.buf.rx'));
 
-    return {
-        plannerBufferSize,
-        receiveBufferSize,
-    };
+  return {
+    plannerBufferSize,
+    receiveBufferSize,
+  };
 })(QueueReports);

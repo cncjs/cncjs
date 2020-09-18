@@ -5,46 +5,46 @@ import * as sharedPropTypes from './shared/prop-types';
 import styles from './index.styl';
 
 const propTypes = {
-    tag: sharedPropTypes.tag,
-    lg: PropTypes.bool,
-    md: PropTypes.bool,
-    sm: PropTypes.bool,
+  tag: sharedPropTypes.tag,
+  lg: PropTypes.bool,
+  md: PropTypes.bool,
+  sm: PropTypes.bool,
 };
 
 const defaultProps = {
-    tag: 'div',
+  tag: 'div',
 };
 
 const FormControl = React.forwardRef(({
-    className,
-    tag: Tag,
-    lg,
-    md,
-    sm,
-    ...props
+  className,
+  tag: Tag,
+  lg,
+  md,
+  sm,
+  ...props
 }, ref) => {
-    if (lg) {
-        md = false;
-        sm = false;
-    }
-    if (md) {
-        sm = false;
-    }
-    if (!lg && !md && !sm) {
-        md = true;
-    }
+  if (lg) {
+    md = false;
+    sm = false;
+  }
+  if (md) {
+    sm = false;
+  }
+  if (!lg && !md && !sm) {
+    md = true;
+  }
 
-    return (
-        <Tag
-            ref={ref}
-            {...props}
-            className={cx(className, styles.formControl, {
-                [styles.formControlLg]: lg,
-                [styles.formControlMd]: md,
-                [styles.formControlSm]: sm,
-            })}
-        />
-    );
+  return (
+    <Tag
+      ref={ref}
+      {...props}
+      className={cx(className, styles.formControl, {
+        [styles.formControlLg]: lg,
+        [styles.formControlMd]: md,
+        [styles.formControlSm]: sm,
+      })}
+    />
+  );
 });
 
 FormControl.propTypes = propTypes;

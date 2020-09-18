@@ -5,15 +5,15 @@ import FormControl from './FormControl';
 import styles from './index.styl';
 
 const propTypes = {
-    tag: sharedPropTypes.tag,
+  tag: sharedPropTypes.tag,
 };
 
 const defaultProps = {
-    tag: 'textarea',
+  tag: 'textarea',
 };
 
 const Textarea = React.forwardRef(({ className, ...props }, ref) => (
-    <FormControl ref={ref} {...props} className={cx(className, styles.textarea)} />
+  <FormControl ref={ref} {...props} className={cx(className, styles.textarea)} />
 ));
 
 Textarea.propTypes = propTypes;

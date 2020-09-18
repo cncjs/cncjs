@@ -16,74 +16,74 @@ import { none } from 'app/lib/utils';
 import OverrideReadout from './components/OverrideReadout';
 
 const RapidOverride = ({
-    value,
+  value,
 }) => {
-    if (!value) {
-        return null;
-    }
+  if (!value) {
+    return null;
+  }
 
-    return (
-        <Center vertical>
-            <FixedWidthText fontSize="1.5rem">
-                R
-            </FixedWidthText>
-            <Space width={8} />
-            <OverrideReadout>
-                {(value >= 0) ? `${value}%` : none}
-            </OverrideReadout>
-            <Space width={8} />
-            <ButtonGroup sm>
-                <RepeatableButton
-                    onClick={() => {
-                        controller.command('override:rapid', 25);
-                    }}
-                    style={{ fontSize: '.75rem' }}
-                >
-                    <Text>{i18n._('25%')}</Text>
-                </RepeatableButton>
-                <RepeatableButton
-                    onClick={() => {
-                        controller.command('override:rapid', 50);
-                    }}
-                    style={{ fontSize: '.75rem' }}
-                >
-                    <Text>{i18n._('50%')}</Text>
-                </RepeatableButton>
-                <RepeatableButton
-                    onClick={() => {
-                        controller.command('override:rapid', 100);
-                    }}
-                    style={{ fontSize: '.75rem' }}
-                >
-                    <Text>{i18n._('100%')}</Text>
-                </RepeatableButton>
-            </ButtonGroup>
-            <Space width={8} />
-            <Clickable
-                onClick={() => {
-                    controller.command('override:rapid', 0);
-                }}
-            >
-                {({ hovered }) => (
-                    <FontAwesomeIcon
-                        icon="undo"
-                        fixedWidth
-                        style={{
-                            color: '#222',
-                            opacity: hovered ? 1 : 0.5,
-                        }}
-                    />
-                )}
-            </Clickable>
-        </Center>
-    );
+  return (
+    <Center vertical>
+      <FixedWidthText fontSize="1.5rem">
+        R
+      </FixedWidthText>
+      <Space width={8} />
+      <OverrideReadout>
+        {(value >= 0) ? `${value}%` : none}
+      </OverrideReadout>
+      <Space width={8} />
+      <ButtonGroup sm>
+        <RepeatableButton
+          onClick={() => {
+            controller.command('override:rapid', 25);
+          }}
+          style={{ fontSize: '.75rem' }}
+        >
+          <Text>{i18n._('25%')}</Text>
+        </RepeatableButton>
+        <RepeatableButton
+          onClick={() => {
+            controller.command('override:rapid', 50);
+          }}
+          style={{ fontSize: '.75rem' }}
+        >
+          <Text>{i18n._('50%')}</Text>
+        </RepeatableButton>
+        <RepeatableButton
+          onClick={() => {
+            controller.command('override:rapid', 100);
+          }}
+          style={{ fontSize: '.75rem' }}
+        >
+          <Text>{i18n._('100%')}</Text>
+        </RepeatableButton>
+      </ButtonGroup>
+      <Space width={8} />
+      <Clickable
+        onClick={() => {
+          controller.command('override:rapid', 0);
+        }}
+      >
+        {({ hovered }) => (
+          <FontAwesomeIcon
+            icon="undo"
+            fixedWidth
+            style={{
+              color: '#222',
+              opacity: hovered ? 1 : 0.5,
+            }}
+          />
+        )}
+      </Clickable>
+    </Center>
+  );
 };
 
 export default connect(store => {
-    const controllerState = _get(store, 'controller.state');
-    const value = ensurePositiveNumber(_get(controllerState, 'status.ov[1]')); // [ovF, ovR, ovS]
+  const controllerState = _get(store, 'controller.state');
+  const value = ensurePositiveNumber(_get(controllerState, 'status.ov[1]')); // [ovF, ovR, ovS]
 
-    return {
-        value,
-    };
+  return {
+    value,
+  };
 })(RapidOverride);

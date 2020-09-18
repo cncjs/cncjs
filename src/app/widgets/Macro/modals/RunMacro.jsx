@@ -6,46 +6,46 @@ import Label from 'app/components/Label';
 import Modal from 'app/components/Modal';
 
 const RunMacro = ({
-    onClose,
-    id,
-    name,
-    content,
+  onClose,
+  id,
+  name,
+  content,
 }) => {
-    const handleRunMacro = () => {
-        // FIXME
-    };
+  const handleRunMacro = () => {
+    // FIXME
+  };
 
-    return (
-        <Modal size="md" onClose={onClose}>
-            <Modal.Header>
-                <Modal.Title>
-                    {i18n._('Run Macro')}
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Label>{name}</Label>
-                <Textarea
-                    readOnly
-                    rows={10}
-                    value={content}
-                />
-            </Modal.Body>
-            <Modal.Footer>
-                <Button
-                    btnStyle="default"
-                    onClick={onClose}
-                >
-                    {i18n._('Cancel')}
-                </Button>
-                <Button
-                    btnStyle="primary"
-                    onClick={handleRunMacro}
-                >
-                    {i18n._('Run')}
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    );
+  return (
+    <Modal size="md" onClose={onClose}>
+      <Modal.Header>
+        <Modal.Title>
+          {i18n._('Run Macro')}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Label>{name}</Label>
+        <Textarea
+          readOnly
+          rows={10}
+          value={content}
+        />
+      </Modal.Body>
+      <Modal.Footer>
+        <Button
+          btnStyle="default"
+          onClick={onClose}
+        >
+          {i18n._('Cancel')}
+        </Button>
+        <Button
+          btnStyle="primary"
+          onClick={handleRunMacro}
+        >
+          {i18n._('Run')}
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
 };
 
 export default RunMacro;

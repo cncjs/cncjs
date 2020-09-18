@@ -65,6 +65,7 @@
     "eslint": "npm run eslint:build",
     "eslint:build": "eslint --ext .js --ext .jsx *.js src scripts test",
     "eslint:debug": "echo \"Checking code style...\"; DEBUG=eslint:cli-engine eslint --ext .js --ext .jsx *.js src scripts test",
+    "eslint:fix": "eslint --fix --ext .js --ext .jsx *.js src scripts test",
     "stylint": "stylint src/app",
     "test": "tap test/*.js --no-timeout --node-arg=--require --node-arg=@babel/register",
     "test:jest": "jest",

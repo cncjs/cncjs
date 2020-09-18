@@ -6,13 +6,13 @@ import controller from './controller';
 import serialport from './serialport';
 
 const rootReducer = combineReducers({
-    container: combineReducers({
-        app,
-    }),
-    connection,
-    controller,
-    serialport,
-    routing: routerReducer
+  container: combineReducers({
+    app,
+  }),
+  connection,
+  controller,
+  serialport,
+  routing: routerReducer
 });
 
 export default rootReducer;

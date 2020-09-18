@@ -12,35 +12,35 @@ class DirectoryWatcherService {
     files = {};
 
     watch(root) {
-        watch.createMonitor(root, (monitor) => {
-            this.unwatch();
-            this.root = root;
-            this.monitor = monitor;
-            this.files = { ...monitor.files };
+      watch.createMonitor(root, (monitor) => {
+        this.unwatch();
+        this.root = root;
+        this.monitor = monitor;
+        this.files = { ...monitor.files };
 
-            monitor.on('created', (f, stat) => {
-                log.trace(`New file has been created (${chalk.yellow(JSON.stringify(f))}).`);
-                this.files[f] = stat;
-            });
-
-            monitor.on('removed', (f, stat) => {
-                log.trace(`A file has been moved or deleted (${chalk.yellow(JSON.stringify(f))}).`);
-                delete this.files[f];
-            });
-
-            monitor.on('changed', (f, curr, prev) => {
-                log.trace(`A file has been changed (${chalk.yellow(JSON.stringify(f))}).`);
-                this.files[f] = curr;
-            });
+        monitor.on('created', (f, stat) => {
+          log.trace(`New file has been created (${chalk.yellow(JSON.stringify(f))}).`);
+          this.files[f] = stat;
         });
+
+        monitor.on('removed', (f, stat) => {
+          log.trace(`A file has been moved or deleted (${chalk.yellow(JSON.stringify(f))}).`);
+          delete this.files[f];
+        });
+
+        monitor.on('changed', (f, curr, prev) => {
+          log.trace(`A file has been changed (${chalk.yellow(JSON.stringify(f))}).`);
+          this.files[f] = curr;
+        });
+      });
     }
 
     unwatch() {
-        if (this.monitor) {
-            this.monitor.stop(); // Stop watching
-            this.monitor = null;
-        }
-        this.files = {};
+      if (this.monitor) {
+        this.monitor.stop(); // Stop watching
+        this.monitor = null;
+      }
+      this.files = {};
     }
 }
 

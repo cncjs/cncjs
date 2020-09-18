@@ -15,9 +15,9 @@ document.body.appendChild(container);
 sagaMiddleware.run(rootSaga);
 
 ReactDOM.render(
-    <GlobalProvider>
-        <CSSBaseline />
-        <App />
-    </GlobalProvider>,
-    container
+  <GlobalProvider>
+    <CSSBaseline />
+    <App />
+  </GlobalProvider>,
+  container
 );

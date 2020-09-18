@@ -12,21 +12,21 @@ const pkg = require('../package.json');
 const pkgApp = require('../src/package.json');
 
 const files = [
-    'src/*.js',
-    'src/server/**/*.{js,jsx}'
+  'src/*.js',
+  'src/server/**/*.{js,jsx}'
 ];
 
 const resolvedImports = findImports(files, {
-    flatten: true,
+  flatten: true,
 });
 
 const deps = _uniq([
-    'core-js', // to polyfill ECMAScript features
-    'regenerator-runtime', // needed to use transpiled generator functions
-    'debug', // 'debug' is required for electron app
+  'core-js', // to polyfill ECMAScript features
+  'regenerator-runtime', // needed to use transpiled generator functions
+  'debug', // 'debug' is required for electron app
 
-    // e.g. 'lodash/get' → 'lodash'
-    ...resolvedImports.map(x => x.split('/')[0]),
+  // e.g. 'lodash/get' → 'lodash'
+  ...resolvedImports.map(x => x.split('/')[0]),
 ]).sort();
 
 //pkgApp.name = pkg.name; // Exclude the name field

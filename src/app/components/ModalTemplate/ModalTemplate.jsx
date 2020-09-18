@@ -42,32 +42,32 @@ const DescriptiveMessage = styled.div`
 `;
 
 const ModalTemplate = ({ type, children, style }) => (
-    <Container>
-        <Row>
-            <Col width="auto">
-                {type === 'error' && <Error />}
-                {type === 'warning' && <Warning />}
-                {type === 'info' && <Info />}
-                {type === 'success' && <Success />}
-                <Space width={16} />
-            </Col>
-            <Col style={{ paddingTop: 4, ...style }}>
-                {(typeof children === 'function')
-                    ? children({ PrimaryMessage, DescriptiveMessage })
-                    : children
-                }
-            </Col>
-        </Row>
-    </Container>
+  <Container>
+    <Row>
+      <Col width="auto">
+        {type === 'error' && <Error />}
+        {type === 'warning' && <Warning />}
+        {type === 'info' && <Info />}
+        {type === 'success' && <Success />}
+        <Space width={16} />
+      </Col>
+      <Col style={{ paddingTop: 4, ...style }}>
+        {(typeof children === 'function')
+          ? children({ PrimaryMessage, DescriptiveMessage })
+          : children
+        }
+      </Col>
+    </Row>
+  </Container>
 );
 
 ModalTemplate.propTypes = {
-    type: PropTypes.oneOf([
-        'error',
-        'warning',
-        'info',
-        'success'
-    ])
+  type: PropTypes.oneOf([
+    'error',
+    'warning',
+    'info',
+    'success'
+  ])
 };
 
 export default ModalTemplate;

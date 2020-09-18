@@ -8,43 +8,43 @@ import CorruptedWorkspaceSettingsModal from './modals/CorruptedWorkspaceSettings
 import ProtectedRoute from './ProtectedRoute';
 
 const App = ({
-    location,
-    isInitializing,
-    promptUserForCorruptedWorkspaceSettings
+  location,
+  isInitializing,
+  promptUserForCorruptedWorkspaceSettings
 }) => {
-    if (isInitializing) {
-        return null;
-    }
+  if (isInitializing) {
+    return null;
+  }
 
-    if (promptUserForCorruptedWorkspaceSettings) {
-        return (
-            <CorruptedWorkspaceSettingsModal />
-        );
-    }
-
+  if (promptUserForCorruptedWorkspaceSettings) {
     return (
-        <Switch>
-            <Route
-                exact
-                path="/login"
-                component={Login}
-            />
-            <ProtectedRoute
-                component={ProtectedPage}
-            />
-        </Switch>
+      <CorruptedWorkspaceSettingsModal />
     );
+  }
+
+  return (
+    <Switch>
+      <Route
+        exact
+        path="/login"
+        component={Login}
+      />
+      <ProtectedRoute
+        component={ProtectedPage}
+      />
+    </Switch>
+  );
 };
 
 export default compose(
-    withRouter,
-    connect(
-        (state, ownProps) => ({ // mapStateToProps
-            isInitializing: state.container.app.isInitializing,
-            error: state.container.app.error,
-            promptUserForCorruptedWorkspaceSettings: state.container.app.promptUserForCorruptedWorkspaceSettings
-        }),
-        (dispatch) => ({ // mapDispatchToProps
-        })
-    ),
+  withRouter,
+  connect(
+    (state, ownProps) => ({ // mapStateToProps
+      isInitializing: state.container.app.isInitializing,
+      error: state.container.app.error,
+      promptUserForCorruptedWorkspaceSettings: state.container.app.promptUserForCorruptedWorkspaceSettings
+    }),
+    (dispatch) => ({ // mapDispatchToProps
+    })
+  ),
 )(App);

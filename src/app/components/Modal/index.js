@@ -17,10 +17,10 @@ Modal.Body = Body;
 Modal.Footer = Footer;
 
 export {
-    ModalProvider,
-    ModalConsumer,
-    ModalRoot,
-    useModal,
+  ModalProvider,
+  ModalConsumer,
+  ModalRoot,
+  useModal,
 };
 
 export default Modal;

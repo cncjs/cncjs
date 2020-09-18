@@ -1,9 +1,9 @@
 import { createAction } from 'redux-action';
 import {
-    APP_INIT,
-    APP_INIT_SUCCESS,
-    APP_INIT_FAILURE,
-    PROMPT_USER_FOR_CORRUPTED_WORKSPACE_SETTINGS
+  APP_INIT,
+  APP_INIT_SUCCESS,
+  APP_INIT_FAILURE,
+  PROMPT_USER_FOR_CORRUPTED_WORKSPACE_SETTINGS
 } from './constants';
 
 export const appInit = createAction(APP_INIT);

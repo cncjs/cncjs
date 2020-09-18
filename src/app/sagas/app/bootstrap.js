@@ -12,92 +12,92 @@ import * as user from 'app/lib/user';
 import configStore from 'app/store/config';
 
 export function* init() {
-    // sequential
-    yield call(changeLogLevel);
+  // sequential
+  yield call(changeLogLevel);
 
-    // parallel
-    yield all([
-        call(changeLocale),
-        call(authenticateSessionToken),
-        call(enableCrossOriginCommunication),
-    ]);
+  // parallel
+  yield all([
+    call(changeLocale),
+    call(authenticateSessionToken),
+    call(enableCrossOriginCommunication),
+  ]);
 }
 
 export function* process() {
-    yield null;
+  yield null;
 }
 
 const changeLogLevel = () => {
-    const obj = qs.parse(window.location.search.slice(1));
-    const level = {
-        trace: TRACE,
-        debug: DEBUG,
-        info: INFO,
-        warn: WARN,
-        error: ERROR
-    }[obj.log_level || settings.log.level];
-    log.setLevel(level);
+  const obj = qs.parse(window.location.search.slice(1));
+  const level = {
+    trace: TRACE,
+    debug: DEBUG,
+    info: INFO,
+    warn: WARN,
+    error: ERROR
+  }[obj.log_level || settings.log.level];
+  log.setLevel(level);
 };
 
 const changeLocale = () => new Promise(resolve => {
-    const lng = i18next.language;
+  const lng = i18next.language;
 
-    if (!lng || lng === 'en') {
-        log.debug(`moment: lng=${lng}`);
-        resolve();
-        return;
-    }
+  if (!lng || lng === 'en') {
+    log.debug(`moment: lng=${lng}`);
+    resolve();
+    return;
+  }
 
-    const bundle = require('bundle-loader!moment/locale/' + lng);
-    bundle(() => {
-        log.debug(`moment: lng=${lng}`);
-        moment().locale(lng);
+  const bundle = require('bundle-loader!moment/locale/' + lng);
+  bundle(() => {
+    log.debug(`moment: lng=${lng}`);
+    moment().locale(lng);
 
-        resolve();
-    });
+    resolve();
+  });
 });
 
 const authenticateSessionToken = () => new Promise(resolve => {
-    const token = configStore.get('session.token');
-    user.signin({ token: token })
-        .then(({ authenticated, token }) => {
-            if (authenticated) {
-                log.debug('Create and establish a WebSocket connection');
+  const token = configStore.get('session.token');
+  user.signin({ token: token })
+    .then(({ authenticated, token }) => {
+      if (authenticated) {
+        log.debug('Create and establish a WebSocket connection');
 
-                const host = '';
-                const options = {
-                    query: 'token=' + token
-                };
-                controller.connect(host, options, () => {
-                    // @see "app/containers/Login/Login.jsx"
-                    resolve();
-                });
-                return;
-            }
-            resolve();
+        const host = '';
+        const options = {
+          query: 'token=' + token
+        };
+        controller.connect(host, options, () => {
+          // @see "app/containers/Login/Login.jsx"
+          resolve();
         });
+        return;
+      }
+      resolve();
+    });
 });
 
 const enableCrossOriginCommunication = () => {
-    // Cross-origin communication
-    window.addEventListener('message', (event) => {
-        // TODO: event.origin
+  // Cross-origin communication
+  window.addEventListener('message', (event) => {
+    // TODO: event.origin
 
-        const { token = '', action } = { ...event.data };
+    const { token = '', action } = { ...event.data };
 
-        // Token authentication
-        if (token !== configStore.get('session.token')) {
-            log.warn(`Received a message with an unauthorized token (${token}).`);
-            return;
-        }
+    // Token authentication
+    if (token !== configStore.get('session.token')) {
+      log.warn(`Received a message with an unauthorized token (${token}).`);
+      return;
+    }
 
-        const { type, payload } = { ...action };
-        if (type === 'connect') {
-            pubsub.publish('message:connect', payload);
-        } else if (type === 'resize') {
-            pubsub.publish('message:resize', payload);
-        } else {
-            log.warn(`No valid action type (${type}) specified in the message.`);
-        }
-    }, false);
+    const { type, payload } = { ...action };
+    if (type === 'connect') {
+      pubsub.publish('message:connect', payload);
+    } else if (type === 'resize') {
+      pubsub.publish('message:resize', payload);
+    } else {
+      log.warn(`No valid action type (${type}) specified in the message.`);
+    }
+  }, false);
 };

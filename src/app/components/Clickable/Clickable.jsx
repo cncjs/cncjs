@@ -10,11 +10,11 @@ const Component = styled(Hoverable)`
 `;
 
 const Clickable = (props) => (
-    <Component role="presentation" {...props} />
+  <Component role="presentation" {...props} />
 );
 
 Clickable.propTypes = {
-    disabled: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 export default Clickable;

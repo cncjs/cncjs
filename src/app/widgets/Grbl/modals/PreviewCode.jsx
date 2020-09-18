@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 const PreviewCode = ({ children, ...props }) => (
-    <pre {...props}>
-        <code>{children}</code>
-    </pre>
+  <pre {...props}>
+    <code>{children}</code>
+  </pre>
 );
 
 export default styled(PreviewCode)`

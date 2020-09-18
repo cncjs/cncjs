@@ -22,31 +22,31 @@ const spinReverse = keyframes`
 `;
 
 const ImageIcon = styled(({
-    spin,
-    spinReverse,
-    ...rest
+  spin,
+  spinReverse,
+  ...rest
 }) => (
-    <Image {...rest} />
+  <Image {...rest} />
 ))`
     display: inline-block;
     font-size: inherit;
     overflow: visible;
     vertical-align: -0.125em;
     ${props => {
-        if (props.spin) {
-            return css`animation: ${spin} 2s infinite linear;`;
-        }
-        if (props.spinReverse) {
-            return css`animation: ${spinReverse} 2s infinite linear;`;
-        }
-        return '';
-    }}
+    if (props.spin) {
+      return css`animation: ${spin} 2s infinite linear;`;
+    }
+    if (props.spinReverse) {
+      return css`animation: ${spinReverse} 2s infinite linear;`;
+    }
+    return '';
+  }}
 `;
 
 ImageIcon.propTypes = {
-    ...Image.propTypes,
-    spin: PropTypes.bool,
-    spinReverse: PropTypes.bool,
+  ...Image.propTypes,
+  spin: PropTypes.bool,
+  spinReverse: PropTypes.bool,
 };
 
 export default ImageIcon;

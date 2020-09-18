@@ -6,77 +6,77 @@ import styles from './index.styl';
 
 class DropdownToggle extends Component {
     static propTypes = {
-        componentType: PropTypes.any,
+      componentType: PropTypes.any,
 
-        // A custom element for this component.
-        componentClass: PropTypes.oneOfType([
-            PropTypes.func,
-            PropTypes.string,
-            PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
-        ]),
+      // A custom element for this component.
+      componentClass: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.string,
+        PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
+      ]),
 
-        // One of: 'default', 'primary', 'secondary', 'danger', 'warning', 'info', 'success', 'light', 'dark', 'link'
-        btnStyle: Button.propTypes.btnStyle,
+      // One of: 'default', 'primary', 'secondary', 'danger', 'warning', 'info', 'success', 'light', 'dark', 'link'
+      btnStyle: Button.propTypes.btnStyle,
 
-        // Whether to prevent a caret from being rendered next to the title.
-        noCaret: PropTypes.bool,
+      // Whether to prevent a caret from being rendered next to the title.
+      noCaret: PropTypes.bool,
 
-        // Title content.
-        title: PropTypes.string,
+      // Title content.
+      title: PropTypes.string,
 
-        // Dropdown
-        disabled: PropTypes.bool,
-        open: PropTypes.bool
+      // Dropdown
+      disabled: PropTypes.bool,
+      open: PropTypes.bool
     };
 
     static defaultProps = {
-        componentClass: Button,
-        noCaret: false,
+      componentClass: Button,
+      noCaret: false,
 
-        // Dropdown
-        disabled: false,
-        open: false
+      // Dropdown
+      disabled: false,
+      open: false
     };
 
     render() {
-        const {
+      const {
             componentType, // eslint-disable-line
-            componentClass: Component,
-            noCaret,
-            open,
-            className,
-            children,
-            ...props
-        } = this.props;
+        componentClass: Component,
+        noCaret,
+        open,
+        className,
+        children,
+        ...props
+      } = this.props;
 
-        if (Component === Button) {
-            props.btnStyle = props.btnStyle || 'default';
-            props.dropdownToggle = true;
-        }
+      if (Component === Button) {
+        props.btnStyle = props.btnStyle || 'default';
+        props.dropdownToggle = true;
+      }
 
-        const useCaret = !noCaret;
-        const empty = !children && !props.title;
+      const useCaret = !noCaret;
+      const empty = !children && !props.title;
 
-        return (
-            <Component
-                {...props}
-                aria-haspopup
-                aria-expanded={open}
-                role="button"
-                className={cx(className, {
-                    [styles.dropdownToggle]: true,
-                    [styles.btnLink]: props.btnStyle === 'link', // CSS selector ".btn-link:hover .caret"
-                    [styles.btnLg]: !!props.lg,
-                    [styles.btnMd]: !!props.md,
-                    [styles.btnSm]: !!props.sm,
-                    [styles.btnXs]: !!props.xs,
-                    [styles.empty]: empty
-                })}
-            >
-                {children || props.title}
-                {useCaret && <span className={styles.caret} />}
-            </Component>
-        );
+      return (
+        <Component
+          {...props}
+          aria-haspopup
+          aria-expanded={open}
+          role="button"
+          className={cx(className, {
+            [styles.dropdownToggle]: true,
+            [styles.btnLink]: props.btnStyle === 'link', // CSS selector ".btn-link:hover .caret"
+            [styles.btnLg]: !!props.lg,
+            [styles.btnMd]: !!props.md,
+            [styles.btnSm]: !!props.sm,
+            [styles.btnXs]: !!props.xs,
+            [styles.empty]: empty
+          })}
+        >
+          {children || props.title}
+          {useCaret && <span className={styles.caret} />}
+        </Component>
+      );
     }
 }
 

@@ -5,29 +5,29 @@ import styles from './index.styl';
 
 class BreadcrumbsItem extends Component {
     static propTypes = {
-        active: PropTypes.bool
+      active: PropTypes.bool
     };
 
     static defaultProps = {
-        active: false
+      active: false
     };
 
     render() {
-        const {
-            className,
-            active,
-            ...props
-        } = this.props;
+      const {
+        className,
+        active,
+        ...props
+      } = this.props;
 
-        return (
-            <li
-                {...props}
-                className={cx(
-                    className,
-                    { [styles.active]: active }
-                )}
-            />
-        );
+      return (
+        <li
+          {...props}
+          className={cx(
+            className,
+            { [styles.active]: active }
+          )}
+        />
+      );
     }
 }
 

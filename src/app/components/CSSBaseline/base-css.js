@@ -1,7 +1,7 @@
 import { css } from '@emotion/core';
 
 const baseCSS = theme => {
-    return css`
+  return css`
         /**
          * Apply a natural box layout model to all elements, but allowing components to change.
          */

@@ -5,9 +5,9 @@ import React from 'react';
  * child element that may not accept refs.
  */
 class RefHolder extends React.Component {
-    render() {
-        return this.props.children;
-    }
+  render() {
+    return this.props.children;
+  }
 }
 
 export default RefHolder;

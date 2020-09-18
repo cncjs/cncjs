@@ -5,28 +5,28 @@ import ProgressBar from './ProgressBar';
 import styles from './styles/index.styl';
 
 const Progress = ({
-    className,
-    children,
-    tag: Component,
-    ...props
+  className,
+  children,
+  tag: Component,
+  ...props
 }) => (
-    <Component
-        {...props}
-        className={cx(className, styles.progress)}
-    >
-        {typeof children === 'function'
-            ? children({ ProgressBar })
-            : children
-        }
-    </Component>
+  <Component
+    {...props}
+    className={cx(className, styles.progress)}
+  >
+    {typeof children === 'function'
+      ? children({ ProgressBar })
+      : children
+    }
+  </Component>
 );
 
 Progress.propTypes = {
-    tag: tagPropType,
+  tag: tagPropType,
 };
 
 Progress.defaultProps = {
-    tag: 'div',
+  tag: 'div',
 };
 
 Progress.Bar = ProgressBar;

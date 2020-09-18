@@ -5,37 +5,37 @@ import { ConfigurationContext, ScreenClassContext } from './context';
 
 class Resolver extends Component {
     static propTypes = {
-        children: PropTypes.func.isRequired,
+      children: PropTypes.func.isRequired,
     };
 
     render() {
-        const { children } = this.props;
+      const { children } = this.props;
 
-        return (
-            <ConfigurationContext.Consumer>
-                {config => (
-                    <ScreenClassContext.Consumer>
-                        {screenClass => {
-                            if (!screenClass) {
-                                return (
-                                    <Provider>
-                                        <ConfigurationContext.Consumer>
-                                            {config => (
-                                                <ScreenClassContext.Consumer>
-                                                    {screenClass => children({ config, screenClass })}
-                                                </ScreenClassContext.Consumer>
-                                            )}
-                                        </ConfigurationContext.Consumer>
-                                    </Provider>
-                                );
-                            }
+      return (
+        <ConfigurationContext.Consumer>
+          {config => (
+            <ScreenClassContext.Consumer>
+              {screenClass => {
+                if (!screenClass) {
+                  return (
+                    <Provider>
+                      <ConfigurationContext.Consumer>
+                        {config => (
+                          <ScreenClassContext.Consumer>
+                            {screenClass => children({ config, screenClass })}
+                          </ScreenClassContext.Consumer>
+                        )}
+                      </ConfigurationContext.Consumer>
+                    </Provider>
+                  );
+                }
 
-                            return children({ config, screenClass });
-                        }}
-                    </ScreenClassContext.Consumer>
-                )}
-            </ConfigurationContext.Consumer>
-        );
+                return children({ config, screenClass });
+              }}
+            </ScreenClassContext.Consumer>
+          )}
+        </ConfigurationContext.Consumer>
+      );
     }
 }
 

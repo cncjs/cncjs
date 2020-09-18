@@ -32,14 +32,11 @@ module.exports = {
     'jest',
   ],
   rules: {
-    //'indent': ['error', 2],
-    //'react/jsx-indent': ['error', 2],
-    //'react/jsx-indent-props': ['error', 2],
-    'indent': 0,
-    'react/jsx-indent': 0,
-    'react/jsx-indent-props': 0,
-    'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
-    'react-hooks/exhaustive-deps': 'error', // Checks effect dependencies
+    'indent': ['error', 2],
+    'react/jsx-indent': ['error', 2],
+    'react/jsx-indent-props': ['error', 2],
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'error',
     'max-lines-per-function': ['warn', {
       max: 1024,
       skipBlankLines: true,

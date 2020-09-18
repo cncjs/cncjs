@@ -19,8 +19,8 @@ import Line from './components/Line';
 import Circle from './components/Circle';
 import webcamIcon from './images/webcam.svg';
 import {
-    MEDIA_SOURCE_LOCAL,
-    MEDIA_SOURCE_MJPEG,
+  MEDIA_SOURCE_LOCAL,
+  MEDIA_SOURCE_MJPEG,
 } from './constants';
 import styles from './index.styl';
 
@@ -31,307 +31,307 @@ import styles from './index.styl';
 // | //0.0.0.0:8000/       | //localhost:8000/       |
 // |-----------------------|-------------------------|
 const mapMetaAddressToHostname = (url) => {
-    const hostname = window.location.hostname;
+  const hostname = window.location.hostname;
 
-    return String(url).trim().replace(/((?:https?:)?\/\/)?(0.0.0.0)/i, (match, p1, p2, offset, string) => {
-        // p1 = 'http://'
-        // p2 = '0.0.0.0'
-        return [p1, hostname].join('');
-    });
+  return String(url).trim().replace(/((?:https?:)?\/\/)?(0.0.0.0)/i, (match, p1, p2, offset, string) => {
+    // p1 = 'http://'
+    // p2 = '0.0.0.0'
+    return [p1, hostname].join('');
+  });
 };
 
 const Webcam = ({
-    disabled,
-    isFullscreen,
+  disabled,
+  isFullscreen,
 }) => {
-    const config = useWidgetConfig();
-    const emitter = useWidgetEvent();
-    const mediaSource = config.get('mediaSource');
-    const deviceId = config.get('deviceId');
-    const url = config.get('url');
-    const scale = config.get('geometry.scale', 1.0);
-    const rotation = config.get('geometry.rotation', 0);
-    const flipHorizontally = config.get('geometry.flipHorizontally', false);
-    const flipVertically = config.get('geometry.flipVertically', false);
-    const crosshair = config.get('crosshair', false);
-    const muted = config.get('muted', false);
+  const config = useWidgetConfig();
+  const emitter = useWidgetEvent();
+  const mediaSource = config.get('mediaSource');
+  const deviceId = config.get('deviceId');
+  const url = config.get('url');
+  const scale = config.get('geometry.scale', 1.0);
+  const rotation = config.get('geometry.rotation', 0);
+  const flipHorizontally = config.get('geometry.flipHorizontally', false);
+  const flipVertically = config.get('geometry.flipVertically', false);
+  const crosshair = config.get('crosshair', false);
+  const muted = config.get('muted', false);
 
-    // Image source
-    const imageSourceRef = useRef();
-    useEffect(() => {
-        const onRefreshImageSource = () => {
-            const el = imageSourceRef.current;
-            el.src = '';
+  // Image source
+  const imageSourceRef = useRef();
+  useEffect(() => {
+    const onRefreshImageSource = () => {
+      const el = imageSourceRef.current;
+      el.src = '';
 
-            setTimeout(() => {
-                el.src = mapMetaAddressToHostname(url);
-            }, 10); // delay 10ms
-        };
-
-        emitter.on('refresh', onRefreshImageSource);
-
-        return () => {
-            emitter.off('refresh', onRefreshImageSource);
-        };
-    }, [emitter, url]);
-
-    const changeImageScale = (value) => {
-        config.set('geometry.scale', value);
+      setTimeout(() => {
+        el.src = mapMetaAddressToHostname(url);
+      }, 10); // delay 10ms
     };
 
-    const rotateLeft = () => {
-        const rotateLeft = (flipHorizontally && flipVertically) || (!flipHorizontally && !flipVertically);
-        const modulus = 4;
-        const i = rotateLeft ? -1 : 1;
+    emitter.on('refresh', onRefreshImageSource);
 
-        config.set('geometry.rotation', (Math.abs(Number(rotation || 0)) + modulus + i) % modulus);
+    return () => {
+      emitter.off('refresh', onRefreshImageSource);
     };
+  }, [emitter, url]);
 
-    const rotateRight = () => {
-        const rotateRight = (flipHorizontally && flipVertically) || (!flipHorizontally && !flipVertically);
-        const modulus = 4;
-        const i = rotateRight ? 1 : -1;
+  const changeImageScale = (value) => {
+    config.set('geometry.scale', value);
+  };
 
-        config.set('geometry.rotation', (Math.abs(Number(rotation || 0)) + modulus + i) % modulus);
-    };
+  const rotateLeft = () => {
+    const rotateLeft = (flipHorizontally && flipVertically) || (!flipHorizontally && !flipVertically);
+    const modulus = 4;
+    const i = rotateLeft ? -1 : 1;
 
-    const toggleFlipHorizontally = () => {
-        config.set('geometry.flipHorizontally', !flipHorizontally);
-    };
+    config.set('geometry.rotation', (Math.abs(Number(rotation || 0)) + modulus + i) % modulus);
+  };
 
-    const toggleFlipVertically = () => {
-        config.set('geometry.flipVertically', !flipVertically);
-    };
+  const rotateRight = () => {
+    const rotateRight = (flipHorizontally && flipVertically) || (!flipHorizontally && !flipVertically);
+    const modulus = 4;
+    const i = rotateRight ? 1 : -1;
 
-    const toggleCrosshair = () => {
-        config.set('crosshair', !crosshair);
-    };
+    config.set('geometry.rotation', (Math.abs(Number(rotation || 0)) + modulus + i) % modulus);
+  };
 
-    const toggleMuted = () => {
-        config.set('muted', !muted);
-    };
+  const toggleFlipHorizontally = () => {
+    config.set('geometry.flipHorizontally', !flipHorizontally);
+  };
 
-    const transformStyle = [
-        'translate(-50%, -50%)',
-        `rotateX(${flipVertically ? 180 : 0}deg)`,
-        `rotateY(${flipHorizontally ? 180 : 0}deg)`,
-        `rotate(${(rotation % 4) * 90}deg)`
-    ].join(' ');
+  const toggleFlipVertically = () => {
+    config.set('geometry.flipVertically', !flipVertically);
+  };
 
-    return (
-        <>
-            {disabled && (
-                <WebcamDisabledContainer>
-                    <Image src={webcamIcon} width={128} height={128} />
-                    <Margin top="1rem">
-                        <Text fontSize="1.5rem">{i18n._('Webcam is off')}</Text>
-                    </Margin>
-                </WebcamDisabledContainer>
-            )}
-            <WebcamContainer
-                style={{
-                    display: disabled ? 'none' : 'block',
-                    minHeight: isFullscreen ? '100%' : 240,
-                }}
-            >
+  const toggleCrosshair = () => {
+    config.set('crosshair', !crosshair);
+  };
+
+  const toggleMuted = () => {
+    config.set('muted', !muted);
+  };
+
+  const transformStyle = [
+    'translate(-50%, -50%)',
+    `rotateX(${flipVertically ? 180 : 0}deg)`,
+    `rotateY(${flipHorizontally ? 180 : 0}deg)`,
+    `rotate(${(rotation % 4) * 90}deg)`
+  ].join(' ');
+
+  return (
+    <>
+      {disabled && (
+        <WebcamDisabledContainer>
+          <Image src={webcamIcon} width={128} height={128} />
+          <Margin top="1rem">
+            <Text fontSize="1.5rem">{i18n._('Webcam is off')}</Text>
+          </Margin>
+        </WebcamDisabledContainer>
+      )}
+      <WebcamContainer
+        style={{
+          display: disabled ? 'none' : 'block',
+          minHeight: isFullscreen ? '100%' : 240,
+        }}
+      >
+        {mediaSource === MEDIA_SOURCE_LOCAL && (
+          <div style={{ width: '100%' }}>
+            <WebcamComponent
+              className={styles.center}
+              style={{
+                transform: transformStyle,
+              }}
+              width={(100 * scale).toFixed(0) + '%'}
+              height="auto"
+              muted={muted}
+              video={!!deviceId ? deviceId : true}
+            />
+          </div>
+        )}
+        {mediaSource === MEDIA_SOURCE_MJPEG && (
+          <Image
+            ref={imageSourceRef}
+            src={mapMetaAddressToHostname(url)}
+            style={{
+              width: (100 * scale).toFixed(0) + '%',
+              transform: transformStyle,
+            }}
+            className={styles.center}
+          />
+        )}
+        {crosshair && (
+          <div>
+            <Line
+              className={cx(
+                styles.center
+              )}
+              length="100%"
+            />
+            <Line
+              className={cx(
+                styles.center,
+              )}
+              length="100%"
+              vertical
+            />
+            <Circle
+              className={cx(
+                styles.center,
+              )}
+              diameter={20}
+            />
+            <Circle
+              className={cx(
+                styles.center,
+              )}
+              diameter={40}
+            />
+          </div>
+        )}
+        <ControlBar>
+          <Margin left=".75rem" right=".75rem" bottom=".25rem">
+            <Slider
+              defaultValue={scale}
+              min={0.1}
+              max={10}
+              step={0.1}
+              tipFormatter={null}
+              onChange={changeImageScale}
+            />
+          </Margin>
+          <Container
+            fluid
+            style={{
+              backgroundColor: '#000',
+              padding: '.125rem .75rem',
+            }}
+          >
+            <Row>
+              <Col width="auto">
+                <ScaleText>{scale}x</ScaleText>
+              </Col>
+              <Col>
                 {mediaSource === MEDIA_SOURCE_LOCAL && (
-                    <div style={{ width: '100%' }}>
-                        <WebcamComponent
-                            className={styles.center}
-                            style={{
-                                transform: transformStyle,
-                            }}
-                            width={(100 * scale).toFixed(0) + '%'}
-                            height="auto"
-                            muted={muted}
-                            video={!!deviceId ? deviceId : true}
-                        />
-                    </div>
-                )}
-                {mediaSource === MEDIA_SOURCE_MJPEG && (
-                    <Image
-                        ref={imageSourceRef}
-                        src={mapMetaAddressToHostname(url)}
-                        style={{
-                            width: (100 * scale).toFixed(0) + '%',
-                            transform: transformStyle,
-                        }}
-                        className={styles.center}
+                  <Anchor
+                    className={styles.btnIcon}
+                    onClick={toggleMuted}
+                  >
+                    <i
+                      className={cx(
+                        styles.icon,
+                        styles.inverted,
+                        { [styles.iconUnmute]: !muted },
+                        { [styles.iconMute]: muted }
+                      )}
                     />
+                  </Anchor>
                 )}
-                {crosshair && (
-                    <div>
-                        <Line
-                            className={cx(
-                                styles.center
-                            )}
-                            length="100%"
-                        />
-                        <Line
-                            className={cx(
-                                styles.center,
-                            )}
-                            length="100%"
-                            vertical
-                        />
-                        <Circle
-                            className={cx(
-                                styles.center,
-                            )}
-                            diameter={20}
-                        />
-                        <Circle
-                            className={cx(
-                                styles.center,
-                            )}
-                            diameter={40}
-                        />
-                    </div>
-                )}
-                <ControlBar>
-                    <Margin left=".75rem" right=".75rem" bottom=".25rem">
-                        <Slider
-                            defaultValue={scale}
-                            min={0.1}
-                            max={10}
-                            step={0.1}
-                            tipFormatter={null}
-                            onChange={changeImageScale}
-                        />
-                    </Margin>
-                    <Container
-                        fluid
-                        style={{
-                            backgroundColor: '#000',
-                            padding: '.125rem .75rem',
-                        }}
-                    >
-                        <Row>
-                            <Col width="auto">
-                                <ScaleText>{scale}x</ScaleText>
-                            </Col>
-                            <Col>
-                                {mediaSource === MEDIA_SOURCE_LOCAL && (
-                                    <Anchor
-                                        className={styles.btnIcon}
-                                        onClick={toggleMuted}
-                                    >
-                                        <i
-                                            className={cx(
-                                                styles.icon,
-                                                styles.inverted,
-                                                { [styles.iconUnmute]: !muted },
-                                                { [styles.iconMute]: muted }
-                                            )}
-                                        />
-                                    </Anchor>
-                                )}
-                                <Tooltip
-                                    content={i18n._('Rotate Left')}
-                                    enterDelay={500}
-                                    hideOnClick
-                                    placement="top"
-                                >
-                                    <Anchor
-                                        className={styles.btnIcon}
-                                        onClick={rotateLeft}
-                                    >
-                                        <i
-                                            className={cx(
-                                                styles.icon,
-                                                styles.inverted,
-                                                styles.iconRotateLeft
-                                            )}
-                                        />
-                                    </Anchor>
-                                </Tooltip>
-                                <Tooltip
-                                    content={i18n._('Rotate Right')}
-                                    enterDelay={500}
-                                    hideOnClick
-                                    placement="top"
-                                >
-                                    <Anchor
-                                        className={styles.btnIcon}
-                                        onClick={rotateRight}
-                                    >
-                                        <i
-                                            className={cx(
-                                                styles.icon,
-                                                styles.inverted,
-                                                styles.iconRotateRight
-                                            )}
-                                        />
-                                    </Anchor>
-                                </Tooltip>
-                                <Tooltip
-                                    content={i18n._('Flip Horizontally')}
-                                    enterDelay={500}
-                                    hideOnClick
-                                    placement="top"
-                                >
-                                    <Anchor
-                                        className={styles.btnIcon}
-                                        onClick={toggleFlipHorizontally}
-                                    >
-                                        <i
-                                            className={cx(
-                                                styles.icon,
-                                                styles.inverted,
-                                                styles.iconFlipHorizontally
-                                            )}
-                                        />
-                                    </Anchor>
-                                </Tooltip>
-                                <Tooltip
-                                    content={i18n._('Flip Vertically')}
-                                    enterDelay={500}
-                                    hideOnClick
-                                    placement="top"
-                                >
-                                    <Anchor
-                                        className={styles.btnIcon}
-                                        onClick={toggleFlipVertically}
-                                    >
-                                        <i
-                                            className={cx(
-                                                styles.icon,
-                                                styles.inverted,
-                                                styles.iconFlipVertically
-                                            )}
-                                        />
-                                    </Anchor>
-                                </Tooltip>
-                                <Tooltip
-                                    content={i18n._('Crosshair')}
-                                    enterDelay={500}
-                                    hideOnClick
-                                    placement="top"
-                                >
-                                    <Anchor
-                                        className={styles.btnIcon}
-                                        onClick={toggleCrosshair}
-                                    >
-                                        <i
-                                            className={cx(
-                                                styles.icon,
-                                                styles.inverted,
-                                                styles.iconCrosshair
-                                            )}
-                                        />
-                                    </Anchor>
-                                </Tooltip>
-                            </Col>
-                        </Row>
-                    </Container>
-                </ControlBar>
-            </WebcamContainer>
-        </>
-    );
+                <Tooltip
+                  content={i18n._('Rotate Left')}
+                  enterDelay={500}
+                  hideOnClick
+                  placement="top"
+                >
+                  <Anchor
+                    className={styles.btnIcon}
+                    onClick={rotateLeft}
+                  >
+                    <i
+                      className={cx(
+                        styles.icon,
+                        styles.inverted,
+                        styles.iconRotateLeft
+                      )}
+                    />
+                  </Anchor>
+                </Tooltip>
+                <Tooltip
+                  content={i18n._('Rotate Right')}
+                  enterDelay={500}
+                  hideOnClick
+                  placement="top"
+                >
+                  <Anchor
+                    className={styles.btnIcon}
+                    onClick={rotateRight}
+                  >
+                    <i
+                      className={cx(
+                        styles.icon,
+                        styles.inverted,
+                        styles.iconRotateRight
+                      )}
+                    />
+                  </Anchor>
+                </Tooltip>
+                <Tooltip
+                  content={i18n._('Flip Horizontally')}
+                  enterDelay={500}
+                  hideOnClick
+                  placement="top"
+                >
+                  <Anchor
+                    className={styles.btnIcon}
+                    onClick={toggleFlipHorizontally}
+                  >
+                    <i
+                      className={cx(
+                        styles.icon,
+                        styles.inverted,
+                        styles.iconFlipHorizontally
+                      )}
+                    />
+                  </Anchor>
+                </Tooltip>
+                <Tooltip
+                  content={i18n._('Flip Vertically')}
+                  enterDelay={500}
+                  hideOnClick
+                  placement="top"
+                >
+                  <Anchor
+                    className={styles.btnIcon}
+                    onClick={toggleFlipVertically}
+                  >
+                    <i
+                      className={cx(
+                        styles.icon,
+                        styles.inverted,
+                        styles.iconFlipVertically
+                      )}
+                    />
+                  </Anchor>
+                </Tooltip>
+                <Tooltip
+                  content={i18n._('Crosshair')}
+                  enterDelay={500}
+                  hideOnClick
+                  placement="top"
+                >
+                  <Anchor
+                    className={styles.btnIcon}
+                    onClick={toggleCrosshair}
+                  >
+                    <i
+                      className={cx(
+                        styles.icon,
+                        styles.inverted,
+                        styles.iconCrosshair
+                      )}
+                    />
+                  </Anchor>
+                </Tooltip>
+              </Col>
+            </Row>
+          </Container>
+        </ControlBar>
+      </WebcamContainer>
+    </>
+  );
 };
 
 export default compose(
-    withMemo(_isEqual),
+  withMemo(_isEqual),
 )(Webcam);
 
 const ControlBar = styled.div`

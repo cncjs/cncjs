@@ -8,45 +8,45 @@ class GridLine {
     colorGrid = new THREE.Color(0x888888);
 
     constructor(sizeX, stepX, sizeY, stepY, colorCenterLine, colorGrid) {
-        colorCenterLine = new THREE.Color(colorCenterLine) || this.colorCenterLine;
-        colorGrid = new THREE.Color(colorGrid) || this.colorGrid;
+      colorCenterLine = new THREE.Color(colorCenterLine) || this.colorCenterLine;
+      colorGrid = new THREE.Color(colorGrid) || this.colorGrid;
 
-        sizeY = (typeof sizeY === 'undefined') ? sizeX : sizeY;
-        stepY = (typeof stepY === 'undefined') ? stepX : stepY;
+      sizeY = (typeof sizeY === 'undefined') ? sizeX : sizeY;
+      stepY = (typeof stepY === 'undefined') ? stepX : stepY;
 
-        for (let i = -1 * sizeX; i <= sizeX; i += stepX) {
-            const geometry = new THREE.Geometry();
-            const material = new THREE.LineBasicMaterial({
-                vertexColors: THREE.VertexColors
-            });
-            const color = (i === 0) ? colorCenterLine : colorGrid;
+      for (let i = -1 * sizeX; i <= sizeX; i += stepX) {
+        const geometry = new THREE.Geometry();
+        const material = new THREE.LineBasicMaterial({
+          vertexColors: THREE.VertexColors
+        });
+        const color = (i === 0) ? colorCenterLine : colorGrid;
 
-            geometry.vertices.push(
-                new THREE.Vector3(-sizeX, i, 0),
-                new THREE.Vector3(sizeX, i, 0),
-            );
-            geometry.colors.push(color, color);
+        geometry.vertices.push(
+          new THREE.Vector3(-sizeX, i, 0),
+          new THREE.Vector3(sizeX, i, 0),
+        );
+        geometry.colors.push(color, color);
 
-            this.group.add(new THREE.Line(geometry, material));
-        }
+        this.group.add(new THREE.Line(geometry, material));
+      }
 
-        for (let i = -1 * sizeY; i <= sizeY; i += stepY) {
-            const geometry = new THREE.Geometry();
-            const material = new THREE.LineBasicMaterial({
-                vertexColors: THREE.VertexColors
-            });
-            const color = (i === 0) ? colorCenterLine : colorGrid;
+      for (let i = -1 * sizeY; i <= sizeY; i += stepY) {
+        const geometry = new THREE.Geometry();
+        const material = new THREE.LineBasicMaterial({
+          vertexColors: THREE.VertexColors
+        });
+        const color = (i === 0) ? colorCenterLine : colorGrid;
 
-            geometry.vertices.push(
-                new THREE.Vector3(i, -sizeY, 0),
-                new THREE.Vector3(i, sizeY, 0),
-            );
-            geometry.colors.push(color, color);
+        geometry.vertices.push(
+          new THREE.Vector3(i, -sizeY, 0),
+          new THREE.Vector3(i, sizeY, 0),
+        );
+        geometry.colors.push(color, color);
 
-            this.group.add(new THREE.Line(geometry, material));
-        }
+        this.group.add(new THREE.Line(geometry, material));
+      }
 
-        return this.group;
+      return this.group;
     }
 }
 

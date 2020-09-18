@@ -1,9 +1,9 @@
 const RenderChildren = ({ children, ...props }) => {
-    if (typeof children === 'function') {
-        return children(props);
-    }
+  if (typeof children === 'function') {
+    return children(props);
+  }
 
-    return children;
+  return children;
 };
 
 export default RenderChildren;

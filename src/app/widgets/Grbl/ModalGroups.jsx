@@ -14,148 +14,148 @@ import OverflowEllipsis from './components/OverflowEllipsis';
 import Readout from './components/Readout';
 
 const ModalGroups = ({
-    modal,
+  modal,
 }) => {
-    const config = useWidgetConfig();
-    const expanded = config.get('panel.modalGroups.expanded');
-    const collapsed = !expanded;
+  const config = useWidgetConfig();
+  const expanded = config.get('panel.modalGroups.expanded');
+  const collapsed = !expanded;
 
-    return (
-        <CollapsibleCard
-            easing="ease-out"
-            collapsed={collapsed}
-        >
-            {({ collapsed, ToggleIcon, Header, Body }) => {
-                const expanded = !collapsed;
-                config.set('panel.modalGroups.expanded', expanded);
+  return (
+    <CollapsibleCard
+      easing="ease-out"
+      collapsed={collapsed}
+    >
+      {({ collapsed, ToggleIcon, Header, Body }) => {
+        const expanded = !collapsed;
+        config.set('panel.modalGroups.expanded', expanded);
 
-                return (
-                    <Container fluid style={{ width: '100%' }}>
-                        <Header>
-                            {({ hovered }) => (
-                                <Row>
-                                    <Col>{i18n._('Modal Groups')}</Col>
-                                    <Col width="auto">
-                                        <ToggleIcon style={{ opacity: hovered ? 1 : 0.5 }} />
-                                    </Col>
-                                </Row>
-                            )}
-                        </Header>
-                        <Body>
-                            <HorizontalForm spacing={['.75rem', '.5rem']}>
-                                {({ FormContainer, FormRow, FormCol }) => (
-                                    <FormContainer>
-                                        <FormRow>
-                                            <FormCol>
-                                                <OverflowEllipsis title={i18n._('Motion')}>
-                                                    {i18n._('Motion')}
-                                                </OverflowEllipsis>
-                                            </FormCol>
-                                            <FormCol style={{ width: '50%' }}>
-                                                <Readout>{nonblankValue(modal.motion)}</Readout>
-                                            </FormCol>
-                                        </FormRow>
-                                        <FormRow>
-                                            <FormCol>
-                                                <OverflowEllipsis title={i18n._('Coordinate')}>
-                                                    {i18n._('Coordinate')}
-                                                </OverflowEllipsis>
-                                            </FormCol>
-                                            <FormCol style={{ width: '50%' }}>
-                                                <Readout>{nonblankValue(modal.wcs)}</Readout>
-                                            </FormCol>
-                                        </FormRow>
-                                        <FormRow>
-                                            <FormCol>
-                                                <OverflowEllipsis title={i18n._('Plane')}>
-                                                    {i18n._('Plane')}
-                                                </OverflowEllipsis>
-                                            </FormCol>
-                                            <FormCol style={{ width: '50%' }}>
-                                                <Readout>{nonblankValue(modal.plane)}</Readout>
-                                            </FormCol>
-                                        </FormRow>
-                                        <FormRow>
-                                            <FormCol>
-                                                <OverflowEllipsis title={i18n._('Distance')}>
-                                                    {i18n._('Distance')}
-                                                </OverflowEllipsis>
-                                            </FormCol>
-                                            <FormCol style={{ width: '50%' }}>
-                                                <Readout>{nonblankValue(modal.distance)}</Readout>
-                                            </FormCol>
-                                        </FormRow>
-                                        <FormRow>
-                                            <FormCol>
-                                                <OverflowEllipsis title={i18n._('Feed Rate')}>
-                                                    {i18n._('Feed Rate')}
-                                                </OverflowEllipsis>
-                                            </FormCol>
-                                            <FormCol style={{ width: '50%' }}>
-                                                <Readout>{nonblankValue(modal.feedrate)}</Readout>
-                                            </FormCol>
-                                        </FormRow>
-                                        <FormRow>
-                                            <FormCol>
-                                                <OverflowEllipsis title={i18n._('Units')}>
-                                                    {i18n._('Units')}
-                                                </OverflowEllipsis>
-                                            </FormCol>
-                                            <FormCol style={{ width: '50%' }}>
-                                                <Readout>{nonblankValue(modal.units)}</Readout>
-                                            </FormCol>
-                                        </FormRow>
-                                        <FormRow>
-                                            <FormCol>
-                                                <OverflowEllipsis title={i18n._('Program')}>
-                                                    {i18n._('Program')}
-                                                </OverflowEllipsis>
-                                            </FormCol>
-                                            <FormCol style={{ width: '50%' }}>
-                                                <Readout>{nonblankValue(modal.program)}</Readout>
-                                            </FormCol>
-                                        </FormRow>
-                                        <FormRow>
-                                            <FormCol>
-                                                <OverflowEllipsis title={i18n._('Spindle')}>
-                                                    {i18n._('Spindle')}
-                                                </OverflowEllipsis>
-                                            </FormCol>
-                                            <FormCol style={{ width: '50%' }}>
-                                                <Readout>{nonblankValue(modal.spindle)}</Readout>
-                                            </FormCol>
-                                        </FormRow>
-                                        <FormRow>
-                                            <FormCol>
-                                                <OverflowEllipsis title={i18n._('Coolant')}>
-                                                    {i18n._('Coolant')}
-                                                </OverflowEllipsis>
-                                            </FormCol>
-                                            <FormCol style={{ width: '50%' }}>
-                                                <Readout>
-                                                    {ensureArray(modal.coolant).map(coolant => (
-                                                        <div title={coolant} key={coolant}>{nonblankValue(coolant)}</div>
-                                                    ))}
-                                                </Readout>
-                                            </FormCol>
-                                        </FormRow>
-                                    </FormContainer>
-                                )}
-                            </HorizontalForm>
-                        </Body>
-                    </Container>
-                );
-            }}
-        </CollapsibleCard>
-    );
+        return (
+          <Container fluid style={{ width: '100%' }}>
+            <Header>
+              {({ hovered }) => (
+                <Row>
+                  <Col>{i18n._('Modal Groups')}</Col>
+                  <Col width="auto">
+                    <ToggleIcon style={{ opacity: hovered ? 1 : 0.5 }} />
+                  </Col>
+                </Row>
+              )}
+            </Header>
+            <Body>
+              <HorizontalForm spacing={['.75rem', '.5rem']}>
+                {({ FormContainer, FormRow, FormCol }) => (
+                  <FormContainer>
+                    <FormRow>
+                      <FormCol>
+                        <OverflowEllipsis title={i18n._('Motion')}>
+                          {i18n._('Motion')}
+                        </OverflowEllipsis>
+                      </FormCol>
+                      <FormCol style={{ width: '50%' }}>
+                        <Readout>{nonblankValue(modal.motion)}</Readout>
+                      </FormCol>
+                    </FormRow>
+                    <FormRow>
+                      <FormCol>
+                        <OverflowEllipsis title={i18n._('Coordinate')}>
+                          {i18n._('Coordinate')}
+                        </OverflowEllipsis>
+                      </FormCol>
+                      <FormCol style={{ width: '50%' }}>
+                        <Readout>{nonblankValue(modal.wcs)}</Readout>
+                      </FormCol>
+                    </FormRow>
+                    <FormRow>
+                      <FormCol>
+                        <OverflowEllipsis title={i18n._('Plane')}>
+                          {i18n._('Plane')}
+                        </OverflowEllipsis>
+                      </FormCol>
+                      <FormCol style={{ width: '50%' }}>
+                        <Readout>{nonblankValue(modal.plane)}</Readout>
+                      </FormCol>
+                    </FormRow>
+                    <FormRow>
+                      <FormCol>
+                        <OverflowEllipsis title={i18n._('Distance')}>
+                          {i18n._('Distance')}
+                        </OverflowEllipsis>
+                      </FormCol>
+                      <FormCol style={{ width: '50%' }}>
+                        <Readout>{nonblankValue(modal.distance)}</Readout>
+                      </FormCol>
+                    </FormRow>
+                    <FormRow>
+                      <FormCol>
+                        <OverflowEllipsis title={i18n._('Feed Rate')}>
+                          {i18n._('Feed Rate')}
+                        </OverflowEllipsis>
+                      </FormCol>
+                      <FormCol style={{ width: '50%' }}>
+                        <Readout>{nonblankValue(modal.feedrate)}</Readout>
+                      </FormCol>
+                    </FormRow>
+                    <FormRow>
+                      <FormCol>
+                        <OverflowEllipsis title={i18n._('Units')}>
+                          {i18n._('Units')}
+                        </OverflowEllipsis>
+                      </FormCol>
+                      <FormCol style={{ width: '50%' }}>
+                        <Readout>{nonblankValue(modal.units)}</Readout>
+                      </FormCol>
+                    </FormRow>
+                    <FormRow>
+                      <FormCol>
+                        <OverflowEllipsis title={i18n._('Program')}>
+                          {i18n._('Program')}
+                        </OverflowEllipsis>
+                      </FormCol>
+                      <FormCol style={{ width: '50%' }}>
+                        <Readout>{nonblankValue(modal.program)}</Readout>
+                      </FormCol>
+                    </FormRow>
+                    <FormRow>
+                      <FormCol>
+                        <OverflowEllipsis title={i18n._('Spindle')}>
+                          {i18n._('Spindle')}
+                        </OverflowEllipsis>
+                      </FormCol>
+                      <FormCol style={{ width: '50%' }}>
+                        <Readout>{nonblankValue(modal.spindle)}</Readout>
+                      </FormCol>
+                    </FormRow>
+                    <FormRow>
+                      <FormCol>
+                        <OverflowEllipsis title={i18n._('Coolant')}>
+                          {i18n._('Coolant')}
+                        </OverflowEllipsis>
+                      </FormCol>
+                      <FormCol style={{ width: '50%' }}>
+                        <Readout>
+                          {ensureArray(modal.coolant).map(coolant => (
+                            <div title={coolant} key={coolant}>{nonblankValue(coolant)}</div>
+                          ))}
+                        </Readout>
+                      </FormCol>
+                    </FormRow>
+                  </FormContainer>
+                )}
+              </HorizontalForm>
+            </Body>
+          </Container>
+        );
+      }}
+    </CollapsibleCard>
+  );
 };
 
 export default connect(store => {
-    const controllerState = _get(store, 'controller.state');
-    const parserstate = _get(controllerState, 'parserstate');
-    const modal = _get(parserstate, 'modal');
+  const controllerState = _get(store, 'controller.state');
+  const parserstate = _get(controllerState, 'parserstate');
+  const modal = _get(parserstate, 'modal');
 
-    return {
-        modal: _mapValues(modal, mapGCodeToText),
-    };
+  return {
+    modal: _mapValues(modal, mapGCodeToText),
+  };
 })(ModalGroups);

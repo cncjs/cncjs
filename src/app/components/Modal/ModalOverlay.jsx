@@ -4,56 +4,56 @@ import React, { Component } from 'react';
 import styles from './index.styl';
 
 const isModifiedEvent = (event) => {
-    return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
+  return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 };
 
 const isLeftClickEvent = (event) => {
-    return event.button === 0;
+  return event.button === 0;
 };
 
 class ModalOverlay extends Component {
     static propTypes = {
-        disableOverlayClick: PropTypes.bool,
-        onClose: PropTypes.func
+      disableOverlayClick: PropTypes.bool,
+      onClose: PropTypes.func
     };
 
     ref = React.createRef();
 
     handleClick = (event) => {
-        const { disableOverlayClick, onClose } = this.props;
+      const { disableOverlayClick, onClose } = this.props;
 
-        if (disableOverlayClick) {
-            return;
-        }
+      if (disableOverlayClick) {
+        return;
+      }
 
-        const node = this.ref.current;
-        const isOverlayTarget = (event.target === node);
-        const canClose = !isModifiedEvent(event) && isLeftClickEvent(event) && isOverlayTarget;
+      const node = this.ref.current;
+      const isOverlayTarget = (event.target === node);
+      const canClose = !isModifiedEvent(event) && isLeftClickEvent(event) && isOverlayTarget;
 
-        if (canClose && (typeof onClose === 'function')) {
-            onClose(event);
-        }
+      if (canClose && (typeof onClose === 'function')) {
+        onClose(event);
+      }
     };
 
     render() {
-        const {
+      const {
             disableOverlayClick, // eslint-disable-line
             onClose, // eslint-disable-line
-            className,
-            ...props
-        } = this.props;
+        className,
+        ...props
+      } = this.props;
 
-        return (
-            <div
-                ref={this.ref}
-                {...props}
-                role="presentation"
-                className={cx(className, styles.modalOverlay, styles.centered)}
-                onClick={this.handleClick}
-            >
-                {this.props.children}
-            </div>
-        );
+      return (
+        <div
+          ref={this.ref}
+          {...props}
+          role="presentation"
+          className={cx(className, styles.modalOverlay, styles.centered)}
+          onClick={this.handleClick}
+        >
+          {this.props.children}
+        </div>
+      );
     }
 }
 

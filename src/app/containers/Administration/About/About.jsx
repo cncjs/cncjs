@@ -6,33 +6,33 @@ import UpdateStatusContainer from './UpdateStatusContainer';
 
 class About extends Component {
     static propTypes = {
-        initialState: PropTypes.object,
-        state: PropTypes.object,
-        stateChanged: PropTypes.bool,
-        actions: PropTypes.object
+      initialState: PropTypes.object,
+      state: PropTypes.object,
+      stateChanged: PropTypes.bool,
+      actions: PropTypes.object
     };
 
     componentDidMount() {
-        const { actions } = this.props;
-        actions.checkLatestVersion();
+      const { actions } = this.props;
+      actions.checkLatestVersion();
     }
 
     render() {
-        const { state } = this.props;
-        const { version } = state;
+      const { state } = this.props;
+      const { version } = state;
 
-        return (
-            <div>
-                <AboutContainer version={version} />
-                <HelpContainer />
-                <UpdateStatusContainer
-                    checking={version.checking}
-                    current={version.current}
-                    latest={version.latest}
-                    lastUpdate={version.lastUpdate}
-                />
-            </div>
-        );
+      return (
+        <div>
+          <AboutContainer version={version} />
+          <HelpContainer />
+          <UpdateStatusContainer
+            checking={version.checking}
+            current={version.current}
+            latest={version.latest}
+            lastUpdate={version.lastUpdate}
+          />
+        </div>
+      );
     }
 }
 

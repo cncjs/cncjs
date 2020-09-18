@@ -3,7 +3,7 @@ import ToastRenderer from './ToastRenderer';
 import useToast from './useToast';
 
 export {
-    ToastManager,
-    ToastRenderer,
-    useToast,
+  ToastManager,
+  ToastRenderer,
+  useToast,
 };

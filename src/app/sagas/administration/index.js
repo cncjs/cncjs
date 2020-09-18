@@ -1,7 +1,7 @@
 export function* init() {
-    yield null;
+  yield null;
 }
 
 export function* process() {
-    yield null;
+  yield null;
 }

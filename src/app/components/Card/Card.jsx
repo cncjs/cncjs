@@ -5,42 +5,42 @@ import styles from './styles/index.styl';
 import Resolver from './Resolver';
 
 const Card = ({
-    className,
-    style,
-    tag: Component,
-    ...props
+  className,
+  style,
+  tag: Component,
+  ...props
 }) => (
-    <Resolver>
-        {value => {
-            const { borderColor, borderRadius, borderWidth } = value;
+  <Resolver>
+    {value => {
+      const { borderColor, borderRadius, borderWidth } = value;
 
-            if (borderColor !== undefined) {
-                style = { borderColor, ...style };
-            }
-            if (borderRadius !== undefined) {
-                style = { borderRadius, ...style };
-            }
-            if (borderWidth !== undefined) {
-                style = { borderWidth, ...style };
-            }
+      if (borderColor !== undefined) {
+        style = { borderColor, ...style };
+      }
+      if (borderRadius !== undefined) {
+        style = { borderRadius, ...style };
+      }
+      if (borderWidth !== undefined) {
+        style = { borderWidth, ...style };
+      }
 
-            return (
-                <Component
-                    {...props}
-                    style={style}
-                    className={cx(className, styles.card)}
-                />
-            );
-        }}
-    </Resolver>
+      return (
+        <Component
+          {...props}
+          style={style}
+          className={cx(className, styles.card)}
+        />
+      );
+    }}
+  </Resolver>
 );
 
 Card.propTypes = {
-    tag: tagPropType,
+  tag: tagPropType,
 };
 
 Card.defaultProps = {
-    tag: 'div',
+  tag: 'div',
 };
 
 export default Card;

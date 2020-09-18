@@ -5,9 +5,9 @@ import DropdownMenu from './DropdownMenu';
 import MenuItem from './MenuItem';
 
 export {
-    DropdownToggle,
-    DropdownMenuWrapper,
-    DropdownMenu,
-    MenuItem,
+  DropdownToggle,
+  DropdownMenuWrapper,
+  DropdownMenu,
+  MenuItem,
 };
 export default Dropdown;

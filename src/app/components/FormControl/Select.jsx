@@ -5,15 +5,15 @@ import FormControl from './FormControl';
 import styles from './index.styl';
 
 const propTypes = {
-    tag: sharedPropTypes.tag,
+  tag: sharedPropTypes.tag,
 };
 
 const defaultProps = {
-    tag: 'select',
+  tag: 'select',
 };
 
 const Select = React.forwardRef(({ className, ...props }, ref) => (
-    <FormControl ref={ref} {...props} className={cx(className, styles.select)} />
+  <FormControl ref={ref} {...props} className={cx(className, styles.select)} />
 ));
 
 Select.propTypes = propTypes;

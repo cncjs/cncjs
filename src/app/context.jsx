@@ -11,32 +11,32 @@ import reduxStore from 'app/store/redux';
 import i18next from 'app/i18next';
 
 export const GlobalProvider = ({ children }) => (
-    <ThemeProvider>
-        <ColorModeProvider>
-            <ReduxProvider store={reduxStore}>
-                <ModalProvider>
-                    <ModalRoot />
-                    <GridSystemProvider
-                        breakpoints={[576, 768, 992, 1200, 1600]}
-                        containerWidths={[540, 720, 960, 1140]}
-                        columns={12}
-                        gutterWidth={0}
-                        layout="flexbox"
-                    >
-                        <CardProvider
-                            borderRadius={0}
-                            spacingX=".75rem"
-                            spacingY=".375rem"
-                        >
-                            <I18nextProvider i18n={i18next}>
-                                <HashRouter>
-                                    {children}
-                                </HashRouter>
-                            </I18nextProvider>
-                        </CardProvider>
-                    </GridSystemProvider>
-                </ModalProvider>
-            </ReduxProvider>
-        </ColorModeProvider>
-    </ThemeProvider>
+  <ThemeProvider>
+    <ColorModeProvider>
+      <ReduxProvider store={reduxStore}>
+        <ModalProvider>
+          <ModalRoot />
+          <GridSystemProvider
+            breakpoints={[576, 768, 992, 1200, 1600]}
+            containerWidths={[540, 720, 960, 1140]}
+            columns={12}
+            gutterWidth={0}
+            layout="flexbox"
+          >
+            <CardProvider
+              borderRadius={0}
+              spacingX=".75rem"
+              spacingY=".375rem"
+            >
+              <I18nextProvider i18n={i18next}>
+                <HashRouter>
+                  {children}
+                </HashRouter>
+              </I18nextProvider>
+            </CardProvider>
+          </GridSystemProvider>
+        </ModalProvider>
+      </ReduxProvider>
+    </ColorModeProvider>
+  </ThemeProvider>
 );

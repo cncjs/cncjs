@@ -8,55 +8,55 @@ import SmoothieLineParserResultParameters from './SmoothieLineParserResultParame
 import SmoothieLineParserResultVersion from './SmoothieLineParserResultVersion';
 
 class SmoothieLineParser {
-    parse(line) {
-        const parsers = [
-            // <>
-            SmoothieLineParserResultStatus,
+  parse(line) {
+    const parsers = [
+      // <>
+      SmoothieLineParserResultStatus,
 
-            // ok
-            SmoothieLineParserResultOk,
+      // ok
+      SmoothieLineParserResultOk,
 
-            // error:x
-            SmoothieLineParserResultError,
+      // error:x
+      SmoothieLineParserResultError,
 
-            // ALARM:
-            SmoothieLineParserResultAlarm,
+      // ALARM:
+      SmoothieLineParserResultAlarm,
 
-            // [G38.2 G54 G17 G21 G91 G94 M0 M5 M9 T0 F20. S0.]
-            SmoothieLineParserResultParserState,
+      // [G38.2 G54 G17 G21 G91 G94 M0 M5 M9 T0 F20. S0.]
+      SmoothieLineParserResultParserState,
 
-            // [G54:0.000,0.000,0.000]
-            // [G55:0.000,0.000,0.000]
-            // [G56:0.000,0.000,0.000]
-            // [G57:0.000,0.000,0.000]
-            // [G58:0.000,0.000,0.000]
-            // [G59:0.000,0.000,0.000]
-            // [G28:0.000,0.000,0.000]
-            // [G30:0.000,0.000,0.000]
-            // [G92:0.000,0.000,0.000]
-            // [TLO:0.000]
-            // [PRB:0.000,0.000,0.000:0]
-            SmoothieLineParserResultParameters,
+      // [G54:0.000,0.000,0.000]
+      // [G55:0.000,0.000,0.000]
+      // [G56:0.000,0.000,0.000]
+      // [G57:0.000,0.000,0.000]
+      // [G58:0.000,0.000,0.000]
+      // [G59:0.000,0.000,0.000]
+      // [G28:0.000,0.000,0.000]
+      // [G30:0.000,0.000,0.000]
+      // [G92:0.000,0.000,0.000]
+      // [TLO:0.000]
+      // [PRB:0.000,0.000,0.000:0]
+      SmoothieLineParserResultParameters,
 
-            // Build version: edge-3332442, Build date: xxx, MCU: LPC1769, System Clock: 120MHz
-            SmoothieLineParserResultVersion
-        ];
+      // Build version: edge-3332442, Build date: xxx, MCU: LPC1769, System Clock: 120MHz
+      SmoothieLineParserResultVersion
+    ];
 
-        for (let parser of parsers) {
-            const result = parser.parse(line);
-            if (result) {
-                _.set(result, 'payload.raw', line);
-                return result;
-            }
-        }
-
-        return {
-            type: null,
-            payload: {
-                raw: line
-            }
-        };
+    for (let parser of parsers) {
+      const result = parser.parse(line);
+      if (result) {
+        _.set(result, 'payload.raw', line);
+        return result;
+      }
     }
+
+    return {
+      type: null,
+      payload: {
+        raw: line
+      }
+    };
+  }
 }
 
 export default SmoothieLineParser;

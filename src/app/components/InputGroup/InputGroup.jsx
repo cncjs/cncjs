@@ -14,65 +14,65 @@ import styles from './index.styl';
 const getComponentType = (Component) => (Component ? (<Component />).type : undefined);
 
 const propTypes = {
-    tag: sharedPropTypes.tag,
-    lg: PropTypes.bool,
-    md: PropTypes.bool,
-    sm: PropTypes.bool,
+  tag: sharedPropTypes.tag,
+  lg: PropTypes.bool,
+  md: PropTypes.bool,
+  sm: PropTypes.bool,
 };
 
 const defaultProps = {
-    tag: 'div',
+  tag: 'div',
 };
 
 const InputGroup = ({
-    tag: Tag,
-    lg,
-    md,
-    sm,
-    className,
-    children,
-    ...props
+  tag: Tag,
+  lg,
+  md,
+  sm,
+  className,
+  children,
+  ...props
 }) => {
-    if (lg) {
-        md = false;
-        sm = false;
-    }
-    if (md) {
-        sm = false;
-    }
-    if (!lg && !md && !sm) {
-        md = true;
-    }
+  if (lg) {
+    md = false;
+    sm = false;
+  }
+  if (md) {
+    sm = false;
+  }
+  if (!lg && !md && !sm) {
+    md = true;
+  }
 
-    return (
-        <Tag
-            {...props}
-            className={cx(className, styles.inputGroup, {
-                [styles.inputGroupLg]: lg,
-                [styles.inputGroupMd]: md,
-                [styles.inputGroupSm]: sm,
-            })}
-        >
-            {React.Children.map(children, child => {
-                if (React.isValidElement(child) && (
-                    child.type === getComponentType(FormControl) ||
+  return (
+    <Tag
+      {...props}
+      className={cx(className, styles.inputGroup, {
+        [styles.inputGroupLg]: lg,
+        [styles.inputGroupMd]: md,
+        [styles.inputGroupSm]: sm,
+      })}
+    >
+      {React.Children.map(children, child => {
+        if (React.isValidElement(child) && (
+          child.type === getComponentType(FormControl) ||
                     child.type === getComponentType(Input) ||
                     child.type === getComponentType(Select) ||
                     child.type === getComponentType(Textarea)
-                )) {
-                    const childProps = {};
+        )) {
+          const childProps = {};
 
-                    childProps.lg = !!lg;
-                    childProps.md = !!md;
-                    childProps.sm = !!sm;
+          childProps.lg = !!lg;
+          childProps.md = !!md;
+          childProps.sm = !!sm;
 
-                    childProps.className = cx(childProps.className, styles.inputGroupItem);
-                    return React.cloneElement(child, childProps);
-                }
-                return child;
-            })}
-        </Tag>
-    );
+          childProps.className = cx(childProps.className, styles.inputGroupItem);
+          return React.cloneElement(child, childProps);
+        }
+        return child;
+      })}
+    </Tag>
+  );
 };
 
 InputGroup.propTypes = propTypes;

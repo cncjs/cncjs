@@ -3,14 +3,14 @@ import React from 'react';
 import styles from './index.styl';
 
 const InputGroupAppend = ({
-    tag: Component = 'div',
-    className,
-    ...props
+  tag: Component = 'div',
+  className,
+  ...props
 }) => (
-    <Component
-        {...props}
-        className={cx(className, styles.inputGroupAppend)}
-    />
+  <Component
+    {...props}
+    className={cx(className, styles.inputGroupAppend)}
+  />
 );
 
 export default InputGroupAppend;

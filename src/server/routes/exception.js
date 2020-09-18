@@ -15,10 +15,10 @@ import express from 'express';
  */
 
 const errlog = () => {
-    return (err, req, res, next) => {
-        console.error(err.stack);
-        next(err);
-    };
+  return (err, req, res, next) => {
+    console.error(err.stack);
+    next(err);
+  };
 };
 
 /**
@@ -38,20 +38,20 @@ const errlog = () => {
  */
 
 const errclient = (options) => {
-    options = options || {};
+  options = options || {};
 
-    let error = options.error || '';
+  let error = options.error || '';
 
-    return (err, req, res, next) => {
-        if (req.xhr) {
-            res.send(500, {
-                error: error
-            });
-            return;
-        }
+  return (err, req, res, next) => {
+    if (req.xhr) {
+      res.send(500, {
+        error: error
+      });
+      return;
+    }
 
-        next(err);
-    };
+    next(err);
+  };
 };
 
 /**
@@ -72,29 +72,29 @@ const errclient = (options) => {
  */
 
 const errnotfound = (options) => {
-    options = options || {};
+  options = options || {};
 
-    let view = options.view || '404',
-        error = options.error || '';
+  let view = options.view || '404',
+    error = options.error || '';
 
-    return (req, res, next) => {
-        res.status(404);
+  return (req, res, next) => {
+    res.status(404);
 
-        // respond with html page
-        if (req.accepts('html')) {
-            res.render(view, { url: req.url });
-            return;
-        }
+    // respond with html page
+    if (req.accepts('html')) {
+      res.render(view, { url: req.url });
+      return;
+    }
 
-        // respond with json
-        if (req.accepts('json')) {
-            res.send({ error: error });
-            return;
-        }
+    // respond with json
+    if (req.accepts('json')) {
+      res.send({ error: error });
+      return;
+    }
 
-        // default to plain-text. send()
-        res.type('txt').send(error);
-    };
+    // default to plain-text. send()
+    res.type('txt').send(error);
+  };
 };
 
 /**
@@ -127,40 +127,40 @@ const errnotfound = (options) => {
  */
 
 const errserver = (options) => {
-    options = options || {};
+  options = options || {};
 
-    let view = options.view || '500',
-        error = options.error || '';
+  let view = options.view || '500',
+    error = options.error || '';
 
-    return (err, req, res, next) => {
-        // we may use properties of the error object
-        // here and next(err) appropriately, or if
-        // we possibly recovered from the error, simply next().
-        res.status(err.status || 500);
-        res.render(view, { error: error });
-    };
+  return (err, req, res, next) => {
+    // we may use properties of the error object
+    // here and next(err) appropriately, or if
+    // we possibly recovered from the error, simply next().
+    res.status(err.status || 500);
+    res.render(view, { error: error });
+  };
 };
 
 const createExceptionRouter = () => {
-    const router = express.Router();
+  const router = express.Router();
 
-    router.use(errlog());
+  router.use(errlog());
 
-    router.use(errclient({
-        error: 'XHR error'
-    }));
+  router.use(errclient({
+    error: 'XHR error'
+  }));
 
-    router.use(errnotfound({
-        view: path.join('common', '404.hogan'),
-        error: 'Not found'
-    }));
+  router.use(errnotfound({
+    view: path.join('common', '404.hogan'),
+    error: 'Not found'
+  }));
 
-    router.use(errserver({
-        view: path.join('common', '500.hogan'),
-        error: 'Internal server error'
-    }));
+  router.use(errserver({
+    view: path.join('common', '500.hogan'),
+    error: 'Internal server error'
+  }));
 
-    return router;
+  return router;
 };
 
 export { createExceptionRouter };

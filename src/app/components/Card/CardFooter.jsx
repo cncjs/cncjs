@@ -5,44 +5,44 @@ import Resolver from './Resolver';
 import styles from './styles/index.styl';
 
 const CardFooter = ({
-    className,
-    style,
-    tag: Component,
-    ...props
+  className,
+  style,
+  tag: Component,
+  ...props
 }) => (
-    <Resolver>
-        {value => {
-            const { borderColor, borderWidth, spacingX, spacingY } = value;
+  <Resolver>
+    {value => {
+      const { borderColor, borderWidth, spacingX, spacingY } = value;
 
-            if (borderColor !== undefined) {
-                style = { borderTopColor: borderColor, ...style };
-            }
-            if (borderWidth !== undefined) {
-                style = { borderTopWidth: borderWidth, ...style };
-            }
+      if (borderColor !== undefined) {
+        style = { borderTopColor: borderColor, ...style };
+      }
+      if (borderWidth !== undefined) {
+        style = { borderTopWidth: borderWidth, ...style };
+      }
 
-            style = {
-                padding: `${spacingY} ${spacingX}`,
-                ...style,
-            };
+      style = {
+        padding: `${spacingY} ${spacingX}`,
+        ...style,
+      };
 
-            return (
-                <Component
-                    {...props}
-                    style={style}
-                    className={cx(className, styles.cardFooter)}
-                />
-            );
-        }}
-    </Resolver>
+      return (
+        <Component
+          {...props}
+          style={style}
+          className={cx(className, styles.cardFooter)}
+        />
+      );
+    }}
+  </Resolver>
 );
 
 CardFooter.propTypes = {
-    tag: tagPropType,
+  tag: tagPropType,
 };
 
 CardFooter.defaultProps = {
-    tag: 'div',
+  tag: 'div',
 };
 
 export default CardFooter;

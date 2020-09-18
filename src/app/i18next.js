@@ -5,18 +5,18 @@ import { initReactI18next } from 'react-i18next';
 import settings from 'app/config/settings';
 
 i18next
-    .use(XHR)
-    .use(LanguageDetector)
-    .use(initReactI18next)
-    .init(settings.i18next, (err, t) => {
-        if (err) {
-            return;
-        }
+  .use(XHR)
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init(settings.i18next, (err, t) => {
+    if (err) {
+      return;
+    }
 
-        if (i18next.language) {
-            const html = document.querySelector('html');
-            html.setAttribute('lang', i18next.language);
-        }
-    });
+    if (i18next.language) {
+      const html = document.querySelector('html');
+      html.setAttribute('lang', i18next.language);
+    }
+  });
 
 export default i18next;
