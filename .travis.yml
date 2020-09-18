@@ -11,7 +11,7 @@ os:
   - linux
   - osx
 
-osx_image: xcode8.3
+osx_image: xcode12
 
 node_js:
   - "10"
@@ -44,20 +44,6 @@ before_install:
   - git --version
   - git config --global user.name "Travis CI"
   - git config --global user.email "travis@travis-ci.org"
-  #
-  # https://github.com/electron-userland/electron-builder/wiki/Multi-Platform-Build#os-x
-  #
-  # Use brew to install required packages.
-  #
-  # To build app in distributable format for Windows on OS X:
-  # $ brew install Caskroom/cask/xquartz wine mono
-  #
-  # To build app in distributable format for Linux on OS X:
-  # $ brew install ruby gnu-tar libicns graphicsmagick
-  #
-  #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-  #    brew update;
-  #  fi
   - npm install -g npm
   - npm --version
 
