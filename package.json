@@ -147,6 +147,8 @@
     "@fortawesome/free-solid-svg-icons": "~5.12.1",
     "@fortawesome/react-fontawesome": "~0.1.8",
     "@styled-system/css": "~5.1.5",
+    "@trendmicro/react-styled-ui": "~0.8.0",
+    "@trendmicro/styled-ui-theme": "~0.7.0",
     "@xstate/react": "~0.8.1",
     "awilix": "~4.2.5",
     "awilix-express": "~3.0.0",
