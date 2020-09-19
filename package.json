@@ -390,7 +390,7 @@
     "testEnvironment": "node"
   },
   "pre-push": [
-    "eslint-dev"
+    "eslint-debug"
   ],
   "collective": {
     "type": "opencollective",
