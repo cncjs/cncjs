@@ -7,7 +7,7 @@ import compress from 'compression';
 import cookieParser from 'cookie-parser';
 import multiparty from 'connect-multiparty';
 import connectRestreamer from 'connect-restreamer';
-import engines from 'consolidate';
+import consolidate from 'consolidate';
 import ensureArray from 'ensure-array';
 import errorhandler from 'errorhandler';
 import express from 'express';
@@ -135,9 +135,6 @@ const appMain = () => {
 
   { // Settings
     if (process.env.NODE_ENV === 'development') {
-      const webpackDevServer = require('./webpack-dev-server').default;
-      webpackDevServer(app);
-
       // Error handler - https://github.com/expressjs/errorhandler
       // Development error handler, providing stack traces and error message responses
       // for requests accepting text, html, or json.
@@ -157,12 +154,10 @@ const appMain = () => {
     app.disable('strict routing'); // Enable strict routing, by default "/foo" and "/foo/" are treated the same by the router
     app.disable('x-powered-by'); // Enables the X-Powered-By: Express HTTP header, enabled by default
 
-    for (let i = 0; i < settings.view.engines.length; ++i) {
-      const extension = settings.view.engines[i].extension;
-      const template = settings.view.engines[i].template;
-      app.engine(extension, engines[template]);
-    }
-    app.set('view engine', settings.view.defaultExtension); // The default engine extension to use when omitted
+    app.engine('html', consolidate.hogan);
+    app.engine('hogan', consolidate.hogan);
+
+    app.set('view engine', 'html');
     app.set('views', [
       path.resolve(__dirname, '../app'),
       path.resolve(__dirname, 'views')
@@ -253,6 +248,17 @@ const appMain = () => {
 
   app.use(i18nextHandle(i18next, {}));
 
+  const apiPrefix = urljoin(settings.route, 'api');
+
+  const publicApiRouter = createPublicApiRouter();
+  app.use(apiPrefix, publicApiRouter);
+
+  const protectedApiRouter = createProtectedApiRouter();
+  app.use(apiPrefix, jwtAuthenticationMiddleware(), jwtAuthorizationMiddleware(), protectedApiRouter);
+
+  const publicViewRouter = createPublicViewRouter();
+  app.use(settings.route, publicViewRouter);
+
   Object.keys(settings.assets).forEach((name) => {
     const asset = settings.assets[name];
 
@@ -270,17 +276,6 @@ const appMain = () => {
       }));
     });
   });
-
-  const apiPrefix = urljoin(settings.route, 'api');
-
-  const publicApiRouter = createPublicApiRouter();
-  app.use(apiPrefix, publicApiRouter);
-
-  const protectedApiRouter = createProtectedApiRouter();
-  app.use(apiPrefix, jwtAuthenticationMiddleware(), jwtAuthorizationMiddleware(), protectedApiRouter);
-
-  const publicViewRouter = createPublicViewRouter();
-  app.use(settings.route, publicViewRouter);
 
   const exceptionRouter = createExceptionRouter();
   app.use(settings.route, exceptionRouter);

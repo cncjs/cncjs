@@ -1,9 +1,12 @@
-/* eslint max-len: 0 */
+/* eslint-disable no-console */
 /* eslint no-console: 0 */
-import path from 'path';
-import isElectron from 'is-electron';
-import program from 'commander';
-import pkg from './package.json';
+require('core-js/stable'); // to polyfill ECMAScript features
+require('regenerator-runtime/runtime'); // needed to use transpiled generator functions
+
+const path = require('path');
+const isElectron = require('is-electron');
+const program = require('commander');
+const pkg = require('./package.json');
 
 // Defaults to 'production'
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
@@ -88,7 +91,7 @@ if (normalizedArgv.length > 1) {
   program.parse(normalizedArgv);
 }
 
-export default () => new Promise((resolve, reject) => {
+module.exports = () => new Promise((resolve, reject) => {
   // Change working directory to 'server' before require('./server')
   process.chdir(path.resolve(__dirname, 'server'));
 

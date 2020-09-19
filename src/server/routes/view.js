@@ -4,7 +4,7 @@ import settings from '../config/settings';
 
 const createPublicViewRouter = () => {
   const router = express.Router();
-  const view = 'index.hbs';
+  const view = 'index.html';
 
   router.get('/', (req, res) => {
     // Override IE's Compatibility View Settings

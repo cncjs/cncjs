@@ -1,65 +1,76 @@
+const crypto = require('crypto');
 const path = require('path');
-const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
+const { boolean } = require('boolean');
 const dotenv = require('dotenv');
+const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
+const findImports = require('find-imports');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
-const WriteFileWebpackPlugin = require('write-file-webpack-plugin');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
 const pkg = require('./package.json');
 
-dotenv.config();
+dotenv.config({
+  path: path.resolve('webpack.config.production.env'),
+});
 
-const publicPath = process.env.PUBLIC_PATH || '';
+const USE_ESLINT_LOADER = boolean(process.env.USE_ESLINT_LOADER);
+const USE_TERSER_PLUGIN = boolean(process.env.USE_TERSER_PLUGIN);
+const USE_OPTIMIZE_CSS_ASSETS_PLUGIN = boolean(process.env.USE_OPTIMIZE_CSS_ASSETS_PLUGIN);
+
+// Use publicPath for production
+const publicPath = ((payload) => {
+  const algorithm = 'sha1';
+  const buf = String(payload);
+  const hash = crypto.createHash(algorithm).update(buf).digest('hex');
+  return '/' + hash.substr(0, 8) + '/'; // 8 digits
+})(pkg.version);
 const buildVersion = pkg.version;
 const timestamp = new Date().getTime();
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   cache: true,
   target: 'web',
   context: path.resolve(__dirname, 'src/app'),
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'cheap-module-source-map',
   entry: {
     polyfill: [
       path.resolve(__dirname, 'src/app/polyfill/index.js'),
-      'webpack-hot-middleware/client?path=/__webpack_hmr&reload=true',
     ],
+    vendor: findImports([
+      'src/app/**/*.{js,jsx}',
+      '!src/app/polyfill/**/*.js',
+      '!src/app/**/*.development.js'
+    ], { flatten: true }),
     app: [
       path.resolve(__dirname, 'src/app/index.jsx'),
-      'webpack-hot-middleware/client?path=/__webpack_hmr&reload=true',
     ],
   },
   output: {
-    path: path.resolve(__dirname, 'output/app'),
+    path: path.resolve(__dirname, 'dist/cncjs/app'),
     chunkFilename: `[name].[chunkhash].chunk.js?_=${timestamp}`,
     filename: `[name].[hash].bundle.js?_=${timestamp}`,
-    pathinfo: true,
     publicPath: publicPath,
   },
   module: {
     rules: [
-      {
+      USE_ESLINT_LOADER && {
         test: /\.jsx?$/,
         loader: 'eslint-loader',
         enforce: 'pre',
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        options: {
-          ...babelConfig(),
-          env: {
-            development: {
-              plugins: ['react-hot-loader/babel']
-            }
-          }
-        },
-        exclude: /node_modules/
+        options: babelConfig(),
+        exclude: /node_modules/,
       },
       {
         test: /\.styl$/,
@@ -75,10 +86,10 @@ module.exports = {
               localsConvention: 'camelCase',
             }
           },
-          'stylus-loader'
+          'stylus-loader',
         ],
         exclude: [
-          path.resolve(__dirname, 'src/app/styles')
+          path.resolve(__dirname, 'src/app/styles'),
         ]
       },
       {
@@ -131,22 +142,25 @@ module.exports = {
     net: 'empty',
     tls: 'empty',
   },
+  optimization: {
+    minimizer: [
+      USE_TERSER_PLUGIN && (
+        new TerserPlugin()
+      ),
+      USE_OPTIMIZE_CSS_ASSETS_PLUGIN && (
+        new OptimizeCSSAssetsPlugin()
+      ),
+    ].filter(Boolean)
+  },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('development'),
+        NODE_ENV: JSON.stringify('production'),
         BUILD_VERSION: JSON.stringify(buildVersion),
         LANGUAGES: JSON.stringify(buildConfig.languages),
         TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId),
       }
     }),
-    new webpack.LoaderOptionsPlugin({
-      debug: true,
-    }),
-    // https://github.com/gajus/write-file-webpack-plugin
-    // Forces webpack-dev-server to write bundle files to the file system.
-    new WriteFileWebpackPlugin(),
     new webpack.ContextReplacementPlugin(
       /moment[\/\\]locale$/,
       new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$'),
@@ -166,8 +180,8 @@ module.exports = {
       preserve: false,
     }),
     new HtmlWebpackPlugin({
-      filename: 'index.hbs',
-      template: path.resolve(__dirname, 'index.hbs'),
+      filename: 'index.html',
+      template: path.resolve(__dirname, 'index.tmpl.html'),
     }),
   ].filter(Boolean),
   resolve: {
@@ -180,20 +194,5 @@ module.exports = {
       'node_modules',
     ],
     extensions: ['.js', '.jsx'],
-  },
-  devServer: {
-    host: process.env.WEBPACK_DEV_SERVER_HOST,
-    disableHostCheck: true,
-    noInfo: false,
-    lazy: false,
-    watchOptions: {
-      ignored: /node_modules/,
-    },
-    proxy: {
-      '/api': {
-        target: process.env.PROXY_TARGET,
-        changeOrigin: true,
-      },
-    },
   },
 };

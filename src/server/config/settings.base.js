@@ -1,6 +1,5 @@
 import path from 'path';
 import pkg from '../../package.json';
-import { languages } from '../../../build.config';
 
 const RC_FILE = '.cncrc';
 const SESSION_PATH = '.cncjs-sessions';
@@ -25,27 +24,6 @@ export default {
   // Allow Remote Access
   allowRemoteAccess: false,
 
-  // Express view engine
-  view: {
-    // Set html (w/o dot) as the default extension
-    defaultExtension: 'html',
-
-    // Format: <extension>: <template>
-    engines: [
-      { // Hogan template with .html extension
-        extension: 'html',
-        template: 'hogan'
-      },
-      { // Hogan template with .hbs extension
-        extension: 'hbs',
-        template: 'hogan'
-      },
-      { // Hogan template with .hogan extension
-        extension: 'hogan',
-        template: 'hogan'
-      }
-    ]
-  },
   // Middleware (https://github.com/senchalabs/connect)
   middleware: {
     // https://github.com/expressjs/body-parser
@@ -114,7 +92,22 @@ export default {
     // default namespace used if not passed to translation function
     defaultNS: 'resource',
 
-    whitelist: languages,
+    whitelist: [
+      'en', // English (default)
+      'cs', // Czech
+      'de', // German
+      'es', // Spanish
+      'fr', // French
+      'hu', // Hungarian
+      'it', // Italian
+      'ja', // Japanese
+      'nl', // Nederlands
+      'pt-br', // Portuguese (Brazil)
+      'ru', // Russian
+      'tr', // Turkish
+      'zh-cn', // Simplified Chinese
+      'zh-tw' // Traditional Chinese
+    ],
 
     // array of languages to preload
     preload: [],

@@ -1,7 +1,7 @@
 import * as awilix from 'awilix';
-import DirectoryWatcherService from './services/DirectoryWatcherService';
-import ShellCommandService from './services/ShellCommandService';
-import UserStoreService from './services/UserStoreService';
+import DirectoryWatcherService from 'server/services/DirectoryWatcherService';
+import ShellCommandService from 'server/services/ShellCommandService';
+import UserStoreService from 'server/services/UserStoreService';
 
 const container = awilix.createContainer();
 

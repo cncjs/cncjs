@@ -10,26 +10,26 @@ import _uniq from 'lodash/uniq';
 import SerialPort from 'serialport';
 import socketIO from 'socket.io';
 import socketioJwt from 'socketio-jwt';
-import settings from './config/settings';
+import settings from 'server/config/settings';
 import {
   CONNECTION_TYPE_SERIAL,
   CONNECTION_TYPE_SOCKET,
-} from './constants/connection';
-import * as accessControl from './lib/access-control';
-import EventTrigger from './lib/EventTrigger';
-import logger from './lib/logger';
-import { toIdent as toSerialIdent } from './lib/SerialConnection';
-import { toIdent as toSocketIdent } from './lib/SocketConnection';
-import GrblController from './controllers/Grbl/GrblController';
-import MarlinController from './controllers/Marlin/MarlinController';
-import SmoothieController from './controllers/Smoothie/SmoothieController';
-import TinyGController from './controllers/TinyG/TinyGController';
-import { GRBL } from './controllers/Grbl/constants';
-import { MARLIN } from './controllers/Marlin/constants';
-import { SMOOTHIE } from './controllers/Smoothie/constants';
-import { G2CORE, TINYG } from './controllers/TinyG/constants';
-import controllers from './store/controllers';
-import serviceContainer from './service-container';
+} from 'server/constants/connection';
+import * as accessControl from 'server/lib/access-control';
+import EventTrigger from 'server/lib/EventTrigger';
+import logger from 'server/lib/logger';
+import { toIdent as toSerialIdent } from 'server/lib/SerialConnection';
+import { toIdent as toSocketIdent } from 'server/lib/SocketConnection';
+import GrblController from 'server/controllers/Grbl/GrblController';
+import MarlinController from 'server/controllers/Marlin/MarlinController';
+import SmoothieController from 'server/controllers/Smoothie/SmoothieController';
+import TinyGController from 'server/controllers/TinyG/TinyGController';
+import { GRBL } from 'server/controllers/Grbl/constants';
+import { MARLIN } from 'server/controllers/Marlin/constants';
+import { SMOOTHIE } from 'server/controllers/Smoothie/constants';
+import { G2CORE, TINYG } from 'server/controllers/TinyG/constants';
+import controllers from 'server/store/controllers';
+import serviceContainer from 'server/service-container';
 
 const shellCommand = serviceContainer.resolve('shellCommand');
 const userStore = serviceContainer.resolve('userStore');
