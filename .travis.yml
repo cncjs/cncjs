@@ -38,7 +38,7 @@ before_install:
   - git config --global user.name "Travis CI"
   - git config --global user.email "travis@travis-ci.org"
   - npm install -g npm
-  - npm --version
+  - npm install -g yarn
   - npm config set scripts-prepend-node-path auto
 
 install:
