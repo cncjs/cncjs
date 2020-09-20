@@ -1,5 +1,5 @@
 import constants from 'namespace-constants';
-import uuid from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 
 export const {
   APP_INIT,

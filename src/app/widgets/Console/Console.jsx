@@ -3,7 +3,7 @@ import _get from 'lodash/get';
 import pubsub from 'pubsub-js';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import uuid from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import settings from 'app/config/settings';
 import {
   CONNECTION_STATE_CONNECTED,

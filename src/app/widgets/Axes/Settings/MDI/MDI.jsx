@@ -1,6 +1,6 @@
 import findIndex from 'lodash/findIndex';
 import React, { Component } from 'react';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import api from 'app/api';
 import CreateRecord from './CreateRecord';
 import UpdateRecord from './UpdateRecord';
@@ -72,7 +72,7 @@ class MDI extends Component {
       createRecord: (options) => {
         this.setState(state => ({
           records: state.records.concat({
-            id: uuid.v4(),
+            id: uuidv4(),
             ...options
           })
         }), () => {

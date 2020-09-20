@@ -4,7 +4,7 @@ import ensureArray from 'ensure-array';
 import _isPlainObject from 'lodash/isPlainObject';
 import _find from 'lodash/find';
 import _some from 'lodash/some';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import settings from '../config/settings';
 import { ensureFiniteNumber } from '../lib/ensure-type';
 import logger from '../lib/logger';
@@ -48,7 +48,7 @@ const getSanitizedRecords = () => {
     const record = records[i];
 
     if (!record.id) {
-      record.id = uuid.v4();
+      record.id = uuidv4();
       shouldUpdate = true;
     }
 

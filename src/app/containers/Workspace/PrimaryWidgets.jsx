@@ -8,7 +8,7 @@ import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Sortable from 'react-sortablejs';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import {
   GRBL,
   MARLIN,
@@ -65,7 +65,7 @@ class PrimaryWidgets extends Component {
                   }
 
                   // Use the same widget settings in a new widget
-                  const forkedWidgetId = `${name}:${uuid.v4()}`;
+                  const forkedWidgetId = `${name}:${uuidv4()}`;
                   const defaultSettings = config.get(`widgets["${name}"]`);
                   const clonedSettings = config.get(`widgets["${widgetId}"]`, defaultSettings);
                   config.set(`widgets["${forkedWidgetId}"]`, clonedSettings);
