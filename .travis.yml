@@ -37,9 +37,9 @@ before_install:
   - git --version
   - git config --global user.name "Travis CI"
   - git config --global user.email "travis@travis-ci.org"
+  - npm config set scripts-prepend-node-path auto
   - npm install -g npm
   - npm install -g yarn
-  - npm config set scripts-prepend-node-path auto
 
 install:
   - yarn
@@ -50,6 +50,9 @@ before_script:
 
 script:
   - |
+    yarn clean
+    yarn lint
+    yarn test
     if [[ -z "$TRAVIS_TAG" ]]; then
       yarn build-latest
     else

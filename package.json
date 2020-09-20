@@ -24,7 +24,6 @@
   },
   "preferGlobal": true,
   "scripts": {
-    "prepare": "npm run clean && npm run eslint && npm run stylint && npm run test && npm run build",
     "prebuild-latest": "npm run package-sync && bash -c \"cd src; npm version ${npm_package_version}-${COMMIT_COUNT:-latest}\" && bash scripts/prebuild-prod.sh",
     "prebuild-dev": "npm run package-sync && bash scripts/prebuild-dev.sh",
     "prebuild-prod": "npm run package-sync && bash scripts/prebuild-prod.sh",
@@ -58,7 +57,7 @@
     "dev": "npm run build-dev && concurrently --names \"start-app-dev,start-server-dev\" \"npm run start-app-dev\" \"npm run start-server-dev\"",
     "start-app-dev": "webpack-dev-server --config webpack.config.development.js --inline --content-base output/cncjs/app",
     "start-server-dev": "cross-env NODE_ENV=development ./bin/cncjs --port 8000 -m /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v1/",
-    "lint": "concurrently --kill-others-on-fail --names \"i18nlint,eslint,stylint\" \"npm run i18nlint\" \"npm run eslint-prod\" \"npm run stylint\"",
+    "lint": "concurrently --kill-others-on-fail --names \"i18nlint,eslint,stylint\" \"npm run i18nlint\" \"npm run eslint\" \"npm run stylint\"",
     "eslint": "eslint --color --ext .js --ext .jsx *.js src scripts test",
     "eslint-debug": "DEBUG=\"eslint:glob-util,eslint:config-*,eslint:cli*\" eslint --cache --color --quiet --ext .js --ext .jsx *.js src scripts test",
     "i18nlint": "bash -c 'find src/{app,server}/i18n -type f -name \"*.json\" | xargs -L1 -I{} sh -c \"echo Linting {}; jsonlint -q {}\"'",
@@ -383,7 +382,7 @@
     "testEnvironment": "node"
   },
   "pre-push": [
-    "eslint-debug"
+    "lint"
   ],
   "collective": {
     "type": "opencollective",
