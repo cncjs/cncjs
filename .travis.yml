@@ -85,13 +85,13 @@ after_success:
           --owner=cncjs \
           --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
-          --name="${TRAVIS_BRANCH}" \
+          --release-name="${TRAVIS_BRANCH}" \
           "*-mac-x64.dmg";
         yarn github-release -- upload \
           --owner=cncjs \
           --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
-          --name="${TRAVIS_BRANCH}" \
+          --release-name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-mac-x64.dmg";
         rm -f "releases/${RELEASE}-mac-x64.dmg";
@@ -116,7 +116,7 @@ after_success:
           --owner=cncjs \
           --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
-          --name="${TRAVIS_BRANCH}" \
+          --release-name="${TRAVIS_BRANCH}" \
           "*-linux-i386.AppImage" \
           "*-linux-i386.deb" \
           "*-linux.i686.rpm" \
@@ -125,7 +125,7 @@ after_success:
           --owner=cncjs \
           --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
-          --name="${TRAVIS_BRANCH}" \
+          --release-name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-linux-i386.AppImage" \
           "releases/${RELEASE}-linux-i386.deb" \
@@ -156,7 +156,7 @@ after_success:
           --owner=cncjs \
           --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
-          --name="${TRAVIS_BRANCH}" \
+          --release-name="${TRAVIS_BRANCH}" \
           "*-linux-x86_64.AppImage" \
           "*-linux-amd64.deb" \
           "*-linux.x86_64.rpm" \
@@ -165,7 +165,7 @@ after_success:
           --owner=cncjs \
           --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
-          --name="${TRAVIS_BRANCH}" \
+          --release-name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-linux-x86_64.AppImage" \
           "releases/${RELEASE}-linux-amd64.deb" \
