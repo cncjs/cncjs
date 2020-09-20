@@ -61,7 +61,10 @@ const createFetchMachine = () => {
       }),
       onFailure: assign({
         isLoading: false,
-        error: (context, event) => new Error(event.data?.message),
+        error: (context, event) => {
+          const { message } = { ...event.data };
+          return new Error(message);
+        },
       }),
       resetContext: assign((context, event) => ({ ...fetchMachine.initialState.context })),
     },
