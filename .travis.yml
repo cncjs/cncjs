@@ -4,7 +4,7 @@ os:
   - linux
   - osx
 
-osx_image: xcode12
+#osx_image: xcode11.6
 
 node_js:
   - "10"
