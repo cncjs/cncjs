@@ -6,7 +6,7 @@ export const {
   APP_INIT_SUCCESS,
   APP_INIT_FAILURE,
   PROMPT_USER_FOR_CORRUPTED_WORKSPACE_SETTINGS
-} = constants(uuid(), [
+} = constants(uuidv4(), [
   'APP_INIT',
   'APP_INIT_SUCCESS',
   'APP_INIT_FAILURE',

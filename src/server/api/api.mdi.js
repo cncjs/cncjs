@@ -97,7 +97,7 @@ export const create = (req, res) => {
   try {
     const records = getSanitizedRecords();
     const record = {
-      id: uuid.v4(),
+      id: uuidv4(),
       name: name,
       command: command,
       grid: grid
@@ -197,7 +197,7 @@ export const bulkUpdate = (req, res) => {
     const { id, name, command, grid = {} } = { ...record };
 
     if (!id) {
-      record.id = uuid.v4();
+      record.id = uuidv4();
     }
     record.name = String(name || '');
     record.command = String(command || '');

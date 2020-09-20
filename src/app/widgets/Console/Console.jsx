@@ -25,7 +25,7 @@ const Console = ({
   const emitter = useWidgetEvent();
   const prevIsFullscreen = usePrevious(isFullscreen);
   const terminalRef = useRef();
-  const sender = useRef(uuid());
+  const sender = useRef(uuidv4());
 
   useEffectOnce(() => {
     const onConnectionOpen = (state) => {

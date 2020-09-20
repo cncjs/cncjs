@@ -113,7 +113,7 @@ export const create = (req, res) => {
   try {
     const records = getSanitizedRecords();
     const record = {
-      id: uuid.v4(),
+      id: uuidv4(),
       mtime: new Date().getTime(),
       enabled: !!enabled,
       title: title,

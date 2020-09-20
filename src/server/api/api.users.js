@@ -204,7 +204,7 @@ export const create = (req, res) => {
     const hash = bcrypt.hashSync(password.trim(), salt);
     const records = getSanitizedRecords();
     const record = {
-      id: uuid.v4(),
+      id: uuidv4(),
       mtime: new Date().getTime(),
       enabled: enabled,
       name: name,

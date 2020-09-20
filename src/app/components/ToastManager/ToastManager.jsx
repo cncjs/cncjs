@@ -6,7 +6,7 @@ const noop = () => {};
 
 class ToastManager extends Component {
     addToast = (meta, options, callback = noop) => {
-      const id = uuid();
+      const id = uuidv4();
 
       this.setState(state => {
         const toasts = state.toasts.slice(0);

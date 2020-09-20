@@ -1,7 +1,7 @@
 import ensureArray from 'ensure-array';
 import _find from 'lodash/find';
 import _isPlainObject from 'lodash/isPlainObject';
-import { v4 as uuid } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import settings from '../config/settings';
 import { ensureFiniteNumber } from '../lib/ensure-type';
 import logger from '../lib/logger';
@@ -120,7 +120,7 @@ export const create = (req, res) => {
   try {
     const records = getSanitizedRecords();
     const record = {
-      id: uuid.v4(),
+      id: uuidv4(),
       mtime: new Date().getTime(),
       enabled: !!enabled,
       event: event,
