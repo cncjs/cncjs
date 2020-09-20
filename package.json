@@ -29,7 +29,7 @@
     "prebuild-dev": "npm run package-sync && bash scripts/prebuild-dev.sh",
     "prebuild-prod": "npm run package-sync && bash scripts/prebuild-prod.sh",
     "build": "npm run build-prod",
-    "build-latest": "npm run build-server-prod && npm run build-app-prod",
+    "build-latest": "concurrently --names \"build-app-prod,build-server-prod\" \"npm run build-app-prod\" \"npm run build-server-prod\"",
     "build-dev": "concurrently --names \"build-app-dev,build-server-dev\" \"npm run build-app-dev\" \"npm run build-server-dev\"",
     "build-prod": "concurrently --names \"build-app-prod,build-server-prod\" \"npm run build-app-prod\" \"npm run build-server-prod\"",
     "postbuild-dev": "bash scripts/postbuild-dev.sh",
