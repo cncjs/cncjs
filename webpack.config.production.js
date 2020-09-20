@@ -81,9 +81,11 @@ module.exports = {
             options: {
               modules: {
                 localIdentName: '[path][name]__[local]--[hash:base64:5]',
+                exportLocalsConvention: 'camelCase',
               },
               importLoaders: 1,
-              localsConvention: 'camelCase',
+              // 0 => no loaders (default)
+              // 1 => stylus-loader
             }
           },
           'stylus-loader',
@@ -99,8 +101,9 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              modules: false,
-              localsConvention: 'camelCase',
+              modules: {
+                exportLocalsConvention: 'camelCase',
+              },
             }
           },
           'stylus-loader',
