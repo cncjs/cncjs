@@ -45,6 +45,11 @@ install:
   - yarn
 
 before_script:
+  # https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
+  - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
+  - echo "TRAVIS_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER"
+  - echo "TRAVIS_COMMIT=$TRAVIS_COMMIT"
+  - echo "TRAVIS_TAG=$TRAVIS_TAG"
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
   - echo "$COMMIT_LOG"
 
