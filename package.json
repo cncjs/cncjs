@@ -199,7 +199,7 @@
     "gcode-toolpath": "~2.2.0",
     "history": "~4.9.0",
     "hogan.js": "~3.0.2",
-    "http-proxy": "~1.17.0",
+    "http-proxy": "~1.18.1",
     "i18next": "~15.0.9",
     "i18next-browser-languagedetector": "~3.0.1",
     "i18next-express-middleware": "~1.8.0",
