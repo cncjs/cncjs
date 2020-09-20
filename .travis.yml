@@ -1,17 +1,10 @@
-sudo: required
-dist: trusty
-group: travis_latest
-
-services:
-  - docker
-
 language: node_js
 
 os:
   - linux
   - osx
 
-osx_image: xcode8.3
+#osx_image: xcode11.6
 
 node_js:
   - "10"
@@ -61,7 +54,7 @@ before_install:
   - npm install -g npm
   - npm --version
 
-install: travis_wait 40 npm install
+install: npm install
 
 before_script:
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
