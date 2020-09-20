@@ -312,7 +312,7 @@
     "css-split-webpack-plugin": "~0.2.6",
     "del-cli": "~3.0.1",
     "dotenv": "~8.2.0",
-    "electron": "~8.5.2",
+    "electron": "~8.5.1",
     "electron-builder": "~22.8.1",
     "electron-rebuild": "~2.0.3",
     "enzyme": "~3.11.0",
