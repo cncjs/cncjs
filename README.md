@@ -71,11 +71,8 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 
  Version | Supported Level
 :------- |:---------------
- 4       | Dropped support
- 6       | Supported
- 8       | Supported
- 10      | Recommended
- 12      | Recommended
+ <= 8    | Dropped support
+ >= 10   | Recommended
 
 ## Getting Started
 
