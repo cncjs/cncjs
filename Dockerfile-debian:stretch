@@ -1,0 +1,25 @@
+FROM debian:stretch
+MAINTAINER Cheton Wu <cheton@gmail.com>
+
+# Install global dependencies
+RUN apt-get update -y && apt-get install --no-install-recommends -y python-pip git curl make g++ udev
+
+# Install NVM & Node 10
+ENV NVM_DIR="/home/.nvm"
+RUN git clone https://github.com/creationix/nvm.git $NVM_DIR && cd $NVM_DIR && git checkout `git describe --abbrev=0 --tags` && chmod +x $NVM_DIR/nvm.sh && $NVM_DIR/nvm.sh
+RUN [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && nvm install 10 && nvm use 10
+
+# Home
+RUN groupadd --gid 1000 cncjs && useradd --uid 1000 --gid cncjs --shell /bin/bash --create-home cncjs
+
+COPY ./dist/cncjs /home/cncjs
+
+ENV NODE_ENV production
+USER cncjs
+WORKDIR /home/cncjs
+
+RUN yarn --production
+
+EXPOSE 80
+
+CMD ["node", "-p \"require('./server-cli')()\"", "--", "--port 80", "-vv"]
