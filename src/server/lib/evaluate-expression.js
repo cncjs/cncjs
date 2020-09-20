@@ -1,6 +1,7 @@
 /* eslint no-bitwise: 0 */
 import { generate } from 'escodegen';
 import { parse } from 'esprima';
+import _get from 'lodash/get';
 import logger from './logger';
 
 const log = logger('evaluate-expression');
@@ -282,7 +283,7 @@ const evaluateExpression = (ast, vars) => {
 
   try {
     if (typeof ast === 'string') {
-      ast = parse(ast)?.body[0]?.expression;
+      ast = _get(parse(ast), 'body[0].expression');
     }
 
     if (!ast) {
