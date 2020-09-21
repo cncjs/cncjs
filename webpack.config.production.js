@@ -184,7 +184,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: path.resolve(__dirname, 'index.tmpl.html'),
+      template: path.resolve(__dirname, 'src/app/index.tmpl.html'),
     }),
   ].filter(Boolean),
   resolve: {
