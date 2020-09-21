@@ -30,6 +30,7 @@ const CONFIG_KEY = 'users';
 // Note. Do not use password and other sensitive fields in the payload
 const generateAccessToken = (payload, secret = settings.secret) => {
   const token = jwt.sign(payload, secret, {
+    algorithm: 'HS256',
     expiresIn: settings.accessTokenLifetime
   });
 
