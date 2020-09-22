@@ -1,4 +1,4 @@
-import rangeCheck from 'range_check';
+import { inRange } from 'range_check';
 import settings from '../config/settings';
 
 const whitelist = [
@@ -23,7 +23,7 @@ const whitelist = [
 
 export const isAllowedIPAddress = (ipaddr) => {
   let pass = !!(settings.allowRemoteAccess);
-  pass = pass || whitelist.some(test => rangeCheck.inRange(ipaddr, test));
+  pass = pass || inRange(ipaddr, whitelist);
 
   return pass;
 };

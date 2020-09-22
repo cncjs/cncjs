@@ -24,6 +24,7 @@ const deps = _uniq([
   'core-js', // to polyfill ECMAScript features
   'regenerator-runtime', // needed to use transpiled generator functions
   'debug', // 'debug' is required for electron app
+  'hogan.js',
 
   // e.g. 'lodash/get' → 'lodash'
   ...resolvedImports.map(x => x.split('/')[0]),
