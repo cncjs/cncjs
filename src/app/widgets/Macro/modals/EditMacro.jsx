@@ -1,5 +1,6 @@
+import { useService } from '@xstate/react';
 import _uniqueId from 'lodash/uniqueId';
-import React, { useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import { Form, Field } from 'react-final-form';
 import api from 'app/api';
 import Box from 'app/components/Box';
@@ -16,6 +17,7 @@ import Modal from 'app/components/Modal';
 import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 import { composeValidators, required } from 'app/widgets/shared/validations';
+import { ServiceContext } from '../context';
 import variables from '../shared/variables';
 
 const updateMacro = async (id, { name, content }) => {
@@ -32,6 +34,8 @@ const EditMacro = ({
   name,
   content,
 }) => {
+  const { fetchMacrosService } = useContext(ServiceContext);
+  const [, send] = useService(fetchMacrosService);
   const contentRef = useRef();
   const initialValues = {
     name,
@@ -45,6 +49,7 @@ const EditMacro = ({
         onSubmit={async (values) => {
           const { name, content } = values;
           await updateMacro(id, { name, content });
+          send('FETCH');
           onClose();
         }}
         subscription={{}}

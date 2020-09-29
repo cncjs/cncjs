@@ -5,21 +5,26 @@ const createFetchMachine = () => {
     id: 'fetchMachine',
     initial: 'idle',
     context: {
-      isFetchedOnce: false,
-      isLoading: false,
+      lastUpdateTime: 0, // in milliseconds
+      isFetching: false,
+      isSuccess: false,
+      isError: false,
       data: null,
-      error: null,
     },
     states: {
       idle: {
         on: {
           FETCH: {
-            target: 'loading',
-            actions: ['onLoading'],
+            target: 'fetching',
+            actions: ['onFetching'],
+          },
+          RESET: {
+            target: 'idle',
+            actions: 'resetContext',
           },
         },
       },
-      loading: {
+      fetching: {
         invoke: {
           src: 'fetch',
           onDone: {
@@ -35,7 +40,11 @@ const createFetchMachine = () => {
       success: {
         on: {
           FETCH: {
-            target: 'loading',
+            target: 'fetching',
+            actions: ['onFetching'],
+          },
+          RESET: {
+            target: 'idle',
             actions: 'resetContext',
           },
         },
@@ -43,7 +52,11 @@ const createFetchMachine = () => {
       failure: {
         on: {
           FETCH: {
-            target: 'loading',
+            target: 'fetching',
+            actions: ['onFetching'],
+          },
+          RESET: {
+            target: 'idle',
             actions: 'resetContext',
           },
         },
@@ -51,20 +64,22 @@ const createFetchMachine = () => {
     },
   }, {
     actions: {
-      onLoading: assign({
-        isLoading: true,
+      onFetching: assign({
+        isFetching: true,
       }),
       onSuccess: assign({
-        isFetchedOnce: true,
-        isLoading: false,
+        lastUpdateTime: Date.now(),
+        isFetching: false,
+        isSuccess: true,
+        isError: false,
         data: (context, event) => event.data,
       }),
       onFailure: assign({
-        isLoading: false,
-        error: (context, event) => {
-          const { message } = { ...event.data };
-          return new Error(message);
-        },
+        lastUpdateTime: Date.now(),
+        isFetching: false,
+        isSuccess: false,
+        isError: true,
+        data: (context, event) => event.data,
       }),
       resetContext: assign((context, event) => ({ ...fetchMachine.initialState.context })),
     },

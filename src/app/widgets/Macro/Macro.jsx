@@ -1,8 +1,8 @@
 import ensureArray from 'ensure-array';
-import { useMachine } from '@xstate/react';
+import { useService } from '@xstate/react';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
-import React from 'react';
+import React, { useContext } from 'react';
 import { connect } from 'react-redux';
 import Box from 'app/components/Box';
 import { Button } from 'app/components/Buttons';
@@ -27,55 +27,18 @@ import {
   WORKFLOW_STATE_PAUSED,
   WORKFLOW_STATE_RUNNING,
 } from 'app/constants/workflow';
-import fetchMacrosMachine from './machines/fetchMacrosMachine';
-import ConfirmLoadMacro from './modals/ConfirmLoadMacro';
+import LoadMacro from './modals/LoadMacro';
 import EditMacro from './modals/EditMacro';
 import NewMacro from './modals/NewMacro';
 import RunMacro from './modals/RunMacro';
-
-/*
-    handleLoadMacro = (macro) => (event) => {
-        const { id, name } = macro;
-        portal(({ onClose }) => (
-            <Modal size="xs" onClose={onClose}>
-                <Modal.Header>
-                    <Modal.Title>
-                        {i18n._('Load Macro')}
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {i18n._('Are you sure you want to load this macro?')}
-                    <p><strong>{name}</strong></p>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        onClick={onClose}
-                    >
-                        {i18n._('No')}
-                    </Button>
-                    <Button
-                        btnStyle="primary"
-                        onClick={chainedFunction(
-                            () => {
-                                const { actions } = this.props;
-                                actions.loadMacro(id, { name });
-                            },
-                            onClose
-                        )}
-                    >
-                        {i18n._('Yes')}
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        ));
-    };
-*/
+import { ServiceContext } from './context';
 
 const Macro = ({
   canLoadMacro,
   canRunMacro,
 }) => {
-  const [current, send] = useMachine(fetchMacrosMachine);
+  const { fetchMacrosService } = useContext(ServiceContext);
+  const [state, send] = useService(fetchMacrosService);
   const { openModal } = useModal();
 
   useMount(() => {
@@ -86,6 +49,7 @@ const Macro = ({
     openModal(NewMacro);
   };
   const handleRefreshMacros = () => {
+    send('RESET');
     send('FETCH');
   };
   const handleExportMacros = () => {
@@ -93,7 +57,7 @@ const Macro = ({
   };
   const handleLoadMacro = (macro) => () => {
     const { id, name } = macro;
-    openModal(ConfirmLoadMacro, { id, name });
+    openModal(LoadMacro, { id, name });
   };
   const handleRunMacro = (macro) => () => {
     const { id, name, content } = macro;
@@ -140,11 +104,24 @@ const Macro = ({
       </Flex>
       <RenderChildren>
         {() => {
-          const macros = ensureArray(_get(current.context, 'data.records'));
-          const isErrorOccurred = !!_get(current.context, 'error');
-          const noMacrosAvailable = macros.length === 0;
+          if (!state) {
+            return null;
+          }
 
-          if (isErrorOccurred) {
+          const isFetching = !!_get(state, 'context.isFetching');
+          const isError = !!_get(state, 'context.isError');
+          const data = _get(state, 'context.data');
+          const noData = !data;
+
+          if (isFetching && noData) {
+            return (
+              <Text>
+                {i18n._('Loading...')}
+              </Text>
+            );
+          }
+
+          if (isError) {
             return (
               <Text color="text.danger">
                 {i18n._('An error occurred while fetching data.')}
@@ -152,6 +129,8 @@ const Macro = ({
             );
           }
 
+          const macros = ensureArray(_get(data, 'records'));
+          const noMacrosAvailable = macros.length === 0;
           if (noMacrosAvailable) {
             return (
               <Text>

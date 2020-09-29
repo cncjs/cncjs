@@ -1,8 +1,8 @@
-//import cx from 'classnames';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import includes from 'lodash/includes';
 import React, { Component } from 'react';
+import { interpret } from 'xstate';
 import api from 'app/api';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Container } from 'app/components/GridSystem';
@@ -42,7 +42,8 @@ import {
   MODAL_EDIT_MACRO,
   MODAL_RUN_MACRO,
 } from './constants';
-//import styles from './index.styl'; // FIXME
+import { ServiceContext } from './context';
+import fetchMacrosMachine from './machines/fetchMacrosMachine';
 
 class MacroWidget extends Component {
     static propTypes = {
@@ -64,6 +65,8 @@ class MacroWidget extends Component {
     config = new WidgetConfig(this.props.widgetId);
 
     state = this.getInitialState();
+
+    fetchMacrosService = interpret(fetchMacrosMachine);
 
     toggleFullscreen = () => {
       this.setState(state => ({
@@ -228,11 +231,12 @@ class MacroWidget extends Component {
     };
 
     componentDidMount() {
-      this.fetchMacros();
+      this.fetchMacrosService.start();
       this.addControllerEvents();
     }
 
     componentWillUnmount() {
+      this.fetchMacrosService.stop();
       this.removeControllerEvents();
     }
 
@@ -338,95 +342,101 @@ class MacroWidget extends Component {
 
       return (
         <WidgetConfigProvider widgetId={widgetId}>
-          <ModalProvider>
-            <ModalRoot />
-            <Widget fullscreen={isFullscreen}>
-              <Widget.Header>
-                <Widget.Title>
-                  <Widget.Sortable className={this.props.sortable.handleClassName}>
-                    <FontAwesomeIcon icon="bars" fixedWidth />
-                    <Space width={4} />
-                  </Widget.Sortable>
-                  {isForkedWidget &&
-                  <FontAwesomeIcon icon="code-branch" fixedWidth />
-                  }
-                  {i18n._('Macro')}
-                </Widget.Title>
-                <Widget.Controls className={this.props.sortable.filterClassName}>
-                  <Widget.Button
-                    disabled={isFullscreen}
-                    title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                    onClick={this.toggleMinimized}
-                  >
-                    {minimized &&
-                    <FontAwesomeIcon icon="chevron-down" fixedWidth />
+          <ServiceContext.Provider
+            value={{
+              fetchMacrosService: this.fetchMacrosService,
+            }}
+          >
+            <ModalProvider>
+              <ModalRoot />
+              <Widget fullscreen={isFullscreen}>
+                <Widget.Header>
+                  <Widget.Title>
+                    <Widget.Sortable className={this.props.sortable.handleClassName}>
+                      <FontAwesomeIcon icon="bars" fixedWidth />
+                      <Space width={4} />
+                    </Widget.Sortable>
+                    {isForkedWidget &&
+                    <FontAwesomeIcon icon="code-branch" fixedWidth />
                     }
-                    {!minimized &&
-                    <FontAwesomeIcon icon="chevron-up" fixedWidth />
-                    }
-                  </Widget.Button>
-                  {isFullscreen && (
+                    {i18n._('Macro')}
+                  </Widget.Title>
+                  <Widget.Controls className={this.props.sortable.filterClassName}>
                     <Widget.Button
-                      title={i18n._('Exit Full Screen')}
-                      onClick={this.toggleFullscreen}
+                      disabled={isFullscreen}
+                      title={minimized ? i18n._('Expand') : i18n._('Collapse')}
+                      onClick={this.toggleMinimized}
                     >
-                      <FontAwesomeIcon icon="compress" fixedWidth />
-                    </Widget.Button>
-                  )}
-                  <Widget.DropdownButton
-                    title={i18n._('More')}
-                    toggle={(
-                      <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
-                    )}
-                    onSelect={(eventKey) => {
-                      if (eventKey === 'fullscreen') {
-                        this.toggleFullscreen();
-                      } else if (eventKey === 'fork') {
-                        this.props.onFork();
-                      } else if (eventKey === 'remove') {
-                        this.props.onRemove();
+                      {minimized &&
+                      <FontAwesomeIcon icon="chevron-down" fixedWidth />
                       }
-                    }}
-                  >
-                    <Widget.DropdownMenuItem eventKey="fullscreen">
-                      {!isFullscreen && (
-                        <FontAwesomeIcon icon="expand" fixedWidth />
-                      )}
-                      {isFullscreen && (
+                      {!minimized &&
+                      <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                      }
+                    </Widget.Button>
+                    {isFullscreen && (
+                      <Widget.Button
+                        title={i18n._('Exit Full Screen')}
+                        onClick={this.toggleFullscreen}
+                      >
                         <FontAwesomeIcon icon="compress" fixedWidth />
+                      </Widget.Button>
+                    )}
+                    <Widget.DropdownButton
+                      title={i18n._('More')}
+                      toggle={(
+                        <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
                       )}
-                      <Space width={8} />
-                      {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
-                    </Widget.DropdownMenuItem>
-                    <Widget.DropdownMenuItem eventKey="fork">
-                      <FontAwesomeIcon icon="code-branch" fixedWidth />
-                      <Space width={8} />
-                      {i18n._('Fork Widget')}
-                    </Widget.DropdownMenuItem>
-                    <Widget.DropdownMenuItem eventKey="remove">
-                      <FontAwesomeIcon icon="times" fixedWidth />
-                      <Space width={8} />
-                      {i18n._('Remove Widget')}
-                    </Widget.DropdownMenuItem>
-                  </Widget.DropdownButton>
-                </Widget.Controls>
-              </Widget.Header>
-              <Widget.Content
-                style={{
-                  display: (minimized ? 'none' : 'block'),
-                }}
-              >
-                <Container
-                  fluid
+                      onSelect={(eventKey) => {
+                        if (eventKey === 'fullscreen') {
+                          this.toggleFullscreen();
+                        } else if (eventKey === 'fork') {
+                          this.props.onFork();
+                        } else if (eventKey === 'remove') {
+                          this.props.onRemove();
+                        }
+                      }}
+                    >
+                      <Widget.DropdownMenuItem eventKey="fullscreen">
+                        {!isFullscreen && (
+                          <FontAwesomeIcon icon="expand" fixedWidth />
+                        )}
+                        {isFullscreen && (
+                          <FontAwesomeIcon icon="compress" fixedWidth />
+                        )}
+                        <Space width={8} />
+                        {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
+                      </Widget.DropdownMenuItem>
+                      <Widget.DropdownMenuItem eventKey="fork">
+                        <FontAwesomeIcon icon="code-branch" fixedWidth />
+                        <Space width={8} />
+                        {i18n._('Fork Widget')}
+                      </Widget.DropdownMenuItem>
+                      <Widget.DropdownMenuItem eventKey="remove">
+                        <FontAwesomeIcon icon="times" fixedWidth />
+                        <Space width={8} />
+                        {i18n._('Remove Widget')}
+                      </Widget.DropdownMenuItem>
+                    </Widget.DropdownButton>
+                  </Widget.Controls>
+                </Widget.Header>
+                <Widget.Content
                   style={{
-                    padding: '.75rem',
+                    display: (minimized ? 'none' : 'block'),
                   }}
                 >
-                  <Macro />
-                </Container>
-              </Widget.Content>
-            </Widget>
-          </ModalProvider>
+                  <Container
+                    fluid
+                    style={{
+                      padding: '.75rem',
+                    }}
+                  >
+                    <Macro />
+                  </Container>
+                </Widget.Content>
+              </Widget>
+            </ModalProvider>
+          </ServiceContext.Provider>
         </WidgetConfigProvider>
       );
     }
