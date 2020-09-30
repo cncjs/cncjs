@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
 const dotenv = require('dotenv');
@@ -15,6 +16,7 @@ dotenv.config({
   path: path.resolve('webpack.config.development.env'),
 });
 
+const isWebpackDevServer = process.env.WEBPACK_DEV_SERVER;
 const publicPath = process.env.PUBLIC_PATH || '';
 const buildVersion = pkg.version;
 const timestamp = new Date().getTime();
@@ -170,10 +172,31 @@ module.exports = {
       filename: '[name]-[part].[ext]?[hash]',
       preserve: false,
     }),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: path.resolve(__dirname, 'src/app/index.tmpl.html'),
-    }),
+    // HtmlWebpackPlugin
+    (() => {
+      const filename = 'index.html';
+      const template = path.resolve(__dirname, 'src/app/index.tmpl.html');
+
+      if (isWebpackDevServer) {
+        return new HtmlWebpackPlugin({
+          filename,
+          templateContent: (() => {
+            return fs.readFileSync(template, 'utf8')
+              .replace(/{{dir}}/g, 'ltr')
+              .replace(/{{title}}/g, `CNCjs ${buildVersion}`)
+              .replace(/{{webroot}}/g, '/')
+              .replace(/{{loading}}/g, 'Loading...');
+          })(),
+        });
+      }
+
+      return (
+        new HtmlWebpackPlugin({
+          filename,
+          template,
+        })
+      );
+    })(),
   ].filter(Boolean),
   resolve: {
     alias: {
