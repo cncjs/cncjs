@@ -15,6 +15,7 @@ const createPublicViewRouter = () => {
     const { language, t } = req;
     const locals = {
       webroot,
+      dir: 'ltr',
       lang: language,
       title: `${t('title')} ${settings.version}`,
       loading: t('loading'),
