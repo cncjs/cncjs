@@ -14,13 +14,17 @@ const createFetchMachine = () => {
     states: {
       idle: {
         on: {
+          CLEAR: {
+            target: 'idle',
+            actions: ['onClear'],
+          },
           FETCH: {
             target: 'fetching',
             actions: ['onFetching'],
           },
           RESET: {
             target: 'idle',
-            actions: 'resetContext',
+            actions: ['onResetContext'],
           },
         },
       },
@@ -39,31 +43,46 @@ const createFetchMachine = () => {
       },
       success: {
         on: {
+          CLEAR: {
+            target: 'idle',
+            actions: ['onClear'],
+          },
           FETCH: {
             target: 'fetching',
             actions: ['onFetching'],
           },
           RESET: {
             target: 'idle',
-            actions: 'resetContext',
+            actions: ['onResetContext'],
           },
         },
       },
       failure: {
         on: {
+          CLEAR: {
+            target: 'idle',
+            actions: ['onClear'],
+          },
           FETCH: {
             target: 'fetching',
             actions: ['onFetching'],
           },
           RESET: {
             target: 'idle',
-            actions: 'resetContext',
+            actions: ['onResetContext'],
           },
         },
       },
     },
   }, {
     actions: {
+      onResetContext: assign((context, event) => ({ ...fetchMachine.initialState.context })),
+      onClear: () => ({
+        isFetching: false,
+        isSuccess: false,
+        isError: false,
+        data: null,
+      }),
       onFetching: assign({
         isFetching: true,
       }),
@@ -81,7 +100,6 @@ const createFetchMachine = () => {
         isError: true,
         data: (context, event) => event.data,
       }),
-      resetContext: assign((context, event) => ({ ...fetchMachine.initialState.context })),
     },
     services: {
       fetch: (context) => null,

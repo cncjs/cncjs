@@ -49,7 +49,7 @@ const Macro = ({
     openModal(NewMacro);
   };
   const handleRefreshMacros = () => {
-    send('RESET');
+    send('CLEAR');
     send('FETCH');
   };
   const handleExportMacros = () => {
