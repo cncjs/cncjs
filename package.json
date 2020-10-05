@@ -55,7 +55,7 @@
     "start-electron": "electron ./dist/cncjs/main",
     "start-prod": "npm run build-prod && NODE_ENV=production ./bin/cncjs",
     "dev": "npm run build-dev && concurrently --names \"start-app-dev,start-server-dev\" \"npm run start-app-dev\" \"npm run start-server-dev\"",
-    "start-app-dev": "webpack-dev-server --config webpack.config.development.js --inline --content-base output/cncjs/app",
+    "start-app-dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.development.js --inline --content-base output/cncjs/app",
     "start-server-dev": "cross-env NODE_ENV=development ./bin/cncjs --port 8000 -m /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v1/",
     "lint": "concurrently --kill-others-on-fail --names \"i18nlint,eslint,stylint\" \"npm run i18nlint\" \"npm run eslint\" \"npm run stylint\"",
     "eslint": "eslint --color --ext .js --ext .jsx *.js src scripts test",
