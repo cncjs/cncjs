@@ -5,7 +5,7 @@ const fetchMacrosMachine = createFetchMachine()
   .withConfig({
     services: {
       fetch: (context) => {
-        return api.macros.fetch().then(res => res.body);
+        return api.macros.fetch();
       },
     },
   });

@@ -10,6 +10,7 @@ const createFetchMachine = () => {
       isSuccess: false,
       isError: false,
       data: null,
+      error: null,
     },
     states: {
       idle: {
@@ -82,6 +83,7 @@ const createFetchMachine = () => {
         isSuccess: false,
         isError: false,
         data: null,
+        error: null,
       }),
       onFetching: assign({
         isFetching: true,
@@ -98,7 +100,7 @@ const createFetchMachine = () => {
         isFetching: false,
         isSuccess: false,
         isError: true,
-        data: (context, event) => event.data,
+        error: (context, event) => event.data,
       }),
     },
     services: {

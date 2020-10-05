@@ -110,7 +110,7 @@ const Macro = ({
 
           const isFetching = !!_get(state, 'context.isFetching');
           const isError = !!_get(state, 'context.isError');
-          const data = _get(state, 'context.data');
+          const data = _get(state, 'context.data.body'); // FIXME
           const noData = !data;
 
           if (isFetching && noData) {
