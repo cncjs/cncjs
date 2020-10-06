@@ -78,7 +78,7 @@ const createFetchMachine = () => {
   }, {
     actions: {
       onResetContext: assign((context, event) => ({ ...fetchMachine.initialState.context })),
-      onClear: () => ({
+      onClear: assign({
         isFetching: false,
         isSuccess: false,
         isError: false,
