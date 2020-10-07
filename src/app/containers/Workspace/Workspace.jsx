@@ -481,16 +481,16 @@ class Workspace extends Component {
                       }}
                     >
                       {isConnected && (
-                      <>
-                        <FontAwesomeIcon icon="file-upload" size="2x" />
-                        <div>{i18n._('Drop file here')}</div>
-                      </>
+                        <>
+                          <FontAwesomeIcon icon="file-upload" size="2x" />
+                          <div>{i18n._('Drop file here')}</div>
+                        </>
                       )}
                       {!isConnected && (
-                      <>
-                        <FontAwesomeIcon icon="times-circle" color="#db3d44" size="2x" />
-                        <div>{i18n._('You cannot upload files to the workspace when the connection is not established.')}</div>
-                      </>
+                        <>
+                          <FontAwesomeIcon icon="times-circle" color="#db3d44" size="2x" />
+                          <div>{i18n._('You cannot upload files to the workspace when the connection is not established.')}</div>
+                        </>
                       )}
                     </Text>
                   </DropzoneOverlay>

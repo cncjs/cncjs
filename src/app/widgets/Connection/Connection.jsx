@@ -924,10 +924,10 @@ const SerialPortSingleValue = ({
   return (
     <SelectComponents.SingleValue {...props}>
       {connected && (
-      <>
-        <FontAwesomeIcon icon="lock" fixedWidth />
-        <Space width={8} />
-      </>
+        <>
+          <FontAwesomeIcon icon="lock" fixedWidth />
+          <Space width={8} />
+        </>
       )}
       {children}
     </SelectComponents.SingleValue>
