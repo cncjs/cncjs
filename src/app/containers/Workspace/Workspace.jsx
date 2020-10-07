@@ -449,7 +449,7 @@ class Workspace extends Component {
             disabled={controller.workflow.state !== WORKFLOW_STATE_IDLE}
             noClick={true}
             multiple={false}
-            onDrop={(acceptedFiles, rejectedFiles) => {
+            onDrop={(acceptedFiles, fileRejections, event) => {
               if (!isConnected) {
                 return;
               }
