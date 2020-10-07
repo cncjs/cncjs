@@ -9,7 +9,7 @@ import { Button } from 'app/components/Buttons';
 import Flex from 'app/components/Flex';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import useModal from 'app/components/Modal/useModal';
-import RenderChildren from 'app/components/RenderChildren';
+import RenderBlock from 'app/components/RenderBlock';
 import Space from 'app/components/Space';
 import Text from 'app/components/Text';
 import useMount from 'app/hooks/useMount';
@@ -102,18 +102,17 @@ const Macro = ({
           </Button>
         </Box>
       </Flex>
-      <RenderChildren>
+      <RenderBlock>
         {() => {
           if (!state) {
             return null;
           }
 
-          const isFetching = !!_get(state, 'context.isFetching');
-          const isError = !!_get(state, 'context.isError');
-          const data = _get(state, 'context.data.body'); // FIXME
-          const noData = !data;
+          const isLoading = (state.value === 'loading');
+          const isFailure = (state.value === 'failure');
+          const data = _get(state.context, 'data');
 
-          if (isFetching && noData) {
+          if (isLoading && !data) {
             return (
               <Text>
                 {i18n._('Loading...')}
@@ -121,7 +120,7 @@ const Macro = ({
             );
           }
 
-          if (isError) {
+          if (isFailure) {
             return (
               <Text color="text.danger">
                 {i18n._('An error occurred while fetching data.')}
@@ -129,7 +128,7 @@ const Macro = ({
             );
           }
 
-          const macros = ensureArray(_get(data, 'records'));
+          const macros = ensureArray(_get(state.context, 'data.body.records')); // XXX: superagent -> axios
           const noMacrosAvailable = macros.length === 0;
           if (noMacrosAvailable) {
             return (
@@ -181,7 +180,7 @@ const Macro = ({
             </Box>
           );
         }}
-      </RenderChildren>
+      </RenderBlock>
     </Box>
   );
 };

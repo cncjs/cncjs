@@ -1,4 +1,4 @@
-const RenderChildren = ({ children, ...props }) => {
+const RenderBlock = ({ children, ...props }) => {
   if (typeof children === 'function') {
     return children(props);
   }
@@ -6,4 +6,4 @@ const RenderChildren = ({ children, ...props }) => {
   return children;
 };
 
-export default RenderChildren;
+export default RenderBlock;

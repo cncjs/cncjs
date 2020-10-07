@@ -5,103 +5,57 @@ const createFetchMachine = () => {
     id: 'fetchMachine',
     initial: 'idle',
     context: {
-      lastUpdateTime: 0, // in milliseconds
-      isFetching: false,
-      isSuccess: false,
-      isError: false,
       data: null,
       error: null,
     },
     states: {
       idle: {
+        entry: 'clear',
         on: {
-          CLEAR: {
-            target: 'idle',
-            actions: ['onClear'],
-          },
-          FETCH: {
-            target: 'fetching',
-            actions: ['onFetching'],
-          },
-          RESET: {
-            target: 'idle',
-            actions: ['onResetContext'],
-          },
+          FETCH: 'loading',
+          CLEAR: 'idle',
         },
       },
-      fetching: {
+      loading: {
         invoke: {
           src: 'fetch',
           onDone: {
             target: 'success',
-            actions: ['onSuccess'],
+            actions: assign({
+              data: (context, event) => event.data,
+            }),
           },
           onError: {
             target: 'failure',
-            actions: ['onFailure'],
+            actions: assign({
+              error: (context, event) => event.data,
+            }),
           },
         },
       },
       success: {
+        entry: 'notifySuccess',
         on: {
-          CLEAR: {
-            target: 'idle',
-            actions: ['onClear'],
-          },
-          FETCH: {
-            target: 'fetching',
-            actions: ['onFetching'],
-          },
-          RESET: {
-            target: 'idle',
-            actions: ['onResetContext'],
-          },
+          FETCH: 'loading',
+          CLEAR: 'idle',
         },
       },
       failure: {
+        entry: 'notifyFailure',
         on: {
-          CLEAR: {
-            target: 'idle',
-            actions: ['onClear'],
-          },
-          FETCH: {
-            target: 'fetching',
-            actions: ['onFetching'],
-          },
-          RESET: {
-            target: 'idle',
-            actions: ['onResetContext'],
-          },
+          FETCH: 'loading',
+          CLEAR: 'idle',
         },
       },
     },
   }, {
     actions: {
-      onResetContext: assign((context, event) => ({ ...fetchMachine.initialState.context })),
-      onClear: assign({
-        isFetching: false,
-        isSuccess: false,
-        isError: false,
+      clear: assign({
         data: null,
         error: null,
       }),
-      onFetching: assign({
-        isFetching: true,
-      }),
-      onSuccess: assign({
-        lastUpdateTime: Date.now(),
-        isFetching: false,
-        isSuccess: true,
-        isError: false,
-        data: (context, event) => event.data,
-      }),
-      onFailure: assign({
-        lastUpdateTime: Date.now(),
-        isFetching: false,
-        isSuccess: false,
-        isError: true,
-        error: (context, event) => event.data,
-      }),
+      notifySuccess: (context) => {},
+      notifyFailure: (context) => {},
     },
     services: {
       fetch: (context) => null,
