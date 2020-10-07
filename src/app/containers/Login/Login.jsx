@@ -1,3 +1,6 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import _get from 'lodash/get';
 import qs from 'qs';
 import React, { Fragment, Component } from 'react';
@@ -10,7 +13,6 @@ import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Input from 'app/components/FormControl/Input';
 import { Notification } from 'app/components/Notifications';
-import Space from 'app/components/Space';
 import settings from 'app/config/settings';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';

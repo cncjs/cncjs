@@ -1,3 +1,6 @@
+import {
+  TextLabel,
+} from '@trendmicro/react-styled-ui';
 import _find from 'lodash/find';
 import React, { useEffect, useState } from 'react';
 import { Form, Field } from 'react-final-form';
@@ -5,7 +8,6 @@ import Select from 'react-select';
 import { Button } from 'app/components/Buttons';
 import Input from 'app/components/FormControl/Input';
 import FormGroup from 'app/components/FormGroup';
-import Label from 'app/components/Label';
 import Margin from 'app/components/Margin';
 import Modal from 'app/components/Modal';
 import { RadioButton } from 'app/components/Radio';
@@ -87,9 +89,9 @@ const SettingsModal = ({
               </Modal.Header>
               <Modal.Body>
                 <FormGroup>
-                  <Label>
+                  <TextLabel mb="2x">
                     {i18n._('Media Source')}
-                  </Label>
+                  </TextLabel>
                   <Margin bottom={8}>
                     <Margin bottom={4}>
                       <Field name="mediaSource" type="radio" value={MEDIA_SOURCE_LOCAL}>

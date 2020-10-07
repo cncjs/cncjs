@@ -1,10 +1,12 @@
+import {
+  Box,
+  Text,
+} from '@trendmicro/react-styled-ui';
 import chainedFunction from 'chained-function';
 import React from 'react';
 import api from 'app/api';
 import { Button } from 'app/components/Buttons';
-import Box from 'app/components/Box';
 import Modal from 'app/components/Modal';
-import Text from 'app/components/Text';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';

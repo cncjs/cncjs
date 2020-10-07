@@ -1,4 +1,6 @@
-/* eslint react/jsx-no-bind: 0 */
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import chainedFunction from 'chained-function';
 import take from 'lodash/take';
 import moment from 'moment';
@@ -7,7 +9,6 @@ import React, { Component } from 'react';
 import Anchor from 'app/components/Anchor';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
-import Space from 'app/components/Space';
 import Table from 'app/components/Table';
 import ToggleSwitch from 'app/components/ToggleSwitch';
 import portal from 'app/lib/portal';

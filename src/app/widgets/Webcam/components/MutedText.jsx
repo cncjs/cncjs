@@ -1,8 +1,9 @@
-import styled from 'styled-components';
-import Text from 'app/components/Text';
+import {
+  Text,
+} from '@trendmicro/react-styled-ui';
 
-const MutedText = styled(Text)`
-    color: #888;
-`;
+const MutedText = (props) => (
+  <Text color="#888" {...props} />
+);
 
 export default MutedText;

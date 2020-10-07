@@ -1,10 +1,12 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import path from 'path';
+import cx from 'classnames';
 import includes from 'lodash/includes';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
-import classNames from 'classnames';
-import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 import { formatBytes } from 'app/lib/numeral';
 import styles from './renderer.styl';
@@ -16,7 +18,7 @@ const TreeNode = (props) => {
   return (
     <Component
       {...others}
-      className={classNames(
+      className={cx(
         className,
         styles.treeNode,
         { [styles.selected]: selected }
@@ -45,7 +47,7 @@ const TreeNodeColumn = (props) => {
   return (
     <Component
       {...others}
-      className={classNames(
+      className={cx(
         className,
         styles.treeNodeColumn,
         { [styles.noPadding]: !padding }
@@ -67,12 +69,12 @@ const TreeNodeToggler = ({ show, expanded }) => {
 
   return (
     <span
-      className={classNames(
+      className={cx(
         styles.treeToggler
       )}
     >
       <i
-        className={classNames(
+        className={cx(
           'fa',
           'fa-fw',
           { 'fa-chevron-down': expanded },
@@ -98,7 +100,7 @@ const TreeNodeLoader = ({ show }) => {
   return (
     <i
       style={{ marginLeft: 5 }}
-      className={classNames(
+      className={cx(
         { 'hidden': !show },
         'fa',
         'fa-circle-o-notch',
@@ -172,7 +174,7 @@ const renderer = (node, treeOptions) => {
             expanded={more && open}
           />
           <i
-            className={classNames(
+            className={cx(
               'fa',
               { 'fa-folder-open-o': more && open },
               { 'fa-folder-o': more && !open },

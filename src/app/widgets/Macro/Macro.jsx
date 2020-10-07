@@ -1,17 +1,19 @@
-import ensureArray from 'ensure-array';
+import {
+  Box,
+  Flex,
+  Space,
+  Text,
+} from '@trendmicro/react-styled-ui';
 import { useService } from '@xstate/react';
+import ensureArray from 'ensure-array';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import React, { useContext } from 'react';
 import { connect } from 'react-redux';
-import Box from 'app/components/Box';
 import { Button } from 'app/components/Buttons';
-import Flex from 'app/components/Flex';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import useModal from 'app/components/Modal/useModal';
 import RenderBlock from 'app/components/RenderBlock';
-import Space from 'app/components/Space';
-import Text from 'app/components/Text';
 import useMount from 'app/hooks/useMount';
 import i18n from 'app/lib/i18n';
 import {

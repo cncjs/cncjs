@@ -1,5 +1,7 @@
+import {
+  Text,
+} from '@trendmicro/react-styled-ui';
 import React from 'react';
-import Text from 'app/components/Text';
 
 const fixedWidthFontFamily = 'Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif';
 

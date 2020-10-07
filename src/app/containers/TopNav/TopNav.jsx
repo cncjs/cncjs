@@ -1,3 +1,7 @@
+import {
+  Space,
+  Text,
+} from '@trendmicro/react-styled-ui';
 import React, { Fragment, Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import semverLt from 'semver/functions/lt';
@@ -13,9 +17,7 @@ import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Hoverable from 'app/components/Hoverable';
 import Image from 'app/components/Image';
-import Space from 'app/components/Space';
 import Tooltip from 'app/components/Tooltip';
-import Text from 'app/components/Text';
 import settings from 'app/config/settings';
 import {
   TOPNAV_HEIGHT,
@@ -382,7 +384,7 @@ class TopNav extends Component {
                     </div>
                     <Text
                       color={hovered ? '#fff' : '#9d9d9d'}
-                      size="50%"
+                      fontSize="50%"
                     >
                       {settings.version}
                     </Text>

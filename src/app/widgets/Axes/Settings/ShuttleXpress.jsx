@@ -1,9 +1,11 @@
+import {
+  TextLabel,
+} from '@trendmicro/react-styled-ui';
 import Slider from 'rc-slider';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import i18n from 'app/lib/i18n';
 import FormGroup from 'app/components/FormGroup';
-import Label from 'app/components/Label';
 
 const FEEDRATE_RANGE = [100, 2500];
 const FEEDRATE_STEP = 50;
@@ -68,9 +70,9 @@ class ShuttleXpress extends Component {
       return (
         <div>
           <FormGroup>
-            <Label>
+            <TextLabel mb="2x">
               {i18n._('Feed Rate Range: {{min}} - {{max}} mm/min', { min: feedrateMin, max: feedrateMax })}
-            </Label>
+            </TextLabel>
             <Slider.Range
               allowCross={false}
               defaultValue={[feedrateMin, feedrateMax]}
@@ -81,9 +83,9 @@ class ShuttleXpress extends Component {
             />
           </FormGroup>
           <FormGroup>
-            <Label>
+            <TextLabel mb="2x">
               {i18n._('Repeat Rate: {{hertz}}Hz', { hertz: hertz })}
-            </Label>
+            </TextLabel>
             <select
               className="form-control"
               defaultValue={hertz}
@@ -100,9 +102,9 @@ class ShuttleXpress extends Component {
             </select>
           </FormGroup>
           <FormGroup>
-            <Label>
+            <TextLabel mb="2x">
               {i18n._('Distance Overshoot: {{overshoot}}x', { overshoot: overshoot })}
-            </Label>
+            </TextLabel>
             <Slider
               defaultValue={overshoot}
               min={OVERSHOOT_RANGE[0]}

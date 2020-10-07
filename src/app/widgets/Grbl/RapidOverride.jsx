@@ -1,3 +1,7 @@
+import {
+  Space,
+  Text,
+} from '@trendmicro/react-styled-ui';
 import _get from 'lodash/get';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -7,8 +11,6 @@ import Clickable from 'app/components/Clickable';
 import FixedWidthText from 'app/components/FixedWidthText';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import RepeatableButton from 'app/components/RepeatableButton';
-import Space from 'app/components/Space';
-import Text from 'app/components/Text';
 import controller from 'app/lib/controller';
 import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';

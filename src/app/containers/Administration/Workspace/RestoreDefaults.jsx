@@ -1,8 +1,10 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
-import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 import config from 'app/store/config';
 

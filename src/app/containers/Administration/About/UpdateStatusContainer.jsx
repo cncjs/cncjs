@@ -1,10 +1,12 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import moment from 'moment';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import semverLt from 'semver/functions/lt';
 import Anchor from 'app/components/Anchor';
-import Space from 'app/components/Space';
 import settings from 'app/config/settings';
 import i18n from 'app/lib/i18n';
 import styles from './index.styl';

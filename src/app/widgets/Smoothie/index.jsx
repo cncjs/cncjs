@@ -1,8 +1,10 @@
-import classNames from 'classnames';
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
-import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
@@ -377,7 +379,7 @@ class SmoothieWidget extends Component {
             </Widget.Header>
             {isReady && (
               <Widget.Content
-                className={classNames(
+                className={cx(
                   styles['widget-content'],
                   { [styles.hidden]: minimized }
                 )}

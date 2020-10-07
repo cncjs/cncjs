@@ -1,3 +1,7 @@
+import {
+  Box,
+  Text,
+} from '@trendmicro/react-styled-ui';
 import cx from 'classnames';
 import _isEqual from 'lodash/isEqual';
 import Slider from 'rc-slider';
@@ -7,8 +11,6 @@ import styled from 'styled-components';
 import Anchor from 'app/components/Anchor';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Image from 'app/components/Image';
-import Margin from 'app/components/Margin';
-import Text from 'app/components/Text';
 import Tooltip from 'app/components/Tooltip';
 import WebcamComponent from 'app/components/Webcam';
 import withMemo from 'app/hocs/withMemo';
@@ -123,9 +125,11 @@ const Webcam = ({
       {disabled && (
         <WebcamDisabledContainer>
           <Image src={webcamIcon} width={128} height={128} />
-          <Margin top="1rem">
-            <Text fontSize="1.5rem">{i18n._('Webcam is off')}</Text>
-          </Margin>
+          <Box top="4x">
+            <Text size="2xl">
+              {i18n._('Webcam is off')}
+            </Text>
+          </Box>
         </WebcamDisabledContainer>
       )}
       <WebcamContainer
@@ -189,7 +193,10 @@ const Webcam = ({
           </div>
         )}
         <ControlBar>
-          <Margin left=".75rem" right=".75rem" bottom=".25rem">
+          <Box
+            mx="3x"
+            mb="1x"
+          >
             <Slider
               defaultValue={scale}
               min={0.1}
@@ -198,7 +205,7 @@ const Webcam = ({
               tipFormatter={null}
               onChange={changeImageScale}
             />
-          </Margin>
+          </Box>
           <Container
             fluid
             style={{

@@ -1,9 +1,11 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import classNames from 'classnames';
 import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FacebookLoading from 'react-facebook-loading';
-import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 import styles from './index.styl';
 

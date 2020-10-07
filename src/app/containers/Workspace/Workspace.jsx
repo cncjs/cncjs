@@ -1,3 +1,7 @@
+import {
+  Space,
+  Text,
+} from '@trendmicro/react-styled-ui';
 import _difference from 'lodash/difference';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
@@ -19,8 +23,6 @@ import { Button, ButtonGroup } from 'app/components/Buttons';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Row, Col } from 'app/components/GridSystem';
 import Margin from 'app/components/Margin';
-import Space from 'app/components/Space';
-import Text from 'app/components/Text';
 import {
   CONNECTION_STATE_CONNECTED,
 } from 'app/constants/connection';
@@ -472,7 +474,7 @@ class Workspace extends Component {
                   <DropzoneOverlay disabled={!isConnected}>
                     <Text
                       color="#666"
-                      size={32}
+                      size="4xl"
                       style={{
                         position: 'absolute',
                         top: '50%',

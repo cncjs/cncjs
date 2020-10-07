@@ -1,3 +1,6 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import cx from 'classnames';
 import ensureArray from 'ensure-array';
 import get from 'lodash/get';
@@ -8,7 +11,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import api from 'app/api';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
-import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import combokeys from 'app/lib/combokeys';
 import controller from 'app/lib/controller';

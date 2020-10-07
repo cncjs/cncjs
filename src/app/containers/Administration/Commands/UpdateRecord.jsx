@@ -1,9 +1,11 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import _ from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Modal from 'app/components/Modal';
-import Space from 'app/components/Space';
 import { ToastNotification } from 'app/components/Notifications';
 import ToggleSwitch from 'app/components/ToggleSwitch';
 import { Form, Input, Textarea } from 'app/components/Validation';

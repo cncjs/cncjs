@@ -1,3 +1,6 @@
+import {
+  Text,
+} from '@trendmicro/react-styled-ui';
 import _get from 'lodash/get';
 import React, { useRef } from 'react';
 import { connect } from 'react-redux';
@@ -7,7 +10,6 @@ import CollapsibleCard from 'app/components/CollapsibleCard';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import HorizontalForm from 'app/components/HorizontalForm';
 import Progress from 'app/components/Progress';
-import Text from 'app/components/Text';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import OverflowEllipsis from './components/OverflowEllipsis';
 

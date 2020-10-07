@@ -1,8 +1,10 @@
-import classNames from 'classnames';
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
-import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import {
   TINYG,
@@ -416,7 +418,7 @@ class TinyGWidget extends Component {
             </Widget.Header>
             {isReady && (
               <Widget.Content
-                className={classNames(
+                className={cx(
                   styles.widgetContent,
                   { [styles.hidden]: minimized }
                 )}

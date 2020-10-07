@@ -14,10 +14,11 @@ import configStore from 'app/store/config';
 export function* init() {
   // sequential
   yield call(changeLogLevel);
+  yield call(initI18next);
 
   // parallel
   yield all([
-    call(changeLocale),
+    call(initMomentLocale),
     call(authenticateSessionToken),
     call(enableCrossOriginCommunication),
   ]);
@@ -39,7 +40,25 @@ const changeLogLevel = () => {
   log.setLevel(level);
 };
 
-const changeLocale = () => new Promise(resolve => {
+const initI18next = () => new Promise((resolve, reject) => {
+  i18next
+    .init(settings.i18next, (err, t) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      if (i18next.language) {
+        // Update lang attribute
+        const html = document.querySelector('html');
+        html.setAttribute('lang', i18next.language);
+      }
+
+      resolve();
+    });
+});
+
+const initMomentLocale = () => new Promise(resolve => {
   const lng = i18next.language;
 
   if (!lng || lng === 'en') {

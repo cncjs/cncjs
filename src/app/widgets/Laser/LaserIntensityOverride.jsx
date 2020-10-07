@@ -1,3 +1,8 @@
+import {
+  Space,
+  Text,
+  TextLabel,
+} from '@trendmicro/react-styled-ui';
 import _get from 'lodash/get';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -6,10 +11,7 @@ import Center from 'app/components/Center';
 import Clickable from 'app/components/Clickable';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
-import Label from 'app/components/Label';
 import RepeatableButton from 'app/components/RepeatableButton';
-import Space from 'app/components/Space';
-import Text from 'app/components/Text';
 import {
   GRBL,
   MARLIN,
@@ -26,9 +28,9 @@ const LaserIntensityOverride = ({
   value,
 }) => (
   <FormGroup>
-    <Label>
+    <TextLabel mb="2x">
       {i18n._('Laser Intensity Control')}
-    </Label>
+    </TextLabel>
     <Center vertical>
       <FontAwesomeIcon icon="bolt" fixedWidth />
       <Space width={8} />

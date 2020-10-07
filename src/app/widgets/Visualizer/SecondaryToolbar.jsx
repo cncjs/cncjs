@@ -1,3 +1,6 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import cx from 'classnames';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
@@ -12,7 +15,6 @@ import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Image from 'app/components/Image';
 import RepeatableButton from 'app/components/RepeatableButton';
-import Space from 'app/components/Space';
 import Tooltip from 'app/components/Tooltip';
 import api from 'app/api';
 import i18n from 'app/lib/i18n';

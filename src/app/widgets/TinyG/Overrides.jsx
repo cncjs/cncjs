@@ -1,7 +1,9 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RepeatableButton from 'app/components/RepeatableButton';
-import Space from 'app/components/Space';
 import controller from 'app/lib/controller';
 import DigitalReadout from './DigitalReadout';
 import styles from './index.styl';

@@ -1,7 +1,9 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import React, { Component } from 'react';
 import { ButtonToolbar, ButtonGroup, Button } from 'app/components/Buttons';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
-import Space from 'app/components/Space';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 

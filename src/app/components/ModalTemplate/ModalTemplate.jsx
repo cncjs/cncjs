@@ -1,8 +1,10 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 import { Container, Row, Col } from 'app/components/GridSystem';
-import Space from 'app/components/Space';
 import iconError from './icon-error-48.png';
 import iconWarning from './icon-warning-48.png';
 import iconInfo from './icon-info-48.png';

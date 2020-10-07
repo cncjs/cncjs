@@ -1,6 +1,8 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import React from 'react';
 import Infotip from 'app/components/Infotip';
-import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 
 const keypadInfotip = () => {

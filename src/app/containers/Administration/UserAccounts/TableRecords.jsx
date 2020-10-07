@@ -1,4 +1,6 @@
-/* eslint react/jsx-no-bind: 0 */
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import chainedFunction from 'chained-function';
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -7,7 +9,6 @@ import Anchor from 'app/components/Anchor';
 import { Button } from 'app/components/Buttons';
 import FormGroup from 'app/components/FormGroup';
 import Modal from 'app/components/Modal';
-import Space from 'app/components/Space';
 import Table from 'app/components/Table';
 import ToggleSwitch from 'app/components/ToggleSwitch';
 import { TablePagination } from 'app/components/Paginations';

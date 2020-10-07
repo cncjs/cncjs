@@ -1,9 +1,13 @@
+import {
+  Box,
+  Space,
+  TextLabel,
+} from '@trendmicro/react-styled-ui';
 import { useService } from '@xstate/react';
 import _uniqueId from 'lodash/uniqueId';
 import React, { useContext, useRef } from 'react';
 import { Form, Field } from 'react-final-form';
 import api from 'app/api';
-import Box from 'app/components/Box';
 import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import { Container, Row, Col } from 'app/components/GridSystem';
@@ -12,9 +16,7 @@ import Input from 'app/components/FormControl/Input';
 import Textarea from 'app/components/FormControl/Textarea';
 import FormGroup from 'app/components/FormGroup';
 import InlineError from 'app/components/InlineError';
-import Label from 'app/components/Label';
 import Modal from 'app/components/Modal';
-import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 import { composeValidators, required } from 'app/widgets/shared/validations';
 import variables from '../shared/variables';
@@ -66,7 +68,9 @@ const NewMacro = ({
                 {({ input, meta }) => {
                   return (
                     <FormGroup>
-                      <Label>{i18n._('Macro Name')}</Label>
+                      <TextLabel mb="2x">
+                        {i18n._('Macro Name')}
+                      </TextLabel>
                       <Box>
                         <Input {...input} />
                       </Box>
@@ -86,7 +90,9 @@ const NewMacro = ({
                     <FormGroup>
                       <Row style={{ alignItems: 'center' }}>
                         <Col>
-                          <Label>{i18n._('Macro Commands')}</Label>
+                          <TextLabel mb="2x">
+                            {i18n._('Macro Commands')}
+                          </TextLabel>
                         </Col>
                         <Col width="auto">
                           <Dropdown

@@ -1,8 +1,10 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
-import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import {
   MARLIN,

@@ -1,3 +1,9 @@
+import {
+  Box,
+  Space,
+  Text,
+  TextLabel,
+} from '@trendmicro/react-styled-ui';
 import chainedFunction from 'chained-function';
 import ensureArray from 'ensure-array';
 import _find from 'lodash/find';
@@ -21,13 +27,10 @@ import InlineError from 'app/components/InlineError';
 import Input from 'app/components/FormControl/Input';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
-import Label from 'app/components/Label';
 import Margin from 'app/components/Margin';
 import Modal, { useModal } from 'app/components/Modal';
 import ModalTemplate from 'app/components/ModalTemplate';
 import { Notification } from 'app/components/Notifications';
-import Space from 'app/components/Space';
-import Text from 'app/components/Text';
 import { useToast } from 'app/components/ToastManager';
 import {
   GRBL,
@@ -453,7 +456,9 @@ const Connection = ({
                     return (
                       <>
                         <FormGroup>
-                          <Label>{i18n._('Serial port')}</Label>
+                          <TextLabel mb="2x">
+                            {i18n._('Serial port')}
+                          </TextLabel>
                           <Row style={{ alignItems: 'center' }}>
                             <Col>
                               <Field name="connection.serial.path">
@@ -518,7 +523,9 @@ const Connection = ({
                           </Row>
                         </FormGroup>
                         <FormGroup>
-                          <Label>{i18n._('Baud rate')}</Label>
+                          <TextLabel mb="2x">
+                            {i18n._('Baud rate')}
+                          </TextLabel>
                           <Row style={{ alignItems: 'center' }}>
                             <Col>
                               <Field name="connection.serial.baudRate">
@@ -607,8 +614,10 @@ const Connection = ({
                     return (
                       <>
                         <FormGroup>
-                          <Label>{i18n._('Host')}</Label>
-                          <div>
+                          <TextLabel mb="2x">
+                            {i18n._('Host')}
+                          </TextLabel>
+                          <Box>
                             <Field
                               name="connection.socket.host"
                               validate={required}
@@ -637,11 +646,13 @@ const Connection = ({
                                 );
                               }}
                             </Field>
-                          </div>
+                          </Box>
                         </FormGroup>
                         <FormGroup>
-                          <Label>{i18n._('Port')}</Label>
-                          <div>
+                          <TextLabel mb="2x">
+                            {i18n._('Port')}
+                          </TextLabel>
+                          <Box>
                             <Field
                               name="connection.socket.port"
                               validate={composeValidators(required, validatePortNumber(1, 65535))}
@@ -676,7 +687,7 @@ const Connection = ({
                                 );
                               }}
                             </Field>
-                          </div>
+                          </Box>
                         </FormGroup>
                       </>
                     );
@@ -905,7 +916,7 @@ const SerialPortOption = ({
       </Container>
       {manufacturer && (
         <Margin left={24}>
-          <Text color="#888" fontSize="0.875em">
+          <Text color="#888">
             {i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}
           </Text>
         </Margin>

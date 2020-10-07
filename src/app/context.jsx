@@ -1,18 +1,20 @@
+import {
+  ColorModeProvider,
+  ThemeProvider,
+} from '@trendmicro/react-styled-ui';
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { Provider as ReduxProvider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
 import { CardProvider } from 'app/components/Card';
-import ColorModeProvider from 'app/components/ColorModeProvider';
 import { Provider as GridSystemProvider } from 'app/components/GridSystem';
 import { ModalProvider, ModalRoot } from 'app/components/Modal';
-import ThemeProvider from 'app/components/ThemeProvider';
 import reduxStore from 'app/store/redux';
 import i18next from 'app/i18next';
 
 export const GlobalProvider = ({ children }) => (
   <ThemeProvider>
-    <ColorModeProvider>
+    <ColorModeProvider value="light">
       <ReduxProvider store={reduxStore}>
         <ModalProvider>
           <ModalRoot />

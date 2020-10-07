@@ -1,3 +1,7 @@
+import {
+  Space,
+  TextLabel,
+} from '@trendmicro/react-styled-ui';
 import ensureArray from 'ensure-array';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
@@ -11,8 +15,6 @@ import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import ImageIcon from 'app/components/ImageIcon';
 import InputGroup from 'app/components/InputGroup';
-import Label from 'app/components/Label';
-import Space from 'app/components/Space';
 import {
   CONNECTION_STATE_CONNECTED,
 } from 'app/constants/connection';
@@ -53,7 +55,9 @@ const Spindle = ({
       {({ form }) => (
         <Container fluid>
           <FormGroup>
-            <Label>{i18n._('Coolant')}</Label>
+            <TextLabel mb="2x">
+              {i18n._('Coolant')}
+            </TextLabel>
             <Row>
               <Col width={8}>
                 <ButtonGroup
@@ -112,7 +116,9 @@ const Spindle = ({
             </Row>
           </FormGroup>
           <FormGroup>
-            <Label>{i18n._('Spindle')}</Label>
+            <TextLabel mb="2x">
+              {i18n._('Spindle')}
+            </TextLabel>
             <Row>
               <Col width={8}>
                 <Field name="speed">
@@ -175,7 +181,9 @@ const Spindle = ({
             </Row>
           </FormGroup>
           <FormGroup>
-            <Label>{i18n._('Spindle Speed')}</Label>
+            <TextLabel mb="2x">
+              {i18n._('Spindle Speed')}
+            </TextLabel>
             <Row>
               <Col width={8}>
                 <Field name="speed">

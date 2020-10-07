@@ -1,8 +1,11 @@
+import {
+  Box,
+  Space,
+} from '@trendmicro/react-styled-ui';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Anchor from 'app/components/Anchor';
 import { ToastNotification } from 'app/components/Notifications';
-import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 import {
   NOTIFICATION_PROGRAM_ERROR,
@@ -15,16 +18,13 @@ import {
   NOTIFICATION_M190_SET_HEATED_BED_TEMPERATURE
 } from './constants';
 
-const Notifications = ({ show, type, data, onDismiss, style, ...props }) => (
-  <div
+const Notifications = ({ show, type, data, onDismiss, ...props }) => (
+  <Box
     {...props}
-    style={{
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      ...style
-    }}
+    position="absolute"
+    bottom={0}
+    left={0}
+    right={0}
   >
     <ToastNotification
       {...props}
@@ -99,7 +99,7 @@ const Notifications = ({ show, type, data, onDismiss, style, ...props }) => (
         </div>
       )}
     </ToastNotification>
-  </div>
+  </Box>
 );
 
 Notifications.propTypes = {

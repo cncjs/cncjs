@@ -1,3 +1,6 @@
+import {
+  Text,
+} from '@trendmicro/react-styled-ui';
 import _get from 'lodash/get';
 import React from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
@@ -10,7 +13,6 @@ import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import HorizontalForm from 'app/components/HorizontalForm';
 import InputGroup from 'app/components/InputGroup';
-import Text from 'app/components/Text';
 import {
   CONNECTION_STATE_CONNECTED,
 } from 'app/constants/connection';

@@ -1,8 +1,10 @@
+import {
+  TextLabel,
+} from '@trendmicro/react-styled-ui';
 import React from 'react';
 import i18n from 'app/lib/i18n';
 import { Button } from 'app/components/Buttons';
 import Textarea from 'app/components/FormControl/Textarea';
-import Label from 'app/components/Label';
 import Modal from 'app/components/Modal';
 
 const RunMacro = ({
@@ -23,7 +25,9 @@ const RunMacro = ({
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Label>{name}</Label>
+        <TextLabel mb="2x">
+          {name}
+        </TextLabel>
         <Textarea
           readOnly
           rows={10}

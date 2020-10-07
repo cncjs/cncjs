@@ -1,9 +1,11 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Container } from 'app/components/GridSystem';
 import { ModalProvider, ModalRoot } from 'app/components/Modal';
-import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
 import WidgetConfig from 'app/widgets/shared/WidgetConfig';

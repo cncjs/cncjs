@@ -1,3 +1,6 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import _ from 'lodash';
 import classNames from 'classnames';
 import colornames from 'colornames';
@@ -6,7 +9,6 @@ import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import I18n from 'app/components/I18n';
-import Space from 'app/components/Space';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import * as WebGL from 'app/lib/three/WebGL';

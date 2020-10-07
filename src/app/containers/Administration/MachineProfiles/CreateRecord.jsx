@@ -1,3 +1,6 @@
+import {
+  TextLabel,
+} from '@trendmicro/react-styled-ui';
 import _get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -63,7 +66,9 @@ class CreateRecord extends Component {
             <Field name="limits.xmin">
               {({ input, meta }) => (
                 <FormGroup>
-                  <label><Axis value="X" sub="min" /></label>
+                  <TextLabel mb="2x">
+                    <Axis value="X" sub="min" />
+                  </TextLabel>
                   <Input {...input} type="number" />
                   {meta.touched && meta.error && <Error>{meta.error}</Error>}
                 </FormGroup>
@@ -75,7 +80,9 @@ class CreateRecord extends Component {
             <Field name="limits.xmax">
               {({ input, meta }) => (
                 <FormGroup>
-                  <label><Axis value="X" sub="max" /></label>
+                  <TextLabel mb="2x">
+                    <Axis value="X" sub="max" />
+                  </TextLabel>
                   <Input {...input} type="number" />
                   {meta.touched && meta.error && <Error>{meta.error}</Error>}
                 </FormGroup>
@@ -88,7 +95,9 @@ class CreateRecord extends Component {
             <Field name="limits.ymin">
               {({ input, meta }) => (
                 <FormGroup>
-                  <label><Axis value="Y" sub="min" /></label>
+                  <TextLabel mb="2x">
+                    <Axis value="Y" sub="min" />
+                  </TextLabel>
                   <Input {...input} type="number" />
                   {meta.touched && meta.error && <Error>{meta.error}</Error>}
                 </FormGroup>
@@ -100,7 +109,9 @@ class CreateRecord extends Component {
             <Field name="limits.ymax">
               {({ input, meta }) => (
                 <FormGroup>
-                  <label><Axis value="Y" sub="max" /></label>
+                  <TextLabel mb="2x">
+                    <Axis value="Y" sub="max" />
+                  </TextLabel>
                   <Input {...input} type="number" />
                   {meta.touched && meta.error && <Error>{meta.error}</Error>}
                 </FormGroup>
@@ -113,7 +124,9 @@ class CreateRecord extends Component {
             <Field name="limits.zmin">
               {({ input, meta }) => (
                 <FormGroup>
-                  <label><Axis value="Z" sub="min" /></label>
+                  <TextLabel mb="2x">
+                    <Axis value="Z" sub="min" />
+                  </TextLabel>
                   <Input {...input} type="number" />
                   {meta.touched && meta.error && <Error>{meta.error}</Error>}
                 </FormGroup>
@@ -125,7 +138,9 @@ class CreateRecord extends Component {
             <Field name="limits.zmax">
               {({ input, meta }) => (
                 <FormGroup>
-                  <label><Axis value="Z" sub="max" /></label>
+                  <TextLabel mb="2x">
+                    <Axis value="Z" sub="max" />
+                  </TextLabel>
                   <Input {...input} type="number" />
                   {meta.touched && meta.error && <Error>{meta.error}</Error>}
                 </FormGroup>
@@ -149,7 +164,7 @@ class CreateRecord extends Component {
             initialValues={this.state.values}
             onSubmit={this.onSubmit}
             render={({ handleSubmit, pristine, invalid }) => (
-              <div>
+              <>
                 <Modal.Header>
                   <Modal.Title>
                     {i18n._('Machine Profile')}
@@ -171,7 +186,9 @@ class CreateRecord extends Component {
                     <Field name="name" validate={validations.required}>
                       {({ input, meta }) => (
                         <FormGroup>
-                          <label>{i18n._('Name')}</label>
+                          <TextLabel mb="2x">
+                            {i18n._('Name')}
+                          </TextLabel>
                           <Input {...input} type="text" />
                           {meta.touched && meta.error && <Error>{meta.error}</Error>}
                         </FormGroup>
@@ -202,7 +219,7 @@ class CreateRecord extends Component {
                     {i18n._('OK')}
                   </button>
                 </Modal.Footer>
-              </div>
+              </>
             )}
           />
         </Modal>

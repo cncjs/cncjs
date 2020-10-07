@@ -1,14 +1,16 @@
+import {
+  Space,
+  TextLabel,
+} from '@trendmicro/react-styled-ui';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import Slider from 'rc-slider';
 import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
-import Space from 'app/components/Space';
 import { ToastNotification } from 'app/components/Notifications';
 import { Form, Input, Textarea } from 'app/components/Validation';
 import FormGroup from 'app/components/FormGroup';
-import Label from 'app/components/Label';
 import i18n from 'app/lib/i18n';
 import * as validations from 'app/lib/validations';
 import styles from '../form.styl';
@@ -77,7 +79,9 @@ class CreateRecord extends Component {
               }}
             >
               <FormGroup>
-                <Label>{i18n._('Name')}</Label>
+                <TextLabel mb="2x">
+                  {i18n._('Name')}
+                </TextLabel>
                 <Input
                   type="text"
                   name="name"
@@ -91,7 +95,9 @@ class CreateRecord extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <Label>{i18n._('Command')}</Label>
+                <TextLabel mb="2x">
+                  {i18n._('Command')}
+                </TextLabel>
                 <Textarea
                   name="command"
                   value=""
@@ -105,7 +111,9 @@ class CreateRecord extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <Label>{i18n._('Button Width')}</Label>
+                <TextLabel mb="2x">
+                  {i18n._('Button Width')}
+                </TextLabel>
                 <Slider
                   ref={node => {
                     this.slider = node;

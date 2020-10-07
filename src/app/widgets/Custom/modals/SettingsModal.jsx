@@ -1,10 +1,12 @@
+import {
+  TextLabel,
+} from '@trendmicro/react-styled-ui';
 import React from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { Button } from 'app/components/Buttons';
 import Input from 'app/components/FormControl/Input';
 import FormGroup from 'app/components/FormGroup';
 import InlineError from 'app/components/InlineError';
-import Label from 'app/components/Label';
 import Modal from 'app/components/Modal';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import i18n from 'app/lib/i18n';
@@ -48,7 +50,9 @@ const SettingsModal = ({
                 <Field name="title">
                   {({ input, meta }) => (
                     <FormGroup>
-                      <Label>{i18n._('Title')}</Label>
+                      <TextLabel mb="2x">
+                        {i18n._('Title')}
+                      </TextLabel>
                       <Input
                         {...input}
                         type="url"
@@ -63,7 +67,9 @@ const SettingsModal = ({
                 <Field name="url">
                   {({ input, meta }) => (
                     <FormGroup>
-                      <Label>{i18n._('URL')}</Label>
+                      <TextLabel mb="2x">
+                        {i18n._('URL')}
+                      </TextLabel>
                       <Input
                         {...input}
                         type="url"

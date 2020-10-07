@@ -1,3 +1,6 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import _get from 'lodash/get';
 import chainedFunction from 'chained-function';
 import PropTypes from 'prop-types';
@@ -7,7 +10,6 @@ import { Button } from 'app/components/Buttons';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Modal from 'app/components/Modal';
 import ModalTemplate from 'app/components/ModalTemplate';
-import Space from 'app/components/Space';
 import Table from 'app/components/Table';
 import { TablePagination } from 'app/components/Paginations';
 import portal from 'app/lib/portal';

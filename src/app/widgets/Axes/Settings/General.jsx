@@ -1,3 +1,7 @@
+import {
+  Space,
+  TextLabel,
+} from '@trendmicro/react-styled-ui';
 import ensureArray from 'ensure-array';
 import _includes from 'lodash/includes';
 import _set from 'lodash/set';
@@ -10,8 +14,6 @@ import { Checkbox } from 'app/components/Checkbox';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
-import Label from 'app/components/Label';
-import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 
 const IMPERIAL_JOG_DISTANCES_MAX = 5;
@@ -146,9 +148,9 @@ class General extends Component {
       return (
         <Container>
           <FormGroup>
-            <Label>
+            <TextLabel mb="2x">
               {i18n._('Axes')}
-            </Label>
+            </TextLabel>
             <Row>
               <Col xs={4}>
                 <FormGroup>
@@ -224,9 +226,9 @@ class General extends Component {
           <FormGroup>
             <Row>
               <Col>
-                <Label>
+                <TextLabel mb="2x">
                   {i18n._('Custom Jog Distance (mm)')}
-                </Label>
+                </TextLabel>
                 <Row>
                   <Col>
                     <ForEach items={metricJogDistances}>
@@ -272,9 +274,9 @@ class General extends Component {
                 <Space width={24} />
               </Col>
               <Col>
-                <Label>
+                <TextLabel mb="2x">
                   {i18n._('Custom Jog Distance (inches)')}
-                </Label>
+                </TextLabel>
                 <Row>
                   <Col>
                     <ForEach items={imperialJogDistances}>

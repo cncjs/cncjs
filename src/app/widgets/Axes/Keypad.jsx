@@ -1,3 +1,6 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import cx from 'classnames';
 import ensureArray from 'ensure-array';
 import frac from 'frac';
@@ -9,7 +12,6 @@ import styled from 'styled-components';
 import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import RepeatableButton from 'app/components/RepeatableButton';
-import Space from 'app/components/Space';
 import {
   IMPERIAL_UNITS,
   IMPERIAL_STEPS,

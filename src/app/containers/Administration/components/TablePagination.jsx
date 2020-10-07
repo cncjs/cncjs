@@ -1,8 +1,10 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import React, { Fragment } from 'react';
 import styled, { css } from 'styled-components';
 import Hoverable from 'app/components/Hoverable';
 import TablePagination from 'app/components/Paginations/TablePagination';
-import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 
 const Caret = styled.i`${({

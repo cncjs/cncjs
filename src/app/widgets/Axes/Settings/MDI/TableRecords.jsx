@@ -1,9 +1,11 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import get from 'lodash/get';
 import take from 'lodash/take';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Button, ButtonGroup } from 'app/components/Buttons';
-import Space from 'app/components/Space';
 import Table from 'app/components/Table';
 import i18n from 'app/lib/i18n';
 import {

@@ -1,3 +1,6 @@
+import {
+  Space,
+} from '@trendmicro/react-styled-ui';
 import get from 'lodash/get';
 import includes from 'lodash/includes';
 import pick from 'lodash/pick';
@@ -5,7 +8,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import { ButtonToolbar, ButtonGroup, Button } from 'app/components/Buttons';
-import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import {

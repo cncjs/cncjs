@@ -1,3 +1,8 @@
+import {
+  Box,
+  Space,
+  TextLabel,
+} from '@trendmicro/react-styled-ui';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import React from 'react';
@@ -10,10 +15,8 @@ import FormGroup from 'app/components/FormGroup';
 import Hoverable from 'app/components/Hoverable';
 import InlineError from 'app/components/InlineError';
 import InputGroup from 'app/components/InputGroup';
-import Label from 'app/components/Label';
 import Margin from 'app/components/Margin';
 import { useModal } from 'app/components/Modal';
-import Space from 'app/components/Space';
 import Infotip from 'app/components/Infotip';
 import {
   IMPERIAL_UNITS,
@@ -110,9 +113,11 @@ const Probe = ({
               return (
                 <FormGroup>
                   <Margin bottom=".25rem">
-                    <div>
-                      <Label>{i18n._('Probe Axis')}</Label>
-                    </div>
+                    <Box>
+                      <TextLabel mb="2x">
+                        {i18n._('Probe Axis')}
+                      </TextLabel>
+                    </Box>
                     <ButtonGroup
                       sm
                       style={{
@@ -158,8 +163,10 @@ const Probe = ({
               return (
                 <FormGroup>
                   <Margin bottom=".25rem">
-                    <div>
-                      <Label>{i18n._('Probe Command: {{probeCommand}}', { probeCommand })}</Label>
+                    <Box>
+                      <TextLabel mb="2x">
+                        {i18n._('Probe Command: {{probeCommand}}', { probeCommand })}
+                      </TextLabel>
                       <Space width={8} />
                       <Infotip content={mapProbeCommandToDescription(probeCommand)}>
                         <Hoverable>
@@ -177,7 +184,7 @@ const Probe = ({
                           )}
                         </Hoverable>
                       </Infotip>
-                    </div>
+                    </Box>
                     <ButtonGroup
                       sm
                       style={{
@@ -235,7 +242,9 @@ const Probe = ({
 
               return (
                 <FormGroup>
-                  <Label>{i18n._('Probe Depth')}</Label>
+                  <TextLabel mb="2x">
+                    {i18n._('Probe Depth')}
+                  </TextLabel>
                   <InputGroup sm>
                     <Input
                       {...input}
@@ -274,7 +283,9 @@ const Probe = ({
 
               return (
                 <FormGroup>
-                  <Label>{i18n._('Probe Feedrate')}</Label>
+                  <TextLabel mb="2x">
+                    {i18n._('Probe Feedrate')}
+                  </TextLabel>
                   <InputGroup sm>
                     <Input
                       {...input}
@@ -313,7 +324,9 @@ const Probe = ({
 
               return (
                 <FormGroup>
-                  <Label>{i18n._('Touch Plate Thickness')}</Label>
+                  <TextLabel mb="2x">
+                    {i18n._('Touch Plate Thickness')}
+                  </TextLabel>
                   <InputGroup sm>
                     <Input
                       {...input}
@@ -352,7 +365,9 @@ const Probe = ({
 
               return (
                 <FormGroup>
-                  <Label>{i18n._('Retraction Distance')}</Label>
+                  <TextLabel mb="2x">
+                    {i18n._('Retraction Distance')}
+                  </TextLabel>
                   <InputGroup sm>
                     <Input
                       {...input}
