@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Container, Row, Col } from 'app/components/GridSystem';
-import Margin from 'app/components/Margin';
 import ToggleSwitch from 'app/components/ToggleSwitch';
 import i18n from 'app/lib/i18n';
 
@@ -50,7 +49,7 @@ class WidgetListItem extends Component {
             height: '100%',
           }}
         >
-          <Margin bottom={12}>
+          <Box mb="3x">
             <Row>
               <Box>
                 <FontAwesomeIcon
@@ -64,8 +63,8 @@ class WidgetListItem extends Component {
                 />
               </Box>
             </Row>
-          </Margin>
-          <Margin bottom={12}>
+          </Box>
+          <Box mb="3x">
             <Row>
               <Col>
                 <div
@@ -85,8 +84,8 @@ class WidgetListItem extends Component {
                 />
               </Col>
             </Row>
-          </Margin>
-          <Margin bottom={12}>
+          </Box>
+          <Box mb="3x">
             <div
               style={{
                 opacity: checked ? 1 : 0.6,
@@ -94,7 +93,7 @@ class WidgetListItem extends Component {
             >
               {this.props.details}
             </div>
-          </Margin>
+          </Box>
         </Container>
       );
     }

@@ -1,4 +1,5 @@
 import {
+  Box,
   TextLabel,
 } from '@trendmicro/react-styled-ui';
 import _get from 'lodash/get';
@@ -8,7 +9,6 @@ import { Form, Field } from 'react-final-form';
 import Input from 'app/components/FormControl/Input';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
-import Margin from 'app/components/Margin';
 import Modal from 'app/components/Modal';
 import { ToastNotification } from 'app/components/Notifications';
 import SectionGroup from 'app/components/SectionGroup';
@@ -197,9 +197,9 @@ class CreateRecord extends Component {
                   </SectionGroup>
                   <SectionGroup style={{ marginBottom: 0 }}>
                     <SectionTitle>{i18n._('Limits')}</SectionTitle>
-                    <Margin left={24}>
+                    <Box ml="6x">
                       {this.renderLimits()}
-                    </Margin>
+                    </Box>
                   </SectionGroup>
                 </Modal.Body>
                 <Modal.Footer>

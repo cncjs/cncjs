@@ -27,7 +27,6 @@ import InlineError from 'app/components/InlineError';
 import Input from 'app/components/FormControl/Input';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
-import Margin from 'app/components/Margin';
 import Modal, { useModal } from 'app/components/Modal';
 import ModalTemplate from 'app/components/ModalTemplate';
 import { Notification } from 'app/components/Notifications';
@@ -915,11 +914,11 @@ const SerialPortOption = ({
         </Row>
       </Container>
       {manufacturer && (
-        <Margin left={24}>
+        <Box ml="6x">
           <Text color="#888">
             {i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}
           </Text>
-        </Margin>
+        </Box>
       )}
     </SelectComponents.Option>
   );

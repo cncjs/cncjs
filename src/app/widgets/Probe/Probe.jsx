@@ -15,7 +15,6 @@ import FormGroup from 'app/components/FormGroup';
 import Hoverable from 'app/components/Hoverable';
 import InlineError from 'app/components/InlineError';
 import InputGroup from 'app/components/InputGroup';
-import Margin from 'app/components/Margin';
 import { useModal } from 'app/components/Modal';
 import Infotip from 'app/components/Infotip';
 import {
@@ -112,7 +111,7 @@ const Probe = ({
 
               return (
                 <FormGroup>
-                  <Margin bottom=".25rem">
+                  <Box mb="1x">
                     <Box>
                       <TextLabel mb="2x">
                         {i18n._('Probe Axis')}
@@ -146,7 +145,7 @@ const Probe = ({
                         Y
                       </Button>
                     </ButtonGroup>
-                  </Margin>
+                  </Box>
                 </FormGroup>
               );
             }}
@@ -162,7 +161,7 @@ const Probe = ({
 
               return (
                 <FormGroup>
-                  <Margin bottom=".25rem">
+                  <Box mb="1x">
                     <Box>
                       <TextLabel mb="2x">
                         {i18n._('Probe Command: {{probeCommand}}', { probeCommand })}
@@ -220,7 +219,7 @@ const Probe = ({
                         G38.5
                       </Button>
                     </ButtonGroup>
-                  </Margin>
+                  </Box>
                 </FormGroup>
               );
             }}
@@ -410,7 +409,7 @@ const Probe = ({
               })();
 
               return (
-                <Margin bottom=".5rem">
+                <Box mb="2x">
                   <Button
                     md
                     btnStyle="secondary"
@@ -421,7 +420,7 @@ const Probe = ({
                   >
                     {i18n._('Probe Axis {{axis}}', { axis: probeAxis })}
                   </Button>
-                </Margin>
+                </Box>
               );
             }}
           </FormSpy>

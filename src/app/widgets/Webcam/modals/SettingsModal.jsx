@@ -1,4 +1,5 @@
 import {
+  Box,
   TextLabel,
 } from '@trendmicro/react-styled-ui';
 import _find from 'lodash/find';
@@ -8,7 +9,6 @@ import Select from 'react-select';
 import { Button } from 'app/components/Buttons';
 import Input from 'app/components/FormControl/Input';
 import FormGroup from 'app/components/FormGroup';
-import Margin from 'app/components/Margin';
 import Modal from 'app/components/Modal';
 import { RadioButton } from 'app/components/Radio';
 import i18n from 'app/lib/i18n';
@@ -92,8 +92,8 @@ const SettingsModal = ({
                   <TextLabel mb="2x">
                     {i18n._('Media Source')}
                   </TextLabel>
-                  <Margin bottom={8}>
-                    <Margin bottom={4}>
+                  <Box mb="2x">
+                    <Box mb="1x">
                       <Field name="mediaSource" type="radio" value={MEDIA_SOURCE_LOCAL}>
                         {({ input }) => (
                           <RadioButton
@@ -102,8 +102,8 @@ const SettingsModal = ({
                           />
                         )}
                       </Field>
-                    </Margin>
-                    <Margin left={20}>
+                    </Box>
+                    <Box ml="5x">
                       <Field name="videoDevice">
                         {({ input }) => {
                           const { values } = form.getState();
@@ -136,10 +136,10 @@ const SettingsModal = ({
                           );
                         }}
                       </Field>
-                    </Margin>
-                  </Margin>
-                  <Margin bottom={8}>
-                    <Margin bottom={4}>
+                    </Box>
+                  </Box>
+                  <Box mb="2x">
+                    <Box mb="1x">
                       <Field name="mediaSource" type="radio" value={MEDIA_SOURCE_MJPEG}>
                         {({ input }) => (
                           <RadioButton
@@ -148,8 +148,8 @@ const SettingsModal = ({
                           />
                         )}
                       </Field>
-                    </Margin>
-                    <Margin left={20}>
+                    </Box>
+                    <Box ml="5x">
                       <Field name="url">
                         {({ input, meta }) => {
                           const { values } = form.getState();
@@ -166,13 +166,13 @@ const SettingsModal = ({
                           );
                         }}
                       </Field>
-                      <Margin top={4}>
+                      <Box mt="1x">
                         <MutedText>
                           {i18n._('The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.')}
                         </MutedText>
-                      </Margin>
-                    </Margin>
-                  </Margin>
+                      </Box>
+                    </Box>
+                  </Box>
                 </FormGroup>
               </Modal.Body>
               <Modal.Footer>

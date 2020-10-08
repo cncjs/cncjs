@@ -1,4 +1,5 @@
 import {
+  Box,
   Space,
   Text,
 } from '@trendmicro/react-styled-ui';
@@ -22,7 +23,6 @@ import api from 'app/api';
 import { Button, ButtonGroup } from 'app/components/Buttons';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Row, Col } from 'app/components/GridSystem';
-import Margin from 'app/components/Margin';
 import {
   CONNECTION_STATE_CONNECTED,
 } from 'app/constants/connection';
@@ -469,7 +469,7 @@ class Workspace extends Component {
               getRootProps,
               isDragActive,
             }) => (
-              <div {...getRootProps()}>
+              <Box {...getRootProps()}>
                 {isDragActive && (
                   <DropzoneOverlay disabled={!isConnected}>
                     <Text
@@ -508,7 +508,7 @@ class Workspace extends Component {
                         { [styles.hidden]: hidePrimaryContainer }
                       )}
                     >
-                      <Margin top={10} bottom={10}>
+                      <Box my="3x">
                         <Row>
                           <Col width="auto">
                             <Button
@@ -554,7 +554,7 @@ class Workspace extends Component {
                             </ButtonGroup>
                           </Col>
                         </Row>
-                      </Margin>
+                      </Box>
                       <PrimaryWidgets
                         ref={node => {
                           this.primaryWidgets = node;
@@ -615,7 +615,7 @@ class Workspace extends Component {
                         { [styles.hidden]: hideSecondaryContainer }
                       )}
                     >
-                      <Margin top={10} bottom={10}>
+                      <Box my="3x">
                         <Row>
                           <Col width="auto">
                             <ButtonGroup sm>
@@ -661,7 +661,7 @@ class Workspace extends Component {
                             </Button>
                           </Col>
                         </Row>
-                      </Margin>
+                      </Box>
                       <SecondaryWidgets
                         ref={node => {
                           this.secondaryWidgets = node;
@@ -674,7 +674,7 @@ class Workspace extends Component {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Box>
             )}
           </Dropzone>
         </div>
