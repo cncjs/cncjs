@@ -32,6 +32,9 @@ const createFetchMachine = () => {
             }),
           },
         },
+        on: {
+          CANCEL: 'idle',
+        }
       },
       success: {
         entry: 'notifySuccess',
@@ -54,11 +57,11 @@ const createFetchMachine = () => {
         data: null,
         error: null,
       }),
-      notifySuccess: (context) => {},
-      notifyFailure: (context) => {},
+      notifySuccess: (context, event) => {},
+      notifyFailure: (context, event) => {},
     },
     services: {
-      fetch: (context) => null,
+      fetch: (context, event) => null,
     },
   });
 
