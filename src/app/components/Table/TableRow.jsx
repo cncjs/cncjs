@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import { connect } from 'mini-store';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';

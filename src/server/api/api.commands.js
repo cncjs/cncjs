@@ -1,5 +1,4 @@
-import ensureArray from 'ensure-array';
-import { ensureFiniteNumber } from 'ensure-type';
+import { ensureArray, ensureFiniteNumber } from 'ensure-type';
 import _find from 'lodash/find';
 import _isPlainObject from 'lodash/isPlainObject';
 import { v4 as uuidv4 } from 'uuid';

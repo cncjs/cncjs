@@ -1,4 +1,4 @@
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import _get from 'lodash/get';
 import _mapValues from 'lodash/mapValues';
 import React from 'react';

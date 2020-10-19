@@ -1,5 +1,5 @@
 import _get from 'lodash/get';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import superagent from 'superagent';
 import superagentUse from 'superagent-use';
 import controller from 'app/lib/controller';

@@ -1,5 +1,4 @@
-import ensureArray from 'ensure-array';
-import { ensurePositiveNumber } from 'ensure-type';
+import { ensureArray, ensurePositiveNumber } from 'ensure-type';
 import get from 'lodash/get';
 import map from 'lodash/map';
 import mapValues from 'lodash/mapValues';

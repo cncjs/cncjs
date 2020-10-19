@@ -1,5 +1,4 @@
-import ensureArray from 'ensure-array';
-import { ensurePositiveNumber } from 'ensure-type';
+import { ensureArray, ensurePositiveNumber } from 'ensure-type';
 import _mapValues from 'lodash/mapValues';
 import {
   IMPERIAL_UNITS,

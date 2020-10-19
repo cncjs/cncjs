@@ -1,4 +1,4 @@
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import styled from 'styled-components';
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';

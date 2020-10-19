@@ -5,8 +5,7 @@ import {
   TextLabel,
 } from '@trendmicro/react-styled-ui';
 import chainedFunction from 'chained-function';
-import ensureArray from 'ensure-array';
-import { ensurePositiveNumber } from 'ensure-type';
+import { ensureArray, ensurePositiveNumber } from 'ensure-type';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';

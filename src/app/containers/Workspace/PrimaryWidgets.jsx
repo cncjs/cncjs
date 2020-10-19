@@ -1,6 +1,6 @@
 import chainedFunction from 'chained-function';
 import classNames from 'classnames';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import get from 'lodash/get';
 import includes from 'lodash/includes';
 import isEqual from 'lodash/isEqual';

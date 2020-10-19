@@ -1,4 +1,4 @@
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import serviceContainer from '../service-container';
 
 const userStore = serviceContainer.resolve('userStore');

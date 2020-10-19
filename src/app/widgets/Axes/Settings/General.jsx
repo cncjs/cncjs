@@ -2,7 +2,7 @@ import {
   Space,
   TextLabel,
 } from '@trendmicro/react-styled-ui';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import _includes from 'lodash/includes';
 import _set from 'lodash/set';
 import PropTypes from 'prop-types';

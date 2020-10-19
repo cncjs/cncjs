@@ -1,8 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
-import ensureArray from 'ensure-array';
-import { ensureFiniteNumber, ensurePositiveNumber } from 'ensure-type';
+import { ensureArray, ensureFiniteNumber, ensurePositiveNumber } from 'ensure-type';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
 import {

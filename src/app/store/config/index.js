@@ -1,5 +1,4 @@
-import ensureArray from 'ensure-array';
-import { ensureFiniteNumber } from 'ensure-type';
+import { ensureArray, ensureFiniteNumber } from 'ensure-type';
 import isElectron from 'is-electron';
 import _debounce from 'lodash/debounce';
 import _difference from 'lodash/difference';

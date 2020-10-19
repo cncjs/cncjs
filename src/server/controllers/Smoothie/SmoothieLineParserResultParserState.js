@@ -1,4 +1,4 @@
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import _compact from 'lodash/compact';
 import _find from 'lodash/find';
 import _get from 'lodash/get';

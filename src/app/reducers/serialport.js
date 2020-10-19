@@ -1,4 +1,4 @@
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import { createReducer } from 'redux-action';
 import {
   FETCH_PORTS,

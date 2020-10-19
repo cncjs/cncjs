@@ -1,4 +1,4 @@
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import i18n from './i18n';
 
 export default (word, group, object) => {

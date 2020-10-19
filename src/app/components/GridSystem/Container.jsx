@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import {

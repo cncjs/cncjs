@@ -1,5 +1,4 @@
-import ensureArray from 'ensure-array';
-import { ensureFiniteNumber, ensureString } from 'ensure-type';
+import { ensureArray, ensureFiniteNumber, ensureString } from 'ensure-type';
 import _get from 'lodash/get';
 import _set from 'lodash/set';
 import _find from 'lodash/find';

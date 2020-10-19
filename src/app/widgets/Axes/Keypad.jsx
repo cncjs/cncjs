@@ -2,7 +2,7 @@ import {
   Space,
 } from '@trendmicro/react-styled-ui';
 import cx from 'classnames';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import frac from 'frac';
 import _includes from 'lodash/includes';
 import _uniqueId from 'lodash/uniqueId';

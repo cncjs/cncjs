@@ -5,7 +5,7 @@ import {
   Text,
 } from '@trendmicro/react-styled-ui';
 import { useService } from '@xstate/react';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import React, { useContext } from 'react';

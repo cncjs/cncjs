@@ -1,4 +1,4 @@
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 

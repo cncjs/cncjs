@@ -1,4 +1,4 @@
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import _difference from 'lodash/difference';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';

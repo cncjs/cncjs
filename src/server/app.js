@@ -8,7 +8,7 @@ import cookieParser from 'cookie-parser';
 import multiparty from 'connect-multiparty';
 import connectRestreamer from 'connect-restreamer';
 import consolidate from 'consolidate';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import errorhandler from 'errorhandler';
 import express from 'express';
 import expressJWT from 'express-jwt';

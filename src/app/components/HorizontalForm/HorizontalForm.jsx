@@ -1,4 +1,4 @@
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import React from 'react';
 import styled from 'styled-components';
 import withContextConsumer from './withContextConsumer';

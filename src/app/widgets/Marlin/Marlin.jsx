@@ -1,7 +1,7 @@
 import {
   Space,
 } from '@trendmicro/react-styled-ui';
-import ensureArray from 'ensure-array';
+import { ensureArray, ensurePositiveNumber } from 'ensure-type';
 import _get from 'lodash/get';
 import _mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
@@ -15,7 +15,6 @@ import Clickable from 'app/components/Clickable';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Panel from 'app/components/Panel';
-import { ensurePositiveNumber } from 'ensure-type';
 import FadeInOut from './FadeInOut';
 import Overrides from './Overrides';
 import styles from './index.styl';

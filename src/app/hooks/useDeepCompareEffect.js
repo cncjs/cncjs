@@ -1,4 +1,4 @@
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import _isEqual from 'lodash/isEqual';
 import { useEffect, useRef } from 'react';
 
