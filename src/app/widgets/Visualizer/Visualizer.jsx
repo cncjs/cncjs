@@ -1,3 +1,4 @@
+import { ensurePositiveNumber } from 'ensure-type';
 import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _isEqual from 'lodash/isEqual';
@@ -13,7 +14,6 @@ import {
   IMPERIAL_UNITS,
   METRIC_UNITS,
 } from 'app/constants';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import CombinedCamera from 'app/lib/three/CombinedCamera';
 import TrackballControls from 'app/lib/three/TrackballControls';
 import * as WebGL from 'app/lib/three/WebGL';

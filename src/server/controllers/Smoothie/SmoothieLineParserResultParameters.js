@@ -1,4 +1,4 @@
-import { ensureFiniteNumber } from '../../lib/ensure-type';
+import { ensureFiniteNumber } from 'ensure-type';
 
 class SmoothieLineParserResultParameters {
   static parse(line) {

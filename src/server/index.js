@@ -6,6 +6,7 @@ import url from 'url';
 import bcrypt from 'bcryptjs';
 import chalk from 'chalk';
 import ensureArray from 'ensure-array';
+import { ensureString } from 'ensure-type';
 import expandTilde from 'expand-tilde';
 import express from 'express';
 import httpProxy from 'http-proxy';
@@ -20,7 +21,6 @@ import app from './app';
 import settings from './config/settings';
 import serviceContainer from './service-container';
 import serviceEngine from './service-engine';
-import { ensureString } from './lib/ensure-type';
 import logger, { setLevel } from './lib/logger';
 import urljoin from './lib/urljoin';
 

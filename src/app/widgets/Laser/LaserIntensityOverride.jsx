@@ -3,6 +3,7 @@ import {
   Text,
   TextLabel,
 } from '@trendmicro/react-styled-ui';
+import { ensurePositiveNumber } from 'ensure-type';
 import _get from 'lodash/get';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -19,7 +20,6 @@ import {
   TINYG,
 } from 'app/constants/controller';
 import controller from 'app/lib/controller';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import { none } from 'app/lib/utils';
 import OverrideReadout from './components/OverrideReadout';

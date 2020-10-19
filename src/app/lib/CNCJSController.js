@@ -1,4 +1,5 @@
 import ensureArray from 'ensure-array';
+import { ensurePositiveNumber } from 'ensure-type';
 import _mapValues from 'lodash/mapValues';
 import {
   IMPERIAL_UNITS,
@@ -10,7 +11,6 @@ import {
   SMOOTHIE,
   TINYG,
 } from 'app/constants/controller';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import { in2mm } from 'app/lib/units';
 
 const noop = () => {};

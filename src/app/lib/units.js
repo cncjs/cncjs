@@ -1,8 +1,8 @@
+import { ensureFiniteNumber } from 'ensure-type';
 import {
   IMPERIAL_UNITS,
   METRIC_UNITS,
 } from 'app/constants';
-import { ensureFiniteNumber } from 'app/lib/ensure-type';
 
 // Converts value from millimeters to inches
 export const mm2in = (val = 0) => val / 25.4;

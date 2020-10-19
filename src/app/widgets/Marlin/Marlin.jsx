@@ -15,7 +15,7 @@ import Clickable from 'app/components/Clickable';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Panel from 'app/components/Panel';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
+import { ensurePositiveNumber } from 'ensure-type';
 import FadeInOut from './FadeInOut';
 import Overrides from './Overrides';
 import styles from './index.styl';

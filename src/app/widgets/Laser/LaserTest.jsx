@@ -1,6 +1,7 @@
 import {
   Text,
 } from '@trendmicro/react-styled-ui';
+import { ensurePositiveNumber } from 'ensure-type';
 import _get from 'lodash/get';
 import React from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
@@ -17,7 +18,6 @@ import {
   CONNECTION_STATE_CONNECTED,
 } from 'app/constants/connection';
 import controller from 'app/lib/controller';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import OverflowEllipsis from './components/OverflowEllipsis';

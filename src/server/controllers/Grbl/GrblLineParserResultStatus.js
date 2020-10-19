@@ -1,6 +1,6 @@
 /* eslint no-bitwise: ["error", { "allow": ["&", "<<"] }] */
+import { ensureFiniteNumber } from 'ensure-type';
 import _ from 'lodash';
-import { ensureFiniteNumber } from '../../lib/ensure-type';
 
 //https://github.com/grbl/grbl/blob/master/grbl/report.c
 class GrblLineParserResultStatus {

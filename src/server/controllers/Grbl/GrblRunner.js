@@ -1,7 +1,7 @@
 import events from 'events';
+import { ensureFiniteNumber } from 'ensure-type';
 import _ from 'lodash';
 import decimalPlaces from '../../lib/decimal-places';
-import { ensureFiniteNumber } from '../../lib/ensure-type';
 import GrblLineParser from './GrblLineParser';
 import GrblLineParserResultStatus from './GrblLineParserResultStatus';
 import GrblLineParserResultOk from './GrblLineParserResultOk';

@@ -1,5 +1,6 @@
 import chainedFunction from 'chained-function';
 import classNames from 'classnames';
+import { ensurePositiveNumber } from 'ensure-type';
 import ExpressionEvaluator from 'expr-eval';
 import includes from 'lodash/includes';
 import get from 'lodash/get';
@@ -37,7 +38,6 @@ import {
   WORKFLOW_STATE_IDLE,
 } from 'app/constants/workflow';
 import controller from 'app/lib/controller';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import portal from 'app/lib/portal';

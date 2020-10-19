@@ -1,3 +1,4 @@
+import { ensurePositiveNumber } from 'ensure-type';
 import _get from 'lodash/get';
 import _mapValues from 'lodash/mapValues';
 import { createReducer } from 'redux-action';
@@ -42,9 +43,6 @@ import {
 import {
   WORKFLOW_STATE_IDLE,
 } from 'app/constants/workflow';
-import {
-  ensurePositiveNumber,
-} from 'app/lib/ensure-type';
 import {
   in2mm,
 } from 'app/lib/units';

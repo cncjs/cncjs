@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import ensureArray from 'ensure-array';
+import { ensureFiniteNumber, ensurePositiveNumber } from 'ensure-type';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
 import {
@@ -19,7 +20,6 @@ import Workflow, {
   WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
-import { ensureFiniteNumber, ensurePositiveNumber } from '../../lib/ensure-type';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';

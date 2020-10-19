@@ -1,7 +1,7 @@
 import events from 'events';
 import ensureArray from 'ensure-array';
+import { ensureFiniteNumber } from 'ensure-type';
 import _ from 'lodash';
-import { ensureFiniteNumber } from '../../lib/ensure-type';
 import TinyGLineParser from './TinyGLineParser';
 import TinyGLineParserResultMotorTimeout from './TinyGLineParserResultMotorTimeout';
 import TinyGLineParserResultOverrides from './TinyGLineParserResultOverrides';

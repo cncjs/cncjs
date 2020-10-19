@@ -1,5 +1,5 @@
+import { ensureFiniteNumber } from 'ensure-type';
 import _ from 'lodash';
-import { ensureFiniteNumber } from '../../lib/ensure-type';
 
 class TinyGLineParserResultQueueReports {
   static parse(data) {

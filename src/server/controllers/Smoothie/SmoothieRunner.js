@@ -1,6 +1,6 @@
 import events from 'events';
+import { ensureFiniteNumber } from 'ensure-type';
 import _ from 'lodash';
-import { ensureFiniteNumber } from '../../lib/ensure-type';
 import SmoothieLineParser from './SmoothieLineParser';
 import SmoothieLineParserResultStatus from './SmoothieLineParserResultStatus';
 import SmoothieLineParserResultOk from './SmoothieLineParserResultOk';

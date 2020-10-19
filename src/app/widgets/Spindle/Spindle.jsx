@@ -3,6 +3,7 @@ import {
   TextLabel,
 } from '@trendmicro/react-styled-ui';
 import ensureArray from 'ensure-array';
+import { ensurePositiveNumber } from 'ensure-type';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import React from 'react';
@@ -27,7 +28,6 @@ import {
   WORKFLOW_STATE_RUNNING,
 } from 'app/constants/workflow';
 import controller from 'app/lib/controller';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import iconFan from './images/fan.svg';

@@ -2,6 +2,7 @@ import {
   Space,
 } from '@trendmicro/react-styled-ui';
 import classNames from 'classnames';
+import { ensurePositiveNumber } from 'ensure-type';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
@@ -11,7 +12,6 @@ import {
 } from 'app/constants/controller';
 import i18n from 'app/lib/i18n';
 import controller from 'app/lib/controller';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import WidgetConfig from 'app/widgets/shared/WidgetConfig';
 import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import Marlin from './Marlin';

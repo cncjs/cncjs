@@ -2,13 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import ensureArray from 'ensure-array';
+import { ensureFiniteNumber, ensurePositiveNumber } from 'ensure-type';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
 import {
   CONNECTION_TYPE_SERIAL,
   CONNECTION_TYPE_SOCKET,
 } from '../../constants/connection';
-import { ensureFiniteNumber, ensurePositiveNumber } from '../../lib/ensure-type';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
 import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/Sender';

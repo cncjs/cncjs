@@ -1,4 +1,5 @@
 import ensureArray from 'ensure-array';
+import { ensureFiniteNumber } from 'ensure-type';
 import isElectron from 'is-electron';
 import _debounce from 'lodash/debounce';
 import _difference from 'lodash/difference';
@@ -9,7 +10,6 @@ import _uniq from 'lodash/uniq';
 import semverLt from 'semver/functions/lt';
 import semverLte from 'semver/functions/lte';
 import settings from 'app/config/settings';
-import { ensureFiniteNumber } from 'app/lib/ensure-type';
 import log from 'app/lib/log';
 import reduxStore from 'app/store/redux';
 import { promptUserForCorruptedWorkspaceSettings } from 'app/containers/App/actions';

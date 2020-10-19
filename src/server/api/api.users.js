@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import ensureArray from 'ensure-array';
+import { ensureFiniteNumber } from 'ensure-type';
 import _isPlainObject from 'lodash/isPlainObject';
 import _find from 'lodash/find';
 import _some from 'lodash/some';
 import { v4 as uuidv4 } from 'uuid';
 import settings from '../config/settings';
-import { ensureFiniteNumber } from '../lib/ensure-type';
 import logger from '../lib/logger';
 import serviceContainer from '../service-container';
 import { getPagingRange } from './shared/paging';

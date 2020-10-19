@@ -1,11 +1,11 @@
 import ensureArray from 'ensure-array';
+import { ensureFiniteNumber, ensureString } from 'ensure-type';
 import _get from 'lodash/get';
 import _set from 'lodash/set';
 import _find from 'lodash/find';
 import _isPlainObject from 'lodash/isPlainObject';
 import { v4 as uuidv4 } from 'uuid';
 import settings from '../config/settings';
-import { ensureFiniteNumber, ensureString } from '../lib/ensure-type';
 import logger from '../lib/logger';
 import serviceContainer from '../service-container';
 import { getPagingRange } from './shared/paging';

@@ -1,3 +1,4 @@
+import { ensureFiniteNumber } from 'ensure-type';
 import _get from 'lodash/get';
 import moment from 'moment';
 import React from 'react';
@@ -5,7 +6,6 @@ import { connect } from 'react-redux';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import HorizontalForm from 'app/components/HorizontalForm';
-import { ensureFiniteNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import { mapPositionToUnits } from 'app/lib/units';
 import {

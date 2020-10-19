@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import { ensurePositiveNumber } from 'ensure-type';
 import escape from 'lodash/escape';
 import get from 'lodash/get';
 import throttle from 'lodash/throttle';
@@ -10,7 +11,6 @@ import VirtualList from 'react-tiny-virtual-list';
 import api from 'app/api';
 import Anchor from 'app/components/Anchor';
 import Panel from 'app/components/Panel';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import { formatBytes } from 'app/lib/numeral';
 import styles from './dashboard.styl';

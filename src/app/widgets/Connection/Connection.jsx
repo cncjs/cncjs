@@ -6,6 +6,7 @@ import {
 } from '@trendmicro/react-styled-ui';
 import chainedFunction from 'chained-function';
 import ensureArray from 'ensure-array';
+import { ensurePositiveNumber } from 'ensure-type';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
@@ -47,7 +48,6 @@ import {
 } from 'app/constants/connection';
 import useMount from 'app/hooks/useMount';
 import usePrevious from 'app/hooks/usePrevious';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';

@@ -1,4 +1,4 @@
-import { ensureFiniteNumber } from '../../lib/ensure-type';
+import { ensureFiniteNumber } from 'ensure-type';
 
 class MarlinLineParserResultFirmware {
   // FIRMWARE_NAME:Marlin 1.1.0 (Github) SOURCE_CODE_URL:https://github.com/MarlinFirmware/Marlin PROTOCOL_VERSION:1.0 MACHINE_TYPE:RepRap EXTRUDER_COUNT:1 UUID:cede2a2f-41a2-4748-9b12-c55c62f367ff

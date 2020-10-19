@@ -1,12 +1,12 @@
 import cx from 'classnames';
 import color from 'cli-color';
+import { ensurePositiveNumber } from 'ensure-type';
 import _trimEnd from 'lodash/trimEnd';
 import PerfectScrollbar from 'perfect-scrollbar';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import { limit } from 'app/lib/normalize-range';
 import log from 'app/lib/log';
 import History from './History';

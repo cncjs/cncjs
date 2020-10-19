@@ -1,4 +1,5 @@
 import ensureArray from 'ensure-array';
+import { ensurePositiveNumber } from 'ensure-type';
 import get from 'lodash/get';
 import map from 'lodash/map';
 import mapValues from 'lodash/mapValues';
@@ -29,7 +30,6 @@ import {
   TINYG_MACHINE_STATE_SHUTDOWN,
   TINYG_MACHINE_STATE_PANIC,
 } from 'app/constants/controller';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import Overrides from './Overrides';
 import styles from './index.styl';
 

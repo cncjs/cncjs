@@ -1,5 +1,6 @@
-import _get from 'lodash/get';
+import { ensurePositiveNumber } from 'ensure-type';
 import Uri from 'jsuri';
+import _get from 'lodash/get';
 import pubsub from 'pubsub-js';
 import React, { useEffect, useRef } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
@@ -8,7 +9,6 @@ import settings from 'app/config/settings';
 import Iframe from 'app/components/Iframe';
 import useEffectOnce from 'app/hooks/useEffectOnce';
 import controller from 'app/lib/controller';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import i18n from 'app/lib/i18n';
 import configStore from 'app/store/config';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';

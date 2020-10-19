@@ -1,5 +1,5 @@
+import { ensurePositiveNumber } from 'ensure-type';
 import * as THREE from 'three';
-import { ensurePositiveNumber } from 'app/lib/ensure-type';
 
 class CuttingPointer {
   constructor(options) {
