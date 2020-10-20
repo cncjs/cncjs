@@ -8,7 +8,6 @@ import React, { Component } from 'react';
 import { interpret } from 'xstate';
 import api from 'app/api';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
-import { Container } from 'app/components/GridSystem';
 import { ModalProvider, ModalRoot } from 'app/components/Modal';
 import Widget from 'app/components/Widget';
 import controller from 'app/lib/controller';
@@ -427,14 +426,7 @@ class MacroWidget extends Component {
                     display: (minimized ? 'none' : 'block'),
                   }}
                 >
-                  <Container
-                    fluid
-                    style={{
-                      padding: '.75rem',
-                    }}
-                  >
-                    <Macro />
-                  </Container>
+                  <Macro />
                 </Widget.Content>
               </Widget>
             </ModalProvider>

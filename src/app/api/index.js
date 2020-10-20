@@ -1,9 +1,18 @@
+import axios from 'axios';
 import _get from 'lodash/get';
 import { ensureArray } from 'ensure-type';
 import superagent from 'superagent';
 import superagentUse from 'superagent-use';
 import controller from 'app/lib/controller';
 import configStore from 'app/store/config';
+
+const token = configStore.get('session.token');
+
+const api = axios.create({
+  headers: {
+    'Authorization': `Bearer ${token}`,
+  },
+});
 
 const bearer = (request) => {
   const token = configStore.get('session.token');
@@ -361,18 +370,7 @@ events.update = (id, options) => new Promise((resolve, reject) => {
 //
 const macros = {};
 
-macros.fetch = (options) => new Promise((resolve, reject) => {
-  authrequest
-    .get('/api/macros')
-    .query(options)
-    .end((err, res) => {
-      if (err) {
-        reject(res);
-      } else {
-        resolve(res);
-      }
-    });
-});
+macros.fetch = (params) => api.get('/api/macros', { params });
 
 macros.create = (options) => new Promise((resolve, reject) => {
   authrequest

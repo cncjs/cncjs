@@ -149,6 +149,7 @@
     "@xstate/react": "~1.0.1",
     "awilix": "~4.2.6",
     "awilix-express": "~3.0.0",
+    "axios": "~0.20.0",
     "bcryptjs": "~2.4.3",
     "body-parser": "~1.19.0",
     "chained-function": "~0.5.0",

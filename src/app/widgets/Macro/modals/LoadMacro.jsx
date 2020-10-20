@@ -4,7 +4,7 @@ import {
 } from '@trendmicro/react-styled-ui';
 import chainedFunction from 'chained-function';
 import React from 'react';
-import api from 'app/api';
+import axios from 'app/api/axios';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
 import controller from 'app/lib/controller';
@@ -13,9 +13,9 @@ import log from 'app/lib/log';
 
 const loadMacroById = async (id) => {
   try {
-    let res;
-    res = await api.macros.read(id);
-    const { name } = res.body;
+    const url = `/macros/${id}`;
+    const response = await axios.get(url);
+    const { name } = { ...response.data };
     controller.command('macro:load', id, controller.context, (err, data) => {
       if (err) {
         log.error(`Failed to load the macro: id=${id}, name="${name}"`);

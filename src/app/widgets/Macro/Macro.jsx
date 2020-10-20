@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Flex,
   Space,
   Text,
@@ -10,10 +11,10 @@ import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import React, { useContext } from 'react';
 import { connect } from 'react-redux';
-import { Button } from 'app/components/Buttons';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import useModal from 'app/components/Modal/useModal';
 import RenderBlock from 'app/components/RenderBlock';
+import { useStyledUI } from 'app/components/StyledUI';
 import useMount from 'app/hooks/useMount';
 import i18n from 'app/lib/i18n';
 import {
@@ -39,6 +40,14 @@ const Macro = ({
   canLoadMacro,
   canRunMacro,
 }) => {
+  const { colorMode, getColorStyle } = useStyledUI();
+  const secondaryColor = getColorStyle('secondaryColor');
+  const defaultBorderColor = getColorStyle('defaultBorderColor');
+  const defaultDividerColor = getColorStyle('defaultDividerColor');
+  const toolbarBackgroundColor = {
+    dark: 'gray:90',
+    light: 'gray:10',
+  }[colorMode];
   const { fetchMacrosService } = useContext(ServiceContext);
   const [state, send] = useService(fetchMacrosService);
   const { openModal } = useModal();
@@ -75,10 +84,15 @@ const Macro = ({
       <Flex
         align="center"
         justify="space-between"
+        backgroundColor={toolbarBackgroundColor}
+        borderBottom={1}
+        borderColor={defaultBorderColor}
+        px="3x"
+        py="2x"
       >
         <Box>
           <Button
-            sm
+            variant="secondary"
             onClick={handleNewMacro}
           >
             <FontAwesomeIcon icon="plus" fixedWidth />
@@ -88,7 +102,7 @@ const Macro = ({
         </Box>
         <Box>
           <Button
-            sm
+            variant="secondary"
             onClick={handleExportMacros}
           >
             <FontAwesomeIcon icon="file-export" fixedWidth />
@@ -96,7 +110,7 @@ const Macro = ({
             {i18n._('Export')}
           </Button>
           <Button
-            sm
+            variant="secondary"
             onClick={handleRefreshMacros}
             title={i18n._('Refresh')}
           >
@@ -130,11 +144,11 @@ const Macro = ({
             );
           }
 
-          const macros = ensureArray(_get(state.context, 'data.body.records')); // XXX: superagent -> axios
-          const noMacrosAvailable = macros.length === 0;
-          if (noMacrosAvailable) {
+          const macros = ensureArray(_get(data, 'data.records'));
+          const isEmpty = macros.length === 0;
+          if (isEmpty) {
             return (
-              <Text>
+              <Text color={secondaryColor} px="3x" py="2x">
                 {i18n._('No macros available')}
               </Text>
             );
@@ -147,11 +161,12 @@ const Macro = ({
                   key={macro.id}
                   align="center"
                   borderBottom={1}
-                  borderColor="gray.20"
+                  borderColor={defaultDividerColor}
+                  px="3x"
+                  py="2x"
                 >
                   <Box flex="auto">
                     <Button
-                      sm
                       disabled={!canRunMacro}
                       onClick={handleRunMacro(macro)}
                       title={i18n._('Run Macro')}
@@ -163,7 +178,6 @@ const Macro = ({
                   </Box>
                   <Box>
                     <Button
-                      sm
                       disabled={!canLoadMacro}
                       onClick={handleLoadMacro(macro)}
                       title={i18n._('Load Macro')}
@@ -171,7 +185,6 @@ const Macro = ({
                       <FontAwesomeIcon icon="chevron-up" fixedWidth />
                     </Button>
                     <Button
-                      sm
                       onClick={handleEditMacro(macro)}
                     >
                       <FontAwesomeIcon icon="edit" fixedWidth />

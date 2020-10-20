@@ -1,4 +1,4 @@
-import api from 'app/api';
+import axios from 'app/api/axios';
 import createFetchMachine from 'app/machines/createFetchMachine';
 
 const fetchMacrosMachine = createFetchMachine()
@@ -13,7 +13,8 @@ const fetchMacrosMachine = createFetchMachine()
     },
     services: {
       fetch: (context) => {
-        return api.macros.fetch();
+        const url = '/api/macros';
+        return axios.get(url);
       },
     },
   });
