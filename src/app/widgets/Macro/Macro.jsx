@@ -15,7 +15,9 @@ import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import useModal from 'app/components/Modal/useModal';
 import RenderBlock from 'app/components/RenderBlock';
 import { useStyledUI } from 'app/components/StyledUI';
+import useEffectOnce from 'app/hooks/useEffectOnce';
 import useMount from 'app/hooks/useMount';
+import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import {
   CONNECTION_STATE_CONNECTED,
@@ -51,6 +53,18 @@ const Macro = ({
   const { fetchMacrosService } = useContext(ServiceContext);
   const [state, send] = useService(fetchMacrosService);
   const { openModal } = useModal();
+
+  useEffectOnce(() => {
+    const onConfigChange = () => {
+      send('FETCH');
+    };
+
+    controller.addListener('config:change', onConfigChange);
+
+    return () => {
+      controller.removeListener('config:change', onConfigChange);
+    };
+  });
 
   useMount(() => {
     send('FETCH');

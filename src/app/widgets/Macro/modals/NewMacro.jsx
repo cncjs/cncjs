@@ -18,10 +18,9 @@ import {
   Textarea,
   TextLabel,
 } from '@trendmicro/react-styled-ui';
-import { useService } from '@xstate/react';
 import { ensureArray } from 'ensure-type';
 import _uniqueId from 'lodash/uniqueId';
-import React, { useContext, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Form, Field } from 'react-final-form';
 import axios from 'app/api/axios';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
@@ -30,7 +29,6 @@ import InlineError from 'app/components/InlineError';
 import i18n from 'app/lib/i18n';
 import { composeValidators, required } from 'app/widgets/shared/validations';
 import variables from '../shared/variables';
-import { ServiceContext } from '../context';
 
 const addMacro = async ({ name, content }) => {
   try {
@@ -68,8 +66,6 @@ const mapMacroVariablesToMenuGroupItems = (variables) => ensureArray(variables).
 const NewMacro = ({
   onClose,
 }) => {
-  const { fetchMacrosService } = useContext(ServiceContext);
-  const [, send] = useService(fetchMacrosService);
   const contentRef = useRef();
   const initialValues = {
     name: '',
@@ -88,7 +84,6 @@ const NewMacro = ({
         onSubmit={async (values) => {
           const { name, content } = values;
           await addMacro({ name, content });
-          send('FETCH');
           onClose();
         }}
         subscription={{}}

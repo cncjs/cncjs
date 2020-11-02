@@ -19,11 +19,10 @@ import {
   Textarea,
   TextLabel,
 } from '@trendmicro/react-styled-ui';
-import { useService } from '@xstate/react';
 import chainedFunction from 'chained-function';
 import { ensureArray } from 'ensure-type';
 import _uniqueId from 'lodash/uniqueId';
-import React, { useContext, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Form, Field } from 'react-final-form';
 import axios from 'app/api/axios';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
@@ -32,7 +31,6 @@ import InlineError from 'app/components/InlineError';
 import useModal from 'app/components/Modal/useModal';
 import i18n from 'app/lib/i18n';
 import { composeValidators, required } from 'app/widgets/shared/validations';
-import { ServiceContext } from '../context';
 import variables from '../shared/variables';
 
 const updateMacro = async (id, { name, content }) => {
@@ -128,8 +126,6 @@ const EditMacro = ({
   content,
 }) => {
   const { openModal } = useModal();
-  const { fetchMacrosService } = useContext(ServiceContext);
-  const [, send] = useService(fetchMacrosService);
   const contentRef = useRef();
   const initialValues = {
     name,
@@ -147,7 +143,6 @@ const EditMacro = ({
           onParentClose,
           async () => {
             await deleteMacro(id);
-            send('FETCH');
           },
         )}
       />
@@ -166,7 +161,6 @@ const EditMacro = ({
         onSubmit={async (values) => {
           const { name, content } = values;
           await updateMacro(id, { name, content });
-          send('FETCH');
           onClose();
         }}
         subscription={{}}

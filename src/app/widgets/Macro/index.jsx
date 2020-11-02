@@ -2,47 +2,15 @@ import {
   Space,
 } from '@trendmicro/react-styled-ui';
 import PropTypes from 'prop-types';
-import get from 'lodash/get';
-import includes from 'lodash/includes';
 import React, { Component } from 'react';
 import { interpret } from 'xstate';
-import api from 'app/api';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { ModalProvider, ModalRoot } from 'app/components/Modal';
 import Widget from 'app/components/Widget';
-import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import log from 'app/lib/log';
 import WidgetConfig from 'app/widgets/shared/WidgetConfig';
 import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
-import {
-  // Grbl
-  GRBL,
-  GRBL_MACHINE_STATE_IDLE,
-  GRBL_MACHINE_STATE_RUN,
-  // Marlin
-  MARLIN,
-  // Smoothie
-  SMOOTHIE,
-  SMOOTHIE_MACHINE_STATE_IDLE,
-  SMOOTHIE_MACHINE_STATE_RUN,
-  // TinyG
-  TINYG,
-  TINYG_MACHINE_STATE_READY,
-  TINYG_MACHINE_STATE_STOP,
-  TINYG_MACHINE_STATE_END,
-  TINYG_MACHINE_STATE_RUN,
-} from 'app/constants/controller';
-import {
-  WORKFLOW_STATE_RUNNING,
-} from 'app/constants/workflow';
 import Macro from './Macro';
-import {
-  MODAL_NONE,
-  MODAL_ADD_MACRO,
-  MODAL_EDIT_MACRO,
-  MODAL_RUN_MACRO,
-} from './constants';
 import { ServiceContext } from './context';
 import fetchMacrosMachine from './machines/fetchMacrosMachine';
 
@@ -82,67 +50,9 @@ class MacroWidget extends Component {
       }));
     };
 
+    // FIXME
+    /*
     actions = {
-      openModal: (name = MODAL_NONE, params = {}) => {
-        this.setState({
-          modal: {
-            name: name,
-            params: params
-          }
-        });
-      },
-      closeModal: () => {
-        this.setState({
-          modal: {
-            name: MODAL_NONE,
-            params: {}
-          }
-        });
-      },
-      updateModalParams: (params = {}) => {
-        this.setState({
-          modal: {
-            ...this.state.modal,
-            params: {
-              ...this.state.modal.params,
-              ...params
-            }
-          }
-        });
-      },
-      addMacro: async ({ name, content }) => {
-        try {
-          let res;
-          res = await api.macros.create({ name, content });
-          res = await api.macros.fetch();
-          const { records: macros } = res.body;
-          this.setState({ macros: macros });
-        } catch (err) {
-          // Ignore error
-        }
-      },
-      deleteMacro: async (id) => {
-        try {
-          let res;
-          res = await api.macros.delete(id);
-          res = await api.macros.fetch();
-          const { records: macros } = res.body;
-          this.setState({ macros: macros });
-        } catch (err) {
-          // Ignore error
-        }
-      },
-      updateMacro: async (id, { name, content }) => {
-        try {
-          let res;
-          res = await api.macros.update(id, { name, content });
-          res = await api.macros.fetch();
-          const { records: macros } = res.body;
-          this.setState({ macros: macros });
-        } catch (err) {
-          // Ignore error
-        }
-      },
       runMacro: (id, { name }) => {
         controller.command('macro:run', id, controller.context, (err, data) => {
           if (err) {
@@ -186,59 +96,14 @@ class MacroWidget extends Component {
           });
       }
     };
-
-    controllerEvents = {
-      'config:change': () => {
-        this.fetchMacros();
-      },
-      'serialport:open': (options) => {
-        const { port } = options;
-        this.setState({ port: port });
-      },
-      'serialport:close': (options) => {
-        const initialState = this.getInitialState();
-        this.setState(state => ({
-          ...initialState,
-          macros: [...state.macros]
-        }));
-      },
-      'controller:state': (type, controllerState) => {
-        this.setState(state => ({
-          controller: {
-            ...state.controller,
-            type: type,
-            state: controllerState
-          }
-        }));
-      },
-      'workflow:state': (workflowState) => {
-        this.setState(state => ({
-          workflow: {
-            state: workflowState
-          }
-        }));
-      }
-    };
-
-    fetchMacros = async () => {
-      try {
-        let res;
-        res = await api.macros.fetch();
-        const { records: macros } = res.body;
-        this.setState({ macros: macros });
-      } catch (err) {
-        // Ignore error
-      }
-    };
+    */
 
     componentDidMount() {
       this.fetchMacrosService.start();
-      this.addControllerEvents();
     }
 
     componentWillUnmount() {
       this.fetchMacrosService.stop();
-      this.removeControllerEvents();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -253,87 +118,7 @@ class MacroWidget extends Component {
       return {
         minimized: this.config.get('minimized', false),
         isFullscreen: false,
-        port: controller.port,
-        controller: {
-          type: controller.type,
-          state: controller.state
-        },
-        workflow: {
-          state: controller.workflow.state
-        },
-        modal: {
-          name: MODAL_NONE,
-          params: {}
-        },
-        macros: []
       };
-    }
-
-    addControllerEvents() {
-      Object.keys(this.controllerEvents).forEach(eventName => {
-        const callback = this.controllerEvents[eventName];
-        controller.addListener(eventName, callback);
-      });
-    }
-
-    removeControllerEvents() {
-      Object.keys(this.controllerEvents).forEach(eventName => {
-        const callback = this.controllerEvents[eventName];
-        controller.removeListener(eventName, callback);
-      });
-    }
-
-    canClick() {
-      const { port, workflow } = this.state;
-      const controllerType = this.state.controller.type;
-      const controllerState = this.state.controller.state;
-
-      if (!port) {
-        return false;
-      }
-      if (workflow.state === WORKFLOW_STATE_RUNNING) {
-        return false;
-      }
-      if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {
-        return false;
-      }
-      if (controllerType === GRBL) {
-        const machineState = get(controllerState, 'status.machineState');
-        const states = [
-          GRBL_MACHINE_STATE_IDLE,
-          GRBL_MACHINE_STATE_RUN
-        ];
-        if (!includes(states, machineState)) {
-          return false;
-        }
-      }
-      if (controllerType === MARLIN) {
-        // Marlin does not have machine state
-      }
-      if (controllerType === SMOOTHIE) {
-        const machineState = get(controllerState, 'status.machineState');
-        const states = [
-          SMOOTHIE_MACHINE_STATE_IDLE,
-          SMOOTHIE_MACHINE_STATE_RUN
-        ];
-        if (!includes(states, machineState)) {
-          return false;
-        }
-      }
-      if (controllerType === TINYG) {
-        const machineState = get(controllerState, 'sr.machineState');
-        const states = [
-          TINYG_MACHINE_STATE_READY,
-          TINYG_MACHINE_STATE_STOP,
-          TINYG_MACHINE_STATE_END,
-          TINYG_MACHINE_STATE_RUN
-        ];
-        if (!includes(states, machineState)) {
-          return false;
-        }
-      }
-
-      return true;
     }
 
     render() {
