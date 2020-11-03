@@ -15,10 +15,6 @@ import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import useModal from 'app/components/Modal/useModal';
 import RenderBlock from 'app/components/RenderBlock';
 import { useStyledUI } from 'app/components/StyledUI';
-import useEffectOnce from 'app/hooks/useEffectOnce';
-import useMount from 'app/hooks/useMount';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
 import {
   CONNECTION_STATE_CONNECTED,
 } from 'app/constants/connection';
@@ -32,11 +28,28 @@ import {
   WORKFLOW_STATE_PAUSED,
   WORKFLOW_STATE_RUNNING,
 } from 'app/constants/workflow';
+import useEffectOnce from 'app/hooks/useEffectOnce';
+import useMount from 'app/hooks/useMount';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
+import iframeExport from 'app/lib/iframe-export';
+import configStore from 'app/store/config';
 import LoadMacro from './modals/LoadMacro';
 import EditMacro from './modals/EditMacro';
 import NewMacro from './modals/NewMacro';
 import RunMacro from './modals/RunMacro';
 import { ServiceContext } from './context';
+
+const exportMacros = () => {
+  const url = '/api/macros/export';
+  const data = {
+    filename: 'macros',
+  };
+  const token = configStore.get('session.token');
+  iframeExport(url, data, {
+    token,
+  });
+};
 
 const Macro = ({
   canLoadMacro,
@@ -78,7 +91,7 @@ const Macro = ({
     send('FETCH');
   };
   const handleExportMacros = () => {
-    // FIXME
+    exportMacros();
   };
   const handleLoadMacro = (macro) => () => {
     const { id, name } = macro;

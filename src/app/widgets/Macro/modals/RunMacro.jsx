@@ -1,11 +1,33 @@
 import {
+  Button,
+  Textarea,
   TextLabel,
 } from '@trendmicro/react-styled-ui';
 import React from 'react';
-import i18n from 'app/lib/i18n';
-import { Button } from 'app/components/Buttons';
-import Textarea from 'app/components/FormControl/Textarea';
 import Modal from 'app/components/Modal';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
+import log from 'app/lib/log';
+import promisify from 'app/lib/promisify';
+
+const x = JSON.stringify;
+
+const controllerCommand = promisify(controller.command, {
+  errorFirst: true,
+  thisArg: controller
+});
+
+const runMacro = async ({ id }) => {
+  const cmd = 'macro:run';
+
+  try {
+    const data = await controllerCommand(cmd, id, controller.context);
+    log.debug(`controller.command(${x(cmd)}, ${x(id)}, controller.context): data=${x(data)}`);
+  } catch (err) {
+    log.error(`controller.command(${x(cmd)}, ${x(id)}, controller.context): err=${x(err)}`);
+    // TODO: toast notification
+  }
+};
 
 const RunMacro = ({
   onClose,
@@ -13,8 +35,9 @@ const RunMacro = ({
   name,
   content,
 }) => {
-  const handleRunMacro = () => {
-    // FIXME
+  const handleRunMacro = async (e) => {
+    await runMacro({ id });
+    onClose();
   };
 
   return (
@@ -36,13 +59,13 @@ const RunMacro = ({
       </Modal.Body>
       <Modal.Footer>
         <Button
-          btnStyle="default"
+          variant="default"
           onClick={onClose}
         >
           {i18n._('Cancel')}
         </Button>
         <Button
-          btnStyle="primary"
+          variant="primary"
           onClick={handleRunMacro}
         >
           {i18n._('Run')}

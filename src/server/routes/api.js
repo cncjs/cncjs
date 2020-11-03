@@ -63,6 +63,7 @@ const createProtectedApiRouter = () => {
 
   // Macros
   router.get('/macros', macros.fetch);
+  router.post('/macros/export', macros.__export);
   router.post('/macros', macros.create);
   router.get('/macros/:id', macros.read);
   router.put('/macros/:id', macros.update);

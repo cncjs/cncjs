@@ -1,6 +1,8 @@
 import { ensureArray, ensureFiniteNumber } from 'ensure-type';
+import * as json2csv from 'json2csv';
 import _find from 'lodash/find';
 import _isPlainObject from 'lodash/isPlainObject';
+import _values from 'lodash/values';
 import { v4 as uuidv4 } from 'uuid';
 import settings from '../config/settings';
 import logger from '../lib/logger';
@@ -73,6 +75,51 @@ export const fetch = (req, res) => {
         return { id, mtime, name, content };
       })
     });
+  }
+};
+
+export const __export = (req, res) => {
+  const records = getSanitizedRecords();
+  const paging = !!req.query.paging;
+  const { filename = 'macros.csv' } = { ...req.body };
+  const fieldMap = {
+    id: 'ID',
+    mtime: 'Date Modified',
+    name: 'Name',
+    content: 'Content',
+  };
+  const fields = _values(fieldMap);
+
+  res.set('Expires', 0);
+  res.set('Content-Type', 'text/csv');
+  res.set('Content-Transfer-Encoding', 'binary');
+  res.set('Pragma', 'no-cache');
+  res.set('Content-Disposition', `attachment; filename=${JSON.stringify(filename)}`);
+
+  if (paging) {
+    const { page = 1, pageLength = 10 } = req.query;
+    const totalRecords = records.length;
+    const [begin, end] = getPagingRange({ page, pageLength, totalRecords });
+    const data = records
+      .slice(begin, end)
+      .map(x => ({
+        [fieldMap.id]: x.id,
+        [fieldMap.mtime]: new Date(x.mtime).toISOString(),
+        [fieldMap.name]: x.name,
+        [fieldMap.content]: x.content,
+      }));
+    const csv = json2csv.parse(records, { fields });
+    res.send(csv).end();
+  } else {
+    const data = records
+      .map(x => ({
+        [fieldMap.id]: x.id,
+        [fieldMap.mtime]: new Date(x.mtime).toISOString(),
+        [fieldMap.name]: x.name,
+        [fieldMap.content]: x.content,
+      }));
+    const csv = json2csv.parse(data, { fields });
+    res.send(csv).end();
   }
 };
 

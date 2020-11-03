@@ -35,7 +35,9 @@ class MacroWidget extends Component {
 
     state = this.getInitialState();
 
-    fetchMacrosService = interpret(fetchMacrosMachine);
+    serviceContext = {
+      fetchMacrosService: interpret(fetchMacrosMachine),
+    };
 
     toggleFullscreen = () => {
       this.setState(state => ({
@@ -50,60 +52,12 @@ class MacroWidget extends Component {
       }));
     };
 
-    // FIXME
-    /*
-    actions = {
-      runMacro: (id, { name }) => {
-        controller.command('macro:run', id, controller.context, (err, data) => {
-          if (err) {
-            log.error(`Failed to run the macro: id=${id}, name="${name}"`);
-            return;
-          }
-        });
-      },
-      loadMacro: async (id, { name }) => {
-        try {
-          let res;
-          res = await api.macros.read(id);
-          const { name } = res.body;
-          controller.command('macro:load', id, controller.context, (err, data) => {
-            if (err) {
-              log.error(`Failed to load the macro: id=${id}, name="${name}"`);
-              return;
-            }
-
-            log.debug(data); // TODO
-          });
-        } catch (err) {
-          // Ignore error
-        }
-      },
-      openAddMacroModal: () => {
-        this.actions.openModal(MODAL_ADD_MACRO);
-      },
-      openRunMacroModal: (id) => {
-        api.macros.read(id)
-          .then((res) => {
-            const { id, name, content } = res.body;
-            this.actions.openModal(MODAL_RUN_MACRO, { id, name, content });
-          });
-      },
-      openEditMacroModal: (id) => {
-        api.macros.read(id)
-          .then((res) => {
-            const { id, name, content } = res.body;
-            this.actions.openModal(MODAL_EDIT_MACRO, { id, name, content });
-          });
-      }
-    };
-    */
-
     componentDidMount() {
-      this.fetchMacrosService.start();
+      this.serviceContext.fetchMacrosService.start();
     }
 
     componentWillUnmount() {
-      this.fetchMacrosService.stop();
+      this.serviceContext.fetchMacrosService.stop();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -128,11 +82,7 @@ class MacroWidget extends Component {
 
       return (
         <WidgetConfigProvider widgetId={widgetId}>
-          <ServiceContext.Provider
-            value={{
-              fetchMacrosService: this.fetchMacrosService,
-            }}
-          >
+          <ServiceContext.Provider value={this.serviceContext}>
             <ModalProvider>
               <ModalRoot />
               <Widget fullscreen={isFullscreen}>

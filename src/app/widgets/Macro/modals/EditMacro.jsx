@@ -15,11 +15,9 @@ import {
   ModalBody,
   ModalFooter,
   Space,
-  Text,
   Textarea,
   TextLabel,
 } from '@trendmicro/react-styled-ui';
-import chainedFunction from 'chained-function';
 import { ensureArray } from 'ensure-type';
 import _uniqueId from 'lodash/uniqueId';
 import React, { useRef } from 'react';
@@ -32,8 +30,9 @@ import useModal from 'app/components/Modal/useModal';
 import i18n from 'app/lib/i18n';
 import { composeValidators, required } from 'app/widgets/shared/validations';
 import variables from '../shared/variables';
+import ConfirmDeleteMacro from './ConfirmDeleteMacro';
 
-const updateMacro = async (id, { name, content }) => {
+const updateMacro = async ({ id, name, content }) => {
   try {
     const url = `/api/macros/${id}`;
     const data = {
@@ -42,16 +41,16 @@ const updateMacro = async (id, { name, content }) => {
     };
     await axios.put(url, data);
   } catch (err) {
-    // Ignore error
+    // TODO: toast notification
   }
 };
 
-const deleteMacro = async (id) => {
+const deleteMacro = async ({ id }) => {
   try {
     const url = `/api/macros/${id}`;
     await axios.delete(url);
   } catch (err) {
-    // Ignore error
+    // TODO: toast notification
   }
 };
 
@@ -75,50 +74,6 @@ const mapMacroVariablesToMenuGroupItems = (variables) => ensureArray(variables).
   return null;
 });
 
-const ConfirmDeleteMacro = ({
-  onClose,
-  name,
-  onConfirm,
-}) => (
-  <Modal
-    closeOnEsc
-    closeOnOutsideClick
-    isCloseButtonVisible
-    isOpen
-    onClose={onClose}
-    size="sm"
-  >
-    <ModalOverlay />
-    <ModalContent>
-      <ModalHeader>
-        {i18n._('Delete Macro')}
-      </ModalHeader>
-      <ModalBody>
-        <Box mb="4x">
-          {i18n._('Are you sure you want to delete this macro?')}
-        </Box>
-        <Text fontWeight="semibold">
-          {name}
-        </Text>
-      </ModalBody>
-      <ModalFooter>
-        <Button
-          variant="default"
-          onClick={onClose}
-        >
-          {i18n._('Cancel')}
-        </Button>
-        <Button
-          variant="emphasis"
-          onClick={onConfirm}
-        >
-          {i18n._('Delete')}
-        </Button>
-      </ModalFooter>
-    </ModalContent>
-  </Modal>
-);
-
 const EditMacro = ({
   onClose,
   id,
@@ -131,20 +86,20 @@ const EditMacro = ({
     name,
     content,
   };
+
   const handleClickDelete = (e) => {
     const onParentClose = onClose;
+    const onConfirm = async (e) => {
+      await deleteMacro({ id });
+      onClose();
+      onParentClose();
+    };
 
     openModal(({ onClose }) => (
       <ConfirmDeleteMacro
         onClose={onClose}
         name={name}
-        onConfirm={chainedFunction(
-          onClose,
-          onParentClose,
-          async () => {
-            await deleteMacro(id);
-          },
-        )}
+        onConfirm={onConfirm}
       />
     ));
   };
@@ -160,7 +115,7 @@ const EditMacro = ({
         initialValues={initialValues}
         onSubmit={async (values) => {
           const { name, content } = values;
-          await updateMacro(id, { name, content });
+          await updateMacro({ id, name, content });
           onClose();
         }}
         subscription={{}}

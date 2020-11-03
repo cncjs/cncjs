@@ -2,30 +2,30 @@ import {
   Box,
   Text,
 } from '@trendmicro/react-styled-ui';
-import chainedFunction from 'chained-function';
 import React from 'react';
-import axios from 'app/api/axios';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
+import promisify from 'app/lib/promisify';
 
-const loadMacroById = async (id) => {
+const x = JSON.stringify;
+
+const controllerCommand = promisify(controller.command, {
+  errorFirst: true,
+  thisArg: controller
+});
+
+const loadMacro = async ({ id }) => {
+  const cmd = 'macro:load';
+
   try {
-    const url = `/macros/${id}`;
-    const response = await axios.get(url);
-    const { name } = { ...response.data };
-    controller.command('macro:load', id, controller.context, (err, data) => {
-      if (err) {
-        log.error(`Failed to load the macro: id=${id}, name="${name}"`);
-        return;
-      }
-
-      log.debug(data); // TODO
-    });
+    const data = await controllerCommand(cmd, id, controller.context);
+    log.debug(`controller.command(${x(cmd)}, ${x(id)}, controller.context): data=${x(data)}`);
   } catch (err) {
-    // Ignore error
+    log.error(`controller.command(${x(cmd)}, ${x(id)}, controller.context): err=${x(err)}`);
+    // TODO: toast notification
   }
 };
 
@@ -34,6 +34,11 @@ const LoadMacro = ({
   name,
   onClose,
 }) => {
+  const handleLoadMacro = async (e) => {
+    await loadMacro({ id });
+    onClose();
+  };
+
   return (
     <Modal size="xs" onClose={onClose}>
       <Modal.Header>
@@ -59,12 +64,7 @@ const LoadMacro = ({
         </Button>
         <Button
           btnStyle="primary"
-          onClick={chainedFunction(
-            () => {
-              loadMacroById(id);
-            },
-            onClose
-          )}
+          onClick={handleLoadMacro}
         >
           {i18n._('Yes')}
         </Button>

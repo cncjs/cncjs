@@ -1,18 +1,9 @@
-import axios from 'axios';
 import _get from 'lodash/get';
 import { ensureArray } from 'ensure-type';
 import superagent from 'superagent';
 import superagentUse from 'superagent-use';
 import controller from 'app/lib/controller';
 import configStore from 'app/store/config';
-
-const token = configStore.get('session.token');
-
-const api = axios.create({
-  headers: {
-    'Authorization': `Bearer ${token}`,
-  },
-});
 
 const bearer = (request) => {
   const token = configStore.get('session.token');
@@ -366,63 +357,6 @@ events.update = (id, options) => new Promise((resolve, reject) => {
 });
 
 //
-// Macros
-//
-const macros = {};
-
-macros.fetch = (params) => api.get('/api/macros', { params });
-
-macros.create = (options) => new Promise((resolve, reject) => {
-  authrequest
-    .post('/api/macros')
-    .send(options)
-    .end((err, res) => {
-      if (err) {
-        reject(res);
-      } else {
-        resolve(res);
-      }
-    });
-});
-
-macros.read = (id) => new Promise((resolve, reject) => {
-  authrequest
-    .get('/api/macros/' + id)
-    .end((err, res) => {
-      if (err) {
-        reject(res);
-      } else {
-        resolve(res);
-      }
-    });
-});
-
-macros.update = (id, options) => new Promise((resolve, reject) => {
-  authrequest
-    .put('/api/macros/' + id)
-    .send(options)
-    .end((err, res) => {
-      if (err) {
-        reject(res);
-      } else {
-        resolve(res);
-      }
-    });
-});
-
-macros.delete = (id) => new Promise((resolve, reject) => {
-  authrequest
-    .delete('/api/macros/' + id)
-    .end((err, res) => {
-      if (err) {
-        reject(res);
-      } else {
-        resolve(res);
-      }
-    });
-});
-
-//
 // MDI
 //
 const mdi = {};
@@ -689,7 +623,6 @@ export default {
   commands,
   events,
   machines,
-  macros,
   mdi,
   users,
 };
