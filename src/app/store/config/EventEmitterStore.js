@@ -4,12 +4,9 @@ import _get from 'lodash/get';
 import _set from 'lodash/set';
 import _unset from 'lodash/unset';
 import _update from 'lodash/update';
-import _isObject from 'lodash/isObject';
 import log from 'app/lib/log';
 
-const strval = (value) => {
-  return _isObject(value) ? JSON.stringify(value) : value;
-};
+const x = JSON.stringify;
 
 class EventEmitterStore extends events.EventEmitter {
     _state = {};
@@ -29,9 +26,9 @@ class EventEmitterStore extends events.EventEmitter {
 
     get(path, defaultValue) {
       if (defaultValue !== undefined) {
-        log.trace(`get(path=${JSON.stringify(path)}, defaultValue=${strval(defaultValue)})`);
+        log.trace(`get(path=${x(path)}, defaultValue=${x(defaultValue)})`);
       } else {
-        log.trace(`get(path=${JSON.stringify(path)})`);
+        log.trace(`get(path=${x(path)})`);
       }
 
       return (path === undefined) ? this._state : _get(this._state, path, defaultValue);
@@ -44,7 +41,7 @@ class EventEmitterStore extends events.EventEmitter {
       });
       const changed = (baseState !== nextState);
 
-      log.trace(`set(path=${JSON.stringify(path)}, value=${strval(value)}): changed=${changed}`);
+      log.trace(`set(path=${x(path)}, value=${x(value)}): changed=${changed}`);
 
       if (changed) {
         this._state = nextState;
@@ -61,7 +58,7 @@ class EventEmitterStore extends events.EventEmitter {
       });
       const changed = (baseState !== nextState);
 
-      log.trace(`unset(path=${JSON.stringify(path)}): changed=${changed}`);
+      log.trace(`unset(path=${x(path)}): changed=${changed}`);
 
       if (changed) {
         this._state = nextState;
@@ -78,7 +75,7 @@ class EventEmitterStore extends events.EventEmitter {
       });
       const changed = (baseState !== nextState);
 
-      log.trace(`update(path=${JSON.stringify(path)}, updater=${updater}): changed=${changed}`);
+      log.trace(`update(path=${x(path)}, updater=${updater}): changed=${changed}`);
 
       if (changed) {
         this._state = nextState;

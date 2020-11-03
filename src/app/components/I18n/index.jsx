@@ -6,6 +6,8 @@ import i18next from 'app/i18next';
 import log from 'app/lib/log';
 import nodesToString from './nodes-to-string';
 
+const x = JSON.stringify;
+
 export default ({ children, ...props }) => {
   if (typeof children === 'function') {
     children = children(props);
@@ -13,7 +15,7 @@ export default ({ children, ...props }) => {
 
   let i18nKey = sha1(nodesToString('', children, 0));
   if (env.NODE_ENV === 'development') {
-    log.trace(`i18nKey=${JSON.stringify(i18nKey)}`);
+    log.trace(`i18nKey=${x(i18nKey)}`);
   }
 
   if (!i18next.exists(i18nKey)) {
