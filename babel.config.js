@@ -30,7 +30,12 @@ module.exports = (api) => {
           corejs: 3,
         }
       ],
-      '@babel/preset-react',
+      [
+        '@babel/preset-react',
+        {
+          runtime: 'classic', // One of: 'classic', 'automatic'
+        },
+      ],
       '@emotion/babel-preset-css-prop',
     ],
     plugins,
