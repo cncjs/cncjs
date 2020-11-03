@@ -108,7 +108,7 @@ export const __export = (req, res) => {
         [fieldMap.name]: x.name,
         [fieldMap.content]: x.content,
       }));
-    const csv = json2csv.parse(records, { fields });
+    const csv = json2csv.parse(data, { fields });
     res.send(csv).end();
   } else {
     const data = records
