@@ -1,14 +1,14 @@
-/* eslint import/no-cycle: 0 */
 import chainedFunction from 'chained-function';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component, cloneElement } from 'react';
 import ReactDOM from 'react-dom';
 import RootCloseWrapper from 'app/components/RootCloseWrapper';
-import {
-  isMenuItem,
-} from './helpers';
+import MenuItem from './MenuItem';
+import match from './match-component';
 import styles from './index.styl';
+
+const isMenuItem = match(MenuItem);
 
 class DropdownMenu extends Component {
     static propTypes = {
@@ -128,6 +128,7 @@ class DropdownMenu extends Component {
             {React.Children.map(children, child => {
               if (React.isValidElement(child) && isMenuItem(child)) {
                 return cloneElement(child, {
+                  DropdownMenu,
                   onKeyDown: chainedFunction(
                     child.props.onKeyDown,
                     this.handleKeyDown

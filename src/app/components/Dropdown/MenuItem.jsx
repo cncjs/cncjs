@@ -1,10 +1,8 @@
-/* eslint import/no-cycle: 0 */
 import chainedFunction from 'chained-function';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import match from './match-component';
-import DropdownMenu from './DropdownMenu';
 import styles from './index.styl';
 
 class MenuItem extends Component {
@@ -135,6 +133,8 @@ class MenuItem extends Component {
 
       const others = React.Children.toArray(children)
         .filter(child => !(React.isValidElement(child) && this.isMenuItem(child)));
+
+      const DropdownMenu = this.props.DropdownMenu;
 
       return (
         <Component

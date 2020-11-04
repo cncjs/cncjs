@@ -1,14 +1,14 @@
-/* eslint import/no-cycle: 0 */
 import chainedFunction from 'chained-function';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component, cloneElement } from 'react';
 import warning from 'warning';
 import RootCloseWrapper from 'app/components/RootCloseWrapper';
-import {
-  isDropdownMenu,
-} from './helpers';
 import styles from './index.styl';
+import match from './match-component';
+import DropdownMenu from './DropdownMenu';
+
+const isDropdownMenu = match(DropdownMenu);
 
 class DropdownMenuWrapper extends Component {
     static propTypes = {

@@ -9,14 +9,14 @@ import { uncontrollable } from 'uncontrollable';
 import warning from 'warning';
 import { ButtonGroup } from 'app/components/Buttons';
 import DropdownToggle from './DropdownToggle';
-import DropdownMenuWrapper from './DropdownMenuWrapper';
 import DropdownMenu from './DropdownMenu';
-import {
-  isDropdownToggle,
-  isDropdownMenu,
-  isDropdownMenuWrapper,
-} from './helpers';
+import DropdownMenuWrapper from './DropdownMenuWrapper';
+import match from './match-component';
 import styles from './index.styl';
+
+const isDropdownToggle = match(DropdownToggle);
+const isDropdownMenu = match(DropdownMenu);
+const isDropdownMenuWrapper = match(DropdownMenuWrapper);
 
 class Dropdown extends Component {
     static propTypes = {
