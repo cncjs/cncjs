@@ -33,7 +33,7 @@ module.exports = (api) => {
       [
         '@babel/preset-react',
         {
-          runtime: 'classic', // One of: 'classic', 'automatic'
+          runtime: 'automatic', // One of: 'classic', 'automatic'
         },
       ],
       '@emotion/babel-preset-css-prop',
