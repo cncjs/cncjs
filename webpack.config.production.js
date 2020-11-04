@@ -2,7 +2,6 @@ const crypto = require('crypto');
 const path = require('path');
 const { boolean } = require('boolean');
 const dotenv = require('dotenv');
-const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
 const findImports = require('find-imports');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const without = require('lodash/without');
@@ -10,7 +9,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
-const ManifestPlugin = require('webpack-manifest-plugin');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
 const pkg = require('./package.json');
@@ -35,7 +33,9 @@ const timestamp = new Date().getTime();
 
 module.exports = {
   mode: 'production',
-  cache: true,
+  cache: {
+    type: 'filesystem',
+  },
   target: 'web',
   context: path.resolve(__dirname, 'src/app'),
   devtool: 'cheap-module-source-map',
@@ -55,7 +55,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist/cncjs/app'),
     chunkFilename: `[name].[chunkhash].chunk.js?_=${timestamp}`,
-    filename: `[name].[hash].bundle.js?_=${timestamp}`,
+    filename: `[name].[contenthash].bundle.js?_=${timestamp}`,
     publicPath: publicPath,
   },
   module: {
@@ -140,11 +140,6 @@ module.exports = {
       },
     ].filter(Boolean),
   },
-  node: {
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-  },
   optimization: {
     minimizer: [
       USE_TERSER_PLUGIN && (
@@ -156,31 +151,19 @@ module.exports = {
     ].filter(Boolean)
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production'),
-        BUILD_VERSION: JSON.stringify(buildVersion),
-        LANGUAGES: JSON.stringify(buildConfig.languages),
-        TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId),
-      }
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: JSON.stringify('production'),
+      BUILD_VERSION: JSON.stringify(buildVersion),
+      LANGUAGES: JSON.stringify(buildConfig.languages),
+      TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId),
     }),
     new webpack.ContextReplacementPlugin(
       /moment[\/\\]locale$/,
       new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$'),
     ),
-    // Generates a manifest.json file in your root output directory with a mapping of all source file names to their corresponding output file.
-    new ManifestPlugin({
-      fileName: 'manifest.json',
-    }),
     new MiniCssExtractPlugin({
       filename: `[name].css?_=${timestamp}`,
       chunkFilename: `[id].css?_=${timestamp}`,
-    }),
-    new CSSSplitWebpackPlugin({
-      size: 4000,
-      imports: '[name].[ext]?[hash]',
-      filename: '[name]-[part].[ext]?[hash]',
-      preserve: false,
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
@@ -192,10 +175,18 @@ module.exports = {
       'react-spring$': 'react-spring/web.cjs',
       'react-spring/renderprops$': 'react-spring/renderprops.cjs',
     },
+    extensions: ['.js', '.jsx'],
+    fallback: {
+      fs: false,
+      net: 'empty',
+      path: require.resolve('path-browserify'),
+      stream: require.resolve('stream-browserify'),
+      timers: require.resolve('timers-browserify'),
+      tls: 'empty',
+    },
     modules: [
       path.resolve(__dirname, 'src'),
       'node_modules',
     ],
-    extensions: ['.js', '.jsx'],
   },
 };
