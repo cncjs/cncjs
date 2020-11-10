@@ -337,7 +337,7 @@
     "glob": "~7.1.6",
     "html-webpack-plugin": "~4.5.0",
     "husky": "~4.3.0",
-    "i18next-scanner": "~2.11.0",
+    "i18next-scanner": "~3.0.0",
     "jest": "~26.6.3",
     "json-loader": "~0.5.7",
     "jsonlint": "~1.6.3",
