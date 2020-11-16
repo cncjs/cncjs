@@ -72,6 +72,7 @@ module.exports = {
             loader: 'css-loader',
             options: {
               modules: {
+                mode: 'local',
                 localIdentName: '[path][name]__[local]--[hash:base64:5]',
                 exportLocalsConvention: 'camelCase',
               },
@@ -94,8 +95,12 @@ module.exports = {
             loader: 'css-loader',
             options: {
               modules: {
+                mode: 'global',
                 exportLocalsConvention: 'camelCase',
               },
+              importLoaders: 1,
+              // 0 => no loaders (default)
+              // 1 => stylus-loader
             }
           },
           'stylus-loader',
