@@ -1,6 +1,7 @@
 module.exports = (api) => {
   const { env } = { ...api };
   const plugins = [
+    '@emotion/babel-plugin',
     'lodash',
     ['prismjs', {
       'languages': ['javascript', 'css', 'markup', 'gcode'],
@@ -32,11 +33,11 @@ module.exports = (api) => {
       ],
       [
         '@babel/preset-react',
-        {
-          runtime: 'automatic', // One of: 'classic', 'automatic'
+        { // https://emotion.sh/docs/css-prop#babel-preset
+          runtime: 'automatic',
+          importSource: '@emotion/react',
         },
       ],
-      '@emotion/babel-preset-css-prop',
     ],
     plugins,
   };
