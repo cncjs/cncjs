@@ -34,6 +34,7 @@ import {
     GRBL_ERRORS,
     GRBL_SETTINGS
 } from './constants';
+import relays from '../../services/relays';
 
 // % commands
 const WAIT = '%wait';
@@ -132,6 +133,7 @@ class GrblController {
             throw new Error('engine must be specified');
         }
         this.engine = engine;
+        relays.init(this, engine);
 
         const { port, baudrate, rtscts } = { ...options };
         this.options = {
@@ -170,7 +172,25 @@ class GrblController {
                         }
                     }
                 }
-
+                if (line.indexOf('M90') > -1 || line.indexOf('M91') > -1) {
+                    let idx = line.substring(3);
+                    if (line.indexOf('M90') > -1) {
+                        log.debug('writeFilter turn relay off: ' + idx);
+                        relays.emit('relay:off', idx);
+                    } else {
+                        log.debug('writeFilter turn relay on: ' + idx);
+                        relays.emit('relay:on', idx);
+                    }
+                    data = `(${line})`;
+                }
+                {
+                    if (line === 'T22') {
+                        log.debug(`T22 Tool Change: ${line} `);
+                        this.emit('macro:auto', line);
+                        this.workflow.pause({ data: 'T22' });
+                        data = `(${line})`;
+                    }
+                }
                 return data;
             }
         });
@@ -219,6 +239,13 @@ class GrblController {
                     } else if (programMode === 'M1') {
                         log.debug('M1 Program Pause');
                         this.feeder.hold({ data: 'M1' }); // Hold reason
+                    }
+                }
+
+                { // Relays: M90, M91
+                    const programMode = _.intersection(words, ['M90', 'M91'])[0];
+                    if (programMode === 'M90' || programMode === 'M91') {
+                        line = `(${line})`;
                     }
                 }
 
@@ -305,6 +332,13 @@ class GrblController {
                     } else if (programMode === 'M1') {
                         log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
                         this.workflow.pause({ data: 'M1' });
+                    }
+                }
+
+                { // Relays: M90, M91
+                    const programMode = _.intersection(words, ['M90', 'M91'])[0];
+                    if (programMode === 'M90' || programMode === 'M91') {
+                        line = `(${line})`;
                     }
                 }
 
@@ -791,6 +825,8 @@ class GrblController {
             // Tool
             tool: Number(tool) || 0,
 
+            relays: relays.status,
+
             // Global objects
             ...globalObjects,
         });
@@ -839,6 +875,10 @@ class GrblController {
         if (this.workflow) {
             this.workflow = null;
         }
+
+        if (relays) {
+            relays.stop();
+        }
     }
 
     get status() {
@@ -855,6 +895,7 @@ class GrblController {
             },
             feeder: this.feeder.toJSON(),
             sender: this.sender.toJSON(),
+            relays: relays.toJson(),
             workflow: {
                 state: this.workflow.state
             }
@@ -1006,6 +1047,9 @@ class GrblController {
             // workflow state
             socket.emit('workflow:state', this.workflow.state);
         }
+        socket.on('relay:status', () => {
+            relays.emit('relay:status');
+        });
     }
 
     removeConnection(socket) {
@@ -1326,6 +1370,14 @@ class GrblController {
 
                     this.command('gcode:load', file, data, context, callback);
                 });
+            },
+            'relay:on': (data) => {
+                log.debug('Command relay on', data);
+                relays.emit('relay:on', data);
+            },
+            'relay:off': (data) => {
+                log.debug('Command relay off', data);
+                relays.emit('relay:off', data);
             }
         }[cmd];
 

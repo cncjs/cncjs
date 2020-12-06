@@ -21,7 +21,8 @@ export default {
         enable: false, // disable backend service in production
         host: 'localhost',
         port: 80,
-        route: 'api/'
+        route: 'api/',
+        relayWS: 'http://localhost:3000'
     },
     cluster: {
         // note. node-inspector cannot debug child (forked) process
