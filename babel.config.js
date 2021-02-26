@@ -1,7 +1,6 @@
 module.exports = (api) => {
   const { env } = { ...api };
   const plugins = [
-    '@emotion/babel-plugin',
     'lodash',
     ['prismjs', {
       'languages': ['javascript', 'css', 'markup', 'gcode'],
@@ -38,6 +37,7 @@ module.exports = (api) => {
           importSource: '@emotion/react',
         },
       ],
+      '@emotion/babel-preset-css-prop',
     ],
     plugins,
   };
