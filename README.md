@@ -50,6 +50,7 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 ### Existing Pendants
 
 * [cncjs-pendant-keyboard](https://github.com/cncjs/cncjs-pendant-keyboard) - A simple pendant (using wireless keyboard or usb) to CNCJS.
+* [cncjs-pendant-numpad](https://github.com/mariolukas/cncjs-pendant-numpad) - A simple pendant (using wireless numpad or usb) to CNCJS.
 * [cncjs-pendant-lcd](https://github.com/cncjs/cncjs-pendant-lcd) - CNCjs Web Kiosk for Raspberry Pi Touch Displays.
 * [cncjs-pendant-ps3](https://github.com/cncjs/cncjs-pendant-ps3) - Dual Shock / PS3 Bluetooth Remote Pendant for CNCjs.
 * [cncjs-pendant-raspi-gpio](https://github.com/cncjs/cncjs-pendant-raspi-gpio) - Simple Raspberry Pi GPIO Pendant control for CNCjs.
