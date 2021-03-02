@@ -52,9 +52,9 @@ before_install:
       brew update;
     fi
   - npm install -g npm
-  - npm --version
+  - npm install -g yarn
 
-install: npm install
+install: yarn install
 
 before_script:
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
@@ -63,9 +63,9 @@ before_script:
 script:
   - |
     if [[ -z "$TRAVIS_TAG" ]]; then
-      npm run build-latest
+      yarn build-latest
     else
-      npm run build
+      yarn build
     fi
 
 after_success:
@@ -77,7 +77,7 @@ after_success:
   - echo "$PACKAGE_VERSION"
   - echo "$PRODUCT_NAME"
   - echo "$RELEASE"
-  - npm run coveralls
+  - yarn coveralls
   - mkdir -p releases
   - |
     # build:mac-x64
@@ -88,18 +88,18 @@ after_success:
       # Temporarily Bypass Gatekeeper
       sudo spctl --master-disable;
       sudo spctl --status;
-      npm run build:mac-x64;
+      yarn build:mac-x64;
       ls -al output output/*;
       cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.dmg" "releases/${RELEASE}-mac-x64.dmg";
       ls -al releases/*;
       if [[ "$TRAVIS_BRANCH" == "master" && -z "$TRAVIS_TAG" && ! -z "$(ls -A releases)" ]]; then
-        npm run github-release -- delete \
+        yarn github-release -- delete \
           --owner=cncjs \
           --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           "*-mac-x64.dmg";
-        npm run github-release -- upload \
+        yarn github-release -- upload \
           --owner=cncjs \
           --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
@@ -112,7 +112,7 @@ after_success:
   - |
     # build:linux-ia32
     if [[ "$TRAVIS_NODE_VERSION" == "10" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-      npm run build:linux-ia32;
+      yarn build:linux-ia32;
       ls -al output output/*;
       cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-i386.AppImage" "releases/${RELEASE}-linux-i386.AppImage";
       cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_i386.deb" "releases/${RELEASE}-linux-i386.deb";
@@ -124,7 +124,7 @@ after_success:
       popd;
       ls -al releases/*;
       if [[ "$TRAVIS_BRANCH" == "master" && -z "$TRAVIS_TAG" && ! -z "$(ls -A releases)" ]]; then
-        npm run github-release -- delete \
+        yarn github-release -- delete \
           --owner=cncjs \
           --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
@@ -133,7 +133,7 @@ after_success:
           "*-linux-i386.deb" \
           "*-linux.i686.rpm" \
           "*-linux-ia32.tar.gz";
-        npm run github-release -- upload \
+        yarn github-release -- upload \
           --owner=cncjs \
           --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
@@ -152,7 +152,7 @@ after_success:
   - |
     # build:linux-x64
     if [[ "$TRAVIS_NODE_VERSION" == "10" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-      npm run build:linux-x64;
+      yarn build:linux-x64;
       ls -al output output/*;
       cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.AppImage" "releases/${RELEASE}-linux-x86_64.AppImage";
       cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/${RELEASE}-linux-amd64.deb";
@@ -164,7 +164,7 @@ after_success:
       popd;
       ls -al releases/*;
       if [[ "$TRAVIS_BRANCH" == "master" && -z "$TRAVIS_TAG" && ! -z "$(ls -A releases)" ]]; then
-        npm run github-release -- delete \
+        yarn github-release -- delete \
           --owner=cncjs \
           --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
@@ -173,7 +173,7 @@ after_success:
           "*-linux-amd64.deb" \
           "*-linux.x86_64.rpm" \
           "*-linux-x64.tar.gz";
-        npm run github-release -- upload \
+        yarn github-release -- upload \
           --owner=cncjs \
           --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
