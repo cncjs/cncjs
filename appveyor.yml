@@ -48,9 +48,9 @@ install:
       Write-Host $env:APPVEYOR_REPO_COMMIT_TIMESTAMP -ForegroundColor "Green"
   - ps: Install-Product node $env:nodejs_version $env:platform
   - npm install -g npm
-  - npm --version
+  - npm install -g yarn
   - npm config set loglevel warn
-  - npm install
+  - yarn install
 
 before_build:
   - ps: $COMMIT_LOG = git log -1 --format='%ci %H %s'
@@ -59,10 +59,10 @@ before_build:
 build_script:
   - ps: |
       if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-        npm run build-latest
+        yarn build-latest
       }
       else {
-        npm run build
+        yarn build
       }
   - ps: $PACKAGE_NAME = node -e "console.log(require('./src/package.json').name)"
   - ps: $PACKAGE_VERSION = node -e "console.log(require('./src/package.json').version)"
@@ -75,25 +75,25 @@ build_script:
   - ps: mkdir releases
   - ps: |
       if ($env:nodejs_version -eq '10' -And $env:platform -eq 'x64') {
-        npm run build:win-x64
+        yarn build:win-x64
         Get-ChildItem output
         Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${RELEASE}-win-x64.exe"
         Get-ChildItem releases
         if ($env:APPVEYOR_REPO_BRANCH -eq 'master' -And -not $env:APPVEYOR_REPO_TAG_NAME) {
-          npm run github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" "*-win-x64.exe"
-          npm run github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${COMMIT_LOG}" "releases\${RELEASE}-win-x64.exe"
+          yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" "*-win-x64.exe"
+          yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${COMMIT_LOG}" "releases\${RELEASE}-win-x64.exe"
           Remove-Item "releases\${RELEASE}-win-x64.exe"
         }
       }
   - ps: |
       if ($env:nodejs_version -eq '10' -And $env:platform -eq 'x64') {
-        npm run build:win-ia32
+        yarn build:win-ia32
         Get-ChildItem output
         Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${RELEASE}-win-ia32.exe"
         Get-ChildItem releases
         if ($env:APPVEYOR_REPO_BRANCH -eq 'master' -And -not $env:APPVEYOR_REPO_TAG_NAME) {
-          npm run github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" "*-win-ia32.exe"
-          npm run github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${COMMIT_LOG}" "releases\${RELEASE}-win-ia32.exe"
+          yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" "*-win-ia32.exe"
+          yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${COMMIT_LOG}" "releases\${RELEASE}-win-ia32.exe"
           Remove-Item "releases\${RELEASE}-win-ia32.exe"
         }
       }
