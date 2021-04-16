@@ -50,7 +50,7 @@ install:
   - npm install -g npm
   - npm --version
   - npm config set loglevel warn
-  - npm install
+  - npm install --legacy-peer-deps
 
 before_build:
   - ps: $COMMIT_LOG = git log -1 --format='%ci %H %s'
