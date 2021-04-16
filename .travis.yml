@@ -54,7 +54,7 @@ before_install:
   - npm install -g npm
   - npm --version
 
-install: npm install
+install: npm install --legacy-peer-deps
 
 before_script:
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
