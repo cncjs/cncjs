@@ -11,44 +11,42 @@ workflows:
 
 jobs:
   build-linux:
-    environment:
-      - CI_BUILD_NUMBER: $CIRCLE_BUILD_NUM
     docker:
       - image: cimg/node:12.22-browsers
     steps:
       - browser-tools/install-browser-tools
-      - run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
+      - run:
+          name: Install system packages
+          command: |
+            sudo apt-get update
+            sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
       - checkout
       - run:
-          name: Environment variables
+          name: Prepare environment variables
           command: |
+            CI_BUILD_NUMBER=$CIRCLE_BUILD_NUM
+            COMMIT_LOG=`git log -1 --format='%ci %H %s'`
             PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
             PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
             PRODUCT_NAME=CNCjs
             RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
             echo "$CI_BUILD_NUMBER"
+            echo "$COMMIT_LOG"
             echo "$PACKAGE_NAME"
             echo "$PACKAGE_VERSION"
             echo "$PRODUCT_NAME"
             echo "$RELEASE"
       - run:
-          name: Before install
+          name: Check package version
           command: |
             git --version
             node --version
             java --version
             google-chrome --version
       - run:
-          name: Install
+          name: Install packages
           command: |
             yarn
-      - run:
-          name: Before build
-          command: |
-            COMMIT_LOG=`git log -1 --format='%ci %H %s'`
-            echo "$COMMIT_LOG"
       - run:
           name: Build
           command: |
@@ -58,7 +56,7 @@ jobs:
               yarn build
             fi
       - run:
-          name: After success
+          name: Code coverage
           command:
             yarn coveralls
       - run:
