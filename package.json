@@ -20,7 +20,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "preferGlobal": true,
   "scripts": {
@@ -166,7 +166,7 @@
     "debug": "~4.3.1",
     "deep-keys": "~0.5.0",
     "detect-browser": "~5.2.0",
-    "electron-store": "~6.0.1",
+    "electron-store": "~7.0.3",
     "element-resize-detector": "~1.2.1",
     "ensure-array": "~1.0.0",
     "ensure-type": "~1.4.2",
@@ -258,7 +258,7 @@
     "resize-observer-polyfill": "~1.5.1",
     "rimraf": "~3.0.2",
     "semver": "~7.3.4",
-    "serialport": "~9.0.4",
+    "serialport": "~9.0.7",
     "serve-favicon": "~2.5.0",
     "serve-static": "~1.14.1",
     "session-file-store": "~1.5.0",
@@ -313,9 +313,9 @@
     "css-loader": "~5.0.1",
     "del-cli": "~3.0.1",
     "dotenv": "~8.2.0",
-    "electron": "~8.5.1",
-    "electron-builder": "~22.9.1",
-    "electron-rebuild": "~2.3.4",
+    "electron": "~11.4.3",
+    "electron-builder": "~22.10.5",
+    "electron-rebuild": "~2.3.5",
     "enzyme": "~3.11.0",
     "enzyme-adapter-react-16": "~1.15.5",
     "eslint": "~7.15.0",

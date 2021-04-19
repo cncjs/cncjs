@@ -25,7 +25,7 @@
     "core-js": "~3.8.1",
     "debug": "~4.3.1",
     "deep-keys": "~0.5.0",
-    "electron-store": "~6.0.1",
+    "electron-store": "~7.0.3",
     "ensure-array": "~1.0.0",
     "ensure-type": "~1.4.2",
     "errorhandler": "~1.5.1",
