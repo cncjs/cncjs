@@ -1,0 +1,29 @@
+version: 2.1
+
+orbs:
+  browser-tools: circleci/browser-tools@1.1.3
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
+
+jobs:
+  build:
+    docker:
+      - image: cimg/node:12.22-browsers
+    steps:
+      - browser-tools/install-browser-tools
+      - checkout
+      - run: |
+          node --version
+          java --version
+          google-chrome --version
+      - run: |
+          sudo npm install -g npm
+          sudo npm install -g yarn
+      - run: |
+          yarn clean
+          yarn lint
+          yarn test
