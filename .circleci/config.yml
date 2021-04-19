@@ -21,9 +21,6 @@ jobs:
           java --version
           google-chrome --version
       - run: |
-          sudo npm install -g npm
-          sudo npm install -g yarn
-      - run: |
           yarn clean
           yarn lint
           yarn test
