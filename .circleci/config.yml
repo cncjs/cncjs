@@ -101,7 +101,6 @@ jobs:
               rm -f "releases/${RELEASE}-linux.i686.rpm"
               rm -f "releases/${RELEASE}-linux-ia32.tar.gz"
             fi
-          fi
       - run:
           name: Build Electron app for Linux x64
           command: |
@@ -142,7 +141,6 @@ jobs:
               rm -f "releases/${RELEASE}-linux.x86_64.rpm";
               rm -f "releases/${RELEASE}-linux-x64.tar.gz";
             fi
-          fi
       - run:
           name: Build docker image
           command: travis_wait 40 scripts/circle-docker-build.sh
