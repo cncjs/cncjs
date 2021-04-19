@@ -16,11 +16,14 @@ jobs:
     steps:
       - browser-tools/install-browser-tools
       - checkout
+      - run:
+          name: installation
+          command: |
+            sudo apt-get update
+            sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
       - run: |
           node --version
           java --version
           google-chrome --version
       - run: |
-          yarn clean
-          yarn lint
-          yarn test
+          yarn
