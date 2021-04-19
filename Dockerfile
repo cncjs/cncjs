@@ -3,7 +3,7 @@ MAINTAINER Cheton Wu <cheton@gmail.com>
 
 ADD package.json package.json
 RUN npm i npm@latest -g
-RUN npm install --production
+RUN npm install --production --legacy-peer-deps
 
 ADD . .
 EXPOSE 8000
