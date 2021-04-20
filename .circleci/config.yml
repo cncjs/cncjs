@@ -61,8 +61,8 @@ jobs:
           name: Build Electron app for Linux ia32
           command: |
             PRODUCT_NAME=CNCjs
-            PACKAGE_NAME=`node -e \"console.log(require('./src/package.json').name)\"`
-            PACKAGE_VERSION=`node -e \"console.log(require('./src/package.json').version)\"`
+            PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+            PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
             yarn build:linux-ia32
             ls -al output output/*
             cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-i386.AppImage" "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.AppImage"
@@ -104,8 +104,8 @@ jobs:
           name: Build Electron app for Linux x64
           command: |
             PRODUCT_NAME=CNCjs
-            PACKAGE_NAME=`node -e \"console.log(require('./src/package.json').name)\"`
-            PACKAGE_VERSION=`node -e \"console.log(require('./src/package.json').version)\"`
+            PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+            PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
             yarn build:linux-x64
             ls -al output output/*
             cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.AppImage" "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage"
