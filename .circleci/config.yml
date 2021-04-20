@@ -153,4 +153,4 @@ jobs:
       - image: cimg/node:12.22
     steps:
       - run: |
-        ls -al releases/*
+          ls -al releases/*
