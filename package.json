@@ -350,7 +350,7 @@
   "collective": {
     "type": "opencollective",
     "url": "https://opencollective.com/cncjs"
-  }
+  },
   "tap": {
     "check-coverage": true,
     "lines": 80,
