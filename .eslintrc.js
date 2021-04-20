@@ -49,7 +49,7 @@ module.exports = {
     'react/prefer-stateless-function': 0,
     'react/no-access-state-in-setstate': 0,
     'react/prop-types': 0,
-    "react/jsx-curly-brace-presence": ['error', {
+    'react/jsx-curly-brace-presence': ['error', {
       'props': 'never',
       'children': 'ignore',
     }],
