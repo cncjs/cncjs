@@ -5,9 +5,12 @@ orbs:
 
 workflows:
   version: 2
-  build:
+  build-n-deploy:
     jobs:
       - build-linux
+      - deploy-linux:
+          requires:
+            - build-linux
 
 jobs:
   build-linux:
@@ -22,20 +25,12 @@ jobs:
             sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
       - checkout
       - run:
-          name: Prepare environment variables
+          name: Setup CI environment variables
           command: |
-            CI_BUILD_NUMBER=$CIRCLE_BUILD_NUM
-            COMMIT_LOG=`git log -1 --format='%ci %H %s'`
-            PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
-            PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
-            PRODUCT_NAME=CNCjs
-            RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
-            echo "$CI_BUILD_NUMBER"
-            echo "$COMMIT_LOG"
-            echo "$PACKAGE_NAME"
-            echo "$PACKAGE_VERSION"
-            echo "$PRODUCT_NAME"
-            echo "$RELEASE"
+            echo "export CI_BRANCH=${CIRCLE_BRANCH}" >> $BASH_ENV
+            echo "export CI_BUILD_NUMBER=${CIRCLE_BUILD_NUM}" >> $BASH_ENV
+            echo "export CI_TAG=${CIRCLE_TAG}" >> $BASH_ENV
+            echo "export GIT_COMMIT_LOG=$(git log -1 --format='%ci %H %s')" >> $BASH_ENV
       - run:
           name: Check package version
           command: |
@@ -53,7 +48,7 @@ jobs:
             yarn clean
             yarn lint
             yarn test
-            if [[ -z "$CIRCLE_TAG" ]]; then
+            if [[ -z "$CI_TAG" ]]; then
               yarn build-latest
             else
               yarn build
@@ -65,24 +60,27 @@ jobs:
       - run:
           name: Build Electron app for Linux ia32
           command: |
+            PRODUCT_NAME=CNCjs
+            PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+            PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
             yarn build:linux-ia32
             ls -al output output/*
-            cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-i386.AppImage" "releases/${RELEASE}-linux-i386.AppImage"
-            cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_i386.deb" "releases/${RELEASE}-linux-i386.deb"
-            cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.i686.rpm" "releases/${RELEASE}-linux.i686.rpm"
             mkdir -p releases
+            cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-i386.AppImage" "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.AppImage"
+            cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_i386.deb" "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.deb"
+            cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.i686.rpm" "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.i686.rpm"
             pushd releases
-            ln -sf ../output/linux-ia32-unpacked "${RELEASE}-linux-ia32"
-            tar zcfh "${RELEASE}-linux-ia32.tar.gz" "${RELEASE}-linux-ia32"
-            rm -f "${RELEASE}-linux-ia32"
+            ln -sf ../output/linux-ia32-unpacked "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32"
+            tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32"
+            rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32"
             popd
             ls -al releases/*
-            if [[ "$CIRCLE_BRANCH" == "master" && -z "$CIRCLE_TAG" && ! -z "$(ls -A releases)" ]]; then
+            if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" && ! -z "$(ls -A releases)" ]]; then
               yarn github-release -- delete \
                 --owner=cncjs \
                 --repo=cncjs \
-                --tag="${CIRCLE_BRANCH}-latest" \
-                --name="${CIRCLE_BRANCH}" \
+                --tag="${CI_BRANCH}-latest" \
+                --name="${CI_BRANCH}" \
                 "*-linux-i386.AppImage" \
                 "*-linux-i386.deb" \
                 "*-linux.i686.rpm" \
@@ -90,39 +88,42 @@ jobs:
               yarn github-release -- upload \
                 --owner=cncjs \
                 --repo=cncjs \
-                --tag="${CIRCLE_BRANCH}-latest" \
-                --name="${CIRCLE_BRANCH}" \
-                --body="${COMMIT_LOG}" \
-                "releases/${RELEASE}-linux-i386.AppImage" \
-                "releases/${RELEASE}-linux-i386.deb" \
-                "releases/${RELEASE}-linux.i686.rpm" \
-                "releases/${RELEASE}-linux-ia32.tar.gz";
-              rm -f "releases/${RELEASE}-linux-i386.AppImage"
-              rm -f "releases/${RELEASE}-linux-i386.deb"
-              rm -f "releases/${RELEASE}-linux.i686.rpm"
-              rm -f "releases/${RELEASE}-linux-ia32.tar.gz"
+                --tag="${CI_BRANCH}-latest" \
+                --name="${CI_BRANCH}" \
+                --body="${GIT_COMMIT_LOG}" \
+                "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.AppImage" \
+                "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.deb" \
+                "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.i686.rpm" \
+                "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32.tar.gz";
+              rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.AppImage"
+              rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.deb"
+              rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.i686.rpm"
+              rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32.tar.gz"
             fi
       - run:
           name: Build Electron app for Linux x64
           command: |
+            PRODUCT_NAME=CNCjs
+            PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+            PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
             yarn build:linux-x64
             ls -al output output/*
-            cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.AppImage" "releases/${RELEASE}-linux-x86_64.AppImage"
-            cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/${RELEASE}-linux-amd64.deb"
-            cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.x86_64.rpm" "releases/${RELEASE}-linux.x86_64.rpm"
             mkdir -p releases
+            cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.AppImage" "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage"
+            cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb"
+            cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.x86_64.rpm" "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm"
             pushd releases
-            ln -sf ../output/linux-unpacked "${RELEASE}-linux-x64"
-            tar zcfh "${RELEASE}-linux-x64.tar.gz" "${RELEASE}-linux-x64"
-            rm -f "${RELEASE}-linux-x64"
+            ln -sf ../output/linux-unpacked "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
+            tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
+            rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
             popd
             ls -al releases/*
-            if [[ "$CIRCLE_BRANCH" == "master" && -z "$CIRCLE_TAG" && ! -z "$(ls -A releases)" ]]; then
+            if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" && ! -z "$(ls -A releases)" ]]; then
               yarn github-release -- delete \
                 --owner=cncjs \
                 --repo=cncjs \
-                --tag="${CIRCLE_BRANCH}-latest" \
-                --name="${CIRCLE_BRANCH}" \
+                --tag="${CI_BRANCH}-latest" \
+                --name="${CI_BRANCH}" \
                 "*-linux-x86_64.AppImage" \
                 "*-linux-amd64.deb" \
                 "*-linux.x86_64.rpm" \
@@ -130,18 +131,24 @@ jobs:
               yarn github-release -- upload \
                 --owner=cncjs \
                 --repo=cncjs \
-                --tag="${CIRCLE_BRANCH}-latest" \
-                --name="${CIRCLE_BRANCH}" \
-                --body="${COMMIT_LOG}" \
-                "releases/${RELEASE}-linux-x86_64.AppImage" \
-                "releases/${RELEASE}-linux-amd64.deb" \
-                "releases/${RELEASE}-linux.x86_64.rpm" \
-                "releases/${RELEASE}-linux-x64.tar.gz";
-              rm -f "releases/${RELEASE}-linux-x86_64.AppImage";
-              rm -f "releases/${RELEASE}-linux-amd64.deb";
-              rm -f "releases/${RELEASE}-linux.x86_64.rpm";
-              rm -f "releases/${RELEASE}-linux-x64.tar.gz";
+                --tag="${CI_BRANCH}-latest" \
+                --name="${CI_BRANCH}" \
+                --body="${GIT_COMMIT_LOG}" \
+                "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage" \
+                "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb" \
+                "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm" \
+                "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
+              rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage";
+              rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb";
+              rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm";
+              rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
             fi
       - run:
           name: Build docker image
-          command: travis_wait 40 scripts/circle-docker-build.sh
+          command: scripts/ci-docker-build.sh
+  deploy-linux:
+    docker:
+      - image: cimg/node:12.22
+    steps:
+      - run: |
+          ls -al releases/*

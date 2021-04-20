@@ -4,7 +4,7 @@
 # - master       -> master
 # - feature/next -> feature-next
 # - v1.0         -> v1.0
-DOCKER_BRANCH_TAG=$(echo $CIRCLE_BRANCH | sed -e 's/\//-/g')
+DOCKER_BRANCH_TAG=$(echo $CI_BRANCH | sed -e 's/\//-/g')
 echo "DOCKER_BRANCH_TAG=$DOCKER_BRANCH_TAG"
 
 DOCKER_REPO=cncjs/cncjs
