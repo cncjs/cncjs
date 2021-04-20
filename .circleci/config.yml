@@ -8,7 +8,7 @@ workflows:
   build-n-deploy:
     jobs:
       - build-linux
-      - deploy-linux
+      - deploy-linux:
           requires:
             - build-linux
 
