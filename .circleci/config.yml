@@ -8,10 +8,6 @@ workflows:
   build-n-deploy:
     jobs:
       - build-linux
-          # required since `deploy-linux` has tag filters AND requires `build-linux`
-          filters:
-            tags:
-              only: /.*/
       - deploy-linux
           requires:
             - build-linux
