@@ -33,6 +33,7 @@ for:
       - x64
 
     install:
+      - ps: Install-Product node $env:nodejs_version $env:platform
       - ps: |
           Write-Host "Build directory: " -NoNewLine
           Write-Host $env:APPVEYOR_BUILD_FOLDER -ForegroundColor "Green"
@@ -46,7 +47,6 @@ for:
           Write-Host $env:APPVEYOR_REPO_COMMIT -ForegroundColor "Green"
           Write-Host "Commit timestamp: " -NoNewLine
           Write-Host $env:APPVEYOR_REPO_COMMIT_TIMESTAMP -ForegroundColor "Green"
-      - ps: Install-Product node $env:nodejs_version $env:platform
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
       - npm install -g npm
@@ -132,14 +132,15 @@ for:
       - x64
 
     install:
+      - nvm install $nodejs_version
+      - sudo apt-get update
+      - sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
       - echo "Build directory: $APPVEYOR_BUILD_FOLDER"
       - echo "Build number: $APPVEYOR_BUILD_NUMBER"
       - echo "Branch: $APPVEYOR_REPO_BRANCH"
       - echo "Tag: $APPVEYOR_REPO_TAG_NAME"
       - echo "Commit: $APPVEYOR_REPO_COMMIT"
       - echo "Commit timestamp: $APPVEYOR_REPO_COMMIT_TIMESTAMP"
-      - sudo apt-get update
-      - sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
       - npm install -g npm
