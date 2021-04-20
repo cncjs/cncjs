@@ -14,9 +14,6 @@ workflows:
       - deploy-linux
           requires:
             - build-linux
-         #filters:
-         #  tags:
-         #    only: /.*/
 
 jobs:
   build-linux:
