@@ -60,7 +60,7 @@
     "lint": "concurrently --kill-others-on-fail --names \"i18nlint,eslint,stylint\" \"npm run i18nlint\" \"npm run eslint\" \"npm run stylint\"",
     "eslint": "eslint --color --ext .js --ext .jsx *.js src scripts test",
     "eslint-debug": "DEBUG=\"eslint:glob-util,eslint:config-*,eslint:cli*\" eslint --cache --color --quiet --ext .js --ext .jsx *.js src scripts test",
-    "i18nlint": "bash -c 'find src/{app,server}/i18n -type f -name \"*.json\" | xargs -L1 -I{} sh -c \"echo Linting {}; jsonlint -q {}\"'",
+    "i18nlint": "bash -c 'find src/{app,server}/i18n -type f -name \"*.json\" | xargs -L1 -I{} -- bash -c \"echo Linting {}; jsonlint -q {}\"'",
     "stylint": "stylint src/app",
     "test": "tap test/*.js --no-timeout --node-arg=--require --node-arg=@babel/register --node-arg=--require --node-arg=@babel/polyfill",
     "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=@babel/register --nyc-arg=--require --nyc-arg=@babel/polyfill",
