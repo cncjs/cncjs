@@ -37,8 +37,8 @@ for:
           security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign
           # https://github.com/electron-userland/electron-osx-sign/issues/83
           # bypass Gatekeeper
-          sudo spctl --master-disable
-          sudo spctl --status
+          sudo spctl --master-disable || exit 0
+          sudo spctl --status || exit 0
       - sh: |
           echo "Build directory: $APPVEYOR_BUILD_FOLDER"
           echo "Build number: $APPVEYOR_BUILD_NUMBER"
