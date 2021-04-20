@@ -50,11 +50,13 @@ for:
       - yarn
 
     before_build:
+      - export CI_COMMIT_SHORT=${CI_COMMIT:0:8}
       - export GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
       - sh: |
           echo "$CI_BUILD_NUMBER"
           echo "$CI_BRANCH"
           echo "$CI_COMMIT"
+          echo "$CI_COMMIT_SHORT"
           echo "$CI_TAG"
           echo "$GIT_COMMIT_LOG"
 
