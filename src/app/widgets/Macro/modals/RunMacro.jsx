@@ -7,10 +7,9 @@ import React from 'react';
 import Modal from 'app/components/Modal';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
+import x from 'app/lib/json-stringify';
 import log from 'app/lib/log';
 import promisify from 'app/lib/promisify';
-
-const x = JSON.stringify;
 
 const controllerCommand = promisify(controller.command, {
   errorFirst: true,

@@ -11,10 +11,9 @@ import {
   CONNECTION_STATE_DISCONNECTED,
 } from 'app/constants/connection';
 import controller from 'app/lib/controller';
+import x from 'app/lib/json-stringify';
 import log from 'app/lib/log';
 import reduxStore from 'app/store/redux';
-
-const x = JSON.stringify;
 
 export function* init() {
   /**

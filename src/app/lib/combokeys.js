@@ -1,9 +1,8 @@
 import events from 'events';
 import Mousetrap from 'mousetrap';
+import x from 'app/lib/json-stringify';
 import log from './log';
 import { preventDefault } from './dom-events';
-
-const x = JSON.stringify;
 
 const AXIS_X = 'x';
 const AXIS_Y = 'y';
