@@ -131,12 +131,13 @@ for:
       - nvm install $nodejs_version
       - sudo apt-get update
       - sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
-      - sh: echo "Build directory: $APPVEYOR_BUILD_FOLDER"
-      - sh: echo "Build number: $APPVEYOR_BUILD_NUMBER"
-      - sh: echo "Branch: $APPVEYOR_REPO_BRANCH"
-      - sh: echo "Tag: $APPVEYOR_REPO_TAG_NAME"
-      - sh: echo "Commit: $APPVEYOR_REPO_COMMIT"
-      - sh: echo "Commit timestamp: $APPVEYOR_REPO_COMMIT_TIMESTAMP"
+      - sh: |
+          echo "Build directory: $APPVEYOR_BUILD_FOLDER"
+          echo "Build number: $APPVEYOR_BUILD_NUMBER"
+          echo "Branch: $APPVEYOR_REPO_BRANCH"
+          echo "Tag: $APPVEYOR_REPO_TAG_NAME"
+          echo "Commit: $APPVEYOR_REPO_COMMIT"
+          echo "Commit timestamp: $APPVEYOR_REPO_COMMIT_TIMESTAMP"
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
       - npm install -g npm
@@ -147,9 +148,10 @@ for:
       - export CI_BRANCH=$APPVEYOR_REPO_BRANCH
       - export CI_TAG=$APPVEYOR_REPO_TAG_NAME
       - export GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
-      - echo "$CI_BRANCH"
-      - echo "$CI_TAG"
-      - echo "$GIT_COMMIT_LOG"
+      - sh: |
+          echo "$CI_BRANCH"
+          echo "$CI_TAG"
+          echo "$GIT_COMMIT_LOG"
 
     build_script:
       - sh: |
