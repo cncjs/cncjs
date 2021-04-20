@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
   'check-coverage': true,
   lines: 80,
