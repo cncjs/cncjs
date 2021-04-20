@@ -25,20 +25,14 @@ jobs:
             sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
       - checkout
       - run:
-          name: Prepare environment variables
+          name: Setup environment variables
           command: |
-            CI_BUILD_NUMBER=$CIRCLE_BUILD_NUM
-            COMMIT_LOG=`git log -1 --format='%ci %H %s'`
-            PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
-            PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
-            PRODUCT_NAME=CNCjs
-            RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
-            echo "$CI_BUILD_NUMBER"
-            echo "$COMMIT_LOG"
-            echo "$PACKAGE_NAME"
-            echo "$PACKAGE_VERSION"
-            echo "$PRODUCT_NAME"
-            echo "$RELEASE"
+            echo "export CI_BUILD_NUMBER=$CIRCLE_BUILD_NUM" >> $BASH_ENV
+            echo "export COMMIT_LOG=`git log -1 --format='%ci %H %s'`" >> $BASH_ENV
+            echo "export PACKAGE_NAME=`node -e \"console.log(require('./src/package.json').name)\"`" >> $BASH_ENV
+            echo "export PACKAGE_VERSION=`node -e \"console.log(require('./src/package.json').version)\"`" >> $BASH_ENV
+            echo "export PRODUCT_NAME=CNCjs" >> $BASH_ENV
+            echo "export RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}" >> $BASH_ENV
       - run:
           name: Check package version
           command: |
