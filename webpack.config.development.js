@@ -36,7 +36,7 @@ module.exports = {
         ]
     },
     output: {
-        path: path.resolve(__dirname, 'output/app'),
+        path: path.resolve(__dirname, 'output/cncjs/app'),
         chunkFilename: `[name].[hash].bundle.js?_=${timestamp}`,
         filename: `[name].[hash].bundle.js?_=${timestamp}`,
         pathinfo: true,

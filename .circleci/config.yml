@@ -50,6 +50,9 @@ jobs:
       - run:
           name: Build
           command: |
+            yarn clean
+            yarn lint
+            yarn test
             if [[ -z "$CIRCLE_TAG" ]]; then
               yarn build-latest
             else

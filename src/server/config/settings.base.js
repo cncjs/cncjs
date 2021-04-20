@@ -1,6 +1,5 @@
 import path from 'path';
 import pkg from '../../package.json';
-import { languages } from '../../../build.config';
 
 const RC_FILE = '.cncrc';
 const SESSION_PATH = '.cncjs-sessions';
@@ -114,7 +113,23 @@ export default {
         // default namespace used if not passed to translation function
         defaultNS: 'resource',
 
-        whitelist: languages,
+        whitelist: [
+            'en', // English (default)
+            'cs', // Czech
+            'de', // German
+            'es', // Spanish
+            'fr', // French
+            'hu', // Hungarian
+            'it', // Italian
+            'ja', // Japanese
+            'nl', // Nederlands
+            'pt-br', // Portuguese (Brazil)
+            'ru', // Russian
+            'tr', // Turkish
+            'zh-cn', // Simplified Chinese
+            'zh-tw' // Traditional Chinese
+        ],
+
 
         // array of languages to preload
         preload: [],

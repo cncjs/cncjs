@@ -58,6 +58,9 @@ before_build:
 
 build_script:
   - ps: |
+      npm run clean
+      npm run lint
+      npm run test
       if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
         npm run build-latest
       }
