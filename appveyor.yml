@@ -153,98 +153,98 @@ for:
 
     build_script:
       - sh: |
-        yarn clean
-        yarn lint
-        yarn test
-        if [[ -z "$CI_TAG" ]]; then
-          yarn build-latest
-        else
-          yarn build
-        fi
+          yarn clean
+          yarn lint
+          yarn test
+          if [[ -z "$CI_TAG" ]]; then
+            yarn build-latest
+          else
+            yarn build
+          fi
       - sh: |
-        # build:linux-ia32
-        PRODUCT_NAME=CNCjs
-        PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
-        PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
-        yarn build:linux-ia32;
-        ls -al output output/*;
-        mkdir -p releases
-        cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-i386.AppImage" "releases/${RELEASE}-linux-i386.AppImage";
-        cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_i386.deb" "releases/${RELEASE}-linux-i386.deb";
-        cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.i686.rpm" "releases/${RELEASE}-linux.i686.rpm";
-        pushd releases;
-        ln -sf ../output/linux-ia32-unpacked "${RELEASE}-linux-ia32";
-        tar zcfh "${RELEASE}-linux-ia32.tar.gz" "${RELEASE}-linux-ia32";
-        rm -f "${RELEASE}-linux-ia32";
-        popd;
-        ls -al releases/*;
-        if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" && ! -z "$(ls -A releases)" ]]; then
-          yarn github-release -- delete \
-            --owner=cncjs \
-            --repo=cncjs \
-            --tag="${TRAVIS_BRANCH}-latest" \
-            --release-name="${TRAVIS_BRANCH}" \
-            "*-linux-i386.AppImage" \
-            "*-linux-i386.deb" \
-            "*-linux.i686.rpm" \
-            "*-linux-ia32.tar.gz";
-          yarn github-release -- upload \
-            --owner=cncjs \
-            --repo=cncjs \
-            --tag="${TRAVIS_BRANCH}-latest" \
-            --release-name="${TRAVIS_BRANCH}" \
-            --body="${COMMIT_LOG}" \
-            "releases/${RELEASE}-linux-i386.AppImage" \
-            "releases/${RELEASE}-linux-i386.deb" \
-            "releases/${RELEASE}-linux.i686.rpm" \
-            "releases/${RELEASE}-linux-ia32.tar.gz";
-          rm -f "releases/${RELEASE}-linux-i386.AppImage";
-          rm -f "releases/${RELEASE}-linux-i386.deb";
-          rm -f "releases/${RELEASE}-linux.i686.rpm";
-          rm -f "releases/${RELEASE}-linux-ia32.tar.gz";
-        fi
+          # build:linux-ia32
+          PRODUCT_NAME=CNCjs
+          PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+          PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+          yarn build:linux-ia32;
+          ls -al output output/*;
+          mkdir -p releases
+          cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-i386.AppImage" "releases/${RELEASE}-linux-i386.AppImage";
+          cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_i386.deb" "releases/${RELEASE}-linux-i386.deb";
+          cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.i686.rpm" "releases/${RELEASE}-linux.i686.rpm";
+          pushd releases;
+          ln -sf ../output/linux-ia32-unpacked "${RELEASE}-linux-ia32";
+          tar zcfh "${RELEASE}-linux-ia32.tar.gz" "${RELEASE}-linux-ia32";
+          rm -f "${RELEASE}-linux-ia32";
+          popd;
+          ls -al releases/*;
+          if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" && ! -z "$(ls -A releases)" ]]; then
+            yarn github-release -- delete \
+              --owner=cncjs \
+              --repo=cncjs \
+              --tag="${TRAVIS_BRANCH}-latest" \
+              --release-name="${TRAVIS_BRANCH}" \
+              "*-linux-i386.AppImage" \
+              "*-linux-i386.deb" \
+              "*-linux.i686.rpm" \
+              "*-linux-ia32.tar.gz";
+            yarn github-release -- upload \
+              --owner=cncjs \
+              --repo=cncjs \
+              --tag="${TRAVIS_BRANCH}-latest" \
+              --release-name="${TRAVIS_BRANCH}" \
+              --body="${COMMIT_LOG}" \
+              "releases/${RELEASE}-linux-i386.AppImage" \
+              "releases/${RELEASE}-linux-i386.deb" \
+              "releases/${RELEASE}-linux.i686.rpm" \
+              "releases/${RELEASE}-linux-ia32.tar.gz";
+            rm -f "releases/${RELEASE}-linux-i386.AppImage";
+            rm -f "releases/${RELEASE}-linux-i386.deb";
+            rm -f "releases/${RELEASE}-linux.i686.rpm";
+            rm -f "releases/${RELEASE}-linux-ia32.tar.gz";
+          fi
       - sh: |
-        # build:linux-x64
-        PRODUCT_NAME=CNCjs
-        PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
-        PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
-        yarn build:linux-x64
-        ls -al output output/*
-        mkdir -p releases
-        cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.AppImage" "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage"
-        cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb"
-        cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.x86_64.rpm" "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm"
-        pushd releases
-        ln -sf ../output/linux-unpacked "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
-        tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
-        rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
-        popd
-        ls -al releases/*
-        if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" && ! -z "$(ls -A releases)" ]]; then
-          yarn github-release -- delete \
-            --owner=cncjs \
-            --repo=cncjs \
-            --tag="${CI_BRANCH}-latest" \
-            --name="${CI_BRANCH}" \
-            "*-linux-x86_64.AppImage" \
-            "*-linux-amd64.deb" \
-            "*-linux.x86_64.rpm" \
-            "*-linux-x64.tar.gz";
-          yarn github-release -- upload \
-            --owner=cncjs \
-            --repo=cncjs \
-            --tag="${CI_BRANCH}-latest" \
-            --name="${CI_BRANCH}" \
-            --body="${GIT_COMMIT_LOG}" \
-            "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage" \
-            "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb" \
-            "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm" \
-            "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
-            rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage";
-            rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb";
-            rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm";
-            rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
-        fi
+          # build:linux-x64
+          PRODUCT_NAME=CNCjs
+          PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+          PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+          yarn build:linux-x64
+          ls -al output output/*
+          mkdir -p releases
+          cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.AppImage" "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage"
+          cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb"
+          cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.x86_64.rpm" "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm"
+          pushd releases
+          ln -sf ../output/linux-unpacked "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
+          tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
+          rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
+          popd
+          ls -al releases/*
+          if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" && ! -z "$(ls -A releases)" ]]; then
+            yarn github-release -- delete \
+              --owner=cncjs \
+              --repo=cncjs \
+              --tag="${CI_BRANCH}-latest" \
+              --name="${CI_BRANCH}" \
+              "*-linux-x86_64.AppImage" \
+              "*-linux-amd64.deb" \
+              "*-linux.x86_64.rpm" \
+              "*-linux-x64.tar.gz";
+            yarn github-release -- upload \
+              --owner=cncjs \
+              --repo=cncjs \
+              --tag="${CI_BRANCH}-latest" \
+              --name="${CI_BRANCH}" \
+              --body="${GIT_COMMIT_LOG}" \
+              "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage" \
+              "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb" \
+              "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm" \
+              "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
+              rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage";
+              rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb";
+              rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm";
+              rm -f "releases/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
+          fi
 
     test: off
 
