@@ -147,7 +147,7 @@ jobs:
             fi
       - run:
           name: Build docker image
-          command: travis_wait 40 scripts/circle-docker-build.sh
+          command: scripts/circle-docker-build.sh
   deploy-linux:
     docker:
       - image: cimg/node:12.22
