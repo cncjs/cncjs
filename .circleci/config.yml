@@ -152,5 +152,5 @@ jobs:
     docker:
       - image: cimg/node:12.22
     steps:
-      run: |
+      - run: |
         ls -al releases/*
