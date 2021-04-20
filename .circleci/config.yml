@@ -30,7 +30,6 @@ jobs:
             echo "export CI_BRANCH=${CIRCLE_BRANCH}" >> $BASH_ENV
             echo "export CI_BUILD_NUMBER=${CIRCLE_BUILD_NUM}" >> $BASH_ENV
             echo "export CI_TAG=${CIRCLE_TAG}" >> $BASH_ENV
-            echo "export GIT_COMMIT_LOG=$(git log -1 --format='%ci %H %s')" >> $BASH_ENV
       - run:
           name: Check package version
           command: |
@@ -60,6 +59,7 @@ jobs:
       - run:
           name: Build Electron app for Linux ia32
           command: |
+            GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
             PRODUCT_NAME=CNCjs
             PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
             PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
@@ -103,6 +103,7 @@ jobs:
       - run:
           name: Build Electron app for Linux x64
           command: |
+            GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
             PRODUCT_NAME=CNCjs
             PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
             PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
@@ -145,7 +146,7 @@ jobs:
             fi
       - run:
           name: Build docker image
-          command: scripts/circle-docker-build.sh
+          command: scripts/ci-docker-build.sh
   deploy-linux:
     docker:
       - image: cimg/node:12.22
