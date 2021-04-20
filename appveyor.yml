@@ -78,28 +78,24 @@ for:
       - ps: echo "$RELEASE"
       - ps: mkdir releases
       - ps: |
-          if ($env:nodejs_version -eq '12' -And $env:platform -eq 'x64') {
-            yarn build:win-x64
-            Get-ChildItem output
-            Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${RELEASE}-win-x64.exe"
-            Get-ChildItem releases
-            if ($env:APPVEYOR_REPO_BRANCH -eq 'master' -And -not $env:APPVEYOR_REPO_TAG_NAME) {
-              yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --release-name="${env:APPVEYOR_REPO_BRANCH}" "*-win-x64.exe"
-              yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --release-name="${env:APPVEYOR_REPO_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\${RELEASE}-win-x64.exe"
-              Remove-Item "releases\${RELEASE}-win-x64.exe"
-            }
+          yarn build:win-x64
+          Get-ChildItem output
+          Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${RELEASE}-win-x64.exe"
+          Get-ChildItem releases
+          if ($env:APPVEYOR_REPO_BRANCH -eq 'master' -And -not $env:APPVEYOR_REPO_TAG_NAME) {
+            yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --release-name="${env:APPVEYOR_REPO_BRANCH}" "*-win-x64.exe"
+            yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --release-name="${env:APPVEYOR_REPO_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\${RELEASE}-win-x64.exe"
+            Remove-Item "releases\${RELEASE}-win-x64.exe"
           }
       - ps: |
-          if ($env:nodejs_version -eq '12' -And $env:platform -eq 'x64') {
-            yarn build:win-ia32
-            Get-ChildItem output
-            Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${RELEASE}-win-ia32.exe"
-            Get-ChildItem releases
-            if ($env:APPVEYOR_REPO_BRANCH -eq 'master' -And -not $env:APPVEYOR_REPO_TAG_NAME) {
-              yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --release-name="${env:APPVEYOR_REPO_BRANCH}" "*-win-ia32.exe"
-              yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --release-name="${env:APPVEYOR_REPO_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\${RELEASE}-win-ia32.exe"
-              Remove-Item "releases\${RELEASE}-win-ia32.exe"
-            }
+          yarn build:win-ia32
+          Get-ChildItem output
+          Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${RELEASE}-win-ia32.exe"
+          Get-ChildItem releases
+          if ($env:APPVEYOR_REPO_BRANCH -eq 'master' -And -not $env:APPVEYOR_REPO_TAG_NAME) {
+            yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --release-name="${env:APPVEYOR_REPO_BRANCH}" "*-win-ia32.exe"
+            yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --release-name="${env:APPVEYOR_REPO_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\${RELEASE}-win-ia32.exe"
+            Remove-Item "releases\${RELEASE}-win-ia32.exe"
           }
 
     test: off
