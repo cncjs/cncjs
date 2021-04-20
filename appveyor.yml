@@ -16,7 +16,10 @@ environment:
   matrix:
     - nodejs_version: "10"
   global:
-    CI_BUILD_NUMBER: $(appveyor_build_number)
+    CI_BUILD_NUMBER: $(APPVEYOR_BUILD_NUMBER)
+    CI_BRANCH: $(APPVEYOR_REPO_BRANCH)
+    CI_COMMIT: $(APPVEYOR_REPO_COMMIT)
+    CI_TAG: $(APPVEYOR_REPO_TAG_NAME)
     GH_TOKEN:
       secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
     GITHUB_TOKEN:
@@ -49,11 +52,11 @@ for:
       - yarn
 
     before_build:
-      - export CI_BRANCH=$APPVEYOR_REPO_BRANCH
-      - export CI_TAG=$APPVEYOR_REPO_TAG_NAME
       - export GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
       - sh: |
+          echo "$CI_BUILD_NUMBER"
           echo "$CI_BRANCH"
+          echo "$CI_COMMIT"
           echo "$CI_TAG"
           echo "$GIT_COMMIT_LOG"
 
