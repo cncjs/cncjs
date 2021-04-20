@@ -32,13 +32,7 @@ for:
 
     install:
       - nvm install $nodejs_version
-      - sh: |
-          # https://github.com/electron-userland/electron-builder/issues/398
-          security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign
-          # https://github.com/electron-userland/electron-osx-sign/issues/83
-          # bypass Gatekeeper
-          sudo spctl --master-disable
-          sudo spctl --status
+      - security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign
       - sh: |
           echo "Build directory: $APPVEYOR_BUILD_FOLDER"
           echo "Build number: $APPVEYOR_BUILD_NUMBER"
