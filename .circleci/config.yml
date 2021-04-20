@@ -1,0 +1,147 @@
+version: 2.1
+
+orbs:
+  browser-tools: circleci/browser-tools@1.1.3
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build-linux
+
+jobs:
+  build-linux:
+    docker:
+      - image: cimg/node:12.22-browsers
+    steps:
+      - browser-tools/install-browser-tools
+      - run:
+          name: Install system packages
+          command: |
+            sudo apt-get update
+            sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
+      - checkout
+      - run:
+          name: Prepare environment variables
+          command: |
+            CI_BUILD_NUMBER=$CIRCLE_BUILD_NUM
+            COMMIT_LOG=`git log -1 --format='%ci %H %s'`
+            PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+            PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+            PRODUCT_NAME=CNCjs
+            RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
+            echo "$CI_BUILD_NUMBER"
+            echo "$COMMIT_LOG"
+            echo "$PACKAGE_NAME"
+            echo "$PACKAGE_VERSION"
+            echo "$PRODUCT_NAME"
+            echo "$RELEASE"
+      - run:
+          name: Check package version
+          command: |
+            git --version
+            node --version
+            java --version
+            google-chrome --version
+      - run:
+          name: Install packages
+          command: |
+            yarn
+      - run:
+          name: Build
+          command: |
+            yarn clean
+            yarn lint
+            yarn test
+            if [[ -z "$CIRCLE_TAG" ]]; then
+              yarn build-latest
+            else
+              yarn build
+            fi
+      - run:
+          name: Code coverage
+          command:
+            yarn coveralls
+      - run:
+          name: Build Electron app for Linux ia32
+          command: |
+            yarn build:linux-ia32
+            ls -al output output/*
+            cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-i386.AppImage" "releases/${RELEASE}-linux-i386.AppImage"
+            cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_i386.deb" "releases/${RELEASE}-linux-i386.deb"
+            cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.i686.rpm" "releases/${RELEASE}-linux.i686.rpm"
+            mkdir -p releases
+            pushd releases
+            ln -sf ../output/linux-ia32-unpacked "${RELEASE}-linux-ia32"
+            tar zcfh "${RELEASE}-linux-ia32.tar.gz" "${RELEASE}-linux-ia32"
+            rm -f "${RELEASE}-linux-ia32"
+            popd
+            ls -al releases/*
+            if [[ "$CIRCLE_BRANCH" == "master" && -z "$CIRCLE_TAG" && ! -z "$(ls -A releases)" ]]; then
+              yarn github-release -- delete \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CIRCLE_BRANCH}-latest" \
+                --name="${CIRCLE_BRANCH}" \
+                "*-linux-i386.AppImage" \
+                "*-linux-i386.deb" \
+                "*-linux.i686.rpm" \
+                "*-linux-ia32.tar.gz";
+              yarn github-release -- upload \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CIRCLE_BRANCH}-latest" \
+                --name="${CIRCLE_BRANCH}" \
+                --body="${COMMIT_LOG}" \
+                "releases/${RELEASE}-linux-i386.AppImage" \
+                "releases/${RELEASE}-linux-i386.deb" \
+                "releases/${RELEASE}-linux.i686.rpm" \
+                "releases/${RELEASE}-linux-ia32.tar.gz";
+              rm -f "releases/${RELEASE}-linux-i386.AppImage"
+              rm -f "releases/${RELEASE}-linux-i386.deb"
+              rm -f "releases/${RELEASE}-linux.i686.rpm"
+              rm -f "releases/${RELEASE}-linux-ia32.tar.gz"
+            fi
+      - run:
+          name: Build Electron app for Linux x64
+          command: |
+            yarn build:linux-x64
+            ls -al output output/*
+            cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.AppImage" "releases/${RELEASE}-linux-x86_64.AppImage"
+            cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/${RELEASE}-linux-amd64.deb"
+            cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.x86_64.rpm" "releases/${RELEASE}-linux.x86_64.rpm"
+            mkdir -p releases
+            pushd releases
+            ln -sf ../output/linux-unpacked "${RELEASE}-linux-x64"
+            tar zcfh "${RELEASE}-linux-x64.tar.gz" "${RELEASE}-linux-x64"
+            rm -f "${RELEASE}-linux-x64"
+            popd
+            ls -al releases/*
+            if [[ "$CIRCLE_BRANCH" == "master" && -z "$CIRCLE_TAG" && ! -z "$(ls -A releases)" ]]; then
+              yarn github-release -- delete \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CIRCLE_BRANCH}-latest" \
+                --name="${CIRCLE_BRANCH}" \
+                "*-linux-x86_64.AppImage" \
+                "*-linux-amd64.deb" \
+                "*-linux.x86_64.rpm" \
+                "*-linux-x64.tar.gz";
+              yarn github-release -- upload \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CIRCLE_BRANCH}-latest" \
+                --name="${CIRCLE_BRANCH}" \
+                --body="${COMMIT_LOG}" \
+                "releases/${RELEASE}-linux-x86_64.AppImage" \
+                "releases/${RELEASE}-linux-amd64.deb" \
+                "releases/${RELEASE}-linux.x86_64.rpm" \
+                "releases/${RELEASE}-linux-x64.tar.gz";
+              rm -f "releases/${RELEASE}-linux-x86_64.AppImage";
+              rm -f "releases/${RELEASE}-linux-amd64.deb";
+              rm -f "releases/${RELEASE}-linux.x86_64.rpm";
+              rm -f "releases/${RELEASE}-linux-x64.tar.gz";
+            fi
+      - run:
+          name: Build docker image
+          command: travis_wait 40 scripts/circle-docker-build.sh
