@@ -12,12 +12,15 @@ workflows:
           requires:
             - build-linux
 
+# https://circleci.com/docs/2.0/executor-types/
 jobs:
   build-linux:
     docker:
       - image: cimg/node:12.22-browsers
     steps:
       - browser-tools/install-browser-tools
+      - setup_remote_docker:
+          version: 19.03.13
       - run:
           name: Install system packages
           command: |
