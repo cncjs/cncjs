@@ -5,9 +5,18 @@ orbs:
 
 workflows:
   version: 2
-  build:
+  build-n-deploy:
     jobs:
       - build-linux
+          filters: # required since `deploy-linux` has tag filters AND requires `build-linux`
+            tags:
+              only: /.*/
+      - deploy-linux
+          requires:
+            - build-linux
+         #filters:
+         #  tags:
+         #    only: /.*/
 
 jobs:
   build-linux:
@@ -145,3 +154,9 @@ jobs:
       - run:
           name: Build docker image
           command: travis_wait 40 scripts/circle-docker-build.sh
+  deploy-linux:
+    docker:
+      - image: cimg/node:12.22
+    steps:
+      run: |
+        ls -al releases/*
