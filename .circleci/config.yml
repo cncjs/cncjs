@@ -32,6 +32,7 @@ jobs:
           command: |
             echo "export CI_BRANCH=${CIRCLE_BRANCH}" >> $BASH_ENV
             echo "export CI_BUILD_NUMBER=${CIRCLE_BUILD_NUM}" >> $BASH_ENV
+            echo "export CI_COMMIT=${CIRCLE_SHA1}" >> $BASH_ENV
             echo "export CI_TAG=${CIRCLE_TAG}" >> $BASH_ENV
       - run:
           name: Check package version
