@@ -1,7 +1,7 @@
 # https://www.appveyor.com/docs/build-environment/#build-worker-images
 image:
-  - Visual Studio 2019
   - Ubuntu
+  - Visual Studio 2019
 
 version: "{build}-{branch}"
 
