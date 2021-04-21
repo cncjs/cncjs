@@ -14,4 +14,4 @@ echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
 docker build -f Dockerfile -t $DOCKER_REPO:$DOCKER_BRANCH_TAG .
 
 docker images
-docker push $DOCKER_REPO
+docker push $DOCKER_REPO:$DOCKER_BRANCH_TAG

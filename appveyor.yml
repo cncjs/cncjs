@@ -224,9 +224,6 @@ for:
               rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm";
               rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
           fi
-      - sh: |
-          # build docker image
-          scripts/ci-docker-build.sh
 
     test: off
 
