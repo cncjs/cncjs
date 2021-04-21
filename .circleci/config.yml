@@ -1,3 +1,5 @@
+# https://circleci.com/blog/persisting-data-in-workflows-when-to-use-caching-artifacts-and-workspaces/
+
 version: 2.1
 
 orbs:
@@ -58,14 +60,25 @@ jobs:
             else
               yarn build
             fi
-      - store_artifacts:
-          path: dist
+      - run: |
+          name: Compress build artifacts
+          command: |
+            tar -zcvf cncjs-${CI_BUILD_NUMBER}.tar.gz --directory dist cncjs
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory.
+          # This is a directory on the container which is taken to be the root directory of the workspace.
+          root: dist
+          paths:
+            - cncjs-*.tar.gz
   deploy:
     docker:
       - image: cimg/node:12.22
     steps:
       - setup_remote_docker:
           version: 19.03.13
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: dist
       - run: |
           ls -al dist
-          scripts/ci-docker-build.sh
+          #scripts/ci-docker-build.sh
