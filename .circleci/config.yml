@@ -27,7 +27,7 @@ jobs:
             sudo apt-get update
       - checkout
       - run:
-          name: Setup CI environment variables
+          name: Setup environment variables
           command: |
             echo "export CI_BRANCH=${CIRCLE_BRANCH}" >> $BASH_ENV
             echo "export CI_BUILD_NUMBER=${CIRCLE_BUILD_NUM}" >> $BASH_ENV
@@ -76,6 +76,10 @@ jobs:
     steps:
       - setup_remote_docker:
           version: 19.03.13
+      - run:
+          name: Setup environment variables
+          command: |
+            echo "export CI_BRANCH=${CIRCLE_BRANCH}" >> $BASH_ENV
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: workspace
@@ -86,4 +90,14 @@ jobs:
             tar zxvf workspace/ci.tar.gz --directory dist
       - run:
           name: Build Docker image
-          command: scripts/ci-docker-build.sh
+          command: |
+            DOCKER_BRANCH_TAG=$(echo $CI_BRANCH | sed -e 's/\//-/g')
+            DOCKER_REPO=cncjs/cncjs
+
+            echo "DOCKER_BRANCH_TAG=$DOCKER_BRANCH_TAG"
+            echo "DOCKER_REPO=$DOCKER_REPO"
+
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            docker build -f Dockerfile -t $DOCKER_REPO:$DOCKER_BRANCH_TAG .
+            docker images
+            docker push $DOCKER_REPO:$DOCKER_BRANCH_TAG
