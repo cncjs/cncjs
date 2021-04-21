@@ -76,6 +76,7 @@ jobs:
     steps:
       - setup_remote_docker:
           version: 19.03.13
+      - checkout
       - run:
           name: Setup environment variables
           command: |
