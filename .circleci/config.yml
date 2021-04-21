@@ -39,13 +39,13 @@ jobs:
             node --version
             java --version
             google-chrome --version
+            npm --version
+            yarn --version
       - run:
           name: Install packages
           command: |
             npm config set loglevel warn
             npm config set scripts-prepend-node-path auto
-            sudo npm install -g npm
-            sudo npm install -g yarn
             yarn
       - run:
           name: Build
