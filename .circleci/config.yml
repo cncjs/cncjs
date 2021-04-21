@@ -42,6 +42,10 @@ jobs:
       - run:
           name: Install packages
           command: |
+            npm config set loglevel warn
+            npm config set scripts-prepend-node-path auto
+            npm install -g npm
+            npm install -g yarn
             yarn
       - run:
           name: Build
