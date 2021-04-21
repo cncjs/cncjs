@@ -1,12 +1,12 @@
 const crypto = require('crypto');
 const path = require('path');
 const { boolean } = require('boolean');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const dotenv = require('dotenv');
 const findImports = require('find-imports');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const babelConfig = require('./babel.config');
@@ -19,7 +19,7 @@ dotenv.config({
 
 const USE_ESLINT_LOADER = boolean(process.env.USE_ESLINT_LOADER);
 const USE_TERSER_PLUGIN = boolean(process.env.USE_TERSER_PLUGIN);
-const USE_OPTIMIZE_CSS_ASSETS_PLUGIN = boolean(process.env.USE_OPTIMIZE_CSS_ASSETS_PLUGIN);
+const USE_CSS_MINIMIZER_PLUGIN = boolean(process.env.USE_CSS_MINIMIZER_PLUGIN);
 
 // Use publicPath for production
 const publicPath = ((payload) => {
@@ -141,12 +141,13 @@ module.exports = {
     ].filter(Boolean),
   },
   optimization: {
+    minimize: true,
     minimizer: [
       USE_TERSER_PLUGIN && (
         new TerserPlugin()
       ),
-      USE_OPTIMIZE_CSS_ASSETS_PLUGIN && (
-        new OptimizeCSSAssetsPlugin()
+      USE_CSS_MINIMIZER_PLUGIN && (
+        new CssMinimizerPlugin()
       ),
     ].filter(Boolean)
   },

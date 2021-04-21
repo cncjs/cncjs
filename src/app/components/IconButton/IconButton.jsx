@@ -1,13 +1,16 @@
 import {
   ButtonBase,
+  useColorMode,
+  useColorStyle,
 } from '@trendmicro/react-styled-ui';
 import React from 'react';
-import { useStyledUI } from 'app/components/StyledUI';
+import _get from 'lodash/get';
 
 const IconButton = (props) => {
-  const { getColorStyle } = useStyledUI();
-  const color = getColorStyle('secondaryColor');
-  const hoverColor = getColorStyle('primaryColor');
+  const [colorMode] = useColorMode();
+  const [colorStyle] = useColorStyle({ colorMode });
+  const color = _get(colorStyle, 'text.secondary');
+  const hoverColor = _get(colorStyle, 'text.primary');
 
   return (
     <ButtonBase

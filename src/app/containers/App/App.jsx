@@ -2,8 +2,11 @@ import { Global, css } from '@emotion/core';
 import {
   Toast,
   Box,
+  useColorMode,
+  useColorStyle,
   useTheme,
 } from '@trendmicro/react-styled-ui';
+import _get from 'lodash/get';
 import pubsub from 'pubsub-js';
 import React, { useEffect } from 'react';
 import Helmet from 'react-helmet';
@@ -12,7 +15,6 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import compose from 'recompose/compose';
 import ToastLayout from 'app/components/ToastLayout';
 import useToast from 'app/components/useToast';
-import { useStyledUI } from 'app/components/StyledUI';
 import settings from 'app/config/settings';
 import Login from 'app/containers/Login';
 import ProtectedPage from 'app/containers/ProtectedPage';
@@ -20,17 +22,14 @@ import CorruptedWorkspaceSettingsModal from './modals/CorruptedWorkspaceSettings
 import ProtectedRoute from './ProtectedRoute';
 
 const Layout = (props) => {
-  const { productName, version } = settings;
-  const { getColorStyle } = useStyledUI();
+  const [colorMode] = useColorMode();
+  const [colorStyle] = useColorStyle({ colorMode });
   const { fontSizes, lineHeights } = useTheme();
-  const defaultBackgroundColor = getColorStyle('defaultBackgroundColor');
-  const primaryColor = getColorStyle('primaryColor');
+  const backgroundColor = _get(colorStyle, 'background.primary');
+  const color = _get(colorStyle, 'text.primary');
 
   return (
     <>
-      <Helmet>
-        <title>{`${productName} ${version}`}</title>
-      </Helmet>
       <Global
         styles={css`
           body {
@@ -40,8 +39,8 @@ const Layout = (props) => {
         `}
       />
       <Box
-        backgroundColor={defaultBackgroundColor}
-        color={primaryColor}
+        backgroundColor={backgroundColor}
+        color={color}
         fontSize="sm"
         lineHeight="sm"
         {...props}
@@ -55,6 +54,7 @@ const App = ({
   isInitializing,
   promptUserForCorruptedWorkspaceSettings
 }) => {
+  const { productName, version } = settings;
   const toast = useToast();
 
   useEffect(() => {
@@ -103,6 +103,9 @@ const App = ({
 
   return (
     <Layout>
+      <Helmet>
+        <title>{`${productName} ${version}`}</title>
+      </Helmet>
       <Switch>
         <Route
           exact

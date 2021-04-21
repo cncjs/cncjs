@@ -1,6 +1,6 @@
 import _get from 'lodash/get';
 
-const layoutStyles = {
+const layout = {
   header: {
     height: '16x',
     headingSize: '2xl',
@@ -10,7 +10,7 @@ const layoutStyles = {
   },
 };
 
-Object.defineProperty(layoutStyles, 'get', {
+Object.defineProperty(layout, 'get', {
   value: function get(key, defaultValue) {
     return _get(this, key, defaultValue);
   },
@@ -19,4 +19,4 @@ Object.defineProperty(layoutStyles, 'get', {
   configurable: false,
 });
 
-export default layoutStyles;
+export default layout;

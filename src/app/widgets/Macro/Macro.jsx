@@ -4,6 +4,8 @@ import {
   Flex,
   Space,
   Text,
+  useColorMode,
+  useColorStyle,
 } from '@trendmicro/react-styled-ui';
 import { useService } from '@xstate/react';
 import { ensureArray } from 'ensure-type';
@@ -14,7 +16,6 @@ import { connect } from 'react-redux';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import useModal from 'app/components/Modal/useModal';
 import RenderBlock from 'app/components/RenderBlock';
-import { useStyledUI } from 'app/components/StyledUI';
 import {
   CONNECTION_STATE_CONNECTED,
 } from 'app/constants/connection';
@@ -55,10 +56,17 @@ const Macro = ({
   canLoadMacro,
   canRunMacro,
 }) => {
-  const { colorMode, getColorStyle } = useStyledUI();
-  const secondaryColor = getColorStyle('secondaryColor');
-  const defaultBorderColor = getColorStyle('defaultBorderColor');
-  const defaultDividerColor = getColorStyle('defaultDividerColor');
+  const [colorMode] = useColorMode();
+  const [colorStyle] = useColorStyle({ colorMode });
+  const secondaryColor = _get(colorStyle, 'text.secondary');
+  const borderColor = {
+    dark: 'gray:60',
+    light: 'gray:30'
+  }[colorMode];
+  const dividerColor = {
+    dark: 'gray:60',
+    light: 'gray:30'
+  }[colorMode];
   const toolbarBackgroundColor = {
     dark: 'gray:90',
     light: 'gray:10',
@@ -113,7 +121,7 @@ const Macro = ({
         justify="space-between"
         backgroundColor={toolbarBackgroundColor}
         borderBottom={1}
-        borderColor={defaultBorderColor}
+        borderColor={borderColor}
         px="3x"
         py="2x"
       >
@@ -188,7 +196,7 @@ const Macro = ({
                   key={macro.id}
                   align="center"
                   borderBottom={1}
-                  borderColor={defaultDividerColor}
+                  borderColor={dividerColor}
                   px="3x"
                   py="2x"
                 >

@@ -1,3 +1,8 @@
+import {
+  ThemeProvider,
+  ColorModeProvider,
+  ColorStyleProvider,
+} from '@trendmicro/react-styled-ui';
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -5,41 +10,39 @@ import { HashRouter } from 'react-router-dom';
 import { CardProvider } from 'app/components/Card';
 import { Provider as GridSystemProvider } from 'app/components/GridSystem';
 import { ModalProvider, ModalRoot } from 'app/components/Modal';
-import { StyledUIProvider } from 'app/components/StyledUI';
-import colorStyles from 'app/config/color.styles';
-import layoutStyles from 'app/config/layout.styles';
-import reduxStore from 'app/store/redux';
+import colorStyle from 'app/config/color-style';
 import i18next from 'app/i18next';
+import reduxStore from 'app/store/redux';
 
 export const GlobalProvider = ({ children }) => (
-  <StyledUIProvider
-    colorMode="light"
-    colorStyles={colorStyles}
-    layoutStyles={layoutStyles}
-  >
-    <ReduxProvider store={reduxStore}>
-      <ModalProvider>
-        <ModalRoot />
-        <GridSystemProvider
-          breakpoints={[576, 768, 992, 1200, 1600]}
-          containerWidths={[540, 720, 960, 1140]}
-          columns={12}
-          gutterWidth={0}
-          layout="flexbox"
-        >
-          <CardProvider
-            borderRadius={0}
-            spacingX=".75rem"
-            spacingY=".375rem"
-          >
-            <I18nextProvider i18n={i18next}>
-              <HashRouter>
-                {children}
-              </HashRouter>
-            </I18nextProvider>
-          </CardProvider>
-        </GridSystemProvider>
-      </ModalProvider>
-    </ReduxProvider>
-  </StyledUIProvider>
+  <ThemeProvider>
+    <ColorModeProvider value="light">
+      <ColorStyleProvider value={colorStyle}>
+        <ReduxProvider store={reduxStore}>
+          <ModalProvider>
+            <ModalRoot />
+            <GridSystemProvider
+              breakpoints={[576, 768, 992, 1200, 1600]}
+              containerWidths={[540, 720, 960, 1140]}
+              columns={12}
+              gutterWidth={0}
+              layout="flexbox"
+            >
+              <CardProvider
+                borderRadius={0}
+                spacingX=".75rem"
+                spacingY=".375rem"
+              >
+                <I18nextProvider i18n={i18next}>
+                  <HashRouter>
+                    {children}
+                  </HashRouter>
+                </I18nextProvider>
+              </CardProvider>
+            </GridSystemProvider>
+          </ModalProvider>
+        </ReduxProvider>
+      </ColorStyleProvider>
+    </ColorModeProvider>
+  </ThemeProvider>
 );
