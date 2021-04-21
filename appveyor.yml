@@ -11,15 +11,37 @@ init:
   - git config --global core.autocrlf false
   - git config --global user.name "AppVeyor"
   - git config --global user.email "appveyor@ci.appveyor.com"
+  - ps: |
+      Write-Host "Build directory: " -NoNewLine
+      Write-Host $env:APPVEYOR_BUILD_FOLDER -ForegroundColor "Green"
+      Write-Host "Build number: " -NoNewLine
+      Write-Host $env:APPVEYOR_BUILD_NUMBER -ForegroundColor "Green"
+      Write-Host "Branch: " -NoNewLine
+      Write-Host $env:APPVEYOR_REPO_BRANCH -ForegroundColor "Green"
+      Write-Host "Tag: " -NoNewLine
+      Write-Host $env:APPVEYOR_REPO_TAG_NAME -ForegroundColor "Green"
+      Write-Host "Commit: " -NoNewLine
+      Write-Host $env:APPVEYOR_REPO_COMMIT -ForegroundColor "Green"
+      Write-Host "Commit timestamp: " -NoNewLine
+      Write-Host $env:APPVEYOR_REPO_COMMIT_TIMESTAMP -ForegroundColor "Green"
+  - export CI_BRANCH=${APPVEYOR_REPO_BRANCH}
+  - export CI_BUILD_NUMBER=${APPVEYOR_BUILD_NUMBER}
+  - export CI_COMMIT=${APPVEYOR_REPO_COMMIT}
+  - export CI_COMMIT_SHORT=${APPVEYOR_REPO_COMMIT:0:8}
+  - export CI_TAG=${APPVEYOR_REPO_TAG_NAME}
+  - export GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
+  - sh: |
+      echo "$CI_BRANCH"
+      echo "$CI_BUILD_NUMBER"
+      echo "$CI_COMMIT"
+      echo "$CI_COMMIT_SHORT"
+      echo "$CI_TAG"
+      echo "$GIT_COMMIT_LOG"
 
 environment:
   matrix:
     - nodejs_version: "12"
   global:
-    CI_BUILD_NUMBER: $(APPVEYOR_BUILD_NUMBER)
-    CI_BRANCH: $(APPVEYOR_REPO_BRANCH)
-    CI_COMMIT: $(APPVEYOR_REPO_COMMIT)
-    CI_TAG: $(APPVEYOR_REPO_TAG_NAME)
     GH_TOKEN:
       secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
     GITHUB_TOKEN:
@@ -36,29 +58,11 @@ for:
     install:
       - nvm install $nodejs_version
       - security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign
-      - sh: |
-          echo "Build directory: $APPVEYOR_BUILD_FOLDER"
-          echo "Build number: $APPVEYOR_BUILD_NUMBER"
-          echo "Branch: $APPVEYOR_REPO_BRANCH"
-          echo "Tag: $APPVEYOR_REPO_TAG_NAME"
-          echo "Commit: $APPVEYOR_REPO_COMMIT"
-          echo "Commit timestamp: $APPVEYOR_REPO_COMMIT_TIMESTAMP"
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
       - npm install -g npm
       - npm install -g yarn
       - yarn
-
-    before_build:
-      - export CI_COMMIT_SHORT=${CI_COMMIT:0:8}
-      - export GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
-      - sh: |
-          echo "$CI_BUILD_NUMBER"
-          echo "$CI_BRANCH"
-          echo "$CI_COMMIT"
-          echo "$CI_COMMIT_SHORT"
-          echo "$CI_TAG"
-          echo "$GIT_COMMIT_LOG"
 
     build_script:
       - sh: |
@@ -130,27 +134,11 @@ for:
       - nvm install $nodejs_version
       - sudo apt-get update
       - sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
-      - sh: |
-          echo "Build directory: $APPVEYOR_BUILD_FOLDER"
-          echo "Build number: $APPVEYOR_BUILD_NUMBER"
-          echo "Branch: $APPVEYOR_REPO_BRANCH"
-          echo "Tag: $APPVEYOR_REPO_TAG_NAME"
-          echo "Commit: $APPVEYOR_REPO_COMMIT"
-          echo "Commit timestamp: $APPVEYOR_REPO_COMMIT_TIMESTAMP"
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
       - npm install -g npm
       - npm install -g yarn
       - yarn
-
-    before_build:
-      - export CI_BRANCH=$APPVEYOR_REPO_BRANCH
-      - export CI_TAG=$APPVEYOR_REPO_TAG_NAME
-      - export GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
-      - sh: |
-          echo "$CI_BRANCH"
-          echo "$CI_TAG"
-          echo "$GIT_COMMIT_LOG"
 
     build_script:
       - sh: |
@@ -281,28 +269,11 @@ for:
 
     install:
       - ps: Install-Product node $env:nodejs_version $env:platform
-      - ps: |
-          Write-Host "Build directory: " -NoNewLine
-          Write-Host $env:APPVEYOR_BUILD_FOLDER -ForegroundColor "Green"
-          Write-Host "Build number: " -NoNewLine
-          Write-Host $env:APPVEYOR_BUILD_NUMBER -ForegroundColor "Green"
-          Write-Host "Branch: " -NoNewLine
-          Write-Host $env:APPVEYOR_REPO_BRANCH -ForegroundColor "Green"
-          Write-Host "Tag: " -NoNewLine
-          Write-Host $env:APPVEYOR_REPO_TAG_NAME -ForegroundColor "Green"
-          Write-Host "Commit: " -NoNewLine
-          Write-Host $env:APPVEYOR_REPO_COMMIT -ForegroundColor "Green"
-          Write-Host "Commit timestamp: " -NoNewLine
-          Write-Host $env:APPVEYOR_REPO_COMMIT_TIMESTAMP -ForegroundColor "Green"
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
       - npm install -g npm
       - npm install -g yarn
       - yarn
-
-    before_build:
-      - ps: $COMMIT_LOG = git log -1 --format='%ci %H %s'
-      - ps: echo "$COMMIT_LOG"
 
     build_script:
       - ps: |
