@@ -61,7 +61,7 @@ jobs:
               yarn build
             fi
       - run:
-          name: Compress build artifacts
+          name: Archive build artifacts
           command: |
             tar -zcvf ci.tar.gz --directory dist cncjs
       - persist_to_workspace:
@@ -79,6 +79,11 @@ jobs:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: workspace
-      - run: |
-          ls -al workspace
-          #scripts/ci-docker-build.sh
+      - run:
+          name: Extract build artifacts
+          command: |
+            mkdir -p dist
+            tar zxvf workspace/ci.tar.gz --directory dist
+      - run:
+          name: Build Docker image
+          command: scripts/ci-docker-build.sh
