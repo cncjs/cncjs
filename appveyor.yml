@@ -11,32 +11,19 @@ init:
   - git config --global core.autocrlf false
   - git config --global user.name "AppVeyor"
   - git config --global user.email "appveyor@ci.appveyor.com"
-  - ps: |
-      Write-Host "Build directory: " -NoNewLine
-      Write-Host $env:APPVEYOR_BUILD_FOLDER -ForegroundColor "Green"
-      Write-Host "Build number: " -NoNewLine
-      Write-Host $env:APPVEYOR_BUILD_NUMBER -ForegroundColor "Green"
-      Write-Host "Branch: " -NoNewLine
-      Write-Host $env:APPVEYOR_REPO_BRANCH -ForegroundColor "Green"
-      Write-Host "Tag: " -NoNewLine
-      Write-Host $env:APPVEYOR_REPO_TAG_NAME -ForegroundColor "Green"
-      Write-Host "Commit: " -NoNewLine
-      Write-Host $env:APPVEYOR_REPO_COMMIT -ForegroundColor "Green"
-      Write-Host "Commit timestamp: " -NoNewLine
-      Write-Host $env:APPVEYOR_REPO_COMMIT_TIMESTAMP -ForegroundColor "Green"
   - export CI_BRANCH=${APPVEYOR_REPO_BRANCH}
   - export CI_BUILD_NUMBER=${APPVEYOR_BUILD_NUMBER}
   - export CI_COMMIT=${APPVEYOR_REPO_COMMIT}
   - export CI_COMMIT_SHORT=${APPVEYOR_REPO_COMMIT:0:8}
+  - export CI_COMMIT_TIMESTAMP=${APPVEYOR_REPO_COMMIT_TIMESTAMP}
   - export CI_TAG=${APPVEYOR_REPO_TAG_NAME}
-  - export GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
   - sh: |
-      echo "$CI_BRANCH"
-      echo "$CI_BUILD_NUMBER"
-      echo "$CI_COMMIT"
-      echo "$CI_COMMIT_SHORT"
-      echo "$CI_TAG"
-      echo "$GIT_COMMIT_LOG"
+      echo "• CI_BRANCH=$CI_BRANCH"
+      echo "• CI_BUILD_NUMBER=$CI_BUILD_NUMBER"
+      echo "• CI_COMMIT=$CI_COMMIT"
+      echo "• CI_COMMIT_SHORT=$CI_COMMIT_SHORT"
+      echo "• CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP"
+      echo "• CI_TAG=$CI_TAG"
 
 environment:
   matrix:
@@ -76,9 +63,10 @@ for:
           fi
       - sh: |
           # build:mac-x64
-          PRODUCT_NAME=CNCjs
+          GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
           PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
           PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+          PRODUCT_NAME=CNCjs
           yarn build:mac-x64
           ls -al output output/*
           mkdir -p releases/macos
@@ -152,9 +140,10 @@ for:
           fi
       - sh: |
           # build:linux-ia32
-          PRODUCT_NAME=CNCjs
+          GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
           PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
           PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+          PRODUCT_NAME=CNCjs
           yarn build:linux-ia32;
           ls -al output output/*;
           mkdir -p releases/linux
@@ -194,9 +183,10 @@ for:
           fi
       - sh: |
           # build:linux-x64
-          PRODUCT_NAME=CNCjs
+          GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
           PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
           PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+          PRODUCT_NAME=CNCjs
           yarn build:linux-x64
           ls -al output output/*
           mkdir -p releases/linux
@@ -280,37 +270,40 @@ for:
           yarn clean
           yarn lint
           yarn test
-          if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
+          if (-not $env:CI_TAG) {
             yarn build-latest
-          }
-          else {
+          } else {
             yarn build
           }
-      - ps: $PACKAGE_NAME = node -e "console.log(require('./src/package.json').name)"
-      - ps: $PACKAGE_VERSION = node -e "console.log(require('./src/package.json').version)"
-      - ps: $PRODUCT_NAME = "CNCjs"
-      - ps: echo "$PACKAGE_NAME"
-      - ps: echo "$PACKAGE_VERSION"
-      - ps: echo "$PRODUCT_NAME"
-      - ps: mkdir releases/windows
       - ps: |
+          # build:win-x64
+          $GIT_COMMIT_LOG = git log -1 --format='%ci %H %s'
+          $PACKAGE_NAME = node -e "console.log(require('./src/package.json').name)"
+          $PACKAGE_VERSION = node -e "console.log(require('./src/package.json').version)"
+          $PRODUCT_NAME = "CNCjs"
+          mkdir -Force -Path releases\windows
           yarn build:win-x64
           Get-ChildItem output
           Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-x64.exe"
           Get-ChildItem releases\windows
-          if ($env:APPVEYOR_REPO_BRANCH -eq 'master' -And -not $env:APPVEYOR_REPO_TAG_NAME) {
-            yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --release-name="${env:APPVEYOR_REPO_BRANCH}" "*-x64.exe"
-            yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --release-name="${env:APPVEYOR_REPO_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-x64.exe"
+          if ($env:CI_BRANCH -eq 'master' -And -not $env:CI_TAG) {
+            yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-x64.exe"
+            yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-x64.exe"
             Remove-Item "releases\${PACKAGE_NAME}-${PACKAGE_VERSION}-x64.exe"
           }
       - ps: |
+          $GIT_COMMIT_LOG = git log -1 --format='%ci %H %s'
+          $PACKAGE_NAME = node -e "console.log(require('./src/package.json').name)"
+          $PACKAGE_VERSION = node -e "console.log(require('./src/package.json').version)"
+          $PRODUCT_NAME = "CNCjs"
+          mkdir -Force -Path releases\windows
           yarn build:win-ia32
           Get-ChildItem output
           Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-ia32.exe"
           Get-ChildItem releases\windows
-          if ($env:APPVEYOR_REPO_BRANCH -eq 'master' -And -not $env:APPVEYOR_REPO_TAG_NAME) {
-            yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --release-name="${env:APPVEYOR_REPO_BRANCH}" "*-ia32.exe"
-            yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --release-name="${env:APPVEYOR_REPO_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-ia32.exe"
+          if ($env:CI_BRANCH -eq 'master' -And -not $env:CI_TAG) {
+            yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-ia32.exe"
+            yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-ia32.exe"
             Remove-Item "releases\${PACKAGE_NAME}-${PACKAGE_VERSION}-ia32.exe"
           }
 
