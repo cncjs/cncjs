@@ -63,13 +63,13 @@ jobs:
       - run:
           name: Compress build artifacts
           command: |
-            tar -zcvf cncjs-${CI_BUILD_NUMBER}.tar.gz --directory dist cncjs
+            tar -zcvf ci-${CI_BUILD_NUMBER}.tar.gz --directory dist cncjs
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory.
           # This is a directory on the container which is taken to be the root directory of the workspace.
-          root: dist
+          root: .
           paths:
-            - cncjs-*.tar.gz
+            - ci-${CI_BUILD_NUMBER}.tar.gz
   deploy:
     docker:
       - image: cimg/node:12.22
