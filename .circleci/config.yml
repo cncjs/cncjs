@@ -60,7 +60,7 @@ jobs:
             else
               yarn build
             fi
-      - run: |
+      - run:
           name: Compress build artifacts
           command: |
             tar -zcvf cncjs-${CI_BUILD_NUMBER}.tar.gz --directory dist cncjs
