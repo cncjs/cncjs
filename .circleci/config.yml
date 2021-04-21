@@ -54,10 +54,8 @@ jobs:
             else
               yarn build
             fi
-      - run:
-          name: Code coverage
-          command: |
-            yarn coveralls
+      - store_artifacts:
+          path: dist
   deploy:
     docker:
       - image: cimg/node:12.22
