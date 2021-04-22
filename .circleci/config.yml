@@ -22,9 +22,10 @@ jobs:
     steps:
       - browser-tools/install-browser-tools
       - run:
-          name: Install system packages
+          name: Configuration
           command: |
-            sudo apt-get update
+            npm config set loglevel warn
+            npm config set scripts-prepend-node-path auto
       - checkout
       - run:
           name: Setup environment variables
@@ -35,7 +36,11 @@ jobs:
             echo "export CI_COMMIT_SHORT=${CIRCLE_SHA1:0:8}" >> $BASH_ENV
             echo "export CI_TAG=${CIRCLE_TAG}" >> $BASH_ENV
       - run:
-          name: Check package version
+          name: Install system packages
+          command: |
+            sudo apt-get update
+      - run:
+          name: Check version
           command: |
             git --version
             node --version
@@ -46,8 +51,6 @@ jobs:
       - run:
           name: Install packages
           command: |
-            npm config set loglevel warn
-            npm config set scripts-prepend-node-path auto
             yarn
       - run:
           name: Build
