@@ -32,7 +32,7 @@ RUN npm install -g npm@latest && npm install -g yarn && yarn --production
 # FINAL STAGE
 FROM debian:stretch
 
-ENV BUILD_DIR /root/build
+ENV BUILD_DIR /root/build/cncjs
 ENV NVM_DIR /root/.nvm
 ENV NODE_VERSION v12.22.1
 ENV NODE_ENV production
