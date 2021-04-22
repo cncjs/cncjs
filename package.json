@@ -31,6 +31,7 @@
     "build-latest": "concurrently --names \"build-app-prod,build-server-prod\" \"npm run build-app-prod\" \"npm run build-server-prod\"",
     "build-dev": "concurrently --names \"build-app-dev,build-server-dev\" \"npm run build-app-dev\" \"npm run build-server-dev\"",
     "build-prod": "concurrently --names \"build-app-prod,build-server-prod\" \"npm run build-app-prod\" \"npm run build-server-prod\"",
+    "postbuild-latest": "bash scripts/postbuild-prod.sh",
     "postbuild-dev": "bash scripts/postbuild-dev.sh",
     "postbuild-prod": "bash scripts/postbuild-prod.sh",
     "build-app-i18n": "i18next-scanner --config i18next-scanner.app.config.js \"src/app/**/*.{html,js,jsx}\" \"!src/app/i18n/**\" \"!**/node_modules/**\"",
