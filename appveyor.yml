@@ -2,19 +2,20 @@ version: "{build}-{branch}"
 
 environment:
   matrix:
-    - job_name: macOS build
-      appveyor_build_worker_image: macos
-      nodejs_version: "12"
-    - job_name: Linux build
+    #- job_name: macOS build
+    #  appveyor_build_worker_image: macos
+    #  nodejs_version: "12"
+    - job_name: Linux build (arm64)
       appveyor_build_worker_image: Ubuntu
       nodejs_version: "12"
-    - job_name: Linux ARM64 build
-      appveyor_build_worker_image: Ubuntu
-      nodejs_version: "12"
-      arch: arm64
-    - job_name: Windows build
-      appveyor_build_worker_image: Visual Studio 2019
-      nodejs_version: "12"
+      ARCH: arm64
+    #- job_name: Linux build
+    #  appveyor_build_worker_image: Ubuntu
+    #  nodejs_version: "12"
+    #  ARCH: amd64
+    #- job_name: Windows build
+    #  appveyor_build_worker_image: Visual Studio 2019
+    #  nodejs_version: "12"
   global:
     GITHUB_TOKEN:
       secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
@@ -31,6 +32,7 @@ init:
       $CI_COMMIT_SHORT = ${env:APPVEYOR_REPO_COMMIT}.SubString(0,8)
       $CI_COMMIT_TIMESTAMP = $env:APPVEYOR_REPO_COMMIT_TIMESTAMP
       $CI_TAG = $env:APPVEYOR_REPO_TAG_NAME
+      Write-Host "• ARCH=$env:ARCH"
       Write-Host "• CI_BRANCH=$CI_BRANCH"
       Write-Host "• CI_BUILD_NUMBER=$CI_BUILD_NUMBER"
       Write-Host "• CI_COMMIT=$CI_COMMIT"
@@ -112,7 +114,7 @@ for:
           appveyor_repo_tag: true  # deploy on tag push only
           nodejs_version: "12"
 
-  # Linux
+  # Linux (amd64)
   -
     matrix:
       only:
@@ -248,11 +250,11 @@ for:
           appveyor_repo_tag: true  # deploy on tag push only
           nodejs_version: "12"
 
-  # Linux ARM
+  # Linux (arm64)
   -
     matrix:
       only:
-        - job_name: Linux ARM build
+        - job_name: Linux build (arm64)
       fast_finish: true
 
     install:
