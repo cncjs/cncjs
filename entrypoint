@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+require('@babel/polyfill');
+
 const launchServer = require('/opt/cncjs/server-cli').default;
 
 launchServer().catch(err => {

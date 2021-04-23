@@ -27,7 +27,7 @@ RUN git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR" \
   && nvm use --delete-prefix default
 
 COPY ./dist/cncjs $BUILD_DIR/cncjs
-COPY ./entrypoint $BUILD_DIR/entrypoint
+COPY ./entrypoint $BUILD_DIR/cncjs/
 
 WORKDIR $BUILD_DIR/cncjs
 RUN npm install -g npm@latest && npm install -g yarn && yarn --production
@@ -47,8 +47,7 @@ RUN apt-get update -y && apt-get install -y -q --no-install-recommends \
 
 WORKDIR /opt/cncjs
 EXPOSE 8000
-ENTRYPOINT ["/entrypoint"]
+ENTRYPOINT ["/opt/cncjs/entrypoint"]
 
 COPY --from=build-stage /root/.nvm $NVM_DIR
 COPY --from=build-stage /tmp/build/cncjs /opt/cncjs
-COPY --from=build-stage /tmp/build/entrypoint /entrypoint
