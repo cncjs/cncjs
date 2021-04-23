@@ -1,29 +1,19 @@
-# https://www.appveyor.com/docs/build-environment/#build-worker-images
-image:
-  - macos
-  - Ubuntu
-  - Visual Studio 2019
-
 version: "{build}-{branch}"
 
 environment:
   matrix:
     - job_name: macOS build
-      image: macos
+      appveyor_build_worker_image: macos
       nodejs_version: "12"
     - job_name: Linux build
-      image: Ubuntu
+      appveyor_build_worker_image: Ubuntu
       nodejs_version: "12"
     - job_name: Windows build
-      image: Visual Studio 2019
+      appveyor_build_worker_image: Visual Studio 2019
       nodejs_version: "12"
-
   global:
     GITHUB_TOKEN:
       secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
-
-matrix:
-  fast_finish: true
 
 init:
   - git --version
@@ -50,6 +40,7 @@ for:
     matrix:
       only:
         - job_name: macOS build
+      fast_finish: true
 
     install:
       - nvm install $nodejs_version
@@ -122,6 +113,7 @@ for:
     matrix:
       only:
         - job_name: Linux build
+      fast_finish: true
 
     platform:
       - x64
@@ -257,6 +249,7 @@ for:
     matrix:
       only:
         - job_name: Windows build
+      fast_finish: true
 
     platform:
       - x64
