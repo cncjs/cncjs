@@ -458,12 +458,12 @@ for:
             mkdir -Force -Path releases\windows
             yarn build:win-x64
             Get-ChildItem output
-            Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-x64.exe"
+            Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
             Get-ChildItem releases\windows
             if ($env:CI_BRANCH -eq 'master' -And -not $env:CI_TAG) {
-              yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-x64.exe"
-              yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-x64.exe"
-              Remove-Item "releases\${PACKAGE_NAME}-${PACKAGE_VERSION}-x64.exe"
+              yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-windows-x64.exe"
+              yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
+              Remove-Item "releases\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
             }
           }
       - ps: |
@@ -475,12 +475,12 @@ for:
             mkdir -Force -Path releases\windows
             yarn build:win-ia32
             Get-ChildItem output
-            Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-win32.exe"
+            Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
             Get-ChildItem releases\windows
             if ($env:CI_BRANCH -eq 'master' -And -not $env:CI_TAG) {
-              yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-win32.exe"
-              yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-win32.exe"
-              Remove-Item "releases\${PACKAGE_NAME}-${PACKAGE_VERSION}-win32.exe"
+              yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-windows-x86.exe"
+              yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
+              Remove-Item "releases\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
             }
           }
 
