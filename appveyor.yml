@@ -6,6 +6,25 @@ image:
 
 version: "{build}-{branch}"
 
+environment:
+  matrix:
+    - job_name: macOS build
+      image: macos
+      nodejs_version: "12"
+    - job_name: Linux build
+      image: Ubuntu
+      nodejs_version: "12"
+    - job_name: Windows build
+      image: Visual Studio 2019
+      nodejs_version: "12"
+
+  global:
+    GITHUB_TOKEN:
+      secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
+
+matrix:
+  fast_finish: true
+
 init:
   - git --version
   - git config --global core.autocrlf false
@@ -25,20 +44,12 @@ init:
       Write-Host "• CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP"
       Write-Host "• CI_TAG=$CI_TAG"
 
-environment:
-  matrix:
-    - nodejs_version: "12"
-  global:
-    GITHUB_TOKEN:
-      secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
-
 for:
-  # macos
+  # macOS
   -
     matrix:
       only:
-        - image: macos
-      fast_finish: true
+        - job_name: macOS build
 
     install:
       - nvm install $nodejs_version
@@ -106,12 +117,11 @@ for:
           appveyor_repo_tag: true  # deploy on tag push only
           nodejs_version: "12"
 
-  # Ubutu
+  # Linux
   -
     matrix:
       only:
-        - image: Ubuntu
-      fast_finish: true
+        - job_name: Linux build
 
     platform:
       - x64
@@ -242,12 +252,11 @@ for:
           appveyor_repo_tag: true  # deploy on tag push only
           nodejs_version: "12"
 
-  # Visual Studio 2019
+  # Windows
   -
     matrix:
       only:
-        - image: Visual Studio 2019
-      fast_finish: true
+        - job_name: Windows build
 
     platform:
       - x64
