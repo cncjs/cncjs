@@ -51,6 +51,7 @@
     "build:linux-ia32": "bash -c 'scripts/electron-builder.sh --linux --ia32'",
     "build:linux-x64": "bash -c 'scripts/electron-builder.sh --linux --x64'",
     "build:linux-armv7l": "bash -c 'scripts/electron-builder.sh --linux --armv7l'",
+    "build:linux-arm64": "bash -c 'scripts/electron-builder.sh --linux --arm64'",
     "build:win-ia32": "bash -c 'scripts/electron-builder.sh --win --ia32'",
     "build:win-x64": "bash -c 'scripts/electron-builder.sh --win --x64'",
     "start-electron": "electron ./dist/cncjs/main",
