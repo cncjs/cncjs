@@ -8,6 +8,10 @@ environment:
     - job_name: Linux build
       appveyor_build_worker_image: Ubuntu
       nodejs_version: "12"
+    - job_name: Linux ARM64 build
+      appveyor_build_worker_image: Ubuntu
+      nodejs_version: "12"
+      arch: arm64
     - job_name: Windows build
       appveyor_build_worker_image: Visual Studio 2019
       nodejs_version: "12"
@@ -223,6 +227,92 @@ for:
               rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb";
               rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm";
               rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
+          fi
+
+    test: off
+
+    # Packaging artifacts
+    # https://www.appveyor.com/docs/packaging-artifacts
+    artifacts:
+      - path: releases/linux/*
+
+    # Publishing artifacts to GitHub Releases
+    # https://www.appveyor.com/docs/deployment/github
+    deploy:
+      - provider: GitHub
+        auth_token:
+          secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
+        draft: false
+        prerelease: false
+        on:
+          appveyor_repo_tag: true  # deploy on tag push only
+          nodejs_version: "12"
+
+  # Linux ARM
+  -
+    matrix:
+      only:
+        - job_name: Linux ARM build
+      fast_finish: true
+
+    install:
+      - nvm install $nodejs_version
+      - sudo apt-get update
+      - sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
+      - npm config set loglevel warn
+      - npm config set scripts-prepend-node-path auto
+      - npm install -g npm
+      - npm install -g yarn
+      - yarn
+
+    build_script:
+      - sh: |
+          yarn clean
+          yarn lint
+          yarn test
+          if [[ -z "$CI_TAG" ]]; then
+            yarn build-latest
+          else
+            yarn build
+          fi
+      - sh: |
+          # build:linux-arm64
+          GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
+          PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+          PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+          PRODUCT_NAME=CNCjs
+          yarn build:linux-arm64
+          ls -al output output/*
+          mkdir -p releases/linux
+          cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage"
+          cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb"
+          pushd releases/linux
+          ln -sf ../output/linux-unpacked "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
+          tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
+          rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
+          popd
+          ls -al releases/linux/*
+          if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" && ! -z "$(ls -A releases/linux)" ]]; then
+            yarn github-release -- delete \
+              --owner=cncjs \
+              --repo=cncjs \
+              --tag="${CI_BRANCH}-latest" \
+              --name="${CI_BRANCH}" \
+              "*-linux-arm64.AppImage" \
+              "*-linux-arm64.deb" \
+              "*-linux-arm64.tar.gz";
+            yarn github-release -- upload \
+              --owner=cncjs \
+              --repo=cncjs \
+              --tag="${CI_BRANCH}-latest" \
+              --name="${CI_BRANCH}" \
+              --body="${GIT_COMMIT_LOG}" \
+              "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage" \
+              "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb" \
+              "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz";
           fi
 
     test: off
