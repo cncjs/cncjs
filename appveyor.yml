@@ -49,11 +49,6 @@ for:
 
     init:
       - uname -a
-      - dpkg --print-architecture
-      - dpkg --add-architecture arm64
-      - dpkg --add-architecture armhf
-      - dpkg --add-architecture i386
-      - dpkg --print-foreign-architectures
       - git --version
       - git config --global core.autocrlf false
       - git config --global user.name "AppVeyor"
@@ -74,9 +69,14 @@ for:
           echo "• CI_TAG=$CI_TAG"
 
     install:
-      - nvm install $nodejs_version
+      - sudo dpkg --print-architecture
+      - sudo dpkg --add-architecture arm64
+      - sudo dpkg --add-architecture armhf
+      - sudo dpkg --add-architecture i386
+      - sudo dpkg --print-foreign-architectures
       - sudo apt-get update
       - sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
+      - nvm install $nodejs_version
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
       - npm install -g npm
