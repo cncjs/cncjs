@@ -11,7 +11,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
-const pkg = require('./package.json');
+const pkg = require('./src/package.json');
 
 dotenv.config({
   path: path.resolve('webpack.config.production.env'),

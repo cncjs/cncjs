@@ -7,7 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
-const pkg = require('./package.json');
+const pkg = require('./src/package.json');
 
 dotenv.config({
   path: path.resolve('webpack.config.development.env'),
