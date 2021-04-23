@@ -60,7 +60,7 @@ for:
           export CI_COMMIT_SHORT=${APPVEYOR_REPO_COMMIT:0:8}
           export CI_COMMIT_TIMESTAMP=$APPVEYOR_REPO_COMMIT_TIMESTAMP
           export CI_TAG=$APPVEYOR_REPO_TAG_NAME
-          echo "• ARCH=$env:ARCH"
+          echo "• ARCH=$ARCH"
           echo "• CI_BRANCH=$CI_BRANCH"
           echo "• CI_BUILD_NUMBER=$CI_BUILD_NUMBER"
           echo "• CI_COMMIT=$CI_COMMIT"
@@ -315,7 +315,7 @@ for:
           export CI_COMMIT_SHORT=${APPVEYOR_REPO_COMMIT:0:8}
           export CI_COMMIT_TIMESTAMP=$APPVEYOR_REPO_COMMIT_TIMESTAMP
           export CI_TAG=$APPVEYOR_REPO_TAG_NAME
-          echo "• ARCH=$env:ARCH"
+          echo "• ARCH=$ARCH"
           echo "• CI_BRANCH=$CI_BRANCH"
           echo "• CI_BUILD_NUMBER=$CI_BUILD_NUMBER"
           echo "• CI_COMMIT=$CI_COMMIT"
