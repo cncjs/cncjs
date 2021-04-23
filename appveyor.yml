@@ -70,6 +70,16 @@ for:
           echo "• CI_TAG=$CI_TAG"
 
     install:
+      # https://github.com/cfillion/reapack/blob/master/.appveyor.yml
+      - sudo cat /etc/apt/sources.list
+      - |
+        #sudo sed -i '/arch=/! s/^deb/deb [arch=amd64,i386]/' /etc/apt/sources.list
+        awk '
+          $3 !~ /ubuntu\.com/ { next }
+          $1 == "deb" {
+          $2 = "[arch=armhf,arm64]";
+          $3 = "http://ports.ubuntu.com/ubuntu-ports/"
+        } 1' /etc/apt/sources.list | sudo dd of=/etc/apt/sources.list.d/ports.list
       - sudo cat /etc/apt/sources.list
       - sudo dpkg --print-architecture
       - sudo dpkg --add-architecture arm64
