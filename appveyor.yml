@@ -49,6 +49,7 @@ for:
 
     init:
       - uname -a
+      - uname -i
       - git --version
       - git config --global core.autocrlf false
       - git config --global user.name "AppVeyor"
@@ -69,6 +70,7 @@ for:
           echo "• CI_TAG=$CI_TAG"
 
     install:
+      - sudo apt-get update
       - sudo dpkg --print-architecture
       - sudo dpkg --add-architecture arm64
       - sudo dpkg --add-architecture armhf
@@ -304,6 +306,7 @@ for:
 
     init:
       - uname -a
+      - uname -i
       - git --version
       - git config --global core.autocrlf false
       - git config --global user.name "AppVeyor"
