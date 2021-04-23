@@ -4,14 +4,10 @@ version: "{build}-{branch}"
 
 environment:
   matrix:
-    - job_name: macOS build (x64)
-      appveyor_build_worker_image: macos
-      nodejs_version: "12"
-      ARCH: x64
-    - job_name: Linux build (i386)
-      appveyor_build_worker_image: Ubuntu
-      nodejs_version: "12"
-      ARCH: i386
+    #- job_name: Linux build (i386)
+    #  appveyor_build_worker_image: Ubuntu
+    #  nodejs_version: "12"
+    #  ARCH: i386
     - job_name: Linux build (amd64)
       appveyor_build_worker_image: Ubuntu
       nodejs_version: "12"
@@ -24,6 +20,10 @@ environment:
       appveyor_build_worker_image: Ubuntu
       nodejs_version: "12"
       ARCH: arm64
+    - job_name: macOS build (x64)
+      appveyor_build_worker_image: macos
+      nodejs_version: "12"
+      ARCH: x64
     - job_name: Windows build (x64)
       appveyor_build_worker_image: Visual Studio 2019
       nodejs_version: "12"
@@ -37,102 +37,6 @@ environment:
       secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
 
 for:
-  # macOS
-  -
-    matrix:
-      only:
-        - job_name: macOS build (x64)
-      fast_finish: true
-
-    init:
-      - uname -a
-      - git --version
-      - git config --global core.autocrlf false
-      - git config --global user.name "AppVeyor"
-      - git config --global user.email "appveyor@ci.appveyor.com"
-      - ps: |
-          export CI_BRANCH=$APPVEYOR_REPO_BRANCH
-          export CI_BUILD_NUMBER=$APPVEYOR_BUILD_NUMBER
-          export CI_COMMIT=$APPVEYOR_REPO_COMMIT
-          export CI_COMMIT_SHORT=${APPVEYOR_REPO_COMMIT:0:8}
-          export CI_COMMIT_TIMESTAMP=$APPVEYOR_REPO_COMMIT_TIMESTAMP
-          export CI_TAG=$APPVEYOR_REPO_TAG_NAME
-          echo "• ARCH=$env:ARCH"
-          echo "• CI_BRANCH=$CI_BRANCH"
-          echo "• CI_BUILD_NUMBER=$CI_BUILD_NUMBER"
-          echo "• CI_COMMIT=$CI_COMMIT"
-          echo "• CI_COMMIT_SHORT=$CI_COMMIT_SHORT"
-          echo "• CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP"
-          echo "• CI_TAG=$CI_TAG"
-
-    install:
-      - nvm install $nodejs_version
-      - security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign
-      - npm config set loglevel warn
-      - npm config set scripts-prepend-node-path auto
-      - npm install -g npm
-      - npm install -g yarn
-      - yarn
-
-    build_script:
-      - sh: |
-          yarn clean
-          yarn lint
-          yarn test
-          if [[ -z "$CI_TAG" ]]; then
-            yarn build-latest
-          else
-            yarn build
-          fi
-      - sh: |
-          # x64
-          if [[ "$ARCH" == "x64" ]]; then
-            GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
-            PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
-            PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
-            PRODUCT_NAME=CNCjs
-            yarn build:mac-x64
-            ls -al output output/*
-            mkdir -p releases/macos
-            cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.dmg" "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg"
-            ls -al releases/macos/*
-            if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" && ! -z "$(ls -A releases/macos)" ]]; then
-              yarn github-release -- delete \
-                --owner=cncjs \
-                --repo=cncjs \
-                --tag="${CI_BRANCH}-latest" \
-                --name="${CI_BRANCH}" \
-                "*-macos.x64.dmg";
-              yarn github-release -- upload \
-                --owner=cncjs \
-                --repo=cncjs \
-                --tag="${CI_BRANCH}-latest" \
-                --name="${CI_BRANCH}" \
-                --body="${GIT_COMMIT_LOG}" \
-                "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg";
-              rm -f "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg";
-            fi
-          fi
-
-    test: off
-
-    # Packaging artifacts
-    # https://www.appveyor.com/docs/packaging-artifacts
-    artifacts:
-      - path: releases/macos/*
-
-    # Publishing artifacts to GitHub Releases
-    # https://www.appveyor.com/docs/deployment/github
-    deploy:
-      - provider: GitHub
-        auth_token:
-          secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
-        draft: false
-        prerelease: false
-        on:
-          appveyor_repo_tag: true  # deploy on tag push only
-          nodejs_version: "12"
-
   # Linux
   -
     matrix:
@@ -145,11 +49,16 @@ for:
 
     init:
       - uname -a
+      - dpkg --print-architecture
+      - dpkg --add-architecture arm64
+      - dpkg --add-architecture armhf
+      - dpkg --add-architecture i386
+      - dpkg --print-foreign-architectures
       - git --version
       - git config --global core.autocrlf false
       - git config --global user.name "AppVeyor"
       - git config --global user.email "appveyor@ci.appveyor.com"
-      - ps: |
+      - sh: |
           export CI_BRANCH=$APPVEYOR_REPO_BRANCH
           export CI_BUILD_NUMBER=$APPVEYOR_BUILD_NUMBER
           export CI_COMMIT=$APPVEYOR_REPO_COMMIT
@@ -373,6 +282,102 @@ for:
     # https://www.appveyor.com/docs/packaging-artifacts
     artifacts:
       - path: releases/linux/*
+
+    # Publishing artifacts to GitHub Releases
+    # https://www.appveyor.com/docs/deployment/github
+    deploy:
+      - provider: GitHub
+        auth_token:
+          secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
+        draft: false
+        prerelease: false
+        on:
+          appveyor_repo_tag: true  # deploy on tag push only
+          nodejs_version: "12"
+
+  # macOS
+  -
+    matrix:
+      only:
+        - job_name: macOS build (x64)
+      fast_finish: true
+
+    init:
+      - uname -a
+      - git --version
+      - git config --global core.autocrlf false
+      - git config --global user.name "AppVeyor"
+      - git config --global user.email "appveyor@ci.appveyor.com"
+      - sh: |
+          export CI_BRANCH=$APPVEYOR_REPO_BRANCH
+          export CI_BUILD_NUMBER=$APPVEYOR_BUILD_NUMBER
+          export CI_COMMIT=$APPVEYOR_REPO_COMMIT
+          export CI_COMMIT_SHORT=${APPVEYOR_REPO_COMMIT:0:8}
+          export CI_COMMIT_TIMESTAMP=$APPVEYOR_REPO_COMMIT_TIMESTAMP
+          export CI_TAG=$APPVEYOR_REPO_TAG_NAME
+          echo "• ARCH=$env:ARCH"
+          echo "• CI_BRANCH=$CI_BRANCH"
+          echo "• CI_BUILD_NUMBER=$CI_BUILD_NUMBER"
+          echo "• CI_COMMIT=$CI_COMMIT"
+          echo "• CI_COMMIT_SHORT=$CI_COMMIT_SHORT"
+          echo "• CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP"
+          echo "• CI_TAG=$CI_TAG"
+
+    install:
+      - nvm install $nodejs_version
+      - security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign
+      - npm config set loglevel warn
+      - npm config set scripts-prepend-node-path auto
+      - npm install -g npm
+      - npm install -g yarn
+      - yarn
+
+    build_script:
+      - sh: |
+          yarn clean
+          yarn lint
+          yarn test
+          if [[ -z "$CI_TAG" ]]; then
+            yarn build-latest
+          else
+            yarn build
+          fi
+      - sh: |
+          # x64
+          if [[ "$ARCH" == "x64" ]]; then
+            GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
+            PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+            PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+            PRODUCT_NAME=CNCjs
+            yarn build:mac-x64
+            ls -al output output/*
+            mkdir -p releases/macos
+            cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.dmg" "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg"
+            ls -al releases/macos/*
+            if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" && ! -z "$(ls -A releases/macos)" ]]; then
+              yarn github-release -- delete \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CI_BRANCH}-latest" \
+                --name="${CI_BRANCH}" \
+                "*-macos.x64.dmg";
+              yarn github-release -- upload \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CI_BRANCH}-latest" \
+                --name="${CI_BRANCH}" \
+                --body="${GIT_COMMIT_LOG}" \
+                "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg";
+              rm -f "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg";
+            fi
+          fi
+
+    test: off
+
+    # Packaging artifacts
+    # https://www.appveyor.com/docs/packaging-artifacts
+    artifacts:
+      - path: releases/macos/*
 
     # Publishing artifacts to GitHub Releases
     # https://www.appveyor.com/docs/deployment/github
