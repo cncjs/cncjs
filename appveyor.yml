@@ -24,6 +24,19 @@ init:
       echo "• CI_COMMIT_SHORT=$CI_COMMIT_SHORT"
       echo "• CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP"
       echo "• CI_TAG=$CI_TAG"
+  - ps: |
+      $CI_BRANCH = $env:APPVEYOR_REPO_BRANCH
+      $CI_BUILD_NUMBER = $env:APPVEYOR_BUILD_NUMBER
+      $CI_COMMIT = $env:APPVEYOR_REPO_COMMIT
+      $CI_COMMIT_SHORT = ${env:APPVEYOR_REPO_COMMIT}.SubString(0,8)
+      $CI_COMMIT_TIMESTAMP = $env:APPVEYOR_REPO_COMMIT_TIMESTAMP
+      $CI_TAG = $env:APPVEYOR_REPO_TAG_NAME
+      Write-Host "• CI_BRANCH=$CI_BRANCH"
+      Write-Host "• CI_BUILD_NUMBER=$CI_BUILD_NUMBER"
+      Write-Host "• CI_COMMIT=$CI_COMMIT"
+      Write-Host "• CI_COMMIT_SHORT=$CI_COMMIT_SHORT"
+      Write-Host "• CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP"
+      Write-Host "• CI_TAG=$CI_TAG"
 
 environment:
   matrix:
