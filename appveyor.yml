@@ -9,15 +9,15 @@ environment:
     #  nodejs_version: "12"
     #  ARCH: i386
     - job_name: Linux build (amd64)
-      appveyor_build_worker_image: Ubuntu
+      appveyor_build_worker_image: Ubuntu2004
       nodejs_version: "12"
       ARCH: amd64
     - job_name: Linux build (arm)
-      appveyor_build_worker_image: Ubuntu
+      appveyor_build_worker_image: Ubuntu2004
       nodejs_version: "12"
       ARCH: arm
     - job_name: Linux build (arm64)
-      appveyor_build_worker_image: Ubuntu
+      appveyor_build_worker_image: Ubuntu2004
       nodejs_version: "12"
       ARCH: arm64
     - job_name: macOS build (x64)
@@ -72,7 +72,7 @@ for:
       - sudo dpkg --print-architecture
       - sudo dpkg --add-architecture arm64
       - sudo dpkg --add-architecture armhf
-      - sudo dpkg --add-architecture i386
+      #- sudo dpkg --add-architecture i386
       - sudo dpkg --print-foreign-architectures
       - sudo apt-get update
       - sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
