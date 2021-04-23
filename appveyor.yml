@@ -70,7 +70,7 @@ for:
           echo "• CI_TAG=$CI_TAG"
 
     install:
-      - sudo apt-get update
+      - sudo cat /etc/apt/sources.list
       - sudo dpkg --print-architecture
       - sudo dpkg --add-architecture arm64
       - sudo dpkg --add-architecture armhf
