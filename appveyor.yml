@@ -73,7 +73,7 @@ for:
       # https://github.com/cfillion/reapack/blob/master/.appveyor.yml
       - sudo cat /etc/apt/sources.list
       - |
-        #sudo sed -i '/arch=/! s/^deb/deb [arch=amd64,i386]/' /etc/apt/sources.list
+        sudo sed -i '/arch=/! s/^deb/deb [arch=amd64,i386]/' /etc/apt/sources.list
         awk '
           $3 !~ /ubuntu\.com/ { next }
           $1 == "deb" {
