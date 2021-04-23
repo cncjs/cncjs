@@ -11,19 +11,6 @@ init:
   - git config --global core.autocrlf false
   - git config --global user.name "AppVeyor"
   - git config --global user.email "appveyor@ci.appveyor.com"
-  - sh: |
-      export CI_BRANCH=${APPVEYOR_REPO_BRANCH}
-      export CI_BUILD_NUMBER=${APPVEYOR_BUILD_NUMBER}
-      export CI_COMMIT=${APPVEYOR_REPO_COMMIT}
-      export CI_COMMIT_SHORT=${APPVEYOR_REPO_COMMIT:0:8}
-      export CI_COMMIT_TIMESTAMP=${APPVEYOR_REPO_COMMIT_TIMESTAMP}
-      export CI_TAG=${APPVEYOR_REPO_TAG_NAME}
-      echo "• CI_BRANCH=$CI_BRANCH"
-      echo "• CI_BUILD_NUMBER=$CI_BUILD_NUMBER"
-      echo "• CI_COMMIT=$CI_COMMIT"
-      echo "• CI_COMMIT_SHORT=$CI_COMMIT_SHORT"
-      echo "• CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP"
-      echo "• CI_TAG=$CI_TAG"
   - ps: |
       $CI_BRANCH = $env:APPVEYOR_REPO_BRANCH
       $CI_BUILD_NUMBER = $env:APPVEYOR_BUILD_NUMBER
