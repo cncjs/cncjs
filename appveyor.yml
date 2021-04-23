@@ -26,19 +26,19 @@ init:
   - git config --global user.name "AppVeyor"
   - git config --global user.email "appveyor@ci.appveyor.com"
   - ps: |
-      $CI_BRANCH = $env:APPVEYOR_REPO_BRANCH
-      $CI_BUILD_NUMBER = $env:APPVEYOR_BUILD_NUMBER
-      $CI_COMMIT = $env:APPVEYOR_REPO_COMMIT
-      $CI_COMMIT_SHORT = ${env:APPVEYOR_REPO_COMMIT}.SubString(0,8)
-      $CI_COMMIT_TIMESTAMP = $env:APPVEYOR_REPO_COMMIT_TIMESTAMP
-      $CI_TAG = $env:APPVEYOR_REPO_TAG_NAME
+      $env:CI_BRANCH = $env:APPVEYOR_REPO_BRANCH
+      $env:CI_BUILD_NUMBER = $env:APPVEYOR_BUILD_NUMBER
+      $env:CI_COMMIT = $env:APPVEYOR_REPO_COMMIT
+      $env:CI_COMMIT_SHORT = ${env:APPVEYOR_REPO_COMMIT}.SubString(0,8)
+      $env:CI_COMMIT_TIMESTAMP = $env:APPVEYOR_REPO_COMMIT_TIMESTAMP
+      $env:CI_TAG = $env:APPVEYOR_REPO_TAG_NAME
       Write-Host "• ARCH=$env:ARCH"
-      Write-Host "• CI_BRANCH=$CI_BRANCH"
-      Write-Host "• CI_BUILD_NUMBER=$CI_BUILD_NUMBER"
-      Write-Host "• CI_COMMIT=$CI_COMMIT"
-      Write-Host "• CI_COMMIT_SHORT=$CI_COMMIT_SHORT"
-      Write-Host "• CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP"
-      Write-Host "• CI_TAG=$CI_TAG"
+      Write-Host "• CI_BRANCH=$env:CI_BRANCH"
+      Write-Host "• CI_BUILD_NUMBER=$env:CI_BUILD_NUMBER"
+      Write-Host "• CI_COMMIT=$env:CI_COMMIT"
+      Write-Host "• CI_COMMIT_SHORT=$env:CI_COMMIT_SHORT"
+      Write-Host "• CI_COMMIT_TIMESTAMP=$env:CI_COMMIT_TIMESTAMP"
+      Write-Host "• CI_TAG=$env:CI_TAG"
 
 for:
   # macOS
@@ -47,6 +47,9 @@ for:
       only:
         - job_name: macOS build
       fast_finish: true
+
+    init:
+      - uname -a
 
     install:
       - nvm install $nodejs_version
@@ -121,8 +124,8 @@ for:
         - job_name: Linux build
       fast_finish: true
 
-    platform:
-      - x64
+    init:
+      - uname -a
 
     install:
       - nvm install $nodejs_version
@@ -257,6 +260,9 @@ for:
         - job_name: Linux build (arm64)
       fast_finish: true
 
+    init:
+      - uname -a
+
     install:
       - nvm install $nodejs_version
       - sudo apt-get update
@@ -286,10 +292,11 @@ for:
           yarn build:linux-arm64
           ls -al output output/*
           mkdir -p releases/linux
-          cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage"
-          cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb"
+          cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-arm64.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage"
+          cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_arm64.deb" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb"
+          cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.aarch64.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.aarch64.rpm"
           pushd releases/linux
-          ln -sf ../output/linux-unpacked "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
+          ln -sf ../output/linux-arm64-unpacked "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
           tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
           rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
           popd
@@ -343,11 +350,8 @@ for:
         - job_name: Windows build
       fast_finish: true
 
-    platform:
-      - x64
-
     install:
-      - ps: Install-Product node $env:nodejs_version $env:platform
+      - ps: Install-Product node $env:nodejs_version
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
       - npm install -g npm
