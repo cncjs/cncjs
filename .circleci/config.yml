@@ -13,6 +13,10 @@ workflows:
       - deploy:
           requires:
             - build
+      - build-arm64
+      - deploy-arm64:
+          requires:
+            - build-arm64
 
 # https://circleci.com/docs/2.0/executor-types/
 jobs:
@@ -105,3 +109,21 @@ jobs:
             docker build -f Dockerfile -t $DOCKER_REPO:$DOCKER_BRANCH_TAG .
             docker images
             docker push $DOCKER_REPO:$DOCKER_BRANCH_TAG
+
+  build-arm64:
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - run: uname -a
+      - run: echo "Hello, Arm!"
+
+  deploy-arm64:
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - run: uname -a
+      - run: echo "Hello, Arm!"
