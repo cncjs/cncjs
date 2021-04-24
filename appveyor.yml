@@ -4,10 +4,10 @@ version: "{build}-{branch}"
 
 environment:
   matrix:
-    - job_name: Linux build (i386)
-      appveyor_build_worker_image: Ubuntu
-      nodejs_version: "12"
-      ARCH: i386
+    #- job_name: Linux build (i386)
+    #  appveyor_build_worker_image: Ubuntu
+    #  nodejs_version: "12"
+    #  ARCH: i386
     - job_name: Linux build (amd64)
       appveyor_build_worker_image: Ubuntu2004
       nodejs_version: "12"
@@ -41,7 +41,7 @@ for:
   -
     matrix:
       only:
-        - job_name: Linux build (i386)
+        #- job_name: Linux build (i386)
         - job_name: Linux build (amd64)
         - job_name: Linux build (arm)
         - job_name: Linux build (arm64)
@@ -84,7 +84,7 @@ for:
       - sudo dpkg --print-architecture
       - sudo dpkg --add-architecture arm64
       - sudo dpkg --add-architecture armhf
-      - sudo dpkg --add-architecture i386
+      #- sudo dpkg --add-architecture i386
       - sudo dpkg --print-foreign-architectures
       - sudo apt-get update
       - sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
