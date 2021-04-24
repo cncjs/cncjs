@@ -275,18 +275,18 @@ for:
       - git config --global user.name "AppVeyor"
       - git config --global user.email "appveyor@ci.appveyor.com"
       - ps: |
-          $CI_BRANCH = $env:APPVEYOR_REPO_BRANCH
-          $CI_BUILD_NUMBER = $env:APPVEYOR_BUILD_NUMBER
-          $CI_COMMIT = $env:APPVEYOR_REPO_COMMIT
-          $CI_COMMIT_SHORT = ${env:APPVEYOR_REPO_COMMIT}.SubString(0,8)
-          $CI_COMMIT_TIMESTAMP = $env:APPVEYOR_REPO_COMMIT_TIMESTAMP
-          $CI_TAG = $env:APPVEYOR_REPO_TAG_NAME
-          Write-Host "• CI_BRANCH=$CI_BRANCH"
-          Write-Host "• CI_BUILD_NUMBER=$CI_BUILD_NUMBER"
-          Write-Host "• CI_COMMIT=$CI_COMMIT"
-          Write-Host "• CI_COMMIT_SHORT=$CI_COMMIT_SHORT"
-          Write-Host "• CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP"
-          Write-Host "• CI_TAG=$CI_TAG"
+          $env:CI_BRANCH = $env:APPVEYOR_REPO_BRANCH
+          $env:CI_BUILD_NUMBER = $env:APPVEYOR_BUILD_NUMBER
+          $env:CI_COMMIT = $env:APPVEYOR_REPO_COMMIT
+          $env:CI_COMMIT_SHORT = ${env:APPVEYOR_REPO_COMMIT}.SubString(0,8)
+          $env:CI_COMMIT_TIMESTAMP = $env:APPVEYOR_REPO_COMMIT_TIMESTAMP
+          $env:CI_TAG = $env:APPVEYOR_REPO_TAG_NAME
+          Write-Host "• CI_BRANCH=$env:CI_BRANCH"
+          Write-Host "• CI_BUILD_NUMBER=$env:CI_BUILD_NUMBER"
+          Write-Host "• CI_COMMIT=$env:CI_COMMIT"
+          Write-Host "• CI_COMMIT_SHORT=$env:CI_COMMIT_SHORT"
+          Write-Host "• CI_COMMIT_TIMESTAMP=$env:CI_COMMIT_TIMESTAMP"
+          Write-Host "• CI_TAG=$env:CI_TAG"
 
     install:
       - ps: Install-Product node $env:nodejs_version $env:platform
