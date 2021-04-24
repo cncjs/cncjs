@@ -318,7 +318,7 @@ for:
           if ($env:CI_BRANCH -eq 'master' -And -not $env:CI_TAG) {
             yarn github-release delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-x64.exe"
             yarn github-release upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-x64.exe"
-            Remove-Item "releases\${PACKAGE_NAME}-${PACKAGE_VERSION}-x64.exe"
+            Remove-Item "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-x64.exe"
           }
       - ps: |
           $GIT_COMMIT_LOG = git log -1 --format='%ci %H %s'
@@ -333,7 +333,7 @@ for:
           if ($env:CI_BRANCH -eq 'master' -And -not $env:CI_TAG) {
             yarn github-release delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-ia32.exe"
             yarn github-release upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-ia32.exe"
-            Remove-Item "releases\${PACKAGE_NAME}-${PACKAGE_VERSION}-ia32.exe"
+            Remove-Item "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-ia32.exe"
           }
 
     test: off
