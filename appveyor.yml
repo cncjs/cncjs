@@ -205,7 +205,7 @@ for:
             yarn build:linux-armv7l
             ls -al output output/*
             mkdir -p releases/linux
-            cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.aarch32.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.aarch32.rpm"
+            cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.armv7l.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.armv7l.rpm"
             cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-armv7l.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.AppImage"
             cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_armv7l.deb" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.deb"
             pushd releases/linux
@@ -220,7 +220,7 @@ for:
                 --repo=cncjs \
                 --tag="${CI_BRANCH}-latest" \
                 --release-name="${CI_BRANCH}" \
-                "*-linux.aarch32.rpm" \
+                "*-linux.armv7l.rpm" \
                 "*-linux-armv7l.AppImage" \
                 "*-linux-armv7l.deb" \
                 "*-linux-armv7l.tar.gz";
@@ -230,11 +230,11 @@ for:
                 --tag="${CI_BRANCH}-latest" \
                 --release-name="${CI_BRANCH}" \
                 --body="${GIT_COMMIT_LOG}" \
-                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.aarch32.rpm" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.armv7l.rpm" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.AppImage" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.deb" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.tar.gz";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.aarch32.rpm";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.armv7l.rpm";
               rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.AppImage";
               rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.deb";
               rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.tar.gz";
@@ -250,7 +250,7 @@ for:
             yarn build:linux-arm64
             ls -al output output/*
             mkdir -p releases/linux
-            cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.aarch64.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.aarch64.rpm"
+            cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.arm64.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.arm64.rpm"
             cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-arm64.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage"
             cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_arm64.deb" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb"
             pushd releases/linux
@@ -265,7 +265,7 @@ for:
                 --repo=cncjs \
                 --tag="${CI_BRANCH}-latest" \
                 --release-name="${CI_BRANCH}" \
-                "*-linux.aarch64.rpm" \
+                "*-linux.arm64.rpm" \
                 "*-linux-arm64.AppImage" \
                 "*-linux-arm64.deb" \
                 "*-linux-arm64.tar.gz";
@@ -275,11 +275,11 @@ for:
                 --tag="${CI_BRANCH}-latest" \
                 --release-name="${CI_BRANCH}" \
                 --body="${GIT_COMMIT_LOG}" \
-                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.aarch64.rpm" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.arm64.rpm" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.aarch64.rpm";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.arm64.rpm";
               rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage";
               rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb";
               rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz";
