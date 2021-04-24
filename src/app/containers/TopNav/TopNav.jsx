@@ -385,6 +385,7 @@ class TopNav extends Component {
                     <Text
                       color={hovered ? '#fff' : '#9d9d9d'}
                       fontSize="50%"
+                      whiteSpace="nowrap"
                     >
                       {settings.version}
                     </Text>
