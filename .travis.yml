@@ -62,6 +62,9 @@ before_script:
 
 script:
   - |
+    npm run clean
+    npm run lint
+    npm run test
     if [[ -z "$TRAVIS_TAG" ]]; then
       npm run build-latest
     else

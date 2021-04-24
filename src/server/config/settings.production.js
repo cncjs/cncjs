@@ -1,8 +1,16 @@
+import crypto from 'crypto';
 import os from 'os';
 import path from 'path';
+import pkg from '../../package.json';
 import urljoin from '../lib/urljoin';
 
-const publicPath = global.PUBLIC_PATH || ''; // see gulp/task/app.js
+const publicPath = ((payload) => {
+    const algorithm = 'sha1';
+    const buf = String(payload);
+    const hash = crypto.createHash(algorithm).update(buf).digest('hex');
+    return '/' + hash.substr(0, 8) + '/'; // 8 digits
+})(pkg.version);
+
 const maxAge = (365 * 24 * 60 * 60 * 1000); // one year
 
 export default {
