@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=$(TZ=UTC date +'%Y%m%d')-${CI_COMMIT_SHORT:-latest}
+VERSION=${npm_package_version}-$(TZ=UTC date +'%Y%m%d')-${CI_COMMIT_SHORT:-latest}
 
 mkdir -p dist
 rm -rf dist/*
