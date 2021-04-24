@@ -72,17 +72,17 @@ for:
           cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.dmg" "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}.dmg"
           ls -al releases/macos/*
           if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" ]]; then
-            yarn github-release -- delete \
+            yarn github-release delete \
               --owner=cncjs \
               --repo=cncjs \
               --tag="${CI_BRANCH}-latest" \
-              --name="${CI_BRANCH}" \
+              --release-name="${CI_BRANCH}" \
               "*.dmg";
-            yarn github-release -- upload \
+            yarn github-release upload \
               --owner=cncjs \
               --repo=cncjs \
               --tag="${CI_BRANCH}-latest" \
-              --name="${CI_BRANCH}" \
+              --release-name="${CI_BRANCH}" \
               --body="${GIT_COMMIT_LOG}" \
               "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}.dmg";
             rm -f "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}.dmg";
@@ -173,7 +173,7 @@ for:
           popd;
           ls -al releases/linux/*
           if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" ]]; then
-            yarn github-release -- delete \
+            yarn github-release delete \
               --owner=cncjs \
               --repo=cncjs \
               --tag="${CI_BRANCH}-latest" \
@@ -182,7 +182,7 @@ for:
               "*-linux-i386.deb" \
               "*-linux.i686.rpm" \
               "*-linux-ia32.tar.gz";
-            yarn github-release -- upload \
+            yarn github-release upload \
               --owner=cncjs \
               --repo=cncjs \
               --tag="${CI_BRANCH}-latest" \
@@ -216,20 +216,20 @@ for:
           popd
           ls -al releases/linux/*
           if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" ]]; then
-            yarn github-release -- delete \
+            yarn github-release delete \
               --owner=cncjs \
               --repo=cncjs \
               --tag="${CI_BRANCH}-latest" \
-              --name="${CI_BRANCH}" \
+              --release-name="${CI_BRANCH}" \
               "*-linux-x86_64.AppImage" \
               "*-linux-amd64.deb" \
               "*-linux.x86_64.rpm" \
               "*-linux-x64.tar.gz";
-            yarn github-release -- upload \
+            yarn github-release upload \
               --owner=cncjs \
               --repo=cncjs \
               --tag="${CI_BRANCH}-latest" \
-              --name="${CI_BRANCH}" \
+              --release-name="${CI_BRANCH}" \
               --body="${GIT_COMMIT_LOG}" \
               "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage" \
               "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb" \
@@ -316,8 +316,8 @@ for:
           Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-x64.exe"
           Get-ChildItem releases\windows
           if ($env:CI_BRANCH -eq 'master' -And -not $env:CI_TAG) {
-            yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-x64.exe"
-            yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-x64.exe"
+            yarn github-release delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-x64.exe"
+            yarn github-release upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-x64.exe"
             Remove-Item "releases\${PACKAGE_NAME}-${PACKAGE_VERSION}-x64.exe"
           }
       - ps: |
@@ -331,8 +331,8 @@ for:
           Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-ia32.exe"
           Get-ChildItem releases\windows
           if ($env:CI_BRANCH -eq 'master' -And -not $env:CI_TAG) {
-            yarn github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-ia32.exe"
-            yarn github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-ia32.exe"
+            yarn github-release delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-ia32.exe"
+            yarn github-release upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-ia32.exe"
             Remove-Item "releases\${PACKAGE_NAME}-${PACKAGE_VERSION}-ia32.exe"
           }
 
