@@ -49,7 +49,6 @@ for:
 
     init:
       - uname -a
-      - uname -i
       - git --version
       - git config --global core.autocrlf false
       - git config --global user.name "AppVeyor"
@@ -315,7 +314,6 @@ for:
 
     init:
       - uname -a
-      - uname -i
       - git --version
       - git config --global core.autocrlf false
       - git config --global user.name "AppVeyor"
@@ -361,7 +359,7 @@ for:
             PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
             PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
             PRODUCT_NAME=CNCjs
-            yarn build:mac-x64
+            yarn build:macos-x64
             ls -al output output/*
             mkdir -p releases/macos
             cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.dmg" "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg"
@@ -456,7 +454,7 @@ for:
             $PACKAGE_VERSION = node -e "console.log(require('./src/package.json').version)"
             $PRODUCT_NAME = "CNCjs"
             mkdir -Force -Path releases\windows
-            yarn build:win-x64
+            yarn build:windows-x64
             Get-ChildItem output
             Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
             Get-ChildItem releases\windows
@@ -473,7 +471,7 @@ for:
             $PACKAGE_VERSION = node -e "console.log(require('./src/package.json').version)"
             $PRODUCT_NAME = "CNCjs"
             mkdir -Force -Path releases\windows
-            yarn build:win-ia32
+            yarn build:windows-ia32
             Get-ChildItem output
             Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
             Get-ChildItem releases\windows
