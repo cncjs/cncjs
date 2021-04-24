@@ -7,7 +7,8 @@ rm -rf dist/*
 
 pushd src
 mkdir -p ../dist/cncjs/
-sed -i 's/\("version":\s*\)".*"/\1"'$VERSION'"/' package.json
+sed 's/\("version":\s*\)".*"/\1"'$VERSION'"/' package.json > package.json.new
+mv -f package.json.new package.json
 cp -af package.json ../dist/cncjs/
 cross-env NODE_ENV=production babel "*.js" \
     --config-file ../babel.config.js \
