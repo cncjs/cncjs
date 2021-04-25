@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Flex,
@@ -165,17 +166,24 @@ const Macro = ({
 
           if (isLoading && !data) {
             return (
-              <Text>
-                {i18n._('Loading...')}
-              </Text>
+              <Box px="3x" py="2x">
+                <Text color={secondaryColor}>
+                  {i18n._('Loading...')}
+                </Text>
+              </Box>
             );
           }
 
           if (isFailure) {
             return (
-              <Text color="text.danger">
-                {i18n._('An error occurred while fetching data.')}
-              </Text>
+              <Alert severity="error">
+                <Box mb="1x">
+                  <Text fontWeight="bold">{i18n._('Error')}</Text>
+                </Box>
+                <Text mr={-36}>
+                  {i18n._('An error occurred while fetching data.')}
+                </Text>
+              </Alert>
             );
           }
 
@@ -183,9 +191,11 @@ const Macro = ({
           const isEmpty = macros.length === 0;
           if (isEmpty) {
             return (
-              <Text color={secondaryColor} px="3x" py="2x">
-                {i18n._('No macros available')}
-              </Text>
+              <Box px="3x" py="2x">
+                <Text color={secondaryColor}>
+                  {i18n._('No macros available')}
+                </Text>
+              </Box>
             );
           }
 

@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Space,
   Text,
@@ -12,11 +13,15 @@ import _includes from 'lodash/includes';
 import _isEqual from 'lodash/isEqual';
 import _set from 'lodash/set';
 import memoize from 'micro-memoize';
-import React, { useEffect, useRef } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
 import Select, { components as SelectComponents } from 'react-select';
-import { Transition, TransitionGroup } from 'react-transition-group';
+import { useTransition, animated } from 'react-spring';
 import * as connectionActions from 'app/actions/connection';
 import * as serialportActions from 'app/actions/serialport';
 import { Button, ButtonGroup } from 'app/components/Buttons';
@@ -29,7 +34,6 @@ import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Modal, { useModal } from 'app/components/Modal';
 import ModalTemplate from 'app/components/ModalTemplate';
-import { Notification } from 'app/components/Notifications';
 import { useToast } from 'app/components/ToastManager';
 import {
   GRBL,
@@ -137,6 +141,118 @@ const getMemoizedInitialValues = memoize((options) => {
   isEqual: _isEqual,
 });
 
+const ToastMessage = ({
+  position = 'top',
+  onRequestClose = () => {},
+  duration = 5000,
+  children,
+}) => {
+  const container = useRef(null);
+  const timerId = useRef(null);
+  const isFromTop =
+    position === 'top' ||
+    position === 'top-left' ||
+    position === 'top-right';
+  const [show, setShow] = useState(true);
+  const transitions = useTransition(show, {
+    from: {
+      opacity: 0,
+      height: 0,
+      transform: `translateY(${isFromTop ? '-100%' : 0}) scale(1)`,
+    },
+    enter: () => (next) => {
+      return next({
+        opacity: 1,
+        height: container.current?.getBoundingClientRect().height,
+        transform: 'translateY(0) scale(1)',
+      });
+    },
+    leave: {
+      opacity: 0,
+      height: 0,
+      transform: 'translateY(0) scale(0.9)',
+    },
+    config: {
+      duration: 150,
+    },
+    onRest: () => {
+      if (!show) {
+        onRequestClose();
+      }
+    },
+  });
+  useEffect(() => {
+    if (timerId.current) {
+      clearTimeout(timerId.current);
+      timerId.current = null;
+    }
+
+    timerId.current = setTimeout(() => {
+      setShow(false);
+    }, duration);
+
+    return () => {
+      clearTimeout(timerId.current);
+      timerId.current = null;
+    };
+  }, [duration]);
+  const onMouseEnter = () => {
+    if (timerId.current) {
+      clearTimeout(timerId.current);
+      timerId.current = null;
+    }
+  };
+  const onMouseLeave = () => {
+    timerId.current = setTimeout(() => {
+      setShow(false);
+    }, duration);
+  };
+  const requestClose = () => {
+    setShow(false);
+  };
+  const style = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: (() => {
+      if (position.includes('left')) {
+        return 'flex-start';
+      }
+      if (position.includes('right')) {
+        return 'flex-end';
+      }
+      return 'center';
+    })(),
+  };
+
+  return (
+    <>
+      {transitions(({ opacity, height, transform }, item) => (
+        item && (
+          <animated.div
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            style={{
+              opacity: opacity,
+              height: height,
+              ...style
+            }}
+          >
+            <animated.div
+              style={{
+                transform: transform,
+                pointerEvents: 'auto',
+              }}
+              ref={container}
+            >
+              {typeof children === 'function' ? children({ requestClose }) : children}
+            </animated.div>
+          </animated.div>
+        )
+      ))}
+    </>
+  );
+};
+
 const Connection = ({
   connection,
   isConnected,
@@ -183,14 +299,14 @@ const Connection = ({
 
     if (connection.type === CONNECTION_TYPE_SERIAL) {
       addToast({
-        type: 'error',
-        title: (<strong>{i18n._('Error opening serial port')}</strong>),
+        severity: 'error',
+        title: i18n._('Error opening serial port'),
         message: connection.error,
       });
     } else if (connection.type === CONNECTION_TYPE_SOCKET) {
       addToast({
-        type: 'error',
-        title: (<strong>{i18n._('Error opening socket')}</strong>),
+        severity: 'error',
+        title: i18n._('Error opening socket'),
         message: connection.error,
       });
     }
@@ -282,34 +398,38 @@ const Connection = ({
 
   return (
     <>
-      <TransitionGroup>
+      <Box>
         {toasts.map(toast => {
           const { id, meta } = toast;
-          const { type, title, message } = { ...meta };
-          const onDismiss = () => removeToast(id);
-          const duration = 150; // in ms
+          const { severity, title, message } = { ...meta };
 
           return (
-            <Transition key={id} in={true} timeout={duration}>
-              {state => {
-                const show = (state === 'entered');
-
+            <ToastMessage
+              position="bottom"
+              onRequestClose={() => {
+                removeToast(id);
+              }}
+            >
+              {({ requestClose }) => {
                 return (
-                  <Notification
-                    show={show}
-                    type={type}
-                    autoDismiss={5000}
-                    onDismiss={onDismiss}
+                  <Alert
+                    isCloseButtonVisible
+                    onClose={requestClose}
+                    severity={severity}
                   >
-                    <div>{title}</div>
-                    <div>{message}</div>
-                  </Notification>
+                    <Box mb="1x">
+                      <Text fontWeight="bold">{title}</Text>
+                    </Box>
+                    <Text mr={-36}>
+                      {message}
+                    </Text>
+                  </Alert>
                 );
               }}
-            </Transition>
+            </ToastMessage>
           );
         })}
-      </TransitionGroup>
+      </Box>
       <Container
         fluid
         style={{

@@ -75,7 +75,11 @@ const App = ({
               mb="12x"
               mx="4x"
             >
-              <Toast appearance={severity} onClose={onClose}>
+              <Toast
+                severity={severity}
+                isCloseButtonVisible={true}
+                onClose={onClose}
+              >
                 {render()}
               </Toast>
             </ToastLayout>
