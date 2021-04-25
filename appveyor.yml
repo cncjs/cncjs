@@ -4,10 +4,10 @@ version: "{build}-{branch}"
 
 environment:
   matrix:
-    #- job_name: Linux build (i386)
-    #  appveyor_build_worker_image: Ubuntu
-    #  nodejs_version: "12"
-    #  ARCH: i386
+    - job_name: Linux build (i386)
+      appveyor_build_worker_image: Ubuntu
+      nodejs_version: "12"
+      ARCH: i386
     - job_name: Linux build (amd64)
       appveyor_build_worker_image: Ubuntu2004
       nodejs_version: "12"
@@ -41,7 +41,7 @@ for:
   -
     matrix:
       only:
-        #- job_name: Linux build (i386)
+        - job_name: Linux build (i386)
         - job_name: Linux build (amd64)
         - job_name: Linux build (arm)
         - job_name: Linux build (arm64)
@@ -84,7 +84,7 @@ for:
       - sudo dpkg --print-architecture
       - sudo dpkg --add-architecture arm64
       - sudo dpkg --add-architecture armhf
-      #- sudo dpkg --add-architecture i386
+      - sudo dpkg --add-architecture i386
       - sudo dpkg --print-foreign-architectures
       - sudo apt-get update
       - sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
@@ -144,10 +144,10 @@ for:
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.AppImage" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.deb" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32.tar.gz";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.i686.rpm";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.AppImage";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.deb";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32.tar.gz";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.i686.rpm";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.AppImage";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.deb";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32.tar.gz";
             fi
           fi
       - sh: |
@@ -189,10 +189,10 @@ for:
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
             fi
           fi
       - sh: |
@@ -234,10 +234,10 @@ for:
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.AppImage" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.deb" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.tar.gz";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.armv7l.rpm";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.AppImage";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.deb";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.tar.gz";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.armv7l.rpm";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.AppImage";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.deb";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.tar.gz";
             fi
           fi
       - sh: |
@@ -279,10 +279,10 @@ for:
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.arm64.rpm";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.arm64.rpm";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz";
             fi
           fi
 
@@ -378,7 +378,7 @@ for:
                 --release-name="${CI_BRANCH}" \
                 --body="${GIT_COMMIT_LOG}" \
                 "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg";
-              rm -f "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg";
+              #rm -f "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg";
             fi
           fi
 
@@ -459,9 +459,20 @@ for:
             Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
             Get-ChildItem releases\windows
             if ($env:CI_BRANCH -eq "master" -And -not $env:CI_TAG) {
-              yarn github-release delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-windows-x64.exe"
-              yarn github-release upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
-              Remove-Item "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
+              yarn github-release delete `
+                --owner=cncjs `
+                --repo=cncjs `
+                --tag="${env:CI_BRANCH}-latest" `
+                --release-name="${env:CI_BRANCH}" `
+                "*-windows-x64.exe"
+              yarn github-release upload `
+                --owner=cncjs `
+                --repo=cncjs `
+                --tag="${env:CI_BRANCH}-latest" `
+                --release-name="${env:CI_BRANCH}" `
+                --body="${GIT_COMMIT_LOG}" `
+                "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
+              #Remove-Item "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
             }
           }
       - ps: |
@@ -476,9 +487,20 @@ for:
             Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
             Get-ChildItem releases\windows
             if ($env:CI_BRANCH -eq "master" -And -not $env:CI_TAG) {
-              yarn github-release delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-windows-x86.exe"
-              yarn github-release upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
-              Remove-Item "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
+              yarn github-release delete `
+                --owner=cncjs `
+                --repo=cncjs `
+                --tag="${env:CI_BRANCH}-latest" `
+                --release-name="${env:CI_BRANCH}" `
+                "*-windows-x86.exe"
+              yarn github-release upload `
+                --owner=cncjs `
+                --repo=cncjs `
+                --tag="${env:CI_BRANCH}-latest" `
+                --release-name="${env:CI_BRANCH}" `
+                --body="${GIT_COMMIT_LOG}" `
+                "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
+              #Remove-Item "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
             }
           }
 
