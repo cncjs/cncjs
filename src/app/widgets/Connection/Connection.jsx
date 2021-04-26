@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Space,
   Text,
@@ -16,7 +17,6 @@ import React, { useEffect, useRef } from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
 import Select, { components as SelectComponents } from 'react-select';
-import { Transition, TransitionGroup } from 'react-transition-group';
 import * as connectionActions from 'app/actions/connection';
 import * as serialportActions from 'app/actions/serialport';
 import { Button, ButtonGroup } from 'app/components/Buttons';
@@ -29,7 +29,6 @@ import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Modal, { useModal } from 'app/components/Modal';
 import ModalTemplate from 'app/components/ModalTemplate';
-import { Notification } from 'app/components/Notifications';
 import { useToast } from 'app/components/ToastManager';
 import {
   GRBL,
@@ -165,12 +164,8 @@ const Connection = ({
   const isSocketConnectionReady = true;
 
   // Toast notification
-  const {
-    addToast,
-    removeToast,
-    clearToasts,
-    toasts,
-  } = useToast();
+  const toast = useToast();
+  const { toasts } = toast.state;
 
   useEffect(() => {
     if (!connection.error) {
@@ -178,21 +173,21 @@ const Connection = ({
     }
 
     if (toasts.length > 0) {
-      clearToasts();
+      toast.remove();
     }
 
     if (connection.type === CONNECTION_TYPE_SERIAL) {
-      addToast({
-        type: 'error',
-        title: (<strong>{i18n._('Error opening serial port')}</strong>),
+      toast.notify({
+        severity: 'error',
+        title: i18n._('Error opening serial port'),
         message: connection.error,
-      });
+      }, { duration: 5000 });
     } else if (connection.type === CONNECTION_TYPE_SOCKET) {
-      addToast({
-        type: 'error',
-        title: (<strong>{i18n._('Error opening socket')}</strong>),
+      toast.notify({
+        severity: 'error',
+        title: i18n._('Error opening socket'),
         message: connection.error,
-      });
+      }, { duration: 5000 });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connection.error]);
@@ -282,34 +277,25 @@ const Connection = ({
 
   return (
     <>
-      <TransitionGroup>
-        {toasts.map(toast => {
-          const { id, meta } = toast;
-          const { type, title, message } = { ...meta };
-          const onDismiss = () => removeToast(id);
-          const duration = 150; // in ms
+      {toasts.map(toast => {
+        const { severity, title, message } = toast.context;
+        const onClose = () => toast.remove();
 
-          return (
-            <Transition key={id} in={true} timeout={duration}>
-              {state => {
-                const show = (state === 'entered');
-
-                return (
-                  <Notification
-                    show={show}
-                    type={type}
-                    autoDismiss={5000}
-                    onDismiss={onDismiss}
-                  >
-                    <div>{title}</div>
-                    <div>{message}</div>
-                  </Notification>
-                );
-              }}
-            </Transition>
-          );
-        })}
-      </TransitionGroup>
+        return (
+          <Alert
+            severity={severity}
+            isCloseButtonVisible
+            onClose={onClose}
+          >
+            <Box mb="1x" >
+              <Text fontWeight="bold">{title}</Text>
+            </Box>
+            <Text mr={-36}>
+              {message}
+            </Text>
+          </Alert>
+        );
+      })}
       <Container
         fluid
         style={{

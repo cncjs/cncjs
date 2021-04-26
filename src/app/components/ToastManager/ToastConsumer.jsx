@@ -1,7 +1,7 @@
 import React from 'react';
 import { ToastContext } from './context';
 
-const ToastRenderer = ({
+const ToastConsumer = ({
   context: Context = ToastContext,
   children,
 }) => (
@@ -10,4 +10,4 @@ const ToastRenderer = ({
   </Context.Consumer>
 );
 
-export default ToastRenderer;
+export default ToastConsumer;

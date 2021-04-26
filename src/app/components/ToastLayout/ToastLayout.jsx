@@ -1,15 +1,14 @@
 import {
   Box,
   useColorMode,
+  useColorStyle,
 } from '@trendmicro/react-styled-ui';
 import React from 'react';
 
 const ToastLayout = (props) => {
-  const { colorMode } = useColorMode();
-  const boxShadow = {
-    dark: 'dark.sm',
-    light: 'light.sm',
-  }[colorMode];
+  const [colorMode] = useColorMode();
+  const [colorStyle] = useColorStyle({ colorMode });
+  const boxShadow = colorStyle?.shadow?.thin;
 
   return (
     <Box

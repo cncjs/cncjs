@@ -6,17 +6,10 @@ const useToast = (options) => {
   const context = useContext(Context);
 
   if (!context) {
-    throw new Error('The `useToast` hook must be called from a descendent of the `ToastManager`.');
+    throw new Error('The `useToast` hook must be called from a descendent of the `ToastProvider`.');
   }
 
-  const { toasts, addToast, removeToast, clearToasts } = context;
-
-  return {
-    toasts,
-    addToast,
-    removeToast,
-    clearToasts,
-  };
+  return context;
 };
 
 export default useToast;
