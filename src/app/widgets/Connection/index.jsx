@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { ModalProvider, ModalRoot } from 'app/components/Modal';
-import { ToastManager } from 'app/components/ToastManager';
+import { ToastProvider } from 'app/components/ToastManager';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
 import WidgetConfig from 'app/widgets/shared/WidgetConfig';
@@ -128,9 +128,9 @@ class ConnectionWidget extends Component {
                   display: (minimized ? 'none' : 'block'),
                 }}
               >
-                <ToastManager>
+                <ToastProvider>
                   <Connection />
-                </ToastManager>
+                </ToastProvider>
               </Widget.Content>
             </Widget>
           </ModalProvider>

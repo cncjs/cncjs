@@ -1,9 +1,11 @@
-import ToastManager from './ToastManager';
-import ToastRenderer from './ToastRenderer';
+import ToastProvider from './ToastProvider';
+import ToastConsumer from './ToastConsumer';
 import useToast from './useToast';
 
 export {
-  ToastManager,
-  ToastRenderer,
+  ToastProvider,
+  ToastConsumer,
+  //ToastContainer,
+  //ToastController,
   useToast,
 };

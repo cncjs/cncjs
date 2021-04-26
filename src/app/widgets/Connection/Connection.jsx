@@ -281,12 +281,8 @@ const Connection = ({
   const isSocketConnectionReady = true;
 
   // Toast notification
-  const {
-    addToast,
-    removeToast,
-    clearToasts,
-    toasts,
-  } = useToast();
+  const toast = useToast();
+  const { toasts } = toast.state;
 
   useEffect(() => {
     if (!connection.error) {
@@ -294,21 +290,21 @@ const Connection = ({
     }
 
     if (toasts.length > 0) {
-      clearToasts();
+      toast.remove();
     }
 
     if (connection.type === CONNECTION_TYPE_SERIAL) {
-      addToast({
+      toast.notify({
         severity: 'error',
         title: i18n._('Error opening serial port'),
         message: connection.error,
-      });
+      }, { duration: 5000 });
     } else if (connection.type === CONNECTION_TYPE_SOCKET) {
-      addToast({
+      toast.notify({
         severity: 'error',
         title: i18n._('Error opening socket'),
         message: connection.error,
-      });
+      }, { duration: 5000 });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connection.error]);
@@ -400,14 +396,13 @@ const Connection = ({
     <>
       <Box>
         {toasts.map(toast => {
-          const { id, meta } = toast;
-          const { severity, title, message } = { ...meta };
+          const { severity, title, message } = toast.context;
 
           return (
             <ToastMessage
               position="bottom"
               onRequestClose={() => {
-                removeToast(id);
+                toast.remove();
               }}
             >
               {({ requestClose }) => {
