@@ -141,29 +141,104 @@ const getMemoizedInitialValues = memoize((options) => {
   isEqual: _isEqual,
 });
 
-const ToastMessage = ({
-  position = 'top',
-  onRequestClose = () => {},
-  duration = 5000,
+/*
+const Dismissible = ({
+  dismissOnTimeout = 0,
+  onShow,
+  onDismiss,
   children,
 }) => {
-  const container = useRef(null);
-  const timerId = useRef(null);
-  const isFromTop =
-    position === 'top' ||
-    position === 'top-left' ||
-    position === 'top-right';
-  const [show, setShow] = useState(true);
-  const transitions = useTransition(show, {
+  const containerRef = useRef(null);
+  const timerIdRef = useRef(null);
+  const [isShow, setShow] = useState(true);
+
+  useEffect(() => {
+    if (isShow && typeof onShow === 'function') {
+      onShow();
+    }
+    if (!isShow && typeof onDismiss === 'function') {
+      onDismiss();
+    }
+  }, [isShow, onShow, onDismiss]);
+
+  useEffect(() => {
+    if (timerIdRef.current) {
+      clearTimeout(timerIdRef.current);
+      timerIdRef.current = null;
+    }
+
+    if (dismissOnTimeout > 0) {
+      timerIdRef.current = setTimeout(() => {
+        setShow(false);
+      }, dismissOnTimeout);
+    }
+
+    return () => {
+      if (timerIdRef.current) {
+        clearTimeout(timerIdRef.current);
+        timerIdRef.current = null;
+      }
+    };
+  }, [dismissOnTimeout]);
+  const onMouseEnter = () => {
+    if (timerIdRef.current) {
+      clearTimeout(timerIdRef.current);
+      timerIdRef.current = null;
+    }
+  };
+  const onMouseLeave = () => {
+    if (timerIdRef.current) {
+      clearTimeout(timerIdRef.current);
+      timerIdRef.current = null;
+    }
+
+    if (dismissOnTimeout > 0) {
+      timerIdRef.current = setTimeout(() => {
+        setShow(false);
+      }, dismissOnTimeout);
+    }
+  };
+  const show = () => {
+    setShow(true);
+  };
+  const dismiss = () => {
+    setShow(false);
+  };
+
+  return (
+    <Box
+      ref={containerRef}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      pointerEvents="auto"
+    >
+      {typeof children === 'function' ? children({ isShow, show, dismiss }) : children}
+    </Box>
+  );
+};
+*/
+
+const DismissibleTransition = ({
+  dismissOnTimeout = 0,
+  onShowStart = () => {}, // Triggered when the show animation start.
+  onShowEnd = () => {}, // Triggered when the show animation finish.
+  onDismissStart = () => {}, // Triggered when the dismiss animation start.
+  onDismissEnd = () => {}, // Triggered when the dismiss animation finish.
+  children,
+}) => {
+  const containerRef = useRef(null);
+  const timerIdRef = useRef(null);
+  const [isShow, setShow] = useState(true);
+  const transitions = useTransition(isShow, {
     from: {
       opacity: 0,
       height: 0,
-      transform: `translateY(${isFromTop ? '-100%' : 0}) scale(1)`,
+      transform: 'translateY(0) scale(1)',
     },
     enter: () => (next) => {
       return next({
         opacity: 1,
-        height: container.current?.getBoundingClientRect().height,
+        height: containerRef.current?.getBoundingClientRect().height,
         transform: 'translateY(0) scale(1)',
       });
     },
@@ -175,53 +250,63 @@ const ToastMessage = ({
     config: {
       duration: 150,
     },
+    onStart: () => {
+      if (isShow) {
+        onShowStart();
+      } else {
+        onDismissStart();
+      }
+    },
     onRest: () => {
-      if (!show) {
-        onRequestClose();
+      if (isShow) {
+        onShowEnd();
+      } else {
+        onDismissEnd();
       }
     },
   });
   useEffect(() => {
-    if (timerId.current) {
-      clearTimeout(timerId.current);
-      timerId.current = null;
+    if (timerIdRef.current) {
+      clearTimeout(timerIdRef.current);
+      timerIdRef.current = null;
     }
 
-    timerId.current = setTimeout(() => {
-      setShow(false);
-    }, duration);
+    if (dismissOnTimeout > 0) {
+      timerIdRef.current = setTimeout(() => {
+        setShow(false);
+      }, dismissOnTimeout);
+    }
 
     return () => {
-      clearTimeout(timerId.current);
-      timerId.current = null;
+      if (timerIdRef.current) {
+        clearTimeout(timerIdRef.current);
+        timerIdRef.current = null;
+      }
     };
-  }, [duration]);
+  }, [dismissOnTimeout]);
   const onMouseEnter = () => {
-    if (timerId.current) {
-      clearTimeout(timerId.current);
-      timerId.current = null;
+    if (timerIdRef.current) {
+      clearTimeout(timerIdRef.current);
+      timerIdRef.current = null;
     }
   };
   const onMouseLeave = () => {
-    timerId.current = setTimeout(() => {
-      setShow(false);
-    }, duration);
+    if (timerIdRef.current) {
+      clearTimeout(timerIdRef.current);
+      timerIdRef.current = null;
+    }
+
+    if (dismissOnTimeout > 0) {
+      timerIdRef.current = setTimeout(() => {
+        setShow(false);
+      }, dismissOnTimeout);
+    }
   };
-  const requestClose = () => {
+  const show = () => {
+    setShow(true);
+  };
+  const dismiss = () => {
     setShow(false);
-  };
-  const style = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: (() => {
-      if (position.includes('left')) {
-        return 'flex-start';
-      }
-      if (position.includes('right')) {
-        return 'flex-end';
-      }
-      return 'center';
-    })(),
   };
 
   return (
@@ -232,19 +317,18 @@ const ToastMessage = ({
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
             style={{
-              opacity: opacity,
-              height: height,
-              ...style
+              height,
+              opacity,
             }}
           >
             <animated.div
+              ref={containerRef}
               style={{
-                transform: transform,
+                transform,
                 pointerEvents: 'auto',
               }}
-              ref={container}
             >
-              {typeof children === 'function' ? children({ requestClose }) : children}
+              {typeof children === 'function' ? children({ isShow, show, dismiss }) : children}
             </animated.div>
           </animated.div>
         )
@@ -290,7 +374,7 @@ const Connection = ({
     }
 
     if (toasts.length > 0) {
-      toast.remove();
+      toast.closeAll();
     }
 
     if (connection.type === CONNECTION_TYPE_SERIAL) {
@@ -399,29 +483,31 @@ const Connection = ({
           const { severity, title, message } = toast.context;
 
           return (
-            <ToastMessage
-              position="bottom"
-              onRequestClose={() => {
-                toast.remove();
-              }}
-            >
-              {({ requestClose }) => {
-                return (
-                  <Alert
-                    isCloseButtonVisible
-                    onClose={requestClose}
-                    severity={severity}
-                  >
-                    <Box mb="1x">
-                      <Text fontWeight="bold">{title}</Text>
-                    </Box>
-                    <Text mr={-36}>
-                      {message}
-                    </Text>
-                  </Alert>
-                );
-              }}
-            </ToastMessage>
+            <Box key={toast.id}>
+              <DismissibleTransition
+                dismissOnTimeout={toast.duration}
+                onDismissEnd={() => {
+                  toast.close();
+                }}
+              >
+                {({ isShow, show, dismiss }) => {
+                  return (
+                    <Alert
+                      isCloseButtonVisible
+                      onClose={dismiss}
+                      severity={severity}
+                    >
+                      <Box mb="1x">
+                        <Text fontWeight="bold">{title}</Text>
+                      </Box>
+                      <Text mr={-36}>
+                        {message}
+                      </Text>
+                    </Alert>
+                  );
+                }}
+              </DismissibleTransition>
+            </Box>
           );
         })}
       </Box>

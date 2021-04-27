@@ -23,9 +23,8 @@ const ToastProvider = ({
   const idCounterRef = useRef(0);
   const [state, setState] = useState(initialState);
 
-  const remove = useCallback(id => {
-    if (id === undefined) {
-      setState(initialState);
+  const close = useCallback(id => {
+    if (id === undefined || id === null) {
       return;
     }
 
@@ -36,6 +35,10 @@ const ToastProvider = ({
         toasts: toasts.filter(toast => (toast.id !== id)),
       };
     });
+  }, []);
+
+  const closeAll = useCallback(() => {
+    setState(initialState);
   }, []);
 
   /**
@@ -55,9 +58,7 @@ const ToastProvider = ({
       duration,
       position,
       order,
-      remove: () => {
-        remove(id);
-      },
+      close: () => close(id),
     };
     setState(prevState => ({
       ...prevState,
@@ -75,47 +76,13 @@ const ToastProvider = ({
           : [...toasts, toast];
       })(),
     }));
-  }, [remove]);
-
-  const close = useCallback(id => {
-    setState(prevState => {
-      const toasts = ensureArray(prevState?.toasts);
-      return {
-        ...prevState,
-        toasts: toasts.map(toast => {
-          if (toast.id !== id) {
-            return toast;
-          }
-          return {
-            ...toast,
-            isClosing: true,
-          };
-        }),
-      };
-    });
-  }, []);
-
-  const closeAll = useCallback(() => {
-    setState(prevState => {
-      const toasts = ensureArray(prevState?.toasts);
-      return {
-        ...prevState,
-        toasts: toasts.map(toast => {
-          return {
-            ...toast,
-            isClosing: true,
-          };
-        }),
-      };
-    });
-  }, []);
+  }, [close]);
 
   const memoizedValue = getMemoizedValue({
     state,
-    notify,
-    remove,
     close,
     closeAll,
+    notify,
   });
 
   return (
