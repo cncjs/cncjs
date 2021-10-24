@@ -10,12 +10,11 @@ ENV PATH $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
 
 RUN apt-get update -y && apt-get install -y -q --no-install-recommends \
   apt-utils \
+  build-essential \
   ca-certificates \
   python-pip \
   curl \
   git \
-  make \
-  g++ \
   udev
 
 RUN git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR" \
