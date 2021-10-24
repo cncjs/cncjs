@@ -3,7 +3,7 @@
 require('@babel/polyfill');
 
 const launchServer = (process.env.NODE_ENV === 'development')
-    ? require('../output/server-cli').default
+    ? require('../output/cncjs/server-cli').default
     : require('../dist/cncjs/server-cli').default;
 
 launchServer().catch(err => {
