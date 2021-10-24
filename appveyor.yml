@@ -34,7 +34,7 @@ environment:
       ARCH: x86
   global:
     GITHUB_TOKEN:
-      secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
+      secure: G9Qlv8MYhgvYlUxWWUiDdfIUTrKcia16HAdzkVydWqC+wo60XrC8nk1Q2R9WKGXx
 
 for:
   # Linux
@@ -298,7 +298,7 @@ for:
     deploy:
       - provider: GitHub
         auth_token:
-          secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
+          secure: G9Qlv8MYhgvYlUxWWUiDdfIUTrKcia16HAdzkVydWqC+wo60XrC8nk1Q2R9WKGXx
         draft: false
         prerelease: false
         on:
