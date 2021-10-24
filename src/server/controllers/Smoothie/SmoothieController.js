@@ -455,6 +455,32 @@ class SmoothieController {
             this.emit('serialport:read', res.raw);
         });
 
+        // Action commands
+        //
+        // ```
+        // //action:<command>
+        // ```
+        this.runner.on('action', (res) => {
+            log.debug(`action command: action:${res.message}`);
+
+            if (res.message === 'pause') {
+                this.workflow.pause({ data: 'action:pause' });
+                return;
+            }
+
+            if (res.message === 'resume') {
+                this.workflow.resume({ data: 'action:resume' });
+                return;
+            }
+
+            if (res.message === 'cancel') {
+                this.workflow.stop();
+                return;
+            }
+
+            log.error(`Unknown action command: action:${res.message}`);
+        });
+
         this.runner.on('parserstate', (res) => {
             this.actionMask.queryParserState.state = false;
             this.actionMask.queryParserState.reply = true;
@@ -1004,7 +1030,7 @@ class SmoothieController {
 
                 const activeState = _.get(this.state, 'status.activeState', '');
                 if (activeState === SMOOTHIE_ACTIVE_STATE_HOLD) {
-                    this.write('~'); // resume
+                    this.writeln('resume'); // resume
                 }
             },
             'pause': () => {
@@ -1016,7 +1042,7 @@ class SmoothieController {
 
                 this.workflow.pause();
 
-                this.write('!');
+                this.writeln('suspend');
             },
             'resume': () => {
                 log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
@@ -1025,7 +1051,7 @@ class SmoothieController {
             'gcode:resume': () => {
                 this.event.trigger('gcode:resume');
 
-                this.write('~');
+                this.writeln('resume');
 
                 this.workflow.resume();
             },
@@ -1037,7 +1063,7 @@ class SmoothieController {
                 if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                     return;
                 }
-                this.write('~');
+                this.writeln('resume');
                 this.feeder.unhold();
                 this.feeder.next();
             },
@@ -1047,12 +1073,12 @@ class SmoothieController {
             'feedhold': () => {
                 this.event.trigger('feedhold');
 
-                this.write('!');
+                this.writeln('suspend');
             },
             'cyclestart': () => {
                 this.event.trigger('cyclestart');
 
-                this.write('~');
+                this.writeln('resume');
             },
             'statusreport': () => {
                 this.write('?');

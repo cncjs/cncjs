@@ -2,6 +2,7 @@ import _ from 'lodash';
 import SmoothieLineParserResultStatus from './SmoothieLineParserResultStatus';
 import SmoothieLineParserResultOk from './SmoothieLineParserResultOk';
 import SmoothieLineParserResultError from './SmoothieLineParserResultError';
+import SmoothieLineParserResultAction from './SmoothieLineParserResultAction';
 import SmoothieLineParserResultAlarm from './SmoothieLineParserResultAlarm';
 import SmoothieLineParserResultParserState from './SmoothieLineParserResultParserState';
 import SmoothieLineParserResultParameters from './SmoothieLineParserResultParameters';
@@ -18,6 +19,9 @@ class SmoothieLineParser {
 
             // error:x
             SmoothieLineParserResultError,
+
+            // action:<command>
+            SmoothieLineParserResultAction,
 
             // ALARM:
             SmoothieLineParserResultAlarm,

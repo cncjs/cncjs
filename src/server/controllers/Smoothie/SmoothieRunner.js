@@ -4,6 +4,7 @@ import SmoothieLineParser from './SmoothieLineParser';
 import SmoothieLineParserResultStatus from './SmoothieLineParserResultStatus';
 import SmoothieLineParserResultOk from './SmoothieLineParserResultOk';
 import SmoothieLineParserResultError from './SmoothieLineParserResultError';
+import SmoothieLineParserResultAction from './SmoothieLineParserResultAction';
 import SmoothieLineParserResultAlarm from './SmoothieLineParserResultAlarm';
 import SmoothieLineParserResultParserState from './SmoothieLineParserResultParserState';
 import SmoothieLineParserResultParameters from './SmoothieLineParserResultParameters';
@@ -97,6 +98,10 @@ class SmoothieRunner extends events.EventEmitter {
             // https://nodejs.org/api/events.html#events_error_events
             // As a best practice, listeners should always be added for the 'error' events.
             this.emit('error', payload);
+            return;
+        }
+        if (type === SmoothieLineParserResultAction) {
+            this.emit('action', payload);
             return;
         }
         if (type === SmoothieLineParserResultAlarm) {
