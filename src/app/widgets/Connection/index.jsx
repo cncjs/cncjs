@@ -243,6 +243,7 @@ class ConnectionWidget extends PureComponent {
         const defaultBaudrates = [
             250000,
             115200,
+            76800,
             57600,
             38400,
             19200,
