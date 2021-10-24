@@ -4,11 +4,12 @@ mkdir -p output
 rm -rf output/*
 
 pushd src
-cp -af package.json ../output/
+mkdir -p ../output/cncjs/
+cp -af package.json ../output/cncjs/
 cross-env NODE_ENV=development babel "*.js" \
     --config-file ../babel.config.js \
-    --out-dir ../output
+    --out-dir ../output/cncjs
 cross-env NODE_ENV=development babel "electron-app/**/*.js" \
     --config-file ../babel.config.js \
-    --out-dir ../output/electron-app
+    --out-dir ../output/cncjs/electron-app
 popd

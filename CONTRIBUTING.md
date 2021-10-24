@@ -172,7 +172,7 @@ $ ls -al output/linux/
 
 ## Localization
 
-If you'd like to help contribute translations, you can fork the repository, update resource files in the [src/app/i18n](https://github.com/cncjs/cncjs/tree/master/src/app/i18n) directory, and create a pull request to submit your changes.
+If you'd like to help contribute translations, you can fork the repository, update resource files in the [src/app/i18n](https://github.com/cncjs/cncjs/tree/master/src/app/i18n) directory or in the [src/server/i18n](https://github.com/cncjs/cncjs/tree/master/src/server/i18n) directory, and create a pull request to submit your changes.
 
 ### Fork the repository
 
