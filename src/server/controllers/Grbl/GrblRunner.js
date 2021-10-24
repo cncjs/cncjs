@@ -209,6 +209,10 @@ class GrblRunner extends events.EventEmitter {
       return ensureFiniteNumber(_.get(state, 'parserstate.tool'));
     }
 
+    getParameters() {
+      return _.get(this.settings, 'parameters', {});
+    }
+
     isAlarm() {
       const machineState = _.get(this.state, 'status.machineState');
       return machineState === GRBL_MACHINE_STATE_ALARM;
