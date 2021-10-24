@@ -1,4 +1,6 @@
-export GrblController from './Grbl/GrblController';
-export MarlinController from './Marlin/MarlinController';
-export SmoothieController from './Smoothie/SmoothieController';
-export TinyGController from './TinyG/TinyGController';
+import GrblController from './Grbl/GrblController';
+import MarlinController from './Marlin/MarlinController';
+import SmoothieController from './Smoothie/SmoothieController';
+import TinyGController from './TinyG/TinyGController';
+
+export { GrblController, MarlinController, SmoothieController, TinyGController };

@@ -295,7 +295,8 @@ class Header extends PureComponent {
                                 style={{
                                     fontSize: '50%',
                                     lineHeight: '14px',
-                                    textAlign: 'center'
+                                    textAlign: 'center',
+                                    whiteSpace: 'nowrap',
                                 }}
                             >
                                 {settings.version}

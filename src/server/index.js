@@ -10,9 +10,11 @@ import expandTilde from 'expand-tilde';
 import express from 'express';
 import httpProxy from 'http-proxy';
 import escapeRegExp from 'lodash/escapeRegExp';
+import isEqual from 'lodash/isEqual';
 import set from 'lodash/set';
 import size from 'lodash/size';
 import trimEnd from 'lodash/trimEnd';
+import uniqWith from 'lodash/uniqWith';
 import webappengine from 'webappengine';
 import settings from './config/settings';
 import app from './app';
@@ -101,18 +103,20 @@ const createServer = (options, callback) => {
     }
 
     const { port = 0, host, backlog } = options;
-    const mountPoints = [
+    const mountPoints = uniqWith([
         ...ensureArray(options.mountPoints),
         ...ensureArray(config.get('mountPoints'))
-    ];
+    ], isEqual).filter(mount => {
+        if (!mount || !mount.route || mount.route === '/') {
+            log.error(`Must specify a valid route path ${JSON.stringify(mount.route)}.`);
+            return false;
+        }
+
+        return true;
+    });
     const routes = [];
 
     mountPoints.forEach(mount => {
-        if (!mount || !mount.route || mount.route === '/') {
-            log.error(`Must specify a valid route path ${JSON.stringify(mount.route)}.`);
-            return;
-        }
-
         if (ensureString(mount.target).match(/^(http|https):\/\//i)) {
             log.info(`Starting a proxy server to proxy all requests starting with ${chalk.yellow(mount.route)} to ${chalk.yellow(mount.target)}`);
 
@@ -235,21 +239,11 @@ const createServer = (options, callback) => {
 
             const address = server.address().address;
             const port = server.address().port;
-            const filteredRoutes = routes.reduce((acc, r) => {
-                const { type, route, directory } = r;
-                if (type === 'static') {
-                    acc.push({
-                        path: route,
-                        directory: directory
-                    });
-                }
-                return acc;
-            }, []);
 
             callback && callback(null, {
-                address: address,
-                port: port,
-                routes: filteredRoutes
+                address,
+                port,
+                mountPoints,
             });
 
             if (address !== '0.0.0.0') {

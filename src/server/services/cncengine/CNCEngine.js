@@ -209,9 +209,9 @@ class CNCEngine {
 
                         ports = ports.map(port => {
                             return {
-                                port: port.comName,
+                                port: port.path,
                                 manufacturer: port.manufacturer,
-                                inuse: portsInUse.indexOf(port.comName) >= 0
+                                inuse: portsInUse.indexOf(port.path) >= 0
                             };
                         });
 

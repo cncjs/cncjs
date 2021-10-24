@@ -1,119 +1,502 @@
-# http://www.appveyor.com/docs/appveyor-yml
-
-# https://www.appveyor.com/docs/build-environment/#build-worker-images
-image: Visual Studio 2017
+# https://stefanscherer.github.io/use-appveyor-to-build-multi-arch-docker-image/
 
 version: "{build}-{branch}"
 
-init:
-  - git --version
-  - git config --global core.autocrlf false
-  - git config --global user.name "AppVeyor"
-  - git config --global user.email "appveyor@ci.appveyor.com"
-
 environment:
   matrix:
-    - nodejs_version: "8"
-    - nodejs_version: "10"
+    #- job_name: Linux build (i386)
+    #  appveyor_build_worker_image: Ubuntu
+    #  nodejs_version: "12"
+    #  ARCH: i386
+    - job_name: Linux build (amd64)
+      appveyor_build_worker_image: Ubuntu2004
+      nodejs_version: "12"
+      ARCH: amd64
+    - job_name: Linux build (arm)
+      appveyor_build_worker_image: Ubuntu2004
+      nodejs_version: "12"
+      ARCH: arm
+    - job_name: Linux build (arm64)
+      appveyor_build_worker_image: Ubuntu2004
+      nodejs_version: "12"
+      ARCH: arm64
+    - job_name: macOS build (x64)
+      appveyor_build_worker_image: macos
+      nodejs_version: "12"
+      ARCH: x64
+    - job_name: Windows build (x64)
+      appveyor_build_worker_image: Visual Studio 2019
+      nodejs_version: "12"
+      ARCH: x64
+    - job_name: Windows build (x86)
+      appveyor_build_worker_image: Visual Studio 2019
+      nodejs_version: "12"
+      ARCH: x86
   global:
-    CI_BUILD_NUMBER: $(appveyor_build_number)
-    GH_TOKEN:
-      secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
     GITHUB_TOKEN:
-      secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
-#    CSC_LINK:
-#      secure: a+2xo1z15zej505BjOcL6iIaGEbVgJd4usmxpKZWUP4sI2tLvQdBLMOXdxr/KGzVBtMYKDHJcl3Xpv+iOUXeRjd4iplIZkkSaCUkE9mbccs=
-#    CSC_KEY_PASSWORD:
-#      secure: vysRX38PjZMwcrzs07Kn7w==
+      secure: G9Qlv8MYhgvYlUxWWUiDdfIUTrKcia16HAdzkVydWqC+wo60XrC8nk1Q2R9WKGXx
 
-matrix:
-  fast_finish: true
+for:
+  # Linux
+  -
+    matrix:
+      only:
+        #- job_name: Linux build (i386)
+        - job_name: Linux build (amd64)
+        - job_name: Linux build (arm)
+        - job_name: Linux build (arm64)
+      fast_finish: true
 
-platform:
-  - x64
+    init:
+      - uname -a
+      - git --version
+      - git config --global core.autocrlf false
+      - git config --global user.name "AppVeyor"
+      - git config --global user.email "appveyor@ci.appveyor.com"
+      - sh: |
+          export CI_BRANCH=$APPVEYOR_REPO_BRANCH
+          export CI_BUILD_NUMBER=$APPVEYOR_BUILD_NUMBER
+          export CI_COMMIT=$APPVEYOR_REPO_COMMIT
+          export CI_COMMIT_SHORT=${APPVEYOR_REPO_COMMIT:0:8}
+          export CI_COMMIT_TIMESTAMP=$APPVEYOR_REPO_COMMIT_TIMESTAMP
+          export CI_TAG=$APPVEYOR_REPO_TAG_NAME
+          echo "• ARCH=$ARCH"
+          echo "• CI_BRANCH=$CI_BRANCH"
+          echo "• CI_BUILD_NUMBER=$CI_BUILD_NUMBER"
+          echo "• CI_COMMIT=$CI_COMMIT"
+          echo "• CI_COMMIT_SHORT=$CI_COMMIT_SHORT"
+          echo "• CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP"
+          echo "• CI_TAG=$CI_TAG"
 
-install:
-  - ps: |
-      Write-Host "Build directory: " -NoNewLine
-      Write-Host $env:APPVEYOR_BUILD_FOLDER -ForegroundColor "Green"
-      Write-Host "Build number: " -NoNewLine
-      Write-Host $env:APPVEYOR_BUILD_NUMBER -ForegroundColor "Green"
-      Write-Host "Branch: " -NoNewLine
-      Write-Host $env:APPVEYOR_REPO_BRANCH -ForegroundColor "Green"
-      Write-Host "Tag: " -NoNewLine
-      Write-Host $env:APPVEYOR_REPO_TAG_NAME -ForegroundColor "Green"
-      Write-Host "Commit: " -NoNewLine
-      Write-Host $env:APPVEYOR_REPO_COMMIT -ForegroundColor "Green"
-      Write-Host "Commit timestamp: " -NoNewLine
-      Write-Host $env:APPVEYOR_REPO_COMMIT_TIMESTAMP -ForegroundColor "Green"
-  - ps: Install-Product node $env:nodejs_version $env:platform
-  - npm install -g npm
-  - npm --version
-  - npm config set loglevel warn
-  - npm install
+    install:
+      # https://github.com/cfillion/reapack/blob/master/.appveyor.yml
+      - |
+        sudo cp -af /etc/apt/sources.list /etc/apt/sources.list.old
+        sudo sed -i '/arch=/! s/^deb/deb [arch=amd64,i386]/' /etc/apt/sources.list
+        awk '
+          $3 !~ /ubuntu\.com/ { next }
+          $1 == "deb" {
+          $2 = "[arch=armhf,arm64]";
+          $3 = "http://ports.ubuntu.com/ubuntu-ports/"
+        } 1' /etc/apt/sources.list | sudo dd of=/etc/apt/sources.list.d/ports.list
+        diff -uN /etc/apt/sources.list.old /etc/apt/sources.list
+        cat /etc/apt/sources.list.d/ports.list
+      - sudo dpkg --print-architecture
+      - sudo dpkg --add-architecture arm64
+      - sudo dpkg --add-architecture armhf
+      #- sudo dpkg --add-architecture i386
+      - sudo dpkg --print-foreign-architectures
+      - sudo apt-get update
+      - sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
+      - nvm install $nodejs_version
+      - npm config set loglevel warn
+      - npm config set scripts-prepend-node-path auto
+      - npm install -g npm
+      - npm install -g yarn
+      - yarn
 
-before_build:
-  - ps: $COMMIT_LOG = git log -1 --format='%ci %H %s'
-  - ps: echo "$COMMIT_LOG"
+    build_script:
+      - sh: |
+          yarn clean
+          yarn lint
+          yarn test
+          if [[ -z "$CI_TAG" ]]; then
+            yarn build-latest
+          else
+            yarn build
+          fi
+      - sh: |
+          # i386
+          if [[ "$ARCH" == "i386" ]]; then
+            GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
+            PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+            PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+            PRODUCT_NAME=CNCjs
+            yarn build:linux-ia32
+            ls -al output output/*
+            mkdir -p releases/linux
+            cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.i686.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.i686.rpm"
+            cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-i386.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.AppImage"
+            cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_i386.deb" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.deb"
+            pushd releases/linux
+            ln -sf ../../output/linux-ia32-unpacked "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32"
+            tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32"
+            rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32";
+            popd
+            ls -al releases/linux/*
+            if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" ]]; then
+              yarn github-release delete \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CI_BRANCH}-latest" \
+                --release-name="${CI_BRANCH}" \
+                "*-linux-i386.AppImage" \
+                "*-linux-i386.deb" \
+                "*-linux.i686.rpm" \
+                "*-linux-ia32.tar.gz";
+              yarn github-release upload \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CI_BRANCH}-latest" \
+                --release-name="${CI_BRANCH}" \
+                --body="${COMMIT_LOG}" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.i686.rpm" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.AppImage" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.deb" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32.tar.gz";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.i686.rpm";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.AppImage";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.deb";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32.tar.gz";
+            fi
+          fi
+      - sh: |
+          # amd64
+          if [[ "$ARCH" == "amd64" ]]; then
+            GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
+            PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+            PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+            PRODUCT_NAME=CNCjs
+            yarn build:linux-x64
+            ls -al output output/*
+            mkdir -p releases/linux
+            cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.x86_64.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm"
+            cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage"
+            cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb"
+            pushd releases/linux
+            ln -sf ../../output/linux-unpacked "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
+            tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
+            rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64"
+            popd
+            ls -al releases/linux/*
+            if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" ]]; then
+              yarn github-release delete \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CI_BRANCH}-latest" \
+                --release-name="${CI_BRANCH}" \
+                "*-linux.x86_64.rpm" \
+                "*-linux-x86_64.AppImage" \
+                "*-linux-amd64.deb" \
+                "*-linux-x64.tar.gz";
+              yarn github-release upload \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CI_BRANCH}-latest" \
+                --release-name="${CI_BRANCH}" \
+                --body="${GIT_COMMIT_LOG}" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
+            fi
+          fi
+      - sh: |
+          # arm
+          if [[ "$ARCH" == "arm" ]]; then
+            GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
+            PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+            PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+            PRODUCT_NAME=CNCjs
+            yarn build:linux-armv7l
+            ls -al output output/*
+            mkdir -p releases/linux
+            cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.armv7l.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.armv7l.rpm"
+            cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-armv7l.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.AppImage"
+            cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_armv7l.deb" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.deb"
+            pushd releases/linux
+            ln -sf ../../output/linux-armv7l-unpacked "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l"
+            tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l"
+            rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l"
+            popd
+            ls -al releases/linux/*
+            if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" ]]; then
+              yarn github-release delete \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CI_BRANCH}-latest" \
+                --release-name="${CI_BRANCH}" \
+                "*-linux.armv7l.rpm" \
+                "*-linux-armv7l.AppImage" \
+                "*-linux-armv7l.deb" \
+                "*-linux-armv7l.tar.gz";
+              yarn github-release upload \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CI_BRANCH}-latest" \
+                --release-name="${CI_BRANCH}" \
+                --body="${GIT_COMMIT_LOG}" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.armv7l.rpm" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.AppImage" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.deb" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.tar.gz";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.armv7l.rpm";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.AppImage";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.deb";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.tar.gz";
+            fi
+          fi
+      - sh: |
+          # arm64
+          if [[ "$ARCH" == "arm64" ]]; then
+            GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
+            PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+            PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+            PRODUCT_NAME=CNCjs
+            yarn build:linux-arm64
+            ls -al output output/*
+            mkdir -p releases/linux
+            cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.arm64.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.arm64.rpm"
+            cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-arm64.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage"
+            cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_arm64.deb" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb"
+            pushd releases/linux
+            ln -sf ../../output/linux-arm64-unpacked "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
+            tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
+            rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
+            popd
+            ls -al releases/linux/*
+            if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" ]]; then
+              yarn github-release delete \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CI_BRANCH}-latest" \
+                --release-name="${CI_BRANCH}" \
+                "*-linux.arm64.rpm" \
+                "*-linux-arm64.AppImage" \
+                "*-linux-arm64.deb" \
+                "*-linux-arm64.tar.gz";
+              yarn github-release upload \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CI_BRANCH}-latest" \
+                --release-name="${CI_BRANCH}" \
+                --body="${GIT_COMMIT_LOG}" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.arm64.rpm" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb" \
+                "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.arm64.rpm";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb";
+              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz";
+            fi
+          fi
 
-build_script:
-  - ps: |
-      if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-        npm run build-latest
-      }
-      else {
-        npm run build
-      }
-  - ps: $PACKAGE_NAME = node -e "console.log(require('./src/package.json').name)"
-  - ps: $PACKAGE_VERSION = node -e "console.log(require('./src/package.json').version)"
-  - ps: $PRODUCT_NAME = "CNCjs"
-  - ps: $RELEASE = "${PACKAGE_NAME}-${PACKAGE_VERSION}"
-  - ps: echo "$PACKAGE_NAME"
-  - ps: echo "$PACKAGE_VERSION"
-  - ps: echo "$PRODUCT_NAME"
-  - ps: echo "$RELEASE"
-  - ps: mkdir releases
-  - ps: |
-      if ($env:nodejs_version -eq '10' -And $env:platform -eq 'x64') {
-        npm run build:win-x64
-        Get-ChildItem output
-        Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${RELEASE}-win-x64.exe"
-        Get-ChildItem releases
-        if ($env:APPVEYOR_REPO_BRANCH -eq 'master' -And -not $env:APPVEYOR_REPO_TAG_NAME) {
-          npm run github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" "*-win-x64.exe"
-          npm run github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${COMMIT_LOG}" "releases\${RELEASE}-win-x64.exe"
-          Remove-Item "releases\${RELEASE}-win-x64.exe"
-        }
-      }
-  - ps: |
-      if ($env:nodejs_version -eq '10' -And $env:platform -eq 'x64') {
-        npm run build:win-ia32
-        Get-ChildItem output
-        Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${RELEASE}-win-ia32.exe"
-        Get-ChildItem releases
-        if ($env:APPVEYOR_REPO_BRANCH -eq 'master' -And -not $env:APPVEYOR_REPO_TAG_NAME) {
-          npm run github-release -- delete --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" "*-win-ia32.exe"
-          npm run github-release -- upload --owner=cncjs --repo=cncjs --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${COMMIT_LOG}" "releases\${RELEASE}-win-ia32.exe"
-          Remove-Item "releases\${RELEASE}-win-ia32.exe"
-        }
-      }
+    test: off
 
-test: off
+    # Packaging artifacts
+    # https://www.appveyor.com/docs/packaging-artifacts
+    artifacts:
+      - path: releases/linux/*
 
-# Packaging artifacts
-# https://www.appveyor.com/docs/packaging-artifacts
-artifacts:
-  # pushing all *.exe files in a directory
-  - path: releases\*.exe
+    # Publishing artifacts to GitHub Releases
+    # https://www.appveyor.com/docs/deployment/github
+    deploy:
+      - provider: GitHub
+        auth_token:
+          secure: G9Qlv8MYhgvYlUxWWUiDdfIUTrKcia16HAdzkVydWqC+wo60XrC8nk1Q2R9WKGXx
+        draft: false
+        prerelease: false
+        on:
+          appveyor_repo_tag: true  # deploy on tag push only
+          nodejs_version: "12"
 
-# Publishing artifacts to GitHub Releases
-# https://www.appveyor.com/docs/deployment/github
-deploy:
-  - provider: GitHub
-    auth_token:
-      secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
-    draft: false
-    prerelease: false
-    on:
-      appveyor_repo_tag: true  # deploy on tag push only
-      nodejs_version: "10"
+  # macOS
+  -
+    matrix:
+      only:
+        - job_name: macOS build (x64)
+      fast_finish: true
+
+    init:
+      - uname -a
+      - git --version
+      - git config --global core.autocrlf false
+      - git config --global user.name "AppVeyor"
+      - git config --global user.email "appveyor@ci.appveyor.com"
+      - sh: |
+          export CI_BRANCH=$APPVEYOR_REPO_BRANCH
+          export CI_BUILD_NUMBER=$APPVEYOR_BUILD_NUMBER
+          export CI_COMMIT=$APPVEYOR_REPO_COMMIT
+          export CI_COMMIT_SHORT=${APPVEYOR_REPO_COMMIT:0:8}
+          export CI_COMMIT_TIMESTAMP=$APPVEYOR_REPO_COMMIT_TIMESTAMP
+          export CI_TAG=$APPVEYOR_REPO_TAG_NAME
+          echo "• ARCH=$ARCH"
+          echo "• CI_BRANCH=$CI_BRANCH"
+          echo "• CI_BUILD_NUMBER=$CI_BUILD_NUMBER"
+          echo "• CI_COMMIT=$CI_COMMIT"
+          echo "• CI_COMMIT_SHORT=$CI_COMMIT_SHORT"
+          echo "• CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP"
+          echo "• CI_TAG=$CI_TAG"
+
+    install:
+      - nvm install $nodejs_version
+      - security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign
+      - npm config set loglevel warn
+      - npm config set scripts-prepend-node-path auto
+      - npm install -g npm
+      - npm install -g yarn
+      - yarn
+
+    build_script:
+      - sh: |
+          yarn clean
+          yarn lint
+          yarn test
+          if [[ -z "$CI_TAG" ]]; then
+            yarn build-latest
+          else
+            yarn build
+          fi
+      - sh: |
+          # x64
+          if [[ "$ARCH" == "x64" ]]; then
+            GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
+            PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+            PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+            PRODUCT_NAME=CNCjs
+            yarn build:macos-x64
+            ls -al output output/*
+            mkdir -p releases/macos
+            cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.dmg" "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg"
+            ls -al releases/macos/*
+            if [[ "$CI_BRANCH" == "master" && -z "$CI_TAG" ]]; then
+              yarn github-release delete \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CI_BRANCH}-latest" \
+                --release-name="${CI_BRANCH}" \
+                "*-macos.x64.dmg";
+              yarn github-release upload \
+                --owner=cncjs \
+                --repo=cncjs \
+                --tag="${CI_BRANCH}-latest" \
+                --release-name="${CI_BRANCH}" \
+                --body="${GIT_COMMIT_LOG}" \
+                "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg";
+              rm -f "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg";
+            fi
+          fi
+
+    test: off
+
+    # Packaging artifacts
+    # https://www.appveyor.com/docs/packaging-artifacts
+    artifacts:
+      - path: releases/macos/*
+
+    # Publishing artifacts to GitHub Releases
+    # https://www.appveyor.com/docs/deployment/github
+    deploy:
+      - provider: GitHub
+        auth_token:
+          secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
+        draft: false
+        prerelease: false
+        on:
+          appveyor_repo_tag: true  # deploy on tag push only
+          nodejs_version: "12"
+
+  # Windows
+  -
+    matrix:
+      only:
+        - job_name: Windows build (x64)
+        - job_name: Windows build (x86)
+      fast_finish: true
+
+    init:
+      - git --version
+      - git config --global core.autocrlf false
+      - git config --global user.name "AppVeyor"
+      - git config --global user.email "appveyor@ci.appveyor.com"
+      - ps: |
+          $env:CI_BRANCH = $env:APPVEYOR_REPO_BRANCH
+          $env:CI_BUILD_NUMBER = $env:APPVEYOR_BUILD_NUMBER
+          $env:CI_COMMIT = $env:APPVEYOR_REPO_COMMIT
+          $env:CI_COMMIT_SHORT = ${env:APPVEYOR_REPO_COMMIT}.SubString(0,8)
+          $env:CI_COMMIT_TIMESTAMP = $env:APPVEYOR_REPO_COMMIT_TIMESTAMP
+          $env:CI_TAG = $env:APPVEYOR_REPO_TAG_NAME
+          Write-Host "• ARCH=$env:ARCH"
+          Write-Host "• CI_BRANCH=$env:CI_BRANCH"
+          Write-Host "• CI_BUILD_NUMBER=$env:CI_BUILD_NUMBER"
+          Write-Host "• CI_COMMIT=$env:CI_COMMIT"
+          Write-Host "• CI_COMMIT_SHORT=$env:CI_COMMIT_SHORT"
+          Write-Host "• CI_COMMIT_TIMESTAMP=$env:CI_COMMIT_TIMESTAMP"
+          Write-Host "• CI_TAG=$env:CI_TAG"
+
+    install:
+      - ps: Install-Product node $env:nodejs_version
+      - npm config set loglevel warn
+      - npm config set scripts-prepend-node-path auto
+      - npm install -g npm
+      - npm install -g yarn
+      - yarn
+
+    build_script:
+      - ps: |
+          yarn clean
+          yarn lint
+          yarn test
+          if (-not $env:CI_TAG) {
+            yarn build-latest
+          } else {
+            yarn build
+          }
+      - ps: |
+          if ($env:ARCH -eq "x64") {
+            $GIT_COMMIT_LOG = git log -1 --format='%ci %H %s'
+            $PACKAGE_NAME = node -e "console.log(require('./src/package.json').name)"
+            $PACKAGE_VERSION = node -e "console.log(require('./src/package.json').version)"
+            $PRODUCT_NAME = "CNCjs"
+            mkdir -Force -Path releases\windows
+            yarn build:windows-x64
+            Get-ChildItem output
+            Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
+            Get-ChildItem releases\windows
+            if ($env:CI_BRANCH -eq "master" -And -not $env:CI_TAG) {
+              yarn github-release delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-windows-x64.exe"
+              yarn github-release upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
+              Remove-Item "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
+            }
+          }
+      - ps: |
+          if ($env:ARCH -eq "x86") {
+            $GIT_COMMIT_LOG = git log -1 --format='%ci %H %s'
+            $PACKAGE_NAME = node -e "console.log(require('./src/package.json').name)"
+            $PACKAGE_VERSION = node -e "console.log(require('./src/package.json').version)"
+            $PRODUCT_NAME = "CNCjs"
+            mkdir -Force -Path releases\windows
+            yarn build:windows-ia32
+            Get-ChildItem output
+            Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
+            Get-ChildItem releases\windows
+            if ($env:CI_BRANCH -eq "master" -And -not $env:CI_TAG) {
+              yarn github-release delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-windows-x86.exe"
+              yarn github-release upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
+              Remove-Item "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
+            }
+          }
+
+    test: off
+
+    # Packaging artifacts
+    # https://www.appveyor.com/docs/packaging-artifacts
+    artifacts:
+      - path: releases\windows\*
+
+    # Publishing artifacts to GitHub Releases
+    # https://www.appveyor.com/docs/deployment/github
+    deploy:
+      - provider: GitHub
+        auth_token:
+          secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
+        draft: false
+        prerelease: false
+        on:
+          appveyor_repo_tag: true  # deploy on tag push only
+          nodejs_version: "12"
