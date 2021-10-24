@@ -1,5 +1,5 @@
 # BUILD STAGE
-FROM debian:stretch as build-stage
+FROM debian:bullseye as build-stage
 
 ENV BUILD_DIR /tmp/build
 ENV NVM_DIR /root/.nvm
@@ -12,7 +12,8 @@ RUN apt-get update -y && apt-get install -y -q --no-install-recommends \
   apt-utils \
   build-essential \
   ca-certificates \
-  python-pip \
+  python3 \
+  python3-pip \
   curl \
   git \
   udev
@@ -32,7 +33,7 @@ WORKDIR $BUILD_DIR/cncjs
 RUN npm install -g npm@latest && npm install -g yarn && yarn --production
 
 # FINAL STAGE
-FROM debian:stretch
+FROM debian:bullseye
 
 ENV NVM_DIR /root/.nvm
 ENV NODE_VERSION v12.22.1
@@ -41,6 +42,7 @@ ENV NODE_PATH $NVM_DIR/$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
 
 RUN apt-get update -y && apt-get install -y -q --no-install-recommends \
+  apt-utils \
   ca-certificates \
   udev
 
