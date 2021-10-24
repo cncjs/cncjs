@@ -1,68 +1,50 @@
-const crypto = require('crypto');
 const path = require('path');
-const boolean = require('boolean');
-const dotenv = require('dotenv');
 const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
-const findImports = require('find-imports');
+const dotenv = require('dotenv');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const nib = require('nib');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const stylusLoader = require('stylus-loader');
-const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
+const WriteFileWebpackPlugin = require('write-file-webpack-plugin');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
-const pkg = require('./package.json');
+const pkg = require('./src/package.json');
 
-dotenv.config({
-    path: path.resolve('webpack.config.app.production.env')
-});
+dotenv.config();
 
-const USE_ESLINT_LOADER = boolean(process.env.USE_ESLINT_LOADER);
-const USE_TERSER_PLUGIN = boolean(process.env.USE_TERSER_PLUGIN);
-const USE_OPTIMIZE_CSS_ASSETS_PLUGIN = boolean(process.env.USE_OPTIMIZE_CSS_ASSETS_PLUGIN);
-
-// Use publicPath for production
-const publicPath = ((payload) => {
-    const algorithm = 'sha1';
-    const buf = String(payload);
-    const hash = crypto.createHash(algorithm).update(buf).digest('hex');
-    return '/' + hash.substr(0, 8) + '/'; // 8 digits
-})(pkg.version);
+const publicPath = process.env.PUBLIC_PATH || '';
 const buildVersion = pkg.version;
 const timestamp = new Date().getTime();
 
 module.exports = {
-    mode: 'production',
+    mode: 'development',
     cache: true,
     target: 'web',
     context: path.resolve(__dirname, 'src/app'),
-    devtool: 'cheap-module-source-map',
+    devtool: 'cheap-module-eval-source-map',
     entry: {
         polyfill: [
-            path.resolve(__dirname, 'src/app/polyfill/index.js')
+            path.resolve(__dirname, 'src/app/polyfill/index.js'),
+            'webpack-hot-middleware/client?path=/__webpack_hmr&reload=true',
         ],
-        vendor: findImports([
-            'src/app/**/*.{js,jsx}',
-            '!src/app/polyfill/**/*.js',
-            '!src/app/**/*.development.js'
-        ], { flatten: true }),
         app: [
-            path.resolve(__dirname, 'src/app/index.jsx')
+            path.resolve(__dirname, 'src/app/index.jsx'),
+            'webpack-hot-middleware/client?path=/__webpack_hmr&reload=true',
         ]
     },
     output: {
-        path: path.resolve(__dirname, 'dist/cncjs/app'),
-        chunkFilename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
-        filename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
+        path: path.resolve(__dirname, 'output/cncjs/app'),
+        chunkFilename: `[name].[hash].bundle.js?_=${timestamp}`,
+        filename: `[name].[hash].bundle.js?_=${timestamp}`,
+        pathinfo: true,
         publicPath: publicPath
     },
     module: {
         rules: [
-            USE_ESLINT_LOADER && {
+            {
                 test: /\.jsx?$/,
                 loader: 'eslint-loader',
                 enforce: 'pre',
@@ -71,7 +53,14 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',
-                options: babelConfig,
+                options: {
+                    ...babelConfig,
+                    env: {
+                        development: {
+                            plugins: ['react-hot-loader/babel']
+                        }
+                    }
+                },
                 exclude: /node_modules/
             },
             {
@@ -84,7 +73,7 @@ module.exports = {
                             modules: true,
                             localIdentName: '[path][name]__[local]--[hash:base64:5]',
                             camelCase: true,
-                            importLoaders: 1,
+                            importLoaders: 1
                         }
                     },
                     'stylus-loader'
@@ -136,31 +125,25 @@ module.exports = {
                 test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: 'file-loader'
             }
-        ].filter(Boolean)
+        ]
     },
     node: {
         fs: 'empty',
         net: 'empty',
         tls: 'empty'
     },
-    optimization: {
-        minimizer: [
-            USE_TERSER_PLUGIN && (
-                new TerserPlugin()
-            ),
-            USE_OPTIMIZE_CSS_ASSETS_PLUGIN && (
-                new OptimizeCSSAssetsPlugin()
-            ),
-        ].filter(Boolean)
-    },
     plugins: [
+        new webpack.HotModuleReplacementPlugin(),
         new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV: JSON.stringify('production'),
+                NODE_ENV: JSON.stringify('development'),
                 BUILD_VERSION: JSON.stringify(buildVersion),
                 LANGUAGES: JSON.stringify(buildConfig.languages),
                 TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId)
             }
+        }),
+        new webpack.LoaderOptionsPlugin({
+            debug: true
         }),
         new stylusLoader.OptionsPlugin({
             default: {
@@ -170,6 +153,9 @@ module.exports = {
                 import: ['~nib/lib/nib/index.styl']
             }
         }),
+        // https://github.com/gajus/write-file-webpack-plugin
+        // Forces webpack-dev-server to write bundle files to the file system.
+        new WriteFileWebpackPlugin(),
         new webpack.ContextReplacementPlugin(
             /moment[\/\\]locale$/,
             new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$')

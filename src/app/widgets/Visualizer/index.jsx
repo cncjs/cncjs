@@ -1074,7 +1074,7 @@ class VisualizerWidget extends PureComponent {
         };
         const showDashboard = !capable.view3D && !showLoader;
         const showVisualizer = capable.view3D && !showLoader;
-        const showNotifications = showVisualizer && !!state.notification.type;
+        const showNotifications = !!state.notification.type;
 
         return (
             <Widget borderless>
@@ -1142,14 +1142,16 @@ class VisualizerWidget extends PureComponent {
                         />
                     )}
                 </Widget.Content>
-                <Widget.Footer className={styles.widgetFooter}>
-                    <SecondaryToolbar
-                        is3DView={capable.view3D}
-                        cameraMode={state.cameraMode}
-                        cameraPosition={state.cameraPosition}
-                        camera={actions.camera}
-                    />
-                </Widget.Footer>
+                {showVisualizer && (
+                    <Widget.Footer className={styles.widgetFooter}>
+                        <SecondaryToolbar
+                            is3DView={capable.view3D}
+                            cameraMode={state.cameraMode}
+                            cameraPosition={state.cameraPosition}
+                            camera={actions.camera}
+                        />
+                    </Widget.Footer>
+                )}
             </Widget>
         );
     }
