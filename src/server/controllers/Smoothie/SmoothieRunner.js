@@ -100,6 +100,10 @@ class SmoothieRunner extends events.EventEmitter {
         this.emit('error', payload);
         return;
       }
+      if (type === SmoothieLineParserResultAction) {
+        this.emit('action', payload);
+        return;
+      }
       if (type === SmoothieLineParserResultAlarm) {
         this.emit('alarm', payload);
         return;

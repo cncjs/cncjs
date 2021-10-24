@@ -257,7 +257,7 @@ class SmoothieController {
 
         const machineState = _.get(this.state, 'machineState', '');
         if (machineState === SMOOTHIE_MACHINE_STATE_HOLD) {
-          this.write('~'); // resume
+          this.writeln('resume'); // resume
         }
       },
       'sender:pause': () => {
@@ -265,12 +265,12 @@ class SmoothieController {
 
         this.workflow.pause();
 
-        this.write('!');
+        this.writeln('suspend');
       },
       'sender:resume': () => {
         this.event.trigger('sender:resume');
 
-        this.write('~');
+        this.writeln('resume');
 
         this.workflow.resume();
       },
@@ -278,7 +278,7 @@ class SmoothieController {
         if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
           return;
         }
-        this.write('~');
+        this.writeln('resume');
         this.feeder.unhold();
         this.feeder.next();
       },
@@ -288,12 +288,12 @@ class SmoothieController {
       'feedhold': () => {
         this.event.trigger('feedhold');
 
-        this.write('!');
+        this.writeln('suspend');
       },
       'cyclestart': () => {
         this.event.trigger('cyclestart');
 
-        this.write('~');
+        this.writeln('resume');
       },
       'homing': () => {
         this.event.trigger('homing');
@@ -837,6 +837,32 @@ class SmoothieController {
 
         // Feeder
         this.feeder.next();
+      });
+
+      // Action commands
+      //
+      // ```
+      // //action:<command>
+      // ```
+      this.runner.on('action', (res) => {
+        log.debug(`action command: action:${res.message}`);
+
+        if (res.message === 'pause') {
+          this.workflow.pause({ data: 'action:pause' });
+          return;
+        }
+
+        if (res.message === 'resume') {
+          this.workflow.resume({ data: 'action:resume' });
+          return;
+        }
+
+        if (res.message === 'cancel') {
+          this.workflow.stop();
+          return;
+        }
+
+        log.error(`Unknown action command: action:${res.message}`);
       });
 
       this.runner.on('alarm', (res) => {
