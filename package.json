@@ -205,7 +205,7 @@
     "i18next-xhr-backend": "~2.0.1",
     "infinite-tree": "~1.16.2",
     "is-electron": "~2.2.0",
-    "jimp": "~0.6.1",
+    "jimp": "^0.10.3",
     "js-polyfills": "~0.1.42",
     "jsonwebtoken": "~8.5.1",
     "jsuri": "~1.3.1",
