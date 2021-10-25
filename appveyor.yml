@@ -302,7 +302,7 @@ for:
         draft: false
         prerelease: false
         on:
-          appveyor_repo_tag: true  # deploy on tag push only
+          APPVEYOR_REPO_TAG: true # trigger deployment on tag only
           nodejs_version: "12"
 
   # macOS
@@ -398,7 +398,7 @@ for:
         draft: false
         prerelease: false
         on:
-          appveyor_repo_tag: true  # deploy on tag push only
+          APPVEYOR_REPO_TAG: true # trigger deployment on tag only
           nodejs_version: "12"
 
   # Windows
@@ -498,5 +498,5 @@ for:
         draft: false
         prerelease: false
         on:
-          appveyor_repo_tag: true  # deploy on tag push only
+          APPVEYOR_REPO_TAG: true # trigger deployment on tag only
           nodejs_version: "12"
