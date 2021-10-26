@@ -7,12 +7,17 @@ orbs:
 
 workflows:
   version: 2
-  build-n-deploy:
+  workflow:
     jobs:
       - build
       - deploy:
           requires:
             - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
 
 # https://circleci.com/docs/2.0/executor-types/
 jobs:
