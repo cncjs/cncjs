@@ -165,7 +165,7 @@ class Dropdown extends Component {
       this.focusOnOpen();
     }
 
-    componentWillUpdate(nextProps) {
+    UNSAFE_componentWillUpdate(nextProps) {
       if (!nextProps.open && this.props.open) {
         this._focusInDropdown = this.menu && contains(ReactDOM.findDOMNode(this.menu), activeElement(document));
       }
