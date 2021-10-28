@@ -40,6 +40,7 @@ class Nav extends Component {
     };
 
     static contextTypes = {
+      // eslint-disable-next-line camelcase
       $tm_navbar: PropTypes.shape({
         navbarStyle: PropTypes.string,
         onSelect: PropTypes.func
