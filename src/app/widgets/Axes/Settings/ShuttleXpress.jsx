@@ -53,7 +53,7 @@ class ShuttleXpress extends Component {
       return { feedrateMin, feedrateMax, hertz, overshoot };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
       const {
         feedrateMin,
         feedrateMax,

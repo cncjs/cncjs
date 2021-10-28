@@ -100,7 +100,7 @@ class CheckboxGroup extends Component {
       }
     };
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
       if (nextProps.value !== undefined) {
         this.setState({
           value: ensureArray(nextProps.value)

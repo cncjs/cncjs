@@ -58,7 +58,7 @@ const createFormControl = (options) => (WrappedComponent) => class FormControl e
       this.context.$validation.unregister(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
       const { validations, ...props } = this.props;
       const { validations: nextValidations, ...otherProps } = nextProps;
 

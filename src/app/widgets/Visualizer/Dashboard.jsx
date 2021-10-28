@@ -71,7 +71,7 @@ class Dashboard extends Component {
       window.removeEventListener('resize', this.resizeVirtualList);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
       if (nextProps.state.gcode.content !== this.props.state.gcode.content) {
         this.lines = get(nextProps, 'state.gcode.content', '')
           .split('\n')

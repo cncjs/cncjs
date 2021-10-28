@@ -90,7 +90,7 @@ class TablePagination extends Component {
       }
     };
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
       if (nextProps.page !== this.state.page) {
         this.setState({ page: Number(nextProps.page) });
       }

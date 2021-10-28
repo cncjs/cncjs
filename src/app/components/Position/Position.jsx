@@ -34,7 +34,7 @@ class Position extends React.Component {
     this.updatePosition(this.getTarget());
   }
 
-  componentWillReceiveProps() {
+  UNSAFE_componentWillReceiveProps() {
     this._needsFlush = true;
   }
 

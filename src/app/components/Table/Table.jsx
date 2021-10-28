@@ -486,7 +486,7 @@ class Table extends Component {
       this.mainTable = null;
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
       const equal = isEqual(
         nextProps.columns.map(it => ({ key: it.key, sortOrder: it.sortOrder })),
         this.props.columns.map(it => ({ key: it.key, sortOrder: it.sortOrder }))

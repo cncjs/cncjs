@@ -44,7 +44,7 @@ class ToggleSwitch extends Component {
       }
     };
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
       if (this.props.checked !== nextProps.checked) {
         this.setState({ checked: nextProps.checked });
       }
