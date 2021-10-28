@@ -33,9 +33,7 @@ module.exports = {
     'jest',
   ],
   rules: {
-    'indent': ['error', 2],
-    'react/jsx-indent': ['error', 2],
-    'react/jsx-indent-props': ['error', 2],
+    'react/jsx-curly-newline': 'warn',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'error',
     'max-lines-per-function': ['warn', {
