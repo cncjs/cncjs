@@ -385,6 +385,12 @@ class AxesWidget extends PureComponent {
                 this.shuttleControl.clear();
 
                 if (jog.axis) {
+                    //TinyG keeps moving for a second, when done jogging, if queue isn't cleared
+                    //  (Unsure if this applies to other firmwares) --@Sil3ntlight
+                    if (type === TINYG) {
+                        controller.command('gcode', '!%'); // TinyG / g2core command used to stop jogging, ! is feedhold, % is queue flush and resume
+                                                           //   see also: https://github.com/synthetos/g2/wiki/Feedhold,-Resume,-and-Other-Simple-Commands#jogging-using-feedhold-and-queue-flush
+                    }
                     controller.command('gcode', 'G90');
                 }
                 return;
