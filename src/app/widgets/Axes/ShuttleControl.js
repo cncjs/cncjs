@@ -2,8 +2,13 @@ import _ from 'lodash';
 import events from 'events';
 
 const HERTZ_LIMIT = 60; // 60 items per second
-const FLUSH_INTERVAL = 250; // milliseconds
-const QUEUE_LENGTH = Math.floor(HERTZ_LIMIT / (1000 / FLUSH_INTERVAL));
+//const FLUSH_INTERVAL = 250; // milliseconds
+
+//removing need for flushing by creating large enough queue
+// to make cnc keep moving, not pause when jogging.
+
+//const QUEUE_LENGTH = Math.floor(HERTZ_LIMIT / (1000 / FLUSH_INTERVAL));
+const QUEUE_LENGTH = 30
 
 const DEFAULT_FEEDRATE_MIN = 500;
 const DEFAULT_FEEDRATE_MAX = 1500;
@@ -36,7 +41,7 @@ class ShuttleControl extends events.EventEmitter {
         const zoneMax = 7; // Shuttle Zone +7/-7
         const zoneMin = 1; // Shuttle Zone +1/-1
         const direction = (zone < 0) ? -1 : 1;
-        const feedrate = ((feedrateMax - feedrateMin) * distance * ((Math.abs(zone) - zoneMin) / (zoneMax - zoneMin))) + feedrateMin;
+        const feedrate = ((feedrateMax - feedrateMin) * (Math.floor(distance/10) + 1) * ((Math.abs(zone) - zoneMin) / (zoneMax - zoneMin))) + feedrateMin;
         const relativeDistance = direction * overshoot * (feedrate / 60.0) / hertz;
 
         this.zone = zone;
@@ -46,18 +51,18 @@ class ShuttleControl extends events.EventEmitter {
             relativeDistance: relativeDistance
         });
 
-        if (!this.timer) {
-            this.timer = setTimeout(() => {
-                this.flush();
-            }, FLUSH_INTERVAL);
-        }
+        // if (!this.timer) {
+        //     this.timer = setTimeout(() => {
+        //         this.flush();
+        //     }, FLUSH_INTERVAL);
+        // }
     }
 
     clear() {
-        if (this.timer) {
-            clearTimeout(this.timer);
-            this.timer = null;
-        }
+        // if (this.timer) {
+        //     clearTimeout(this.timer);
+        //     this.timer = null;
+        // }
         this.queue = [];
     }
 
@@ -72,8 +77,8 @@ class ShuttleControl extends events.EventEmitter {
             relativeDistance: _.sumBy(this.queue, (o) => o.relativeDistance)
         };
 
-        clearTimeout(this.timer);
-        this.timer = null;
+        //clearTimeout(this.timer);
+        //this.timer = null;
         this.queue = [];
         this.emit('flush', accumulatedResult);
         typeof callback === 'function' && callback(accumulatedResult);
