@@ -16,24 +16,33 @@ const defaultState = {
             primary: {
                 show: true,
                 widgets: [
-                    'connection', 'console', 'grbl', 'marlin', 'smoothie', 'tinyg', 'webcam'
+                    'gcode', 'connection', 'console', 'tinyg'
                 ]
             },
             secondary: {
                 show: true,
                 widgets: [
-                    'axes', 'gcode', 'macro', 'probe', 'spindle', 'laser'
+                    'axes', 'spindle', 'probe', 'macro'
                 ]
             }
         },
         machineProfile: {
-            id: null
+            id: '2e113b35-1073-4de4-b564-b807b945d80d',
+            name: 'ideas-3040',
+            limits: {
+                xmin: 0,
+                xmax: 299,
+                ymin: 0,
+                ymax: 399,
+                zmin: 1,
+                zmax: 80
+            }
         }
     },
     widgets: {
         axes: {
             minimized: false,
-            axes: ['x', 'y', 'z'],
+            axes: ['x', 'y', 'z', 'a'],
             jog: {
                 keypad: false,
                 imperial: {
@@ -42,7 +51,12 @@ const defaultState = {
                 },
                 metric: {
                     step: METRIC_STEPS.indexOf(1), // Defaults to 1 mm
-                    distances: []
+                    distances: [
+                        0.01,
+                        0.1,
+                        1,
+                        10
+                    ]
                 }
             },
             mdi: {
@@ -50,17 +64,17 @@ const defaultState = {
             },
             shuttle: {
                 feedrateMin: 500,
-                feedrateMax: 2000,
+                feedrateMax: 2500,
                 hertz: 10,
                 overshoot: 1
             }
         },
         connection: {
-            minimized: false,
+            minimized: true,
             controller: {
-                type: 'Grbl' // Grbl|Marlin|Smoothie|TinyG
+                type: 'TinyG' // Grbl|Marlin|Smoothie|TinyG
             },
-            port: '', // will be deprecated in v2
+            port: '/dev/ttyACM0', // will be deprecated in v2
             baudrate: 115200, // will be deprecated in v2
             connection: {
                 type: 'serial',
@@ -161,7 +175,7 @@ const defaultState = {
         },
         spindle: {
             minimized: false,
-            speed: 1000
+            speed: 10000
         },
         tinyg: {
             minimized: false,
@@ -186,7 +200,7 @@ const defaultState = {
             // 3D View
             disabled: false,
             projection: 'orthographic', // 'perspective' or 'orthographic'
-            cameraMode: 'pan', // 'pan' or 'rotate'
+            cameraMode: 'rotate', // 'pan' or 'rotate'
             gcode: {
                 displayName: true
             },
