@@ -2,13 +2,10 @@ import _ from 'lodash';
 import events from 'events';
 
 const HERTZ_LIMIT = 60; // 60 items per second
-//const FLUSH_INTERVAL = 250; // milliseconds
+const FLUSH_INTERVAL = 250; // milliseconds
 
-//removing need for flushing by creating large enough queue
-// to make cnc keep moving, not pause when jogging.
-
-//const QUEUE_LENGTH = Math.floor(HERTZ_LIMIT / (1000 / FLUSH_INTERVAL));
-const QUEUE_LENGTH = 30
+const QUEUE_LENGTH = Math.floor(4 * HERTZ_LIMIT / (1000 / FLUSH_INTERVAL));
+//const QUEUE_LENGTH = 30
 
 const DEFAULT_FEEDRATE_MIN = 500;
 const DEFAULT_FEEDRATE_MAX = 1500;
@@ -51,18 +48,18 @@ class ShuttleControl extends events.EventEmitter {
             relativeDistance: relativeDistance
         });
 
-        // if (!this.timer) {
-        //     this.timer = setTimeout(() => {
-        //         this.flush();
-        //     }, FLUSH_INTERVAL);
-        // }
+        if (!this.timer) {
+            this.timer = setTimeout(() => {
+                this.flush();
+            }, FLUSH_INTERVAL);
+        }
     }
 
     clear() {
-        // if (this.timer) {
-        //     clearTimeout(this.timer);
-        //     this.timer = null;
-        // }
+        if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
         this.queue = [];
     }
 
@@ -77,8 +74,8 @@ class ShuttleControl extends events.EventEmitter {
             relativeDistance: _.sumBy(this.queue, (o) => o.relativeDistance)
         };
 
-        //clearTimeout(this.timer);
-        //this.timer = null;
+        clearTimeout(this.timer);
+        this.timer = null;
         this.queue = [];
         this.emit('flush', accumulatedResult);
         typeof callback === 'function' && callback(accumulatedResult);
