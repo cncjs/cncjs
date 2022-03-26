@@ -122,8 +122,10 @@ export default {
             'hu', // Hungarian
             'it', // Italian
             'ja', // Japanese
+            'nb', // Norwegian
             'nl', // Nederlands
             'pt-br', // Portuguese (Brazil)
+            'pt-pt', // Portuguese (Portugal)
             'ru', // Russian
             'tr', // Turkish
             'zh-cn', // Simplified Chinese
