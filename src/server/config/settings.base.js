@@ -123,7 +123,9 @@ export default {
             'it', // Italian
             'ja', // Japanese
             'nl', // Nederlands
+            'no', // Norwegian
             'pt-br', // Portuguese (Brazil)
+            'pt-pt', // Portuguese (Portugal)
             'ru', // Russian
             'tr', // Turkish
             'zh-cn', // Simplified Chinese
