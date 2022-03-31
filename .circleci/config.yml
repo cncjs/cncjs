@@ -9,13 +9,17 @@ workflows:
   version: 2
   workflow:
     jobs:
-      - build:
+      # The `build-tag` job will not run on all branches and will run only on the matched tags.
+      - build-tag:
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /v[0-9]+(\.[0-9]+)*/
-      - deploy:
+      # The `deploy-tag` job will not run on all branches and will run only on the matched tags.
+      - deploy-tag:
           requires:
-            - build
+            - build-tag
           filters:
             branches:
               ignore: /.*/
@@ -24,7 +28,7 @@ workflows:
 
 # https://circleci.com/docs/2.0/executor-types/
 jobs:
-  build:
+  build-tag:
     docker:
       - image: cimg/node:12.22-browsers
     steps:
@@ -81,7 +85,7 @@ jobs:
           root: .
           paths:
             - ci.tar.gz
-  deploy:
+  deploy-tag:
     docker:
       - image: cimg/node:12.22
     steps:
@@ -92,6 +96,7 @@ jobs:
           name: Setup environment variables
           command: |
             echo "export CI_BRANCH=${CIRCLE_BRANCH}" >> $BASH_ENV
+            echo "export CI_TAG=${CIRCLE_TAG}" >> $BASH_ENV
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: workspace
@@ -103,7 +108,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            DOCKER_BRANCH_TAG=$(echo $CI_BRANCH | sed -e 's/\//-/g')
+            DOCKER_BRANCH_TAG=$(echo $CI_TAG | sed -e 's/\//-/g')
             DOCKER_REPO=cncjs/cncjs
 
             echo "DOCKER_BRANCH_TAG=$DOCKER_BRANCH_TAG"
