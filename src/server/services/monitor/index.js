@@ -14,7 +14,7 @@ const stop = () => {
 };
 
 const getFiles = (searchPath) => {
-    const root = monitor.root;
+    const root = path.normalize(monitor.root);
     const files = Object.keys(monitor.files);
     const pattern = path.join(root, searchPath, '*');
 
