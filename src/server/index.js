@@ -5,8 +5,7 @@ import path from 'path';
 import url from 'url';
 import bcrypt from 'bcryptjs';
 import chalk from 'chalk';
-import ensureArray from 'ensure-array';
-import { ensureString } from 'ensure-type';
+import { ensureArray, ensureString } from 'ensure-type';
 import expandTilde from 'expand-tilde';
 import express from 'express';
 import httpProxy from 'http-proxy';
@@ -71,14 +70,15 @@ const createServer = (options, callback) => {
 
   { // watchDirectory
     const watchDirectory = options.watchDirectory || userStore.get('watchDirectory');
+    const normalizedWatchDirectory = path.normalize(ensureString(watchDirectory));
 
-    if (watchDirectory) {
-      if (fs.existsSync(watchDirectory)) {
-        log.info(`Watching ${chalk.yellow(JSON.stringify(watchDirectory))} for file changes`);
+    if (normalizedWatchDirectory) {
+      if (fs.existsSync(normalizedWatchDirectory)) {
+        log.info(`Watching ${chalk.yellow(JSON.stringify(normalizedWatchDirectory))} for file changes`);
 
-        directoryWatcher.watch(watchDirectory);
+        directoryWatcher.watch(normalizedWatchDirectory);
       } else {
-        log.error(`The directory ${chalk.yellow(JSON.stringify(watchDirectory))} does not exist.`);
+        log.error(`The directory ${chalk.yellow(JSON.stringify(normalizedWatchDirectory))} does not exist.`);
       }
     }
   }

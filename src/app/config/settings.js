@@ -1,6 +1,6 @@
-import endsWith from 'lodash/endsWith';
 import mapKeys from 'lodash/mapKeys';
 import sha1 from 'sha1';
+import x from 'app/lib/json-stringify';
 import log from 'app/lib/log';
 import env from 'app/config/env';
 import pkg from '../../package.json';
@@ -87,12 +87,10 @@ const settings = {
       allowMultiLoading: false,
 
       // parse data after it has been fetched
-      parse: function(data, url) {
-        log.debug(`Loading resource: url="${url}"`);
+      parse: function(data, language, namespace) {
+        log.debug(`Loading resource: language=${x(language)}, namespace=${x(namespace)}`);
 
-        // gcode.json
-        // resource.json
-        if (endsWith(url, '/gcode.json') || endsWith(url, '/resource.json')) {
+        if (namespace === 'gcode' || namespace === 'resource') {
           return mapKeys(JSON.parse(data), (value, key) => sha1(key));
         }
 

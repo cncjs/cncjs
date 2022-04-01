@@ -11,141 +11,141 @@ import styles from './index.styl';
 const isMenuItem = match(MenuItem);
 
 class DropdownMenu extends Component {
-    static propTypes = {
-      componentType: PropTypes.any,
+  static propTypes = {
+    componentType: PropTypes.any,
 
-      // A custom element for this component.
-      componentClass: PropTypes.oneOfType([
-        PropTypes.func,
-        PropTypes.string,
-        PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
-      ]),
+    // A custom element for this component.
+    componentClass: PropTypes.oneOfType([
+      PropTypes.func,
+      PropTypes.string,
+      PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
+    ]),
 
-      // Dropdown
-      open: PropTypes.bool,
-      pullRight: PropTypes.bool,
-      onClose: PropTypes.func,
-      onSelect: PropTypes.func,
-      rootCloseEvent: PropTypes.oneOf([
-        'click',
-        'mousedown'
-      ])
-    };
+    // Dropdown
+    open: PropTypes.bool,
+    pullRight: PropTypes.bool,
+    onClose: PropTypes.func,
+    onSelect: PropTypes.func,
+    rootCloseEvent: PropTypes.oneOf([
+      'click',
+      'mousedown'
+    ])
+  };
 
-    static defaultProps = {
-      componentClass: 'div'
-    };
+  static defaultProps = {
+    componentClass: 'div'
+  };
 
-    handleKeyDown = (event) => {
-      if (event.keyCode === 40) { // Down
-        this.focusNext();
-        event.preventDefault();
-        return;
-      }
-
-      if (event.keyCode === 38) { // up
-        this.focusPrevious();
-        event.preventDefault();
-        return;
-      }
-
-      if (event.keyCode === 27 || event.keyCode === 9) { // esc or tab
-        this.props.onClose(event);
-        return;
-      }
-    };
-
-    getItemsAndActiveIndex() {
-      const items = this.getFocusableMenuItems();
-      const activeIndex = items.indexOf(document.activeElement);
-
-      return { items, activeIndex };
+  handleKeyDown = (event) => {
+    if (event.keyCode === 40) { // Down
+      this.focusNext();
+      event.preventDefault();
+      return;
     }
 
-    getFocusableMenuItems() {
-      const node = ReactDOM.findDOMNode(this);
-      if (!node) {
-        return [];
-      }
-
-      return Array.from(node.querySelectorAll('[tabIndex="-1"]:not([disabled])'));
+    if (event.keyCode === 38) { // up
+      this.focusPrevious();
+      event.preventDefault();
+      return;
     }
 
-    focusNext() {
-      const { items, activeIndex } = this.getItemsAndActiveIndex();
-      if (items.length === 0) {
-        return;
-      }
+    if (event.keyCode === 27 || event.keyCode === 9) { // esc or tab
+      this.props.onClose(event);
+      return;
+    }
+  };
 
-      const nextIndex = (activeIndex >= items.length - 1) ? 0 : activeIndex + 1;
-      items[nextIndex].focus();
+  getItemsAndActiveIndex() {
+    const items = this.getFocusableMenuItems();
+    const activeIndex = items.indexOf(document.activeElement);
+
+    return { items, activeIndex };
+  }
+
+  getFocusableMenuItems() {
+    const node = ReactDOM.findDOMNode(this);
+    if (!node) {
+      return [];
     }
 
-    focusPrevious() {
-      const { items, activeIndex } = this.getItemsAndActiveIndex();
-      if (items.length === 0) {
-        return;
-      }
+    return Array.from(node.querySelectorAll('[tabIndex="-1"]:not([disabled])'));
+  }
 
-      const prevIndex = (activeIndex <= 0) ? items.length - 1 : activeIndex - 1;
-      items[prevIndex].focus();
+  focusNext() {
+    const { items, activeIndex } = this.getItemsAndActiveIndex();
+    if (items.length === 0) {
+      return;
     }
 
-    render() {
-      const {
+    const nextIndex = (activeIndex >= items.length - 1) ? 0 : activeIndex + 1;
+    items[nextIndex].focus();
+  }
+
+  focusPrevious() {
+    const { items, activeIndex } = this.getItemsAndActiveIndex();
+    if (items.length === 0) {
+      return;
+    }
+
+    const prevIndex = (activeIndex <= 0) ? items.length - 1 : activeIndex - 1;
+    items[prevIndex].focus();
+  }
+
+  render() {
+    const {
             componentType, // eslint-disable-line
-        componentClass: Component,
-        open,
-        pullRight,
-        onClose,
-        onSelect,
-        rootCloseEvent,
-        className,
-        style = {},
-        children,
-        ...props
-      } = this.props;
+      componentClass: Component,
+      open,
+      pullRight,
+      onClose,
+      onSelect,
+      rootCloseEvent,
+      className,
+      style = {},
+      children,
+      ...props
+    } = this.props;
 
-      const activeMenuItems = React.Children.toArray(children)
-        .filter(child => React.isValidElement(child) && isMenuItem(child) && child.props.active);
+    const activeMenuItems = React.Children.toArray(children)
+      .filter(child => React.isValidElement(child) && isMenuItem(child) && child.props.active);
 
-      return (
-        <RootCloseWrapper
-          disabled={!open}
-          onRootClose={onClose}
-          event={rootCloseEvent}
+    return (
+      <RootCloseWrapper
+        disabled={!open}
+        onRootClose={onClose}
+        event={rootCloseEvent}
+      >
+        <Component
+          {...props}
+          role="menu"
+          className={cx(className, {
+            [styles.dropdownMenu]: true,
+            [styles.selected]: activeMenuItems.length > 0,
+            [styles.pullRight]: !!pullRight
+          })}
+          style={style}
         >
-          <Component
-            {...props}
-            role="menu"
-            className={cx(className, {
-              [styles.dropdownMenu]: true,
-              [styles.selected]: activeMenuItems.length > 0,
-              [styles.pullRight]: !!pullRight
-            })}
-            style={style}
-          >
-            {React.Children.map(children, child => {
-              if (React.isValidElement(child) && isMenuItem(child)) {
-                return cloneElement(child, {
-                  DropdownMenu,
-                  onKeyDown: chainedFunction(
-                    child.props.onKeyDown,
-                    this.handleKeyDown
-                  ),
-                  onSelect: chainedFunction(
-                    child.props.onSelect,
-                    onSelect
-                  )
-                });
-              }
+          {React.Children.map(children, child => {
+            if (React.isValidElement(child) && isMenuItem(child)) {
+              return cloneElement(child, {
+                DropdownMenu,
+                onKeyDown: chainedFunction(
+                  child.props.onKeyDown,
+                  this.handleKeyDown
+                ),
+                onSelect: chainedFunction(
+                  child.props.onSelect,
+                  onSelect
+                )
+              });
+            }
 
-              return child;
-            })}
-          </Component>
-        </RootCloseWrapper>
-      );
-    }
+            return child;
+          })}
+        </Component>
+      </RootCloseWrapper>
+    );
+  }
 }
 
 // For component matching

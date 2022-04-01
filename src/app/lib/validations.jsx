@@ -2,9 +2,9 @@
 import React from 'react';
 import i18n from './i18n';
 
-const Error = (props) => (
-  <div {...props} style={{ color: '#A94442' }} />
-);
+function Error(props) {
+  return <div {...props} style={{ color: '#A94442' }} />;
+}
 
 const required = (value, props, components) => {
   if (props.type === 'radio') {

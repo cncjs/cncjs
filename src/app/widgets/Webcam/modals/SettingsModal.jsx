@@ -1,7 +1,7 @@
 import {
   Box,
   TextLabel,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import _find from 'lodash/find';
 import React, { useEffect, useState } from 'react';
 import { Form, Field } from 'react-final-form';
@@ -50,9 +50,9 @@ const useVideoDevices = () => {
   };
 };
 
-const SettingsModal = ({
+function SettingsModal({
   onClose,
-}) => {
+}) {
   const config = useWidgetConfig();
   const initialValues = {
     mediaSource: config.get('mediaSource'),
@@ -195,6 +195,6 @@ const SettingsModal = ({
       </Form>
     </Modal>
   );
-};
+}
 
 export default SettingsModal;

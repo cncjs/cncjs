@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Icon from 'react-icon-base';
 
-const HeatedBed = ({ color = '#000', ...props }) => {
+function HeatedBed({ color = '#000', ...props }) {
   const stroke = {
     st0: {
       fill: 'none',
@@ -44,7 +44,7 @@ const HeatedBed = ({ color = '#000', ...props }) => {
       />
     </Icon>
   );
-};
+}
 
 HeatedBed.propTypes = {
   color: PropTypes.string

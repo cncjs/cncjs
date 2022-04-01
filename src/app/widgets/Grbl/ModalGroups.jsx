@@ -13,9 +13,9 @@ import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import OverflowEllipsis from './components/OverflowEllipsis';
 import Readout from './components/Readout';
 
-const ModalGroups = ({
+function ModalGroups({
   modal,
-}) => {
+}) {
   const config = useWidgetConfig();
   const expanded = config.get('panel.modalGroups.expanded');
   const collapsed = !expanded;
@@ -148,7 +148,7 @@ const ModalGroups = ({
       }}
     </CollapsibleCard>
   );
-};
+}
 
 export default connect(store => {
   const controllerState = _get(store, 'controller.state');

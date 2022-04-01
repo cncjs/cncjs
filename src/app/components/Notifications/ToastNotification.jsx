@@ -3,12 +3,14 @@ import React from 'react';
 import Notification from './Notification';
 import styles from './index.styl';
 
-const ToastNotification = ({ className, ...props }) => (
-  <Notification
-    {...props}
-    className={cx(className, styles.toastNotification)}
-  />
-);
+function ToastNotification({ className, ...props }) {
+  return (
+    <Notification
+      {...props}
+      className={cx(className, styles.toastNotification)}
+    />
+  );
+}
 
 ToastNotification.propTypes = {
   ...Notification.propTypes

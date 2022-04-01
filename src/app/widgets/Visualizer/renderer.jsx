@@ -1,6 +1,6 @@
 import {
   Space,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import path from 'path';
 import cx from 'classnames';
 import includes from 'lodash/includes';
@@ -11,7 +11,7 @@ import i18n from 'app/lib/i18n';
 import { formatBytes } from 'app/lib/numeral';
 import styles from './renderer.styl';
 
-const TreeNode = (props) => {
+function TreeNode(props) {
   const { componentClass, id, selected, disabled, className, children, ...others } = props;
   const Component = componentClass || 'tr';
 
@@ -29,7 +29,7 @@ const TreeNode = (props) => {
       {children}
     </Component>
   );
-};
+}
 TreeNode.propTypes = {
   componentClass: PropTypes.node,
   id: PropTypes.oneOfType([
@@ -40,7 +40,7 @@ TreeNode.propTypes = {
   disabled: PropTypes.bool
 };
 
-const TreeNodeColumn = (props) => {
+function TreeNodeColumn(props) {
   const { className, children, padding = true, componentClass, ...others } = props;
   const Component = componentClass || 'td';
 
@@ -56,13 +56,13 @@ const TreeNodeColumn = (props) => {
       {children}
     </Component>
   );
-};
+}
 TreeNodeColumn.propTypes = {
   padding: PropTypes.bool,
   componentClass: PropTypes.node
 };
 
-const TreeNodeToggler = ({ show, expanded }) => {
+function TreeNodeToggler({ show, expanded }) {
   if (!show) {
     return null;
   }
@@ -86,13 +86,13 @@ const TreeNodeToggler = ({ show, expanded }) => {
       />
     </span>
   );
-};
+}
 TreeNodeToggler.propTypes = {
   show: PropTypes.bool,
   expanded: PropTypes.bool
 };
 
-const TreeNodeLoader = ({ show }) => {
+function TreeNodeLoader({ show }) {
   if (!show) {
     return null;
   }
@@ -109,7 +109,7 @@ const TreeNodeLoader = ({ show }) => {
       )}
     />
   );
-};
+}
 TreeNodeLoader.propTypes = {
   show: PropTypes.bool
 };

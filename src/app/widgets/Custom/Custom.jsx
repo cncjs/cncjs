@@ -14,9 +14,9 @@ import configStore from 'app/store/config';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import useWidgetEvent from 'app/widgets/shared/useWidgetEvent';
 
-const Custom = ({
+function Custom({
   disabled,
-}) => {
+}) {
   const config = useWidgetConfig();
   const emitter = useWidgetEvent();
   const url = config.get('url');
@@ -183,7 +183,7 @@ const Custom = ({
       }}
     />
   );
-};
+}
 
 export default Custom;
 

@@ -1,10 +1,10 @@
 import {
   Text,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import React from 'react';
 
-const MutedText = (props) => (
-  <Text color="#888" {...props} />
-);
+function MutedText(props) {
+  return <Text color="#888" {...props} />;
+}
 
 export default MutedText;

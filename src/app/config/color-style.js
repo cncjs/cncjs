@@ -1,6 +1,6 @@
 import {
   colorStyle,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 
 export default {
   ...colorStyle,

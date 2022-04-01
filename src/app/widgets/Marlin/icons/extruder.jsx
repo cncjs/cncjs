@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Icon from 'react-icon-base';
 
-const Extruder = ({ color = '#000', ...props }) => {
+function Extruder({ color = '#000', ...props }) {
   const stroke = {
     st1: {
       fill: 'none',
@@ -45,7 +45,7 @@ const Extruder = ({ color = '#000', ...props }) => {
       <path fill={color} d="M34 56h-4l-1 6h6z" />
     </Icon>
   );
-};
+}
 
 Extruder.propTypes = {
   color: PropTypes.string

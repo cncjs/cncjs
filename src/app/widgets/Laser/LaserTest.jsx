@@ -1,6 +1,6 @@
 import {
   Text,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import { ensurePositiveNumber } from 'ensure-type';
 import _get from 'lodash/get';
 import React from 'react';
@@ -22,9 +22,9 @@ import i18n from 'app/lib/i18n';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import OverflowEllipsis from './components/OverflowEllipsis';
 
-const LaserTest = ({
+function LaserTest({
   isConnected,
-}) => {
+}) {
   const config = useWidgetConfig();
   const initialValues = {
     test: {
@@ -242,7 +242,7 @@ const LaserTest = ({
       }}
     </CollapsibleCard>
   );
-};
+}
 
 export default connect(store => {
   const connectionState = _get(store, 'connection.state');

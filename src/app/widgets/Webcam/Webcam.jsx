@@ -1,7 +1,7 @@
 import {
   Box,
   Text,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import cx from 'classnames';
 import _isEqual from 'lodash/isEqual';
 import Slider from 'rc-slider';
@@ -42,10 +42,10 @@ const mapMetaAddressToHostname = (url) => {
   });
 };
 
-const Webcam = ({
+function Webcam({
   disabled,
   isFullscreen,
-}) => {
+}) {
   const config = useWidgetConfig();
   const emitter = useWidgetEvent();
   const mediaSource = config.get('mediaSource');
@@ -335,7 +335,7 @@ const Webcam = ({
       </WebcamContainer>
     </>
   );
-};
+}
 
 export default compose(
   withMemo(_isEqual),

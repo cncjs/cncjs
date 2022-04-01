@@ -149,9 +149,6 @@ export default {
 
       // path to post missing resources
       addPath: path.resolve(__dirname, '..', 'i18n', '{{lng}}', '{{ns}}.savedMissing.json'),
-
-      // jsonIndent to use when storing json files
-      jsonIndent: 4
     }
   }
 };

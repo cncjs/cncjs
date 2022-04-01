@@ -1,5 +1,5 @@
 import { test } from 'tap';
-import MarlinRunner from '../src/server/controllers/Marlin/MarlinRunner';
+import MarlinRunner from 'server/controllers/Marlin/MarlinRunner';
 
 test('MarlinRunner', (t) => {
   t.test('MarlinLineParserResultEcho', (t) => {

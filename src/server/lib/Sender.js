@@ -9,414 +9,414 @@ export const SP_TYPE_CHAR_COUNTING = 1;
 const noop = () => {};
 
 class SPSendResponse {
-    callback = null;
+  callback = null;
 
-    constructor(options, callback = noop) {
-      if (typeof options === 'function') {
-        callback = options;
-        options = {};
-      }
-      if (typeof callback === 'function') {
-        this.callback = callback;
-      }
+  constructor(options, callback = noop) {
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
     }
+    if (typeof callback === 'function') {
+      this.callback = callback;
+    }
+  }
 
-    process() {
-      this.callback && this.callback(this);
-    }
+  process() {
+    this.callback && this.callback(this);
+  }
 
-    clear() {
-      // Do nothing
-    }
+  clear() {
+    // Do nothing
+  }
 
-    get type() {
-      return SP_TYPE_SEND_RESPONSE;
-    }
+  get type() {
+    return SP_TYPE_SEND_RESPONSE;
+  }
 }
 
 class SPCharCounting {
-    callback = null;
+  callback = null;
 
-    state = {
-      bufferSize: 128, // Defaults to 128
-      dataLength: 0,
-      queue: [],
-      line: ''
-    };
+  state = {
+    bufferSize: 128, // Defaults to 128
+    dataLength: 0,
+    queue: [],
+    line: ''
+  };
 
-    constructor(options, callback = noop) {
-      if (typeof options === 'function') {
-        callback = options;
-        options = {};
-      }
-
-      // bufferSize
-      const bufferSize = Number(options.bufferSize);
-      if (bufferSize && bufferSize > 0) {
-        this.state.bufferSize = bufferSize;
-      }
-
-      if (typeof callback === 'function') {
-        this.callback = callback;
-      }
+  constructor(options, callback = noop) {
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
     }
 
-    process() {
-      this.callback && this.callback(this);
+    // bufferSize
+    const bufferSize = Number(options.bufferSize);
+    if (bufferSize && bufferSize > 0) {
+      this.state.bufferSize = bufferSize;
     }
 
-    reset() {
-      this.state.bufferSize = 128; // Defaults to 128
-      this.state.dataLength = 0;
-      this.state.queue = [];
-      this.state.line = '';
+    if (typeof callback === 'function') {
+      this.callback = callback;
+    }
+  }
+
+  process() {
+    this.callback && this.callback(this);
+  }
+
+  reset() {
+    this.state.bufferSize = 128; // Defaults to 128
+    this.state.dataLength = 0;
+    this.state.queue = [];
+    this.state.line = '';
+  }
+
+  clear() {
+    this.state.dataLength = 0;
+    this.state.queue = [];
+    this.state.line = '';
+  }
+
+  get type() {
+    return SP_TYPE_CHAR_COUNTING;
+  }
+
+  get bufferSize() {
+    return this.state.bufferSize;
+  }
+
+  set bufferSize(bufferSize = 0) {
+    bufferSize = Number(bufferSize);
+    if (!bufferSize) {
+      return;
     }
 
-    clear() {
-      this.state.dataLength = 0;
-      this.state.queue = [];
-      this.state.line = '';
-    }
+    // The buffer size cannot be reduced below the size of the data within the buffer.
+    this.state.bufferSize = Math.max(bufferSize, this.state.dataLength);
+  }
 
-    get type() {
-      return SP_TYPE_CHAR_COUNTING;
-    }
+  get dataLength() {
+    return this.state.dataLength;
+  }
 
-    get bufferSize() {
-      return this.state.bufferSize;
-    }
+  set dataLength(dataLength) {
+    this.state.dataLength = dataLength;
+  }
 
-    set bufferSize(bufferSize = 0) {
-      bufferSize = Number(bufferSize);
-      if (!bufferSize) {
-        return;
-      }
+  get queue() {
+    return this.state.queue;
+  }
 
-      // The buffer size cannot be reduced below the size of the data within the buffer.
-      this.state.bufferSize = Math.max(bufferSize, this.state.dataLength);
-    }
+  set queue(queue) {
+    this.state.queue = queue;
+  }
 
-    get dataLength() {
-      return this.state.dataLength;
-    }
+  get line() {
+    return this.state.line;
+  }
 
-    set dataLength(dataLength) {
-      this.state.dataLength = dataLength;
-    }
-
-    get queue() {
-      return this.state.queue;
-    }
-
-    set queue(queue) {
-      this.state.queue = queue;
-    }
-
-    get line() {
-      return this.state.line;
-    }
-
-    set line(line) {
-      this.state.line = line;
-    }
+  set line(line) {
+    this.state.line = line;
+  }
 }
 
 class Sender extends EventEmitter {
-    // streaming protocol
-    sp = null;
+  // streaming protocol
+  sp = null;
 
-    state = {
-      loaded: false,
-      hold: false,
-      holdReason: null,
-      name: '',
-      content: '',
-      context: {},
-      lines: [],
-      total: 0,
-      sent: 0,
-      received: 0,
-      startTime: 0,
-      finishTime: 0,
-      elapsedTime: 0,
-      remainingTime: 0
-    };
+  state = {
+    loaded: false,
+    hold: false,
+    holdReason: null,
+    name: '',
+    content: '',
+    context: {},
+    lines: [],
+    total: 0,
+    sent: 0,
+    received: 0,
+    startTime: 0,
+    finishTime: 0,
+    elapsedTime: 0,
+    remainingTime: 0
+  };
 
-    stateChanged = false;
+  stateChanged = false;
 
-    dataFilter = null;
+  dataFilter = null;
 
-    // @param {number} [type] Streaming protocol type. 0 for send-response, 1 for character-counting.
-    // @param {object} [options] The options object.
-    // @param {number} [options.bufferSize] The buffer size used in character-counting streaming protocol. Defaults to 127.
-    // @param {function} [options.dataFilter] A function to be used to handle the data. The function accepts two arguments: The data to be sent to the controller, and the context.
-    constructor(type = SP_TYPE_SEND_RESPONSE, options = {}) {
-      super();
+  // @param {number} [type] Streaming protocol type. 0 for send-response, 1 for character-counting.
+  // @param {object} [options] The options object.
+  // @param {number} [options.bufferSize] The buffer size used in character-counting streaming protocol. Defaults to 127.
+  // @param {function} [options.dataFilter] A function to be used to handle the data. The function accepts two arguments: The data to be sent to the controller, and the context.
+  constructor(type = SP_TYPE_SEND_RESPONSE, options = {}) {
+    super();
 
-      if (typeof options.dataFilter === 'function') {
-        this.dataFilter = options.dataFilter;
-      }
+    if (typeof options.dataFilter === 'function') {
+      this.dataFilter = options.dataFilter;
+    }
 
-      // character-counting
-      if (type === SP_TYPE_CHAR_COUNTING) {
-        this.sp = new SPCharCounting(options, (sp) => {
-          if (sp.queue.length > 0) {
-            const lineLength = sp.queue.shift();
-            sp.dataLength -= lineLength;
+    // character-counting
+    if (type === SP_TYPE_CHAR_COUNTING) {
+      this.sp = new SPCharCounting(options, (sp) => {
+        if (sp.queue.length > 0) {
+          const lineLength = sp.queue.shift();
+          sp.dataLength -= lineLength;
+        }
+
+        while (!this.state.hold && (this.state.sent < this.state.total)) {
+          // Remove leading and trailing whitespace from both ends of a string
+          sp.line = sp.line || this.state.lines[this.state.sent].trim();
+
+          if (this.dataFilter) {
+            sp.line = this.dataFilter(sp.line, this.state.context) || '';
           }
 
-          while (!this.state.hold && (this.state.sent < this.state.total)) {
-            // Remove leading and trailing whitespace from both ends of a string
-            sp.line = sp.line || this.state.lines[this.state.sent].trim();
-
-            if (this.dataFilter) {
-              sp.line = this.dataFilter(sp.line, this.state.context) || '';
-            }
-
-            // The newline character (\n) consumed the RX buffer space
-            if ((sp.line.length > 0) && ((sp.dataLength + sp.line.length + 1) >= sp.bufferSize)) {
-              break;
-            }
-
-            this.state.sent++;
-            this.emit('change');
-
-            if (sp.line.length === 0) {
-              this.ack(); // ack empty line
-              continue;
-            }
-
-            const line = sp.line + '\n';
-            sp.line = '';
-            sp.dataLength += line.length;
-            sp.queue.push(line.length);
-            this.emit('data', line, this.state.context);
-          }
-        });
-      }
-
-      // send-response
-      if (type === SP_TYPE_SEND_RESPONSE) {
-        this.sp = new SPSendResponse(options, (sp) => {
-          while (!this.state.hold && (this.state.sent < this.state.total)) {
-            // Remove leading and trailing whitespace from both ends of a string
-            let line = this.state.lines[this.state.sent].trim();
-
-            if (this.dataFilter) {
-              line = this.dataFilter(line, this.state.context) || '';
-            }
-
-            this.state.sent++;
-            this.emit('change');
-
-            if (line.length === 0) {
-              this.ack(); // ack empty line
-              continue;
-            }
-
-            this.emit('data', line + '\n', this.state.context);
+          // The newline character (\n) consumed the RX buffer space
+          if ((sp.line.length > 0) && ((sp.dataLength + sp.line.length + 1) >= sp.bufferSize)) {
             break;
           }
-        });
-      }
 
-      this.on('change', () => {
-        this.stateChanged = true;
+          this.state.sent++;
+          this.emit('change');
+
+          if (sp.line.length === 0) {
+            this.ack(); // ack empty line
+            continue;
+          }
+
+          const line = sp.line + '\n';
+          sp.line = '';
+          sp.dataLength += line.length;
+          sp.queue.push(line.length);
+          this.emit('data', line, this.state.context);
+        }
       });
     }
 
-    toJSON() {
-      return {
-        sp: this.sp.type,
-        loaded: this.state.loaded,
-        hold: this.state.hold,
-        holdReason: this.state.holdReason,
-        name: this.state.name,
-        context: this.state.context,
-        size: _size(this.state.content),
-        total: this.state.total,
-        sent: this.state.sent,
-        received: this.state.received,
-        startTime: this.state.startTime,
-        finishTime: this.state.finishTime,
-        elapsedTime: this.state.elapsedTime,
-        remainingTime: this.state.remainingTime,
-      };
+    // send-response
+    if (type === SP_TYPE_SEND_RESPONSE) {
+      this.sp = new SPSendResponse(options, (sp) => {
+        while (!this.state.hold && (this.state.sent < this.state.total)) {
+          // Remove leading and trailing whitespace from both ends of a string
+          let line = this.state.lines[this.state.sent].trim();
+
+          if (this.dataFilter) {
+            line = this.dataFilter(line, this.state.context) || '';
+          }
+
+          this.state.sent++;
+          this.emit('change');
+
+          if (line.length === 0) {
+            this.ack(); // ack empty line
+            continue;
+          }
+
+          this.emit('data', line + '\n', this.state.context);
+          break;
+        }
+      });
     }
 
-    hold(reason) {
-      if (this.state.hold) {
-        return;
-      }
-      this.state.hold = true;
-      this.state.holdReason = reason;
-      this.emit('hold');
-      this.emit('change');
+    this.on('change', () => {
+      this.stateChanged = true;
+    });
+  }
+
+  toJSON() {
+    return {
+      sp: this.sp.type,
+      loaded: this.state.loaded,
+      hold: this.state.hold,
+      holdReason: this.state.holdReason,
+      name: this.state.name,
+      context: this.state.context,
+      size: _size(this.state.content),
+      total: this.state.total,
+      sent: this.state.sent,
+      received: this.state.received,
+      startTime: this.state.startTime,
+      finishTime: this.state.finishTime,
+      elapsedTime: this.state.elapsedTime,
+      remainingTime: this.state.remainingTime,
+    };
+  }
+
+  hold(reason) {
+    if (this.state.hold) {
+      return;
+    }
+    this.state.hold = true;
+    this.state.holdReason = reason;
+    this.emit('hold');
+    this.emit('change');
+  }
+
+  unhold() {
+    if (!this.state.hold) {
+      return;
+    }
+    this.state.hold = false;
+    this.state.holdReason = null;
+    this.emit('unhold');
+    this.emit('change');
+  }
+
+  // @return {boolean} Returns true on success, false otherwise.
+  load(meta, context = {}) {
+    let name = '';
+    let content = '';
+
+    if (typeof meta === 'string') {
+      content = meta;
+    } else {
+      name = _get(meta, 'name');
+      content = _get(meta, 'content');
     }
 
-    unhold() {
-      if (!this.state.hold) {
-        return;
-      }
-      this.state.hold = false;
-      this.state.holdReason = null;
-      this.emit('unhold');
-      this.emit('change');
+    if (typeof content !== 'string' || !content) {
+      return false;
     }
 
-    // @return {boolean} Returns true on success, false otherwise.
-    load(meta, context = {}) {
-      let name = '';
-      let content = '';
+    const lines = content.split('\n')
+      .filter(line => (line.trim().length > 0));
 
-      if (typeof meta === 'string') {
-        content = meta;
-      } else {
-        name = _get(meta, 'name');
-        content = _get(meta, 'content');
-      }
+    if (this.sp) {
+      this.sp.clear();
+    }
+    this.state.loaded = true;
+    this.state.hold = false;
+    this.state.holdReason = null;
+    this.state.name = name;
+    this.state.content = content;
+    this.state.context = context;
+    this.state.lines = lines;
+    this.state.total = this.state.lines.length;
+    this.state.sent = 0;
+    this.state.received = 0;
+    this.state.startTime = 0;
+    this.state.finishTime = 0;
+    this.state.elapsedTime = 0;
+    this.state.remainingTime = 0;
 
-      if (typeof content !== 'string' || !content) {
-        return false;
-      }
+    this.emit('load');
+    this.emit('change');
 
-      const lines = content.split('\n')
-        .filter(line => (line.trim().length > 0));
+    return true;
+  }
 
-      if (this.sp) {
-        this.sp.clear();
-      }
-      this.state.loaded = true;
-      this.state.hold = false;
-      this.state.holdReason = null;
-      this.state.name = name;
-      this.state.content = content;
-      this.state.context = context;
-      this.state.lines = lines;
-      this.state.total = this.state.lines.length;
-      this.state.sent = 0;
-      this.state.received = 0;
-      this.state.startTime = 0;
+  unload() {
+    if (this.sp) {
+      this.sp.clear();
+    }
+    this.state.loaded = false;
+    this.state.hold = false;
+    this.state.holdReason = null;
+    this.state.name = '';
+    this.state.content = '';
+    this.state.context = {};
+    this.state.lines = [];
+    this.state.total = 0;
+    this.state.sent = 0;
+    this.state.received = 0;
+    this.state.startTime = 0;
+    this.state.finishTime = 0;
+    this.state.elapsedTime = 0;
+    this.state.remainingTime = 0;
+
+    this.emit('unload');
+    this.emit('change');
+  }
+
+  // Tells the sender an acknowledgement has received.
+  // @return {boolean} Returns true on success, false otherwise.
+  ack() {
+    if (!this.state.content) {
+      return false;
+    }
+
+    if (this.state.received >= this.state.sent) {
+      return false;
+    }
+
+    this.state.received++;
+    this.emit('change');
+
+    return true;
+  }
+
+  // Tells the sender to send more data.
+  // @return {boolean} Returns true on success, false otherwise.
+  next() {
+    if (!this.state.content) {
+      return false;
+    }
+
+    const now = new Date().getTime();
+
+    if (this.state.total > 0 && this.state.sent === 0) {
+      this.state.startTime = now;
       this.state.finishTime = 0;
       this.state.elapsedTime = 0;
       this.state.remainingTime = 0;
-
-      this.emit('load');
-      this.emit('change');
-
-      return true;
-    }
-
-    unload() {
-      if (this.sp) {
-        this.sp.clear();
-      }
-      this.state.loaded = false;
-      this.state.hold = false;
-      this.state.holdReason = null;
-      this.state.name = '';
-      this.state.content = '';
-      this.state.context = {};
-      this.state.lines = [];
-      this.state.total = 0;
-      this.state.sent = 0;
-      this.state.received = 0;
-      this.state.startTime = 0;
-      this.state.finishTime = 0;
-      this.state.elapsedTime = 0;
-      this.state.remainingTime = 0;
-
-      this.emit('unload');
+      this.emit('start', this.state.startTime);
       this.emit('change');
     }
 
-    // Tells the sender an acknowledgement has received.
-    // @return {boolean} Returns true on success, false otherwise.
-    ack() {
-      if (!this.state.content) {
-        return false;
-      }
-
-      if (this.state.received >= this.state.sent) {
-        return false;
-      }
-
-      this.state.received++;
-      this.emit('change');
-
-      return true;
+    if (this.sp) {
+      this.sp.process();
     }
 
-    // Tells the sender to send more data.
-    // @return {boolean} Returns true on success, false otherwise.
-    next() {
-      if (!this.state.content) {
-        return false;
-      }
+    // Elapsed Time
+    this.state.elapsedTime = now - this.state.startTime;
 
-      const now = new Date().getTime();
+    // Make a 1 second delay before estimating the remaining time
+    if (this.state.elapsedTime >= 1000 && this.state.received > 0) {
+      const timePerCode = this.state.elapsedTime / this.state.received;
+      this.state.remainingTime = (timePerCode * this.state.total - this.state.elapsedTime);
+    }
 
-      if (this.state.total > 0 && this.state.sent === 0) {
-        this.state.startTime = now;
-        this.state.finishTime = 0;
-        this.state.elapsedTime = 0;
-        this.state.remainingTime = 0;
-        this.emit('start', this.state.startTime);
+    if (this.state.received >= this.state.total) {
+      if (this.state.finishTime === 0) {
+        // avoid issue 'end' multiple times
+        this.state.finishTime = now;
+        this.emit('end', this.state.finishTime);
         this.emit('change');
       }
-
-      if (this.sp) {
-        this.sp.process();
-      }
-
-      // Elapsed Time
-      this.state.elapsedTime = now - this.state.startTime;
-
-      // Make a 1 second delay before estimating the remaining time
-      if (this.state.elapsedTime >= 1000 && this.state.received > 0) {
-        const timePerCode = this.state.elapsedTime / this.state.received;
-        this.state.remainingTime = (timePerCode * this.state.total - this.state.elapsedTime);
-      }
-
-      if (this.state.received >= this.state.total) {
-        if (this.state.finishTime === 0) {
-          // avoid issue 'end' multiple times
-          this.state.finishTime = now;
-          this.emit('end', this.state.finishTime);
-          this.emit('change');
-        }
-      }
-
-      return true;
     }
 
-    // Rewinds the internal array pointer.
-    // @return {boolean} Returns true on success, false otherwise.
-    rewind() {
-      if (!this.state.content) {
-        return false;
-      }
+    return true;
+  }
 
-      if (this.sp) {
-        this.sp.clear();
-      }
-      this.state.hold = false; // clear hold off state
-      this.state.holdReason = null;
-      this.state.sent = 0;
-      this.state.received = 0;
-      this.emit('rewind');
-      this.emit('change');
-
-      return true;
+  // Rewinds the internal array pointer.
+  // @return {boolean} Returns true on success, false otherwise.
+  rewind() {
+    if (!this.state.content) {
+      return false;
     }
 
-    // Checks if there are any state changes. It also clears the stateChanged flag.
-    // @return {boolean} Returns true on state changes, false otherwise.
-    peek() {
-      const stateChanged = this.stateChanged;
-      this.stateChanged = false;
-      return stateChanged;
+    if (this.sp) {
+      this.sp.clear();
     }
+    this.state.hold = false; // clear hold off state
+    this.state.holdReason = null;
+    this.state.sent = 0;
+    this.state.received = 0;
+    this.emit('rewind');
+    this.emit('change');
+
+    return true;
+  }
+
+  // Checks if there are any state changes. It also clears the stateChanged flag.
+  // @return {boolean} Returns true on state changes, false otherwise.
+  peek() {
+    const stateChanged = this.stateChanged;
+    this.stateChanged = false;
+    return stateChanged;
+  }
 }
 
 export default Sender;

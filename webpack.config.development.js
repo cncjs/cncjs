@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -45,12 +46,6 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.jsx?$/,
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        exclude: /node_modules/
-      },
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
@@ -138,7 +133,6 @@ module.exports = {
     ].filter(Boolean),
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.EnvironmentPlugin({
       NODE_ENV: JSON.stringify('development'),
       BUILD_VERSION: JSON.stringify(buildVersion),
@@ -152,6 +146,7 @@ module.exports = {
       /moment[\/\\]locale$/,
       new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$'),
     ),
+    new ESLintPlugin(),
     new MiniCssExtractPlugin({
       filename: `[name].css?_=${timestamp}`,
       chunkFilename: `[id].css?_=${timestamp}`,
@@ -202,14 +197,12 @@ module.exports = {
     ],
   },
   devServer: {
-    host: process.env.WEBPACK_DEV_SERVER_HOST,
-    disableHostCheck: true,
-    noInfo: false,
-    lazy: false,
-    watchOptions: {
-      ignored: /node_modules/,
+    compress: true,
+    devMiddleware: {
+      writeToDisk: true,
     },
-    writeToDisk: true,
+    host: process.env.WEBPACK_DEV_SERVER_HOST,
+    hot: true,
     proxy: {
       '/api': {
         target: process.env.PROXY_TARGET,
@@ -219,6 +212,10 @@ module.exports = {
         target: process.env.PROXY_TARGET,
         changeOrigin: true,
       },
+    },
+    static: {
+      directory: path.resolve(__dirname, 'output/cncjs/app'),
+      watch: true,
     },
   },
 };

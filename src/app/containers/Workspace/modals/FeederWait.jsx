@@ -7,41 +7,43 @@ import Modal from 'app/components/Modal';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 
-const FeederWait = (props) => (
-  <Modal
-    size="xs"
-    disableOverlayClick
-    showCloseButton={false}
-  >
-    <Modal.Body>
-      <ModalTemplate type="warning">
-        {({ PrimaryMessage, DescriptiveMessage }) => (
-          <>
-            <PrimaryMessage>
-              {props.title}
-            </PrimaryMessage>
-            <DescriptiveMessage>
-              {i18n._('Waiting for the planner to empty...')}
-            </DescriptiveMessage>
-          </>
-        )}
-      </ModalTemplate>
-    </Modal.Body>
-    <Modal.Footer>
-      <Button
-        btnStyle="danger"
-        onClick={chainedFunction(
-          () => {
-            controller.command('feeder:stop');
-          },
-          props.onClose
-        )}
-      >
-        {i18n._('Stop')}
-      </Button>
-    </Modal.Footer>
-  </Modal>
-);
+function FeederWait(props) {
+  return (
+    <Modal
+      size="xs"
+      disableOverlayClick
+      showCloseButton={false}
+    >
+      <Modal.Body>
+        <ModalTemplate type="warning">
+          {({ PrimaryMessage, DescriptiveMessage }) => (
+            <>
+              <PrimaryMessage>
+                {props.title}
+              </PrimaryMessage>
+              <DescriptiveMessage>
+                {i18n._('Waiting for the planner to empty...')}
+              </DescriptiveMessage>
+            </>
+          )}
+        </ModalTemplate>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button
+          btnStyle="danger"
+          onClick={chainedFunction(
+            () => {
+              controller.command('feeder:stop');
+            },
+            props.onClose
+          )}
+        >
+          {i18n._('Stop')}
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}
 
 FeederWait.propTypes = {
   title: PropTypes.string,

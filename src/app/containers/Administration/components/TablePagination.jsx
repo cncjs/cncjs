@@ -1,6 +1,6 @@
 import {
   Space,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import React, { Fragment } from 'react';
 import styled, { css } from 'styled-components';
 import Hoverable from 'app/components/Hoverable';
@@ -21,30 +21,32 @@ const Caret = styled.i`${({
     border-top-color: ${hovered ? '#0096cc' : '#666'};
 `}`;
 
-export default (props) => (
-  <TablePagination
-    {...props}
-    pageRecordsRenderer={({ totalRecords, from, to }) => {
-      if (totalRecords > 0) {
-        return i18n._('Records: {{from}} - {{to}} / {{total}}', {
-          from,
-          to,
-          total: totalRecords
-        });
-      }
+export default function(props) {
+  return (
+    <TablePagination
+      {...props}
+      pageRecordsRenderer={({ totalRecords, from, to }) => {
+        if (totalRecords > 0) {
+          return i18n._('Records: {{from}} - {{to}} / {{total}}', {
+            from,
+            to,
+            total: totalRecords
+          });
+        }
 
-      return i18n._('Records: {{total}}', { total: totalRecords });
-    }}
-    pageLengthRenderer={({ pageLength }) => (
-      <Hoverable>
-        {({ hovered }) => (
-          <Fragment>
-            {i18n._('{{pageLength}} per page', { pageLength })}
-            <Space width={8} />
-            <Caret hovered={hovered} />
-          </Fragment>
-        )}
-      </Hoverable>
-    )}
-  />
-);
+        return i18n._('Records: {{total}}', { total: totalRecords });
+      }}
+      pageLengthRenderer={({ pageLength }) => (
+        <Hoverable>
+          {({ hovered }) => (
+            <>
+              {i18n._('{{pageLength}} per page', { pageLength })}
+              <Space width={8} />
+              <Caret hovered={hovered} />
+            </>
+          )}
+        </Hoverable>
+      )}
+    />
+  );
+}

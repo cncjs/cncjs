@@ -1,7 +1,7 @@
 import {
   Space,
   TextLabel,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import { ensureArray, ensurePositiveNumber } from 'ensure-type';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
@@ -31,12 +31,12 @@ import i18n from 'app/lib/i18n';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import iconFan from './images/fan.svg';
 
-const Spindle = ({
+function Spindle({
   isActionable,
   mistCoolant,
   floodCoolant,
   spindle,
-}) => {
+}) {
   const config = useWidgetConfig();
   const initialValues = {
     speed: ensurePositiveNumber(config.get('speed', 1000)),
@@ -187,28 +187,26 @@ const Spindle = ({
               <Col width={8}>
                 <Field name="speed">
                   {({ input, meta }) => (
-                    <>
-                      <InputGroup sm>
-                        <Input
-                          type="number"
-                          value={input.value}
-                          min={0}
-                          step={1}
-                          onChange={(event) => {
-                            const value = event.target.value;
-                            input.onChange(value);
+                    <InputGroup sm>
+                      <Input
+                        type="number"
+                        value={input.value}
+                        min={0}
+                        step={1}
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          input.onChange(value);
 
-                            const speed = ensurePositiveNumber(value);
-                            config.set('speed', speed);
-                          }}
-                        />
-                        <InputGroup.Append>
-                          <InputGroup.Text>
-                            {i18n._('RPM')}
-                          </InputGroup.Text>
-                        </InputGroup.Append>
-                      </InputGroup>
-                    </>
+                          const speed = ensurePositiveNumber(value);
+                          config.set('speed', speed);
+                        }}
+                      />
+                      <InputGroup.Append>
+                        <InputGroup.Text>
+                          {i18n._('RPM')}
+                        </InputGroup.Text>
+                      </InputGroup.Append>
+                    </InputGroup>
                   )}
                 </Field>
               </Col>
@@ -218,7 +216,7 @@ const Spindle = ({
       )}
     </Form>
   );
-};
+}
 
 export default connect(store => {
   const isActionable = (() => {

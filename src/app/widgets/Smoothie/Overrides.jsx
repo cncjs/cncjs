@@ -5,7 +5,7 @@ import controller from 'app/lib/controller';
 import DigitalReadout from './DigitalReadout';
 import styles from './index.styl';
 
-const Overrides = (props) => {
+function Overrides(props) {
   const { ovF, ovS } = props;
 
   if (!ovF && !ovS) {
@@ -124,7 +124,7 @@ const Overrides = (props) => {
       )}
     </div>
   );
-};
+}
 
 Overrides.propTypes = {
   ovF: PropTypes.number,

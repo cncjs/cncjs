@@ -2,7 +2,7 @@ import {
   Box,
   Space,
   TextLabel,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import React from 'react';
@@ -15,7 +15,6 @@ import FormGroup from 'app/components/FormGroup';
 import Hoverable from 'app/components/Hoverable';
 import InlineError from 'app/components/InlineError';
 import InputGroup from 'app/components/InputGroup';
-import { useModal } from 'app/components/Modal';
 import Infotip from 'app/components/Infotip';
 import {
   IMPERIAL_UNITS,
@@ -32,6 +31,7 @@ import {
   WORKFLOW_STATE_IDLE,
 } from 'app/constants/workflow';
 import i18n from 'app/lib/i18n';
+import portal from 'app/lib/portal';
 import { in2mm, mapValueToUnits } from 'app/lib/units';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import { composeValidators, required, minValue } from 'app/widgets/shared/validations';
@@ -44,13 +44,12 @@ const mapProbeCommandToDescription = (probeCommand) => ({
   'G38.5': i18n._('G38.5 probe away from workpiece, stop on loss of contact'),
 }[probeCommand] || '');
 
-const Probe = ({
+function Probe({
   isActionable,
   units,
   wcs,
-}) => {
+}) {
   const config = useWidgetConfig();
-  const { openModal } = useModal();
   const initialValues = {
     probeAxis: config.get('probeAxis', 'Z'),
     probeCommand: config.get('probeCommand', 'G38.2'),
@@ -63,7 +62,8 @@ const Probe = ({
   const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
   const step = (units === METRIC_UNITS) ? 1 : 0.1;
   const openProbeModal = (probeData) => {
-    openModal(({ onClose }) => (
+    portal(({ onClose }) => (
+      // TODO
       <ProbeModal
         onClose={onClose}
         probeData={probeData}
@@ -428,7 +428,7 @@ const Probe = ({
       )}
     </Form>
   );
-};
+}
 
 export default connect(store => {
   const isActionable = (() => {

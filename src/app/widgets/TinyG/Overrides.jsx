@@ -1,6 +1,6 @@
 import {
   Space,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RepeatableButton from 'app/components/RepeatableButton';
@@ -8,7 +8,7 @@ import controller from 'app/lib/controller';
 import DigitalReadout from './DigitalReadout';
 import styles from './index.styl';
 
-const Overrides = (props) => {
+function Overrides(props) {
   const { ovF, ovS, ovT } = props;
 
   if (!ovF && !ovS && !ovT) {
@@ -164,7 +164,7 @@ const Overrides = (props) => {
       )}
     </div>
   );
-};
+}
 
 Overrides.propTypes = {
   ovF: PropTypes.number,

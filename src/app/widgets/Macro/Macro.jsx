@@ -7,15 +7,14 @@ import {
   Text,
   useColorMode,
   useColorStyle,
-} from '@trendmicro/react-styled-ui';
-import { useService } from '@xstate/react';
+} from '@tonic-ui/react';
+import { useActor } from '@xstate/react';
 import { ensureArray } from 'ensure-type';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import React, { useContext } from 'react';
 import { connect } from 'react-redux';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
-import useModal from 'app/components/Modal/useModal';
 import RenderBlock from 'app/components/RenderBlock';
 import {
   CONNECTION_STATE_CONNECTED,
@@ -35,6 +34,7 @@ import useMount from 'app/hooks/useMount';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import iframeExport from 'app/lib/iframe-export';
+import portal from 'app/lib/portal';
 import configStore from 'app/store/config';
 import LoadMacro from './modals/LoadMacro';
 import EditMacro from './modals/EditMacro';
@@ -53,13 +53,13 @@ const exportMacros = () => {
   });
 };
 
-const Macro = ({
+function Macro({
   canLoadMacro,
   canRunMacro,
-}) => {
+}) {
   const [colorMode] = useColorMode();
   const [colorStyle] = useColorStyle({ colorMode });
-  const secondaryColor = _get(colorStyle, 'text.secondary');
+  const secondaryColor = colorStyle?.color?.secondary;
   const borderColor = {
     dark: 'gray:60',
     light: 'gray:30'
@@ -73,12 +73,11 @@ const Macro = ({
     light: 'gray:10',
   }[colorMode];
   const { fetchMacrosService } = useContext(ServiceContext);
-  const [state, send] = useService(fetchMacrosService);
-  const { openModal } = useModal();
+  const [state, send] = useActor(fetchMacrosService);
 
   useEffectOnce(() => {
     const onConfigChange = () => {
-      send('FETCH');
+      send({ type: 'FETCH' });
     };
 
     controller.addListener('config:change', onConfigChange);
@@ -89,30 +88,48 @@ const Macro = ({
   });
 
   useMount(() => {
-    send('FETCH');
+    send({ type: 'FETCH' });
   });
 
   const handleNewMacro = () => {
-    openModal(NewMacro);
+    portal(({ onClose }) => (
+      // TODO
+      <NewMacro onClose={onClose} />
+    ));
   };
   const handleRefreshMacros = () => {
-    send('CLEAR');
-    send('FETCH');
+    send({ type: 'CLEAR' });
+    send({ type: 'FETCH' });
   };
   const handleExportMacros = () => {
     exportMacros();
   };
   const handleLoadMacro = (macro) => () => {
     const { id, name } = macro;
-    openModal(LoadMacro, { id, name });
+    portal(({ onClose }) => (
+      // TODO
+      <LoadMacro onClose={onClose} id={id} name={name} />
+    ));
   };
   const handleRunMacro = (macro) => () => {
     const { id, name, content } = macro;
-    openModal(RunMacro, { id, name, content });
+    portal(({ onClose }) => (
+      // TODO
+      <RunMacro
+        onClose={onClose} id={id} name={name}
+        content={content}
+      />
+    ));
   };
   const handleEditMacro = (macro) => () => {
     const { id, name, content } = macro;
-    openModal(EditMacro, { id, name, content });
+    portal(({ onClose }) => (
+      // TODO
+      <EditMacro
+        onClose={onClose} id={id} name={name}
+        content={content}
+      />
+    ));
   };
 
   return (
@@ -243,7 +260,7 @@ const Macro = ({
       </RenderBlock>
     </Box>
   );
-};
+}
 
 export default connect(store => {
   const isActionable = (() => {

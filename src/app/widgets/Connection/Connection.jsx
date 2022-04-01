@@ -1,10 +1,17 @@
 import {
   Alert,
   Box,
+  Button,
+  ButtonGroup,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalBody,
+  ModalFooter,
   Space,
   Text,
   TextLabel,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import chainedFunction from 'chained-function';
 import { ensureArray, ensurePositiveNumber } from 'ensure-type';
 import _find from 'lodash/find';
@@ -21,20 +28,17 @@ import React, {
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
 import Select, { components as SelectComponents } from 'react-select';
-import { useTransition, animated } from 'react-spring';
+import { useTransition, animated } from 'react-spring'; // TODO: remove
 import * as connectionActions from 'app/actions/connection';
 import * as serialportActions from 'app/actions/serialport';
-import { Button, ButtonGroup } from 'app/components/Buttons';
-import { Checkbox } from 'app/components/Checkbox';
+import { Checkbox } from 'app/components/Checkbox'; // TODO: remove
 import Clickable from 'app/components/Clickable';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import InlineError from 'app/components/InlineError';
-import Input from 'app/components/FormControl/Input';
+import Input from 'app/components/FormControl/Input'; // TODO: remove
 import FormGroup from 'app/components/FormGroup';
-import { Container, Row, Col } from 'app/components/GridSystem';
-import Modal, { useModal } from 'app/components/Modal';
-import ModalTemplate from 'app/components/ModalTemplate';
-import { useToast } from 'app/components/ToastManager';
+import { Container, Row, Col } from 'app/components/GridSystem'; // TODO: remove
+import ModalTemplate from 'app/components/ModalTemplate'; // TODO: remove
 import {
   GRBL,
   MARLIN,
@@ -53,6 +57,7 @@ import useMount from 'app/hooks/useMount';
 import usePrevious from 'app/hooks/usePrevious';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
+import portal from 'app/lib/portal';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import { composeValidators, required } from 'app/widgets/shared/validations';
 
@@ -141,91 +146,15 @@ const getMemoizedInitialValues = memoize((options) => {
   isEqual: _isEqual,
 });
 
-/*
-const Dismissible = ({
-  dismissOnTimeout = 0,
-  onShow,
-  onDismiss,
-  children,
-}) => {
-  const containerRef = useRef(null);
-  const timerIdRef = useRef(null);
-  const [isShow, setShow] = useState(true);
-
-  useEffect(() => {
-    if (isShow && typeof onShow === 'function') {
-      onShow();
-    }
-    if (!isShow && typeof onDismiss === 'function') {
-      onDismiss();
-    }
-  }, [isShow, onShow, onDismiss]);
-
-  useEffect(() => {
-    if (timerIdRef.current) {
-      clearTimeout(timerIdRef.current);
-      timerIdRef.current = null;
-    }
-
-    if (dismissOnTimeout > 0) {
-      timerIdRef.current = setTimeout(() => {
-        setShow(false);
-      }, dismissOnTimeout);
-    }
-
-    return () => {
-      if (timerIdRef.current) {
-        clearTimeout(timerIdRef.current);
-        timerIdRef.current = null;
-      }
-    };
-  }, [dismissOnTimeout]);
-  const onMouseEnter = () => {
-    if (timerIdRef.current) {
-      clearTimeout(timerIdRef.current);
-      timerIdRef.current = null;
-    }
-  };
-  const onMouseLeave = () => {
-    if (timerIdRef.current) {
-      clearTimeout(timerIdRef.current);
-      timerIdRef.current = null;
-    }
-
-    if (dismissOnTimeout > 0) {
-      timerIdRef.current = setTimeout(() => {
-        setShow(false);
-      }, dismissOnTimeout);
-    }
-  };
-  const show = () => {
-    setShow(true);
-  };
-  const dismiss = () => {
-    setShow(false);
-  };
-
-  return (
-    <Box
-      ref={containerRef}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      pointerEvents="auto"
-    >
-      {typeof children === 'function' ? children({ isShow, show, dismiss }) : children}
-    </Box>
-  );
-};
-*/
-
-const DismissibleTransition = ({
+// TODO: use transition component
+function DismissibleTransition({
   dismissOnTimeout = 0,
   onShowStart = () => {}, // Triggered when the show animation start.
   onShowEnd = () => {}, // Triggered when the show animation finish.
   onDismissStart = () => {}, // Triggered when the dismiss animation start.
   onDismissEnd = () => {}, // Triggered when the dismiss animation finish.
   children,
-}) => {
+}) {
   const containerRef = useRef(null);
   const timerIdRef = useRef(null);
   const [isShow, setShow] = useState(true);
@@ -335,9 +264,9 @@ const DismissibleTransition = ({
       ))}
     </>
   );
-};
+}
 
-const Connection = ({
+function Connection({
   connection,
   isConnected,
   isConnecting,
@@ -351,9 +280,8 @@ const Connection = ({
   closeConnection,
   fetchSerialPorts,
   fetchSerialBaudRates,
-}) => {
+}) {
   const config = useWidgetConfig();
-  const { openModal } = useModal();
   const initialValues = getMemoizedInitialValues({ config, serialPorts, serialBaudRates });
   const canRefreshSerialPorts = isDisconnected && !isFetchingSerialPorts;
   const canRefreshSerialBaudRates = isDisconnected && !isFetchingSerialBaudRates;
@@ -364,31 +292,28 @@ const Connection = ({
   });
   const isSocketConnectionReady = true;
 
-  // Toast notification
-  const toast = useToast();
-  const { toasts } = toast.state;
+  // Alert notification
+  const [alert, setAlert] = useState(null);
 
   useEffect(() => {
     if (!connection.error) {
       return;
     }
 
-    if (toasts.length > 0) {
-      toast.closeAll();
-    }
-
     if (connection.type === CONNECTION_TYPE_SERIAL) {
-      toast.notify({
-        severity: 'error',
+      setAlert({
+        appearance: 'error',
         title: i18n._('Error opening serial port'),
         message: connection.error,
-      }, { duration: 5000 });
+        duration: 5000,
+      });
     } else if (connection.type === CONNECTION_TYPE_SOCKET) {
-      toast.notify({
-        severity: 'error',
+      setAlert({
+        appearance: 'error',
         title: i18n._('Error opening socket'),
         message: connection.error,
-      }, { duration: 5000 });
+        duration: 5000,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connection.error]);
@@ -479,37 +404,31 @@ const Connection = ({
   return (
     <>
       <Box>
-        {toasts.map(toast => {
-          const { severity, title, message } = toast.context;
-
-          return (
-            <Box key={toast.id}>
-              <DismissibleTransition
-                dismissOnTimeout={toast.duration}
-                onDismissEnd={() => {
-                  toast.close();
-                }}
-              >
-                {({ isShow, show, dismiss }) => {
-                  return (
-                    <Alert
-                      isCloseButtonVisible
-                      onClose={dismiss}
-                      severity={severity}
-                    >
-                      <Box mb="1x">
-                        <Text fontWeight="bold">{title}</Text>
-                      </Box>
-                      <Text mr={-36}>
-                        {message}
-                      </Text>
-                    </Alert>
-                  );
-                }}
-              </DismissibleTransition>
-            </Box>
-          );
-        })}
+        {alert && (
+          <DismissibleTransition
+            dismissOnTimeout={alert?.duration}
+            onDismissEnd={() => {
+              setAlert(null);
+            }}
+          >
+            {({ isShow, show, dismiss }) => {
+              return (
+                <Alert
+                  severity={alert?.severity}
+                  isClosable
+                  onClose={dismiss}
+                >
+                  <Box mb="1x">
+                    <Text fontWeight="bold">{alert?.title}</Text>
+                  </Box>
+                  <Text mr="-9x">
+                    {alert?.message}
+                  </Text>
+                </Alert>
+              );
+            }}
+          </DismissibleTransition>
+        )}
       </Box>
       <Container
         fluid
@@ -555,16 +474,11 @@ const Connection = ({
 
                   return (
                     <FormGroup>
-                      <ButtonGroup
-                        sm
-                        style={{
-                          width: '100%',
-                        }}
-                      >
+                      <ButtonGroup variant="default">
                         {canSelectGrbl && (
                           <Button
-                            btnStyle={isGrblSelected ? 'dark' : 'default'}
                             disabled={isGrblDisabled}
+                            selected={isGrblSelected}
                             onClick={handleChangeByValue(GRBL)}
                           >
                             {GRBL}
@@ -572,8 +486,8 @@ const Connection = ({
                         )}
                         {canSelectMarlin && (
                           <Button
-                            btnStyle={isMarlinSelected ? 'dark' : 'default'}
                             disabled={isMarlinDisabled}
+                            selected={isMarlinSelected}
                             onClick={handleChangeByValue(MARLIN)}
                           >
                             {MARLIN}
@@ -581,8 +495,8 @@ const Connection = ({
                         )}
                         {canSelectSmoothie && (
                           <Button
-                            btnStyle={isSmoothieSelected ? 'dark' : 'default'}
                             disabled={isSmoothieDisabled}
+                            selected={isSmoothieSelected}
                             onClick={handleChangeByValue(SMOOTHIE)}
                           >
                             {SMOOTHIE}
@@ -590,8 +504,8 @@ const Connection = ({
                         )}
                         {canSelectTinyG && (
                           <Button
-                            btnStyle={isTinyGSelected ? 'dark' : 'default'}
                             disabled={isTinyGDisabled}
+                            selected={isTinyGSelected}
                             onClick={handleChangeByValue(TINYG)}
                           >
                             {TINYG}
@@ -618,15 +532,10 @@ const Connection = ({
                     };
 
                     return (
-                      <ButtonGroup
-                        sm
-                        style={{
-                          width: '50%',
-                        }}
-                      >
+                      <ButtonGroup variant="default">
                         <Button
-                          btnStyle={isSerialSelected ? 'dark' : 'default'}
                           disabled={isSerialDisabled}
+                          selected={isSerialSelected}
                           onClick={handleChangeByValue(CONNECTION_TYPE_SERIAL)}
                         >
                           <FontAwesomeIcon icon={['fab', 'usb']} fixedWidth />
@@ -634,8 +543,8 @@ const Connection = ({
                           {i18n._('Serial')}
                         </Button>
                         <Button
-                          btnStyle={isSocketSelected ? 'dark' : 'default'}
                           disabled={isSocketDisabled}
+                          selected={isSocketSelected}
                           onClick={handleChangeByValue(CONNECTION_TYPE_SOCKET)}
                         >
                           <FontAwesomeIcon icon="network-wired" fixedWidth />
@@ -969,35 +878,41 @@ const Connection = ({
                     openConnection(options);
                   };
                   const confirmCloseConnection = (e) => {
-                    openModal(({ onClose }) => (
-                      <Modal onClose={onClose}>
-                        <Modal.Body>
-                          <ModalTemplate type="warning">
-                            {({ PrimaryMessage, DescriptiveMessage }) => (
-                              <DescriptiveMessage>
-                                {i18n._('Are you sure you want to close the connection?')}
-                              </DescriptiveMessage>
-                            )}
-                          </ModalTemplate>
-                        </Modal.Body>
-                        <Modal.Footer>
-                          <Button onClick={onClose}>
-                            {i18n._('Cancel')}
-                          </Button>
-                          <Button
-                            btnStyle="primary"
-                            onClick={chainedFunction(
-                              (e) => {
-                                closeConnection();
-                                fetchSerialPorts();
-                                fetchSerialBaudRates();
-                              },
-                              onClose,
-                            )}
-                          >
-                            {i18n._('OK')}
-                          </Button>
-                        </Modal.Footer>
+                    portal(({ onClose }) => (
+                      <Modal
+                        isOpen={true}
+                        onClose={onClose}
+                      >
+                        <ModalOverlay />
+                        <ModalContent>
+                          <ModalBody>
+                            <ModalTemplate type="warning">
+                              {({ PrimaryMessage, DescriptiveMessage }) => (
+                                <DescriptiveMessage>
+                                  {i18n._('Are you sure you want to close the connection?')}
+                                </DescriptiveMessage>
+                              )}
+                            </ModalTemplate>
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button onClick={onClose}>
+                              {i18n._('Cancel')}
+                            </Button>
+                            <Button
+                              btnStyle="primary"
+                              onClick={chainedFunction(
+                                (e) => {
+                                  closeConnection();
+                                  fetchSerialPorts();
+                                  fetchSerialBaudRates();
+                                },
+                                onClose,
+                              )}
+                            >
+                              {i18n._('OK')}
+                            </Button>
+                          </ModalFooter>
+                        </ModalContent>
                       </Modal>
                     ));
                   };
@@ -1015,8 +930,7 @@ const Connection = ({
                         >
                           {isConnecting
                             ? <FontAwesomeIcon icon="circle-notch" spin />
-                            : <FontAwesomeIcon icon="toggle-off" />
-                          }
+                            : <FontAwesomeIcon icon="toggle-off" />}
                           <Space width={8} />
                           {i18n._('Open')}
                         </Button>
@@ -1032,8 +946,7 @@ const Connection = ({
                         >
                           {isDisconnecting
                             ? <FontAwesomeIcon icon="circle-notch" spin />
-                            : <FontAwesomeIcon icon="toggle-on" />
-                          }
+                            : <FontAwesomeIcon icon="toggle-on" />}
                           <Space width={8} />
                           {i18n._('Close')}
                         </Button>
@@ -1048,7 +961,7 @@ const Connection = ({
       </Container>
     </>
   );
-};
+}
 
 const mapStateToProps = (store) => {
   const connection = _get(store, 'connection', {});
@@ -1092,10 +1005,10 @@ export default connect(
   }
 )(Connection);
 
-const SerialPortOption = ({
+function SerialPortOption({
   children,
   ...props
-}) => {
+}) {
   const data = _get(props, 'data');
   const connected = !!data.connected;
   const manufacturer = data.manufacturer;
@@ -1122,12 +1035,12 @@ const SerialPortOption = ({
       )}
     </SelectComponents.Option>
   );
-};
+}
 
-const SerialPortSingleValue = ({
+function SerialPortSingleValue({
   children,
   ...props
-}) => {
+}) {
   const data = _get(props, 'data');
   const connected = !!data.connected;
 
@@ -1142,4 +1055,4 @@ const SerialPortSingleValue = ({
       {children}
     </SelectComponents.SingleValue>
   );
-};
+}

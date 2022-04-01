@@ -9,33 +9,31 @@ import {
 } from './constants';
 
 class MachineProfiles extends Component {
-    static propTypes = {
-      initialState: PropTypes.object,
-      state: PropTypes.object,
-      stateChanged: PropTypes.bool,
-      actions: PropTypes.object
-    };
+  static propTypes = {
+    initialState: PropTypes.object,
+    state: PropTypes.object,
+    stateChanged: PropTypes.bool,
+    actions: PropTypes.object
+  };
 
-    componentDidMount() {
-      const { actions } = this.props;
-      actions.fetchRecords();
-    }
+  componentDidMount() {
+    const { actions } = this.props;
+    actions.fetchRecords();
+  }
 
-    render() {
-      const { state, actions } = this.props;
+  render() {
+    const { state, actions } = this.props;
 
-      return (
-        <div style={{ margin: -15 }}>
-          {state.modal.name === MODAL_CREATE_RECORD &&
-          <CreateRecord state={state} actions={actions} />
-          }
-          {state.modal.name === MODAL_UPDATE_RECORD &&
-          <UpdateRecord state={state} actions={actions} />
-          }
-          <TableRecords state={state} actions={actions} />
-        </div>
-      );
-    }
+    return (
+      <div style={{ margin: -15 }}>
+        {state.modal.name === MODAL_CREATE_RECORD &&
+          <CreateRecord state={state} actions={actions} />}
+        {state.modal.name === MODAL_UPDATE_RECORD &&
+          <UpdateRecord state={state} actions={actions} />}
+        <TableRecords state={state} actions={actions} />
+      </div>
+    );
+  }
 }
 
 export default MachineProfiles;

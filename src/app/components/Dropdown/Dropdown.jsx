@@ -19,340 +19,340 @@ const isDropdownMenu = match(DropdownMenu);
 const isDropdownMenuWrapper = match(DropdownMenuWrapper);
 
 class Dropdown extends Component {
-    static propTypes = {
-      componentType: PropTypes.any,
+  static propTypes = {
+    componentType: PropTypes.any,
 
-      // A custom element for this component.
-      componentClass: PropTypes.oneOfType([
-        PropTypes.func,
-        PropTypes.string,
-        PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
-      ]),
+    // A custom element for this component.
+    componentClass: PropTypes.oneOfType([
+      PropTypes.func,
+      PropTypes.string,
+      PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
+    ]),
 
-      // The menu will open above the dropdown button, instead of below it.
-      dropup: PropTypes.bool,
+    // The menu will open above the dropdown button, instead of below it.
+    dropup: PropTypes.bool,
 
-      // Whether or not component is disabled.
-      disabled: PropTypes.bool,
+    // Whether or not component is disabled.
+    disabled: PropTypes.bool,
 
-      // Whether or not the dropdown is visible.
-      open: PropTypes.bool,
+    // Whether or not the dropdown is visible.
+    open: PropTypes.bool,
 
-      // Whether to open the dropdown on mouse over.
-      autoOpen: PropTypes.bool,
+    // Whether to open the dropdown on mouse over.
+    autoOpen: PropTypes.bool,
 
-      // Align the menu to the right side of the dropdown toggle.
-      pullRight: PropTypes.bool,
+    // Align the menu to the right side of the dropdown toggle.
+    pullRight: PropTypes.bool,
 
-      // A callback fired when the dropdown closes.
-      onClose: PropTypes.func,
+    // A callback fired when the dropdown closes.
+    onClose: PropTypes.func,
 
-      // A callback fired when the dropdown wishes to change visibility. Called with the requested
-      // `open` value.
-      //
-      // ```js
-      // function(Boolean isOpen) {}
-      // ```
-      onToggle: PropTypes.func,
+    // A callback fired when the dropdown wishes to change visibility. Called with the requested
+    // `open` value.
+    //
+    // ```js
+    // function(Boolean isOpen) {}
+    // ```
+    onToggle: PropTypes.func,
 
-      // A callback fired when a menu item is selected.
-      //
-      // ```js
-      // (eventKey: any, event: Object) => any
-      // ```
-      onSelect: PropTypes.func,
+    // A callback fired when a menu item is selected.
+    //
+    // ```js
+    // (eventKey: any, event: Object) => any
+    // ```
+    onSelect: PropTypes.func,
 
-      // If `'menuitem'`, causes the dropdown to behave like a menu item rather than a menu button.
-      role: PropTypes.string,
+    // If `'menuitem'`, causes the dropdown to behave like a menu item rather than a menu button.
+    role: PropTypes.string,
 
-      // Which event when fired outside the component will cause it to be closed.
-      rootCloseEvent: PropTypes.oneOf([
-        'click',
-        'mousedown'
-      ]),
+    // Which event when fired outside the component will cause it to be closed.
+    rootCloseEvent: PropTypes.oneOf([
+      'click',
+      'mousedown'
+    ]),
 
-      onMouseEnter: PropTypes.func,
-      onMouseLeave: PropTypes.func
-    };
+    onMouseEnter: PropTypes.func,
+    onMouseLeave: PropTypes.func
+  };
 
-    static defaultProps = {
-      componentClass: ButtonGroup,
-      dropup: false,
-      disabled: false,
-      pullRight: false,
-      open: false
-    };
+  static defaultProps = {
+    componentClass: ButtonGroup,
+    dropup: false,
+    disabled: false,
+    pullRight: false,
+    open: false
+  };
 
-    menu = null;
+  menu = null;
 
-    // <DropdownMenu ref={c => this.menu = c} />
-    toggle = null;
+  // <DropdownMenu ref={c => this.menu = c} />
+  toggle = null;
 
-    // <DropdownToggle ref={c => this.toggle = c} />
-    _focusInDropdown = false;
+  // <DropdownToggle ref={c => this.toggle = c} />
+  _focusInDropdown = false;
 
-    lastOpenEventType = null;
+  lastOpenEventType = null;
 
-    handleToggleClick = (event) => {
-      if (this.props.disabled) {
-        return;
+  handleToggleClick = (event) => {
+    if (this.props.disabled) {
+      return;
+    }
+
+    this.toggleDropdown('click');
+  };
+
+  handleToggleKeyDown = (event) => {
+    if (this.props.disabled) {
+      return;
+    }
+
+    if (event.keyCode === 38) { // up
+      if (!this.props.open) {
+        this.toggleDropdown('keyup');
+      } else if (this.menu.focusPrevious) {
+        this.menu.focusPrevious();
       }
+      event.preventDefault();
+      return;
+    }
 
-      this.toggleDropdown('click');
-    };
-
-    handleToggleKeyDown = (event) => {
-      if (this.props.disabled) {
-        return;
+    if (event.keyCode === 40) { // down
+      if (!this.props.open) {
+        this.toggleDropdown('keydown');
+      } else if (this.menu.focusNext) {
+        this.menu.focusNext();
       }
+      event.preventDefault();
+      return;
+    }
 
-      if (event.keyCode === 38) { // up
-        if (!this.props.open) {
-          this.toggleDropdown('keyup');
-        } else if (this.menu.focusPrevious) {
-          this.menu.focusPrevious();
-        }
-        event.preventDefault();
-        return;
-      }
+    if (event.keyCode === 27 || event.keyCode === 9) { // esc or tab
+      this.closeDropdown();
+      return;
+    }
+  };
 
-      if (event.keyCode === 40) { // down
-        if (!this.props.open) {
-          this.toggleDropdown('keydown');
-        } else if (this.menu.focusNext) {
-          this.menu.focusNext();
-        }
-        event.preventDefault();
-        return;
-      }
+  handleMouseEnter = (event) => {
+    const { autoOpen, onToggle } = this.props;
 
-      if (event.keyCode === 27 || event.keyCode === 9) { // esc or tab
-        this.closeDropdown();
-        return;
-      }
-    };
+    if (autoOpen && typeof onToggle === 'function') {
+      onToggle(true);
+    }
+  };
 
-    handleMouseEnter = (event) => {
-      const { autoOpen, onToggle } = this.props;
+  handleMouseLeave = (event) => {
+    const { autoOpen, onToggle } = this.props;
 
-      if (autoOpen && typeof onToggle === 'function') {
-        onToggle(true);
-      }
-    };
+    if (autoOpen && typeof onToggle === 'function') {
+      onToggle(false);
+    }
+  };
 
-    handleMouseLeave = (event) => {
-      const { autoOpen, onToggle } = this.props;
+  closeDropdown = () => {
+    const { open, autoOpen, onToggle } = this.props;
 
-      if (autoOpen && typeof onToggle === 'function') {
-        onToggle(false);
-      }
-    };
+    if (open) {
+      this.toggleDropdown(null);
+      return;
+    }
 
-    closeDropdown = () => {
-      const { open, autoOpen, onToggle } = this.props;
+    if (autoOpen && typeof onToggle === 'function') {
+      onToggle(false);
+    }
+  };
 
-      if (open) {
-        this.toggleDropdown(null);
-        return;
-      }
+  componentDidMount() {
+    this.focusOnOpen();
+  }
 
-      if (autoOpen && typeof onToggle === 'function') {
-        onToggle(false);
-      }
-    };
+  UNSAFE_componentWillUpdate(nextProps) {
+    if (!nextProps.open && this.props.open) {
+      this._focusInDropdown = this.menu && contains(ReactDOM.findDOMNode(this.menu), activeElement(document));
+    }
+  }
 
-    componentDidMount() {
+  componentDidUpdate(prevProps) {
+    const { open } = this.props;
+    const prevOpen = prevProps.open;
+
+    if (open && !prevOpen) {
       this.focusOnOpen();
     }
 
-    UNSAFE_componentWillUpdate(nextProps) {
-      if (!nextProps.open && this.props.open) {
-        this._focusInDropdown = this.menu && contains(ReactDOM.findDOMNode(this.menu), activeElement(document));
+    if (!open && prevOpen) {
+      // if focus hasn't already moved from the menu lets return it to the toggle
+      if (this._focusInDropdown) {
+        this._focusInDropdown = false;
+        this.focus();
       }
     }
+  }
 
-    componentDidUpdate(prevProps) {
-      const { open } = this.props;
-      const prevOpen = prevProps.open;
+  toggleDropdown(eventType) {
+    const { open, onToggle } = this.props;
+    const shouldOpen = !open;
 
-      if (open && !prevOpen) {
-        this.focusOnOpen();
-      }
-
-      if (!open && prevOpen) {
-        // if focus hasn't already moved from the menu lets return it to the toggle
-        if (this._focusInDropdown) {
-          this._focusInDropdown = false;
-          this.focus();
-        }
-      }
+    if (shouldOpen) {
+      this.lastOpenEventType = eventType;
     }
 
-    toggleDropdown(eventType) {
-      const { open, onToggle } = this.props;
-      const shouldOpen = !open;
+    if (typeof onToggle === 'function') {
+      onToggle(shouldOpen);
+    }
+  }
 
-      if (shouldOpen) {
-        this.lastOpenEventType = eventType;
-      }
+  focusOnOpen() {
+    const menu = this.menu;
 
-      if (typeof onToggle === 'function') {
-        onToggle(shouldOpen);
-      }
+    if (this.lastOpenEventType === 'keydown' || this.props.role === 'menuitem') {
+      menu.focusNext && menu.focusNext();
+      return;
     }
 
-    focusOnOpen() {
-      const menu = this.menu;
-
-      if (this.lastOpenEventType === 'keydown' || this.props.role === 'menuitem') {
-        menu.focusNext && menu.focusNext();
-        return;
-      }
-
-      if (this.lastOpenEventType === 'keyup') {
-        menu.focusPrevious && menu.focusPrevious();
-        return;
-      }
+    if (this.lastOpenEventType === 'keyup') {
+      menu.focusPrevious && menu.focusPrevious();
+      return;
     }
+  }
 
-    focus() {
-      const toggle = ReactDOM.findDOMNode(this.toggle);
+  focus() {
+    const toggle = ReactDOM.findDOMNode(this.toggle);
 
-      if (toggle && toggle.focus) {
-        toggle.focus();
-      }
+    if (toggle && toggle.focus) {
+      toggle.focus();
     }
+  }
 
-    renderToggle(child, props) {
-      let ref = c => {
-        this.toggle = c;
-      };
+  renderToggle(child, props) {
+    let ref = c => {
+      this.toggle = c;
+    };
 
-      if (typeof child.ref === 'string') {
-        warning(
-          false,
-          'String refs are not supported on `<Dropdown.Toggle>` components. ' +
+    if (typeof child.ref === 'string') {
+      warning(
+        false,
+        'String refs are not supported on `<Dropdown.Toggle>` components. ' +
                 'To apply a ref to the component use the callback signature:\n\n ' +
                 'https://facebook.github.io/react/docs/more-about-refs.html#the-ref-callback-attribute'
-        );
-      } else {
-        ref = chainedFunction(child.ref, ref);
-      }
-
-      return cloneElement(child, {
-        ...props,
-        ref,
-        onClick: chainedFunction(
-          child.props.onClick,
-          this.handleToggleClick
-        ),
-        onKeyDown: chainedFunction(
-          child.props.onKeyDown,
-          this.handleToggleKeyDown
-        )
-      });
-    }
-
-    renderMenu(child, { id, onClose, onSelect, rootCloseEvent, ...props }) {
-      let ref = c => {
-        this.menu = c;
-      };
-
-      if (typeof child.ref === 'string') {
-        warning(
-          false,
-          'String refs are not supported on `<Dropdown.Menu>` components. ' +
-                'To apply a ref to the component use the callback signature:\n\n ' +
-                'https://facebook.github.io/react/docs/more-about-refs.html#the-ref-callback-attribute'
-        );
-      } else {
-        ref = chainedFunction(child.ref, ref);
-      }
-
-      return cloneElement(child, {
-        ...props,
-        ref,
-        onClose: chainedFunction(
-          child.props.onClose,
-          onClose,
-          this.closeDropdown
-        ),
-        onSelect: chainedFunction(
-          child.props.onSelect,
-          onSelect,
-          this.closeDropdown
-        ),
-        rootCloseEvent
-      });
-    }
-
-    render() {
-      const {
-            componentType, // eslint-disable-line
-        componentClass: Component,
-        dropup,
-        disabled,
-        pullRight,
-        open,
-            autoOpen, // eslint-disable-line
-        onClose,
-        onSelect,
-        className,
-        rootCloseEvent,
-        onMouseEnter,
-        onMouseLeave,
-            onToggle, // eslint-disable-line
-        children,
-        ...props
-      } = this.props;
-
-      if (Component === ButtonGroup) {
-        props.dropdownOpen = open;
-      }
-
-      return (
-        <Component
-          {...props}
-          onMouseEnter={chainedFunction(
-            onMouseEnter,
-            this.handleMouseEnter
-          )}
-          onMouseLeave={chainedFunction(
-            onMouseLeave,
-            this.handleMouseLeave
-          )}
-          className={cx(className, styles.dropdown, {
-            [styles.open]: open,
-            [styles.disabled]: disabled,
-            [styles.dropup]: dropup
-          })}
-        >
-          {React.Children.map(children, child => {
-            if (!React.isValidElement(child)) {
-              return child;
-            }
-
-            if (isDropdownToggle(child)) {
-              return this.renderToggle(child, {
-                disabled, open
-              });
-            }
-
-            if (isDropdownMenu(child) || isDropdownMenuWrapper(child)) {
-              return this.renderMenu(child, {
-                open,
-                pullRight,
-                onClose,
-                onSelect,
-                rootCloseEvent
-              });
-            }
-
-            return child;
-          })}
-        </Component>
       );
+    } else {
+      ref = chainedFunction(child.ref, ref);
     }
+
+    return cloneElement(child, {
+      ...props,
+      ref,
+      onClick: chainedFunction(
+        child.props.onClick,
+        this.handleToggleClick
+      ),
+      onKeyDown: chainedFunction(
+        child.props.onKeyDown,
+        this.handleToggleKeyDown
+      )
+    });
+  }
+
+  renderMenu(child, { id, onClose, onSelect, rootCloseEvent, ...props }) {
+    let ref = c => {
+      this.menu = c;
+    };
+
+    if (typeof child.ref === 'string') {
+      warning(
+        false,
+        'String refs are not supported on `<Dropdown.Menu>` components. ' +
+                'To apply a ref to the component use the callback signature:\n\n ' +
+                'https://facebook.github.io/react/docs/more-about-refs.html#the-ref-callback-attribute'
+      );
+    } else {
+      ref = chainedFunction(child.ref, ref);
+    }
+
+    return cloneElement(child, {
+      ...props,
+      ref,
+      onClose: chainedFunction(
+        child.props.onClose,
+        onClose,
+        this.closeDropdown
+      ),
+      onSelect: chainedFunction(
+        child.props.onSelect,
+        onSelect,
+        this.closeDropdown
+      ),
+      rootCloseEvent
+    });
+  }
+
+  render() {
+    const {
+            componentType, // eslint-disable-line
+      componentClass: Component,
+      dropup,
+      disabled,
+      pullRight,
+      open,
+            autoOpen, // eslint-disable-line
+      onClose,
+      onSelect,
+      className,
+      rootCloseEvent,
+      onMouseEnter,
+      onMouseLeave,
+            onToggle, // eslint-disable-line
+      children,
+      ...props
+    } = this.props;
+
+    if (Component === ButtonGroup) {
+      props.dropdownOpen = open;
+    }
+
+    return (
+      <Component
+        {...props}
+        onMouseEnter={chainedFunction(
+          onMouseEnter,
+          this.handleMouseEnter
+        )}
+        onMouseLeave={chainedFunction(
+          onMouseLeave,
+          this.handleMouseLeave
+        )}
+        className={cx(className, styles.dropdown, {
+          [styles.open]: open,
+          [styles.disabled]: disabled,
+          [styles.dropup]: dropup
+        })}
+      >
+        {React.Children.map(children, child => {
+          if (!React.isValidElement(child)) {
+            return child;
+          }
+
+          if (isDropdownToggle(child)) {
+            return this.renderToggle(child, {
+              disabled, open
+            });
+          }
+
+          if (isDropdownMenu(child) || isDropdownMenuWrapper(child)) {
+            return this.renderMenu(child, {
+              open,
+              pullRight,
+              onClose,
+              onSelect,
+              rootCloseEvent
+            });
+          }
+
+          return child;
+        })}
+      </Component>
+    );
+  }
 }
 
 // For component matching

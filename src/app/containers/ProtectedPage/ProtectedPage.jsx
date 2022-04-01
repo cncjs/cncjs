@@ -15,10 +15,10 @@ import {
   CONTENT_MIN_WIDTH,
 } from 'app/config/styles';
 
-const ProtectedPage = ({
+function ProtectedPage({
   location,
   history
-}) => {
+}) {
   const accepted = ([
     '/workspace',
     '/administration',
@@ -48,7 +48,7 @@ const ProtectedPage = ({
   analytics.pageview(location.pathname);
 
   return (
-    <Fragment>
+    <>
       <TopBar>
         <TopNav />
       </TopBar>
@@ -63,13 +63,12 @@ const ProtectedPage = ({
             }}
           />
           {location.pathname.indexOf('/administration') === 0 &&
-          <Administration />
-          }
+          <Administration />}
         </Content>
       </Main>
-    </Fragment>
+    </>
   );
-};
+}
 
 export default compose(
   withRouter

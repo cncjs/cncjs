@@ -91,21 +91,23 @@ if (normalizedArgv.length > 1) {
   program.parse(normalizedArgv);
 }
 
+const options = program.opts();
+
 module.exports = () => new Promise((resolve, reject) => {
   // Change working directory to 'server' before require('./server')
   process.chdir(path.resolve(__dirname, 'server'));
 
   require('./server').createServer({
-    port: program.port,
-    host: program.host,
-    backlog: program.backlog,
-    configFile: program.config,
-    verbosity: program.verbose,
-    mountPoints: program.mount,
-    watchDirectory: program.watchDirectory,
-    accessTokenLifetime: program.accessTokenLifetime,
-    allowRemoteAccess: !!program.allowRemoteAccess,
-    controller: program.controller
+    port: options.port,
+    host: options.host,
+    backlog: options.backlog,
+    configFile: options.config,
+    verbosity: options.verbose,
+    mountPoints: options.mount,
+    watchDirectory: options.watchDirectory,
+    accessTokenLifetime: options.accessTokenLifetime,
+    allowRemoteAccess: !!options.allowRemoteAccess,
+    controller: options.controller
   }, (err, data) => {
     if (err) {
       reject(err);

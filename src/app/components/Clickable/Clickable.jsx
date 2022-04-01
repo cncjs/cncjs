@@ -9,9 +9,9 @@ const Component = styled(Hoverable)`
     }
 `;
 
-const Clickable = (props) => (
-  <Component role="presentation" {...props} />
-);
+function Clickable(props) {
+  return <Component role="presentation" {...props} />;
+}
 
 Clickable.propTypes = {
   disabled: PropTypes.bool,

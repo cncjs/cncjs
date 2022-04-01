@@ -18,10 +18,10 @@ import useWidgetEvent from 'app/widgets/shared/useWidgetEvent';
 import Terminal from './Terminal';
 import styles from './index.styl';
 
-const Console = ({
+function Console({
   isFullscreen,
   isConnected,
-}) => {
+}) {
   const emitter = useWidgetEvent();
   const prevIsFullscreen = usePrevious(isFullscreen);
   const terminalRef = useRef();
@@ -190,7 +190,7 @@ const Console = ({
       onData={onData}
     />
   );
-};
+}
 
 export default connect(store => {
   const connectionState = _get(store, 'connection.state');

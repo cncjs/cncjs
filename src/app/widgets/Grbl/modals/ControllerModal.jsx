@@ -9,11 +9,11 @@ import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import PreviewCode from './PreviewCode';
 
-const ControllerModal = ({
+function ControllerModal({
   onClose,
   stringifiedControllerState,
   stringifiedControllerSettings,
-}) => {
+}) {
   const [activeTab, setActiveTab] = useState('state');
 
   return (
@@ -82,7 +82,7 @@ const ControllerModal = ({
       </Modal.Footer>
     </Modal>
   );
-};
+}
 
 ControllerModal.propTypes = {
   onClose: PropTypes.func,

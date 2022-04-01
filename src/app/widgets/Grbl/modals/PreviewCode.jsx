@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const PreviewCode = ({ children, ...props }) => (
-  <pre {...props}>
-    <code>{children}</code>
-  </pre>
-);
+function PreviewCode({ children, ...props }) {
+  return (
+    <pre {...props}>
+      <code>{children}</code>
+    </pre>
+  );
+}
 
 export default styled(PreviewCode)`
     display: block;

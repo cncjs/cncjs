@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './index.styl';
 
-const DigitalReadout = (props) => {
+function DigitalReadout(props) {
   const { label, value, children } = props;
 
   return (
@@ -32,7 +32,7 @@ const DigitalReadout = (props) => {
       </div>
     </div>
   );
-};
+}
 
 DigitalReadout.propTypes = {
   label: PropTypes.string,

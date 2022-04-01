@@ -1,6 +1,6 @@
 import {
   TextLabel,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import React from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { Button } from 'app/components/Buttons';
@@ -11,9 +11,9 @@ import Modal from 'app/components/Modal';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import i18n from 'app/lib/i18n';
 
-const SettingsModal = ({
+function SettingsModal({
   onClose,
-}) => {
+}) {
   const config = useWidgetConfig();
   const initialValues = {
     title: config.get('title'),
@@ -122,6 +122,6 @@ const SettingsModal = ({
       </Form>
     </Modal>
   );
-};
+}
 
 export default SettingsModal;

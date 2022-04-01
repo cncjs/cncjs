@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import styles from './index.styl';
 
-const ModalTitle = (props) => {
+function ModalTitle(props) {
   const { children } = props;
   const doEllipsis = typeof children === 'string';
   return (
@@ -14,6 +14,6 @@ const ModalTitle = (props) => {
       )}
     />
   );
-};
+}
 
 export default ModalTitle;

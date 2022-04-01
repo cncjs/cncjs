@@ -5,10 +5,10 @@ const initialColorMode = 'light';
 const ColorModeContext = React.createContext(initialColorMode);
 const ColorModeSetterContext = React.createContext({});
 
-const ColorModeProvider = ({
+function ColorModeProvider({
   value = initialColorMode,
   children,
-}) => {
+}) {
   const [colorMode, setColorMode] = useState(value);
   useEffect(() => {
     setColorMode(value);
@@ -35,7 +35,7 @@ const ColorModeProvider = ({
       </ColorModeSetterContext.Provider>
     </ColorModeContext.Provider>
   );
-};
+}
 
 ColorModeProvider.propTypes = {
   value: PropTypes.oneOf(['light', 'dark']),

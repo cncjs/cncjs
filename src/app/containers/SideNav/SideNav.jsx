@@ -11,9 +11,9 @@ import styles from './index.styl';
 import iconXYZ from './images/xyz.svg';
 import iconGear from './images/gear.svg';
 
-const SideNav = ({
+function SideNav({
   location,
-}) => {
+}) {
   const { pathname = '' } = location;
 
   return (
@@ -62,6 +62,6 @@ const SideNav = ({
       </li>
     </ul>
   );
-};
+}
 
 export default withRouter(SideNav);

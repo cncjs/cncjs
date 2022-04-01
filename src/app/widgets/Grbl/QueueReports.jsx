@@ -1,6 +1,6 @@
 import {
   Text,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import _get from 'lodash/get';
 import React, { useRef } from 'react';
 import { connect } from 'react-redux';
@@ -55,10 +55,10 @@ const useReceiveBufferMax = (receiveBufferSize) => {
   return receiveBufferMax;
 };
 
-const QueueReports = ({
+function QueueReports({
   plannerBufferSize = 0,
   receiveBufferSize = 0,
-}) => {
+}) {
   const config = useWidgetConfig();
   const expanded = config.get('panel.queueReports.expanded');
   const collapsed = !expanded;
@@ -152,7 +152,7 @@ const QueueReports = ({
       }}
     </CollapsibleCard>
   );
-};
+}
 
 export default connect(store => {
   const controllerState = _get(store, 'controller.state');

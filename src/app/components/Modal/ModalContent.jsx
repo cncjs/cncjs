@@ -14,16 +14,18 @@ const mapSizeToStyle = (size) => ({
   'large': styles.lg
 }[size]);
 
-const ModalContent = ({ className, size, ...props }) => (
-  <div
-    {...props}
-    className={cx(
-      className,
-      styles.modalContent,
-      mapSizeToStyle(size)
-    )}
-  />
-);
+function ModalContent({ className, size, ...props }) {
+  return (
+    <div
+      {...props}
+      className={cx(
+        className,
+        styles.modalContent,
+        mapSizeToStyle(size)
+      )}
+    />
+  );
+}
 
 ModalContent.propTypes = {
   size: PropTypes.oneOf([

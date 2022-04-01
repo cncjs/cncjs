@@ -1,7 +1,10 @@
 import { ensureArray } from 'ensure-type';
+import memoize from 'micro-memoize';
 import React from 'react';
 import styled from 'styled-components';
 import withContextConsumer from './withContextConsumer';
+
+const getMemoizedState = memoize(state => ({ ...state }));
 
 const HorizontalFormContext = React.createContext();
 
@@ -36,19 +39,20 @@ const normalizeSpacingProperty = spacing => {
  * When one `<length>` value is specified, it defines both the horizontal and vertical spacings between cells.
  * When two `<length>` values are specified, the first value defines the horizontal spacing between cells (i.e., the space between cells in adjacent columns), and the second value defines the vertical spacing between cells (i.e., the space between cells in adjacent rows).
  */
-const HorizontalForm = ({ spacing, children }) => {
+function HorizontalForm({ spacing, children }) {
   // The normalizeSpacingProperty() function will return an array containing both the horizontal and vertical spacing.
   spacing = normalizeSpacingProperty(spacing);
 
+  const context = getMemoizedState({ spacing });
+
   return (
-    <HorizontalFormContext.Provider value={{ spacing }}>
+    <HorizontalFormContext.Provider value={context}>
       {(typeof children === 'function')
         ? children({ FormContainer, FormRow, FormCol })
-        : children
-      }
+        : children}
     </HorizontalFormContext.Provider>
   );
-};
+}
 
 const FormContainer = styled.div`
     display: table;

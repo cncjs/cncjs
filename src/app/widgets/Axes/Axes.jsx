@@ -4,7 +4,7 @@ import DisplayPanel from './DisplayPanel';
 import Keypad from './Keypad';
 import MDI from './MDI';
 
-const Axes = (props) => {
+function Axes(props) {
   const { state, actions } = props;
 
   return (
@@ -31,7 +31,7 @@ const Axes = (props) => {
       />
     </div>
   );
-};
+}
 
 Axes.propTypes = {
   state: PropTypes.object,

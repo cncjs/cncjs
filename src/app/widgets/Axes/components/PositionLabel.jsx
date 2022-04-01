@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const PositionLabel = ({ value }) => {
+function PositionLabel({ value }) {
   value = String(value);
   return (
     <div style={{ fontSize: 24, padding: 5, textAlign: 'right' }}>
@@ -10,7 +10,7 @@ const PositionLabel = ({ value }) => {
       <span>{value.split('.')[1]}</span>
     </div>
   );
-};
+}
 
 PositionLabel.propTypes = {
   value: PropTypes.oneOfType([

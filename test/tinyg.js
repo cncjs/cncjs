@@ -1,5 +1,5 @@
 import { test } from 'tap';
-import TinyGRunner from '../src/server/controllers/TinyG/TinyGRunner';
+import TinyGRunner from 'server/controllers/TinyG/TinyGRunner';
 
 test('TinyGRunner', (t) => {
   t.test('TinyGParserResultMotorTimeout', (t) => {

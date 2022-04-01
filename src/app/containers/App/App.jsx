@@ -1,40 +1,44 @@
-import { Global, css } from '@emotion/core';
+import { Global, css } from '@emotion/react';
 import {
-  Toast,
   Box,
+  Toast,
   useColorMode,
   useColorStyle,
   useTheme,
-} from '@trendmicro/react-styled-ui';
-import _get from 'lodash/get';
+  useToast,
+} from '@tonic-ui/react';
 import pubsub from 'pubsub-js';
 import React, { useEffect } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import compose from 'recompose/compose';
-import ToastLayout from 'app/components/ToastLayout';
-import useToast from 'app/components/useToast';
 import settings from 'app/config/settings';
 import Login from 'app/containers/Login';
 import ProtectedPage from 'app/containers/ProtectedPage';
 import CorruptedWorkspaceSettingsModal from './modals/CorruptedWorkspaceSettingsModal';
 import ProtectedRoute from './ProtectedRoute';
 
-const Layout = (props) => {
+function Layout(props) {
   const [colorMode] = useColorMode();
   const [colorStyle] = useColorStyle({ colorMode });
-  const { fontSizes, lineHeights } = useTheme();
-  const backgroundColor = _get(colorStyle, 'background.primary');
-  const color = _get(colorStyle, 'text.primary');
+  const theme = useTheme();
+  const backgroundColor = colorStyle.background.primary;
+  const color = colorStyle.color.primary;
 
   return (
     <>
       <Global
         styles={css`
+          :root {
+            color-scheme: ${colorMode};
+          }
+          :focus:not(:focus-visible) {
+            outline: none;
+          }
           body {
-            font-size: ${fontSizes.sm};
-            line-height: ${lineHeights.sm};
+            font-size: ${theme.fontSizes.sm};
+            line-height: ${theme.lineHeights.sm};
           }
         `}
       />
@@ -47,44 +51,66 @@ const Layout = (props) => {
       />
     </>
   );
-};
+}
 
-const App = ({
+function ToastLayout(props) {
+  const [colorMode] = useColorMode();
+  const [colorStyle] = useColorStyle({ colorMode });
+  const boxShadow = colorStyle?.shadow?.thin;
+
+  return (
+    <Box
+      fontSize="sm"
+      lineHeight="sm"
+      textAlign="left"
+      boxShadow={boxShadow}
+      width={320}
+      {...props}
+    />
+  );
+}
+
+function App({
   location,
   isInitializing,
   promptUserForCorruptedWorkspaceSettings
-}) => {
+}) {
   const { productName, version } = settings;
   const toast = useToast();
 
   useEffect(() => {
     const subscriber = pubsub.subscribe('toast.notify', (msg, data) => {
       const {
-        severity,
-        position = 'bottom-right',
+        appearance,
+        placement,
         duration = 5000,
         render,
       } = data;
 
-      toast.notify({
-        position,
-        duration,
-        render: ({ onClose, position }) => {
-          return (
-            <ToastLayout
-              mb="12x"
-              mx="4x"
+      toast(({ onClose, placement }) => {
+        const styleProps = {
+          'top-left': { mt: '2x', mx: '4x' },
+          'top': { mt: '2x', mx: '4x' },
+          'top-right': { mt: '2x', mx: '4x' },
+          'bottom-left': { mb: '2x', mx: '4x' },
+          'bottom': { mb: '2x', mx: '4x' },
+          'bottom-right': { mb: '2x', mx: '4x' },
+        }[placement];
+
+        return (
+          <ToastLayout {...styleProps}>
+            <Toast
+              appearance={appearance}
+              isClosable
+              onClose={onClose}
             >
-              <Toast
-                severity={severity}
-                isCloseButtonVisible={true}
-                onClose={onClose}
-              >
-                {render()}
-              </Toast>
-            </ToastLayout>
-          );
-        },
+              {render()}
+            </Toast>
+          </ToastLayout>
+        );
+      }, {
+        placement,
+        duration,
       });
     });
 
@@ -122,7 +148,7 @@ const App = ({
       </Switch>
     </Layout>
   );
-};
+}
 
 export default compose(
   withRouter,

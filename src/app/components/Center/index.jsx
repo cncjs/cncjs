@@ -3,22 +3,24 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './index.styl';
 
-const Center = ({
+function Center({
   className,
   horizontal,
   vertical,
   stretched,
   ...props
-}) => (
-  <div
-    {...props}
-    className={cx(className, {
-      [styles.horizontal]: !!horizontal,
-      [styles.vertical]: !!vertical,
-      [styles.stretched]: !!stretched
-    })}
-  />
-);
+}) {
+  return (
+    <div
+      {...props}
+      className={cx(className, {
+        [styles.horizontal]: !!horizontal,
+        [styles.vertical]: !!vertical,
+        [styles.stretched]: !!stretched
+      })}
+    />
+  );
+}
 
 Center.propTypes = {
   horizontal: PropTypes.bool,

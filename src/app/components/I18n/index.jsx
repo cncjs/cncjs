@@ -7,7 +7,7 @@ import x from 'app/lib/json-stringify';
 import log from 'app/lib/log';
 import nodesToString from './nodes-to-string';
 
-export default ({ children, ...props }) => {
+export default function({ children, ...props }) {
   if (typeof children === 'function') {
     children = children(props);
   }
@@ -26,4 +26,4 @@ export default ({ children, ...props }) => {
       {children}
     </Trans>
   );
-};
+}

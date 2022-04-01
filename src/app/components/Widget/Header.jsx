@@ -3,16 +3,18 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './index.styl';
 
-const Header = ({ fixed, className, ...props }) => (
-  <div
-    {...props}
-    className={cx(
-      className,
-      styles.widgetHeader,
-      { [styles.widgetHeaderFixed]: fixed }
-    )}
-  />
-);
+function Header({ fixed, className, ...props }) {
+  return (
+    <div
+      {...props}
+      className={cx(
+        className,
+        styles.widgetHeader,
+        { [styles.widgetHeaderFixed]: fixed }
+      )}
+    />
+  );
+}
 
 Header.propTypes = {
   fixed: PropTypes.bool

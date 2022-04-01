@@ -1,6 +1,6 @@
 import {
   Space,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import React from 'react';
 import i18n from 'app/lib/i18n';
 import Anchor from 'app/components/Anchor';
@@ -11,7 +11,7 @@ import ModalTemplate from 'app/components/ModalTemplate';
 import settings from 'app/config/settings';
 import config from 'app/store/config';
 
-const CorruptedWorkspaceSettingsModal = (props) => {
+function CorruptedWorkspaceSettingsModal(props) {
   const text = config.getConfig();
   const url = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text);
   const filename = `${settings.name}-${settings.version}.json`;
@@ -66,6 +66,6 @@ const CorruptedWorkspaceSettingsModal = (props) => {
       </Modal.Footer>
     </Modal>
   );
-};
+}
 
 export default CorruptedWorkspaceSettingsModal;

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { CollapsibleCardContext } from './context';
 
-const ToggleIcon = ({ style, ...props }) => {
+function ToggleIcon({ style, ...props }) {
   const { duration, collapsed } = useContext(CollapsibleCardContext);
 
   return (
@@ -17,6 +17,6 @@ const ToggleIcon = ({ style, ...props }) => {
       }}
     />
   );
-};
+}
 
 export default ToggleIcon;

@@ -15,10 +15,10 @@ import {
 const PROBE_SETTER_TLO = 'tlo';
 const PROBE_SETTER_WCS = 'wcs';
 
-const ProbeModal = ({
+function ProbeModal({
   onClose,
   probeData,
-}) => {
+}) {
   const config = useWidgetConfig();
   const contentRef = useRef();
   const {
@@ -145,6 +145,6 @@ const ProbeModal = ({
       </Form>
     </Modal>
   );
-};
+}
 
 export default ProbeModal;

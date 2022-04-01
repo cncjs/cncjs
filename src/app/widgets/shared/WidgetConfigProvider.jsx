@@ -52,11 +52,11 @@ const getMemoizedInitialState = memoize(({ widgetId }) => {
   isEqual: _isEqual,
 });
 
-const WidgetConfigProvider = ({
+function WidgetConfigProvider({
   context: Context = WidgetConfigContext,
   widgetId,
   children,
-}) => {
+}) {
   if (!widgetId) {
     throw new TypeError(`"widgetId" is not defined: ${widgetId}`);
   }
@@ -70,6 +70,6 @@ const WidgetConfigProvider = ({
       </TrackedProvider>
     </WidgetConfigContext.Provider>
   );
-};
+}
 
 export default WidgetConfigProvider;

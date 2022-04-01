@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 import styles from './index.styl';
 
-const TabPane = ({ active, lazy, eventKey, className, ...props }) => {
+function TabPane({ active, lazy, eventKey, className, ...props }) {
   if (!active && lazy) {
     return null;
   }
@@ -16,7 +16,7 @@ const TabPane = ({ active, lazy, eventKey, className, ...props }) => {
       })}
     />
   );
-};
+}
 
 TabPane.propTypes = {
   active: PropTypes.bool,

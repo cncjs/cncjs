@@ -3,7 +3,7 @@ import React from 'react';
 import Anchor from '../Anchor';
 import styles from './index.styl';
 
-const Sortable = (props) => {
+function Sortable(props) {
   const { children, className, style, ...rest } = props;
 
   return (
@@ -13,6 +13,6 @@ const Sortable = (props) => {
       </Anchor>
     </div>
   );
-};
+}
 
 export default Sortable;

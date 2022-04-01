@@ -84,50 +84,50 @@ class Position extends React.Component {
     });
   }
 
-    getTarget = () => {
-      const { target } = this.props;
-      const targetElement = typeof target === 'function' ? target() : target;
-      return targetElement && ReactDOM.findDOMNode(targetElement) || null;
-    };
+  getTarget = () => {
+    const { target } = this.props;
+    const targetElement = typeof target === 'function' ? target() : target;
+    return targetElement && ReactDOM.findDOMNode(targetElement) || null;
+  };
 
-    maybeUpdatePosition = (placementChanged) => {
-      const target = this.getTarget();
-      const shouldUpdatePosition = this.props.shouldUpdatePosition || target !== this._lastTarget || placementChanged;
+  maybeUpdatePosition = (placementChanged) => {
+    const target = this.getTarget();
+    const shouldUpdatePosition = this.props.shouldUpdatePosition || target !== this._lastTarget || placementChanged;
 
-      if (!shouldUpdatePosition) {
-        return;
-      }
+    if (!shouldUpdatePosition) {
+      return;
+    }
 
-      this.updatePosition(target);
-    };
+    this.updatePosition(target);
+  };
 
-    updatePosition = (target) => {
-      this._lastTarget = target;
+  updatePosition = (target) => {
+    this._lastTarget = target;
 
-      if (!target) {
-        this.setState({
-          positionLeft: 0,
-          positionTop: 0,
-          arrowOffsetLeft: null,
-          arrowOffsetTop: null
-        });
+    if (!target) {
+      this.setState({
+        positionLeft: 0,
+        positionTop: 0,
+        arrowOffsetLeft: null,
+        arrowOffsetTop: null
+      });
 
-        return;
-      }
+      return;
+    }
 
-      const overlay = ReactDOM.findDOMNode(this);
-      const container = getContainer(
-        this.props.container, ownerDocument(this).body
-      );
+    const overlay = ReactDOM.findDOMNode(this);
+    const container = getContainer(
+      this.props.container, ownerDocument(this).body
+    );
 
-      this.setState(calculatePosition(
-        this.props.placement,
-        overlay,
-        target,
-        container,
-        this.props.containerPadding
-      ));
-    };
+    this.setState(calculatePosition(
+      this.props.placement,
+      overlay,
+      target,
+      container,
+      this.props.containerPadding
+    ));
+  };
 }
 
 Position.propTypes = {

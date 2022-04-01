@@ -1,3 +1,4 @@
+/* eslint import/no-import-module-exports: 0 */
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { END } from 'redux-saga';
@@ -25,8 +26,8 @@ const configureStore = (preloadedState) => {
   // Hot reload reducers (requires Webpack or Browserify HMR to be enabled)
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
-    module.hot.accept('app/reducers', () => {
-      const nextReducer = require('app/reducers').default;
+    module.hot.accept('app/reducers', async () => {
+      const nextReducer = await import('app/reducers');
       store.replaceReducer(nextReducer);
     });
   }

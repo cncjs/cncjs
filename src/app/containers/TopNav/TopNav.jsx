@@ -1,7 +1,7 @@
 import {
   Space,
   Text,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import React, { Fragment, Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import semverLt from 'semver/functions/lt';
@@ -47,485 +47,483 @@ const NavDropdownToggle = styled(Button)`
 `;
 
 class TopNav extends Component {
-    static propTypes = {
-      ...withRouter.propTypes
-    };
+  static propTypes = {
+    ...withRouter.propTypes
+  };
 
-    state = this.getInitialState();
+  state = this.getInitialState();
 
-    actions = {
-      requestPushPermission: () => {
-        const onGranted = () => {
-          this.setState({ pushPermission: Push.Permission.GRANTED });
-        };
-        const onDenied = () => {
-          this.setState({ pushPermission: Push.Permission.DENIED });
-        };
+  actions = {
+    requestPushPermission: () => {
+      const onGranted = () => {
+        this.setState({ pushPermission: Push.Permission.GRANTED });
+      };
+      const onDenied = () => {
+        this.setState({ pushPermission: Push.Permission.DENIED });
+      };
         // Note that if "Permission.DEFAULT" is returned, no callback is executed
-        const permission = Push.Permission.request(onGranted, onDenied);
-        if (permission === Push.Permission.DEFAULT) {
-          this.setState({ pushPermission: Push.Permission.DEFAULT });
-        }
-      },
-      checkForUpdates: async () => {
-        try {
-          const res = await api.getState();
-          const { checkForUpdates } = res.body;
+      const permission = Push.Permission.request(onGranted, onDenied);
+      if (permission === Push.Permission.DEFAULT) {
+        this.setState({ pushPermission: Push.Permission.DEFAULT });
+      }
+    },
+    checkForUpdates: async () => {
+      try {
+        const res = await api.getState();
+        const { checkForUpdates } = res.body;
 
-          if (checkForUpdates) {
-            const res = await api.getLatestVersion();
-            const { time, version } = res.body;
-
-            this._isMounted && this.setState({
-              latestVersion: version,
-              latestTime: time
-            });
-          }
-        } catch (res) {
-          // Ignore error
-        }
-      },
-      fetchCommands: async () => {
-        try {
-          const res = await api.commands.fetch({ paging: false });
-          const { records: commands } = res.body;
+        if (checkForUpdates) {
+          const res = await api.getLatestVersion();
+          const { time, version } = res.body;
 
           this._isMounted && this.setState({
-            commands: commands.filter(command => command.enabled)
+            latestVersion: version,
+            latestTime: time
           });
-        } catch (res) {
-          // Ignore error
         }
-      },
-      runCommand: async (cmd) => {
-        try {
-          const res = await api.commands.run(cmd.id);
-          const { taskId } = res.body;
-
-          this.setState({
-            commands: this.state.commands.map(c => {
-              return (c.id === cmd.id) ? { ...c, taskId: taskId, err: null } : c;
-            })
-          });
-        } catch (res) {
-          // Ignore error
-        }
+      } catch (res) {
+        // Ignore error
       }
-    };
-
-    actionHandlers = {
-      CONTROLLER_COMMAND: (event, { command }) => {
-        // feedhold, cyclestart, homing, unlock, reset
-        controller.command(command);
-      }
-    };
-
-    controllerEvents = {
-      'config:change': () => {
-        this.actions.fetchCommands();
-      },
-      'task:start': (taskId) => {
-        this.setState({
-          runningTasks: this.state.runningTasks.concat(taskId)
-        });
-      },
-      'task:finish': (taskId, code) => {
-        const err = (code !== 0) ? new Error(`errno=${code}`) : null;
-        let cmd = null;
-
-        this.setState({
-          commands: this.state.commands.map(c => {
-            if (c.taskId !== taskId) {
-              return c;
-            }
-            cmd = c;
-            return {
-              ...c,
-              taskId: null,
-              err: err
-            };
-          }),
-          runningTasks: _without(this.state.runningTasks, taskId)
-        });
-
-        if (cmd && this.state.pushPermission === Push.Permission.GRANTED) {
-          Push.create(cmd.title, {
-            body: code === 0
-              ? i18n._('Command succeeded')
-              : i18n._('Command failed ({{err}})', { err: err }),
-            icon: 'images/logo-badge-32x32.png',
-            timeout: 10 * 1000,
-            onClick: function () {
-              window.focus();
-              this.close();
-            }
-          });
-        }
-      },
-      'task:error': (taskId, err) => {
-        let cmd = null;
-
-        this.setState({
-          commands: this.state.commands.map(c => {
-            if (c.taskId !== taskId) {
-              return c;
-            }
-            cmd = c;
-            return {
-              ...c,
-              taskId: null,
-              err: err
-            };
-          }),
-          runningTasks: _without(this.state.runningTasks, taskId)
-        });
-
-        if (cmd && this.state.pushPermission === Push.Permission.GRANTED) {
-          Push.create(cmd.title, {
-            body: i18n._('Command failed ({{err}})', { err: err }),
-            icon: 'images/logo-badge-32x32.png',
-            timeout: 10 * 1000,
-            onClick: function () {
-              window.focus();
-              this.close();
-            }
-          });
-        }
-      }
-    };
-
-    _isMounted = false;
-
-    getInitialState() {
-      let pushPermission = '';
+    },
+    fetchCommands: async () => {
       try {
-        // Push.Permission.get() will throw an error if Push is not supported on this device
-        pushPermission = Push.Permission.get();
-      } catch (e) {
-        // Ignore
+        const res = await api.commands.fetch({ paging: false });
+        const { records: commands } = res.body;
+
+        this._isMounted && this.setState({
+          commands: commands.filter(command => command.enabled)
+        });
+      } catch (res) {
+        // Ignore error
       }
+    },
+    runCommand: async (cmd) => {
+      try {
+        const res = await api.commands.run(cmd.id);
+        const { taskId } = res.body;
 
-      return {
-        pushPermission: pushPermission,
-        commands: [],
-        runningTasks: [],
-        currentVersion: settings.version,
-        latestVersion: settings.version
-      };
+        this.setState({
+          commands: this.state.commands.map(c => {
+            return (c.id === cmd.id) ? { ...c, taskId: taskId, err: null } : c;
+          })
+        });
+      } catch (res) {
+        // Ignore error
+      }
     }
+  };
 
-    componentDidMount() {
-      this._isMounted = true;
+  actionHandlers = {
+    CONTROLLER_COMMAND: (event, { command }) => {
+      // feedhold, cyclestart, homing, unlock, reset
+      controller.command(command);
+    }
+  };
 
-      this.addActionHandlers();
-      this.addControllerEvents();
-
-      // Initial actions
-      this.actions.checkForUpdates();
+  controllerEvents = {
+    'config:change': () => {
       this.actions.fetchCommands();
-    }
-
-    componentWillUnmount() {
-      this._isMounted = false;
-
-      this.removeActionHandlers();
-      this.removeControllerEvents();
-
-      this.runningTasks = [];
-    }
-
-    addActionHandlers() {
-      Object.keys(this.actionHandlers).forEach(eventName => {
-        const callback = this.actionHandlers[eventName];
-        combokeys.on(eventName, callback);
+    },
+    'task:start': (taskId) => {
+      this.setState({
+        runningTasks: this.state.runningTasks.concat(taskId)
       });
-    }
+    },
+    'task:finish': (taskId, code) => {
+      const err = (code !== 0) ? new Error(`errno=${code}`) : null;
+      let cmd = null;
 
-    removeActionHandlers() {
-      Object.keys(this.actionHandlers).forEach(eventName => {
-        const callback = this.actionHandlers[eventName];
-        combokeys.removeListener(eventName, callback);
+      this.setState({
+        commands: this.state.commands.map(c => {
+          if (c.taskId !== taskId) {
+            return c;
+          }
+          cmd = c;
+          return {
+            ...c,
+            taskId: null,
+            err: err
+          };
+        }),
+        runningTasks: _without(this.state.runningTasks, taskId)
       });
-    }
 
-    addControllerEvents() {
-      Object.keys(this.controllerEvents).forEach(eventName => {
-        const callback = this.controllerEvents[eventName];
-        controller.addListener(eventName, callback);
-      });
-    }
-
-    removeControllerEvents() {
-      Object.keys(this.controllerEvents).forEach(eventName => {
-        const callback = this.controllerEvents[eventName];
-        controller.removeListener(eventName, callback);
-      });
-    }
-
-    mapCommandsToMenuItems(commands) {
-      if (commands.length === 0) {
-        return null;
+      if (cmd && this.state.pushPermission === Push.Permission.GRANTED) {
+        Push.create(cmd.title, {
+          body: code === 0
+            ? i18n._('Command succeeded')
+            : i18n._('Command failed ({{err}})', { err: err }),
+          icon: 'images/logo-badge-32x32.png',
+          timeout: 10 * 1000,
+          onClick: function () {
+            window.focus();
+            this.close();
+          }
+        });
       }
+    },
+    'task:error': (taskId, err) => {
+      let cmd = null;
 
-      return (
-        <Fragment>
-          <MenuItem header>
-            <Row
-              style={{
-                justifyContent: 'space-between',
-                flexWrap: 'nowrap',
-              }}
-            >
-              <Col width="auto">
-                {i18n._('Command')}
-              </Col>
-              <Col width="auto">
-                <Space width={12} />
-                {(this.state.pushPermission === Push.Permission.GRANTED) && (
-                  <FontAwesomeIcon icon="bell" fixedWidth />
-                )}
-                {(this.state.pushPermission === Push.Permission.DEFAULT) && (
-                  <Anchor
-                    onClick={this.actions.requestPushPermission}
-                    title={i18n._('Show notifications')}
-                  >
-                    <FontAwesomeIcon icon="bell" fixedWidth />
-                  </Anchor>
-                )}
-              </Col>
-            </Row>
-          </MenuItem>
-          {commands.map(cmd => {
-            let icon = null;
-            let spin = false;
+      this.setState({
+        commands: this.state.commands.map(c => {
+          if (c.taskId !== taskId) {
+            return c;
+          }
+          cmd = c;
+          return {
+            ...c,
+            taskId: null,
+            err: err
+          };
+        }),
+        runningTasks: _without(this.state.runningTasks, taskId)
+      });
 
-            if (this.state.runningTasks.indexOf(cmd.taskId) >= 0) { // Task is runing
-              icon = 'circle-notch';
-              spin = true;
-            }
-            if (cmd.err) {
-              icon = 'exclamation-circle';
-              spin = false;
-            }
+      if (cmd && this.state.pushPermission === Push.Permission.GRANTED) {
+        Push.create(cmd.title, {
+          body: i18n._('Command failed ({{err}})', { err: err }),
+          icon: 'images/logo-badge-32x32.png',
+          timeout: 10 * 1000,
+          onClick: function () {
+            window.focus();
+            this.close();
+          }
+        });
+      }
+    }
+  };
 
-            return (
-              <MenuItem
-                key={cmd.id}
-                disabled={cmd.disabled}
-                onSelect={() => {
-                  this.actions.runCommand(cmd);
-                }}
-              >
-                <Row style={{ justifyContent: 'space-between' }}>
-                  <Col width="auto">
-                    {cmd.title || cmd.command}
-                  </Col>
-                  <Col width="auto" title={cmd.err}>
-                    <Space width={12} />
-                    {icon && (
-                      <FontAwesomeIcon icon={icon} fixedWidth spin={spin} />
-                    )}
-                  </Col>
-                </Row>
-              </MenuItem>
-            );
-          })}
-          <MenuItem divider />
-        </Fragment>
-      );
+  _isMounted = false;
+
+  getInitialState() {
+    let pushPermission = '';
+    try {
+      // Push.Permission.get() will throw an error if Push is not supported on this device
+      pushPermission = Push.Permission.get();
+    } catch (e) {
+      // Ignore
     }
 
-    render() {
-      const { history, location } = this.props;
-      const { commands, currentVersion, latestVersion } = this.state;
-      const newUpdateAvailable = semverLt(currentVersion, latestVersion);
-      const sessionEnabled = configStore.get('session.enabled');
-      const signedInName = configStore.get('session.name');
+    return {
+      pushPermission: pushPermission,
+      commands: [],
+      runningTasks: [],
+      currentVersion: settings.version,
+      latestVersion: settings.version
+    };
+  }
 
-      return (
-        <Container
-          fluid
-          style={{
-            height: TOPNAV_HEIGHT,
-          }}
-        >
+  componentDidMount() {
+    this._isMounted = true;
+
+    this.addActionHandlers();
+    this.addControllerEvents();
+
+    // Initial actions
+    this.actions.checkForUpdates();
+    this.actions.fetchCommands();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+
+    this.removeActionHandlers();
+    this.removeControllerEvents();
+
+    this.runningTasks = [];
+  }
+
+  addActionHandlers() {
+    Object.keys(this.actionHandlers).forEach(eventName => {
+      const callback = this.actionHandlers[eventName];
+      combokeys.on(eventName, callback);
+    });
+  }
+
+  removeActionHandlers() {
+    Object.keys(this.actionHandlers).forEach(eventName => {
+      const callback = this.actionHandlers[eventName];
+      combokeys.removeListener(eventName, callback);
+    });
+  }
+
+  addControllerEvents() {
+    Object.keys(this.controllerEvents).forEach(eventName => {
+      const callback = this.controllerEvents[eventName];
+      controller.addListener(eventName, callback);
+    });
+  }
+
+  removeControllerEvents() {
+    Object.keys(this.controllerEvents).forEach(eventName => {
+      const callback = this.controllerEvents[eventName];
+      controller.removeListener(eventName, callback);
+    });
+  }
+
+  mapCommandsToMenuItems(commands) {
+    if (commands.length === 0) {
+      return null;
+    }
+
+    return (
+      <>
+        <MenuItem header>
           <Row
             style={{
               justifyContent: 'space-between',
               flexWrap: 'nowrap',
             }}
           >
-            <Col
-              width="auto"
-              style={{
-                textAlign: 'center',
-                width: 60,
-              }}
-            >
-              <Hoverable>
-                {({ hovered }) => (
-                  <div
-                    role="presentation"
-                    style={{
-                      cursor: hovered ? 'pointer' : 'default',
-                      height: 60,
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                    title={`${settings.productName} ${settings.version}`}
-                    onClick={() => {
-                      window.open(releases, '_blank');
-                    }}
-                  >
-                    <div style={{ width: '100%' }}>
-                      <Image src={logo} width={32} height={32} />
-                    </div>
-                    <Text
-                      color={hovered ? '#fff' : '#9d9d9d'}
-                      fontSize="50%"
-                      whiteSpace="nowrap"
-                    >
-                      {settings.version}
-                    </Text>
-                  </div>
-                )}
-              </Hoverable>
-              {newUpdateAvailable && (
-                <Tooltip content={i18n._('New update available')}>
-                  <Badge
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      right: 0,
-                      backgroundColor: '#007bff',
-                      color: '#fff',
-                      cursor: 'default',
-                    }}
-                  >
-                    N
-                  </Badge>
-                </Tooltip>
+            <Col width="auto">
+              {i18n._('Command')}
+            </Col>
+            <Col width="auto">
+              <Space width={12} />
+              {(this.state.pushPermission === Push.Permission.GRANTED) && (
+                <FontAwesomeIcon icon="bell" fixedWidth />
+              )}
+              {(this.state.pushPermission === Push.Permission.DEFAULT) && (
+                <Anchor
+                  onClick={this.actions.requestPushPermission}
+                  title={i18n._('Show notifications')}
+                >
+                  <FontAwesomeIcon icon="bell" fixedWidth />
+                </Anchor>
               )}
             </Col>
-            <Col
-              width="auto"
-              style={{
-                paddingLeft: 12,
-                paddingRight: 12,
-                display: 'flex',
-                alignItems: 'center',
+          </Row>
+        </MenuItem>
+        {commands.map(cmd => {
+          let icon = null;
+          let spin = false;
+
+          if (this.state.runningTasks.indexOf(cmd.taskId) >= 0) { // Task is runing
+            icon = 'circle-notch';
+            spin = true;
+          }
+          if (cmd.err) {
+            icon = 'exclamation-circle';
+            spin = false;
+          }
+
+          return (
+            <MenuItem
+              key={cmd.id}
+              disabled={cmd.disabled}
+              onSelect={() => {
+                this.actions.runCommand(cmd);
               }}
             >
-              <Row>
+              <Row style={{ justifyContent: 'space-between' }}>
                 <Col width="auto">
-                  {location.pathname === '/workspace' &&
-                  <QuickAccessToolbar />
-                  }
+                  {cmd.title || cmd.command}
                 </Col>
-                <Col width="auto">
+                <Col width="auto" title={cmd.err}>
                   <Space width={12} />
-                </Col>
-                <Col width="auto">
-                  {sessionEnabled && (
-                    <Dropdown
-                      pullRight
-                    >
-                      <Dropdown.Toggle
-                        componentClass={NavDropdownToggle}
-                        btnStyle="dark"
-                      >
-                        <FontAwesomeIcon icon="user" />
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <MenuItem header>
-                          {i18n._('Signed in as {{name}}', { name: signedInName })}
-                        </MenuItem>
-                        <MenuItem divider />
-                        <MenuItem
-                          onClick={() => {
-                            history.push('/settings/account');
-                          }}
-                        >
-                          <FontAwesomeIcon icon="user" fixedWidth />
-                          <Space width={8} />
-                          {i18n._('Account')}
-                        </MenuItem>
-                        <MenuItem
-                          onClick={() => {
-                            if (user.isAuthenticated()) {
-                              log.debug('Destroy and cleanup the WebSocket connection');
-                              controller.disconnect();
-
-                              user.signout();
-
-                              // Remember current location
-                              history.replace(location.pathname);
-                            }
-                          }}
-                        >
-                          <FontAwesomeIcon icon="sign-out-alt" fixedWidth />
-                          <Space width={8} />
-                          {i18n._('Sign Out')}
-                        </MenuItem>
-                      </Dropdown.Menu>
-                    </Dropdown>
+                  {icon && (
+                    <FontAwesomeIcon icon={icon} fixedWidth spin={spin} />
                   )}
+                </Col>
+              </Row>
+            </MenuItem>
+          );
+        })}
+        <MenuItem divider />
+      </>
+    );
+  }
+
+  render() {
+    const { history, location } = this.props;
+    const { commands, currentVersion, latestVersion } = this.state;
+    const newUpdateAvailable = semverLt(currentVersion, latestVersion);
+    const sessionEnabled = configStore.get('session.enabled');
+    const signedInName = configStore.get('session.name');
+
+    return (
+      <Container
+        fluid
+        style={{
+          height: TOPNAV_HEIGHT,
+        }}
+      >
+        <Row
+          style={{
+            justifyContent: 'space-between',
+            flexWrap: 'nowrap',
+          }}
+        >
+          <Col
+            width="auto"
+            style={{
+              textAlign: 'center',
+              width: 60,
+            }}
+          >
+            <Hoverable>
+              {({ hovered }) => (
+                <div
+                  role="presentation"
+                  style={{
+                    cursor: hovered ? 'pointer' : 'default',
+                    height: 60,
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  title={`${settings.productName} ${settings.version}`}
+                  onClick={() => {
+                    window.open(releases, '_blank');
+                  }}
+                >
+                  <div style={{ width: '100%' }}>
+                    <Image src={logo} width={32} height={32} />
+                  </div>
+                  <Text
+                    color={hovered ? '#fff' : '#9d9d9d'}
+                    fontSize="50%"
+                    whiteSpace="nowrap"
+                  >
+                    {settings.version}
+                  </Text>
+                </div>
+              )}
+            </Hoverable>
+            {newUpdateAvailable && (
+              <Tooltip content={i18n._('New update available')}>
+                <Badge
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    backgroundColor: '#007bff',
+                    color: '#fff',
+                    cursor: 'default',
+                  }}
+                >
+                  N
+                </Badge>
+              </Tooltip>
+            )}
+          </Col>
+          <Col
+            width="auto"
+            style={{
+              paddingLeft: 12,
+              paddingRight: 12,
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Row>
+              <Col width="auto">
+                {location.pathname === '/workspace' &&
+                  <QuickAccessToolbar />}
+              </Col>
+              <Col width="auto">
+                <Space width={12} />
+              </Col>
+              <Col width="auto">
+                {sessionEnabled && (
                   <Dropdown
                     pullRight
                   >
                     <Dropdown.Toggle
                       componentClass={NavDropdownToggle}
                       btnStyle="dark"
-                      noCaret
-                      title={i18n._('Options')}
                     >
-                      <FontAwesomeIcon icon="ellipsis-v" />
-                      {(this.state.runningTasks.length > 0) && (
-                        <Badge
-                          style={{
-                            position: 'absolute',
-                            top: 0,
-                            right: 0,
-                            backgroundColor: '#17a2b8',
-                            color: '#fff',
-                            cursor: 'default',
-                          }}
-                        >
-                          {this.state.runningTasks.length}
-                        </Badge>
-                      )}
+                      <FontAwesomeIcon icon="user" />
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                      {(commands.length > 0) &&
-                                        this.mapCommandsToMenuItems(commands)
-                      }
+                      <MenuItem header>
+                        {i18n._('Signed in as {{name}}', { name: signedInName })}
+                      </MenuItem>
+                      <MenuItem divider />
                       <MenuItem
                         onClick={() => {
-                          const url = 'https://github.com/cncjs/cncjs/wiki';
-                          window.open(url, '_blank');
+                          history.push('/settings/account');
                         }}
                       >
-                        {i18n._('Help')}
+                        <FontAwesomeIcon icon="user" fixedWidth />
+                        <Space width={8} />
+                        {i18n._('Account')}
                       </MenuItem>
                       <MenuItem
                         onClick={() => {
-                          const url = 'https://github.com/cncjs/cncjs/issues';
-                          window.open(url, '_blank');
+                          if (user.isAuthenticated()) {
+                            log.debug('Destroy and cleanup the WebSocket connection');
+                            controller.disconnect();
+
+                            user.signout();
+
+                            // Remember current location
+                            history.replace(location.pathname);
+                          }
                         }}
                       >
-                        {i18n._('Report an issue')}
+                        <FontAwesomeIcon icon="sign-out-alt" fixedWidth />
+                        <Space width={8} />
+                        {i18n._('Sign Out')}
                       </MenuItem>
                     </Dropdown.Menu>
                   </Dropdown>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Container>
-      );
-    }
+                )}
+                <Dropdown
+                  pullRight
+                >
+                  <Dropdown.Toggle
+                    componentClass={NavDropdownToggle}
+                    btnStyle="dark"
+                    noCaret
+                    title={i18n._('Options')}
+                  >
+                    <FontAwesomeIcon icon="ellipsis-v" />
+                    {(this.state.runningTasks.length > 0) && (
+                      <Badge
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          right: 0,
+                          backgroundColor: '#17a2b8',
+                          color: '#fff',
+                          cursor: 'default',
+                        }}
+                      >
+                        {this.state.runningTasks.length}
+                      </Badge>
+                    )}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    {(commands.length > 0) &&
+                                        this.mapCommandsToMenuItems(commands)}
+                    <MenuItem
+                      onClick={() => {
+                        const url = 'https://github.com/cncjs/cncjs/wiki';
+                        window.open(url, '_blank');
+                      }}
+                    >
+                      {i18n._('Help')}
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        const url = 'https://github.com/cncjs/cncjs/issues';
+                        window.open(url, '_blank');
+                      }}
+                    >
+                      {i18n._('Report an issue')}
+                    </MenuItem>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
 }
 
 export default withRouter(TopNav);

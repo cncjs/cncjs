@@ -1,5 +1,7 @@
 import env from 'app/config/env';
+import configureStoreProduction from './configureStore.production';
+import configureStoreDevelopment from './configureStore.development';
 
-export default (env.NODE_ENV === 'production')
-  ? require('./configureStore.production').default
-  : require('./configureStore.development').default;
+const configureStore = (env.NODE_ENV === 'production') ? configureStoreProduction : configureStoreDevelopment;
+
+export default configureStore;

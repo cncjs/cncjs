@@ -33,7 +33,7 @@ const formatRemainingTime = (remainingTime) => {
   return moment(d._data).format('HH:mm:ss');
 };
 
-const GCodeStats = ({
+function GCodeStats({
   units,
   boundingBox,
   loaded,
@@ -44,7 +44,7 @@ const GCodeStats = ({
   finishTime,
   elapsedTime,
   remainingTime,
-}) => {
+}) {
   const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
   const minX = ensureFiniteNumber(_get(boundingBox, 'min.x'));
   const minY = ensureFiniteNumber(_get(boundingBox, 'min.y'));
@@ -156,7 +156,7 @@ const GCodeStats = ({
       </Row>
     </Container>
   );
-};
+}
 
 export default connect(store => {
   const modalUnits = _get(store, 'controller.modal.units');

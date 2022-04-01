@@ -3,6 +3,7 @@ const path = require('path');
 const { boolean } = require('boolean');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const dotenv = require('dotenv');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const findImports = require('find-imports');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const without = require('lodash/without');
@@ -17,7 +18,6 @@ dotenv.config({
   path: path.resolve('webpack.config.production.env'),
 });
 
-const USE_ESLINT_LOADER = boolean(process.env.USE_ESLINT_LOADER);
 const USE_TERSER_PLUGIN = boolean(process.env.USE_TERSER_PLUGIN);
 const USE_CSS_MINIMIZER_PLUGIN = boolean(process.env.USE_CSS_MINIMIZER_PLUGIN);
 
@@ -60,12 +60,6 @@ module.exports = {
   },
   module: {
     rules: [
-      USE_ESLINT_LOADER && {
-        test: /\.jsx?$/,
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        exclude: /node_modules/,
-      },
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
@@ -162,6 +156,7 @@ module.exports = {
       /moment[\/\\]locale$/,
       new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$'),
     ),
+    new ESLintPlugin(),
     new MiniCssExtractPlugin({
       filename: `[name].css?_=${timestamp}`,
       chunkFilename: `[id].css?_=${timestamp}`,

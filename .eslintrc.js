@@ -33,23 +33,24 @@ module.exports = {
     'jest',
   ],
   rules: {
-    'react/jsx-curly-newline': 'warn',
-    'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'error',
     'max-lines-per-function': ['warn', {
       max: 1024,
       skipBlankLines: true,
       skipComments: true,
     }],
+    'react/jsx-curly-newline': 'warn',
     'react/jsx-no-bind': ['warn', {
       allowArrowFunctions: true,
     }],
-    'react/prefer-stateless-function': 0,
     'react/no-access-state-in-setstate': 0,
+    'react/prefer-stateless-function': 0,
     'react/prop-types': 0,
     'react/jsx-curly-brace-presence': ['error', {
       'props': 'never',
       'children': 'ignore',
     }],
+    'react/static-property-placement': 0,
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'error',
   }
 };

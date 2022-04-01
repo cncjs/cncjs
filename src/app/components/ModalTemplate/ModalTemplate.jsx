@@ -1,6 +1,6 @@
 import {
   Space,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
@@ -43,25 +43,26 @@ const DescriptiveMessage = styled.div`
     font-weight: normal;
 `;
 
-const ModalTemplate = ({ type, children, style }) => (
-  <Container>
-    <Row>
-      <Col width="auto">
-        {type === 'error' && <Error />}
-        {type === 'warning' && <Warning />}
-        {type === 'info' && <Info />}
-        {type === 'success' && <Success />}
-        <Space width={16} />
-      </Col>
-      <Col style={{ paddingTop: 4, ...style }}>
-        {(typeof children === 'function')
-          ? children({ PrimaryMessage, DescriptiveMessage })
-          : children
-        }
-      </Col>
-    </Row>
-  </Container>
-);
+function ModalTemplate({ type, children, style }) {
+  return (
+    <Container>
+      <Row>
+        <Col width="auto">
+          {type === 'error' && <Error />}
+          {type === 'warning' && <Warning />}
+          {type === 'info' && <Info />}
+          {type === 'success' && <Success />}
+          <Space width={16} />
+        </Col>
+        <Col style={{ paddingTop: 4, ...style }}>
+          {(typeof children === 'function')
+            ? children({ PrimaryMessage, DescriptiveMessage })
+            : children}
+        </Col>
+      </Row>
+    </Container>
+  );
+}
 
 ModalTemplate.propTypes = {
   type: PropTypes.oneOf([

@@ -1,6 +1,6 @@
 import {
   Space,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import moment from 'moment';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -11,7 +11,7 @@ import settings from 'app/config/settings';
 import i18n from 'app/lib/i18n';
 import styles from './index.styl';
 
-const UpdateStatusContainer = (props) => {
+function UpdateStatusContainer(props) {
   const { checking, current, latest, lastUpdate } = props;
   const newUpdateAvailable = (checking === false) && semverLt(current, latest);
 
@@ -74,7 +74,7 @@ const UpdateStatusContainer = (props) => {
       </div>
     </div>
   );
-};
+}
 
 UpdateStatusContainer.propTypes = {
   checking: PropTypes.bool,

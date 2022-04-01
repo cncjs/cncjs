@@ -14,7 +14,7 @@ import express from 'express';
 import expressJWT from 'express-jwt';
 import session from 'express-session';
 import i18next from 'i18next';
-import i18nextBackend from 'i18next-node-fs-backend';
+import i18nextFSBackend from 'i18next-fs-backend';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
 import favicon from 'serve-favicon';
@@ -27,7 +27,7 @@ import rimraf from 'rimraf';
 import {
   LanguageDetector as i18nextLanguageDetector,
   handle as i18nextHandle,
-} from 'i18next-express-middleware';
+} from 'i18next-http-middleware';
 import urljoin from './lib/urljoin';
 import logger from './lib/logger';
 import settings from './config/settings';
@@ -170,7 +170,7 @@ const appMain = () => {
 
   // Setup i18n (i18next)
   i18next
-    .use(i18nextBackend)
+    .use(i18nextFSBackend)
     .use(i18nextLanguageDetector)
     .init(settings.i18next);
 

@@ -2,7 +2,7 @@ import {
   Button,
   Textarea,
   TextLabel,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import React from 'react';
 import Modal from 'app/components/Modal';
 import controller from 'app/lib/controller';
@@ -28,12 +28,12 @@ const runMacro = async ({ id }) => {
   }
 };
 
-const RunMacro = ({
+function RunMacro({
   onClose,
   id,
   name,
   content,
-}) => {
+}) {
   const handleRunMacro = async (e) => {
     await runMacro({ id });
     onClose();
@@ -72,6 +72,6 @@ const RunMacro = ({
       </Modal.Footer>
     </Modal>
   );
-};
+}
 
 export default RunMacro;

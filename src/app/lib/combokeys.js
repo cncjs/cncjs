@@ -531,54 +531,54 @@ const commandKeys = [
 ];
 
 class Combokeys extends events.EventEmitter {
-    state = {
-      didBindEvents: false
-    };
+  state = {
+    didBindEvents: false
+  };
 
-    list = [];
+  list = [];
 
-    constructor(options = {}) {
-      super();
+  constructor(options = {}) {
+    super();
 
-      if (options.autoBind) {
-        this.bind();
-      }
+    if (options.autoBind) {
+      this.bind();
     }
+  }
 
-    bind() {
-      if (this.state.didBindEvents) {
-        return;
-      }
-      commandKeys.forEach((o) => {
-        const { keys, cmd, payload = {} } = o;
-        const callback = (event) => {
-          log.debug(`combokeys: keys=${x(keys)} cmd=${x(cmd)} payload=${x(payload)}`);
-          if (!!o.preventDefault) {
-            preventDefault(event);
-          }
-          this.emit(cmd, event, payload);
-        };
-        Mousetrap.bind(keys, callback);
-        this.list.push({ keys: keys, callback: callback });
-      });
-      this.state.didBindEvents = true;
+  bind() {
+    if (this.state.didBindEvents) {
+      return;
     }
+    commandKeys.forEach((o) => {
+      const { keys, cmd, payload = {} } = o;
+      const callback = (event) => {
+        log.debug(`combokeys: keys=${x(keys)} cmd=${x(cmd)} payload=${x(payload)}`);
+        if (!!o.preventDefault) {
+          preventDefault(event);
+        }
+        this.emit(cmd, event, payload);
+      };
+      Mousetrap.bind(keys, callback);
+      this.list.push({ keys: keys, callback: callback });
+    });
+    this.state.didBindEvents = true;
+  }
 
-    unbind() {
-      if (!this.state.didBindEvents) {
-        return;
-      }
-      this.list.forEach((o) => {
-        const { keys, callback } = o;
-        Mousetrap.unbind(keys, callback);
-      });
-      this.state.didBindEvents = false;
+  unbind() {
+    if (!this.state.didBindEvents) {
+      return;
     }
+    this.list.forEach((o) => {
+      const { keys, callback } = o;
+      Mousetrap.unbind(keys, callback);
+    });
+    this.state.didBindEvents = false;
+  }
 
-    reset() {
-      Mousetrap.reset();
-      this.state.didBindEvents = false;
-    }
+  reset() {
+    Mousetrap.reset();
+    this.state.didBindEvents = false;
+  }
 }
 
 const combokeys = new Combokeys({ autoBind: true });

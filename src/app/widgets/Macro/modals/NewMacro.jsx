@@ -17,7 +17,7 @@ import {
   Space,
   Textarea,
   TextLabel,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import { ensureArray } from 'ensure-type';
 import _uniqueId from 'lodash/uniqueId';
 import React, { useRef } from 'react';
@@ -63,9 +63,9 @@ const mapMacroVariablesToMenuGroupItems = (variables) => ensureArray(variables).
   return null;
 });
 
-const NewMacro = ({
+function NewMacro({
   onClose,
-}) => {
+}) {
   const contentRef = useRef();
   const initialValues = {
     name: '',
@@ -74,7 +74,7 @@ const NewMacro = ({
 
   return (
     <Modal
-      isCloseButtonVisible
+      isClosable
       isOpen
       onClose={onClose}
       size="md"
@@ -197,6 +197,6 @@ const NewMacro = ({
       </Form>
     </Modal>
   );
-};
+}
 
 export default NewMacro;

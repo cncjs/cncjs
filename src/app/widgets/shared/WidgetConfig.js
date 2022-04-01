@@ -2,32 +2,32 @@ import config from 'app/store/config';
 import { translatePathByWidgetId } from './utils';
 
 class WidgetConfig {
-    widgetId = '';
+  widgetId = '';
 
-    constructor(widgetId) {
-      if (!widgetId) {
-        throw new TypeError(`"widgetId" is not defined: ${widgetId}`);
-      }
-
-      this.widgetId = widgetId;
-      this.translatePath = translatePathByWidgetId(this.widgetId);
+  constructor(widgetId) {
+    if (!widgetId) {
+      throw new TypeError(`"widgetId" is not defined: ${widgetId}`);
     }
 
-    get(path, defaultValue) {
-      return config.get(this.translatePath(path), defaultValue);
-    }
+    this.widgetId = widgetId;
+    this.translatePath = translatePathByWidgetId(this.widgetId);
+  }
 
-    set(path, value) {
-      return config.set(this.translatePath(path), value);
-    }
+  get(path, defaultValue) {
+    return config.get(this.translatePath(path), defaultValue);
+  }
 
-    unset(path) {
-      return config.unset(this.translatePath(path));
-    }
+  set(path, value) {
+    return config.set(this.translatePath(path), value);
+  }
 
-    update(path, updater) {
-      return config.updater(this.translatePath(path), updater);
-    }
+  unset(path) {
+    return config.unset(this.translatePath(path));
+  }
+
+  update(path, updater) {
+    return config.updater(this.translatePath(path), updater);
+  }
 }
 
 export default WidgetConfig;

@@ -1,7 +1,7 @@
 import {
   Box,
   Text,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import React from 'react';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
@@ -28,11 +28,11 @@ const loadMacro = async ({ id }) => {
   }
 };
 
-const LoadMacro = ({
+function LoadMacro({
   id,
   name,
   onClose,
-}) => {
+}) {
   const handleLoadMacro = async (e) => {
     await loadMacro({ id });
     onClose();
@@ -70,6 +70,6 @@ const LoadMacro = ({
       </Modal.Footer>
     </Modal>
   );
-};
+}
 
 export default LoadMacro;

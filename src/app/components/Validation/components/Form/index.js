@@ -17,13 +17,13 @@ const options = {
   }
 };
 
-const Form = (props) => {
+function Form(props) {
   props = { ...props };
   delete props.onValidate;
 
   return (
     <form {...props} />
   );
-};
+}
 
 export default createForm(options)(Form);

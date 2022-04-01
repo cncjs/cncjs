@@ -5,7 +5,7 @@ import ProgressBar from 'progress';
 import Sender, {
   SP_TYPE_SEND_RESPONSE,
   SP_TYPE_CHAR_COUNTING
-} from '../src/server/lib/Sender';
+} from 'server/lib/Sender';
 
 test('null streaming protocol', (t) => {
   t.plan(1);

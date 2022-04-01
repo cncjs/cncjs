@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const Fraction = (props) => {
+function Fraction(props) {
   const { numerator, denominator } = props;
 
   return (
@@ -48,7 +48,7 @@ const Fraction = (props) => {
       </span>
     </span>
   );
-};
+}
 
 Fraction.propTypes = {
   numerator: PropTypes.number,

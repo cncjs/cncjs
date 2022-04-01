@@ -1,5 +1,6 @@
+import memoize from 'micro-memoize';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Card from 'app/components/Card';
 import ToggleIcon from './ToggleIcon';
 import Header from './Header';
@@ -7,7 +8,9 @@ import Body from './Body';
 import { CollapsibleCardContext } from './context';
 import { useStateFromProps } from './hooks';
 
-const CollapsibleCard = ({
+const getMemoizedState = memoize(state => ({ ...state }));
+
+function CollapsibleCard({
   collapsed: nextCollapsed,
 
   // https://github.com/Stanko/react-animate-height#props
@@ -16,27 +19,26 @@ const CollapsibleCard = ({
 
   children,
   ...props
-}) => {
+}) {
   const [collapsed, setCollapsed] = useStateFromProps(nextCollapsed);
   const [collapsing, setCollapsing] = useState(false);
-  const toggle = (value) => {
+  const toggle = useCallback((value) => {
     if (value === undefined || value !== collapsed) {
       setCollapsing(true);
       setCollapsed(!collapsed);
     }
-  };
+  }, [collapsed, setCollapsed]);
+  const context = getMemoizedState({
+    duration,
+    easing,
+    collapsed,
+    collapsing,
+    setCollapsing,
+    toggle,
+  });
 
   return (
-    <CollapsibleCardContext.Provider
-      value={{
-        duration,
-        easing,
-        collapsed,
-        collapsing,
-        setCollapsing,
-        toggle,
-      }}
-    >
+    <CollapsibleCardContext.Provider value={context}>
       <Card {...props}>
         {typeof children === 'function' && children({
           collapsed,
@@ -49,7 +51,7 @@ const CollapsibleCard = ({
       </Card>
     </CollapsibleCardContext.Provider>
   );
-};
+}
 
 CollapsibleCard.ToggleIcon = ToggleIcon;
 CollapsibleCard.Header = Header;

@@ -140,7 +140,7 @@ const displayWebGLErrorMessage = () => {
   ));
 };
 
-const GCodeName = ({ name, style, ...props }) => {
+function GCodeName({ name, style, ...props }) {
   if (!name) {
     return null;
   }
@@ -162,195 +162,139 @@ const GCodeName = ({ name, style, ...props }) => {
       {name}
     </div>
   );
-};
+}
 
 class VisualizerWidget extends Component {
-    static propTypes = {
-      widgetId: PropTypes.string.isRequired
-    };
+  static propTypes = {
+    widgetId: PropTypes.string.isRequired
+  };
 
-    config = new WidgetConfig(this.props.widgetId);
+  config = new WidgetConfig(this.props.widgetId);
 
-    state = this.getInitialState();
+  state = this.getInitialState();
 
-    actions = {
-      dismissNotification: () => {
-        this.setState((state) => ({
-          notification: {
-            ...state.notification,
-            type: '',
-            data: ''
+  actions = {
+    dismissNotification: () => {
+      this.setState((state) => ({
+        notification: {
+          ...state.notification,
+          type: '',
+          data: ''
+        }
+      }));
+    },
+    openModal: (name = '', params = {}) => {
+      this.setState((state) => ({
+        modal: {
+          name: name,
+          params: params
+        }
+      }));
+    },
+    closeModal: () => {
+      this.setState((state) => ({
+        modal: {
+          name: '',
+          params: {}
+        }
+      }));
+    },
+    updateModalParams: (params = {}) => {
+      this.setState((state) => ({
+        modal: {
+          ...state.modal,
+          params: {
+            ...state.modal.params,
+            ...params
           }
-        }));
-      },
-      openModal: (name = '', params = {}) => {
-        this.setState((state) => ({
-          modal: {
-            name: name,
-            params: params
-          }
-        }));
-      },
-      closeModal: () => {
-        this.setState((state) => ({
-          modal: {
-            name: '',
-            params: {}
-          }
-        }));
-      },
-      updateModalParams: (params = {}) => {
-        this.setState((state) => ({
-          modal: {
-            ...state.modal,
-            params: {
-              ...state.modal.params,
-              ...params
+        }
+      }));
+    },
+    // Load file from watch directory
+    loadFile: (file) => {
+      this.setState((state) => ({
+        gcode: {
+          ...state.gcode,
+          loading: true,
+          rendering: false,
+          ready: false
+        }
+      }));
+
+      controller.command('watchdir:load', file, (err, data) => {
+        if (err) {
+          this.setState((state) => ({
+            gcode: {
+              ...state.gcode,
+              loading: false,
+              rendering: false,
+              ready: false
             }
-          }
-        }));
-      },
-      // Load file from watch directory
-      loadFile: (file) => {
-        this.setState((state) => ({
-          gcode: {
-            ...state.gcode,
-            loading: true,
-            rendering: false,
-            ready: false
-          }
-        }));
+          }));
 
-        controller.command('watchdir:load', file, (err, data) => {
-          if (err) {
-            this.setState((state) => ({
-              gcode: {
-                ...state.gcode,
-                loading: false,
-                rendering: false,
-                ready: false
-              }
-            }));
-
-            log.error(err);
-            return;
-          }
-
-          log.debug(data); // TODO
-        });
-      },
-      uploadFile: (meta) => {
-        this.setState((state) => ({
-          gcode: {
-            ...state.gcode,
-            loading: true,
-            rendering: false,
-            ready: false
-          }
-        }));
-
-        const context = {};
-        controller.command('sender:load', meta, context, (err, data) => {
-          if (err) {
-            this.setState((state) => ({
-              gcode: {
-                ...state.gcode,
-                loading: false,
-                rendering: false,
-                ready: false
-              }
-            }));
-
-            log.error(err);
-            return;
-          }
-
-          log.debug(data); // TODO
-        });
-      },
-      loadGCode: ({ name, content }) => {
-        const capable = {
-          view3D: !!this.visualizer
-        };
-
-        const updater = (state) => ({
-          gcode: {
-            ...state.gcode,
-            loading: false,
-            rendering: capable.view3D,
-            ready: !capable.view3D,
-            content: content,
-            bbox: {
-              min: {
-                x: 0,
-                y: 0,
-                z: 0,
-              },
-              max: {
-                x: 0,
-                y: 0,
-                z: 0,
-              }
-            }
-          }
-        });
-        const callback = () => {
-          // Clear gcode bounding box
-          controller.context = {
-            ...controller.context,
-            xmin: 0,
-            xmax: 0,
-            ymin: 0,
-            ymax: 0,
-            zmin: 0,
-            zmax: 0,
-          };
-
-          if (!capable.view3D) {
-            return;
-          }
-
-          setTimeout(() => {
-            this.visualizer.load(content, ({ bbox }) => {
-              // Set gcode bounding box
-              controller.context = {
-                ...controller.context,
-                xmin: bbox.min.x,
-                xmax: bbox.max.x,
-                ymin: bbox.min.y,
-                ymax: bbox.max.y,
-                zmin: bbox.min.z,
-                zmax: bbox.max.z,
-              };
-
-              reduxStore.dispatch({
-                type: UPDATE_BOUNDING_BOX,
-                payload: {
-                  boundingBox: bbox,
-                }
-              });
-
-              this.setState((state) => ({
-                gcode: {
-                  ...state.gcode,
-                  loading: false,
-                  rendering: false,
-                  ready: true,
-                  bbox: bbox,
-                }
-              }));
-            });
-          }, 0);
-        };
-
-        this.setState(updater, callback);
-      },
-      unloadGCode: () => {
-        const visualizer = this.visualizer;
-        if (visualizer) {
-          visualizer.unload();
+          log.error(err);
+          return;
         }
 
+        log.debug(data); // TODO
+      });
+    },
+    uploadFile: (meta) => {
+      this.setState((state) => ({
+        gcode: {
+          ...state.gcode,
+          loading: true,
+          rendering: false,
+          ready: false
+        }
+      }));
+
+      const context = {};
+      controller.command('sender:load', meta, context, (err, data) => {
+        if (err) {
+          this.setState((state) => ({
+            gcode: {
+              ...state.gcode,
+              loading: false,
+              rendering: false,
+              ready: false
+            }
+          }));
+
+          log.error(err);
+          return;
+        }
+
+        log.debug(data); // TODO
+      });
+    },
+    loadGCode: ({ name, content }) => {
+      const capable = {
+        view3D: !!this.visualizer
+      };
+
+      const updater = (state) => ({
+        gcode: {
+          ...state.gcode,
+          loading: false,
+          rendering: capable.view3D,
+          ready: !capable.view3D,
+          content: content,
+          bbox: {
+            min: {
+              x: 0,
+              y: 0,
+              z: 0,
+            },
+            max: {
+              x: 0,
+              y: 0,
+              z: 0,
+            }
+          }
+        }
+      });
+      const callback = () => {
         // Clear gcode bounding box
         controller.context = {
           ...controller.context,
@@ -362,552 +306,65 @@ class VisualizerWidget extends Component {
           zmax: 0,
         };
 
-        this.setState((state) => ({
-          gcode: {
-            ...state.gcode,
-            loading: false,
-            rendering: false,
-            ready: false,
-            content: '',
-            bbox: {
-              min: {
-                x: 0,
-                y: 0,
-                z: 0,
-              },
-              max: {
-                x: 0,
-                y: 0,
-                z: 0,
-              }
-            }
-          }
-        }));
-      },
-      handleRun: () => {
-        const { workflow } = this.state;
-        console.assert(includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflow.state));
-
-        if (workflow.state === WORKFLOW_STATE_IDLE) {
-          controller.command('sender:start');
+        if (!capable.view3D) {
           return;
         }
-
-        if (workflow.state === WORKFLOW_STATE_PAUSED) {
-          const { notification } = this.state;
-
-          // M6 Tool Change
-          if (notification.type === NOTIFICATION_M6_TOOL_CHANGE) {
-            portal(({ onClose }) => (
-              <Modal disableOverlayClick size="xs" onClose={onClose}>
-                <Modal.Header>
-                  <Modal.Title>
-                    {i18n._('Tool Change')}
-                  </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  {i18n._('Are you sure you want to resume program execution?')}
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button onClick={onClose}>
-                    {i18n._('No')}
-                  </Button>
-                  <Button
-                    btnStyle="primary"
-                    onClick={chainedFunction(
-                      () => {
-                        controller.command('sender:resume');
-                      },
-                      onClose
-                    )}
-                  >
-                    {i18n._('Yes')}
-                  </Button>
-                </Modal.Footer>
-              </Modal>
-            ));
-
-            return;
-          }
-
-          controller.command('sender:resume');
-        }
-      },
-      handlePause: () => {
-        const { workflow } = this.state;
-        console.assert(includes([WORKFLOW_STATE_RUNNING], workflow.state));
-
-        controller.command('sender:pause');
-      },
-      handleStop: () => {
-        const { workflow } = this.state;
-        console.assert(includes([WORKFLOW_STATE_PAUSED], workflow.state));
-
-        controller.command('sender:stop', { force: true });
-      },
-      handleClose: () => {
-        const { workflow } = this.state;
-        console.assert(includes([WORKFLOW_STATE_IDLE], workflow.state));
-
-        controller.command('sender:unload');
-      },
-      setBoundingBox: (bbox) => {
-        this.setState((state) => ({
-          gcode: {
-            ...state.gcode,
-            bbox: bbox
-          }
-        }));
-      },
-      toggle3DView: () => {
-        if (!WebGL.isWebGLAvailable() && this.state.disabled) {
-          displayWebGLErrorMessage();
-          return;
-        }
-
-        this.setState((state) => ({
-          disabled: !state.disabled
-        }));
-      },
-      toPerspectiveProjection: (projection) => {
-        this.setState((state) => ({
-          projection: 'perspective'
-        }));
-      },
-      toOrthographicProjection: (projection) => {
-        this.setState((state) => ({
-          projection: 'orthographic'
-        }));
-      },
-      toggleGCodeFilename: () => {
-        this.setState((state) => ({
-          gcode: {
-            ...state.gcode,
-            displayName: !state.gcode.displayName
-          }
-        }));
-      },
-      toggleLimitsVisibility: () => {
-        this.setState((state) => ({
-          objects: {
-            ...state.objects,
-            limits: {
-              ...state.objects.limits,
-              visible: !state.objects.limits.visible
-            }
-          }
-        }));
-      },
-      toggleCoordinateSystemVisibility: () => {
-        this.setState((state) => ({
-          objects: {
-            ...state.objects,
-            coordinateSystem: {
-              ...state.objects.coordinateSystem,
-              visible: !state.objects.coordinateSystem.visible
-            }
-          }
-        }));
-      },
-      toggleGridLineNumbersVisibility: () => {
-        this.setState((state) => ({
-          objects: {
-            ...state.objects,
-            gridLineNumbers: {
-              ...state.objects.gridLineNumbers,
-              visible: !state.objects.gridLineNumbers.visible
-            }
-          }
-        }));
-      },
-      toggleCuttingToolVisibility: () => {
-        this.setState((state) => ({
-          objects: {
-            ...state.objects,
-            cuttingTool: {
-              ...state.objects.cuttingTool,
-              visible: !state.objects.cuttingTool.visible
-            }
-          }
-        }));
-      },
-      camera: {
-        toRotateMode: () => {
-          this.setState((state) => ({
-            cameraMode: CAMERA_MODE_ROTATE
-          }));
-        },
-        toPanMode: () => {
-          this.setState((state) => ({
-            cameraMode: CAMERA_MODE_PAN
-          }));
-        },
-        zoomFit: () => {
-          if (this.visualizer) {
-            this.visualizer.zoomFit();
-          }
-        },
-        zoomIn: () => {
-          if (this.visualizer) {
-            this.visualizer.zoomIn();
-          }
-        },
-        zoomOut: () => {
-          if (this.visualizer) {
-            this.visualizer.zoomOut();
-          }
-        },
-        panUp: () => {
-          if (this.visualizer) {
-            this.visualizer.panUp();
-          }
-        },
-        panDown: () => {
-          if (this.visualizer) {
-            this.visualizer.panDown();
-          }
-        },
-        panLeft: () => {
-          if (this.visualizer) {
-            this.visualizer.panLeft();
-          }
-        },
-        panRight: () => {
-          if (this.visualizer) {
-            this.visualizer.panRight();
-          }
-        },
-        lookAtCenter: () => {
-          if (this.visualizer) {
-            this.visualizer.lookAtCenter();
-          }
-        },
-        toTopView: () => {
-          this.setState({ cameraPosition: 'top' });
-        },
-        to3DView: () => {
-          this.setState({ cameraPosition: '3d' });
-        },
-        toFrontView: () => {
-          this.setState({ cameraPosition: 'front' });
-        },
-        toLeftSideView: () => {
-          this.setState({ cameraPosition: 'left' });
-        },
-        toRightSideView: () => {
-          this.setState({ cameraPosition: 'right' });
-        }
-      }
-    };
-
-    controllerEvents = {
-      'serialport:open': (options) => {
-        const { port } = options;
-        this.setState((state) => ({ port: port }));
-      },
-      'serialport:close': (options) => {
-        this.actions.unloadGCode();
-
-        const initialState = this.getInitialState();
-        this.setState((state) => ({ ...initialState }));
-      },
-      'sender:load': (meta, context) => {
-        const { name, content } = meta;
-        const modifiedContent = translateExpression(content, context); // e.g. xmin,xmax,ymin,ymax,zmin,zmax
-        this.actions.loadGCode({ name, content: modifiedContent });
-      },
-      'sender:unload': () => {
-        this.actions.unloadGCode();
-      },
-      'sender:status': (data) => {
-        const { hold, holdReason, name, size, total, sent, received } = data;
-        const notification = {
-          type: '',
-          data: ''
-        };
-
-        if (hold) {
-          const { err, data } = { ...holdReason };
-
-          if (err) {
-            notification.type = NOTIFICATION_PROGRAM_ERROR;
-            notification.data = err;
-          } else if (data === 'M0') {
-            // M0 Program Pause
-            notification.type = NOTIFICATION_M0_PROGRAM_PAUSE;
-          } else if (data === 'M1') {
-            // M1 Program Pause
-            notification.type = NOTIFICATION_M1_PROGRAM_PAUSE;
-          } else if (data === 'M2') {
-            // M2 Program End
-            notification.type = NOTIFICATION_M2_PROGRAM_END;
-          } else if (data === 'M30') {
-            // M30 Program End
-            notification.type = NOTIFICATION_M30_PROGRAM_END;
-          } else if (data === 'M6') {
-            // M6 Tool Change
-            notification.type = NOTIFICATION_M6_TOOL_CHANGE;
-          } else if (data === 'M109') {
-            // M109 Set Extruder Temperature
-            notification.type = NOTIFICATION_M109_SET_EXTRUDER_TEMPERATURE;
-          } else if (data === 'M190') {
-            // M190 Set Heated Bed Temperature
-            notification.type = NOTIFICATION_M190_SET_HEATED_BED_TEMPERATURE;
-          }
-        }
-
-        this.setState(state => ({
-          gcode: {
-            ...state.gcode,
-            name,
-            size,
-            total,
-            sent,
-            received
-          },
-          notification: {
-            ...state.notification,
-            ...notification
-          }
-        }));
-      },
-      'workflow:state': (workflowState) => {
-        this.setState(state => ({
-          workflow: {
-            ...state.workflow,
-            state: workflowState
-          }
-        }));
-      },
-      'controller:settings': (type, controllerSettings) => {
-        this.setState(state => ({
-          controller: {
-            ...state.controller,
-            type: type,
-            settings: controllerSettings
-          }
-        }));
-      },
-      'controller:state': (type, controllerState) => {
-        // Grbl
-        if (type === GRBL) {
-          const { status, parserstate } = { ...controllerState };
-          const { mpos, wpos } = status;
-          const { modal = {} } = { ...parserstate };
-          const units = {
-            'G20': IMPERIAL_UNITS,
-            'G21': METRIC_UNITS
-          }[modal.units] || this.state.units;
-          const $13 = ensurePositiveNumber(get(controller.settings, 'settings.$13', 0));
-
-          this.setState(state => ({
-            units: units,
-            controller: {
-              ...state.controller,
-              type: type,
-              state: controllerState
-            },
-            // Machine position are reported in mm ($13=0) or inches ($13=1)
-            machinePosition: mapValues({
-              ...state.machinePosition,
-              ...mpos
-            }, (val) => {
-              return ($13 > 0) ? in2mm(val) : val;
-            }),
-            // Work position are reported in mm ($13=0) or inches ($13=1)
-            workPosition: mapValues({
-              ...state.workPosition,
-              ...wpos
-            }, val => {
-              return ($13 > 0) ? in2mm(val) : val;
-            })
-          }));
-        }
-
-        // Marlin
-        if (type === MARLIN) {
-          const { pos, modal = {} } = { ...controllerState };
-          const units = {
-            'G20': IMPERIAL_UNITS,
-            'G21': METRIC_UNITS
-          }[modal.units] || this.state.units;
-
-          this.setState(state => ({
-            units: units,
-            controller: {
-              ...state.controller,
-              type: type,
-              state: controllerState
-            },
-            // Machine position are reported in current units
-            machinePosition: mapValues({
-              ...state.machinePosition,
-              ...pos
-            }, (val) => {
-              return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-            }),
-            // Work position are reported in current units
-            workPosition: mapValues({
-              ...state.workPosition,
-              ...pos
-            }, (val) => {
-              return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-            })
-          }));
-        }
-
-        // Smoothie
-        if (type === SMOOTHIE) {
-          const { status, parserstate } = { ...controllerState };
-          const { mpos, wpos } = status;
-          const { modal = {} } = { ...parserstate };
-          const units = {
-            'G20': IMPERIAL_UNITS,
-            'G21': METRIC_UNITS
-          }[modal.units] || this.state.units;
-
-          this.setState(state => ({
-            units: units,
-            controller: {
-              ...state.controller,
-              type: type,
-              state: controllerState
-            },
-            // Machine position are reported in current units
-            machinePosition: mapValues({
-              ...state.machinePosition,
-              ...mpos
-            }, (val) => {
-              return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-            }),
-            // Work position are reported in current units
-            workPosition: mapValues({
-              ...state.workPosition,
-              ...wpos
-            }, (val) => {
-              return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-            })
-          }));
-        }
-
-        // TinyG
-        if (type === TINYG) {
-          const { sr } = { ...controllerState };
-          const { mpos, wpos, modal = {} } = { ...sr };
-          const units = {
-            'G20': IMPERIAL_UNITS,
-            'G21': METRIC_UNITS
-          }[modal.units] || this.state.units;
-
-          this.setState(state => ({
-            units: units,
-            controller: {
-              ...state.controller,
-              type: type,
-              state: controllerState
-            },
-            // https://github.com/synthetos/g2/wiki/Status-Reports
-            // Canonical machine position are always reported in millimeters with no offsets.
-            machinePosition: {
-              ...state.machinePosition,
-              ...mpos
-            },
-            // Work position are reported in current units, and also apply any offsets.
-            workPosition: mapValues({
-              ...state.workPosition,
-              ...wpos
-            }, (val) => {
-              return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-            })
-          }));
-        }
-      }
-    };
-
-    pubsubTokens = [];
-
-    // refs
-    widgetContent = null;
-
-    visualizer = null;
-
-    componentDidMount() {
-      this.addControllerEvents();
-
-      if (!WebGL.isWebGLAvailable() && !this.state.disabled) {
-        displayWebGLErrorMessage();
 
         setTimeout(() => {
-          this.setState((state) => ({
-            disabled: true
-          }));
+          this.visualizer.load(content, ({ bbox }) => {
+            // Set gcode bounding box
+            controller.context = {
+              ...controller.context,
+              xmin: bbox.min.x,
+              xmax: bbox.max.x,
+              ymin: bbox.min.y,
+              ymax: bbox.max.y,
+              zmin: bbox.min.z,
+              zmax: bbox.max.z,
+            };
+
+            reduxStore.dispatch({
+              type: UPDATE_BOUNDING_BOX,
+              payload: {
+                boundingBox: bbox,
+              }
+            });
+
+            this.setState((state) => ({
+              gcode: {
+                ...state.gcode,
+                loading: false,
+                rendering: false,
+                ready: true,
+                bbox: bbox,
+              }
+            }));
+          });
         }, 0);
-      }
-    }
+      };
 
-    componentWillUnmount() {
-      this.removeControllerEvents();
-    }
+      this.setState(updater, callback);
+    },
+    unloadGCode: () => {
+      const visualizer = this.visualizer;
+      if (visualizer) {
+        visualizer.unload();
+      }
 
-    componentDidUpdate(prevProps, prevState) {
-      if (this.state.disabled !== prevState.disabled) {
-        this.config.set('disabled', this.state.disabled);
-      }
-      if (this.state.projection !== prevState.projection) {
-        this.config.set('projection', this.state.projection);
-      }
-      if (this.state.cameraMode !== prevState.cameraMode) {
-        this.config.set('cameraMode', this.state.cameraMode);
-      }
-      if (this.state.gcode.displayName !== prevState.gcode.displayName) {
-        this.config.set('gcode.displayName', this.state.gcode.displayName);
-      }
-      if (this.state.objects.limits.visible !== prevState.objects.limits.visible) {
-        this.config.set('objects.limits.visible', this.state.objects.limits.visible);
-      }
-      if (this.state.objects.coordinateSystem.visible !== prevState.objects.coordinateSystem.visible) {
-        this.config.set('objects.coordinateSystem.visible', this.state.objects.coordinateSystem.visible);
-      }
-      if (this.state.objects.gridLineNumbers.visible !== prevState.objects.gridLineNumbers.visible) {
-        this.config.set('objects.gridLineNumbers.visible', this.state.objects.gridLineNumbers.visible);
-      }
-      if (this.state.objects.cuttingTool.visible !== prevState.objects.cuttingTool.visible) {
-        this.config.set('objects.cuttingTool.visible', this.state.objects.cuttingTool.visible);
-      }
-    }
+      // Clear gcode bounding box
+      controller.context = {
+        ...controller.context,
+        xmin: 0,
+        xmax: 0,
+        ymin: 0,
+        ymax: 0,
+        zmin: 0,
+        zmax: 0,
+      };
 
-    getInitialState() {
-      return {
-        port: controller.port,
-        units: METRIC_UNITS,
-        controller: {
-          type: controller.type,
-          settings: controller.settings,
-          state: controller.state
-        },
-        workflow: {
-          state: controller.workflow.state
-        },
-        notification: {
-          type: '',
-          data: ''
-        },
-        modal: {
-          name: '',
-          params: {}
-        },
-        machinePosition: { // Machine position
-          x: '0.000',
-          y: '0.000',
-          z: '0.000'
-        },
-        workPosition: { // Work position
-          x: '0.000',
-          y: '0.000',
-          z: '0.000'
-        },
+      this.setState((state) => ({
         gcode: {
-          displayName: this.config.get('gcode.displayName', true),
+          ...state.gcode,
           loading: false,
           rendering: false,
           ready: false,
@@ -916,195 +373,736 @@ class VisualizerWidget extends Component {
             min: {
               x: 0,
               y: 0,
-              z: 0
+              z: 0,
             },
             max: {
               x: 0,
               y: 0,
-              z: 0
+              z: 0,
             }
-          },
-          // Updates by the "sender:status" event
-          name: '',
-          size: 0,
-          total: 0,
-          sent: 0,
-          received: 0
-        },
-        disabled: this.config.get('disabled', false),
-        projection: this.config.get('projection', 'orthographic'),
+          }
+        }
+      }));
+    },
+    handleRun: () => {
+      const { workflow } = this.state;
+      console.assert(includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflow.state));
+
+      if (workflow.state === WORKFLOW_STATE_IDLE) {
+        controller.command('sender:start');
+        return;
+      }
+
+      if (workflow.state === WORKFLOW_STATE_PAUSED) {
+        const { notification } = this.state;
+
+        // M6 Tool Change
+        if (notification.type === NOTIFICATION_M6_TOOL_CHANGE) {
+          portal(({ onClose }) => (
+            <Modal disableOverlayClick size="xs" onClose={onClose}>
+              <Modal.Header>
+                <Modal.Title>
+                  {i18n._('Tool Change')}
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                {i18n._('Are you sure you want to resume program execution?')}
+              </Modal.Body>
+              <Modal.Footer>
+                <Button onClick={onClose}>
+                  {i18n._('No')}
+                </Button>
+                <Button
+                  btnStyle="primary"
+                  onClick={chainedFunction(
+                    () => {
+                      controller.command('sender:resume');
+                    },
+                    onClose
+                  )}
+                >
+                  {i18n._('Yes')}
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          ));
+
+          return;
+        }
+
+        controller.command('sender:resume');
+      }
+    },
+    handlePause: () => {
+      const { workflow } = this.state;
+      console.assert(includes([WORKFLOW_STATE_RUNNING], workflow.state));
+
+      controller.command('sender:pause');
+    },
+    handleStop: () => {
+      const { workflow } = this.state;
+      console.assert(includes([WORKFLOW_STATE_PAUSED], workflow.state));
+
+      controller.command('sender:stop', { force: true });
+    },
+    handleClose: () => {
+      const { workflow } = this.state;
+      console.assert(includes([WORKFLOW_STATE_IDLE], workflow.state));
+
+      controller.command('sender:unload');
+    },
+    setBoundingBox: (bbox) => {
+      this.setState((state) => ({
+        gcode: {
+          ...state.gcode,
+          bbox: bbox
+        }
+      }));
+    },
+    toggle3DView: () => {
+      if (!WebGL.isWebGLAvailable() && this.state.disabled) {
+        displayWebGLErrorMessage();
+        return;
+      }
+
+      this.setState((state) => ({
+        disabled: !state.disabled
+      }));
+    },
+    toPerspectiveProjection: (projection) => {
+      this.setState((state) => ({
+        projection: 'perspective'
+      }));
+    },
+    toOrthographicProjection: (projection) => {
+      this.setState((state) => ({
+        projection: 'orthographic'
+      }));
+    },
+    toggleGCodeFilename: () => {
+      this.setState((state) => ({
+        gcode: {
+          ...state.gcode,
+          displayName: !state.gcode.displayName
+        }
+      }));
+    },
+    toggleLimitsVisibility: () => {
+      this.setState((state) => ({
         objects: {
+          ...state.objects,
           limits: {
-            visible: this.config.get('objects.limits.visible', true)
-          },
+            ...state.objects.limits,
+            visible: !state.objects.limits.visible
+          }
+        }
+      }));
+    },
+    toggleCoordinateSystemVisibility: () => {
+      this.setState((state) => ({
+        objects: {
+          ...state.objects,
           coordinateSystem: {
-            visible: this.config.get('objects.coordinateSystem.visible', true)
-          },
+            ...state.objects.coordinateSystem,
+            visible: !state.objects.coordinateSystem.visible
+          }
+        }
+      }));
+    },
+    toggleGridLineNumbersVisibility: () => {
+      this.setState((state) => ({
+        objects: {
+          ...state.objects,
           gridLineNumbers: {
-            visible: this.config.get('objects.gridLineNumbers.visible', true)
-          },
+            ...state.objects.gridLineNumbers,
+            visible: !state.objects.gridLineNumbers.visible
+          }
+        }
+      }));
+    },
+    toggleCuttingToolVisibility: () => {
+      this.setState((state) => ({
+        objects: {
+          ...state.objects,
           cuttingTool: {
-            visible: this.config.get('objects.cuttingTool.visible', true)
+            ...state.objects.cuttingTool,
+            visible: !state.objects.cuttingTool.visible
+          }
+        }
+      }));
+    },
+    camera: {
+      toRotateMode: () => {
+        this.setState((state) => ({
+          cameraMode: CAMERA_MODE_ROTATE
+        }));
+      },
+      toPanMode: () => {
+        this.setState((state) => ({
+          cameraMode: CAMERA_MODE_PAN
+        }));
+      },
+      zoomFit: () => {
+        if (this.visualizer) {
+          this.visualizer.zoomFit();
+        }
+      },
+      zoomIn: () => {
+        if (this.visualizer) {
+          this.visualizer.zoomIn();
+        }
+      },
+      zoomOut: () => {
+        if (this.visualizer) {
+          this.visualizer.zoomOut();
+        }
+      },
+      panUp: () => {
+        if (this.visualizer) {
+          this.visualizer.panUp();
+        }
+      },
+      panDown: () => {
+        if (this.visualizer) {
+          this.visualizer.panDown();
+        }
+      },
+      panLeft: () => {
+        if (this.visualizer) {
+          this.visualizer.panLeft();
+        }
+      },
+      panRight: () => {
+        if (this.visualizer) {
+          this.visualizer.panRight();
+        }
+      },
+      lookAtCenter: () => {
+        if (this.visualizer) {
+          this.visualizer.lookAtCenter();
+        }
+      },
+      toTopView: () => {
+        this.setState({ cameraPosition: 'top' });
+      },
+      to3DView: () => {
+        this.setState({ cameraPosition: '3d' });
+      },
+      toFrontView: () => {
+        this.setState({ cameraPosition: 'front' });
+      },
+      toLeftSideView: () => {
+        this.setState({ cameraPosition: 'left' });
+      },
+      toRightSideView: () => {
+        this.setState({ cameraPosition: 'right' });
+      }
+    }
+  };
+
+  controllerEvents = {
+    'serialport:open': (options) => {
+      const { port } = options;
+      this.setState((state) => ({ port: port }));
+    },
+    'serialport:close': (options) => {
+      this.actions.unloadGCode();
+
+      const initialState = this.getInitialState();
+      this.setState((state) => ({ ...initialState }));
+    },
+    'sender:load': (meta, context) => {
+      const { name, content } = meta;
+      const modifiedContent = translateExpression(content, context); // e.g. xmin,xmax,ymin,ymax,zmin,zmax
+      this.actions.loadGCode({ name, content: modifiedContent });
+    },
+    'sender:unload': () => {
+      this.actions.unloadGCode();
+    },
+    'sender:status': (data) => {
+      const { hold, holdReason, name, size, total, sent, received } = data;
+      const notification = {
+        type: '',
+        data: ''
+      };
+
+      if (hold) {
+        const { err, data } = { ...holdReason };
+
+        if (err) {
+          notification.type = NOTIFICATION_PROGRAM_ERROR;
+          notification.data = err;
+        } else if (data === 'M0') {
+          // M0 Program Pause
+          notification.type = NOTIFICATION_M0_PROGRAM_PAUSE;
+        } else if (data === 'M1') {
+          // M1 Program Pause
+          notification.type = NOTIFICATION_M1_PROGRAM_PAUSE;
+        } else if (data === 'M2') {
+          // M2 Program End
+          notification.type = NOTIFICATION_M2_PROGRAM_END;
+        } else if (data === 'M30') {
+          // M30 Program End
+          notification.type = NOTIFICATION_M30_PROGRAM_END;
+        } else if (data === 'M6') {
+          // M6 Tool Change
+          notification.type = NOTIFICATION_M6_TOOL_CHANGE;
+        } else if (data === 'M109') {
+          // M109 Set Extruder Temperature
+          notification.type = NOTIFICATION_M109_SET_EXTRUDER_TEMPERATURE;
+        } else if (data === 'M190') {
+          // M190 Set Heated Bed Temperature
+          notification.type = NOTIFICATION_M190_SET_HEATED_BED_TEMPERATURE;
+        }
+      }
+
+      this.setState(state => ({
+        gcode: {
+          ...state.gcode,
+          name,
+          size,
+          total,
+          sent,
+          received
+        },
+        notification: {
+          ...state.notification,
+          ...notification
+        }
+      }));
+    },
+    'workflow:state': (workflowState) => {
+      this.setState(state => ({
+        workflow: {
+          ...state.workflow,
+          state: workflowState
+        }
+      }));
+    },
+    'controller:settings': (type, controllerSettings) => {
+      this.setState(state => ({
+        controller: {
+          ...state.controller,
+          type: type,
+          settings: controllerSettings
+        }
+      }));
+    },
+    'controller:state': (type, controllerState) => {
+      // Grbl
+      if (type === GRBL) {
+        const { status, parserstate } = { ...controllerState };
+        const { mpos, wpos } = status;
+        const { modal = {} } = { ...parserstate };
+        const units = {
+          'G20': IMPERIAL_UNITS,
+          'G21': METRIC_UNITS
+        }[modal.units] || this.state.units;
+        const $13 = ensurePositiveNumber(get(controller.settings, 'settings.$13', 0));
+
+        this.setState(state => ({
+          units: units,
+          controller: {
+            ...state.controller,
+            type: type,
+            state: controllerState
+          },
+          // Machine position are reported in mm ($13=0) or inches ($13=1)
+          machinePosition: mapValues({
+            ...state.machinePosition,
+            ...mpos
+          }, (val) => {
+            return ($13 > 0) ? in2mm(val) : val;
+          }),
+          // Work position are reported in mm ($13=0) or inches ($13=1)
+          workPosition: mapValues({
+            ...state.workPosition,
+            ...wpos
+          }, val => {
+            return ($13 > 0) ? in2mm(val) : val;
+          })
+        }));
+      }
+
+      // Marlin
+      if (type === MARLIN) {
+        const { pos, modal = {} } = { ...controllerState };
+        const units = {
+          'G20': IMPERIAL_UNITS,
+          'G21': METRIC_UNITS
+        }[modal.units] || this.state.units;
+
+        this.setState(state => ({
+          units: units,
+          controller: {
+            ...state.controller,
+            type: type,
+            state: controllerState
+          },
+          // Machine position are reported in current units
+          machinePosition: mapValues({
+            ...state.machinePosition,
+            ...pos
+          }, (val) => {
+            return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+          }),
+          // Work position are reported in current units
+          workPosition: mapValues({
+            ...state.workPosition,
+            ...pos
+          }, (val) => {
+            return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+          })
+        }));
+      }
+
+      // Smoothie
+      if (type === SMOOTHIE) {
+        const { status, parserstate } = { ...controllerState };
+        const { mpos, wpos } = status;
+        const { modal = {} } = { ...parserstate };
+        const units = {
+          'G20': IMPERIAL_UNITS,
+          'G21': METRIC_UNITS
+        }[modal.units] || this.state.units;
+
+        this.setState(state => ({
+          units: units,
+          controller: {
+            ...state.controller,
+            type: type,
+            state: controllerState
+          },
+          // Machine position are reported in current units
+          machinePosition: mapValues({
+            ...state.machinePosition,
+            ...mpos
+          }, (val) => {
+            return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+          }),
+          // Work position are reported in current units
+          workPosition: mapValues({
+            ...state.workPosition,
+            ...wpos
+          }, (val) => {
+            return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+          })
+        }));
+      }
+
+      // TinyG
+      if (type === TINYG) {
+        const { sr } = { ...controllerState };
+        const { mpos, wpos, modal = {} } = { ...sr };
+        const units = {
+          'G20': IMPERIAL_UNITS,
+          'G21': METRIC_UNITS
+        }[modal.units] || this.state.units;
+
+        this.setState(state => ({
+          units: units,
+          controller: {
+            ...state.controller,
+            type: type,
+            state: controllerState
+          },
+          // https://github.com/synthetos/g2/wiki/Status-Reports
+          // Canonical machine position are always reported in millimeters with no offsets.
+          machinePosition: {
+            ...state.machinePosition,
+            ...mpos
+          },
+          // Work position are reported in current units, and also apply any offsets.
+          workPosition: mapValues({
+            ...state.workPosition,
+            ...wpos
+          }, (val) => {
+            return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+          })
+        }));
+      }
+    }
+  };
+
+  pubsubTokens = [];
+
+  // refs
+  widgetContent = null;
+
+  visualizer = null;
+
+  componentDidMount() {
+    this.addControllerEvents();
+
+    if (!WebGL.isWebGLAvailable() && !this.state.disabled) {
+      displayWebGLErrorMessage();
+
+      setTimeout(() => {
+        this.setState((state) => ({
+          disabled: true
+        }));
+      }, 0);
+    }
+  }
+
+  componentWillUnmount() {
+    this.removeControllerEvents();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.disabled !== prevState.disabled) {
+      this.config.set('disabled', this.state.disabled);
+    }
+    if (this.state.projection !== prevState.projection) {
+      this.config.set('projection', this.state.projection);
+    }
+    if (this.state.cameraMode !== prevState.cameraMode) {
+      this.config.set('cameraMode', this.state.cameraMode);
+    }
+    if (this.state.gcode.displayName !== prevState.gcode.displayName) {
+      this.config.set('gcode.displayName', this.state.gcode.displayName);
+    }
+    if (this.state.objects.limits.visible !== prevState.objects.limits.visible) {
+      this.config.set('objects.limits.visible', this.state.objects.limits.visible);
+    }
+    if (this.state.objects.coordinateSystem.visible !== prevState.objects.coordinateSystem.visible) {
+      this.config.set('objects.coordinateSystem.visible', this.state.objects.coordinateSystem.visible);
+    }
+    if (this.state.objects.gridLineNumbers.visible !== prevState.objects.gridLineNumbers.visible) {
+      this.config.set('objects.gridLineNumbers.visible', this.state.objects.gridLineNumbers.visible);
+    }
+    if (this.state.objects.cuttingTool.visible !== prevState.objects.cuttingTool.visible) {
+      this.config.set('objects.cuttingTool.visible', this.state.objects.cuttingTool.visible);
+    }
+  }
+
+  getInitialState() {
+    return {
+      port: controller.port,
+      units: METRIC_UNITS,
+      controller: {
+        type: controller.type,
+        settings: controller.settings,
+        state: controller.state
+      },
+      workflow: {
+        state: controller.workflow.state
+      },
+      notification: {
+        type: '',
+        data: ''
+      },
+      modal: {
+        name: '',
+        params: {}
+      },
+      machinePosition: { // Machine position
+        x: '0.000',
+        y: '0.000',
+        z: '0.000'
+      },
+      workPosition: { // Work position
+        x: '0.000',
+        y: '0.000',
+        z: '0.000'
+      },
+      gcode: {
+        displayName: this.config.get('gcode.displayName', true),
+        loading: false,
+        rendering: false,
+        ready: false,
+        content: '',
+        bbox: {
+          min: {
+            x: 0,
+            y: 0,
+            z: 0
+          },
+          max: {
+            x: 0,
+            y: 0,
+            z: 0
           }
         },
-        cameraMode: this.config.get('cameraMode', CAMERA_MODE_PAN),
-        cameraPosition: 'top', // 'top', '3d', 'front', 'left', 'right'
-        isAgitated: false // Defaults to false
-      };
-    }
-
-    addControllerEvents() {
-      Object.keys(this.controllerEvents).forEach(eventName => {
-        const callback = this.controllerEvents[eventName];
-        controller.addListener(eventName, callback);
-      });
-    }
-
-    removeControllerEvents() {
-      Object.keys(this.controllerEvents).forEach(eventName => {
-        const callback = this.controllerEvents[eventName];
-        controller.removeListener(eventName, callback);
-      });
-    }
-
-    isAgitated() {
-      const { workflow, disabled, objects } = this.state;
-      const controllerType = this.state.controller.type;
-      const controllerState = this.state.controller.state;
-
-      if (workflow.state !== WORKFLOW_STATE_RUNNING) {
-        return false;
-      }
-      // Return false when 3D view is disabled
-      if (disabled) {
-        return false;
-      }
-      // Return false when the cutting tool is not visible
-      if (!objects.cuttingTool.visible) {
-        return false;
-      }
-      if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {
-        return false;
-      }
-      if (controllerType === GRBL) {
-        const machineState = get(controllerState, 'status.machineState');
-        if (machineState !== GRBL_MACHINE_STATE_RUN) {
-          return false;
+        // Updates by the "sender:status" event
+        name: '',
+        size: 0,
+        total: 0,
+        sent: 0,
+        received: 0
+      },
+      disabled: this.config.get('disabled', false),
+      projection: this.config.get('projection', 'orthographic'),
+      objects: {
+        limits: {
+          visible: this.config.get('objects.limits.visible', true)
+        },
+        coordinateSystem: {
+          visible: this.config.get('objects.coordinateSystem.visible', true)
+        },
+        gridLineNumbers: {
+          visible: this.config.get('objects.gridLineNumbers.visible', true)
+        },
+        cuttingTool: {
+          visible: this.config.get('objects.cuttingTool.visible', true)
         }
-      }
-      if (controllerType === MARLIN) {
-        // Marlin does not have machine state
+      },
+      cameraMode: this.config.get('cameraMode', CAMERA_MODE_PAN),
+      cameraPosition: 'top', // 'top', '3d', 'front', 'left', 'right'
+      isAgitated: false // Defaults to false
+    };
+  }
+
+  addControllerEvents() {
+    Object.keys(this.controllerEvents).forEach(eventName => {
+      const callback = this.controllerEvents[eventName];
+      controller.addListener(eventName, callback);
+    });
+  }
+
+  removeControllerEvents() {
+    Object.keys(this.controllerEvents).forEach(eventName => {
+      const callback = this.controllerEvents[eventName];
+      controller.removeListener(eventName, callback);
+    });
+  }
+
+  isAgitated() {
+    const { workflow, disabled, objects } = this.state;
+    const controllerType = this.state.controller.type;
+    const controllerState = this.state.controller.state;
+
+    if (workflow.state !== WORKFLOW_STATE_RUNNING) {
+      return false;
+    }
+    // Return false when 3D view is disabled
+    if (disabled) {
+      return false;
+    }
+    // Return false when the cutting tool is not visible
+    if (!objects.cuttingTool.visible) {
+      return false;
+    }
+    if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {
+      return false;
+    }
+    if (controllerType === GRBL) {
+      const machineState = get(controllerState, 'status.machineState');
+      if (machineState !== GRBL_MACHINE_STATE_RUN) {
         return false;
       }
-      if (controllerType === SMOOTHIE) {
-        const machineState = get(controllerState, 'status.machineState');
-        if (machineState !== SMOOTHIE_MACHINE_STATE_RUN) {
-          return false;
-        }
+    }
+    if (controllerType === MARLIN) {
+      // Marlin does not have machine state
+      return false;
+    }
+    if (controllerType === SMOOTHIE) {
+      const machineState = get(controllerState, 'status.machineState');
+      if (machineState !== SMOOTHIE_MACHINE_STATE_RUN) {
+        return false;
       }
-      if (controllerType === TINYG) {
-        const machineState = get(controllerState, 'sr.machineState');
-        if (machineState !== TINYG_MACHINE_STATE_RUN) {
-          return false;
-        }
+    }
+    if (controllerType === TINYG) {
+      const machineState = get(controllerState, 'sr.machineState');
+      if (machineState !== TINYG_MACHINE_STATE_RUN) {
+        return false;
       }
-
-      return true;
     }
 
-    render() {
-      const { widgetId } = this.props;
-      const state = {
-        ...this.state,
-        isAgitated: this.isAgitated()
-      };
-      const actions = {
-        ...this.actions
-      };
-      const showLoader = state.gcode.loading || state.gcode.rendering;
-      const capable = {
-        view3D: WebGL.isWebGLAvailable() && !state.disabled
-      };
-      const showDashboard = !capable.view3D && !showLoader;
-      const showVisualizer = capable.view3D && !showLoader;
-      const showNotifications = !!state.notification.type;
+    return true;
+  }
 
-      return (
-        <WidgetConfigProvider widgetId={widgetId}>
-          <Widget borderless>
-            <Widget.Header className={styles.widgetHeader} fixed>
-              <PrimaryToolbar
-                state={state}
-                actions={actions}
-              />
-            </Widget.Header>
-            <Widget.Content
-              ref={node => {
-                this.widgetContent = node;
-              }}
-              className={classNames(
-                styles.widgetContent,
-                { [styles.view3D]: capable.view3D }
-              )}
-            >
-              {state.gcode.loading &&
-              <Loading />
-              }
-              {state.gcode.rendering &&
-              <Rendering />
-              }
-              {state.modal.name === MODAL_WATCH_DIRECTORY && (
-                <WatchDirectory
-                  state={state}
-                  actions={actions}
-                />
-              )}
-              <WorkflowControl
-                state={state}
-                actions={actions}
-              />
-              <Dashboard
-                show={showDashboard}
-                state={state}
-              />
-              {WebGL.isWebGLAvailable() && (
-                <Visualizer
-                  show={showVisualizer}
-                  cameraPosition={state.cameraPosition}
-                  ref={node => {
-                    this.visualizer = node;
-                  }}
-                  state={state}
-                />
-              )}
-              {(showVisualizer && state.gcode.displayName) && (
-                <GCodeName
-                  name={state.gcode.name}
-                />
-              )}
-              {showNotifications && (
-                <Notifications
-                  show={showNotifications}
-                  type={state.notification.type}
-                  data={state.notification.data}
-                  onDismiss={actions.dismissNotification}
-                />
-              )}
-            </Widget.Content>
-            {showVisualizer && (
-              <Widget.Footer className={styles.widgetFooter}>
-                <SecondaryToolbar
-                  is3DView={capable.view3D}
-                  cameraMode={state.cameraMode}
-                  cameraPosition={state.cameraPosition}
-                  camera={actions.camera}
-                />
-              </Widget.Footer>
+  render() {
+    const { widgetId } = this.props;
+    const state = {
+      ...this.state,
+      isAgitated: this.isAgitated()
+    };
+    const actions = {
+      ...this.actions
+    };
+    const showLoader = state.gcode.loading || state.gcode.rendering;
+    const capable = {
+      view3D: WebGL.isWebGLAvailable() && !state.disabled
+    };
+    const showDashboard = !capable.view3D && !showLoader;
+    const showVisualizer = capable.view3D && !showLoader;
+    const showNotifications = !!state.notification.type;
+
+    return (
+      <WidgetConfigProvider widgetId={widgetId}>
+        <Widget borderless>
+          <Widget.Header className={styles.widgetHeader} fixed>
+            <PrimaryToolbar
+              state={state}
+              actions={actions}
+            />
+          </Widget.Header>
+          <Widget.Content
+            ref={node => {
+              this.widgetContent = node;
+            }}
+            className={classNames(
+              styles.widgetContent,
+              { [styles.view3D]: capable.view3D }
             )}
-          </Widget>
-        </WidgetConfigProvider>
-      );
-    }
+          >
+            {state.gcode.loading &&
+              <Loading />}
+            {state.gcode.rendering &&
+              <Rendering />}
+            {state.modal.name === MODAL_WATCH_DIRECTORY && (
+              <WatchDirectory
+                state={state}
+                actions={actions}
+              />
+            )}
+            <WorkflowControl
+              state={state}
+              actions={actions}
+            />
+            <Dashboard
+              show={showDashboard}
+              state={state}
+            />
+            {WebGL.isWebGLAvailable() && (
+              <Visualizer
+                show={showVisualizer}
+                cameraPosition={state.cameraPosition}
+                ref={node => {
+                  this.visualizer = node;
+                }}
+                state={state}
+              />
+            )}
+            {(showVisualizer && state.gcode.displayName) && (
+              <GCodeName
+                name={state.gcode.name}
+              />
+            )}
+            {showNotifications && (
+              <Notifications
+                show={showNotifications}
+                type={state.notification.type}
+                data={state.notification.data}
+                onDismiss={actions.dismissNotification}
+              />
+            )}
+          </Widget.Content>
+          {showVisualizer && (
+            <Widget.Footer className={styles.widgetFooter}>
+              <SecondaryToolbar
+                is3DView={capable.view3D}
+                cameraMode={state.cameraMode}
+                cameraPosition={state.cameraPosition}
+                camera={actions.camera}
+              />
+            </Widget.Footer>
+          )}
+        </Widget>
+      </WidgetConfigProvider>
+    );
+  }
 }
 
 export default VisualizerWidget;

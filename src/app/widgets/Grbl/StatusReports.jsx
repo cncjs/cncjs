@@ -10,12 +10,12 @@ import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import OverflowEllipsis from './components/OverflowEllipsis';
 import Readout from './components/Readout';
 
-const StatusReports = ({
+function StatusReports({
   machineState,
   feedrate,
   spindle,
   tool,
-}) => {
+}) {
   const config = useWidgetConfig();
   const expanded = config.get('panel.statusReports.expanded');
   const collapsed = !expanded;
@@ -94,7 +94,7 @@ const StatusReports = ({
       }}
     </CollapsibleCard>
   );
-};
+}
 
 export default connect(store => {
   const controllerState = _get(store, 'controller.state');

@@ -6,7 +6,7 @@ import { Nav, NavItem } from 'app/components/Navs';
 import i18n from 'app/lib/i18n';
 import styles from './index.styl';
 
-const Controller = (props) => {
+function Controller(props) {
   const { state, actions } = props;
   const { activeTab = 'state' } = state.modal.params;
   const height = Math.max(window.innerHeight / 2, 200);
@@ -50,7 +50,7 @@ const Controller = (props) => {
       </Modal.Footer>
     </Modal>
   );
-};
+}
 
 Controller.propTypes = {
   state: PropTypes.object,

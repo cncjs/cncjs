@@ -4,31 +4,31 @@ import React, { Component } from 'react';
 import styles from './index.styl';
 
 class BreadcrumbsItem extends Component {
-    static propTypes = {
-      active: PropTypes.bool
-    };
+  static propTypes = {
+    active: PropTypes.bool
+  };
 
-    static defaultProps = {
-      active: false
-    };
+  static defaultProps = {
+    active: false
+  };
 
-    render() {
-      const {
-        className,
-        active,
-        ...props
-      } = this.props;
+  render() {
+    const {
+      className,
+      active,
+      ...props
+    } = this.props;
 
-      return (
-        <li
-          {...props}
-          className={cx(
-            className,
-            { [styles.active]: active }
-          )}
-        />
-      );
-    }
+    return (
+      <li
+        {...props}
+        className={cx(
+          className,
+          { [styles.active]: active }
+        )}
+      />
+    );
+  }
 }
 
 export default BreadcrumbsItem;

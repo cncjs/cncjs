@@ -2,15 +2,14 @@ import {
   ButtonBase,
   useColorMode,
   useColorStyle,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import React from 'react';
-import _get from 'lodash/get';
 
-const IconButton = (props) => {
+function IconButton(props) {
   const [colorMode] = useColorMode();
   const [colorStyle] = useColorStyle({ colorMode });
-  const color = _get(colorStyle, 'text.secondary');
-  const hoverColor = _get(colorStyle, 'text.primary');
+  const color = colorStyle?.color?.secondary;
+  const hoverColor = colorStyle?.color?.primary;
 
   return (
     <ButtonBase
@@ -23,6 +22,6 @@ const IconButton = (props) => {
       {...props}
     />
   );
-};
+}
 
 export default IconButton;

@@ -1,6 +1,6 @@
 import {
   Space,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import React from 'react';
 import Infotip from 'app/components/Infotip';
 import i18n from 'app/lib/i18n';
@@ -124,7 +124,7 @@ const keypadInfotip = () => {
   );
 };
 
-export default (props) => {
+export default function(props) {
   const { show, children } = { ...props };
 
   if (!show) {
@@ -141,4 +141,4 @@ export default (props) => {
       {children}
     </Infotip>
   );
-};
+}

@@ -1,6 +1,3 @@
-import {
-  CSSBaseline,
-} from '@trendmicro/react-styled-ui';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from 'app/containers/App';
@@ -18,7 +15,6 @@ sagaMiddleware.run(rootSaga);
 
 ReactDOM.render(
   <GlobalProvider>
-    <CSSBaseline />
     <App />
   </GlobalProvider>,
   container

@@ -1,5 +1,5 @@
 import { test } from 'tap';
-import SmoothieRunner from '../src/server/controllers/Smoothie/SmoothieRunner';
+import SmoothieRunner from 'server/controllers/Smoothie/SmoothieRunner';
 
 test('SmoothieRunner', (t) => {
   // $10 - Status report mask:binary

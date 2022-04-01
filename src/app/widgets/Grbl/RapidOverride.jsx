@@ -1,7 +1,7 @@
 import {
   Space,
   Text,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import { ensurePositiveNumber } from 'ensure-type';
 import _get from 'lodash/get';
 import React from 'react';
@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 import { ButtonGroup } from 'app/components/Buttons';
 import Center from 'app/components/Center';
 import Clickable from 'app/components/Clickable';
-import FixedWidthText from 'app/components/FixedWidthText';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import RepeatableButton from 'app/components/RepeatableButton';
 import controller from 'app/lib/controller';
@@ -17,18 +16,18 @@ import i18n from 'app/lib/i18n';
 import { none } from 'app/lib/utils';
 import OverrideReadout from './components/OverrideReadout';
 
-const RapidOverride = ({
+function RapidOverride({
   value,
-}) => {
+}) {
   if (!value) {
     return null;
   }
 
   return (
     <Center vertical>
-      <FixedWidthText fontSize="1.5rem">
+      <Text fontFamily="mono" fontSize="1.5rem">
         R
-      </FixedWidthText>
+      </Text>
       <Space width={8} />
       <OverrideReadout>
         {(value >= 0) ? `${value}%` : none}
@@ -79,7 +78,7 @@ const RapidOverride = ({
       </Clickable>
     </Center>
   );
-};
+}
 
 export default connect(store => {
   const controllerState = _get(store, 'controller.state');

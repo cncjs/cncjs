@@ -1,6 +1,6 @@
 import React, { useRef, useLayoutEffect } from 'react';
 
-const OverflowTooltip = ({ title, ...props }) => {
+function OverflowTooltip({ title, ...props }) {
   const ref = useRef(null);
 
   // Use useLayoutEffect for making DOM measurements and mutations
@@ -16,6 +16,6 @@ const OverflowTooltip = ({ title, ...props }) => {
   return (
     <div ref={ref} {...props} />
   );
-};
+}
 
 export default OverflowTooltip;

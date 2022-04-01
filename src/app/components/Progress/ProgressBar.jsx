@@ -5,7 +5,7 @@ import React from 'react';
 import { tagPropType } from 'app/components/shared/utils';
 import styles from './styles/index.styl';
 
-const ProgressBar = ({
+function ProgressBar({
   className,
   style,
   tag: Component,
@@ -15,7 +15,7 @@ const ProgressBar = ({
   striped,
   animated,
   ...props
-}) => {
+}) {
   const percent = ((_toNumber(value) / _toNumber(max)) * 100);
 
   return (
@@ -32,7 +32,7 @@ const ProgressBar = ({
       aria-valuemax={max}
     />
   );
-};
+}
 
 ProgressBar.propTypes = {
   tag: tagPropType,

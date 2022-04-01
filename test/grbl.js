@@ -1,11 +1,11 @@
 import { test } from 'tap';
 import trim from 'lodash/trim';
-import GrblLineParser from '../src/server/controllers/Grbl/GrblLineParser';
-import GrblLineParserResultHelp from '../src/server/controllers/Grbl/GrblLineParserResultHelp';
-import GrblLineParserResultVersion from '../src/server/controllers/Grbl/GrblLineParserResultVersion';
-import GrblLineParserResultOption from '../src/server/controllers/Grbl/GrblLineParserResultOption';
-import GrblLineParserResultEcho from '../src/server/controllers/Grbl/GrblLineParserResultEcho';
-import GrblRunner from '../src/server/controllers/Grbl/GrblRunner';
+import GrblLineParser from 'server/controllers/Grbl/GrblLineParser';
+import GrblLineParserResultHelp from 'server/controllers/Grbl/GrblLineParserResultHelp';
+import GrblLineParserResultVersion from 'server/controllers/Grbl/GrblLineParserResultVersion';
+import GrblLineParserResultOption from 'server/controllers/Grbl/GrblLineParserResultOption';
+import GrblLineParserResultEcho from 'server/controllers/Grbl/GrblLineParserResultEcho';
+import GrblRunner from 'server/controllers/Grbl/GrblRunner';
 
 /**
  * Response Messages:

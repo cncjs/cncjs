@@ -24,7 +24,7 @@ const defaultProps = {
   tag: 'div',
 };
 
-const InputGroup = ({
+function InputGroup({
   tag: Tag,
   lg,
   md,
@@ -32,7 +32,7 @@ const InputGroup = ({
   className,
   children,
   ...props
-}) => {
+}) {
   if (lg) {
     md = false;
     sm = false;
@@ -73,7 +73,7 @@ const InputGroup = ({
       })}
     </Tag>
   );
-};
+}
 
 InputGroup.propTypes = propTypes;
 InputGroup.defaultProps = defaultProps;

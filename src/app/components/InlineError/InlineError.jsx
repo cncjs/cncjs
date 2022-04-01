@@ -1,21 +1,23 @@
 import {
   Box,
   Space,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import React from 'react';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 
-const InlineError = ({ children, ...props }) => (
-  <Box
-    {...props}
-    display="inline-block"
-    color="#db3d44"
-    mt="1x"
-  >
-    <FontAwesomeIcon icon="exclamation-circle" fixedWidth />
-    <Space width="1x" />
-    {children}
-  </Box>
-);
+function InlineError({ children, ...props }) {
+  return (
+    <Box
+      display="inline-block"
+      color="#db3d44"
+      mt="1x"
+      {...props}
+    >
+      <FontAwesomeIcon icon="exclamation-circle" fixedWidth />
+      <Space width="1x" />
+      {children}
+    </Box>
+  );
+}
 
 export default InlineError;

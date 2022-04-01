@@ -3,7 +3,7 @@ import Card from 'app/components/Card';
 import Clickable from 'app/components/Clickable';
 import { CollapsibleCardContext } from './context';
 
-const Header = ({ children, style, ...props }) => {
+function Header({ children, style, ...props }) {
   const { collapsed, collapsing, toggle } = useContext(CollapsibleCardContext);
 
   return (
@@ -22,12 +22,11 @@ const Header = ({ children, style, ...props }) => {
         >
           {typeof children === 'function'
             ? children({ collapsed, collapsing, toggle, hovered })
-            : children
-          }
+            : children}
         </Card.Header>
       )}
     </Clickable>
   );
-};
+}
 
 export default Header;

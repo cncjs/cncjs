@@ -5,7 +5,7 @@ import settings from 'app/config/settings';
 import i18n from 'app/lib/i18n';
 import styles from './index.styl';
 
-const AboutContainer = ({ version }) => {
+function AboutContainer({ version }) {
   const wiki = 'https://github.com/cncjs/cncjs/wiki';
 
   return (
@@ -29,7 +29,7 @@ const AboutContainer = ({ version }) => {
       </div>
     </div>
   );
-};
+}
 
 AboutContainer.propTypes = {
   version: PropTypes.object

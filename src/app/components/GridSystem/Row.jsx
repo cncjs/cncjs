@@ -8,48 +8,48 @@ import Resolver from './Resolver';
 import styles from './index.styl';
 
 class Row extends PureComponent {
-    getStyle = ({ gutterWidth }) => {
-      const style = {
-        marginLeft: -(gutterWidth / 2),
-        marginRight: -(gutterWidth / 2)
-      };
-
-      return style;
+  getStyle = ({ gutterWidth }) => {
+    const style = {
+      marginLeft: -(gutterWidth / 2),
+      marginRight: -(gutterWidth / 2)
     };
 
-    render() {
-      const {
-        className,
-        style,
-        children,
-        ...props
-      } = this.props;
+    return style;
+  };
 
-      return (
-        <Resolver>
-          {({ config, screenClass }) => {
-            const { gutterWidth, layout } = config;
-            const rowStyle = this.getStyle({ gutterWidth });
+  render() {
+    const {
+      className,
+      style,
+      children,
+      ...props
+    } = this.props;
 
-            return (
-              <div
-                {...props}
-                className={cx(className, {
-                  [styles.flexboxRow]: layout === LAYOUT_FLEXBOX,
-                  [styles.floatsRow]: layout === LAYOUT_FLOATS,
-                })}
-                style={{
-                  ...rowStyle,
-                  ...style,
-                }}
-              >
-                {children}
-              </div>
-            );
-          }}
-        </Resolver>
-      );
-    }
+    return (
+      <Resolver>
+        {({ config, screenClass }) => {
+          const { gutterWidth, layout } = config;
+          const rowStyle = this.getStyle({ gutterWidth });
+
+          return (
+            <div
+              {...props}
+              className={cx(className, {
+                [styles.flexboxRow]: layout === LAYOUT_FLEXBOX,
+                [styles.floatsRow]: layout === LAYOUT_FLOATS,
+              })}
+              style={{
+                ...rowStyle,
+                ...style,
+              }}
+            >
+              {children}
+            </div>
+          );
+        }}
+      </Resolver>
+    );
+  }
 }
 
 export default Row;

@@ -24,17 +24,19 @@ const hidden = (screenClass, { xs, sm, md, lg, xl, xxl }) => {
   return true; // Defaults to true
 };
 
-const Hidden = ({ xs, sm, md, lg, xl, xxl, children }) => (
-  <Resolver>
-    {({ screenClass }) => {
-      if (hidden(screenClass, { xs, sm, md, lg, xl, xxl })) {
-        return null;
-      }
+function Hidden({ xs, sm, md, lg, xl, xxl, children }) {
+  return (
+    <Resolver>
+      {({ screenClass }) => {
+        if (hidden(screenClass, { xs, sm, md, lg, xl, xxl })) {
+          return null;
+        }
 
-      return children;
-    }}
-  </Resolver>
-);
+        return children;
+      }}
+    </Resolver>
+  );
+}
 
 Hidden.propTypes = {
   // Hidden on extra small devices.

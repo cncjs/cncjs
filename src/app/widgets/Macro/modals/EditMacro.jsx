@@ -17,7 +17,7 @@ import {
   Space,
   Textarea,
   TextLabel,
-} from '@trendmicro/react-styled-ui';
+} from '@tonic-ui/react';
 import { ensureArray } from 'ensure-type';
 import _uniqueId from 'lodash/uniqueId';
 import React, { useRef } from 'react';
@@ -26,8 +26,8 @@ import axios from 'app/api/axios';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
 import InlineError from 'app/components/InlineError';
-import useModal from 'app/components/Modal/useModal';
 import i18n from 'app/lib/i18n';
+import portal from 'app/lib/portal';
 import { composeValidators, required } from 'app/widgets/shared/validations';
 import variables from '../shared/variables';
 import ConfirmDeleteMacro from './ConfirmDeleteMacro';
@@ -74,13 +74,12 @@ const mapMacroVariablesToMenuGroupItems = (variables) => ensureArray(variables).
   return null;
 });
 
-const EditMacro = ({
+function EditMacro({
   onClose,
   id,
   name,
   content,
-}) => {
-  const { openModal } = useModal();
+}) {
   const contentRef = useRef();
   const initialValues = {
     name,
@@ -95,7 +94,8 @@ const EditMacro = ({
       onParentClose();
     };
 
-    openModal(({ onClose }) => (
+    portal(({ onClose }) => (
+      // TODO
       <ConfirmDeleteMacro
         onClose={onClose}
         name={name}
@@ -106,7 +106,7 @@ const EditMacro = ({
 
   return (
     <Modal
-      isCloseButtonVisible
+      isClosable
       isOpen
       onClose={onClose}
       size="md"
@@ -240,6 +240,6 @@ const EditMacro = ({
       </Form>
     </Modal>
   );
-};
+}
 
 export default EditMacro;

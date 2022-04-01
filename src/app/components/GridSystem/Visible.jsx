@@ -24,17 +24,19 @@ const visible = (screenClass, { xs, sm, md, lg, xl, xxl }) => {
   return true; // Defaults to true
 };
 
-const Visible = ({ xs, sm, md, lg, xl, xxl, children }) => (
-  <Resolver>
-    {({ screenClass }) => {
-      if (visible(screenClass, { xs, sm, md, lg, xl, xxl })) {
-        return children;
-      }
+function Visible({ xs, sm, md, lg, xl, xxl, children }) {
+  return (
+    <Resolver>
+      {({ screenClass }) => {
+        if (visible(screenClass, { xs, sm, md, lg, xl, xxl })) {
+          return children;
+        }
 
-      return null;
-    }}
-  </Resolver>
-);
+        return null;
+      }}
+    </Resolver>
+  );
+}
 
 Visible.propTypes = {
   // Visible on extra small devices.
