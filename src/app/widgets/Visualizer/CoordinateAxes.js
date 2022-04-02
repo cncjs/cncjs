@@ -2,9 +2,11 @@ import colornames from 'colornames';
 import * as THREE from 'three';
 
 const buildAxis = (src, dst, color, dashed) => {
-  let geometry = new THREE.Geometry();
-  let material;
+  const geometry = new THREE.BufferGeometry();
+  const points = [src.clone(), dst.clone()];
+  geometry.setFromPoints(points);
 
+  let material;
   if (dashed) {
     material = new THREE.LineDashedMaterial({
       linewidth: 1,
@@ -22,9 +24,6 @@ const buildAxis = (src, dst, color, dashed) => {
       transparent: true
     });
   }
-
-  geometry.vertices.push(src.clone());
-  geometry.vertices.push(dst.clone());
 
   const axisLine = new THREE.Line(geometry, material);
 

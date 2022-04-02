@@ -15,33 +15,37 @@ class GridLine {
     stepY = (typeof stepY === 'undefined') ? stepX : stepY;
 
     for (let i = -1 * sizeX; i <= sizeX; i += stepX) {
-      const geometry = new THREE.Geometry();
+      const geometry = new THREE.BufferGeometry();
       const material = new THREE.LineBasicMaterial({
         vertexColors: THREE.VertexColors
       });
+      const positions = [];
+      const colors = [];
       const color = (i === 0) ? colorCenterLine : colorGrid;
-
-      geometry.vertices.push(
-        new THREE.Vector3(-sizeX, i, 0),
-        new THREE.Vector3(sizeX, i, 0),
-      );
-      geometry.colors.push(color, color);
+      positions.push(-sizeX, i, 0);
+      positions.push(sizeX, i, 0);
+      colors.push(color.r, color.g, color.b);
+      colors.push(color.r, color.g, color.b);
+      geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
 
       this.group.add(new THREE.Line(geometry, material));
     }
 
     for (let i = -1 * sizeY; i <= sizeY; i += stepY) {
-      const geometry = new THREE.Geometry();
+      const geometry = new THREE.BufferGeometry();
       const material = new THREE.LineBasicMaterial({
         vertexColors: THREE.VertexColors
       });
+      const positions = [];
+      const colors = [];
       const color = (i === 0) ? colorCenterLine : colorGrid;
-
-      geometry.vertices.push(
-        new THREE.Vector3(i, -sizeY, 0),
-        new THREE.Vector3(i, sizeY, 0),
-      );
-      geometry.colors.push(color, color);
+      positions.push(i, -sizeY, 0);
+      positions.push(i, sizeY, 0);
+      colors.push(color.r, color.g, color.b);
+      colors.push(color.r, color.g, color.b);
+      geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
 
       this.group.add(new THREE.Line(geometry, material));
     }
