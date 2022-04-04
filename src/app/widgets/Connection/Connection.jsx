@@ -302,14 +302,14 @@ function Connection({
 
     if (connection.type === CONNECTION_TYPE_SERIAL) {
       setAlert({
-        appearance: 'error',
+        severity: 'error',
         title: i18n._('Error opening serial port'),
         message: connection.error,
         duration: 5000,
       });
     } else if (connection.type === CONNECTION_TYPE_SOCKET) {
       setAlert({
-        appearance: 'error',
+        severity: 'error',
         title: i18n._('Error opening socket'),
         message: connection.error,
         duration: 5000,
@@ -540,7 +540,7 @@ function Connection({
                         >
                           <FontAwesomeIcon icon={['fab', 'usb']} fixedWidth />
                           <Space width={8} />
-                          {i18n._('Serial')}
+                          {i18n._('Serial Port')}
                         </Button>
                         <Button
                           disabled={isSocketDisabled}
@@ -549,7 +549,7 @@ function Connection({
                         >
                           <FontAwesomeIcon icon="network-wired" fixedWidth />
                           <Space width={8} />
-                          {i18n._('Socket')}
+                          {i18n._('Wi-Fi')}
                         </Button>
                       </ButtonGroup>
                     );

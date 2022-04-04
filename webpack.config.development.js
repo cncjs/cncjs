@@ -197,6 +197,7 @@ module.exports = {
     ],
   },
   devServer: {
+    allowedHosts: 'all',
     compress: true,
     devMiddleware: {
       writeToDisk: true,

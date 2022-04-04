@@ -1,9 +1,9 @@
 import {
   Space,
+  Spinner,
 } from '@tonic-ui/react';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import FacebookLoading from 'react-facebook-loading';
 import i18n from 'app/lib/i18n';
 import styles from './index.styl';
 
@@ -44,11 +44,7 @@ class Controller extends Component {
 
     if (state.api.loading) {
       return (
-        <FacebookLoading
-          delay={400}
-          zoom={2}
-          style={{ margin: '15px auto' }}
-        />
+        <Spinner />
       );
     }
 

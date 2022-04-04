@@ -11,7 +11,7 @@ import pubsub from 'pubsub-js';
 import React, { useEffect } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import compose from 'recompose/compose';
 import settings from 'app/config/settings';
 import Login from 'app/containers/Login';
@@ -71,7 +71,6 @@ function ToastLayout(props) {
 }
 
 function App({
-  location,
   isInitializing,
   promptUserForCorruptedWorkspaceSettings
 }) {
@@ -151,7 +150,6 @@ function App({
 }
 
 export default compose(
-  withRouter,
   connect(
     (state, ownProps) => ({ // mapStateToProps
       isInitializing: state.container.app.isInitializing,

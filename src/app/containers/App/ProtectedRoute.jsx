@@ -1,9 +1,14 @@
 import React from 'react';
-import { Route, Redirect, withRouter } from 'react-router-dom';
+import { Route, Redirect, useLocation } from 'react-router-dom';
 import * as user from 'app/lib/user';
 import log from 'app/lib/log';
 
-function ProtectedRoute({ component: Component, ...rest }) {
+const ProtectedRoute = ({
+  component: Component,
+  ...rest
+}) => {
+  const location = useLocation();
+
   return (
     <Route
       {...rest}
@@ -12,7 +17,7 @@ function ProtectedRoute({ component: Component, ...rest }) {
           return Component ? <Component {...rest} /> : null;
         }
 
-        const redirectFrom = props.location.pathname;
+        const redirectFrom = location.pathname;
         const redirectTo = '/login';
         if (redirectFrom === redirectTo) {
           return null;
@@ -25,7 +30,7 @@ function ProtectedRoute({ component: Component, ...rest }) {
             to={{
               pathname: '/login',
               state: {
-                from: props.location
+                from: location
               }
             }}
           />
@@ -33,10 +38,6 @@ function ProtectedRoute({ component: Component, ...rest }) {
       }}
     />
   );
-}
-
-ProtectedRoute.propTypes = {
-  ...withRouter.propTypes
 };
 
 export default ProtectedRoute;

@@ -1,6 +1,7 @@
 import {
   TonicProvider,
   ToastProvider,
+  theme,
 } from '@tonic-ui/react';
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
@@ -9,8 +10,17 @@ import { HashRouter } from 'react-router-dom';
 import { CardProvider } from 'app/components/Card';
 import { Provider as GridSystemProvider } from 'app/components/GridSystem'; // TODO: remove this
 import colorStyle from 'app/config/color-style';
+import customIcons from 'app/config/icons';
 import i18next from 'app/i18next';
 import reduxStore from 'app/store/redux';
+
+const customTheme = {
+  ...theme,
+  icons: {
+    ...theme.icons,
+    ...customIcons,
+  },
+};
 
 export function GlobalProvider({ children }) {
   return (
@@ -21,6 +31,7 @@ export function GlobalProvider({ children }) {
       colorStyle={{
         defaultValue: colorStyle,
       }}
+      theme={customTheme}
       useCSSBaseline={true}
     >
       <ToastProvider placement="bottom-right">

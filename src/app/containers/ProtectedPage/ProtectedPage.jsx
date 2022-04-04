@@ -1,24 +1,26 @@
-import React, { Fragment } from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
-import compose from 'recompose/compose';
-import styled from 'styled-components';
+import {
+  Box,
+} from '@tonic-ui/react';
+import {
+  useToggle,
+} from '@tonic-ui/react-hooks';
+import React, { forwardRef, useEffect } from 'react';
+import { Redirect, useLocation } from 'react-router-dom';
 import Administration from 'app/containers/Administration';
-import SideNav from 'app/containers/SideNav';
-import TopNav from 'app/containers/TopNav';
+import Header from 'app/containers/Header';
+import Main from 'app/containers/Main';
+import { MiniNav, SideNav } from 'app/containers/Nav';
 import Workspace from 'app/containers/Workspace';
 import analytics from 'app/lib/analytics';
-import {
-  TOPNAV_HEIGHT,
-  SIDENAV_WIDTH,
-  CONTENT_FONT_SIZE,
-  CONTENT_BACKGROUND_COLOR,
-  CONTENT_MIN_WIDTH,
-} from 'app/config/styles';
 
-function ProtectedPage({
-  location,
-  history
-}) {
+const ProtectedPage = forwardRef((props, ref) => {
+  const [isSideNavOpen, toggleSideNav] = useToggle(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    analytics.pageview(location.pathname);
+  }, [location.pathname]);
+
   const accepted = ([
     '/workspace',
     '/administration',
@@ -38,70 +40,35 @@ function ProtectedPage({
         to={{
           pathname: '/workspace',
           state: {
-            from: location
+            from: location,
           }
         }}
       />
     );
   }
 
-  analytics.pageview(location.pathname);
-
   return (
-    <>
-      <TopBar>
-        <TopNav />
-      </TopBar>
-      <SideBar id="sidebar">
-        <SideNav />
-      </SideBar>
+    <Box ref={ref} {...props}>
+      <MiniNav id="sidebar" />
+      <SideNav
+        isSideNavOpen={isSideNavOpen}
+        toggleSideNav={toggleSideNav}
+      />
+      <Header
+        toggleSideNav={toggleSideNav}
+      />
       <Main>
-        <Content>
-          <Workspace
-            style={{
-              display: (location.pathname !== '/workspace') ? 'none' : 'block'
-            }}
-          />
-          {location.pathname.indexOf('/administration') === 0 &&
-          <Administration />}
-        </Content>
+        <Workspace
+          style={{
+            display: (location.pathname !== '/workspace') ? 'none' : 'block'
+          }}
+        />
+        {(location.pathname.indexOf('/administration') === 0) && (
+          <Administration />
+        )}
       </Main>
-    </>
+    </Box>
   );
-}
+});
 
-export default compose(
-  withRouter
-)(ProtectedPage);
-
-const TopBar = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-`;
-
-const SideBar = styled.aside`
-    position: fixed;
-    top: ${TOPNAV_HEIGHT};
-    left: 0;
-    bottom: 0;
-    z-index: 1000;
-`;
-
-const Main = styled.div`
-    position: absolute;
-    top: ${TOPNAV_HEIGHT};
-    left: ${SIDENAV_WIDTH};
-    right: 0;
-    bottom: 0;
-    overflow-y: auto;
-`;
-
-const Content = styled.div`
-    position: relative;
-    background-color: ${CONTENT_BACKGROUND_COLOR};
-    font-size: ${CONTENT_FONT_SIZE};
-    min-width: ${CONTENT_MIN_WIDTH};
-`;
+export default ProtectedPage;
