@@ -55,20 +55,43 @@ test('MarlinLineParserResultOk', (t) => {
 });
 
 test('MarlinLineParserResultPosition', (t) => {
-    const runner = new MarlinRunner();
-    runner.on('pos', ({ raw, pos }) => {
-        t.equal(raw, 'X:1.529 Y:-5.440 Z:0.00 E:0.00 Count X:0 Y:0 Z:0');
-        t.same(pos, {
-            x: '1.529',
-            y: '-5.440',
-            z: '0.00',
-            e: '0.00'
+    t.test('X/Y/Z/E', (t) => {
+        const runner = new MarlinRunner();
+        runner.on('pos', ({ raw, pos }) => {
+            t.equal(raw, 'X:1.529 Y:-5.440 Z:0.00 E:0.00 Count X:0 Y:0 Z:0');
+            t.same(pos, {
+                x: '1.529',
+                y: '-5.440',
+                z: '0.00',
+                e: '0.00'
+            });
+            t.end();
         });
-        t.end();
+
+        const line = 'X:1.529 Y:-5.440 Z:0.00 E:0.00 Count X:0 Y:0 Z:0';
+        runner.parse(line);
     });
 
-    const line = 'X:1.529 Y:-5.440 Z:0.00 E:0.00 Count X:0 Y:0 Z:0';
-    runner.parse(line);
+    t.test('X/Y/Z/A/B/C', (t) => {
+        const runner = new MarlinRunner();
+        runner.on('pos', ({ raw, pos }) => {
+            t.equal(raw, 'X:20.000 Y:41.000 Z:38.000 A:34.000 B:24.000 C:17.000 Count X:9311 Y:18922 Z:15200 A:536 B:378 C:268');
+            t.same(pos, {
+                x: '20.000',
+                y: '41.000',
+                z: '38.000',
+                a: '34.000',
+                b: '24.000',
+                c: '17.000',
+            });
+            t.end();
+        });
+
+        const line = 'X:20.000 Y:41.000 Z:38.000 A:34.000 B:24.000 C:17.000 Count X:9311 Y:18922 Z:15200 A:536 B:378 C:268';
+        runner.parse(line);
+    });
+
+    t.end();
 });
 
 test('MarlinLineParserResultStart', (t) => {
