@@ -1,4 +1,7 @@
-import ensureArray from 'ensure-array';
+import {
+    ensureArray,
+    ensureString,
+} from 'ensure-type';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
 import SerialConnection from '../../lib/SerialConnection';
@@ -188,8 +191,13 @@ class GrblController {
         // Feeder
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
-                // Remove comments that start with a semicolon `;`
-                line = line.replace(/\s*;.*/g, '').trim();
+                const originalLine = line;
+                /**
+                 * line = 'G0X10 ; comment text'
+                 * parts = ['G0X10 ', ' comment text', '']
+                 */
+                const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
+                line = ensureString(parts[0]).trim();
                 context = this.populateContext(context);
 
                 if (line[0] === '%') {
@@ -215,17 +223,17 @@ class GrblController {
                     const programMode = _.intersection(words, ['M0', 'M1'])[0];
                     if (programMode === 'M0') {
                         log.debug('M0 Program Pause');
-                        this.feeder.hold({ data: 'M0' }); // Hold reason
+                        this.feeder.hold({ data: 'M0', msg: originalLine }); // Hold reason
                     } else if (programMode === 'M1') {
                         log.debug('M1 Program Pause');
-                        this.feeder.hold({ data: 'M1' }); // Hold reason
+                        this.feeder.hold({ data: 'M1', msg: originalLine }); // Hold reason
                     }
                 }
 
                 // M6 Tool Change
                 if (_.includes(words, 'M6')) {
                     log.debug('M6 Tool Change');
-                    this.feeder.hold({ data: 'M6' }); // Hold reason
+                    this.feeder.hold({ data: 'M6', msg: originalLine }); // Hold reason
 
                     // Surround M6 with parentheses to ignore
                     // unsupported command error. If we nuke the whole
@@ -271,8 +279,13 @@ class GrblController {
             // Deduct the buffer size to prevent from buffer overrun
             bufferSize: (128 - 8), // The default buffer size is 128 bytes
             dataFilter: (line, context) => {
-                // Remove comments that start with a semicolon `;`
-                line = line.replace(/\s*;.*/g, '').trim();
+                const originalLine = line;
+                /**
+                 * line = 'G0X10 ; comment text'
+                 * parts = ['G0X10 ', ' comment text', '']
+                 */
+                const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
+                line = ensureString(parts[0]).trim();
                 context = this.populateContext(context);
 
                 const { sent, received } = this.sender.state;
@@ -281,7 +294,7 @@ class GrblController {
                     // %wait
                     if (line === WAIT) {
                         log.debug(`Wait for the planner to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.sender.hold({ data: WAIT }); // Hold reason
+                        this.sender.hold({ data: WAIT, msg: originalLine }); // Hold reason
                         return 'G4 P0.5'; // dwell
                     }
 
@@ -301,17 +314,17 @@ class GrblController {
                     const programMode = _.intersection(words, ['M0', 'M1'])[0];
                     if (programMode === 'M0') {
                         log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ data: 'M0' });
+                        this.workflow.pause({ data: 'M0', msg: originalLine });
                     } else if (programMode === 'M1') {
                         log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ data: 'M1' });
+                        this.workflow.pause({ data: 'M1', msg: originalLine });
                     }
                 }
 
                 // M6 Tool Change
                 if (_.includes(words, 'M6')) {
                     log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
-                    this.workflow.pause({ data: 'M6' });
+                    this.workflow.pause({ data: 'M6', msg: originalLine });
 
                     // Surround M6 with parentheses to ignore unsupported command error
                     line = line.replace('M6', '(M6)');
@@ -477,14 +490,14 @@ class GrblController {
                     this.emit('serialport:read', `error:${code} (${error.message})`);
 
                     if (pauseError) {
-                        this.workflow.pause({ err: `error:${code} (${error.message})` });
+                        this.workflow.pause({ err: true, msg: `error:${code} (${error.message})` });
                     }
                 } else {
                     // Grbl v0.9
                     this.emit('serialport:read', res.raw);
 
                     if (pauseError) {
-                        this.workflow.pause({ err: res.raw });
+                        this.workflow.pause({ err: true, msg: res.raw });
                     }
                 }
 

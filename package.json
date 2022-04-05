@@ -180,6 +180,7 @@
     "detect-browser": "~4.4.0",
     "electron-store": "~3.2.0",
     "ensure-array": "~1.0.0",
+    "ensure-type": "~1.5.1",
     "errorhandler": "~1.5.0",
     "es5-shim": "~4.5.13",
     "escodegen": "~1.11.1",
