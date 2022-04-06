@@ -480,15 +480,13 @@ class MarlinController {
                 // M109 Set extruder temperature and wait for the target temperature to be reached
                 if (_.includes(words, 'M109')) {
                     log.debug(`Wait for extruder temperature to reach target temperature (${line}): line=${sent + 1}, sent=${sent}, received=${received}`);
-                    const reason = { data: 'M109', msg: originalLine };
-                    this.sender.hold(reason); // Hold reason
+                    this.sender.hold({ data: 'M109', msg: originalLine }); // Hold reason
                 }
 
                 // M190 Set heated bed temperature and wait for the target temperature to be reached
                 if (_.includes(words, 'M190')) {
                     log.debug(`Wait for heated bed temperature to reach target temperature (${line}): line=${sent + 1}, sent=${sent}, received=${received}`);
-                    const reason = { data: 'M190', msg: originalLine };
-                    this.sender.hold(reason); // Hold reason
+                    this.sender.hold({ data: 'M190', msg: originalLine }); // Hold reason
                 }
 
                 { // Program Mode: M0, M1
