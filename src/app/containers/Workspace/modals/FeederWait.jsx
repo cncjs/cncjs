@@ -7,7 +7,11 @@ import Modal from 'app/components/Modal';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 
-const FeederWait = (props) => (
+const FeederWait = ({
+    title,
+    message,
+    onClose,
+}) => (
     <Modal
         size="xs"
         disableOverlay={true}
@@ -15,7 +19,10 @@ const FeederWait = (props) => (
     >
         <Modal.Body>
             <ModalTemplate type="warning">
-                <h5>{props.title}</h5>
+                <h5>{title}</h5>
+                {message &&
+                    <p>{message}</p>
+                }
                 <p>{i18n._('Waiting for the planner to empty...')}</p>
             </ModalTemplate>
         </Modal.Body>
@@ -26,7 +33,7 @@ const FeederWait = (props) => (
                     () => {
                         controller.command('feeder:stop');
                     },
-                    props.onClose
+                    onClose
                 )}
             >
                 {i18n._('Stop')}
@@ -37,6 +44,7 @@ const FeederWait = (props) => (
 
 FeederWait.propTypes = {
     title: PropTypes.string,
+    message: PropTypes.string,
     onClose: PropTypes.func
 };
 

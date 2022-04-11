@@ -1,4 +1,7 @@
-import ensureArray from 'ensure-array';
+import {
+    ensureArray,
+    ensureString,
+} from 'ensure-type';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
 import SerialConnection from '../../lib/SerialConnection';
@@ -345,8 +348,13 @@ class MarlinController {
         // Feeder
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
-                // Remove comments that start with a semicolon `;`
-                line = line.replace(/\s*;.*/g, '').trim();
+                const originalLine = line;
+                /**
+                 * line = 'G0X10 ; comment text'
+                 * parts = ['G0X10 ', ' comment text', '']
+                 */
+                const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
+                line = ensureString(parts[0]).trim();
                 context = this.populateContext(context);
 
                 if (line[0] === '%') {
@@ -373,30 +381,30 @@ class MarlinController {
                 // M109 Set extruder temperature and wait for the target temperature to be reached
                 if (_.includes(words, 'M109')) {
                     log.debug(`Wait for extruder temperature to reach target temperature (${line})`);
-                    this.feeder.hold({ data: 'M109' }); // Hold reason
+                    this.feeder.hold({ data: 'M109', msg: originalLine }); // Hold reason
                 }
 
                 // M190 Set heated bed temperature and wait for the target temperature to be reached
                 if (_.includes(words, 'M190')) {
                     log.debug(`Wait for heated bed temperature to reach target temperature (${line})`);
-                    this.feeder.hold({ data: 'M190' }); // Hold reason
+                    this.feeder.hold({ data: 'M190', msg: originalLine }); // Hold reason
                 }
 
                 { // Program Mode: M0, M1
                     const programMode = _.intersection(words, ['M0', 'M1'])[0];
                     if (programMode === 'M0') {
                         log.debug('M0 Program Pause');
-                        this.feeder.hold({ data: 'M0' }); // Hold reason
+                        this.feeder.hold({ data: 'M0', msg: originalLine }); // Hold reason
                     } else if (programMode === 'M1') {
                         log.debug('M1 Program Pause');
-                        this.feeder.hold({ data: 'M1' }); // Hold reason
+                        this.feeder.hold({ data: 'M1', msg: originalLine }); // Hold reason
                     }
                 }
 
                 // M6 Tool Change
                 if (_.includes(words, 'M6')) {
                     log.debug('M6 Tool Change');
-                    this.feeder.hold({ data: 'M6' }); // Hold reason
+                    this.feeder.hold({ data: 'M6', msg: originalLine }); // Hold reason
                 }
 
                 return line;
@@ -435,8 +443,13 @@ class MarlinController {
         // Sender
         this.sender = new Sender(SP_TYPE_SEND_RESPONSE, {
             dataFilter: (line, context) => {
-                // Remove comments that start with a semicolon `;`
-                line = line.replace(/\s*;.*/g, '').trim();
+                const originalLine = line;
+                /**
+                 * line = 'G0X10 ; comment text'
+                 * parts = ['G0X10 ', ' comment text', '']
+                 */
+                const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
+                line = ensureString(parts[0]).trim();
                 context = this.populateContext(context);
 
                 const { sent, received } = this.sender.state;
@@ -445,7 +458,7 @@ class MarlinController {
                     // %wait
                     if (line === WAIT) {
                         log.debug(`Wait for the planner to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.sender.hold({ data: WAIT }); // Hold reason
+                        this.sender.hold({ data: WAIT, msg: originalLine }); // Hold reason
 
                         // G4 [P<time in ms>] [S<time in sec>]
                         // If both S and P are included, S takes precedence.
@@ -467,32 +480,30 @@ class MarlinController {
                 // M109 Set extruder temperature and wait for the target temperature to be reached
                 if (_.includes(words, 'M109')) {
                     log.debug(`Wait for extruder temperature to reach target temperature (${line}): line=${sent + 1}, sent=${sent}, received=${received}`);
-                    const reason = { data: 'M109' };
-                    this.sender.hold(reason); // Hold reason
+                    this.sender.hold({ data: 'M109', msg: originalLine }); // Hold reason
                 }
 
                 // M190 Set heated bed temperature and wait for the target temperature to be reached
                 if (_.includes(words, 'M190')) {
                     log.debug(`Wait for heated bed temperature to reach target temperature (${line}): line=${sent + 1}, sent=${sent}, received=${received}`);
-                    const reason = { data: 'M190' };
-                    this.sender.hold(reason); // Hold reason
+                    this.sender.hold({ data: 'M190', msg: originalLine }); // Hold reason
                 }
 
                 { // Program Mode: M0, M1
                     const programMode = _.intersection(words, ['M0', 'M1'])[0];
                     if (programMode === 'M0') {
                         log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ data: 'M0' });
+                        this.workflow.pause({ data: 'M0', msg: originalLine });
                     } else if (programMode === 'M1') {
                         log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ data: 'M1' });
+                        this.workflow.pause({ data: 'M1', msg: originalLine });
                     }
                 }
 
                 // M6 Tool Change
                 if (_.includes(words, 'M6')) {
                     log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
-                    this.workflow.pause({ data: 'M6' });
+                    this.workflow.pause({ data: 'M6', msg: originalLine });
                 }
 
                 return line;
@@ -677,7 +688,7 @@ class MarlinController {
                 this.emit('serialport:read', res.raw);
 
                 if (pauseError) {
-                    this.workflow.pause({ err: res.raw });
+                    this.workflow.pause({ err: true, msg: res.raw });
                 }
 
                 this.sender.ack();
