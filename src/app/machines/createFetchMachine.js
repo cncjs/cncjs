@@ -1,7 +1,7 @@
-import { Machine, assign } from 'xstate';
+import { createMachine, assign } from 'xstate';
 
 const createFetchMachine = () => {
-  const fetchMachine = Machine({
+  const fetchMachine = createMachine({
     id: 'fetchMachine',
     initial: 'idle',
     context: {
