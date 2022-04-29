@@ -4,9 +4,6 @@ import {
 } from '@tonic-ui/react';
 import React, { forwardRef } from 'react';
 
-const headerHeight = '12x';
-const sidenavWidth = '16x';
-
 const Main = forwardRef((props, ref) => {
   const [colorMode] = useColorMode();
   const backgroundColor = {
@@ -19,9 +16,6 @@ const Main = forwardRef((props, ref) => {
       as="main"
       ref={ref}
       backgroundColor={backgroundColor}
-      ml={sidenavWidth}
-      pt={headerHeight}
-      height="100vh"
       {...props}
     />
   );

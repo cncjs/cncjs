@@ -4,6 +4,7 @@ import {
   Flex,
   Icon,
   Image,
+  Space,
   Text,
   useColorMode,
   useColorStyle,
@@ -14,11 +15,9 @@ import settings from 'app/config/settings';
 import i18next from 'app/i18next';
 import iconLogo from 'app/images/logo-badge-32x32.png';
 
-const headerHeight = '12x';
-
 const Header = forwardRef((
   {
-    toggleSideNav,
+    onToggle,
     ...rest
   },
   ref,
@@ -37,34 +36,25 @@ const Header = forwardRef((
       backdropFilter="blur(20px)"
       backgroundColor={colorStyle?.background?.primary}
       color={colorStyle?.color?.primary}
-      position="fixed"
-      top={0}
-      left={0}
-      right={0}
-      height={headerHeight}
-      zIndex="fixed"
       {...rest}
     >
       <Flex
         alignItems="center"
-        columnGap="2x"
-        height={headerHeight}
+        height="100%"
         px="4x"
       >
         <IconButton
           width="10x"
           height="10x"
-          onClick={() => {
-            toggleSideNav();
-          }}
+          onClick={onToggle}
         >
           <Icon icon="menu" size="6x"/>
         </IconButton>
+        <Space minWidth="2x" />
         <ButtonBase
           onClick={handleViewReleases}
           title={`${settings.productName} ${settings.version}`}
           color={colorStyle?.color?.primary}
-          height="100%"
           px="2x"
           position="relative"
         >
@@ -86,21 +76,17 @@ const Header = forwardRef((
               {settings.productName}
             </Text>
           </Flex>
-          <Text
-            position="absolute"
-            top="1h"
-            left="100%"
-            ml="-2x"
-            color={colorStyle?.color?.tertiary}
-            textTransform="uppercase"
-            fontFamily="mono"
-            fontSize="xs"
-            lineHeight="xs"
-            whiteSpace="nowrap"
-          >
-            {i18next.language}
-          </Text>
         </ButtonBase>
+        <Text
+          color={colorStyle?.color?.tertiary}
+          textTransform="uppercase"
+          fontFamily="mono"
+          fontSize="xs"
+          lineHeight="1"
+          whiteSpace="nowrap"
+        >
+          {i18next.language}
+        </Text>
       </Flex>
     </Box>
   );

@@ -14,7 +14,7 @@ import cx from 'classnames';
 import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+//import ReactDOM from 'react-dom'; // FIXME
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import compose from 'recompose/compose';
@@ -227,12 +227,11 @@ class Workspace extends Component {
   };
 
   resizeDefaultContainer = () => {
-    const sidebar = document.querySelector('#sidebar');
-    const primaryContainer = ReactDOM.findDOMNode(this.primaryContainer);
-    const secondaryContainer = ReactDOM.findDOMNode(this.secondaryContainer);
-    const primaryToggler = ReactDOM.findDOMNode(this.primaryToggler);
-    const secondaryToggler = ReactDOM.findDOMNode(this.secondaryToggler);
-    const defaultContainer = ReactDOM.findDOMNode(this.defaultContainer);
+    //const primaryContainer = ReactDOM.findDOMNode(this.primaryContainer);
+    //const secondaryContainer = ReactDOM.findDOMNode(this.secondaryContainer);
+    //const primaryToggler = ReactDOM.findDOMNode(this.primaryToggler);
+    //const secondaryToggler = ReactDOM.findDOMNode(this.secondaryToggler);
+    //const defaultContainer = ReactDOM.findDOMNode(this.defaultContainer);
     const { showPrimaryContainer, showSecondaryContainer } = this.state;
 
     { // Mobile-Friendly View
@@ -247,18 +246,6 @@ class Workspace extends Component {
         // Enable horizontal scroll
         document.body.style.overflowX = '';
       }
-    }
-
-    if (showPrimaryContainer) {
-      defaultContainer.style.left = primaryContainer.offsetWidth + sidebar.offsetWidth + 'px';
-    } else {
-      defaultContainer.style.left = primaryToggler.offsetWidth + sidebar.offsetWidth + 'px';
-    }
-
-    if (showSecondaryContainer) {
-      defaultContainer.style.right = secondaryContainer.offsetWidth + 'px';
-    } else {
-      defaultContainer.style.right = secondaryToggler.offsetWidth + 'px';
     }
 
     // Publish a 'resize' event

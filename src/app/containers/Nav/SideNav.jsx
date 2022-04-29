@@ -10,6 +10,7 @@ import {
   Icon,
   Image,
   Scrollbar,
+  Space,
   Text,
   useColorMode,
   useColorStyle,
@@ -25,13 +26,12 @@ import iconLogo from 'app/images/logo-badge-32x32.png';
 import i18n from 'app/lib/i18n';
 import NavLink from './NavLink';
 
-const headerHeight = '12x';
 const sidenavWidth = '240px';
 
 const SideNav = forwardRef((
   {
-    isSideNavOpen,
-    toggleSideNav,
+    isOpen,
+    onClose,
     ...rest
   },
   ref,
@@ -51,8 +51,8 @@ const SideNav = forwardRef((
       backdrop={true}
       closeOnEsc={true}
       closeOnOutsideClick={true}
-      isOpen={isSideNavOpen}
-      onClose={toggleSideNav}
+      isOpen={isOpen}
+      onClose={onClose}
       placement="left"
     >
       <Global
@@ -74,24 +74,24 @@ const SideNav = forwardRef((
         {...rest}
       >
         <Flex
+          flex="none"
+          height="12x"
           alignItems="center"
-          height={headerHeight}
           px="4x"
           mb="2x"
-          columnGap="2x"
         >
           <IconButton
             width="10x"
             height="10x"
-            onClick={() => toggleSideNav()}
+            onClick={onClose}
           >
             <Icon icon="menu" size="6x"/>
           </IconButton>
+          <Space minWidth="2x" />
           <ButtonBase
             onClick={handleViewReleases}
             title={`${settings.productName} ${settings.version}`}
             color={colorStyle?.color?.primary}
-            height="100%"
             px="2x"
             position="relative"
           >
@@ -113,21 +113,17 @@ const SideNav = forwardRef((
                 {settings.productName}
               </Text>
             </Flex>
-            <Text
-              position="absolute"
-              top="1h"
-              left="100%"
-              ml="-2x"
-              color={colorStyle?.color?.tertiary}
-              textTransform="uppercase"
-              fontFamily="mono"
-              fontSize="xs"
-              lineHeight="xs"
-              whiteSpace="nowrap"
-            >
-              {i18next.language}
-            </Text>
           </ButtonBase>
+          <Text
+            color={colorStyle?.color?.tertiary}
+            textTransform="uppercase"
+            fontFamily="mono"
+            fontSize="xs"
+            lineHeight="1"
+            whiteSpace="nowrap"
+          >
+            {i18next.language}
+          </Text>
         </Flex>
         <Scrollbar
           height="100%"

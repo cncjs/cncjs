@@ -1,5 +1,6 @@
 import {
   Box,
+  Divider,
   Flex,
   Icon,
   Menu,
@@ -7,6 +8,7 @@ import {
   MenuGroup,
   MenuItem,
   MenuList,
+  Scrollbar,
   Text,
   useColorMode,
   useColorStyle,
@@ -18,15 +20,120 @@ import routes from 'app/config/routes';
 import i18n from 'app/lib/i18n';
 import NavLink from './NavLink';
 
-const headerHeight = '12x';
-const mininavWidth = '18x';
-
-const MiniNav = forwardRef((props, ref) => {
+const MiniNav = forwardRef((
+  {
+    isExpanded,
+    ...rest
+  },
+  ref,
+) => {
   const [colorMode] = useColorMode();
   const [colorStyle] = useColorStyle({ colorMode });
   const history = useHistory();
   const location = useLocation();
   const [hoveredItem, setHoveredItem] = useState(null);
+
+  if (isExpanded) {
+    return (
+      <Box
+        as="nav"
+        ref={ref}
+        backgroundColor={colorStyle?.background?.primary}
+        color={colorStyle?.color?.primary}
+        {...rest}
+      >
+        <Box mb="2x" />
+        <Scrollbar
+          height="100%"
+          overflowY="scroll"
+        >
+          {routes.map((route, index) => {
+            const key = route.path;
+            const isSelected = ensureString(location.pathname).startsWith(route.path);
+
+            if (!route.routes) {
+              return (
+                <NavLink
+                  key={key}
+                  isSelected={isSelected}
+                  onClick={() => {
+                    history.push(route.path);
+                  }}
+                  height="10x"
+                  position="relative"
+                  px="6x"
+                  py="3x"
+                >
+                  <Flex
+                    alignItems="center"
+                    columnGap="4x"
+                  >
+                    <Icon
+                      icon={route.icon}
+                      size="6x"
+                    />
+                    <Text>
+                      {i18n._(route.title)}
+                    </Text>
+                  </Flex>
+                </NavLink>
+              );
+            }
+
+            return (
+              <Box key={key}>
+                <Divider my="2x" />
+                <Box
+                  pt="1x"
+                  pb="2x"
+                  px="6x"
+                >
+                  <Text
+                    color={colorStyle?.color?.secondary}
+                    fontWeight="semibold"
+                    textTransform="uppercase"
+                  >
+                    {i18n._(route.title)}
+                  </Text>
+                </Box>
+                {ensureArray(route.routes).map((childRoute, index) => {
+                  const key = childRoute.path;
+                  const isSelected = ensureString(location.pathname).startsWith(childRoute.path);
+
+                  return (
+                    <NavLink
+                      key={key}
+                      isSelected={isSelected}
+                      onClick={() => {
+                        history.push(childRoute.path);
+                      }}
+                      height="10x"
+                      position="relative"
+                      px="6x"
+                      py="3x"
+                    >
+                      <Flex
+                        alignItems="center"
+                        columnGap="4x"
+                      >
+                        <Icon
+                          icon={childRoute.icon}
+                          size="6x"
+                        />
+                        <Text>
+                          {i18n._(childRoute.title)}
+                        </Text>
+                      </Flex>
+                    </NavLink>
+                  );
+                })}
+              </Box>
+            );
+          })}
+        </Scrollbar>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -34,13 +141,7 @@ const MiniNav = forwardRef((props, ref) => {
       ref={ref}
       backgroundColor={colorStyle?.background?.primary}
       color={colorStyle?.color?.primary}
-      position="fixed"
-      top={headerHeight}
-      bottom={0}
-      left={0}
-      width={mininavWidth}
-      zIndex="fixed"
-      {...props}
+      {...rest}
     >
       {routes.map((route, index) => {
         const key = route.path;
