@@ -35,7 +35,7 @@ import {
   GRBL_REALTIME_COMMANDS,
   GRBL_ALARMS,
   GRBL_ERRORS,
-  GRBL_SETTINGS
+  GRBL_SETTINGS,
 } from './constants';
 
 // % commands
