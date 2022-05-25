@@ -212,7 +212,7 @@ See https://github.com/cncjs/cncjs/issues/242#issuecomment-352294549 for a detai
 {
   "ports": [
      {
-       "comName": "/dev/ttyAMA0",
+       "path": "/dev/ttyAMA0",
        "manufacturer": ""
      }
   ],

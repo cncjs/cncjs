@@ -1,7 +1,7 @@
 {
     "ports": [
         {
-            "comName": "/dev/ttyFAKE",
+            "path": "/dev/ttyFAKE",
             "manufacturer": "grbl-sim"
         }
     ]
