@@ -120,6 +120,20 @@ class GrblRunner extends events.EventEmitter {
             return;
         }
         if (type === GrblLineParserResultAlarm) {
+            const alarmPayload = {
+                activeState: GRBL_ACTIVE_STATE_ALARM
+            };
+            const nextState = {
+                ...this.state,
+                status: {
+                    ...this.state.status,
+                    ...alarmPayload
+                }
+            };
+            if (!_.isEqual(this.state.status, nextState.status)) {
+                this.state = nextState; // enforce change
+            }
+            this.emit('status', alarmPayload);
             this.emit('alarm', payload);
             return;
         }
