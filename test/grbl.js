@@ -147,8 +147,8 @@ test('GrblLineParserResultAlarm', (t) => {
 
 test('GrblLineParserResultAlarm: sets activeState', (t) => {
     const runner = new GrblRunner();
-    runner.on('status', ({ activeState }) => {
-        t.equal(activeState, 'Alarm');
+    runner.on('alarm', () => {
+        t.equal(runner.state.status.activeState, 'Alarm');
         t.end();
     });
 

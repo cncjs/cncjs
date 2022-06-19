@@ -133,7 +133,6 @@ class GrblRunner extends events.EventEmitter {
             if (!_.isEqual(this.state.status, nextState.status)) {
                 this.state = nextState; // enforce change
             }
-            this.emit('status', alarmPayload);
             this.emit('alarm', payload);
             return;
         }
