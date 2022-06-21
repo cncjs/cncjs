@@ -244,15 +244,33 @@ test('GrblRunner', (t) => {
   });
 
   t.test('GrblLineParserResultAlarm', (t) => {
-    const runner = new GrblRunner();
-    runner.on('alarm', ({ raw, message }) => {
-      t.equal(raw, 'ALARM: Probe fail');
-      t.equal(message, 'Probe fail');
-      t.end();
+    t.test('Probe fail', (t) => {
+      const runner = new GrblRunner();
+      runner.on('alarm', ({ raw, message }) => {
+        t.equal(runner.state.status.machineState, 'Alarm');
+        t.equal(raw, 'ALARM: Probe fail');
+        t.equal(message, 'Probe fail');
+        t.end();
+      });
+
+      const line = 'ALARM: Probe fail';
+      runner.parse(line);
     });
 
-    const line = 'ALARM: Probe fail';
-    runner.parse(line);
+    t.test('Soft limit', (t) => {
+      const runner = new GrblRunner();
+      runner.on('alarm', ({ raw, message }) => {
+        t.equal(runner.state.status.machineState, 'Alarm');
+        t.equal(raw, 'ALARM:2 (Soft limit)');
+        t.equal(message, '2 (Soft limit)');
+        t.end();
+      });
+
+      const line = 'ALARM:2 (Soft limit)';
+      runner.parse(line);
+    });
+
+    t.end();
   });
 
   t.test('GrblLineParserResultParserState', (t) => {
