@@ -618,32 +618,39 @@ class VisualizerWidget extends PureComponent {
             };
 
             if (hold) {
-                const { err, data } = { ...holdReason };
+                const { err, data, msg } = { ...holdReason };
 
                 if (err) {
                     notification.type = NOTIFICATION_PROGRAM_ERROR;
-                    notification.data = err;
+                    notification.data = msg;
                 } else if (data === 'M0') {
                     // M0 Program Pause
                     notification.type = NOTIFICATION_M0_PROGRAM_PAUSE;
+                    notification.data = msg;
                 } else if (data === 'M1') {
                     // M1 Program Pause
                     notification.type = NOTIFICATION_M1_PROGRAM_PAUSE;
+                    notification.data = msg;
                 } else if (data === 'M2') {
                     // M2 Program End
                     notification.type = NOTIFICATION_M2_PROGRAM_END;
+                    notification.data = msg;
                 } else if (data === 'M30') {
                     // M30 Program End
                     notification.type = NOTIFICATION_M30_PROGRAM_END;
+                    notification.data = msg;
                 } else if (data === 'M6') {
                     // M6 Tool Change
                     notification.type = NOTIFICATION_M6_TOOL_CHANGE;
+                    notification.data = msg;
                 } else if (data === 'M109') {
                     // M109 Set Extruder Temperature
                     notification.type = NOTIFICATION_M109_SET_EXTRUDER_TEMPERATURE;
+                    notification.data = msg;
                 } else if (data === 'M190') {
                     // M190 Set Heated Bed Temperature
                     notification.type = NOTIFICATION_M190_SET_HEATED_BED_TEMPERATURE;
+                    notification.data = msg;
                 }
             }
 
