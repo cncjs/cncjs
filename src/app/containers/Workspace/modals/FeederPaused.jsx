@@ -7,7 +7,11 @@ import Modal from 'app/components/Modal';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 
-function FeederPaused(props) {
+const FeederPaused = ({
+  title,
+  message,
+  onClose,
+}) => {
   return (
     <Modal
       size="xs"
@@ -19,7 +23,10 @@ function FeederPaused(props) {
           {({ PrimaryMessage, DescriptiveMessage }) => (
             <>
               <PrimaryMessage>
-                {props.title}
+                <h5>{title}</h5>
+                {message && (
+                  <p>{message}</p>
+                )}
               </PrimaryMessage>
               <DescriptiveMessage>
                 {i18n._('Click the Continue button to resume execution.')}
@@ -36,7 +43,7 @@ function FeederPaused(props) {
             () => {
               controller.command('feeder:stop');
             },
-            props.onClose
+            onClose,
           )}
         >
           {i18n._('Stop')}
@@ -46,7 +53,7 @@ function FeederPaused(props) {
             () => {
               controller.command('feeder:start');
             },
-            props.onClose
+            onClose,
           )}
         >
           {i18n._('Continue')}
@@ -54,10 +61,11 @@ function FeederPaused(props) {
       </Modal.Footer>
     </Modal>
   );
-}
+};
 
 FeederPaused.propTypes = {
   title: PropTypes.string,
+  message: PropTypes.string,
   onClose: PropTypes.func
 };
 

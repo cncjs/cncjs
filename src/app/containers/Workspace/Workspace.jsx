@@ -156,18 +156,20 @@ class Workspace extends Component {
         return;
       }
 
-      const { err, data } = { ...holdReason };
+      const { err, data, msg } = { ...holdReason };
 
       if (err) {
         this.action.openModal(MODAL_FEEDER_PAUSED, {
-          title: i18n._('Error')
+          title: i18n._('Error'),
+          message: msg,
         });
         return;
       }
 
       if (data === WAIT) {
         this.action.openModal(MODAL_FEEDER_WAIT, {
-          title: '%wait'
+          title: '%wait',
+          message: msg,
         });
         return;
       }
@@ -183,7 +185,8 @@ class Workspace extends Component {
       }[data] || data;
 
       this.action.openModal(MODAL_FEEDER_PAUSED, {
-        title: title
+        title: title,
+        message: msg,
       });
     }
   };
@@ -422,12 +425,14 @@ class Workspace extends Component {
         {modal.name === MODAL_FEEDER_PAUSED && (
           <FeederPaused
             title={modal.params.title}
+            message={modal.params.message}
             onClose={this.action.closeModal}
           />
         )}
         {modal.name === MODAL_FEEDER_WAIT && (
           <FeederWait
             title={modal.params.title}
+            message={modal.params.message}
             onClose={this.action.closeModal}
           />
         )}

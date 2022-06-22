@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
-import { ensureArray, ensureFiniteNumber, ensurePositiveNumber } from 'ensure-type';
+import { ensureArray, ensureFiniteNumber, ensurePositiveNumber, ensureString } from 'ensure-type';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
 import {
@@ -611,17 +611,22 @@ class TinyGController {
 
     // Feeder
     this.feeder = new Feeder({
+      // https://github.com/synthetos/g2/wiki/JSON-Active-Comments
       dataFilter: (line, context) => {
-        // Remove comments that start with a semicolon `;`
-        // @see https://github.com/synthetos/g2/wiki/JSON-Active-Comments
-        line = line.replace(/\s*;.*/g, '').trim();
+        const originalLine = line;
+        /**
+         * line = 'G0X10 ; comment text'
+         * parts = ['G0X10 ', ' comment text', '']
+         */
+        const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
+        line = ensureString(parts[0]).trim();
         context = this.populateContext(context);
 
         if (line[0] === '%') {
           // %wait
           if (line === WAIT) {
             log.debug('Wait for the planner to empty');
-            this.feeder.hold({ data: WAIT }); // Hold reason
+            this.feeder.hold({ data: WAIT, msg: originalLine }); // Hold reason
             return 'G4 P0.5'; // dwell
           }
 
@@ -641,17 +646,17 @@ class TinyGController {
           const programMode = _.intersection(words, ['M0', 'M1'])[0];
           if (programMode === 'M0') {
             log.debug('M0 Program Pause');
-            this.feeder.hold({ data: 'M0' }); // Hold reason
+            this.feeder.hold({ data: 'M0', msg: originalLine }); // Hold reason
           } else if (programMode === 'M1') {
             log.debug('M1 Program Pause');
-            this.feeder.hold({ data: 'M1' }); // Hold reason
+            this.feeder.hold({ data: 'M1', msg: originalLine }); // Hold reason
           }
         }
 
         // M6 Tool Change
         if (_.includes(words, 'M6')) {
           log.debug('M6 Tool Change');
-          this.feeder.hold({ data: 'M6' }); // Hold reason
+          this.feeder.hold({ data: 'M6', msg: originalLine }); // Hold reason
         }
 
         return line;
@@ -687,10 +692,15 @@ class TinyGController {
 
     // Sender
     this.sender = new Sender(SP_TYPE_SEND_RESPONSE, {
+      // https://github.com/synthetos/g2/wiki/JSON-Active-Comments
       dataFilter: (line, context) => {
-        // Remove comments that start with a semicolon `;`
-        // @see https://github.com/synthetos/g2/wiki/JSON-Active-Comments
-        line = line.replace(/\s*;.*/g, '').trim();
+        const originalLine = line;
+        /**
+         * line = 'G0X10 ; comment text'
+         * parts = ['G0X10 ', ' comment text', '']
+         */
+        const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
+        line = ensureString(parts[0]).trim();
         context = this.populateContext(context);
 
         const { sent, received } = this.sender.state;
@@ -699,7 +709,7 @@ class TinyGController {
           // %wait
           if (line === WAIT) {
             log.debug(`Wait for the planner to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.sender.hold({ data: WAIT }); // Hold reason
+            this.sender.hold({ data: WAIT, msg: originalLine }); // Hold reason
             return 'G4 P0.5'; // dwell
           }
 
@@ -719,17 +729,17 @@ class TinyGController {
           const programMode = _.intersection(words, ['M0', 'M1'])[0];
           if (programMode === 'M0') {
             log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.workflow.pause({ data: 'M0' });
+            this.workflow.pause({ data: 'M0', msg: originalLine });
           } else if (programMode === 'M1') {
             log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.workflow.pause({ data: 'M1' });
+            this.workflow.pause({ data: 'M1', msg: originalLine });
           }
         }
 
         // M6 Tool Change
         if (_.includes(words, 'M6')) {
           log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
-          this.workflow.pause({ data: 'M6' });
+          this.workflow.pause({ data: 'M6', msg: originalLine });
         }
 
         return line;
@@ -988,7 +998,7 @@ class TinyGController {
           });
 
           if (pauseError) {
-            this.workflow.pause({ err: err.msg });
+            this.workflow.pause({ err: true, msg: err.msg });
           }
 
           return;
