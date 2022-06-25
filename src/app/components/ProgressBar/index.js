@@ -18,7 +18,7 @@ const ProgressBar = forwardRef((
 ) => {
   const [colorMode] = useColorMode();
   const [colorStyle] = useColorStyle({ colorMode });
-  const trackColor = colorStyle.background.tertiary;
+  const trackColor = colorStyle.divider;
   const indicatorColor = {
     success: {
       dark: 'green:40',
