@@ -4,7 +4,6 @@ import map from 'lodash/map';
 import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ProgressBar } from 'react-bootstrap';
 import controller from 'app/lib/controller';
 import mapGCodeToText from 'app/lib/gcode-text';
 import i18n from 'app/lib/i18n';
@@ -13,6 +12,7 @@ import Clickable from 'app/components/Clickable';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Panel from 'app/components/Panel';
+import ProgressBar from 'app/components/ProgressBar';
 import {
   TINYG_MACHINE_STATE_INITIALIZING,
   TINYG_MACHINE_STATE_READY,
@@ -154,8 +154,7 @@ class TinyG extends Component {
                   </div>
                   <div className="col col-xs-8">
                     <ProgressBar
-                      style={{ marginBottom: 0 }}
-                      bsStyle="info"
+                      variant="info"
                       min={0}
                       max={1}
                       now={value}
@@ -201,7 +200,7 @@ class TinyG extends Component {
                 <div className="col col-xs-8">
                   <ProgressBar
                     style={{ marginBottom: 0 }}
-                    bsStyle="info"
+                    variant="info"
                     min={this.plannerBufferMin}
                     max={this.plannerBufferMax}
                     now={plannerBuffer}

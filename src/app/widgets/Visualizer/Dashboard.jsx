@@ -6,11 +6,11 @@ import throttle from 'lodash/throttle';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { ProgressBar } from 'react-bootstrap';
 import VirtualList from 'react-tiny-virtual-list';
 import api from 'app/api';
 import Anchor from 'app/components/Anchor';
 import Panel from 'app/components/Panel';
+import ProgressBar from 'app/components/ProgressBar';
 import i18n from 'app/lib/i18n';
 import { formatBytes } from 'app/lib/numeral';
 import styles from './dashboard.styl';
@@ -126,8 +126,7 @@ class Dashboard extends Component {
           </div>
           <div style={{ marginBottom: 10 }}>
             <ProgressBar
-              style={{ marginBottom: 0 }}
-              bsStyle="info"
+              variant="info"
               min={0}
               max={total}
               now={sent}
