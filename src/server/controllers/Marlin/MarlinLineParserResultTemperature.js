@@ -5,11 +5,13 @@ class MarlinLineParserResultTemperature {
     // ok T:293.0 /0.0 (0.0) B:25.9 /0.0 T0:293.0 /0.0 (0.0) T1:100.0 /0.0 (0.0) @:0 B@:0 @0:0 @1:0
     // ok T:293.0 /0.0 (0.0) B:25.9 /0.0 T0:293.0 /0.0 (0.0) T1:100.0 /0.0 (0.0) @:0 B@:0 @0:0 @1:0 W:?
     // ok T:293.0 /0.0 (0.0) B:25.9 /0.0 T0:293.0 /0.0 (0.0) T1:100.0 /0.0 (0.0) @:0 B@:0 @0:0 @1:0 W:0
+    // ok T0:27.58 /0.00 B:28.27 /0.00 T0:27.58 /0.00 T1:27.37 /0.00 @:0 B@:0 @0:0 @1:0
     //  T:293.0 /0.0 B:25.9 /0.0 @:0 B@:0
     //  T:293.0 /0.0 B:25.9 /0.0 T0:293.0 /0.0 T1:100.0 /0.0 @:0 B@:0 @0:0 @1:0
     //  T:293.0 /0.0 (0.0) B:25.9 /0.0 T0:293.0 /0.0 (0.0) T1:100.0 /0.0 (0.0) @:0 B@:0 @0:0 @1:0
+    //  T0:27.58 /0.00 B:28.27 /0.00 T0:27.58 /0.00 T1:27.37 /0.00 @:0 B@:0 @0:0 @1:0
     static parse(line) {
-        let r = line.match(/^(ok)?\s+T:[0-9\.\-]+/i);
+        let r = line.match(/^(ok)?\s+(T|T\d+):[0-9\.\-]+/i);
         if (!r) {
             return null;
         }
@@ -26,6 +28,12 @@ class MarlinLineParserResultTemperature {
             const key = r[1] || r[4] || r[6];
 
             if (key === 'T') { // T:293.0 /0.0
+                payload.extruder.deg = r[2];
+                payload.extruder.degTarget = r[3];
+                continue;
+            }
+
+            if (key === 'T0') { // T0:27.58 /0.00
                 payload.extruder.deg = r[2];
                 payload.extruder.degTarget = r[3];
                 continue;
