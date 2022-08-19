@@ -283,6 +283,52 @@ test('MarlinRunner', (t) => {
       runner.parse(line);
     });
 
+    t.test('ok T0:27.58 /0.00 B:28.27 /0.00 T0:27.58 /0.00 T1:27.37 /0.00 @:0 B@:0 @0:0 @1:0', (t) => {
+      const runner = new MarlinRunner();
+      runner.on('temperature', ({ raw, ok, extruder, heatedBed, wait }) => {
+        t.equal(raw, 'ok T0:27.58 /0.00 B:28.27 /0.00 T0:27.58 /0.00 T1:27.37 /0.00 @:0 B@:0 @0:0 @1:0');
+        t.equal(ok, true);
+        t.same(extruder, {
+          deg: '27.58',
+          degTarget: '0.00',
+          power: 0,
+        });
+        t.same(heatedBed, {
+          deg: '28.27',
+          degTarget: '0.00',
+          power: 0,
+        });
+        t.equal(wait, undefined);
+        t.end();
+      });
+
+      const line = 'ok T0:27.58 /0.00 B:28.27 /0.00 T0:27.58 /0.00 T1:27.37 /0.00 @:0 B@:0 @0:0 @1:0';
+      runner.parse(line);
+    });
+
+    t.test(' T0:27.72 /0.00 B:28.38 /0.00 T0:27.72 /0.00 T1:27.28 /0.00 @:0 B@:0 @0:0 @1:0', (t) => {
+      const runner = new MarlinRunner();
+      runner.on('temperature', ({ raw, ok, extruder, heatedBed, wait }) => {
+        t.equal(raw, ' T0:27.72 /0.00 B:28.38 /0.00 T0:27.72 /0.00 T1:27.28 /0.00 @:0 B@:0 @0:0 @1:0');
+        t.equal(ok, false);
+        t.same(extruder, {
+          deg: '27.72',
+          degTarget: '0.00',
+          power: 0,
+        });
+        t.same(heatedBed, {
+          deg: '28.38',
+          degTarget: '0.00',
+          power: 0,
+        });
+        t.equal(wait, undefined);
+        t.end();
+      });
+
+      const line = ' T0:27.72 /0.00 B:28.38 /0.00 T0:27.72 /0.00 T1:27.28 /0.00 @:0 B@:0 @0:0 @1:0';
+      runner.parse(line);
+    });
+
     t.end();
   });
 
