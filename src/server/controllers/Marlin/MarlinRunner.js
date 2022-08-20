@@ -32,6 +32,7 @@ class MarlinRunner extends events.EventEmitter {
         ovS: 100,
         extruder: {}, // { deg, degTarget, power }
         heatedBed: {}, // { deg, degTarget, power }
+        hotend: {}, // { T0: { deg, degTarget, power }, T1: { deg, degTarget, power }, ... }
         rapidFeedrate: 0, // Related to G0
         feedrate: 0, // Related to G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
         spindle: 0 // Related to M3, M4, M5
@@ -112,16 +113,21 @@ class MarlinRunner extends events.EventEmitter {
                 ...this.state,
                 extruder: {
                     ...this.state.extruder,
-                    ...payload.extruder
+                    ...payload.extruder,
                 },
                 heatedBed: {
                     ...this.state.heatedBed,
-                    ...payload.heatedBed
-                }
+                    ...payload.heatedBed,
+                },
+                hotend: {
+                    ...this.state.hotend,
+                    ...payload.hotend,
+                },
             };
 
             if (!_.isEqual(this.state.extruder, nextState.extruder) ||
-                !_.isEqual(this.state.heatedBed, nextState.heatedBed)) {
+                !_.isEqual(this.state.heatedBed, nextState.heatedBed) ||
+                !_.isEqual(this.state.hotend, nextState.hotend)) {
                 this.state = nextState; // enforce change
             }
 
