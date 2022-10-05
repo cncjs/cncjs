@@ -119,5 +119,5 @@ jobs:
             docker images
             docker push $DOCKER_REPO:$DOCKER_BRANCH_TAG
 
-            docker tag $DOCKER_BRANCH_TAG latest
+            docker tag $DOCKER_REPO:$DOCKER_BRANCH_TAG $DOCKER_REPO:latest
             docker push $DOCKER_REPO:latest
