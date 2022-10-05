@@ -118,3 +118,6 @@ jobs:
             docker build -f Dockerfile -t $DOCKER_REPO:$DOCKER_BRANCH_TAG .
             docker images
             docker push $DOCKER_REPO:$DOCKER_BRANCH_TAG
+
+            docker tag $DOCKER_BRANCH_TAG latest
+            docker push $DOCKER_REPO:latest
