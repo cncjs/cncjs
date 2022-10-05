@@ -130,6 +130,8 @@ jobs:
             docker build -f Dockerfile -t $DOCKER_REPO:$DOCKER_BRANCH_TAG .
             docker images
             docker push $DOCKER_REPO:$DOCKER_BRANCH_TAG
+            docker tag $DOCKER_REPO:$DOCKER_BRANCH_TAG $DOCKER_REPO:latest
+            docker push $DOCKER_REPO:latest
 
   build-tag-arm64:
     machine:
