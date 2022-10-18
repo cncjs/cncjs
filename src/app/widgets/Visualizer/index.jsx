@@ -133,6 +133,31 @@ const displayWebGLErrorMessage = () => {
     ));
 };
 
+const GCodeMessage = ({ message, style, ...props }) => {
+    if (!message) {
+        return null;
+    }
+
+    return (
+        <div
+            style={{
+                display: 'inline-block',
+                position: 'absolute',
+                top: 48,
+                left: 8,
+                fontSize: '1rem',
+                fontWeight: 'bold',
+                color: '#000',
+                opacity: 0.75,
+                ...style,
+            }}
+            {...props}
+        >
+            {i18n._('Program Message')}: {message}
+        </div>
+    );
+};
+
 const GCodeName = ({ name, style, ...props }) => {
     if (!name) {
         return null;
@@ -471,6 +496,14 @@ class VisualizerWidget extends PureComponent {
                 projection: 'orthographic'
             }));
         },
+        toggleGCodeMessage: () => {
+            this.setState((state) => ({
+                gcode: {
+                    ...state.gcode,
+                    displayMessage: !state.gcode.displayMessage
+                }
+            }));
+        },
         toggleGCodeFilename: () => {
             this.setState((state) => ({
                 gcode: {
@@ -611,7 +644,7 @@ class VisualizerWidget extends PureComponent {
             this.actions.unloadGCode();
         },
         'sender:status': (data) => {
-            const { hold, holdReason, name, size, total, sent, received } = data;
+            const { hold, holdReason, name, size, total, sent, received, message } = data;
             const notification = {
                 type: '',
                 data: ''
@@ -654,20 +687,39 @@ class VisualizerWidget extends PureComponent {
                 }
             }
 
-            this.setState(state => ({
-                gcode: {
-                    ...state.gcode,
-                    name,
-                    size,
-                    total,
-                    sent,
-                    received
-                },
-                notification: {
-                    ...state.notification,
-                    ...notification
+            this.setState((state) => {
+                let newState = {
+                    gcode: {
+                        ...state.gcode,
+                        name,
+                        size,
+                        total,
+                        sent,
+                        received
+                    },
+                    notification: {
+                        ...state.notification,
+                        ...notification
+                    }
+                };
+
+                if (message !== null) {
+                    newState.gcode.message = message;
                 }
-            }));
+
+                return newState;
+            });
+        },
+        'feeder:status': (data) => {
+            const { message } = data;
+            if (message !== null) {
+                this.setState(state => ({
+                    gcode: {
+                        ...state.gcode,
+                        message
+                    }
+                }));
+            }
         },
         'workflow:state': (workflowState) => {
             this.setState(state => ({
@@ -857,6 +909,9 @@ class VisualizerWidget extends PureComponent {
         if (this.state.cameraMode !== prevState.cameraMode) {
             this.config.set('cameraMode', this.state.cameraMode);
         }
+        if (this.state.gcode.displayMessage !== prevState.gcode.displayMessage) {
+            this.config.set('gcode.displayMessage', this.state.gcode.displayMessage);
+        }
         if (this.state.gcode.displayName !== prevState.gcode.displayName) {
             this.config.set('gcode.displayName', this.state.gcode.displayName);
         }
@@ -905,6 +960,7 @@ class VisualizerWidget extends PureComponent {
                 z: '0.000'
             },
             gcode: {
+                displayMessage: this.config.get('gcode.displayMessage', true),
                 displayName: this.config.get('gcode.displayName', true),
                 loading: false,
                 rendering: false,
@@ -927,7 +983,8 @@ class VisualizerWidget extends PureComponent {
                 size: 0,
                 total: 0,
                 sent: 0,
-                received: 0
+                received: 0,
+                message: ''
             },
             disabled: this.config.get('disabled', false),
             projection: this.config.get('projection', 'orthographic'),
@@ -1071,6 +1128,11 @@ class VisualizerWidget extends PureComponent {
                                 this.visualizer = node;
                             }}
                             state={state}
+                        />
+                    )}
+                    {(showVisualizer && state.gcode.displayMessage) && (
+                        <GCodeMessage
+                            message={state.gcode.message}
                         />
                     )}
                     {(showVisualizer && state.gcode.displayName) && (

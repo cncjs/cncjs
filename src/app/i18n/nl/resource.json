@@ -534,4 +534,7 @@
     "Ready to start": "Klaar om te starten",
     "Connect to an IP camera": "Verbind met een IP camera",
     "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": "De URL moet voor een Motion JPEG (mjpeg), HTTP-stream of RTSP-stream zijn."
+    "Display G-code Messages": "",
+    "Program Message": "",
+    "none": ""
 }

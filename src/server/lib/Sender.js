@@ -136,7 +136,8 @@ class Sender extends events.EventEmitter {
         startTime: 0,
         finishTime: 0,
         elapsedTime: 0,
-        remainingTime: 0
+        remainingTime: 0,
+        message: null
     };
 
     stateChanged = false;
@@ -168,6 +169,12 @@ class Sender extends events.EventEmitter {
 
                     if (this.dataFilter) {
                         sp.line = this.dataFilter(sp.line, this.state.context) || '';
+                    }
+
+                    if (sp.line.toUpperCase().startsWith('(MSG')) {
+                        let startChar = (sp.line[4] === ',' ? 5 : 4);
+                        const msg = sp.line.substring(startChar, sp.line.length - 1).trim();
+                        this.state.message = msg;
                     }
 
                     // The newline character (\n) consumed the RX buffer space
@@ -203,6 +210,12 @@ class Sender extends events.EventEmitter {
                         line = this.dataFilter(line, this.state.context) || '';
                     }
 
+                    if (line.toUpperCase().startsWith('(MSG')) {
+                        let startChar = (line[4] === ',' ? 5 : 4);
+                        const msg = line.substring(startChar, line.length - 1).trim();
+                        this.state.message = msg;
+                    }
+
                     this.state.sent++;
                     this.emit('change');
 
@@ -223,6 +236,9 @@ class Sender extends events.EventEmitter {
     }
 
     toJSON() {
+        const sendMessage = this.state.message;
+        this.state.message = null;
+
         return {
             sp: this.sp.type,
             hold: this.state.hold,
@@ -236,7 +252,8 @@ class Sender extends events.EventEmitter {
             startTime: this.state.startTime,
             finishTime: this.state.finishTime,
             elapsedTime: this.state.elapsedTime,
-            remainingTime: this.state.remainingTime
+            remainingTime: this.state.remainingTime,
+            message: sendMessage
         };
     }
 
@@ -285,6 +302,7 @@ class Sender extends events.EventEmitter {
         this.state.finishTime = 0;
         this.state.elapsedTime = 0;
         this.state.remainingTime = 0;
+        this.state.message = '';
 
         this.emit('load', name, gcode, context);
         this.emit('change');
@@ -309,6 +327,7 @@ class Sender extends events.EventEmitter {
         this.state.finishTime = 0;
         this.state.elapsedTime = 0;
         this.state.remainingTime = 0;
+        this.state.message = '';
 
         this.emit('unload');
         this.emit('change');
@@ -345,6 +364,7 @@ class Sender extends events.EventEmitter {
             this.state.finishTime = 0;
             this.state.elapsedTime = 0;
             this.state.remainingTime = 0;
+            this.state.message = '';
             this.emit('start', this.state.startTime);
             this.emit('change');
         }

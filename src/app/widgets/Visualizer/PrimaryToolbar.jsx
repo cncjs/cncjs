@@ -368,6 +368,17 @@ class PrimaryToolbar extends PureComponent {
                             <MenuItem divider />
                             <MenuItem
                                 disabled={!canToggleOptions}
+                                onSelect={actions.toggleGCodeMessage}
+                            >
+                                {gcode.displayMessage
+                                    ? <i className="fa fa-toggle-on fa-fw" />
+                                    : <i className="fa fa-toggle-off fa-fw" />
+                                }
+                                <Space width={8} />
+                                {i18n._('Display G-code Messages')}
+                            </MenuItem>
+                            <MenuItem
+                                disabled={!canToggleOptions}
                                 onSelect={actions.toggleGCodeFilename}
                             >
                                 {gcode.displayName

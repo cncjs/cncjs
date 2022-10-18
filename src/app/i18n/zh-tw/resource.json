@@ -533,5 +533,8 @@
     "Show Cutting Tool": "",
     "Ready to start": "",
     "Connect to an IP camera": "",
-    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": ""
+    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": "",
+    "Display G-code Messages": "",
+    "Program Message": "",
+    "none": ""
 }

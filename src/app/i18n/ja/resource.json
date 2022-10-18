@@ -534,4 +534,7 @@
     "Ready to start": "スタートの準備ができました",
     "Connect to an IP camera": "IPカメラと接続",
     "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": "このURLはモーションJPEG (mjpeg) HTTP もしくは RTSP ストリームである必要があります。"
+    "Display G-code Messages": "",
+    "Program Message": "",
+    "none": ""
 }
