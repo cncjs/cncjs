@@ -6,13 +6,15 @@ import {
   useToggle,
 } from '@tonic-ui/react-hooks';
 import React, { forwardRef, useEffect } from 'react';
-import { Redirect, useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import Administration from 'app/containers/Administration';
 import Header from 'app/containers/Header';
 import Main from 'app/containers/Main';
 import { MiniNav, SideNav } from 'app/containers/Nav';
 import Workspace from 'app/containers/Workspace';
 import analytics from 'app/lib/analytics';
+import log from 'app/lib/log';
+import * as user from 'app/lib/user';
 
 const headerHeight = '12x';
 
@@ -33,6 +35,24 @@ const ProtectedPage = forwardRef((props, ref) => {
     }
   }, [notLessThan1024, isSideNavOpen, toggleSideNav]);
 
+  if (!user.isAuthenticated()) {
+    const redirectFrom = location.pathname;
+    const redirectTo = '/login';
+
+    log.debug(`Redirect from "${redirectFrom}" to "${redirectTo}"`);
+
+    return (
+      <Navigate
+        to={{
+          pathname: '/login',
+          state: {
+            from: location
+          }
+        }}
+      />
+    );
+  }
+
   const accepted = ([
     '/workspace',
     '/administration',
@@ -48,7 +68,7 @@ const ProtectedPage = forwardRef((props, ref) => {
 
   if (!accepted) {
     return (
-      <Redirect
+      <Navigate
         to={{
           pathname: '/workspace',
           state: {

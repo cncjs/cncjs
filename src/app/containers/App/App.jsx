@@ -11,13 +11,12 @@ import pubsub from 'pubsub-js';
 import React, { useEffect } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import compose from 'recompose/compose';
 import settings from 'app/config/settings';
 import Login from 'app/containers/Login';
 import ProtectedPage from 'app/containers/ProtectedPage';
 import CorruptedWorkspaceSettingsModal from './modals/CorruptedWorkspaceSettingsModal';
-import ProtectedRoute from './ProtectedRoute';
 
 function Layout(props) {
   const [colorMode] = useColorMode();
@@ -135,16 +134,10 @@ function App({
       <Helmet>
         <title>{`${productName} ${version}`}</title>
       </Helmet>
-      <Switch>
-        <Route
-          exact
-          path="/login"
-          component={Login}
-        />
-        <ProtectedRoute
-          component={ProtectedPage}
-        />
-      </Switch>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/*" element={<ProtectedPage />} />
+      </Routes>
     </Layout>
   );
 }

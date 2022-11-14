@@ -3,7 +3,6 @@ import {
   Text,
 } from '@tonic-ui/react';
 import React, { Fragment, Component } from 'react';
-import { withRouter } from 'react-router-dom';
 import semverLt from 'semver/functions/lt';
 import styled from 'styled-components';
 import _without from 'lodash/without';
@@ -18,6 +17,7 @@ import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Hoverable from 'app/components/Hoverable';
 import Image from 'app/components/Image';
 import Tooltip from 'app/components/Tooltip';
+import withRouter from 'app/components/withRouter'; // withRouter is deprecated
 import settings from 'app/config/settings';
 import {
   TOPNAV_HEIGHT,

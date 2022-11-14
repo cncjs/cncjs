@@ -15,7 +15,7 @@ import {
 } from '@tonic-ui/react';
 import { ensureArray, ensureString } from 'ensure-type';
 import React, { forwardRef, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import routes from 'app/config/routes';
 import i18n from 'app/lib/i18n';
 import NavLink from './NavLink';
@@ -29,7 +29,7 @@ const MiniNav = forwardRef((
 ) => {
   const [colorMode] = useColorMode();
   const [colorStyle] = useColorStyle({ colorMode });
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const [hoveredItem, setHoveredItem] = useState(null);
 
@@ -57,7 +57,7 @@ const MiniNav = forwardRef((
                   key={key}
                   isSelected={isSelected}
                   onClick={() => {
-                    history.push(route.path);
+                    navigate(route.path);
                   }}
                   height="10x"
                   position="relative"
@@ -68,10 +68,12 @@ const MiniNav = forwardRef((
                     alignItems="center"
                     columnGap="4x"
                   >
-                    <Icon
-                      icon={route.icon}
-                      size="6x"
-                    />
+                    {route.icon && (
+                      <Icon
+                        icon={route.icon}
+                        size="6x"
+                      />
+                    )}
                     <Text>
                       {i18n._(route.title)}
                     </Text>
@@ -91,7 +93,6 @@ const MiniNav = forwardRef((
                   <Text
                     color={colorStyle?.color?.secondary}
                     fontWeight="semibold"
-                    textTransform="uppercase"
                   >
                     {i18n._(route.title)}
                   </Text>
@@ -105,7 +106,7 @@ const MiniNav = forwardRef((
                       key={key}
                       isSelected={isSelected}
                       onClick={() => {
-                        history.push(childRoute.path);
+                        navigate(childRoute.path);
                       }}
                       height="10x"
                       position="relative"
@@ -116,10 +117,12 @@ const MiniNav = forwardRef((
                         alignItems="center"
                         columnGap="4x"
                       >
-                        <Icon
-                          icon={childRoute.icon}
-                          size="6x"
-                        />
+                        {!!childRoute.icon && (
+                          <Icon
+                            icon={childRoute.icon}
+                            size="6x"
+                          />
+                        )}
                         <Text>
                           {i18n._(childRoute.title)}
                         </Text>
@@ -157,7 +160,7 @@ const MiniNav = forwardRef((
                 return;
               }
 
-              history.push(route.path);
+              navigate(route.path);
             }}
             height="18x"
             position="relative"
@@ -206,7 +209,6 @@ const MiniNav = forwardRef((
                       title={(
                         <Text
                           fontWeight="semibold"
-                          textTransform="uppercase"
                         >
                           {i18n._(route.title)}
                         </Text>
@@ -220,7 +222,7 @@ const MiniNav = forwardRef((
                           <MenuItem
                             key={childKey}
                             onClick={() => {
-                              history.push(childRoute.path);
+                              navigate(childRoute.path);
                             }}
                           >
                             {i18n._(childRoute.title)}

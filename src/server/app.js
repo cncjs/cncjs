@@ -11,7 +11,10 @@ import consolidate from 'consolidate';
 import { ensureArray } from 'ensure-type';
 import errorhandler from 'errorhandler';
 import express from 'express';
-import expressJWT from 'express-jwt';
+import {
+  expressjwt,
+  UnauthorizedError as ExpressJWTUnauthorizedError,
+} from 'express-jwt';
 import session from 'express-session';
 import i18next from 'i18next';
 import i18nextFSBackend from 'i18next-fs-backend';
@@ -64,7 +67,7 @@ const ipAddressAccessControlMiddleware = () => (req, res, next) => {
 const jwtAuthenticationMiddleware = () => {
   const secret = userStore.get('secret');
 
-  return expressJWT({
+  return expressjwt({
     secret,
     algorithms: ['HS256'],
     credentialsRequired: true,
@@ -96,15 +99,13 @@ const jwtAuthenticationMiddleware = () => {
 };
 
 const jwtAuthorizationMiddleware = () => (err, req, res, next) => {
-  const JWTUnauthorizedError = expressJWT.UnauthorizedError;
-
   try {
-    if (err && (err instanceof JWTUnauthorizedError)) {
+    if (err && (err instanceof ExpressJWTUnauthorizedError)) {
       throw err;
     }
 
     if (!req.user) {
-      throw new JWTUnauthorizedError('missing_decoded_token', { message: 'The decoded token is not attached to the result object' });
+      throw new ExpressJWTUnauthorizedError('missing_decoded_token', { message: 'The decoded token is not attached to the result object' });
     }
 
     { // validate the user
@@ -119,7 +120,7 @@ const jwtAuthorizationMiddleware = () => (err, req, res, next) => {
         }))
         .filter(user => user.enabled);
       if ((enabledUsers.length > 0) && !_find(enabledUsers, { id: id, name: name })) {
-        throw new JWTUnauthorizedError('user_not_found', { message: 'User not found' });
+        throw new ExpressJWTUnauthorizedError('user_not_found', { message: 'User not found' });
       }
     }
   } catch (err) {

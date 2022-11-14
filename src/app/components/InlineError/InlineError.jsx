@@ -1,23 +1,8 @@
-import {
-  Box,
-  Space,
-} from '@tonic-ui/react';
-import React from 'react';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import { Text } from '@tonic-ui/react';
+import React, { forwardRef } from 'react';
 
-function InlineError({ children, ...props }) {
-  return (
-    <Box
-      display="inline-block"
-      color="#db3d44"
-      mt="1x"
-      {...props}
-    >
-      <FontAwesomeIcon icon="exclamation-circle" fixedWidth />
-      <Space width="1x" />
-      {children}
-    </Box>
-  );
-}
+const InlineError = forwardRef((props, ref) => (
+  <Text fontSize="sm" lineHeight="sm" color="red:50" {...props} />
+));
 
 export default InlineError;

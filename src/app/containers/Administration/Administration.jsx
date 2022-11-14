@@ -9,7 +9,7 @@ import _get from 'lodash/get';
 import _isEqual from 'lodash/isEqual';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import api from 'app/api';
 import {
   ERR_CONFLICT,
@@ -17,6 +17,7 @@ import {
 } from 'app/api/constants';
 import settings from 'app/config/settings';
 import Breadcrumbs from 'app/components/Breadcrumbs';
+import withRouter from 'app/components/withRouter'; // withRouter is deprecated
 import i18n from 'app/lib/i18n';
 import config from 'app/store/config';
 import General from './General';

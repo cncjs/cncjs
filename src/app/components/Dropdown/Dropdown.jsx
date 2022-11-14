@@ -1,7 +1,7 @@
 import chainedFunction from 'chained-function';
 import cx from 'classnames';
 import activeElement from 'dom-helpers/activeElement';
-import contains from 'dom-helpers/query/contains';
+import contains from 'dom-helpers/contains';
 import PropTypes from 'prop-types';
 import React, { Component, cloneElement } from 'react';
 import ReactDOM from 'react-dom';

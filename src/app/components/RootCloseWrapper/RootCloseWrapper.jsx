@@ -1,13 +1,9 @@
-import contains from 'dom-helpers/query/contains';
-import addEventListener from 'dom-helpers/events/on';
-import removeEventListener from 'dom-helpers/events/off';
+import contains from 'dom-helpers/contains';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 const escapeKeyCode = 27;
-
-const ownerDocument = (node) => (node && node.ownerDocument) || document;
 
 const isLeftClickEvent = (event) => {
   return event.button === 0;
@@ -87,23 +83,19 @@ class RootCloseWrapper extends React.Component {
 
   addEventListeners() {
     const { event } = this.props;
-    const doc = ownerDocument(ReactDOM.findDOMNode(this));
-
     // Use capture for this listener so it fires before React's listener, to
     // avoid false positives in the contains() check below if the target DOM
     // element is removed in the React mouse callback.
-    addEventListener(doc, event, this.handleMouseCapture, true);
-    addEventListener(doc, event, this.handleMouse);
-    addEventListener(doc, 'keyup', this.handleKeyUp);
+    window.addEventListener(event, this.handleMouseCapture, true);
+    window.addEventListener(event, this.handleMouse);
+    window.addEventListener('keyup', this.handleKeyUp);
   }
 
   removeEventListeners() {
     const { event } = this.props;
-    const doc = ownerDocument(ReactDOM.findDOMNode(this));
-
-    removeEventListener(doc, event, this.handleMouseCapture, true);
-    removeEventListener(doc, event, this.handleMouse);
-    removeEventListener(doc, 'keyup', this.handleKeyUp);
+    window.removeEventListener(event, this.handleMouseCapture, true);
+    window.removeEventListener(event, this.handleMouse);
+    window.removeEventListener('keyup', this.handleKeyUp);
   }
 
   render() {

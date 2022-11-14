@@ -17,7 +17,7 @@ import {
 } from '@tonic-ui/react';
 import { ensureArray, ensureString } from 'ensure-type';
 import React, { forwardRef, useCallback } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import IconButton from 'app/components/IconButton';
 import routes from 'app/config/routes';
 import settings from 'app/config/settings';
@@ -38,7 +38,7 @@ const SideNav = forwardRef((
 ) => {
   const [colorMode] = useColorMode();
   const [colorStyle] = useColorStyle({ colorMode });
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const handleViewReleases = useCallback(() => {
     const releases = 'https://github.com/cncjs/cncjs/releases';
@@ -116,7 +116,6 @@ const SideNav = forwardRef((
           </ButtonBase>
           <Text
             color={colorStyle?.color?.tertiary}
-            textTransform="uppercase"
             fontFamily="mono"
             fontSize="xs"
             lineHeight="1"
@@ -139,7 +138,7 @@ const SideNav = forwardRef((
                   key={key}
                   isSelected={isSelected}
                   onClick={() => {
-                    history.push(route.path);
+                    navigate(route.path);
                   }}
                   height="10x"
                   position="relative"
@@ -150,10 +149,12 @@ const SideNav = forwardRef((
                     alignItems="center"
                     columnGap="4x"
                   >
-                    <Icon
-                      icon={route.icon}
-                      size="6x"
-                    />
+                    {!!route.icon && (
+                      <Icon
+                        icon={route.icon}
+                        size="6x"
+                      />
+                    )}
                     <Text>
                       {i18n._(route.title)}
                     </Text>
@@ -173,7 +174,6 @@ const SideNav = forwardRef((
                   <Text
                     color={colorStyle?.color?.secondary}
                     fontWeight="semibold"
-                    textTransform="uppercase"
                   >
                     {i18n._(route.title)}
                   </Text>
@@ -187,7 +187,7 @@ const SideNav = forwardRef((
                       key={key}
                       isSelected={isSelected}
                       onClick={() => {
-                        history.push(childRoute.path);
+                        navigate(childRoute.path);
                       }}
                       height="10x"
                       position="relative"
@@ -198,10 +198,12 @@ const SideNav = forwardRef((
                         alignItems="center"
                         columnGap="4x"
                       >
-                        <Icon
-                          icon={childRoute.icon}
-                          size="6x"
-                        />
+                        {!!childRoute.icon && (
+                          <Icon
+                            icon={childRoute.icon}
+                            size="6x"
+                          />
+                        )}
                         <Text>
                           {i18n._(childRoute.title)}
                         </Text>

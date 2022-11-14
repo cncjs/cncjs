@@ -1,208 +1,215 @@
 import {
-  Space,
+  Alert,
+  Box,
+  Button,
+  Flex,
+  Image,
+  Input,
+  Link,
+  Stack,
+  Text,
 } from '@tonic-ui/react';
+import { ensureString } from 'ensure-type';
 import _get from 'lodash/get';
 import qs from 'qs';
-import React, { Fragment, Component } from 'react';
+import React, { useState } from 'react';
 import { Form, Field } from 'react-final-form';
-import { withRouter, Redirect } from 'react-router-dom';
-import Anchor from 'app/components/Anchor';
-import { Button } from 'app/components/Buttons';
+import { Navigate, useLocation } from 'react-router-dom';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
-import { Container, Row, Col } from 'app/components/GridSystem';
-import Input from 'app/components/FormControl/Input';
-import { Notification } from 'app/components/Notifications';
+import InlineError from 'app/components/InlineError';
 import settings from 'app/config/settings';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
 import configStore from 'app/store/config';
-import styles from './index.styl';
 
-class Login extends Component {
-  static propTypes = {
-    ...withRouter.propTypes
+const required = value => {
+  return ensureString(value).trim().length > 0
+    ? undefined
+    : i18n._('This field is required.');
+};
+
+const forgotPasswordLink = 'https://cnc.js.org/docs/faq/#forgot-your-password';
+
+const Login = () => {
+  const location = useLocation();
+  const { from } = location.state || { from: { pathname: '/' } };
+  const [state, setState] = useState({
+    alertMessage: '',
+    authenticating: false,
+    redirectToReferrer: false
+  });
+
+  const clearAlertMessage = () => {
+    setState(prevState => ({
+      ...prevState,
+      alertMessage: '',
+    }));
   };
 
-  state = this.getDefaultState();
-
-  actions = {
-    showAlertMessage: (msg) => {
-      this.setState({ alertMessage: msg });
-    },
-    clearAlertMessage: () => {
-      this.setState({ alertMessage: '' });
-    }
-  };
-
-  handleFormSubmit = (values, form) => {
-    this.setState({
+  const handleFormSubmit = async (values, form) => {
+    setState(prevState => ({
+      ...prevState,
       alertMessage: '',
       authenticating: true,
       redirectToReferrer: false
-    });
+    }));
 
     const name = _get(values, 'name');
     const password = _get(values, 'password');
+    const { authenticated } = await user.signin({ name, password });
 
-    user.signin({ name, password })
-      .then(({ authenticated }) => {
-        if (!authenticated) {
-          this.setState({
-            alertMessage: i18n._('Authentication failed.'),
-            authenticating: false,
-            redirectToReferrer: false
-          });
-          return;
-        }
-
-        log.debug('Create and establish a WebSocket connection');
-
-        const token = configStore.get('session.token');
-        const host = '';
-        const options = {
-          query: 'token=' + token
-        };
-        controller.connect(host, options, () => {
-          // @see "app/index.jsx"
-          this.setState({
-            alertMessage: '',
-            authenticating: false,
-            redirectToReferrer: true
-          });
-        });
-      });
-  };
-
-  getDefaultState() {
-    return {
-      alertMessage: '',
-      authenticating: false,
-      redirectToReferrer: false
-    };
-  }
-
-  render() {
-    const { from } = this.props.location.state || { from: { pathname: '/' } };
-    const state = { ...this.state };
-    const actions = { ...this.actions };
-    const { alertMessage, authenticating } = state;
-    const forgotPasswordLink = 'https://cnc.js.org/docs/faq/#forgot-your-password';
-
-    if (state.redirectToReferrer) {
-      const query = qs.parse(window.location.search, { ignoreQueryPrefix: true });
-      if (query && query.continue) {
-        log.debug(`Navigate to "${query.continue}"`);
-
-        window.location = query.continue;
-
-        return null;
-      }
-
-      log.debug(`Redirect from "/login" to "${from.pathname}"`);
-
-      return (
-        <Redirect to={from} />
-      );
+    if (!authenticated) {
+      setState(prevState => ({
+        ...prevState,
+        alertMessage: i18n._('Authentication failed.'),
+        authenticating: false,
+        redirectToReferrer: false
+      }));
+      return;
     }
 
+    log.debug('Create and establish a WebSocket connection');
+
+    const token = configStore.get('session.token');
+    const host = '';
+    const options = {
+      query: 'token=' + token
+    };
+    controller.connect(host, options, () => {
+      // @see "app/index.jsx"
+      setState(prevState => ({
+        ...prevState,
+        alertMessage: '',
+        authenticating: false,
+        redirectToReferrer: true
+      }));
+    });
+  };
+
+  if (state.redirectToReferrer) {
+    const query = qs.parse(window.location.search, { ignoreQueryPrefix: true });
+    if (query && query.continue) {
+      log.debug(`Navigate to "${query.continue}"`);
+
+      window.location = query.continue;
+
+      return null;
+    }
+
+    log.debug(`Navigate from "/login" to "${from.pathname}"`);
+
     return (
-      <div
-        style={{
-          backgroundColor: '#fff',
-          height: '100vh',
-        }}
-      >
-        {alertMessage && (
-          <Notification
-            style={{ marginBottom: 10 }}
-            type="error"
-            onDismiss={actions.clearAlertMessage}
-          >
-            <div><strong>{i18n._('Error')}</strong></div>
-            <div>{alertMessage}</div>
-          </Notification>
-        )}
-        <Container
-          style={{
-            width: 300,
-            margin: '0 auto',
-            paddingTop: 40,
-          }}
-        >
-          <div className={styles.logo}>
-            <img src="images/logo-square-256x256.png" alt="" />
-          </div>
-          <div className={styles.title}>
-            {i18n._('Sign in to {{name}}', { name: settings.productName })}
-          </div>
-          <Form
-            onSubmit={this.handleFormSubmit}
-            render={({ handleSubmit, values }) => (
-              <>
-                <FormGroup>
-                  <Field name="name">
-                    {({ input, meta }) => (
-                      <>
-                        <Input
-                          {...input}
-                          type="text"
-                          placeholder={i18n._('Username')}
-                        />
-                        {meta.touched && meta.error && <div>{meta.error}</div>}
-                      </>
-                    )}
-                  </Field>
-                </FormGroup>
-                <FormGroup>
-                  <Field name="password">
-                    {({ input, meta }) => (
-                      <>
-                        <Input
-                          {...input}
-                          type="password"
-                          placeholder={i18n._('Password')}
-                        />
-                        {meta.touched && meta.error && <div>{meta.error}</div>}
-                      </>
-                    )}
-                  </Field>
-                </FormGroup>
-                <FormGroup>
-                  <Row
-                    style={{
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <Col width="auto">
-                      <Anchor href={forgotPasswordLink}>
-                        {i18n._('Forgot your password?')}
-                      </Anchor>
-                    </Col>
-                    <Col width="auto">
-                      <Button
-                        btnStyle="primary"
-                        onClick={handleSubmit}
-                      >
-                        {authenticating &&
-                          <FontAwesomeIcon icon="circle-notch" spin />}
-                        {!authenticating &&
-                          <FontAwesomeIcon icon="sign-in-alt" />}
-                        <Space width={8} />
-                        {i18n._('Sign In')}
-                      </Button>
-                    </Col>
-                  </Row>
-                </FormGroup>
-              </>
-            )}
-          />
-        </Container>
-      </div>
+      <Navigate to={from} />
     );
   }
-}
 
-export default withRouter(Login);
+  return (
+    <Box height="100vh">
+      {state.alertMessage && (
+        <Alert
+          variant="solid"
+          severity="error"
+          isClosable
+          onClose={clearAlertMessage}
+        >
+          <Box mb="1x">
+            <Text fontWeight="bold">{i18n._('Error')}</Text>
+          </Box>
+          <Text mr="-9x">
+            {state.alertMessage}
+          </Text>
+        </Alert>
+      )}
+      <Box
+        width={320}
+        m="0 auto"
+        pt="10x"
+      >
+        <Stack direction="column" alignItems="center" mb="4x">
+          <Image src="images/logo-square-256x256.png" width="32x" height="32x" />
+          <Text fontSize="lg" lineHeight="lg" textAlign="center">
+            {i18n._('Sign in to {{name}}', { name: settings.productName })}
+          </Text>
+        </Stack>
+        <Form
+          onSubmit={handleFormSubmit}
+          render={({ handleSubmit, values }) => (
+            <>
+              <FormGroup>
+                <Field
+                  name="name"
+                  validate={required}
+                >
+                  {({ input, meta }) => (
+                    <>
+                      <Input
+                        {...input}
+                        type="text"
+                        placeholder={i18n._('Username')}
+                      />
+                      {(meta.error && meta.touched) && (
+                        <InlineError>{meta.error}</InlineError>
+                      )}
+                    </>
+                  )}
+                </Field>
+              </FormGroup>
+              <FormGroup>
+                <Field
+                  name="password"
+                  validate={required}
+                >
+                  {({ input, meta }) => (
+                    <>
+                      <Input
+                        {...input}
+                        type="password"
+                        placeholder={i18n._('Password')}
+                      />
+                      {(meta.error && meta.touched) && (
+                        <InlineError>{meta.error}</InlineError>
+                      )}
+                    </>
+                  )}
+                </Field>
+              </FormGroup>
+              <FormGroup>
+                <Flex
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Box>
+                    <Link href={forgotPasswordLink}>
+                      {i18n._('Forgot your password?')}
+                    </Link>
+                  </Box>
+                  <Box>
+                    <Button
+                      variant="primary"
+                      onClick={handleSubmit}
+                    >
+                      <Flex alignItems="center" columnGap="2x">
+                        {state.authenticating && (
+                          <FontAwesomeIcon icon="circle-notch" spin />
+                        )}
+                        {!state.authenticating && (
+                          <FontAwesomeIcon icon="sign-in-alt" />
+                        )}
+                        {i18n._('Sign In')}
+                      </Flex>
+                    </Button>
+                  </Box>
+                </Flex>
+              </FormGroup>
+            </>
+          )}
+        />
+      </Box>
+    </Box>
+  );
+};
+
+export default Login;
