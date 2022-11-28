@@ -13,7 +13,7 @@ import Badge from 'app/components/Badge';
 import { Button } from 'app/components/Buttons';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Hoverable from 'app/components/Hoverable';
 import Image from 'app/components/Image';
 import Tooltip from 'app/components/Tooltip';

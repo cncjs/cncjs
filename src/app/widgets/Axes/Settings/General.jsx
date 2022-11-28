@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Space,
   TextLabel,
@@ -11,7 +12,6 @@ import React, { Component } from 'react';
 import ForEach from 'react-foreach';
 import { Button } from 'app/components/Buttons';
 import { Checkbox } from 'app/components/Checkbox';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import i18n from 'app/lib/i18n';

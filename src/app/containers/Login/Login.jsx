@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Alert,
   Box,
@@ -15,7 +16,6 @@ import qs from 'qs';
 import React, { useState } from 'react';
 import { Form, Field } from 'react-final-form';
 import { Navigate, useLocation } from 'react-router-dom';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
 import InlineError from 'app/components/InlineError';
 import settings from 'app/config/settings';

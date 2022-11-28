@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Alert,
   Box,
@@ -33,7 +34,6 @@ import * as connectionActions from 'app/actions/connection';
 import * as serialportActions from 'app/actions/serialport';
 import { Checkbox } from 'app/components/Checkbox'; // TODO: remove
 import Clickable from 'app/components/Clickable';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import InlineError from 'app/components/InlineError';
 import Input from 'app/components/FormControl/Input'; // TODO: remove
 import FormGroup from 'app/components/FormGroup';

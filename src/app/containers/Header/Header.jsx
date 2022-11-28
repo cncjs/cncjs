@@ -1,6 +1,7 @@
 import {
   Box,
   ButtonBase,
+  Divider,
   Flex,
   Icon,
   Image,
@@ -10,7 +11,9 @@ import {
   useColorStyle,
 } from '@tonic-ui/react';
 import React, { forwardRef, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import IconButton from 'app/components/IconButton';
+import { mapRoutePathToPageTitle } from 'app/config/routes';
 import settings from 'app/config/settings';
 import i18next from 'app/i18next';
 import iconLogo from 'app/images/logo-badge-32x32.png';
@@ -24,6 +27,7 @@ const Header = forwardRef((
 ) => {
   const [colorMode] = useColorMode();
   const [colorStyle] = useColorStyle({ colorMode });
+  const location = useLocation();
   const handleViewReleases = useCallback(() => {
     const releases = 'https://github.com/cncjs/cncjs/releases';
     window.open(releases, '_blank');
@@ -86,6 +90,10 @@ const Header = forwardRef((
           whiteSpace="nowrap"
         >
           {i18next.language}
+        </Text>
+        <Divider orientation="vertical" height="5x" mx="2x" />
+        <Text>
+          {mapRoutePathToPageTitle(location.pathname)}
         </Text>
       </Flex>
     </Box>

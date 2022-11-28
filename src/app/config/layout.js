@@ -2,11 +2,14 @@ import _get from 'lodash/get';
 
 const layout = {
   header: {
-    height: '16x',
-    headingSize: '2xl',
+    height: 48,
   },
-  footer: {
-    height: '10x',
+  mininav: {
+    defaultWidth: 72,
+    expandedWidth: 240,
+  },
+  sidenav: {
+    width: 240,
   },
 };
 

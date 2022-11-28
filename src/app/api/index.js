@@ -48,21 +48,6 @@ const signin = (options) => new Promise((resolve, reject) => {
 });
 
 //
-// Latest Version
-//
-const getLatestVersion = () => new Promise((resolve, reject) => {
-  authrequest
-    .get('/api/version/latest')
-    .end((err, res) => {
-      if (err) {
-        reject(res);
-      } else {
-        resolve(res);
-      }
-    });
-});
-
-//
 // State
 //
 const getState = (options) => new Promise((resolve, reject) => {
@@ -598,7 +583,7 @@ machines.run = (id) => new Promise((resolve, reject) => {
 });
 
 export default {
-  getLatestVersion,
+  //getLatestVersion, // TODO: remove me
 
   // State
   getState,

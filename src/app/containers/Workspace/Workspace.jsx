@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Box,
   Space,
@@ -14,13 +15,11 @@ import cx from 'classnames';
 import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
-//import ReactDOM from 'react-dom'; // FIXME
 import { connect } from 'react-redux';
 import compose from 'recompose/compose';
 import styled from 'styled-components';
 import api from 'app/api';
 import { Button, ButtonGroup } from 'app/components/Buttons';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Row, Col } from 'app/components/GridSystem';
 import withRouter from 'app/components/withRouter'; // withRouter is deprecated
 import {

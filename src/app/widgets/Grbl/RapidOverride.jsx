@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Space,
   Text,
@@ -9,7 +10,6 @@ import { connect } from 'react-redux';
 import { ButtonGroup } from 'app/components/Buttons';
 import Center from 'app/components/Center';
 import Clickable from 'app/components/Clickable';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import RepeatableButton from 'app/components/RepeatableButton';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';

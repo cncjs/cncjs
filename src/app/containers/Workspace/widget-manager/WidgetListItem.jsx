@@ -1,7 +1,7 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import ToggleSwitch from 'app/components/ToggleSwitch';
 import i18n from 'app/lib/i18n';

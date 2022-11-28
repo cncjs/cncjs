@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Space,
 } from '@tonic-ui/react';
@@ -11,7 +12,6 @@ import mapGCodeToText from 'app/lib/gcode-text';
 import i18n from 'app/lib/i18n';
 import { Button } from 'app/components/Buttons';
 import Clickable from 'app/components/Clickable';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Panel from 'app/components/Panel';
 import ProgressBar from 'app/components/ProgressBar';

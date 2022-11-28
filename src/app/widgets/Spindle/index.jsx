@@ -3,7 +3,7 @@ import {
 } from '@tonic-ui/react';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Container } from 'app/components/GridSystem';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';

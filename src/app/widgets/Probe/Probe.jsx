@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Box,
   Space,
@@ -9,7 +10,6 @@ import React from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
 import { Button, ButtonGroup } from 'app/components/Buttons';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Input from 'app/components/FormControl/Input';
 import FormGroup from 'app/components/FormGroup';
 import Hoverable from 'app/components/Hoverable';

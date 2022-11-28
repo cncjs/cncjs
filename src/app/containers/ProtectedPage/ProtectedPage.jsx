@@ -7,6 +7,7 @@ import {
 } from '@tonic-ui/react-hooks';
 import React, { forwardRef, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import layout from 'app/config/layout';
 import Administration from 'app/containers/Administration';
 import Header from 'app/containers/Header';
 import Main from 'app/containers/Main';
@@ -15,8 +16,6 @@ import Workspace from 'app/containers/Workspace';
 import analytics from 'app/lib/analytics';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
-
-const headerHeight = '12x';
 
 const ProtectedPage = forwardRef((props, ref) => {
   const notLessThan640 = useMediaQuery('(min-width: 640px)'); // md
@@ -102,20 +101,20 @@ const ProtectedPage = forwardRef((props, ref) => {
         top={0}
         left={0}
         right={0}
-        height={headerHeight}
+        height={layout.header.height}
         zIndex="fixed"
       />
       {notLessThan640 && (
         <MiniNav
           isExpanded={notLessThan1024 ? isMiniNavExpanded : false}
           position="fixed"
-          top={headerHeight}
+          top={layout.header.height}
           bottom={0}
           left={0}
           width={{
             xs: 0,
-            md: '18x',
-            lg: (isMiniNavExpanded) ? '240px' : '18x',
+            md: layout.mininav.defaultWidth,
+            lg: (isMiniNavExpanded) ? layout.mininav.expandedWidth : layout.mininav.defaultWidth,
           }}
           zIndex="fixed"
         />
@@ -123,10 +122,10 @@ const ProtectedPage = forwardRef((props, ref) => {
       <Main
         ml={{
           xs: 0,
-          md: '18x',
-          lg: (isMiniNavExpanded) ? '240px' : '18x',
+          md: layout.mininav.defaultWidth,
+          lg: (isMiniNavExpanded) ? layout.mininav.expandedWidth : layout.mininav.defaultWidth,
         }}
-        pt={headerHeight}
+        pt={layout.header.height}
       >
         <Workspace
           style={{

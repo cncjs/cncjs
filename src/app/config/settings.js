@@ -12,6 +12,10 @@ const settings = {
   productName: pkg.productName,
   version: pkg.version,
   webroot: webroot,
+  url: {
+    wiki: 'https://github.com/cncjs/cncjs/wiki',
+    releases: 'https://github.com/cncjs/cncjs/releases',
+  },
   log: {
     level: 'warn' // trace, debug, info, warn, error
   },

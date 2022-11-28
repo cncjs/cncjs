@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Space,
 } from '@tonic-ui/react';
@@ -5,7 +6,6 @@ import React from 'react';
 import i18n from 'app/lib/i18n';
 import Anchor from 'app/components/Anchor';
 import { Button } from 'app/components/Buttons';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Modal from 'app/components/Modal';
 import ModalTemplate from 'app/components/ModalTemplate';
 import settings from 'app/config/settings';

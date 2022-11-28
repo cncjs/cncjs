@@ -1,9 +1,9 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Space,
 } from '@tonic-ui/react';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Container } from 'app/components/GridSystem';
 import { ModalProvider, ModalRoot } from 'app/components/Modal';
 import Widget from 'app/components/Widget';

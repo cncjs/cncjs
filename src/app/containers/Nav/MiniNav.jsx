@@ -4,8 +4,6 @@ import {
   Flex,
   Icon,
   Menu,
-  MenuDivider,
-  MenuGroup,
   MenuItem,
   MenuList,
   Scrollbar,
@@ -16,8 +14,7 @@ import {
 import { ensureArray, ensureString } from 'ensure-type';
 import React, { forwardRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import routes from 'app/config/routes';
-import i18n from 'app/lib/i18n';
+import { routes, mapRoutePathToPageTitle } from 'app/config/routes';
 import NavLink from './NavLink';
 
 const MiniNav = forwardRef((
@@ -75,7 +72,7 @@ const MiniNav = forwardRef((
                       />
                     )}
                     <Text>
-                      {i18n._(route.title)}
+                      {mapRoutePathToPageTitle(route.path)}
                     </Text>
                   </Flex>
                 </NavLink>
@@ -91,10 +88,11 @@ const MiniNav = forwardRef((
                   px="6x"
                 >
                   <Text
-                    color={colorStyle?.color?.secondary}
                     fontWeight="semibold"
+                    fontSize="md"
+                    lineHeight="md"
                   >
-                    {i18n._(route.title)}
+                    {mapRoutePathToPageTitle(route.path)}
                   </Text>
                 </Box>
                 {ensureArray(route.routes).map((childRoute, index) => {
@@ -124,7 +122,7 @@ const MiniNav = forwardRef((
                           />
                         )}
                         <Text>
-                          {i18n._(childRoute.title)}
+                          {mapRoutePathToPageTitle(childRoute.path)}
                         </Text>
                       </Flex>
                     </NavLink>
@@ -188,7 +186,7 @@ const MiniNav = forwardRef((
                 lineHeight={1}
                 textAlign="center"
               >
-                {i18n._(route.title)}
+                {mapRoutePathToPageTitle(route.path)}
               </Text>
             </Flex>
             {(childRoutes.length > 0) && (
@@ -205,31 +203,22 @@ const MiniNav = forwardRef((
                   <MenuList
                     width="max-content"
                   >
-                    <MenuGroup
-                      title={(
-                        <Text
-                          fontWeight="semibold"
-                        >
-                          {i18n._(route.title)}
-                        </Text>
-                      )}
-                    >
-                      <MenuDivider />
-                      {childRoutes.map((childRoute) => {
-                        const childKey = childRoute.path;
+                    {childRoutes.map((childRoute) => {
+                      const childKey = childRoute.path;
 
-                        return (
-                          <MenuItem
-                            key={childKey}
-                            onClick={() => {
-                              navigate(childRoute.path);
-                            }}
-                          >
-                            {i18n._(childRoute.title)}
-                          </MenuItem>
-                        );
-                      })}
-                    </MenuGroup>
+                      return (
+                        <MenuItem
+                          key={childKey}
+                          onClick={() => {
+                            navigate(childRoute.path);
+                          }}
+                        >
+                          <Text px="2x">
+                            {mapRoutePathToPageTitle(childRoute.path)}
+                          </Text>
+                        </MenuItem>
+                      );
+                    })}
                   </MenuList>
                 </Menu>
               </Box>

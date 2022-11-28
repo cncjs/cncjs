@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Alert,
   Box,
@@ -14,7 +15,6 @@ import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import React, { useContext } from 'react';
 import { connect } from 'react-redux';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import RenderBlock from 'app/components/RenderBlock';
 import {
   CONNECTION_STATE_CONNECTED,

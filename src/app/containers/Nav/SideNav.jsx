@@ -19,14 +19,12 @@ import { ensureArray, ensureString } from 'ensure-type';
 import React, { forwardRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import IconButton from 'app/components/IconButton';
-import routes from 'app/config/routes';
+import layout from 'app/config/layout';
+import { routes, mapRoutePathToPageTitle } from 'app/config/routes';
 import settings from 'app/config/settings';
 import i18next from 'app/i18next';
 import iconLogo from 'app/images/logo-badge-32x32.png';
-import i18n from 'app/lib/i18n';
 import NavLink from './NavLink';
-
-const sidenavWidth = '240px';
 
 const SideNav = forwardRef((
   {
@@ -69,7 +67,7 @@ const SideNav = forwardRef((
         color={colorStyle?.color?.primary}
         borderY="none"
         borderLeft="none"
-        width={sidenavWidth}
+        width={layout.sidenav.width}
         whiteSpace="nowrap"
         {...rest}
       >
@@ -156,7 +154,7 @@ const SideNav = forwardRef((
                       />
                     )}
                     <Text>
-                      {i18n._(route.title)}
+                      {mapRoutePathToPageTitle(route.path)}
                     </Text>
                   </Flex>
                 </NavLink>
@@ -172,10 +170,11 @@ const SideNav = forwardRef((
                   px="6x"
                 >
                   <Text
-                    color={colorStyle?.color?.secondary}
                     fontWeight="semibold"
+                    fontSize="md"
+                    lineHeight="md"
                   >
-                    {i18n._(route.title)}
+                    {mapRoutePathToPageTitle(route.path)}
                   </Text>
                 </Box>
                 {ensureArray(route.routes).map((childRoute, index) => {
@@ -205,7 +204,7 @@ const SideNav = forwardRef((
                           />
                         )}
                         <Text>
-                          {i18n._(childRoute.title)}
+                          {mapRoutePathToPageTitle(childRoute.path)}
                         </Text>
                       </Flex>
                     </NavLink>

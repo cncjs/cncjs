@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Box,
   Button,
@@ -23,7 +24,6 @@ import _uniqueId from 'lodash/uniqueId';
 import React, { useRef } from 'react';
 import { Form, Field } from 'react-final-form';
 import axios from 'app/api/axios';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
 import InlineError from 'app/components/InlineError';
 import i18n from 'app/lib/i18n';

@@ -1,9 +1,9 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Space,
 } from '@tonic-ui/react';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
 import portal from 'app/lib/portal';

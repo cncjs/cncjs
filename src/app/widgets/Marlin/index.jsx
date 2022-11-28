@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Space,
 } from '@tonic-ui/react';
@@ -5,7 +6,6 @@ import classNames from 'classnames';
 import { ensurePositiveNumber } from 'ensure-type';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Widget from 'app/components/Widget';
 import {
   MARLIN,

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Space,
 } from '@tonic-ui/react';
@@ -10,7 +11,6 @@ import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import api from 'app/api';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Widget from 'app/components/Widget';
 import combokeys from 'app/lib/combokeys';
 import controller from 'app/lib/controller';

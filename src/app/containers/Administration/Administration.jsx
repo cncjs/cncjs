@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { Box } from '@tonic-ui/react';
 import { ensureArray } from 'ensure-type';
 import i18next from 'i18next';
 import Uri from 'jsuri';
@@ -9,14 +9,13 @@ import _get from 'lodash/get';
 import _isEqual from 'lodash/isEqual';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import api from 'app/api';
 import {
   ERR_CONFLICT,
   ERR_PRECONDITION_FAILED
 } from 'app/api/constants';
+import layout from 'app/config/layout';
 import settings from 'app/config/settings';
-import Breadcrumbs from 'app/components/Breadcrumbs';
 import withRouter from 'app/components/withRouter'; // withRouter is deprecated
 import i18n from 'app/lib/i18n';
 import config from 'app/store/config';
@@ -28,7 +27,6 @@ import Controller from './Controller';
 import Commands from './Commands';
 import Events from './Events';
 import About from './About';
-import styles from './index.styl';
 
 const mapSectionPathToId = (path = '') => {
   return _camelCase(path.split('/')[0] || '');
@@ -1208,6 +1206,7 @@ class Settings extends Component {
     const sectionPath = pathname.replace(/^\/administration(\/)?/, ''); // TODO
     const id = mapSectionPathToId(sectionPath || initialSectionPath);
     const activeSection = _find(this.sections, { id: id }) || this.sections[0];
+    /*
     const sectionItems = this.sections.map((section, index) => (
       <li
         key={section.id}
@@ -1220,6 +1219,7 @@ class Settings extends Component {
         </Link>
       </li>
     ));
+    */
 
     // Section component
     const Section = activeSection.component;
@@ -1229,34 +1229,16 @@ class Settings extends Component {
     const sectionActions = actions[activeSection.id];
 
     return (
-      <div className={styles.settings}>
-        <Breadcrumbs>
-          <Breadcrumbs.Item active>{i18n._('Settings')}</Breadcrumbs.Item>
-        </Breadcrumbs>
-        <div className={classNames(styles.container, styles.border)}>
-          <div className={styles.row}>
-            <div className={classNames(styles.col, styles.sidenav)}>
-              <nav className={styles.navbar}>
-                <ul className={styles.nav}>
-                  {sectionItems}
-                </ul>
-              </nav>
-            </div>
-            <div className={classNames(styles.col, styles.splitter)} />
-            <div className={classNames(styles.col, styles.section)}>
-              <div className={styles.heading}>{activeSection.title}</div>
-              <div className={styles.content}>
-                <Section
-                  initialState={sectionInitialState}
-                  state={sectionState}
-                  stateChanged={sectionStateChanged}
-                  actions={sectionActions}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Box
+        height={`calc(100vh - ${layout.header.height}px)`}
+      >
+        <Section
+          initialState={sectionInitialState}
+          state={sectionState}
+          stateChanged={sectionStateChanged}
+          actions={sectionActions}
+        />
+      </Box>
     );
   }
 }

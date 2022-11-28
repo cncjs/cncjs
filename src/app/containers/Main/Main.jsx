@@ -1,15 +1,14 @@
 import {
   Box,
   useColorMode,
+  useColorStyle,
 } from '@tonic-ui/react';
 import React, { forwardRef } from 'react';
 
 const Main = forwardRef((props, ref) => {
   const [colorMode] = useColorMode();
-  const backgroundColor = {
-    light: 'white',
-    dark: 'gray:100',
-  }[colorMode];
+  const [colorStyle] = useColorStyle({ colorMode });
+  const backgroundColor = colorStyle.background.primary;
 
   return (
     <Box
