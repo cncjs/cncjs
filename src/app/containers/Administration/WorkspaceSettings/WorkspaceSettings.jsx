@@ -19,7 +19,7 @@ import {
   MODAL_IMPORT_SETTINGS
 } from './constants';
 
-class Workspace extends Component {
+class WorkspaceSettings extends Component {
   static propTypes = {
     initialState: PropTypes.object,
     state: PropTypes.object,
@@ -188,4 +188,4 @@ class Workspace extends Component {
   }
 }
 
-export default Workspace;
+export default WorkspaceSettings;

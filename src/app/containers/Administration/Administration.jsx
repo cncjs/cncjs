@@ -20,7 +20,7 @@ import withRouter from 'app/components/withRouter'; // withRouter is deprecated
 import i18n from 'app/lib/i18n';
 import config from 'app/store/config';
 import General from './General';
-import Workspace from './Workspace';
+import WorkspaceSettings from './WorkspaceSettings';
 import MachineProfiles from './MachineProfiles';
 import UserAccounts from './UserAccounts';
 import Controller from './Controller';
@@ -45,10 +45,10 @@ class Settings extends Component {
       component: (props) => <General {...props} />
     },
     {
-      id: 'workspace',
-      path: 'workspace',
-      title: i18n._('Workspace'),
-      component: (props) => <Workspace {...props} />
+      id: 'workspaceSettings',
+      path: 'workspace-settings',
+      title: i18n._('Workspace Settings'),
+      component: (props) => <WorkspaceSettings {...props} />
     },
     {
       id: 'controller',
@@ -222,12 +222,12 @@ class Settings extends Component {
         });
       }
     },
-    // Workspace
-    workspace: {
+    // Workspace Settings
+    workspaceSettings: {
       openModal: (name = '', params = {}) => {
         this.setState({
-          workspace: {
-            ...this.state.workspace,
+          workspaceSettings: {
+            ...this.state.workspaceSettings,
             modal: {
               name: name,
               params: params
@@ -237,8 +237,8 @@ class Settings extends Component {
       },
       closeModal: () => {
         this.setState({
-          workspace: {
-            ...this.state.workspace,
+          workspaceSettings: {
+            ...this.state.workspaceSettings,
             modal: {
               name: '',
               params: {}
@@ -1092,7 +1092,7 @@ class Settings extends Component {
         lang: i18next.language
       },
       // Workspace
-      workspace: {
+      workspaceSettings: {
         modal: {
           name: '',
           params: {

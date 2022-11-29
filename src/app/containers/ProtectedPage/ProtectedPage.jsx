@@ -5,9 +5,11 @@ import {
   useMediaQuery,
   useToggle,
 } from '@tonic-ui/react-hooks';
+import { ensureArray } from 'ensure-type';
 import React, { forwardRef, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import layout from 'app/config/layout';
+import { routes } from 'app/config/routes';
 import Administration from 'app/containers/Administration';
 import Header from 'app/containers/Header';
 import Main from 'app/containers/Main';
@@ -52,24 +54,37 @@ const ProtectedPage = forwardRef((props, ref) => {
     );
   }
 
-  const accepted = ([
-    '/workspace',
-    '/administration',
-    '/administration/general',
-    '/administration/workspace',
-    '/administration/machine-profiles',
-    '/administration/user-accounts',
-    '/administration/controller',
-    '/administration/commands',
-    '/administration/events',
-    '/administration/about'
-  ].indexOf(location.pathname) >= 0);
+  /**
+   * The acceptedPaths is an array of the route paths.
+   *
+   * /workspace
+   * /administration
+   * /administration/about
+   * /administration/workspace-settings
+   * /administration/...
+   */
+  const acceptedPaths = ((routes) => {
+    const stack = [...routes];
+    const paths = [];
+    while (stack.length > 0) {
+      const current = stack.pop();
+      paths.push(current.path);
+      let index = 0;
+      while (index < ensureArray(current.routes).length) {
+        stack.push(current.routes[index]);
+        ++index;
+      }
+    }
+    return paths;
+  })(routes);
 
-  if (!accepted) {
+  const defaultPath = '/workspace';
+  const isAcceptedPath = acceptedPaths.includes(location.pathname);
+  if (!isAcceptedPath) {
     return (
       <Navigate
         to={{
-          pathname: '/workspace',
+          pathname: defaultPath,
           state: {
             from: location,
           }

@@ -5,11 +5,14 @@ import {
   Button,
   Collapse,
   Flex,
+  Icon,
   Image,
   Link,
   Spinner,
   Stack,
   Text,
+  useColorMode,
+  useColorStyle,
 } from '@tonic-ui/react';
 import {
   useEffectOnce,
@@ -41,6 +44,8 @@ const About = () => {
   const isUpdateAvailable = currentVersion && latestVersion && semverLt(currentVersion, latestVersion);
   const isLatestVersion = currentVersion && latestVersion && !semverLt(currentVersion, latestVersion);
   const [isUpdateAlertVisible, toggleUpdateAlertVisible] = useToggle(false);
+  const [colorMode] = useColorMode();
+  const [colorStyle] = useColorStyle({ colorMode });
 
   useEffectOnce(() => {
     send({ type: 'FETCH' });
@@ -137,7 +142,7 @@ const About = () => {
         )}
         {isLatestVersion && (
           <Flex alignItems="center" columnGap="2x">
-            <FontAwesomeIcon icon="check-circle" fixedWidth />
+            <Icon icon="success" color={colorStyle.component.alert.solid.success} />
             <Text>
               {i18n._('You already have the newest version of {{name}}', { name: settings.productName })}
             </Text>
