@@ -1,4 +1,3 @@
-import { Box } from '@tonic-ui/react';
 import { ensureArray } from 'ensure-type';
 import i18next from 'i18next';
 import Uri from 'jsuri';
@@ -14,7 +13,6 @@ import {
   ERR_CONFLICT,
   ERR_PRECONDITION_FAILED
 } from 'app/api/constants';
-import layout from 'app/config/layout';
 import withRouter from 'app/components/withRouter'; // withRouter is deprecated
 import i18n from 'app/lib/i18n';
 import config from 'app/store/config';
@@ -25,7 +23,6 @@ import UserAccounts from './UserAccounts';
 import Controller from './Controller';
 import Commands from './Commands';
 import Events from './Events';
-import About from './About';
 
 const mapSectionPathToId = (path = '') => {
   return _camelCase(path.split('/')[0] || '');
@@ -79,12 +76,6 @@ class Administration extends Component {
       title: i18n._('Events'),
       component: (props) => <Events {...props} />
     },
-    {
-      id: 'about',
-      path: 'about',
-      title: i18n._('About'),
-      component: (props) => <About {...props} />
-    }
   ];
 
   initialState = this.getInitialState();
@@ -1009,7 +1000,6 @@ class Administration extends Component {
     },
 
     workspaceSettings: {}, // TODO
-    about: {}, // TODO
   };
 
   componentDidMount() {
@@ -1123,7 +1113,6 @@ class Administration extends Component {
           }
         }
       },
-      about: {}, // TODO: remove me
     };
   }
 
@@ -1162,16 +1151,12 @@ class Administration extends Component {
     const sectionActions = actions[activeSection.id];
 
     return (
-      <Box
-        height={`calc(100vh - ${layout.header.height}px)`}
-      >
-        <Section
-          initialState={sectionInitialState}
-          state={sectionState}
-          stateChanged={sectionStateChanged}
-          actions={sectionActions}
-        />
-      </Box>
+      <Section
+        initialState={sectionInitialState}
+        state={sectionState}
+        stateChanged={sectionStateChanged}
+        actions={sectionActions}
+      />
     );
   }
 }

@@ -46,7 +46,12 @@ const MiniNav = forwardRef((
         >
           {routes.map((route, index) => {
             const key = route.path;
+            const isHidden = !!route.hidden;
             const isSelected = ensureString(location.pathname).startsWith(route.path);
+
+            if (isHidden) {
+              return null;
+            }
 
             if (!route.routes) {
               return (
@@ -97,7 +102,12 @@ const MiniNav = forwardRef((
                 </Box>
                 {ensureArray(route.routes).map((childRoute, index) => {
                   const key = childRoute.path;
+                  const isHidden = !!childRoute.hidden;
                   const isSelected = ensureString(location.pathname).startsWith(childRoute.path);
+
+                  if (isHidden) {
+                    return null;
+                  }
 
                   return (
                     <NavLink
@@ -146,8 +156,13 @@ const MiniNav = forwardRef((
     >
       {routes.map((route, index) => {
         const key = route.path;
+        const isHidden = !!route.hidden;
         const isSelected = ensureString(location.pathname).startsWith(route.path);
         const childRoutes = ensureArray(route.routes);
+
+        if (isHidden) {
+          return null;
+        }
 
         return (
           <NavLink

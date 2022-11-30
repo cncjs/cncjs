@@ -6,7 +6,7 @@ export const {
   MODAL_FEEDER_PAUSED,
   MODAL_FEEDER_WAIT,
   MODAL_SERVER_DISCONNECTED
-} = constants('containers/Workspace', [
+} = constants('pages/Workspace', [
   'MODAL_NONE',
   'MODAL_FEEDER_PAUSED',
   'MODAL_FEEDER_WAIT',

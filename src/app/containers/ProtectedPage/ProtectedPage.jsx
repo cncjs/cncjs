@@ -10,14 +10,15 @@ import React, { forwardRef, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import layout from 'app/config/layout';
 import { routes } from 'app/config/routes';
-import Administration from 'app/containers/Administration';
 import Header from 'app/containers/Header';
 import Main from 'app/containers/Main';
 import { MiniNav, SideNav } from 'app/containers/Nav';
-import Workspace from 'app/containers/Workspace';
 import analytics from 'app/lib/analytics';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
+import About from 'app/pages/About';
+import Administration from 'app/pages/Administration';
+import Workspace from 'app/pages/Workspace';
 
 const ProtectedPage = forwardRef((props, ref) => {
   const notLessThan640 = useMediaQuery('(min-width: 640px)'); // md
@@ -58,10 +59,8 @@ const ProtectedPage = forwardRef((props, ref) => {
    * The acceptedPaths is an array of the route paths.
    *
    * /workspace
-   * /administration
-   * /administration/about
-   * /administration/workspace-settings
-   * /administration/...
+   * /about
+   * /administration/:xxx
    */
   const acceptedPaths = ((routes) => {
     const stack = [...routes];
@@ -142,14 +141,21 @@ const ProtectedPage = forwardRef((props, ref) => {
         }}
         pt={layout.header.height}
       >
+        {(location.pathname.indexOf('/about') === 0) && (
+          <Box height={`calc(100vh - ${layout.header.height}px)`}>
+            <About />
+          </Box>
+        )}
+        {(location.pathname.indexOf('/administration') === 0) && (
+          <Box height={`calc(100vh - ${layout.header.height}px)`}>
+            <Administration />
+          </Box>
+        )}
         <Workspace
           style={{
             display: (location.pathname !== '/workspace') ? 'none' : 'block'
           }}
         />
-        {(location.pathname.indexOf('/administration') === 0) && (
-          <Administration />
-        )}
       </Main>
     </Box>
   );

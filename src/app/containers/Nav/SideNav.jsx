@@ -128,7 +128,12 @@ const SideNav = forwardRef((
         >
           {routes.map((route, index) => {
             const key = route.path;
+            const isHidden = !!route.hidden;
             const isSelected = ensureString(location.pathname).startsWith(route.path);
+
+            if (isHidden) {
+              return null;
+            }
 
             if (!route.routes) {
               return (
@@ -179,7 +184,12 @@ const SideNav = forwardRef((
                 </Box>
                 {ensureArray(route.routes).map((childRoute, index) => {
                   const key = childRoute.path;
+                  const isHidden = !!childRoute.hidden;
                   const isSelected = ensureString(location.pathname).startsWith(childRoute.path);
+
+                  if (isHidden) {
+                    return null;
+                  }
 
                   return (
                     <NavLink

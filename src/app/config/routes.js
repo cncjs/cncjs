@@ -39,16 +39,17 @@ const routes = [
         key: 'settings/workspace-settings',
         path: '/administration/workspace-settings',
       },
-      {
-        key: 'settings/about',
-        path: '/administration/about',
-      },
     ],
+  },
+  {
+    hidden: true,
+    key: 'about',
+    path: '/about',
   },
 ];
 
 const mapRoutePathToPageTitle = (path) => ({
-  '/workspace': i18n._('Workspace'),
+  '/about': i18n._('About'),
   '/administration': i18n._('Administration'),
   '/administration/general-settings': i18n._('General Settings'),
   '/administration/machine-profiles': i18n._('Machine Profiles'),
@@ -57,7 +58,7 @@ const mapRoutePathToPageTitle = (path) => ({
   '/administration/commands': i18n._('Commands'),
   '/administration/events': i18n._('Events'),
   '/administration/workspace-settings': i18n._('Workspace Settings'),
-  '/administration/about': i18n._('About'),
+  '/workspace': i18n._('Workspace'),
 })[path] || '';
 
 export {
