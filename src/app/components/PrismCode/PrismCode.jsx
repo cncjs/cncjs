@@ -31,6 +31,8 @@ class PrismCode extends React.Component {
       console.error(err);
     }
 
+    console.log('### innerHTML:', innerHTML, content);
+
     return (
       <Pre {...props}>
         <code

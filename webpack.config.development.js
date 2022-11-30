@@ -184,6 +184,7 @@ module.exports = {
     },
     extensions: ['.js', '.jsx'],
     fallback: {
+      crypto: require.resolve('crypto-browserify'),
       fs: false,
       net: false,
       path: require.resolve('path-browserify'),

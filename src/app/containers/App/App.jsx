@@ -21,9 +21,16 @@ import CorruptedWorkspaceSettingsModal from './modals/CorruptedWorkspaceSettings
 function Layout(props) {
   const [colorMode] = useColorMode();
   const [colorStyle] = useColorStyle({ colorMode });
-  const theme = useTheme();
+  const { colors, fontSizes, lineHeights } = useTheme();
   const backgroundColor = colorStyle.background.primary;
   const color = colorStyle.color.primary;
+  const scrollbarThumbBackgroundColor = colorStyle.color.disabled;
+  const scrollbarThumbHoverBackgroundColor = colorStyle.color.tertiary;
+  const scrollbarThumbHoverBorderColor = colorStyle.color.secondary;
+  const scrollbarTrackBackgroundColor = {
+    light: 'gray:30',
+    dark: 'gray:70',
+  }[colorMode];
 
   return (
     <>
@@ -35,19 +42,32 @@ function Layout(props) {
           :focus:not(:focus-visible) {
             outline: none;
           }
+          ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+          }
+          ::-webkit-scrollbar-track {
+            background-color: ${colors[scrollbarTrackBackgroundColor]};
+          }
+          ::-webkit-scrollbar-thumb {
+            background-color: ${colors[scrollbarThumbBackgroundColor]};
+          }
+          ::-webkit-scrollbar-thumb:hover {
+            background-color: ${colors[scrollbarThumbHoverBackgroundColor]};
+            border: 1px solid ${colors[scrollbarThumbHoverBorderColor]};
+          }
           body {
-            font-size: ${theme.fontSizes.sm};
-            line-height: ${theme.lineHeights.sm};
+            background-color: ${backgroundColor};
+            color: ${color};
+            font-size: ${fontSizes.sm};
+            line-height: ${lineHeights.sm};
+          }
+          pre {
+            margin: 0;
           }
         `}
       />
-      <Box
-        backgroundColor={backgroundColor}
-        color={color}
-        fontSize="sm"
-        lineHeight="sm"
-        {...props}
-      />
+      <Box {...props} />
     </>
   );
 }

@@ -15,11 +15,10 @@ import {
   ERR_PRECONDITION_FAILED
 } from 'app/api/constants';
 import layout from 'app/config/layout';
-import settings from 'app/config/settings';
 import withRouter from 'app/components/withRouter'; // withRouter is deprecated
 import i18n from 'app/lib/i18n';
 import config from 'app/store/config';
-import General from './General';
+import GeneralSettings from './GeneralSettings';
 import WorkspaceSettings from './WorkspaceSettings';
 import MachineProfiles from './MachineProfiles';
 import UserAccounts from './UserAccounts';
@@ -32,17 +31,17 @@ const mapSectionPathToId = (path = '') => {
   return _camelCase(path.split('/')[0] || '');
 };
 
-class Settings extends Component {
+class Administration extends Component {
   static propTypes = {
     ...withRouter.propTypes
   };
 
   sections = [
     {
-      id: 'general',
-      path: 'general',
-      title: i18n._('General'),
-      component: (props) => <General {...props} />
+      id: 'generalSettings',
+      path: 'general-settings',
+      title: i18n._('General Settings'),
+      component: (props) => <GeneralSettings {...props} />
     },
     {
       id: 'workspaceSettings',
@@ -93,14 +92,14 @@ class Settings extends Component {
   state = this.getInitialState();
 
   actions = {
-    // General
-    general: {
+    // General Settings
+    generalSettings: {
       load: (options) => {
         this.setState({
-          general: {
-            ...this.state.general,
+          generalSettings: {
+            ...this.state.generalSettings,
             api: {
-              ...this.state.general.api,
+              ...this.state.generalSettings.api,
               err: false,
               loading: true
             }
@@ -112,9 +111,9 @@ class Settings extends Component {
             const { checkForUpdates } = { ...res.body };
 
             const nextState = {
-              ...this.state.general,
+              ...this.state.generalSettings,
               api: {
-                ...this.state.general.api,
+                ...this.state.generalSettings.api,
                 err: false,
                 loading: false
               },
@@ -123,16 +122,16 @@ class Settings extends Component {
               lang: i18next.language
             };
 
-            this.initialState.general = nextState;
+            this.initialState.generalSettings = nextState;
 
-            this.setState({ general: nextState });
+            this.setState({ generalSettings: nextState });
           })
           .catch((res) => {
             this.setState({
-              general: {
-                ...this.state.general,
+              generalSettings: {
+                ...this.state.generalSettings,
                 api: {
-                  ...this.state.general.api,
+                  ...this.state.generalSettings.api,
                   err: true,
                   loading: false
                 }
@@ -141,13 +140,13 @@ class Settings extends Component {
           });
       },
       save: () => {
-        const { lang = 'en' } = this.state.general;
+        const { lang = 'en' } = this.state.generalSettings;
 
         this.setState({
-          general: {
-            ...this.state.general,
+          generalSettings: {
+            ...this.state.generalSettings,
             api: {
-              ...this.state.general.api,
+              ...this.state.generalSettings.api,
               err: false,
               saving: true
             }
@@ -155,31 +154,31 @@ class Settings extends Component {
         });
 
         const data = {
-          checkForUpdates: this.state.general.checkForUpdates
+          checkForUpdates: this.state.generalSettings.checkForUpdates
         };
 
         api.setState(data)
           .then((res) => {
             const nextState = {
-              ...this.state.general,
+              ...this.state.generalSettings,
               api: {
-                ...this.state.general.api,
+                ...this.state.generalSettings.api,
                 err: false,
                 saving: false
               }
             };
 
             // Update settings to initialState
-            this.initialState.general = nextState;
+            this.initialState.generalSettings = nextState;
 
-            this.setState({ general: nextState });
+            this.setState({ generalSettings: nextState });
           })
           .catch((res) => {
             this.setState({
-              general: {
-                ...this.state.general,
+              generalSettings: {
+                ...this.state.generalSettings,
                 api: {
-                  ...this.state.general.api,
+                  ...this.state.generalSettings.api,
                   err: true,
                   saving: false
                 }
@@ -201,52 +200,28 @@ class Settings extends Component {
       restoreSettings: () => {
         // Restore settings from initialState
         this.setState({
-          general: this.initialState.general
+          generalSettings: this.initialState.generalSettings,
         });
       },
       toggleCheckForUpdates: () => {
-        const { checkForUpdates } = this.state.general;
+        const { checkForUpdates } = this.state.generalSettings;
         this.setState({
-          general: {
-            ...this.state.general,
+          generalSettings: {
+            ...this.state.generalSettings,
             checkForUpdates: !checkForUpdates
           }
         });
       },
       changeLanguage: (lang) => {
         this.setState({
-          general: {
-            ...this.state.general,
+          generalSettings: {
+            ...this.state.generalSettings,
             lang: lang
           }
         });
       }
     },
-    // Workspace Settings
-    workspaceSettings: {
-      openModal: (name = '', params = {}) => {
-        this.setState({
-          workspaceSettings: {
-            ...this.state.workspaceSettings,
-            modal: {
-              name: name,
-              params: params
-            }
-          }
-        });
-      },
-      closeModal: () => {
-        this.setState({
-          workspaceSettings: {
-            ...this.state.workspaceSettings,
-            modal: {
-              name: '',
-              params: {}
-            }
-          }
-        });
-      }
-    },
+
     // Controller
     controller: {
       load: (options) => {
@@ -1032,43 +1007,9 @@ class Settings extends Component {
         });
       }
     },
-    // About
-    about: {
-      checkLatestVersion: () => {
-        this.setState({
-          about: {
-            ...this.state.about,
-            version: {
-              ...this.state.about.version,
-              checking: true
-            }
-          }
-        });
 
-        api.getLatestVersion()
-          .then((res) => {
-            if (!this.mounted) {
-              return;
-            }
-
-            const { version, time } = res.body;
-            this.setState({
-              about: {
-                ...this.state.about,
-                version: {
-                  ...this.state.about.version,
-                  checking: false,
-                  latest: version,
-                  lastUpdate: time
-                }
-              }
-            });
-          })
-          .catch(res => {
-            // Ignore error
-          });
-      }
-    }
+    workspaceSettings: {}, // TODO
+    about: {}, // TODO
   };
 
   componentDidMount() {
@@ -1081,8 +1022,8 @@ class Settings extends Component {
 
   getInitialState() {
     return {
-      // General
-      general: {
+      // General Settings
+      generalSettings: {
         api: {
           err: false,
           loading: true, // defaults to true
@@ -1091,7 +1032,7 @@ class Settings extends Component {
         checkForUpdates: true,
         lang: i18next.language
       },
-      // Workspace
+      // Workspace Settings
       workspaceSettings: {
         modal: {
           name: '',
@@ -1182,15 +1123,7 @@ class Settings extends Component {
           }
         }
       },
-      // About
-      about: {
-        version: {
-          checking: false,
-          current: settings.version,
-          latest: settings.version,
-          lastUpdate: ''
-        }
-      }
+      about: {}, // TODO: remove me
     };
   }
 
@@ -1243,4 +1176,4 @@ class Settings extends Component {
   }
 }
 
-export default withRouter(Settings);
+export default withRouter(Administration);

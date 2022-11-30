@@ -2,18 +2,18 @@ import i18n from 'app/lib/i18n';
 
 const routes = [
   {
-    icon: 'xyz',
+    icon: ':xyz',
     key: 'workspace',
     path: '/workspace',
   },
   {
-    icon: 'gears',
-    key: 'settings',
+    icon: ':gears',
+    key: 'administration',
     path: '/administration',
     routes: [
       {
-        key: 'settings/general',
-        path: '/administration/general',
+        key: 'settings/general-settings',
+        path: '/administration/general-settings',
       },
       {
         key: 'settings/controller',
@@ -49,8 +49,8 @@ const routes = [
 
 const mapRoutePathToPageTitle = (path) => ({
   '/workspace': i18n._('Workspace'),
-  '/administration': i18n._('Settings'),
-  '/administration/general': i18n._('General'),
+  '/administration': i18n._('Administration'),
+  '/administration/general-settings': i18n._('General Settings'),
   '/administration/machine-profiles': i18n._('Machine Profiles'),
   '/administration/user-accounts': i18n._('User Accounts'),
   '/administration/controller': i18n._('Controller'),

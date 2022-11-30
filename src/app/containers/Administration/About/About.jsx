@@ -92,7 +92,7 @@ const About = () => {
           </Flex>
         </Alert>
       </Collapse>
-      <Box mx="4x" my="3x">
+      <Box p="4x">
         <Stack spacing="4x" mb="8x">
           <Flex alignItems="center" columnGap="2x">
             <Image src="images/logo-square-256x256.png" alt="" width={96} />
