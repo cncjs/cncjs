@@ -1,14 +1,39 @@
 import {
-  Space,
-  Spinner,
+  Checkbox,
+  Text,
 } from '@tonic-ui/react';
-import classNames from 'classnames';
-import get from 'lodash/get';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
+import { Form } from 'react-final-form';
 import i18n from 'app/lib/i18n';
-import styles from './index.styl';
 
+const Title = (props) => (
+  <Text fontSize="md" lineHeight="md" {...props} />
+);
+
+const GeneralSettings = () => {
+  const initialValues = {};
+  const handleFormSubmit = () => {
+  };
+
+  return (
+    <Form
+      initialValues={initialValues}
+      onSubmit={handleFormSubmit}
+      render={({ handleSubmit, pristine, invalid }) => (
+        <>
+          <Title>
+            {i18n._('Language Settings')}
+          </Title>
+          <Checkbox label={i18n._('Automatically check for updates')} />
+        </>
+      )}
+    />
+  );
+};
+
+export default GeneralSettings;
+
+/*
 class General extends Component {
   static propTypes = {
     initialState: PropTypes.object,
@@ -96,8 +121,8 @@ class General extends Component {
               <option value="hu">Magyar</option>
               <option value="nb">Norwegian</option>
               <option value="nl">Nederlands</option>
+              <option value="pt">Português (Portugal)</option>
               <option value="pt-br">Português (Brasil)</option>
-              <option value="pt-pt">Português (Portugal)</option>
               <option value="tr">Türkçe</option>
               <option value="ru">Русский</option>
               <option value="zh-tw">中文 (繁體)</option>
@@ -137,3 +162,4 @@ class General extends Component {
 }
 
 export default General;
+*/

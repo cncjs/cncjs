@@ -21,6 +21,7 @@ import InlineError from 'app/components/InlineError';
 import settings from 'app/config/settings';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
+import x from 'app/lib/json-stringify';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
 import configStore from 'app/store/config';
@@ -33,7 +34,7 @@ const required = value => {
 
 const forgotPasswordLink = 'https://cnc.js.org/docs/faq/#forgot-your-password';
 
-const Login = () => {
+const LoginPage = () => {
   const location = useLocation();
   const { from } = location.state || { from: { pathname: '/' } };
   const [state, setState] = useState({
@@ -89,20 +90,26 @@ const Login = () => {
     });
   };
 
+  if (user.isAuthenticated()) {
+    const navigateTo = '/';
+    log.debug(`Navigate to ${x(navigateTo)}`);
+    return (
+      <Navigate to={navigateTo} />
+    );
+  }
+
   if (state.redirectToReferrer) {
     const query = qs.parse(window.location.search, { ignoreQueryPrefix: true });
     if (query && query.continue) {
-      log.debug(`Navigate to "${query.continue}"`);
-
+      log.debug(`Navigate to the continue path ${x(query.continue)}`);
       window.location = query.continue;
-
       return null;
     }
 
-    log.debug(`Navigate from "/login" to "${from.pathname}"`);
-
+    const navigateTo = from;
+    log.debug(`Navigate to the referrer ${x(from.pathname)}`);
     return (
-      <Navigate to={from} />
+      <Navigate to={navigateTo} />
     );
   }
 
@@ -212,4 +219,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;

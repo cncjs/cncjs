@@ -40,6 +40,7 @@ export function* init() {
 
     yield put(appInitSuccess());
   } catch (error) {
+    log.error(error);
     const errorMessage = _get(error, 'message', error);
     yield put(appInitFailure(errorMessage));
   } finally {

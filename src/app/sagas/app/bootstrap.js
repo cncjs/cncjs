@@ -1,15 +1,22 @@
 /* eslint import/no-dynamic-require: 0 */
+import I18nextHTTPBackend from 'i18next-http-backend';
+import I18nextBrowserLanguageDetector from 'i18next-browser-languagedetector';
+import mapKeys from 'lodash/mapKeys';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
 import qs from 'qs';
+import { initReactI18next } from 'react-i18next';
 import { all, call } from 'redux-saga/effects';
+import sha1 from 'sha1';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
+import env from 'app/config/env';
 import settings from 'app/config/settings';
 import i18next from 'app/i18next';
 import controller from 'app/lib/controller';
+import x from 'app/lib/json-stringify';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
-import configStore from 'app/store/config';
+import config from 'app/store/config';
 
 export function* init() {
   // sequential
@@ -41,8 +48,112 @@ const changeLogLevel = () => {
 };
 
 const initI18next = () => new Promise((resolve, reject) => {
+  // https://www.i18next.com/overview/configuration-options
+  const i18nextSettings = {
+    compatibilityJSON: 'v3',
+
+    /**
+     * Logging
+     */
+    debug: false,
+
+    /**
+     * Languages, namespaces, and resources
+     */
+    //resources, // keep as is
+    //lng, // keep as is
+    fallbackLng: 'en',
+    supportedLngs: JSON.parse(env.LANGUAGES), // @see webpack.webconfig.xxx.js
+    //nonExplicitSupportedLngs, // keep as is
+    load: 'currentOnly',
+    preload: [],
+    lowerCaseLng: true,
+    //cleanCode // keep as is
+    ns: [
+      'controller', // Grbl|Marlin|Smoothie|TinyG
+      'gcode', // G-code
+      'resource' // default
+    ],
+    defaultNS: 'resource',
+    fallbackNS: false,
+    //partialBundledLanguages, // keep as is
+
+    /**
+     * Translation defaults
+     */
+    interpolation: {
+      prefix: '{{',
+      suffix: '}}'
+    },
+
+    /**
+     * Others
+     */
+    keySeparator: '.',
+    nsSeparator: ':',
+    pluralSeparator: '_',
+    contextSeparator: '_',
+
+    /**
+     * Plugin options
+     * https://www.i18next.com/overview/plugins-and-utils
+     */
+    detection: { // options for language detection
+      // order and from where user language should be detected
+      // 'config-store' is a custom plugin and should be placed at the start of the array
+      order: ['config-store', 'querystring', 'cookie', 'localStorage'],
+
+      // keys or params to lookup language from
+      lookupQuerystring: 'lang',
+      lookupCookie: 'lang',
+      lookupLocalStorage: 'lang',
+
+      // cache user language on
+      caches: ['cookie', 'localStorage'],
+    },
+    backend: { // options for backend
+      // path where resources get loaded from
+      loadPath: settings.webroot + 'i18n/{{lng}}/{{ns}}.json',
+
+      // path to post missing resources
+      addPath: 'api/i18n/sendMissing/{{lng}}/{{ns}}',
+
+      // your backend server supports multiloading
+      // /locales/resources.json?lng=de+en&ns=ns1+ns2
+      allowMultiLoading: false,
+
+      // parse data after it has been fetched
+      parse: function(data, language, namespace) {
+        log.debug(`Loading resource: language=${x(language)}, namespace=${x(namespace)}`);
+
+        if (namespace === 'gcode' || namespace === 'resource') {
+          return mapKeys(JSON.parse(data), (value, key) => sha1(key));
+        }
+
+        return JSON.parse(data);
+      },
+
+      // allow cross domain requests
+      crossDomain: false,
+    },
+    cache: { // options for a cache layer in backends
+    },
+  };
+
+  const languageDetector = new I18nextBrowserLanguageDetector();
+  languageDetector.addDetector({
+    name: 'config-store',
+    lookup(options) {
+      const found = config.get('settings.language');
+      return found;
+    },
+  });
+
   i18next
-    .init(settings.i18next, (err, t) => {
+    .use(I18nextHTTPBackend)
+    .use(languageDetector)
+    .use(initReactI18next)
+    .init(i18nextSettings, (err, t) => {
       if (err) {
         reject(err);
         return;
@@ -77,7 +188,7 @@ const initMomentLocale = () => new Promise(resolve => {
 });
 
 const authenticateSessionToken = () => new Promise(resolve => {
-  const token = configStore.get('session.token');
+  const token = config.get('session.token');
   user.signin({ token: token })
     .then(({ authenticated, token }) => {
       if (authenticated) {
@@ -105,7 +216,7 @@ const enableCrossOriginCommunication = () => {
     const { token = '', action } = { ...event.data };
 
     // Token authentication
-    if (token !== configStore.get('session.token')) {
+    if (token !== config.get('session.token')) {
       log.warn(`Received a message with an unauthorized token (${token}).`);
       return;
     }

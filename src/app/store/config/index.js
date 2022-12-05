@@ -9,6 +9,7 @@ import _uniq from 'lodash/uniq';
 import semverLt from 'semver/functions/lt';
 import semverLte from 'semver/functions/lte';
 import settings from 'app/config/settings';
+import { parse as parseCookie } from 'app/lib/cookie-parser';
 import log from 'app/lib/log';
 import reduxStore from 'app/store/redux';
 import { promptUserForCorruptedWorkspaceSettings } from 'app/containers/App/actions';
@@ -209,6 +210,14 @@ const migrateStore = () => {
   }
   if (semverLt(cnc.version, '1.10.0')) {
     log.info(`Migrating configuration settings from v${cnc.version} to v1.10.0`);
+
+    // appearance
+    config.set('settings.appearance', _get(defaultState, 'settings.appearance'));
+
+    // language
+    const cookie = parseCookie(document?.cookie ?? '');
+    const language = cookie?.lang ?? _get(defaultState, 'settings.language');
+    config.set('settings.language', language);
   }
 };
 

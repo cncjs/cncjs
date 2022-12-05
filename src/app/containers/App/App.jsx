@@ -14,9 +14,9 @@ import { connect } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import compose from 'recompose/compose';
 import settings from 'app/config/settings';
-import Login from 'app/containers/Login';
-import ProtectedPage from 'app/containers/ProtectedPage';
 import CorruptedWorkspaceSettingsModal from './modals/CorruptedWorkspaceSettingsModal';
+import LoginPage from './LoginPage';
+import MainPage from './MainPage';
 
 function Layout(props) {
   const [colorMode] = useColorMode();
@@ -155,8 +155,8 @@ function App({
         <title>{`${productName} ${version}`}</title>
       </Helmet>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/*" element={<ProtectedPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/*" element={<MainPage />} />
       </Routes>
     </Layout>
   );

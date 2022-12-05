@@ -3,7 +3,11 @@ import {
   ToastProvider,
   theme,
 } from '@tonic-ui/react';
-import React from 'react';
+import {
+  useConst,
+  useEffectOnce,
+} from '@tonic-ui/react-hooks';
+import React, { useState } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { Provider as ReduxProvider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
@@ -13,6 +17,7 @@ import { PortalManager } from 'app/components/PortalManager';
 import colorStyle from 'app/config/color-style';
 import customIcons from 'app/config/icons';
 import i18next from 'app/i18next';
+import config from 'app/store/config';
 import reduxStore from 'app/store/redux';
 
 const customTheme = {
@@ -24,11 +29,44 @@ const customTheme = {
 };
 
 export function GlobalProvider({ children }) {
+  const initialColorModeState = useConst(() => {
+    const appearance = config.get('settings.appearance') ?? 'auto'; // The appearance value is one of 'auto', 'light', 'dark'
+    const useSystemColorMode = (appearance === 'auto');
+    const defaultValue = (appearance === 'dark') ? 'dark' : 'light'; // The color mode value is one of 'light', 'dark'
+    return {
+      useSystemColorMode,
+      defaultValue,
+    };
+  });
+  const [colorModeState, setColorModeState] = useState(initialColorModeState);
+
+  useEffectOnce(() => {
+    const onChange = () => {
+      // This callback is used to update the "useSystemColorMode" state
+      //
+      // | appearance | useSystemColorMode |
+      // | :--------- | :----------------- |
+      // | 'auto'     | true               |
+      // | 'light'    | false              |
+      // | 'dark'     | false              |
+      const appearance = config.get('settings.appearance') ?? 'auto';
+      const useSystemColorMode = (appearance === 'auto');
+      if (colorModeState.useSystemColorMode !== useSystemColorMode) {
+        setColorModeState(prevState => ({
+          ...prevState,
+          useSystemColorMode,
+        }));
+      }
+    };
+    config.on('change', onChange);
+    return () => {
+      config.off('change', onChange);
+    };
+  });
+
   return (
     <TonicProvider
-      colorMode={{
-        defaultValue: 'dark', // One of: 'dark', 'light'
-      }}
+      colorMode={colorModeState}
       colorStyle={{
         defaultValue: colorStyle,
       }}

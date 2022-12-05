@@ -1,3 +1,3 @@
-import General from './General';
+import GeneralSettings from './GeneralSettings';
 
-export default General;
+export default GeneralSettings;

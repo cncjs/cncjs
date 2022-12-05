@@ -8,6 +8,10 @@ const defaultState = Object.freeze({ // Freezes the default state
     name: '',
     token: ''
   },
+  settings: {
+    appearance: 'auto', // One of: 'auto', 'light', 'dark'
+    language: 'en',
+  },
   workspace: {
     container: {
       default: {

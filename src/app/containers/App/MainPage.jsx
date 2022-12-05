@@ -1,7 +1,10 @@
 import {
   Box,
+  useColorMode,
+  useColorStyle,
 } from '@tonic-ui/react';
 import {
+  useConst,
   useMediaQuery,
   useToggle,
 } from '@tonic-ui/react-hooks';
@@ -10,59 +13,33 @@ import React, { forwardRef, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import layout from 'app/config/layout';
 import { routes } from 'app/config/routes';
-import Header from 'app/containers/Header';
-import Main from 'app/containers/Main';
-import { MiniNav, SideNav } from 'app/containers/Nav';
 import analytics from 'app/lib/analytics';
+import x from 'app/lib/json-stringify';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
 import About from 'app/pages/About';
 import Administration from 'app/pages/Administration';
 import Workspace from 'app/pages/Workspace';
+import Header from './Header';
+import MiniNav from './MiniNav';
+import SideNav from './SideNav';
 
-const ProtectedPage = forwardRef((props, ref) => {
+const MainPage = forwardRef((props, ref) => {
+  const [colorMode] = useColorMode();
+  const [colorStyle] = useColorStyle({ colorMode });
   const notLessThan640 = useMediaQuery('(min-width: 640px)'); // md
   const notLessThan1024 = useMediaQuery('(min-width: 1024px)'); // lg
   const [isMiniNavExpanded, toggleMiniNavExpanded] = useToggle(false);
   const [isSideNavOpen, toggleSideNav] = useToggle(false);
   const location = useLocation();
-
-  useEffect(() => {
-    analytics.pageview(location.pathname);
-  }, [location.pathname]);
-
-  useEffect(() => {
-    if (notLessThan1024 && isSideNavOpen) {
-      toggleSideNav(false);
-    }
-  }, [notLessThan1024, isSideNavOpen, toggleSideNav]);
-
-  if (!user.isAuthenticated()) {
-    const redirectFrom = location.pathname;
-    const redirectTo = '/login';
-
-    log.debug(`Redirect from "${redirectFrom}" to "${redirectTo}"`);
-
-    return (
-      <Navigate
-        to={{
-          pathname: '/login',
-          state: {
-            from: location
-          }
-        }}
-      />
-    );
-  }
-
-  /**
-   * The acceptedPaths is an array of the route paths.
-   *
-   * /workspace
-   * /about
-   * /administration/:xxx
-   */
-  const acceptedPaths = ((routes) => {
+  const defaultPath = '/workspace';
+  const acceptedPaths = useConst(() => {
+    /**
+     * The accepted paths are the paths that are allowed to be navigated to. It includes the following:
+     * /about
+     * /administration/:name
+     * /workspace
+     */
     const stack = [...routes];
     const paths = [];
     while (stack.length > 0) {
@@ -75,20 +52,32 @@ const ProtectedPage = forwardRef((props, ref) => {
       }
     }
     return paths;
-  })(routes);
+  });
 
-  const defaultPath = '/workspace';
+  useEffect(() => {
+    analytics.pageview(location.pathname);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (notLessThan1024 && isSideNavOpen) {
+      toggleSideNav(false);
+    }
+  }, [notLessThan1024, isSideNavOpen, toggleSideNav]);
+
+  if (!user.isAuthenticated()) {
+    const navigateTo = '/login';
+    log.debug(`Navigate to ${x(navigateTo)}: msg="unauthenticated"`);
+    return (
+      <Navigate to={navigateTo} />
+    );
+  }
+
   const isAcceptedPath = acceptedPaths.includes(location.pathname);
   if (!isAcceptedPath) {
+    const navigateTo = defaultPath;
+    log.debug(`Navigate to ${x(navigateTo)}: msg="invalid path"`);
     return (
-      <Navigate
-        to={{
-          pathname: defaultPath,
-          state: {
-            from: location,
-          }
-        }}
-      />
+      <Navigate to={navigateTo} />
     );
   }
 
@@ -133,7 +122,9 @@ const ProtectedPage = forwardRef((props, ref) => {
           zIndex="fixed"
         />
       )}
-      <Main
+      <Box
+        as="main"
+        backgroundColor={colorStyle.background.primary}
         ml={{
           xs: 0,
           md: layout.mininav.defaultWidth,
@@ -141,24 +132,24 @@ const ProtectedPage = forwardRef((props, ref) => {
         }}
         pt={layout.header.height}
       >
-        {(location.pathname.indexOf('/about') === 0) && (
+        {(location.pathname !== '/workspace') && (
           <Box height={`calc(100vh - ${layout.header.height}px)`}>
-            <About />
+            {location.pathname.startsWith('/about') && (
+              <About />
+            )}
+            {location.pathname.startsWith('/administration') && (
+              <Administration />
+            )}
           </Box>
         )}
-        {(location.pathname.indexOf('/administration') === 0) && (
-          <Box height={`calc(100vh - ${layout.header.height}px)`}>
-            <Administration />
-          </Box>
-        )}
-        <Workspace
-          style={{
-            display: (location.pathname !== '/workspace') ? 'none' : 'block'
-          }}
-        />
-      </Main>
+        <Box
+          display={(location.pathname !== '/workspace') ? 'none' : 'block'}
+        >
+          <Workspace />
+        </Box>
+      </Box>
     </Box>
   );
 });
 
-export default ProtectedPage;
+export default MainPage;

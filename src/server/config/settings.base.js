@@ -75,24 +75,19 @@ export default {
     dir: './tmp/siofu'
   },
   i18next: {
-    lowerCaseLng: true,
+    // https://www.i18next.com/overview/configuration-options
+    compatibilityJSON: 'v3',
 
-    // logs out more info (console)
+    /**
+     * Logging
+     */
     debug: false,
 
-    // language to lookup key if not found on set language
+    /**
+     * Languages, namespaces, resources
+     */
     fallbackLng: 'en',
-
-    // string or array of namespaces
-    ns: [
-      'config',
-      'resource' // default
-    ],
-
-    // default namespace used if not passed to translation function
-    defaultNS: 'resource',
-
-    whitelist: [
+    supportedLngs: [
       'en', // English (default)
       'cs', // Czech
       'de', // German
@@ -103,47 +98,55 @@ export default {
       'ja', // Japanese
       'nb', // Norwegian
       'nl', // Nederlands
+      'pt', // Portuguese (Portugal)
       'pt-br', // Portuguese (Brazil)
       'ru', // Russian
       'tr', // Turkish
       'zh-cn', // Simplified Chinese
-      'zh-tw' // Traditional Chinese
+      'zh-tw', // Traditional Chinese
     ],
-
-    // array of languages to preload
-    preload: [],
-
-    // language codes to lookup, given set language is 'en-US':
-    // 'all' --> ['en-US', 'en', 'dev']
-    // 'currentOnly' --> 'en-US'
-    // 'languageOnly' --> 'en'
     load: 'currentOnly',
+    preload: [],
+    lowerCaseLng: true,
+    ns: [
+      'config',
+      'resource' // default
+    ],
+    defaultNS: 'resource',
+    fallbackNS: false,
 
-    // char to separate keys
-    keySeparator: '.',
-
-    // char to split namespace from key
-    nsSeparator: ':',
-
+    /**
+     * Translation defaults
+     */
     interpolation: {
       prefix: '{{',
       suffix: '}}'
     },
 
-    detection: {
+    /**
+     * Others
+     */
+    keySeparator: '.',
+    nsSeparator: ':',
+    pluralSeparator: '_',
+    contextSeparator: '_',
+
+    /**
+     * Plugin options
+     * https://www.i18next.com/overview/plugins-and-utils
+     */
+    detection: { // options for language detection
       // order and from where user language should be detected
-      order: ['session', 'querystring', 'cookie', 'header'],
+      order: ['querystring', 'cookie', 'header'],
 
       // keys or params to lookup language from
       lookupQuerystring: 'lang',
       lookupCookie: 'lang',
-      lookupSession: 'lang',
 
       // cache user language
       caches: ['cookie']
     },
-
-    backend: {
+    backend: { // options for backend
       // path where resources get loaded from
       loadPath: path.resolve(__dirname, '..', 'i18n', '{{lng}}', '{{ns}}.json'),
 
