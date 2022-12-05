@@ -209,8 +209,8 @@ const MainMenuItems = forwardRef((props, ref) => {
         <>
           <Flex alignItems="center" columnGap="3x" px="3x">
             <Avatar
-              backgroundColor={colorStyle.color.tertiary}
-              color={colorStyle.color.tertiary}
+              backgroundColor={colorStyle.background.tertiary}
+              color={colorStyle.color.secondary}
               _hover={{
                 color: colorStyle.color.primary,
               }}
@@ -437,8 +437,8 @@ const Header = forwardRef((
         >
           <MenuToggle>
             <Avatar
-              backgroundColor={colorStyle.color.tertiary}
-              color={colorStyle.color.tertiary}
+              backgroundColor={colorStyle.background.tertiary}
+              color={colorStyle.color.secondary}
               _hover={{
                 color: colorStyle.color.primary,
               }}

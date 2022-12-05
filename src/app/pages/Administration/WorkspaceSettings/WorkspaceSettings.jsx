@@ -16,41 +16,13 @@ import {
   useColorStyle,
 } from '@tonic-ui/react';
 import React, { useCallback, useRef } from 'react';
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import hljsA11yDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
-import hljsA11yLight from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-light';
+import CodePreview from 'app/components/CodePreview';
 import { usePortalManager } from 'app/components/PortalManager';
 import settings from 'app/config/settings';
 import exportFile from 'app/lib/export-file';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import config from 'app/store/config';
-
-const CodePreview = ({
-  data,
-  language = 'js',
-}) => {
-  const [colorMode] = useColorMode();
-  const hljsStyle = {
-    dark: hljsA11yDark,
-    light: hljsA11yLight,
-  }[colorMode];
-
-  return (
-    <SyntaxHighlighter
-      customStyle={{
-        padding: '.5rem',
-        width: '100%',
-      }}
-      language="json"
-      showLineNumbers
-      style={hljsStyle}
-      wrapLongLines
-    >
-      {data}
-    </SyntaxHighlighter>
-  );
-};
 
 const WorkspaceSettings = () => {
   const [colorMode] = useColorMode();
