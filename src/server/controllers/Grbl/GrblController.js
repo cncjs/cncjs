@@ -191,14 +191,17 @@ class GrblController {
         // Feeder
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
-                const originalLine = line;
+                context = this.populateContext(context);
+                // line="G0 X[posx - 8] Y[ymax] ; some comment"
+                // > "G0 X2 Y50 ; some comment"
+                const originalLine = translateExpression(line, context);
                 /**
-                 * line = 'G0X10 ; comment text'
-                 * parts = ['G0X10 ', ' comment text', '']
+                 * line = 'G0 X2 Y50 ; some comment'
+                 * parts = ['G0 X2 Y50 ', ' some comment', '']
                  */
                 const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
-                line = ensureString(parts[0]).trim();
-                context = this.populateContext(context);
+                // 'G0 X2 Y50 ' > 'G0 X2 Y50'
+                line = ensureString(parts[0]).trim();                
 
                 if (line[0] === '%') {
                     // %wait
@@ -213,9 +216,6 @@ class GrblController {
                     return '';
                 }
 
-                // line="G0 X[posx - 8] Y[ymax]"
-                // > "G0 X2 Y50"
-                line = translateExpression(line, context);
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
 
@@ -279,14 +279,17 @@ class GrblController {
             // Deduct the buffer size to prevent from buffer overrun
             bufferSize: (128 - 8), // The default buffer size is 128 bytes
             dataFilter: (line, context) => {
-                const originalLine = line;
+                context = this.populateContext(context);
+                // line="G0 X[posx - 8] Y[ymax] ; some comment"
+                // > "G0 X2 Y50 ; some comment"
+                const originalLine = translateExpression(line, context);
                 /**
-                 * line = 'G0X10 ; comment text'
-                 * parts = ['G0X10 ', ' comment text', '']
+                 * line = 'G0 X2 Y50 ; some comment'
+                 * parts = ['G0 X2 Y50 ', ' some comment', '']
                  */
                 const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
-                line = ensureString(parts[0]).trim();
-                context = this.populateContext(context);
+                // 'G0 X2 Y50 ' > 'G0 X2 Y50'
+                line = ensureString(parts[0]).trim(); 
 
                 const { sent, received } = this.sender.state;
 
@@ -304,9 +307,6 @@ class GrblController {
                     return '';
                 }
 
-                // line="G0 X[posx - 8] Y[ymax]"
-                // > "G0 X2 Y50"
-                line = translateExpression(line, context);
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
 
@@ -815,6 +815,17 @@ class GrblController {
 
             // Tool
             tool: Number(tool) || 0,
+
+            // Custom functions
+            toleranceCheck: function(diff, tolerance) {
+                let absDiff = Math.abs(diff);
+
+                if (absDiff > tolerance) {
+                    return 'M1; Out of tolerance (' + diff + ' > ' + tolerance + ')';
+                }
+
+                return '';
+            },
 
             // G-code parameters
             params: parameters,
