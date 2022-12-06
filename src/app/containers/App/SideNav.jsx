@@ -117,6 +117,7 @@ const SideNav = forwardRef((
             fontFamily="mono"
             fontSize="xs"
             lineHeight="1"
+            textTransform="uppercase"
             whiteSpace="nowrap"
           >
             {i18next.language}

@@ -2,6 +2,7 @@ import { createHash } from 'crypto';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
+  Divider,
   Flex,
   Icon,
   Input,
@@ -252,10 +253,13 @@ const WorkspaceSettings = () => {
           {i18n._('Restore Defaults')}
         </Button>
       </Flex>
+      <Divider mb="4x" />
       <Flex
         flex="auto"
         height="100%"
         overflowY="auto"
+        px="4x"
+        mb="4x"
       >
         <CodePreview
           data={JSON.stringify({

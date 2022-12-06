@@ -363,7 +363,6 @@ const Header = forwardRef((
     <Flex
       as="header"
       ref={ref}
-      backdropFilter="blur(20px)"
       backgroundColor={colorStyle?.background?.primary}
       color={colorStyle?.color?.primary}
       justifyContent="space-between"
@@ -412,10 +411,10 @@ const Header = forwardRef((
         </ButtonBase>
         <Text
           color={colorStyle?.color?.tertiary}
-          textTransform="uppercase"
           fontFamily="mono"
           fontSize="xs"
           lineHeight="1"
+          textTransform="uppercase"
           whiteSpace="nowrap"
         >
           {i18next.language}
