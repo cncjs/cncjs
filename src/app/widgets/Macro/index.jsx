@@ -2,17 +2,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Space,
 } from '@tonic-ui/react';
+import axios from 'app/api/axios';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { interpret } from 'xstate';
 import { ModalProvider, ModalRoot } from 'app/components/Modal';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
+import { createFetchMachine } from 'app/machines';
 import WidgetConfig from 'app/widgets/shared/WidgetConfig';
 import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
 import Macro from './Macro';
 import { ServiceContext } from './context';
-import fetchMacrosMachine from './machines/fetchMacrosMachine';
+
+const fetchMachine = createFetchMachine();
 
 class MacroWidget extends Component {
   static propTypes = {
@@ -36,7 +39,17 @@ class MacroWidget extends Component {
   state = this.getInitialState();
 
   serviceContext = {
-    fetchMacrosService: interpret(fetchMacrosMachine),
+    fetchMacrosService: interpret(
+      fetchMachine,
+      {
+        services: {
+          fetch: (context, event) => {
+            const url = '/api/macros';
+            return axios.get(url, event?.config);
+          },
+        },
+      },
+    ),
   };
 
   toggleFullscreen = () => {

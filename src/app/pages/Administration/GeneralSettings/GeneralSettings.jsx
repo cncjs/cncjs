@@ -4,69 +4,199 @@ import {
   Divider,
   Flex,
   Icon,
+  Spinner,
   Text,
   useColorMode,
   useColorStyle,
 } from '@tonic-ui/react';
-import React from 'react';
+import {
+  useConst,
+  useEffectOnce,
+  useToggle,
+} from '@tonic-ui/react-hooks';
+import { useActor, useInterpret } from '@xstate/react';
+import React, { useCallback, useState } from 'react';
 import { Form, FormSpy } from 'react-final-form';
+import axios from 'app/api/axios';
+import ToastNotification from 'app/components/ToastNotification';
 import i18n from 'app/lib/i18n';
-import FieldCheckbox from './components/FieldCheckbox';
+import { createFetchMachine } from 'app/machines';
+import FieldCheckbox from 'app/pages/Administration/components/FieldCheckbox';
+import Overlay from 'app/pages/Administration/components/Overlay';
+import TitleText from 'app/pages/Administration/components/TitleText';
 
-const Title = (props) => (
-  <Text fontSize="md" lineHeight="md" mb="3x" {...props} />
-);
+const fetchMachine = createFetchMachine();
 
 const GeneralSettings = () => {
+  const [formState, setFormState] = useState({});
   const [colorMode] = useColorMode();
   const [colorStyle] = useColorStyle({ colorMode });
-  const initialValues = {
-    update: {
-      checkForUpdates: false,
+  const toast = useConst(() => ({
+    autoClose: false,
+    appearance: 'none',
+    message: null,
+  }));
+  const [isToastOpen, toggleIsToastOpen] = useToggle();
+  const openToast = useCallback((props) => {
+    toast.autoClose = props?.autoClose;
+    toast.appearance = props?.appearance;
+    toast.message = props?.message;
+    toggleIsToastOpen(true);
+  }, [toast, toggleIsToastOpen]);
+  const closeToast = useCallback(() => {
+    toast.autoClose = false;
+    toast.apperance = 'none';
+    toast.message = null;
+    toggleIsToastOpen(false);
+  }, [toast, toggleIsToastOpen]);
+  const getterService = useInterpret(
+    fetchMachine,
+    {
+      actions: {
+        onSuccess: (context, event) => {
+          const data = context.data.data;
+          setFormState(data);
+        },
+        onFailure: (context, event) => {
+          openToast({
+            autoClose: false,
+            appearance: 'error',
+            message: (
+              <Text>{i18n._('An unexpected error has occurred.')}</Text>
+            ),
+          });
+        },
+      },
+      services: {
+        fetch: (context, event) => {
+          const url = '/api/state';
+          return axios.get(url, event?.config);
+        }
+      },
     },
-    controller: {
-      ignoreErrors: false,
+  );
+  const setterService = useInterpret(
+    fetchMachine,
+    {
+      actions: {
+        onSuccess: (context, event) => {
+          openToast({
+            autoClose: true,
+            appearance: 'success',
+            message: (
+              <Text>{i18n._('Settings saved.')}</Text>
+            ),
+          });
+
+          getterDispatch({ type: 'FETCH' });
+        },
+        onFailure: (context, event) => {
+          openToast({
+            autoClose: false,
+            appearance: 'error',
+            message: (
+              <Text>{i18n._('An unexpected error has occurred.')}</Text>
+            ),
+          });
+        },
+      },
+      services: {
+        fetch: (context, event) => {
+          const url = '/api/state';
+          return axios.post(url, event?.data, event?.config);
+        }
+      },
     },
-  };
-  const handleFormSubmit = () => {
-  };
+  );
+  const [getterState, getterDispatch] = useActor(getterService);
+  const [setterState, setterDispatch] = useActor(setterService);
+  const handleClickRetry = useCallback((event) => {
+    closeToast();
+    getterDispatch({ type: 'FETCH' });
+  }, [closeToast, getterDispatch]);
+  const handleFormSubmit = useCallback((values) => {
+    closeToast();
+    setterDispatch({
+      type: 'FETCH',
+      data: values,
+    });
+  }, [closeToast, setterDispatch]);
+
+  useEffectOnce(() => {
+    closeToast();
+    getterDispatch({ type: 'FETCH' });
+  });
+
+  const isLoading = getterState.matches('loading') || setterState.matches('loading');
+  const isFormDisabled = isLoading || getterState.matches('failure');
+  const shouldRetryFailure = getterState.matches('failure');
 
   return (
     <Form
-      initialValues={initialValues}
+      initialValues={formState}
       onSubmit={handleFormSubmit}
       subscription={{}}
       render={({ form }) => (
         <Flex
           flexDirection="column"
           height="100%"
+          position="relative"
         >
+          {isLoading && (
+            <Overlay
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Spinner size="md" />
+            </Overlay>
+          )}
+          <Flex
+            justifyContent="center"
+            position="absolute"
+            mt="4x"
+            width="100%"
+          >
+            <ToastNotification
+              TransitionProps={{
+                maxWidth: '80%',
+              }}
+              appearance={toast.appearance}
+              autoClose={toast.autoClose}
+              isClosable
+              isOpen={isToastOpen}
+              onClose={closeToast}
+            >
+              {toast.message}
+            </ToastNotification>
+          </Flex>
           <Box
             flex="auto"
             p="4x"
             overflowY="auto"
           >
             <>
-              <Title>
+              <TitleText>
                 {i18n._('Update')}
-              </Title>
+              </TitleText>
               <FieldCheckbox
-                name="update.checkForUpdates"
+                name="checkForUpdates"
+                disabled={isFormDisabled}
               >
                 {i18n._('Automatically check for updates')}
               </FieldCheckbox>
             </>
             <Divider my="4x" />
             <>
-              <Title>
+              <TitleText>
                 {i18n._('Controller')}
-              </Title>
+              </TitleText>
               <Text mb="3x">
                 {i18n._('Exception Handling')}
               </Text>
               <Box mb="1x">
                 <FieldCheckbox
-                  name="controller.ignoreErrors"
+                  name="controller.exception.ignoreErrors"
+                  disabled={isFormDisabled}
                 >
                   {i18n._('Continue execution when an error is detected in the G-code program')}
                 </FieldCheckbox>
@@ -82,13 +212,12 @@ const GeneralSettings = () => {
           >
             <FormSpy
               subscription={{
-                values: true,
                 invalid: true,
                 pristine: true,
               }}
             >
-              {({ values, invalid, pristine }) => {
-                const canSubmit = (() => {
+              {({ invalid, pristine }) => {
+                const canSave = (() => {
                   if (invalid) {
                     return false;
                   }
@@ -97,7 +226,7 @@ const GeneralSettings = () => {
                   }
                   return true;
                 })();
-                const handleSubmit = () => {
+                const handleClickSave = () => {
                   form.submit();
                 };
 
@@ -107,15 +236,25 @@ const GeneralSettings = () => {
                     px="4x"
                     py="3x"
                     alignItems="center"
-                    justifyContent="flex-end"
+                    justifyContent="flex-start"
                   >
-                    <Button
-                      variant="primary"
-                      disabled={!canSubmit}
-                      onClick={handleSubmit}
-                    >
-                      {i18n._('Save')}
-                    </Button>
+                    {shouldRetryFailure ? (
+                      <Button
+                        variant="primary"
+                        onClick={handleClickRetry}
+                      >
+                        {i18n._('Retry')}
+                      </Button>
+                    ) : (
+                      <Button
+                        justifySelf="flex-end"
+                        variant="primary"
+                        disabled={!canSave}
+                        onClick={handleClickSave}
+                      >
+                        {i18n._('Save')}
+                      </Button>
+                    )}
                   </Flex>
                 );
               }}
@@ -128,83 +267,3 @@ const GeneralSettings = () => {
 };
 
 export default GeneralSettings;
-
-/*
-class General extends Component {
-      static propTypes = {
-        initialState: PropTypes.object,
-        state: PropTypes.object,
-        stateChanged: PropTypes.bool,
-        actions: PropTypes.object
-      };
-
-      fields = {
-        checkForUpdates: null
-      };
-
-      handlers = {
-        changeCheckForUpdates: (event) => {
-          const { actions } = this.props;
-          actions.toggleCheckForUpdates();
-        },
-        changeLanguage: (event) => {
-          const { actions } = this.props;
-          const target = event.target;
-          actions.changeLanguage(target.value);
-        },
-        cancel: (event) => {
-          const { actions } = this.props;
-          actions.restoreSettings();
-        },
-        save: (event) => {
-          const { actions } = this.props;
-          actions.save();
-        }
-      };
-
-      componentDidMount() {
-        const { actions } = this.props;
-        actions.load();
-      }
-
-      render() {
-        const { state, stateChanged } = this.props;
-        const lang = get(state, 'lang', 'en');
-
-        if (state.api.loading) {
-          return (
-            <Spinner />
-          );
-        }
-
-              <div className="row">
-                <div className="col-md-12">
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={this.handlers.cancel}
-                  >
-                    {i18n._('Cancel')}
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    disabled={!stateChanged}
-                    onClick={this.handlers.save}
-                  >
-                    {state.api.saving
-                      ? <i className="fa fa-circle-o-notch fa-spin" />
-                      : <i className="fa fa-save" />}
-                    <Space width={8} />
-                    {i18n._('Save Changes')}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </form>
-        );
-      }
-    }
-
-    export default General;
-    */

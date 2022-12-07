@@ -19,24 +19,37 @@ import {
   useToggle,
 } from '@tonic-ui/react-hooks';
 import { useActor, useInterpret } from '@xstate/react';
+import axios from 'app/api/axios';
 import memoize from 'micro-memoize';
 import React, { useEffect } from 'react';
 import settings from 'app/config/settings';
 import i18n from 'app/lib/i18n';
+import { createFetchMachine } from 'app/machines';
 import semverLt from 'semver/functions/lt';
 import AlertLinkButton from './AlertLinkButton';
 import { StateContext } from './context';
-import { fetchVersionMachine } from './machines';
 
 const getMemoizedState = memoize(state => ({ ...state }));
 
 let defaultWillShowUpdateAlert = true;
 
+const fetchMachine = createFetchMachine();
+
 const About = () => {
-  const fetchVersionService = useInterpret(fetchVersionMachine);
-  const [state, send] = useActor(fetchVersionService);
-  const value = getMemoizedState({
-    fetchVersionService,
+  const getLatestVersionService = useInterpret(
+    fetchMachine,
+    {
+      services: {
+        fetch: (context, event) => {
+          const url = '/api/version/latest';
+          return axios.get(url, event?.config);
+        }
+      },
+    },
+  );
+  const [state, send] = useActor(getLatestVersionService);
+  const stateContext = getMemoizedState({
+    getLatestVersionService,
   });
   const currentVersion = settings.version;
   const latestVersion = state.context?.data?.data?.version;
@@ -58,7 +71,7 @@ const About = () => {
   }, [isUpdateAvailable, toggleUpdateAlertVisible]);
 
   return (
-    <StateContext.Provider value={value}>
+    <StateContext.Provider value={stateContext}>
       <Collapse in={isUpdateAlertVisible}>
         <Alert
           isClosable

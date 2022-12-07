@@ -6,20 +6,26 @@ import {
 import {
   isNullOrUndefined,
 } from '@tonic-ui/utils';
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Field } from 'react-final-form';
 
-const FieldErrorText = ({
-  name,
-  ...props
-}) => {
+const FieldErrorText = forwardRef((
+  {
+    name,
+    ...rest
+  },
+  ref,
+) => {
   const [colorMode] = useColorMode();
   const [colorStyle] = useColorStyle({ colorMode });
 
   return (
     <Field
       name={name}
-      subscription={{ error: true, touched: true }}
+      subscription={{
+        error: true,
+        touched: true,
+      }}
       render={({ meta }) => {
         const isEmpty = !meta.error;
         const isInvalid = meta.touched && !isNullOrUndefined(meta.error);
@@ -30,13 +36,18 @@ const FieldErrorText = ({
         }
 
         return (
-          <Text color={colorStyle.color.error} mt="1x" {...props}>
+          <Text
+            ref={ref}
+            color={colorStyle.color.error}
+            mt="1x"
+            {...rest}
+          >
             {meta.error}
           </Text>
         );
       }}
     />
   );
-};
+});
 
 export default FieldErrorText;

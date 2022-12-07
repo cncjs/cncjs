@@ -37,14 +37,14 @@ const createFetchMachine = () => {
         }
       },
       success: {
-        entry: 'notifySuccess',
+        entry: 'onSuccess',
         on: {
           FETCH: 'loading',
           CLEAR: 'idle',
         },
       },
       failure: {
-        entry: 'notifyFailure',
+        entry: 'onFailure',
         on: {
           FETCH: 'loading',
           CLEAR: 'idle',
@@ -57,8 +57,8 @@ const createFetchMachine = () => {
         data: null,
         error: null,
       }),
-      notifySuccess: (context, event) => {},
-      notifyFailure: (context, event) => {},
+      onSuccess: (context, event) => {},
+      onFailure: (context, event) => {},
     },
     services: {
       fetch: (context, event) => null,
@@ -68,4 +68,6 @@ const createFetchMachine = () => {
   return fetchMachine;
 };
 
-export default createFetchMachine;
+export {
+  createFetchMachine,
+};
