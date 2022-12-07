@@ -201,7 +201,7 @@ class GrblController {
                  */
                 const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
                 // 'G0 X2 Y50 ' > 'G0 X2 Y50'
-                line = ensureString(parts[0]).trim();                
+                line = ensureString(parts[0]).trim();
 
                 if (line[0] === '%') {
                     // %wait
@@ -289,7 +289,7 @@ class GrblController {
                  */
                 const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
                 // 'G0 X2 Y50 ' > 'G0 X2 Y50'
-                line = ensureString(parts[0]).trim(); 
+                line = ensureString(parts[0]).trim();
 
                 const { sent, received } = this.sender.state;
 
