@@ -10,27 +10,27 @@ environment:
     #  ARCH: i386
     - job_name: Linux build (amd64)
       appveyor_build_worker_image: Ubuntu2004
-      nodejs_version: "15"
+      nodejs_version: "12"
       ARCH: amd64
     - job_name: Linux build (arm)
       appveyor_build_worker_image: Ubuntu2004
-      nodejs_version: "15"
+      nodejs_version: "12"
       ARCH: arm
     - job_name: Linux build (arm64)
       appveyor_build_worker_image: Ubuntu2004
-      nodejs_version: "15"
+      nodejs_version: "12"
       ARCH: arm64
     - job_name: macOS build (x64)
       appveyor_build_worker_image: macos
-      nodejs_version: "15"
+      nodejs_version: "12"
       ARCH: x64
     - job_name: Windows build (x64)
       appveyor_build_worker_image: Visual Studio 2019
-      nodejs_version: "15"
+      nodejs_version: "12"
       ARCH: x64
     - job_name: Windows build (x86)
       appveyor_build_worker_image: Visual Studio 2019
-      nodejs_version: "15"
+      nodejs_version: "12"
       ARCH: x86
   global:
     GITHUB_TOKEN:
@@ -303,7 +303,7 @@ for:
         prerelease: false
         on:
           APPVEYOR_REPO_TAG: true # trigger deployment on tag only
-          nodejs_version: "15"
+          nodejs_version: "12"
 
   # macOS
   -
@@ -399,7 +399,7 @@ for:
         prerelease: false
         on:
           APPVEYOR_REPO_TAG: true # trigger deployment on tag only
-          nodejs_version: "15"
+          nodejs_version: "12"
 
   # Windows
   -
@@ -499,4 +499,4 @@ for:
         prerelease: false
         on:
           APPVEYOR_REPO_TAG: true # trigger deployment on tag only
-          nodejs_version: "15"
+          nodejs_version: "12"
