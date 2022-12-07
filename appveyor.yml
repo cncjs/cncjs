@@ -11,26 +11,32 @@ environment:
     - job_name: Linux build (amd64)
       appveyor_build_worker_image: Ubuntu2004
       nodejs_version: "12"
+      npm_version: "8.19.2"
       ARCH: amd64
     - job_name: Linux build (arm)
       appveyor_build_worker_image: Ubuntu2004
       nodejs_version: "12"
+      npm_version: "8.19.2"
       ARCH: arm
     - job_name: Linux build (arm64)
       appveyor_build_worker_image: Ubuntu2004
       nodejs_version: "12"
+      npm_version: "8.19.2"
       ARCH: arm64
     - job_name: macOS build (x64)
       appveyor_build_worker_image: macos
       nodejs_version: "12"
+      npm_version: "8.19.2"
       ARCH: x64
     - job_name: Windows build (x64)
       appveyor_build_worker_image: Visual Studio 2019
       nodejs_version: "12"
+      npm_version: "8.19.2"
       ARCH: x64
     - job_name: Windows build (x86)
       appveyor_build_worker_image: Visual Studio 2019
       nodejs_version: "12"
+      npm_version: "8.19.2"
       ARCH: x86
   global:
     GITHUB_TOKEN:
@@ -91,7 +97,7 @@ for:
       - nvm install $nodejs_version
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
-      - npm install -g npm
+      - npm install -g npm@$npm_version
       - npm install -g yarn
       - yarn
 
@@ -338,7 +344,7 @@ for:
       - security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
-      - npm install -g npm
+      - npm install -g npm@$npm_version
       - npm install -g yarn
       - yarn
 
@@ -433,7 +439,7 @@ for:
       - ps: Install-Product node $env:nodejs_version
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
-      - npm install -g npm
+      - npm install -g npm@$npm_version
       - npm install -g yarn
       - yarn
 
