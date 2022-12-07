@@ -18,6 +18,11 @@
   "controller": "",
   "state": {
     "checkForUpdates": true
+    "controller": {
+      "exception": {
+        "ignoreErrors": false
+      }
+    }
   },
   "commands": [
     {
