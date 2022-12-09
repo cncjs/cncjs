@@ -6,19 +6,21 @@ import {
   Icon,
   Spinner,
   Text,
+  Toast,
+  ToastController,
+  ToastTransition,
   useColorMode,
   useColorStyle,
 } from '@tonic-ui/react';
 import {
-  useConst,
   useEffectOnce,
-  useToggle,
 } from '@tonic-ui/react-hooks';
 import { useActor, useInterpret } from '@xstate/react';
 import React, { useCallback, useState } from 'react';
 import { Form, FormSpy } from 'react-final-form';
+import { TransitionGroup } from 'react-transition-group';
+import { v4 as uuidv4 } from 'uuid';
 import axios from 'app/api/axios';
-import ToastNotification from 'app/components/ToastNotification';
 import i18n from 'app/lib/i18n';
 import { createFetchMachine } from 'app/machines';
 import FieldCheckbox from 'app/pages/Administration/components/FieldCheckbox';
@@ -27,28 +29,53 @@ import TitleText from 'app/pages/Administration/components/TitleText';
 
 const fetchMachine = createFetchMachine();
 
+const ToastContainer = (props) => (
+  <Box
+    position="absolute"
+    top="4x"
+    left="50%"
+    transform="translateX(-50%)"
+    width="max-content"
+    maxWidth="80%" // 80% of the container width
+    zIndex="toast"
+    {...props}
+  />
+);
+
 const GeneralSettings = () => {
   const [formState, setFormState] = useState({});
   const [colorMode] = useColorMode();
   const [colorStyle] = useColorStyle({ colorMode });
-  const toast = useConst(() => ({
-    autoClose: false,
-    appearance: 'none',
-    message: null,
-  }));
-  const [isToastOpen, toggleIsToastOpen] = useToggle();
-  const openToast = useCallback((props) => {
-    toast.autoClose = props?.autoClose;
-    toast.appearance = props?.appearance;
-    toast.message = props?.message;
-    toggleIsToastOpen(true);
-  }, [toast, toggleIsToastOpen]);
-  const closeToast = useCallback(() => {
-    toast.autoClose = false;
-    toast.apperance = 'none';
-    toast.message = null;
-    toggleIsToastOpen(false);
-  }, [toast, toggleIsToastOpen]);
+  const [toasts, setToasts] = useState([]);
+  const addToast = (options) => {
+    const {
+      appearance,
+      content,
+      duration = null,
+      isClosable = true,
+    } = { ...options };
+
+    setToasts(prevState => {
+      const id = uuidv4();
+      const onClose = () => {
+        setToasts(toasts => toasts.filter(x => x.id !== id));
+      };
+      // You can decide how many toasts you want to show at the same time depending on your use case
+      const nextState = [
+        ...prevState.slice(-2),
+        {
+          id,
+          appearance,
+          content,
+          duration,
+          isClosable,
+          onClose,
+        },
+      ];
+      return nextState;
+    });
+  };
+  const removeToasts = useCallback(() => setToasts([]), []);
   const getterService = useInterpret(
     fetchMachine,
     {
@@ -58,10 +85,9 @@ const GeneralSettings = () => {
           setFormState(data);
         },
         onFailure: (context, event) => {
-          openToast({
-            autoClose: false,
+          addToast({
             appearance: 'error',
-            message: (
+            content: (
               <Text>{i18n._('An unexpected error has occurred.')}</Text>
             ),
           });
@@ -80,10 +106,10 @@ const GeneralSettings = () => {
     {
       actions: {
         onSuccess: (context, event) => {
-          openToast({
-            autoClose: true,
+          addToast({
             appearance: 'success',
-            message: (
+            duration: 3000,
+            content: (
               <Text>{i18n._('Settings saved.')}</Text>
             ),
           });
@@ -91,10 +117,9 @@ const GeneralSettings = () => {
           getterDispatch({ type: 'FETCH' });
         },
         onFailure: (context, event) => {
-          openToast({
-            autoClose: false,
+          addToast({
             appearance: 'error',
-            message: (
+            content: (
               <Text>{i18n._('An unexpected error has occurred.')}</Text>
             ),
           });
@@ -111,19 +136,19 @@ const GeneralSettings = () => {
   const [getterState, getterDispatch] = useActor(getterService);
   const [setterState, setterDispatch] = useActor(setterService);
   const handleClickRetry = useCallback((event) => {
-    closeToast();
+    removeToasts();
     getterDispatch({ type: 'FETCH' });
-  }, [closeToast, getterDispatch]);
+  }, [removeToasts, getterDispatch]);
   const handleFormSubmit = useCallback((values) => {
-    closeToast();
+    removeToasts();
     setterDispatch({
       type: 'FETCH',
       data: values,
     });
-  }, [closeToast, setterDispatch]);
+  }, [removeToasts, setterDispatch]);
 
   useEffectOnce(() => {
-    closeToast();
+    removeToasts();
     getterDispatch({ type: 'FETCH' });
   });
 
@@ -150,25 +175,34 @@ const GeneralSettings = () => {
               <Spinner size="md" />
             </Overlay>
           )}
-          <Flex
-            justifyContent="center"
-            position="absolute"
-            mt="4x"
-            width="100%"
-          >
-            <ToastNotification
-              TransitionProps={{
-                maxWidth: '80%',
-              }}
-              appearance={toast.appearance}
-              autoClose={toast.autoClose}
-              isClosable
-              isOpen={isToastOpen}
-              onClose={closeToast}
+          <ToastContainer>
+            <TransitionGroup
+              component={null} // Pass in `component={null}` to avoid a wrapping `<div>` element
             >
-              {toast.message}
-            </ToastNotification>
-          </Flex>
+              {toasts.map(toast => (
+                <ToastTransition
+                  in={true}
+                  key={toast?.id}
+                  unmountOnExit
+                >
+                  <ToastController
+                    duration={toast?.duration}
+                    onClose={toast?.onClose}
+                  >
+                    <Toast
+                      appearance={toast?.appearance}
+                      isClosable={toast?.isClosable}
+                      onClose={toast?.onClose}
+                      mb="2x"
+                      minWidth={280}
+                    >
+                      {toast?.content}
+                    </Toast>
+                  </ToastController>
+                </ToastTransition>
+              ))}
+            </TransitionGroup>
+          </ToastContainer>
           <Box
             flex="auto"
             p="4x"
