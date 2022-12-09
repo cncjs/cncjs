@@ -30,13 +30,15 @@ import TitleText from 'app/pages/Administration/components/TitleText';
 const fetchMachine = createFetchMachine();
 
 const ToastContainer = (props) => (
-  <Box
+  <Flex
+    flexDirection="column"
+    alignItems="center"
     position="absolute"
     top="4x"
     left="50%"
     transform="translateX(-50%)"
     width="max-content"
-    maxWidth="80%" // 80% of the container width
+    maxWidth="80%" // up to 80% of the container width
     zIndex="toast"
     {...props}
   />
@@ -194,7 +196,8 @@ const GeneralSettings = () => {
                       isClosable={toast?.isClosable}
                       onClose={toast?.onClose}
                       mb="2x"
-                      minWidth={280}
+                      minWidth={280} // The toast has a minimum width of 280 pixels
+                      width="fit-content"
                     >
                       {toast?.content}
                     </Toast>
