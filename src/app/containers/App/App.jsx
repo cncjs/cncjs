@@ -57,8 +57,8 @@ function Layout(props) {
             border: 1px solid ${colors[scrollbarThumbHoverBorderColor]};
           }
           body {
-            background-color: ${backgroundColor};
-            color: ${color};
+            background-color: ${colors[backgroundColor]};
+            color: ${colors[color]};
             font-size: ${fontSizes.sm};
             line-height: ${lineHeights.sm};
           }
