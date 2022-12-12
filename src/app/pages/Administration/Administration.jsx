@@ -20,7 +20,6 @@ import GeneralSettings from './GeneralSettings';
 import WorkspaceSettings from './WorkspaceSettings';
 import MachineProfiles from './MachineProfiles';
 import UserAccounts from './UserAccounts';
-import Controller from './Controller';
 import Commands from './Commands';
 import Events from './Events';
 
@@ -45,12 +44,6 @@ class Administration extends Component {
       path: 'workspace-settings',
       title: i18n._('Workspace Settings'),
       component: (props) => <WorkspaceSettings {...props} />
-    },
-    {
-      id: 'controller',
-      path: 'controller',
-      title: i18n._('Controller'),
-      component: (props) => <Controller {...props} />
     },
     {
       id: 'machineProfiles',
@@ -213,112 +206,6 @@ class Administration extends Component {
       }
     },
 
-    // Controller
-    controller: {
-      load: (options) => {
-        this.setState(state => ({
-          controller: {
-            ...state.controller,
-            api: {
-              ...state.controller.api,
-              err: false,
-              loading: true
-            }
-          }
-        }));
-
-        api.getState().then((res) => {
-          const ignoreErrors = _get(res.body, 'controller.exception.ignoreErrors');
-
-          const nextState = {
-            ...this.state.controller,
-            api: {
-              ...this.state.controller.api,
-              err: false,
-              loading: false
-            },
-            // followed by data
-            ignoreErrors: !!ignoreErrors
-          };
-
-          this.initialState.controller = nextState;
-
-          this.setState({ controller: nextState });
-        }).catch((res) => {
-          this.setState(state => ({
-            controller: {
-              ...state.controller,
-              api: {
-                ...state.controller.api,
-                err: true,
-                loading: false
-              }
-            }
-          }));
-        });
-      },
-      save: () => {
-        this.setState(state => ({
-          controller: {
-            ...state.controller,
-            api: {
-              ...state.controller.api,
-              err: false,
-              saving: true
-            }
-          }
-        }));
-
-        const data = {
-          controller: {
-            exception: {
-              ignoreErrors: this.state.controller.ignoreErrors
-            }
-          }
-        };
-
-        api.setState(data).then((res) => {
-          const nextState = {
-            ...this.state.controller,
-            api: {
-              ...this.state.controller.api,
-              err: false,
-              saving: false
-            }
-          };
-
-          // Update settings to initialState
-          this.initialState.controller = nextState;
-
-          this.setState({ controller: nextState });
-        }).catch((res) => {
-          this.setState(state => ({
-            controller: {
-              ...state.controller,
-              api: {
-                ...state.controller.api,
-                err: true,
-                saving: false
-              }
-            }
-          }));
-        });
-      },
-      restoreSettings: () => {
-        // Restore settings from initialState
-        this.setState({
-          controller: this.initialState.controller
-        });
-      },
-      toggleIgnoreErrors: () => {
-        this.setState(state => ({
-          controller: {
-            ...state.controller,
-            ignoreErrors: !state.controller.ignoreErrors
-          }
-        }));
-      }
-    },
     // Machine Profiles
     machineProfiles: {
       fetchRecords: (options) => {
@@ -1067,15 +954,6 @@ class Administration extends Component {
             changePassword: false
           }
         }
-      },
-      // Controller
-      controller: {
-        api: {
-          err: false,
-          loading: true, // defaults to true
-          saving: false
-        },
-        ignoreErrors: false
       },
       // Commands
       commands: {
