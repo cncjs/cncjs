@@ -13,7 +13,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
 import { CardProvider } from 'app/components/Card';
 import { Provider as GridSystemProvider } from 'app/components/GridSystem'; // TODO: remove this
-import { PortalManager } from 'app/components/PortalManager';
+import { PortalProvider } from 'app/components/Portal';
 import colorStyle from 'app/config/color-style';
 import customIcons from 'app/config/icons';
 import i18next from 'app/i18next';
@@ -73,7 +73,7 @@ export function GlobalProvider({ children }) {
       theme={customTheme}
       useCSSBaseline={true}
     >
-      <PortalManager>
+      <PortalProvider>
         <ToastProvider placement="bottom-right">
           <ReduxProvider store={reduxStore}>
             <GridSystemProvider
@@ -97,7 +97,7 @@ export function GlobalProvider({ children }) {
             </GridSystemProvider>
           </ReduxProvider>
         </ToastProvider>
-      </PortalManager>
+      </PortalProvider>
     </TonicProvider>
   );
 }

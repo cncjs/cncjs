@@ -1,5 +1,7 @@
-import ReactDOM from 'react-dom';
-import Portal from './Portal';
-import LegacyPortal from './LegacyPortal';
+import PortalProvider from './PortalProvider';
+import usePortal from './usePortal';
 
-export default !!(ReactDOM.createPortal) ? Portal : LegacyPortal;
+export {
+  PortalProvider,
+  usePortal,
+};

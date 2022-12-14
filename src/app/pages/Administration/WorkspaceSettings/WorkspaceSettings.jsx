@@ -18,7 +18,7 @@ import {
 } from '@tonic-ui/react';
 import React, { useCallback, useRef } from 'react';
 import CodePreview from 'app/components/CodePreview';
-import { usePortalManager } from 'app/components/PortalManager';
+import { usePortal } from 'app/components/Portal';
 import settings from 'app/config/settings';
 import exportFile from 'app/lib/export-file';
 import i18n from 'app/lib/i18n';
@@ -28,7 +28,7 @@ import config from 'app/store/config';
 const WorkspaceSettings = () => {
   const [colorMode] = useColorMode();
   const [colorStyle] = useColorStyle({ colorMode });
-  const portalManager = usePortalManager();
+  const portal = usePortal();
   const fileInputRef = useRef();
 
   const handleClickExport = useCallback((event) => {
@@ -50,11 +50,13 @@ const WorkspaceSettings = () => {
   }, []);
 
   const handleClickRestoreDefaults = useCallback((event) => {
-    portalManager.add(({ remove }) => (
+    portal.add((callback) => (
       <Modal
+        closeOnEsc
+        closeOnOutsideClick
         isClosable
         isOpen={true}
-        onClose={remove}
+        onClose={callback}
         size="sm"
       >
         <ModalContent>
@@ -72,7 +74,7 @@ const WorkspaceSettings = () => {
             </Flex>
           </ModalBody>
           <ModalFooter columnGap="2x">
-            <Button onClick={remove}>
+            <Button onClick={callback}>
               {i18n._('Cancel')}
             </Button>
             <Button
@@ -94,7 +96,7 @@ const WorkspaceSettings = () => {
         </ModalContent>
       </Modal>
     ));
-  }, [portalManager, colorStyle]);
+  }, [portal, colorStyle]);
 
   const handleChangeFile = useCallback((event) => {
     const files = event.target.files;
@@ -121,11 +123,13 @@ const WorkspaceSettings = () => {
       const isValidWorkspaceSettings = (typeof version === 'string' && typeof state === 'object');
 
       if (!isValidWorkspaceSettings) {
-        portalManager.add(({ remove }) => (
+        portal.add((callback) => (
           <Modal
+            closeOnEsc
+            closeOnOutsideClick
             isClosable
             isOpen={true}
-            onClose={remove}
+            onClose={callback}
             size="xs"
           >
             <ModalContent>
@@ -143,7 +147,7 @@ const WorkspaceSettings = () => {
                 </Flex>
               </ModalBody>
               <ModalFooter>
-                <Button onClick={remove}>
+                <Button onClick={callback}>
                   {i18n._('Close')}
                 </Button>
               </ModalFooter>
@@ -151,11 +155,13 @@ const WorkspaceSettings = () => {
           </Modal>
         ));
       } else {
-        portalManager.add(({ remove }) => (
+        portal.add((callback) => (
           <Modal
+            closeOnEsc
+            closeOnOutsideClick
             isClosable
             isOpen={true}
-            onClose={remove}
+            onClose={callback}
             size="sm"
           >
             <ModalContent>
@@ -177,7 +183,7 @@ const WorkspaceSettings = () => {
                 />
               </ModalBody>
               <ModalFooter columnGap="2x">
-                <Button onClick={remove}>
+                <Button onClick={callback}>
                   {i18n._('Cancel')}
                 </Button>
                 <Button
@@ -206,7 +212,7 @@ const WorkspaceSettings = () => {
     } catch (err) {
       // Ignore error
     }
-  }, [portalManager, colorStyle]);
+  }, [portal, colorStyle]);
 
   return (
     <Flex

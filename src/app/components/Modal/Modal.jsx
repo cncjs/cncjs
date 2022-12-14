@@ -1,10 +1,10 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Portal from 'app/components/Portal';
 import ModalOverlay from './ModalOverlay';
 import ModalContent from './ModalContent';
 import { ModalSettingsContext } from './ModalContext';
+import Portal from './Portal';
 import styles from './index.styl';
 
 const deprecate = ({ deprecatedPropName, remappedPropName }) => {
