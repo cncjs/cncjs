@@ -109,19 +109,25 @@ const Commands = () => {
     },
     {
       header: (
-        i18n._('Description')
+        <Truncate>
+          {i18n._('Description')}
+        </Truncate>
       ),
       accessorKey: 'title',
     },
     {
       header: (
-        i18n._('Enabled')
+        <Truncate>
+          {i18n._('Enabled')}
+        </Truncate>
       ),
       accessorKey: 'enabled',
     },
     {
       header: (
-        i18n._('Last Modified')
+        <Truncate>
+          {i18n._('Last Modified')}
+        </Truncate>
       ),
       accessorKey: 'mtime',
       enableResizing: false,
@@ -168,13 +174,11 @@ const Commands = () => {
                             width: cellWidth,
                           }}
                         >
-                          {header.isPlaceholder ? null : (
-                            <Truncate>
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                            </Truncate>
+                          {!header.isPlaceholder && (
+                            flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )
                           )}
                           {header.column.getCanResize() && (
                             <Resizer
@@ -206,12 +210,20 @@ const Commands = () => {
                             width: cellWidth,
                           }}
                         >
-                          <Truncate>
-                            {flexRender(
+                          {cell.column.id === 'selection' && (
+                            flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext(),
-                            )}
-                          </Truncate>
+                            )
+                          )}
+                          {cell.column.id !== 'selection' && (
+                            <Truncate>
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext(),
+                              )}
+                            </Truncate>
+                          )}
                         </TableCell>
                       );
                     })}
