@@ -533,5 +533,5 @@
     "Show Cutting Tool": "Vis skjæreverktøy",
     "Ready to start": "Klar til å starte",
     "Connect to an IP camera": "Koble til et IP-kamera",
-    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": "URL-en må være til en Motion JPEG (mjpeg) HTTP- eller RTSP-strøm."
+    "The URL must be for a Motion JPEG (mjpeg) HTTP RTSP or H264(MP4) stream.": "URL-en må være til en Motion JPEG (mjpeg) HTTP RTSP- eller H264(MP4)-strøm."
 }

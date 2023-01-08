@@ -10,7 +10,7 @@ import Webcam from './Webcam';
 import Settings from './Settings';
 import styles from './index.styl';
 import {
-    MEDIA_SOURCE_LOCAL
+    MEDIA_SOURCE_LOCAL, MEDIA_SOURCE_STREAM
 } from './constants';
 
 class WebcamWidget extends PureComponent {
@@ -112,11 +112,16 @@ class WebcamWidget extends PureComponent {
     }
 
     getInitialState() {
+        // Upgrade existing config from MEDIA_SOURCE_MJPEG
+        let mediaSource = this.config.get('mediaSource', MEDIA_SOURCE_LOCAL);
+        if (mediaSource === 'mjpeg') {
+            mediaSource = MEDIA_SOURCE_STREAM;
+        }
         return {
             disabled: this.config.get('disabled', true),
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            mediaSource: this.config.get('mediaSource', MEDIA_SOURCE_LOCAL),
+            mediaSource: mediaSource,
             deviceId: this.config.get('deviceId', ''),
             url: this.config.get('url', ''),
             scale: this.config.get('geometry.scale', 1.0),
