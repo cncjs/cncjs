@@ -433,6 +433,9 @@ for:
       - ps: Install-Product node $env:nodejs_version
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
+      # Fix broken npm on Windows/node 14
+      # https://github.com/actions/setup-node/issues/623
+      - npm install -g npm@8
       - npm install -g npm
       - npm install -g yarn
       - yarn
