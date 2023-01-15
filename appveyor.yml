@@ -109,6 +109,7 @@ for:
           else
             yarn build
           fi
+          npm shrinkwrap
       - sh: |
           # i386
           if [[ "$ARCH" == "i386" ]]; then
@@ -296,6 +297,7 @@ for:
     # https://www.appveyor.com/docs/packaging-artifacts
     artifacts:
       - path: releases/linux/*
+      - path: ./npm-shrinkwrap.json
 
     # Publishing artifacts to GitHub Releases
     # https://www.appveyor.com/docs/deployment/github
@@ -307,7 +309,7 @@ for:
         prerelease: false
         on:
           APPVEYOR_REPO_TAG: true # trigger deployment on tag only
-          nodejs_version: "12"
+          nodejs_version: "14"
 
   # macOS
   -
@@ -356,6 +358,7 @@ for:
           else
             yarn build
           fi
+          npm shrinkwrap
       - sh: |
           # x64
           if [[ "$ARCH" == "x64" ]]; then
@@ -392,6 +395,7 @@ for:
     # https://www.appveyor.com/docs/packaging-artifacts
     artifacts:
       - path: releases/macos/*
+      - path: ./npm-shrinkwrap.json
 
     # Publishing artifacts to GitHub Releases
     # https://www.appveyor.com/docs/deployment/github
@@ -403,7 +407,7 @@ for:
         prerelease: false
         on:
           APPVEYOR_REPO_TAG: true # trigger deployment on tag only
-          nodejs_version: "12"
+          nodejs_version: "14"
 
   # Windows
   -
@@ -457,6 +461,7 @@ for:
           } else {
             yarn build
           }
+          npm shrinkwrap
       - ps: |
           if ($env:ARCH -eq "x64") {
             $GIT_COMMIT_LOG = git log -1 --format='%ci %H %s'
@@ -498,6 +503,7 @@ for:
     # https://www.appveyor.com/docs/packaging-artifacts
     artifacts:
       - path: releases\windows\*
+      - path: ./npm-shrinkwrap.json
 
     # Publishing artifacts to GitHub Releases
     # https://www.appveyor.com/docs/deployment/github
@@ -509,4 +515,4 @@ for:
         prerelease: false
         on:
           APPVEYOR_REPO_TAG: true # trigger deployment on tag only
-          nodejs_version: "12"
+          nodejs_version: "14"
