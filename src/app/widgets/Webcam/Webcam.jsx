@@ -1,3 +1,4 @@
+/* eslint jsx-a11y/media-has-caption: 0 */
 import classNames from 'classnames';
 import Slider from 'rc-slider';
 import PropTypes from 'prop-types';
@@ -13,7 +14,7 @@ import Circle from './Circle';
 import styles from './index.styl';
 import {
     MEDIA_SOURCE_LOCAL,
-    MEDIA_SOURCE_MJPEG
+    MEDIA_SOURCE_STREAM
 } from './constants';
 
 // | Before                | After                   |
@@ -68,6 +69,8 @@ class Webcam extends PureComponent {
             muted
         } = state;
 
+        const isHtml5 = url.split('.').pop() === 'mp4';
+
         if (disabled) {
             return (
                 <div className={styles['webcam-off-container']}>
@@ -98,18 +101,31 @@ class Webcam extends PureComponent {
                         />
                     </div>
                 )}
-                {mediaSource === MEDIA_SOURCE_MJPEG && (
-                    <Image
-                        ref={node => {
-                            this.imageSource = node;
-                        }}
-                        src={mapMetaAddressToHostname(url)}
-                        style={{
-                            width: (100 * scale).toFixed(0) + '%',
-                            transform: transformStyle
-                        }}
-                        className={styles.center}
-                    />
+                {mediaSource === MEDIA_SOURCE_STREAM && (
+                    isHtml5
+                        ? (
+                            <video
+                                className={styles.center}
+                                style={{ transform: transformStyle }}
+                                width={(100 * scale).toFixed(0) + '%'}
+                                height="auto"
+                                muted={muted}
+                                src={mapMetaAddressToHostname(url)}
+                                autoPlay={true}
+                            />
+                        ) : (
+                            <Image
+                                ref={node => {
+                                    this.imageSource = node;
+                                }}
+                                src={mapMetaAddressToHostname(url)}
+                                style={{
+                                    width: (100 * scale).toFixed(0) + '%',
+                                    transform: transformStyle
+                                }}
+                                className={styles.center}
+                            />
+                        )
                 )}
                 {crosshair && (
                     <div>

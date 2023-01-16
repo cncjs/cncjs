@@ -9,7 +9,7 @@ import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import {
     MEDIA_SOURCE_LOCAL,
-    MEDIA_SOURCE_MJPEG
+    MEDIA_SOURCE_STREAM
 } from './constants';
 
 const MutedText = styled.div`
@@ -141,10 +141,10 @@ class Settings extends PureComponent {
                                 <input
                                     type="radio"
                                     name="mediaSource"
-                                    value={MEDIA_SOURCE_MJPEG}
-                                    checked={mediaSource === MEDIA_SOURCE_MJPEG}
+                                    value={MEDIA_SOURCE_STREAM}
+                                    checked={mediaSource === MEDIA_SOURCE_STREAM}
                                     onChange={() => {
-                                        this.setState({ mediaSource: MEDIA_SOURCE_MJPEG });
+                                        this.setState({ mediaSource: MEDIA_SOURCE_STREAM });
                                     }}
                                 />
                                 {i18n._('Connect to an IP camera')}
@@ -154,14 +154,14 @@ class Settings extends PureComponent {
                             <input
                                 type="url"
                                 className="form-control"
-                                disabled={mediaSource !== MEDIA_SOURCE_MJPEG}
+                                disabled={mediaSource !== MEDIA_SOURCE_STREAM}
                                 placeholder="http://0.0.0.0:8080/?action=stream"
                                 defaultValue={url}
                                 onChange={this.handleChangeURL}
                             />
                             <Margin top={4}>
                                 <MutedText style={{ marginTop: 4 }}>
-                                    {i18n._('The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.')}
+                                    {i18n._('The URL must be for a Motion JPEG (mjpeg) HTTP RTSP or H264(MP4) stream.')}
                                 </MutedText>
                             </Margin>
                         </div>

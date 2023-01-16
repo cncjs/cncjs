@@ -10,28 +10,32 @@ environment:
     #  ARCH: i386
     - job_name: Linux build (amd64)
       appveyor_build_worker_image: Ubuntu2004
-      nodejs_version: "12"
+      nodejs_version: "14"
       ARCH: amd64
     - job_name: Linux build (arm)
       appveyor_build_worker_image: Ubuntu2004
-      nodejs_version: "12"
+      nodejs_version: "14"
       ARCH: arm
     - job_name: Linux build (arm64)
       appveyor_build_worker_image: Ubuntu2004
-      nodejs_version: "12"
+      nodejs_version: "14"
       ARCH: arm64
     - job_name: macOS build (x64)
       appveyor_build_worker_image: macos
-      nodejs_version: "12"
+      nodejs_version: "14"
       ARCH: x64
     - job_name: Windows build (x64)
       appveyor_build_worker_image: Visual Studio 2019
-      nodejs_version: "12"
+      nodejs_version: "14"
       ARCH: x64
+      # https://github.com/nodejs/node-gyp/issues/2219
+      PYTHON: "C:\\Python39-x64"
     - job_name: Windows build (x86)
       appveyor_build_worker_image: Visual Studio 2019
-      nodejs_version: "12"
+      nodejs_version: "14"
       ARCH: x86
+      # https://github.com/nodejs/node-gyp/issues/2219
+      PYTHON: "C:\\Python39"
   global:
     GITHUB_TOKEN:
       secure: G9Qlv8MYhgvYlUxWWUiDdfIUTrKcia16HAdzkVydWqC+wo60XrC8nk1Q2R9WKGXx
@@ -410,6 +414,8 @@ for:
       fast_finish: true
 
     init:
+      - "set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+      - python --version
       - git --version
       - git config --global core.autocrlf false
       - git config --global user.name "AppVeyor"
@@ -428,11 +434,15 @@ for:
           Write-Host "• CI_COMMIT_SHORT=$env:CI_COMMIT_SHORT"
           Write-Host "• CI_COMMIT_TIMESTAMP=$env:CI_COMMIT_TIMESTAMP"
           Write-Host "• CI_TAG=$env:CI_TAG"
+      - python --version
 
     install:
       - ps: Install-Product node $env:nodejs_version
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
+      # Fix broken npm on Windows/node 14
+      # https://github.com/actions/setup-node/issues/623
+      - npm install -g npm@8
       - npm install -g npm
       - npm install -g yarn
       - yarn
