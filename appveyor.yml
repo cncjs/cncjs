@@ -29,13 +29,13 @@ environment:
       nodejs_version: "14"
       ARCH: x64
       # https://github.com/nodejs/node-gyp/issues/2219
-      PYTHON: "C:\Python39-x64"
+      PYTHON: "C:\\Python39-x64"
     - job_name: Windows build (x86)
       appveyor_build_worker_image: Visual Studio 2019
       nodejs_version: "14"
       ARCH: x86
       # https://github.com/nodejs/node-gyp/issues/2219
-      PYTHON: "C:\Python39"
+      PYTHON: "C:\\Python39"
   global:
     GITHUB_TOKEN:
       secure: G9Qlv8MYhgvYlUxWWUiDdfIUTrKcia16HAdzkVydWqC+wo60XrC8nk1Q2R9WKGXx
@@ -414,12 +414,13 @@ for:
       fast_finish: true
 
     init:
+      - "set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+      - python --version
       - git --version
       - git config --global core.autocrlf false
       - git config --global user.name "AppVeyor"
       - git config --global user.email "appveyor@ci.appveyor.com"
       - ps: |
-          $env:PATH="$env:PYTHON;$env:PYTHON/Scripts;$env:PATH"
           $env:CI_BRANCH = $env:APPVEYOR_REPO_BRANCH
           $env:CI_BUILD_NUMBER = $env:APPVEYOR_BUILD_NUMBER
           $env:CI_COMMIT = $env:APPVEYOR_REPO_COMMIT
