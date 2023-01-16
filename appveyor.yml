@@ -414,13 +414,12 @@ for:
       fast_finish: true
 
     init:
-      # Since we are not using the defaut python installation here.
-      - set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
       - git --version
       - git config --global core.autocrlf false
       - git config --global user.name "AppVeyor"
       - git config --global user.email "appveyor@ci.appveyor.com"
       - ps: |
+          $env:PATH="$env:PYTHON;$env:PYTHON/Scripts;$env:PATH"
           $env:CI_BRANCH = $env:APPVEYOR_REPO_BRANCH
           $env:CI_BUILD_NUMBER = $env:APPVEYOR_BUILD_NUMBER
           $env:CI_COMMIT = $env:APPVEYOR_REPO_COMMIT
@@ -434,6 +433,7 @@ for:
           Write-Host "• CI_COMMIT_SHORT=$env:CI_COMMIT_SHORT"
           Write-Host "• CI_COMMIT_TIMESTAMP=$env:CI_COMMIT_TIMESTAMP"
           Write-Host "• CI_TAG=$env:CI_TAG"
+      - python --version
 
     install:
       - ps: Install-Product node $env:nodejs_version
