@@ -4,10 +4,10 @@ version: "{build}-{branch}"
 
 environment:
   matrix:
-    #- job_name: Linux build (i386)
-    #  appveyor_build_worker_image: Ubuntu
-    #  nodejs_version: "12"
-    #  ARCH: i386
+    - job_name: Linux build (i386)
+      appveyor_build_worker_image: Ubuntu
+      nodejs_version: "14"
+      ARCH: i386
     - job_name: Linux build (amd64)
       appveyor_build_worker_image: Ubuntu2004
       nodejs_version: "14"
@@ -28,14 +28,10 @@ environment:
       appveyor_build_worker_image: Visual Studio 2019
       nodejs_version: "14"
       ARCH: x64
-      # https://github.com/nodejs/node-gyp/issues/2219
-      PYTHON: "C:\\Python39-x64"
     - job_name: Windows build (x86)
       appveyor_build_worker_image: Visual Studio 2019
       nodejs_version: "14"
       ARCH: x86
-      # https://github.com/nodejs/node-gyp/issues/2219
-      PYTHON: "C:\\Python39"
   global:
     GITHUB_TOKEN:
       secure: G9Qlv8MYhgvYlUxWWUiDdfIUTrKcia16HAdzkVydWqC+wo60XrC8nk1Q2R9WKGXx
@@ -45,7 +41,7 @@ for:
   -
     matrix:
       only:
-        #- job_name: Linux build (i386)
+        - job_name: Linux build (i386)
         - job_name: Linux build (amd64)
         - job_name: Linux build (arm)
         - job_name: Linux build (arm64)
@@ -88,7 +84,7 @@ for:
       - sudo dpkg --print-architecture
       - sudo dpkg --add-architecture arm64
       - sudo dpkg --add-architecture armhf
-      #- sudo dpkg --add-architecture i386
+      - sudo dpkg --add-architecture i386
       - sudo dpkg --print-foreign-architectures
       - sudo apt-get update
       - sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
@@ -97,7 +93,8 @@ for:
       - npm config set scripts-prepend-node-path auto
       - npm install -g npm
       - npm install -g yarn
-      - yarn
+      - yarn up
+      - yarn install
 
     build_script:
       - sh: |
@@ -109,7 +106,6 @@ for:
           else
             yarn build
           fi
-          npm shrinkwrap
       - sh: |
           # i386
           if [[ "$ARCH" == "i386" ]]; then
@@ -149,10 +145,10 @@ for:
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.AppImage" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.deb" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32.tar.gz";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.i686.rpm";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.AppImage";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.deb";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32.tar.gz";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.i686.rpm";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.AppImage";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-i386.deb";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-ia32.tar.gz";
             fi
           fi
       - sh: |
@@ -194,10 +190,10 @@ for:
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-amd64.deb";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x64.tar.gz";
             fi
           fi
       - sh: |
@@ -239,10 +235,10 @@ for:
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.AppImage" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.deb" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.tar.gz";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.armv7l.rpm";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.AppImage";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.deb";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.tar.gz";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.armv7l.rpm";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.AppImage";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.deb";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.tar.gz";
             fi
           fi
       - sh: |
@@ -284,10 +280,10 @@ for:
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb" \
                 "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.arm64.rpm";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb";
-              rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.arm64.rpm";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb";
+              #rm -f "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz";
             fi
           fi
 
@@ -297,7 +293,6 @@ for:
     # https://www.appveyor.com/docs/packaging-artifacts
     artifacts:
       - path: releases/linux/*
-      - path: ./npm-shrinkwrap.json
 
     # Publishing artifacts to GitHub Releases
     # https://www.appveyor.com/docs/deployment/github
@@ -308,7 +303,7 @@ for:
         draft: false
         prerelease: false
         on:
-          APPVEYOR_REPO_TAG: true # trigger deployment on tag only
+          appveyor_repo_tag: true # deploy on tag push only
           nodejs_version: "14"
 
   # macOS
@@ -346,7 +341,8 @@ for:
       - npm config set scripts-prepend-node-path auto
       - npm install -g npm
       - npm install -g yarn
-      - yarn
+      - yarn up
+      - yarn install
 
     build_script:
       - sh: |
@@ -358,7 +354,6 @@ for:
           else
             yarn build
           fi
-          npm shrinkwrap
       - sh: |
           # x64
           if [[ "$ARCH" == "x64" ]]; then
@@ -385,7 +380,7 @@ for:
                 --release-name="${CI_BRANCH}" \
                 --body="${GIT_COMMIT_LOG}" \
                 "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg";
-              rm -f "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg";
+              #rm -f "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg";
             fi
           fi
 
@@ -395,7 +390,6 @@ for:
     # https://www.appveyor.com/docs/packaging-artifacts
     artifacts:
       - path: releases/macos/*
-      - path: ./npm-shrinkwrap.json
 
     # Publishing artifacts to GitHub Releases
     # https://www.appveyor.com/docs/deployment/github
@@ -406,7 +400,7 @@ for:
         draft: false
         prerelease: false
         on:
-          APPVEYOR_REPO_TAG: true # trigger deployment on tag only
+          appveyor_repo_tag: true # deploy on tag push only
           nodejs_version: "14"
 
   # Windows
@@ -418,8 +412,6 @@ for:
       fast_finish: true
 
     init:
-      - "set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-      - python --version
       - git --version
       - git config --global core.autocrlf false
       - git config --global user.name "AppVeyor"
@@ -438,18 +430,17 @@ for:
           Write-Host "• CI_COMMIT_SHORT=$env:CI_COMMIT_SHORT"
           Write-Host "• CI_COMMIT_TIMESTAMP=$env:CI_COMMIT_TIMESTAMP"
           Write-Host "• CI_TAG=$env:CI_TAG"
-      - python --version
 
     install:
       - ps: Install-Product node $env:nodejs_version
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
-      # Fix broken npm on Windows/node 14
-      # https://github.com/actions/setup-node/issues/623
-      - npm install -g npm@8
-      - npm install -g npm
+      # To resolve the issue of broken npm on Windows with Node.js 14, the following actions can be taken,
+      # as reported in the GitHub issue (https://github.com/actions/setup-node/issues/623):
+      - npm install -g npm@8 && npm install -g npm@latest
       - npm install -g yarn
-      - yarn
+      - yarn up
+      - yarn install
 
     build_script:
       - ps: |
@@ -461,7 +452,6 @@ for:
           } else {
             yarn build
           }
-          npm shrinkwrap
       - ps: |
           if ($env:ARCH -eq "x64") {
             $GIT_COMMIT_LOG = git log -1 --format='%ci %H %s'
@@ -474,9 +464,20 @@ for:
             Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
             Get-ChildItem releases\windows
             if ($env:CI_BRANCH -eq "master" -And -not $env:CI_TAG) {
-              yarn github-release delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-windows-x64.exe"
-              yarn github-release upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
-              Remove-Item "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
+              yarn github-release delete `
+                --owner=cncjs `
+                --repo=cncjs `
+                --tag="${env:CI_BRANCH}-latest" `
+                --release-name="${env:CI_BRANCH}" `
+                "*-windows-x64.exe"
+              yarn github-release upload `
+                --owner=cncjs `
+                --repo=cncjs `
+                --tag="${env:CI_BRANCH}-latest" `
+                --release-name="${env:CI_BRANCH}" `
+                --body="${GIT_COMMIT_LOG}" `
+                "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
+              #Remove-Item "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
             }
           }
       - ps: |
@@ -491,9 +492,20 @@ for:
             Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
             Get-ChildItem releases\windows
             if ($env:CI_BRANCH -eq "master" -And -not $env:CI_TAG) {
-              yarn github-release delete --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" "*-windows-x86.exe"
-              yarn github-release upload --owner=cncjs --repo=cncjs --tag="${env:CI_BRANCH}-latest" --release-name="${env:CI_BRANCH}" --body="${GIT_COMMIT_LOG}" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
-              Remove-Item "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
+              yarn github-release delete `
+                --owner=cncjs `
+                --repo=cncjs `
+                --tag="${env:CI_BRANCH}-latest" `
+                --release-name="${env:CI_BRANCH}" `
+                "*-windows-x86.exe"
+              yarn github-release upload `
+                --owner=cncjs `
+                --repo=cncjs `
+                --tag="${env:CI_BRANCH}-latest" `
+                --release-name="${env:CI_BRANCH}" `
+                --body="${GIT_COMMIT_LOG}" `
+                "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
+              #Remove-Item "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
             }
           }
 
@@ -503,7 +515,6 @@ for:
     # https://www.appveyor.com/docs/packaging-artifacts
     artifacts:
       - path: releases\windows\*
-      - path: ./npm-shrinkwrap.json
 
     # Publishing artifacts to GitHub Releases
     # https://www.appveyor.com/docs/deployment/github
@@ -514,5 +525,5 @@ for:
         draft: false
         prerelease: false
         on:
-          APPVEYOR_REPO_TAG: true # trigger deployment on tag only
+          appveyor_repo_tag: true # deploy on tag push only
           nodejs_version: "14"

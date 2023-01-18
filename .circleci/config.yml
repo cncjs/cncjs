@@ -30,7 +30,7 @@ workflows:
 jobs:
   build-tag:
     docker:
-      - image: cimg/node:12.22-browsers
+      - image: cimg/node:14.20-browsers
     steps:
       - browser-tools/install-browser-tools
       - run:
@@ -87,7 +87,7 @@ jobs:
             - ci.tar.gz
   deploy-tag:
     docker:
-      - image: cimg/node:12.22
+      - image: cimg/node:14.20
     steps:
       - setup_remote_docker:
           version: 19.03.13
@@ -118,6 +118,5 @@ jobs:
             docker build -f Dockerfile -t $DOCKER_REPO:$DOCKER_BRANCH_TAG .
             docker images
             docker push $DOCKER_REPO:$DOCKER_BRANCH_TAG
-
             docker tag $DOCKER_REPO:$DOCKER_BRANCH_TAG $DOCKER_REPO:latest
             docker push $DOCKER_REPO:latest
