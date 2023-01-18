@@ -69,7 +69,9 @@ class Webcam extends PureComponent {
             muted
         } = state;
 
-        const isHtml5 = url.split('.').pop() === 'mp4';
+        // Find a better solution to determine whether to use the <video/> or <img/> tag.
+        // Currently using the URL extension check for ".mp4" as a proxy.
+        const isVideoStream = url.endsWith('.mp4');
 
         if (disabled) {
             return (
@@ -102,7 +104,7 @@ class Webcam extends PureComponent {
                     </div>
                 )}
                 {mediaSource === MEDIA_SOURCE_STREAM && (
-                    isHtml5
+                    isVideoStream
                         ? (
                             <video
                                 className={styles.center}
