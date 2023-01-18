@@ -25,7 +25,7 @@
     "cookie-parser": "~1.4.4",
     "debug": "~4.1.1",
     "deep-keys": "~0.5.0",
-    "electron-store": "~3.2.0",
+    "electron-store": "~8.0.1",
     "ensure-array": "~1.0.0",
     "ensure-type": "~1.5.1",
     "errorhandler": "~1.5.0",
