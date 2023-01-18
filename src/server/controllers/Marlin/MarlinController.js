@@ -1088,7 +1088,7 @@ class MarlinController {
                     return;
                 }
 
-                this.emit('gcode:load', name, gcode, context);
+                this.emit('gcode:load', name, this.sender.state.gcode, context);
                 this.event.trigger('gcode:load');
 
                 log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
