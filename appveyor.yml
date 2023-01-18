@@ -269,6 +269,11 @@ for:
       - git config --global user.name "AppVeyor"
       - git config --global user.email "appveyor@ci.appveyor.com"
       - sh: |
+          # The system default python 3.8.2 on macOS 10.15.7 will cause `regex` installation error
+          # caused by compiler option of `-arch arm64 -arch x86_64` (similar to the issue mentioned in
+          # https://github.com/giampaolo/psutil/issues/1832).
+          # To overcome this issue, `ARCHFLAGS="-arch x86_64"` will be needed to remove "arm64" build option.
+          export ARCHFLAGS="-arch x86_64"
           export CI_BRANCH=$APPVEYOR_REPO_BRANCH
           export CI_BUILD_NUMBER=$APPVEYOR_BUILD_NUMBER
           export CI_COMMIT=$APPVEYOR_REPO_COMMIT
@@ -276,6 +281,7 @@ for:
           export CI_COMMIT_TIMESTAMP=$APPVEYOR_REPO_COMMIT_TIMESTAMP
           export CI_TAG=$APPVEYOR_REPO_TAG_NAME
           echo "• ARCH=$ARCH"
+          echo "• ARCHFLAGS=$ARCHFLAGS"
           echo "• CI_BRANCH=$CI_BRANCH"
           echo "• CI_BUILD_NUMBER=$CI_BUILD_NUMBER"
           echo "• CI_COMMIT=$CI_COMMIT"
