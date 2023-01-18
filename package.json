@@ -6,8 +6,8 @@
   "author": "Cheton Wu <cheton@gmail.com>",
   "main": "./dist/cncjs/server-cli.js",
   "bin": {
-    "cncjs": "./bin/cncjs",
-    "cnc": "./bin/cnc"
+    "cnc": "./bin/cnc",
+    "cncjs": "./bin/cncjs"
   },
   "files": [
     "bin",
@@ -40,7 +40,7 @@
     "build-server-i18n": "i18next-scanner --config i18next-scanner.server.config.js \"src/server/**/*.{html,js,jsx}\" \"!src/server/i18n/**\" \"!**/node_modules/**\"",
     "build-server-dev": "babel -d output/cncjs/server src/server && npm run build-server-i18n",
     "build-server-prod": "babel -d dist/cncjs/server src/server && npm run build-server-i18n",
-    "clean": "del dist output yarn.lock package-lock.json",
+    "clean": "del dist output",
     "electron": "electron",
     "electron-builder": "electron-builder",
     "electron-builder:debug": "cross-env DEBUG=electron-builder electron-builder",
@@ -266,7 +266,7 @@
     "resize-observer-polyfill": "~1.5.1",
     "rimraf": "~3.0.2",
     "semver": "~7.3.5",
-    "serialport": "~9.0.7",
+    "serialport": "~10.5.0",
     "serve-favicon": "~2.5.0",
     "serve-static": "~1.15.0",
     "session-file-store": "~1.5.0",
@@ -403,5 +403,6 @@
     "functions": 60,
     "branches": 60,
     "statements": 80
-  }
+  },
+  "packageManager": "yarn@3.3.1"
 }

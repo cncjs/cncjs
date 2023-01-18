@@ -52,7 +52,7 @@
     "registry-auth-token": "~4.2.1",
     "registry-url": "~5.1.0",
     "rimraf": "~3.0.2",
-    "serialport": "~9.0.7",
+    "serialport": "~10.5.0",
     "serve-favicon": "~2.5.0",
     "serve-static": "~1.15.0",
     "session-file-store": "~1.5.0",

@@ -6,35 +6,35 @@ environment:
   matrix:
     - job_name: Linux build (i386)
       appveyor_build_worker_image: Ubuntu
-      nodejs_version: "12"
+      nodejs_version: "14"
       ARCH: i386
     - job_name: Linux build (amd64)
       appveyor_build_worker_image: Ubuntu2004
-      nodejs_version: "12"
+      nodejs_version: "14"
       ARCH: amd64
     - job_name: Linux build (arm)
       appveyor_build_worker_image: Ubuntu2004
-      nodejs_version: "12"
+      nodejs_version: "14"
       ARCH: arm
     - job_name: Linux build (arm64)
       appveyor_build_worker_image: Ubuntu2004
-      nodejs_version: "12"
+      nodejs_version: "14"
       ARCH: arm64
     - job_name: macOS build (x64)
       appveyor_build_worker_image: macos
-      nodejs_version: "12"
+      nodejs_version: "14"
       ARCH: x64
     - job_name: Windows build (x64)
       appveyor_build_worker_image: Visual Studio 2019
-      nodejs_version: "12"
+      nodejs_version: "14"
       ARCH: x64
     - job_name: Windows build (x86)
       appveyor_build_worker_image: Visual Studio 2019
-      nodejs_version: "12"
+      nodejs_version: "14"
       ARCH: x86
   global:
     GITHUB_TOKEN:
-      secure: G9Qlv8MYhgvYlUxWWUiDdfIUTrKcia16HAdzkVydWqC+wo60XrC8nk1Q2R9WKGXx
+      secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
 
 for:
   # Linux
@@ -93,7 +93,8 @@ for:
       - npm config set scripts-prepend-node-path auto
       - npm install -g npm
       - npm install -g yarn
-      - yarn
+      - yarn up
+      - yarn install
 
     build_script:
       - sh: |
@@ -298,12 +299,12 @@ for:
     deploy:
       - provider: GitHub
         auth_token:
-          secure: G9Qlv8MYhgvYlUxWWUiDdfIUTrKcia16HAdzkVydWqC+wo60XrC8nk1Q2R9WKGXx
+          secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
         draft: false
         prerelease: false
         on:
-          appveyor_repo_tag: true  # deploy on tag push only
-          nodejs_version: "12"
+          appveyor_repo_tag: true # deploy on tag push only
+          nodejs_version: "14"
 
   # macOS
   -
@@ -340,7 +341,8 @@ for:
       - npm config set scripts-prepend-node-path auto
       - npm install -g npm
       - npm install -g yarn
-      - yarn
+      - yarn up
+      - yarn install
 
     build_script:
       - sh: |
@@ -398,8 +400,8 @@ for:
         draft: false
         prerelease: false
         on:
-          appveyor_repo_tag: true  # deploy on tag push only
-          nodejs_version: "12"
+          appveyor_repo_tag: true # deploy on tag push only
+          nodejs_version: "14"
 
   # Windows
   -
@@ -433,9 +435,12 @@ for:
       - ps: Install-Product node $env:nodejs_version
       - npm config set loglevel warn
       - npm config set scripts-prepend-node-path auto
-      - npm install -g npm
+      # To resolve the issue of broken npm on Windows with Node.js 14, the following actions can be taken,
+      # as reported in the GitHub issue (https://github.com/actions/setup-node/issues/623):
+      - npm install -g npm@8 && npm install -g npm@latest
       - npm install -g yarn
-      - yarn
+      - yarn up
+      - yarn install
 
     build_script:
       - ps: |
@@ -520,5 +525,5 @@ for:
         draft: false
         prerelease: false
         on:
-          appveyor_repo_tag: true  # deploy on tag push only
-          nodejs_version: "12"
+          appveyor_repo_tag: true # deploy on tag push only
+          nodejs_version: "14"
