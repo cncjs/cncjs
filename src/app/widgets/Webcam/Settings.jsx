@@ -161,7 +161,7 @@ class Settings extends PureComponent {
                             />
                             <Margin top={4}>
                                 <MutedText style={{ marginTop: 4 }}>
-                                    {i18n._('The URL must be for a Motion JPEG (mjpeg) HTTP RTSP or H264(MP4) stream.')}
+                                    {i18n._('The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).')}
                                 </MutedText>
                             </Margin>
                         </div>

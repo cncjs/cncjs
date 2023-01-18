@@ -183,6 +183,15 @@ const migrateStore = () => {
     if (semver.lt(cnc.version, '1.9.16')) {
         store.unset('widgets.axes.jog.step');
     }
+
+    // 1.9.28
+    // Changed the value of "widgets.webcam.mediaSource" from "mjpeg" to "stream"
+    if (semver.lt(cnc.version, '1.9.28')) {
+        const originalMediaSource = store.get('widgets.webcam.mediaSource');
+        if (originalMediaSource === 'mjpeg') {
+            store.set('widgets.webcam.mediaSource', 'stream');
+        }
+    }
 };
 
 try {

@@ -210,7 +210,7 @@ const defaultState = {
             minimized: false,
 
             // local - Use a built-in camera or a connected webcam
-            // mjpeg - M-JPEG stream over HTTP
+            // stream - Use a URL that points to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4)
             mediaSource: 'local',
 
             // The device id
