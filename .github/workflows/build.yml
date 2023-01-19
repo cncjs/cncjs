@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "master", "next" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "next" ]
 
 jobs:
   build-linux:
@@ -58,7 +58,6 @@ jobs:
         PRODUCT_NAME=CNCjs
         PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
         PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
-        ls -al output output/*
         mkdir -p releases/linux
         cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.x86_64.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.x86_64.rpm"
         cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-x86_64.AppImage"
