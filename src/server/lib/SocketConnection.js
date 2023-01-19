@@ -1,9 +1,7 @@
 import { EventEmitter } from 'events';
 import net from 'net';
-import SerialPort from 'serialport';
+import { ReadlineParser } from '@serialport/parser-readline';
 import log from './logger';
-
-const Readline = SerialPort.parsers.Readline;
 
 const defaultOptions = Object.freeze({
   port: 23
@@ -122,7 +120,7 @@ class SocketConnection extends EventEmitter {
     this.socket.on('close', this.eventListener.close);
     this.socket.on('error', this.eventListener.error);
 
-    this.parser = this.socket.pipe(new Readline({ delimiter: '\n' }));
+    this.parser = this.socket.pipe(new ReadlineParser({ delimiter: '\n' }));
     this.parser.on('data', this.eventListener.data);
   }
 

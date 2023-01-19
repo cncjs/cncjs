@@ -12,6 +12,7 @@
   },
   "main": "main.js",
   "dependencies": {
+    "@serialport/parser-readline": "^10.0.0",
     "awilix": "~4.3.1",
     "bcryptjs": "~2.4.3",
     "body-parser": "~1.19.2",
@@ -52,7 +53,7 @@
     "registry-auth-token": "~4.2.1",
     "registry-url": "~5.1.0",
     "rimraf": "~3.0.2",
-    "serialport": "~10.5.0",
+    "serialport": "^10.0.0",
     "serve-favicon": "~2.5.0",
     "serve-static": "~1.15.0",
     "session-file-store": "~1.5.0",
