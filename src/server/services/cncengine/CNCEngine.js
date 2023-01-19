@@ -1,6 +1,6 @@
 import ensureArray from 'ensure-array';
 import noop from 'lodash/noop';
-import SerialPort from 'serialport';
+import { SerialPort } from 'serialport';
 import socketIO from 'socket.io';
 import socketioJwt from 'socketio-jwt';
 import EventTrigger from '../../lib/EventTrigger';
