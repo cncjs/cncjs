@@ -4,30 +4,26 @@ version: "{build}-{branch}"
 
 environment:
   matrix:
-    - job_name: Linux build (amd64)
-      appveyor_build_worker_image: Ubuntu2004
-      nodejs_version: "14"
-      ARCH: amd64
-    - job_name: Linux build (arm)
-      appveyor_build_worker_image: Ubuntu2004
-      nodejs_version: "14"
-      ARCH: arm
-    - job_name: Linux build (arm64)
-      appveyor_build_worker_image: Ubuntu2004
-      nodejs_version: "14"
-      ARCH: arm64
-    - job_name: macOS build (x64)
-      appveyor_build_worker_image: macos
-      nodejs_version: "14"
-      ARCH: x64
-    - job_name: Windows build (x64)
-      appveyor_build_worker_image: Visual Studio 2019
-      nodejs_version: "14"
-      ARCH: x64
-    - job_name: Windows build (x86)
-      appveyor_build_worker_image: Visual Studio 2019
-      nodejs_version: "14"
-      ARCH: x86
+    #- job_name: Linux build (amd64)
+    #  appveyor_build_worker_image: Ubuntu2004
+    #  nodejs_version: "14"
+    #  ARCH: amd64
+    #- job_name: Linux build (arm)
+    #  appveyor_build_worker_image: Ubuntu2004
+    #  nodejs_version: "14"
+    #  ARCH: arm
+    #- job_name: Linux build (arm64)
+    #  appveyor_build_worker_image: Ubuntu2004
+    #  nodejs_version: "14"
+    #  ARCH: arm64
+    #- job_name: macOS build (x64)
+    #  appveyor_build_worker_image: macos
+    #  nodejs_version: "14"
+    #  ARCH: x64
+    #- job_name: Windows build (x64)
+    #  appveyor_build_worker_image: Visual Studio 2019
+    #  nodejs_version: "14"
+    #  ARCH: x64
   global:
     GITHUB_TOKEN:
       secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
@@ -38,8 +34,8 @@ for:
     matrix:
       only:
         - job_name: Linux build (amd64)
-        - job_name: Linux build (arm)
-        - job_name: Linux build (arm64)
+        #- job_name: Linux build (arm)
+        #- job_name: Linux build (arm64)
       fast_finish: true
 
     init:
@@ -363,7 +359,6 @@ for:
     matrix:
       only:
         - job_name: Windows build (x64)
-        - job_name: Windows build (x86)
       fast_finish: true
 
     init:
@@ -433,34 +428,6 @@ for:
                 --body="${GIT_COMMIT_LOG}" `
                 "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
               #Remove-Item "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
-            }
-          }
-      - ps: |
-          if ($env:ARCH -eq "x86") {
-            $GIT_COMMIT_LOG = git log -1 --format='%ci %H %s'
-            $PACKAGE_NAME = node -e "console.log(require('./src/package.json').name)"
-            $PACKAGE_VERSION = node -e "console.log(require('./src/package.json').version)"
-            $PRODUCT_NAME = "CNCjs"
-            mkdir -Force -Path releases\windows
-            yarn build:windows-ia32
-            Get-ChildItem output
-            Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
-            Get-ChildItem releases\windows
-            if ($env:CI_BRANCH -eq "master" -And -not $env:CI_TAG) {
-              yarn github-release delete `
-                --owner=cncjs `
-                --repo=cncjs `
-                --tag="${env:CI_BRANCH}-latest" `
-                --release-name="${env:CI_BRANCH}" `
-                "*-windows-x86.exe"
-              yarn github-release upload `
-                --owner=cncjs `
-                --repo=cncjs `
-                --tag="${env:CI_BRANCH}-latest" `
-                --release-name="${env:CI_BRANCH}" `
-                --body="${GIT_COMMIT_LOG}" `
-                "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
-              #Remove-Item "releases\windows\${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x86.exe"
             }
           }
 
