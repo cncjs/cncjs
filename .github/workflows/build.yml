@@ -13,8 +13,6 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x]
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -115,8 +113,6 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x]
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -201,8 +197,6 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x]
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - run: |
         git --version
@@ -241,8 +235,6 @@ jobs:
       if: github.ref_type == 'branch'
       run: yarn run build-latest
     - name: Build Windows binaries
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: yarn run build:windows
     - name: Prepare release assets
       shell: bash
