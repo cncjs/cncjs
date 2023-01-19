@@ -1,9 +1,8 @@
 #!/bin/bash
 
 PACKAGE_VERSION=${npm_package_version:-0.0.0}
-BRANCH_NAME=`git rev-parse --abbrev-ref HEAD`
 COMMIT_ID_SHORT=`git rev-parse --short HEAD`
-VERSION=${PACKAGE_VERSION}-${BRANCH_NAME}-${COMMIT_ID_SHORT:-latest}
+VERSION=${PACKAGE_VERSION}-${COMMIT_ID_SHORT:-latest}
 
 yarn run package-sync
 
