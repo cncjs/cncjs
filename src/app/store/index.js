@@ -184,9 +184,9 @@ const migrateStore = () => {
         store.unset('widgets.axes.jog.step');
     }
 
-    // 1.9.28
+    // 1.10.0
     // Changed the value of "widgets.webcam.mediaSource" from "mjpeg" to "stream"
-    if (semver.lt(cnc.version, '1.9.28')) {
+    if (semver.lt(cnc.version, '1.10.0')) {
         const originalMediaSource = store.get('widgets.webcam.mediaSource');
         if (originalMediaSource === 'mjpeg') {
             store.set('widgets.webcam.mediaSource', 'stream');
