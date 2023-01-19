@@ -108,6 +108,10 @@ jobs:
       - run:
           name: Build Docker image
           command: |
+            # Change a forward slash to another character
+            # - master       -> master
+            # - feature/next -> feature-next
+            # - v1.0         -> v1.0
             DOCKER_BRANCH_TAG=$(echo $CI_TAG | sed -e 's/\//-/g')
             DOCKER_REPO=cncjs/cncjs
 

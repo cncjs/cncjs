@@ -1,6 +1,7 @@
 #!/bin/bash
 
-VERSION=${npm_package_version}-$(TZ=UTC date +'%Y%m%d')-${CI_COMMIT_SHORT:-latest}
+CI_SHA_SHORT=${CI_SHA:0:8}
+VERSION=${npm_package_version}-$(TZ=UTC date +'%Y%m%d')-${CI_SHA_SHORT:-latest}
 
 yarn run package-sync
 
