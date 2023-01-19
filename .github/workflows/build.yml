@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ "master", "feature/next" ]
+    branches: [ "master", "next" ]
   pull_request:
     branches: [ "master" ]
 
@@ -85,8 +85,8 @@ jobs:
         tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
         rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
         popd
-        ls -al output releases
-        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "master" ]]; then
+        ls -al output releases/linux
+        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "next" ]]; then
           yarn github-release delete \
             --owner=cncjs \
             --repo=cncjs \
@@ -173,8 +173,8 @@ jobs:
         mkdir -p releases/macos
         cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.dmg" "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos-x64.dmg"
         cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-arm64.dmg" "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos-arm64.dmg"
-        ls -al output releases
-        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "master" ]]; then
+        ls -al output releases/macos
+        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "next" ]]; then
           yarn github-release delete \
             --owner=cncjs \
             --repo=cncjs \
@@ -261,8 +261,8 @@ jobs:
         PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
         mkdir -p releases/windows
         cp -af "output/${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases/windows/${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
-        ls -al output releases
-        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "master" ]]; then
+        ls -al output releases/windows
+        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "next" ]]; then
           yarn github-release delete \
             --owner=cncjs \
             --repo=cncjs \
