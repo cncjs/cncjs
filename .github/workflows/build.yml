@@ -115,6 +115,8 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x]
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -199,9 +201,9 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x]
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-    - run: |
-        git --version
     - name: Prepare VC++ Runtime
       run: choco install -y vcredist2017
     - name: Checkout code
