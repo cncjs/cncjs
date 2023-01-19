@@ -1,6 +1,6 @@
 {
   "name": "cncjs-app",
-  "version": "1.10.0",
+  "version": "2.0.0",
   "productName": "CNCjs",
   "description": "CNC Milling Controller",
   "homepage": "https://github.com/cncjs/cncjs",
@@ -25,7 +25,7 @@
     "core-js": "~3.26.1",
     "debug": "~4.3.4",
     "deep-keys": "~0.5.0",
-    "electron-store": "~8.0.1",
+    "electron-store": "~8.1.0",
     "ensure-type": "~1.5.1",
     "errorhandler": "~1.5.1",
     "escodegen": "~2.0.0",
