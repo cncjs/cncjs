@@ -7,7 +7,7 @@ import _noop from 'lodash/noop';
 import _reverse from 'lodash/reverse';
 import _sortBy from 'lodash/sortBy';
 import _uniq from 'lodash/uniq';
-import SerialPort from 'serialport';
+import { SerialPort } from 'serialport';
 import socketIO from 'socket.io';
 import socketioJwt from 'socketio-jwt';
 import settings from 'server/config/settings';
