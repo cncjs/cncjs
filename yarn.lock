@@ -2543,7 +2543,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@serialport/parser-readline@npm:10.5.0, @serialport/parser-readline@npm:^10.2.1":
+"@serialport/parser-readline@npm:10.5.0, @serialport/parser-readline@npm:^10.0.0, @serialport/parser-readline@npm:^10.2.1":
   version: 10.5.0
   resolution: "@serialport/parser-readline@npm:10.5.0"
   dependencies:
@@ -5247,9 +5247,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001400":
-  version: 1.0.30001445
-  resolution: "caniuse-lite@npm:1.0.30001445"
-  checksum: f98ca67829c3c52af5af0a62b8510432b2ad9594437d24ad460a6eb1a23d93e7a31631b1f550fbbe482ad05c467aa00da710a41699eb13d1f246d7db4147ab79
+  version: 1.0.30001446
+  resolution: "caniuse-lite@npm:1.0.30001446"
+  checksum: b31a7e1837783afd7f3d4cb742689996c0a09d67394ddaa0609fd2bce00ceea65c448e25f91c03ba0f2d0e345b7e28fd5bc636c6760c949621a654c0effe74b5
   languageName: node
   linkType: hard
 
@@ -5681,6 +5681,7 @@ __metadata:
     "@babel/preset-react": ~7.0.0
     "@babel/register": ~7.4.0
     "@babel/runtime": ~7.4.3
+    "@serialport/parser-readline": ^10.0.0
     "@trendmicro/babel-config": ~1.0.0-alpha
     "@trendmicro/react-anchor": ~0.5.6
     "@trendmicro/react-breadcrumbs": ~0.5.5
@@ -5840,7 +5841,7 @@ __metadata:
     rimraf: ~2.6.3
     run-sequence: ~2.2.1
     semver: ~6.0.0
-    serialport: ~10.5.0
+    serialport: ^10.0.0
     serve-favicon: ~2.5.0
     serve-static: ~1.13.2
     session-file-store: ~1.2.0
@@ -17735,7 +17736,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"serialport@npm:~10.5.0":
+"serialport@npm:^10.0.0":
   version: 10.5.0
   resolution: "serialport@npm:10.5.0"
   dependencies:

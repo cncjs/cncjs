@@ -15,6 +15,7 @@ const files = [
     'src/server/**/*.{js,jsx}'
 ];
 const deps = [
+    '@serialport/parser-readline',
     '@babel/runtime', // 'babel-runtime' is required for electron app
     'debug' // 'debug' is required for electron app
 ].concat(findImports(files, { flatten: true })).sort();
