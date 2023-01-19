@@ -136,6 +136,9 @@ jobs:
         echo "• RUNNER_OS=$RUNNER_OS"
         echo "• RUNNER_TEMP=$RUNNER_TEMP"
         echo "• RUNNER_TOOL_CACHE=$RUNNER_TOOL_CACHE"
+    #- name: Import the code signing certificate
+    #- run: |
+    #    security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign
     - name: Install Yarn package manager
       run: npm install -g yarn
     - name: Install necessary dependencies and perform initial checks
