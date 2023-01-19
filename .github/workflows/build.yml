@@ -59,6 +59,7 @@ jobs:
     - name: Prepare release assets
       shell: bash
       run: |
+        GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
         PRODUCT_NAME=CNCjs
         PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
         PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
@@ -70,7 +71,7 @@ jobs:
         cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.armv7l.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.armv7l.rpm"
         cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-armv7l.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.AppImage"
         cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_armv7l.deb" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-armv7l.deb"
-        cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.arm64.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux.arm64.rpm"
+        cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}.aarch64.rpm" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-aarch64.rpm"
         cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-arm64.AppImage" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.AppImage"
         cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_arm64.deb" "releases/linux/${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.deb"
         pushd releases/linux
@@ -84,14 +85,35 @@ jobs:
         tar zcfh "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64.tar.gz" "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
         rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
         popd
-        ls -al releases/linux/*
-    - name: Upload release assets
-      uses: actions/github-script@v6
+        ls -al output releases
+        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "master" ]]; then
+          yarn github-release delete \
+            --owner=cncjs \
+            --repo=cncjs \
+            --tag="${GITHUB_REF_NAME}-latest" \
+            --release-name="${GITHUB_REF_NAME}" \
+            "*-linux*";
+          yarn github-release upload \
+            --owner=cncjs \
+            --repo=cncjs \
+            --tag="${GITHUB_REF_NAME}-latest" \
+            --release-name="${GITHUB_REF_NAME}" \
+            --body="${GIT_COMMIT_LOG}" \
+            releases/linux/*;
+        fi
+    #- name: Upload release assets
+    #  uses: actions/github-script@v6
+    #  with:
+    #    github-token: ${{ secrets.GITHUB_TOKEN }}
+    #    script: |
+    #      // https://github.com/actions/upload-release-asset/issues/47#issuecomment-659071145
+    #      console.log('environment:', process.versions);
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          // https://github.com/actions/upload-release-asset/issues/47#issuecomment-659071145
-          console.log('environment:', process.versions);
+        files: |
+          releases/linux/*
 
   build-macos:
     name: Build macOS packages
@@ -144,20 +166,42 @@ jobs:
     - name: Prepare release assets
       shell: bash
       run: |
+        GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
         PRODUCT_NAME=CNCjs
         PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
         PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
-        ls -al output output/*
         mkdir -p releases/macos
-        cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.dmg" "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos.x64.dmg"
-        ls -al releases/macos/*
-    - name: Upload release assets
-      uses: actions/github-script@v6
+        cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.dmg" "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos-x64.dmg"
+        cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-arm64.dmg" "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos-arm64.dmg"
+        ls -al output releases
+        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "master" ]]; then
+          yarn github-release delete \
+            --owner=cncjs \
+            --repo=cncjs \
+            --tag="${GITHUB_REF_NAME}-latest" \
+            --release-name="${GITHUB_REF_NAME}" \
+            "*-macos*";
+          yarn github-release upload \
+            --owner=cncjs \
+            --repo=cncjs \
+            --tag="${GITHUB_REF_NAME}-latest" \
+            --release-name="${GITHUB_REF_NAME}" \
+            --body="${GIT_COMMIT_LOG}" \
+            releases/macos/*;
+        fi
+    #- name: Upload release assets
+    #  uses: actions/github-script@v6
+    #  with:
+    #    github-token: ${{ secrets.GITHUB_TOKEN }}
+    #    script: |
+    #      // https://github.com/actions/upload-release-asset/issues/47#issuecomment-659071145
+    #      console.log('environment:', process.versions);
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          // https://github.com/actions/upload-release-asset/issues/47#issuecomment-659071145
-          console.log('environment:', process.versions);
+        files: |
+          releases/macos/*
 
   build-windows:
     name: Build Windows packages
@@ -211,17 +255,38 @@ jobs:
     - name: Prepare release assets
       shell: bash
       run: |
+        GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
         PRODUCT_NAME=CNCjs
         PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
         PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
-        ls -al output output/*
         mkdir -p releases/windows
         cp -af "output/${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases/windows/${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
-        ls -al releases/windows/*
-    - name: Upload release assets
-      uses: actions/github-script@v6
+        ls -al output releases
+        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "master" ]]; then
+          yarn github-release delete \
+            --owner=cncjs \
+            --repo=cncjs \
+            --tag="${GITHUB_REF_NAME}-latest" \
+            --release-name="${GITHUB_REF_NAME}" \
+            "*-windows*";
+          yarn github-release upload \
+            --owner=cncjs \
+            --repo=cncjs \
+            --tag="${GITHUB_REF_NAME}-latest" \
+            --release-name="${GITHUB_REF_NAME}" \
+            --body="${GIT_COMMIT_LOG}" \
+            releases/windows/*;
+        fi
+    #- name: Upload release assets
+    #  uses: actions/github-script@v6
+    #  with:
+    #    github-token: ${{ secrets.GITHUB_TOKEN }}
+    #    script: |
+    #      // https://github.com/actions/upload-release-asset/issues/47#issuecomment-659071145
+    #      console.log('environment:', process.versions);
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          // https://github.com/actions/upload-release-asset/issues/47#issuecomment-659071145
-          console.log('environment:', process.versions);
+        files: |
+          releases/windows/*
