@@ -1,7 +1,9 @@
 #!/bin/bash
 
-CI_SHA_SHORT=${CI_SHA:0:8}
-VERSION=${npm_package_version}-$(TZ=UTC date +'%Y%m%d')-${CI_SHA_SHORT:-latest}
+PACKAGE_VERSION=${npm_package_version:-0.0.0}
+BRANCH_NAME=`git rev-parse --abbrev-ref HEAD`
+COMMIT_ID_SHORT=`git rev-parse --short HEAD`
+VERSION=${PACKAGE_VERSION}-${BRANCH_NAME}-${COMMIT_ID_SHORT:-latest}
 
 yarn run package-sync
 
