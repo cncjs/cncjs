@@ -32,7 +32,6 @@ import {
     GRBL,
     GRBL_ACTIVE_STATE_RUN,
     GRBL_ACTIVE_STATE_HOLD,
-    GRBL_REALTIME_COMMANDS,
     GRBL_ALARMS,
     GRBL_ERRORS,
     GRBL_SETTINGS
@@ -1157,8 +1156,8 @@ class GrblController {
                 this.workflow.resume();
             },
             'feeder:feed': () => {
-                const [commands, context = {}] = args;
-                this.command('gcode', commands, context);
+                const [commands, context, options] = args;
+                this.command('gcode', commands, context, options);
             },
             'feeder:start': () => {
                 if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
@@ -1284,8 +1283,12 @@ class GrblController {
                 ];
                 this.command('gcode', commands);
             },
+            // @param {string|string[]} commands The commands to be added to the queue.
+            // @param {object} [context] The associated context for the commands.
+            // @param {object} [options] The options object.
+            // @param {string} [options.direction] The direction can be one of 'prepend' or 'append' (default). It's used to instruct the feeder to insert data to the beginning or the end of the queue.
             'gcode': () => {
-                const [commands, context] = args;
+                const [commands, context, options] = args;
                 const data = ensureArray(commands)
                     .join('\n')
                     .split(/\r?\n/)
@@ -1297,7 +1300,7 @@ class GrblController {
                         return line.trim().length > 0;
                     });
 
-                this.feeder.feed(data, context);
+                this.feeder.feed(data, context, options);
 
                 if (!this.feeder.isPending()) {
                     this.feeder.next();
@@ -1354,7 +1357,17 @@ class GrblController {
 
                     this.command('gcode:load', file, data, context, callback);
                 });
-            }
+            },
+            'jogCancel': () => {
+                const command = '\x85'; // Jog Cancel
+                const context = {}; // empty context
+                const options = {
+                    direction: 'prepend',
+                };
+
+                // Prepend jog cancel (0x85) real-time command to the queue
+                this.command('gcode', command, context, options);
+            },
         }[cmd];
 
         if (!handler) {
@@ -1385,7 +1398,19 @@ class GrblController {
     }
 
     writeln(data, context) {
-        if (_.includes(GRBL_REALTIME_COMMANDS, data)) {
+        /**
+         * https://github.com/gnea/grbl/blob/master/doc/markdown/commands.md#grbl-v11-realtime-commands
+         */
+        const isASCIIRealtimeCommand = _.includes([
+            '\x18', // Soft-Reset (Ctrl-X)
+            '?', // Status Report Query
+            '~', // Cycle Start / Resume
+            '!', // Feed Hold
+        ], data);
+        const isExtendedASCIIRealtimeCommand = String(data).match(/[\x80-\xff]/);
+        const isRealtimeCommand = isASCIIRealtimeCommand || isExtendedASCIIRealtimeCommand;
+
+        if (isRealtimeCommand) {
             this.write(data, context);
         } else {
             this.write(data + '\n', context);

@@ -1,3 +1,4 @@
+import { ensureArray } from 'ensure-type';
 import events from 'events';
 
 class Feeder extends events.EventEmitter {
@@ -6,7 +7,7 @@ class Feeder extends events.EventEmitter {
         holdReason: null,
         queue: [],
         pending: false,
-        changed: false
+        changed: false,
     };
 
     dataFilter = null;
@@ -31,23 +32,48 @@ class Feeder extends events.EventEmitter {
             holdReason: this.state.holdReason,
             queue: this.state.queue.length,
             pending: this.state.pending,
-            changed: this.state.changed
+            changed: this.state.changed,
         };
     }
 
-    feed(data = [], context = {}) {
+    // @param {string} data The data to be added to the queue.
+    // @param {object} [context] The context associated with the data.
+    // @param {object} [options] The options object.
+    // @param {string} [options.direction] The direction can be one of 'prepend' or 'append' (default). It's used to instruct the feeder to insert data to the beginning or the end of the queue.
+    feed(data, context, options) {
         // Clear pending state when the feeder queue is empty
         if (this.state.queue.length === 0) {
             this.state.pending = false;
         }
 
-        data = [].concat(data);
+        data = ensureArray(data);
         if (data.length > 0) {
-            this.state.queue = this.state.queue.concat(data.map(command => {
-                return { command: command, context: context };
+            const queueItems = data.map(command => ({
+                command,
+                context: { ...context },
             }));
+
+            const direction = options?.direction; // One of: prepend, append (default)
+            if (direction === 'prepend') {
+                // prepend
+                this.state.queue = this.state.queue.slice().unshift(...queueItems);
+            } else {
+                // append
+                this.state.queue = this.state.queue.concat(queueItems);
+            }
+
             this.emit('change');
         }
+    }
+
+    prepend(data, context, options) {
+        options = { ...options, direction: 'prepend' };
+        this.feed(data, context, options);
+    }
+
+    append(data, context, options) {
+        options = { ...options, direction: 'append' };
+        this.feed(data, context, options);
     }
 
     hold(reason) {
