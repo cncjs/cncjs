@@ -30,7 +30,7 @@ workflows:
 jobs:
   build-tag:
     docker:
-      - image: cimg/node:14.20-browsers
+      - image: cimg/node:14.21-browsers
     steps:
       - checkout
       - browser-tools/install-browser-tools
@@ -87,10 +87,9 @@ jobs:
             - ci.tar.gz
   deploy-tag:
     docker:
-      - image: cimg/node:14.20
+      - image: cimg/node:14.21
     steps:
-      - setup_remote_docker:
-          version: 19.03.13
+      - setup_remote_docker
       - checkout
       - run:
           name: Setup environment variables

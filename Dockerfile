@@ -3,7 +3,7 @@ FROM debian:bullseye as build-stage
 
 ENV BUILD_DIR /tmp/build
 ENV NVM_DIR /root/.nvm
-ENV NODE_VERSION v12.22.1
+ENV NODE_VERSION v14.21.2
 ENV NODE_ENV production
 ENV NODE_PATH $NVM_DIR/$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
@@ -36,7 +36,7 @@ RUN npm install -g npm@latest && npm install -g yarn && yarn --production
 FROM debian:bullseye
 
 ENV NVM_DIR /root/.nvm
-ENV NODE_VERSION v12.22.1
+ENV NODE_VERSION v14.21.2
 ENV NODE_ENV production
 ENV NODE_PATH $NVM_DIR/$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
