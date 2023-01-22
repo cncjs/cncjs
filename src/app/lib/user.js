@@ -5,7 +5,7 @@ let _authenticated = false;
 
 export const signin = ({ token, name, password }) => new Promise((resolve, reject) => {
     api.signin({ token, name, password })
-        .then((res) => {
+        .then(async (res) => {
             const { enabled = false, token = '', name = '' } = { ...res.body };
 
             config.set('session.enabled', enabled);
@@ -13,7 +13,7 @@ export const signin = ({ token, name, password }) => new Promise((resolve, rejec
             config.set('session.name', name);
 
             // Persist data after successful login to prevent debounced update
-            config.persist();
+            await config.persist(); // async
 
             _authenticated = true;
             resolve({ authenticated: true, token: token });

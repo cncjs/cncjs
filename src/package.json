@@ -14,6 +14,7 @@
   "dependencies": {
     "@babel/polyfill": "~7.4.3",
     "@babel/runtime": "~7.4.3",
+    "@serialport/parser-readline": "^10.0.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.18.3",
     "chalk": "~2.4.2",
@@ -51,7 +52,7 @@
     "registry-auth-token": "~3.4.0",
     "registry-url": "~5.1.0",
     "rimraf": "~2.6.3",
-    "serialport": "~10.5.0",
+    "serialport": "^10.0.0",
     "serve-favicon": "~2.5.0",
     "serve-static": "~1.13.2",
     "session-file-store": "~1.2.0",

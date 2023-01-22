@@ -158,7 +158,7 @@ series([
     }
 
     if (settings.error.corruptedWorkspaceSettings) {
-        const text = store.getConfig();
+        const text = await store.getConfig(); // async
         const url = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text);
         const filename = `${settings.name}-${settings.version}.json`;
 
@@ -188,12 +188,12 @@ series([
                     <Button
                         btnStyle="danger"
                         onClick={chainedFunction(
-                            () => {
+                            async () => {
                                 // Reset to default state
                                 store.state = defaultState;
 
                                 // Persist data locally
-                                store.persist();
+                                await store.persist(); // async
                             },
                             onClose
                         )}

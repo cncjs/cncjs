@@ -38,12 +38,12 @@ class RestoreDefaults extends PureComponent {
                     </Button>
                     <Button
                         btnStyle="danger"
-                        onClick={() => {
+                        onClick={async () => {
                             // Reset to default state
                             store.state = defaultState;
 
                             // Persist data locally
-                            store.persist();
+                            await store.persist(); // async
 
                             // Refresh
                             window.location.reload();

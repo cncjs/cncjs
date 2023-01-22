@@ -42,9 +42,9 @@ class ImportSettings extends PureComponent {
                     </Button>
                     <Button
                         btnStyle="danger"
-                        onClick={() => {
+                        onClick={async () => {
                             // Persist data locally
-                            store.persist(data);
+                            await store.persist(data); // async
 
                             // Refresh
                             window.location.reload();

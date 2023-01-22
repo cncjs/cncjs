@@ -12,29 +12,20 @@ import ImmutableStore from '../lib/immutable-store';
 import log from '../lib/log';
 import defaultState from './defaultState';
 
+const cnc = {
+    version: settings.version,
+    state: {}
+};
+
 const store = new ImmutableStore(defaultState);
 
-let userData = null;
-
-// Check whether the code is running in Electron renderer process
-if (isElectron()) {
-    const electron = window.require('electron');
-    const path = window.require('path'); // Require the path module within Electron
-    const app = electron.remote.app;
-    userData = {
-        path: path.join(app.getPath('userData'), 'cnc.json')
-    };
-}
-
-const getConfig = () => {
+const getConfig = async () => {
     let content = '';
 
     // Check whether the code is running in Electron renderer process
     if (isElectron()) {
-        const fs = window.require('fs'); // Require the fs module within Electron
-        if (fs.existsSync(userData.path)) {
-            content = fs.readFileSync(userData.path, 'utf8') || '{}';
-        }
+        const electron = window.require('electron');
+        content = await electron.ipcRenderer.invoke('read-user-data');
     } else {
         content = localStorage.getItem('cnc') || '{}';
     }
@@ -42,7 +33,7 @@ const getConfig = () => {
     return content;
 };
 
-const persist = (data) => {
+const persist = async (data) => {
     const { version, state } = { ...data };
 
     data = {
@@ -58,8 +49,8 @@ const persist = (data) => {
 
         // Check whether the code is running in Electron renderer process
         if (isElectron()) {
-            const fs = window.require('fs'); // Use window.require to require fs module in Electron
-            fs.writeFileSync(userData.path, value);
+            const electron = window.require('electron');
+            await electron.ipcRenderer.invoke('write-user-data', value);
         } else {
             localStorage.setItem('cnc', value);
         }
@@ -117,28 +108,6 @@ const normalizeState = (state) => {
     return state;
 };
 
-const cnc = {
-    version: settings.version,
-    state: {}
-};
-
-try {
-    const text = getConfig();
-    const data = JSON.parse(text);
-    cnc.version = get(data, 'version', settings.version);
-    cnc.state = get(data, 'state', {});
-} catch (e) {
-    set(settings, 'error.corruptedWorkspaceSettings', true);
-    log.error(e);
-}
-
-store.state = normalizeState(merge({}, defaultState, cnc.state || {}));
-
-// Debouncing enforces that a function not be called again until a certain amount of time (e.g. 100ms) has passed without it being called.
-store.on('change', debounce((state) => {
-    persist({ state: state });
-}, 100));
-
 //
 // Migration
 //
@@ -194,11 +163,30 @@ const migrateStore = () => {
     }
 };
 
-try {
-    migrateStore();
-} catch (err) {
-    log.error(err);
-}
+(async () => {
+    // Debouncing enforces that a function not be called again until a certain amount of time (e.g. 100ms) has passed without it being called.
+    store.on('change', debounce(async (state) => {
+        await persist({ state: state });
+    }, 100));
+
+    try {
+        const text = await getConfig();
+        const data = JSON.parse(text);
+        cnc.version = get(data, 'version', settings.version);
+        cnc.state = get(data, 'state', {});
+    } catch (e) {
+        set(settings, 'error.corruptedWorkspaceSettings', true);
+        log.error(e);
+    }
+
+    store.state = normalizeState(merge({}, defaultState, cnc.state || {}));
+
+    try {
+        migrateStore();
+    } catch (err) {
+        log.error(err);
+    }
+})();
 
 store.getConfig = getConfig;
 store.persist = persist;

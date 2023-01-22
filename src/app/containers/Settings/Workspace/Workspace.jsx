@@ -98,9 +98,9 @@ class Workspace extends PureComponent {
         this.fileInput.click();
     };
 
-    handleExport = (event) => {
+    handleExport = async (event) => {
         // https://github.com/mholt/PapaParse/issues/175#issuecomment-201308792
-        const text = store.getConfig();
+        const text = await store.getConfig(); // async
         const data = new Blob([text], {
             type: 'text/plain;charset=utf-8;'
         });
