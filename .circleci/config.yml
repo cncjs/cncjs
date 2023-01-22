@@ -30,7 +30,7 @@ workflows:
 jobs:
   build-tag:
     docker:
-      - image: cimg/node:14-browsers
+      - image: cimg/node:14.21-browsers
     steps:
       - checkout
       - browser-tools/install-browser-tools
@@ -87,7 +87,7 @@ jobs:
             - ci.tar.gz
   deploy-tag:
     docker:
-      - image: cimg/node:14
+      - image: cimg/node:14.21
     steps:
       - setup_remote_docker
       - checkout
@@ -107,10 +107,6 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            # Change a forward slash to another character
-            # - master       -> master
-            # - feature/next -> feature-next
-            # - v1.0         -> v1.0
             DOCKER_BRANCH_TAG=$(echo $CI_TAG | sed -e 's/\//-/g')
             DOCKER_REPO=cncjs/cncjs
 
