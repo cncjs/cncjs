@@ -1,8 +1,14 @@
 name: CI
 
 on:
+  # https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#example-including-branches-and-tags
   push:
-    branches: [ "master" ]
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - master
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - '*'
   pull_request:
     branches: [ "master" ]
 
