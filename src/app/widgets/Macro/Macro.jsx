@@ -35,7 +35,7 @@ import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import iframeExport from 'app/lib/iframe-export';
 import portal from 'app/lib/portal';
-import configStore from 'app/store/config';
+import config from 'app/store/config';
 import LoadMacro from './modals/LoadMacro';
 import EditMacro from './modals/EditMacro';
 import NewMacro from './modals/NewMacro';
@@ -47,7 +47,7 @@ const exportMacros = () => {
   const data = {
     filename: 'macros',
   };
-  const token = configStore.get('session.token');
+  const token = config.get('session.token');
   iframeExport(url, data, {
     token,
   });

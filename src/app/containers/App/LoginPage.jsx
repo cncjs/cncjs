@@ -24,7 +24,7 @@ import i18n from 'app/lib/i18n';
 import x from 'app/lib/json-stringify';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
-import configStore from 'app/store/config';
+import config from 'app/store/config';
 
 const required = value => {
   return ensureString(value).trim().length > 0
@@ -74,7 +74,7 @@ const LoginPage = () => {
 
     log.debug('Create and establish a WebSocket connection');
 
-    const token = configStore.get('session.token');
+    const token = config.get('session.token');
     const host = '';
     const options = {
       query: 'token=' + token

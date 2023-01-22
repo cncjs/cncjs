@@ -10,18 +10,18 @@ import Iframe from 'app/components/Iframe';
 import useEffectOnce from 'app/hooks/useEffectOnce';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import configStore from 'app/store/config';
+import config from 'app/store/config';
 import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import useWidgetEvent from 'app/widgets/shared/useWidgetEvent';
 
 function Custom({
   disabled,
 }) {
-  const config = useWidgetConfig();
-  const emitter = useWidgetEvent();
-  const url = config.get('url');
+  const widgetConfig = useWidgetConfig();
+  const widgetEmitter = useWidgetEvent();
+  const url = widgetConfig.get('url');
   const iframeRef = useRef(null);
-  const token = configStore.get('session.token');
+  const token = config.get('session.token');
 
   useEffect(() => {
     const reload = (forceGet = false) => {
@@ -43,12 +43,12 @@ function Custom({
       }
     };
 
-    emitter.on('refresh', reload);
+    widgetEmitter.on('refresh', reload);
 
     return () => {
-      emitter.off('refresh', reload);
+      widgetEmitter.off('refresh', reload);
     };
-  }, [emitter, token, url]);
+  }, [widgetEmitter, token, url]);
 
   useEffectOnce(() => {
     const postMessage = (type = '', payload) => {

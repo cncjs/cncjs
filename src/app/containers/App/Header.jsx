@@ -131,7 +131,7 @@ const AppearanceMenuItems = forwardRef((props, ref) => {
 const LanguageMenuItems = forwardRef((props, ref) => {
   const [, navigateMenu] = useContext(MenuStateContext);
   const currentLanguage = config.get('settings.language');
-  const setLanguage = (value) => {
+  const setLanguage = async (value) => {
     if (value === i18next.language) {
       return;
     }
@@ -140,7 +140,8 @@ const LanguageMenuItems = forwardRef((props, ref) => {
     config.set('settings.language', value);
 
     // Persist language setting to cookies and local storage before reloading the page
-    config.persist();
+    await config.persist();
+
     i18next.changeLanguage(value, (err, t) => {
       window.location.reload();
     });

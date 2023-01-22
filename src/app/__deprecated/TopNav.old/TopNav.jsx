@@ -27,7 +27,7 @@ import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
-import configStore from 'app/store/config';
+import config from 'app/store/config';
 import logo from 'app/images/logo-badge-32x32.png';
 import QuickAccessToolbar from './QuickAccessToolbar';
 
@@ -339,8 +339,8 @@ class TopNav extends Component {
     const { history, location } = this.props;
     const { commands, currentVersion, latestVersion } = this.state;
     const newUpdateAvailable = semverLt(currentVersion, latestVersion);
-    const sessionEnabled = configStore.get('session.enabled');
-    const signedInName = configStore.get('session.name');
+    const sessionEnabled = config.get('session.enabled');
+    const signedInName = config.get('session.name');
 
     return (
       <Container

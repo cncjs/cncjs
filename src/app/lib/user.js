@@ -1,19 +1,19 @@
 import api from 'app/api';
-import configStore from 'app/store/config';
+import config from 'app/store/config';
 
 let _authenticated = false;
 
 export const signin = ({ token, name, password }) => new Promise((resolve, reject) => {
   api.signin({ token, name, password })
-    .then((res) => {
+    .then(async (res) => {
       const { enabled = false, token = '', name = '' } = { ...res.body };
 
-      configStore.set('session.enabled', enabled);
-      configStore.set('session.token', token);
-      configStore.set('session.name', name);
+      config.set('session.enabled', enabled);
+      config.set('session.token', token);
+      config.set('session.name', name);
 
       // Persist data after successful login to prevent debounced update
-      configStore.persist();
+      await config.persist();
 
       _authenticated = true;
       resolve({ authenticated: true, token: token });
@@ -26,7 +26,7 @@ export const signin = ({ token, name, password }) => new Promise((resolve, rejec
 });
 
 export const signout = () => new Promise((resolve, reject) => {
-  configStore.unset('session.token');
+  config.unset('session.token');
   _authenticated = false;
   resolve();
 });

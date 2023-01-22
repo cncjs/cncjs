@@ -16,29 +16,20 @@ import { promptUserForCorruptedWorkspaceSettings } from 'app/containers/App/acti
 import EventEmitterStore from './EventEmitterStore';
 import defaultState from './defaultState';
 
+const cnc = {
+  version: settings.version,
+  state: {},
+};
+
 const config = new EventEmitterStore(defaultState);
 
-let userData = null;
-
-// Check whether the code is running in Electron renderer process
-if (isElectron()) {
-  const electron = window.require('electron');
-  const path = window.require('path'); // Require the path module within Electron
-  const app = electron.remote.app;
-  userData = {
-    path: path.join(app.getPath('userData'), 'cnc.json')
-  };
-}
-
-config.toJSONString = () => {
+config.toJSONString = async () => {
   let content = '';
 
   // Check whether the code is running in Electron renderer process
   if (isElectron()) {
-    const fs = window.require('fs'); // Require the fs module within Electron
-    if (fs.existsSync(userData.path)) {
-      content = fs.readFileSync(userData.path, 'utf8') || '{}';
-    }
+    const electron = window.require('electron');
+    content = await electron.ipcRenderer.invoke('read-user-config');
   } else {
     content = localStorage.getItem('cnc') || '{}';
   }
@@ -48,7 +39,7 @@ config.toJSONString = () => {
 
 config.getDefaultState = () => defaultState;
 
-config.persist = (data) => {
+config.persist = async (data) => {
   const { version, state } = { ...data };
 
   data = {
@@ -64,8 +55,8 @@ config.persist = (data) => {
 
     // Check whether the code is running in Electron renderer process
     if (isElectron()) {
-      const fs = window.require('fs'); // Use window.require to require fs module in Electron
-      fs.writeFileSync(userData.path, value);
+      const electron = window.require('electron');
+      await electron.ipcRenderer.invoke('write-user-config', value);
     } else {
       localStorage.setItem('cnc', value);
     }
@@ -77,6 +68,11 @@ config.persist = (data) => {
 config.restoreDefault = () => {
   config.state = { ...defaultState };
 };
+
+// Debouncing enforces that a function not be called again until a certain amount of time (e.g. 100ms) has passed without it being called.
+config.on('change', _debounce(async (state) => {
+  await config.persist({ state: state });
+}, 100));
 
 const normalizeState = (state) => {
   { // Update workspace widgets
@@ -124,46 +120,10 @@ const normalizeState = (state) => {
   return state;
 };
 
-const cnc = {
-  error: false,
-  version: settings.version,
-  state: {}
-};
-
-try {
-  const text = config.toJSONString();
-  const data = JSON.parse(text);
-  cnc.version = _get(data, 'version', settings.version);
-  cnc.state = _get(data, 'state', {});
-} catch (e) {
-  log.error(e);
-
-  cnc.error = true;
-
-  // Dispatch an action to prompt user for corrupted workspace settings
-  reduxStore.dispatch(promptUserForCorruptedWorkspaceSettings());
-}
-
-config.state = normalizeState(_merge({}, defaultState, cnc.state || {}));
-
-// Debouncing enforces that a function not be called again until a certain amount of time (e.g. 100ms) has passed without it being called.
-config.on('change', _debounce((state) => {
-  config.persist({ state: state });
-}, 100));
-
 //
 // Migration
 //
 const migrateStore = () => {
-  if (cnc.error) {
-    // Probably due to corrupted workspace settings
-    return;
-  }
-
-  if (!cnc.version) {
-    return;
-  }
-
   // 1.9.0
   // * Renamed "widgets.probe.tlo" to "widgets.probe.touchPlateHeight"
   // * Removed "widgets.webcam.scale"
@@ -202,14 +162,24 @@ const migrateStore = () => {
   }
 
   // 1.10.0
+  // Changed the value of "widgets.webcam.mediaSource" from "mjpeg" to "stream"
+  if (semverLt(cnc.version, '1.10.0')) {
+    const originalMediaSource = config.get('widgets.webcam.mediaSource');
+    if (originalMediaSource === 'mjpeg') {
+      config.set('widgets.webcam.mediaSource', 'stream');
+    }
+  }
+
+  // 2.0.0
   // Removed "widgets.connection.port"
   // Removed "widgets.connection.baudrate"
-  if (semverLte(cnc.version, '1.10.0')) {
+  if (semverLte(cnc.version, '2.0.0')) {
     config.unset('widgets.connection.port');
     config.unset('widgets.connection.baudrate');
   }
-  if (semverLt(cnc.version, '1.10.0')) {
-    log.info(`Migrating configuration settings from v${cnc.version} to v1.10.0`);
+
+  if (semverLt(cnc.version, '2.0.0')) {
+    log.info(`Migrating configuration settings from v${cnc.version} to v2.0.0`);
 
     // appearance
     config.set('settings.appearance', _get(defaultState, 'settings.appearance'));
@@ -221,10 +191,30 @@ const migrateStore = () => {
   }
 };
 
-try {
-  migrateStore();
-} catch (err) {
-  log.error(err);
-}
+(async () => {
+  let canMigrateStore = false;
+
+  try {
+    const content = await config.toJSONString();
+    const { version, state } = JSON.parse(content);
+    cnc.version = version;
+    cnc.state = state;
+
+    config.state = normalizeState(_merge({}, defaultState, cnc.state ?? {}));
+
+    if (!!cnc.version) {
+      canMigrateStore = true;
+    }
+  } catch (e) {
+    log.error(e);
+
+    // Dispatch an action to prompt user for corrupted workspace settings
+    reduxStore.dispatch(promptUserForCorruptedWorkspaceSettings());
+  }
+
+  if (canMigrateStore) {
+    migrateStore();
+  }
+})();
 
 export default config;

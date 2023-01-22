@@ -31,8 +31,8 @@ const WorkspaceSettings = () => {
   const portal = usePortal();
   const fileInputRef = useRef();
 
-  const handleClickExport = useCallback((event) => {
-    const content = config.toJSONString();
+  const handleClickExport = useCallback(async (event) => {
+    const content = await config.toJSONString();
     const hash = createHash('sha256')
       .update(content)
       .digest('hex')
@@ -79,12 +79,12 @@ const WorkspaceSettings = () => {
             </Button>
             <Button
               variant="emphasis"
-              onClick={() => {
+              onClick={async () => {
                 // Restore default settings
                 config.restoreDefault();
 
                 // Persist data locally
-                config.persist();
+                await config.persist();
 
                 // Reload the current page from the server
                 window.location.reload(true);
@@ -188,9 +188,9 @@ const WorkspaceSettings = () => {
                 </Button>
                 <Button
                   variant="emphasis"
-                  onClick={() => {
+                  onClick={async () => {
                     // Persist data locally
-                    config.persist(data);
+                    await config.persist({ version, state });
 
                     // Reload the current page from the server
                     window.location.reload(true);

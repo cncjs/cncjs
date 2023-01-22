@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Space,
 } from '@tonic-ui/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import i18n from 'app/lib/i18n';
 import Anchor from 'app/components/Anchor';
 import { Button } from 'app/components/Buttons';
@@ -12,9 +12,15 @@ import settings from 'app/config/settings';
 import config from 'app/store/config';
 
 function CorruptedWorkspaceSettingsModal(props) {
-  const text = config.getConfig();
-  const url = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text);
+  const [url, setUrl] = useState();
   const filename = `${settings.name}-${settings.version}.json`;
+
+  useEffect(() => {
+    (async () => {
+      const content = await config.toJSONString();
+      setUrl('data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+    })();
+  }, []);
 
   return (
     <Modal
@@ -50,12 +56,12 @@ function CorruptedWorkspaceSettingsModal(props) {
       <Modal.Footer>
         <Button
           btnStyle="danger"
-          onClick={() => {
+          onClick={async () => {
             // Reset default settings
             config.restoreDefault();
 
             // Persist data locally
-            config.persist();
+            await config.persist();
 
             // Reload the current page from the server
             window.location.reload(true);

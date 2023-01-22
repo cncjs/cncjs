@@ -1,7 +1,7 @@
 import axios from 'axios';
-import configStore from 'app/store/config';
+import config from 'app/store/config';
 
-const token = configStore.get('session.token');
+const token = config.get('session.token');
 const axiosInstance = axios.create({
   headers: {
     'Authorization': `Bearer ${token}`,
