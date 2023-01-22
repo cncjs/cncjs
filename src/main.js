@@ -160,8 +160,6 @@ const showMainWindow = async () => {
 
   // Save window size and position
   mainWindow.on('close', (event) => {
-    event.preventDefault();
-
     const bounds = mainWindow.getBounds();
     const display = screen.getDisplayMatching(bounds);
     const options = {
