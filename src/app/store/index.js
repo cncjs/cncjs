@@ -25,7 +25,7 @@ const getConfig = async () => {
   // Check whether the code is running in Electron renderer process
   if (isElectron()) {
     const electron = window.require('electron');
-    content = await electron.ipcRenderer.invoke('read-user-data');
+    content = await electron.ipcRenderer.invoke('read-user-config');
   } else {
     content = localStorage.getItem('cnc') || '{}';
   }
@@ -50,7 +50,7 @@ const persist = async (data) => {
     // Check whether the code is running in Electron renderer process
     if (isElectron()) {
       const electron = window.require('electron');
-      await electron.ipcRenderer.invoke('write-user-data', value);
+      await electron.ipcRenderer.invoke('write-user-config', value);
     } else {
       localStorage.setItem('cnc', value);
     }

@@ -177,19 +177,19 @@ const showMainWindow = async () => {
   });
 
   // @see 'src/app/store/index.js'
-  ipcMain.handle('read-user-data', () => {
+  ipcMain.handle('read-user-config', () => {
     let content = '{}';
-    const userDataPath = path.join(app.getPath('userData'), 'cnc.json');
-    if (fs.existsSync(userDataPath)) {
-      content = fs.readFileSync(userDataPath, 'utf8');
+    const configPath = path.join(userDataPath, 'cnc.json');
+    if (fs.existsSync(configPath)) {
+      content = fs.readFileSync(configPath, 'utf8');
     }
     return content;
   });
 
   // @see 'src/app/store/index.js'
-  ipcMain.handle('write-user-data', (event, content) => {
-    const userDataPath = path.join(app.getPath('userData'), 'cnc.json');
-    fs.writeFileSync(userDataPath, content ?? '{}');
+  ipcMain.handle('write-user-config', (event, content) => {
+    const configPath = path.join(userDataPath, 'cnc.json');
+    fs.writeFileSync(configPath, content ?? '{}');
   });
 };
 
