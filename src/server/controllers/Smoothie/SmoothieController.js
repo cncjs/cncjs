@@ -217,7 +217,11 @@ class SmoothieController {
         return;
       }
 
-      this.emit('sender:load', meta, context);
+      // Emit the 'sender:load' event with the name and content from the sender's state object
+      this.emit('sender:load', {
+        name: this.sender.state.name,
+        content: this.sender.state.content,
+      }, context);
 
       this.event.trigger('sender:load');
 
