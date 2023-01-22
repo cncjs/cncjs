@@ -72,17 +72,15 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 
  Version | Supported Level
 :------- |:---------------
- 4       | Dropped support
- 6       | Supported
- 8       | Supported
- 10      | Recommended
- 12      | Recommended
+ <= 10   | Not supported
+ 12      | Supported
+ >= 14   | Recommended
 
 ## Getting Started
 
 ### Node.js Installation
 
-Node.js 8 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
+Node.js 14 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
 ```
 git clone https://github.com/creationix/nvm.git ~/.nvm
 cd ~/.nvm
@@ -99,8 +97,8 @@ export NVM_DIR="$HOME/.nvm"
 
 Once installed, you can select Node.js versions with:
 ```
-nvm install 10
-nvm use 10
+nvm install 14
+nvm use 14
 ```
 
 It's also recommended that you upgrade npm to the latest version. To upgrade, run:

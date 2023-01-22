@@ -7,9 +7,9 @@ const env = process.env.NODE_ENV || 'production'; // Ensure production environme
 const settings = {};
 
 if (env === 'development') {
-    merge(settings, base, development, { env: env });
+  merge(settings, base, development, { env: env });
 } else {
-    merge(settings, base, production, { env: env });
+  merge(settings, base, production, { env: env });
 }
 
 export default settings;

@@ -1,9 +1,19 @@
 node_modules
 npm-debug.log
-package-lock.json
+yarn-debug.log*
+yarn-error.log
 /.eslintcache
 /.nyc_output
 /coverage
 /dist
 /output
 /releases
+
+# https://next.yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

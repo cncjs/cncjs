@@ -9,51 +9,51 @@ import defaultState from 'app/store/defaultState';
 
 class RestoreDefaults extends PureComponent {
     static propTypes = {
-        state: PropTypes.object,
-        actions: PropTypes.object
+      state: PropTypes.object,
+      actions: PropTypes.object
     };
 
     render() {
-        const { actions } = this.props;
+      const { actions } = this.props;
 
-        return (
-            <Modal disableOverlay size="xs" onClose={actions.closeModal}>
-                <Modal.Header>
-                    <Modal.Title>
-                        {i18n._('Workspace')}
-                        <Space width="8" />
+      return (
+        <Modal disableOverlay size="xs" onClose={actions.closeModal}>
+          <Modal.Header>
+            <Modal.Title>
+              {i18n._('Workspace')}
+              <Space width="8" />
                         &rsaquo;
-                        <Space width="8" />
-                        {i18n._('Restore Defaults')}
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {i18n._('Are you sure you want to restore the default settings?')}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        onClick={actions.closeModal}
-                    >
-                        {i18n._('Cancel')}
-                    </Button>
-                    <Button
-                        btnStyle="danger"
-                        onClick={() => {
-                            // Reset to default state
-                            store.state = defaultState;
+              <Space width="8" />
+              {i18n._('Restore Defaults')}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {i18n._('Are you sure you want to restore the default settings?')}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              onClick={actions.closeModal}
+            >
+              {i18n._('Cancel')}
+            </Button>
+            <Button
+              btnStyle="danger"
+              onClick={async () => {
+                // Reset to default state
+                store.state = defaultState;
 
-                            // Persist data locally
-                            store.persist();
+                // Persist data locally
+                await store.persist(); // async
 
-                            // Refresh
-                            window.location.reload();
-                        }}
-                    >
-                        {i18n._('Restore Defaults')}
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        );
+                // Refresh
+                window.location.reload();
+              }}
+            >
+              {i18n._('Restore Defaults')}
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      );
     }
 }
 

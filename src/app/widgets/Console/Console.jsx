@@ -6,39 +6,39 @@ import styles from './index.styl';
 
 class Console extends PureComponent {
     static propTypes = {
-        state: PropTypes.object,
-        actions: PropTypes.object
+      state: PropTypes.object,
+      actions: PropTypes.object
     };
 
     terminal = null;
 
     render() {
-        const { state, actions } = this.props;
-        const { port } = state;
+      const { state, actions } = this.props;
+      const { port } = state;
 
-        if (!port) {
-            return (
-                <div className={styles.noSerialConnection}>
-                    {i18n._('No serial connection')}
-                </div>
-            );
-        }
-
+      if (!port) {
         return (
-            <Terminal
-                ref={node => {
-                    if (node) {
-                        this.terminal = node;
-                    }
-                }}
-                cols={state.terminal.cols}
-                rows={state.terminal.rows}
-                cursorBlink={state.terminal.cursorBlink}
-                scrollback={state.terminal.scrollback}
-                tabStopWidth={state.terminal.tabStopWidth}
-                onData={actions.onTerminalData}
-            />
+          <div className={styles.noSerialConnection}>
+            {i18n._('No serial connection')}
+          </div>
         );
+      }
+
+      return (
+        <Terminal
+          ref={node => {
+            if (node) {
+              this.terminal = node;
+            }
+          }}
+          cols={state.terminal.cols}
+          rows={state.terminal.rows}
+          cursorBlink={state.terminal.cursorBlink}
+          scrollback={state.terminal.scrollback}
+          tabStopWidth={state.terminal.tabStopWidth}
+          onData={actions.onTerminalData}
+        />
+      );
     }
 }
 
