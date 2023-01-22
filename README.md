@@ -70,11 +70,11 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 
 ## Supported Node.js Versions
 
- Version | Supported Level
-:------- |:---------------
- <= 10   | Not supported
- 12      | Supported
- >= 14   | Recommended
+| Version | Supported Level |
+| :------ |:--------------- |
+| <= 10   | Not supported   |
+| 12      | Supported       |
+| >= 14   | Recommended     |
 
 ## Getting Started
 
