@@ -1,6 +1,6 @@
 {
   "name": "cncjs-app",
-  "version": "1.9.27",
+  "version": "1.10.0",
   "productName": "CNCjs",
   "description": "CNC Milling Controller",
   "homepage": "https://github.com/cncjs/cncjs",
@@ -12,7 +12,6 @@
   },
   "main": "main.js",
   "dependencies": {
-    "@babel/polyfill": "~7.4.3",
     "@babel/runtime": "~7.4.3",
     "@serialport/parser-readline": "^10.0.0",
     "bcrypt-nodejs": "0.0.3",
