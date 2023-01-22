@@ -129,10 +129,8 @@ class SerialConnection extends EventEmitter {
         return;
       }
 
-      const { path, ...rest } = this.settings;
-
-      this.port = new SerialPort(path, {
-        ...rest,
+      this.port = new SerialPort({
+        ...this.settings,
         autoOpen: false
       });
       this.port.on('open', this.eventListener.open);
