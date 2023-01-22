@@ -15,7 +15,7 @@ const EllipsisInlineBlock = styled(Ellipsis)`
 `;
 
 export {
-    EllipsisBlock,
-    EllipsisInlineBlock
+  EllipsisBlock,
+  EllipsisInlineBlock
 };
 export default Ellipsis;

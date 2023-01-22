@@ -23,15 +23,18 @@ module.exports = {
         }
     },
     rules: {
+        'indent': ['error', 2],
         'max-lines-per-function': [1, {
             max: 512,
             skipBlankLines: true,
             skipComments: true
         }],
+        'react/jsx-indent': ['error', 2],
+        'react/jsx-indent-props': ['error', 2],
         'react/jsx-no-bind': [1, {
             allowArrowFunctions: true
         }],
+        'react/no-access-state-in-setstate': 0,
         'react/prefer-stateless-function': 0,
-        'react/no-access-state-in-setstate': 0
     }
 };

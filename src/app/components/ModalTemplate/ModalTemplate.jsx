@@ -32,29 +32,29 @@ const Success = styled(Icon)`
 `;
 
 const ModalTemplate = ({ type, children, templateStyle }) => (
-    <FlexContainer>
-        <Row>
-            <Col width="auto">
-                {type === 'error' && <Error />}
-                {type === 'warning' && <Warning />}
-                {type === 'info' && <Info />}
-                {type === 'success' && <Success />}
-            </Col>
-            <Col style={templateStyle}>
-                {children}
-            </Col>
-        </Row>
-    </FlexContainer>
+  <FlexContainer>
+    <Row>
+      <Col width="auto">
+        {type === 'error' && <Error />}
+        {type === 'warning' && <Warning />}
+        {type === 'info' && <Info />}
+        {type === 'success' && <Success />}
+      </Col>
+      <Col style={templateStyle}>
+        {children}
+      </Col>
+    </Row>
+  </FlexContainer>
 );
 
 ModalTemplate.propTypes = {
-    type: PropTypes.oneOf([
-        'error',
-        'warning',
-        'info',
-        'success'
-    ]),
-    templateStyle: PropTypes.object,
+  type: PropTypes.oneOf([
+    'error',
+    'warning',
+    'info',
+    'success'
+  ]),
+  templateStyle: PropTypes.object,
 };
 
 export default ModalTemplate;

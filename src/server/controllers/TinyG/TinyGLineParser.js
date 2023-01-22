@@ -8,34 +8,34 @@ import TinyGLineParserResultOverrides from './TinyGLineParserResultOverrides';
 import TinyGLineParserResultReceiveReports from './TinyGLineParserResultReceiveReports';
 
 class TinyGLineParser {
-    parse(data) {
-        const parsers = [
-            TinyGLineParserResultMotorTimeout,
-            TinyGLineParserResultPowerManagement,
-            TinyGLineParserResultQueueReports,
-            TinyGLineParserResultStatusReports,
-            TinyGLineParserResultSystemSettings,
-            TinyGLineParserResultOverrides,
-            TinyGLineParserResultReceiveReports
-        ];
+  parse(data) {
+    const parsers = [
+      TinyGLineParserResultMotorTimeout,
+      TinyGLineParserResultPowerManagement,
+      TinyGLineParserResultQueueReports,
+      TinyGLineParserResultStatusReports,
+      TinyGLineParserResultSystemSettings,
+      TinyGLineParserResultOverrides,
+      TinyGLineParserResultReceiveReports
+    ];
 
-        for (let parser of parsers) {
-            const result = parser.parse(data);
-            if (result) {
-                _.set(result, 'payload.raw', data);
-                _.set(result, 'payload.f', data.f || []); // footer
-                return result;
-            }
-        }
-
-        return {
-            type: null,
-            payload: {
-                raw: data,
-                f: data.f || [] // footer
-            }
-        };
+    for (let parser of parsers) {
+      const result = parser.parse(data);
+      if (result) {
+        _.set(result, 'payload.raw', data);
+        _.set(result, 'payload.f', data.f || []); // footer
+        return result;
+      }
     }
+
+    return {
+      type: null,
+      payload: {
+        raw: data,
+        f: data.f || [] // footer
+      }
+    };
+  }
 }
 
 export default TinyGLineParser;

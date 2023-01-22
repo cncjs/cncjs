@@ -6,21 +6,21 @@ import styles from './index.styl';
 
 class Toggler extends PureComponent {
     static propTypes = {
-        onToggle: PropTypes.func.isRequired
+      onToggle: PropTypes.func.isRequired
     };
 
     render() {
-        const { onToggle, className, ...props } = this.props;
+      const { onToggle, className, ...props } = this.props;
 
-        return (
-            <Anchor
-                {...props}
-                className={classNames(className, styles.toggler)}
-                onClick={(event) => {
-                    onToggle(event);
-                }}
-            />
-        );
+      return (
+        <Anchor
+          {...props}
+          className={classNames(className, styles.toggler)}
+          onClick={(event) => {
+            onToggle(event);
+          }}
+        />
+      );
     }
 }
 

@@ -2,38 +2,38 @@ import colornames from 'colornames';
 import * as THREE from 'three';
 
 const buildAxis = (src, dst, color, dashed) => {
-    let geometry = new THREE.Geometry();
-    let material;
+  let geometry = new THREE.Geometry();
+  let material;
 
-    if (dashed) {
-        material = new THREE.LineDashedMaterial({
-            linewidth: 1,
-            color: color,
-            dashSize: 1,
-            gapSize: 1,
-            opacity: 0.8,
-            transparent: true
-        });
-    } else {
-        material = new THREE.LineBasicMaterial({
-            linewidth: 1,
-            color: color,
-            opacity: 0.8,
-            transparent: true
-        });
-    }
+  if (dashed) {
+    material = new THREE.LineDashedMaterial({
+      linewidth: 1,
+      color: color,
+      dashSize: 1,
+      gapSize: 1,
+      opacity: 0.8,
+      transparent: true
+    });
+  } else {
+    material = new THREE.LineBasicMaterial({
+      linewidth: 1,
+      color: color,
+      opacity: 0.8,
+      transparent: true
+    });
+  }
 
-    geometry.vertices.push(src.clone());
-    geometry.vertices.push(dst.clone());
+  geometry.vertices.push(src.clone());
+  geometry.vertices.push(dst.clone());
 
-    const axisLine = new THREE.Line(geometry, material);
+  const axisLine = new THREE.Line(geometry, material);
 
-    if (dashed) {
-        // Computes an array of distance values which are necessary for LineDashedMaterial.
-        axisLine.computeLineDistances();
-    }
+  if (dashed) {
+    // Computes an array of distance values which are necessary for LineDashedMaterial.
+    axisLine.computeLineDistances();
+  }
 
-    return axisLine;
+  return axisLine;
 };
 
 // CoordinateAxes
@@ -46,20 +46,20 @@ class CoordinateAxes {
     // @param {number} size Define the size of the line representing the axes.
     // @see [Drawing the Coordinate Axes]{@http://soledadpenades.com/articles/three-js-tutorials/drawing-the-coordinate-axes/}
     constructor(size) {
-        const red = colornames('red');
-        const green = colornames('green');
-        const blue = colornames('blue');
+      const red = colornames('red');
+      const green = colornames('green');
+      const blue = colornames('blue');
 
-        this.group.add(
-            buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(size, 0, 0), red, false), // +X
-            buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-size, 0, 0), red, true), // -X
-            buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, size, 0), green, false), // +Y
-            buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -size, 0), green, true), // -Y
-            buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, size), blue, false), // +Z
-            buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -size), blue, true) // -Z
-        );
+      this.group.add(
+        buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(size, 0, 0), red, false), // +X
+        buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-size, 0, 0), red, true), // -X
+        buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, size, 0), green, false), // +Y
+        buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -size, 0), green, true), // -Y
+        buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, size), blue, false), // +Z
+        buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -size), blue, true) // -Z
+      );
 
-        return this.group;
+      return this.group;
     }
 }
 

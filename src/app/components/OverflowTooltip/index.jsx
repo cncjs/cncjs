@@ -4,45 +4,45 @@ import ReactDOM from 'react-dom';
 
 class OverflowTooltip extends React.Component {
     static propTypes = {
-        title: PropTypes.string
+      title: PropTypes.string
     };
 
     state = {
-        overflow: false
+      overflow: false
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        return {
-            overflow: false
-        };
+      return {
+        overflow: false
+      };
     }
 
     detectOverflow = () => {
-        const el = ReactDOM.findDOMNode(this);
-        const overflow = (el.clientWidth < el.scrollWidth);
-        if (overflow !== this.state.overflow) {
-            this.setState({ overflow: overflow });
-        }
+      const el = ReactDOM.findDOMNode(this);
+      const overflow = (el.clientWidth < el.scrollWidth);
+      if (overflow !== this.state.overflow) {
+        this.setState({ overflow: overflow });
+      }
     };
 
     componentDidMount() {
-        this.detectOverflow();
+      this.detectOverflow();
     }
 
     componentDidUpdate() {
-        this.detectOverflow();
+      this.detectOverflow();
     }
 
     render() {
-        const { title, ...props } = this.props;
+      const { title, ...props } = this.props;
 
-        if (this.state.overflow) {
-            props.title = title;
-        }
+      if (this.state.overflow) {
+        props.title = title;
+      }
 
-        return (
-            <div {...props} />
-        );
+      return (
+        <div {...props} />
+      );
     }
 }
 

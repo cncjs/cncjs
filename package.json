@@ -277,7 +277,7 @@
     "@babel/preset-env": "~7.4.3",
     "@babel/preset-react": "~7.0.0",
     "@babel/register": "~7.4.0",
-    "@trendmicro/babel-config": "~1.0.0-alpha",
+    "@trendmicro/babel-config": "~1.0.2",
     "babel-core": "~7.0.0-bridge.0",
     "babel-eslint": "~10.0.1",
     "babel-loader": "~8.0.5",
