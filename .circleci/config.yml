@@ -32,13 +32,13 @@ jobs:
     docker:
       - image: cimg/node:14.20-browsers
     steps:
+      - checkout
       - browser-tools/install-browser-tools
       - run:
           name: Configuration
           command: |
             npm config set loglevel warn
             npm config set scripts-prepend-node-path auto
-      - checkout
       - run:
           name: Setup environment variables
           command: |
