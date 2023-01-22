@@ -1,10 +1,17 @@
 name: CI
 
 on:
+  # https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#example-including-branches-and-tags
   push:
-    branches: [ "master", "next" ]
+    branches:
+      - master
+      - next
+    tags:
+      - '*'
   pull_request:
-    branches: [ "master", "next" ]
+    branches:
+      - master
+      - next
 
 jobs:
   build-linux:
