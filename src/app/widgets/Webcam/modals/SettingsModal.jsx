@@ -17,7 +17,7 @@ import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
 import MutedText from '../components/MutedText';
 import {
   MEDIA_SOURCE_LOCAL,
-  MEDIA_SOURCE_MJPEG,
+  MEDIA_SOURCE_STREAM,
 } from '../constants';
 
 const useVideoDevices = () => {
@@ -140,7 +140,7 @@ function SettingsModal({
                   </Box>
                   <Box mb="2x">
                     <Box mb="1x">
-                      <Field name="mediaSource" type="radio" value={MEDIA_SOURCE_MJPEG}>
+                      <Field name="mediaSource" type="radio" value={MEDIA_SOURCE_STREAM}>
                         {({ input }) => (
                           <RadioButton
                             {...input}
@@ -154,7 +154,7 @@ function SettingsModal({
                         {({ input, meta }) => {
                           const { values } = form.getState();
                           const { mediaSource } = values;
-                          const isDisabled = mediaSource !== MEDIA_SOURCE_MJPEG;
+                          const isDisabled = mediaSource !== MEDIA_SOURCE_STREAM;
 
                           return (
                             <Input
@@ -168,7 +168,7 @@ function SettingsModal({
                       </Field>
                       <Box mt="1x">
                         <MutedText>
-                          {i18n._('The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.')}
+                          {i18n._('The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).')}
                         </MutedText>
                       </Box>
                     </Box>

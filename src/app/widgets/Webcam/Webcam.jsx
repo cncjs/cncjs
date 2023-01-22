@@ -22,7 +22,7 @@ import Circle from './components/Circle';
 import webcamIcon from './images/webcam.svg';
 import {
   MEDIA_SOURCE_LOCAL,
-  MEDIA_SOURCE_MJPEG,
+  MEDIA_SOURCE_STREAM,
 } from './constants';
 import styles from './index.styl';
 
@@ -42,27 +42,33 @@ const mapMetaAddressToHostname = (url) => {
   });
 };
 
+const normalizeMediaSource = (mediaSource) => {
+  if ((mediaSource === MEDIA_SOURCE_LOCAL) || (mediaSource === MEDIA_SOURCE_STREAM)) {
+    return mediaSource;
+  }
+  return MEDIA_SOURCE_LOCAL;
+};
+
 function Webcam({
   disabled,
   isFullscreen,
 }) {
-  const config = useWidgetConfig();
-  const emitter = useWidgetEvent();
-  const mediaSource = config.get('mediaSource');
-  const deviceId = config.get('deviceId');
-  const url = config.get('url');
-  const scale = config.get('geometry.scale', 1.0);
-  const rotation = config.get('geometry.rotation', 0);
-  const flipHorizontally = config.get('geometry.flipHorizontally', false);
-  const flipVertically = config.get('geometry.flipVertically', false);
-  const crosshair = config.get('crosshair', false);
-  const muted = config.get('muted', false);
+  const widgetConfig = useWidgetConfig();
+  const widgetEmitter = useWidgetEvent();
+  const mediaSource = normalizeMediaSource(widgetConfig.get('mediaSource'));
+  const deviceId = widgetConfig.get('deviceId');
+  const url = widgetConfig.get('url');
+  const scale = widgetConfig.get('geometry.scale', 1.0);
+  const rotation = widgetConfig.get('geometry.rotation', 0);
+  const flipHorizontally = widgetConfig.get('geometry.flipHorizontally', false);
+  const flipVertically = widgetConfig.get('geometry.flipVertically', false);
+  const crosshair = widgetConfig.get('crosshair', false);
+  const muted = widgetConfig.get('muted', false);
+  const streamRef = useRef();
 
-  // Image source
-  const imageSourceRef = useRef();
   useEffect(() => {
-    const onRefreshImageSource = () => {
-      const el = imageSourceRef.current;
+    const onRefreshStream = () => {
+      const el = streamRef.current;
       el.src = '';
 
       setTimeout(() => {
@@ -70,15 +76,15 @@ function Webcam({
       }, 10); // delay 10ms
     };
 
-    emitter.on('refresh', onRefreshImageSource);
+    widgetEmitter.on('refresh', onRefreshStream);
 
     return () => {
-      emitter.off('refresh', onRefreshImageSource);
+      widgetEmitter.off('refresh', onRefreshStream);
     };
-  }, [emitter, url]);
+  }, [widgetEmitter, url]);
 
   const changeImageScale = (value) => {
-    config.set('geometry.scale', value);
+    widgetConfig.set('geometry.scale', value);
   };
 
   const rotateLeft = () => {
@@ -86,7 +92,7 @@ function Webcam({
     const modulus = 4;
     const i = rotateLeft ? -1 : 1;
 
-    config.set('geometry.rotation', (Math.abs(Number(rotation || 0)) + modulus + i) % modulus);
+    widgetConfig.set('geometry.rotation', (Math.abs(Number(rotation || 0)) + modulus + i) % modulus);
   };
 
   const rotateRight = () => {
@@ -94,23 +100,23 @@ function Webcam({
     const modulus = 4;
     const i = rotateRight ? 1 : -1;
 
-    config.set('geometry.rotation', (Math.abs(Number(rotation || 0)) + modulus + i) % modulus);
+    widgetConfig.set('geometry.rotation', (Math.abs(Number(rotation || 0)) + modulus + i) % modulus);
   };
 
   const toggleFlipHorizontally = () => {
-    config.set('geometry.flipHorizontally', !flipHorizontally);
+    widgetConfig.set('geometry.flipHorizontally', !flipHorizontally);
   };
 
   const toggleFlipVertically = () => {
-    config.set('geometry.flipVertically', !flipVertically);
+    widgetConfig.set('geometry.flipVertically', !flipVertically);
   };
 
   const toggleCrosshair = () => {
-    config.set('crosshair', !crosshair);
+    widgetConfig.set('crosshair', !crosshair);
   };
 
   const toggleMuted = () => {
-    config.set('muted', !muted);
+    widgetConfig.set('muted', !muted);
   };
 
   const transformStyle = [
@@ -119,6 +125,10 @@ function Webcam({
     `rotateY(${flipHorizontally ? 180 : 0}deg)`,
     `rotate(${(rotation % 4) * 90}deg)`
   ].join(' ');
+
+  // Find a better solution to determine whether to use the <video/> or <img/> tag.
+  // Currently using the URL extension check for ".mp4" as a proxy.
+  const isVideoStream = url.endsWith('.mp4');
 
   return (
     <>
@@ -152,9 +162,25 @@ function Webcam({
             />
           </div>
         )}
-        {mediaSource === MEDIA_SOURCE_MJPEG && (
+        {(mediaSource === MEDIA_SOURCE_STREAM && isVideoStream) && (
+          // eslint-disable-next-line jsx-a11y/media-has-caption
+          <video
+            ref={streamRef}
+            src={mapMetaAddressToHostname(url)}
+            style={{
+              width: (100 * scale).toFixed(0) + '%',
+              transform: transformStyle,
+            }}
+            className={styles.center}
+            height="auto"
+            muted={muted}
+            src={mapMetaAddressToHostname(url)}
+            autoPlay={true}
+          />
+        )}
+        {(mediaSource === MEDIA_SOURCE_STREAM && !isVideoStream) && (
           <Image
-            ref={imageSourceRef}
+            ref={streamRef}
             src={mapMetaAddressToHostname(url)}
             style={{
               width: (100 * scale).toFixed(0) + '%',

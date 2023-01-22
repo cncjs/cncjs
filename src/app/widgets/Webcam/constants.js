@@ -1,3 +1,3 @@
 // Media Source
 export const MEDIA_SOURCE_LOCAL = 'local';
-export const MEDIA_SOURCE_MJPEG = 'mjpeg';
+export const MEDIA_SOURCE_STREAM = 'stream';
