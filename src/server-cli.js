@@ -1,9 +1,12 @@
-/* eslint max-len: 0 */
+/* eslint-disable no-console */
 /* eslint no-console: 0 */
-import path from 'path';
-import isElectron from 'is-electron';
-import program from 'commander';
-import pkg from './package.json';
+require('core-js/stable'); // to polyfill ECMAScript features
+require('regenerator-runtime/runtime'); // needed to use transpiled generator functions
+
+const path = require('path');
+const isElectron = require('is-electron');
+const program = require('commander');
+const pkg = require('./package.json');
 
 // Defaults to 'production'
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
@@ -51,7 +54,7 @@ const defaultHost = isElectron() ? '127.0.0.1' : '0.0.0.0';
 const defaultPort = isElectron() ? 0 : 8000;
 
 program
-  .version(pkg.version)
+  .version(pkg.version, '--version', 'output the current version')
   .usage('[options]')
   .option('-p, --port <port>', `Set listen port (default: ${defaultPort})`, defaultPort)
   .option('-H, --host <host>', `Set listen address or hostname (default: ${defaultHost})`, defaultHost)
@@ -88,21 +91,23 @@ if (normalizedArgv.length > 1) {
   program.parse(normalizedArgv);
 }
 
-export default () => new Promise((resolve, reject) => {
+const options = program.opts();
+
+module.exports = () => new Promise((resolve, reject) => {
   // Change working directory to 'server' before require('./server')
   process.chdir(path.resolve(__dirname, 'server'));
 
   require('./server').createServer({
-    port: program.port,
-    host: program.host,
-    backlog: program.backlog,
-    configFile: program.config,
-    verbosity: program.verbose,
-    mountPoints: program.mount,
-    watchDirectory: program.watchDirectory,
-    accessTokenLifetime: program.accessTokenLifetime,
-    allowRemoteAccess: !!program.allowRemoteAccess,
-    controller: program.controller
+    port: options.port,
+    host: options.host,
+    backlog: options.backlog,
+    configFile: options.config,
+    verbosity: options.verbose,
+    mountPoints: options.mount,
+    watchDirectory: options.watchDirectory,
+    accessTokenLifetime: options.accessTokenLifetime,
+    allowRemoteAccess: !!options.allowRemoteAccess,
+    controller: options.controller
   }, (err, data) => {
     if (err) {
       reject(err);

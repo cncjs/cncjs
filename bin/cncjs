@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 
-require('@babel/polyfill');
-
 const launchServer = (process.env.NODE_ENV === 'development')
-    ? require('../output/cncjs/server-cli').default
-    : require('../dist/cncjs/server-cli').default;
+  ? require('../output/cncjs/server-cli')
+  : require('../dist/cncjs/server-cli');
 
 launchServer().catch(err => {
-    console.error('Error:', err);
+  console.error('Error:', err);
 });

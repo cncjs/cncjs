@@ -3488,11 +3488,11 @@ __metadata:
   linkType: hard
 
 "acorn@npm:^8.5.0":
-  version: 8.8.1
-  resolution: "acorn@npm:8.8.1"
+  version: 8.8.2
+  resolution: "acorn@npm:8.8.2"
   bin:
     acorn: bin/acorn
-  checksum: 4079b67283b94935157698831967642f24a075c52ce3feaaaafe095776dfbe15d86a1b33b1e53860fc0d062ed6c83f4284a5c87c85b9ad51853a01173da6097f
+  checksum: f790b99a1bf63ef160c967e23c46feea7787e531292bb827126334612c234ed489a0dc2c7ba33156416f0ffa8d25bf2b0fdb7f35c2ba60eb3e960572bece4001
   languageName: node
   linkType: hard
 
@@ -5247,9 +5247,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001400":
-  version: 1.0.30001446
-  resolution: "caniuse-lite@npm:1.0.30001446"
-  checksum: b31a7e1837783afd7f3d4cb742689996c0a09d67394ddaa0609fd2bce00ceea65c448e25f91c03ba0f2d0e345b7e28fd5bc636c6760c949621a654c0effe74b5
+  version: 1.0.30001448
+  resolution: "caniuse-lite@npm:1.0.30001448"
+  checksum: 8d8bb7d097a9c80c01a4f8e3e1819cc7fc218114c8cc8773fe35aef898d12ff4e668b132a661a221ab56c022981c1df708fbe8efa09a3ce21dff97eee483cf90
   languageName: node
   linkType: hard
 
@@ -5720,13 +5720,14 @@ __metadata:
     cli-color: ~1.4.0
     cncjs-controller: ~1.3.0
     colornames: ~1.1.1
-    commander: ~2.20.0
+    commander: ~9.1.0
     compression: ~1.7.4
     concurrently: ~4.1.0
     connect-multiparty: ~2.2.0
     connect-restreamer: ~1.0.3
     consolidate: ~0.15.1
     cookie-parser: ~1.4.4
+    core-js: ~3.26.1
     coveralls: ~3.0.3
     cross-env: ~5.2.0
     css-loader: ~2.1.1
@@ -5781,7 +5782,7 @@ __metadata:
     i18next-xhr-backend: ~2.0.1
     imports-loader: ~0.8.0
     infinite-tree: ~1.16.2
-    is-electron: ~2.2.0
+    is-electron: ~2.2.1
     jimp: ^0.10.3
     js-polyfills: ~0.1.42
     json-loader: ~0.5.7
@@ -5836,6 +5837,7 @@ __metadata:
     recompose: ~0.30.0
     redux: ~4.0.1
     redux-devtools: ~3.5.0
+    regenerator-runtime: ~0.13.10
     registry-auth-token: ~3.4.0
     registry-url: ~5.1.0
     rimraf: ~2.6.3
@@ -6035,7 +6037,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^2.11.0, commander@npm:^2.19.0, commander@npm:^2.20.0, commander@npm:^2.8.1, commander@npm:~2.20.0":
+"commander@npm:^2.11.0, commander@npm:^2.19.0, commander@npm:^2.20.0, commander@npm:^2.8.1":
   version: 2.20.3
   resolution: "commander@npm:2.20.3"
   checksum: ab8c07884e42c3a8dbc5dd9592c606176c7eb5c1ca5ff274bcf907039b2c41de3626f684ea75ccf4d361ba004bbaff1f577d5384c155f3871e456bdf27becf9e
@@ -6067,6 +6069,13 @@ __metadata:
   version: 2.19.0
   resolution: "commander@npm:2.19.0"
   checksum: d52ffb0b31528784005356f879591b5a4875d3e88806c115fb30a8de0994d2fa9ca3f72a3cb880cdaf1bfb9df185f928cfcbbc656fa831f9c6109a209569ef6d
+  languageName: node
+  linkType: hard
+
+"commander@npm:~9.1.0":
+  version: 9.1.0
+  resolution: "commander@npm:9.1.0"
+  checksum: 1428319b6b90600a813c28fe1e413996d1be99bf01afe9ebc4a9fc6f8077ff3e75f11809b2d2f85bd9b13d7cb592154278e9bbfdb16dc5843cef97bcba6a9cfd
   languageName: node
   linkType: hard
 
@@ -6447,6 +6456,13 @@ __metadata:
   version: 3.27.2
   resolution: "core-js@npm:3.27.2"
   checksum: 718debd426f55a6b97cf9b757c936be258afd6d4f7052f89d0f96c982d7013e9000b0b006df42831a0cf32adad298e34d6a19052dce9ae1c7ab87162c0c665e0
+  languageName: node
+  linkType: hard
+
+"core-js@npm:~3.26.1":
+  version: 3.26.1
+  resolution: "core-js@npm:3.26.1"
+  checksum: 0a01149f51ff1e9f41d1ea49cc4c9222047949ea597189ede7c4cf8cde3b097766b9c7615acc77c86fe65b4002f20b638a133dfba7b41dba830d707aeeed45ad
   languageName: node
   linkType: hard
 
@@ -11492,7 +11508,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-electron@npm:~2.2.0":
+"is-electron@npm:~2.2.1":
   version: 2.2.1
   resolution: "is-electron@npm:2.2.1"
   checksum: 06e569aa933a737d418489bb9ca081af62eceb714d4c3d553ad2497610e35494be6dddd010c4e29890c7dd9d0481c2e3e1e9097af9d19df1c52dd5be747d80a0
@@ -16961,7 +16977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"regenerator-runtime@npm:^0.13.11, regenerator-runtime@npm:^0.13.2, regenerator-runtime@npm:^0.13.3, regenerator-runtime@npm:^0.13.4":
+"regenerator-runtime@npm:^0.13.11, regenerator-runtime@npm:^0.13.2, regenerator-runtime@npm:^0.13.3, regenerator-runtime@npm:^0.13.4, regenerator-runtime@npm:~0.13.10":
   version: 0.13.11
   resolution: "regenerator-runtime@npm:0.13.11"
   checksum: 27481628d22a1c4e3ff551096a683b424242a216fee44685467307f14d58020af1e19660bf2e26064de946bad7eff28950eae9f8209d55723e2d9351e632bbb4
@@ -19771,9 +19787,9 @@ __metadata:
   linkType: hard
 
 "ua-parser-js@npm:^0.7.30":
-  version: 0.7.32
-  resolution: "ua-parser-js@npm:0.7.32"
-  checksum: 6b6b035dd78a0ab3369f166ab6f26225d823d83630788806d634f16259297a8f4ae6fe0be4e48f4353ac10dffded3971d7745c55d1432fdfc78a893ba58ef044
+  version: 0.7.33
+  resolution: "ua-parser-js@npm:0.7.33"
+  checksum: 1510e9ec26fcaf0d8c6ae8f1078a8230e8816f083e1b5f453ea19d06b8ef2b8a596601c92148fd41899e8b3e5f83fa69c42332bd5729b931a721040339831696
   languageName: node
   linkType: hard
 
