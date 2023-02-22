@@ -4676,10 +4676,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap@npm:~3.3.7":
-  version: 3.3.7
-  resolution: "bootstrap@npm:3.3.7"
-  checksum: 7a31f48db010cbc3d18bcde2371ae3feed8378657463f0def3564b2efb9f630ca3318d92682f36bf031b01ae05389c844b22d5c44078b98359059012bb504021
+"bootstrap@npm:~4.3.1":
+  version: 4.3.1
+  resolution: "bootstrap@npm:4.3.1"
+  peerDependencies:
+    jquery: 1.9.1 - 3
+    popper.js: ^1.14.7
+  checksum: c78694db1d80b1ed91abc67a49edf2f48618bb52380432a7de60c40d203a3aa4a5bb65f4c68b732cb75ef8ca915c0e6bb3fe0009b830b2fc455a74b2b6a61d8d
   languageName: node
   linkType: hard
 
@@ -5712,7 +5715,7 @@ __metadata:
     bcrypt-nodejs: 0.0.3
     body-parser: ~1.18.3
     boolean: ~1.0.0
-    bootstrap: ~3.3.7
+    bootstrap: ~4.3.1
     bundle-loader: ~0.5.6
     chained-function: ~0.5.0
     chalk: ~2.4.2
