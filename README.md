@@ -115,7 +115,7 @@ npm install -g cncjs
 
 If you're going to use sudo or root to install cncjs, you need to specify the `--unsafe-perm` option to run npm as the root account.
 ```
-sudo npm install --unsafe-perm -g cncjs
+npm install --unsafe-perm -g cncjs
 ```
 
 Check out [https://github.com/cncjs/cncjs/wiki/Installation](https://github.com/cncjs/cncjs/wiki/Installation) for other installation methods.
