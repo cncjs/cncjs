@@ -325,7 +325,6 @@
     "Refresh": "Actualiser",
     "Baud rate": "Vitesse de transmission",
     "Choose a baud rate": "Selectionner le 'Baudrate'",
-    "Enable hardware flow control": "",
     "Connect automatically": "Connecter automatiquement",
     "Open": "Ouvrir",
     "Error opening serial port '{{- port}}'": "",
@@ -533,5 +532,10 @@
     "Show Cutting Tool": "",
     "Ready to start": "",
     "Connect to an IP camera": "",
-    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": ""
+    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": "",
+    "Set DTR line status upon opening": "Définir l'état de la ligne DTR à l'ouverture",
+    "SET": "ÉTABLIR",
+    "CLR": "CLR",
+    "Set RTS line status upon opening": "Définir l'état de la ligne RTS à l'ouverture",
+    "Use RTS/CTS flow control": "Utilisez le contrôle de flux RTS/CTS"
 }

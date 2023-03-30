@@ -325,7 +325,6 @@
     "Refresh": "Actualizar",
     "Baud rate": "Baud rate",
     "Choose a baud rate": "Elija",
-    "Enable hardware flow control": "",
     "Connect automatically": "Conectar automaticamente",
     "Open": "Abrir",
     "Error opening serial port '{{- port}}'": "Error al abrir el puerto serie '{{- port}}'",
@@ -533,5 +532,10 @@
     "Show Cutting Tool": "",
     "Ready to start": "",
     "Connect to an IP camera": "",
-    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": ""
+    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": "",
+    "Set DTR line status upon opening": "Establecer el estado de la línea DTR al abrir",
+    "SET": "ESTABLECER",
+    "CLR": "BORRAR",
+    "Set RTS line status upon opening": "Establecer el estado de la línea RTS al abrir",
+    "Use RTS/CTS flow control": "Utilice control de flujo RTS/CTS"
 }

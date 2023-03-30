@@ -325,7 +325,6 @@
     "Refresh": "Frissítés",
     "Baud rate": "Átviteli sebesség",
     "Choose a baud rate": "Átviteli sebesség választás",
-    "Enable hardware flow control": "",
     "Connect automatically": "Automatikus csatlakozás",
     "Open": "Csatlakozás",
     "Error opening serial port '{{- port}}'": "",
@@ -533,5 +532,10 @@
     "Show Cutting Tool": "",
     "Ready to start": "",
     "Connect to an IP camera": "",
-    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": ""
+    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": "",
+    "Set DTR line status upon opening": "DTR vonal állapotának beállítása az nyitáskor",
+    "SET": "BEÁLLÍT",
+    "CLR": "TÖRLÉS",
+    "Set RTS line status upon opening": "RTS vonal állapotának beállítása az nyitáskor",
+    "Use RTS/CTS flow control": "Használjon RTS/CTS áramvezérlést"
 }

@@ -325,7 +325,6 @@
     "Refresh": "Ververs",
     "Baud rate": "Verbindingssnelheid",
     "Choose a baud rate": "Kies een verbindingssnelheid",
-    "Enable hardware flow control": "Schakel hardware flow control in",
     "Connect automatically": "Verbind automatisch",
     "Open": "Open",
     "Error opening serial port '{{- port}}'": "Fout bij openen seriële poort",
@@ -533,5 +532,10 @@
     "Show Cutting Tool": "Laat gereedschap zien",
     "Ready to start": "Klaar om te starten",
     "Connect to an IP camera": "Verbind met een IP camera",
-    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": ""
+    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": "",
+    "Set DTR line status upon opening": "Stel DTR-lijnstatus in bij opening",
+    "SET": "INSTELLEN",
+    "CLR": "WISSEN",
+    "Set RTS line status upon opening": "Stel RTS-lijnstatus in bij opening",
+    "Use RTS/CTS flow control": "Gebruik RTS/CTS-stroomregeling"
 }
