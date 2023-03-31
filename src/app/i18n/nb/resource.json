@@ -325,7 +325,6 @@
     "Refresh": "Oppfrisk",
     "Baud rate": "Baud-hastighet",
     "Choose a baud rate": "Velg baud-hastighet",
-    "Enable hardware flow control": "Enable hardware flow control",
     "Connect automatically": "Koble til automatisk",
     "Open": "Åpne",
     "Error opening serial port '{{- port}}'": "Feil i åpning av seriellport '{{- port}}'",
@@ -533,5 +532,10 @@
     "Show Cutting Tool": "Vis skjæreverktøy",
     "Ready to start": "Klar til å starte",
     "Connect to an IP camera": "Koble til et IP-kamera",
-    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": ""
+    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": "",
+    "Set DTR line status upon opening": "Sett DTR-linjestatus ved åpning",
+    "SET": "SETT",
+    "CLR": "SLETT",
+    "Set RTS line status upon opening": "Sett RTS-linjestatus ved åpning",
+    "Use RTS/CTS flow control": "Bruk RTS/CTS strømstyring"
 }

@@ -136,12 +136,13 @@ class GrblController {
       }
       this.engine = engine;
 
-      const { port, baudrate, rtscts } = { ...options };
+      const { port, baudrate, rtscts, pin } = { ...options };
       this.options = {
         ...this.options,
         port: port,
         baudrate: baudrate,
-        rtscts: rtscts
+        rtscts: rtscts,
+        pin,
       };
 
       // Connection
@@ -193,9 +194,9 @@ class GrblController {
         dataFilter: (line, context) => {
           const originalLine = line;
           /**
-                 * line = 'G0X10 ; comment text'
-                 * parts = ['G0X10 ', ' comment text', '']
-                 */
+           * line = 'G0X10 ; comment text'
+           * parts = ['G0X10 ', ' comment text', '']
+           */
           const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
           line = ensureString(parts[0]).trim();
           context = this.populateContext(context);
@@ -890,7 +891,7 @@ class GrblController {
     }
 
     open(callback = noop) {
-      const { port, baudrate } = this.options;
+      const { port, baudrate, pin } = this.options;
 
       // Assertion check
       if (this.isOpen()) {
@@ -902,12 +903,37 @@ class GrblController {
       this.connection.on('close', this.connectionEventListener.close);
       this.connection.on('error', this.connectionEventListener.error);
 
-      this.connection.open((err) => {
+      this.connection.open(async (err) => {
         if (err) {
           log.error(`Error opening serial port "${port}":`, err);
           this.emit('serialport:error', { err: err, port: port });
           callback(err); // notify error
           return;
+        }
+
+        let setOptions = null;
+        try {
+          // Set DTR and RTS control flags if they exist
+          if (typeof pin?.dtr === 'boolean') {
+            setOptions = {
+              ...setOptions,
+              dtr: pin?.dtr,
+            };
+          }
+          if (typeof pin?.rts === 'boolean') {
+            setOptions = {
+              ...setOptions,
+              rts: pin?.rts,
+            };
+          }
+
+          if (setOptions) {
+            await delay(100);
+            await this.connection.port.set(setOptions);
+            await delay(100);
+          }
+        } catch (err) {
+          log.error('Failed to set control flags:', { err, port });
         }
 
         this.emit('serialport:open', {
