@@ -38,6 +38,10 @@ module.exports = {
       skipBlankLines: true,
       skipComments: true,
     }],
+    'no-unused-vars': ['error', {
+      // https://eslint.org/docs/latest/rules/no-unused-vars#args
+      args: 'none', // do not check arguments
+    }],
     'react/jsx-curly-newline': 'warn',
     'react/jsx-no-bind': ['warn', {
       allowArrowFunctions: true,

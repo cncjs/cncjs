@@ -1,240 +1,121 @@
 import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
-import {
-  Box,
+  Button,
+  ButtonBase,
   Checkbox,
-  Table,
-  TableHeader,
-  TableHeaderRow,
-  TableHeaderCell,
-  TableBody,
-  TableRow,
-  TableCell,
-  Truncate,
+  Flex,
+  Icon,
+  Tooltip,
 } from '@tonic-ui/react';
-import React, { useMemo, useState } from 'react';
-import AutoSizer from 'react-virtualized-auto-sizer';
+import React, { useMemo } from 'react';
+import BaseTable from 'app/components/BaseTable';
 import i18n from 'app/lib/i18n';
 
-/*
-const getCalculatedColumns = ({ initColumns, tableWidth }) => {
-  const columns = initColumns.map(column => {
-    let columnWidth = column.width;
-    if (typeof columnWidth === 'string') {
-      const lastChar = columnWidth.substr(columnWidth.length - 1);
-      if (lastChar === '%') {
-        columnWidth = tableWidth * (parseFloat(columnWidth) / 100);
-        return {
-          ...column,
-          width: columnWidth
-        };
-      }
-      if (columnWidth === 'auto') {
-        return {
-          ...column,
-          width: 0
-        };
-      }
-    }
-    return column;
-  });
-  const customWidthColumns = columns.filter(column => !!column.width);
-  const totalCustomWidth = customWidthColumns.reduce((accumulator, column) => accumulator + column.width, 0);
-  let defaultCellWidth = (tableWidth - totalCustomWidth) / (columns.length - customWidthColumns.length);
-  defaultCellWidth = defaultCellWidth <= 0 ? 150 : defaultCellWidth;
-  return columns.map(column => {
-    if (!!column.width) {
-      return column;
-    }
-    return {
-      ...column,
-      width: defaultCellWidth
-    };
-  });
-};
-*/
-
 const data = [
-  { id: 1, enabled: true, title: 'G28', mtime: '2020-01-01 00:00:00' },
-  { id: 2, enabled: true, title: 'G29', mtime: '2020-01-01 00:00:00' },
-  { id: 3, enabled: true, title: 'G30', mtime: '2020-01-01 00:00:00' },
-  { id: 4, enabled: true, title: 'G31', mtime: '2020-01-01 00:00:00' },
-  { id: 5, enabled: true, title: 'G32', mtime: '2020-01-01 00:00:00' },
-  { id: 6, enabled: true, title: 'G33', mtime: '2020-01-01 00:00:00' },
+  { id: 1, enabled: true, title: 'G28', mtime: '2020-01-01 00:00:00', commands: 'xxx' },
+  { id: 2, enabled: true, title: 'G29', mtime: '2020-01-01 00:00:00', commands: 'yyy' },
+  { id: 3, enabled: true, title: 'G30', mtime: '2020-01-01 00:00:00', commands: 'zzz' },
+  { id: 4, enabled: true, title: 'G31', mtime: '2020-01-01 00:00:00', commands: 'xxx' },
+  { id: 5, enabled: true, title: 'G32', mtime: '2020-01-01 00:00:00', commands: 'yyy' },
+  { id: 6, enabled: true, title: 'G33', mtime: '2020-01-01 00:00:00', commands: 'zzz' },
 ];
-
-const Resizer = (props) => {
-  return (
-    <Box
-      position="absolute"
-      right="-1x"
-      top={0}
-      bottom={0}
-      width="2x"
-      backgroundColor="transparent"
-      cursor="col-resize"
-      userSelect="none"
-      touchAction="none"
-      zIndex={1}
-      {...props}
-    />
-  );
-};
 
 const Commands = () => {
   const columns = useMemo(() => ([
     {
       id: 'selection',
       header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllRowsSelected()}
-          indeterminate={table.getIsSomeRowsSelected()}
-          onChange={table.getToggleAllRowsSelectedHandler()}
-          mt="1h"
-        />
+        <Flex alignItems="center" justifyContent="center">
+          <Checkbox
+            checked={table.getIsAllRowsSelected()}
+            indeterminate={table.getIsSomeRowsSelected()}
+            onChange={table.getToggleAllRowsSelectedHandler()}
+          />
+        </Flex>
       ),
       cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          indeterminate={row.getIsSomeSelected()}
-          onChange={row.getToggleSelectedHandler()}
-          mt="1h"
-        />
+        <Flex alignItems="center" justifyContent="center">
+          <Checkbox
+            checked={row.getIsSelected()}
+            indeterminate={row.getIsSomeSelected()}
+            onChange={row.getToggleSelectedHandler()}
+          />
+        </Flex>
       ),
-      enableResizing: false,
-      size: 40 + 1, // including the right border width
+      size: 48,
     },
     {
-      header: (
-        <Truncate>
-          {i18n._('Description')}
-        </Truncate>
-      ),
+      header: i18n._('Description'),
       accessorKey: 'title',
+      size: 'auto',
     },
     {
-      header: (
-        <Truncate>
-          {i18n._('Enabled')}
-        </Truncate>
-      ),
-      accessorKey: 'enabled',
+      header: i18n._('Commands'),
+      accessorKey: 'commands',
+      size: 'auto',
     },
     {
-      header: (
-        <Truncate>
-          {i18n._('Last Modified')}
-        </Truncate>
-      ),
+      header: i18n._('Date Modified'),
       accessorKey: 'mtime',
-      enableResizing: false,
+      size: 180,
+    },
+    {
+      id: 'actions',
+      header: '',
+      cell: ({ row }) => (
+        <ButtonBase>
+          <Icon icon="edit" />
+        </ButtonBase>
+      ),
+      size: 48,
     },
   ]), []);
-  const [rowSelection, setRowSelection] = useState({});
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    state: {
-      rowSelection,
-    },
-    enableColumnResizing: true,
-    columnResizeMode: 'onChange',
-    onRowSelectionChange: setRowSelection,
-  });
 
   return (
-    <Box
-      p="4x"
+    <Flex
+      flexDirection="column"
       height="100%"
     >
-      <AutoSizer>
-        {({ width: containerWidth, height: containerHeight }) => {
-          return (
-            <Table
-              variant="outline"
-              width={containerWidth}
-            >
-              <TableHeader>
-                {table.getHeaderGroups().map(headerGroup => (
-                  <TableHeaderRow id={headerGroup.id}>
-                    {headerGroup.headers.map(header => {
-                      const cellWidth = (header.column.id === 'mtime')
-                        ? containerWidth - header.getStart()
-                        : header.getSize();
-
-                      return (
-                        <TableHeaderCell
-                          key={header.id}
-                          style={{
-                            position: 'relative',
-                            width: cellWidth,
-                          }}
-                        >
-                          {!header.isPlaceholder && (
-                            flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )
-                          )}
-                          {header.column.getCanResize() && (
-                            <Resizer
-                              onMouseDown={header.getResizeHandler()}
-                              onTouchStart={header.getResizeHandler()}
-                              style={{
-                                opacity: header.column.getIsResizing() ? 1 : 0,
-                              }}
-                            />
-                          )}
-                        </TableHeaderCell>
-                      );
-                    })}
-                  </TableHeaderRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => {
-                      const cellWidth = (cell.column.id === 'mtime')
-                        ? containerWidth - cell.column.getStart()
-                        : cell.column.getSize();
-
-                      return (
-                        <TableCell
-                          key={cell.id}
-                          style={{
-                            width: cellWidth,
-                          }}
-                        >
-                          {cell.column.id === 'selection' && (
-                            flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext(),
-                            )
-                          )}
-                          {cell.column.id !== 'selection' && (
-                            <Truncate>
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext(),
-                              )}
-                            </Truncate>
-                          )}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          );
+      <Flex
+        alignItems="flex-start"
+        justifyContent="space-between"
+        columnGap="6x"
+        pt="4x"
+        pb="2x"
+        px="4x"
+      >
+        <Flex
+          flexWrap="wrap"
+          alignItems="center"
+          columnGap="2x"
+          rowGap="2x"
+        >
+          <Button variant="primary">
+            Add
+          </Button>
+          <Button variant="secondary">
+            Remove
+          </Button>
+        </Flex>
+        <Flex
+          flexWrap="nowrap"
+          alignItems="center"
+          columnGap="2x"
+        >
+          <Tooltip label={i18n._('Refresh')}>
+            <Button variant="ghost">
+              <Icon icon="refresh" />
+            </Button>
+          </Tooltip>
+        </Flex>
+      </Flex>
+      <BaseTable
+        columns={columns}
+        data={data}
+        sx={{
+          height: '100%',
         }}
-      </AutoSizer>
-    </Box>
+      />
+    </Flex>
   );
 };
 

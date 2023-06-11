@@ -3729,27 +3729,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tonic-ui/react-hooks@npm:^1.5.0":
-  version: 1.5.1
-  resolution: "@tonic-ui/react-hooks@npm:1.5.1"
+"@tonic-ui/react-hooks@npm:^1.5.2":
+  version: 1.5.2
+  resolution: "@tonic-ui/react-hooks@npm:1.5.2"
   peerDependencies:
     react: ^16.14.0 || ^17 || ^18
-  checksum: 1b92509ca5fec5d2e2d6d7411c7727b8f445439708b74863ab7995af89fc4bc445cf827069542378ddad3832a5c49a7027b8bd7a010266549a824d4ad813b151
+  checksum: 5234dbf9f81fc49046e0a028333d2150f9c54e11f0f976a18853e50a19c50ca3020446ed67f81c8786e7413bc7eb52f3afec10e57e3285e2770ec0172aeaf830
   languageName: node
   linkType: hard
 
-"@tonic-ui/react@npm:~1.9.0":
-  version: 1.9.0
-  resolution: "@tonic-ui/react@npm:1.9.0"
+"@tonic-ui/react@npm:^1.21.0":
+  version: 1.21.0
+  resolution: "@tonic-ui/react@npm:1.21.0"
   dependencies:
     "@emotion/is-prop-valid": 1.x
     "@emotion/react": 11.x
     "@emotion/styled": 11.x
     "@popperjs/core": 2.x
-    "@tonic-ui/react-hooks": ^1.5.0
-    "@tonic-ui/styled-system": ^1.5.0
-    "@tonic-ui/theme": ^1.2.1
-    "@tonic-ui/utils": ^1.2.0
+    "@tonic-ui/react-hooks": ^1.5.2
+    "@tonic-ui/styled-system": ^1.8.0
+    "@tonic-ui/theme": ^1.2.2
+    "@tonic-ui/utils": ^1.5.0
     "@trendmicro/tmicon": 1.x
     ensure-type: ^1.5.1
     lodash.get: 4.x
@@ -3760,30 +3760,30 @@ __metadata:
   peerDependencies:
     react: ^16.14.0 || ^17 || ^18
     react-dom: ^16.14.0 || ^17 || ^18
-  checksum: 7eb0ae03de1cbec679da438c561ebc2bf916ef3800800170ab640af0c9e6091b5230a33345140de5ff443c862c2fe478c7f3c7261a29a603023743e8848c4422
+  checksum: f36837fdfc2b7b8f96a5f03c413b193ad2009ddfa0bc72d46eb7709da0ca2bd72aca544fd81fd4134a849064483b2917758b28666aab6e4885e1dde7263a2a90
   languageName: node
   linkType: hard
 
-"@tonic-ui/styled-system@npm:^1.5.0":
-  version: 1.6.0
-  resolution: "@tonic-ui/styled-system@npm:1.6.0"
-  checksum: 05aeaa03290ea431af0716d5b0a42fc278a729d344474b040e4c10f018c9800272c57b5e5ab4f0d8db3a9267d07de39579a3c8c4474e842dd88e42fd1e119c5d
+"@tonic-ui/styled-system@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "@tonic-ui/styled-system@npm:1.8.0"
+  checksum: 67775a443f96e8fbfd4383ec6487c468afd3dbf3e70c6c6f28466c4c271b34200984df91c0be7b0af65fd3cd19dfee83d0ecdc9b2136efec1a98dc1749f53b49
   languageName: node
   linkType: hard
 
-"@tonic-ui/theme@npm:^1.2.1":
+"@tonic-ui/theme@npm:^1.2.2":
   version: 1.2.2
   resolution: "@tonic-ui/theme@npm:1.2.2"
   checksum: 5fb52c6d60a673346f124819a509d83369417770c6fe62114a5671ed4497924018177f0bf4c26ebf08a18ac17644019fbd9d43cbb75b09e8825f6c073f402810
   languageName: node
   linkType: hard
 
-"@tonic-ui/utils@npm:^1.2.0":
-  version: 1.2.1
-  resolution: "@tonic-ui/utils@npm:1.2.1"
+"@tonic-ui/utils@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@tonic-ui/utils@npm:1.5.0"
   dependencies:
     ensure-type: ^1.5.1
-  checksum: b730bc3b3e51b6f07c1ad493c09047348f8902fc3cb062ec5dc1081c43ea810ad3e90457567fe40e5f55344502710953d26d496a26188fd189549cf2ae768119
+  checksum: b48902f606e79bc5295a4894d6e950b1e593bf02dc3b836eda22e6b97b0fc266c915ca0f6f0ec547065d41b71c4bf4031f7476c484724b000adcabb414a253df
   languageName: node
   linkType: hard
 
@@ -6982,7 +6982,7 @@ __metadata:
     "@fortawesome/react-fontawesome": ~0.2.0
     "@serialport/parser-readline": ^10.0.0
     "@tanstack/react-table": ~8.7.2
-    "@tonic-ui/react": ~1.9.0
+    "@tonic-ui/react": ^1.21.0
     "@trendmicro/babel-config": ~1.0.2
     "@xstate/react": ~3.0.1
     awilix: ~4.3.1

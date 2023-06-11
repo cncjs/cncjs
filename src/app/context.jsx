@@ -1,6 +1,7 @@
 import {
+  PortalManager,
+  ToastManager,
   TonicProvider,
-  ToastProvider,
   theme,
 } from '@tonic-ui/react';
 import {
@@ -13,7 +14,6 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
 import { CardProvider } from 'app/components/Card';
 import { Provider as GridSystemProvider } from 'app/components/GridSystem'; // TODO: remove this
-import { PortalProvider } from 'app/components/Portal';
 import colorStyle from 'app/config/color-style';
 import customIcons from 'app/config/icons';
 import i18next from 'app/i18next';
@@ -73,8 +73,8 @@ export function GlobalProvider({ children }) {
       theme={customTheme}
       useCSSBaseline={true}
     >
-      <PortalProvider>
-        <ToastProvider placement="bottom-right">
+      <PortalManager>
+        <ToastManager placement="bottom-right">
           <ReduxProvider store={reduxStore}>
             <GridSystemProvider
               breakpoints={[576, 768, 992, 1200, 1600]}
@@ -96,8 +96,8 @@ export function GlobalProvider({ children }) {
               </CardProvider>
             </GridSystemProvider>
           </ReduxProvider>
-        </ToastProvider>
-      </PortalProvider>
+        </ToastManager>
+      </PortalManager>
     </TonicProvider>
   );
 }

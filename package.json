@@ -135,7 +135,7 @@
     "@fortawesome/react-fontawesome": "~0.2.0",
     "@serialport/parser-readline": "^10.0.0",
     "@tanstack/react-table": "~8.7.2",
-    "@tonic-ui/react": "~1.9.0",
+    "@tonic-ui/react": "^1.21.0",
     "@xstate/react": "~3.0.1",
     "awilix": "~4.3.1",
     "awilix-express": "~3.0.0",
