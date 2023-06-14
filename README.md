@@ -336,3 +336,5 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 ## License
 
 Licensed under the [MIT License](https://raw.githubusercontent.com/cncjs/cncjs/master/LICENSE).
+
+[Bash Reference Manual](https://www.gnu.org/software/bash/manual/html_node/index.html)
