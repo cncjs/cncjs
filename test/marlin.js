@@ -286,6 +286,51 @@ test('MarlinLineParserResultTemperature', (t) => {
     runner.parse(line);
   });
 
+  t.test('ok L:21.84 /0.00 @:0 C@:0', (t) => {
+    const runner = new MarlinRunner();
+    runner.on('temperature', ({ raw, ok, extruder, cooler }) => {
+      t.equal(raw, 'ok L:21.84 /0.00 @:0 C@:0');
+      t.equal(ok, true);
+      t.same(extruder, {
+        power: 0,
+      });
+      t.same(cooler, {
+        deg: '21.84',
+        degTarget: '0.00',
+        power: 0,
+      });
+      t.end();
+    });
+
+    const line = 'ok L:21.84 /0.00 @:0 C@:0';
+    runner.parse(line);
+  });
+
+  t.test('ok C:25.9 /0.00 L:21.84 /0.00 @:0 C@:127 C@:0', (t) => {
+    const runner = new MarlinRunner();
+    runner.on('temperature', ({ raw, ok, extruder, heatedChamber, cooler }) => {
+      t.equal(raw, 'ok C:25.9 /0.00 L:21.84 /0.00 @:0 C@:127 C@:0');
+      t.equal(ok, true);
+      t.same(extruder, {
+        power: 0,
+      });
+      t.same(heatedChamber, {
+        deg: '25.9',
+        degTarget: '0.00',
+        power: 127,
+      });
+      t.same(cooler, {
+        deg: '21.84',
+        degTarget: '0.00',
+        power: 0,
+      });
+      t.end();
+    });
+
+    const line = 'ok C:25.9 /0.00 L:21.84 /0.00 @:0 C@:127 C@:0';
+    runner.parse(line);
+  });
+
   t.test(' T:293.0 /0.0 B:25.9 /0.0 @:0 B@:0', (t) => {
     const runner = new MarlinRunner();
     runner.on('temperature', ({ raw, ok, extruder, heatedBed, hotend, wait }) => {
