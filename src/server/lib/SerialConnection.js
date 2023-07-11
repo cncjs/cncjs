@@ -1,6 +1,9 @@
 import { EventEmitter } from 'events';
 import { SerialPort } from 'serialport';
 import { ReadlineParser } from '@serialport/parser-readline';
+import delay from './delay';
+import log from './logger';
+import x from './json-stringify';
 
 // Validation
 const DATABITS = Object.freeze([5, 6, 7, 8]);
@@ -32,6 +35,8 @@ class SerialConnection extends EventEmitter {
 
   parser = null;
 
+  pin = null; // { dtr: boolean, rts: boolean }
+
   writeFilter = (data) => data;
 
   eventListener = {
@@ -52,7 +57,11 @@ class SerialConnection extends EventEmitter {
   constructor(props) {
     super();
 
-    const { writeFilter, ...rest } = { ...props };
+    const { pin, writeFilter, ...rest } = { ...props };
+
+    if (pin) {
+      this.pin = pin;
+    }
 
     if (writeFilter) {
       if (typeof writeFilter !== 'function') {
@@ -138,7 +147,41 @@ class SerialConnection extends EventEmitter {
     this.parser = this.port.pipe(new ReadlineParser({ delimiter: '\n' }));
     this.parser.on('data', this.eventListener.data);
 
-    this.port.open(callback);
+    this.port.open(async (...args) => {
+      // This is an error-first callback
+      const isError = !!args[0];
+
+      if (!isError && this.pin) {
+        let controlFlag = null;
+
+        try {
+          // Set DTR and RTS control flags if they exist
+          if (typeof this.pin?.dtr === 'boolean') {
+            controlFlag = {
+              ...controlFlag,
+              dtr: this.pin?.dtr,
+            };
+          }
+          if (typeof this.pin?.rts === 'boolean') {
+            controlFlag = {
+              ...controlFlag,
+              rts: this.pin?.rts,
+            };
+          }
+
+          if (controlFlag) {
+            await delay(100);
+            await this.port.set(controlFlag);
+            await delay(100);
+          }
+        } catch (err) {
+          log.error(`An unexpected error occurred when setting the control flags: options=${x(this.options)}`);
+          log.error(err.message);
+        }
+      }
+
+      callback(...args);
+    });
   }
 
   // @param {function} callback The error-first callback.

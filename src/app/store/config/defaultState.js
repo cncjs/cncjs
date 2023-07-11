@@ -69,8 +69,16 @@ const defaultState = Object.freeze({ // Freezes the default state
         serial: {
           path: '',
           baudRate: 115200,
-          // Hardware flow control (RTS/CTS)
-          rtscts: false
+
+          // RTS/CTS flow control
+          rtscts: false,
+
+          pin: {
+            // Set DTR line status (default to null)
+            dtr: null,
+            // Set RTS line status (default to null)
+            rts: null,
+          },
         },
         socket: {
           host: '',

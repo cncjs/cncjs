@@ -64,9 +64,11 @@ import { composeValidators, required } from 'app/widgets/shared/validations';
 // @param {string} options.path
 // @param {number} options.baudRate
 // @param {boolean} options.rtscts
+// @param {boolean} options.pin.dtr
+// @param {boolean} options.pin.rts
 const validateSerialConnectionOptions = (options) => {
-  const { path, baudRate, rtscts } = { ...options };
-  return (!!path) && (baudRate > 0) && (rtscts !== undefined);
+  const { path, baudRate, rtscts, pin } = { ...options };
+  return (!!path) && (baudRate > 0) && (rtscts !== undefined) && (pin?.dtr !== undefined) && (pin?.rts !== undefined);
 };
 
 // @param {string} options.host
@@ -124,6 +126,10 @@ const getMemoizedInitialValues = memoize((options) => {
         path: config.get('connection.serial.path'),
         baudRate: config.get('connection.serial.baudRate'),
         rtscts: config.get('connection.serial.rtscts'),
+        pin: {
+          dtr: config.get('connection.serial.pin.dtr'),
+          rts: config.get('connection.serial.pin.rts'),
+        },
       },
       socket: {
         host: config.get('connection.socket.host'),
@@ -345,8 +351,8 @@ function Connection({
         return;
       }
 
-      const { path, baudRate, rtscts } = config.get('connection.serial');
-      if (!validateSerialConnectionOptions({ path, baudRate, rtscts })) {
+      const { path, baudRate, rtscts, pin } = config.get('connection.serial');
+      if (!validateSerialConnectionOptions({ path, baudRate, rtscts, pin })) {
         return;
       }
 
@@ -354,7 +360,7 @@ function Connection({
       const options = {};
       _set(options, 'controller.type', controllerType);
       _set(options, 'connection.type', connectionType);
-      _set(options, 'connection.options', { path, baudRate, rtscts });
+      _set(options, 'connection.options', { path, baudRate, rtscts, pin });
 
       openConnection(options);
 
@@ -621,7 +627,6 @@ function Connection({
                                     fixedWidth
                                     spin={isFetchingSerialPorts}
                                     style={{
-                                      color: '#222',
                                       opacity: hovered ? 1 : 0.5,
                                     }}
                                   />
@@ -681,7 +686,6 @@ function Connection({
                                     fixedWidth
                                     spin={isFetchingSerialBaudRates}
                                     style={{
-                                      color: '#222',
                                       opacity: hovered ? 1 : 0.5,
                                     }}
                                   />
@@ -689,6 +693,142 @@ function Connection({
                               </Clickable>
                             </Col>
                           </Row>
+                        </FormGroup>
+                        <FormGroup>
+                          <Field name="connection.serial.pin.dtr">
+                            {({ input, meta }) => {
+                              const canChange = isDisconnected;
+                              const isChecked = (typeof input.value === 'boolean');
+                              const isDisabled = !canChange;
+
+                              return (
+                                <Checkbox
+                                  checked={isChecked}
+                                  disabled={isDisabled}
+                                  onChange={(event) => {
+                                    const checked = !!event.target.checked;
+                                    input.onChange(checked);
+
+                                    // Set DTR pin to `true` when checked and `null` when unchecked
+                                    config.set('connection.serial.pin.dtr', checked ? true : null);
+                                  }}
+                                >
+                                  <Space width={8} />
+                                  {i18n._('Set DTR line status upon opening')}
+                                </Checkbox>
+                              );
+                            }}
+                          </Field>
+                          <Field name="connection.serial.pin.dtr" subscription={{ value: true }}>
+                            {({ input, meta }) => {
+                              const canChange = isDisconnected;
+                              const isChecked = (typeof input.value === 'boolean');
+                              const isDisabled = !canChange;
+                              const isSETSelected = (input.value === true);
+                              const isCLRSelected = (input.value === false);
+
+                              if (!isChecked) {
+                                return null;
+                              }
+
+                              return (
+                                <ButtonGroup variant="default">
+                                  <Button
+                                    disabled={isDisabled}
+                                    selected={isSETSelected}
+                                    onClick={(event) => {
+                                      // Set DTR pin to `true`
+                                      const value = true;
+                                      input.onChange(value);
+                                      config.set('connection.serial.pin.dtr', value);
+                                    }}
+                                  >
+                                    {i18n._('SET')}
+                                  </Button>
+                                  <Button
+                                    disabled={isDisabled}
+                                    selected={isCLRSelected}
+                                    onClick={(event) => {
+                                      // Set DTR pin to `false`
+                                      const value = false;
+                                      input.onChange(value);
+                                      config.set('connection.serial.pin.dtr', value);
+                                    }}
+                                  >
+                                    {i18n._('CLR')}
+                                  </Button>
+                                </ButtonGroup>
+                              );
+                            }}
+                          </Field>
+                        </FormGroup>
+                        <FormGroup>
+                          <Field name="connection.serial.pin.rts">
+                            {({ input, meta }) => {
+                              const canChange = isDisconnected;
+                              const isChecked = (typeof input.value === 'boolean');
+                              const isDisabled = !canChange;
+
+                              return (
+                                <Checkbox
+                                  checked={isChecked}
+                                  disabled={isDisabled}
+                                  onChange={(event) => {
+                                    const checked = !!event.target.checked;
+                                    input.onChange(checked);
+
+                                    // Set RTS pin to `true` when checked and `null` when unchecked
+                                    config.set('connection.serial.pin.rts', checked ? true : null);
+                                  }}
+                                >
+                                  <Space width={8} />
+                                  {i18n._('Set RTS line status upon opening')}
+                                </Checkbox>
+                              );
+                            }}
+                          </Field>
+                          <Field name="connection.serial.pin.rts" subscription={{ value: true }}>
+                            {({ input, meta }) => {
+                              const canChange = isDisconnected;
+                              const isChecked = (typeof input.value === 'boolean');
+                              const isDisabled = !canChange;
+                              const isSETSelected = (input.value === true);
+                              const isCLRSelected = (input.value === false);
+
+                              if (!isChecked) {
+                                return null;
+                              }
+
+                              return (
+                                <ButtonGroup variant="default">
+                                  <Button
+                                    disabled={isDisabled}
+                                    selected={isSETSelected}
+                                    onClick={(event) => {
+                                      // Set RTS pin to `true`
+                                      const value = true;
+                                      input.onChange(value);
+                                      config.set('connection.serial.pin.rts', value);
+                                    }}
+                                  >
+                                    {i18n._('SET')}
+                                  </Button>
+                                  <Button
+                                    disabled={isDisabled}
+                                    selected={isCLRSelected}
+                                    onClick={(event) => {
+                                      // Set RTS pin to `false`
+                                      const value = false;
+                                      input.onChange(value);
+                                      config.set('connection.serial.pin.rts', value);
+                                    }}
+                                  >
+                                    {i18n._('CLR')}
+                                  </Button>
+                                </ButtonGroup>
+                              );
+                            }}
+                          </Field>
                         </FormGroup>
                         <FormGroup>
                           <Field name="connection.serial.rtscts">
@@ -708,7 +848,7 @@ function Connection({
                                   }}
                                 >
                                   <Space width={8} />
-                                  {i18n._('Enable hardware flow control')}
+                                  {i18n._('Use RTS/CTS flow control')}
                                 </Checkbox>
                               );
                             }}
@@ -842,8 +982,9 @@ function Connection({
                       const path = _get(values, 'connection.serial.path');
                       const baudRate = _get(values, 'connection.serial.baudRate');
                       const rtscts = _get(values, 'connection.serial.rtscts');
+                      const pin = _get(values, 'connection.serial.pin');
 
-                      return validateSerialConnectionOptions({ path, baudRate, rtscts });
+                      return validateSerialConnectionOptions({ path, baudRate, rtscts, pin });
                     }
 
                     if (connectionType === CONNECTION_TYPE_SOCKET) {
@@ -868,6 +1009,7 @@ function Connection({
                         path: _get(values, 'connection.serial.path'),
                         baudRate: _get(values, 'connection.serial.baudRate'),
                         rtscts: _get(values, 'connection.serial.rtscts'),
+                        pin: _get(values, 'connection.serial.pin'),
                       },
                       [CONNECTION_TYPE_SOCKET]: {
                         host: _get(values, 'connection.socket.host'),
@@ -1028,7 +1170,7 @@ function SerialPortOption({
       </Container>
       {manufacturer && (
         <Box ml="6x">
-          <Text color="#888">
+          <Text>
             {i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}
           </Text>
         </Box>
