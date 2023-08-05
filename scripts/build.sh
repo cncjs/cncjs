@@ -2,6 +2,7 @@
 
 export NODE_OPTIONS=--openssl-legacy-provider
 cd ..
+pushd -n $(pwd)
 rm -Rf dist
 rm -f ~/.cncrc
 rm -fR ~/cncjs_i18n_old
@@ -15,6 +16,5 @@ yarn build-prod
 cd dist/cncjs/
 touch yarn.lock
 yarn install
-cd ..
-cd ..
+pushd +1
 bin/cncjs
