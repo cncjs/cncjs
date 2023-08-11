@@ -23,6 +23,10 @@ module.exports = {
         }
     },
     rules: {
+        "quotes": [1, "double", {
+            "avoidEscape": false,
+            "allowTemplateLiterals": true,
+          }],
         'indent': ['error', 2],
         'max-lines-per-function': [1, {
             max: 512,
