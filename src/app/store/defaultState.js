@@ -22,7 +22,7 @@ const defaultState = {
       secondary: {
         show: true,
         widgets: [
-          'axes', 'gcode', 'macro', 'probe', 'spindle', 'laser'
+          'axes', 'gcode', 'macro', 'probe', 'spindle', 'laser', 'autolevel'
         ]
       }
     },
@@ -31,6 +31,9 @@ const defaultState = {
     }
   },
   widgets: {
+    autolevel: {
+      minimized: false,
+    },
     axes: {
       minimized: false,
       axes: ['x', 'y', 'z'],

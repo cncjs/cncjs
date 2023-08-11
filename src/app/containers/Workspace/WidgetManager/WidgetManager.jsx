@@ -126,7 +126,14 @@ class WidgetManager extends PureComponent {
         details: i18n._('This widget lets you monitor a webcam.'),
         visible: true,
         disabled: false
-      }
+      },
+      {
+        id: 'autolevel',
+        caption: i18n._('AutoLevel Widget'),
+        details: i18n._('This widget lets you probe a grid for autolevelling a PCB.'),
+        visible: true,
+        disabled: false
+      } 
     ];
 
     handleSave = () => {
