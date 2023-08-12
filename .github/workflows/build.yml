@@ -5,12 +5,12 @@ on:
   push:
     # Sequence of patterns matched against refs/heads
     branches:
-      - master
+      - main
     # Sequence of patterns matched against refs/tags
     tags:
       - '*'
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
   build-linux:
@@ -86,7 +86,7 @@ jobs:
         rm -f "${PACKAGE_NAME}-${PACKAGE_VERSION}-linux-arm64"
         popd
         ls -al output releases/linux
-        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "master" ]]; then
+        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "main" ]]; then
           yarn github-release delete \
             --owner=cncjs \
             --repo=cncjs \
@@ -169,7 +169,7 @@ jobs:
         cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.dmg" "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos-x64.dmg"
         cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}-arm64.dmg" "releases/macos/${PACKAGE_NAME}-${PACKAGE_VERSION}-macos-arm64.dmg"
         ls -al output releases/macos
-        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "master" ]]; then
+        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "main" ]]; then
           yarn github-release delete \
             --owner=cncjs \
             --repo=cncjs \
@@ -253,7 +253,7 @@ jobs:
         mkdir -p releases/windows
         cp -af "output/${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases/windows/${PACKAGE_NAME}-${PACKAGE_VERSION}-windows-x64.exe"
         ls -al output releases/windows
-        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "master" ]]; then
+        if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "main" ]]; then
           yarn github-release delete \
             --owner=cncjs \
             --repo=cncjs \
