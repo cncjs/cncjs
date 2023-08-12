@@ -37,10 +37,9 @@ $ git checkout -b my-feature-branch -t origin/master
 
 ### Step 3: Install
 
-Run `npm install` to install the dependencies in the local node_modules folder:
+Run `yarn install` to install the dependencies in the local node_modules folder:
 ```bash
-$ npm install -g npm
-$ npm install
+$ yarn install
 ```
 
 ### Step 4: Commit
@@ -63,9 +62,9 @@ $ git rebase upstream/master
 
 ### Step 6: Build
 
-Run `npm run prepare` to make sure the build succeed:
+Run `yarn run prepare` to make sure the build succeed:
 ```bash
-$ npm run prepare
+$ yarn run prepare
 ```
 
 ### Step 7: Push
