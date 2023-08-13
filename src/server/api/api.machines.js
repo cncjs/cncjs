@@ -5,7 +5,7 @@ import _castArray from 'lodash/castArray';
 import _isPlainObject from 'lodash/isPlainObject';
 import uuid from 'uuid';
 import settings from '../config/settings';
-import { ensureNumber, ensureString } from '../lib/ensure-type';
+import { ensureNumber, ensureString, ensureBoolean } from '../lib/ensure-type';
 import logger from '../lib/logger';
 import config from '../services/configstore';
 import { getPagingRange } from './paging';
@@ -19,6 +19,7 @@ const log = logger('api:machines');
 const CONFIG_KEY = 'machines';
 
 const getSanitizedRecords = () => {
+
   const records = _castArray(config.get(CONFIG_KEY, []));
 
   let shouldUpdate = false;
@@ -46,7 +47,7 @@ const getSanitizedRecords = () => {
 };
 
 const ensureMachineProfile = (payload) => {
-  const { id, name, limits } = { ...payload };
+  const { id, name, limits, avoidParens } = { ...payload };
   const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = { ...limits };
 
   return {
@@ -59,7 +60,8 @@ const ensureMachineProfile = (payload) => {
       ymax: ensureNumber(ymax) || 0,
       zmin: ensureNumber(zmin) || 0,
       zmax: ensureNumber(zmax) || 0,
-    }
+    },
+    avoidParens: ensureBoolean(avoidParens)
   };
 };
 
@@ -149,6 +151,7 @@ export const update = (req, res) => {
       ['limits.ymax', ensureNumber],
       ['limits.zmin', ensureNumber],
       ['limits.zmax', ensureNumber],
+      ['avoidParens', ensureBoolean],
     ].forEach(it => {
       const [key, ensureType] = it;
       const defaultValue = _get(record, key);

@@ -28,6 +28,7 @@ import Notifications from './Notifications';
 import Loading from './Loading';
 import Rendering from './Rendering';
 import WatchDirectory from './WatchDirectory';
+import store from 'app/store';
 import {
   // Units
   IMPERIAL_UNITS,
@@ -245,7 +246,8 @@ class VisualizerWidget extends PureComponent {
           }
         }));
 
-        controller.command('gcode:load', name, gcode, context, (err, data) => {
+        const machine = store.get('workspace.machineProfile');
+        controller.command('gcode:load', name, gcode, machine, context, (err, data) => {
           if (err) {
             this.setState((state) => ({
               gcode: {

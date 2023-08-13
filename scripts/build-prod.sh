@@ -19,7 +19,7 @@ popd
 babel -d dist/cncjs/server src/server
 i18next-scanner --config i18next-scanner.server.config.js \"src/server/**/*.{html,js,jsx}\" \"!src/server/i18n/**\" \"!**/node_modules/**\"
 
-cross-env NODE_ENV=production webpack-cli --config webpack.config.production.js
+cross-env NODE_ENV=production NODE_OPTIONS=--openssl-legacy-provider webpack-cli --config webpack.config.production.js
 i18next-scanner --config i18next-scanner.app.config.js \"src/app/**/*.{html,js,jsx}\" \"!src/app/i18n/**\" \"!**/node_modules/**\"
 
 mkdir -p dist/cncjs/app

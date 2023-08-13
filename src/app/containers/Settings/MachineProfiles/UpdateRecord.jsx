@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Form, Field } from 'react-final-form';
 import { Input } from 'app/components/FormControl';
+import { Checkbox } from 'app/components/Checkbox';
 import FormGroup from 'app/components/FormGroup';
 import { FlexContainer, Row, Col } from 'app/components/GridSystem';
 import Margin from 'app/components/Margin';
@@ -36,7 +37,8 @@ class UpdateRecord extends Component {
             ymax: Number(_get(values, 'limits.ymax')) || 0,
             zmin: Number(_get(values, 'limits.zmin')) || 0,
             zmax: Number(_get(values, 'limits.zmax')) || 0,
-          }
+          },
+          avoidParens: Boolean(_get(values, 'avoidParens', false))
         }
       };
     }
@@ -55,7 +57,8 @@ class UpdateRecord extends Component {
           ymax: Number(_get(values, 'limits.ymax')) || 0,
           zmin: Number(_get(values, 'limits.zmin')) || 0,
           zmax: Number(_get(values, 'limits.zmax')) || 0,
-        }
+        },
+        avoidParens: Boolean(_get(values, 'avoidParens', false))
       }, forceReload);
     };
 
@@ -183,6 +186,17 @@ class UpdateRecord extends Component {
                     <Margin left={24}>
                       {this.renderLimits()}
                     </Margin>
+                  </SectionGroup>
+                  <SectionGroup>
+                    <Field name="avoidParens" type="checkbox">
+                      {({ input, meta }) => (
+                        <Checkbox
+                          {...input}
+                          >
+                        {i18n._('Don\'t send parentheses to this machine (ONLY for Shapeoko 5 Pro)')}
+                        </Checkbox>
+                     )}
+                    </Field>
                   </SectionGroup>
                 </Modal.Body>
                 <Modal.Footer>

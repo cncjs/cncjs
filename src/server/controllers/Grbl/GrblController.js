@@ -236,11 +236,16 @@ class GrblController {
             log.debug('M6 Tool Change');
             this.feeder.hold({ data: 'M6', msg: originalLine }); // Hold reason
 
+
             // Surround M6 with parentheses to ignore
             // unsupported command error. If we nuke the whole
             // line, then we'll likely lose other commands that
             // share the line, like a T~.  This makes tool
             // changes complicated.
+
+
+            //This apparently never gets called and instead the sender version does.  Leaving this as-is for now
+            //without replacing the parentheses until I understand the situations where this code executes.
             line = line.replace('M6', '(M6)');
           }
 
@@ -338,6 +343,18 @@ class GrblController {
 
             // Surround M6 with parentheses to ignore unsupported command error
             line = line.replace('M6', '(M6)');
+          }
+
+          //It's unclear to me at the moment why the gcode_parser allows parentheses comments to come through.  There's code in
+          //parser.parseLine (called above) that strips parentheses comments, at least as shown in the source, though I haven't
+          //debugged it:  https://github.com/cncjs/gcode-parser/blob/d3f431d15abd2d49f4d89b9b01556142f6ebf1da/src/index.js#L69
+
+          //In any case, the parentheses are coming through and the M6 toolchange code above adds even more after-the-fact.  We'll
+          //add the removal here as the step JUST before it gets sent to the controller as a catch-all.
+          if (this.sender.state.machine.avoidParens) {
+            if (_.includes(line, '(')) {
+              line = line.replace(/\(.*?\)/g, '');
+            }
           }
 
           return line;
@@ -1083,7 +1100,7 @@ class GrblController {
     command(cmd, ...args) {
       const handler = {
         'gcode:load': () => {
-          let [name, gcode, context = {}, callback = noop] = args;
+          let [name, gcode, machine, context = {}, callback = noop] = args;
           if (typeof context === 'function') {
             callback = context;
             context = {};
@@ -1094,16 +1111,16 @@ class GrblController {
           // be no queued motions, as long as no more commands were sent after the G4.
           // This is the fastest way to do it without having to check the status reports.
           const dwell = '%wait ; Wait for the planner to empty';
-          const ok = this.sender.load(name, gcode + '\n' + dwell, context);
+          const ok = this.sender.load(name, gcode + '\n' + dwell, machine, context);
           if (!ok) {
             callback(new Error(`Invalid G-code: name=${name}`));
             return;
           }
 
-          this.emit('gcode:load', name, this.sender.state.gcode, context);
+          this.emit('gcode:load', name, this.sender.state.gcode, machine, context);
           this.event.trigger('gcode:load');
 
-          log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
+          log.debug(`Load G-code: name="${this.sender.state.name}", machineName=${this.sender.state.machine.name}, size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
           this.workflow.stop();
 
