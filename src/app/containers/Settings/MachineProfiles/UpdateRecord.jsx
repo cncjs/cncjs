@@ -192,10 +192,10 @@ class UpdateRecord extends Component {
                       {({ input, meta }) => (
                         <Checkbox
                           {...input}
-                          >
-                        {i18n._('Don\'t send parentheses to this machine (ONLY for Shapeoko 5 Pro)')}
+                        >
+                          {i18n._('Don\'t send parentheses to this machine (ONLY for Shapeoko 5 Pro)')}
                         </Checkbox>
-                     )}
+                      )}
                     </Field>
                   </SectionGroup>
                 </Modal.Body>

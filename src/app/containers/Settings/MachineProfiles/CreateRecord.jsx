@@ -23,7 +23,7 @@ class CreateRecord extends Component {
     };
 
     state = this.getInitialState();
-    
+
     getInitialState() {
       return {
         values: {
@@ -188,10 +188,10 @@ class CreateRecord extends Component {
                       {({ input, meta }) => (
                         <Checkbox
                           {...input}
-                          >
-                        {i18n._('Don\'t send parentheses to this machine (ONLY for Shapeoko 5 Pro)')}
+                        >
+                          {i18n._('Don\'t send parentheses to this machine (ONLY for Shapeoko 5 Pro)')}
                         </Checkbox>
-                     )}
+                      )}
                     </Field>
                   </SectionGroup>
                 </Modal.Body>

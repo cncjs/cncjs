@@ -16,6 +16,7 @@ import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import portal from 'app/lib/portal';
+import store from 'app/store';
 import * as WebGL from 'app/lib/three/WebGL';
 import { in2mm } from 'app/lib/units';
 import WidgetConfig from '../WidgetConfig';
@@ -28,7 +29,6 @@ import Notifications from './Notifications';
 import Loading from './Loading';
 import Rendering from './Rendering';
 import WatchDirectory from './WatchDirectory';
-import store from 'app/store';
 import {
   // Units
   IMPERIAL_UNITS,

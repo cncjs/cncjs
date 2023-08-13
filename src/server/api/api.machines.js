@@ -19,7 +19,6 @@ const log = logger('api:machines');
 const CONFIG_KEY = 'machines';
 
 const getSanitizedRecords = () => {
-
   const records = _castArray(config.get(CONFIG_KEY, []));
 
   let shouldUpdate = false;
