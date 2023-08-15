@@ -325,7 +325,6 @@
     "Refresh": "Yenile",
     "Baud rate": "Band hızı",
     "Choose a baud rate": "Bir band hızı seçin",
-    "Enable hardware flow control": "Donanım akış denetimini etkinleştir",
     "Connect automatically": "Otomatik bağlan",
     "Open": "Aç",
     "Error opening serial port '{{- port}}'": "Seri bağlantı noktası açılırken hata oluştu '{{- port}}'",
@@ -533,5 +532,10 @@
     "Show Cutting Tool": "",
     "Ready to start": "",
     "Connect to an IP camera": "",
-    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": ""
+    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": "",
+    "Set DTR line status upon opening": "Açılışta DTR hat durumunu ayarla",
+    "SET": "AYARLA",
+    "CLR": "TEMİZLE",
+    "Set RTS line status upon opening": "Açılışta RTS hat durumunu ayarla",
+    "Use RTS/CTS flow control": "RTS/CTS akış kontrolü kullanın"
 }

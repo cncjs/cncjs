@@ -325,7 +325,6 @@
     "Refresh": "表示更新",
     "Baud rate": "ボーレート",
     "Choose a baud rate": "ボーレートを選択",
-    "Enable hardware flow control": "ハードウェアフローコントロールを有効",
     "Connect automatically": "自動的に接続",
     "Open": "開く",
     "Error opening serial port '{{- port}}'": "シリアルポート '{{- port}}' を開くのに失敗しました",
@@ -533,5 +532,10 @@
     "Show Cutting Tool": "工具を表示する",
     "Ready to start": "スタートの準備ができました",
     "Connect to an IP camera": "IPカメラと接続",
-    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": ""
+    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": "",
+    "Set DTR line status upon opening": "開くときにDTRラインの状態を設定する",
+    "SET": "設定",
+    "CLR": "クリア",
+    "Set RTS line status upon opening": "開くときにRTSラインの状態を設定する",
+    "Use RTS/CTS flow control": "RTS/CTSフロー制御を使用する"
 }

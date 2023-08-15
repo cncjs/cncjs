@@ -167,12 +167,13 @@ class TinyGController {
       }
       this.engine = engine;
 
-      const { port, baudrate, rtscts } = { ...options };
+      const { port, baudrate, rtscts, pin } = { ...options };
       this.options = {
         ...this.options,
         port: port,
         baudrate: baudrate,
-        rtscts: rtscts
+        rtscts: rtscts,
+        pin,
       };
 
       // Connection
@@ -282,9 +283,9 @@ class TinyGController {
         dataFilter: (line, context) => {
           const originalLine = line;
           /**
-                 * line = 'G0X10 ; comment text'
-                 * parts = ['G0X10 ', ' comment text', '']
-                 */
+           * line = 'G0X10 ; comment text'
+           * parts = ['G0X10 ', ' comment text', '']
+           */
           const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
           line = ensureString(parts[0]).trim();
           context = this.populateContext(context);
@@ -909,7 +910,7 @@ class TinyGController {
     }
 
     open(callback = noop) {
-      const { port, baudrate } = this.options;
+      const { port, baudrate, pin } = this.options;
 
       // Assertion check
       if (this.isOpen()) {
@@ -927,6 +928,31 @@ class TinyGController {
           this.emit('serialport:error', { err: err, port: port });
           callback(err); // notify error
           return;
+        }
+
+        let setOptions = null;
+        try {
+          // Set DTR and RTS control flags if they exist
+          if (typeof pin?.dtr === 'boolean') {
+            setOptions = {
+              ...setOptions,
+              dtr: pin?.dtr,
+            };
+          }
+          if (typeof pin?.rts === 'boolean') {
+            setOptions = {
+              ...setOptions,
+              rts: pin?.rts,
+            };
+          }
+
+          if (setOptions) {
+            await delay(100);
+            await this.connection.port.set(setOptions);
+            await delay(100);
+          }
+        } catch (err) {
+          log.error('Failed to set control flags:', { err, port });
         }
 
         this.emit('serialport:open', {
@@ -957,9 +983,6 @@ class TinyGController {
           // Unload G-code
           this.command('unload');
         }
-
-        // Wait for the bootloader to complete before sending commands
-        await delay(1000);
 
         // Set ready flag to true
         this.ready = true;

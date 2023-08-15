@@ -79,7 +79,7 @@ class ConnectionWidget extends PureComponent {
           autoReconnect: checked
         }));
       },
-      toggleHardwareFlowControl: (event) => {
+      toggleRTSCTSFlowControl: (event) => {
         const checked = event.target.checked;
         this.setState(state => ({
           connection: {
@@ -89,6 +89,92 @@ class ConnectionWidget extends PureComponent {
               rtscts: checked
             }
           }
+        }));
+      },
+      toggleDTRPin: (event) => {
+        const checked = event.target.checked;
+        this.setState(state => ({
+          connection: {
+            ...state.connection,
+            serial: {
+              ...state.connection.serial,
+              pin: {
+                ...state.connection.serial.pin,
+                dtr: checked ? true : null, // Set DTR pin to `true` when checked, and to `null` when unchecked
+              },
+            }
+          }
+        }));
+      },
+      setDTR: () => {
+        this.setState(state => ({
+          connection: {
+            ...state.connection,
+            serial: {
+              ...state.connection.serial,
+              pin: {
+                ...state.connection.serial.pin,
+                dtr: true,
+              },
+            },
+          },
+        }));
+      },
+      clearDTR: () => {
+        this.setState(state => ({
+          connection: {
+            ...state.connection,
+            serial: {
+              ...state.connection.serial,
+              pin: {
+                ...state.connection.serial.pin,
+                dtr: false,
+              },
+            },
+          },
+        }));
+      },
+      toggleRTSPin: (event) => {
+        const checked = event.target.checked;
+        this.setState(state => ({
+          connection: {
+            ...state.connection,
+            serial: {
+              ...state.connection.serial,
+              pin: {
+                ...state.connection.serial.pin,
+                rts: checked ? true : null, // Set RTS pin to `true` when checked, and to `null` when unchecked
+              },
+            }
+          }
+        }));
+      },
+      setRTS: () => {
+        this.setState(state => ({
+          connection: {
+            ...state.connection,
+            serial: {
+              ...state.connection.serial,
+              pin: {
+                ...state.connection.serial.pin,
+                rts: true,
+              },
+            },
+          },
+        }));
+      },
+      clearRTS: () => {
+        this.setState(state => ({
+          connection: {
+            ...state.connection,
+            serial: {
+              ...state.connection.serial,
+              pin: {
+                ...state.connection.serial.pin,
+                rts: false,
+              },
+            },
+          },
         }));
       },
       handleRefreshPorts: (event) => {
@@ -229,6 +315,8 @@ class ConnectionWidget extends PureComponent {
       }
       if (connection) {
         this.config.set('connection.serial.rtscts', get(connection, 'serial.rtscts', false));
+        this.config.set('connection.serial.pin.dtr', get(connection, 'serial.pin.dtr', null));
+        this.config.set('connection.serial.pin.rts', get(connection, 'serial.pin.rts', null));
       }
       this.config.set('autoReconnect', autoReconnect);
     }
@@ -264,7 +352,11 @@ class ConnectionWidget extends PureComponent {
         baudrate: this.config.get('baudrate'),
         connection: {
           serial: {
-            rtscts: this.config.get('connection.serial.rtscts')
+            rtscts: this.config.get('connection.serial.rtscts'),
+            pin: {
+              dtr: this.config.get('connection.serial.pin.dtr'),
+              rts: this.config.get('connection.serial.pin.rts'),
+            },
           }
         },
         autoReconnect: this.config.get('autoReconnect'),
@@ -325,7 +417,11 @@ class ConnectionWidget extends PureComponent {
       controller.openPort(port, {
         controllerType: this.state.controllerType,
         baudrate: baudrate,
-        rtscts: this.state.connection.serial.rtscts
+        rtscts: this.state.connection.serial.rtscts,
+        pin: {
+          dtr: this.state.connection.serial.pin.dtr,
+          rts: this.state.connection.serial.pin.rts,
+        },
       }, (err) => {
         if (err) {
           this.setState(state => ({
