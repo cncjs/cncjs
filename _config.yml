@@ -1,0 +1,18 @@
+title: CNCjs
+description: keep calm and make something of amazing
+logo: docs/assets/images/logo.png
+show_downloads: true
+google_analytics: UA-169399028-2
+theme: jekyll-theme-minimal
+remote_theme: pages-themes/minimal@v0.2.0
+plugins:
+- jekyll-remote-theme # add this line to the plugins list if you already have one
+lsi: false
+safe: true
+incremental: false
+highlighter: rouge
+gist:
+noscript: false
+kramdown:
+math_engine: mathjax
+syntax_highlighter: rouge
