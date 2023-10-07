@@ -35,6 +35,7 @@ export const mapDisplayLanguageToLocaleString = (language) => ({
   'pt-br': 'Português (Brasil)',
   'ru': 'Русский',
   'tr': 'Türkçe',
+  'uk': 'Український',
   'zh-cn': '中文 (简体)',
   'zh-tw': '中文 (繁體)',
 }[language]);

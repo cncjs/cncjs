@@ -101,6 +101,7 @@ export default {
       'pt', // Portuguese (Portugal)
       'pt-br', // Portuguese (Brazil)
       'ru', // Russian
+      'uk', // Ukraine
       'tr', // Turkish
       'zh-cn', // Simplified Chinese
       'zh-tw', // Traditional Chinese

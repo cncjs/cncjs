@@ -14,6 +14,7 @@ module.exports = {
     'pt-br', // Portuguese (Brazil)
     'ru', // Russian
     'tr', // Turkish
+    'uk', // Ukrainian
     'zh-cn', // Simplified Chinese
     'zh-tw', // Traditional Chinese
   ],
