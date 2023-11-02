@@ -13,6 +13,7 @@ module.exports = {
     'pt-br', // Portuguese (Brazil)
     'pt-pt', // Portuguese (Portugal)
     'ru', // Russian
+    'uk', // Ukraine
     'tr', // Turkish
     'zh-cn', // Simplified Chinese
     'zh-tw' // Traditional Chinese
