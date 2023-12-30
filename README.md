@@ -126,6 +126,17 @@ Check out [https://github.com/cncjs/cncjs/wiki/Installation](https://github.com/
 
 Run `npm install -g cncjs@latest` to install the latest version. To determine the version, use `cncjs -V`.
 
+
+##### Run Cncjs (no default port):
+```
+cncjs -p 8001
+```
+##### Browser URL:
+```
+http://localhost:8001
+```
+
+
 ### Usage
 
 Run `cncjs` to start the server, and visit `http://yourhostname:8000/` to view the web interface. Pass `--help` to `cncjs` for more options.
@@ -181,11 +192,6 @@ Instead of passing command line options for `--watch-directory`, `--access-token
     "allowRemoteAccess": false,
     "controller": ""
 }
-```
-
-To troubleshoot issues, run:
-```
-cncjs -vvv
 ```
 
 ### Configuration File
