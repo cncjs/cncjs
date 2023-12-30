@@ -76,31 +76,31 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 | :------ |:--------------- |
 | <= 10   | Not supported   |
 | 12      | Supported       |
-| >= 14   | Recommended     |
+| >= 14   | Supported       |
+| >= 20(LTS)    | Recommended     |
+
 
 ## Getting Started
-
-### Node.js Installation
-
-Node.js 14 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
+Required Packages:
 ```
-git clone https://github.com/creationix/nvm.git ~/.nvm
-cd ~/.nvm
-git checkout `git describe --abbrev=0 --tags`
-cd ..
-. ~/.nvm/nvm.sh
+sudo apt install curl git build-essential
+```
+##### NVM Node Version Manager:
+nvm allows you to quickly install and use different versions of node via the command line.
+```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
 ```
 
-Add these lines to your `~/.bash_profile`, `~/.bashrc`, or `~/.profile` file to have it automatically sourced upon login: 
-```bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
+##### [NodeJs 20](https://nodejs.org/en)
 ```
-
-Once installed, you can select Node.js versions with:
+nvm install 20
+nvm use 20
 ```
-nvm install 14
-nvm use 14
+Add these lines to your ~/.bash_profile, ~/.bashrc, or ~/.profile file to have it automatically sourced upon login:
+[?](https://github.com/nvm-sh/nvm#install--update-script)
+```
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 ```
 
 It's also recommended that you upgrade npm to the latest version. To upgrade, run:
