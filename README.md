@@ -1,4 +1,9 @@
-##### [Support UniversalBit Project](https://github.com/universalbit-dev/universalbit-dev/tree/main/support)
+
+##### Releases:
+* [CNCjs Linux App Image](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-x86_64.AppImage)
+* [Debian Package](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-amd64.deb)
+* [Source Code](https://github.com/cncjs/cncjs/archive/refs/tags/v1.10.3.tar.gz)
+
 
 # CNCjs [![Backers on Open Collective](https://opencollective.com/cncjs/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/cncjs/sponsors/badge.svg)](#sponsors) [![Travis CI Build Status](https://travis-ci.org/cncjs/cncjs.svg)](https://travis-ci.org/cncjs/cncjs) [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/qxx53wq32w3edule?svg=true)](https://ci.appveyor.com/project/cheton/cncjs) [![Coverage Status](https://coveralls.io/repos/github/cncjs/cncjs/badge.svg?branch=master)](https://coveralls.io/github/cncjs/cncjs?branch=master)
 
@@ -338,10 +343,8 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 <a href="https://opencollective.com/cncjs/sponsor/8/website" target="_blank"><img src="https://opencollective.com/cncjs/sponsor/8/avatar.svg"></a>
 <a href="https://opencollective.com/cncjs/sponsor/9/website" target="_blank"><img src="https://opencollective.com/cncjs/sponsor/9/avatar.svg"></a>
 
-
-
 ## License
 
-Licensed under the [MIT License](https://raw.githubusercontent.com/cncjs/cncjs/master/LICENSE).
-
-[Bash Reference Manual](https://www.gnu.org/software/bash/manual/html_node/index.html)
+* [MIT License](https://raw.githubusercontent.com/cncjs/cncjs/master/LICENSE).
+* [Bash Reference Manual](https://www.gnu.org/software/bash/manual/html_node/index.html)
+* [Support UniversalBit Project](https://github.com/universalbit-dev/universalbit-dev/tree/main/support)
