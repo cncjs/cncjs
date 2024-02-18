@@ -1,6 +1,8 @@
 
 ##### [Releases](https://github.com/cncjs/cncjs/releases)
-* [CNCjs Linux AppImage](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-x86_64.AppImage)
+* [Linux](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-x86_64.AppImage)
+* [MacOs](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-macos-arm64.dmg)
+* [Windows](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-windows-x64.exe)
 ##### Linux AppImage: [Website](https://appimage.org/)   
 ---
 * [Debian Package](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-amd64.deb)
