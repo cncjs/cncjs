@@ -113,7 +113,7 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 ```
 
-It's also recommended that you upgrade npm to the latest version. To upgrade, run:
+upgrade npm to the latest version. To upgrade, run:
 ```
 npm install npm@latest -g
 ```
