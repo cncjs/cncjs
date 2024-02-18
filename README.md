@@ -1,6 +1,6 @@
 
 ##### Releases:
-* [CNCjs Linux App Image](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-x86_64.AppImage)
+* [CNCjs Linux AppImage](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-x86_64.AppImage)[?](https://appimage.org/)
 * [Debian Package](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-amd64.deb)
 * [Source Code](https://github.com/cncjs/cncjs/archive/refs/tags/v1.10.3.tar.gz)
 
