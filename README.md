@@ -1,3 +1,5 @@
+##### [Disambiguation](https://en.wikipedia.org/wiki/Wikipedia:Disambiguation)
+
 
 ##### [Releases](https://github.com/cncjs/cncjs/releases)
 * [Linux](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-x86_64.AppImage)
