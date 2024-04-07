@@ -8,7 +8,7 @@
   ##### [releases](https://github.com/cncjs/cncjs/releases)
 ---
 For now i use Cncjs Linux Desktop AppImage and run Cncjs with Pm2 advanced process manager
-<img src="" width="auto"></img>
+<img src="https://github.com/universalbit-dev/cncjs/blob/master/gif/cncjs.gif" width="auto"></img>
 
 
 
