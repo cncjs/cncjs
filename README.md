@@ -1,16 +1,30 @@
+##### [Support UniversalBit Project](https://github.com/universalbit-dev/universalbit-dev/tree/main/support)
 ##### [Disambiguation](https://en.wikipedia.org/wiki/Wikipedia:Disambiguation)
+##### [Bash Reference Manual](https://www.gnu.org/software/bash/manual/html_node/index.html)
 
+---
+
+* ## [CncJS Desktop App](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-x86_64.AppImage)
+  
+---
+For now i use Cncjs Linux Desktop AppImage and run Cncjs with Pm2 advanced process manager
+<img src="" width="auto"></img>
+
+
+
+
+---
 
 ##### [Releases](https://github.com/cncjs/cncjs/releases)
 * [Linux](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-x86_64.AppImage)
 * [MacOs](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-macos-arm64.dmg)
 * [Windows](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-windows-x64.exe)
-##### Linux AppImage: [Website](https://appimage.org/)   
----
-* [Debian Package](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-amd64.deb)
-* [Source Code](https://github.com/cncjs/cncjs/archive/refs/tags/v1.10.3.tar.gz)
----
 
+
+
+##### Warning:
+CODE HAS VULNERABILITIES AND ERRORS
+...is a news? [Npm Auditing](https://docs.npmjs.com/auditing-package-dependencies-for-security-vulnerabilities)
 
 * ##### Npm Package for NodeJs App
 
