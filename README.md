@@ -4,6 +4,12 @@
 
 ---
 
+```bash
+
+wget https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-x86_64.AppImage
+
+```
+
 * ## [CncJS Desktop App](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-x86_64.AppImage)
   ##### [releases](https://github.com/cncjs/cncjs/releases)
 ---
