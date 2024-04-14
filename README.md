@@ -13,16 +13,16 @@ wget https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-l
 * ## [CncJS Desktop App](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-x86_64.AppImage)
   ##### [releases](https://github.com/cncjs/cncjs/releases)
 ---
-For now i use Cncjs Linux Desktop AppImage and run Cncjs with Pm2 advanced process manager
+#### [Cncjs Desktop AppImage](https://cnc.js.org/docs/desktop-app/) and run Cncjs with Pm2 advanced process manager
 <img src="https://github.com/universalbit-dev/cncjs/blob/master/gif/cncjs.gif" width="auto"></img>
 
 ---
 
 
 
+##### Warning:
 * ##### [cncjs Github repository](https://github.com/universalbit-dev/cncjs)
 * ##### [cncjs NPM package](https://www.npmjs.com/package/cncjs)
-##### Warning:
 CODE HAS VULNERABILITIES AND ERRORS
 ...is a news? [Npm Auditing](https://docs.npmjs.com/auditing-package-dependencies-for-security-vulnerabilities)
 
