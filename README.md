@@ -15,7 +15,7 @@ wget https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-l
 ---
 ### [Cncjs Desktop AppImage](https://cnc.js.org/docs/desktop-app/) 
 
-*Start Cncjs with Pm2 advanced process manager
+* Start Cncjs with Pm2 advanced process manager
 <img src="https://github.com/universalbit-dev/cncjs/blob/master/gif/cncjs.gif" width="auto"></img>
 
 ---
