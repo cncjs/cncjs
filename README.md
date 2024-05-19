@@ -22,7 +22,7 @@ wget https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-l
 
 
 
-##### Warning:
+##### Development:
 * ##### [cncjs Github repository](https://github.com/universalbit-dev/cncjs)
 * ##### [cncjs NPM package](https://www.npmjs.com/package/cncjs)
 CODE HAS VULNERABILITIES AND ERRORS
