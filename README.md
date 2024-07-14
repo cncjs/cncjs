@@ -43,7 +43,7 @@ systemctl.enable pm2-user
 pm2 save
 ```
 
-* After starting the program it may be necessary to enable the USB port for reading and writing
+* After starting cncjs-app it may be necessary to resolve the error "Error: cannot open USB port:dev/ttyUSB0".
 ```bash
 sudo chmod 777 /dev/ttyUSB0
 ```
