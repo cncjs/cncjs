@@ -23,27 +23,35 @@ wget https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-l
 ```bash
 sudo chmod a+x cncjs-app-1.10.3-linux-x86_64.AppImage
 ```
-Pm2 Advanced Process Manager
+[Pm2 Advanced Process Manager](https://pm2.keymetrics.io/docs/usage/restart-strategies/)
 ```bash
 npm i pm2 -g
 pm2 start cncjs-app-1.10.3-linux-x86_64.AppImage  --cron-restart="0 0 * * *"
 ```
 
-Pm2 Startup Script
+[Pm2 Startup Script](https://pm2.keymetrics.io/docs/usage/startup/)
 ```bash
 pm2 startup
 ### [PM2] To setup the Startup Script, copy/paste the following command:
 sudo env PATH=$PATH: ... ...
 ```
+```
+systemctl.enable pm2-user
+```
+
 ```bash
 pm2 save
 ```
 
----
+* After starting the program it may be necessary to enable the USB port for reading and writing
+```bash
+sudo chmod 777 /dev/ttyUSB0
+```
+
 ---
 
 
-##### Development:
+##### Development Area:
 * ##### [cncjs Github repository](https://github.com/universalbit-dev/cncjs)
 * ##### [cncjs NPM package](https://www.npmjs.com/package/cncjs)
 CODE HAS VULNERABILITIES AND ERRORS
