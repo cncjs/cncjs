@@ -36,7 +36,7 @@ pm2 startup
 sudo env PATH=$PATH: ... ...
 ```
 ```
-systemctl.enable pm2-user
+systemctl enable pm2-user
 ```
 
 ```bash
