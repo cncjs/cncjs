@@ -43,7 +43,7 @@ systemctl enable pm2-universalbit
 pm2 save
 ```
 
-* After starting cncjs-app it may be necessary to resolve the error "Error : Error: Permission Denied cannot open port:dev/ttyUSB0".
+* After starting cncjs-app it may be necessary to resolve the error "Error : Error: Permission Denied cannot open port:dev/ttyUSB0"
 ```bash
 sudo chmod 777 /dev/ttyUSB0
 ```
