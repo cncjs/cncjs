@@ -15,7 +15,7 @@ wget https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-l
 ---
 ### [Cncjs Desktop AppImage](https://cnc.js.org/docs/desktop-app/) 
 
-* Start Cncjs with Pm2 advanced process manager
+* Start cncjs-app with [PM2](https://pm2.keymetrics.io/docs/usage/quick-start/) advanced process manager
 <img src="https://github.com/universalbit-dev/cncjs/blob/master/gif/cncjs.gif" width="auto"></img>
 
 
@@ -23,7 +23,7 @@ wget https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-l
 ```bash
 sudo chmod a+x cncjs-app-1.10.3-linux-x86_64.AppImage
 ```
-[Pm2 Advanced Process Manager](https://pm2.keymetrics.io/docs/usage/restart-strategies/)
+[Pm2 Restart Strategies](https://pm2.keymetrics.io/docs/usage/restart-strategies/)
 ```bash
 npm i pm2 -g
 pm2 start cncjs-app-1.10.3-linux-x86_64.AppImage  --cron-restart="0 0 * * *"
