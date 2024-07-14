@@ -33,17 +33,17 @@ pm2 start cncjs-app-1.10.3-linux-x86_64.AppImage  --cron-restart="0 0 * * *"
 ```bash
 pm2 startup
 ### [PM2] To setup the Startup Script, copy/paste the following command:
-sudo env PATH=$PATH: ... ...
+sudo env PATH=$PATH:/home/universalbit/.nvm/versions/node/v20.11.0/bin /home/universalbit/.nvm/versions/node/v20.11.0/lib/node_modules/pm2/bin/pm2 startup systemd -u user --hp /home/universalbit
 ```
 ```
-systemctl enable pm2-user
+systemctl enable pm2-universalbit
 ```
 
 ```bash
 pm2 save
 ```
 
-* After starting cncjs-app it may be necessary to resolve the error "Error: cannot open USB port:dev/ttyUSB0".
+* After starting cncjs-app it may be necessary to resolve the error "Error : Error: Permission Denied cannot open port:dev/ttyUSB0".
 ```bash
 sudo chmod 777 /dev/ttyUSB0
 ```
