@@ -4,8 +4,8 @@
 
 ---
 
+* Linux app image cncjs v1.10.3
 ```bash
-
 wget https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-x86_64.AppImage
 
 ```
@@ -17,6 +17,27 @@ wget https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-l
 
 * Start Cncjs with Pm2 advanced process manager
 <img src="https://github.com/universalbit-dev/cncjs/blob/master/gif/cncjs.gif" width="auto"></img>
+
+
+* Execute permissions 
+```bash
+sudo chmod a+x cncjs-app-1.10.3-linux-x86_64.AppImage
+```
+Pm2 Advanced Process Manager
+```bash
+npm i pm2 -g
+pm2 start cncjs-app-1.10.3-linux-x86_64.AppImage  --cron-restart="0 0 * * *"
+```
+
+Pm2 Startup Script
+```bash
+pm2 startup
+### [PM2] To setup the Startup Script, copy/paste the following command:
+sudo env PATH=$PATH: ... ...
+```
+```bash
+pm2 save
+```
 
 ---
 ---
