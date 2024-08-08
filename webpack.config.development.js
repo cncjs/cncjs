@@ -1,13 +1,10 @@
 const path = require('path');
-const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
 const dotenv = require('dotenv');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const nib = require('nib');
-const stylusLoader = require('stylus-loader');
 const webpack = require('webpack');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const WriteFileWebpackPlugin = require('write-file-webpack-plugin');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
@@ -24,7 +21,7 @@ module.exports = {
   cache: true,
   target: 'web',
   context: path.resolve(__dirname, 'src/app'),
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'eval-cheap-module-source-map',
   entry: {
     polyfill: [
       path.resolve(__dirname, 'src/app/polyfill/index.js'),
@@ -76,7 +73,15 @@ module.exports = {
               importLoaders: 1
             }
           },
-          'stylus-loader'
+          {
+            loader: 'stylus-loader',
+            options: {
+              stylusOptions: {
+                use: ['nib'],
+                import: ['nib']
+              }
+            }
+          }
         ],
         exclude: [
           path.resolve(__dirname, 'src/app/styles')
@@ -127,11 +132,6 @@ module.exports = {
       }
     ]
   },
-  node: {
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty'
-  },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
@@ -145,14 +145,6 @@ module.exports = {
     new webpack.LoaderOptionsPlugin({
       debug: true
     }),
-    new stylusLoader.OptionsPlugin({
-      default: {
-        // nib - CSS3 extensions for Stylus
-        use: [nib()],
-        // no need to have a '@import "nib"' in the stylesheet
-        import: ['~nib/lib/nib/index.styl']
-      }
-    }),
     // https://github.com/gajus/write-file-webpack-plugin
     // Forces webpack-dev-server to write bundle files to the file system.
     new WriteFileWebpackPlugin(),
@@ -161,23 +153,16 @@ module.exports = {
       new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$')
     ),
     // Generates a manifest.json file in your root output directory with a mapping of all source file names to their corresponding output file.
-    new ManifestPlugin({
+    new WebpackManifestPlugin({
       fileName: 'manifest.json'
     }),
     new MiniCssExtractPlugin({
       filename: `[name].css?_=${timestamp}`,
       chunkFilename: `[id].css?_=${timestamp}`
     }),
-    new CSSSplitWebpackPlugin({
-      size: 4000,
-      imports: '[name].[ext]?[hash]',
-      filename: '[name]-[part].[ext]?[hash]',
-      preserve: false
-    }),
     new HtmlWebpackPlugin({
       filename: 'index.hbs',
       template: path.resolve(__dirname, 'index.hbs'),
-      chunksSortMode: 'dependency' // Sort chunks by dependency
     })
   ],
   resolve: {
@@ -185,6 +170,14 @@ module.exports = {
       path.resolve(__dirname, 'src'),
       'node_modules'
     ],
+    fallback: {
+      fs: false,
+      net: false,
+      path: false,
+      stream: false,
+      timers: false,
+      tls: false,
+    },
     extensions: ['.js', '.jsx']
   }
 };

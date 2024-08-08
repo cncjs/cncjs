@@ -2,17 +2,14 @@ const crypto = require('crypto');
 const path = require('path');
 const boolean = require('boolean');
 const dotenv = require('dotenv');
-const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
 const findImports = require('find-imports');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const nib = require('nib');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const stylusLoader = require('stylus-loader');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
 const pkg = require('./src/package.json');
@@ -30,7 +27,7 @@ const publicPath = ((payload) => {
   const algorithm = 'sha1';
   const buf = String(payload);
   const hash = crypto.createHash(algorithm).update(buf).digest('hex');
-  return '/' + hash.substr(0, 8) + '/'; // 8 digits
+  return '/' + hash.substring(0, 8) + '/'; // 8 digits
 })(pkg.version);
 const buildVersion = pkg.version;
 const timestamp = new Date().getTime();
@@ -87,7 +84,15 @@ module.exports = {
               importLoaders: 1,
             }
           },
-          'stylus-loader'
+          {
+            loader: 'stylus-loader',
+            options: {
+              stylusOptions: {
+                use: ['nib'],
+                import: ['nib']
+              }
+            }
+          }
         ],
         exclude: [
           path.resolve(__dirname, 'src/app/styles')
@@ -138,11 +143,6 @@ module.exports = {
       }
     ].filter(Boolean)
   },
-  node: {
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty'
-  },
   optimization: {
     minimizer: [
       USE_TERSER_PLUGIN && (
@@ -162,36 +162,21 @@ module.exports = {
         TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId)
       }
     }),
-    new stylusLoader.OptionsPlugin({
-      default: {
-        // nib - CSS3 extensions for Stylus
-        use: [nib()],
-        // no need to have a '@import "nib"' in the stylesheet
-        import: ['~nib/lib/nib/index.styl']
-      }
-    }),
     new webpack.ContextReplacementPlugin(
       /moment[\/\\]locale$/,
       new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$')
     ),
     // Generates a manifest.json file in your root output directory with a mapping of all source file names to their corresponding output file.
-    new ManifestPlugin({
+    new WebpackManifestPlugin({
       fileName: 'manifest.json'
     }),
     new MiniCssExtractPlugin({
       filename: `[name].css?_=${timestamp}`,
       chunkFilename: `[id].css?_=${timestamp}`
     }),
-    new CSSSplitWebpackPlugin({
-      size: 4000,
-      imports: '[name].[ext]?[hash]',
-      filename: '[name]-[part].[ext]?[hash]',
-      preserve: false
-    }),
     new HtmlWebpackPlugin({
       filename: 'index.hbs',
       template: path.resolve(__dirname, 'index.hbs'),
-      chunksSortMode: 'dependency' // Sort chunks by dependency
     })
   ],
   resolve: {
@@ -199,6 +184,14 @@ module.exports = {
       path.resolve(__dirname, 'src'),
       'node_modules'
     ],
+    fallback: {
+      fs: false,
+      net: false,
+      path: false,
+      stream: false,
+      timers: false,
+      tls: false,
+    },
     extensions: ['.js', '.jsx']
   }
 };
