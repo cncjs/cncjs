@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import color from 'cli-color';
+import chalk from 'chalk';
 import PropTypes from 'prop-types';
 import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
@@ -16,6 +16,8 @@ import styles from './index.styl';
 // The buffer starts with 254 bytes free. The terminating <LF> or <CR> counts as a byte.
 const TERMINAL_COLS = 254;
 const TERMINAL_ROWS = 15;
+
+chalk.level = 1;
 
 class ConsoleWidget extends PureComponent {
     static propTypes = {
@@ -78,8 +80,8 @@ class ConsoleWidget extends PureComponent {
 
         if (this.terminal) {
           const { productName, version } = settings;
-          this.terminal.writeln(color.white.bold(`${productName} ${version} [${controller.type}]`));
-          this.terminal.writeln(color.white(i18n._('Connected to {{-port}} with a baud rate of {{baudrate}}', { port: color.yellowBright(port), baudrate: color.blueBright(baudrate) })));
+          this.terminal.writeln(chalk.white.bold(`${productName} ${version} [${controller.type}]`));
+          this.terminal.writeln(chalk.white(i18n._('Connected to {{-port}} with a baud rate of {{baudrate}}', { port: chalk.yellowBright(port), baudrate: chalk.blueBright(baudrate) })));
         }
       },
       'serialport:close': (options) => {
@@ -103,9 +105,9 @@ class ConsoleWidget extends PureComponent {
         data = String(data).trim();
 
         if (source) {
-          this.terminal.writeln(color.blackBright(source) + color.white(this.terminal.prompt + data));
+          this.terminal.writeln(chalk.blackBright(source) + chalk.white(this.terminal.prompt + data));
         } else {
-          this.terminal.writeln(color.white(this.terminal.prompt + data));
+          this.terminal.writeln(chalk.white(this.terminal.prompt + data));
         }
       },
       'serialport:read': (data) => {
