@@ -174,7 +174,7 @@ module.exports = {
       fs: false,
       net: false,
       path: false,
-      stream: false,
+      stream: require.resolve('stream-browserify'),
       timers: false,
       tls: false,
     },
