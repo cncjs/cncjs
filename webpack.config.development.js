@@ -5,7 +5,6 @@ const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
-const WriteFileWebpackPlugin = require('write-file-webpack-plugin');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
 const pkg = require('./src/package.json');
@@ -23,14 +22,8 @@ module.exports = {
   context: path.resolve(__dirname, 'src/app'),
   devtool: 'eval-cheap-module-source-map',
   entry: {
-    polyfill: [
-      path.resolve(__dirname, 'src/app/polyfill/index.js'),
-      'webpack-hot-middleware/client?path=/__webpack_hmr&reload=true',
-    ],
-    app: [
-      path.resolve(__dirname, 'src/app/index.jsx'),
-      'webpack-hot-middleware/client?path=/__webpack_hmr&reload=true',
-    ]
+    polyfill: path.resolve(__dirname, 'src/app/polyfill/index.js'),
+    app: path.resolve(__dirname, 'src/app/index.jsx')
   },
   output: {
     path: path.resolve(__dirname, 'output/cncjs/app'),
@@ -145,9 +138,6 @@ module.exports = {
     new webpack.LoaderOptionsPlugin({
       debug: true
     }),
-    // https://github.com/gajus/write-file-webpack-plugin
-    // Forces webpack-dev-server to write bundle files to the file system.
-    new WriteFileWebpackPlugin(),
     new webpack.ContextReplacementPlugin(
       /moment[\/\\]locale$/,
       new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$')
