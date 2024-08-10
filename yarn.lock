@@ -412,7 +412,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/node@npm:^7.25.0":
+"@babel/node@npm:~7.25.0":
   version: 7.25.0
   resolution: "@babel/node@npm:7.25.0"
   dependencies:
@@ -1614,7 +1614,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/register@npm:^7.24.6":
+"@babel/register@npm:^7.24.6, @babel/register@npm:~7.24.6":
   version: 7.24.6
   resolution: "@babel/register@npm:7.24.6"
   dependencies:
@@ -6076,7 +6076,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^4.0.0, chalk@npm:^4.0.2, chalk@npm:^4.1.0, chalk@npm:^4.1.1":
+"chalk@npm:^4.0.0, chalk@npm:^4.0.2, chalk@npm:^4.1.0, chalk@npm:^4.1.1, chalk@npm:~4.1.1":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
   dependencies:
@@ -6429,11 +6429,11 @@ __metadata:
   dependencies:
     "@babel/cli": ~7.4.3
     "@babel/core": ~7.4.3
-    "@babel/node": ^7.25.0
+    "@babel/node": ~7.25.0
     "@babel/polyfill": ~7.4.3
     "@babel/preset-env": ~7.4.3
     "@babel/preset-react": ~7.0.0
-    "@babel/register": ^7.24.6
+    "@babel/register": ~7.24.6
     "@babel/runtime": ~7.4.3
     "@serialport/parser-readline": ^10.0.0
     "@trendmicro/babel-config": ~1.0.2
@@ -6469,7 +6469,7 @@ __metadata:
     bootstrap: ~3.3.7
     bundle-loader: ~0.5.6
     chained-function: ~0.5.0
-    chalk: ^4.1.1
+    chalk: ~4.1.1
     classnames: ~2.2.6
     cncjs-controller: ~1.3.0
     colornames: ~1.1.1
@@ -6483,8 +6483,8 @@ __metadata:
     core-js: ~3.26.1
     coveralls: ~3.0.3
     cross-env: ~5.2.0
-    css-loader: ^3.0.0
-    css-minimizer-webpack-plugin: ^7.0.0
+    css-loader: ~3.0.0
+    css-minimizer-webpack-plugin: ~7.0.0
     debug: ~4.1.1
     deep-keys: ~0.5.0
     del-cli: ~3.0.1
@@ -6525,7 +6525,7 @@ __metadata:
     glob: ~7.1.3
     history: ~4.9.0
     hogan.js: ~3.0.2
-    html-webpack-plugin: 5.6.0
+    html-webpack-plugin: ~5.6.0
     http-proxy: ~1.18.1
     i18next: ~15.0.9
     i18next-browser-languagedetector: ~3.0.1
@@ -6606,7 +6606,7 @@ __metadata:
     socketio-jwt: ~4.5.0
     sortablejs: ~1.9.0
     spawn-default-shell: ~2.0.0
-    stream-browserify: ^3.0.0
+    stream-browserify: ~3.0.0
     style-loader: ~0.23.1
     styled-components: ~3.4.9
     stylint: ~1.5.9
@@ -6615,7 +6615,7 @@ __metadata:
     stylus-loader: ~8.1.0
     superagent: ~3.8.3
     superagent-use: ~0.1.0
-    tap: ^21.0.0
+    tap: ~21.0.0
     text-table: ~0.2.0
     three: ~0.103.0
     transform-loader: ~0.2.4
@@ -7408,30 +7408,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"css-loader@npm:^3.0.0":
-  version: 3.6.0
-  resolution: "css-loader@npm:3.6.0"
+"css-loader@npm:~3.0.0":
+  version: 3.0.0
+  resolution: "css-loader@npm:3.0.0"
   dependencies:
     camelcase: ^5.3.1
     cssesc: ^3.0.0
     icss-utils: ^4.1.1
     loader-utils: ^1.2.3
     normalize-path: ^3.0.0
-    postcss: ^7.0.32
+    postcss: ^7.0.17
     postcss-modules-extract-imports: ^2.0.0
     postcss-modules-local-by-default: ^3.0.2
-    postcss-modules-scope: ^2.2.0
+    postcss-modules-scope: ^2.1.0
     postcss-modules-values: ^3.0.0
-    postcss-value-parser: ^4.1.0
-    schema-utils: ^2.7.0
-    semver: ^6.3.0
+    postcss-value-parser: ^4.0.0
+    schema-utils: ^1.0.0
   peerDependencies:
-    webpack: ^4.0.0 || ^5.0.0
-  checksum: a45d7ee8105eea7a76caa45286f4b31f9413520511ae99a78886c522305a94c8adf289951f989d239919a9ffc08ea8cac2bf9c362f21b65d6f54f6812e904cc0
+    webpack: ^4.0.0
+  checksum: 56ea8fed83da56b1808eb33007afb211becc40f04b5da6c52d997b9d185363bf428afb8b87b034277808fa90e0a7be52879db4f479d9f9507e47c995dd0e0660
   languageName: node
   linkType: hard
 
-"css-minimizer-webpack-plugin@npm:^7.0.0":
+"css-minimizer-webpack-plugin@npm:~7.0.0":
   version: 7.0.0
   resolution: "css-minimizer-webpack-plugin@npm:7.0.0"
   dependencies:
@@ -11244,7 +11243,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-webpack-plugin@npm:5.6.0":
+"html-webpack-plugin@npm:~5.6.0":
   version: 5.6.0
   resolution: "html-webpack-plugin@npm:5.6.0"
   dependencies:
@@ -16252,7 +16251,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-modules-scope@npm:^2.2.0":
+"postcss-modules-scope@npm:^2.1.0":
   version: 2.2.0
   resolution: "postcss-modules-scope@npm:2.2.0"
   dependencies:
@@ -16455,14 +16454,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-value-parser@npm:^4.1.0, postcss-value-parser@npm:^4.2.0":
+"postcss-value-parser@npm:^4.0.0, postcss-value-parser@npm:^4.1.0, postcss-value-parser@npm:^4.2.0":
   version: 4.2.0
   resolution: "postcss-value-parser@npm:4.2.0"
   checksum: 819ffab0c9d51cf0acbabf8996dffbfafbafa57afc0e4c98db88b67f2094cb44488758f06e5da95d7036f19556a4a732525e84289a425f4f6fd8e412a9d7442f
   languageName: node
   linkType: hard
 
-"postcss@npm:^7.0.14, postcss@npm:^7.0.32, postcss@npm:^7.0.5, postcss@npm:^7.0.6":
+"postcss@npm:^7.0.14, postcss@npm:^7.0.17, postcss@npm:^7.0.32, postcss@npm:^7.0.5, postcss@npm:^7.0.6":
   version: 7.0.39
   resolution: "postcss@npm:7.0.39"
   dependencies:
@@ -18375,7 +18374,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"schema-utils@npm:^2.6.5, schema-utils@npm:^2.7.0":
+"schema-utils@npm:^2.6.5":
   version: 2.7.1
   resolution: "schema-utils@npm:2.7.1"
   dependencies:
@@ -19368,7 +19367,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stream-browserify@npm:^3.0.0":
+"stream-browserify@npm:~3.0.0":
   version: 3.0.0
   resolution: "stream-browserify@npm:3.0.0"
   dependencies:
@@ -19956,7 +19955,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tap@npm:^21.0.0":
+"tap@npm:~21.0.0":
   version: 21.0.0
   resolution: "tap@npm:21.0.0"
   dependencies:
