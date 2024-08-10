@@ -60,10 +60,11 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
-              localIdentName: '[path][name]__[local]--[hash:base64:5]',
-              camelCase: true,
-              importLoaders: 1
+              localsConvention: 'camelCase',
+              modules: {
+                localIdentName: '[path][name]__[local]--[hash:base64:5]',
+              },
+              importLoaders: 1,
             }
           },
           {
@@ -88,7 +89,7 @@ module.exports = {
             loader: 'css-loader',
             options: {
               modules: false,
-              camelCase: true,
+              localsConvention: 'camelCase',
             }
           },
           'stylus-loader'

@@ -6,7 +6,7 @@ const findImports = require('find-imports');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CSSMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
@@ -78,9 +78,10 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
-              localIdentName: '[path][name]__[local]--[hash:base64:5]',
-              camelCase: true,
+              localsConvention: 'camelCase',
+              modules: {
+                localIdentName: '[path][name]__[local]--[hash:base64:5]',
+              },
               importLoaders: 1,
             }
           },
@@ -105,8 +106,7 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              modules: false,
-              camelCase: true,
+              modules: false
             }
           },
           'stylus-loader'
@@ -149,7 +149,7 @@ module.exports = {
         new TerserPlugin()
       ),
       USE_OPTIMIZE_CSS_ASSETS_PLUGIN && (
-        new OptimizeCSSAssetsPlugin()
+        new CSSMinimizerWebpackPlugin()
       ),
     ].filter(Boolean)
   },
