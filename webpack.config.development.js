@@ -122,7 +122,10 @@ module.exports = {
       },
       {
         test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'file-loader'
+        loader: 'file-loader',
+        options: {
+          esModule: false
+        }
       }
     ]
   },
