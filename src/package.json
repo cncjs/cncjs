@@ -15,7 +15,7 @@
     "@serialport/parser-readline": "^10.0.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.18.3",
-    "chalk": "^4.1.1",
+    "chalk": "~4.1.1",
     "commander": "~9.1.0",
     "compression": "~1.7.4",
     "connect-multiparty": "~2.2.0",
