@@ -109,7 +109,8 @@ module.exports = {
         test: /\.(png|jpg|svg)$/,
         loader: 'url-loader',
         options: {
-          limit: 8192
+          limit: 8192,
+          esModule: false
         }
       },
       {
@@ -117,7 +118,8 @@ module.exports = {
         loader: 'url-loader',
         options: {
           limit: 10000,
-          mimetype: 'application/font-woff'
+          mimetype: 'application/font-woff',
+          esModule: false
         }
       },
       {
