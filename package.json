@@ -51,7 +51,7 @@
     "start-server-dev": "cross-env NODE_ENV=development ./bin/cncjs --port 8000 -m /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v1/",
     "lint": "concurrently --kill-others-on-fail --names \"i18nlint,eslint,stylint\" \"yarn run i18nlint\" \"yarn run eslint\" \"yarn run stylint\"",
     "eslint": "eslint --color --ext .js --ext .jsx *.js src scripts test",
-    "eslint-debug": "DEBUG=\"eslint:glob-util,eslint:config-*,eslint:cli*\" eslint --cache --color --quiet --ext .js --ext .jsx *.js src scripts test",
+    "eslint-debug": "set DEBUG=\"eslint:glob-util,eslint:config-*,eslint:cli*\" eslint --cache --color --quiet --ext .js --ext .jsx *.js src scripts test",
     "i18nlint": "bash -c 'find src/{app,server}/i18n -type f -name \"*.json\" | xargs -L1 -I{} -- bash -c \"echo Linting {}; jsonlint -q {}\"'",
     "stylint": "stylint src/app",
     "test": "tap test/*.js --no-timeout --node-arg=--require --node-arg=@babel/register --node-arg=--require --node-arg=@babel/polyfill",
