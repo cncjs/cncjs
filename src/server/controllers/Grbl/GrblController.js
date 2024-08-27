@@ -1339,15 +1339,10 @@ class GrblController {
           }
 
           const macros = config.get('macros');
-          var macro = _.find(macros, { id: id });
-
-          // If macro is not found by id, try matching by name
-          if (!macro) {
-            macro = _.find(macros, { name: id });
-          }
+          const macro = _.find(macros, item => item.id === id || item.name === id);
 
           if (!macro) {
-            log.error(`Cannot find the macro: id/name=${id}`);
+            log.error(`Cannot find macro with id or name=${id}`);
             return;
           }
 
