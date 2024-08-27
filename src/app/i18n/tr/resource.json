@@ -537,5 +537,6 @@
     "SET": "AYARLA",
     "CLR": "TEMİZLE",
     "Set RTS line status upon opening": "Açılışta RTS hat durumunu ayarla",
-    "Use RTS/CTS flow control": "RTS/CTS akış kontrolü kullanın"
+    "Use RTS/CTS flow control": "RTS/CTS akış kontrolü kullanın",
+    "Run macro (by id or name)": ""
 }

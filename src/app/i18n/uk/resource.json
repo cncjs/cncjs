@@ -537,5 +537,6 @@
     "Flip Horizontally": "Перевернути по горизонталі",
     "Flip Vertically": "Перевернути по вертикалі",
     "Crosshair": "Перехрестя",
-    "Marlin Widget": "Віджет Marlin"
+    "Marlin Widget": "Віджет Marlin",
+    "Run macro (by id or name)": ""
 }

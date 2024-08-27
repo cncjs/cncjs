@@ -537,5 +537,6 @@
     "SET": "УСТАНОВИТЬ",
     "CLR": "ОЧИСТИТЬ",
     "Set RTS line status upon opening": "Установить статус линии RTS при открытии",
-    "Use RTS/CTS flow control": "Используйте контроль потока RTS/CTS"
+    "Use RTS/CTS flow control": "Используйте контроль потока RTS/CTS",
+    "Run macro (by id or name)": ""
 }
