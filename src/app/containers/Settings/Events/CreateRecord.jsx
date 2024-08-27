@@ -63,7 +63,7 @@ class CreateRecord extends PureComponent {
         ].join('\n');
       } else if (modal.params.trigger === 'macro') {
         sampleCommands = [
-            'My Macro'
+          'My Macro'
         ].join('\n');
       }
 
