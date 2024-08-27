@@ -184,6 +184,8 @@ class GrblController {
         log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
         if (trigger === 'system') {
           taskRunner.run(commands);
+        } else if (trigger === 'macro') {
+          this.command('macro:run', commands);
         } else {
           this.command('gcode', commands);
         }
@@ -1337,10 +1339,15 @@ class GrblController {
           }
 
           const macros = config.get('macros');
-          const macro = _.find(macros, { id: id });
+          var macro = _.find(macros, { id: id });
+
+          // If macro is not found by id, try matching by name
+          if (!macro) {
+            macro = _.find(macros, { name: id });
+          }
 
           if (!macro) {
-            log.error(`Cannot find the macro: id=${id}`);
+            log.error(`Cannot find the macro: id/name=${id}`);
             return;
           }
 

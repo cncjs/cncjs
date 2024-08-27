@@ -149,6 +149,10 @@ class TableRecords extends PureComponent {
                   return <span>{i18n._('G-code')}</span>;
                 }
 
+                if (trigger === 'macro') {
+                  return <span>{i18n._('Run macro (by id or name)')}</span>;
+                }
+
                 return '–';
               }
             },
