@@ -1,11 +1,14 @@
 ##### [Support UniversalBit Project](https://github.com/universalbit-dev/universalbit-dev/tree/main/support) -- [Disambiguation](https://en.wikipedia.org/wiki/Wikipedia:Disambiguation) -- [Bash Reference Manual](https://www.gnu.org/software/bash/manual/html_node/index.html) -- [Join Mastodon](https://mastodon.social/invite/wTHp2hSD) -- [Website](https://www.universalbit.it/) -- [Content Delivery Network](https://universalbitcdn.it/)
 
+### Internet of normal things in life
+
+
+##### CNCjs is a full-featured web-based interface for CNC controllers running Grbl, Marlin, Smoothieware, or TinyG.
 ---
 
 * Linux app image cncjs v1.10.3
 ```bash
 wget https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-x86_64.AppImage
-
 ```
 
 * ## [CncJS Desktop App](https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-linux-x86_64.AppImage)
@@ -21,32 +24,13 @@ wget https://github.com/cncjs/cncjs/releases/download/v1.10.3/cncjs-app-1.10.3-l
 ```bash
 sudo chmod a+x cncjs-app-1.10.3-linux-x86_64.AppImage
 ```
-[Pm2 Restart Strategies](https://pm2.keymetrics.io/docs/usage/restart-strategies/)
+
 ```bash
 npm i pm2 -g
 pm2 start cncjs-app-1.10.3-linux-x86_64.AppImage  --cron-restart="0 0 * * *"
 ```
 
 [Pm2 Startup Script](https://pm2.keymetrics.io/docs/usage/startup/)
-```bash
-pm2 startup
-### [PM2] To setup the Startup Script, copy/paste the following command: <== copy and paste your PATH
-sudo env PATH=$PATH:/home/universalbit/.nvm/versions/node/v20.11.0/bin /home/universalbit/.nvm/versions/node/v20.11.0/lib/node_modules/pm2/bin/pm2 startup systemd -u user --hp /home/universalbit
-```
-```
-systemctl enable pm2-universalbit
-```
-
-```bash
-pm2 save
-```
-
-* After starting cncjs-app it may be necessary to resolve the error "Error : Error: Permission Denied cannot open port:dev/ttyUSB0"
-```bash
-sudo chmod 777 /dev/ttyUSB0
-```
-
----
 
 
 ## Development Area:
@@ -55,14 +39,12 @@ sudo chmod 777 /dev/ttyUSB0
 CODE HAS VULNERABILITIES AND ERRORS
 ...is a news? [Npm Auditing](https://docs.npmjs.com/auditing-package-dependencies-for-security-vulnerabilities)
 
-* ##### Npm Package for NodeJs App
+* ##### Npm Package for NodeJs Engine
 
 # CNCjs [![Backers on Open Collective](https://opencollective.com/cncjs/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/cncjs/sponsors/badge.svg)](#sponsors) [![Travis CI Build Status](https://travis-ci.org/cncjs/cncjs.svg)](https://travis-ci.org/cncjs/cncjs) [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/qxx53wq32w3edule?svg=true)](https://ci.appveyor.com/project/cheton/cncjs) [![Coverage Status](https://coveralls.io/repos/github/cncjs/cncjs/badge.svg?branch=master)](https://coveralls.io/github/cncjs/cncjs?branch=master)
 
 [![NPM](https://nodei.co/npm/cncjs.png?downloads=true&stars=true)](https://www.npmjs.com/package/cncjs)
 ![cncjs](https://raw.githubusercontent.com/cncjs/cncjs/master/media/banner.png)
-
-CNCjs is a full-featured web-based interface for CNC controllers running [Grbl](https://github.com/grbl/grbl), [Marlin](https://github.com/MarlinFirmware/Marlin), [Smoothieware](https://github.com/Smoothieware/Smoothieware), or [TinyG](https://github.com/synthetos/TinyG).
 
 For a more complete introduction, see the [Introduction](https://github.com/cncjs/cncjs/wiki/Introduction) section of the wiki page.
 
@@ -96,11 +78,11 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 * [Tool Change](https://github.com/cncjs/cncjs/wiki/Tool-Change) (since 1.9.11)
 * Z-Probe
 
-## Custom Widgets
+### Custom Widgets
 
 * [cncjs-widget-boilerplate](https://github.com/cncjs/cncjs-widget-boilerplate) - Creating custom widgets for CNCjs.
 
-## Pendants
+### Pendants
 
 ### Boilerplate Code
 
@@ -114,66 +96,41 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 * [cncjs-pendant-ps3](https://github.com/cncjs/cncjs-pendant-ps3) - Dual Shock / PS3 Bluetooth Remote Pendant for CNCjs.
 * [cncjs-pendant-raspi-gpio](https://github.com/cncjs/cncjs-pendant-raspi-gpio) - Simple Raspberry Pi GPIO Pendant control for CNCjs.
 
-## Tablet UI
+### Tablet UI
 
 * [cncjs-pendant-tinyweb](https://github.com/cncjs/cncjs-pendant-tinyweb) - A tiny web console for small 320x240 LCD display.<br>
     ![cncjs-pendant-tinyweb](https://raw.githubusercontent.com/cncjs/cncjs/master/media/tinyweb-axes.png)
 * [cncjs-shopfloor-tablet](https://github.com/cncjs/cncjs-shopfloor-tablet) - A simplified UI for cncjs optimized for tablet computers in a production (shop floor) environment.<br>
     ![cncjs-shopfloor-tablet](https://user-images.githubusercontent.com/4861133/33970662-4a8244b2-e018-11e7-92ab-5a379e3de461.PNG)
 
-## Browser Support
+### Browser Support
 
 ![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png)<br>Chrome | ![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png)<br>Edge | ![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png)<br>Firefox | ![IE](https://raw.github.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png)<br>IE | ![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png)<br>Opera | ![Safari](https://raw.github.com/alrra/browser-logos/master/src/safari/safari_48x48.png)<br>Safari
 --- | --- | --- | --- | --- | --- |
  Yes | Yes | Yes| Not supported | Yes | Yes | 
 
 ## Supported Node.js Versions
-
-| Version | Supported Level |
-| :------ |:--------------- |
-| <= 10   | Not supported   |
-| 12      | Supported       |
-| >= 14   | Supported       |
 | >= 20(LTS)    | Recommended     |
 
-
-## Getting Started
+### Getting Started
 Required Packages:
-```
+```bash
 sudo apt install curl git build-essential
 ```
-##### NVM Node Version Manager:
-nvm allows you to quickly install and use different versions of node via the command line.
+### Clone Project:
+```bash
+git clone https://github.com/universalbit-dev/cncjs.git
+cd cncjs
 ```
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
-```
-
-##### [NodeJs 20](https://nodejs.org/en)
-```
-nvm install 20
-nvm use 20
-```
-Add these lines to your ~/.bash_profile, ~/.bashrc, or ~/.profile file to have it automatically sourced upon login:
-[?](https://github.com/nvm-sh/nvm#install--update-script)
-```
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-```
-
-upgrade npm to the latest version. To upgrade, run:
-```
-npm install npm@latest -g
-```
-
 ### Installation
 
 Install cncjs as a non-root user, or the [serialport](https://github.com/node-serialport/node-serialport) module may not install correctly on some platforms like Raspberry Pi.
-```
+```bash
 npm install -g cncjs
 ```
 
 If you're going to use sudo or root to install cncjs, you need to specify the `--unsafe-perm` option to run npm as the root account.
-```
+```bash
 npm install --unsafe-perm -g cncjs
 ```
 
@@ -185,14 +142,13 @@ Run `npm install -g cncjs@latest` to install the latest version. To determine th
 
 
 ##### Run Cncjs (no default port):
-```
+```bash
 cncjs -p 8001
 ```
 ##### Browser URL:
 ```
 http://localhost:8001
 ```
-
 
 ### Usage
 
@@ -396,7 +352,4 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 <a href="https://opencollective.com/cncjs/sponsor/9/website" target="_blank"><img src="https://opencollective.com/cncjs/sponsor/9/avatar.svg"></a>
 
 ## License
-
 * [MIT License](https://raw.githubusercontent.com/cncjs/cncjs/master/LICENSE).
-* [Bash Reference Manual](https://www.gnu.org/software/bash/manual/html_node/index.html)
-* [Support UniversalBit Project](https://github.com/universalbit-dev/universalbit-dev/tree/main/support)
