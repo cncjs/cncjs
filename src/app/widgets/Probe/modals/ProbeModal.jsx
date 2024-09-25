@@ -1,12 +1,12 @@
 import React, { useRef } from 'react';
 import { Form, Field } from 'react-final-form';
-import { Button, ButtonGroup } from 'app/components/Buttons';
-import CodePreview from 'app/components/CodePreview';
-import FormGroup from 'app/components/FormGroup';
-import Modal from 'app/components/Modal';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
+import { Button, ButtonGroup } from '@app/components/Buttons';
+import CodePreview from '@app/components/CodePreview';
+import FormGroup from '@app/components/FormGroup';
+import Modal from '@app/components/Modal';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
 import {
   populateTLOProbeCommands,
   populateWCSProbeCommands,

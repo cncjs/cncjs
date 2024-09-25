@@ -7,8 +7,8 @@ import includes from 'lodash/includes';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
-import i18n from 'app/lib/i18n';
-import { formatBytes } from 'app/lib/numeral';
+import i18n from '@app/lib/i18n';
+import { formatBytes } from '@app/lib/numeral';
 import styles from './renderer.styl';
 
 function TreeNode(props) {

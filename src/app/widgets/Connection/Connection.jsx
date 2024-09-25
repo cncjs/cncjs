@@ -30,21 +30,21 @@ import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
 import Select, { components as SelectComponents } from 'react-select';
 import { useTransition, animated } from 'react-spring'; // TODO: remove
-import * as connectionActions from 'app/actions/connection';
-import * as serialportActions from 'app/actions/serialport';
-import { Checkbox } from 'app/components/Checkbox'; // TODO: remove
-import Clickable from 'app/components/Clickable';
-import InlineError from 'app/components/InlineError';
-import Input from 'app/components/FormControl/Input'; // TODO: remove
-import FormGroup from 'app/components/FormGroup';
-import { Container, Row, Col } from 'app/components/GridSystem'; // TODO: remove
-import ModalTemplate from 'app/components/ModalTemplate'; // TODO: remove
+import * as connectionActions from '@app/actions/connection';
+import * as serialportActions from '@app/actions/serialport';
+import { Checkbox } from '@app/components/Checkbox'; // TODO: remove
+import Clickable from '@app/components/Clickable';
+import InlineError from '@app/components/InlineError';
+import Input from '@app/components/FormControl/Input'; // TODO: remove
+import FormGroup from '@app/components/FormGroup';
+import { Container, Row, Col } from '@app/components/GridSystem'; // TODO: remove
+import ModalTemplate from '@app/components/ModalTemplate'; // TODO: remove
 import {
   GRBL,
   MARLIN,
   SMOOTHIE,
   TINYG,
-} from 'app/constants/controller';
+} from '@app/constants/controller';
 import {
   CONNECTION_TYPE_SERIAL,
   CONNECTION_TYPE_SOCKET,
@@ -52,14 +52,14 @@ import {
   CONNECTION_STATE_CONNECTING,
   CONNECTION_STATE_DISCONNECTED,
   CONNECTION_STATE_DISCONNECTING,
-} from 'app/constants/connection';
-import useMount from 'app/hooks/useMount';
-import usePrevious from 'app/hooks/usePrevious';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import portal from 'app/lib/portal';
-import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
-import { composeValidators, required } from 'app/widgets/shared/validations';
+} from '@app/constants/connection';
+import useMount from '@app/hooks/useMount';
+import usePrevious from '@app/hooks/usePrevious';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import portal from '@app/lib/portal';
+import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
+import { composeValidators, required } from '@app/widgets/shared/validations';
 
 // @param {string} options.path
 // @param {number} options.baudRate

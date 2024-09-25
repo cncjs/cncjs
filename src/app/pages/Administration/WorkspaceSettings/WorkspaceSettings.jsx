@@ -18,12 +18,12 @@ import {
   usePortalManager,
 } from '@tonic-ui/react';
 import React, { useCallback, useRef } from 'react';
-import CodePreview from 'app/components/CodePreview';
-import settings from 'app/config/settings';
-import exportFile from 'app/lib/export-file';
-import i18n from 'app/lib/i18n';
-import log from 'app/lib/log';
-import config from 'app/store/config';
+import CodePreview from '@app/components/CodePreview';
+import settings from '@app/config/settings';
+import exportFile from '@app/lib/export-file';
+import i18n from '@app/lib/i18n';
+import log from '@app/lib/log';
+import config from '@app/store/config';
 
 const WorkspaceSettings = () => {
   const [colorMode] = useColorMode();

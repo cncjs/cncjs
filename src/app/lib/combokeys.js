@@ -1,6 +1,6 @@
 import events from 'events';
 import Mousetrap from 'mousetrap';
-import x from 'app/lib/json-stringify';
+import x from '@app/lib/json-stringify';
 import log from './log';
 import { preventDefault } from './dom-events';
 

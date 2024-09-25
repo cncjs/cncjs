@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
-import { limit } from 'app/lib/normalize-range';
-import log from 'app/lib/log';
+import { limit } from '@app/lib/normalize-range';
+import log from '@app/lib/log';
 import History from './History';
 import styles from './index.styl';
 

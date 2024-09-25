@@ -4,7 +4,7 @@ import {
   FETCH_PORTS,
   FETCH_BAUD_RATES,
   UPDATE_CONNECTION_STATUS,
-} from 'app/actions/serialport';
+} from '@app/actions/serialport';
 
 const initialState = {
   // ports

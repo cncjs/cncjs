@@ -3,13 +3,13 @@ import {
   Space,
 } from '@tonic-ui/react';
 import React, { useEffect, useState } from 'react';
-import i18n from 'app/lib/i18n';
-import Anchor from 'app/components/Anchor';
-import { Button } from 'app/components/Buttons';
-import Modal from 'app/components/Modal';
-import ModalTemplate from 'app/components/ModalTemplate';
-import settings from 'app/config/settings';
-import config from 'app/store/config';
+import i18n from '@app/lib/i18n';
+import Anchor from '@app/components/Anchor';
+import { Button } from '@app/components/Buttons';
+import Modal from '@app/components/Modal';
+import ModalTemplate from '@app/components/ModalTemplate';
+import settings from '@app/config/settings';
+import config from '@app/store/config';
 
 function CorruptedWorkspaceSettingsModal(props) {
   const [url, setUrl] = useState();

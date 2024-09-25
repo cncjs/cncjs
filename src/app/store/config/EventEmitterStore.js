@@ -4,8 +4,8 @@ import _get from 'lodash/get';
 import _set from 'lodash/set';
 import _unset from 'lodash/unset';
 import _update from 'lodash/update';
-import x from 'app/lib/json-stringify';
-import log from 'app/lib/log';
+import x from '@app/lib/json-stringify';
+import log from '@app/lib/log';
 
 class EventEmitterStore extends events.EventEmitter {
   _state = {};

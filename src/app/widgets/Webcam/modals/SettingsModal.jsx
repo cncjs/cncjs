@@ -6,14 +6,14 @@ import _find from 'lodash/find';
 import React, { useEffect, useState } from 'react';
 import { Form, Field } from 'react-final-form';
 import Select from 'react-select';
-import { Button } from 'app/components/Buttons';
-import Input from 'app/components/FormControl/Input';
-import FormGroup from 'app/components/FormGroup';
-import Modal from 'app/components/Modal';
-import { RadioButton } from 'app/components/Radio';
-import i18n from 'app/lib/i18n';
-import log from 'app/lib/log';
-import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
+import { Button } from '@app/components/Buttons';
+import Input from '@app/components/FormControl/Input';
+import FormGroup from '@app/components/FormGroup';
+import Modal from '@app/components/Modal';
+import { RadioButton } from '@app/components/Radio';
+import i18n from '@app/lib/i18n';
+import log from '@app/lib/log';
+import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
 import MutedText from '../components/MutedText';
 import {
   MEDIA_SOURCE_LOCAL,

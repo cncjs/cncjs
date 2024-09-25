@@ -7,14 +7,14 @@ import take from 'lodash/take';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Button } from 'app/components/Buttons';
-import FormGroup from 'app/components/FormGroup';
-import Modal from 'app/components/Modal';
-import { TablePagination } from 'app/components/Paginations';
-import Table from 'app/components/Table';
-import ToggleSwitch from 'app/components/ToggleSwitch';
-import portal from 'app/lib/portal';
-import i18n from 'app/lib/i18n';
+import { Button } from '@app/components/Buttons';
+import FormGroup from '@app/components/FormGroup';
+import Modal from '@app/components/Modal';
+import { TablePagination } from '@app/components/Paginations';
+import Table from '@app/components/Table';
+import ToggleSwitch from '@app/components/ToggleSwitch';
+import portal from '@app/lib/portal';
+import i18n from '@app/lib/i18n';
 import {
   MODAL_CREATE_RECORD,
   MODAL_UPDATE_RECORD

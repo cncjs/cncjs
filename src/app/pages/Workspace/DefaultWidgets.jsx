@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { ensureArray } from 'ensure-type';
 import React, { Component } from 'react';
-import config from 'app/store/config';
+import config from '@app/store/config';
 import Widget from './Widget';
 import styles from './widgets.styl';
 

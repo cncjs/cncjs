@@ -5,15 +5,15 @@ import chainedFunction from 'chained-function';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Anchor from 'app/components/Anchor';
-import { Button } from 'app/components/Buttons';
-import FormGroup from 'app/components/FormGroup';
-import Modal from 'app/components/Modal';
-import Table from 'app/components/Table';
-import ToggleSwitch from 'app/components/ToggleSwitch';
-import { TablePagination } from 'app/components/Paginations';
-import portal from 'app/lib/portal';
-import i18n from 'app/lib/i18n';
+import Anchor from '@app/components/Anchor';
+import { Button } from '@app/components/Buttons';
+import FormGroup from '@app/components/FormGroup';
+import Modal from '@app/components/Modal';
+import Table from '@app/components/Table';
+import ToggleSwitch from '@app/components/ToggleSwitch';
+import { TablePagination } from '@app/components/Paginations';
+import portal from '@app/lib/portal';
+import i18n from '@app/lib/i18n';
 import {
   MODAL_CREATE_RECORD,
   MODAL_UPDATE_RECORD

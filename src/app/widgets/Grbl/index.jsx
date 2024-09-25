@@ -7,20 +7,20 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import FormGroup from 'app/components/FormGroup';
-import { Container } from 'app/components/GridSystem';
-import { ModalProvider, ModalConsumer, ModalRoot } from 'app/components/Modal';
-import Widget from 'app/components/Widget';
-import i18n from 'app/lib/i18n';
-import controller from 'app/lib/controller';
-import WidgetConfig from 'app/widgets/shared/WidgetConfig';
-import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
+import FormGroup from '@app/components/FormGroup';
+import { Container } from '@app/components/GridSystem';
+import { ModalProvider, ModalConsumer, ModalRoot } from '@app/components/Modal';
+import Widget from '@app/components/Widget';
+import i18n from '@app/lib/i18n';
+import controller from '@app/lib/controller';
+import WidgetConfig from '@app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from '@app/widgets/shared/WidgetConfigProvider';
 import {
   GRBL,
-} from 'app/constants/controller';
+} from '@app/constants/controller';
 import {
   CONNECTION_STATE_CONNECTED,
-} from 'app/constants/connection';
+} from '@app/constants/connection';
 import QueueReports from './QueueReports';
 import StatusReports from './StatusReports';
 import ModalGroups from './ModalGroups';

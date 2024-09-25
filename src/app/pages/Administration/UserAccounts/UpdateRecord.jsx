@@ -2,12 +2,12 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Modal from 'app/components/Modal';
-import { ToastNotification } from 'app/components/Notifications';
-import ToggleSwitch from 'app/components/ToggleSwitch';
-import { Form, Input } from 'app/components/Validation';
-import i18n from 'app/lib/i18n';
-import * as validations from 'app/lib/validations';
+import Modal from '@app/components/Modal';
+import { ToastNotification } from '@app/components/Notifications';
+import ToggleSwitch from '@app/components/ToggleSwitch';
+import { Form, Input } from '@app/components/Validation';
+import i18n from '@app/lib/i18n';
+import * as validations from '@app/lib/validations';
 import styles from '../form.styl';
 
 class UpdateRecord extends Component {

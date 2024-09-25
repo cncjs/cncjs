@@ -1,6 +1,6 @@
 import _get from 'lodash/get';
 import { useContext } from 'react';
-import config from 'app/store/config';
+import config from '@app/store/config';
 import { WidgetConfigContext } from './context';
 import { useTracked } from './tracked';
 import { translatePathByWidgetId } from './utils';

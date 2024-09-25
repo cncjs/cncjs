@@ -3,14 +3,14 @@ import _mapValues from 'lodash/mapValues';
 import {
   IMPERIAL_UNITS,
   METRIC_UNITS,
-} from 'app/constants';
+} from '@app/constants';
 import {
   GRBL,
   MARLIN,
   SMOOTHIE,
   TINYG,
-} from 'app/constants/controller';
-import { in2mm } from 'app/lib/units';
+} from '@app/constants/controller';
+import { in2mm } from '@app/lib/units';
 
 const noop = () => {};
 

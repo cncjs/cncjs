@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Card from 'app/components/Card';
+import Card from '@app/components/Card';
 
 const Readout = styled(Card)`
     font-size: .75rem;

@@ -3,15 +3,15 @@ import _get from 'lodash/get';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'react-redux';
-import FormGroup from 'app/components/FormGroup';
-import { Container, Row, Col } from 'app/components/GridSystem';
-import HorizontalForm from 'app/components/HorizontalForm';
-import i18n from 'app/lib/i18n';
-import { mapPositionToUnits } from 'app/lib/units';
+import FormGroup from '@app/components/FormGroup';
+import { Container, Row, Col } from '@app/components/GridSystem';
+import HorizontalForm from '@app/components/HorizontalForm';
+import i18n from '@app/lib/i18n';
+import { mapPositionToUnits } from '@app/lib/units';
 import {
   IMPERIAL_UNITS,
   METRIC_UNITS
-} from 'app/constants';
+} from '@app/constants';
 
 const formatISODateTime = (time) => {
   return time > 0 ? moment.unix(time / 1000).format('YYYY-MM-DD HH:mm:ss') : '–';

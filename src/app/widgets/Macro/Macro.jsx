@@ -15,27 +15,27 @@ import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import React, { useContext } from 'react';
 import { connect } from 'react-redux';
-import RenderBlock from 'app/components/RenderBlock';
+import RenderBlock from '@app/components/RenderBlock';
 import {
   CONNECTION_STATE_CONNECTED,
-} from 'app/constants/connection';
+} from '@app/constants/connection';
 import {
   MACHINE_STATE_NONE,
   REFORMED_MACHINE_STATE_IDLE,
   REFORMED_MACHINE_STATE_RUN,
-} from 'app/constants/controller';
+} from '@app/constants/controller';
 import {
   WORKFLOW_STATE_IDLE,
   WORKFLOW_STATE_PAUSED,
   WORKFLOW_STATE_RUNNING,
-} from 'app/constants/workflow';
-import useEffectOnce from 'app/hooks/useEffectOnce';
-import useMount from 'app/hooks/useMount';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import iframeExport from 'app/lib/iframe-export';
-import portal from 'app/lib/portal';
-import config from 'app/store/config';
+} from '@app/constants/workflow';
+import useEffectOnce from '@app/hooks/useEffectOnce';
+import useMount from '@app/hooks/useMount';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import iframeExport from '@app/lib/iframe-export';
+import portal from '@app/lib/portal';
+import config from '@app/store/config';
 import LoadMacro from './modals/LoadMacro';
 import EditMacro from './modals/EditMacro';
 import NewMacro from './modals/NewMacro';

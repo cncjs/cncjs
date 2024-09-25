@@ -9,16 +9,16 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
   UPDATE_BOUNDING_BOX,
-} from 'app/actions/controller';
-import Anchor from 'app/components/Anchor';
-import { Button } from 'app/components/Buttons';
-import ModalTemplate from 'app/components/ModalTemplate';
-import Modal from 'app/components/Modal';
-import Widget from 'app/components/Widget';
+} from '@app/actions/controller';
+import Anchor from '@app/components/Anchor';
+import { Button } from '@app/components/Buttons';
+import ModalTemplate from '@app/components/ModalTemplate';
+import Modal from '@app/components/Modal';
+import Widget from '@app/components/Widget';
 import {
   IMPERIAL_UNITS,
   METRIC_UNITS,
-} from 'app/constants';
+} from '@app/constants';
 import {
   // Grbl
   GRBL,
@@ -31,21 +31,21 @@ import {
   // TinyG
   TINYG,
   TINYG_MACHINE_STATE_RUN,
-} from 'app/constants/controller';
+} from '@app/constants/controller';
 import {
   WORKFLOW_STATE_RUNNING,
   WORKFLOW_STATE_PAUSED,
   WORKFLOW_STATE_IDLE,
-} from 'app/constants/workflow';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import log from 'app/lib/log';
-import portal from 'app/lib/portal';
-import * as WebGL from 'app/lib/three/WebGL';
-import { in2mm } from 'app/lib/units';
-import reduxStore from 'app/store/redux';
-import WidgetConfig from 'app/widgets/shared/WidgetConfig';
-import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
+} from '@app/constants/workflow';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import log from '@app/lib/log';
+import portal from '@app/lib/portal';
+import * as WebGL from '@app/lib/three/WebGL';
+import { in2mm } from '@app/lib/units';
+import reduxStore from '@app/store/redux';
+import WidgetConfig from '@app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from '@app/widgets/shared/WidgetConfigProvider';
 import PrimaryToolbar from './PrimaryToolbar';
 import SecondaryToolbar from './SecondaryToolbar';
 import WorkflowControl from './WorkflowControl';

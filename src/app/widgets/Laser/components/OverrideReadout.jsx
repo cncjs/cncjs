@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Card from 'app/components/Card';
+import Card from '@app/components/Card';
 
 const OverrideReadout = styled(Card)`
     display: inline-block;

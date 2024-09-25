@@ -7,7 +7,7 @@ import React, { Component, cloneElement } from 'react';
 import ReactDOM from 'react-dom';
 import { uncontrollable } from 'uncontrollable';
 import warning from 'warning';
-import { ButtonGroup } from 'app/components/Buttons';
+import { ButtonGroup } from '@app/components/Buttons';
 import DropdownToggle from './DropdownToggle';
 import DropdownMenu from './DropdownMenu';
 import DropdownMenuWrapper from './DropdownMenuWrapper';

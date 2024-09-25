@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import React from 'react';
-import { tagPropType } from 'app/components/shared/utils';
+import { tagPropType } from '@app/components/shared/utils';
 import ProgressBar from './ProgressBar';
 import styles from './styles/index.styl';
 

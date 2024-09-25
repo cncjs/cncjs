@@ -7,28 +7,28 @@ import semverLt from 'semver/functions/lt';
 import styled from 'styled-components';
 import _without from 'lodash/without';
 import Push from 'push.js';
-import api from 'app/api';
-import Anchor from 'app/components/Anchor';
-import Badge from 'app/components/Badge';
-import { Button } from 'app/components/Buttons';
-import { Container, Row, Col } from 'app/components/GridSystem';
-import Dropdown, { MenuItem } from 'app/components/Dropdown';
+import api from '@app/api';
+import Anchor from '@app/components/Anchor';
+import Badge from '@app/components/Badge';
+import { Button } from '@app/components/Buttons';
+import { Container, Row, Col } from '@app/components/GridSystem';
+import Dropdown, { MenuItem } from '@app/components/Dropdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Hoverable from 'app/components/Hoverable';
-import Image from 'app/components/Image';
-import Tooltip from 'app/components/Tooltip';
-import withRouter from 'app/components/withRouter'; // withRouter is deprecated
-import settings from 'app/config/settings';
+import Hoverable from '@app/components/Hoverable';
+import Image from '@app/components/Image';
+import Tooltip from '@app/components/Tooltip';
+import withRouter from '@app/components/withRouter'; // withRouter is deprecated
+import settings from '@app/config/settings';
 import {
   TOPNAV_HEIGHT,
-} from 'app/config/styles';
-import combokeys from 'app/lib/combokeys';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import log from 'app/lib/log';
-import * as user from 'app/lib/user';
-import config from 'app/store/config';
-import logo from 'app/images/logo-badge-32x32.png';
+} from '@app/config/styles';
+import combokeys from '@app/lib/combokeys';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import log from '@app/lib/log';
+import * as user from '@app/lib/user';
+import config from '@app/store/config';
+import logo from '@app/images/logo-badge-32x32.png';
 import QuickAccessToolbar from './QuickAccessToolbar';
 
 const releases = 'https://github.com/cncjs/cncjs/releases';

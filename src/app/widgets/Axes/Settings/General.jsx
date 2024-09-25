@@ -10,11 +10,11 @@ import PropTypes from 'prop-types';
 import _uniqueId from 'lodash/uniqueId';
 import React, { Component } from 'react';
 import ForEach from 'react-foreach';
-import { Button } from 'app/components/Buttons';
-import { Checkbox } from 'app/components/Checkbox';
-import FormGroup from 'app/components/FormGroup';
-import { Container, Row, Col } from 'app/components/GridSystem';
-import i18n from 'app/lib/i18n';
+import { Button } from '@app/components/Buttons';
+import { Checkbox } from '@app/components/Checkbox';
+import FormGroup from '@app/components/FormGroup';
+import { Container, Row, Col } from '@app/components/GridSystem';
+import i18n from '@app/lib/i18n';
 
 const IMPERIAL_JOG_DISTANCES_MAX = 5;
 const METRIC_JOG_DISTANCES_MAX = 5;

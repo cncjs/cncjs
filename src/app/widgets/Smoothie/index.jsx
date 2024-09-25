@@ -5,14 +5,14 @@ import {
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Widget from 'app/components/Widget';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import WidgetConfig from 'app/widgets/shared/WidgetConfig';
-import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
+import Widget from '@app/components/Widget';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import WidgetConfig from '@app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from '@app/widgets/shared/WidgetConfigProvider';
 import {
   SMOOTHIE,
-} from 'app/constants/controller';
+} from '@app/constants/controller';
 import Smoothie from './Smoothie';
 import Controller from './Controller';
 import {

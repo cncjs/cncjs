@@ -3,13 +3,13 @@ import {
 } from '@tonic-ui/react';
 import React from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
-import { Button } from 'app/components/Buttons';
-import Input from 'app/components/FormControl/Input';
-import FormGroup from 'app/components/FormGroup';
-import InlineError from 'app/components/InlineError';
-import Modal from 'app/components/Modal';
-import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
-import i18n from 'app/lib/i18n';
+import { Button } from '@app/components/Buttons';
+import Input from '@app/components/FormControl/Input';
+import FormGroup from '@app/components/FormGroup';
+import InlineError from '@app/components/InlineError';
+import Modal from '@app/components/Modal';
+import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
+import i18n from '@app/lib/i18n';
 
 function SettingsModal({
   onClose,

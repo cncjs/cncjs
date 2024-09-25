@@ -1,11 +1,11 @@
 import chainedFunction from 'chained-function';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button } from 'app/components/Buttons';
-import ModalTemplate from 'app/components/ModalTemplate';
-import Modal from 'app/components/Modal';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
+import { Button } from '@app/components/Buttons';
+import ModalTemplate from '@app/components/ModalTemplate';
+import Modal from '@app/components/Modal';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
 
 const FeederWait = ({
   title,

@@ -8,14 +8,14 @@ import _get from 'lodash/get';
 import _isEqual from 'lodash/isEqual';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
-import api from 'app/api';
+import api from '@app/api';
 import {
   ERR_CONFLICT,
   ERR_PRECONDITION_FAILED
-} from 'app/api/constants';
-import withRouter from 'app/components/withRouter'; // withRouter is deprecated
-import i18n from 'app/lib/i18n';
-import config from 'app/store/config';
+} from '@app/api/constants';
+import withRouter from '@app/components/withRouter'; // withRouter is deprecated
+import i18n from '@app/lib/i18n';
+import config from '@app/store/config';
 import GeneralSettings from './GeneralSettings';
 import WorkspaceSettings from './WorkspaceSettings';
 import MachineProfiles from './MachineProfiles';

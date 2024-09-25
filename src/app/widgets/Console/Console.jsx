@@ -4,17 +4,17 @@ import pubsub from 'pubsub-js';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import settings from 'app/config/settings';
+import settings from '@app/config/settings';
 import {
   CONNECTION_STATE_CONNECTED,
   CONNECTION_TYPE_SERIAL,
   CONNECTION_TYPE_SOCKET,
-} from 'app/constants/connection';
-import useEffectOnce from 'app/hooks/useEffectOnce';
-import usePrevious from 'app/hooks/usePrevious';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import useWidgetEvent from 'app/widgets/shared/useWidgetEvent';
+} from '@app/constants/connection';
+import useEffectOnce from '@app/hooks/useEffectOnce';
+import usePrevious from '@app/hooks/usePrevious';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import useWidgetEvent from '@app/widgets/shared/useWidgetEvent';
 import Terminal from './Terminal';
 import styles from './index.styl';
 

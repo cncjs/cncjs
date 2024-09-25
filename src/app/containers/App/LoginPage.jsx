@@ -16,15 +16,15 @@ import qs from 'qs';
 import React, { useState } from 'react';
 import { Form, Field } from 'react-final-form';
 import { Navigate, useLocation } from 'react-router-dom';
-import FormGroup from 'app/components/FormGroup';
-import InlineError from 'app/components/InlineError';
-import settings from 'app/config/settings';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import x from 'app/lib/json-stringify';
-import log from 'app/lib/log';
-import * as user from 'app/lib/user';
-import config from 'app/store/config';
+import FormGroup from '@app/components/FormGroup';
+import InlineError from '@app/components/InlineError';
+import settings from '@app/config/settings';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import x from '@app/lib/json-stringify';
+import log from '@app/lib/log';
+import * as user from '@app/lib/user';
+import config from '@app/store/config';
 
 const required = value => {
   return ensureString(value).trim().length > 0

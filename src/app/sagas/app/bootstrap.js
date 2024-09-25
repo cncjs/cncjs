@@ -9,14 +9,14 @@ import { initReactI18next } from 'react-i18next';
 import { all, call } from 'redux-saga/effects';
 import sha1 from 'sha1';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
-import env from 'app/config/env';
-import settings from 'app/config/settings';
-import i18next from 'app/i18next';
-import controller from 'app/lib/controller';
-import x from 'app/lib/json-stringify';
-import log from 'app/lib/log';
-import * as user from 'app/lib/user';
-import config from 'app/store/config';
+import env from '@app/config/env';
+import settings from '@app/config/settings';
+import i18next from '@app/i18next';
+import controller from '@app/lib/controller';
+import x from '@app/lib/json-stringify';
+import log from '@app/lib/log';
+import * as user from '@app/lib/user';
+import config from '@app/store/config';
 
 export function* init() {
   // sequential

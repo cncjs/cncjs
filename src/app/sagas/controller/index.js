@@ -1,19 +1,19 @@
 import _get from 'lodash/get';
 import _noop from 'lodash/noop';
 import { call, takeLatest } from 'redux-saga/effects';
-import * as CONNECTION from 'app/actions/connection';
-import * as CONTROLLER from 'app/actions/controller';
-import * as SERIALPORT from 'app/actions/serialport';
+import * as CONNECTION from '@app/actions/connection';
+import * as CONTROLLER from '@app/actions/controller';
+import * as SERIALPORT from '@app/actions/serialport';
 import {
   CONNECTION_TYPE_SERIAL,
   CONNECTION_TYPE_SOCKET,
   CONNECTION_STATE_CONNECTED,
   CONNECTION_STATE_DISCONNECTED,
-} from 'app/constants/connection';
-import controller from 'app/lib/controller';
-import x from 'app/lib/json-stringify';
-import log from 'app/lib/log';
-import reduxStore from 'app/store/redux';
+} from '@app/constants/connection';
+import controller from '@app/lib/controller';
+import x from '@app/lib/json-stringify';
+import log from '@app/lib/log';
+import reduxStore from '@app/store/redux';
 
 export function* init() {
   /**

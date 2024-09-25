@@ -4,8 +4,8 @@ import {
 import Slider from 'rc-slider';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import i18n from 'app/lib/i18n';
-import FormGroup from 'app/components/FormGroup';
+import i18n from '@app/lib/i18n';
+import FormGroup from '@app/components/FormGroup';
 
 const FEEDRATE_RANGE = [100, 2500];
 const FEEDRATE_STEP = 50;

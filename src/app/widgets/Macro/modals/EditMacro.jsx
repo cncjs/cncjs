@@ -23,12 +23,12 @@ import { ensureArray } from 'ensure-type';
 import _uniqueId from 'lodash/uniqueId';
 import React, { useRef } from 'react';
 import { Form, Field } from 'react-final-form';
-import axios from 'app/api/axios';
-import FormGroup from 'app/components/FormGroup';
-import InlineError from 'app/components/InlineError';
-import i18n from 'app/lib/i18n';
-import portal from 'app/lib/portal';
-import { composeValidators, required } from 'app/widgets/shared/validations';
+import axios from '@app/api/axios';
+import FormGroup from '@app/components/FormGroup';
+import InlineError from '@app/components/InlineError';
+import i18n from '@app/lib/i18n';
+import portal from '@app/lib/portal';
+import { composeValidators, required } from '@app/widgets/shared/validations';
 import variables from '../shared/variables';
 import ConfirmDeleteMacro from './ConfirmDeleteMacro';
 

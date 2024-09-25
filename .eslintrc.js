@@ -17,6 +17,9 @@ module.exports = {
       webpack: {
         config: {
           resolve: {
+            alias: {
+              '@app': path.resolve(__dirname, 'src/app'),
+            },
             modules: [
               path.resolve(__dirname, 'src'),
               'node_modules',

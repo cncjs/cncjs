@@ -14,7 +14,7 @@ import {
 import { ensureArray, ensureString } from 'ensure-type';
 import React, { forwardRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { routes, mapRoutePathToPageTitle } from 'app/config/routes';
+import { routes, mapRoutePathToPageTitle } from '@app/config/routes';
 import NavLink from './components/NavLink';
 
 const MiniNav = forwardRef((

@@ -4,13 +4,13 @@ import {
   OPEN_CONNECTION,
   CLOSE_CONNECTION,
   UPDATE_CONNECTION,
-} from 'app/actions/connection';
+} from '@app/actions/connection';
 import {
   CONNECTION_STATE_CONNECTING,
   CONNECTION_STATE_DISCONNECTED,
   CONNECTION_STATE_DISCONNECTING,
   CONNECTION_TYPE_SERIAL,
-} from 'app/constants/connection';
+} from '@app/constants/connection';
 
 const initialState = {
   error: null,

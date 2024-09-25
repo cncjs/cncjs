@@ -2,10 +2,10 @@ import { call, delay, put, race, takeLatest } from 'redux-saga/effects';
 import {
   FETCH_PORTS,
   FETCH_BAUD_RATES,
-} from 'app/actions/serialport';
-import controller from 'app/lib/controller';
-import log from 'app/lib/log';
-import promisify from 'app/lib/promisify';
+} from '@app/actions/serialport';
+import controller from '@app/lib/controller';
+import log from '@app/lib/log';
+import promisify from '@app/lib/promisify';
 
 const asyncFetchPorts = promisify(controller.getPorts, {
   errorFirst: true,

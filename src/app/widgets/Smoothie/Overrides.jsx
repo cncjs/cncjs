@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import RepeatableButton from 'app/components/RepeatableButton';
-import controller from 'app/lib/controller';
+import RepeatableButton from '@app/components/RepeatableButton';
+import controller from '@app/lib/controller';
 import DigitalReadout from './DigitalReadout';
 import styles from './index.styl';
 

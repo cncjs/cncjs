@@ -6,7 +6,7 @@ import _unset from 'lodash/unset';
 import _update from 'lodash/update';
 import memoize from 'micro-memoize';
 import React from 'react';
-import config from 'app/store/config';
+import config from '@app/store/config';
 import { WidgetConfigContext } from './context';
 import { Provider as TrackedProvider } from './tracked';
 

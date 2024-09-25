@@ -2,8 +2,8 @@ import _get from 'lodash/get';
 import { ensureArray } from 'ensure-type';
 import superagent from 'superagent';
 import superagentUse from 'superagent-use';
-import controller from 'app/lib/controller';
-import config from 'app/store/config';
+import controller from '@app/lib/controller';
+import config from '@app/store/config';
 
 const bearer = (request) => {
   const token = config.get('session.token');

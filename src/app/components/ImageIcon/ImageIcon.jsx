@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
-import Image from 'app/components/Image';
+import Image from '@app/components/Image';
 
 const spin = keyframes`
     0% {

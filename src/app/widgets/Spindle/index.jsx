@@ -4,11 +4,11 @@ import {
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Container } from 'app/components/GridSystem';
-import Widget from 'app/components/Widget';
-import i18n from 'app/lib/i18n';
-import WidgetConfig from 'app/widgets/shared/WidgetConfig';
-import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
+import { Container } from '@app/components/GridSystem';
+import Widget from '@app/components/Widget';
+import i18n from '@app/lib/i18n';
+import WidgetConfig from '@app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from '@app/widgets/shared/WidgetConfigProvider';
 import Spindle from './Spindle';
 
 class SpindleWidget extends Component {

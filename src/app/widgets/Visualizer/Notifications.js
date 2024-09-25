@@ -4,9 +4,9 @@ import {
 } from '@tonic-ui/react';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Anchor from 'app/components/Anchor';
-import { ToastNotification } from 'app/components/Notifications';
-import i18n from 'app/lib/i18n';
+import Anchor from '@app/components/Anchor';
+import { ToastNotification } from '@app/components/Notifications';
+import i18n from '@app/lib/i18n';
 import {
   NOTIFICATION_PROGRAM_ERROR,
   NOTIFICATION_M0_PROGRAM_PAUSE,

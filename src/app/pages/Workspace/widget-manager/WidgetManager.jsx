@@ -4,17 +4,17 @@ import _includes from 'lodash/includes';
 import _union from 'lodash/union';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Button } from 'app/components/Buttons';
-import Modal from 'app/components/Modal';
+import { Button } from '@app/components/Buttons';
+import Modal from '@app/components/Modal';
 import {
   GRBL,
   MARLIN,
   SMOOTHIE,
   TINYG,
-} from 'app/constants/controller';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import config from 'app/store/config';
+} from '@app/constants/controller';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import config from '@app/store/config';
 import WidgetList from './WidgetList';
 
 class WidgetManager extends Component {

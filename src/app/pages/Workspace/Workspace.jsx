@@ -18,20 +18,20 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import compose from 'recompose/compose';
 import styled from 'styled-components';
-import api from 'app/api';
-import { Button, ButtonGroup } from 'app/components/Buttons';
-import { Row, Col } from 'app/components/GridSystem';
-import withRouter from 'app/components/withRouter'; // withRouter is deprecated
+import api from '@app/api';
+import { Button, ButtonGroup } from '@app/components/Buttons';
+import { Row, Col } from '@app/components/GridSystem';
+import withRouter from '@app/components/withRouter'; // withRouter is deprecated
 import {
   CONNECTION_STATE_CONNECTED,
-} from 'app/constants/connection';
+} from '@app/constants/connection';
 import {
   WORKFLOW_STATE_IDLE,
-} from 'app/constants/workflow';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import log from 'app/lib/log';
-import config from 'app/store/config';
+} from '@app/constants/workflow';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import log from '@app/lib/log';
+import config from '@app/store/config';
 import * as widgetManager from './widget-manager';
 import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';

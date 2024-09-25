@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import InfiniteTree from 'react-infinite-tree';
-import api from 'app/api';
-import Modal from 'app/components/Modal';
-import i18n from 'app/lib/i18n';
+import api from '@app/api';
+import Modal from '@app/components/Modal';
+import i18n from '@app/lib/i18n';
 import renderer from './renderer';
 import styles from './renderer.styl';
 

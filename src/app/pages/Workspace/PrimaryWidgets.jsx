@@ -14,14 +14,14 @@ import {
   MARLIN,
   SMOOTHIE,
   TINYG,
-} from 'app/constants/controller';
-import { Button } from 'app/components/Buttons';
-import Modal from 'app/components/Modal';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import log from 'app/lib/log';
-import portal from 'app/lib/portal';
-import config from 'app/store/config';
+} from '@app/constants/controller';
+import { Button } from '@app/components/Buttons';
+import Modal from '@app/components/Modal';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import log from '@app/lib/log';
+import portal from '@app/lib/portal';
+import config from '@app/store/config';
 import Widget from './Widget';
 import styles from './widgets.styl';
 

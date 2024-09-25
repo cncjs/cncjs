@@ -168,6 +168,7 @@ module.exports = {
   ].filter(Boolean),
   resolve: {
     alias: {
+      '@app': path.resolve(__dirname, 'src/app'),
       'react-spring$': 'react-spring/web.cjs',
       'react-spring/renderprops$': 'react-spring/renderprops.cjs',
     },

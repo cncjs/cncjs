@@ -9,32 +9,32 @@ import _includes from 'lodash/includes';
 import React from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
-import { Button, ButtonGroup } from 'app/components/Buttons';
-import Input from 'app/components/FormControl/Input';
-import FormGroup from 'app/components/FormGroup';
-import Hoverable from 'app/components/Hoverable';
-import InlineError from 'app/components/InlineError';
-import InputGroup from 'app/components/InputGroup';
-import Infotip from 'app/components/Infotip';
+import { Button, ButtonGroup } from '@app/components/Buttons';
+import Input from '@app/components/FormControl/Input';
+import FormGroup from '@app/components/FormGroup';
+import Hoverable from '@app/components/Hoverable';
+import InlineError from '@app/components/InlineError';
+import InputGroup from '@app/components/InputGroup';
+import Infotip from '@app/components/Infotip';
 import {
   IMPERIAL_UNITS,
   METRIC_UNITS,
-} from 'app/constants';
+} from '@app/constants';
 import {
   CONNECTION_STATE_CONNECTED,
-} from 'app/constants/connection';
+} from '@app/constants/connection';
 import {
   MACHINE_STATE_NONE,
   REFORMED_MACHINE_STATE_IDLE,
-} from 'app/constants/controller';
+} from '@app/constants/controller';
 import {
   WORKFLOW_STATE_IDLE,
-} from 'app/constants/workflow';
-import i18n from 'app/lib/i18n';
-import portal from 'app/lib/portal';
-import { in2mm, mapValueToUnits } from 'app/lib/units';
-import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
-import { composeValidators, required, minValue } from 'app/widgets/shared/validations';
+} from '@app/constants/workflow';
+import i18n from '@app/lib/i18n';
+import portal from '@app/lib/portal';
+import { in2mm, mapValueToUnits } from '@app/lib/units';
+import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
+import { composeValidators, required, minValue } from '@app/widgets/shared/validations';
 import ProbeModal from './modals/ProbeModal';
 
 const mapProbeCommandToDescription = (probeCommand) => ({

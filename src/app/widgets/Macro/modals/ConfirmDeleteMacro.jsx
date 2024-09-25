@@ -10,7 +10,7 @@ import {
   Text,
 } from '@tonic-ui/react';
 import React from 'react';
-import i18n from 'app/lib/i18n';
+import i18n from '@app/lib/i18n';
 
 function ConfirmDeleteMacro({
   onClose,

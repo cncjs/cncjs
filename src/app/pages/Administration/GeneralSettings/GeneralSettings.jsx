@@ -20,12 +20,12 @@ import React, { useCallback, useState } from 'react';
 import { Form, FormSpy } from 'react-final-form';
 import { TransitionGroup } from 'react-transition-group';
 import { v4 as uuidv4 } from 'uuid';
-import axios from 'app/api/axios';
-import i18n from 'app/lib/i18n';
-import { createFetchMachine } from 'app/machines';
-import FieldCheckbox from 'app/pages/Administration/components/FieldCheckbox';
-import Overlay from 'app/pages/Administration/components/Overlay';
-import TitleText from 'app/pages/Administration/components/TitleText';
+import axios from '@app/api/axios';
+import i18n from '@app/lib/i18n';
+import { createFetchMachine } from '@app/machines';
+import FieldCheckbox from '@app/pages/Administration/components/FieldCheckbox';
+import Overlay from '@app/pages/Administration/components/Overlay';
+import TitleText from '@app/pages/Administration/components/TitleText';
 
 const fetchMachine = createFetchMachine();
 

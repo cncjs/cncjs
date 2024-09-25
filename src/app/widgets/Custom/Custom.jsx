@@ -5,14 +5,14 @@ import pubsub from 'pubsub-js';
 import React, { useEffect, useRef } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 import styled from 'styled-components';
-import settings from 'app/config/settings';
-import Iframe from 'app/components/Iframe';
-import useEffectOnce from 'app/hooks/useEffectOnce';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import config from 'app/store/config';
-import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
-import useWidgetEvent from 'app/widgets/shared/useWidgetEvent';
+import settings from '@app/config/settings';
+import Iframe from '@app/components/Iframe';
+import useEffectOnce from '@app/hooks/useEffectOnce';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import config from '@app/store/config';
+import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
+import useWidgetEvent from '@app/widgets/shared/useWidgetEvent';
 
 function Custom({
   disabled,

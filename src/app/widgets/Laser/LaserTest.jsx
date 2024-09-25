@@ -7,19 +7,19 @@ import React from 'react';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { connect } from 'react-redux';
 import Slider from 'rc-slider';
-import { Button } from 'app/components/Buttons';
-import CollapsibleCard from 'app/components/CollapsibleCard';
-import Input from 'app/components/FormControl/Input';
-import FormGroup from 'app/components/FormGroup';
-import { Container, Row, Col } from 'app/components/GridSystem';
-import HorizontalForm from 'app/components/HorizontalForm';
-import InputGroup from 'app/components/InputGroup';
+import { Button } from '@app/components/Buttons';
+import CollapsibleCard from '@app/components/CollapsibleCard';
+import Input from '@app/components/FormControl/Input';
+import FormGroup from '@app/components/FormGroup';
+import { Container, Row, Col } from '@app/components/GridSystem';
+import HorizontalForm from '@app/components/HorizontalForm';
+import InputGroup from '@app/components/InputGroup';
 import {
   CONNECTION_STATE_CONNECTED,
-} from 'app/constants/connection';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
+} from '@app/constants/connection';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
 import OverflowEllipsis from './components/OverflowEllipsis';
 
 function LaserTest({

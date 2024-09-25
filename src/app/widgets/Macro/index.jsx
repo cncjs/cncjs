@@ -2,16 +2,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Space,
 } from '@tonic-ui/react';
-import axios from 'app/api/axios';
+import axios from '@app/api/axios';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { interpret } from 'xstate';
-import { ModalProvider, ModalRoot } from 'app/components/Modal';
-import Widget from 'app/components/Widget';
-import i18n from 'app/lib/i18n';
-import { createFetchMachine } from 'app/machines';
-import WidgetConfig from 'app/widgets/shared/WidgetConfig';
-import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
+import { ModalProvider, ModalRoot } from '@app/components/Modal';
+import Widget from '@app/components/Widget';
+import i18n from '@app/lib/i18n';
+import { createFetchMachine } from '@app/machines';
+import WidgetConfig from '@app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from '@app/widgets/shared/WidgetConfigProvider';
 import Macro from './Macro';
 import { ServiceContext } from './context';
 

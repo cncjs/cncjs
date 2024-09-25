@@ -4,13 +4,13 @@ import {
 import _get from 'lodash/get';
 import React, { useRef } from 'react';
 import { connect } from 'react-redux';
-import i18n from 'app/lib/i18n';
+import i18n from '@app/lib/i18n';
 import { ensurePositiveNumber } from 'ensure-type';
-import CollapsibleCard from 'app/components/CollapsibleCard';
-import { Container, Row, Col } from 'app/components/GridSystem';
-import HorizontalForm from 'app/components/HorizontalForm';
-import Progress from 'app/components/Progress';
-import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
+import CollapsibleCard from '@app/components/CollapsibleCard';
+import { Container, Row, Col } from '@app/components/GridSystem';
+import HorizontalForm from '@app/components/HorizontalForm';
+import Progress from '@app/components/Progress';
+import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
 import OverflowEllipsis from './components/OverflowEllipsis';
 
 const mapReceiveBufferSizeToColor = (rx) => {

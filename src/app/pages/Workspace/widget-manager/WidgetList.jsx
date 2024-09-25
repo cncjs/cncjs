@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Container, Row, Col } from 'app/components/GridSystem';
+import { Container, Row, Col } from '@app/components/GridSystem';
 import WidgetListItem from './WidgetListItem';
 
 function WidgetList({ data, onChange }) {

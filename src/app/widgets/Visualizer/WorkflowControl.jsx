@@ -6,10 +6,10 @@ import includes from 'lodash/includes';
 import pick from 'lodash/pick';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Dropdown, { MenuItem } from 'app/components/Dropdown';
-import { ButtonToolbar, ButtonGroup, Button } from 'app/components/Buttons';
-import i18n from 'app/lib/i18n';
-import log from 'app/lib/log';
+import Dropdown, { MenuItem } from '@app/components/Dropdown';
+import { ButtonToolbar, ButtonGroup, Button } from '@app/components/Buttons';
+import i18n from '@app/lib/i18n';
+import log from '@app/lib/log';
 import {
   // Grbl
   GRBL,
@@ -22,12 +22,12 @@ import {
   // TinyG
   TINYG,
   TINYG_MACHINE_STATE_ALARM,
-} from 'app/constants/controller';
+} from '@app/constants/controller';
 import {
   WORKFLOW_STATE_IDLE,
   WORKFLOW_STATE_PAUSED,
   WORKFLOW_STATE_RUNNING,
-} from 'app/constants/workflow';
+} from '@app/constants/workflow';
 import {
   MODAL_WATCH_DIRECTORY
 } from './constants';

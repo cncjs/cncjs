@@ -3,7 +3,7 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component, cloneElement } from 'react';
 import warning from 'warning';
-import RootCloseWrapper from 'app/components/RootCloseWrapper';
+import RootCloseWrapper from '@app/components/RootCloseWrapper';
 import styles from './index.styl';
 import match from './match-component';
 import DropdownMenu from './DropdownMenu';

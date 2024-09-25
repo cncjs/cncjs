@@ -1,5 +1,5 @@
 import _trim from 'lodash/trim';
-import i18n from 'app/lib/i18n';
+import i18n from '@app/lib/i18n';
 
 export const required = value => {
   return _trim(value).length > 0

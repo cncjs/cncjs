@@ -3,11 +3,11 @@ import { ensureArray } from 'ensure-type';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import mapGCodeToText from 'app/lib/gcode-text';
-import i18n from 'app/lib/i18n';
-import Clickable from 'app/components/Clickable';
-import { Container, Row, Col } from 'app/components/GridSystem';
-import Panel from 'app/components/Panel';
+import mapGCodeToText from '@app/lib/gcode-text';
+import i18n from '@app/lib/i18n';
+import Clickable from '@app/components/Clickable';
+import { Container, Row, Col } from '@app/components/GridSystem';
+import Panel from '@app/components/Panel';
 import Overrides from './Overrides';
 import styles from './index.styl';
 

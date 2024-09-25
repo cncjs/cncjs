@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import Card from 'app/components/Card';
-import Clickable from 'app/components/Clickable';
+import Card from '@app/components/Card';
+import Clickable from '@app/components/Clickable';
 import { CollapsibleCardContext } from './context';
 
 function Header({ children, style, ...props }) {

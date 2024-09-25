@@ -9,11 +9,11 @@ import {
   UPDATE_FEEDER_STATUS,
   UPDATE_SENDER_STATUS,
   UPDATE_WORKFLOW_STATE,
-} from 'app/actions/controller';
+} from '@app/actions/controller';
 import {
   IMPERIAL_UNITS,
   METRIC_UNITS,
-} from 'app/constants';
+} from '@app/constants';
 import {
   MACHINE_STATE_NONE,
   REFORMED_MACHINE_STATE_IDLE,
@@ -39,13 +39,13 @@ import {
   TINYG_MACHINE_STATE_RUN,
   TINYG_MACHINE_STATE_HOLD,
   TINYG_MACHINE_STATE_ALARM,
-} from 'app/constants/controller';
+} from '@app/constants/controller';
 import {
   WORKFLOW_STATE_IDLE,
-} from 'app/constants/workflow';
+} from '@app/constants/workflow';
 import {
   in2mm,
-} from 'app/lib/units';
+} from '@app/lib/units';
 
 const initialState = {
   type: null,

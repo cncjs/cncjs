@@ -8,11 +8,11 @@ import _merge from 'lodash/merge';
 import _uniq from 'lodash/uniq';
 import semverLt from 'semver/functions/lt';
 import semverLte from 'semver/functions/lte';
-import settings from 'app/config/settings';
-import { parse as parseCookie } from 'app/lib/cookie-parser';
-import log from 'app/lib/log';
-import reduxStore from 'app/store/redux';
-import { promptUserForCorruptedWorkspaceSettings } from 'app/containers/App/actions';
+import settings from '@app/config/settings';
+import { parse as parseCookie } from '@app/lib/cookie-parser';
+import log from '@app/lib/log';
+import reduxStore from '@app/store/redux';
+import { promptUserForCorruptedWorkspaceSettings } from '@app/containers/App/actions';
 import EventEmitterStore from './EventEmitterStore';
 import defaultState from './defaultState';
 

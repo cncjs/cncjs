@@ -6,12 +6,12 @@ import classNames from 'classnames';
 import colornames from 'colornames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Button } from 'app/components/Buttons';
-import Dropdown, { MenuItem } from 'app/components/Dropdown';
-import I18n from 'app/components/I18n';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import * as WebGL from 'app/lib/three/WebGL';
+import { Button } from '@app/components/Buttons';
+import Dropdown, { MenuItem } from '@app/components/Dropdown';
+import I18n from '@app/components/I18n';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import * as WebGL from '@app/lib/three/WebGL';
 import {
   // Grbl
   GRBL,
@@ -50,10 +50,10 @@ import {
   TINYG_MACHINE_STATE_INTERLOCK,
   TINYG_MACHINE_STATE_SHUTDOWN,
   TINYG_MACHINE_STATE_PANIC,
-} from 'app/constants/controller';
+} from '@app/constants/controller';
 import {
   WORKFLOW_STATE_IDLE,
-} from 'app/constants/workflow';
+} from '@app/constants/workflow';
 import styles from './index.styl';
 
 class PrimaryToolbar extends Component {

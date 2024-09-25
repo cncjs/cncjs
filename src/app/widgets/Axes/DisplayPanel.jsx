@@ -4,9 +4,9 @@ import includes from 'lodash/includes';
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Dropdown, { MenuItem } from 'app/components/Dropdown';
-import Image from 'app/components/Image';
-import Tooltip from 'app/components/Tooltip';
+import Dropdown, { MenuItem } from '@app/components/Dropdown';
+import Image from '@app/components/Image';
+import Tooltip from '@app/components/Tooltip';
 import {
   AXIS_E,
   AXIS_X,
@@ -17,9 +17,9 @@ import {
   AXIS_C,
   IMPERIAL_UNITS,
   METRIC_UNITS,
-} from 'app/constants';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
+} from '@app/constants';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
 import AxisLabel from './components/AxisLabel';
 import AxisSubscript from './components/AxisSubscript';
 import Panel from './components/Panel';

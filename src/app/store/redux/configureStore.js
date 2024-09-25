@@ -1,4 +1,4 @@
-import env from 'app/config/env';
+import env from '@app/config/env';
 import configureStoreProduction from './configureStore.production';
 import configureStoreDevelopment from './configureStore.development';
 

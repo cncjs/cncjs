@@ -1,12 +1,12 @@
 import _get from 'lodash/get';
 import { all, call, delay, fork, put, race } from 'redux-saga/effects';
-import settings from 'app/config/settings';
+import settings from '@app/config/settings';
 import {
   appInit,
   appInitSuccess,
   appInitFailure,
-} from 'app/containers/App/actions';
-import log from 'app/lib/log';
+} from '@app/containers/App/actions';
+import log from '@app/lib/log';
 import * as bootstrapSaga from './bootstrap';
 
 const sagas = [

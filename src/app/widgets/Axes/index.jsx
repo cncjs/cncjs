@@ -10,22 +10,22 @@ import map from 'lodash/map';
 import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import api from 'app/api';
-import Widget from 'app/components/Widget';
-import combokeys from 'app/lib/combokeys';
-import controller from 'app/lib/controller';
-import { preventDefault } from 'app/lib/dom-events';
-import i18n from 'app/lib/i18n';
-import { in2mm, mapPositionToUnits } from 'app/lib/units';
-import { limit } from 'app/lib/normalize-range';
-import WidgetConfig from 'app/widgets/shared/WidgetConfig';
-import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
+import api from '@app/api';
+import Widget from '@app/components/Widget';
+import combokeys from '@app/lib/combokeys';
+import controller from '@app/lib/controller';
+import { preventDefault } from '@app/lib/dom-events';
+import i18n from '@app/lib/i18n';
+import { in2mm, mapPositionToUnits } from '@app/lib/units';
+import { limit } from '@app/lib/normalize-range';
+import WidgetConfig from '@app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from '@app/widgets/shared/WidgetConfigProvider';
 import {
   IMPERIAL_UNITS,
   IMPERIAL_STEPS,
   METRIC_UNITS,
   METRIC_STEPS,
-} from 'app/constants';
+} from '@app/constants';
 import {
   // Grbl
   GRBL,
@@ -43,10 +43,10 @@ import {
   TINYG_MACHINE_STATE_STOP,
   TINYG_MACHINE_STATE_END,
   TINYG_MACHINE_STATE_RUN,
-} from 'app/constants/controller';
+} from '@app/constants/controller';
 import {
   WORKFLOW_STATE_RUNNING,
-} from 'app/constants/workflow';
+} from '@app/constants/workflow';
 import Axes from './Axes';
 import KeypadOverlay from './KeypadOverlay';
 import Settings from './Settings';

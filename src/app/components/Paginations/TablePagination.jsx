@@ -2,7 +2,7 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Anchor from 'app/components/Anchor';
+import Anchor from '@app/components/Anchor';
 import AutosizeInput from './AutosizeInput';
 import styles from './index.styl';
 

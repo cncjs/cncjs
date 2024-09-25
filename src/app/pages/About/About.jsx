@@ -19,12 +19,12 @@ import {
   useToggle,
 } from '@tonic-ui/react-hooks';
 import { useActor, useInterpret } from '@xstate/react';
-import axios from 'app/api/axios';
+import axios from '@app/api/axios';
 import memoize from 'micro-memoize';
 import React, { useEffect } from 'react';
-import settings from 'app/config/settings';
-import i18n from 'app/lib/i18n';
-import { createFetchMachine } from 'app/machines';
+import settings from '@app/config/settings';
+import i18n from '@app/lib/i18n';
+import { createFetchMachine } from '@app/machines';
 import semverLt from 'semver/functions/lt';
 import AlertLinkButton from './AlertLinkButton';
 import { StateContext } from './context';

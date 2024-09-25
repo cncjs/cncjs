@@ -12,13 +12,13 @@ import React, { useState } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { Provider as ReduxProvider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
-import { CardProvider } from 'app/components/Card';
-import { Provider as GridSystemProvider } from 'app/components/GridSystem'; // TODO: remove this
-import colorStyle from 'app/config/color-style';
-import customIcons from 'app/config/icons';
-import i18next from 'app/i18next';
-import config from 'app/store/config';
-import reduxStore from 'app/store/redux';
+import { CardProvider } from '@app/components/Card';
+import { Provider as GridSystemProvider } from '@app/components/GridSystem'; // TODO: remove this
+import colorStyle from '@app/config/color-style';
+import customIcons from '@app/config/icons';
+import i18next from '@app/i18next';
+import config from '@app/store/config';
+import reduxStore from '@app/store/redux';
 
 const customTheme = {
   ...theme,

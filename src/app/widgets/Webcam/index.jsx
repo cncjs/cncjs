@@ -4,12 +4,12 @@ import {
 } from '@tonic-ui/react';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Widget from 'app/components/Widget';
-import i18n from 'app/lib/i18n';
-import portal from 'app/lib/portal';
-import WidgetConfig from 'app/widgets/shared/WidgetConfig'; // deprecated
-import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
-import WidgetEventProvider from 'app/widgets/shared/WidgetEventProvider';
+import Widget from '@app/components/Widget';
+import i18n from '@app/lib/i18n';
+import portal from '@app/lib/portal';
+import WidgetConfig from '@app/widgets/shared/WidgetConfig'; // deprecated
+import WidgetConfigProvider from '@app/widgets/shared/WidgetConfigProvider';
+import WidgetEventProvider from '@app/widgets/shared/WidgetEventProvider';
 import SettingsModal from './modals/SettingsModal';
 import Webcam from './Webcam';
 

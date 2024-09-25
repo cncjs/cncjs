@@ -8,20 +8,20 @@ import { ensurePositiveNumber } from 'ensure-type';
 import _get from 'lodash/get';
 import React from 'react';
 import { connect } from 'react-redux';
-import { ButtonGroup } from 'app/components/Buttons';
-import Center from 'app/components/Center';
-import Clickable from 'app/components/Clickable';
-import FormGroup from 'app/components/FormGroup';
-import RepeatableButton from 'app/components/RepeatableButton';
+import { ButtonGroup } from '@app/components/Buttons';
+import Center from '@app/components/Center';
+import Clickable from '@app/components/Clickable';
+import FormGroup from '@app/components/FormGroup';
+import RepeatableButton from '@app/components/RepeatableButton';
 import {
   GRBL,
   MARLIN,
   SMOOTHIE,
   TINYG,
-} from 'app/constants/controller';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import { none } from 'app/lib/utils';
+} from '@app/constants/controller';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import { none } from '@app/lib/utils';
 import OverrideReadout from './components/OverrideReadout';
 
 function LaserIntensityOverride({

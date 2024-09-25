@@ -2,8 +2,8 @@ import {
   Space,
 } from '@tonic-ui/react';
 import React from 'react';
-import Infotip from 'app/components/Infotip';
-import i18n from 'app/lib/i18n';
+import Infotip from '@app/components/Infotip';
+import i18n from '@app/lib/i18n';
 
 const keypadInfotip = () => {
   const styles = {

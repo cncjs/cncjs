@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Container, Row, Col } from 'app/components/GridSystem';
-import { Button } from 'app/components/Buttons';
-import controller from 'app/lib/controller';
+import { Container, Row, Col } from '@app/components/GridSystem';
+import { Button } from '@app/components/Buttons';
+import controller from '@app/lib/controller';
 
 class MDI extends Component {
   static propTypes = {

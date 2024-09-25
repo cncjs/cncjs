@@ -7,8 +7,8 @@ import {
   Tooltip,
 } from '@tonic-ui/react';
 import React, { useMemo } from 'react';
-import BaseTable from 'app/components/BaseTable';
-import i18n from 'app/lib/i18n';
+import BaseTable from '@app/components/BaseTable';
+import i18n from '@app/lib/i18n';
 
 const data = [
   { id: 1, enabled: true, title: 'G28', mtime: '2020-01-01 00:00:00', commands: 'xxx' },

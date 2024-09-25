@@ -4,12 +4,12 @@ import {
 } from '@tonic-ui/react';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Container } from 'app/components/GridSystem';
-import { ModalProvider, ModalRoot } from 'app/components/Modal';
-import Widget from 'app/components/Widget';
-import i18n from 'app/lib/i18n';
-import WidgetConfig from 'app/widgets/shared/WidgetConfig';
-import WidgetConfigProvider from 'app/widgets/shared/WidgetConfigProvider';
+import { Container } from '@app/components/GridSystem';
+import { ModalProvider, ModalRoot } from '@app/components/Modal';
+import Widget from '@app/components/Widget';
+import i18n from '@app/lib/i18n';
+import WidgetConfig from '@app/widgets/shared/WidgetConfig';
+import WidgetConfigProvider from '@app/widgets/shared/WidgetConfigProvider';
 import Probe from './Probe';
 
 class ProbeWidget extends Component {

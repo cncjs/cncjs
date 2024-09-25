@@ -1,4 +1,4 @@
-import i18n from 'app/lib/i18n';
+import i18n from '@app/lib/i18n';
 
 const routes = [
   {

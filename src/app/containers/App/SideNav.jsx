@@ -18,12 +18,12 @@ import {
 import { ensureArray, ensureString } from 'ensure-type';
 import React, { forwardRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import IconButton from 'app/components/IconButton';
-import layout from 'app/config/layout';
-import { routes, mapRoutePathToPageTitle } from 'app/config/routes';
-import settings from 'app/config/settings';
-import i18next from 'app/i18next';
-import iconLogo from 'app/images/logo-badge-32x32.png';
+import IconButton from '@app/components/IconButton';
+import layout from '@app/config/layout';
+import { routes, mapRoutePathToPageTitle } from '@app/config/routes';
+import settings from '@app/config/settings';
+import i18next from '@app/i18next';
+import iconLogo from '@app/images/logo-badge-32x32.png';
 import NavLink from './components/NavLink';
 
 const SideNav = forwardRef((

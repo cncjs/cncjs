@@ -3,7 +3,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { END } from 'redux-saga';
 import { createLogger } from 'redux-logger';
-import rootReducer from 'app/reducers';
+import rootReducer from '@app/reducers';
 import sagaMiddleware from './sagaMiddleware';
 
 /** Use redux-devtools-extension for Chrome or Firefox browsers in development mode

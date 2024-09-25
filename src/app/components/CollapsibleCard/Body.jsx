@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import AnimateHeight from 'react-animate-height';
-import Card from 'app/components/Card';
+import Card from '@app/components/Card';
 import { CollapsibleCardContext } from './context';
 
 function Body({ children, ...props }) {

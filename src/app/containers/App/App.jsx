@@ -13,7 +13,7 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import compose from 'recompose/compose';
-import settings from 'app/config/settings';
+import settings from '@app/config/settings';
 import CorruptedWorkspaceSettingsModal from './modals/CorruptedWorkspaceSettingsModal';
 import LoginPage from './LoginPage';
 import MainPage from './MainPage';

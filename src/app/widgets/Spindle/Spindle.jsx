@@ -9,26 +9,26 @@ import _includes from 'lodash/includes';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Form, Field } from 'react-final-form';
-import { Button, ButtonGroup } from 'app/components/Buttons';
-import Input from 'app/components/FormControl/Input';
-import FormGroup from 'app/components/FormGroup';
-import { Container, Row, Col } from 'app/components/GridSystem';
-import ImageIcon from 'app/components/ImageIcon';
-import InputGroup from 'app/components/InputGroup';
+import { Button, ButtonGroup } from '@app/components/Buttons';
+import Input from '@app/components/FormControl/Input';
+import FormGroup from '@app/components/FormGroup';
+import { Container, Row, Col } from '@app/components/GridSystem';
+import ImageIcon from '@app/components/ImageIcon';
+import InputGroup from '@app/components/InputGroup';
 import {
   CONNECTION_STATE_CONNECTED,
-} from 'app/constants/connection';
+} from '@app/constants/connection';
 import {
   MACHINE_STATE_NONE,
   REFORMED_MACHINE_STATE_IDLE,
   REFORMED_MACHINE_STATE_HOLD,
-} from 'app/constants/controller';
+} from '@app/constants/controller';
 import {
   WORKFLOW_STATE_RUNNING,
-} from 'app/constants/workflow';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import useWidgetConfig from 'app/widgets/shared/useWidgetConfig';
+} from '@app/constants/workflow';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
+import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
 import iconFan from './images/fan.svg';
 
 function Spindle({

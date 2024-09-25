@@ -1,6 +1,6 @@
 import React from 'react';
 import Repeatable from 'react-repeatable';
-import { Button } from 'app/components/Buttons';
+import { Button } from '@app/components/Buttons';
 
 function RepeatableButton({ tag = Button, onClick, ...props }) {
   return (

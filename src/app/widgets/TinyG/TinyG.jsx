@@ -5,14 +5,14 @@ import map from 'lodash/map';
 import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import controller from 'app/lib/controller';
-import mapGCodeToText from 'app/lib/gcode-text';
-import i18n from 'app/lib/i18n';
-import { Button } from 'app/components/Buttons';
-import Clickable from 'app/components/Clickable';
-import { Container, Row, Col } from 'app/components/GridSystem';
-import Panel from 'app/components/Panel';
-import ProgressBar from 'app/components/ProgressBar';
+import controller from '@app/lib/controller';
+import mapGCodeToText from '@app/lib/gcode-text';
+import i18n from '@app/lib/i18n';
+import { Button } from '@app/components/Buttons';
+import Clickable from '@app/components/Clickable';
+import { Container, Row, Col } from '@app/components/GridSystem';
+import Panel from '@app/components/Panel';
+import ProgressBar from '@app/components/ProgressBar';
 import {
   TINYG_MACHINE_STATE_INITIALIZING,
   TINYG_MACHINE_STATE_READY,
@@ -28,7 +28,7 @@ import {
   TINYG_MACHINE_STATE_INTERLOCK,
   TINYG_MACHINE_STATE_SHUTDOWN,
   TINYG_MACHINE_STATE_PANIC,
-} from 'app/constants/controller';
+} from '@app/constants/controller';
 import Overrides from './Overrides';
 import styles from './index.styl';
 

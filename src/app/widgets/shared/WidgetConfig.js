@@ -1,4 +1,4 @@
-import config from 'app/store/config';
+import config from '@app/store/config';
 import { translatePathByWidgetId } from './utils';
 
 class WidgetConfig {

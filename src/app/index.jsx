@@ -4,10 +4,10 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from 'app/containers/App';
-import rootSaga from 'app/sagas';
-import sagaMiddleware from 'app/store/redux/sagaMiddleware';
-import { GlobalProvider } from 'app/context';
+import App from '@app/containers/App';
+import rootSaga from '@app/sagas';
+import sagaMiddleware from '@app/store/redux/sagaMiddleware';
+import { GlobalProvider } from '@app/context';
 import './styles/vendor.styl';
 
 // Font Awesome icons

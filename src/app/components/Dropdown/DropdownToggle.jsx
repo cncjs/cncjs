@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Button } from 'app/components/Buttons';
+import { Button } from '@app/components/Buttons';
 import styles from './index.styl';
 
 class DropdownToggle extends Component {
