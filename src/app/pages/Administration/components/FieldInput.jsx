@@ -3,6 +3,7 @@ import {
   Icon,
   Input,
 } from '@tonic-ui/react';
+import { WarningCircleIcon } from '@tonic-ui/react-icons';
 import {
   isNullOrUndefined,
 } from '@tonic-ui/utils';
@@ -35,7 +36,7 @@ const FieldInput = forwardRef((
           />
           {isInvalid && (
             <Flex position="absolute" right={0} align="center">
-              <Icon icon="warning-circle" px="3x" color="red:50" />
+              <Icon as={WarningCircleIcon} px="3x" color="red:50" />
             </Flex>
           )}
         </Flex>

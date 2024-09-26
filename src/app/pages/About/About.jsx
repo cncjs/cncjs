@@ -14,6 +14,7 @@ import {
   useColorMode,
   useColorStyle,
 } from '@tonic-ui/react';
+import { SuccessIcon } from '@tonic-ui/react-icons';
 import {
   useEffectOnce,
   useToggle,
@@ -155,7 +156,7 @@ const About = () => {
         )}
         {isLatestVersion && (
           <Flex alignItems="center" columnGap="2x">
-            <Icon icon="success" color={colorStyle.component.alert.solid.success} />
+            <Icon as={SuccessIcon} color={colorStyle.component.alert.solid.success} />
             <Text>
               {i18n._('You already have the newest version of {{name}}', { name: settings.productName })}
             </Text>

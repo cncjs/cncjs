@@ -5,7 +5,7 @@ import {
   appInit,
   appInitSuccess,
   appInitFailure,
-} from '@app/containers/App/actions';
+} from '@app/containers/app/actions';
 import log from '@app/lib/log';
 import * as bootstrapSaga from './bootstrap';
 

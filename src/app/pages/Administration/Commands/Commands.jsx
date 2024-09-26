@@ -6,6 +6,7 @@ import {
   Icon,
   Tooltip,
 } from '@tonic-ui/react';
+import { EditIcon, RefreshIcon } from '@tonic-ui/react-icons';
 import React, { useMemo } from 'react';
 import BaseTable from '@app/components/BaseTable';
 import i18n from '@app/lib/i18n';
@@ -63,7 +64,7 @@ const Commands = () => {
       header: '',
       cell: ({ row }) => (
         <ButtonBase>
-          <Icon icon="edit" />
+          <Icon as={EditIcon} />
         </ButtonBase>
       ),
       size: 48,
@@ -103,7 +104,7 @@ const Commands = () => {
         >
           <Tooltip label={i18n._('Refresh')}>
             <Button variant="ghost">
-              <Icon icon="refresh" />
+              <Icon as={RefreshIcon} />
             </Button>
           </Tooltip>
         </Flex>

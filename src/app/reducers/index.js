@@ -1,6 +1,6 @@
 import { routerReducer } from 'react-router-redux';
 import { combineReducers } from 'redux';
-import app from '@app/containers/App/reducers';
+import app from '@app/containers/app/reducers';
 import connection from './connection';
 import controller from './controller';
 import serialport from './serialport';

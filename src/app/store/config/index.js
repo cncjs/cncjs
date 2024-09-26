@@ -12,7 +12,7 @@ import settings from '@app/config/settings';
 import { parse as parseCookie } from '@app/lib/cookie-parser';
 import log from '@app/lib/log';
 import reduxStore from '@app/store/redux';
-import { promptUserForCorruptedWorkspaceSettings } from '@app/containers/App/actions';
+import { promptUserForCorruptedWorkspaceSettings } from '@app/containers/app/actions';
 import EventEmitterStore from './EventEmitterStore';
 import defaultState from './defaultState';
 

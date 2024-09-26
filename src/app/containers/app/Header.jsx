@@ -18,6 +18,17 @@ import {
   useColorStyle,
 } from '@tonic-ui/react';
 import {
+  ArrowLeftIcon,
+  BoxOutIcon,
+  CheckIcon,
+  ChevronRightIcon,
+  ColorIcon,
+  HelpOIcon,
+  InfoOIcon,
+  InvestigationIcon,
+  LanguageIcon,
+} from '@tonic-ui/react-icons';
+import {
   ensureArray,
 } from 'ensure-type';
 import React, {
@@ -82,7 +93,7 @@ const AppearanceMenuItems = forwardRef((props, ref) => {
               navigateMenu('main');
             }}
           >
-            <Icon icon="arrow-left" />
+            <Icon as={ArrowLeftIcon} />
           </ButtonBase>
         </Flex>
         <Flex flex="auto">
@@ -101,7 +112,7 @@ const AppearanceMenuItems = forwardRef((props, ref) => {
       >
         <MenuItem onClick={(event) => setAppearance('auto')}>
           <Flex flex="none" mr="3x" minWidth="4x">
-            {appearance === 'auto' && <Icon icon="check" />}
+            {appearance === 'auto' && <Icon as={CheckIcon} />}
           </Flex>
           <Flex flex="auto">
             {i18n._('Use device theme')}
@@ -109,7 +120,7 @@ const AppearanceMenuItems = forwardRef((props, ref) => {
         </MenuItem>
         <MenuItem onClick={(event) => setAppearance('dark')}>
           <Flex flex="none" mr="3x" minWidth="4x">
-            {appearance === 'dark' && <Icon icon="check" />}
+            {appearance === 'dark' && <Icon as={CheckIcon} />}
           </Flex>
           <Flex flex="auto">
             {i18n._('Dark theme')}
@@ -117,7 +128,7 @@ const AppearanceMenuItems = forwardRef((props, ref) => {
         </MenuItem>
         <MenuItem onClick={(event) => setAppearance('light')}>
           <Flex flex="none" mr="3x" minWidth="4x">
-            {appearance === 'light' && <Icon icon="check" />}
+            {appearance === 'light' && <Icon as={CheckIcon} />}
           </Flex>
           <Flex flex="auto">
             {i18n._('Light theme')}
@@ -162,7 +173,7 @@ const LanguageMenuItems = forwardRef((props, ref) => {
               navigateMenu('main');
             }}
           >
-            <Icon icon="arrow-left" />
+            <Icon as={ArrowLeftIcon} />
           </ButtonBase>
         </Flex>
         <Flex flex="auto">
@@ -178,7 +189,7 @@ const LanguageMenuItems = forwardRef((props, ref) => {
           onClick={(event) => setLanguage(language)}
         >
           <Flex flex="none" mr="3x" minWidth="4x">
-            {language === currentLanguage && <Icon icon="check" />}
+            {language === currentLanguage && <Icon as={CheckIcon} />}
           </Flex>
           <Flex flex="auto">
             {mapDisplayLanguageToLocaleString(language)}
@@ -232,7 +243,7 @@ const MainMenuItems = forwardRef((props, ref) => {
         }}
       >
         <Flex flex="none" mr="3x">
-          <Icon icon="color" />
+          <Icon as={ColorIcon} />
         </Flex>
         <Flex flex="auto">
           <Text>
@@ -244,7 +255,7 @@ const MainMenuItems = forwardRef((props, ref) => {
           </Text>
         </Flex>
         <Flex flex="none" ml="3x">
-          <Icon icon="chevron-right" />
+          <Icon as={ChevronRightIcon} />
         </Flex>
       </MenuItem>
       <MenuItem
@@ -256,7 +267,7 @@ const MainMenuItems = forwardRef((props, ref) => {
         }}
       >
         <Flex flex="none" mr="3x">
-          <Icon icon="language" />
+          <Icon as={LanguageIcon} />
         </Flex>
         <Flex flex="auto">
           <Text>
@@ -264,7 +275,7 @@ const MainMenuItems = forwardRef((props, ref) => {
           </Text>
         </Flex>
         <Flex flex="none" ml="3x">
-          <Icon icon="chevron-right" />
+          <Icon as={ChevronRightIcon} />
         </Flex>
       </MenuItem>
       <MenuDivider />
@@ -275,7 +286,7 @@ const MainMenuItems = forwardRef((props, ref) => {
         }}
       >
         <Flex flex="none" mr="3x">
-          <Icon icon="info-o" />
+          <Icon as={InfoOIcon} />
         </Flex>
         <Flex flex="auto">
           <Text>{i18n._('About')}</Text>
@@ -288,7 +299,7 @@ const MainMenuItems = forwardRef((props, ref) => {
         }}
       >
         <Flex flex="none" mr="3x">
-          <Icon icon="help-o" />
+          <Icon as={HelpOIcon} />
         </Flex>
         <Flex flex="auto">
           <Text>{i18n._('Help')}</Text>
@@ -301,7 +312,7 @@ const MainMenuItems = forwardRef((props, ref) => {
         }}
       >
         <Flex flex="none" mr="3x">
-          <Icon icon="investigation" />
+          <Icon as={InvestigationIcon} />
         </Flex>
         <Flex flex="auto">
           <Text>{i18n._('Report an issue')}</Text>
@@ -325,7 +336,7 @@ const MainMenuItems = forwardRef((props, ref) => {
             }}
           >
             <Flex flex="none" mr="3x">
-              <Icon icon="box-out" />
+              <Icon as={BoxOutIcon} />
             </Flex>
             <Flex flex="auto">
               <Text>{i18n._('Sign out')}</Text>

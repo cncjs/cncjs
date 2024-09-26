@@ -1,11 +1,9 @@
 import { Global, css } from '@emotion/react';
 import {
   Box,
-  Toast,
   useColorMode,
   useColorStyle,
   useTheme,
-  useToast,
 } from '@tonic-ui/react';
 import pubsub from 'pubsub-js';
 import React, { useEffect } from 'react';
@@ -14,6 +12,7 @@ import { connect } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import compose from 'recompose/compose';
 import settings from '@app/config/settings';
+import useToast from '@app/hooks/useToast';
 import CorruptedWorkspaceSettingsModal from './modals/CorruptedWorkspaceSettingsModal';
 import LoginPage from './LoginPage';
 import MainPage from './MainPage';
@@ -72,23 +71,6 @@ function Layout(props) {
   );
 }
 
-function ToastLayout(props) {
-  const [colorMode] = useColorMode();
-  const [colorStyle] = useColorStyle({ colorMode });
-  const boxShadow = colorStyle?.shadow?.thin;
-
-  return (
-    <Box
-      fontSize="sm"
-      lineHeight="sm"
-      textAlign="left"
-      boxShadow={boxShadow}
-      width={320}
-      {...props}
-    />
-  );
-}
-
 function App({
   isInitializing,
   promptUserForCorruptedWorkspaceSettings
@@ -101,34 +83,15 @@ function App({
       const {
         appearance,
         placement,
-        duration = 5000,
+        duration,
         render,
       } = data;
 
-      toast(({ onClose, placement }) => {
-        const styleProps = {
-          'top-left': { mt: '2x', mx: '4x' },
-          'top': { mt: '2x', mx: '4x' },
-          'top-right': { mt: '2x', mx: '4x' },
-          'bottom-left': { mb: '2x', mx: '4x' },
-          'bottom': { mb: '2x', mx: '4x' },
-          'bottom-right': { mb: '2x', mx: '4x' },
-        }[placement];
-
-        return (
-          <ToastLayout {...styleProps}>
-            <Toast
-              appearance={appearance}
-              isClosable
-              onClose={onClose}
-            >
-              {render()}
-            </Toast>
-          </ToastLayout>
-        );
-      }, {
-        placement,
+      toast({
+        appearance,
+        content: render(),
         duration,
+        placement,
       });
     });
 

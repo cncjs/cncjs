@@ -6,157 +6,66 @@ import {
   Icon,
   Spinner,
   Text,
-  Toast,
-  ToastController,
-  ToastTransition,
   useColorMode,
   useColorStyle,
 } from '@tonic-ui/react';
-import {
-  useEffectOnce,
-} from '@tonic-ui/react-hooks';
-import { useActor, useInterpret } from '@xstate/react';
-import React, { useCallback, useState } from 'react';
+import { WarningCircleIcon } from '@tonic-ui/react-icons';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Form, FormSpy } from 'react-final-form';
-import { TransitionGroup } from 'react-transition-group';
-import { v4 as uuidv4 } from 'uuid';
-import axios from '@app/api/axios';
+import useToast from '@app/hooks/useToast';
 import i18n from '@app/lib/i18n';
-import { createFetchMachine } from '@app/machines';
 import FieldCheckbox from '@app/pages/Administration/components/FieldCheckbox';
 import Overlay from '@app/pages/Administration/components/Overlay';
 import TitleText from '@app/pages/Administration/components/TitleText';
-
-const fetchMachine = createFetchMachine();
-
-const ToastContainer = (props) => (
-  <Flex
-    flexDirection="column"
-    alignItems="center"
-    position="absolute"
-    top="4x"
-    left="50%"
-    transform="translateX(-50%)"
-    width="max-content"
-    maxWidth="80%" // up to 80% of the container width
-    zIndex="toast"
-    {...props}
-  />
-);
+import {
+  useGeneralSettingsQuery,
+  useGeneralSettingsMutation,
+} from './queries';
 
 const GeneralSettings = () => {
   const [formState, setFormState] = useState({});
   const [colorMode] = useColorMode();
   const [colorStyle] = useColorStyle({ colorMode });
-  const [toasts, setToasts] = useState([]);
-  const addToast = (options) => {
-    const {
-      appearance,
-      content,
-      duration = null,
-      isClosable = true,
-    } = { ...options };
-
-    setToasts(prevState => {
-      const id = uuidv4();
-      const onClose = () => {
-        setToasts(toasts => toasts.filter(x => x.id !== id));
-      };
-      // You can decide how many toasts you want to show at the same time depending on your use case
-      const nextState = [
-        ...prevState.slice(-2),
-        {
-          id,
-          appearance,
-          content,
-          duration,
-          isClosable,
-          onClose,
-        },
-      ];
-      return nextState;
-    });
-  };
-  const removeToasts = useCallback(() => setToasts([]), []);
-  const getterService = useInterpret(
-    fetchMachine,
-    {
-      actions: {
-        onSuccess: (context, event) => {
-          const data = context.data.data;
-          setFormState(data);
-        },
-        onFailure: (context, event) => {
-          addToast({
-            appearance: 'error',
-            content: (
-              <Text>{i18n._('An unexpected error has occurred.')}</Text>
-            ),
-          });
-        },
-      },
-      services: {
-        fetch: (context, event) => {
-          const url = '/api/state';
-          return axios.get(url, event?.config);
-        }
-      },
+  const toast = useToast();
+  const query = useGeneralSettingsQuery({
+    onError: () => {
+      toast({
+        appearance: 'error',
+        content: (
+          <Text>{i18n._('An unexpected error has occurred.')}</Text>
+        ),
+        duration: null,
+      });
     },
-  );
-  const setterService = useInterpret(
-    fetchMachine,
-    {
-      actions: {
-        onSuccess: (context, event) => {
-          addToast({
-            appearance: 'success',
-            duration: 3000,
-            content: (
-              <Text>{i18n._('Settings saved.')}</Text>
-            ),
-          });
-
-          getterDispatch({ type: 'FETCH' });
-        },
-        onFailure: (context, event) => {
-          addToast({
-            appearance: 'error',
-            content: (
-              <Text>{i18n._('An unexpected error has occurred.')}</Text>
-            ),
-          });
-        },
-      },
-      services: {
-        fetch: (context, event) => {
-          const url = '/api/state';
-          return axios.post(url, event?.data, event?.config);
-        }
-      },
-    },
-  );
-  const [getterState, getterDispatch] = useActor(getterService);
-  const [setterState, setterDispatch] = useActor(setterService);
-  const handleClickRetry = useCallback((event) => {
-    removeToasts();
-    getterDispatch({ type: 'FETCH' });
-  }, [removeToasts, getterDispatch]);
-  const handleFormSubmit = useCallback((values) => {
-    removeToasts();
-    setterDispatch({
-      type: 'FETCH',
-      data: values,
-    });
-  }, [removeToasts, setterDispatch]);
-
-  useEffectOnce(() => {
-    removeToasts();
-    getterDispatch({ type: 'FETCH' });
   });
+  const mutation = useGeneralSettingsMutation();
+  const handleFormSubmit = useCallback((values) => {
+    mutation.mutate({ data: values }, {
+      onSuccess: () => {
+        toast({
+          appearance: 'success',
+          content: (
+            <Text>{i18n._('Settings saved.')}</Text>
+          ),
+        });
+      },
+      onError: () => {
+        toast({
+          appearance: 'error',
+          content: (
+            <Text>{i18n._('An unexpected error has occurred.')}</Text>
+          ),
+          duration: null,
+        });
+      },
+    });
+  }, [mutation, toast]);
 
-  const isLoading = getterState.matches('loading') || setterState.matches('loading');
-  const isFormDisabled = isLoading || getterState.matches('failure');
-  const shouldRetryFailure = getterState.matches('failure');
+  useEffect(() => {
+    setFormState(query.data);
+  }, [query.data]);
+
+  const isFormDisabled = query.isFetching || query.error;
 
   return (
     <Form
@@ -169,7 +78,7 @@ const GeneralSettings = () => {
           height="100%"
           position="relative"
         >
-          {isLoading && (
+          {query.isFetching && (
             <Overlay
               alignItems="center"
               justifyContent="center"
@@ -177,35 +86,6 @@ const GeneralSettings = () => {
               <Spinner size="md" />
             </Overlay>
           )}
-          <ToastContainer>
-            <TransitionGroup
-              component={null} // Pass in `component={null}` to avoid a wrapping `<div>` element
-            >
-              {toasts.map(toast => (
-                <ToastTransition
-                  in={true}
-                  key={toast?.id}
-                  unmountOnExit
-                >
-                  <ToastController
-                    duration={toast?.duration}
-                    onClose={toast?.onClose}
-                  >
-                    <Toast
-                      appearance={toast?.appearance}
-                      isClosable={toast?.isClosable}
-                      onClose={toast?.onClose}
-                      mb="2x"
-                      minWidth={280} // The toast has a minimum width of 280 pixels
-                      width="fit-content"
-                    >
-                      {toast?.content}
-                    </Toast>
-                  </ToastController>
-                </ToastTransition>
-              ))}
-            </TransitionGroup>
-          </ToastContainer>
           <Box
             flex="auto"
             p="4x"
@@ -239,7 +119,7 @@ const GeneralSettings = () => {
                 </FieldCheckbox>
               </Box>
               <Flex alignItems="center" columnGap="2x" ml="6x">
-                <Icon icon="warning-circle" color={colorStyle.color.error} />
+                <Icon as={WarningCircleIcon} color={colorStyle.color.error} />
                 <Text>{i18n._('Enabling this option may cause machine damage if you don\'t have an Emergency Stop button to prevent a dangerous situation.')}</Text>
               </Flex>
             </>
@@ -250,15 +130,14 @@ const GeneralSettings = () => {
             <FormSpy
               subscription={{
                 invalid: true,
-                pristine: true,
               }}
             >
-              {({ invalid, pristine }) => {
+              {({ invalid }) => {
                 const canSave = (() => {
-                  if (invalid) {
+                  if (isFormDisabled) {
                     return false;
                   }
-                  if (pristine) {
+                  if (invalid) {
                     return false;
                   }
                   return true;
@@ -275,23 +154,14 @@ const GeneralSettings = () => {
                     alignItems="center"
                     justifyContent="flex-start"
                   >
-                    {shouldRetryFailure ? (
-                      <Button
-                        variant="primary"
-                        onClick={handleClickRetry}
-                      >
-                        {i18n._('Retry')}
-                      </Button>
-                    ) : (
-                      <Button
-                        justifySelf="flex-end"
-                        variant="primary"
-                        disabled={!canSave}
-                        onClick={handleClickSave}
-                      >
-                        {i18n._('Save')}
-                      </Button>
-                    )}
+                    <Button
+                      justifySelf="flex-end"
+                      variant="primary"
+                      disabled={!canSave}
+                      onClick={handleClickSave}
+                    >
+                      {i18n._('Save')}
+                    </Button>
                   </Flex>
                 );
               }}

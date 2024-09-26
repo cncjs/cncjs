@@ -2,6 +2,7 @@ import _get from 'lodash/get';
 import { ensureArray } from 'ensure-type';
 import superagent from 'superagent';
 import superagentUse from 'superagent-use';
+import axios from '@app/api/axios';
 import controller from '@app/lib/controller';
 import config from '@app/store/config';
 
@@ -50,50 +51,23 @@ const signin = (options) => new Promise((resolve, reject) => {
 //
 // State
 //
-const getState = (options) => new Promise((resolve, reject) => {
-  const { key } = { ...options };
+const getState = async (config) => {
+  const url = 'api/state';
+  const response = await axios.get(url, config);
+  return response.data;
+};
 
-  authrequest
-    .get('/api/state')
-    .query({ key: key })
-    .end((err, res) => {
-      if (err) {
-        reject(res);
-      } else {
-        resolve(res);
-      }
-    });
-});
+const setState = async (data, config) => {
+  const url = 'api/state';
+  const response = await axios.post(url, data, config);
+  return response.data;
+};
 
-const setState = (options) => new Promise((resolve, reject) => {
-  const data = { ...options };
-
-  authrequest
-    .post('/api/state')
-    .send(data)
-    .end((err, res) => {
-      if (err) {
-        reject(res);
-      } else {
-        resolve(res);
-      }
-    });
-});
-
-const unsetState = (options) => new Promise((resolve, reject) => {
-  const { key } = { ...options };
-
-  authrequest
-    .delete('/api/state')
-    .query({ key: key })
-    .end((err, res) => {
-      if (err) {
-        reject(res);
-      } else {
-        resolve(res);
-      }
-    });
-});
+const unsetState = async (config) => {
+  const url = 'api/state';
+  const response = await axios.delete(url, config);
+  return response.data;
+};
 
 //
 // G-code
