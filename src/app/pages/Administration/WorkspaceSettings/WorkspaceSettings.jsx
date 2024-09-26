@@ -2,33 +2,31 @@ import { createHash } from 'crypto';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
-  Divider,
+  Code,
   Flex,
-  Icon,
   Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
   Space,
   Stack,
   Text,
-  useColorMode,
   useColorStyle,
   usePortalManager,
 } from '@tonic-ui/react';
+import _set from 'lodash/set';
 import React, { useCallback, useRef } from 'react';
 import CodePreview from '@app/components/CodePreview';
 import settings from '@app/config/settings';
+import useToast from '@app/hooks/useToast';
 import exportFile from '@app/lib/export-file';
 import i18n from '@app/lib/i18n';
 import log from '@app/lib/log';
 import config from '@app/store/config';
+import ConfirmImportWorkspaceSettingsModal from './modals/ConfirmImportWorkspaceSettingsModal';
+import ConfirmRestoreDefaultsModal from './modals/ConfirmRestoreDefaultsModal';
 
 const WorkspaceSettings = () => {
-  const [colorMode] = useColorMode();
-  const [colorStyle] = useColorStyle({ colorMode });
+  const [colorStyle] = useColorStyle();
   const portal = usePortalManager();
+  const toast = useToast();
   const fileInputRef = useRef();
 
   const handleClickExport = useCallback(async (event) => {
@@ -51,52 +49,23 @@ const WorkspaceSettings = () => {
 
   const handleClickRestoreDefaults = useCallback((event) => {
     portal((close) => (
-      <Modal
-        closeOnEsc
-        closeOnOutsideClick
-        isClosable
-        isOpen={true}
+      <ConfirmRestoreDefaultsModal
         onClose={close}
-        size="sm"
-      >
-        <ModalContent>
-          <ModalBody>
-            <Flex columnGap="4x">
-              <Icon
-                icon=":modal-warning"
-                color={colorStyle.severity.medium}
-                size="12x"
-              />
-              <Stack spacing="1x">
-                <Text fontWeight="semibold">{i18n._('Warning')}</Text>
-                <Text>{i18n._('Are you sure you want to restore the default settings?')}</Text>
-              </Stack>
-            </Flex>
-          </ModalBody>
-          <ModalFooter columnGap="2x">
-            <Button onClick={close}>
-              {i18n._('Cancel')}
-            </Button>
-            <Button
-              variant="emphasis"
-              onClick={async () => {
-                // Restore default settings
-                config.restoreDefault();
+        onConfirm={async () => {
+          // Restore default settings
+          config.restoreDefault();
 
-                // Persist data locally
-                await config.persist();
+          // Persist data locally
+          await config.persist();
 
-                // Reload the current page from the server
-                window.location.reload(true);
-              }}
-            >
-              {i18n._('Restore Defaults')}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+          close();
+
+          // Reload the current page from the server
+          window.location.reload(true);
+        }}
+      />
     ));
-  }, [portal, colorStyle]);
+  }, [portal]);
 
   const handleChangeFile = useCallback((event) => {
     const files = event.target.files;
@@ -120,91 +89,35 @@ const WorkspaceSettings = () => {
 
       // TODO: Sanitization
       const { version, state } = { ...data };
-      const isValidWorkspaceSettings = (typeof version === 'string' && typeof state === 'object');
-
-      if (!isValidWorkspaceSettings) {
-        portal((close) => (
-          <Modal
-            closeOnEsc
-            closeOnOutsideClick
-            isClosable
-            isOpen={true}
-            onClose={close}
-            size="xs"
-          >
-            <ModalContent>
-              <ModalBody>
-                <Flex columnGap="4x">
-                  <Icon
-                    icon=":modal-error"
-                    color={colorStyle.severity.high}
-                    size="12x"
-                  />
-                  <Stack spacing="1x">
-                    <Text fontWeight="semibold">{i18n._('Import Error')}</Text>
-                    <Text>{i18n._('Invalid file format.')}</Text>
-                  </Stack>
-                </Flex>
-              </ModalBody>
-              <ModalFooter>
-                <Button onClick={close}>
-                  {i18n._('Close')}
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-        ));
-      } else {
-        portal((close) => (
-          <Modal
-            closeOnEsc
-            closeOnOutsideClick
-            isClosable
-            isOpen={true}
-            onClose={close}
-            size="sm"
-          >
-            <ModalContent>
-              <ModalBody>
-                <Flex columnGap="4x" mb="6x">
-                  <Icon
-                    icon=":modal-warning"
-                    color={colorStyle.severity.medium}
-                    size="12x"
-                  />
-                  <Stack spacing="1x">
-                    <Text fontWeight="semibold">{i18n._('Warning')}</Text>
-                    <Text>{i18n._('Are you sure you want to overwrite the workspace settings?')}</Text>
-                  </Stack>
-                </Flex>
-                <CodePreview
-                  data={JSON.stringify(data, null, 2)}
-                  language="json"
-                />
-              </ModalBody>
-              <ModalFooter columnGap="2x">
-                <Button onClick={close}>
-                  {i18n._('Cancel')}
-                </Button>
-                <Button
-                  variant="emphasis"
-                  onClick={async () => {
-                    // Persist data locally
-                    await config.persist({ version, state });
-
-                    // Reload the current page from the server
-                    window.location.reload(true);
-                  }}
-                >
-                  <FontAwesomeIcon icon="upload" fixedWidth />
-                  <Space width="2x" />
-                  {i18n._('Import')}
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-        ));
+      const isWorkspaceSettingsCorrupted = (typeof version !== 'string' || typeof state !== 'object');
+      if (isWorkspaceSettingsCorrupted) {
+        toast({
+          appearance: 'error',
+          content: (
+            <Stack spacing="1x">
+              <Text fontWeight="semibold">{i18n._('Import Error')}</Text>
+              <Text>{i18n._('Invalid file format.')}</Text>
+            </Stack>
+          ),
+        });
+        return;
       }
+
+      portal((close) => (
+        <ConfirmImportWorkspaceSettingsModal
+          data={data}
+          onClose={close}
+          onConfirm={async () => {
+            // Persist data locally
+            await config.persist({ version, state });
+
+            close();
+
+            // Reload the current page from the server
+            window.location.reload(true);
+          }}
+        />
+      ));
     };
 
     try {
@@ -212,13 +125,16 @@ const WorkspaceSettings = () => {
     } catch (err) {
       // Ignore error
     }
-  }, [portal, colorStyle]);
+  }, [portal, toast]);
+
+  const data = JSON.parse(JSON.stringify({
+    version: settings.version,
+    state: config.state,
+  }));
+  _set(data, 'state.session.token', '********'); // Hide session token
 
   return (
-    <Flex
-      flexDirection="column"
-      height="100%"
-    >
+    <>
       <Input
         ref={fileInputRef}
         type="file"
@@ -227,55 +143,73 @@ const WorkspaceSettings = () => {
         onChange={handleChangeFile}
       />
       <Flex
-        flex="none"
-        justifyContent="space-between"
-        px="4x"
-        py="3x"
-      >
-        <Flex columnGap="2x">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={handleClickExport}
-          >
-            <FontAwesomeIcon icon="download" fixedWidth />
-            <Space width="2x" />
-            {i18n._('Export')}
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={handleClickImport}
-          >
-            <FontAwesomeIcon icon="upload" fixedWidth />
-            <Space width="2x" />
-            {i18n._('Import')}
-          </Button>
-        </Flex>
-        <Button
-          variant="emphasis"
-          onClick={handleClickRestoreDefaults}
-        >
-          {i18n._('Restore Defaults')}
-        </Button>
-      </Flex>
-      <Divider mb="4x" />
-      <Flex
-        flex="auto"
+        flexDirection="column"
         height="100%"
-        overflowY="auto"
-        px="4x"
-        mb="4x"
       >
-        <CodePreview
-          data={JSON.stringify({
-            version: settings.version,
-            state: config.state
-          }, null, 2)}
-          language="json"
-        />
+        <Flex
+          flex="none"
+          px="4x"
+          py="3x"
+        >
+          <Text>
+            Your configuration file: <Code>~/.cncrc [FIXME]</Code>
+          </Text>
+        </Flex>
+        <Flex
+          flex="auto"
+          height="100%"
+          overflowY="auto"
+          mx="4x"
+          mb="4x"
+        >
+          <CodePreview
+            language="json"
+            data={JSON.stringify(data, null, 2)}
+            showLineNumbers
+            wrapLongLines
+            style={{
+              width: '100%',
+            }}
+          />
+        </Flex>
+        <Flex
+          flex="none"
+          backgroundColor={colorStyle.background.secondary}
+          px="4x"
+          py="3x"
+          alignItems="center"
+          columnGap="4x"
+          justifyContent="space-between"
+        >
+          <Flex columnGap="2x">
+            <Button
+              variant="secondary"
+              onClick={handleClickExport}
+            >
+              <FontAwesomeIcon icon="download" fixedWidth />
+              <Space width="2x" />
+              {i18n._('Export')}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={handleClickImport}
+            >
+              <FontAwesomeIcon icon="upload" fixedWidth />
+              <Space width="2x" />
+              {i18n._('Import')}
+            </Button>
+          </Flex>
+          <Flex>
+            <Button
+              variant="secondary"
+              onClick={handleClickRestoreDefaults}
+            >
+              {i18n._('Restore Defaults')}
+            </Button>
+          </Flex>
+        </Flex>
       </Flex>
-    </Flex>
+    </>
   );
 };
 

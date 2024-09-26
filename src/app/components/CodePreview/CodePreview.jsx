@@ -5,7 +5,9 @@ import hljsA11yLight from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-li
 
 const CodePreview = ({
   data,
-  language,
+  language = 'json',
+  style,
+  ...rest
 }) => {
   const [colorMode] = useColorMode();
   const hljsStyle = {
@@ -15,14 +17,10 @@ const CodePreview = ({
 
   return (
     <SyntaxHighlighter
-      customStyle={{
-        padding: '.5rem',
-        width: '100%',
-      }}
-      language="json"
-      showLineNumbers
+      customStyle={style}
+      language={language}
       style={hljsStyle}
-      wrapLongLines
+      {...rest}
     >
       {data}
     </SyntaxHighlighter>

@@ -91,7 +91,7 @@ const GeneralSettings = () => {
             p="4x"
             overflowY="auto"
           >
-            <>
+            <Box>
               <TitleText>
                 {i18n._('Update')}
               </TitleText>
@@ -101,9 +101,9 @@ const GeneralSettings = () => {
               >
                 {i18n._('Automatically check for updates')}
               </FieldCheckbox>
-            </>
+            </Box>
             <Divider my="4x" />
-            <>
+            <Box>
               <TitleText>
                 {i18n._('Controller')}
               </TitleText>
@@ -122,7 +122,7 @@ const GeneralSettings = () => {
                 <Icon as={WarningCircleIcon} color={colorStyle.color.error} />
                 <Text>{i18n._('Enabling this option may cause machine damage if you don\'t have an Emergency Stop button to prevent a dangerous situation.')}</Text>
               </Flex>
-            </>
+            </Box>
           </Box>
           <Box
             flex="none"
