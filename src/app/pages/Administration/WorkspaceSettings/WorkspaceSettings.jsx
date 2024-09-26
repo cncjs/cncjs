@@ -11,6 +11,7 @@ import {
   useColorStyle,
   usePortalManager,
 } from '@tonic-ui/react';
+import _get from 'lodash/get';
 import _set from 'lodash/set';
 import React, { useCallback, useRef } from 'react';
 import CodePreview from '@app/components/CodePreview';
@@ -22,8 +23,10 @@ import log from '@app/lib/log';
 import config from '@app/store/config';
 import ConfirmImportWorkspaceSettingsModal from './modals/ConfirmImportWorkspaceSettingsModal';
 import ConfirmRestoreDefaultsModal from './modals/ConfirmRestoreDefaultsModal';
+import { useSystemInformationQuery } from './queries';
 
 const WorkspaceSettings = () => {
+  const systemInformationQuery = useSystemInformationQuery();
   const [colorStyle] = useColorStyle();
   const portal = usePortalManager();
   const toast = useToast();
@@ -148,12 +151,12 @@ const WorkspaceSettings = () => {
       >
         <Flex
           flex="none"
+          columnGap="2x"
           px="4x"
           py="3x"
         >
-          <Text>
-            Your configuration file: <Code>~/.cncrc [FIXME]</Code>
-          </Text>
+          <Text>{i18n._('The configuration file:')}</Text>
+          <Code>{_get(systemInformationQuery.data, 'userStore.file')}</Code>
         </Flex>
         <Flex
           flex="auto"

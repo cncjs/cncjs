@@ -61,11 +61,13 @@ const GeneralSettings = () => {
     });
   }, [mutation, toast]);
 
-  useEffect(() => {
-    setFormState(query.data);
-  }, [query.data]);
-
   const isFormDisabled = query.isFetching || query.error;
+
+  useEffect(() => {
+    if (query.isSuccess) {
+      setFormState(query.data);
+    }
+  }, [query.isSuccess, query.data]);
 
   return (
     <Form

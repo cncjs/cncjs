@@ -70,6 +70,15 @@ const unsetState = async (config) => {
 };
 
 //
+// System
+//
+const getSystemInformation = async (config) => {
+  const url = 'api/system/info';
+  const response = await axios.get(url, config);
+  return response.data;
+};
+
+//
 // G-code
 //
 const loadGCode = (meta, context) => new Promise((resolve, reject) => {
@@ -563,6 +572,9 @@ export default {
   getState,
   setState,
   unsetState,
+
+  // System
+  getSystemInformation,
 
   // G-code
   loadGCode,
