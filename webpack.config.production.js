@@ -6,7 +6,6 @@ const dotenv = require('dotenv');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const findImports = require('find-imports');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
@@ -152,10 +151,6 @@ module.exports = {
       LANGUAGES: JSON.stringify(buildConfig.languages),
       TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId),
     }),
-    new webpack.ContextReplacementPlugin(
-      /moment[\/\\]locale$/,
-      new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$'),
-    ),
     new ESLintPlugin(),
     new MiniCssExtractPlugin({
       filename: `[name].css?_=${timestamp}`,

@@ -1,6 +1,6 @@
 import { ensureFiniteNumber } from 'ensure-type';
 import _get from 'lodash/get';
-import moment from 'moment';
+import { differenceInSeconds, format } from 'date-fns';
 import React from 'react';
 import { connect } from 'react-redux';
 import FormGroup from '@app/components/FormGroup';
@@ -13,24 +13,37 @@ import {
   METRIC_UNITS
 } from '@app/constants';
 
+const formatDuration = (start, finish) => {
+  const diffTime = differenceInSeconds(finish, start);
+  if (!diffTime) {
+    return '00:00:00'; // divide by 0 protection
+  }
+  const minutes = Math.abs(Math.floor(diffTime / 60) % 60).toString();
+  const hours = Math.abs(Math.floor(diffTime / 60 / 60)).toString();
+  const seconds = Math.abs(diffTime % 60).toString();
+  return [
+    hours.length < 2 ? 0 + hours : hours,
+    minutes.length < 2 ? 0 + minutes : minutes,
+    seconds.length < 2 ? 0 + seconds : seconds,
+  ].join(':');
+};
+
 const formatISODateTime = (time) => {
-  return time > 0 ? moment.unix(time / 1000).format('YYYY-MM-DD HH:mm:ss') : '–';
+  return time > 0 ? format(time / 1000, 'YYYY-MM-dd HH:mm:ss') : '–';
 };
 
 const formatElapsedTime = (elapsedTime) => {
   if (!elapsedTime || elapsedTime < 0) {
     return '–';
   }
-  const d = moment.duration(elapsedTime, 'ms');
-  return moment(d._data).format('HH:mm:ss');
+  return formatDuration(0, elapsedTime); // ms
 };
 
 const formatRemainingTime = (remainingTime) => {
   if (!remainingTime || remainingTime < 0) {
     return '–';
   }
-  const d = moment.duration(remainingTime, 'ms');
-  return moment(d._data).format('HH:mm:ss');
+  return formatDuration(0, remainingTime);
 };
 
 function GCodeStats({

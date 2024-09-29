@@ -3,7 +3,6 @@ const path = require('path');
 const dotenv = require('dotenv');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
 const babelConfig = require('./babel.config');
@@ -142,10 +141,6 @@ module.exports = {
     new webpack.LoaderOptionsPlugin({
       debug: true,
     }),
-    new webpack.ContextReplacementPlugin(
-      /moment[\/\\]locale$/,
-      new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$'),
-    ),
     new ESLintPlugin(),
     new MiniCssExtractPlugin({
       filename: `[name].css?_=${timestamp}`,

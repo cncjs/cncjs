@@ -3,8 +3,8 @@ import {
   Space,
 } from '@tonic-ui/react';
 import chainedFunction from 'chained-function';
+import { format } from 'date-fns';
 import take from 'lodash/take';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Button } from '@app/components/Buttons';
@@ -190,7 +190,7 @@ class TableRecords extends Component {
             render: (value, row, index) => {
               const { mtime } = row;
               if (mtime) {
-                return moment(mtime).format('lll');
+                return format(mtime, 'PPpp');
               }
 
               return '–';

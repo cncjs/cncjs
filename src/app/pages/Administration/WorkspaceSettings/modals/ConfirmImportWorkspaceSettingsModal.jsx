@@ -61,16 +61,21 @@ const ConfirmImportWorkspaceSettingsModal = ({
         </ModalBody>
         <ModalFooter columnGap="2x">
           <Button
-            variant="secondary"
-            onClick={onClose}
-          >
-            {i18n._('Cancel')}
-          </Button>
-          <Button
             variant="primary"
             onClick={onConfirm}
+            sx={{
+              minWidth: 80,
+            }}
           >
             {i18n._('Import')}
+          </Button>
+          <Button
+            onClick={onClose}
+            sx={{
+              minWidth: 80,
+            }}
+          >
+            {i18n._('Cancel')}
           </Button>
         </ModalFooter>
       </ModalContent>

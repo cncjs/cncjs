@@ -1,9 +1,11 @@
 import {
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 import {
+  Collapse,
   Flex,
   Table,
   TableHeader,
@@ -16,7 +18,12 @@ import {
   useTheme,
 } from '@tonic-ui/react';
 import { dataAttr } from '@tonic-ui/utils';
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, {
+  Fragment,
+  forwardRef,
+  useEffect,
+  useState,
+} from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 /**
@@ -42,6 +49,7 @@ const BaseTable = forwardRef((
     data,
     layout = 'flexbox', // One of: 'flexbox', 'table'
     variant = 'default', // One of: 'default', 'outline'
+    renderExpandedRow,
     ...rest
   },
   ref,
@@ -63,15 +71,20 @@ const BaseTable = forwardRef((
     data,
     columns,
     defaultColumn: {
-      minSize: 48,
+      minSize: 80,
     },
     state: {
       rowSelection,
     },
     enableRowSelection: true, // enable row selection for all rows
-    // enableRowSelection: row => row.original.detections > 0, // or enable row selection conditionally per row
-    onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getRowCanExpand: () => true,
+    getRowId: (originalRow, index) => {
+      // Identify individual rows that are originating from any server-side operation
+      return originalRow.id;
+    },
+    onRowSelectionChange: setRowSelection,
   });
 
   const [tableWidth, setTableWidth] = useState(0);
@@ -239,32 +252,51 @@ const BaseTable = forwardRef((
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows.map(row => (
-                <TableRow
-                  key={row.id}
-                  data-selected={dataAttr(row.getIsSelected())}
-                  _hover={{
-                    backgroundColor: hoverBackgroundColor,
-                  }}
-                  _selected={{
-                    backgroundColor: selectedBackgroundColor,
-                  }}
-                >
-                  {row.getVisibleCells().map(cell => {
-                    const styleProps = {
-                      minWidth: cell.column.columnDef.minSize,
-                      width: cell.column.getSize(),
-                      ...cell.column.columnDef.style,
-                    };
-                    return (
+                <Fragment key={row.id}>
+                  <TableRow
+                    data-selected={dataAttr(row.getIsSelected())}
+                    _hover={{
+                      backgroundColor: hoverBackgroundColor,
+                    }}
+                    _selected={{
+                      backgroundColor: selectedBackgroundColor,
+                    }}
+                  >
+                    {row.getVisibleCells().map(cell => {
+                      const styleProps = {
+                        minWidth: cell.column.columnDef.minSize,
+                        width: cell.column.getSize(),
+                        ...cell.column.columnDef.cellStyle,
+                      };
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          {...styleProps}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                  {(row.getCanExpand() && layout === 'flexbox') && (
+                    <Collapse in={row.getIsExpanded()}>
+                      {typeof renderExpandedRow === 'function' && renderExpandedRow({ row })}
+                    </Collapse>
+                  )}
+                  {(row.getCanExpand() && layout === 'table') && (
+                    <TableRow>
                       <TableCell
-                        key={cell.id}
-                        {...styleProps}
+                        padding={0}
+                        borderBottom={0}
+                        colSpan={row.getVisibleCells().length}
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        <Collapse in={row.getIsExpanded()}>
+                          {typeof renderExpandedRow === 'function' && renderExpandedRow({ row })}
+                        </Collapse>
                       </TableCell>
-                    );
-                  })}
-                </TableRow>
+                    </TableRow>
+                  )}
+                </Fragment>
               ))}
             </TableBody>
           </Table>

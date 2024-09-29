@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Checkbox,
   Divider,
   Flex,
   Icon,
@@ -11,10 +12,9 @@ import {
 } from '@tonic-ui/react';
 import { WarningCircleIcon } from '@tonic-ui/react-icons';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Form, FormSpy } from 'react-final-form';
+import { Field, Form, FormSpy } from 'react-final-form';
 import useToast from '@app/hooks/useToast';
 import i18n from '@app/lib/i18n';
-import FieldCheckbox from '@app/pages/Administration/components/FieldCheckbox';
 import Overlay from '@app/pages/Administration/components/Overlay';
 import TitleText from '@app/pages/Administration/components/TitleText';
 import {
@@ -70,65 +70,80 @@ const GeneralSettings = () => {
   }, [query.isSuccess, query.data]);
 
   return (
-    <Form
-      initialValues={formState}
-      onSubmit={handleFormSubmit}
-      subscription={{}}
-      render={({ form }) => (
-        <Flex
-          flexDirection="column"
-          height="100%"
-          position="relative"
-        >
-          {query.isFetching && (
-            <Overlay
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Spinner size="md" />
-            </Overlay>
-          )}
-          <Box
-            flex="auto"
-            p="4x"
-            overflowY="auto"
-          >
-            <Box>
-              <TitleText>
-                {i18n._('Update')}
-              </TitleText>
-              <FieldCheckbox
-                name="checkForUpdates"
-                disabled={isFormDisabled}
+    <Flex
+      flexDirection="column"
+      height="100%"
+      position="relative"
+    >
+      <Form
+        initialValues={formState}
+        onSubmit={handleFormSubmit}
+        subscription={{}}
+        render={({ form }) => (
+          <>
+            {query.isFetching && (
+              <Overlay
+                alignItems="center"
+                justifyContent="center"
               >
-                {i18n._('Automatically check for updates')}
-              </FieldCheckbox>
-            </Box>
-            <Divider my="4x" />
-            <Box>
-              <TitleText>
-                {i18n._('Controller')}
-              </TitleText>
-              <Text mb="3x">
-                {i18n._('Exception Handling')}
-              </Text>
-              <Box mb="1x">
-                <FieldCheckbox
-                  name="controller.exception.ignoreErrors"
-                  disabled={isFormDisabled}
-                >
-                  {i18n._('Continue execution when an error is detected in the G-code program')}
-                </FieldCheckbox>
+                <Spinner size="md" />
+              </Overlay>
+            )}
+            <Box
+              flex="auto"
+              overflowY="auto"
+              px="6x"
+              py="4x"
+            >
+              <Box>
+                <TitleText>
+                  {i18n._('Update')}
+                </TitleText>
+                <Field name="checkForUpdates">
+                  {({ input }) => (
+                    <Flex columnGap="2x">
+                      <Checkbox
+                        disabled={isFormDisabled}
+                        {...input}
+                      >
+                        <Text>
+                          {i18n._('Automatically check for updates')}
+                        </Text>
+                      </Checkbox>
+                    </Flex>
+                  )}
+                </Field>
               </Box>
-              <Flex alignItems="center" columnGap="2x" ml="6x">
-                <Icon as={WarningCircleIcon} color={colorStyle.color.error} />
-                <Text>{i18n._('Enabling this option may cause machine damage if you don\'t have an Emergency Stop button to prevent a dangerous situation.')}</Text>
-              </Flex>
+              <Divider my="4x" />
+              <Box>
+                <TitleText>
+                  {i18n._('Controller')}
+                </TitleText>
+                <Text mb="3x">
+                  {i18n._('Exception Handling')}
+                </Text>
+                <Box mb="1x">
+                  <Field name="controller.exception.ignoreErrors">
+                    {({ input }) => (
+                      <Flex columnGap="2x">
+                        <Checkbox
+                          disabled={isFormDisabled}
+                          {...input}
+                        >
+                          <Text>
+                            {i18n._('Continue execution when an error is detected in the G-code program')}
+                          </Text>
+                        </Checkbox>
+                      </Flex>
+                    )}
+                  </Field>
+                </Box>
+                <Flex alignItems="center" columnGap="2x" ml="6x">
+                  <Icon as={WarningCircleIcon} color={colorStyle.color.error} />
+                  <Text>{i18n._('Enabling this option may cause machine damage if you don\'t have an Emergency Stop button to prevent a dangerous situation.')}</Text>
+                </Flex>
+              </Box>
             </Box>
-          </Box>
-          <Box
-            flex="none"
-          >
             <FormSpy
               subscription={{
                 invalid: true,
@@ -150,17 +165,19 @@ const GeneralSettings = () => {
 
                 return (
                   <Flex
-                    backgroundColor={colorStyle.background.secondary}
-                    px="4x"
-                    py="3x"
+                    backgroundColor={colorStyle?.background?.secondary}
                     alignItems="center"
                     justifyContent="flex-start"
+                    px="6x"
+                    py="4x"
                   >
                     <Button
-                      justifySelf="flex-end"
                       variant="primary"
                       disabled={!canSave}
                       onClick={handleClickSave}
+                      sx={{
+                        minWidth: 80,
+                      }}
                     >
                       {i18n._('Save')}
                     </Button>
@@ -168,10 +185,10 @@ const GeneralSettings = () => {
                 );
               }}
             </FormSpy>
-          </Box>
-        </Flex>
-      )}
-    />
+          </>
+        )}
+      />
+    </Flex>
   );
 };
 

@@ -5,7 +5,7 @@ import {
 } from '@tonic-ui/react';
 import React, { forwardRef } from 'react';
 
-const AlertLinkButton = forwardRef((props, ref) => {
+const AlertButtonLink = forwardRef((props, ref) => {
   const [colorMode] = useColorMode();
   const borderColor = {
     dark: 'black:primary',
@@ -25,6 +25,7 @@ const AlertLinkButton = forwardRef((props, ref) => {
       as={Link}
       ref={ref}
       variant="secondary"
+      size="sm"
       borderColor={borderColor}
       color={color}
       _active={{ color }}
@@ -40,4 +41,6 @@ const AlertLinkButton = forwardRef((props, ref) => {
   );
 });
 
-export default AlertLinkButton;
+AlertButtonLink.displayName = 'AlertButtonLink';
+
+export default AlertButtonLink;

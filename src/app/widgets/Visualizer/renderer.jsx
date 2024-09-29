@@ -3,8 +3,8 @@ import {
 } from '@tonic-ui/react';
 import path from 'path';
 import cx from 'classnames';
+import { format } from 'date-fns';
 import includes from 'lodash/includes';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
 import i18n from '@app/lib/i18n';
@@ -138,7 +138,7 @@ const renderer = (node, treeOptions) => {
     }
     return disabled;
   }(node));
-  const dateModified = moment(node.props.mtime).format('lll');
+  const dateModified = format(node.props.mtime, 'PPpp');
   const size = includes(['f', 'l'], node.props.type) ? formatBytes(node.props.size, 0) : '';
   const type = (function(node) {
     if (node.props.type === 'd') {

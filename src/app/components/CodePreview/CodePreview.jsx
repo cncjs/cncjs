@@ -17,7 +17,10 @@ const CodePreview = ({
 
   return (
     <SyntaxHighlighter
-      customStyle={style}
+      customStyle={{
+        padding: 16,
+        ...style,
+      }}
       language={language}
       style={hljsStyle}
       {...rest}

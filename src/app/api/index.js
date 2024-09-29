@@ -48,9 +48,9 @@ const signin = (options) => new Promise((resolve, reject) => {
     });
 });
 
-//
-// State
-//
+/**
+ * State
+ */
 const getState = async (config) => {
   const url = 'api/state';
   const response = await axios.get(url, config);
@@ -69,9 +69,9 @@ const unsetState = async (config) => {
   return response.data;
 };
 
-//
-// System
-//
+/**
+ * System
+ */
 const getSystemInformation = async (config) => {
   const url = 'api/system/info';
   const response = await axios.get(url, config);
@@ -566,8 +566,6 @@ machines.run = (id) => new Promise((resolve, reject) => {
 });
 
 export default {
-  //getLatestVersion, // TODO: remove me
-
   // State
   getState,
   setState,

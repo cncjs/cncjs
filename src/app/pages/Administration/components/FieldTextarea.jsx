@@ -1,8 +1,8 @@
 import {
   Flex,
   Icon,
-  Input,
   Text,
+  Textarea,
 } from '@tonic-ui/react';
 import { WarningCircleIcon } from '@tonic-ui/react-icons';
 import {
@@ -11,7 +11,7 @@ import {
 import React, { forwardRef } from 'react';
 import { Field } from 'react-final-form';
 
-const FieldInput = forwardRef((
+const FieldTextarea = forwardRef((
   {
     name,
     validate,
@@ -30,7 +30,7 @@ const FieldInput = forwardRef((
             alignItems="center"
             width="100%"
           >
-            <Input
+            <Textarea
               ref={ref}
               {...input}
               error={error}
@@ -61,4 +61,4 @@ const FieldInput = forwardRef((
   </Field>
 ));
 
-export default FieldInput;
+export default FieldTextarea;

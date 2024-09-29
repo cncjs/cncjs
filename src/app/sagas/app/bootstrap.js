@@ -1,8 +1,28 @@
-/* eslint import/no-dynamic-require: 0 */
+import { setDefaultOptions } from 'date-fns';
+/* eslint-disable camelcase */
+import {
+  cs as locale_cs,
+  de as locale_de,
+  enUS as locale_en,
+  es as locale_es,
+  fr as locale_fr,
+  hu as locale_hu,
+  it as locale_it,
+  ja as locale_ja,
+  nb as locale_nb,
+  nl as locale_nl,
+  ptBR as locale_ptBR,
+  pt as locale_ptPT,
+  ru as locale_ru,
+  tr as locale_tr,
+  uk as locale_uk,
+  zhCN as locale_zhCN,
+  zhTW as locale_zhTW,
+} from 'date-fns/locale';
+/* eslint-enable camelcase */
 import I18nextHTTPBackend from 'i18next-http-backend';
 import I18nextBrowserLanguageDetector from 'i18next-browser-languagedetector';
 import mapKeys from 'lodash/mapKeys';
-import moment from 'moment';
 import pubsub from 'pubsub-js';
 import qs from 'qs';
 import { initReactI18next } from 'react-i18next';
@@ -25,7 +45,7 @@ export function* init() {
 
   // parallel
   yield all([
-    call(initMomentLocale),
+    call(initDateFns),
     call(authenticateSessionToken),
     call(enableCrossOriginCommunication),
   ]);
@@ -169,23 +189,32 @@ const initI18next = () => new Promise((resolve, reject) => {
     });
 });
 
-const initMomentLocale = () => new Promise(resolve => {
-  const lng = i18next.language;
-
-  if (!lng || lng === 'en') {
-    log.debug(`moment: lng=${lng}`);
-    resolve();
-    return;
+const initDateFns = () => {
+  /* eslint-disable camelcase */
+  const locale = {
+    'cs': locale_cs,
+    'de': locale_de,
+    'en': locale_en,
+    'es': locale_es,
+    'fr': locale_fr,
+    'hu': locale_hu,
+    'it': locale_it,
+    'ja': locale_ja,
+    'nb': locale_nb,
+    'nl': locale_nl,
+    'pt-br': locale_ptBR,
+    'pt-pt': locale_ptPT,
+    'ru': locale_ru,
+    'tr': locale_tr,
+    'uk': locale_uk,
+    'zh-cn': locale_zhCN,
+    'zh-tw': locale_zhTW,
+  }[i18next.language];
+  /* eslint-enable camelcase */
+  if (locale) {
+    setDefaultOptions({ locale: locale });
   }
-
-  const bundle = require('bundle-loader!moment/locale/' + lng);
-  bundle(() => {
-    log.debug(`moment: lng=${lng}`);
-    moment().locale(lng);
-
-    resolve();
-  });
-});
+};
 
 const authenticateSessionToken = () => new Promise(resolve => {
   const token = config.get('session.token');

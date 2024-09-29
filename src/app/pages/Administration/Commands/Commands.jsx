@@ -1,26 +1,58 @@
 import {
   Button,
-  ButtonBase,
   Checkbox,
   Flex,
   Icon,
+  LinkButton,
+  Switch,
+  TextLabel,
   Tooltip,
+  useColorMode,
+  usePortalManager,
 } from '@tonic-ui/react';
-import { EditIcon, RefreshIcon } from '@tonic-ui/react-icons';
-import React, { useMemo } from 'react';
+import { RefreshIcon } from '@tonic-ui/react-icons';
+import { format } from 'date-fns';
+import { ensureArray } from 'ensure-type';
+import React, { useCallback, useMemo } from 'react';
 import BaseTable from '@app/components/BaseTable';
+import CodePreview from '@app/components/CodePreview';
+import IconButton from 'app/components/IconButton';
 import i18n from '@app/lib/i18n';
-
-const data = [
-  { id: 1, enabled: true, title: 'G28', mtime: '2020-01-01 00:00:00', commands: 'xxx' },
-  { id: 2, enabled: true, title: 'G29', mtime: '2020-01-01 00:00:00', commands: 'yyy' },
-  { id: 3, enabled: true, title: 'G30', mtime: '2020-01-01 00:00:00', commands: 'zzz' },
-  { id: 4, enabled: true, title: 'G31', mtime: '2020-01-01 00:00:00', commands: 'xxx' },
-  { id: 5, enabled: true, title: 'G32', mtime: '2020-01-01 00:00:00', commands: 'yyy' },
-  { id: 6, enabled: true, title: 'G33', mtime: '2020-01-01 00:00:00', commands: 'zzz' },
-];
+import CreateCommandDrawer from './drawers/CreateCommandDrawer';
+import UpdateCommandDrawer from './drawers/UpdateCommandDrawer';
+import TableRowToggleIcon from './TableRowToggleIcon';
+import { useFetchCommandsQuery } from './queries';
 
 const Commands = () => {
+  const fetchCommandsQuery = useFetchCommandsQuery();
+  const portal = usePortalManager();
+  const [colorMode] = useColorMode();
+
+  const toggleStatusById = (id) => () => {
+    // TODO
+  };
+
+  const handleClickAdd = useCallback(() => {
+    portal((close) => (
+      <CreateCommandDrawer
+        onClose={close}
+      />
+    ));
+  }, [portal]);
+
+  const handleClickViewCommandDetailsById = useCallback((id) => () => {
+    portal((close) => (
+      <UpdateCommandDrawer
+        id={id}
+        onClose={close}
+      />
+    ));
+  }, [portal]);
+
+  const handleClickRefresh = useCallback(() => {
+    fetchCommandsQuery.refetch();
+  }, [fetchCommandsQuery]);
+
   const columns = useMemo(() => ([
     {
       id: 'selection',
@@ -42,34 +74,125 @@ const Commands = () => {
           />
         </Flex>
       ),
+      minSize: 48,
       size: 48,
     },
     {
-      header: i18n._('Description'),
-      accessorKey: 'title',
-      size: 'auto',
+      id: 'expand',
+      header: () => null,
+      cell: ({ row }) => {
+        const canExpand = row.getCanExpand();
+        const isExpanded = row.getIsExpanded();
+
+        if (!canExpand) {
+          return null;
+        }
+
+        return (
+          <TableRowToggleIcon
+            isExpanded={isExpanded}
+            onClick={row.getToggleExpandedHandler()}
+            sx={{
+              height: '100%',
+              width: '100%',
+            }}
+          />
+        );
+      },
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        px: 0,
+        py: 0,
+      },
+      minSize: 24,
+      size: 24,
     },
     {
-      header: i18n._('Commands'),
-      accessorKey: 'commands',
+      header: i18n._('Name'),
+      cell: ({ row }) => (
+        <LinkButton onClick={handleClickViewCommandDetailsById(row.original.id)}>
+          {row.original.title}
+        </LinkButton>
+      ),
       size: 'auto',
     },
     {
       header: i18n._('Date Modified'),
-      accessorKey: 'mtime',
-      size: 180,
+      cell: ({ row }) => {
+        const dt = new Date(row.original.mtime);
+        return format(dt, 'PPpp');
+      },
+      size: 200,
     },
     {
-      id: 'actions',
-      header: '',
+      id: 'status',
+      header: i18n._('Status'),
       cell: ({ row }) => (
-        <ButtonBase>
-          <Icon as={EditIcon} />
-        </ButtonBase>
+        <Flex
+          alignItems="center"
+          columnGap="2x"
+        >
+          <Switch
+            checked={row.original.enabled}
+            onChange={toggleStatusById(row.original.id)}
+          />
+          <TextLabel>
+            {row.original.enabled === true ? i18n._('ON') : i18n._('OFF')}
+          </TextLabel>
+        </Flex>
       ),
-      size: 48,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        py: 0,
+      },
+      minSize: 80,
     },
-  ]), []);
+  ]), [handleClickViewCommandDetailsById]);
+  const data = ensureArray(fetchCommandsQuery.data?.records);
+
+  const renderExpandedRow = useCallback(({ row }) => {
+    const tableBorderColor = {
+      dark: 'gray:70',
+      light: 'gray:30',
+    }[colorMode];
+    const dividerColor = {
+      dark: 'gray:60',
+      light: 'gray:30',
+    }[colorMode];
+    const data = row.original.commands;
+
+    return (
+      <Flex
+        sx={{
+          borderBottom: 1,
+          borderColor: tableBorderColor,
+          width: '100%',
+        }}
+      >
+        <Flex
+          flex="none"
+          sx={{
+            borderRight: 2,
+            borderColor: dividerColor,
+            width: '15x',
+          }}
+        />
+        <Flex
+          flex="auto"
+        >
+          {!!data && (
+            <CodePreview
+              data={data}
+              language="shell"
+            />
+          )}
+        </Flex>
+      </Flex>
+    );
+  }, [colorMode]);
 
   return (
     <Flex
@@ -85,33 +208,47 @@ const Commands = () => {
         px="4x"
       >
         <Flex
-          flexWrap="wrap"
           alignItems="center"
-          columnGap="2x"
-          rowGap="2x"
+          columnGap="4x"
         >
-          <Button variant="primary">
-            Add
+          <Button
+            variant="primary"
+            onClick={handleClickAdd}
+            sx={{
+              minWidth: 80,
+            }}
+          >
+            {i18n._('Add')}
           </Button>
-          <Button variant="secondary">
-            Remove
+          <Button
+            variant="secondary"
+            sx={{
+              minWidth: 80,
+            }}
+          >
+            {i18n._('Delete')}
           </Button>
         </Flex>
         <Flex
-          flexWrap="nowrap"
           alignItems="center"
           columnGap="2x"
         >
           <Tooltip label={i18n._('Refresh')}>
-            <Button variant="ghost">
-              <Icon as={RefreshIcon} />
-            </Button>
+            <IconButton
+              onClick={handleClickRefresh}
+            >
+              <Icon
+                as={RefreshIcon}
+                spin={fetchCommandsQuery.isFetching}
+              />
+            </IconButton>
           </Tooltip>
         </Flex>
       </Flex>
       <BaseTable
         columns={columns}
         data={data}
+        renderExpandedRow={renderExpandedRow}
         sx={{
           height: '100%',
         }}

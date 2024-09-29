@@ -133,7 +133,12 @@ const MainPage = forwardRef((props, ref) => {
         pt={layout.header.height}
       >
         {(location.pathname !== '/workspace') && (
-          <Box height={`calc(100vh - ${layout.header.height}px)`}>
+          <Box
+            sx={{
+              height: `calc(100vh - ${layout.header.height}px)`,
+              overflowY: 'auto',
+            }}
+          >
             {location.pathname.startsWith('/about') && (
               <About />
             )}

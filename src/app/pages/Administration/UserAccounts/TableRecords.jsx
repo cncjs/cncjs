@@ -2,7 +2,7 @@ import {
   Space,
 } from '@tonic-ui/react';
 import chainedFunction from 'chained-function';
-import moment from 'moment';
+import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Anchor from '@app/components/Anchor';
@@ -132,7 +132,7 @@ class TableRecords extends Component {
             render: (value, row, index) => {
               const { mtime } = row;
               if (mtime) {
-                return moment(mtime).format('lll');
+                return format(mtime, 'PPpp');
               }
 
               return '–';

@@ -88,26 +88,26 @@ export function GlobalProvider({ children }) {
           theme={customTheme}
           useCSSBaseline={true}
         >
-          <PortalManager>
-            <ToastManager
-              placement="bottom-right"
-              TransitionProps={{
-                sx: {
-                  '[data-toast-placement^="top"] > &:first-of-type': {
-                    mt: '4x', // the space to the top edge of the screen
-                  },
-                  '[data-toast-placement^="bottom"] > &:last-of-type': {
-                    mb: '4x', // the space to the bottom edge of the screen
-                  },
-                  '[data-toast-placement$="left"] > &': {
-                    ml: '4x', // the space to the left edge of the screen
-                  },
-                  '[data-toast-placement$="right"] > &': {
-                    mr: '4x', // the space to the right edge of the screen
-                  },
+          <ToastManager
+            placement="bottom-right"
+            TransitionProps={{
+              sx: {
+                '[data-toast-placement^="top"] > &:first-of-type': {
+                  mt: '4x', // the space to the top edge of the screen
                 },
-              }}
-            >
+                '[data-toast-placement^="bottom"] > &:last-of-type': {
+                  mb: '4x', // the space to the bottom edge of the screen
+                },
+                '[data-toast-placement$="left"] > &': {
+                  ml: '4x', // the space to the left edge of the screen
+                },
+                '[data-toast-placement$="right"] > &': {
+                  mr: '4x', // the space to the right edge of the screen
+                },
+              },
+            }}
+          >
+            <PortalManager>
               <ReduxProvider store={reduxStore}>
                 <GridSystemProvider
                   breakpoints={[576, 768, 992, 1200, 1600]}
@@ -127,8 +127,8 @@ export function GlobalProvider({ children }) {
                   </CardProvider>
                 </GridSystemProvider>
               </ReduxProvider>
-            </ToastManager>
-          </PortalManager>
+            </PortalManager>
+          </ToastManager>
         </TonicProvider>
       </QueryClientProvider>
     </I18nextProvider>

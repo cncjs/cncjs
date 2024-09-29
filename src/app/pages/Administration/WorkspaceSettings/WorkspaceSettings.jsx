@@ -1,6 +1,7 @@
 import { createHash } from 'crypto';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  Box,
   Button,
   Code,
   Flex,
@@ -8,7 +9,6 @@ import {
   Space,
   Stack,
   Text,
-  useColorStyle,
   usePortalManager,
 } from '@tonic-ui/react';
 import _get from 'lodash/get';
@@ -27,7 +27,6 @@ import { useSystemInformationQuery } from './queries';
 
 const WorkspaceSettings = () => {
   const systemInformationQuery = useSystemInformationQuery();
-  const [colorStyle] = useColorStyle();
   const portal = usePortalManager();
   const toast = useToast();
   const fileInputRef = useRef();
@@ -137,57 +136,24 @@ const WorkspaceSettings = () => {
   _set(data, 'state.session.token', '********'); // Hide session token
 
   return (
-    <>
-      <Input
-        ref={fileInputRef}
-        type="file"
-        display="none"
-        multiple={false}
-        onChange={handleChangeFile}
-      />
-      <Flex
-        flexDirection="column"
-        height="100%"
-      >
+    <Box
+      px="6x"
+      py="4x"
+    >
+      <Box mb="4x">
         <Flex
           flex="none"
-          columnGap="2x"
-          px="4x"
-          py="3x"
-        >
-          <Text>{i18n._('The configuration file:')}</Text>
-          <Code>{_get(systemInformationQuery.data, 'userStore.file')}</Code>
-        </Flex>
-        <Flex
-          flex="auto"
-          height="100%"
-          overflowY="auto"
-          mx="4x"
-          mb="4x"
-        >
-          <CodePreview
-            language="json"
-            data={JSON.stringify(data, null, 2)}
-            showLineNumbers
-            wrapLongLines
-            style={{
-              width: '100%',
-            }}
-          />
-        </Flex>
-        <Flex
-          flex="none"
-          backgroundColor={colorStyle.background.secondary}
-          px="4x"
-          py="3x"
           alignItems="center"
           columnGap="4x"
           justifyContent="space-between"
         >
-          <Flex columnGap="2x">
+          <Flex columnGap="4x">
             <Button
               variant="secondary"
               onClick={handleClickExport}
+              sx={{
+                minWidth: 80,
+              }}
             >
               <FontAwesomeIcon icon="download" fixedWidth />
               <Space width="2x" />
@@ -196,6 +162,9 @@ const WorkspaceSettings = () => {
             <Button
               variant="secondary"
               onClick={handleClickImport}
+              sx={{
+                minWidth: 80,
+              }}
             >
               <FontAwesomeIcon icon="upload" fixedWidth />
               <Space width="2x" />
@@ -206,13 +175,35 @@ const WorkspaceSettings = () => {
             <Button
               variant="secondary"
               onClick={handleClickRestoreDefaults}
+              sx={{
+                minWidth: 80,
+              }}
             >
               {i18n._('Restore Defaults')}
             </Button>
           </Flex>
         </Flex>
-      </Flex>
-    </>
+      </Box>
+      <Box>
+        <Input
+          ref={fileInputRef}
+          type="file"
+          display="none"
+          multiple={false}
+          onChange={handleChangeFile}
+        />
+        <Box mb="4x">
+          <Flex columnGap="2x">
+            <Text>{i18n._('The configuration file:')}</Text>
+            <Code>{_get(systemInformationQuery.data, 'userStore.file')}</Code>
+          </Flex>
+        </Box>
+        <CodePreview
+          data={JSON.stringify(data, null, 2)}
+          language="json"
+        />
+      </Box>
+    </Box>
   );
 };
 

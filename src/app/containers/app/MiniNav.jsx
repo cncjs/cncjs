@@ -8,7 +8,6 @@ import {
   MenuList,
   Scrollbar,
   Text,
-  useColorMode,
   useColorStyle,
 } from '@tonic-ui/react';
 import { ensureArray, ensureString } from 'ensure-type';
@@ -24,8 +23,7 @@ const MiniNav = forwardRef((
   },
   ref,
 ) => {
-  const [colorMode] = useColorMode();
-  const [colorStyle] = useColorStyle({ colorMode });
+  const [colorStyle] = useColorStyle();
   const navigate = useNavigate();
   const location = useLocation();
   const [hoveredItem, setHoveredItem] = useState(null);
@@ -37,6 +35,8 @@ const MiniNav = forwardRef((
         ref={ref}
         backgroundColor={colorStyle?.background?.primary}
         color={colorStyle?.color?.primary}
+        borderRight={1}
+        borderRightColor={colorStyle?.divider}
         {...rest}
       >
         <Box mb="2x" />
@@ -152,6 +152,8 @@ const MiniNav = forwardRef((
       ref={ref}
       backgroundColor={colorStyle?.background?.primary}
       color={colorStyle?.color?.primary}
+      borderRight={1}
+      borderRightColor={colorStyle?.divider}
       {...rest}
     >
       {routes.map((route, index) => {

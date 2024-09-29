@@ -202,8 +202,7 @@ const LanguageMenuItems = forwardRef((props, ref) => {
 
 const MainMenuItems = forwardRef((props, ref) => {
   const [, navigateMenu] = useContext(MenuStateContext);
-  const [colorMode] = useColorMode();
-  const [colorStyle] = useColorStyle({ colorMode });
+  const [colorStyle] = useColorStyle();
   const location = useLocation();
   const navigate = useNavigate();
   const isUserAccountEnabled = config.get('session.enabled');
@@ -355,8 +354,7 @@ const Header = forwardRef((
   },
   ref,
 ) => {
-  const [colorMode] = useColorMode();
-  const [colorStyle] = useColorStyle({ colorMode });
+  const [colorStyle] = useColorStyle();
   const location = useLocation();
   const [menu, setMenu] = useState('main');
   const shouldPreventDefaultOnLossFocus = useRef(false);
@@ -375,7 +373,7 @@ const Header = forwardRef((
     <Flex
       as="header"
       ref={ref}
-      backgroundColor={colorStyle?.background?.primary}
+      backgroundColor={colorStyle?.background?.secondary}
       color={colorStyle?.color?.primary}
       justifyContent="space-between"
       {...rest}

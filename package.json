@@ -310,6 +310,7 @@
     "cross-env": "~7.0.3",
     "css-loader": "~5.2.2",
     "css-minimizer-webpack-plugin": "~2.0.0",
+    "date-fns": "^4.1.0",
     "del-cli": "~4.0.1",
     "dotenv": "~16.0.1",
     "electron": "~22.0.3",

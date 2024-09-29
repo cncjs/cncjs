@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Alert,
   Box,
@@ -11,79 +10,66 @@ import {
   Spinner,
   Stack,
   Text,
-  useColorMode,
   useColorStyle,
 } from '@tonic-ui/react';
-import { SuccessIcon } from '@tonic-ui/react-icons';
 import {
-  useEffectOnce,
+  ExternalLinkIcon,
+  SuccessIcon,
+} from '@tonic-ui/react-icons';
+import {
   useToggle,
 } from '@tonic-ui/react-hooks';
-import { useActor, useInterpret } from '@xstate/react';
-import axios from '@app/api/axios';
-import memoize from 'micro-memoize';
 import React, { useEffect } from 'react';
-import settings from '@app/config/settings';
-import i18n from '@app/lib/i18n';
-import { createFetchMachine } from '@app/machines';
 import semverLt from 'semver/functions/lt';
-import AlertLinkButton from './AlertLinkButton';
-import { StateContext } from './context';
-
-const getMemoizedState = memoize(state => ({ ...state }));
-
-let defaultWillShowUpdateAlert = true;
-
-const fetchMachine = createFetchMachine();
+import settings from '@app/config/settings';
+import useToast from '@app/hooks/useToast';
+import i18n from '@app/lib/i18n';
+import AlertButtonLink from './components/AlertButtonLink';
+import { useLatestVersionQuery } from './queries';
 
 const About = () => {
-  const getLatestVersionService = useInterpret(
-    fetchMachine,
-    {
-      services: {
-        fetch: (context, event) => {
-          const url = '/api/version/latest';
-          return axios.get(url, event?.config);
-        }
-      },
+  const [colorStyle] = useColorStyle();
+  const toast = useToast();
+  const latestVersionQuery = useLatestVersionQuery({
+    onError: () => {
+      toast({
+        appearance: 'error',
+        content: (
+          <Text>{i18n._('An unexpected error has occurred.')}</Text>
+        ),
+        duration: null,
+      });
     },
-  );
-  const [state, send] = useActor(getLatestVersionService);
-  const stateContext = getMemoizedState({
-    getLatestVersionService,
   });
   const currentVersion = settings.version;
-  const latestVersion = state.context?.data?.data?.version;
-  const isCheckingForUpdates = (state.value === 'loading');
+  const latestVersion = latestVersionQuery?.data?.version;
+  const isCheckingForUpdates = latestVersionQuery.isFetching;
   const isUpdateAvailable = currentVersion && latestVersion && semverLt(currentVersion, latestVersion);
   const isLatestVersion = currentVersion && latestVersion && !semverLt(currentVersion, latestVersion);
   const [isUpdateAlertVisible, toggleUpdateAlertVisible] = useToggle(false);
-  const [colorMode] = useColorMode();
-  const [colorStyle] = useColorStyle({ colorMode });
-
-  useEffectOnce(() => {
-    send({ type: 'FETCH' });
-  });
 
   useEffect(() => {
-    if (isUpdateAvailable && defaultWillShowUpdateAlert) {
+    if (isUpdateAvailable) {
       toggleUpdateAlertVisible();
     }
+    toggleUpdateAlertVisible(true);
   }, [isUpdateAvailable, toggleUpdateAlertVisible]);
 
   return (
-    <StateContext.Provider value={stateContext}>
+    <Box>
       <Collapse in={isUpdateAlertVisible}>
         <Alert
           isClosable
           onClose={() => {
             toggleUpdateAlertVisible(false);
-            defaultWillShowUpdateAlert = false;
           }}
           variant="solid"
           severity="info"
         >
-          <Flex alignItems="flex-start" justifyContent="space-between">
+          <Flex
+            alignItems="flex-start"
+            justifyContent="space-between"
+          >
             <Box mr="10x">
               <Text>
                 {i18n._('A new version of {{name}} is available: {{version}}', {
@@ -92,21 +78,19 @@ const About = () => {
                 })}
               </Text>
             </Box>
-            <AlertLinkButton
-              variant="secondary"
-              size="sm"
+            <AlertButtonLink
               href={settings.url.releases}
               target="_blank"
             >
               <Flex alignItems="center" columnGap="2x">
                 {i18n._('Latest version')}
-                <FontAwesomeIcon icon="external-link" fixedWidth />
+                <Icon as={ExternalLinkIcon} />
               </Flex>
-            </AlertLinkButton>
+            </AlertButtonLink>
           </Flex>
         </Alert>
       </Collapse>
-      <Box p="4x">
+      <Box px="6x" py="4x">
         <Stack spacing="4x" mb="8x">
           <Flex alignItems="center" columnGap="2x">
             <Image src="images/logo-square-256x256.png" alt="" width={96} />
@@ -129,6 +113,7 @@ const About = () => {
           </Flex>
           <Flex alignItems="center" columnGap="2x">
             <Button
+              variant="secondary"
               onClick={() => {
                 const url = 'https://github.com/cncjs/cncjs/releases';
                 window.open(url, '_blank');
@@ -137,6 +122,7 @@ const About = () => {
               {i18n._('Downloads')}
             </Button>
             <Button
+              variant="secondary"
               onClick={() => {
                 const url = 'https://github.com/cncjs/cncjs/issues';
                 window.open(url, '_blank');
@@ -163,7 +149,7 @@ const About = () => {
           </Flex>
         )}
       </Box>
-    </StateContext.Provider>
+    </Box>
   );
 };
 

@@ -1,21 +1,25 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import api from '@app/api';
-
-const queryKeyFactory = {
-  state: ['state'],
-};
+import axios from '@app/api/axios';
 
 const useGeneralSettingsQuery = (options) => {
   return useQuery({
-    queryKey: queryKeyFactory.state,
-    queryFn: () => api.getState(),
+    queryKey: ['api/state'],
+    queryFn: async () => {
+      const url = 'api/state';
+      const response = await axios.get(url);
+      return response.data;
+    },
     ...options,
   });
 };
 
 const useGeneralSettingsMutation = (options) => {
   return useMutation({
-    mutationFn: ({ data }) => api.setState(data),
+    mutationFn: async ({ data }) => {
+      const url = 'api/state';
+      const response = await axios.post(url, data);
+      return response.data;
+    },
     ...options,
   });
 };
