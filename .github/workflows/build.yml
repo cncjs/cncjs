@@ -120,7 +120,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
