@@ -1,7 +1,5 @@
 import {
-  Box,
   Button,
-  Code,
   Flex,
   Icon,
   Modal,
@@ -12,19 +10,16 @@ import {
   Text,
   useColorStyle,
 } from '@tonic-ui/react';
-import _get from 'lodash/get';
 import React from 'react';
 import i18n from '@app/lib/i18n';
-import { useSystemInformationQuery } from '../queries';
 
-const ConfirmRestoreDefaultsModal = ({
+const ConfirmImportWorkspaceSettingsModal = ({
+  rowIds,
   onClose,
   onConfirm,
   ...rest
 }) => {
   const [colorStyle] = useColorStyle();
-  const systemInformationQuery = useSystemInformationQuery();
-  const configFile = _get(systemInformationQuery.data, 'userStore.file');
 
   return (
     <Modal
@@ -37,20 +32,15 @@ const ConfirmRestoreDefaultsModal = ({
     >
       <ModalContent>
         <ModalBody>
-          <Flex columnGap="4x">
+          <Flex columnGap="4x" mb="6x">
             <Icon
-              icon=":modal-warning"
-              color={colorStyle?.color?.warning}
+              icon=":modal-info"
+              color={colorStyle?.color?.info}
               size="12x"
             />
             <Stack spacing="1x">
-              <Text fontWeight="semibold">{i18n._('Warning')}</Text>
-              <Text>{i18n._('Are you sure you want to restore the default settings?')}</Text>
-              <Box>
-                {configFile && (
-                  <Code>{configFile}</Code>
-                )}
-              </Box>
+              <Text>{i18n._('Are you sure you want to delete the selected items?')}</Text>
+              <Text>{i18n._('Count: {{count}}', { count: rowIds.length })}</Text>
             </Stack>
           </Flex>
         </ModalBody>
@@ -62,7 +52,7 @@ const ConfirmRestoreDefaultsModal = ({
               minWidth: 80,
             }}
           >
-            {i18n._('Restore Defaults')}
+            {i18n._('Delete')}
           </Button>
           <Button
             onClick={onClose}
@@ -78,4 +68,4 @@ const ConfirmRestoreDefaultsModal = ({
   );
 };
 
-export default ConfirmRestoreDefaultsModal;
+export default ConfirmImportWorkspaceSettingsModal;

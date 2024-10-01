@@ -5,6 +5,7 @@ import _isPlainObject from 'lodash/isPlainObject';
 import _values from 'lodash/values';
 import { v4 as uuidv4 } from 'uuid';
 import settings from '../config/settings';
+import x from '../lib/json-stringify';
 import logger from '../lib/logger';
 import serviceContainer from '../service-container';
 import { getPagingRange } from './shared/paging';
@@ -155,7 +156,7 @@ export const create = (req, res) => {
     res.send({ err: null });
   } catch (err) {
     res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: 'Failed to save ' + JSON.stringify(settings.rcfile)
+      msg: `Failed to update ${x(settings.rcfile)}`,
     });
   }
 };
@@ -219,7 +220,7 @@ export const update = (req, res) => {
     res.send({ err: null });
   } catch (err) {
     res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: 'Failed to save ' + JSON.stringify(settings.rcfile)
+      msg: `Failed to update ${x(settings.rcfile)}`,
     });
   }
 };
@@ -245,7 +246,7 @@ export const __delete = (req, res) => {
     res.send({ err: null });
   } catch (err) {
     res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: 'Failed to save ' + JSON.stringify(settings.rcfile)
+      msg: `Failed to update ${x(settings.rcfile)}`,
     });
   }
 };

@@ -3,6 +3,7 @@ import _find from 'lodash/find';
 import _isPlainObject from 'lodash/isPlainObject';
 import { v4 as uuidv4 } from 'uuid';
 import settings from '../config/settings';
+import x from '../lib/json-stringify';
 import logger from '../lib/logger';
 import serviceContainer from '../service-container';
 import { getPagingRange } from './shared/paging';
@@ -133,7 +134,7 @@ export const create = (req, res) => {
     res.send({ id: record.id, mtime: record.mtime });
   } catch (err) {
     res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: 'Failed to save ' + JSON.stringify(settings.rcfile)
+      msg: `Failed to update ${x(settings.rcfile)}`,
     });
   }
 };
@@ -192,7 +193,7 @@ export const update = (req, res) => {
     res.send({ id: record.id, mtime: record.mtime });
   } catch (err) {
     res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: 'Failed to save ' + JSON.stringify(settings.rcfile)
+      msg: `Failed to update ${x(settings.rcfile)}`,
     });
   }
 };
@@ -218,7 +219,57 @@ export const __delete = (req, res) => {
     res.send({ id: record.id });
   } catch (err) {
     res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: 'Failed to save ' + JSON.stringify(settings.rcfile)
+      msg: `Failed to update ${x(settings.rcfile)}`,
+    });
+  }
+};
+
+export const enable = (req, res) => {
+  const id = req.params.id;
+  const records = getSanitizedRecords();
+  const record = _find(records, { id: id });
+
+  if (!record) {
+    res.status(ERR_NOT_FOUND).send({
+      msg: 'Not found'
+    });
+    return;
+  }
+
+  try {
+    record.enabled = true;
+
+    userStore.set(CONFIG_KEY, records);
+
+    res.send({ id: record.id, mtime: record.mtime });
+  } catch (err) {
+    res.status(ERR_INTERNAL_SERVER_ERROR).send({
+      msg: `Failed to update ${x(settings.rcfile)}`,
+    });
+  }
+};
+
+export const disable = (req, res) => {
+  const id = req.params.id;
+  const records = getSanitizedRecords();
+  const record = _find(records, { id: id });
+
+  if (!record) {
+    res.status(ERR_NOT_FOUND).send({
+      msg: 'Not found'
+    });
+    return;
+  }
+
+  try {
+    record.enabled = false;
+
+    userStore.set(CONFIG_KEY, records);
+
+    res.send({ id: record.id, mtime: record.mtime });
+  } catch (err) {
+    res.status(ERR_INTERNAL_SERVER_ERROR).send({
+      msg: `Failed to update ${x(settings.rcfile)}`,
     });
   }
 };

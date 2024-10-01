@@ -25,7 +25,7 @@ export const getLatestVersion = (req, res) => {
     .end((err, _res) => {
       if (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
-          msg: `Failed to connect to ${pkgUrl}: code=${err.code}`
+          msg: `Failed to connect to ${pkgUrl}: code=${err.code}`,
         });
         return;
       }

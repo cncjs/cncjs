@@ -50,6 +50,9 @@ const BaseTable = forwardRef((
     layout = 'flexbox', // One of: 'flexbox', 'table'
     variant = 'default', // One of: 'default', 'outline'
     renderExpandedRow,
+    state: stateProp,
+    enableRowSelection: enableRowSelectionProp = false,
+    onRowSelectionChange: onRowSelectionChangeProp,
     ...rest
   },
   ref,
@@ -65,8 +68,6 @@ const BaseTable = forwardRef((
     light: 'rgba(0, 0, 0, 0.08)',
   }[colorMode];
 
-  const [rowSelection, setRowSelection] = useState({});
-
   const table = useReactTable({
     data,
     columns,
@@ -74,9 +75,9 @@ const BaseTable = forwardRef((
       minSize: 80,
     },
     state: {
-      rowSelection,
+      ...stateProp,
     },
-    enableRowSelection: true, // enable row selection for all rows
+    enableRowSelection: enableRowSelectionProp,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getRowCanExpand: () => true,
@@ -84,7 +85,7 @@ const BaseTable = forwardRef((
       // Identify individual rows that are originating from any server-side operation
       return originalRow.id;
     },
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: onRowSelectionChangeProp,
   });
 
   const [tableWidth, setTableWidth] = useState(0);

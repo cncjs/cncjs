@@ -40,7 +40,7 @@ const ConfirmImportWorkspaceSettingsModal = ({
           <Flex columnGap="4x" mb="6x">
             <Icon
               icon=":modal-warning"
-              color={colorStyle.severity.medium}
+              color={colorStyle?.color?.warning}
               size="12x"
             />
             <Stack spacing="1x">

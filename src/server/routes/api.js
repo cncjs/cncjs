@@ -29,7 +29,9 @@ const createProtectedApiRouter = () => {
   router.get('/commands/:id', commands.read);
   router.put('/commands/:id', commands.update);
   router.delete('/commands/:id', commands.__delete);
-  router.post('/commands/run/:id', commands.run);
+  router.post('/commands/:id/run', commands.run);
+  router.post('/commands/:id/enable', commands.enable);
+  router.post('/commands/:id/disable', commands.disable);
 
   // Controllers
   router.get('/controllers', controllers.get);
@@ -40,6 +42,8 @@ const createProtectedApiRouter = () => {
   router.get('/events/:id', events.read);
   router.put('/events/:id', events.update);
   router.delete('/events/:id', events.__delete);
+  router.post('/events/:id/enable', events.enable);
+  router.post('/events/:id/disable', events.disable);
 
   // G-code
   router.get('/gcode', gcode.fetch);
@@ -84,6 +88,8 @@ const createProtectedApiRouter = () => {
   router.get('/users/:id', users.read);
   router.put('/users/:id', users.update);
   router.delete('/users/:id', users.__delete);
+  router.post('/users/:id/enable', users.enable);
+  router.post('/users/:id/disable', users.disable);
 
   // Version
   router.get('/version/latest', version.getLatestVersion);

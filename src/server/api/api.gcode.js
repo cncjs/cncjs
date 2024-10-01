@@ -34,7 +34,7 @@ export const upload = (req, res) => {
   controller.command('sender:load', meta, context, (err, state) => {
     if (err) {
       res.status(ERR_INTERNAL_SERVER_ERROR).send({
-        msg: 'Failed to load the file: ' + err
+        msg: `Failed to load the file: ${err}`,
       });
       return;
     }

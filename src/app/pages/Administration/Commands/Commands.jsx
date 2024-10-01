@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Checkbox,
@@ -13,23 +14,48 @@ import {
 import { RefreshIcon } from '@tonic-ui/react-icons';
 import { format } from 'date-fns';
 import { ensureArray } from 'ensure-type';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import BaseTable from '@app/components/BaseTable';
 import CodePreview from '@app/components/CodePreview';
 import IconButton from 'app/components/IconButton';
 import i18n from '@app/lib/i18n';
 import CreateCommandDrawer from './drawers/CreateCommandDrawer';
 import UpdateCommandDrawer from './drawers/UpdateCommandDrawer';
+import ConfirmDeleteCommandModal from './modals/ConfirmDeleteCommandModal';
 import TableRowToggleIcon from './TableRowToggleIcon';
-import { useFetchCommandsQuery } from './queries';
+import {
+  API_COMMANDS_QUERY_KEY,
+  useFetchCommandsQuery,
+  useEnableCommandMutation,
+  useDisableCommandMutation,
+} from './queries';
 
 const Commands = () => {
+  const [rowSelection, setRowSelection] = useState({});
+  const queryClient = useQueryClient();
   const fetchCommandsQuery = useFetchCommandsQuery();
+  const enableCommandMutation = useEnableCommandMutation({
+    onSuccess: () => {
+      // Invalidate `useFetchCommandsQuery`
+      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+    },
+  });
+  const disableCommandMutation = useDisableCommandMutation({
+    onSuccess: () => {
+      // Invalidate `useFetchCommandsQuery`
+      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+    },
+  });
   const portal = usePortalManager();
   const [colorMode] = useColorMode();
-
-  const toggleStatusById = (id) => () => {
-    // TODO
+  const handleToggleStatusById = (id) => (event) => {
+    const checked = event.currentTarget.checked;
+    const mutation = checked ? enableCommandMutation : disableCommandMutation;
+    mutation.mutate({
+      meta: {
+        id,
+      },
+    });
   };
 
   const handleClickAdd = useCallback(() => {
@@ -39,6 +65,16 @@ const Commands = () => {
       />
     ));
   }, [portal]);
+
+  const handleClickDelete = useCallback(() => {
+    const rowIds = Object.keys(rowSelection);
+    portal((close) => (
+      <ConfirmDeleteCommandModal
+        rowIds={rowIds}
+        onClose={close}
+      />
+    ));
+  }, [rowSelection, portal]);
 
   const handleClickViewCommandDetailsById = useCallback((id) => () => {
     portal((close) => (
@@ -136,7 +172,7 @@ const Commands = () => {
         >
           <Switch
             checked={row.original.enabled}
-            onChange={toggleStatusById(row.original.id)}
+            onChange={handleToggleStatusById(row.original.id)}
           />
           <TextLabel>
             {row.original.enabled === true ? i18n._('ON') : i18n._('OFF')}
@@ -150,7 +186,10 @@ const Commands = () => {
       },
       minSize: 80,
     },
-  ]), [handleClickViewCommandDetailsById]);
+  ]), [
+    handleClickViewCommandDetailsById,
+    handleToggleStatusById
+  ]);
   const data = ensureArray(fetchCommandsQuery.data?.records);
 
   const renderExpandedRow = useCallback(({ row }) => {
@@ -194,6 +233,8 @@ const Commands = () => {
     );
   }, [colorMode]);
 
+  const selectedRowCount = Object.keys(rowSelection).length;
+
   return (
     <Flex
       flexDirection="column"
@@ -221,7 +262,9 @@ const Commands = () => {
             {i18n._('Add')}
           </Button>
           <Button
+            disabled={selectedRowCount === 0}
             variant="secondary"
+            onClick={handleClickDelete}
             sx={{
               minWidth: 80,
             }}
@@ -249,6 +292,11 @@ const Commands = () => {
         columns={columns}
         data={data}
         renderExpandedRow={renderExpandedRow}
+        state={{
+          rowSelection,
+        }}
+        enableRowSelection={true}
+        onRowSelectionChange={setRowSelection}
         sx={{
           height: '100%',
         }}

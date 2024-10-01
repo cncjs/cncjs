@@ -475,7 +475,7 @@ commands.delete = (id) => new Promise((resolve, reject) => {
 
 commands.run = (id) => new Promise((resolve, reject) => {
   authrequest
-    .post('/api/commands/run/' + id)
+    .post('/api/commands/' + id + '/run')
     .end((err, res) => {
       if (err) {
         reject(res);

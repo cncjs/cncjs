@@ -27,7 +27,7 @@ import i18n from '@app/lib/i18n';
 import FieldInput from '@app/pages/Administration/components/FieldInput';
 import FieldTextarea from '@app/pages/Administration/components/FieldTextarea';
 import {
-  FETCH_COMMANDS_QUERY_KEY,
+  API_COMMANDS_QUERY_KEY,
   useCreateCommandMutation,
 } from '../queries';
 
@@ -46,7 +46,7 @@ const CreateCommandDrawer = ({
       }
 
       // Invalidate `useFetchCommandsQuery`
-      queryClient.invalidateQueries({ queryKey: FETCH_COMMANDS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
     },
     onError: () => {
       notifyToast({
@@ -64,7 +64,9 @@ const CreateCommandDrawer = ({
     enabled: true,
   }));
   const handleFormSubmit = useCallback((values) => {
-    createCommandMutation.mutate({ data: values });
+    createCommandMutation.mutate({
+      data: values,
+    });
   }, [createCommandMutation]);
 
   return (
