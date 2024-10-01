@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [18.x]
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -122,7 +122,7 @@ jobs:
     runs-on: macos-13
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [18.x]
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -204,7 +204,7 @@ jobs:
     runs-on: macos-15
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -286,7 +286,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [18.x]
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:

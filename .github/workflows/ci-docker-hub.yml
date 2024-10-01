@@ -22,7 +22,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 14
+        node-version: 18
     - name: Configure environment variables
       id: step_setup_env
       run: |
