@@ -20,7 +20,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "preferGlobal": true,
   "scripts": {
@@ -316,8 +316,6 @@
     "electron": "~22.0.3",
     "electron-builder": "~23.6.0",
     "electron-rebuild": "~3.2.7",
-    "enzyme": "~3.11.0",
-    "enzyme-adapter-react-16": "~1.15.6",
     "eslint": "~8.27.0",
     "eslint-config-trendmicro": "^3.2.0",
     "eslint-import-resolver-node": "~0.3.6",
