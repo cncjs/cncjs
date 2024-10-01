@@ -137,9 +137,9 @@ test('TinyGParserResultOverrides', (t) => {
   t.test('{"r":{"mfo":1.0,"mto":1.0,"sso":1.0},"f":[1,0,21]}', (t) => {
     const runner = new TinyGRunner();
     runner.on('ov', ({ mfo, mto, sso }) => {
-      t.assert(mfo, 1.0);
-      t.assert(mto, 1.0);
-      t.assert(sso, 1.0);
+      t.equal(mfo, 1.0);
+      t.equal(mto, 1.0);
+      t.equal(sso, 1.0);
       t.end();
     });
 

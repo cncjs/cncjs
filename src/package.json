@@ -15,7 +15,7 @@
     "@serialport/parser-readline": "^10.0.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.18.3",
-    "chalk": "~2.4.2",
+    "chalk": "~4.1.1",
     "commander": "~9.1.0",
     "compression": "~1.7.4",
     "connect-multiparty": "~2.2.0",
@@ -65,6 +65,6 @@
     "uuid": "~3.3.2",
     "watch": "~1.0.2",
     "webappengine": "~1.2.0",
-    "winston": "~3.2.1"
+    "winston": "~3.14.1"
   }
 }
