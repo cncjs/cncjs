@@ -1,9 +1,9 @@
-import color from 'cli-color';
 import _get from 'lodash/get';
 import pubsub from 'pubsub-js';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
+import chalk from '@app/chalk';
 import settings from '@app/config/settings';
 import {
   CONNECTION_STATE_CONNECTED,
@@ -36,22 +36,22 @@ function Console({
       }
 
       const { productName, version } = settings;
-      term.writeln(color.white.bold(`${productName} ${version} [${controller.type}]`));
+      term.writeln(chalk.white.bold(`${productName} ${version} [${controller.type}]`));
 
       if (type === CONNECTION_TYPE_SERIAL) {
         const { path, baudRate } = options;
         const line = i18n._('Connected to {{-path}} with a baud rate of {{baudRate}}', {
-          path: color.yellowBright(path),
-          baudRate: color.blueBright(baudRate),
+          path: chalk.yellowBright(path),
+          baudRate: chalk.blueBright(baudRate),
         });
-        term.writeln(color.white(line));
+        term.writeln(chalk.white(line));
       } else if (type === CONNECTION_TYPE_SOCKET) {
         const { host, port } = options;
         const line = i18n._('Connected to {{host}}:{{port}}', {
-          host: color.blueBright(host),
-          port: color.blueBright(port),
+          host: chalk.blueBright(host),
+          port: chalk.blueBright(port),
         });
-        term.writeln(color.white(line));
+        term.writeln(chalk.white(line));
       }
     };
 
@@ -80,9 +80,9 @@ function Console({
       data = String(data).trim();
 
       if (source) {
-        term.writeln(color.blackBright(source) + color.white(term.prompt + data));
+        term.writeln(chalk.blackBright(source) + chalk.white(term.prompt + data));
       } else {
-        term.writeln(color.white(term.prompt + data));
+        term.writeln(chalk.white(term.prompt + data));
       }
     };
 

@@ -1,5 +1,4 @@
 import cx from 'classnames';
-import color from 'cli-color';
 import { ensurePositiveNumber } from 'ensure-type';
 import _trimEnd from 'lodash/trimEnd';
 import PerfectScrollbar from 'perfect-scrollbar';
@@ -7,6 +6,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
+import chalk from '@app/chalk';
 import { limit } from '@app/lib/normalize-range';
 import log from '@app/lib/log';
 import History from './History';
@@ -234,7 +234,7 @@ class TerminalWrapper extends Component {
       if (typeof onData === 'function') {
         onData(line);
       }
-      this.term.write(color.white(line));
+      this.term.write(chalk.white(line));
       this.term.prompt();
     }
   };
@@ -258,7 +258,7 @@ class TerminalWrapper extends Component {
     this.term.loadAddon(this.fitAddon);
     this.term.prompt = () => {
       this.term.write('\r\n');
-      this.term.write(color.white(this.prompt));
+      this.term.write(chalk.white(this.prompt));
     };
 
     const containerElement = this.terminalRef.current;

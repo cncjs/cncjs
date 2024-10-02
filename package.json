@@ -147,7 +147,6 @@
     "chained-function": "~0.5.0",
     "chalk": "~4.1.0",
     "classnames": "~2.3.1",
-    "cli-color": "~2.0.2",
     "cncjs-controller": "~2.0.0-alpha.2",
     "colornames": "~1.1.1",
     "commander": "~9.1.0",
