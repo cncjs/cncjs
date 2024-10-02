@@ -1,5 +1,4 @@
 import cx from 'classnames';
-import chalk from 'chalk';
 import PropTypes from 'prop-types';
 import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
@@ -7,6 +6,7 @@ import uuid from 'uuid';
 import settings from 'app/config/settings';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
+import chalk from 'app/lib/chalk';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import WidgetConfig from '../WidgetConfig';
@@ -16,8 +16,6 @@ import styles from './index.styl';
 // The buffer starts with 254 bytes free. The terminating <LF> or <CR> counts as a byte.
 const TERMINAL_COLS = 254;
 const TERMINAL_ROWS = 15;
-
-chalk.level = 1;
 
 class ConsoleWidget extends PureComponent {
     static propTypes = {

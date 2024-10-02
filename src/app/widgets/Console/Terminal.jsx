@@ -1,5 +1,4 @@
 import cx from 'classnames';
-import chalk from 'chalk';
 import trimEnd from 'lodash/trimEnd';
 import PerfectScrollbar from 'perfect-scrollbar';
 import PropTypes from 'prop-types';
@@ -7,6 +6,7 @@ import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
+import chalk from 'app/lib/chalk';
 import log from 'app/lib/log';
 import History from './History';
 import styles from './index.styl';
