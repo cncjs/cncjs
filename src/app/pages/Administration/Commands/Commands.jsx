@@ -48,7 +48,7 @@ const Commands = () => {
   });
   const portal = usePortalManager();
   const [colorMode] = useColorMode();
-  const handleToggleStatusById = (id) => (event) => {
+  const handleToggleStatusById = useCallback((id) => (event) => {
     const checked = event.currentTarget.checked;
     const mutation = checked ? enableCommandMutation : disableCommandMutation;
     mutation.mutate({
@@ -56,7 +56,7 @@ const Commands = () => {
         id,
       },
     });
-  };
+  }, [enableCommandMutation, disableCommandMutation]);
 
   const handleClickAdd = useCallback(() => {
     portal((close) => (
