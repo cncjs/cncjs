@@ -204,6 +204,9 @@ class TinyGController {
     'feeder:feed': (...args) => {
       this.command('gcode', ...args);
     },
+    'jogCancel': () => {
+      this.command('jog_cancel');
+    },
     'feedOverride': (...args) => {
       this.command('feed_override', ...args);
     },
@@ -366,6 +369,13 @@ class TinyGController {
       this.workflow.stop();
       this.feeder.reset();
       this.write('\x18'); // reset board (^x)
+    },
+    'jog_cancel': () => {
+      // https://github.com/synthetos/g2/wiki/Feedhold,-Resume,-and-Other-Simple-Commands#jogging-using-feedhold-and-queue-flush
+      // Send a ! to stop movement immediately.
+      // Send a % to flush remaining moves from planner buffer.
+      this.writeln('!'); // feedhold
+      this.writeln('%'); // queue flush
     },
     // Feed Overrides
     // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
