@@ -13,8 +13,8 @@ import {
 import React from 'react';
 import i18n from '@app/lib/i18n';
 
-const ConfirmImportWorkspaceSettingsModal = ({
-  rowIds,
+const ConfirmBulkDeleteRecordsModal = ({
+  data,
   onClose,
   onConfirm,
   ...rest
@@ -40,7 +40,7 @@ const ConfirmImportWorkspaceSettingsModal = ({
             />
             <Stack spacing="1x">
               <Text>{i18n._('Are you sure you want to delete the selected items?')}</Text>
-              <Text>{i18n._('Count: {{count}}', { count: rowIds.length })}</Text>
+              <Text>{i18n._('Count: {{count}}', { count: data.length })}</Text>
             </Stack>
           </Flex>
         </ModalBody>
@@ -68,4 +68,4 @@ const ConfirmImportWorkspaceSettingsModal = ({
   );
 };
 
-export default ConfirmImportWorkspaceSettingsModal;
+export default ConfirmBulkDeleteRecordsModal;

@@ -15,6 +15,20 @@ const useFetchCommandsQuery = (options) => {
   });
 };
 
+const useBulkDeleteCommandsMutation = (options) => {
+  return useMutation({
+    mutationFn: async ({ data }) => {
+      const url = 'api/commands';
+      const options = {
+        data,
+      };
+      const response = await axios.delete(url, options);
+      return response.data;
+    },
+    ...options,
+  });
+};
+
 const useCreateCommandMutation = (options) => {
   return useMutation({
     mutationFn: async ({ data }) => {
@@ -89,6 +103,7 @@ const useDisableCommandMutation = (options) => {
 
 export {
   useFetchCommandsQuery,
+  useBulkDeleteCommandsMutation,
   useCreateCommandMutation,
   useReadCommandQuery,
   useUpdateCommandMutation,

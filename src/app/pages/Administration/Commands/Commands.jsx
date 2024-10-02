@@ -21,11 +21,12 @@ import IconButton from 'app/components/IconButton';
 import i18n from '@app/lib/i18n';
 import CreateCommandDrawer from './drawers/CreateCommandDrawer';
 import UpdateCommandDrawer from './drawers/UpdateCommandDrawer';
-import ConfirmDeleteCommandModal from './modals/ConfirmDeleteCommandModal';
+import ConfirmBulkDeleteCommandsModal from './modals/ConfirmBulkDeleteCommandsModal';
 import TableRowToggleIcon from './TableRowToggleIcon';
 import {
   API_COMMANDS_QUERY_KEY,
   useFetchCommandsQuery,
+  useBulkDeleteCommandsMutation,
   useEnableCommandMutation,
   useDisableCommandMutation,
 } from './queries';
@@ -34,6 +35,12 @@ const Commands = () => {
   const [rowSelection, setRowSelection] = useState({});
   const queryClient = useQueryClient();
   const fetchCommandsQuery = useFetchCommandsQuery();
+  const bulkDeleteCommandsMutation = useBulkDeleteCommandsMutation({
+    onSuccess: () => {
+      // Invalidate `useFetchCommandsQuery`
+      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+    },
+  });
   const enableCommandMutation = useEnableCommandMutation({
     onSuccess: () => {
       // Invalidate `useFetchCommandsQuery`
@@ -69,12 +76,24 @@ const Commands = () => {
   const handleClickDelete = useCallback(() => {
     const rowIds = Object.keys(rowSelection);
     portal((close) => (
-      <ConfirmDeleteCommandModal
-        rowIds={rowIds}
+      <ConfirmBulkDeleteCommandsModal
+        data={rowIds}
         onClose={close}
+        onConfirm={() => {
+          const data = {
+            ids: rowIds,
+          };
+          bulkDeleteCommandsMutation.mutate({ data });
+
+          // Close the modal
+          close();
+
+          // Update row selection state
+          setRowSelection([]);
+        }}
       />
     ));
-  }, [rowSelection, portal]);
+  }, [rowSelection, portal, bulkDeleteCommandsMutation]);
 
   const handleClickViewCommandDetailsById = useCallback((id) => () => {
     portal((close) => (

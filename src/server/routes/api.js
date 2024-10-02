@@ -1,5 +1,5 @@
 import express from 'express';
-import * as commands from '../api/api.commands';
+import commands from '../api/api.commands';
 import * as controllers from '../api/api.controllers';
 import * as events from '../api/api.events';
 import * as gcode from '../api/api.gcode';
@@ -26,9 +26,10 @@ const createProtectedApiRouter = () => {
   // Commands
   router.get('/commands', commands.fetch);
   router.post('/commands', commands.create);
+  router.delete('/commands', commands.bulkDelete);
   router.get('/commands/:id', commands.read);
   router.put('/commands/:id', commands.update);
-  router.delete('/commands/:id', commands.__delete);
+  router.delete('/commands/:id', commands.delete);
   router.post('/commands/:id/run', commands.run);
   router.post('/commands/:id/enable', commands.enable);
   router.post('/commands/:id/disable', commands.disable);
