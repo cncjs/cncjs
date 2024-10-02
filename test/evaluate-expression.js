@@ -14,7 +14,7 @@ test('resolved', (t) => {
       }
     }
   });
-  t.deepEqual(res, [1, 2, 49, 800, 555]);
+  t.same(res, [1, 2, 49, 800, 555]);
   t.end();
 });
 
@@ -37,19 +37,19 @@ test('unresolved', (t) => {
 
 test('boolean', (t) => {
   const src = '[ 1===2+3-16/4, [2]==2, [2]!==2, [2]!==[2] ]';
-  t.deepEqual(evaluateExpression(src), [true, true, true, true]);
+  t.same(evaluateExpression(src), [true, true, true, true]);
   t.end();
 });
 
 test('array methods', (t) => {
   const src = '[1, 2, 3].map(function(n) { return n * 2 })';
-  t.deepEqual(evaluateExpression(src), [2, 4, 6]);
+  t.same(evaluateExpression(src), [2, 4, 6]);
   t.end();
 });
 
 test('array methods with vars', (t) => {
   const src = '[1, 2, 3].map(function(n) { return n * x })';
-  t.deepEqual(evaluateExpression(src, { x: 2 }), [2, 4, 6]);
+  t.same(evaluateExpression(src, { x: 2 }), [2, 4, 6]);
   t.end();
 });
 
@@ -96,7 +96,7 @@ test('function property', (t) => {
       }
     }
   });
-  t.deepEqual(res, [1, 2, 49, 800, 555]);
+  t.same(res, [1, 2, 49, 800, 555]);
   t.end();
 });
 
@@ -105,7 +105,7 @@ test('untagged template strings', (t) => {
   const res = evaluateExpression(src, {
     n: 6
   });
-  t.deepEqual(res, '1,8,4,5');
+  t.same(res, '1,8,4,5');
   t.end();
 });
 
@@ -113,12 +113,13 @@ test('tagged template strings', (t) => {
   const src = 'taggedTemplate`${1},${2 + n},${"4,5"}`'; // eslint-disable-line no-template-curly-in-string
   const res = evaluateExpression(src, {
     taggedTemplate: function (strings, ...values) {
-      t.deepEqual(strings, ['', ',', ',', '']);
-      t.deepEqual(values, [1, 8, '4,5']);
+      t.same(strings, ['', ',', ',', '']);
+      t.same(values, [1, 8, '4,5']);
       return 'foo';
     },
     n: 6
   });
-  t.deepEqual(res, 'foo');
+
+  t.same(res, 'foo');
   t.end();
 });

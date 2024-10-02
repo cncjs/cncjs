@@ -1,5 +1,4 @@
 import cx from 'classnames';
-import color from 'cli-color';
 import PropTypes from 'prop-types';
 import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
@@ -7,6 +6,7 @@ import uuid from 'uuid';
 import settings from 'app/config/settings';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
+import chalk from 'app/lib/chalk';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import WidgetConfig from '../WidgetConfig';
@@ -78,8 +78,8 @@ class ConsoleWidget extends PureComponent {
 
         if (this.terminal) {
           const { productName, version } = settings;
-          this.terminal.writeln(color.white.bold(`${productName} ${version} [${controller.type}]`));
-          this.terminal.writeln(color.white(i18n._('Connected to {{-port}} with a baud rate of {{baudrate}}', { port: color.yellowBright(port), baudrate: color.blueBright(baudrate) })));
+          this.terminal.writeln(chalk.white.bold(`${productName} ${version} [${controller.type}]`));
+          this.terminal.writeln(chalk.white(i18n._('Connected to {{-port}} with a baud rate of {{baudrate}}', { port: chalk.yellowBright(port), baudrate: chalk.blueBright(baudrate) })));
         }
       },
       'serialport:close': (options) => {
@@ -103,9 +103,9 @@ class ConsoleWidget extends PureComponent {
         data = String(data).trim();
 
         if (source) {
-          this.terminal.writeln(color.blackBright(source) + color.white(this.terminal.prompt + data));
+          this.terminal.writeln(chalk.blackBright(source) + chalk.white(this.terminal.prompt + data));
         } else {
-          this.terminal.writeln(color.white(this.terminal.prompt + data));
+          this.terminal.writeln(chalk.white(this.terminal.prompt + data));
         }
       },
       'serialport:read': (data) => {
