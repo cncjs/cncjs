@@ -262,7 +262,7 @@ class Table extends Component {
       const newColumns = columns.map((column, index) => {
         columnWidth = column.width;
         if (typeof columnWidth === 'string') {
-          const lastChar = columnWidth.substr(columnWidth.length - 1);
+          const lastChar = columnWidth[columnWidth.length - 1];
           if (lastChar === '%') {
             columnWidth = tableMaxWidth * (parseFloat(columnWidth) / 100);
           } else {
