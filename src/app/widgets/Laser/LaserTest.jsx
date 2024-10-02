@@ -206,11 +206,11 @@ function LaserTest({
                         })();
 
                         const turnLaserTestOn = () => {
-                          controller.command('lasertest', power, duration, maxS);
+                          controller.command('laser_test', power, duration, maxS);
                         };
 
                         const turnLaserTestOff = () => {
-                          controller.command('lasertest', 0);
+                          controller.command('laser_test', 0);
                         };
 
                         return (

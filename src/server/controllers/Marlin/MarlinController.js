@@ -262,20 +262,20 @@ class MarlinController {
       this.command('gcode', ...args);
     },
     'feedOverride': (...args) => {
-      this.command('override:feed', ...args);
+      this.command('feed_override', ...args);
     },
     'spindleOverride': (...args) => {
-      this.command('override:spindle', ...args);
+      this.command('spindle_override', ...args);
     },
     'rapidOverride': (...args) => {
-      this.command('override:rapid', ...args);
+      this.command('rapid_override', ...args);
     },
     'lasertest:on': (...args) => {
-      this.command('lasertest', ...args);
+      this.command('laser_test', ...args);
     },
     'lasertest:off': () => {
       const power = 0;
-      this.command('lasertest', power);
+      this.command('laser_test', power);
     },
   };
 
@@ -393,7 +393,7 @@ class MarlinController {
     },
     // Feed Overrides
     // @param {number} value A percentage value between 10 and 500. A value of zero will reset to 100%.
-    'override:feed': (...args) => {
+    'feed_override': (...args) => {
       const [value] = args;
       let feedOverride = this.runner.state.ovF;
 
@@ -417,7 +417,7 @@ class MarlinController {
     },
     // Spindle Speed Overrides
     // @param {number} value A percentage value between 10 and 500. A value of zero will reset to 100%.
-    'override:spindle': (...args) => {
+    'spindle_override': (...args) => {
       const [value] = args;
       let spindleOverride = this.runner.state.ovS;
 
@@ -439,7 +439,7 @@ class MarlinController {
         ovS: spindleOverride
       };
     },
-    'override:rapid': () => {
+    'rapid_override': () => {
       // Unsupported
     },
     'motor:enable': () => {
@@ -453,7 +453,7 @@ class MarlinController {
     // @param {number} power
     // @param {number} duration
     // @param {number} maxS
-    'lasertest': (...args) => {
+    'laser_test': (...args) => {
       const [power = 0, duration = 0, maxS = 255] = args;
 
       if (!power) {

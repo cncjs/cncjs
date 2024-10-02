@@ -1,3 +1,4 @@
+import { ensureArray } from 'ensure-type';
 import { EventEmitter } from 'events';
 
 class Feeder extends EventEmitter {
@@ -6,7 +7,7 @@ class Feeder extends EventEmitter {
     holdReason: null,
     queue: [],
     pending: false,
-    changed: false
+    changed: false,
   };
 
   dataFilter = null;
@@ -31,21 +32,25 @@ class Feeder extends EventEmitter {
       holdReason: this.state.holdReason,
       queue: this.state.queue.length,
       pending: this.state.pending,
-      changed: this.state.changed
+      changed: this.state.changed,
     };
   }
 
-  feed(data = [], context = {}) {
+  // @param {string[]} data The data to be added to the queue.
+  // @param {object} [context] The context associated with the data.
+  feed(data, context = {}) {
     // Clear pending state when the feeder queue is empty
     if (this.state.queue.length === 0) {
       this.state.pending = false;
     }
 
-    data = [].concat(data);
+    data = ensureArray(data);
     if (data.length > 0) {
-      this.state.queue = this.state.queue.concat(data.map(command => {
-        return { command: command, context: context };
+      const queueItems = data.map(command => ({
+        command,
+        context,
       }));
+      this.state.queue = this.state.queue.concat(queueItems);
       this.emit('change');
     }
   }

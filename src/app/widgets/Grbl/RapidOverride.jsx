@@ -36,7 +36,7 @@ function RapidOverride({
       <ButtonGroup sm>
         <RepeatableButton
           onClick={() => {
-            controller.command('override:rapid', 25);
+            controller.command('rapid_override', 25);
           }}
           style={{ fontSize: '.75rem' }}
         >
@@ -44,7 +44,7 @@ function RapidOverride({
         </RepeatableButton>
         <RepeatableButton
           onClick={() => {
-            controller.command('override:rapid', 50);
+            controller.command('rapid_override', 50);
           }}
           style={{ fontSize: '.75rem' }}
         >
@@ -52,7 +52,7 @@ function RapidOverride({
         </RepeatableButton>
         <RepeatableButton
           onClick={() => {
-            controller.command('override:rapid', 100);
+            controller.command('rapid_override', 100);
           }}
           style={{ fontSize: '.75rem' }}
         >
@@ -62,7 +62,7 @@ function RapidOverride({
       <Space width={8} />
       <Clickable
         onClick={() => {
-          controller.command('override:rapid', 0);
+          controller.command('rapid_override', 0);
         }}
       >
         {({ hovered }) => (

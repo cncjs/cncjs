@@ -178,21 +178,24 @@ class GrblController {
     'feeder:feed': (...args) => {
       this.command('gcode', ...args);
     },
+    'jogCancel': () => {
+      this.command('jog_cancel');
+    },
     'feedOverride': (...args) => {
-      this.command('override:feed', ...args);
+      this.command('feed_override', ...args);
     },
     'spindleOverride': (...args) => {
-      this.command('override:spindle', ...args);
+      this.command('spindle_override', ...args);
     },
     'rapidOverride': (...args) => {
-      this.command('override:rapid', ...args);
+      this.command('rapid_override', ...args);
     },
     'lasertest:on': (...args) => {
-      this.command('lasertest', ...args);
+      this.command('laser_test', ...args);
     },
     'lasertest:off': () => {
       const power = 0;
-      this.command('lasertest', power);
+      this.command('laser_test', power);
     },
   };
 
@@ -332,6 +335,10 @@ class GrblController {
 
       this.write('\x18'); // ^x
     },
+    'jog_cancel': () => {
+      // https://github.com/gnea/grbl/blob/master/doc/markdown/jogging.md
+      this.write('\x85');
+    },
     // Feed Overrides
     // @param {number} value The amount of percentage increase or decrease.
     //   0: Set 100% of programmed rate.
@@ -339,7 +346,7 @@ class GrblController {
     // -10: Decrease 10%
     //   1: Increase 1%
     //  -1: Decrease 1%
-    'override:feed': (...args) => {
+    'feed_override': (...args) => {
       const [value] = args;
 
       if (value === 0) {
@@ -361,7 +368,7 @@ class GrblController {
     // -10: Decrease 10%
     //   1: Increase 1%
     //  -1: Decrease 1%
-    'override:spindle': (...args) => {
+    'spindle_override': (...args) => {
       const [value] = args;
 
       if (value === 0) {
@@ -381,7 +388,7 @@ class GrblController {
     // 100: Set to 100% full rapid rate.
     //  50: Set to 50% of rapid rate.
     //  25: Set to 25% of rapid rate.
-    'override:rapid': (...args) => {
+    'rapid_override': (...args) => {
       const [value] = args;
 
       if (value === 0 || value === 100) {
@@ -395,7 +402,7 @@ class GrblController {
     // @param {number} power
     // @param {number} duration
     // @param {number} maxS
-    'lasertest': (...args) => {
+    'laser_test': (...args) => {
       const [power = 0, duration = 0, maxS = 1000] = args;
 
       if (!power) {

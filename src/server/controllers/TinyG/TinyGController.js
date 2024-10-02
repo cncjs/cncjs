@@ -205,20 +205,20 @@ class TinyGController {
       this.command('gcode', ...args);
     },
     'feedOverride': (...args) => {
-      this.command('override:feed', ...args);
+      this.command('feed_override', ...args);
     },
     'spindleOverride': (...args) => {
-      this.command('override:spindle', ...args);
+      this.command('spindle_override', ...args);
     },
     'rapidOverride': (...args) => {
-      this.command('override:rapid', ...args);
+      this.command('rapid_override', ...args);
     },
     'lasertest:on': (...args) => {
-      this.command('lasertest', ...args);
+      this.command('laser_test', ...args);
     },
     'lasertest:off': () => {
       const power = 0;
-      this.command('lasertest', power);
+      this.command('laser_test', power);
     },
   };
 
@@ -369,7 +369,7 @@ class TinyGController {
     },
     // Feed Overrides
     // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
-    'override:feed': (...args) => {
+    'feed_override': (...args) => {
       const [value] = args;
       let mfo = this.runner.settings.mfo;
 
@@ -387,7 +387,7 @@ class TinyGController {
     },
     // Spindle Speed Overrides
     // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
-    'override:spindle': (...args) => {
+    'spindle_override': (...args) => {
       const [value] = args;
       let sso = this.runner.settings.sso;
 
@@ -404,7 +404,7 @@ class TinyGController {
       this.command('gcode', `{sso:${sso}}`);
     },
     // Rapid Overrides
-    'override:rapid': (...args) => {
+    'rapid_override': (...args) => {
       const [value] = args;
 
       if (value === 0 || value === 100) {
@@ -448,7 +448,7 @@ class TinyGController {
     // @param {number} power
     // @param {number} duration
     // @param {number} maxS
-    'lasertest': (...args) => {
+    'laser_test': (...args) => {
       const [power = 0, duration = 0, maxS = 1000] = args;
 
       if (!power) {

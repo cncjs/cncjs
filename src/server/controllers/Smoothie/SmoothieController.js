@@ -177,20 +177,20 @@ class SmoothieController {
       this.command('gcode', ...args);
     },
     'feedOverride': (...args) => {
-      this.command('override:feed', ...args);
+      this.command('feed_override', ...args);
     },
     'spindleOverride': (...args) => {
-      this.command('override:spindle', ...args);
+      this.command('spindle_override', ...args);
     },
     'rapidOverride': (...args) => {
-      this.command('override:rapid', ...args);
+      this.command('rapid_override', ...args);
     },
     'lasertest:on': (...args) => {
-      this.command('lasertest', ...args);
+      this.command('laser_test', ...args);
     },
     'lasertest:off': () => {
       const power = 0;
-      this.command('lasertest', power);
+      this.command('laser_test', power);
     },
   };
 
@@ -321,7 +321,7 @@ class SmoothieController {
     },
     // Feed Overrides
     // @param {number} value A percentage value between 10 and 200. A value of zero will reset to 100%.
-    'override:feed': (...args) => {
+    'feed_override': (...args) => {
       const [value] = args;
       let feedOverride = this.runner.state.status.ovF;
 
@@ -347,7 +347,7 @@ class SmoothieController {
     },
     // Spindle Speed Overrides
     // @param {number} value A percentage value between 10 and 200. A value of zero will reset to 100%.
-    'override:spindle': (...args) => {
+    'spindle_override': (...args) => {
       const [value] = args;
       let spindleOverride = this.runner.state.status.ovS;
 
@@ -372,12 +372,12 @@ class SmoothieController {
       };
     },
     // Rapid Overrides
-    'override:rapid': () => {
+    'rapid_override': () => {
       // Not supported
     },
     // @param {number} power
     // @param {number} duration
-    'lasertest': (...args) => {
+    'laser_test': (...args) => {
       const [power = 0, duration = 0] = args;
 
       if (!power) {

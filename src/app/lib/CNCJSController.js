@@ -294,14 +294,16 @@ class CNCJSController {
   //   controller.command('unlock')
   // - Reset
   //   controller.command('reset')
+  // - Jog Cancel
+  //   controller.command('jog_cancel')
   // - Feed Override
-  //   controller.command('override:feed')
+  //   controller.command('feed_override')
   // - Spindle Override
-  //   controller.command('override:spindle')
+  //   controller.command('spindle_override')
   // - Rapid Override
-  //   controller.command('override:rapid')
+  //   controller.command('rapid_override')
   // - Laser Test
-  //   controller.command('lasertest', [power=0], [duration=0], [maxS=1000])
+  //   controller.command('laser_test', [power=0], [duration=0], [maxS=1000])
   // - G-code
   //   controller.command('gcode', gcode, [context])
   // - Load a macro
