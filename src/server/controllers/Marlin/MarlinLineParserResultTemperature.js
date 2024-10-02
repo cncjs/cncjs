@@ -6,8 +6,8 @@ class MarlinLineParserResultTemperature {
   // Print a single heater state in the form:
   //       Bed: " B:nnn.nn /nnn.nn"
   //   Chamber: " C:nnn.nn /nnn.nn"
-  //    Cooler: " L:nnn.nn /nnn.nn"
   //     Probe: " P:nnn.nn"
+  //    Cooler: " L:nnn.nn /nnn.nn"
   //     Board: " M:nnn.nn"
   //       SoC: " S:nnn.nn"
   // Redundant: " R:nnn.nn /nnn.nn"
@@ -41,7 +41,7 @@ class MarlinLineParserResultTemperature {
   //  T0:100.0 /0.0 B:25.9 /0.0 T0:293.0 /0.0 T1:100.0 /0.0 @:0 B@:0 @0:0 @1:0
   // ```
   static parse(line) {
-    let r = line.match(/^(ok)?\s+(T\d+|T|B|C|L|P|M|S|R):[0-9\.\-]+/i);
+    let r = line.match(/^(ok)?\s+(T\d+|T|B|C|P|L|M|S|R):[0-9\.\-]+/i);
     if (!r) {
       return null;
     }
@@ -62,11 +62,11 @@ class MarlinLineParserResultTemperature {
       // C:nnn.nn /nnn.nn
       heatedChamber: {},
 
-      // L:nnn.nn /nnn.nn
-      cooler: {},
-
       // P:nnn.nn
       probe: {},
+
+      // L:nnn.nn /nnn.nn
+      cooler: {},
 
       // M:nnn.nn
       board: {},
@@ -78,7 +78,7 @@ class MarlinLineParserResultTemperature {
       redundant: {},
     };
 
-    const re = /(?:(?:(T\d+|T|B|C|L|P|M|S|R):([0-9\.\-]+)\s+\/([0-9\.\-]+)(?:\s+\((?:[0-9\.\-]+)\))?)|(?:(@|B@|C@|@\d+):([0-9\.\-]+))|(?:(W):(\?|[0-9]+)))/ig;
+    const re = /(?:(?:(T\d+|T|B|C|P|L|M|S|R):([0-9\.\-]+)\s+\/([0-9\.\-]+)(?:\s+\((?:[0-9\.\-]+)\))?)|(?:(@|B@|C@|@\d+):([0-9\.\-]+))|(?:(W):(\?|[0-9]+)))/ig;
 
     while ((r = re.exec(line))) {
       // r[1] = T0, T1, T, B, C, L, P, M, S, R
@@ -86,7 +86,7 @@ class MarlinLineParserResultTemperature {
       // r[6] = W
       const key = r[1] || r[4] || r[6];
 
-      { // Multi-Hotend (T0:293.0 /0.0)
+      { // Multi-Hotend (T0:nnn.nn /nnn.nn)
         const found = ensureString(key).match(/^T(\d+)$/);
         if (found) {
           const hotendIndex = parseInt(found[1], 10);
@@ -98,7 +98,7 @@ class MarlinLineParserResultTemperature {
           };
           // Try to update the active hot end if the hot end index is 0.
           // Note: The active hot end might be reported as T0 before B.
-          if (hotendIndex === 0) { // T0:27.37 /0.00
+          if (hotendIndex === 0) { // T0:nnn.nn /nnn.nn
             payload.extruder.deg = payload.extruder.deg ?? r[2];
             payload.extruder.degTarget = payload.extruder.degTarget ?? r[3];
           }
@@ -106,46 +106,46 @@ class MarlinLineParserResultTemperature {
         }
       }
 
-      if (key === 'T') { // Hotend (T:293.0 /0.0)
+      if (key === 'T') { // Hotend (T:nnn.nn /nnn.nn)
         payload.extruder.deg = payload.extruder.deg ?? r[2];
         payload.extruder.degTarget = payload.extruder.degTarget ?? r[3];
         continue;
       }
 
-      if (key === 'B') { // Heated bed (B:60.0 /0.0)
+      if (key === 'B') { // Heated bed (B:nnn.nn /nnn.nn)
         payload.heatedBed.deg = r[2];
         payload.heatedBed.degTarget = r[3];
         continue;
       }
 
-      if (key === 'C') { // Heated chamber
+      if (key === 'C') { // Heated chamber (C:nnn.nn /nnn.nn)
         payload.heatedChamber.deg = r[2];
         payload.heatedChamber.degTarget = r[3];
         continue;
       }
 
-      if (key === 'L') { // Cooler
+      if (key === 'P') { // Probe (P:nnn.nn)
+        payload.probe.deg = r[2];
+        continue;
+      }
+
+      if (key === 'L') { // Cooler (L:nnn.nn /nnn.nn)
         payload.cooler.deg = r[2];
         payload.cooler.degTarget = r[3];
         continue;
       }
 
-      if (key === 'P') { // Probe
-        payload.probe.deg = r[2];
-        continue;
-      }
-
-      if (key === 'M') { // Board
+      if (key === 'M') { // Board (M:nnn.nn)
         payload.board.deg = r[2];
         continue;
       }
 
-      if (key === 'S') { // SoC
+      if (key === 'S') { // SoC (S:nnn.nn)
         payload.soc.deg = r[2];
         continue;
       }
 
-      if (key === 'R') { // Redundant
+      if (key === 'R') { // Redundant (R:nnn.nn /nnn.nn)
         payload.redundant.deg = r[2];
         payload.redundant.degTarget = r[3];
         continue;
