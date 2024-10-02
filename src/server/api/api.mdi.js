@@ -46,196 +46,221 @@ const getSanitizedRecords = () => {
   return records;
 };
 
-export const fetch = (req, res) => {
-  const records = getSanitizedRecords();
-  const paging = !!req.query.paging;
-
-  if (paging) {
-    const { page = 1, pageLength = 10 } = req.query;
-    const totalRecords = records.length;
-    const [begin, end] = getPagingRange({ page, pageLength, totalRecords });
-    const pagedRecords = records.slice(begin, end);
-
-    res.send({
-      pagination: {
-        page: ensureFiniteNumber(page),
-        pageLength: ensureFiniteNumber(pageLength),
-        totalRecords: ensureFiniteNumber(totalRecords)
-      },
-      records: pagedRecords.map(record => {
-        const { id, name, command, grid = {} } = { ...record };
-        return { id, name, command, grid };
-      })
-    });
-  } else {
-    res.send({
-      records: records.map(record => {
-        const { id, name, command, grid = {} } = { ...record };
-        return { id, name, command, grid };
-      })
-    });
-  }
-};
-
-export const create = (req, res) => {
-  const { name, command, grid = {} } = { ...req.body };
-
-  if (!name) {
-    res.status(ERR_BAD_REQUEST).send({
-      msg: 'The "name" parameter must not be empty'
-    });
-    return;
-  }
-
-  if (!command) {
-    res.status(ERR_BAD_REQUEST).send({
-      msg: 'The "command" parameter must not be empty'
-    });
-    return;
-  }
-
-  try {
+const api = {
+  fetch: (req, res) => {
     const records = getSanitizedRecords();
-    const record = {
-      id: uuidv4(),
-      name: name,
-      command: command,
-      grid: grid
-    };
+    const paging = !!req.query.paging;
 
-    records.push(record);
-    userStore.set(CONFIG_KEY, records);
+    if (paging) {
+      const { page = 1, pageLength = 10 } = req.query;
+      const totalRecords = records.length;
+      const [begin, end] = getPagingRange({ page, pageLength, totalRecords });
+      const pagedRecords = records.slice(begin, end);
 
-    res.send({ err: null });
-  } catch (err) {
-    res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: `Failed to update ${x(settings.rcfile)}`,
-    });
-  }
-};
+      res.send({
+        pagination: {
+          page: ensureFiniteNumber(page),
+          pageLength: ensureFiniteNumber(pageLength),
+          totalRecords: ensureFiniteNumber(totalRecords)
+        },
+        records: pagedRecords.map(record => {
+          const { id, name, command, grid = {} } = { ...record };
+          return { id, name, command, grid };
+        })
+      });
+    } else {
+      res.send({
+        records: records.map(record => {
+          const { id, name, command, grid = {} } = { ...record };
+          return { id, name, command, grid };
+        })
+      });
+    }
+  },
+  create: (req, res) => {
+    const { name, command, grid = {} } = { ...req.body };
 
-export const read = (req, res) => {
-  const id = req.params.id;
-  const records = getSanitizedRecords();
-  const record = _find(records, { id: id });
-
-  if (!record) {
-    res.status(ERR_NOT_FOUND).send({
-      msg: 'Not found'
-    });
-    return;
-  }
-
-  const { name, command, grid = {} } = { ...record };
-  res.send({ id, name, command, grid });
-};
-
-export const update = (req, res) => {
-  const id = req.params.id;
-  const records = getSanitizedRecords();
-  const record = _find(records, { id: id });
-
-  if (!record) {
-    res.status(ERR_NOT_FOUND).send({
-      msg: 'Not found'
-    });
-    return;
-  }
-
-  const {
-    name = record.name,
-    command = record.command,
-    grid = record.grid
-  } = { ...req.body };
-
-  /*
     if (!name) {
-        res.status(ERR_BAD_REQUEST).send({
-            msg: 'The "name" parameter must not be empty'
-        });
-        return;
+      res.status(ERR_BAD_REQUEST).send({
+        msg: 'The "name" parameter must not be empty'
+      });
+      return;
     }
 
     if (!command) {
-        res.status(ERR_BAD_REQUEST).send({
-            msg: 'The "command" parameter must not be empty'
-        });
-        return;
+      res.status(ERR_BAD_REQUEST).send({
+        msg: 'The "command" parameter must not be empty'
+      });
+      return;
     }
-    */
 
-  try {
-    record.name = String(name || '');
-    record.command = String(command || '');
-    record.grid = _isPlainObject(grid) ? grid : {};
+    try {
+      const records = getSanitizedRecords();
+      const record = {
+        id: uuidv4(),
+        name: name,
+        command: command,
+        grid: grid
+      };
 
-    userStore.set(CONFIG_KEY, records);
+      records.push(record);
+      userStore.set(CONFIG_KEY, records);
 
-    res.send({ err: null });
-  } catch (err) {
-    res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: `Failed to update ${x(settings.rcfile)}`,
-    });
-  }
-};
-
-export const bulkUpdate = (req, res) => {
-  const { records } = { ...req.body };
-
-  if (!records) {
-    res.status(ERR_BAD_REQUEST).send({
-      msg: 'The "records" parameter must not be empty'
-    });
-    return;
-  }
-
-  const filteredRecords = ensureArray(records)
-    .filter(record => _isPlainObject(record));
-
-  for (let i = 0; i < filteredRecords.length; ++i) {
-    const record = filteredRecords[i];
-    const { id, name, command, grid = {} } = { ...record };
-
-    if (!id) {
-      record.id = uuidv4();
+      res.send({ err: null });
+    } catch (err) {
+      res.status(ERR_INTERNAL_SERVER_ERROR).send({
+        msg: `Failed to update ${x(settings.rcfile)}`,
+      });
     }
-    record.name = String(name || '');
-    record.command = String(command || '');
-    record.grid = _isPlainObject(grid) ? grid : {};
-  }
-
-  try {
-    userStore.set(CONFIG_KEY, filteredRecords);
-    res.send({ err: null });
-  } catch (err) {
-    res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: `Failed to update ${x(settings.rcfile)}`,
-    });
-  }
-};
-
-export const __delete = (req, res) => {
-  const id = req.params.id;
-  const records = getSanitizedRecords();
-  const record = _find(records, { id: id });
-
-  if (!record) {
-    res.status(ERR_NOT_FOUND).send({
-      msg: 'Not found'
-    });
-    return;
-  }
-
-  try {
+  },
+  bulkDelete: (req, res) => {
+    const ids = ensureArray(req.body?.ids);
+    const records = getSanitizedRecords();
     const filteredRecords = records.filter(record => {
-      return record.id !== id;
+      // Keep records that are not in the ids array
+      return !ids.includes(record.id);
     });
+    const totalCount = records.length;
+    const requestedCount = ids.length;
+    const deletedCount = totalCount - filteredRecords.length;
+
+    let status = '';
+    let message = '';
+    if (deletedCount === requestedCount) {
+      status = 'ok';
+      message = 'All requested items were successfully deleted.';
+    } else if (deletedCount > 0) {
+      status = 'partial';
+      message = `${deletedCount} of ${requestedCount} requested items were deleted.`;
+    } else {
+      status = 'not_found';
+      message = 'No requested items were found for deletion.';
+    }
+
     userStore.set(CONFIG_KEY, filteredRecords);
 
-    res.send({ err: null });
-  } catch (err) {
-    res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: `Failed to update ${x(settings.rcfile)}`,
-    });
-  }
+    res.send({ status, message });
+  },
+  read: (req, res) => {
+    const id = req.params.id;
+    const records = getSanitizedRecords();
+    const record = _find(records, { id: id });
+
+    if (!record) {
+      res.status(ERR_NOT_FOUND).send({
+        msg: 'Not found'
+      });
+      return;
+    }
+
+    const { name, command, grid = {} } = { ...record };
+    res.send({ id, name, command, grid });
+  },
+  update: (req, res) => {
+    const id = req.params.id;
+    const records = getSanitizedRecords();
+    const record = _find(records, { id: id });
+
+    if (!record) {
+      res.status(ERR_NOT_FOUND).send({
+        msg: 'Not found'
+      });
+      return;
+    }
+
+    const {
+      name = record.name,
+      command = record.command,
+      grid = record.grid
+    } = { ...req.body };
+
+    if (!name) {
+      res.status(ERR_BAD_REQUEST).send({
+        msg: 'The "name" parameter must not be empty'
+      });
+      return;
+    }
+
+    if (!command) {
+      res.status(ERR_BAD_REQUEST).send({
+        msg: 'The "command" parameter must not be empty'
+      });
+      return;
+    }
+
+    try {
+      record.name = String(name ?? '');
+      record.command = String(command ?? '');
+      record.grid = _isPlainObject(grid) ? grid : {};
+
+      userStore.set(CONFIG_KEY, records);
+
+      res.send({ err: null });
+    } catch (err) {
+      res.status(ERR_INTERNAL_SERVER_ERROR).send({
+        msg: `Failed to update ${x(settings.rcfile)}`,
+      });
+    }
+  },
+  bulkUpdate: (req, res) => {
+    const { records } = { ...req.body };
+
+    if (!records) {
+      res.status(ERR_BAD_REQUEST).send({
+        msg: 'The "records" parameter must not be empty'
+      });
+      return;
+    }
+
+    const filteredRecords = ensureArray(records)
+      .filter(record => _isPlainObject(record));
+
+    for (let i = 0; i < filteredRecords.length; ++i) {
+      const record = filteredRecords[i];
+      const { id, name, command, grid = {} } = { ...record };
+
+      if (!id) {
+        record.id = uuidv4();
+      }
+      record.name = String(name ?? '');
+      record.command = String(command ?? '');
+      record.grid = _isPlainObject(grid) ? grid : {};
+    }
+
+    try {
+      userStore.set(CONFIG_KEY, filteredRecords);
+      res.send({ err: null });
+    } catch (err) {
+      res.status(ERR_INTERNAL_SERVER_ERROR).send({
+        msg: `Failed to update ${x(settings.rcfile)}`,
+      });
+    }
+  },
+  delete: (req, res) => {
+    const id = req.params.id;
+    const records = getSanitizedRecords();
+    const record = _find(records, { id: id });
+
+    if (!record) {
+      res.status(ERR_NOT_FOUND).send({
+        msg: 'Not found'
+      });
+      return;
+    }
+
+    try {
+      const filteredRecords = records.filter(record => {
+        return record.id !== id;
+      });
+      userStore.set(CONFIG_KEY, filteredRecords);
+
+      res.send({ err: null });
+    } catch (err) {
+      res.status(ERR_INTERNAL_SERVER_ERROR).send({
+        msg: `Failed to update ${x(settings.rcfile)}`,
+      });
+    }
+  },
 };
+
+export default api;

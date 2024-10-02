@@ -69,308 +69,333 @@ const getSanitizedRecords = () => {
   return records;
 };
 
-export const signin = (req, res) => {
-  const { token = '', name = '', password = '' } = { ...req.body };
-  const users = getSanitizedRecords();
-  const enabledUsers = users.filter(user => {
-    return user.enabled;
-  });
-
-  if (enabledUsers.length === 0) {
-    const user = { id: '', name: '' };
-    const payload = { ...user };
-    const token = generateAccessToken(payload, settings.secret); // generate access token
-    res.send({
-      enabled: false, // session is disabled
-      token: token,
-      name: user.name // empty name
+const api = {
+  signin: (req, res) => {
+    const { token = '', name = '', password = '' } = { ...req.body };
+    const users = getSanitizedRecords();
+    const enabledUsers = users.filter(user => {
+      return user.enabled;
     });
-    return;
-  }
 
-  if (!token) {
-    const user = _find(enabledUsers, { name: name });
-    const valid = user && bcrypt.compareSync(password, user.password);
-
-    if (!valid) {
-      res.status(ERR_UNAUTHORIZED).send({
-        msg: 'Authentication failed'
+    if (enabledUsers.length === 0) {
+      const user = { id: '', name: '' };
+      const payload = { ...user };
+      const token = generateAccessToken(payload, settings.secret); // generate access token
+      res.send({
+        enabled: false, // session is disabled
+        token: token,
+        name: user.name // empty name
       });
       return;
     }
 
-    const payload = {
-      id: user.id,
-      name: user.name
-    };
-    const token = generateAccessToken(payload, settings.secret); // generate access token
-    res.send({
-      enabled: true, // session is enabled
-      token: token, // new token
-      name: user.name
-    });
-    return;
-  }
+    if (!token) {
+      const user = _find(enabledUsers, { name: name });
+      const valid = user && bcrypt.compareSync(password, user.password);
 
-  jwt.verify(token, settings.secret, (err, user) => {
-    if (err) {
-      res.status(ERR_INTERNAL_SERVER_ERROR).send({
-        msg: 'Internal server error'
+      if (!valid) {
+        res.status(ERR_UNAUTHORIZED).send({
+          msg: 'Authentication failed'
+        });
+        return;
+      }
+
+      const payload = {
+        id: user.id,
+        name: user.name
+      };
+      const token = generateAccessToken(payload, settings.secret); // generate access token
+      res.send({
+        enabled: true, // session is enabled
+        token: token, // new token
+        name: user.name
       });
       return;
     }
 
-    const iat = new Date(user.iat * 1000).toISOString();
-    const exp = new Date(user.exp * 1000).toISOString();
-    log.debug(`jwt.verify: user.id=${user.id}, user.name=${user.name}, user.iat=${iat}, user.exp=${exp}`);
+    jwt.verify(token, settings.secret, (err, user) => {
+      if (err) {
+        res.status(ERR_INTERNAL_SERVER_ERROR).send({
+          msg: 'Internal server error'
+        });
+        return;
+      }
 
-    user = _find(enabledUsers, { id: user.id, name: user.name });
-    if (!user) {
-      res.status(ERR_UNAUTHORIZED).send({
-        msg: 'Authentication failed'
+      const iat = new Date(user.iat * 1000).toISOString();
+      const exp = new Date(user.exp * 1000).toISOString();
+      log.debug(`jwt.verify: user.id=${user.id}, user.name=${user.name}, user.iat=${iat}, user.exp=${exp}`);
+
+      user = _find(enabledUsers, { id: user.id, name: user.name });
+      if (!user) {
+        res.status(ERR_UNAUTHORIZED).send({
+          msg: 'Authentication failed'
+        });
+        return;
+      }
+
+      res.send({
+        enabled: true, // session is enabled
+        token: token, // old token
+        name: user.name
       });
-      return;
-    }
-
-    res.send({
-      enabled: true, // session is enabled
-      token: token, // old token
-      name: user.name
     });
-  });
-};
-
-export const fetch = (req, res) => {
-  const records = getSanitizedRecords();
-  const paging = !!req.query.paging;
-
-  if (paging) {
-    const { page = 1, pageLength = 10 } = req.query;
-    const totalRecords = records.length;
-    const [begin, end] = getPagingRange({ page, pageLength, totalRecords });
-    const pagedRecords = records.slice(begin, end);
-
-    res.send({
-      pagination: {
-        page: ensureFiniteNumber(page),
-        pageLength: ensureFiniteNumber(pageLength),
-        totalRecords: ensureFiniteNumber(totalRecords)
-      },
-      records: pagedRecords.map(record => {
-        const { id, mtime, enabled, name } = { ...record };
-        return { id, mtime, enabled, name };
-      })
-    });
-  } else {
-    res.send({
-      records: records.map(record => {
-        const { id, mtime, enabled, name } = { ...record };
-        return { id, mtime, enabled, name };
-      })
-    });
-  }
-};
-
-export const create = (req, res) => {
-  const {
-    enabled = true,
-    name = '',
-    password = ''
-  } = { ...req.body };
-
-  if (!name) {
-    res.status(ERR_BAD_REQUEST).send({
-      msg: 'The "name" parameter must not be empty'
-    });
-    return;
-  }
-
-  if (!password) {
-    res.status(ERR_BAD_REQUEST).send({
-      msg: 'The "password" parameter must not be empty'
-    });
-    return;
-  }
-
-  const records = getSanitizedRecords();
-  if (_find(records, { name: name })) {
-    res.status(ERR_CONFLICT).send({
-      msg: 'The specified user already exists'
-    });
-    return;
-  }
-
-  try {
-    const salt = bcrypt.genSaltSync();
-    const hash = bcrypt.hashSync(password.trim(), salt);
+  },
+  fetch: (req, res) => {
     const records = getSanitizedRecords();
-    const record = {
-      id: uuidv4(),
-      mtime: new Date().getTime(),
-      enabled: enabled,
-      name: name,
-      password: hash
-    };
+    const paging = !!req.query.paging;
 
-    records.push(record);
-    userStore.set(CONFIG_KEY, records);
+    if (paging) {
+      const { page = 1, pageLength = 10 } = req.query;
+      const totalRecords = records.length;
+      const [begin, end] = getPagingRange({ page, pageLength, totalRecords });
+      const pagedRecords = records.slice(begin, end);
 
-    res.send({ id: record.id, mtime: record.mtime });
-  } catch (err) {
-    res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: `Failed to update ${x(settings.rcfile)}`,
-    });
-  }
-};
+      res.send({
+        pagination: {
+          page: ensureFiniteNumber(page),
+          pageLength: ensureFiniteNumber(pageLength),
+          totalRecords: ensureFiniteNumber(totalRecords)
+        },
+        records: pagedRecords.map(record => {
+          const { id, mtime, enabled, name } = { ...record };
+          return { id, mtime, enabled, name };
+        })
+      });
+    } else {
+      res.send({
+        records: records.map(record => {
+          const { id, mtime, enabled, name } = { ...record };
+          return { id, mtime, enabled, name };
+        })
+      });
+    }
+  },
+  create: (req, res) => {
+    const {
+      enabled = true,
+      name = '',
+      password = ''
+    } = { ...req.body };
 
-export const read = (req, res) => {
-  const id = req.params.id;
-  const records = getSanitizedRecords();
-  const record = _find(records, { id: id });
-
-  if (!record) {
-    res.status(ERR_NOT_FOUND).send({
-      msg: 'Not found'
-    });
-    return;
-  }
-
-  const { mtime, enabled, name } = { ...record };
-  res.send({ id, mtime, enabled, name });
-};
-
-export const update = (req, res) => {
-  const id = req.params.id;
-  const records = getSanitizedRecords();
-  const record = _find(records, { id: id });
-
-  if (!record) {
-    res.status(ERR_NOT_FOUND).send({
-      msg: 'Not found'
-    });
-    return;
-  }
-
-  const {
-    enabled = record.enabled,
-    name = record.name,
-    oldPassword = '',
-    newPassword = ''
-  } = { ...req.body };
-  const willChangePassword = oldPassword && newPassword;
-
-  // Skip validation for "enabled" and "name"
-
-  if (willChangePassword && !bcrypt.compareSync(oldPassword, record.password)) {
-    res.status(ERR_PRECONDITION_FAILED).send({
-      msg: 'Incorrect password'
-    });
-    return;
-  }
-
-  const inuse = (record) => {
-    return record.id !== id && record.name === name;
-  };
-  if (_some(records, inuse)) {
-    res.status(ERR_CONFLICT).send({
-      msg: 'The specified user already exists'
-    });
-    return;
-  }
-
-  try {
-    record.mtime = new Date().getTime();
-    record.enabled = Boolean(enabled);
-    record.name = String(name || '');
-
-    if (willChangePassword) {
-      const salt = bcrypt.genSaltSync();
-      const hash = bcrypt.hashSync(newPassword.trim(), salt);
-      record.password = hash;
+    if (!name) {
+      res.status(ERR_BAD_REQUEST).send({
+        msg: 'The "name" parameter must not be empty'
+      });
+      return;
     }
 
-    userStore.set(CONFIG_KEY, records);
+    if (!password) {
+      res.status(ERR_BAD_REQUEST).send({
+        msg: 'The "password" parameter must not be empty'
+      });
+      return;
+    }
 
-    res.send({ id: record.id, mtime: record.mtime });
-  } catch (err) {
-    res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: `Failed to update ${x(settings.rcfile)}`,
-    });
-  }
-};
+    const records = getSanitizedRecords();
+    if (_find(records, { name: name })) {
+      res.status(ERR_CONFLICT).send({
+        msg: 'The specified user already exists'
+      });
+      return;
+    }
 
-export const __delete = (req, res) => {
-  const id = req.params.id;
-  const records = getSanitizedRecords();
-  const record = _find(records, { id: id });
+    try {
+      const salt = bcrypt.genSaltSync();
+      const hash = bcrypt.hashSync(password.trim(), salt);
+      const records = getSanitizedRecords();
+      const record = {
+        id: uuidv4(),
+        mtime: new Date().getTime(),
+        enabled: enabled,
+        name: name,
+        password: hash
+      };
 
-  if (!record) {
-    res.status(ERR_NOT_FOUND).send({
-      msg: 'Not found'
-    });
-    return;
-  }
+      records.push(record);
+      userStore.set(CONFIG_KEY, records);
 
-  try {
+      res.send({ id: record.id, mtime: record.mtime });
+    } catch (err) {
+      res.status(ERR_INTERNAL_SERVER_ERROR).send({
+        msg: `Failed to update ${x(settings.rcfile)}`,
+      });
+    }
+  },
+  bulkDelete: (req, res) => {
+    const ids = ensureArray(req.body?.ids);
+    const records = getSanitizedRecords();
     const filteredRecords = records.filter(record => {
-      return record.id !== id;
+      // Keep records that are not in the ids array
+      return !ids.includes(record.id);
     });
+    const totalCount = records.length;
+    const requestedCount = ids.length;
+    const deletedCount = totalCount - filteredRecords.length;
+
+    let status = '';
+    let message = '';
+    if (deletedCount === requestedCount) {
+      status = 'ok';
+      message = 'All requested items were successfully deleted.';
+    } else if (deletedCount > 0) {
+      status = 'partial';
+      message = `${deletedCount} of ${requestedCount} requested items were deleted.`;
+    } else {
+      status = 'not_found';
+      message = 'No requested items were found for deletion.';
+    }
+
     userStore.set(CONFIG_KEY, filteredRecords);
 
-    res.send({ id: record.id });
-  } catch (err) {
-    res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: `Failed to update ${x(settings.rcfile)}`,
-    });
-  }
+    res.send({ status, message });
+  },
+  read: (req, res) => {
+    const id = req.params.id;
+    const records = getSanitizedRecords();
+    const record = _find(records, { id: id });
+
+    if (!record) {
+      res.status(ERR_NOT_FOUND).send({
+        msg: 'Not found'
+      });
+      return;
+    }
+
+    const { mtime, enabled, name } = { ...record };
+    res.send({ id, mtime, enabled, name });
+  },
+  update: (req, res) => {
+    const id = req.params.id;
+    const records = getSanitizedRecords();
+    const record = _find(records, { id: id });
+
+    if (!record) {
+      res.status(ERR_NOT_FOUND).send({
+        msg: 'Not found'
+      });
+      return;
+    }
+
+    const {
+      enabled = record.enabled,
+      name = record.name,
+      oldPassword = '',
+      newPassword = ''
+    } = { ...req.body };
+    const willChangePassword = oldPassword && newPassword;
+
+    // Skip validation for "enabled" and "name"
+
+    if (willChangePassword && !bcrypt.compareSync(oldPassword, record.password)) {
+      res.status(ERR_PRECONDITION_FAILED).send({
+        msg: 'Incorrect password'
+      });
+      return;
+    }
+
+    const inuse = (record) => {
+      return record.id !== id && record.name === name;
+    };
+    if (_some(records, inuse)) {
+      res.status(ERR_CONFLICT).send({
+        msg: 'The specified user already exists'
+      });
+      return;
+    }
+
+    try {
+      record.mtime = new Date().getTime();
+      record.enabled = Boolean(enabled);
+      record.name = String(name ?? '');
+
+      if (willChangePassword) {
+        const salt = bcrypt.genSaltSync();
+        const hash = bcrypt.hashSync(newPassword.trim(), salt);
+        record.password = hash;
+      }
+
+      userStore.set(CONFIG_KEY, records);
+
+      res.send({ id: record.id, mtime: record.mtime });
+    } catch (err) {
+      res.status(ERR_INTERNAL_SERVER_ERROR).send({
+        msg: `Failed to update ${x(settings.rcfile)}`,
+      });
+    }
+  },
+  delete: (req, res) => {
+    const id = req.params.id;
+    const records = getSanitizedRecords();
+    const record = _find(records, { id: id });
+
+    if (!record) {
+      res.status(ERR_NOT_FOUND).send({
+        msg: 'Not found'
+      });
+      return;
+    }
+
+    try {
+      const filteredRecords = records.filter(record => {
+        return record.id !== id;
+      });
+      userStore.set(CONFIG_KEY, filteredRecords);
+
+      res.send({ id: record.id });
+    } catch (err) {
+      res.status(ERR_INTERNAL_SERVER_ERROR).send({
+        msg: `Failed to update ${x(settings.rcfile)}`,
+      });
+    }
+  },
+  enable: (req, res) => {
+    const id = req.params.id;
+    const records = getSanitizedRecords();
+    const record = _find(records, { id: id });
+
+    if (!record) {
+      res.status(ERR_NOT_FOUND).send({
+        msg: 'Not found'
+      });
+      return;
+    }
+
+    try {
+      record.enabled = true;
+
+      userStore.set(CONFIG_KEY, records);
+
+      res.send({ id: record.id, mtime: record.mtime });
+    } catch (err) {
+      res.status(ERR_INTERNAL_SERVER_ERROR).send({
+        msg: `Failed to update ${x(settings.rcfile)}`,
+      });
+    }
+  },
+  disable: (req, res) => {
+    const id = req.params.id;
+    const records = getSanitizedRecords();
+    const record = _find(records, { id: id });
+
+    if (!record) {
+      res.status(ERR_NOT_FOUND).send({
+        msg: 'Not found'
+      });
+      return;
+    }
+
+    try {
+      record.enabled = false;
+
+      userStore.set(CONFIG_KEY, records);
+
+      res.send({ id: record.id, mtime: record.mtime });
+    } catch (err) {
+      res.status(ERR_INTERNAL_SERVER_ERROR).send({
+        msg: `Failed to update ${x(settings.rcfile)}`,
+      });
+    }
+  },
 };
 
-export const enable = (req, res) => {
-  const id = req.params.id;
-  const records = getSanitizedRecords();
-  const record = _find(records, { id: id });
-
-  if (!record) {
-    res.status(ERR_NOT_FOUND).send({
-      msg: 'Not found'
-    });
-    return;
-  }
-
-  try {
-    record.enabled = true;
-
-    userStore.set(CONFIG_KEY, records);
-
-    res.send({ id: record.id, mtime: record.mtime });
-  } catch (err) {
-    res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: `Failed to update ${x(settings.rcfile)}`,
-    });
-  }
-};
-
-export const disable = (req, res) => {
-  const id = req.params.id;
-  const records = getSanitizedRecords();
-  const record = _find(records, { id: id });
-
-  if (!record) {
-    res.status(ERR_NOT_FOUND).send({
-      msg: 'Not found'
-    });
-    return;
-  }
-
-  try {
-    record.enabled = false;
-
-    userStore.set(CONFIG_KEY, records);
-
-    res.send({ id: record.id, mtime: record.mtime });
-  } catch (err) {
-    res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: `Failed to update ${x(settings.rcfile)}`,
-    });
-  }
-};
+export default api;

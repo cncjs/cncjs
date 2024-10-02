@@ -22,7 +22,7 @@ const searchFiles = (searchPath) => {
   return minimatch
     .match(Object.keys(directoryWatcher.files), pattern, { matchBase: true })
     .map(file => {
-      const stat = directoryWatcher.files[file] || {};
+      const stat = directoryWatcher.files[file] ?? {};
 
       return {
         name: path.basename(file),
@@ -58,31 +58,34 @@ const searchFiles = (searchPath) => {
     });
 };
 
-export const getFiles = (req, res) => {
-  const searchPath = req.body.path || req.query.path || '';
-  const files = searchFiles(searchPath);
+const api = {
+  getFiles: (req, res) => {
+    const searchPath = (req.body.path ?? req.query.path) ?? '';
+    const files = searchFiles(searchPath);
 
-  res.send({ path: path, files: files });
-};
+    res.send({ path: path, files: files });
+  },
+  readFile: (req, res) => {
+    const file = (req.body.file ?? req.query.file) ?? '';
+    const filepath = path.join(directoryWatcher.root, file);
 
-export const readFile = (req, res) => {
-  const file = req.body.file || req.query.file || '';
-  const filepath = path.join(directoryWatcher.root, file);
-
-  fs.readFile(filepath, 'utf8', (err, data) => {
-    if (err) {
-      if (err.code === 'ENOENT') {
-        res.status(ERR_NOT_FOUND).send({
-          msg: 'File not found'
-        });
-      } else {
-        res.status(ERR_INTERNAL_SERVER_ERROR).send({
-          msg: 'Failed reading file'
-        });
+    fs.readFile(filepath, 'utf8', (err, data) => {
+      if (err) {
+        if (err.code === 'ENOENT') {
+          res.status(ERR_NOT_FOUND).send({
+            msg: 'File not found'
+          });
+        } else {
+          res.status(ERR_INTERNAL_SERVER_ERROR).send({
+            msg: 'Failed reading file'
+          });
+        }
+        return;
       }
-      return;
-    }
 
-    res.send({ file: file, data: data });
-  });
+      res.send({ file: file, data: data });
+    });
+  },
 };
+
+export default api;

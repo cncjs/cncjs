@@ -1,16 +1,16 @@
 import express from 'express';
 import commands from '../api/api.commands';
-import * as controllers from '../api/api.controllers';
-import * as events from '../api/api.events';
-import * as gcode from '../api/api.gcode';
-import * as machines from '../api/api.machines';
-import * as macros from '../api/api.macros';
-import * as mdi from '../api/api.mdi';
-import * as state from '../api/api.state';
-import * as system from '../api/api.system';
-import * as users from '../api/api.users';
-import * as version from '../api/api.version';
-import * as watch from '../api/api.watch';
+import controllers from '../api/api.controllers';
+import events from '../api/api.events';
+import gcode from '../api/api.gcode';
+import machines from '../api/api.machines';
+import macros from '../api/api.macros';
+import mdi from '../api/api.mdi';
+import state from '../api/api.state';
+import system from '../api/api.system';
+import users from '../api/api.users';
+import version from '../api/api.version';
+import watch from '../api/api.watch';
 
 const createPublicApiRouter = () => {
   const router = express.Router();
@@ -40,9 +40,9 @@ const createProtectedApiRouter = () => {
   // Events
   router.get('/events', events.fetch);
   router.post('/events/', events.create);
-  router.get('/events/:id', events.read);
+  router.delete('/events/', events.bulkDelete);
   router.put('/events/:id', events.update);
-  router.delete('/events/:id', events.__delete);
+  router.delete('/events/:id', events.delete);
   router.post('/events/:id/enable', events.enable);
   router.post('/events/:id/disable', events.disable);
 
@@ -55,25 +55,28 @@ const createProtectedApiRouter = () => {
   // Machines
   router.get('/machines', machines.fetch);
   router.post('/machines', machines.create);
+  router.delete('/machines', machines.bulkDelete);
   router.get('/machines/:id', machines.read);
   router.put('/machines/:id', machines.update);
-  router.delete('/machines/:id', machines.__delete);
+  router.delete('/machines/:id', machines.delete);
 
   // Macros
   router.get('/macros', macros.fetch);
-  router.post('/macros/export', macros.__export);
+  router.post('/macros/export', macros.exportCSV);
   router.post('/macros', macros.create);
+  router.delete('/macros', macros.bulkDelete);
   router.get('/macros/:id', macros.read);
   router.put('/macros/:id', macros.update);
-  router.delete('/macros/:id', macros.__delete);
+  router.delete('/macros/:id', macros.delete);
 
   // MDI
   router.get('/mdi', mdi.fetch);
   router.post('/mdi', mdi.create);
+  router.delete('/mdi', mdi.bulkDelete);
   router.put('/mdi', mdi.bulkUpdate);
   router.get('/mdi/:id', mdi.read);
   router.put('/mdi/:id', mdi.update);
-  router.delete('/mdi/:id', mdi.__delete);
+  router.delete('/mdi/:id', mdi.delete);
 
   // State
   router.get('/state', state.get);
@@ -86,9 +89,10 @@ const createProtectedApiRouter = () => {
   // Users
   router.get('/users', users.fetch);
   router.post('/users/', users.create);
+  router.delete('/users/', users.bulkDelete);
   router.get('/users/:id', users.read);
   router.put('/users/:id', users.update);
-  router.delete('/users/:id', users.__delete);
+  router.delete('/users/:id', users.delete);
   router.post('/users/:id/enable', users.enable);
   router.post('/users/:id/disable', users.disable);
 

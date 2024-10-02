@@ -48,205 +48,230 @@ const getSanitizedRecords = () => {
   return records;
 };
 
-export const fetch = (req, res) => {
-  const records = getSanitizedRecords();
-  const paging = !!req.query.paging;
-
-  if (paging) {
-    const { page = 1, pageLength = 10 } = req.query;
-    const totalRecords = records.length;
-    const [begin, end] = getPagingRange({ page, pageLength, totalRecords });
-    const pagedRecords = records.slice(begin, end);
-
-    res.send({
-      pagination: {
-        page: ensureFiniteNumber(page),
-        pageLength: ensureFiniteNumber(pageLength),
-        totalRecords: ensureFiniteNumber(totalRecords)
-      },
-      records: pagedRecords.map(record => {
-        const { id, mtime, name, content } = { ...record };
-        return { id, mtime, name, content };
-      })
-    });
-  } else {
-    res.send({
-      records: records.map(record => {
-        const { id, mtime, name, content } = { ...record };
-        return { id, mtime, name, content };
-      })
-    });
-  }
-};
-
-export const __export = (req, res) => {
-  const records = getSanitizedRecords();
-  const paging = !!req.query.paging;
-  const { filename = 'macros.csv' } = { ...req.body };
-  const fieldMap = {
-    id: 'ID',
-    mtime: 'Date Modified',
-    name: 'Name',
-    content: 'Content',
-  };
-  const fields = _values(fieldMap);
-
-  res.set('Expires', 0);
-  res.set('Content-Type', 'text/csv');
-  res.set('Content-Transfer-Encoding', 'binary');
-  res.set('Pragma', 'no-cache');
-  res.set('Content-Disposition', `attachment; filename=${JSON.stringify(filename)}`);
-
-  if (paging) {
-    const { page = 1, pageLength = 10 } = req.query;
-    const totalRecords = records.length;
-    const [begin, end] = getPagingRange({ page, pageLength, totalRecords });
-    const data = records
-      .slice(begin, end)
-      .map(x => ({
-        [fieldMap.id]: x.id,
-        [fieldMap.mtime]: new Date(x.mtime).toISOString(),
-        [fieldMap.name]: x.name,
-        [fieldMap.content]: x.content,
-      }));
-    const csv = json2csv.parse(data, { fields });
-    res.send(csv).end();
-  } else {
-    const data = records
-      .map(x => ({
-        [fieldMap.id]: x.id,
-        [fieldMap.mtime]: new Date(x.mtime).toISOString(),
-        [fieldMap.name]: x.name,
-        [fieldMap.content]: x.content,
-      }));
-    const csv = json2csv.parse(data, { fields });
-    res.send(csv).end();
-  }
-};
-
-export const create = (req, res) => {
-  const { name, content } = { ...req.body };
-
-  if (!name) {
-    res.status(ERR_BAD_REQUEST).send({
-      msg: 'The "name" parameter must not be empty'
-    });
-    return;
-  }
-
-  if (!content) {
-    res.status(ERR_BAD_REQUEST).send({
-      msg: 'The "content" parameter must not be empty'
-    });
-    return;
-  }
-
-  try {
+const api = {
+  fetch: (req, res) => {
     const records = getSanitizedRecords();
-    const record = {
-      id: uuidv4(),
-      mtime: new Date().getTime(),
-      name: name,
-      content: content
+    const paging = !!req.query.paging;
+
+    if (paging) {
+      const { page = 1, pageLength = 10 } = req.query;
+      const totalRecords = records.length;
+      const [begin, end] = getPagingRange({ page, pageLength, totalRecords });
+      const pagedRecords = records.slice(begin, end);
+
+      res.send({
+        pagination: {
+          page: ensureFiniteNumber(page),
+          pageLength: ensureFiniteNumber(pageLength),
+          totalRecords: ensureFiniteNumber(totalRecords)
+        },
+        records: pagedRecords.map(record => {
+          const { id, mtime, name, content } = { ...record };
+          return { id, mtime, name, content };
+        })
+      });
+    } else {
+      res.send({
+        records: records.map(record => {
+          const { id, mtime, name, content } = { ...record };
+          return { id, mtime, name, content };
+        })
+      });
+    }
+  },
+  exportCSV: (req, res) => {
+    const records = getSanitizedRecords();
+    const paging = !!req.query.paging;
+    const { filename = 'macros.csv' } = { ...req.body };
+    const fieldMap = {
+      id: 'ID',
+      mtime: 'Date Modified',
+      name: 'Name',
+      content: 'Content',
     };
+    const fields = _values(fieldMap);
 
-    records.push(record);
-    userStore.set(CONFIG_KEY, records);
+    res.set('Expires', 0);
+    res.set('Content-Type', 'text/csv');
+    res.set('Content-Transfer-Encoding', 'binary');
+    res.set('Pragma', 'no-cache');
+    res.set('Content-Disposition', `attachment; filename=${JSON.stringify(filename)}`);
 
-    res.send({ err: null });
-  } catch (err) {
-    res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: `Failed to update ${x(settings.rcfile)}`,
-    });
-  }
-};
+    if (paging) {
+      const { page = 1, pageLength = 10 } = req.query;
+      const totalRecords = records.length;
+      const [begin, end] = getPagingRange({ page, pageLength, totalRecords });
+      const data = records
+        .slice(begin, end)
+        .map(x => ({
+          [fieldMap.id]: x.id,
+          [fieldMap.mtime]: new Date(x.mtime).toISOString(),
+          [fieldMap.name]: x.name,
+          [fieldMap.content]: x.content,
+        }));
+      const csv = json2csv.parse(data, { fields });
+      res.send(csv).end();
+    } else {
+      const data = records
+        .map(x => ({
+          [fieldMap.id]: x.id,
+          [fieldMap.mtime]: new Date(x.mtime).toISOString(),
+          [fieldMap.name]: x.name,
+          [fieldMap.content]: x.content,
+        }));
+      const csv = json2csv.parse(data, { fields });
+      res.send(csv).end();
+    }
+  },
+  create: (req, res) => {
+    const { name, content } = { ...req.body };
 
-export const read = (req, res) => {
-  const id = req.params.id;
-  const records = getSanitizedRecords();
-  const record = _find(records, { id: id });
-
-  if (!record) {
-    res.status(ERR_NOT_FOUND).send({
-      msg: 'Not found'
-    });
-    return;
-  }
-
-  const { mtime, name, content } = { ...record };
-  res.send({ id, mtime, name, content });
-};
-
-export const update = (req, res) => {
-  const id = req.params.id;
-  const records = getSanitizedRecords();
-  const record = _find(records, { id: id });
-
-  if (!record) {
-    res.status(ERR_NOT_FOUND).send({
-      msg: 'Not found'
-    });
-    return;
-  }
-
-  const {
-    name = record.name,
-    content = record.content
-  } = { ...req.body };
-
-  /*
     if (!name) {
-        res.status(ERR_BAD_REQUEST).send({
-            msg: 'The "name" parameter must not be empty'
-        });
-        return;
+      res.status(ERR_BAD_REQUEST).send({
+        msg: 'The "name" parameter must not be empty',
+      });
+      return;
     }
 
     if (!content) {
-        res.status(ERR_BAD_REQUEST).send({
-            msg: 'The "content" parameter must not be empty'
-        });
-        return;
+      res.status(ERR_BAD_REQUEST).send({
+        msg: 'The "content" parameter must not be empty',
+      });
+      return;
     }
-    */
 
-  try {
-    record.mtime = new Date().getTime();
-    record.name = String(name || '');
-    record.content = String(content || '');
+    try {
+      const records = getSanitizedRecords();
+      const record = {
+        id: uuidv4(),
+        mtime: new Date().getTime(),
+        name: name,
+        content: content
+      };
 
-    userStore.set(CONFIG_KEY, records);
+      records.push(record);
+      userStore.set(CONFIG_KEY, records);
 
-    res.send({ err: null });
-  } catch (err) {
-    res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: `Failed to update ${x(settings.rcfile)}`,
-    });
-  }
-};
-
-export const __delete = (req, res) => {
-  const id = req.params.id;
-  const records = getSanitizedRecords();
-  const record = _find(records, { id: id });
-
-  if (!record) {
-    res.status(ERR_NOT_FOUND).send({
-      msg: 'Not found'
-    });
-    return;
-  }
-
-  try {
+      res.send({ err: null });
+    } catch (err) {
+      res.status(ERR_INTERNAL_SERVER_ERROR).send({
+        msg: `Failed to update ${x(settings.rcfile)}`,
+      });
+    }
+  },
+  bulkDelete: (req, res) => {
+    const ids = ensureArray(req.body?.ids);
+    const records = getSanitizedRecords();
     const filteredRecords = records.filter(record => {
-      return record.id !== id;
+      // Keep records that are not in the ids array
+      return !ids.includes(record.id);
     });
+    const totalCount = records.length;
+    const requestedCount = ids.length;
+    const deletedCount = totalCount - filteredRecords.length;
+
+    let status = '';
+    let message = '';
+    if (deletedCount === requestedCount) {
+      status = 'ok';
+      message = 'All requested items were successfully deleted.';
+    } else if (deletedCount > 0) {
+      status = 'partial';
+      message = `${deletedCount} of ${requestedCount} requested items were deleted.`;
+    } else {
+      status = 'not_found';
+      message = 'No requested items were found for deletion.';
+    }
+
     userStore.set(CONFIG_KEY, filteredRecords);
 
-    res.send({ err: null });
-  } catch (err) {
-    res.status(ERR_INTERNAL_SERVER_ERROR).send({
-      msg: `Failed to update ${x(settings.rcfile)}`,
-    });
-  }
+    res.send({ status, message });
+  },
+  read: (req, res) => {
+    const id = req.params.id;
+    const records = getSanitizedRecords();
+    const record = _find(records, { id: id });
+
+    if (!record) {
+      res.status(ERR_NOT_FOUND).send({
+        msg: 'Not found',
+      });
+      return;
+    }
+
+    const { mtime, name, content } = { ...record };
+    res.send({ id, mtime, name, content });
+  },
+  update: (req, res) => {
+    const id = req.params.id;
+    const records = getSanitizedRecords();
+    const record = _find(records, { id: id });
+
+    if (!record) {
+      res.status(ERR_NOT_FOUND).send({
+        msg: 'Not found',
+      });
+      return;
+    }
+
+    const {
+      name = record.name,
+      content = record.content
+    } = { ...req.body };
+
+    if (!name) {
+      res.status(ERR_BAD_REQUEST).send({
+        msg: 'The "name" parameter must not be empty',
+      });
+      return;
+    }
+
+    if (!content) {
+      res.status(ERR_BAD_REQUEST).send({
+        msg: 'The "content" parameter must not be empty',
+      });
+      return;
+    }
+
+    try {
+      record.mtime = new Date().getTime();
+      record.name = String(name ?? '');
+      record.content = String(content ?? '');
+
+      userStore.set(CONFIG_KEY, records);
+
+      res.send({ err: null });
+    } catch (err) {
+      res.status(ERR_INTERNAL_SERVER_ERROR).send({
+        msg: `Failed to update ${x(settings.rcfile)}`,
+      });
+    }
+  },
+  delete: (req, res) => {
+    const id = req.params.id;
+    const records = getSanitizedRecords();
+    const record = _find(records, { id: id });
+
+    if (!record) {
+      res.status(ERR_NOT_FOUND).send({
+        msg: 'Not found',
+      });
+      return;
+    }
+
+    try {
+      const filteredRecords = records.filter(record => {
+        return record.id !== id;
+      });
+      userStore.set(CONFIG_KEY, filteredRecords);
+
+      res.send({ err: null });
+    } catch (err) {
+      res.status(ERR_INTERNAL_SERVER_ERROR).send({
+        msg: `Failed to update ${x(settings.rcfile)}`,
+      });
+    }
+  },
 };
+
+export default api;

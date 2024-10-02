@@ -43,7 +43,7 @@ const getSanitizedRecords = () => {
 
     // Alias command
     if (!record.commands) {
-      record.commands = record.command || '';
+      record.commands = record.command ?? '';
       delete record.command;
     }
   }
@@ -133,21 +133,30 @@ const api = {
   bulkDelete: (req, res) => {
     const ids = ensureArray(req.body?.ids);
     const records = getSanitizedRecords();
+    const filteredRecords = records.filter(record => {
+      // Keep records that are not in the ids array
+      return !ids.includes(record.id);
+    });
+    const totalCount = records.length;
+    const requestedCount = ids.length;
+    const deletedCount = totalCount - filteredRecords.length;
 
-    try {
-      const filteredRecords = records.filter(record => {
-        if (ids.includes(record.id)) {
-          return false;
-        }
-        return true;
-      });
-      userStore.set(CONFIG_KEY, filteredRecords);
-      res.send({ 'status': 'ok' });
-    } catch (err) {
-      res.status(ERR_INTERNAL_SERVER_ERROR).send({
-        msg: `Failed to update ${x(settings.rcfile)}`,
-      });
+    let status = '';
+    let message = '';
+    if (deletedCount === requestedCount) {
+      status = 'ok';
+      message = 'All requested items were successfully deleted.';
+    } else if (deletedCount > 0) {
+      status = 'partial';
+      message = `${deletedCount} of ${requestedCount} requested items were deleted.`;
+    } else {
+      status = 'not_found';
+      message = 'No requested items were found for deletion.';
     }
+
+    userStore.set(CONFIG_KEY, filteredRecords);
+
+    res.send({ status, message });
   },
   read: (req, res) => {
     const id = req.params.id;
@@ -187,8 +196,8 @@ const api = {
     try {
       record.mtime = new Date().getTime();
       record.enabled = Boolean(enabled);
-      record.title = String(title || '');
-      record.commands = String(commands || '');
+      record.title = String(title ?? '');
+      record.commands = String(commands ?? '');
 
       // Remove deprecated parameter
       if (record.command !== undefined) {
