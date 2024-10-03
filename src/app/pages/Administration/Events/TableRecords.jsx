@@ -23,21 +23,21 @@ import styles from './index.styl';
 
 const mapEventToTextString = (event) => ({
   'startup': i18n._('Startup'),
-  'connection:open': i18n._('Open'),
-  'connection:close': i18n._('Close'),
-  'controller:ready': i18n._('Ready to start'),
-  'sender:load': i18n._('G-code: Load'),
-  'sender:unload': i18n._('G-code: Unload'),
-  'sender:start': i18n._('G-code: Start'),
-  'sender:stop': i18n._('G-code: Stop'),
-  'sender:pause': i18n._('G-code: Pause'),
-  'sender:resume': i18n._('G-code: Resume'),
-  'feedhold': i18n._('Feed Hold'),
-  'cyclestart': i18n._('Cycle Start'),
+  'connection_open': i18n._('Connection open'),
+  'connection_close': i18n._('Connection close'),
+  'controller_ready': i18n._('Ready to start'),
+  'sender_load': i18n._('G-code: Load'),
+  'sender_unload': i18n._('G-code: Unload'),
+  'sender_start': i18n._('G-code: Start'),
+  'sender_stop': i18n._('G-code: Stop'),
+  'sender_pause': i18n._('G-code: Pause'),
+  'sender_resume': i18n._('G-code: Resume'),
+  'feed_hold': i18n._('Feed Hold'),
+  'cycle_start': i18n._('Cycle Start'),
   'homing': i18n._('Homing'),
   'sleep': i18n._('Sleep'),
-  'macro:run': i18n._('Run Macro'),
-  'macro:load': i18n._('Load Macro')
+  'macro_load': i18n._('Load Macro'),
+  'macro_run': i18n._('Run Macro'),
 }[event] || '');
 
 class TableRecords extends Component {

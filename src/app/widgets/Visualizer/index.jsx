@@ -221,7 +221,7 @@ class VisualizerWidget extends Component {
         }
       }));
 
-      controller.command('watchdir:load', file, (err, data) => {
+      controller.command('watchdir_load', file, (err, data) => {
         if (err) {
           this.setState((state) => ({
             gcode: {
@@ -250,7 +250,7 @@ class VisualizerWidget extends Component {
       }));
 
       const context = {};
-      controller.command('sender:load', meta, context, (err, data) => {
+      controller.command('sender_load', meta, context, (err, data) => {
         if (err) {
           this.setState((state) => ({
             gcode: {
@@ -389,7 +389,7 @@ class VisualizerWidget extends Component {
       console.assert(includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflow.state));
 
       if (workflow.state === WORKFLOW_STATE_IDLE) {
-        controller.command('sender:start');
+        controller.command('sender_start');
         return;
       }
 
@@ -416,7 +416,7 @@ class VisualizerWidget extends Component {
                   btnStyle="primary"
                   onClick={chainedFunction(
                     () => {
-                      controller.command('sender:resume');
+                      controller.command('sender_resume');
                     },
                     onClose
                   )}
@@ -430,26 +430,26 @@ class VisualizerWidget extends Component {
           return;
         }
 
-        controller.command('sender:resume');
+        controller.command('sender_resume');
       }
     },
     handlePause: () => {
       const { workflow } = this.state;
       console.assert(includes([WORKFLOW_STATE_RUNNING], workflow.state));
 
-      controller.command('sender:pause');
+      controller.command('sender_pause');
     },
     handleStop: () => {
       const { workflow } = this.state;
       console.assert(includes([WORKFLOW_STATE_PAUSED], workflow.state));
 
-      controller.command('sender:stop', { force: true });
+      controller.command('sender_stop', { force: true });
     },
     handleClose: () => {
       const { workflow } = this.state;
       console.assert(includes([WORKFLOW_STATE_IDLE], workflow.state));
 
-      controller.command('sender:unload');
+      controller.command('sender_unload');
     },
     setBoundingBox: (bbox) => {
       this.setState((state) => ({

@@ -268,24 +268,24 @@ class CNCJSController {
   // @param {string} cmd The command to execute.
   // @example Example Usage
   // - Load G-code
-  //   controller.command('sender:load', meta, [context], [callback])
+  //   controller.command('sender_load', meta, [context], [callback])
   // - Unload G-code
-  //   controller.command('sender:unload')
+  //   controller.command('sender_unload')
   // - Start sending G-code
-  //   controller.command('sender:start')
+  //   controller.command('sender_start')
   // - Stop sending G-code
-  //   controller.command('sender:stop', { force: true })
+  //   controller.command('sender_stop', { force: true })
   // - Pause
-  //   controller.command('sender:pause')
+  //   controller.command('sender_pause')
   // - Resume
-  //   controller.command('sender:resume')
+  //   controller.command('sender_resume')
   // - Feeder
-  //   controller.command('feeder:start')
-  //   controller.command('feeder:stop')
+  //   controller.command('feeder_start')
+  //   controller.command('feeder_stop')
   // - Feed Hold
-  //   controller.command('feedhold')
+  //   controller.command('feed_hold')
   // - Cycle Start
-  //   controller.command('cyclestart')
+  //   controller.command('cycle_start')
   // - Homing
   //   controller.command('homing')
   // - Sleep
@@ -307,11 +307,11 @@ class CNCJSController {
   // - G-code
   //   controller.command('gcode', gcode, [context])
   // - Load a macro
-  //   controller.command('macro:load', id, [context], [callback])
+  //   controller.command('macro_load', id, [context], [callback])
   // - Run a macro
-  //   controller.command('macro:run', id, [context], [callback])
+  //   controller.command('macro_run', id, [context], [callback])
   // - Load file from a watch directory
-  //   controller.command('watchdir:load', '/path/to/file', callback)
+  //   controller.command('watchdir_load', '/path/to/file', callback)
   command(cmd, ...args) {
     if (!this.socket) {
       return;

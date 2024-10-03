@@ -20,15 +20,55 @@ import Workflow, {
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
+import x from '../../lib/json-stringify';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
 import serviceContainer from '../../service-container';
 import controllers from '../../store/controllers';
 import {
+  CONTROLLER_COMMAND_SENDER_LOAD,
+  CONTROLLER_COMMAND_SENDER_UNLOAD,
+  CONTROLLER_COMMAND_SENDER_START,
+  CONTROLLER_COMMAND_SENDER_STOP,
+  CONTROLLER_COMMAND_SENDER_PAUSE,
+  CONTROLLER_COMMAND_SENDER_RESUME,
+  CONTROLLER_COMMAND_FEEDER_START,
+  CONTROLLER_COMMAND_FEEDER_STOP,
+  CONTROLLER_COMMAND_GCODE,
+  CONTROLLER_COMMAND_FEED_HOLD,
+  CONTROLLER_COMMAND_CYCLE_START,
+  CONTROLLER_COMMAND_HOMING,
+  CONTROLLER_COMMAND_SLEEP,
+  CONTROLLER_COMMAND_UNLOCK,
+  CONTROLLER_COMMAND_RESET,
+  CONTROLLER_COMMAND_JOG_CANCEL,
+  CONTROLLER_COMMAND_FEED_OVERRIDE,
+  CONTROLLER_COMMAND_RAPID_OVERRIDE,
+  CONTROLLER_COMMAND_SPINDLE_OVERRIDE,
+  CONTROLLER_COMMAND_LASER_TEST,
+  CONTROLLER_COMMAND_MACRO_LOAD,
+  CONTROLLER_COMMAND_MACRO_RUN,
+  CONTROLLER_COMMAND_WATCHDIR_LOAD,
+  CONTROLLER_EVENT_TRIGGER_CONTROLLER_READY,
+  CONTROLLER_EVENT_TRIGGER_SENDER_LOAD,
+  CONTROLLER_EVENT_TRIGGER_SENDER_UNLOAD,
+  CONTROLLER_EVENT_TRIGGER_SENDER_START,
+  CONTROLLER_EVENT_TRIGGER_SENDER_STOP,
+  CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE,
+  CONTROLLER_EVENT_TRIGGER_SENDER_RESUME,
+  CONTROLLER_EVENT_TRIGGER_FEED_HOLD,
+  CONTROLLER_EVENT_TRIGGER_CYCLE_START,
+  CONTROLLER_EVENT_TRIGGER_HOMING,
+  CONTROLLER_EVENT_TRIGGER_SLEEP,
+  CONTROLLER_EVENT_TRIGGER_MACRO_LOAD,
+  CONTROLLER_EVENT_TRIGGER_MACRO_RUN,
   GLOBAL_OBJECTS as globalObjects,
   WRITE_SOURCE_CLIENT,
   WRITE_SOURCE_FEEDER
 } from '../constants';
+import {
+  getDeprecatedCommandHandler,
+} from '../utils';
 import SmoothieRunner from './SmoothieRunner';
 import {
   SMOOTHIE,
@@ -137,65 +177,8 @@ class SmoothieController {
   // Workflow
   workflow = null;
 
-  deprecatedCommandHandler = {
-    'start': () => {
-      this.command('sender:start');
-    },
-    'stop': (...args) => {
-      this.command('sender:stop', ...args);
-    },
-    'pause': () => {
-      this.command('sender:pause');
-    },
-    'resume': () => {
-      this.command('sender:resume');
-    },
-    'gcode:load': (...args) => {
-      let [name, gcode, context = {}, callback = noop] = args;
-      const meta = {
-        name: name,
-        content: gcode,
-      };
-      this.command('sender:load', meta, context, callback);
-    },
-    'gcode:unload': () => {
-      this.command('sender:unload');
-    },
-    'gcode:start': () => {
-      this.command('sender:start');
-    },
-    'gcode:stop': (...args) => {
-      this.command('sender:stop', ...args);
-    },
-    'gcode:pause': () => {
-      this.command('sender:pause');
-    },
-    'gcode:resume': () => {
-      this.command('sender:resume');
-    },
-    'feeder:feed': (...args) => {
-      this.command('gcode', ...args);
-    },
-    'feedOverride': (...args) => {
-      this.command('feed_override', ...args);
-    },
-    'spindleOverride': (...args) => {
-      this.command('spindle_override', ...args);
-    },
-    'rapidOverride': (...args) => {
-      this.command('rapid_override', ...args);
-    },
-    'lasertest:on': (...args) => {
-      this.command('laser_test', ...args);
-    },
-    'lasertest:off': () => {
-      const power = 0;
-      this.command('laser_test', power);
-    },
-  };
-
   commandHandler = {
-    'sender:load': (...args) => {
+    [CONTROLLER_COMMAND_SENDER_LOAD]: (...args) => {
       let [meta, context = {}, callback = noop] = args;
       if (typeof context === 'function') {
         callback = context;
@@ -223,7 +206,7 @@ class SmoothieController {
         content: this.sender.state.content,
       }, context);
 
-      this.event.trigger('sender:load');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_LOAD);
 
       this.workflow.stop();
 
@@ -232,17 +215,17 @@ class SmoothieController {
 
       log.debug(`sender: sp=${senderState.sp}, name=${chalk.yellow(JSON.stringify(senderState.name))}, size=${senderState.size}, total=${senderState.total}, context=${JSON.stringify(senderState.context)}`);
     },
-    'sender:unload': () => {
+    [CONTROLLER_COMMAND_SENDER_UNLOAD]: () => {
       this.workflow.stop();
 
       // Sender
       this.sender.unload();
 
       this.emit('sender:unload');
-      this.event.trigger('sender:unload');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_UNLOAD);
     },
-    'sender:start': () => {
-      this.event.trigger('sender:start');
+    [CONTROLLER_COMMAND_SENDER_START]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_START);
 
       this.workflow.start();
 
@@ -254,8 +237,8 @@ class SmoothieController {
     },
     // @param {object} options The options object.
     // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
-    'sender:stop': () => {
-      this.event.trigger('sender:stop');
+    [CONTROLLER_COMMAND_SENDER_STOP]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_STOP);
 
       this.workflow.stop();
 
@@ -264,21 +247,21 @@ class SmoothieController {
         this.writeln('resume'); // resume
       }
     },
-    'sender:pause': () => {
-      this.event.trigger('sender:pause');
+    [CONTROLLER_COMMAND_SENDER_PAUSE]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
 
       this.workflow.pause();
 
       this.writeln('suspend');
     },
-    'sender:resume': () => {
-      this.event.trigger('sender:resume');
+    [CONTROLLER_COMMAND_SENDER_RESUME]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_RESUME);
 
       this.writeln('resume');
 
       this.workflow.resume();
     },
-    'feeder:start': () => {
+    [CONTROLLER_COMMAND_FEEDER_START]: () => {
       if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
         return;
       }
@@ -286,42 +269,45 @@ class SmoothieController {
       this.feeder.unhold();
       this.feeder.next();
     },
-    'feeder:stop': () => {
+    [CONTROLLER_COMMAND_FEEDER_STOP]: () => {
       this.feeder.reset();
     },
-    'feedhold': () => {
-      this.event.trigger('feedhold');
+    [CONTROLLER_COMMAND_FEED_HOLD]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_FEED_HOLD);
 
       this.writeln('suspend');
     },
-    'cyclestart': () => {
-      this.event.trigger('cyclestart');
+    [CONTROLLER_COMMAND_CYCLE_START]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_CYCLE_START);
 
       this.writeln('resume');
     },
-    'homing': () => {
-      this.event.trigger('homing');
+    [CONTROLLER_COMMAND_HOMING]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_HOMING);
 
       this.writeln('$H');
     },
-    'sleep': () => {
-      this.event.trigger('sleep');
+    [CONTROLLER_COMMAND_SLEEP]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SLEEP);
 
       // Not supported
     },
-    'unlock': () => {
+    [CONTROLLER_COMMAND_UNLOCK]: () => {
       this.writeln('$X');
     },
-    'reset': () => {
+    [CONTROLLER_COMMAND_RESET]: () => {
       this.workflow.stop();
 
       this.feeder.reset();
 
       this.write('\x18'); // ^x
     },
+    [CONTROLLER_COMMAND_JOG_CANCEL]: () => {
+      // Not supported
+    },
     // Feed Overrides
     // @param {number} value A percentage value between 10 and 200. A value of zero will reset to 100%.
-    'feed_override': (...args) => {
+    [CONTROLLER_COMMAND_FEED_OVERRIDE]: (...args) => {
       const [value] = args;
       let feedOverride = this.runner.state.status.ovF;
 
@@ -334,7 +320,7 @@ class SmoothieController {
       } else {
         feedOverride += value;
       }
-      this.command('gcode', 'M220S' + feedOverride);
+      this.command(CONTROLLER_COMMAND_GCODE, 'M220S' + feedOverride);
 
       // enforce state change
       this.runner.state = {
@@ -347,7 +333,7 @@ class SmoothieController {
     },
     // Spindle Speed Overrides
     // @param {number} value A percentage value between 10 and 200. A value of zero will reset to 100%.
-    'spindle_override': (...args) => {
+    [CONTROLLER_COMMAND_SPINDLE_OVERRIDE]: (...args) => {
       const [value] = args;
       let spindleOverride = this.runner.state.status.ovS;
 
@@ -360,7 +346,7 @@ class SmoothieController {
       } else {
         spindleOverride += value;
       }
-      this.command('gcode', 'M221S' + spindleOverride);
+      this.command(CONTROLLER_COMMAND_GCODE, 'M221S' + spindleOverride);
 
       // enforce state change
       this.runner.state = {
@@ -372,37 +358,37 @@ class SmoothieController {
       };
     },
     // Rapid Overrides
-    'rapid_override': () => {
+    [CONTROLLER_COMMAND_RAPID_OVERRIDE]: () => {
       // Not supported
     },
     // @param {number} power
     // @param {number} duration
-    'laser_test': (...args) => {
+    [CONTROLLER_COMMAND_LASER_TEST]: (...args) => {
       const [power = 0, duration = 0] = args;
 
       if (!power) {
         // Turning laser off and returning to auto mode
-        this.command('gcode', 'fire off');
-        this.command('gcode', 'M5');
+        this.command(CONTROLLER_COMMAND_GCODE, 'fire off');
+        this.command(CONTROLLER_COMMAND_GCODE, 'M5');
         return;
       }
 
-      this.command('gcode', 'M3');
+      this.command(CONTROLLER_COMMAND_GCODE, 'M3');
       // Firing laser at <power>% power and entering manual mode
-      this.command('gcode', 'fire ' + ensurePositiveNumber(power));
+      this.command(CONTROLLER_COMMAND_GCODE, 'fire ' + ensurePositiveNumber(power));
       if (duration > 0) {
         // http://smoothieware.org/g4
         // Dwell S<seconds> or P<milliseconds>
         // Note that if `grbl_mode` is set to `true`, then the `P` parameter
         // is the duration to wait in seconds, not milliseconds, as a float value.
         // This is to confirm to G-code standards.
-        this.command('gcode', 'G4P' + ensurePositiveNumber(duration / 1000));
+        this.command(CONTROLLER_COMMAND_GCODE, 'G4P' + ensurePositiveNumber(duration / 1000));
         // Turning laser off and returning to auto mode
-        this.command('gcode', 'fire off');
-        this.command('gcode', 'M5');
+        this.command(CONTROLLER_COMMAND_GCODE, 'fire off');
+        this.command(CONTROLLER_COMMAND_GCODE, 'M5');
       }
     },
-    'gcode': (...args) => {
+    [CONTROLLER_COMMAND_GCODE]: (...args) => {
       const [commands, context] = args;
       const data = ensureArray(commands)
         .join('\n')
@@ -421,7 +407,7 @@ class SmoothieController {
         this.feeder.next();
       }
     },
-    'macro:run': (...args) => {
+    [CONTROLLER_COMMAND_MACRO_RUN]: (...args) => {
       let [id, context = {}, callback = noop] = args;
       if (typeof context === 'function') {
         callback = context;
@@ -436,12 +422,12 @@ class SmoothieController {
         return;
       }
 
-      this.event.trigger('macro:run');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_MACRO_RUN);
 
-      this.command('gcode', macro.content, context);
+      this.command(CONTROLLER_COMMAND_GCODE, macro.content, context);
       callback(null);
     },
-    'macro:load': (...args) => {
+    [CONTROLLER_COMMAND_MACRO_LOAD]: (...args) => {
       let [id, context = {}, callback = noop] = args;
       if (typeof context === 'function') {
         callback = context;
@@ -456,15 +442,15 @@ class SmoothieController {
         return;
       }
 
-      this.event.trigger('macro:load');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_MACRO_LOAD);
 
       const meta = {
         name: macro.name,
         content: macro.content,
       };
-      this.command('sender:load', meta, context, callback);
+      this.command(CONTROLLER_COMMAND_SENDER_LOAD, meta, context, callback);
     },
-    'watchdir:load': (...args) => {
+    [CONTROLLER_COMMAND_WATCHDIR_LOAD]: (...args) => {
       const [name, callback = noop] = args;
       const context = {}; // empty context
       const filepath = path.join(directoryWatcher.root, name);
@@ -479,7 +465,7 @@ class SmoothieController {
           name,
           content,
         };
-        this.command('sender:load', meta, context, callback);
+        this.command(CONTROLLER_COMMAND_SENDER_LOAD, meta, context, callback);
       });
     }
   };
@@ -547,7 +533,7 @@ class SmoothieController {
       if (trigger === 'system') {
         shellCommand.spawn(commands);
       } else {
-        this.command('gcode', commands);
+        this.command(CONTROLLER_COMMAND_GCODE, commands);
       }
     });
 
@@ -670,11 +656,11 @@ class SmoothieController {
           const programMode = _.intersection(words, ['M0', 'M1'])[0];
           if (programMode === 'M0') {
             log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.event.trigger('sender:pause');
+            this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
             this.workflow.pause({ data: 'M0', msg: originalLine });
           } else if (programMode === 'M1') {
             log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.event.trigger('sender:pause');
+            this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
             this.workflow.pause({ data: 'M1', msg: originalLine });
           }
         }
@@ -682,7 +668,7 @@ class SmoothieController {
         // M6 Tool Change
         if (_.includes(words, 'M6')) {
           log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
-          this.event.trigger('sender:pause');
+          this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
           this.workflow.pause({ data: 'M6', msg: originalLine });
         }
 
@@ -1041,7 +1027,7 @@ class SmoothieController {
           this.actionTime.senderFinishTime = 0;
 
           // Stop workflow
-          this.command('sender:stop');
+          this.command(CONTROLLER_COMMAND_SENDER_STOP);
         }
       }
     }, 250);
@@ -1171,10 +1157,10 @@ class SmoothieController {
 
   async initController() {
     // Check if it is Smoothieware
-    this.command('gcode', 'version');
+    this.command(CONTROLLER_COMMAND_GCODE, 'version');
 
     await delay(50);
-    this.event.trigger('controller:ready');
+    this.event.trigger(CONTROLLER_EVENT_TRIGGER_CONTROLLER_READY);
   }
 
   open(callback = noop) {
@@ -1324,10 +1310,10 @@ class SmoothieController {
   }
 
   command(cmd, ...args) {
-    const deprecatedHandler = this.deprecatedCommandHandler[cmd];
-    if (deprecatedHandler) {
-      log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-      deprecatedHandler();
+    const deprecatedCommandHandler = getDeprecatedCommandHandler(cmd);
+    if (typeof deprecatedCommandHandler === 'function') {
+      log.warn(`Warning: The ${x(cmd)} command is deprecated and will be removed in a future release.`);
+      deprecatedCommandHandler(this.command, ...args);
       return;
     }
 

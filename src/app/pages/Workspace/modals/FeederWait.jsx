@@ -40,7 +40,7 @@ const FeederWait = ({
           btnStyle="danger"
           onClick={chainedFunction(
             () => {
-              controller.command('feeder:stop');
+              controller.command('feeder_stop');
             },
             onClose,
           )}

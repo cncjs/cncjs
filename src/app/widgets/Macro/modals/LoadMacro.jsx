@@ -17,7 +17,7 @@ const controllerCommand = promisify(controller.command, {
 });
 
 const loadMacro = async ({ id }) => {
-  const cmd = 'macro:load';
+  const cmd = 'macro_load';
 
   try {
     const data = await controllerCommand(cmd, id, controller.context);

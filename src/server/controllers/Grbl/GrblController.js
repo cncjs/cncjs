@@ -20,15 +20,55 @@ import Workflow, {
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
+import x from '../../lib/json-stringify';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
 import serviceContainer from '../../service-container';
 import controllers from '../../store/controllers';
 import {
+  CONTROLLER_COMMAND_SENDER_LOAD,
+  CONTROLLER_COMMAND_SENDER_UNLOAD,
+  CONTROLLER_COMMAND_SENDER_START,
+  CONTROLLER_COMMAND_SENDER_STOP,
+  CONTROLLER_COMMAND_SENDER_PAUSE,
+  CONTROLLER_COMMAND_SENDER_RESUME,
+  CONTROLLER_COMMAND_FEEDER_START,
+  CONTROLLER_COMMAND_FEEDER_STOP,
+  CONTROLLER_COMMAND_GCODE,
+  CONTROLLER_COMMAND_FEED_HOLD,
+  CONTROLLER_COMMAND_CYCLE_START,
+  CONTROLLER_COMMAND_HOMING,
+  CONTROLLER_COMMAND_SLEEP,
+  CONTROLLER_COMMAND_UNLOCK,
+  CONTROLLER_COMMAND_RESET,
+  CONTROLLER_COMMAND_JOG_CANCEL,
+  CONTROLLER_COMMAND_FEED_OVERRIDE,
+  CONTROLLER_COMMAND_RAPID_OVERRIDE,
+  CONTROLLER_COMMAND_SPINDLE_OVERRIDE,
+  CONTROLLER_COMMAND_LASER_TEST,
+  CONTROLLER_COMMAND_MACRO_LOAD,
+  CONTROLLER_COMMAND_MACRO_RUN,
+  CONTROLLER_COMMAND_WATCHDIR_LOAD,
+  CONTROLLER_EVENT_TRIGGER_CONTROLLER_READY,
+  CONTROLLER_EVENT_TRIGGER_SENDER_LOAD,
+  CONTROLLER_EVENT_TRIGGER_SENDER_UNLOAD,
+  CONTROLLER_EVENT_TRIGGER_SENDER_START,
+  CONTROLLER_EVENT_TRIGGER_SENDER_STOP,
+  CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE,
+  CONTROLLER_EVENT_TRIGGER_SENDER_RESUME,
+  CONTROLLER_EVENT_TRIGGER_FEED_HOLD,
+  CONTROLLER_EVENT_TRIGGER_CYCLE_START,
+  CONTROLLER_EVENT_TRIGGER_HOMING,
+  CONTROLLER_EVENT_TRIGGER_SLEEP,
+  CONTROLLER_EVENT_TRIGGER_MACRO_LOAD,
+  CONTROLLER_EVENT_TRIGGER_MACRO_RUN,
   GLOBAL_OBJECTS as globalObjects,
   WRITE_SOURCE_CLIENT,
   WRITE_SOURCE_FEEDER
 } from '../constants';
+import {
+  getDeprecatedCommandHandler,
+} from '../utils';
 import GrblRunner from './GrblRunner';
 import {
   GRBL,
@@ -139,68 +179,8 @@ class GrblController {
   // Workflow
   workflow = null;
 
-  deprecatedCommandHandler = {
-    'start': () => {
-      this.command('sender:start');
-    },
-    'stop': (...args) => {
-      this.command('sender:stop', ...args);
-    },
-    'pause': () => {
-      this.command('sender:pause');
-    },
-    'resume': () => {
-      this.command('sender:resume');
-    },
-    'gcode:load': (...args) => {
-      let [name, gcode, context = {}, callback = noop] = args;
-      const meta = {
-        name: name,
-        content: gcode,
-      };
-      this.command('sender:load', meta, context, callback);
-    },
-    'gcode:unload': () => {
-      this.command('sender:unload');
-    },
-    'gcode:start': () => {
-      this.command('sender:start');
-    },
-    'gcode:stop': (...args) => {
-      this.command('sender:stop', ...args);
-    },
-    'gcode:pause': () => {
-      this.command('sender:pause');
-    },
-    'gcode:resume': () => {
-      this.command('sender:resume');
-    },
-    'feeder:feed': (...args) => {
-      this.command('gcode', ...args);
-    },
-    'jogCancel': () => {
-      this.command('jog_cancel');
-    },
-    'feedOverride': (...args) => {
-      this.command('feed_override', ...args);
-    },
-    'spindleOverride': (...args) => {
-      this.command('spindle_override', ...args);
-    },
-    'rapidOverride': (...args) => {
-      this.command('rapid_override', ...args);
-    },
-    'lasertest:on': (...args) => {
-      this.command('laser_test', ...args);
-    },
-    'lasertest:off': () => {
-      const power = 0;
-      this.command('laser_test', power);
-    },
-  };
-
   commandHandler = {
-    'sender:load': (...args) => {
+    [CONTROLLER_COMMAND_SENDER_LOAD]: (...args) => {
       let [meta, context = {}, callback = noop] = args;
       if (typeof context === 'function') {
         callback = context;
@@ -228,7 +208,7 @@ class GrblController {
         content: this.sender.state.content,
       }, context);
 
-      this.event.trigger('sender:load');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_LOAD);
 
       this.workflow.stop();
 
@@ -237,17 +217,17 @@ class GrblController {
 
       log.debug(`sender: sp=${senderState.sp}, name=${chalk.yellow(JSON.stringify(senderState.name))}, size=${senderState.size}, total=${senderState.total}, context=${JSON.stringify(senderState.context)}`);
     },
-    'sender:unload': () => {
+    [CONTROLLER_COMMAND_SENDER_UNLOAD]: () => {
       this.workflow.stop();
 
       // Sender
       this.sender.unload();
 
       this.emit('sender:unload');
-      this.event.trigger('sender:unload');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_UNLOAD);
     },
-    'sender:start': () => {
-      this.event.trigger('sender:start');
+    [CONTROLLER_COMMAND_SENDER_START]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_START);
 
       this.workflow.start();
 
@@ -259,8 +239,8 @@ class GrblController {
     },
     // @param {object} options The options object.
     // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
-    'sender:stop': async (...args) => {
-      this.event.trigger('sender:stop');
+    [CONTROLLER_COMMAND_SENDER_STOP]: async (...args) => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_STOP);
 
       this.workflow.stop();
 
@@ -282,19 +262,19 @@ class GrblController {
         }
       }
     },
-    'sender:pause': () => {
-      this.event.trigger('sender:pause');
+    [CONTROLLER_COMMAND_SENDER_PAUSE]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
 
       this.workflow.pause();
       this.write('!');
     },
-    'sender:resume': () => {
-      this.event.trigger('sender:resume');
+    [CONTROLLER_COMMAND_SENDER_RESUME]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_RESUME);
 
       this.write('~');
       this.workflow.resume();
     },
-    'feeder:start': () => {
+    [CONTROLLER_COMMAND_FEEDER_START]: () => {
       if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
         return;
       }
@@ -302,40 +282,40 @@ class GrblController {
       this.feeder.unhold();
       this.feeder.next();
     },
-    'feeder:stop': () => {
+    [CONTROLLER_COMMAND_FEEDER_STOP]: () => {
       this.feeder.reset();
     },
-    'feedhold': () => {
-      this.event.trigger('feedhold');
+    [CONTROLLER_COMMAND_FEED_HOLD]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_FEED_HOLD);
 
       this.write('!');
     },
-    'cyclestart': () => {
-      this.event.trigger('cyclestart');
+    [CONTROLLER_COMMAND_CYCLE_START]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_CYCLE_START);
 
       this.write('~');
     },
-    'homing': () => {
-      this.event.trigger('homing');
+    [CONTROLLER_COMMAND_HOMING]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_HOMING);
 
       this.writeln('$H');
     },
-    'sleep': () => {
-      this.event.trigger('sleep');
+    [CONTROLLER_COMMAND_SLEEP]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SLEEP);
 
       this.writeln('$SLP');
     },
-    'unlock': () => {
+    [CONTROLLER_COMMAND_UNLOCK]: () => {
       this.writeln('$X');
     },
-    'reset': () => {
+    [CONTROLLER_COMMAND_RESET]: () => {
       this.workflow.stop();
 
       this.feeder.reset();
 
       this.write('\x18'); // ^x
     },
-    'jog_cancel': () => {
+    [CONTROLLER_COMMAND_JOG_CANCEL]: () => {
       // https://github.com/gnea/grbl/blob/master/doc/markdown/jogging.md
       this.write('\x85');
     },
@@ -346,7 +326,7 @@ class GrblController {
     // -10: Decrease 10%
     //   1: Increase 1%
     //  -1: Decrease 1%
-    'feed_override': (...args) => {
+    [CONTROLLER_COMMAND_FEED_OVERRIDE]: (...args) => {
       const [value] = args;
 
       if (value === 0) {
@@ -368,7 +348,7 @@ class GrblController {
     // -10: Decrease 10%
     //   1: Increase 1%
     //  -1: Decrease 1%
-    'spindle_override': (...args) => {
+    [CONTROLLER_COMMAND_SPINDLE_OVERRIDE]: (...args) => {
       const [value] = args;
 
       if (value === 0) {
@@ -388,7 +368,7 @@ class GrblController {
     // 100: Set to 100% full rapid rate.
     //  50: Set to 50% of rapid rate.
     //  25: Set to 25% of rapid rate.
-    'rapid_override': (...args) => {
+    [CONTROLLER_COMMAND_RAPID_OVERRIDE]: (...args) => {
       const [value] = args;
 
       if (value === 0 || value === 100) {
@@ -402,25 +382,25 @@ class GrblController {
     // @param {number} power
     // @param {number} duration
     // @param {number} maxS
-    'laser_test': (...args) => {
+    [CONTROLLER_COMMAND_LASER_TEST]: (...args) => {
       const [power = 0, duration = 0, maxS = 1000] = args;
 
       if (!power) {
-        this.command('gcode', 'M5S0');
+        this.command(CONTROLLER_COMMAND_GCODE, 'M5S0');
         return;
       }
 
       // https://github.com/gnea/grbl/wiki/Grbl-v1.1-Laser-Mode
       // The laser will only turn on when Grbl is in a G1, G2, or G3 motion mode.
-      this.command('gcode', 'G1F1');
-      this.command('gcode', 'M3S' + ensurePositiveNumber(maxS * (power / 100)));
+      this.command(CONTROLLER_COMMAND_GCODE, 'G1F1');
+      this.command(CONTROLLER_COMMAND_GCODE, 'M3S' + ensurePositiveNumber(maxS * (power / 100)));
 
       if (duration > 0) {
-        this.command('gcode', 'G4P' + ensurePositiveNumber(duration / 1000));
-        this.command('gcode', 'M5S0');
+        this.command(CONTROLLER_COMMAND_GCODE, 'G4P' + ensurePositiveNumber(duration / 1000));
+        this.command(CONTROLLER_COMMAND_GCODE, 'M5S0');
       }
     },
-    'gcode': (...args) => {
+    [CONTROLLER_COMMAND_GCODE]: (...args) => {
       const [commands, context] = args;
       const data = ensureArray(commands)
         .join('\n')
@@ -439,7 +419,7 @@ class GrblController {
         this.feeder.next();
       }
     },
-    'macro:run': (...args) => {
+    [CONTROLLER_COMMAND_MACRO_RUN]: (...args) => {
       let [id, context = {}, callback = noop] = args;
       if (typeof context === 'function') {
         callback = context;
@@ -454,12 +434,12 @@ class GrblController {
         return;
       }
 
-      this.event.trigger('macro:run');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_MACRO_RUN);
 
-      this.command('gcode', macro.content, context);
+      this.command(CONTROLLER_COMMAND_GCODE, macro.content, context);
       callback(null);
     },
-    'macro:load': (...args) => {
+    [CONTROLLER_COMMAND_MACRO_LOAD]: (...args) => {
       let [id, context = {}, callback = noop] = args;
       if (typeof context === 'function') {
         callback = context;
@@ -474,15 +454,15 @@ class GrblController {
         return;
       }
 
-      this.event.trigger('macro:load');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_MACRO_LOAD);
 
       const meta = {
         name: macro.name,
         content: macro.content,
       };
-      this.command('sender:load', meta, context, callback);
+      this.command(CONTROLLER_COMMAND_SENDER_LOAD, meta, context, callback);
     },
-    'watchdir:load': (...args) => {
+    [CONTROLLER_COMMAND_WATCHDIR_LOAD]: (...args) => {
       const [name, callback = noop] = args;
       const context = {}; // empty context
       const filepath = path.join(directoryWatcher.root, name);
@@ -497,7 +477,7 @@ class GrblController {
           name,
           content,
         };
-        this.command('sender:load', meta, context, callback);
+        this.command(CONTROLLER_COMMAND_SENDER_LOAD, meta, context, callback);
       });
     },
   };
@@ -590,7 +570,7 @@ class GrblController {
       if (trigger === 'system') {
         shellCommand.spawn(commands);
       } else {
-        this.command('gcode', commands);
+        this.command(CONTROLLER_COMMAND_GCODE, commands);
       }
     });
 
@@ -720,11 +700,11 @@ class GrblController {
           const programMode = _.intersection(words, ['M0', 'M1'])[0];
           if (programMode === 'M0') {
             log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.event.trigger('sender:pause');
+            this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
             this.workflow.pause({ data: 'M0', msg: originalLine });
           } else if (programMode === 'M1') {
             log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.event.trigger('sender:pause');
+            this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
             this.workflow.pause({ data: 'M1', msg: originalLine });
           }
         }
@@ -732,7 +712,7 @@ class GrblController {
         // M6 Tool Change
         if (_.includes(words, 'M6')) {
           log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
-          this.event.trigger('sender:pause');
+          this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
           this.workflow.pause({ data: 'M6', msg: originalLine });
 
           // Surround M6 with parentheses to ignore unsupported command error
@@ -1124,7 +1104,7 @@ class GrblController {
           this.actionTime.senderFinishTime = 0;
 
           // Stop workflow
-          this.command('sender:stop');
+          this.command(CONTROLLER_COMMAND_SENDER_STOP);
         }
       }
     }, 250);
@@ -1137,7 +1117,7 @@ class GrblController {
     this.writeln('$$');
 
     await delay(50);
-    this.event.trigger('controller:ready');
+    this.event.trigger(CONTROLLER_EVENT_TRIGGER_CONTROLLER_READY);
   }
 
   populateContext(context) {
@@ -1409,10 +1389,10 @@ class GrblController {
   }
 
   command(cmd, ...args) {
-    const deprecatedHandler = this.deprecatedCommandHandler[cmd];
-    if (deprecatedHandler) {
-      log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-      deprecatedHandler(...args);
+    const deprecatedCommandHandler = getDeprecatedCommandHandler(cmd);
+    if (typeof deprecatedCommandHandler === 'function') {
+      log.warn(`Warning: The ${x(cmd)} command is deprecated and will be removed in a future release.`);
+      deprecatedCommandHandler(this.command, ...args);
       return;
     }
 

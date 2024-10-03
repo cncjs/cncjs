@@ -20,15 +20,55 @@ import Workflow, {
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
+import x from '../../lib/json-stringify';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
 import serviceContainer from '../../service-container';
 import controllers from '../../store/controllers';
 import {
+  CONTROLLER_COMMAND_SENDER_LOAD,
+  CONTROLLER_COMMAND_SENDER_UNLOAD,
+  CONTROLLER_COMMAND_SENDER_START,
+  CONTROLLER_COMMAND_SENDER_STOP,
+  CONTROLLER_COMMAND_SENDER_PAUSE,
+  CONTROLLER_COMMAND_SENDER_RESUME,
+  CONTROLLER_COMMAND_FEEDER_START,
+  CONTROLLER_COMMAND_FEEDER_STOP,
+  CONTROLLER_COMMAND_GCODE,
+  CONTROLLER_COMMAND_FEED_HOLD,
+  CONTROLLER_COMMAND_CYCLE_START,
+  CONTROLLER_COMMAND_HOMING,
+  CONTROLLER_COMMAND_SLEEP,
+  CONTROLLER_COMMAND_UNLOCK,
+  CONTROLLER_COMMAND_RESET,
+  CONTROLLER_COMMAND_JOG_CANCEL,
+  CONTROLLER_COMMAND_FEED_OVERRIDE,
+  CONTROLLER_COMMAND_RAPID_OVERRIDE,
+  CONTROLLER_COMMAND_SPINDLE_OVERRIDE,
+  CONTROLLER_COMMAND_LASER_TEST,
+  CONTROLLER_COMMAND_MACRO_LOAD,
+  CONTROLLER_COMMAND_MACRO_RUN,
+  CONTROLLER_COMMAND_WATCHDIR_LOAD,
+  CONTROLLER_EVENT_TRIGGER_CONTROLLER_READY,
+  CONTROLLER_EVENT_TRIGGER_SENDER_LOAD,
+  CONTROLLER_EVENT_TRIGGER_SENDER_UNLOAD,
+  CONTROLLER_EVENT_TRIGGER_SENDER_START,
+  CONTROLLER_EVENT_TRIGGER_SENDER_STOP,
+  CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE,
+  CONTROLLER_EVENT_TRIGGER_SENDER_RESUME,
+  CONTROLLER_EVENT_TRIGGER_FEED_HOLD,
+  CONTROLLER_EVENT_TRIGGER_CYCLE_START,
+  CONTROLLER_EVENT_TRIGGER_HOMING,
+  CONTROLLER_EVENT_TRIGGER_SLEEP,
+  CONTROLLER_EVENT_TRIGGER_MACRO_LOAD,
+  CONTROLLER_EVENT_TRIGGER_MACRO_RUN,
   GLOBAL_OBJECTS as globalObjects,
   WRITE_SOURCE_CLIENT,
   WRITE_SOURCE_FEEDER
 } from '../constants';
+import {
+  getDeprecatedCommandHandler,
+} from '../utils';
 import TinyGRunner from './TinyGRunner';
 import {
   TINYG,
@@ -165,68 +205,8 @@ class TinyGController {
   // Workflow
   workflow = null;
 
-  deprecatedCommandHandler = {
-    'start': () => {
-      this.command('sender:start');
-    },
-    'stop': (...args) => {
-      this.command('sender:stop', ...args);
-    },
-    'pause': () => {
-      this.command('sender:pause');
-    },
-    'resume': () => {
-      this.command('sender:resume');
-    },
-    'gcode:load': (...args) => {
-      let [name, gcode, context = {}, callback = noop] = args;
-      const meta = {
-        name: name,
-        content: gcode,
-      };
-      this.command('sender:load', meta, context, callback);
-    },
-    'gcode:unload': () => {
-      this.command('sender:unload');
-    },
-    'gcode:start': () => {
-      this.command('sender:start');
-    },
-    'gcode:stop': (...args) => {
-      this.command('sender:stop', ...args);
-    },
-    'gcode:pause': () => {
-      this.command('sender:pause');
-    },
-    'gcode:resume': () => {
-      this.command('sender:resume');
-    },
-    'feeder:feed': (...args) => {
-      this.command('gcode', ...args);
-    },
-    'jogCancel': () => {
-      this.command('jog_cancel');
-    },
-    'feedOverride': (...args) => {
-      this.command('feed_override', ...args);
-    },
-    'spindleOverride': (...args) => {
-      this.command('spindle_override', ...args);
-    },
-    'rapidOverride': (...args) => {
-      this.command('rapid_override', ...args);
-    },
-    'lasertest:on': (...args) => {
-      this.command('laser_test', ...args);
-    },
-    'lasertest:off': () => {
-      const power = 0;
-      this.command('laser_test', power);
-    },
-  };
-
   commandHandler = {
-    'sender:load': (...args) => {
+    [CONTROLLER_COMMAND_SENDER_LOAD]: (...args) => {
       let [meta, context = {}, callback = noop] = args;
       if (typeof context === 'function') {
         callback = context;
@@ -254,7 +234,7 @@ class TinyGController {
         content: this.sender.state.content,
       }, context);
 
-      this.event.trigger('sender:load');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_LOAD);
 
       this.workflow.stop();
 
@@ -263,17 +243,17 @@ class TinyGController {
 
       log.debug(`sender: sp=${senderState.sp}, name=${chalk.yellow(JSON.stringify(senderState.name))}, size=${senderState.size}, total=${senderState.total}, context=${JSON.stringify(senderState.context)}`);
     },
-    'sender:unload': () => {
+    [CONTROLLER_COMMAND_SENDER_UNLOAD]: () => {
       this.workflow.stop();
 
       // Sender
       this.sender.unload();
 
       this.emit('sender:unload');
-      this.event.trigger('sender:unload');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_UNLOAD);
     },
-    'sender:start': () => {
-      this.event.trigger('sender:start');
+    [CONTROLLER_COMMAND_SENDER_START]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_START);
 
       this.workflow.start();
 
@@ -285,8 +265,8 @@ class TinyGController {
     },
     // @param {object} options The options object.
     // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
-    'sender:stop': (...args) => {
-      this.event.trigger('sender:stop');
+    [CONTROLLER_COMMAND_SENDER_STOP]: (...args) => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_STOP);
 
       this.workflow.stop();
 
@@ -314,21 +294,21 @@ class TinyGController {
 
       this.writeln('{"qr":""}'); // queue report
     },
-    'sender:pause': () => {
-      this.event.trigger('sender:pause');
+    [CONTROLLER_COMMAND_SENDER_PAUSE]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
 
       this.workflow.pause();
       this.writeln('!'); // feedhold
       this.writeln('{"qr":""}'); // queue report
     },
-    'sender:resume': () => {
-      this.event.trigger('sender:resume');
+    [CONTROLLER_COMMAND_SENDER_RESUME]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_RESUME);
 
       this.writeln('~'); // cycle start
       this.workflow.resume();
       this.writeln('{"qr":""}'); // queue report
     },
-    'feeder:start': () => {
+    [CONTROLLER_COMMAND_FEEDER_START]: () => {
       if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
         return;
       }
@@ -337,40 +317,40 @@ class TinyGController {
       this.feeder.unhold();
       this.feeder.next();
     },
-    'feeder:stop': () => {
+    [CONTROLLER_COMMAND_FEEDER_STOP]: () => {
       this.feeder.reset();
     },
-    'feedhold': () => {
-      this.event.trigger('feedhold');
+    [CONTROLLER_COMMAND_FEED_HOLD]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_FEED_HOLD);
 
       this.writeln('!'); // feedhold
       this.writeln('{"qr":""}'); // queue report
     },
-    'cyclestart': () => {
-      this.event.trigger('cyclestart');
+    [CONTROLLER_COMMAND_CYCLE_START]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_CYCLE_START);
 
       this.writeln('~'); // cycle start
       this.writeln('{"qr":""}'); // queue report
     },
-    'homing': () => {
-      this.event.trigger('homing');
+    [CONTROLLER_COMMAND_HOMING]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_HOMING);
 
       this.writeln('G28.2 X0 Y0 Z0');
     },
-    'sleep': () => {
-      this.event.trigger('sleep');
+    [CONTROLLER_COMMAND_SLEEP]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SLEEP);
 
       // Not supported
     },
-    'unlock': () => {
+    [CONTROLLER_COMMAND_UNLOCK]: () => {
       this.writeln('{clear:null}'); // alarm clear
     },
-    'reset': () => {
+    [CONTROLLER_COMMAND_RESET]: () => {
       this.workflow.stop();
       this.feeder.reset();
       this.write('\x18'); // reset board (^x)
     },
-    'jog_cancel': () => {
+    [CONTROLLER_COMMAND_JOG_CANCEL]: () => {
       // https://github.com/synthetos/g2/wiki/Feedhold,-Resume,-and-Other-Simple-Commands#jogging-using-feedhold-and-queue-flush
       // Send a ! to stop movement immediately.
       // Send a % to flush remaining moves from planner buffer.
@@ -379,7 +359,7 @@ class TinyGController {
     },
     // Feed Overrides
     // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
-    'feed_override': (...args) => {
+    [CONTROLLER_COMMAND_FEED_OVERRIDE]: (...args) => {
       const [value] = args;
       let mfo = this.runner.settings.mfo;
 
@@ -393,11 +373,11 @@ class TinyGController {
         mfo = (mfo * 100 + value) / 100;
       }
 
-      this.command('gcode', `{mfo:${mfo}}`);
+      this.command(CONTROLLER_COMMAND_GCODE, `{mfo:${mfo}}`);
     },
     // Spindle Speed Overrides
     // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
-    'spindle_override': (...args) => {
+    [CONTROLLER_COMMAND_SPINDLE_OVERRIDE]: (...args) => {
       const [value] = args;
       let sso = this.runner.settings.sso;
 
@@ -411,69 +391,39 @@ class TinyGController {
         sso = (sso * 100 + value) / 100;
       }
 
-      this.command('gcode', `{sso:${sso}}`);
+      this.command(CONTROLLER_COMMAND_GCODE, `{sso:${sso}}`);
     },
     // Rapid Overrides
-    'rapid_override': (...args) => {
+    [CONTROLLER_COMMAND_RAPID_OVERRIDE]: (...args) => {
       const [value] = args;
 
       if (value === 0 || value === 100) {
-        this.command('gcode', '{mto:1}');
+        this.command(CONTROLLER_COMMAND_GCODE, '{mto:1}');
       } else if (value === 50) {
-        this.command('gcode', '{mto:0.5}');
+        this.command(CONTROLLER_COMMAND_GCODE, '{mto:0.5}');
       } else if (value === 25) {
-        this.command('gcode', '{mto:0.25}');
-      }
-    },
-    // Turn on any motor that is not disabled.
-    // @param {number} [value] Enable the motors with a specified timeout value in seconds. Defaults to 3600 seconds.
-    'motor:enable': (...args) => {
-      let [mt = this.state.mt] = args;
-      mt = ensureFiniteNumber(mt);
-
-      if (mt <= 0) {
-        this.command('motor:disable');
-        return;
-      }
-
-      // Providing {me:0} will enable the motors for the timeout specified in the mt value.
-      this.command('gcode', `{me:${mt}}`);
-      this.command('gcode', '{pwr:n}');
-    },
-    // Disable all motors that are not permanently enabled.
-    'motor:disable': () => {
-      this.command('gcode', '{md:0}');
-      this.command('gcode', '{pwr:n}');
-    },
-    // Sets the number of seconds before a motor will shut off automatically.
-    // @param {number} value The default timeout in seconds.
-    'motor:timeout': (...args) => {
-      let [mt] = args;
-      mt = ensureFiniteNumber(mt);
-
-      if (mt >= 0) {
-        this.command('gcode', `{mt:${mt}}`);
+        this.command(CONTROLLER_COMMAND_GCODE, '{mto:0.25}');
       }
     },
     // @param {number} power
     // @param {number} duration
     // @param {number} maxS
-    'laser_test': (...args) => {
+    [CONTROLLER_COMMAND_LASER_TEST]: (...args) => {
       const [power = 0, duration = 0, maxS = 1000] = args;
 
       if (!power) {
-        this.command('gcode', 'M5S0');
+        this.command(CONTROLLER_COMMAND_GCODE, 'M5S0');
         return;
       }
 
-      this.command('gcode', 'M3S' + ensurePositiveNumber(maxS * (power / 100)));
+      this.command(CONTROLLER_COMMAND_GCODE, 'M3S' + ensurePositiveNumber(maxS * (power / 100)));
 
       if (duration > 0) {
-        this.command('gcode', 'G4P' + ensurePositiveNumber(duration / 1000));
-        this.command('gcode', 'M5S0');
+        this.command(CONTROLLER_COMMAND_GCODE, 'G4P' + ensurePositiveNumber(duration / 1000));
+        this.command(CONTROLLER_COMMAND_GCODE, 'M5S0');
       }
     },
-    'gcode': (...args) => {
+    [CONTROLLER_COMMAND_GCODE]: (...args) => {
       const [commands, context] = args;
       const data = ensureArray(commands)
         .join('\n')
@@ -492,7 +442,7 @@ class TinyGController {
         this.feeder.next();
       }
     },
-    'macro:run': (...args) => {
+    [CONTROLLER_COMMAND_MACRO_RUN]: (...args) => {
       let [id, context = {}, callback = noop] = args;
       if (typeof context === 'function') {
         callback = context;
@@ -507,12 +457,12 @@ class TinyGController {
         return;
       }
 
-      this.event.trigger('macro:run');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_MACRO_RUN);
 
-      this.command('gcode', macro.content, context);
+      this.command(CONTROLLER_COMMAND_GCODE, macro.content, context);
       callback(null);
     },
-    'macro:load': (...args) => {
+    [CONTROLLER_COMMAND_MACRO_LOAD]: (...args) => {
       let [id, context = {}, callback = noop] = args;
       if (typeof context === 'function') {
         callback = context;
@@ -527,15 +477,15 @@ class TinyGController {
         return;
       }
 
-      this.event.trigger('macro:load');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_MACRO_LOAD);
 
       const meta = {
         name: macro.name,
         content: macro.content,
       };
-      this.command('sender:load', meta, context, callback);
+      this.command(CONTROLLER_COMMAND_SENDER_LOAD, meta, context, callback);
     },
-    'watchdir:load': (...args) => {
+    [CONTROLLER_COMMAND_WATCHDIR_LOAD]: (...args) => {
       const [name, callback = noop] = args;
       const context = {}; // empty context
       const filepath = path.join(directoryWatcher.root, name);
@@ -550,7 +500,7 @@ class TinyGController {
           name,
           content,
         };
-        this.command('sender:load', meta, context, callback);
+        this.command(CONTROLLER_COMMAND_SENDER_LOAD, meta, context, callback);
       });
     },
   };
@@ -619,7 +569,7 @@ class TinyGController {
       if (trigger === 'system') {
         shellCommand.spawn(commands);
       } else {
-        this.command('gcode', commands);
+        this.command(CONTROLLER_COMMAND_GCODE, commands);
       }
     });
 
@@ -743,11 +693,11 @@ class TinyGController {
           const programMode = _.intersection(words, ['M0', 'M1'])[0];
           if (programMode === 'M0') {
             log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.event.trigger('sender:pause');
+            this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
             this.workflow.pause({ data: 'M0', msg: originalLine });
           } else if (programMode === 'M1') {
             log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.event.trigger('sender:pause');
+            this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
             this.workflow.pause({ data: 'M1', msg: originalLine });
           }
         }
@@ -755,7 +705,7 @@ class TinyGController {
         // M6 Tool Change
         if (_.includes(words, 'M6')) {
           log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
-          this.event.trigger('sender:pause');
+          this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
           this.workflow.pause({ data: 'M6', msg: originalLine });
         }
 
@@ -1090,7 +1040,7 @@ class TinyGController {
           this.actionTime.senderFinishTime = 0;
 
           // Stop workflow
-          this.command('sender:stop');
+          this.command(CONTROLLER_COMMAND_SENDER_STOP);
         }
       }
     }, 250);
@@ -1112,7 +1062,7 @@ class TinyGController {
       }
 
       log.silly(`init: ${cmd} ${cmd.length}`);
-      this.command('gcode', cmd);
+      this.command(CONTROLLER_COMMAND_GCODE, cmd);
     };
     const relaxedJSON = (json) => {
       if (typeof json === 'object') {
@@ -1184,7 +1134,7 @@ class TinyGController {
     send('{sr:n}');
 
     await delay(50);
-    this.event.trigger('controller:ready');
+    this.event.trigger(CONTROLLER_EVENT_TRIGGER_CONTROLLER_READY);
   }
 
   populateContext(context) {
@@ -1456,10 +1406,10 @@ class TinyGController {
   // ^d           Kill Job        Trigger ALARM to kill current job. Send {clear:n}, M2 or M30 to end ALARM state
   // ^x           Reset Board     Perform hardware reset to restart the board
   command(cmd, ...args) {
-    const deprecatedHandler = this.deprecatedCommandHandler[cmd];
-    if (deprecatedHandler) {
-      log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-      deprecatedHandler();
+    const deprecatedCommandHandler = getDeprecatedCommandHandler(cmd);
+    if (typeof deprecatedCommandHandler === 'function') {
+      log.warn(`Warning: The ${x(cmd)} command is deprecated and will be removed in a future release.`);
+      deprecatedCommandHandler(this.command, ...args);
       return;
     }
 

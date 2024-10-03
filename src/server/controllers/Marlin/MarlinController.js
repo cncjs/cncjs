@@ -19,17 +19,57 @@ import Workflow, {
   WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
+import x from '../../lib/json-stringify';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
 import serviceContainer from '../../service-container';
 import controllers from '../../store/controllers';
 import {
+  CONTROLLER_COMMAND_SENDER_LOAD,
+  CONTROLLER_COMMAND_SENDER_UNLOAD,
+  CONTROLLER_COMMAND_SENDER_START,
+  CONTROLLER_COMMAND_SENDER_STOP,
+  CONTROLLER_COMMAND_SENDER_PAUSE,
+  CONTROLLER_COMMAND_SENDER_RESUME,
+  CONTROLLER_COMMAND_FEEDER_START,
+  CONTROLLER_COMMAND_FEEDER_STOP,
+  CONTROLLER_COMMAND_GCODE,
+  CONTROLLER_COMMAND_FEED_HOLD,
+  CONTROLLER_COMMAND_CYCLE_START,
+  CONTROLLER_COMMAND_HOMING,
+  CONTROLLER_COMMAND_SLEEP,
+  CONTROLLER_COMMAND_UNLOCK,
+  CONTROLLER_COMMAND_RESET,
+  CONTROLLER_COMMAND_JOG_CANCEL,
+  CONTROLLER_COMMAND_FEED_OVERRIDE,
+  CONTROLLER_COMMAND_RAPID_OVERRIDE,
+  CONTROLLER_COMMAND_SPINDLE_OVERRIDE,
+  CONTROLLER_COMMAND_LASER_TEST,
+  CONTROLLER_COMMAND_MACRO_LOAD,
+  CONTROLLER_COMMAND_MACRO_RUN,
+  CONTROLLER_COMMAND_WATCHDIR_LOAD,
+  CONTROLLER_EVENT_TRIGGER_CONTROLLER_READY,
+  CONTROLLER_EVENT_TRIGGER_SENDER_LOAD,
+  CONTROLLER_EVENT_TRIGGER_SENDER_UNLOAD,
+  CONTROLLER_EVENT_TRIGGER_SENDER_START,
+  CONTROLLER_EVENT_TRIGGER_SENDER_STOP,
+  CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE,
+  CONTROLLER_EVENT_TRIGGER_SENDER_RESUME,
+  CONTROLLER_EVENT_TRIGGER_FEED_HOLD,
+  CONTROLLER_EVENT_TRIGGER_CYCLE_START,
+  CONTROLLER_EVENT_TRIGGER_HOMING,
+  CONTROLLER_EVENT_TRIGGER_SLEEP,
+  CONTROLLER_EVENT_TRIGGER_MACRO_LOAD,
+  CONTROLLER_EVENT_TRIGGER_MACRO_RUN,
   GLOBAL_OBJECTS as globalObjects,
   WRITE_SOURCE_CLIENT,
   WRITE_SOURCE_SERVER,
   WRITE_SOURCE_FEEDER,
   WRITE_SOURCE_SENDER
 } from '../constants';
+import {
+  getDeprecatedCommandHandler,
+} from '../utils';
 import MarlinRunner from './MarlinRunner';
 import interpret from './interpret';
 import {
@@ -222,65 +262,8 @@ class MarlinController {
     }, 1000);
   })();
 
-  deprecatedCommandHandler = {
-    'start': () => {
-      this.command('sender:start');
-    },
-    'stop': (...args) => {
-      this.command('sender:stop', ...args);
-    },
-    'pause': () => {
-      this.command('sender:pause');
-    },
-    'resume': () => {
-      this.command('sender:resume');
-    },
-    'gcode:load': (...args) => {
-      let [name, gcode, context = {}, callback = noop] = args;
-      const meta = {
-        name: name,
-        content: gcode,
-      };
-      this.command('sender:load', meta, context, callback);
-    },
-    'gcode:unload': () => {
-      this.command('sender:unload');
-    },
-    'gcode:start': () => {
-      this.command('sender:start');
-    },
-    'gcode:stop': (...args) => {
-      this.command('sender:stop', ...args);
-    },
-    'gcode:pause': () => {
-      this.command('sender:pause');
-    },
-    'gcode:resume': () => {
-      this.command('sender:resume');
-    },
-    'feeder:feed': (...args) => {
-      this.command('gcode', ...args);
-    },
-    'feedOverride': (...args) => {
-      this.command('feed_override', ...args);
-    },
-    'spindleOverride': (...args) => {
-      this.command('spindle_override', ...args);
-    },
-    'rapidOverride': (...args) => {
-      this.command('rapid_override', ...args);
-    },
-    'lasertest:on': (...args) => {
-      this.command('laser_test', ...args);
-    },
-    'lasertest:off': () => {
-      const power = 0;
-      this.command('laser_test', power);
-    },
-  };
-
   commandHandler = {
-    'sender:load': (...args) => {
+    [CONTROLLER_COMMAND_SENDER_LOAD]: (...args) => {
       let [meta, context = {}, callback = noop] = args;
       if (typeof context === 'function') {
         callback = context;
@@ -308,7 +291,7 @@ class MarlinController {
         content: this.sender.state.content,
       }, context);
 
-      this.event.trigger('sender:load');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_LOAD);
 
       this.workflow.stop();
 
@@ -317,17 +300,17 @@ class MarlinController {
 
       log.debug(`sender: sp=${senderState.sp}, name=${chalk.yellow(JSON.stringify(senderState.name))}, size=${senderState.size}, total=${senderState.total}, context=${JSON.stringify(senderState.context)}`);
     },
-    'sender:unload': () => {
+    [CONTROLLER_COMMAND_SENDER_UNLOAD]: () => {
       this.workflow.stop();
 
       // Sender
       this.sender.unload();
 
       this.emit('sender:unload');
-      this.event.trigger('sender:unload');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_UNLOAD);
     },
-    'sender:start': () => {
-      this.event.trigger('sender:start');
+    [CONTROLLER_COMMAND_SENDER_START]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_START);
 
       this.workflow.start();
 
@@ -339,51 +322,51 @@ class MarlinController {
     },
     // @param {object} options The options object.
     // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
-    'sender:stop': () => {
-      this.event.trigger('sender:stop');
+    [CONTROLLER_COMMAND_SENDER_STOP]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_STOP);
 
       this.workflow.stop();
     },
-    'sender:pause': () => {
-      this.event.trigger('sender:pause');
+    [CONTROLLER_COMMAND_SENDER_PAUSE]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
 
       this.workflow.pause();
     },
-    'sender:resume': () => {
-      this.event.trigger('sender:resume');
+    [CONTROLLER_COMMAND_SENDER_RESUME]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_RESUME);
 
       this.workflow.resume();
     },
-    'feeder:start': () => {
+    [CONTROLLER_COMMAND_FEEDER_START]: () => {
       if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
         return;
       }
       this.feeder.unhold();
       this.feeder.next();
     },
-    'feeder:stop': () => {
+    [CONTROLLER_COMMAND_FEEDER_STOP]: () => {
       this.feeder.reset();
     },
-    'feedhold': () => {
-      this.event.trigger('feedhold');
+    [CONTROLLER_COMMAND_FEED_HOLD]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_FEED_HOLD);
     },
-    'cyclestart': () => {
-      this.event.trigger('cyclestart');
+    [CONTROLLER_COMMAND_CYCLE_START]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_CYCLE_START);
     },
-    'homing': () => {
-      this.event.trigger('homing');
+    [CONTROLLER_COMMAND_HOMING]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_HOMING);
 
       this.writeln('G28.2 X Y Z');
     },
-    'sleep': () => {
-      this.event.trigger('sleep');
+    [CONTROLLER_COMMAND_SLEEP]: () => {
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_SLEEP);
 
       // Unupported
     },
-    'unlock': () => {
+    [CONTROLLER_COMMAND_UNLOCK]: () => {
       // Unsupported
     },
-    'reset': () => {
+    [CONTROLLER_COMMAND_RESET]: () => {
       this.workflow.stop();
 
       this.feeder.reset();
@@ -391,9 +374,12 @@ class MarlinController {
       // M112: Emergency Stop
       this.writeln('M112');
     },
+    [CONTROLLER_COMMAND_JOG_CANCEL]: () => {
+      // Not supported
+    },
     // Feed Overrides
     // @param {number} value A percentage value between 10 and 500. A value of zero will reset to 100%.
-    'feed_override': (...args) => {
+    [CONTROLLER_COMMAND_FEED_OVERRIDE]: (...args) => {
       const [value] = args;
       let feedOverride = this.runner.state.ovF;
 
@@ -407,7 +393,7 @@ class MarlinController {
         feedOverride += value;
       }
       // M220: Set speed factor override percentage
-      this.command('gcode', 'M220S' + feedOverride);
+      this.command(CONTROLLER_COMMAND_GCODE, 'M220S' + feedOverride);
 
       // enforce state change
       this.runner.state = {
@@ -417,7 +403,7 @@ class MarlinController {
     },
     // Spindle Speed Overrides
     // @param {number} value A percentage value between 10 and 500. A value of zero will reset to 100%.
-    'spindle_override': (...args) => {
+    [CONTROLLER_COMMAND_SPINDLE_OVERRIDE]: (...args) => {
       const [value] = args;
       let spindleOverride = this.runner.state.ovS;
 
@@ -431,7 +417,7 @@ class MarlinController {
         spindleOverride += value;
       }
       // M221: Set extruder factor override percentage
-      this.command('gcode', 'M221S' + spindleOverride);
+      this.command(CONTROLLER_COMMAND_GCODE, 'M221S' + spindleOverride);
 
       // enforce state change
       this.runner.state = {
@@ -439,37 +425,37 @@ class MarlinController {
         ovS: spindleOverride
       };
     },
-    'rapid_override': () => {
+    [CONTROLLER_COMMAND_RAPID_OVERRIDE]: () => {
       // Unsupported
     },
     'motor:enable': () => {
       // M17 Enable all stepper motors
-      this.command('gcode', 'M17');
+      this.command(CONTROLLER_COMMAND_GCODE, 'M17');
     },
     'motor:disable': () => {
       // M18/M84 Disable steppers immediately (until the next move)
-      this.command('gcode', 'M18');
+      this.command(CONTROLLER_COMMAND_GCODE, 'M18');
     },
     // @param {number} power
     // @param {number} duration
     // @param {number} maxS
-    'laser_test': (...args) => {
+    [CONTROLLER_COMMAND_LASER_TEST]: (...args) => {
       const [power = 0, duration = 0, maxS = 255] = args;
 
       if (!power) {
-        this.command('gcode', 'M5');
+        this.command(CONTROLLER_COMMAND_GCODE, 'M5');
       }
 
-      this.command('gcode', 'M3S' + ensurePositiveNumber(maxS * (power / 100)));
+      this.command(CONTROLLER_COMMAND_GCODE, 'M3S' + ensurePositiveNumber(maxS * (power / 100)));
 
       if (duration > 0) {
         // G4 [P<time in ms>] [S<time in sec>]
         // If both S and P are included, S takes precedence.
-        this.command('gcode', 'G4 P' + ensurePositiveNumber(duration));
-        this.command('gcode', 'M5');
+        this.command(CONTROLLER_COMMAND_GCODE, 'G4 P' + ensurePositiveNumber(duration));
+        this.command(CONTROLLER_COMMAND_GCODE, 'M5');
       }
     },
-    'gcode': (...args) => {
+    [CONTROLLER_COMMAND_GCODE]: (...args) => {
       const [commands, context] = args;
       const data = ensureArray(commands)
         .join('\n')
@@ -494,7 +480,7 @@ class MarlinController {
         }
       }
     },
-    'macro:run': (...args) => {
+    [CONTROLLER_COMMAND_MACRO_RUN]: (...args) => {
       let [id, context = {}, callback = noop] = args;
       if (typeof context === 'function') {
         callback = context;
@@ -509,12 +495,12 @@ class MarlinController {
         return;
       }
 
-      this.event.trigger('macro:run');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_MACRO_RUN);
 
-      this.command('gcode', macro.content, context);
+      this.command(CONTROLLER_COMMAND_GCODE, macro.content, context);
       callback(null);
     },
-    'macro:load': (...args) => {
+    [CONTROLLER_COMMAND_MACRO_LOAD]: (...args) => {
       let [id, context = {}, callback = noop] = args;
       if (typeof context === 'function') {
         callback = context;
@@ -529,15 +515,15 @@ class MarlinController {
         return;
       }
 
-      this.event.trigger('macro:load');
+      this.event.trigger(CONTROLLER_EVENT_TRIGGER_MACRO_LOAD);
 
       const meta = {
         name: macro.name,
         content: macro.content,
       };
-      this.command('sender:load', meta, context, callback);
+      this.command(CONTROLLER_COMMAND_SENDER_LOAD, meta, context, callback);
     },
-    'watchdir:load': (...args) => {
+    [CONTROLLER_COMMAND_WATCHDIR_LOAD]: (...args) => {
       const [name, callback = noop] = args;
       const context = {}; // empty context
       const filepath = path.join(directoryWatcher.root, name);
@@ -552,7 +538,7 @@ class MarlinController {
           name,
           content,
         };
-        this.command('sender:load', meta, context, callback);
+        this.command(CONTROLLER_COMMAND_SENDER_LOAD, meta, context, callback);
       });
     },
   };
@@ -719,7 +705,7 @@ class MarlinController {
       if (trigger === 'system') {
         shellCommand.spawn(commands);
       } else {
-        this.command('gcode', commands);
+        this.command(CONTROLLER_COMMAND_GCODE, commands);
       }
     });
 
@@ -871,11 +857,11 @@ class MarlinController {
           const programMode = _.intersection(words, ['M0', 'M1'])[0];
           if (programMode === 'M0') {
             log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.event.trigger('sender:pause');
+            this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
             this.workflow.pause({ data: 'M0', msg: originalLine });
           } else if (programMode === 'M1') {
             log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.event.trigger('sender:pause');
+            this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
             this.workflow.pause({ data: 'M1', msg: originalLine });
           }
         }
@@ -883,7 +869,7 @@ class MarlinController {
         // M6 Tool Change
         if (_.includes(words, 'M6')) {
           log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
-          this.event.trigger('sender:pause');
+          this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
           this.workflow.pause({ data: 'M6', msg: originalLine });
         }
 
@@ -982,7 +968,7 @@ class MarlinController {
       if (!this.ready) {
         this.ready = true;
         // Initialize controller
-        this.event.trigger('controller:ready');
+        this.event.trigger(CONTROLLER_EVENT_TRIGGER_CONTROLLER_READY);
       }
     });
 
@@ -1159,7 +1145,7 @@ class MarlinController {
           this.senderFinishTime = 0;
 
           // Stop workflow
-          this.command('sender:stop');
+          this.command(CONTROLLER_COMMAND_SENDER_STOP);
         }
       }
     }, 250);
@@ -1395,10 +1381,10 @@ class MarlinController {
   }
 
   command(cmd, ...args) {
-    const deprecatedHandler = this.deprecatedCommandHandler[cmd];
-    if (deprecatedHandler) {
-      log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-      deprecatedHandler();
+    const deprecatedCommandHandler = getDeprecatedCommandHandler(cmd);
+    if (typeof deprecatedCommandHandler === 'function') {
+      log.warn(`Warning: The ${x(cmd)} command is deprecated and will be removed in a future release.`);
+      deprecatedCommandHandler(this.command, ...args);
       return;
     }
 

@@ -20,6 +20,11 @@ import EventTrigger from 'server/lib/EventTrigger';
 import logger from 'server/lib/logger';
 import { toIdent as toSerialIdent } from 'server/lib/SerialConnection';
 import { toIdent as toSocketIdent } from 'server/lib/SocketConnection';
+import {
+  SYSTEM_EVENT_TRIGGER_STARTUP,
+  SYSTEM_EVENT_TRIGGER_CONNECTION_OPEN,
+  SYSTEM_EVENT_TRIGGER_CONNECTION_CLOSE,
+} from 'server/constants';
 import GrblController from 'server/controllers/Grbl/GrblController';
 import MarlinController from 'server/controllers/Marlin/MarlinController';
 import SmoothieController from 'server/controllers/Smoothie/SmoothieController';
@@ -140,7 +145,7 @@ class ServiceEngine {
     shellCommand.on('error', this.listener.taskError);
 
     // System Trigger: Startup
-    this.event.trigger('startup');
+    this.event.trigger(SYSTEM_EVENT_TRIGGER_STARTUP);
 
     this.server = server;
     this.io = socketIO(this.server, {
@@ -345,7 +350,7 @@ class ServiceEngine {
           }
 
           // System Trigger: Open connection
-          this.event.trigger('connection:open');
+          this.event.trigger(SYSTEM_EVENT_TRIGGER_CONNECTION_OPEN);
 
           if (controllers[ident]) {
             log.error(`The connection was not properly closed: ident=${JSON.stringify(ident)}`);
@@ -378,7 +383,7 @@ class ServiceEngine {
         }
 
         // System Trigger: Close connection
-        this.event.trigger('connection:close');
+        this.event.trigger(SYSTEM_EVENT_TRIGGER_CONNECTION_CLOSE);
 
         // Leave the room
         socket.leave(ident);

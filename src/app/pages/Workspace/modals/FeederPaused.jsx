@@ -41,7 +41,7 @@ const FeederPaused = ({
           btnStyle="danger"
           onClick={chainedFunction(
             () => {
-              controller.command('feeder:stop');
+              controller.command('feeder_stop');
             },
             onClose,
           )}
@@ -51,7 +51,7 @@ const FeederPaused = ({
         <Button
           onClick={chainedFunction(
             () => {
-              controller.command('feeder:start');
+              controller.command('feeder_start');
             },
             onClose,
           )}

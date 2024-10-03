@@ -131,21 +131,21 @@ class UpdateRecord extends Component {
                 >
                   <option value="">{i18n._('Choose an event')}</option>
                   <option value="startup">{i18n._('Startup (System only)')}</option>
-                  <option value="connection:open">{i18n._('Open (System only)')}</option>
-                  <option value="connection:close">{i18n._('Close (System only)')}</option>
-                  <option value="controller:ready">{i18n._('Ready to start')}</option>
-                  <option value="sender:load">{i18n._('G-code: Load')}</option>
-                  <option value="sender:unload">{i18n._('G-code: Unload')}</option>
-                  <option value="sender:start">{i18n._('G-code: Start')}</option>
-                  <option value="sender:stop">{i18n._('G-code: Stop')}</option>
-                  <option value="sender:pause">{i18n._('G-code: Pause')}</option>
-                  <option value="sender:resume">{i18n._('G-code: Resume')}</option>
-                  <option value="feedhold">{i18n._('Feed Hold')}</option>
-                  <option value="cyclestart">{i18n._('Cycle Start')}</option>
+                  <option value="connection_open">{i18n._('Connection open (System only)')}</option>
+                  <option value="connection_close">{i18n._('Connection close (System only)')}</option>
+                  <option value="controller_ready">{i18n._('Ready to start')}</option>
+                  <option value="sender_load">{i18n._('G-code: Load')}</option>
+                  <option value="sender_unload">{i18n._('G-code: Unload')}</option>
+                  <option value="sender_start">{i18n._('G-code: Start')}</option>
+                  <option value="sender_stop">{i18n._('G-code: Stop')}</option>
+                  <option value="sender_pause">{i18n._('G-code: Pause')}</option>
+                  <option value="sender_resume">{i18n._('G-code: Resume')}</option>
+                  <option value="feed_hold">{i18n._('Feed Hold')}</option>
+                  <option value="cycle_start">{i18n._('Cycle Start')}</option>
                   <option value="homing">{i18n._('Homing')}</option>
                   <option value="sleep">{i18n._('Sleep')}</option>
-                  <option value="macro:run">{i18n._('Run Macro')}</option>
-                  <option value="macro:load">{i18n._('Load Macro')}</option>
+                  <option value="macro_load">{i18n._('Load Macro')}</option>
+                  <option value="macro_run">{i18n._('Run Macro')}</option>
                 </Select>
               </div>
               <div className={styles.formGroup}>

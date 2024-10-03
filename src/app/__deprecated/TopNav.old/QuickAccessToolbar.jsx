@@ -9,11 +9,11 @@ import i18n from '@app/lib/i18n';
 
 class QuickAccessToolbar extends Component {
   command = {
-    'cyclestart': () => {
-      controller.command('cyclestart');
+    'cycle_start': () => {
+      controller.command('cycle_start');
     },
-    'feedhold': () => {
-      controller.command('feedhold');
+    'feed_hold': () => {
+      controller.command('feed_hold');
     },
     'homing': () => {
       controller.command('homing');
@@ -35,7 +35,7 @@ class QuickAccessToolbar extends Component {
         <ButtonGroup>
           <Button
             btnStyle="default"
-            onClick={this.command.cyclestart}
+            onClick={this.command.cycle_start}
             title={i18n._('Cycle Start')}
           >
             <FontAwesomeIcon icon="redo-alt" />
@@ -44,7 +44,7 @@ class QuickAccessToolbar extends Component {
           </Button>
           <Button
             btnStyle="default"
-            onClick={this.command.feedhold}
+            onClick={this.command.feed_hold}
             title={i18n._('Feedhold')}
           >
             <FontAwesomeIcon icon="hand-paper" />

@@ -44,11 +44,15 @@ class TinyG extends Component {
   plannerBufferMin = 0;
 
   enableMotors = () => {
-    controller.command('energizeMotors:on');
+    // Enable the motors with a specified timeout value in seconds. Defaults to 3600 seconds.
+    const timeout = 0; // in seconds
+    controller.command('gcode', `{me:${timeout}}`);
+    controller.command('gcode', '{pwr:n}');
   };
 
   disableMotors = () => {
-    controller.command('energizeMotors:off');
+    controller.command('gcode', '{md:0}');
+    controller.command('gcode', '{pwr:n}');
   };
 
   render() {
