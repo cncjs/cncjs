@@ -16,13 +16,13 @@ class General extends PureComponent {
     };
 
     fields = {
-      checkForUpdates: null
+      allowAnonymousUsageDataCollection: null,
     };
 
     handlers = {
-      changeCheckForUpdates: (event) => {
+      changeAllowAnonymousUsageDataCollection: (event) => {
         const { actions } = this.props;
-        actions.toggleCheckForUpdates();
+        actions.toggleAllowAnonymousUsageDataCollection();
       },
       changeLanguage: (event) => {
         const { actions } = this.props;
@@ -60,53 +60,66 @@ class General extends PureComponent {
 
       return (
         <form style={{ marginTop: -10 }}>
-          <div className={styles.formFields}>
-            <div className={styles.formGroup}>
-              <div className="checkbox">
-                <label>
-                  <input
-                    ref={(node) => {
-                      this.fields.checkForUpdates = node;
-                    }}
-                    type="checkbox"
-                    checked={state.checkForUpdates}
-                    onChange={this.handlers.changeCheckForUpdates}
-                  />
-                  {i18n._('Automatically check for updates')}
-                </label>
+          <div style={{ marginBottom: 24 }}>
+            <h5>{i18n._('Data Collection')}</h5>
+            <div className={styles.formFields}>
+              <div className={styles.formGroup}>
+                <div className="checkbox">
+                  <label>
+                    <input
+                      ref={(node) => {
+                        this.fields.allowAnonymousUsageDataCollection = node;
+                      }}
+                      type="checkbox"
+                      checked={state.allowAnonymousUsageDataCollection}
+                      onChange={this.handlers.changeAllowAnonymousUsageDataCollection}
+                    />
+                    {i18n._('Enable anonymous usage data collection')}
+                  </label>
+                </div>
               </div>
             </div>
           </div>
-          <div className={styles.formFields}>
-            <div className={styles.formGroup}>
-              <label>{i18n._('Language')}</label>
-              <select
-                className={classNames(
-                  'form-control',
-                  styles.formControl,
-                  styles.short
-                )}
-                value={lang}
-                onChange={this.handlers.changeLanguage}
+          <div style={{ marginBottom: 24 }}>
+            <h5>{i18n._('Language')}</h5>
+            <div className={styles.formFields}>
+              <div
+                className={styles.formGroup}
+                style={{
+                  display: 'flex',
+                  columnGap: '8px',
+                  alignItems: 'center',
+                }}
               >
-                <option value="cs">Čeština</option>
-                <option value="de">Deutsch</option>
-                <option value="en">English (US)</option>
-                <option value="es">Español</option>
-                <option value="fr">Français (France)</option>
-                <option value="it">Italiano</option>
-                <option value="hu">Magyar</option>
-                <option value="nb">Norwegian</option>
-                <option value="nl">Nederlands</option>
-                <option value="pt-br">Português (Brasil)</option>
-                <option value="pt-pt">Português (Portugal)</option>
-                <option value="tr">Türkçe</option>
-                <option value="ru">Русский</option>
-                <option value="uk">Український</option>
-                <option value="zh-tw">中文 (繁體)</option>
-                <option value="zh-cn">中文 (简体)</option>
-                <option value="ja">日本語</option>
-              </select>
+                <label>{i18n._('Display language:')}</label>
+                <select
+                  className={classNames(
+                    'form-control',
+                    styles.formControl,
+                    styles.short
+                  )}
+                  value={lang}
+                  onChange={this.handlers.changeLanguage}
+                >
+                  <option value="cs">Čeština</option>
+                  <option value="de">Deutsch</option>
+                  <option value="en">English (US)</option>
+                  <option value="es">Español</option>
+                  <option value="fr">Français (France)</option>
+                  <option value="it">Italiano</option>
+                  <option value="hu">Magyar</option>
+                  <option value="nb">Norwegian</option>
+                  <option value="nl">Nederlands</option>
+                  <option value="pt-br">Português (Brasil)</option>
+                  <option value="pt-pt">Português (Portugal)</option>
+                  <option value="tr">Türkçe</option>
+                  <option value="ru">Русский</option>
+                  <option value="uk">Український</option>
+                  <option value="zh-tw">中文 (繁體)</option>
+                  <option value="zh-cn">中文 (简体)</option>
+                  <option value="ja">日本語</option>
+                </select>
+              </div>
             </div>
           </div>
           <div className={styles.formActions}>

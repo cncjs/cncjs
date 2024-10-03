@@ -17,6 +17,7 @@
   "allowRemoteAccess": false,
   "controller": "",
   "state": {
+    "allowAnonymousUsageDataCollection": false,
     "checkForUpdates": true
   },
   "commands": [

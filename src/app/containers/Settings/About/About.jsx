@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import AboutContainer from './AboutContainer';
 import HelpContainer from './HelpContainer';
+import CheckForUpdatesContainer from './CheckForUpdatesContainer';
 import UpdateStatusContainer from './UpdateStatusContainer';
 
 class About extends PureComponent {
@@ -25,6 +26,7 @@ class About extends PureComponent {
         <div>
           <AboutContainer version={version} />
           <HelpContainer />
+          <CheckForUpdatesContainer />
           <UpdateStatusContainer
             checking={version.checking}
             current={version.current}

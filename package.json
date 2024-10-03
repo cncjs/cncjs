@@ -228,7 +228,7 @@
     "react-facebook-loading": "~0.6.2",
     "react-final-form": "~3.7.0",
     "react-foreach": "~0.1.1",
-    "react-ga": "~2.5.7",
+    "react-ga4": "^2.1.0",
     "react-i18next": "~10.7.0",
     "react-icon-base": "~2.1.2",
     "react-infinite-tree": "~0.7.1",

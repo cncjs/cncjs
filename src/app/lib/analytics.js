@@ -1,14 +1,8 @@
-import GoogleAnalytics from 'react-ga';
-import settings from 'app/config/settings';
-
-// https://github.com/ReactTraining/react-router/issues/4278#issuecomment-299692502
-GoogleAnalytics.initialize(settings.analytics.trackingId, {
-  gaOptions: {
-    cookieDomain: 'none'
-  }
-});
+import GoogleAnalytics4 from 'react-ga4';
 
 export const trackPage = (page) => {
-  GoogleAnalytics.set({ page });
-  GoogleAnalytics.pageview(page);
+  if (!GoogleAnalytics4.isInitialized) {
+    return;
+  }
+  GoogleAnalytics4.send({ hitType: 'pageview', page: page });
 };

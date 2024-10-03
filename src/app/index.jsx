@@ -1,5 +1,6 @@
 /* eslint import/no-dynamic-require: 0 */
 import chainedFunction from 'chained-function';
+import GoogleAnalytics4 from 'react-ga4';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
 import qs from 'qs';
@@ -14,6 +15,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import XHR from 'i18next-xhr-backend';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
 import { Provider as GridSystemProvider } from 'app/components/GridSystem';
+import api from 'app/api';
 import settings from './config/settings';
 import portal from './lib/portal';
 import controller from './lib/controller';
@@ -70,6 +72,21 @@ series([
     }[obj.log_level || settings.log.level];
     log.setLevel(level);
   },
+  () => promisify(async (next) => {
+    const res = await api.getState();
+    const { allowAnonymousUsageDataCollection } = res.body;
+    if (allowAnonymousUsageDataCollection) {
+      GoogleAnalytics4.initialize([
+        {
+          trackingId: settings.analytics.trackingId,
+          gaOptions: {
+            cookieDomain: 'none'
+          }
+        },
+      ]);
+    }
+    next();
+  })(),
   () => promisify(next => {
     i18next
       .use(XHR)
