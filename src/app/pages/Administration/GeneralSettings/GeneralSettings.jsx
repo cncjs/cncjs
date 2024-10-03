@@ -66,6 +66,7 @@ const GeneralSettings = () => {
   useEffect(() => {
     if (query.isSuccess) {
       setFormState(query.data);
+      console.log('### query.data:', query.data);
     }
   }, [query.isSuccess, query.data]);
 
@@ -97,33 +98,16 @@ const GeneralSettings = () => {
             >
               <Box>
                 <TitleText>
-                  {i18n._('Update')}
-                </TitleText>
-                <Field name="checkForUpdates">
-                  {({ input }) => (
-                    <Flex columnGap="2x">
-                      <Checkbox
-                        disabled={isFormDisabled}
-                        {...input}
-                      >
-                        <Text>
-                          {i18n._('Automatically check for updates')}
-                        </Text>
-                      </Checkbox>
-                    </Flex>
-                  )}
-                </Field>
-              </Box>
-              <Divider my="4x" />
-              <Box>
-                <TitleText>
                   {i18n._('Controller')}
                 </TitleText>
                 <Text mb="3x">
                   {i18n._('Exception Handling')}
                 </Text>
                 <Box mb="1x">
-                  <Field name="controller.exception.ignoreErrors">
+                  <Field
+                    type="checkbox"
+                    name="controller.exception.ignoreErrors"
+                  >
                     {({ input }) => (
                       <Flex columnGap="2x">
                         <Checkbox
@@ -142,6 +126,29 @@ const GeneralSettings = () => {
                   <Icon as={WarningCircleIcon} color={colorStyle.color.error} />
                   <Text>{i18n._('Enabling this option may cause machine damage if you don\'t have an Emergency Stop button to prevent a dangerous situation.')}</Text>
                 </Flex>
+              </Box>
+              <Divider my="4x" />
+              <Box>
+                <TitleText>
+                  {i18n._('Data Collection')}
+                </TitleText>
+                <Field
+                  type="checkbox"
+                  name="allowAnonymousUsageDataCollection"
+                >
+                  {({ input }) => (
+                    <Flex columnGap="2x">
+                      <Checkbox
+                        disabled={isFormDisabled}
+                        {...input}
+                      >
+                        <Text>
+                          {i18n._('Allow anonymous usage data collection')}
+                        </Text>
+                      </Checkbox>
+                    </Flex>
+                  )}
+                </Field>
               </Box>
             </Box>
             <FormSpy

@@ -13,7 +13,7 @@ import React, { forwardRef, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import layout from '@app/config/layout';
 import { routes } from '@app/config/routes';
-import analytics from '@app/lib/analytics';
+import * as analytics from '@app/lib/analytics';
 import x from '@app/lib/json-stringify';
 import log from '@app/lib/log';
 import * as user from '@app/lib/user';
@@ -55,7 +55,8 @@ const MainPage = forwardRef((props, ref) => {
   });
 
   useEffect(() => {
-    analytics.pageview(location.pathname);
+    const page = location.pathname;
+    analytics.pageview({ page });
   }, [location.pathname]);
 
   useEffect(() => {

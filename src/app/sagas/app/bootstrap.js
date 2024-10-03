@@ -25,10 +25,12 @@ import I18nextBrowserLanguageDetector from 'i18next-browser-languagedetector';
 import mapKeys from 'lodash/mapKeys';
 import pubsub from 'pubsub-js';
 import qs from 'qs';
+import GoogleAnalytics4 from 'react-ga4';
 import { initReactI18next } from 'react-i18next';
 import { all, call } from 'redux-saga/effects';
 import sha1 from 'sha1';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
+import axios from '@app/api/axios';
 import env from '@app/config/env';
 import settings from '@app/config/settings';
 import i18next from '@app/i18next';
@@ -45,6 +47,7 @@ export function* init() {
 
   // parallel
   yield all([
+    call(initGoogleAnalytics4),
     call(initDateFns),
     call(authenticateSessionToken),
     call(enableCrossOriginCommunication),
@@ -188,6 +191,22 @@ const initI18next = () => new Promise((resolve, reject) => {
       resolve();
     });
 });
+
+const initGoogleAnalytics4 = async () => {
+  const url = 'api/state';
+  const res = await axios.get(url);
+  const { allowAnonymousUsageDataCollection } = res.data;
+  if (allowAnonymousUsageDataCollection) {
+    GoogleAnalytics4.initialize([
+      {
+        trackingId: settings.analytics.trackingId,
+        gaOptions: {
+          cookieDomain: 'none'
+        }
+      },
+    ]);
+  }
+};
 
 const initDateFns = () => {
   /* eslint-disable camelcase */

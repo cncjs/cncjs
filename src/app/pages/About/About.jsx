@@ -1,20 +1,20 @@
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Alert,
   Box,
   Button,
+  Checkbox,
   Collapse,
   Flex,
   Icon,
   Image,
   Link,
-  Spinner,
   Stack,
   Text,
   useColorStyle,
 } from '@tonic-ui/react';
 import {
   ExternalLinkIcon,
-  SuccessIcon,
 } from '@tonic-ui/react-icons';
 import {
   useToggle,
@@ -25,12 +25,24 @@ import settings from '@app/config/settings';
 import useToast from '@app/hooks/useToast';
 import i18n from '@app/lib/i18n';
 import AlertButtonLink from './components/AlertButtonLink';
-import { useLatestVersionQuery } from './queries';
+import {
+  API_STATE_QUERY_KEY,
+  useGetLatestVersionQuery,
+  useGetStateQuery,
+  useSetStateMutation,
+} from './queries';
 
 const About = () => {
   const [colorStyle] = useColorStyle();
   const toast = useToast();
-  const latestVersionQuery = useLatestVersionQuery({
+  const queryClient = useQueryClient();
+  const getLatestVersionQuery = useGetLatestVersionQuery();
+  const getStateQuery = useGetStateQuery();
+  const setStateMutation = useSetStateMutation({
+    onSuccess: () => {
+      // Invalidate `getStateQuery`
+      queryClient.invalidateQueries({ queryKey: API_STATE_QUERY_KEY });
+    },
     onError: () => {
       toast({
         appearance: 'error',
@@ -42,17 +54,16 @@ const About = () => {
     },
   });
   const currentVersion = settings.version;
-  const latestVersion = latestVersionQuery?.data?.version;
-  const isCheckingForUpdates = latestVersionQuery.isFetching;
+  const latestVersion = getLatestVersionQuery?.data?.version;
+  const isCheckingForUpdates = getLatestVersionQuery.isFetching;
   const isUpdateAvailable = currentVersion && latestVersion && semverLt(currentVersion, latestVersion);
   const isLatestVersion = currentVersion && latestVersion && !semverLt(currentVersion, latestVersion);
   const [isUpdateAlertVisible, toggleUpdateAlertVisible] = useToggle(false);
 
   useEffect(() => {
     if (isUpdateAvailable) {
-      toggleUpdateAlertVisible();
+      toggleUpdateAlertVisible(true);
     }
-    toggleUpdateAlertVisible(true);
   }, [isUpdateAvailable, toggleUpdateAlertVisible]);
 
   return (
@@ -132,19 +143,44 @@ const About = () => {
             </Button>
           </Flex>
         </Stack>
+        <Box mb="6x">
+          <Checkbox
+            disabled={getStateQuery.isFetching}
+            checked={getStateQuery.data?.checkForUpdates}
+            onChange={(event) => {
+              const checked = event.currentTarget.checked;
+              const data = {
+                checkForUpdates: checked,
+              };
+              setStateMutation.mutate({ data });
+            }}
+          >
+            <Text>
+              {i18n._('Automatically check for updates')}
+            </Text>
+          </Checkbox>
+        </Box>
+        <Box mb="2x">
+          <Button
+            variant="secondary"
+            onClick={() => {
+              getLatestVersionQuery.refetch();
+            }}
+          >
+            {i18n._('Check for updates')}
+          </Button>
+        </Box>
         {isCheckingForUpdates && (
           <Flex alignItems="center" columnGap="2x">
-            <Spinner size="xs" />
             <Text>
               {i18n._('Checking for updates...')}
             </Text>
           </Flex>
         )}
-        {isLatestVersion && (
+        {!isCheckingForUpdates && isLatestVersion && (
           <Flex alignItems="center" columnGap="2x">
-            <Icon as={SuccessIcon} color={colorStyle.component.alert.solid.success} />
             <Text>
-              {i18n._('You already have the newest version of {{name}}', { name: settings.productName })}
+              {i18n._('{{name}} is up to date.', { name: settings.productName })}
             </Text>
           </Flex>
         )}
