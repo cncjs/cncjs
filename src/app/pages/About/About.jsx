@@ -11,7 +11,6 @@ import {
   Link,
   Stack,
   Text,
-  useColorStyle,
 } from '@tonic-ui/react';
 import {
   ExternalLinkIcon,
@@ -33,7 +32,6 @@ import {
 } from './queries';
 
 const About = () => {
-  const [colorStyle] = useColorStyle();
   const toast = useToast();
   const queryClient = useQueryClient();
   const getLatestVersionQuery = useGetLatestVersionQuery();
