@@ -4,37 +4,37 @@
       "initializing": "Inicializando",
       "ready": "Listo",
       "alarm": "Alarma",
-      "stop": "Detener Programa",
-      "end": "Fin del Programa",
-      "run": "Ejecutar",
-      "hold": "Sostener",
+      "stop": "Detener programa",
+      "end": "Finalizar programa",
+      "run": "Iniciar",
+      "hold": "Pausar",
       "probe": "Sonda",
       "cycle": "Ciclo",
-      "homing": "Homaje",
-      "jog": "Movimiento Manual",
-      "interlock": "Interbloqueo",
+      "homing": "Mover a inicio",
+      "jog": "Mover",
+      "interlock": "Parado",
       "shutdown": "Apagar",
       "panic": "Pánico"
     }
   },
   "Grbl": {
     "activeState": {
-      "idle": "Inactivo",
-      "run": "Ejecutar",
-      "hold": "Sostener",
-      "door": "Puerta",
+      "idle": "Parado",
+      "run": "Iniciar",
+      "hold": "Pausar",
+      "door": "Entrada",
       "home": "Inicio",
-      "sleep": "Dormir",
+      "sleep": "dormir",
       "alarm": "Alarma",
       "check": "Comprobar"
     }
   },
   "Smoothie": {
     "activeState": {
-      "idle": "Inactivo",
-      "run": "Ejecutar",
-      "hold": "Sostener",
-      "door": "Puerta",
+      "idle": "Parado",
+      "run": "Iniciar",
+      "hold": "Pausar",
+      "door": "Entrada",
       "home": "Inicio",
       "alarm": "Alarma",
       "check": "Comprobar"
