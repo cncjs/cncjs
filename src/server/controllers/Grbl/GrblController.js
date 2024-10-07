@@ -1,5 +1,6 @@
 import {
   ensureArray,
+  ensureFiniteNumber,
   ensureString,
 } from 'ensure-type';
 import * as parser from 'gcode-parser';
@@ -117,6 +118,9 @@ class GrblController {
 
     // Event Trigger
     event = null;
+
+    // Auto Leveling
+    autoLeveling = null;
 
     // Feeder
     feeder = null;
@@ -553,6 +557,53 @@ class GrblController {
 
       this.runner.on('parameters', (res) => {
         this.emit('serialport:read', res.raw);
+
+        const { name, value } = res.payload;
+        if (name === 'PRB') {
+          // Machine position
+          const {
+            x: mposx,
+            y: mposy,
+            z: mposz,
+            a: mposa,
+            b: mposb,
+            c: mposc,
+          } = this.runner.getMachinePosition();
+
+          // Work position
+          const {
+            x: posx,
+            y: posy,
+            z: posz,
+            a: posa,
+            b: posb,
+            c: posc,
+          } = this.runner.getWorkPosition();
+
+          const wco = {
+            x: (Number(mposx) - Number(posx)).toFixed(3),
+            y: (Number(mposy) - Number(posy)).toFixed(3),
+            z: (Number(mposz) - Number(posz)).toFixed(3),
+            a: (Number(mposa) - Number(posa)).toFixed(3),
+            b: (Number(mposb) - Number(posb)).toFixed(3),
+            c: (Number(mposc) - Number(posc)).toFixed(3),
+          };
+
+          // [PRB:0.000,0.000,0.000:0]
+          // The `PRB:` probe parameter message includes an additional `:` and suffix value is a boolean.
+          // It denotes whether the last probe cycle was successful or not.
+          if (value.result === 1) {
+            const probedPos = {
+              x: ensureFiniteNumber(value.x) - Number(wco.x),
+              y: ensureFiniteNumber(value.y) - Number(wco.y),
+              z: ensureFiniteNumber(value.z) - Number(wco.z),
+              a: ensureFiniteNumber(value.a) - Number(wco.a),
+              b: ensureFiniteNumber(value.b) - Number(wco.b),
+              c: ensureFiniteNumber(value.c) - Number(wco.c),
+            };
+            this.autoLeveling.emit('probe_update', { pos: probedPos });
+          }
+        }
       });
 
       this.runner.on('feedback', (res) => {
