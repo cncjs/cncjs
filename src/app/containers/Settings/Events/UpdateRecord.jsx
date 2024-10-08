@@ -61,6 +61,10 @@ class UpdateRecord extends PureComponent {
           'G90  ; Absolute positioning',
           'G1 Z1 F500  ; Move to clearance level'
         ].join('\n');
+      } else if (modal.params.trigger === 'macro') {
+        sampleCommands = [
+          'My Macro'
+        ].join('\n');
       }
 
       return (
@@ -167,6 +171,7 @@ class UpdateRecord extends PureComponent {
                     <option value="">{i18n._('Choose an trigger')}</option>
                     <option value="system">{i18n._('System')}</option>
                     <option value="gcode">{i18n._('G-code')}</option>
+                    <option value="macro">{i18n._('Run macro (by id or name)')}</option>
                   </Select>
                 </div>
                 <div className={styles.formGroup}>

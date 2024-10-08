@@ -158,6 +158,8 @@ class SmoothieController {
         log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
         if (trigger === 'system') {
           taskRunner.run(commands);
+        } else if (trigger === 'macro') {
+          this.command('macro:run', commands);
         } else {
           this.command('gcode', commands);
         }
@@ -1254,10 +1256,10 @@ class SmoothieController {
           }
 
           const macros = config.get('macros');
-          const macro = _.find(macros, { id: id });
+          const macro = _.find(macros, item => item.id === id || item.name === id);
 
           if (!macro) {
-            log.error(`Cannot find the macro: id=${id}`);
+            log.error(`Cannot find macro with id or name=${id}`);
             return;
           }
 

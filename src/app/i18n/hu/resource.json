@@ -537,5 +537,6 @@
     "SET": "BEÁLLÍT",
     "CLR": "TÖRLÉS",
     "Set RTS line status upon opening": "RTS vonal állapotának beállítása az nyitáskor",
-    "Use RTS/CTS flow control": "Használjon RTS/CTS áramvezérlést"
+    "Use RTS/CTS flow control": "Használjon RTS/CTS áramvezérlést",
+    "Run macro (by id or name)": ""
 }

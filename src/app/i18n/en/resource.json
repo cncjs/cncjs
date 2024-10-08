@@ -537,5 +537,6 @@
     "SET": "SET",
     "CLR": "CLR",
     "Set RTS line status upon opening": "Set RTS line status upon opening",
-    "Use RTS/CTS flow control": "Use RTS/CTS flow control"
+    "Use RTS/CTS flow control": "Use RTS/CTS flow control",
+    "Run macro (by id or name)": "Run macro (by id or name)"
 }

@@ -537,5 +537,6 @@
     "SET": "ÉTABLIR",
     "CLR": "CLR",
     "Set RTS line status upon opening": "Définir l'état de la ligne RTS à l'ouverture",
-    "Use RTS/CTS flow control": "Utilisez le contrôle de flux RTS/CTS"
+    "Use RTS/CTS flow control": "Utilisez le contrôle de flux RTS/CTS",
+    "Run macro (by id or name)": ""
 }
