@@ -297,6 +297,19 @@ test('GrblLineParserResultParserState', (t) => {
     runner.parse(line);
   });
 
+  t.test('Handles invalid parser state output', (t) => {
+    const runner = new GrblRunner();
+    runner.on('parserstate', ({ raw, ...parserstate }) => {
+      t.fail('Parser state should not be emitted for invalid input');
+    });
+    runner.on('feedback', ({ raw }) => {
+      t.equal(raw, '[Invalid Parser State Output]');
+      t.end();
+    });
+    const line = '[Invalid Parser State Output]';
+    runner.parse(line);
+  });
+
   t.end();
 });
 
