@@ -11,11 +11,22 @@ import {
 
 class GrblLineParserResultParserState {
   // * Grbl v0.9
+  //   ```
   //   [G38.2 G54 G17 G21 G91 G94 M0 M5 M9 T0 F20. S0.]
-  // * Grbl v1.1
+  //   ```
+  // * Grbl v1.x
+  //   ```
   //   [GC:G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 S0.0 F500.0]
+  //   ```
+  // * Some Grbl v1.x forks may produce unexpected results
+  //   ```
+  //   [GC:G0 G54 G17 G21 G90 G94 M5 M M9 T0 F0 S0]
+  //   [GC:G0 G54 G17 G21 G90 G94 M5 M9 T F0 S0]
+  //   ```
   static parse(line) {
-    const r = line.match(/^\[(?:GC:)?((?:[a-zA-Z][0-9]+(?:\.[0-9]*)?\s*)+)\]$/);
+    const r1 = line.match(/^\[(?:GC:)?((?:[a-zA-Z][0-9]+(?:\.[0-9]*)?\s*)+)\]$/);
+    const r2 = line.match(/^\[GC:((?:[a-zA-Z][0-9]*(?:\.[0-9]*)?\s*)+)\]$/);
+    const r = r1 ?? r2;
     if (!r) {
       return null;
     }
@@ -28,6 +39,11 @@ class GrblLineParserResultParserState {
 
     for (let i = 0; i < words.length; ++i) {
       const word = words[i];
+
+      if (word.length <= 1) {
+        // Skipping invalid fields like "M" or "T" without numeric values
+        continue;
+      }
 
       // Gx, Mx
       if (word.indexOf('G') === 0 || word.indexOf('M') === 0) {
