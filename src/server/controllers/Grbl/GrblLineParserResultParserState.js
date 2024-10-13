@@ -10,23 +10,37 @@ import {
 } from './constants';
 
 class GrblLineParserResultParserState {
-  // * Grbl v0.9
+  // * Grbl v0.9 output format:
   //   ```
   //   [G38.2 G54 G17 G21 G91 G94 M0 M5 M9 T0 F20. S0.]
   //   ```
-  // * Grbl v1.x
+  // * Grbl v1.x output format:
   //   ```
   //   [GC:G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 S0.0 F500.0]
   //   ```
-  // * Some Grbl v1.x forks may produce unexpected results
+  // * Some Grbl v1.x forks with incorrect parser state output:
   //   ```
   //   [GC:G0 G54 G17 G21 G90 G94 M5 M M9 T0 F0 S0]
   //   [GC:G0 G54 G17 G21 G90 G94 M5 M9 T F0 S0]
   //   ```
   static parse(line) {
-    const r1 = line.match(/^\[(?:GC:)?((?:[a-zA-Z][0-9]+(?:\.[0-9]*)?\s*)+)\]$/);
-    const r2 = line.match(/^\[GC:((?:[a-zA-Z][0-9]*(?:\.[0-9]*)?\s*)+)\]$/);
-    const r = r1 ?? r2;
+    const parseLine = (line) => {
+      const patterns = [
+        // Matches standard output for Grbl v0.9 and v1.x
+        /^\[(?:GC:)?((?:[GMTFS]\d+(?:\.\d*)?\s+)+(?:[GMTFS]\d+(?:\.\d*)?))\]$/,
+        // Matches some Grbl v1.x forks with incorrect parser state output
+        /^\[GC:((?:[GMTFS]\d*(?:\.\d*)?\s+)+(?:[GMTFS]\d+(?:\.\d*)?))\]$/
+      ];
+      for (const pattern of patterns) {
+        const match = line.match(pattern);
+        if (match) {
+          return match;
+        }
+      }
+      return null;
+    };
+
+    const r = parseLine(line);
     if (!r) {
       return null;
     }
