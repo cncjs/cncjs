@@ -7144,7 +7144,7 @@ __metadata:
     socketio-jwt: ~4.6.2
     sortablejs: ~1.10.2
     spawn-default-shell: ~2.0.0
-    stream-browserify: ~3.0.0
+    stream-browserify: ^3.0.0
     style-loader: ~2.0.0
     styled-components: ~5.3.5
     stylint: ~2.0.0
@@ -19231,7 +19231,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stream-browserify@npm:~3.0.0":
+"stream-browserify@npm:^3.0.0":
   version: 3.0.0
   resolution: "stream-browserify@npm:3.0.0"
   dependencies:

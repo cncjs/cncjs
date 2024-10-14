@@ -342,7 +342,7 @@
     "pre-push": "~0.1.2",
     "progress": "~2.0.3",
     "react-hot-loader": "~4.13.0",
-    "stream-browserify": "~3.0.0",
+    "stream-browserify": "^3.0.0",
     "style-loader": "~2.0.0",
     "stylint": "~2.0.0",
     "stylint-loader": "~1.0.0",
