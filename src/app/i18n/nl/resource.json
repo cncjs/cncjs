@@ -537,5 +537,6 @@
     "SET": "INSTELLEN",
     "CLR": "WISSEN",
     "Set RTS line status upon opening": "Stel RTS-lijnstatus in bij opening",
-    "Use RTS/CTS flow control": "Gebruik RTS/CTS-stroomregeling"
+    "Use RTS/CTS flow control": "Gebruik RTS/CTS-stroomregeling",
+    "Run macro (by id or name)": ""
 }
