@@ -157,7 +157,7 @@ test('GrblLineParserResultAlarm: sets activeState', (t) => {
 });
 
 test('GrblLineParserResultParserState', (t) => {
-  t.test('#1', (t) => {
+  t.test('Grbl v0.9', (t) => {
     const runner = new GrblRunner();
     runner.on('parserstate', ({ raw, ...parserstate }) => {
       t.equal(raw, '[G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 F2540. S0.]');
@@ -169,9 +169,9 @@ test('GrblLineParserResultParserState', (t) => {
           units: 'G21', // G20: Inches, G21: Millimeters
           distance: 'G90', // G90: Absolute, G91: Relative
           feedrate: 'G94', // G93: Inverse Time Mode, G94: Units Per Minutes
-          program: 'M0',
-          spindle: 'M5',
-          coolant: 'M9'
+          program: 'M0', // M0, M1, M2, M30
+          spindle: 'M5', // M3, M4, M5
+          coolant: 'M9', // M7, M8, M9
         },
         tool: '0',
         feedrate: '2540.',
@@ -185,10 +185,10 @@ test('GrblLineParserResultParserState', (t) => {
     runner.parse(line);
   });
 
-  t.test('#2', (t) => {
+  t.test('Grbl v1.x', (t) => {
     const runner = new GrblRunner();
     runner.on('parserstate', ({ raw, ...parserstate }) => {
-      t.equal(raw, '[G0 G54 G17 G21 G90 G94 M0 M5 M7 M8 T2 F2540. S0.]');
+      t.equal(raw, '[GC:G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 F2540. S0.]');
       t.same(parserstate, {
         modal: {
           motion: 'G0', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
@@ -197,19 +197,116 @@ test('GrblLineParserResultParserState', (t) => {
           units: 'G21', // G20: Inches, G21: Millimeters
           distance: 'G90', // G90: Absolute, G91: Relative
           feedrate: 'G94', // G93: Inverse Time Mode, G94: Units Per Minutes
-          program: 'M0',
-          spindle: 'M5',
-          coolant: ['M7', 'M8']
+          program: 'M0', // M0, M1, M2, M30
+          spindle: 'M5', // M3, M4, M5
+          coolant: 'M9', // M7, M8, M9
         },
-        tool: '2',
+        tool: '0',
         feedrate: '2540.',
-        spindle: '0.'
+        spindle: '0.',
       });
-      t.equal(runner.getTool(), 2);
+      t.equal(runner.getTool(), 0);
       t.end();
     });
 
-    const line = '[G0 G54 G17 G21 G90 G94 M0 M5 M7 M8 T2 F2540. S0.]';
+    const line = '[GC:G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 F2540. S0.]';
+    runner.parse(line);
+  });
+
+  t.test('Grbl v1.x - mist coolant (M7) and flood coolant (M8)', (t) => {
+    const runner = new GrblRunner();
+    runner.on('parserstate', ({ raw, ...parserstate }) => {
+      t.equal(raw, '[GC:G0 G54 G17 G21 G90 G94 M0 M3 M7 M8 T0 F2000 S20]');
+      t.same(parserstate, {
+        modal: {
+          motion: 'G0', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
+          wcs: 'G54', // G54, G55, G56, G57, G58, G59
+          plane: 'G17', // G17: xy-plane, G18: xz-plane, G19: yz-plane
+          units: 'G21', // G20: Inches, G21: Millimeters
+          distance: 'G90', // G90: Absolute, G91: Relative
+          feedrate: 'G94', // G93: Inverse Time Mode, G94: Units Per Minutes
+          program: 'M0', // M0, M1, M2, M30
+          spindle: 'M3', // M3, M4, M5
+          coolant: ['M7', 'M8'], // M7, M8, M9
+        },
+        tool: '0',
+        feedrate: '2000',
+        spindle: '20',
+      });
+      t.equal(runner.getTool(), 0);
+      t.end();
+    });
+
+    const line = '[GC:G0 G54 G17 G21 G90 G94 M0 M3 M7 M8 T0 F2000 S20]';
+    runner.parse(line);
+  });
+
+  t.test('Handles cases where Grbl forks omit numeric values after the "M" field', (t) => {
+    const runner = new GrblRunner();
+    runner.on('parserstate', ({ raw, ...parserstate }) => {
+      t.equal(raw, '[GC:G0 G54 G17 G21 G90 G94 M5 M M9 T0 F0 S0]');
+      t.same(parserstate, {
+        modal: {
+          motion: 'G0', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
+          wcs: 'G54', // G54, G55, G56, G57, G58, G59
+          plane: 'G17', // G17: xy-plane, G18: xz-plane, G19: yz-plane
+          units: 'G21', // G20: Inches, G21: Millimeters
+          distance: 'G90', // G90: Absolute, G91: Relative
+          feedrate: 'G94', // G93: Inverse Time Mode, G94: Units Per Minutes
+          //program: undefined, // M0, M1, M2, M30
+          spindle: 'M5', // M3, M4, M5
+          coolant: 'M9', // M7, M8, M9
+        },
+        tool: '0',
+        feedrate: '0',
+        spindle: '0',
+      });
+      t.equal(runner.getTool(), 0);
+      t.end();
+    });
+
+    const line = '[GC:G0 G54 G17 G21 G90 G94 M5 M M9 T0 F0 S0]';
+    runner.parse(line);
+  });
+
+  t.test('Handles cases where Grbl forks omit numeric values after the "T" field', (t) => {
+    const runner = new GrblRunner();
+    runner.on('parserstate', ({ raw, ...parserstate }) => {
+      t.equal(raw, '[GC:G0 G54 G17 G21 G90 G94 M5 M9 T F0 S0]');
+      t.same(parserstate, {
+        modal: {
+          motion: 'G0', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
+          wcs: 'G54', // G54, G55, G56, G57, G58, G59
+          plane: 'G17', // G17: xy-plane, G18: xz-plane, G19: yz-plane
+          units: 'G21', // G20: Inches, G21: Millimeters
+          distance: 'G90', // G90: Absolute, G91: Relative
+          feedrate: 'G94', // G93: Inverse Time Mode, G94: Units Per Minutes
+          //program: undefined, // M0, M1, M2, M30
+          spindle: 'M5', // M3, M4, M5
+          coolant: 'M9', // M7, M8, M9
+        },
+        //tool: undefined,
+        feedrate: '0',
+        spindle: '0',
+      });
+      t.equal(runner.getTool(), 0);
+      t.end();
+    });
+
+    const line = '[GC:G0 G54 G17 G21 G90 G94 M5 M9 T F0 S0]';
+    runner.parse(line);
+  });
+
+  t.test('Handles invalid parser state output', (t) => {
+    const runner = new GrblRunner();
+    runner.on('parserstate', ({ raw, ...parserstate }) => {
+      t.fail('Parser state should not be emitted for invalid input');
+    });
+    runner.on('feedback', ({ raw }) => {
+      t.equal(raw, '[Invalid Parser State Output]');
+      t.end();
+    });
+    const line = '[Invalid Parser State Output]';
     runner.parse(line);
   });
 
