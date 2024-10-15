@@ -537,5 +537,8 @@
     "SET": "SET",
     "CLR": "CLR",
     "Set RTS line status upon opening": "Set RTS line status upon opening",
-    "Use RTS/CTS flow control": "Use RTS/CTS flow control"
+    "Use RTS/CTS flow control": "Use RTS/CTS flow control",
+    "Data Collection": "Data Collection",
+    "Enable anonymous usage data collection": "Enable anonymous usage data collection",
+    "Display language:": "Display language:"
 }

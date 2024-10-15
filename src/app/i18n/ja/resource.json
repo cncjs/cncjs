@@ -532,10 +532,13 @@
     "Show Cutting Tool": "工具を表示する",
     "Ready to start": "スタートの準備ができました",
     "Connect to an IP camera": "IPカメラと接続",
-    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": "",
+    "The URL should point to a stream in one of the following formats: Motion JPEG (mjpeg), RTSP, or H264 (MP4).": "URLは次の形式のいずれかのストリームを指す必要があります: Motion JPEG (mjpeg)、RTSP、またはH264 (MP4)。",
     "Set DTR line status upon opening": "開くときにDTRラインの状態を設定する",
     "SET": "設定",
     "CLR": "クリア",
     "Set RTS line status upon opening": "開くときにRTSラインの状態を設定する",
-    "Use RTS/CTS flow control": "RTS/CTSフロー制御を使用する"
+    "Use RTS/CTS flow control": "RTS/CTSフロー制御を使用する",
+    "Data Collection": "データ収集",
+    "Enable anonymous usage data collection": "匿名使用データ収集を有効にする",
+    "Display language:": "表示言語："
 }
