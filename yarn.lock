@@ -6511,7 +6511,7 @@ __metadata:
     i18next-browser-languagedetector: ~3.0.1
     i18next-express-middleware: ~1.8.0
     i18next-node-fs-backend: ~2.1.3
-    i18next-scanner: ~4.5.0
+    i18next-scanner: ~4.6.0
     i18next-xhr-backend: ~2.0.1
     imports-loader: ~0.8.0
     infinite-tree: ~1.16.2
@@ -11451,9 +11451,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-scanner@npm:~4.5.0":
-  version: 4.5.0
-  resolution: "i18next-scanner@npm:4.5.0"
+"i18next-scanner@npm:~4.6.0":
+  version: 4.6.0
+  resolution: "i18next-scanner@npm:4.6.0"
   dependencies:
     acorn: ^8.0.4
     acorn-jsx: ^5.3.1
@@ -11476,7 +11476,7 @@ __metadata:
     vinyl-fs: ^4.0.0
   bin:
     i18next-scanner: bin/cli.js
-  checksum: 57e193b6cb580b288eeb06d95b4e3f3bc196f87957e1402ea92ed6b12bf8457cd5adaf367dbea711aee128cb4dfe6c9e5474bd94ae7ec2e2ec3eba76c95d7f14
+  checksum: 3d0a1f841055cb096a4f3f876f90326495a730738fa6e8c37fda0fe5c9213fa4364bf413fbae99a7b1c424d7687817c236df384d72e96c121fb6c06661b9f1b7
   languageName: node
   linkType: hard
 
