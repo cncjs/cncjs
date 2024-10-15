@@ -15,7 +15,17 @@ module.exports = {
   dest: './',
   options: {
     debug: false,
-    removeUnusedKeys: true,
+    // Available since 4.6.0
+    // @param {string} lng The language of the unused translation key.
+    // @param {string} ns The namespace of the unused translation key.
+    // @param {array} key The translation key in its array form.
+    // @return {boolean} Returns true if the unused translation key should be removed.
+    removeUnusedKeys: function(lng, ns, key) {
+      if (ns === 'resource') {
+        return true;
+      }
+      return false;
+    },
     sort: false,
     func: {
       list: [], // Use an empty array to bypass the default list: i18n.t, i18next.t
