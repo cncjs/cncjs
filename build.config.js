@@ -9,12 +9,12 @@ module.exports = {
     'it', // Italian
     'ja', // Japanese
     'nb', // Norwegian
-    'nl', // Nederlands
+    'nl', // Netherlands
     'pt-br', // Portuguese (Brazil)
     'pt-pt', // Portuguese (Portugal)
     'ru', // Russian
-    'uk', // Ukraine
     'tr', // Turkish
+    'uk', // Ukraine
     'zh-cn', // Simplified Chinese
     'zh-tw' // Traditional Chinese
   ],
