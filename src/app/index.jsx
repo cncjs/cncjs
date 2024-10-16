@@ -72,21 +72,6 @@ series([
     }[obj.log_level || settings.log.level];
     log.setLevel(level);
   },
-  () => promisify(async (next) => {
-    const res = await api.getState();
-    const { allowAnonymousUsageDataCollection } = res.body;
-    if (allowAnonymousUsageDataCollection) {
-      GoogleAnalytics4.initialize([
-        {
-          trackingId: settings.analytics.trackingId,
-          gaOptions: {
-            cookieDomain: 'none'
-          }
-        },
-      ]);
-    }
-    next();
-  })(),
   () => promisify(next => {
     i18next
       .use(XHR)
@@ -111,8 +96,21 @@ series([
   () => promisify(next => {
     const token = store.get('session.token');
     user.signin({ token: token })
-      .then(({ authenticated, token }) => {
+      .then(async ({ authenticated, token }) => {
         if (authenticated) {
+          const res = await api.getState();
+          const { allowAnonymousUsageDataCollection } = res.body;
+          if (allowAnonymousUsageDataCollection && !GoogleAnalytics4.isInitialized) {
+            GoogleAnalytics4.initialize([
+              {
+                trackingId: settings.analytics.trackingId,
+                gaOptions: {
+                  cookieDomain: 'none'
+                }
+              },
+            ]);
+          }
+
           log.debug('Create and establish a WebSocket connection');
 
           const host = '';
@@ -127,7 +125,7 @@ series([
         }
         next();
       });
-  })()
+  })(),
 ]).then(async () => {
   log.info(`${settings.productName} ${settings.version}`);
 
