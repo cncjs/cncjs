@@ -115,7 +115,7 @@ class General extends PureComponent {
                   <option value="pt-pt">Português (Portugal)</option>
                   <option value="ru">Русский</option>
                   <option value="tr">Türkçe</option>
-                  <option value="uk">Український</option>
+                  <option value="uk">українська</option>
                   <option value="zh-cn">中文 (简体)</option>
                   <option value="zh-tw">中文 (繁體)</option>
                 </select>
