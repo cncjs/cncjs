@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import FacebookLoading from 'react-facebook-loading';
 import Space from 'app/components/Space';
+import { SUPPORTED_LANGUAGES } from 'app/constants/i18n';
 import i18n from 'app/lib/i18n';
 import styles from './index.styl';
 
@@ -101,23 +102,9 @@ class General extends PureComponent {
                   value={lang}
                   onChange={this.handlers.changeLanguage}
                 >
-                  <option value="cs">Čeština</option>
-                  <option value="de">Deutsch</option>
-                  <option value="en">English (US)</option>
-                  <option value="es">Español</option>
-                  <option value="fr">Français (France)</option>
-                  <option value="it">Italiano</option>
-                  <option value="hu">Magyar</option>
-                  <option value="nb">Norwegian</option>
-                  <option value="nl">Nederlands</option>
-                  <option value="pt-br">Português (Brasil)</option>
-                  <option value="pt-pt">Português (Portugal)</option>
-                  <option value="tr">Türkçe</option>
-                  <option value="ru">Русский</option>
-                  <option value="uk">Український</option>
-                  <option value="zh-tw">中文 (繁體)</option>
-                  <option value="zh-cn">中文 (简体)</option>
-                  <option value="ja">日本語</option>
+                  {SUPPORTED_LANGUAGES.map(({ value, label }) => (
+                    <option key={value} value={value}>{label}</option>
+                  ))}
                 </select>
               </div>
             </div>
