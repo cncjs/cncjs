@@ -9,7 +9,7 @@ module.exports = {
     'it', // Italian
     'ja', // Japanese
     'nb', // Norwegian
-    'nl', // Netherlands
+    'nl', // Dutch
     'pt-br', // Portuguese (Brazil)
     'pt-pt', // Portuguese (Portugal)
     'ru', // Russian
