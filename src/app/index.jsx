@@ -98,17 +98,21 @@ series([
     user.signin({ token: token })
       .then(async ({ authenticated, token }) => {
         if (authenticated) {
-          const res = await api.getState();
-          const { allowAnonymousUsageDataCollection } = res.body;
-          if (allowAnonymousUsageDataCollection && !GoogleAnalytics4.isInitialized) {
-            GoogleAnalytics4.initialize([
-              {
-                trackingId: settings.analytics.trackingId,
-                gaOptions: {
-                  cookieDomain: 'none'
-                }
-              },
-            ]);
+          try {
+            const res = await api.getState();
+            const { allowAnonymousUsageDataCollection } = res.body || {};
+            if (allowAnonymousUsageDataCollection && !GoogleAnalytics4.isInitialized) {
+              GoogleAnalytics4.initialize([
+                {
+                  trackingId: settings.analytics.trackingId,
+                  gaOptions: {
+                    cookieDomain: 'none'
+                  }
+                },
+              ]);
+            }
+          } catch (error) {
+            log.error('Error initializing Google Analytics:', error);
           }
 
           log.debug('Create and establish a WebSocket connection');
