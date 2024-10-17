@@ -1,7 +1,9 @@
 import cx from 'classnames';
 import qs from 'qs';
 import React, { PureComponent } from 'react';
+import GoogleAnalytics4 from 'react-ga4';
 import { withRouter, Redirect } from 'react-router-dom';
+import api from 'app/api';
 import Anchor from 'app/components/Anchor';
 import { Notification } from 'app/components/Notifications';
 import Space from 'app/components/Space';
@@ -40,7 +42,7 @@ class Login extends PureComponent {
         const password = this.fields.password.value;
 
         user.signin({ name, password })
-          .then(({ authenticated }) => {
+          .then(async ({ authenticated }) => {
             if (!authenticated) {
               this.setState({
                 alertMessage: i18n._('Authentication failed.'),
@@ -48,6 +50,23 @@ class Login extends PureComponent {
                 redirectToReferrer: false
               });
               return;
+            }
+
+            try {
+              const res = await api.getState();
+              const { allowAnonymousUsageDataCollection } = res.body || {};
+              if (allowAnonymousUsageDataCollection && !GoogleAnalytics4.isInitialized) {
+                GoogleAnalytics4.initialize([
+                  {
+                    trackingId: settings.analytics.trackingId,
+                    gaOptions: {
+                      cookieDomain: 'none'
+                    }
+                  },
+                ]);
+              }
+            } catch (error) {
+              log.error('Error initializing Google Analytics:', error);
             }
 
             log.debug('Create and establish a WebSocket connection');
