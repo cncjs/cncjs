@@ -10,8 +10,8 @@ module.exports = {
     'ja', // Japanese
     'nb', // Norwegian
     'nl', // Dutch
+    'pt', // Portuguese (Portugal)
     'pt-br', // Portuguese (Brazil)
-    'pt-pt', // Portuguese (Portugal)
     'ru', // Russian
     'tr', // Turkish
     'uk', // Ukrainian
