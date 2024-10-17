@@ -4,41 +4,40 @@
             "initializing": "Inicializálás",
             "ready": "Kész",
             "alarm": "Riasztás",
-            "stop": "Stop",
-            "end": "Vége",
-            "run": "Futtatás",
+            "stop": "Program Leállítás",
+            "end": "Program Befejezés",
+            "run": "Futás",
             "hold": "Tartás",
-            "probe": "Próba",
-            "cycle": "Folyamat",
-            "homing": "Referencia",
-            "jog": "Jog",
-            "interlock": "",
+            "probe": "Proba",
+            "cycle": "Ciklus",
+            "homing": "Keresés",
+            "jog": "Járatás",
+            "interlock": "Zár",
             "shutdown": "Leállítás",
-            "panic": ""
+            "panic": "Pánik"
         }
     },
     "Grbl": {
         "activeState": {
-            "idle": "Készenlét",
-            "run": "Futtatás",
+            "idle": "Tétlen",
+            "run": "Futás",
             "hold": "Tartás",
             "door": "Ajtó",
-            "home": "Nullpont",
-            "sleep": "",
+            "home": "Otthon",
+            "sleep": "Alvás",
             "alarm": "Riasztás",
-            "check": "Ellenörzés"
+            "check": "Ellenőrzés"
         }
     },
     "Smoothie": {
         "activeState": {
-            "idle": "Készenlét",
-            "run": "Futtatás",
+            "idle": "Tétlen",
+            "run": "Futás",
             "hold": "Tartás",
             "door": "Ajtó",
-            "home": "Nullpont",
-            "sleep": "",
+            "home": "Otthon",
             "alarm": "Riasztás",
-            "check": "Ellenörzés"
+            "check": "Ellenőrzés"
         }
     }
 }

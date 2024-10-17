@@ -1,44 +1,43 @@
 {
     "TinyG": {
         "machineState": {
-            "initializing": "Inizializza",
-            "ready": "Pronta",
+            "initializing": "Inizializzazione",
+            "ready": "Pronto",
             "alarm": "Allarme",
-            "stop": "Stop",
-            "end": "Fine",
-            "run": "Movimento",
-            "hold": "Pausa",
+            "stop": "Arresto Programma",
+            "end": "Fine Programma",
+            "run": "Esegui",
+            "hold": "In Attesa",
             "probe": "Sonda",
             "cycle": "Ciclo",
-            "homing": "Azzera",
-            "jog": "Muovi",
-            "interlock": "",
-            "shutdown": "Spegni",
-            "panic": ""
+            "homing": "Homing",
+            "jog": "Movimento Manuale",
+            "interlock": "Interblocco",
+            "shutdown": "Spegnimento",
+            "panic": "Panico"
         }
     },
     "Grbl": {
         "activeState": {
             "idle": "Inattivo",
-            "run": "Movimento",
-            "hold": "Pausa",
-            "door": "Finecorsa",
+            "run": "Esegui",
+            "hold": "In Attesa",
+            "door": "Porta",
             "home": "Home",
-            "sleep": "",
+            "sleep": "Sonno",
             "alarm": "Allarme",
-            "check": "Controllo"
+            "check": "Controlla"
         }
     },
     "Smoothie": {
         "activeState": {
             "idle": "Inattivo",
-            "run": "Movimento",
-            "hold": "Pausa",
-            "door": "Finecorsa",
+            "run": "Esegui",
+            "hold": "In Attesa",
+            "door": "Porta",
             "home": "Home",
-            "sleep": "",
             "alarm": "Allarme",
-            "check": "Controllo"
+            "check": "Controlla"
         }
     }
 }

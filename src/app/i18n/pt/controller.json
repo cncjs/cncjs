@@ -1,42 +1,41 @@
 {
     "TinyG": {
         "machineState": {
-            "initializing": "A inicializar",
+            "initializing": "A iniciar",
             "ready": "Pronto",
             "alarm": "Alarme",
-            "stop": "Parar",
-            "end": "Fim",
-            "run": "Correr",
+            "stop": "Paragem do Programa",
+            "end": "Fim do Programa",
+            "run": "Executar",
             "hold": "Pausar",
             "probe": "Sonda",
             "cycle": "Ciclo",
-            "homing": "Ir para origem",
-            "jog": "Movimento",
-            "interlock": "Bloqueio",
+            "homing": "Retorno à Origem",
+            "jog": "Movimento Manual",
+            "interlock": "Intertravamento",
             "shutdown": "Desligar",
             "panic": "Pânico"
         }
     },
     "Grbl": {
         "activeState": {
-            "idle": "Inativo",
-            "run": "Correr",
+            "idle": "Ocioso",
+            "run": "Executar",
             "hold": "Pausar",
             "door": "Porta",
             "home": "Origem",
-            "sleep": "Suspenção",
+            "sleep": "Suspenso",
             "alarm": "Alarme",
             "check": "Verificar"
         }
     },
     "Smoothie": {
         "activeState": {
-            "idle": "Inativo",
-            "run": "Correr",
+            "idle": "Ocioso",
+            "run": "Executar",
             "hold": "Pausar",
             "door": "Porta",
             "home": "Origem",
-            "sleep": "Dormir",
             "alarm": "Alarme",
             "check": "Verificar"
         }
