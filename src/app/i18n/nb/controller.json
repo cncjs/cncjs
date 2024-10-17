@@ -1,37 +1,37 @@
 {
     "TinyG": {
         "machineState": {
-            "initializing": "Initialiserer",
+            "initializing": "Initierer",
             "ready": "Klar",
             "alarm": "Alarm",
-            "stop": "Programstopp",
-            "end": "Programslutt",
+            "stop": "Program Stopp",
+            "end": "Program Slutt",
             "run": "Kjør",
             "hold": "Hold",
-            "probe": "Probe",
-            "cycle": "Cycle",
-            "homing": "Homing",
-            "jog": "Jog",
+            "probe": "Sonde",
+            "cycle": "Syklus",
+            "homing": "Hjemsetting",
+            "jog": "Jogg",
             "interlock": "Interlock",
-            "shutdown": "Shutdown",
+            "shutdown": "Nedstengning",
             "panic": "Panikk"
         }
     },
     "Grbl": {
         "activeState": {
-            "idle": "Idle",
+            "idle": "Inaktiv",
             "run": "Kjør",
             "hold": "Hold",
             "door": "Dør",
             "home": "Hjem",
-            "sleep": "sov",
+            "sleep": "Søvn",
             "alarm": "Alarm",
             "check": "Sjekk"
         }
     },
     "Smoothie": {
         "activeState": {
-            "idle": "Idle",
+            "idle": "Inaktiv",
             "run": "Kjør",
             "hold": "Hold",
             "door": "Dør",
