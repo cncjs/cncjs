@@ -1,43 +1,43 @@
 {
-    "TinyG": {
-        "machineState": {
-            "initializing": "Initialisation",
-            "ready": "Prêt",
-            "alarm": "Alarme",
-            "stop": "Arrêt du programme",
-            "end": "Fin du programme",
-            "run": "Exécuter",
-            "hold": "Maintenir",
-            "probe": "Sonde",
-            "cycle": "Cycle",
-            "homing": "Réinitialisation",
-            "jog": "Déplacement manuel",
-            "interlock": "Verrouillage",
-            "shutdown": "Arrêt",
-            "panic": "Panic"
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "Inactif",
-            "run": "Exécuter",
-            "hold": "Maintenir",
-            "door": "Porte",
-            "home": "Origine",
-            "sleep": "Veille",
-            "alarm": "Alarme",
-            "check": "Vérifier"
-        }
-    },
-    "Smoothie": {
-        "activeState": {
-            "idle": "Inactif",
-            "run": "Exécuter",
-            "hold": "Maintenir",
-            "door": "Porte",
-            "home": "Origine",
-            "alarm": "Alarme",
-            "check": "Vérifier"
-        }
+  "TinyG": {
+    "machineState": {
+      "initializing": "Initialisation",
+      "ready": "Prêt",
+      "alarm": "Alarme",
+      "stop": "Arrêt du programme",
+      "end": "Fin du programme",
+      "run": "Exécuter",
+      "hold": "Maintenir",
+      "probe": "Sonde",
+      "cycle": "Cycle",
+      "homing": "Réinitialisation",
+      "jog": "Déplacement manuel",
+      "interlock": "Verrouillage",
+      "shutdown": "Arrêt",
+      "panic": "Panic"
     }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "Inactif",
+      "run": "Exécuter",
+      "hold": "Maintenir",
+      "door": "Porte",
+      "home": "Origine",
+      "sleep": "Veille",
+      "alarm": "Alarme",
+      "check": "Vérifier"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "Inactif",
+      "run": "Exécuter",
+      "hold": "Maintenir",
+      "door": "Porte",
+      "home": "Origine",
+      "alarm": "Alarme",
+      "check": "Vérifier"
+    }
+  }
 }

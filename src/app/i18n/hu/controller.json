@@ -1,43 +1,43 @@
 {
-    "TinyG": {
-        "machineState": {
-            "initializing": "Inicializálás",
-            "ready": "Kész",
-            "alarm": "Riasztás",
-            "stop": "Program Leállítás",
-            "end": "Program Befejezés",
-            "run": "Futás",
-            "hold": "Tartás",
-            "probe": "Proba",
-            "cycle": "Ciklus",
-            "homing": "Keresés",
-            "jog": "Járatás",
-            "interlock": "Zár",
-            "shutdown": "Leállítás",
-            "panic": "Pánik"
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "Tétlen",
-            "run": "Futás",
-            "hold": "Tartás",
-            "door": "Ajtó",
-            "home": "Otthon",
-            "sleep": "Alvás",
-            "alarm": "Riasztás",
-            "check": "Ellenőrzés"
-        }
-    },
-    "Smoothie": {
-        "activeState": {
-            "idle": "Tétlen",
-            "run": "Futás",
-            "hold": "Tartás",
-            "door": "Ajtó",
-            "home": "Otthon",
-            "alarm": "Riasztás",
-            "check": "Ellenőrzés"
-        }
+  "TinyG": {
+    "machineState": {
+      "initializing": "Inicializálás",
+      "ready": "Kész",
+      "alarm": "Riasztás",
+      "stop": "Program Leállítás",
+      "end": "Program Befejezés",
+      "run": "Futás",
+      "hold": "Tartás",
+      "probe": "Proba",
+      "cycle": "Ciklus",
+      "homing": "Keresés",
+      "jog": "Járatás",
+      "interlock": "Zár",
+      "shutdown": "Leállítás",
+      "panic": "Pánik"
     }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "Tétlen",
+      "run": "Futás",
+      "hold": "Tartás",
+      "door": "Ajtó",
+      "home": "Otthon",
+      "sleep": "Alvás",
+      "alarm": "Riasztás",
+      "check": "Ellenőrzés"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "Tétlen",
+      "run": "Futás",
+      "hold": "Tartás",
+      "door": "Ajtó",
+      "home": "Otthon",
+      "alarm": "Riasztás",
+      "check": "Ellenőrzés"
+    }
+  }
 }
