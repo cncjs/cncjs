@@ -1,44 +1,43 @@
 {
-    "TinyG": {
-        "machineState": {
-            "initializing": "初始化",
-            "ready": "准备",
-            "alarm": "报警",
-            "stop": "停止",
-            "end": "",
-            "run": "运行",
-            "hold": "保持",
-            "probe": "",
-            "cycle": "循环",
-            "homing": "",
-            "jog": "",
-            "interlock": "",
-            "shutdown": "关闭",
-            "panic": ""
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "",
-            "run": "运行",
-            "hold": "保持",
-            "door": "",
-            "home": "",
-            "sleep": "休眠",
-            "alarm": "报警",
-            "check": "检查"
-        }
-    },
-    "Smoothie": {
-        "activeState": {
-            "idle": "",
-            "run": "运行",
-            "hold": "保持",
-            "door": "",
-            "home": "",
-            "sleep": "休眠",
-            "alarm": "报警",
-            "check": "检查"
-        }
+  "TinyG": {
+    "machineState": {
+      "initializing": "正在初始化",
+      "ready": "准备就绪",
+      "alarm": "报警",
+      "stop": "程序停止",
+      "end": "程序结束",
+      "run": "运行",
+      "hold": "保持",
+      "probe": "探测",
+      "cycle": "循环",
+      "homing": "回原点",
+      "jog": "手动移动",
+      "interlock": "联锁",
+      "shutdown": "关闭",
+      "panic": "紧急情况"
     }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "空闲",
+      "run": "运行",
+      "hold": "保持",
+      "door": "门",
+      "home": "回原点",
+      "sleep": "睡眠",
+      "alarm": "报警",
+      "check": "检查"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "空闲",
+      "run": "运行",
+      "hold": "保持",
+      "door": "门",
+      "home": "回原点",
+      "alarm": "报警",
+      "check": "检查"
+    }
+  }
 }

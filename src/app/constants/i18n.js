@@ -8,8 +8,8 @@ export const SUPPORTED_LANGUAGES = [
   { value: 'ja', label: '日本語' },
   { value: 'nb', label: 'Norwegian' },
   { value: 'nl', label: 'Nederlands' },
-  { value: 'pt-br', label: 'Português (Brasil)' },
-  { value: 'pt-pt', label: 'Português (Portugal)' },
+  { value: 'pt', label: 'Português (Portugal)' }, // European Portuguese
+  { value: 'pt-br', label: 'Português (Brasil)' }, // Brazilian Portuguese
   { value: 'ru', label: 'Русский' },
   { value: 'tr', label: 'Türkçe' },
   { value: 'uk', label: 'українська' },

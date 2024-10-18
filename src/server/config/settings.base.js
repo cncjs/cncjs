@@ -123,14 +123,14 @@ export default {
       'it', // Italian
       'ja', // Japanese
       'nb', // Norwegian
-      'nl', // Nederlands
+      'nl', // Dutch
+      'pt', // Portuguese (Portugal)
       'pt-br', // Portuguese (Brazil)
-      'pt-pt', // Portuguese (Portugal)
       'ru', // Russian
-      'uk', // Ukraine
       'tr', // Turkish
+      'uk', // Ukrainian
       'zh-cn', // Simplified Chinese
-      'zh-tw' // Traditional Chinese
+      'zh-tw', // Traditional Chinese
     ],
 
 

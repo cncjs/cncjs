@@ -1,44 +1,43 @@
 {
-    "TinyG": {
-        "machineState": {
-            "initializing": "Inicializálás",
-            "ready": "Kész",
-            "alarm": "Riasztás",
-            "stop": "Stop",
-            "end": "Vége",
-            "run": "Futtatás",
-            "hold": "Tartás",
-            "probe": "Próba",
-            "cycle": "Folyamat",
-            "homing": "Referencia",
-            "jog": "Jog",
-            "interlock": "",
-            "shutdown": "Leállítás",
-            "panic": ""
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "Készenlét",
-            "run": "Futtatás",
-            "hold": "Tartás",
-            "door": "Ajtó",
-            "home": "Nullpont",
-            "sleep": "",
-            "alarm": "Riasztás",
-            "check": "Ellenörzés"
-        }
-    },
-    "Smoothie": {
-        "activeState": {
-            "idle": "Készenlét",
-            "run": "Futtatás",
-            "hold": "Tartás",
-            "door": "Ajtó",
-            "home": "Nullpont",
-            "sleep": "",
-            "alarm": "Riasztás",
-            "check": "Ellenörzés"
-        }
+  "TinyG": {
+    "machineState": {
+      "initializing": "Inicializálás",
+      "ready": "Kész",
+      "alarm": "Riasztás",
+      "stop": "Program Leállítás",
+      "end": "Program Befejezés",
+      "run": "Futás",
+      "hold": "Tartás",
+      "probe": "Proba",
+      "cycle": "Ciklus",
+      "homing": "Keresés",
+      "jog": "Járatás",
+      "interlock": "Zár",
+      "shutdown": "Leállítás",
+      "panic": "Pánik"
     }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "Tétlen",
+      "run": "Futás",
+      "hold": "Tartás",
+      "door": "Ajtó",
+      "home": "Otthon",
+      "sleep": "Alvás",
+      "alarm": "Riasztás",
+      "check": "Ellenőrzés"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "Tétlen",
+      "run": "Futás",
+      "hold": "Tartás",
+      "door": "Ajtó",
+      "home": "Otthon",
+      "alarm": "Riasztás",
+      "check": "Ellenőrzés"
+    }
+  }
 }

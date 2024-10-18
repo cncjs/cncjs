@@ -1,17 +1,17 @@
 {
   "TinyG": {
     "machineState": {
-      "initializing": "Inicializando",
+      "initializing": "A iniciar",
       "ready": "Pronto",
       "alarm": "Alarme",
-      "stop": "Parada do Programa",
+      "stop": "Paragem do Programa",
       "end": "Fim do Programa",
       "run": "Executar",
-      "hold": "Pausa",
+      "hold": "Pausar",
       "probe": "Sonda",
       "cycle": "Ciclo",
-      "homing": "Referenciamento",
-      "jog": "Movimentação",
+      "homing": "Retorno à Origem",
+      "jog": "Movimento Manual",
       "interlock": "Intertravamento",
       "shutdown": "Desligar",
       "panic": "Pânico"
@@ -21,10 +21,10 @@
     "activeState": {
       "idle": "Ocioso",
       "run": "Executar",
-      "hold": "Pausa",
+      "hold": "Pausar",
       "door": "Porta",
-      "home": "Referência",
-      "sleep": "Dormir",
+      "home": "Origem",
+      "sleep": "Suspenso",
       "alarm": "Alarme",
       "check": "Verificar"
     }
@@ -33,9 +33,9 @@
     "activeState": {
       "idle": "Ocioso",
       "run": "Executar",
-      "hold": "Pausa",
+      "hold": "Pausar",
       "door": "Porta",
-      "home": "Referência",
+      "home": "Origem",
       "alarm": "Alarme",
       "check": "Verificar"
     }

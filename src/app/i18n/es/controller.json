@@ -1,44 +1,43 @@
 {
-    "TinyG": {
-        "machineState": {
-            "initializing": "Inicializando",
-            "ready": "Listo",
-            "alarm": "Alarma",
-            "stop": "Detener",
-            "end": "Finalizar",
-            "run": "Iniciar",
-            "hold": "Pausar",
-            "probe": "Centrar",
-            "cycle": "Ciclo",
-            "homing": "Mover ejes hasta los finales de carrera",
-            "jog": "Mover",
-            "interlock": "Parado",
-            "shutdown": "Apagar",
-            "panic": "Panico"
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "Parado",
-            "run": "Iniciar",
-            "hold": "Pausar",
-            "door": "Entrada",
-            "home": "Home",
-            "sleep": "Dormir",
-            "alarm": "Alarma",
-            "check": "Comprobar"
-        }
-    },
-    "Smoothie": {
-        "activeState": {
-            "idle": "Parado",
-            "run": "Iniciar",
-            "hold": "Pausar",
-            "door": "Entrada",
-            "home": "Home",
-            "sleep": "Dormir",
-            "alarm": "Alarma",
-            "check": "Comprobar"
-        }
+  "TinyG": {
+    "machineState": {
+      "initializing": "Inicializando",
+      "ready": "Listo",
+      "alarm": "Alarma",
+      "stop": "Detener Programa",
+      "end": "Fin del Programa",
+      "run": "Ejecutar",
+      "hold": "Sostener",
+      "probe": "Sonda",
+      "cycle": "Ciclo",
+      "homing": "Homaje",
+      "jog": "Movimiento Manual",
+      "interlock": "Interbloqueo",
+      "shutdown": "Apagar",
+      "panic": "Pánico"
     }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "Inactivo",
+      "run": "Ejecutar",
+      "hold": "Sostener",
+      "door": "Puerta",
+      "home": "Inicio",
+      "sleep": "Dormir",
+      "alarm": "Alarma",
+      "check": "Comprobar"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "Inactivo",
+      "run": "Ejecutar",
+      "hold": "Sostener",
+      "door": "Puerta",
+      "home": "Inicio",
+      "alarm": "Alarma",
+      "check": "Comprobar"
+    }
+  }
 }

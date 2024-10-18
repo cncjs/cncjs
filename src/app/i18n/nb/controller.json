@@ -1,43 +1,43 @@
 {
-    "TinyG": {
-        "machineState": {
-            "initializing": "Initialiserer",
-            "ready": "Klar",
-            "alarm": "Alarm",
-            "stop": "Programstopp",
-            "end": "Programslutt",
-            "run": "Kjør",
-            "hold": "Hold",
-            "probe": "Probe",
-            "cycle": "Cycle",
-            "homing": "Homing",
-            "jog": "Jog",
-            "interlock": "Interlock",
-            "shutdown": "Shutdown",
-            "panic": "Panikk"
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "Idle",
-            "run": "Kjør",
-            "hold": "Hold",
-            "door": "Dør",
-            "home": "Hjem",
-            "sleep": "sov",
-            "alarm": "Alarm",
-            "check": "Sjekk"
-        }
-    },
-    "Smoothie": {
-        "activeState": {
-            "idle": "Idle",
-            "run": "Kjør",
-            "hold": "Hold",
-            "door": "Dør",
-            "home": "Hjem",
-            "alarm": "Alarm",
-            "check": "Sjekk"
-        }
+  "TinyG": {
+    "machineState": {
+      "initializing": "Initierer",
+      "ready": "Klar",
+      "alarm": "Alarm",
+      "stop": "Program Stopp",
+      "end": "Program Slutt",
+      "run": "Kjør",
+      "hold": "Hold",
+      "probe": "Sonde",
+      "cycle": "Syklus",
+      "homing": "Hjemsetting",
+      "jog": "Jogg",
+      "interlock": "Interlock",
+      "shutdown": "Nedstengning",
+      "panic": "Panikk"
     }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "Inaktiv",
+      "run": "Kjør",
+      "hold": "Hold",
+      "door": "Dør",
+      "home": "Hjem",
+      "sleep": "Søvn",
+      "alarm": "Alarm",
+      "check": "Sjekk"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "Inaktiv",
+      "run": "Kjør",
+      "hold": "Hold",
+      "door": "Dør",
+      "home": "Hjem",
+      "alarm": "Alarm",
+      "check": "Sjekk"
+    }
+  }
 }

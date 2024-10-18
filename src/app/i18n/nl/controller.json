@@ -1,44 +1,43 @@
 {
-    "TinyG": {
-        "machineState": {
-            "initializing": "initialiseren",
-            "ready": "klaar",
-            "alarm": "alarm",
-            "stop": "stop",
-            "end": "einde",
-            "run": "bezig",
-            "hold": "pauze",
-            "probe": "peilen",
-            "cycle": "cyclus",
-            "homing": "naar huis",
-            "jog": "positioneren",
-            "interlock": "hardware slot",
-            "shutdown": "afsluiten",
-            "panic": "paniek"
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "stationair",
-            "run": "bezig",
-            "hold": "pauze",
-            "door": "deur",
-            "home": "naar huis",
-            "sleep": "slaap",
-            "alarm": "alarm",
-            "check": "nakijken"
-        }
-    },
-    "Smoothie": {
-        "activeState": {
-            "idle": "stationair",
-            "run": "bezig",
-            "hold": "pauze",
-            "door": "deur",
-            "home": "naar huis",
-            "sleep": "slaap",
-            "alarm": "alarm",
-            "check": "nakijken"
-        }
+  "TinyG": {
+    "machineState": {
+      "initializing": "Initialiseren",
+      "ready": "Klaar",
+      "alarm": "Alarm",
+      "stop": "Programma Stop",
+      "end": "Programma Einde",
+      "run": "Uitvoeren",
+      "hold": "Vasthouden",
+      "probe": "Proef",
+      "cycle": "Cycli",
+      "homing": "Homing",
+      "jog": "Joggen",
+      "interlock": "Interlock",
+      "shutdown": "Afsluiten",
+      "panic": "Panic"
     }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "Inactief",
+      "run": "Uitvoeren",
+      "hold": "Vasthouden",
+      "door": "Deur",
+      "home": "Huis",
+      "sleep": "Slaap",
+      "alarm": "Alarm",
+      "check": "Controleren"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "Inactief",
+      "run": "Uitvoeren",
+      "hold": "Vasthouden",
+      "door": "Deur",
+      "home": "Huis",
+      "alarm": "Alarm",
+      "check": "Controleren"
+    }
+  }
 }
