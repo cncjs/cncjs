@@ -72,9 +72,9 @@ import {
 import GrblRunner from './GrblRunner';
 import {
   GRBL,
+  GRBL_REALTIME_COMMANDS,
   GRBL_MACHINE_STATE_RUN,
   GRBL_MACHINE_STATE_HOLD,
-  GRBL_REALTIME_COMMANDS,
   GRBL_ALARMS,
   GRBL_ERRORS,
   GRBL_SETTINGS,
@@ -1425,7 +1425,12 @@ class GrblController {
   }
 
   writeln(data, context) {
-    if (_.includes(GRBL_REALTIME_COMMANDS, data)) {
+    // https://github.com/gnea/grbl/blob/master/doc/markdown/commands.md#grbl-v11-realtime-commands
+    const isASCIIRealtimeCommand = _.includes(GRBL_REALTIME_COMMANDS, data);
+    const isExtendedASCIIRealtimeCommand = String(data).match(/[\x80-\xff]/);
+    const isRealtimeCommand = isASCIIRealtimeCommand || isExtendedASCIIRealtimeCommand;
+
+    if (isRealtimeCommand) {
       this.write(data, context);
     } else {
       this.write(data + '\n', context);

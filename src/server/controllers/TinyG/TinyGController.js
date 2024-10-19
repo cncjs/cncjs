@@ -72,6 +72,7 @@ import {
 import TinyGRunner from './TinyGRunner';
 import {
   TINYG,
+  TINYG_REALTIME_COMMANDS,
   TINYG_PLANNER_BUFFER_LOW_WATER_MARK,
   TINYG_PLANNER_BUFFER_HIGH_WATER_MARK,
   TINYG_SERIAL_BUFFER_LIMIT,
@@ -1438,7 +1439,15 @@ class TinyGController {
   }
 
   writeln(data, context) {
-    this.write(data + '\n', context);
+    const isASCIIRealtimeCommand = _.includes(TINYG_REALTIME_COMMANDS, data);
+    const isExtendedASCIIRealtimeCommand = String(data).match(/[\x80-\xff]/);
+    const isRealtimeCommand = isASCIIRealtimeCommand || isExtendedASCIIRealtimeCommand;
+
+    if (isRealtimeCommand) {
+      this.write(data, context);
+    } else {
+      this.write(data + '\n', context);
+    }
   }
 }
 

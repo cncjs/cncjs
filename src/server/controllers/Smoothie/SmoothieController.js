@@ -1346,7 +1346,11 @@ class SmoothieController {
   }
 
   writeln(data, context) {
-    if (_.includes(SMOOTHIE_REALTIME_COMMANDS, data)) {
+    const isASCIIRealtimeCommand = _.includes(SMOOTHIE_REALTIME_COMMANDS, data);
+    const isExtendedASCIIRealtimeCommand = String(data).match(/[\x80-\xff]/);
+    const isRealtimeCommand = isASCIIRealtimeCommand || isExtendedASCIIRealtimeCommand;
+
+    if (isRealtimeCommand) {
       this.write(data, context);
     } else {
       this.write(data + '\n', context);

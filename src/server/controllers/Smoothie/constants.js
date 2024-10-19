@@ -1,6 +1,14 @@
 // Smoothie
 export const SMOOTHIE = 'Smoothie';
 
+// Real-time Commands: ~, !, ?, and Ctrl-x
+export const SMOOTHIE_REALTIME_COMMANDS = [
+  '~', // Cycle Start
+  '!', // Feed Hold
+  '?', // Current Status
+  '\x18', // Reset (Ctrl-X)
+];
+
 // Active State
 export const SMOOTHIE_MACHINE_STATE_IDLE = 'Idle';
 export const SMOOTHIE_MACHINE_STATE_RUN = 'Run';
@@ -9,14 +17,6 @@ export const SMOOTHIE_MACHINE_STATE_DOOR = 'Door';
 export const SMOOTHIE_MACHINE_STATE_HOME = 'Home';
 export const SMOOTHIE_MACHINE_STATE_ALARM = 'Alarm';
 export const SMOOTHIE_MACHINE_STATE_CHECK = 'Check';
-
-// Real-time Commands: ~, !, ?, and Ctrl-x
-export const SMOOTHIE_REALTIME_COMMANDS = [
-  '~', // Cycle Start
-  '!', // Feed Hold
-  '?', // Current Status
-  '\x18' // Reset (Ctrl-X)
-];
 
 // http://linuxcnc.org/docs/html/gcode/overview.html#cap:modal-groups
 export const SMOOTHIE_MODAL_GROUPS = [

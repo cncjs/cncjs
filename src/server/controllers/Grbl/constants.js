@@ -2,6 +2,14 @@
 // Grbl
 export const GRBL = 'Grbl';
 
+// Real-time Commands: ~, !, ?, and Ctrl-x
+export const GRBL_REALTIME_COMMANDS = [
+  '~', // Cycle Start
+  '!', // Feed Hold
+  '?', // Current Status
+  '\x18', // Reset Grbl (Ctrl-X)
+];
+
 // Active State
 export const GRBL_MACHINE_STATE_IDLE = 'Idle';
 export const GRBL_MACHINE_STATE_RUN = 'Run';
@@ -11,14 +19,6 @@ export const GRBL_MACHINE_STATE_HOME = 'Home';
 export const GRBL_MACHINE_STATE_SLEEP = 'Sleep';
 export const GRBL_MACHINE_STATE_ALARM = 'Alarm';
 export const GRBL_MACHINE_STATE_CHECK = 'Check';
-
-// Real-time Commands: ~, !, ?, and Ctrl-x
-export const GRBL_REALTIME_COMMANDS = [
-  '~', // Cycle Start
-  '!', // Feed Hold
-  '?', // Current Status
-  '\x18' // Reset Grbl (Ctrl-X)
-];
 
 // https://github.com/grbl/grbl/wiki/Configuring-Grbl-v0.9
 // http://linuxcnc.org/docs/html/gcode/overview.html#cap:modal-groups

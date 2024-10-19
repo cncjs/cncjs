@@ -4,6 +4,11 @@ export const G2CORE = 'g2core';
 // TinyG
 export const TINYG = 'TinyG';
 
+// Real-time Commands: Ctrl-x
+export const TINYG_REALTIME_COMMANDS = [
+  '\x18', // Reset (Ctrl-X)
+];
+
 // Tinyg Communications Programming
 // https://github.com/synthetos/TinyG/wiki/Tinyg-Communications-Programming
 export const TINYG_PLANNER_BUFFER_LOW_WATER_MARK = 5;
