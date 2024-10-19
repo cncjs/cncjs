@@ -57,7 +57,7 @@ import config from '@app/store/config';
 import Avatar from './components/Avatar';
 import { ensureColorMode, getColorScheme, mapDisplayLanguageToLocaleString } from './utils';
 
-const supportedLngs = ensureArray(JSON.parse(env.LANGUAGES));
+const supportedLngs = ensureArray(env.LANGUAGES);
 
 const MenuStateContext = createContext();
 

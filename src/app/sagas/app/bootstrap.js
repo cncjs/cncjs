@@ -25,7 +25,6 @@ import I18nextBrowserLanguageDetector from 'i18next-browser-languagedetector';
 import mapKeys from 'lodash/mapKeys';
 import pubsub from 'pubsub-js';
 import qs from 'qs';
-import GoogleAnalytics4 from 'react-ga4';
 import { initReactI18next } from 'react-i18next';
 import { all, call } from 'redux-saga/effects';
 import sha1 from 'sha1';
@@ -34,6 +33,7 @@ import axios from '@app/api/axios';
 import env from '@app/config/env';
 import settings from '@app/config/settings';
 import i18next from '@app/i18next';
+import * as analytics from '@app/lib/analytics';
 import controller from '@app/lib/controller';
 import x from '@app/lib/json-stringify';
 import log from '@app/lib/log';
@@ -43,13 +43,12 @@ import config from '@app/store/config';
 export function* init() {
   // sequential
   yield call(changeLogLevel);
+  yield call(initDateFns);
   yield call(initI18next);
+  yield call(authenticateSessionToken);
 
   // parallel
   yield all([
-    call(initGoogleAnalytics4),
-    call(initDateFns),
-    call(authenticateSessionToken),
     call(enableCrossOriginCommunication),
   ]);
 }
@@ -86,7 +85,7 @@ const initI18next = () => new Promise((resolve, reject) => {
     //resources, // keep as is
     //lng, // keep as is
     fallbackLng: 'en',
-    supportedLngs: JSON.parse(env.LANGUAGES), // @see webpack.webconfig.xxx.js
+    supportedLngs: env.LANGUAGES,
     //nonExplicitSupportedLngs, // keep as is
     load: 'currentOnly',
     preload: [],
@@ -192,22 +191,6 @@ const initI18next = () => new Promise((resolve, reject) => {
     });
 });
 
-const initGoogleAnalytics4 = async () => {
-  const url = 'api/state';
-  const res = await axios.get(url);
-  const { allowAnonymousUsageDataCollection } = res.data;
-  if (allowAnonymousUsageDataCollection) {
-    GoogleAnalytics4.initialize([
-      {
-        trackingId: settings.analytics.trackingId,
-        gaOptions: {
-          cookieDomain: 'none'
-        }
-      },
-    ]);
-  }
-};
-
 const initDateFns = () => {
   /* eslint-disable camelcase */
   const locale = {
@@ -238,21 +221,31 @@ const initDateFns = () => {
 const authenticateSessionToken = () => new Promise(resolve => {
   const token = config.get('session.token');
   user.signin({ token: token })
-    .then(({ authenticated, token }) => {
-      if (authenticated) {
-        log.debug('Create and establish a WebSocket connection');
-
-        const host = '';
-        const options = {
-          query: 'token=' + token
-        };
-        controller.connect(host, options, () => {
-          // @see "app/containers/Login/Login.jsx"
-          resolve();
-        });
+    .then(async ({ authenticated, token }) => {
+      if (!authenticated) {
+        resolve();
         return;
       }
-      resolve();
+
+      // Anonymous usage data collection
+      const url = 'api/state';
+      const res = await axios.get(url);
+      const { allowAnonymousUsageDataCollection } = res.data;
+      if (allowAnonymousUsageDataCollection) {
+        log.debug('Initializing anonymous usage data collection');
+        analytics.initialize();
+      }
+
+      // Controller connection
+      log.debug('Establishing controller connection');
+      const host = '';
+      const options = {
+        query: 'token=' + token
+      };
+      controller.connect(host, options, () => {
+        // @see "app/containers/Login/Login.jsx"
+        resolve();
+      });
     });
 });
 

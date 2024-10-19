@@ -1,4 +1,19 @@
 import GoogleAnalytics from 'react-ga4';
+import settings from '@app/config/settings';
+
+export const initialize = () => {
+  if (GoogleAnalytics.isInitialized) {
+    return;
+  }
+  GoogleAnalytics.initialize([
+    {
+      trackingId: settings.analytics.trackingId,
+      gaOptions: {
+        cookieDomain: 'none'
+      }
+    },
+  ]);
+};
 
 export const pageview = ({ page }) => {
   if (!GoogleAnalytics.isInitialized) {

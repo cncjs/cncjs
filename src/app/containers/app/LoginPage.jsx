@@ -16,9 +16,11 @@ import qs from 'qs';
 import React, { useState } from 'react';
 import { Form, Field } from 'react-final-form';
 import { Navigate, useLocation } from 'react-router-dom';
+import axios from '@app/api/axios';
 import FormGroup from '@app/components/FormGroup';
 import InlineError from '@app/components/InlineError';
 import settings from '@app/config/settings';
+import * as analytics from '@app/lib/analytics';
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import x from '@app/lib/json-stringify';
@@ -32,7 +34,7 @@ const required = value => {
     : i18n._('This field is required.');
 };
 
-const forgotPasswordLink = 'https://cnc.js.org/docs/faq/#forgot-your-password';
+const forgotPasswordLink = 'https://github.com/cncjs/cncjs/wiki/FAQ#forgot-your-password';
 
 const LoginPage = () => {
   const location = useLocation();
@@ -72,8 +74,17 @@ const LoginPage = () => {
       return;
     }
 
-    log.debug('Create and establish a WebSocket connection');
+    // Anonymous usage data collection
+    const url = 'api/state';
+    const res = await axios.get(url);
+    const { allowAnonymousUsageDataCollection } = res.data;
+    if (allowAnonymousUsageDataCollection) {
+      log.debug('Initializing anonymous usage data collection');
+      analytics.initialize();
+    }
 
+    // Controller connection
+    log.debug('Establishing controller connection');
     const token = config.get('session.token');
     const host = '';
     const options = {

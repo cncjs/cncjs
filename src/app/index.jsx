@@ -21,9 +21,9 @@ document.body.appendChild(container);
 
 sagaMiddleware.run(rootSaga);
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(container);
+root.render(
   <GlobalProvider>
     <App />
-  </GlobalProvider>,
-  container
+  </GlobalProvider>
 );

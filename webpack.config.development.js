@@ -133,10 +133,10 @@ module.exports = {
   },
   plugins: [
     new webpack.EnvironmentPlugin({
-      NODE_ENV: JSON.stringify('development'),
-      BUILD_VERSION: JSON.stringify(buildVersion),
-      LANGUAGES: JSON.stringify(buildConfig.languages),
-      TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId),
+      NODE_ENV: 'development',
+      BUILD_VERSION: buildVersion,
+      LANGUAGES: buildConfig.languages,
+      TRACKING_ID: buildConfig.analytics.trackingId,
     }),
     new webpack.LoaderOptionsPlugin({
       debug: true,
