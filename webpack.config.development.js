@@ -175,5 +175,28 @@ module.exports = {
       tls: false,
     },
     extensions: ['.js', '.jsx']
-  }
+  },
+  devServer: {
+    allowedHosts: 'all',
+    compress: true,
+    devMiddleware: {
+      writeToDisk: true,
+    },
+    host: process.env.WEBPACK_DEV_SERVER_HOST,
+    hot: true,
+    proxy: {
+      '/api': {
+        target: process.env.PROXY_TARGET,
+        changeOrigin: true,
+      },
+      '/socket.io': {
+        target: process.env.PROXY_TARGET,
+        changeOrigin: true,
+      },
+    },
+    static: {
+      directory: path.resolve(__dirname, 'output/cncjs/app'),
+      watch: true,
+    },
+  },
 };

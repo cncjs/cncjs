@@ -37,10 +37,10 @@ $ git checkout -b my-feature-branch -t origin/master
 
 ### Step 3: Install
 
-Run `npm install` to install the dependencies in the local node_modules folder:
+Run `yarn install` to install the dependencies in the local node_modules folder:
 ```bash
-$ npm install -g npm
-$ npm install
+$ npm install -g yarn
+$ yarn install
 ```
 
 ### Step 4: Commit
@@ -55,17 +55,17 @@ Writing good commit logs is important. A commit log should describe what changed
 
 ### Step 5: Rebase
 
-Use `git rebase` (not `git merge`) to sync your work from time to time.
+Use `git rebase` or `git merge` to sync your work from time to time.
 ```bash
 $ git fetch upstream
 $ git rebase upstream/master
 ```
 
-### Step 6: Build
+### Step 6: Build (Optional)
 
-Run `npm run prepare` to make sure the build succeed:
+Run `yarn build` to make sure the build succeed:
 ```bash
-$ npm run prepare
+$ yarn build
 ```
 
 ### Step 7: Push
@@ -81,11 +81,13 @@ Go to https://github.com/username/cncjs and select your feature branch. Click on
 ## Keeping a Fork Up-to-date
 
 ### Clone your fork
+
 ```bash
 git clone git@github.com:USERNAME/cncjs.git
 ```
 
 ### Add remote from original repository in your forked repository
+
 ```bash
 cd cncjs
 git remote add upstream git://github.com/cncjs/cncjs.git
@@ -93,11 +95,13 @@ git fetch upstream
 ```
 
 ### Updating your fork from original repo to keep up with their changes
+
 ```bash
 git pull upstream master
 ```
 
 ### Push the local branch to the remote repository
+
 ```bash
 git pull origin master
 git push origin master
@@ -105,11 +109,11 @@ git push origin master
 
 ## Running Local Development Server
 
-Make sure you have Node.js 4 or later verions installed, and run `npm run dev` to start a local development server for development and testing. Every code changes will trigger webpack Hot Module Replacement (HMR) which will be really useful while developing in React.
+Make sure you have the latest Node.js version installed, and run `yarn dev` to start a local development server for development and testing. Every code changes will trigger webpack Hot Module Replacement (HMR) which will be really useful while developing in React.
 
 ```bash
-$ npm install  # Ensure that packages are installed
-$ npm run dev  # It may take several minutes...
+$ yarn install  # Ensure that packages are installed
+$ yarn dev  # It may take several minutes...
   :  :  :
 Server is listening on 0.0.0.0:8000
 ```
@@ -126,8 +130,8 @@ Now you're ready to go!
 ## Running Production Build
 
 ```bash
-$ npm install  # Ensure that packages are installed
-$ npm run prepare
+$ yarn install  # Ensure that packages are installed
+$ yarn build
 $ ./bin/cncjs -vv
   :  :  :
 Server is listening on 0.0.0.0:8000
@@ -135,39 +139,24 @@ Server is listening on 0.0.0.0:8000
 
 ## Build Desktop Apps
 
-#### Mac
+#### macOS (x64)
 ```bash
-$ npm install  # Ensure that packages are installed
-$ npm run prepare && npm run build:mac-x64
-$ ls -al output/osx/
+$ yarn build && yarn build:macos-x64
 ```
 
-#### Windows x86
+#### macOS (arm64)
 ```bash
-$ npm install  # Ensure that packages are installed
-$ npm run prepare && npm run build:win-ia32
-$ ls -al output/win-ia32/
+$ yarn build && yarn build:macos-arm64
 ```
 
-#### Windows x64
+#### Windows (x64)
 ```bash
-$ npm install  # Ensure that packages are installed
-$ npm run prepare && npm run build:win-x64
-$ ls -al output/win/
+$ yarn build && yarn build:windows-x64
 ```
 
-#### Linux x86
+#### Linux (x64)
 ```bash
-$ npm install  # Ensure that packages are installed
-$ npm run prepare && npm run build:linux-ia32
-$ ls -al output/linux-ia32/
-```
-
-#### Linux x64
-```bash
-$ npm install  # Ensure that packages are installed
-$ npm run prepare && npm run build:linux-x64
-$ ls -al output/linux/
+$ yarn build && yarn build:linux-x64
 ```
 
 ## Localization
@@ -215,7 +204,7 @@ You can validate the translation by copying translated resource files to the ins
 ```bash
 $ cd $(dirname `which cncjs`)/../lib/node_modules/cncjs/dist/app/i18n/
 $ pwd
-/home/cheton/.nvm/versions/node/v10.15.3/lib/node_modules/cncjs/dist/app/i18n
+/home/cheton/.nvm/versions/node/v{node-version}/lib/node_modules/cncjs/dist/app/i18n
 ```
 
 To verify your changes during runtime, it's recommended that you open <b>Developer Tools</b> and disable browser cache. For example:
