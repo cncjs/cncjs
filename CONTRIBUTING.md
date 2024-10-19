@@ -55,7 +55,7 @@ Writing good commit logs is important. A commit log should describe what changed
 
 ### Step 5: Rebase
 
-Use `git rebase` (not `git merge`) to sync your work from time to time.
+Use `git rebase` or `git merge` to sync your work from time to time.
 ```bash
 $ git fetch upstream
 $ git rebase upstream/master
@@ -142,25 +142,21 @@ Server is listening on 0.0.0.0:8000
 #### macOS (x64)
 ```bash
 $ yarn build && yarn build:macos-x64
-$ ls -al output/
 ```
 
 #### macOS (arm64)
 ```bash
 $ yarn build && yarn build:macos-arm64
-$ ls -al output/
 ```
 
 #### Windows (x64)
 ```bash
 $ yarn build && yarn build:windows-x64
-$ ls -al output/
 ```
 
 #### Linux (x64)
 ```bash
 $ yarn build && yarn build:linux-x64
-$ ls -al output/
 ```
 
 ## Localization
