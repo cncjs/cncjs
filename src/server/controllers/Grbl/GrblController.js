@@ -788,6 +788,23 @@ class GrblController {
     this.runner.on('raw', noop);
 
     this.runner.on('status', (res) => {
+      /**
+       * Handle the scenario where a startup message is not received during UART communication.
+       * A status query (?) will be issued in the `queryActivity` function.
+       */
+      if (!this.ready) {
+        this.ready = true;
+
+        // Reset the state
+        this.clearActionValues();
+      }
+      if (!this.initialized) {
+        this.initialized = true;
+
+        // Initialize controller
+        this.initController();
+      }
+
       this.actionMask.queryStatusReport = false;
 
       if (this.actionMask.replyStatusReport) {
@@ -953,12 +970,14 @@ class GrblController {
     this.runner.on('startup', (res) => {
       this.emit('connection:read', this.connectionState, res.raw);
 
-      // The startup message always prints upon startup, after a reset, or at program end.
-      // Setting the initial state when Grbl has completed re-initializing all systems.
-      this.clearActionValues();
+      if (!this.ready) {
+        // The startup message always prints upon startup, after a reset, or at program end.
+        // Setting the initial state when Grbl has completed re-initializing all systems.
+        this.clearActionValues();
 
-      // Set ready flag to true when a startup message has arrived
-      this.ready = true;
+        // Set ready flag to true when a startup message has arrived
+        this.ready = true;
+      }
 
       if (!this.initialized) {
         this.initialized = true;
@@ -971,6 +990,13 @@ class GrblController {
     this.runner.on('others', (res) => {
       this.emit('connection:read', this.connectionState, res.raw);
     });
+
+    // Restrict the function to execute once within the specified time interval, occurring only on the trailing edge of the timeout.
+    const queryActivity = _.throttle(() => {
+      if (this.isOpen()) {
+        this.connection.write('?');
+      }
+    }, 2000, { trailing: true });
 
     const queryStatusReport = () => {
       // Check the ready flag
@@ -1079,6 +1105,7 @@ class GrblController {
 
       // Check the ready flag
       if (!(this.ready)) {
+        queryActivity();
         return;
       }
 
