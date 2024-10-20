@@ -7,7 +7,17 @@ const languages = require('./build.config').languages;
 module.exports = {
   options: {
     debug: false,
-    removeUnusedKeys: false,
+    // Available since 4.6.0
+    // @param {string} lng The language of the unused translation key.
+    // @param {string} ns The namespace of the unused translation key.
+    // @param {array} key The translation key in its array form.
+    // @return {boolean} Returns true if the unused translation key should be removed.
+    removeUnusedKeys: function(lng, ns, key) {
+      if (ns === 'resource') {
+        return true;
+      }
+      return false;
+    },
     sort: false,
     func: {
       list: ['i18n.t', 't'],

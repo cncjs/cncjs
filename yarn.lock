@@ -4812,15 +4812,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn-dynamic-import@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "acorn-dynamic-import@npm:4.0.0"
-  peerDependencies:
-    acorn: ^6.0.0
-  checksum: ef7298e632e9d107b2be06b47d607de94d7213ca2417fced02af76b0c71e13074d98924e270c7bfec421c1049ed9001a97ed4d0f28020d9cfa1aae16ca20664a
-  languageName: node
-  linkType: hard
-
 "acorn-import-assertions@npm:^1.7.6":
   version: 1.8.0
   resolution: "acorn-import-assertions@npm:1.8.0"
@@ -7056,7 +7047,7 @@ __metadata:
     i18next-fs-backend: ^2.0.0
     i18next-http-backend: ^2.0.1
     i18next-http-middleware: ^3.2.1
-    i18next-scanner: ~4.3.0
+    i18next-scanner: ^4.6.0
     immer: ~9.0.12
     infinite-tree: ~1.17.0
     is-electron: ~2.2.1
@@ -11781,12 +11772,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-scanner@npm:~4.3.0":
-  version: 4.3.0
-  resolution: "i18next-scanner@npm:4.3.0"
+"i18next-scanner@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "i18next-scanner@npm:4.6.0"
   dependencies:
     acorn: ^8.0.4
-    acorn-dynamic-import: ^4.0.0
     acorn-jsx: ^5.3.1
     acorn-stage3: ^4.0.0
     acorn-walk: ^8.0.0
@@ -11807,7 +11797,7 @@ __metadata:
     vinyl-fs: ^4.0.0
   bin:
     i18next-scanner: bin/cli.js
-  checksum: f099cc8ac3e290ef279fbb61ed2cb3923a7a90790f471aafb29c90aee96b548c0c6689b89668d8efc4cf8e367d879fa2c92911442c9b699c2be4a33a44168126
+  checksum: 3d0a1f841055cb096a4f3f876f90326495a730738fa6e8c37fda0fe5c9213fa4364bf413fbae99a7b1c424d7687817c236df384d72e96c121fb6c06661b9f1b7
   languageName: node
   linkType: hard
 
