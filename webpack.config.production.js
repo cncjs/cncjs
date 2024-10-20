@@ -190,11 +190,12 @@ module.exports = {
       'node_modules'
     ],
     fallback: {
+      crypto: require.resolve('crypto-browserify'),
       fs: false,
       net: false,
-      path: false,
+      path: require.resolve('path-browserify'),
       stream: require.resolve('stream-browserify'),
-      timers: false,
+      timers: require.resolve('timers-browserify'),
       tls: false,
     },
     extensions: ['.js', '.jsx']

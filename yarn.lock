@@ -6463,6 +6463,7 @@ __metadata:
     core-js: ~3.26.1
     coveralls: ~3.0.3
     cross-env: ~5.2.0
+    crypto-browserify: ^3.12.0
     css-loader: ~3.0.0
     css-minimizer-webpack-plugin: ~7.0.0
     debug: ~4.1.1
@@ -6536,6 +6537,7 @@ __metadata:
     nib: ~1.2.0
     normalize.css: ~8.0.1
     opencollective: ~1.0.3
+    path-browserify: ^1.0.1
     perfect-scrollbar: ~1.4.0
     pre-push: ~0.1.1
     progress: ~2.0.3
@@ -6586,7 +6588,7 @@ __metadata:
     socketio-jwt: ~4.5.0
     sortablejs: ~1.9.0
     spawn-default-shell: ~2.0.0
-    stream-browserify: ~3.0.0
+    stream-browserify: ^3.0.0
     style-loader: ~0.23.1
     styled-components: ~3.4.9
     stylint: ~1.5.9
@@ -6598,6 +6600,7 @@ __metadata:
     tap: ~21.0.0
     text-table: ~0.2.0
     three: ~0.103.0
+    timers-browserify: ^2.0.12
     transform-loader: ~0.2.4
     universal-logger: ~1.0.1
     universal-logger-browser: ~1.0.2
@@ -7343,7 +7346,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crypto-browserify@npm:^3.11.0":
+"crypto-browserify@npm:^3.11.0, crypto-browserify@npm:^3.12.0":
   version: 3.12.0
   resolution: "crypto-browserify@npm:3.12.0"
   dependencies:
@@ -15694,6 +15697,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"path-browserify@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "path-browserify@npm:1.0.1"
+  checksum: c6d7fa376423fe35b95b2d67990060c3ee304fc815ff0a2dc1c6c3cfaff2bd0d572ee67e18f19d0ea3bbe32e8add2a05021132ac40509416459fffee35200699
+  languageName: node
+  linkType: hard
+
 "path-dirname@npm:^1.0.0":
   version: 1.0.2
   resolution: "path-dirname@npm:1.0.2"
@@ -19344,7 +19354,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stream-browserify@npm:~3.0.0":
+"stream-browserify@npm:^3.0.0":
   version: 3.0.0
   resolution: "stream-browserify@npm:3.0.0"
   dependencies:
@@ -20143,7 +20153,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"timers-browserify@npm:^2.0.4":
+"timers-browserify@npm:^2.0.12, timers-browserify@npm:^2.0.4":
   version: 2.0.12
   resolution: "timers-browserify@npm:2.0.12"
   dependencies:
