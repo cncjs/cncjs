@@ -31,7 +31,7 @@ module.exports = {
     resource: {
       loadPath: 'src/server/i18n/{{lng}}/{{ns}}.json',
       savePath: 'src/server/i18n/{{lng}}/{{ns}}.json', // or 'src/server/i18n/${lng}/${ns}.saveAll.json'
-      jsonIndent: 4
+      jsonIndent: 2,
     },
     nsSeparator: ':', // namespace separator
     keySeparator: '.', // key separator

@@ -57,7 +57,27 @@ import config from '@app/store/config';
 import Avatar from './components/Avatar';
 import { ensureColorMode, getColorScheme, mapDisplayLanguageToLocaleString } from './utils';
 
-const supportedLngs = ensureArray(env.LANGUAGES);
+const supportedLanguages = ensureArray(env.LANGUAGES)
+  .map(language => {
+    return {
+      value: language,
+      label: mapDisplayLanguageToLocaleString(language),
+    };
+  })
+  .sort((a, b) => {
+    const bottomHalfLanguages = new Set(['ja', 'zh-cn', 'zh-tw']);
+
+    const priorityA = bottomHalfLanguages.has(a.value) ? 1 : 0;
+    const priorityB = bottomHalfLanguages.has(b.value) ? 1 : 0;
+
+    // If both items are in the priority list, keep their original order
+    if (priorityA === priorityB) {
+      return a.label.localeCompare(b.label);
+    }
+
+    // If only one item is in the priority list, prioritize the other
+    return priorityA - priorityB;
+  });
 
 const MenuStateContext = createContext();
 
@@ -183,16 +203,16 @@ const LanguageMenuItems = forwardRef((props, ref) => {
         </Flex>
       </Flex>
       <MenuDivider />
-      {supportedLngs.map(language => (
+      {supportedLanguages.map(language => (
         <MenuItem
-          key={language}
-          onClick={(event) => setLanguage(language)}
+          key={language.value}
+          onClick={(event) => setLanguage(language.value)}
         >
           <Flex flex="none" mr="3x" minWidth="4x">
-            {language === currentLanguage && <Icon as={CheckIcon} />}
+            {language.value === currentLanguage && <Icon as={CheckIcon} />}
           </Flex>
           <Flex flex="auto">
-            {mapDisplayLanguageToLocaleString(language)}
+            {language.label}
           </Flex>
         </MenuItem>
       ))}

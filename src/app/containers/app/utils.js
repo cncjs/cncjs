@@ -25,14 +25,14 @@ export const mapDisplayLanguageToLocaleString = (language) => ({
   'de': 'Deutsch',
   'en': 'English (US)',
   'es': 'Español',
-  'fr': 'Français (France)',
+  'fr': 'Français',
   'it': 'Italiano',
   'ja': '日本語',
   'hu': 'Magyar',
   'nb': 'Norwegian',
   'nl': 'Nederlands',
-  'pt': 'Português (Portugal)',
-  'pt-br': 'Português (Brasil)',
+  'pt': 'Português (Portugal)', // European Portuguese
+  'pt-br': 'Português (Brasil)', // Brazilian Portuguese
   'ru': 'Русский',
   'tr': 'Türkçe',
   'uk': 'Український',
