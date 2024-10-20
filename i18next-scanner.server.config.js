@@ -13,9 +13,11 @@ module.exports = {
     // @param {array} key The translation key in its array form.
     // @return {boolean} Returns true if the unused translation key should be removed.
     removeUnusedKeys: function(lng, ns, key) {
+      /*
       if (ns === 'resource') {
         return true;
       }
+      */
       return false;
     },
     sort: false,
