@@ -9,7 +9,6 @@ import {
   DrawerFooter,
   DrawerOverlay,
   Flex,
-  Space,
   Switch,
   Text,
   TextLabel,
@@ -17,9 +16,6 @@ import {
 import {
   useConst,
 } from '@tonic-ui/react-hooks';
-import {
-  InfoOIcon,
-} from '@tonic-ui/react-icons';
 import React, { useCallback } from 'react';
 import { Field, Form, FormSpy } from 'react-final-form';
 import FormGroup from '@app/components/FormGroup';

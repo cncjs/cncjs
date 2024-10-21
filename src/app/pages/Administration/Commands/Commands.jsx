@@ -1,6 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
 import {
-  Box,
   Button,
   Checkbox,
   Flex,
