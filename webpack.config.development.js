@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const webpack = require('webpack');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
@@ -29,11 +30,9 @@ module.exports = {
   entry: {
     polyfill: [
       path.resolve(__dirname, 'src/app/polyfill/index.js'),
-      'webpack-hot-middleware/client?path=/__webpack_hmr&reload=true',
     ],
     app: [
       path.resolve(__dirname, 'src/app/index.jsx'),
-      'webpack-hot-middleware/client?path=/__webpack_hmr&reload=true',
     ],
   },
   output: {
@@ -52,7 +51,7 @@ module.exports = {
           ...babelConfig(),
           env: {
             development: {
-              plugins: ['react-hot-loader/babel']
+              plugins: ['react-refresh/babel'],
             }
           }
         },
@@ -138,6 +137,7 @@ module.exports = {
       LANGUAGES: buildConfig.languages,
       TRACKING_ID: buildConfig.analytics.trackingId,
     }),
+    new webpack.HotModuleReplacementPlugin(),
     new webpack.LoaderOptionsPlugin({
       debug: true,
     }),
@@ -171,6 +171,7 @@ module.exports = {
         })
       );
     })(),
+    new ReactRefreshWebpackPlugin(),
   ].filter(Boolean),
   resolve: {
     alias: {
@@ -196,21 +197,28 @@ module.exports = {
   devServer: {
     allowedHosts: 'all',
     compress: true,
+    client: {
+      overlay: true,
+      progress: true,
+    },
     devMiddleware: {
       writeToDisk: true,
     },
     host: process.env.WEBPACK_DEV_SERVER_HOST,
     hot: true,
-    proxy: {
-      '/api': {
+    liveReload: false,
+    proxy: [
+      {
+        context: ['/api'],
         target: process.env.PROXY_TARGET,
         changeOrigin: true,
       },
-      '/socket.io': {
+      {
+        context: ['/socket.io'],
         target: process.env.PROXY_TARGET,
         changeOrigin: true,
       },
-    },
+    ],
     static: {
       directory: path.resolve(__dirname, 'output/cncjs/app'),
       watch: true,

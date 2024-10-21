@@ -1,4 +1,3 @@
-/* eslint import/no-import-module-exports: 0 */
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { END } from 'redux-saga';
@@ -23,11 +22,9 @@ const configureStore = (preloadedState) => {
   // See https://github.com/rackt/redux/releases/tag/v3.1.0
   const store = createStore(rootReducer, preloadedState, enhancer);
 
-  // Hot reload reducers (requires Webpack or Browserify HMR to be enabled)
-  if (module.hot) {
-    // Enable Webpack hot module replacement for reducers
-    module.hot.accept('app/reducers', async () => {
-      const nextReducer = await import('app/reducers');
+  if (import.meta.webpackHot) {
+    import.meta.webpackHot.accept('@app/reducers', async () => {
+      const nextReducer = await import('@app/reducers');
       store.replaceReducer(nextReducer);
     });
   }

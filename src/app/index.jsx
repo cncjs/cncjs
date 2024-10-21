@@ -10,6 +10,14 @@ import sagaMiddleware from '@app/store/redux/sagaMiddleware';
 import { GlobalProvider } from '@app/context';
 import './styles/vendor.styl';
 
+// Hot Module Replacement
+if (import.meta.webpackHot) {
+  const errorHandler = (err, { moduleId, module }) => {
+    console.error('errorHandler:', err, moduleId, module);
+  };
+  import.meta.webpackHot.accept(errorHandler);
+}
+
 // Font Awesome icons
 library.add(fab);
 library.add(far);
