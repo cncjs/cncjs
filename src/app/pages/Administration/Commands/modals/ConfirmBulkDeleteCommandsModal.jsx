@@ -46,6 +46,14 @@ const ConfirmBulkDeleteRecordsModal = ({
         </ModalBody>
         <ModalFooter columnGap="2x">
           <Button
+            onClick={onClose}
+            sx={{
+              minWidth: 80,
+            }}
+          >
+            {i18n._('Cancel')}
+          </Button>
+          <Button
             variant="primary"
             onClick={onConfirm}
             sx={{
@@ -53,14 +61,6 @@ const ConfirmBulkDeleteRecordsModal = ({
             }}
           >
             {i18n._('Delete')}
-          </Button>
-          <Button
-            onClick={onClose}
-            sx={{
-              minWidth: 80,
-            }}
-          >
-            {i18n._('Cancel')}
           </Button>
         </ModalFooter>
       </ModalContent>

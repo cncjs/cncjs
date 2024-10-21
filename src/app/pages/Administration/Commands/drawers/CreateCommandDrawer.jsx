@@ -1,5 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import {
+  Box,
   Button,
   Drawer,
   DrawerContent,
@@ -8,6 +9,7 @@ import {
   DrawerFooter,
   DrawerOverlay,
   Flex,
+  Space,
   Switch,
   Text,
   TextLabel,
@@ -15,6 +17,9 @@ import {
 import {
   useConst,
 } from '@tonic-ui/react-hooks';
+import {
+  InfoOIcon,
+} from '@tonic-ui/react-icons';
 import React, { useCallback } from 'react';
 import { Field, Form, FormSpy } from 'react-final-form';
 import FormGroup from '@app/components/FormGroup';
@@ -26,6 +31,7 @@ import {
 import i18n from '@app/lib/i18n';
 import FieldInput from '@app/pages/Administration/components/FieldInput';
 import FieldTextarea from '@app/pages/Administration/components/FieldTextarea';
+import FieldTextLabel from '@app/pages/Administration/components/FieldTextLabel';
 import {
   API_COMMANDS_QUERY_KEY,
   useCreateCommandMutation,
@@ -92,46 +98,66 @@ const CreateCommandDrawer = ({
             </InlineToastContainer>
             <DrawerHeader>
               <Text>
-                {i18n._('Command Details')}
+                {i18n._('New Command')}
               </Text>
             </DrawerHeader>
             <DrawerBody>
               <FormGroup>
-                <Field name="enabled">
-                  {({ input, meta }) => {
-                    return (
-                      <Flex
-                        alignItems="center"
-                        columnGap="2x"
-                      >
-                        <Switch
-                          {...input}
-                          checked={input.value}
-                        />
-                        <TextLabel>
-                          {input.value === true ? i18n._('ON') : i18n._('OFF')}
-                        </TextLabel>
-                      </Flex>
-                    );
-                  }}
-                </Field>
+                <Flex
+                  alignItems="center"
+                  justifyContent="space-between"
+                  columnGap="3x"
+                >
+                  <FieldTextLabel>
+                    {i18n._('Enabled:')}
+                  </FieldTextLabel>
+                  <Field name="enabled">
+                    {({ input, meta }) => {
+                      return (
+                        <Flex
+                          alignItems="center"
+                          columnGap="2x"
+                        >
+                          <Switch
+                            {...input}
+                            checked={input.value}
+                          />
+                          <TextLabel>
+                            {input.value === true ? i18n._('ON') : i18n._('OFF')}
+                          </TextLabel>
+                        </Flex>
+                      );
+                    }}
+                  </Field>
+                </Flex>
               </FormGroup>
               <FormGroup>
-                <TextLabel mb="2x">
-                  {i18n._('Name:')}
-                </TextLabel>
+                <Box mb="1x">
+                  <FieldTextLabel
+                    required
+                  >
+                    {i18n._('Command name:')}
+                  </FieldTextLabel>
+                </Box>
                 <FieldInput
                   name="title"
+                  placeholder={i18n._('e.g., Activate Air Purifier')}
                   validate={required}
                 />
               </FormGroup>
               <FormGroup>
-                <TextLabel mb="2x">
-                  {i18n._('Commands:')}
-                </TextLabel>
+                <Box mb="1x">
+                  <FieldTextLabel
+                    required
+                    infoTipLabel={i18n._('Enter the shell commands to be executed when this command runs. Each line will be executed sequentially.')}
+                  >
+                    {i18n._('Shell commands:')}
+                  </FieldTextLabel>
+                </Box>
                 <FieldTextarea
                   name="commands"
                   rows="10"
+                  placeholder="/home/cncjs/bin/activate-air-purifier"
                   validate={required}
                 />
               </FormGroup>
@@ -160,6 +186,14 @@ const CreateCommandDrawer = ({
                       columnGap="2x"
                     >
                       <Button
+                        onClick={onClose}
+                        sx={{
+                          minWidth: 80,
+                        }}
+                      >
+                        {i18n._('Cancel')}
+                      </Button>
+                      <Button
                         variant="primary"
                         disabled={!canClickAdd}
                         onClick={handleClickAdd}
@@ -167,15 +201,7 @@ const CreateCommandDrawer = ({
                           minWidth: 80,
                         }}
                       >
-                        {i18n._('Add')}
-                      </Button>
-                      <Button
-                        onClick={onClose}
-                        sx={{
-                          minWidth: 80,
-                        }}
-                      >
-                        {i18n._('Cancel')}
+                        {i18n._('Create Command')}
                       </Button>
                     </Flex>
                   );

@@ -1,5 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import {
+  Box,
   Button,
   Checkbox,
   Flex,
@@ -165,7 +166,7 @@ const Commands = () => {
       size: 24,
     },
     {
-      header: i18n._('Name'),
+      header: i18n._('Command Name'),
       cell: ({ row }) => (
         <LinkButton onClick={handleClickViewCommandDetailsById(row.original.id)}>
           {row.original.title}
@@ -183,7 +184,7 @@ const Commands = () => {
     },
     {
       id: 'status',
-      header: i18n._('Status'),
+      header: i18n._('Enabled'),
       cell: ({ row }) => (
         <Flex
           alignItems="center"
@@ -240,6 +241,7 @@ const Commands = () => {
         />
         <Flex
           flex="auto"
+          p="2x"
         >
           {!!data && (
             <CodePreview
