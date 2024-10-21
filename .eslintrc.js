@@ -29,6 +29,7 @@ module.exports = {
             skipBlankLines: true,
             skipComments: true
         }],
+        'react/forbid-foreign-prop-types': 0,
         'react/jsx-indent': ['error', 2],
         'react/jsx-indent-props': ['error', 2],
         'react/jsx-no-bind': [1, {
@@ -36,5 +37,6 @@ module.exports = {
         }],
         'react/no-access-state-in-setstate': 0,
         'react/prefer-stateless-function': 0,
+        'react/prop-types': 0,
     }
 };
