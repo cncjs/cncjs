@@ -19,16 +19,19 @@ class ShellCommandService {
     this.emitter.off(eventName, listener);
   }
 
-  spawn(command, options) {
+  // `command` <string>: The command to be executed.
+  // `context` <object>: The relevant information related to the command.
+  // `options` <object>: For available options, refer to the [child_process documentation](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options).
+  spawn(command, context, options) {
     const taskId = shortid.generate(); // task id
     const child = defaultShell.spawn(command, {
       detached: true,
-      ...options
+      ...options,
     });
     child.unref();
 
     this.tasks.push(taskId);
-    this.emitter.emit('start', taskId);
+    this.emitter.emit('start', taskId, context);
 
     child.stdout.on('data', (data) => {
       process.stdout.write(`PID:${child.pid}> ${data}`);
@@ -38,21 +41,21 @@ class ShellCommandService {
       process.stderr.write(`PID:${child.pid}> ${data}`);
       this.emitter.emit('data', taskId, data);
     });
-    child.on('error', (err) => {
-      // Listen for error event can prevent from throwing an unhandled exception
-      log.error(`Failed to start a child process: err=${JSON.stringify(err)}`);
-
-      this.tasks = _without(this.tasks, taskId);
-      this.emitter.emit('error', taskId, err);
-    });
     // The 'exit' event is emitted after the child process ends.
     // Note that the 'exit' event may or may not fire after an error has occurred.
     // It is important to guard against accidentally invoking handler functions multiple times.
     child.on('exit', (code) => {
       if (this.tasks.indexOf(taskId) >= 0) {
         this.tasks = _without(this.tasks, taskId);
-        this.emitter.emit('finish', taskId, code);
+        this.emitter.emit('end', taskId, code);
       }
+    });
+    child.on('error', (err) => {
+      // Listen for error event can prevent from throwing an unhandled exception
+      log.error(`Failed to start a child process: err=${JSON.stringify(err)}`);
+
+      this.tasks = _without(this.tasks, taskId);
+      this.emitter.emit('error', taskId, err);
     });
 
     return taskId;

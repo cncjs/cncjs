@@ -78,9 +78,9 @@ class ServiceEngine {
         this.io.emit('task:data', ...args);
       }
     },
-    taskFinish: (...args) => {
+    taskEnd: (...args) => {
       if (this.io) {
-        this.io.emit('task:finish', ...args);
+        this.io.emit('task:end', ...args);
       }
     },
     taskError: (...args) => {
@@ -147,7 +147,7 @@ class ServiceEngine {
 
     shellCommand.on('start', this.listener.taskStart);
     shellCommand.on('data', this.listener.taskData);
-    shellCommand.on('finish', this.listener.taskFinish);
+    shellCommand.on('end', this.listener.taskEnd);
     shellCommand.on('error', this.listener.taskError);
 
     // System Trigger: Startup
@@ -457,7 +457,8 @@ class ServiceEngine {
     userStore.off('change', this.listener.configChange);
 
     shellCommand.off('start', this.listener.taskStart);
-    shellCommand.off('finish', this.listener.taskFinish);
+    shellCommand.off('data', this.listener.taskData);
+    shellCommand.off('end', this.listener.taskEnd);
     shellCommand.off('error', this.listener.taskError);
   }
 }

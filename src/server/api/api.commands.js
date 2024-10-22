@@ -255,7 +255,11 @@ const api = {
 
     log.info(`run: title="${title}", commands="${commands}"`);
 
-    const taskId = shellCommand.spawn(commands);
+    const context = {
+      id,
+      name: title,
+    };
+    const taskId = shellCommand.spawn(commands, context);
 
     res.send({ taskId: taskId });
   },

@@ -75,7 +75,6 @@ const CreateCommandDrawer = ({
     <Drawer
       backdrop
       closeOnEsc
-      closeOnOutsideClick
       isClosable
       isOpen={true}
       onClose={onClose}

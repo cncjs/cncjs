@@ -17,11 +17,10 @@ import {
 } from '@tonic-ui/react-icons';
 import { format } from 'date-fns';
 import { ensureArray } from 'ensure-type';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import BaseTable from '@app/components/BaseTable';
 import CodePreview from '@app/components/CodePreview';
 import IconButton from '@app/components/IconButton';
-import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import CreateCommandDrawer from './drawers/CreateCommandDrawer';
 import UpdateCommandDrawer from './drawers/UpdateCommandDrawer';
@@ -65,23 +64,6 @@ const Commands = () => {
   });
   const portal = usePortalManager();
   const [colorMode] = useColorMode();
-
-  useEffect(() => {
-    const onTaskStart = (taskId) => {
-      console.log('task:start:', taskId);
-    };
-    const onTaskData = (taskId, data) => {
-      console.log('task:data:', taskId, data);
-    };
-
-    controller.addListener('task:start', onTaskStart);
-    controller.addListener('task:data', onTaskData);
-
-    return () => {
-      controller.removeListener('task:start', onTaskStart);
-      controller.removeListener('task:data', onTaskData);
-    };
-  }, [controller]);
 
   const handleClickAdd = useCallback(() => {
     portal((close) => (

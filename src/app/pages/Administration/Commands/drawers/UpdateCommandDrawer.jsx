@@ -88,7 +88,6 @@ const UpdateCommandDrawer = ({
     <Drawer
       backdrop
       closeOnEsc
-      closeOnOutsideClick
       isClosable
       isOpen={true}
       onClose={onClose}

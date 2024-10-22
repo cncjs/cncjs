@@ -1,6 +1,7 @@
 import { Global, css } from '@emotion/react';
 import {
   Box,
+  Text,
   useColorMode,
   useColorStyle,
   useTheme,
@@ -13,6 +14,8 @@ import { Route, Routes } from 'react-router-dom';
 import compose from 'recompose/compose';
 import settings from '@app/config/settings';
 import useToast from '@app/hooks/useToast';
+import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
 import CorruptedWorkspaceSettingsModal from './modals/CorruptedWorkspaceSettingsModal';
 import LoginPage from './LoginPage';
 import MainPage from './MainPage';
@@ -77,6 +80,80 @@ function App({
 }) {
   const { productName, version } = settings;
   const toast = useToast();
+
+  useEffect(() => {
+    const taskMap = new Map();
+
+    const onTaskStart = (taskId, context) => {
+      taskMap.set(taskId, {
+        id: context?.id,
+        name: context?.name,
+        data: '',
+      });
+    };
+    const onTaskData = (taskId, data) => {
+      const str = (data instanceof ArrayBuffer)
+        ? new TextDecoder('utf-8').decode(data)
+        : data;
+      const task = taskMap.get(taskId);
+      task.data += str;
+    };
+    const onTaskEnd = (taskId, code) => {
+      const task = taskMap.get(taskId);
+
+      toast({
+        appearance: code === 0 ? 'success' : 'warning',
+        content: (
+          <>
+            <Text>
+              {i18n._('Command executed (exitCode={{code}})', { code })}
+            </Text>
+            <Text>
+              {task.name}
+            </Text>
+          </>
+        ),
+        duration: 10 * 1000,
+        placement: 'bottom-right',
+      });
+
+      taskMap.delete(taskId);
+    };
+    const onTaskError = (taskId, error) => {
+      const task = taskMap.get(taskId);
+
+      toast({
+        appearance: 'error',
+        content: (
+          <>
+            <Text>
+              {i18n._('Command failed: {error}', { error })}
+            </Text>
+            <Text>
+              {task.name}
+            </Text>
+          </>
+        ),
+        duration: null,
+        placement: 'bottom-right',
+      });
+
+      taskMap.delete(taskId);
+    };
+
+    controller.addListener('task:start', onTaskStart);
+    controller.addListener('task:data', onTaskData);
+    controller.addListener('task:end', onTaskEnd);
+    controller.addListener('task:error', onTaskError);
+
+    return () => {
+      taskMap.clear();
+      controller.removeListener('task:start', onTaskStart);
+      controller.removeListener('task:data', onTaskData);
+      controller.removeListener('task:end', onTaskEnd);
+      controller.removeListener('task:error', onTaskError);
+    };
+  }, [toast]);
 
   useEffect(() => {
     const subscriber = pubsub.subscribe('toast.notify', (msg, data) => {

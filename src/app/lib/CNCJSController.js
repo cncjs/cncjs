@@ -47,7 +47,7 @@ class CNCJSController {
     'config:change': [],
     'task:start': [],
     'task:data': [],
-    'task:finish': [],
+    'task:end': [],
     'task:error': [],
     'controller:type': [],
     'controller:settings': [],
