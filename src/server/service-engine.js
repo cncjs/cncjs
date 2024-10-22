@@ -73,6 +73,11 @@ class ServiceEngine {
         this.io.emit('task:start', ...args);
       }
     },
+    taskData: (...args) => {
+      if (this.io) {
+        this.io.emit('task:data', ...args);
+      }
+    },
     taskFinish: (...args) => {
       if (this.io) {
         this.io.emit('task:finish', ...args);
@@ -141,6 +146,7 @@ class ServiceEngine {
     userStore.on('change', this.listener.configChange);
 
     shellCommand.on('start', this.listener.taskStart);
+    shellCommand.on('data', this.listener.taskData);
     shellCommand.on('finish', this.listener.taskFinish);
     shellCommand.on('error', this.listener.taskError);
 

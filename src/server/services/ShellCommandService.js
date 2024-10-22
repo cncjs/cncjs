@@ -32,9 +32,11 @@ class ShellCommandService {
 
     child.stdout.on('data', (data) => {
       process.stdout.write(`PID:${child.pid}> ${data}`);
+      this.emitter.emit('data', taskId, data);
     });
     child.stderr.on('data', (data) => {
       process.stderr.write(`PID:${child.pid}> ${data}`);
+      this.emitter.emit('data', taskId, data);
     });
     child.on('error', (err) => {
       // Listen for error event can prevent from throwing an unhandled exception
