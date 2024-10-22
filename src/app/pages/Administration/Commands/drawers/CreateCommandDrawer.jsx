@@ -197,7 +197,7 @@ const CreateCommandDrawer = ({
                           minWidth: 80,
                         }}
                       >
-                        {i18n._('Create Command')}
+                        {i18n._('Add')}
                       </Button>
                     </Flex>
                   );

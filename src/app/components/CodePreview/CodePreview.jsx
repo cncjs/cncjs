@@ -1,4 +1,6 @@
-import { useColorMode } from '@tonic-ui/react';
+import {
+  useColorMode,
+} from '@tonic-ui/react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import hljsA11yDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 import hljsA11yLight from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-light';
@@ -18,7 +20,6 @@ const CodePreview = ({
   return (
     <SyntaxHighlighter
       customStyle={{
-        padding: 16,
         ...style,
       }}
       language={language}

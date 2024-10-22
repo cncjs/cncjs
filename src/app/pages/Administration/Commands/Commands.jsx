@@ -1,5 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import {
+  Box,
   Button,
   Checkbox,
   Flex,
@@ -11,7 +12,9 @@ import {
   useColorMode,
   usePortalManager,
 } from '@tonic-ui/react';
-import { RefreshIcon } from '@tonic-ui/react-icons';
+import {
+  RefreshIcon,
+} from '@tonic-ui/react-icons';
 import { format } from 'date-fns';
 import { ensureArray } from 'ensure-type';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -29,6 +32,7 @@ import {
   useBulkDeleteCommandsMutation,
   useEnableCommandMutation,
   useDisableCommandMutation,
+  useRunCommandMutation,
 } from './queries';
 
 const Commands = () => {
@@ -53,17 +57,13 @@ const Commands = () => {
       queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
     },
   });
+  const runCommandMutation = useRunCommandMutation({
+    onSuccess: (data) => {
+      console.log(data); // FIXME
+    },
+  });
   const portal = usePortalManager();
   const [colorMode] = useColorMode();
-  const handleToggleStatusById = useCallback((id) => (event) => {
-    const checked = event.currentTarget.checked;
-    const mutation = checked ? enableCommandMutation : disableCommandMutation;
-    mutation.mutate({
-      meta: {
-        id,
-      },
-    });
-  }, [enableCommandMutation, disableCommandMutation]);
 
   const handleClickAdd = useCallback(() => {
     portal((close) => (
@@ -95,6 +95,10 @@ const Commands = () => {
     ));
   }, [rowSelection, portal, bulkDeleteCommandsMutation]);
 
+  const handleClickRefresh = useCallback(() => {
+    fetchCommandsQuery.refetch();
+  }, [fetchCommandsQuery]);
+
   const handleClickViewCommandDetailsById = useCallback((id) => () => {
     portal((close) => (
       <UpdateCommandDrawer
@@ -104,9 +108,23 @@ const Commands = () => {
     ));
   }, [portal]);
 
-  const handleClickRefresh = useCallback(() => {
-    fetchCommandsQuery.refetch();
-  }, [fetchCommandsQuery]);
+  const handleToggleStatusById = useCallback((id) => (event) => {
+    const checked = event.currentTarget.checked;
+    const mutation = checked ? enableCommandMutation : disableCommandMutation;
+    mutation.mutate({
+      meta: {
+        id,
+      },
+    });
+  }, [enableCommandMutation, disableCommandMutation]);
+
+  const handleClickRunCommandById = useCallback((id) => () => {
+    runCommandMutation.mutate({
+      meta: {
+        id,
+      },
+    });
+  }, [runCommandMutation]);
 
   const columns = useMemo(() => ([
     {
@@ -207,7 +225,7 @@ const Commands = () => {
     },
   ]), [
     handleClickViewCommandDetailsById,
-    handleToggleStatusById
+    handleToggleStatusById,
   ]);
   const data = ensureArray(fetchCommandsQuery.data?.records);
 
@@ -240,18 +258,36 @@ const Commands = () => {
         />
         <Flex
           flex="auto"
-          p="2x"
+          p="4x"
         >
-          {!!data && (
+          <Box width="100%">
+            <Box mb="4x">
+              <Button
+                variant="secondary"
+                onClick={handleClickRunCommandById(row.original.id)}
+                sx={{
+                  columnGap: '2x',
+                }}
+              >
+                {i18n._('Run Command')}
+              </Button>
+            </Box>
             <CodePreview
               data={data}
               language="shell"
+              style={{
+                padding: 16,
+                width: '100%',
+              }}
             />
-          )}
+          </Box>
         </Flex>
       </Flex>
     );
-  }, [colorMode]);
+  }, [
+    colorMode,
+    handleClickRunCommandById,
+  ]);
 
   const selectedRowCount = Object.keys(rowSelection).length;
 

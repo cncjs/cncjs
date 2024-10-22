@@ -201,6 +201,9 @@ const WorkspaceSettings = () => {
         <CodePreview
           data={JSON.stringify(data, null, 2)}
           language="json"
+          style={{
+            padding: 16,
+          }}
         />
       </Box>
     </Box>

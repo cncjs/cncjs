@@ -101,6 +101,18 @@ const useDisableCommandMutation = (options) => {
   });
 };
 
+const useRunCommandMutation = (options) => {
+  return useMutation({
+    mutationFn: async ({ meta }) => {
+      const id = meta?.id;
+      const url = `api/commands/${id}/run`;
+      const response = await axios.post(url);
+      return response.data;
+    },
+    ...options,
+  });
+};
+
 export {
   useFetchCommandsQuery,
   useBulkDeleteCommandsMutation,
@@ -110,4 +122,5 @@ export {
   useDeleteCommandMutation,
   useEnableCommandMutation,
   useDisableCommandMutation,
+  useRunCommandMutation,
 };
