@@ -26,7 +26,17 @@ module.exports = {
     app: path.resolve(__dirname, 'src/app/index.jsx')
   },
   output: {
-    clean: true,
+    clean: {
+      keep: (asset) => {
+        const keep = [
+          'assets',
+          'favicon.icon',
+          'i18n',
+          'images',
+        ].some(x => asset.startsWith(x));
+        return keep;
+      },
+    },
     path: path.resolve(__dirname, 'output/cncjs/app'),
     filename: '[name].[contenthash].bundle.js',
     pathinfo: true,
