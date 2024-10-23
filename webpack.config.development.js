@@ -17,7 +17,6 @@ dotenv.config({
 const isWebpackDevServer = process.env.WEBPACK_DEV_SERVER;
 const publicPath = process.env.PUBLIC_PATH || '';
 const buildVersion = pkg.version;
-const timestamp = new Date().getTime();
 
 module.exports = {
   mode: 'development',
@@ -37,8 +36,8 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'output/cncjs/app'),
-    chunkFilename: `[name].[chunkhash].chunk.js?_=${timestamp}`,
-    filename: `[name].[contenthash].bundle.js?_=${timestamp}`,
+    chunkFilename: '[name].[chunkhash].chunk.js',
+    filename: '[name].[contenthash].bundle.js',
     pathinfo: true,
     publicPath: publicPath,
   },
@@ -143,8 +142,8 @@ module.exports = {
     }),
     new ESLintPlugin(),
     new MiniCssExtractPlugin({
-      filename: `[name].css?_=${timestamp}`,
-      chunkFilename: `[id].css?_=${timestamp}`,
+      filename: '[name].css',
+      chunkFilename: '[id].css',
     }),
     // HtmlWebpackPlugin
     (() => {
@@ -201,12 +200,9 @@ module.exports = {
       overlay: true,
       progress: true,
     },
-    devMiddleware: {
-      writeToDisk: true,
-    },
+    devMiddleware: {},
     host: process.env.WEBPACK_DEV_SERVER_HOST,
-    hot: true,
-    liveReload: false,
+    liveReload: true,
     proxy: [
       {
         context: ['/api'],
