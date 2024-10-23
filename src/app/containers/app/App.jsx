@@ -1,11 +1,14 @@
 import { Global, css } from '@emotion/react';
 import {
   Box,
+  LinkButton,
+  Stack,
   Text,
   useColorMode,
   useColorStyle,
   useTheme,
 } from '@tonic-ui/react';
+import { ensureString } from 'ensure-type';
 import pubsub from 'pubsub-js';
 import React, { useEffect } from 'react';
 import Helmet from 'react-helmet';
@@ -85,35 +88,48 @@ function App({
     const taskMap = new Map();
 
     const onTaskStart = (taskId, context) => {
-      taskMap.set(taskId, {
-        id: context?.id,
-        name: context?.name,
-        data: '',
+      taskMap.set(taskId, { context, data: '' });
+
+      toast({
+        appearance: 'info',
+        content: (
+          <Text>
+            {i18n._('The command "{{command}}" has started.', { command: context?.name })}
+          </Text>
+        ),
+        duration: 5 * 1000, // 5 seconds
+        placement: 'bottom-right',
       });
     };
     const onTaskData = (taskId, data) => {
+      const task = taskMap.get(taskId);
       const str = (data instanceof ArrayBuffer)
         ? new TextDecoder('utf-8').decode(data)
-        : data;
-      const task = taskMap.get(taskId);
+        : ensureString(data);
       task.data += str;
     };
     const onTaskEnd = (taskId, code) => {
       const task = taskMap.get(taskId);
+      const context = task?.context;
+
+      const handleClickViewDetails = () => {
+        const win = window.open('', '_blank');
+        win.document.write('<pre>' + task.data + '</pre>');
+      };
 
       toast({
         appearance: code === 0 ? 'success' : 'warning',
         content: (
-          <>
+          <Stack spacing="4x">
             <Text>
-              {i18n._('Command executed (exitCode={{code}})', { code })}
+              {i18n._('The command "{{command}}" has completed with exit code {{code}}.', { command: context?.name, code })}
             </Text>
-            <Text>
-              {task.name}
-            </Text>
-          </>
+            <LinkButton onClick={handleClickViewDetails}>
+              {i18n._('View Details')}
+            </LinkButton>
+          </Stack>
         ),
-        duration: 10 * 1000,
+        duration: 10 * 1000, // 10 seconds
         placement: 'bottom-right',
       });
 
@@ -121,18 +137,24 @@ function App({
     };
     const onTaskError = (taskId, error) => {
       const task = taskMap.get(taskId);
+      const context = task?.context;
+
+      const handleClickViewDetails = () => {
+        const win = window.open('', '_blank');
+        win.document.write('<pre>' + task.data + '</pre>');
+      };
 
       toast({
         appearance: 'error',
         content: (
-          <>
+          <Stack spacing="4x">
             <Text>
-              {i18n._('Command failed: {error}', { error })}
+              {i18n._('The command "{{command}}" encountered an error. Details: {{error}}', { command: context?.name, error })}
             </Text>
-            <Text>
-              {task.name}
-            </Text>
-          </>
+            <LinkButton onClick={handleClickViewDetails}>
+              {i18n._('View Details')}
+            </LinkButton>
+          </Stack>
         ),
         duration: null,
         placement: 'bottom-right',

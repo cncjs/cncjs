@@ -58,8 +58,6 @@ const useToast = () => {
       duration,
     };
 
-    toast.closeAll();
-
     toast.notify(render, options);
   }, [toast]);
 };

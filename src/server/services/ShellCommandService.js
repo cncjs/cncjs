@@ -34,11 +34,17 @@ class ShellCommandService {
     this.emitter.emit('start', taskId, context);
 
     child.stdout.on('data', (data) => {
-      process.stdout.write(`PID:${child.pid}> ${data}`);
+      // Sending the `\x1b%G` escape sequence to the terminal directs it to change from ISO 2022 encoding to UTF-8.
+      const utf8SwitchEscapeSequence = Buffer.from('\x1b%G');
+      if (Buffer.compare(data, utf8SwitchEscapeSequence) === 0) {
+        return;
+      }
+
+      process.stdout.write(`[PID:${child.pid}][stdout] ${data}`);
       this.emitter.emit('data', taskId, data);
     });
     child.stderr.on('data', (data) => {
-      process.stderr.write(`PID:${child.pid}> ${data}`);
+      process.stderr.write(`[PID:${child.pid}][stderr] ${data}`);
       this.emitter.emit('data', taskId, data);
     });
     // The 'exit' event is emitted after the child process ends.

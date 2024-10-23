@@ -165,6 +165,9 @@ const CreateCommandDrawer = ({
               >
                 {({ invalid }) => {
                   const canSubmit = (() => {
+                    if (createCommandMutation.isLoading) {
+                      return false;
+                    }
                     if (invalid) {
                       return false;
                     }

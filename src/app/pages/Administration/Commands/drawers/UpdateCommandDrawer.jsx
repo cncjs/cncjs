@@ -44,7 +44,7 @@ const UpdateCommandDrawer = ({
 }) => {
   const { toasts, notify: notifyToast } = useInlineToasts();
   const queryClient = useQueryClient();
-  const { data, isError, isFetching } = useReadCommandQuery({
+  const readCommandQuery = useReadCommandQuery({
     meta: {
       id,
     },
@@ -70,9 +70,9 @@ const UpdateCommandDrawer = ({
   });
 
   const initialValues = getMemoizedState({
-    enabled: data?.enabled,
-    title: data?.title,
-    commands: data?.commands,
+    enabled: readCommandQuery.data?.enabled,
+    title: readCommandQuery.data?.title,
+    commands: readCommandQuery.data?.commands,
   });
 
   const handleFormSubmit = useCallback((values) => {
@@ -110,10 +110,10 @@ const UpdateCommandDrawer = ({
               </Text>
             </DrawerHeader>
             <DrawerBody>
-              {isFetching && (
+              {readCommandQuery.isFetching && (
                 <Spinner />
               )}
-              {!isFetching && (
+              {!(readCommandQuery.isFetching) && (
                 <>
                   <FormGroup>
                     <Flex
@@ -184,10 +184,13 @@ const UpdateCommandDrawer = ({
               >
                 {({ invalid }) => {
                   const canSubmit = (() => {
-                    if (isError) {
+                    if (readCommandQuery.isError) {
                       return false;
                     }
-                    if (isFetching) {
+                    if (readCommandQuery.isFetching) {
+                      return false;
+                    }
+                    if (updateCommandMutation.isLoading) {
                       return false;
                     }
                     if (invalid) {
