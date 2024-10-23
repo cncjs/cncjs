@@ -190,8 +190,8 @@ module.exports = {
       writeToDisk: true,
     },
     host: process.env.WEBPACK_DEV_SERVER_HOST,
-    hot: true,
-    liveReload: false,
+    hot: false,
+    liveReload: true,
     proxy: [
       {
         context: ['/api'],
@@ -208,5 +208,8 @@ module.exports = {
       directory: path.resolve(__dirname, 'output/cncjs/app'),
       watch: true,
     },
+    watchFiles: [
+      'src/app/**/*',
+    ],
   },
 };
