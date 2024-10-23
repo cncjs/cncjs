@@ -30,7 +30,6 @@ const publicPath = ((payload) => {
   return '/' + hash.substring(0, 8) + '/'; // 8 digits
 })(pkg.version);
 const buildVersion = pkg.version;
-const timestamp = new Date().getTime();
 
 module.exports = {
   mode: 'production',
@@ -53,8 +52,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist/cncjs/app'),
-    chunkFilename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
-    filename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
+    filename: '[name].[contenthash].bundle.js',
     publicPath: publicPath
   },
   module: {
@@ -176,8 +174,8 @@ module.exports = {
       fileName: 'manifest.json'
     }),
     new MiniCssExtractPlugin({
-      filename: `[name].css?_=${timestamp}`,
-      chunkFilename: `[id].css?_=${timestamp}`
+      filename: '[name].css',
+      chunkFilename: '[id].css',
     }),
     new HtmlWebpackPlugin({
       filename: 'index.hbs',

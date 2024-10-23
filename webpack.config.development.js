@@ -14,7 +14,6 @@ dotenv.config();
 
 const publicPath = process.env.PUBLIC_PATH || '';
 const buildVersion = pkg.version;
-const timestamp = new Date().getTime();
 
 module.exports = {
   mode: 'development',
@@ -27,9 +26,9 @@ module.exports = {
     app: path.resolve(__dirname, 'src/app/index.jsx')
   },
   output: {
+    clean: true,
     path: path.resolve(__dirname, 'output/cncjs/app'),
-    chunkFilename: `[name].[hash].bundle.js?_=${timestamp}`,
-    filename: `[name].[hash].bundle.js?_=${timestamp}`,
+    filename: '[name].[contenthash].bundle.js',
     pathinfo: true,
     publicPath: publicPath
   },
@@ -154,8 +153,8 @@ module.exports = {
       fileName: 'manifest.json'
     }),
     new MiniCssExtractPlugin({
-      filename: `[name].css?_=${timestamp}`,
-      chunkFilename: `[id].css?_=${timestamp}`
+      filename: '[name].css',
+      chunkFilename: '[id].css',
     }),
     new HtmlWebpackPlugin({
       filename: 'index.hbs',
