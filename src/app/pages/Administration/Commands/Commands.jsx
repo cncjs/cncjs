@@ -6,6 +6,7 @@ import {
   Flex,
   Icon,
   LinkButton,
+  Spinner,
   Switch,
   TextLabel,
   Tooltip,
@@ -36,6 +37,27 @@ import {
   useDisableCommandMutation,
   useRunCommandMutation,
 } from './queries';
+
+const Loader = (props) => {
+  const [colorMode] = useColorMode();
+  const backgroundColor = {
+    dark: 'rgba(0, 0, 0, .7)',
+    light: 'rgba(0, 0, 0, .7)',
+  }[colorMode];
+
+  return (
+    <Flex
+      position="absolute"
+      inset={0}
+      backgroundColor={backgroundColor}
+      alignItems="center"
+      justifyContent="center"
+      {...props}
+    >
+      <Spinner />
+    </Flex>
+  );
+};
 
 const Commands = () => {
   // pagination
@@ -373,8 +395,12 @@ const Commands = () => {
           flex: 'auto',
           height: '100%',
           overflowY: 'auto',
+          position: 'relative',
         }}
       >
+        {fetchCommandsQuery.isFetching && (
+          <Loader />
+        )}
         <BaseTable
           columns={columns}
           data={data}
