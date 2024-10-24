@@ -30,7 +30,6 @@ const publicPath = ((payload) => {
   return '/' + hash.substring(0, 8) + '/'; // 8 digits
 })(pkg.version);
 const buildVersion = pkg.version;
-const timestamp = new Date().getTime();
 
 module.exports = {
   mode: 'production',
@@ -39,22 +38,17 @@ module.exports = {
   context: path.resolve(__dirname, 'src/app'),
   devtool: 'cheap-module-source-map',
   entry: {
-    polyfill: [
-      path.resolve(__dirname, 'src/app/polyfill/index.js')
+    main: [
+      path.resolve(__dirname, 'src/app/index.jsx')
     ],
     vendor: findImports([
       'src/app/**/*.{js,jsx}',
-      '!src/app/polyfill/**/*.js',
       '!src/app/**/*.development.js'
     ], { flatten: true }),
-    app: [
-      path.resolve(__dirname, 'src/app/index.jsx')
-    ]
   },
   output: {
     path: path.resolve(__dirname, 'dist/cncjs/app'),
-    chunkFilename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
-    filename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
+    filename: '[name].[contenthash].bundle.js',
     publicPath: publicPath
   },
   module: {
@@ -176,8 +170,8 @@ module.exports = {
       fileName: 'manifest.json'
     }),
     new MiniCssExtractPlugin({
-      filename: `[name].css?_=${timestamp}`,
-      chunkFilename: `[id].css?_=${timestamp}`
+      filename: '[name].css',
+      chunkFilename: '[id].css',
     }),
     new HtmlWebpackPlugin({
       filename: 'index.hbs',
