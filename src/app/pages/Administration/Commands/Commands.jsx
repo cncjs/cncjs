@@ -17,15 +17,17 @@ import {
 } from '@tonic-ui/react-icons';
 import { format } from 'date-fns';
 import { ensureArray } from 'ensure-type';
+import qs from 'qs';
 import React, { useCallback, useMemo, useState } from 'react';
 import BaseTable from '@app/components/BaseTable';
 import CodePreview from '@app/components/CodePreview';
 import IconButton from '@app/components/IconButton';
+import TablePagination from '@app/components/TablePagination';
 import i18n from '@app/lib/i18n';
+import TableRowToggleIcon from '../components/TableRowToggleIcon';
 import CreateCommandDrawer from './drawers/CreateCommandDrawer';
 import UpdateCommandDrawer from './drawers/UpdateCommandDrawer';
 import ConfirmBulkDeleteCommandsModal from './modals/ConfirmBulkDeleteCommandsModal';
-import TableRowToggleIcon from './TableRowToggleIcon';
 import {
   API_COMMANDS_QUERY_KEY,
   useFetchCommandsQuery,
@@ -36,9 +38,25 @@ import {
 } from './queries';
 
 const Commands = () => {
+  // pagination
+  const rowsPerPageOptions = [25, 50, 100];
+  const minRowsPerPage = Math.min(...rowsPerPageOptions);
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(minRowsPerPage);
+
+  // row selection
   const [rowSelection, setRowSelection] = useState({});
+
   const queryClient = useQueryClient();
-  const fetchCommandsQuery = useFetchCommandsQuery();
+  const fetchCommandsQuery = useFetchCommandsQuery({
+    meta: {
+      query: qs.stringify({
+        paging: true,
+        page,
+        pageLength: rowsPerPage,
+      }),
+    },
+  });
   const bulkDeleteCommandsMutation = useBulkDeleteCommandsMutation({
     onSuccess: () => {
       // Invalidate `useFetchCommandsQuery`
@@ -57,11 +75,7 @@ const Commands = () => {
       queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
     },
   });
-  const runCommandMutation = useRunCommandMutation({
-    onSuccess: (data) => {
-      console.log(data); // FIXME
-    },
-  });
+  const runCommandMutation = useRunCommandMutation();
   const portal = usePortalManager();
   const [colorMode] = useColorMode();
 
@@ -227,7 +241,10 @@ const Commands = () => {
     handleClickViewCommandDetailsById,
     handleToggleStatusById,
   ]);
+
+  const totalCount = fetchCommandsQuery.data?.pagination?.totalRecords;
   const data = ensureArray(fetchCommandsQuery.data?.records);
+  const displayPagination = totalCount > minRowsPerPage;
 
   const renderExpandedRow = useCallback(({ row }) => {
     const tableBorderColor = {
@@ -263,6 +280,7 @@ const Commands = () => {
           <Box width="100%">
             <Box mb="4x">
               <Button
+                disabled={!row.original.enabled}
                 variant="secondary"
                 onClick={handleClickRunCommandById(row.original.id)}
                 sx={{
@@ -276,8 +294,10 @@ const Commands = () => {
               data={data}
               language="shell"
               style={{
-                padding: 16,
+                padding: 12,
                 width: '100%',
+                maxHeight: 180,
+                overflowY: 'auto',
               }}
             />
           </Box>
@@ -293,70 +313,89 @@ const Commands = () => {
 
   return (
     <Flex
-      flexDirection="column"
-      height="100%"
+      sx={{
+        flexDirection: 'column',
+        height: '100%',
+      }}
     >
-      <Flex
-        alignItems="flex-start"
-        justifyContent="space-between"
-        columnGap="6x"
-        pt="4x"
-        pb="2x"
-        px="4x"
-      >
+      <Box flex="none">
         <Flex
-          alignItems="center"
-          columnGap="4x"
+          alignItems="flex-start"
+          justifyContent="space-between"
+          columnGap="6x"
+          pt="4x"
+          pb="2x"
+          px="4x"
         >
-          <Button
-            variant="primary"
-            onClick={handleClickAdd}
-            sx={{
-              minWidth: 80,
-            }}
+          <Flex
+            alignItems="center"
+            columnGap="4x"
           >
-            {i18n._('Add')}
-          </Button>
-          <Button
-            disabled={selectedRowCount === 0}
-            variant="secondary"
-            onClick={handleClickDelete}
-            sx={{
-              minWidth: 80,
-            }}
-          >
-            {i18n._('Delete')}
-          </Button>
-        </Flex>
-        <Flex
-          alignItems="center"
-          columnGap="2x"
-        >
-          <Tooltip label={i18n._('Refresh')}>
-            <IconButton
-              onClick={handleClickRefresh}
+            <Button
+              variant="primary"
+              onClick={handleClickAdd}
+              sx={{
+                minWidth: 80,
+              }}
             >
-              <Icon
-                as={RefreshIcon}
-                spin={fetchCommandsQuery.isFetching}
-              />
-            </IconButton>
-          </Tooltip>
+              {i18n._('Add')}
+            </Button>
+            <Button
+              disabled={selectedRowCount === 0}
+              variant="secondary"
+              onClick={handleClickDelete}
+              sx={{
+                minWidth: 80,
+              }}
+            >
+              {i18n._('Delete')}
+            </Button>
+          </Flex>
+          <Flex
+            alignItems="center"
+            columnGap="2x"
+          >
+            <Tooltip label={i18n._('Refresh')}>
+              <IconButton
+                onClick={handleClickRefresh}
+              >
+                <Icon
+                  as={RefreshIcon}
+                  spin={fetchCommandsQuery.isFetching}
+                />
+              </IconButton>
+            </Tooltip>
+          </Flex>
         </Flex>
-      </Flex>
-      <BaseTable
-        columns={columns}
-        data={data}
-        renderExpandedRow={renderExpandedRow}
-        state={{
-          rowSelection,
-        }}
-        enableRowSelection={true}
-        onRowSelectionChange={setRowSelection}
+      </Box>
+      <Box
         sx={{
+          flex: 'auto',
           height: '100%',
+          overflowY: 'auto',
         }}
-      />
+      >
+        <BaseTable
+          columns={columns}
+          data={data}
+          renderExpandedRow={renderExpandedRow}
+          rowSelection={rowSelection}
+          enableRowSelection={true}
+          onRowSelectionChange={setRowSelection}
+        />
+      </Box>
+      <Box flex="none">
+        {displayPagination && (
+          <TablePagination
+            count={totalCount}
+            onPageChange={setPage}
+            onRowsPerPageChange={setRowsPerPage}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            rowsPerPageOptions={rowsPerPageOptions}
+          />
+        )}
+      </Box>
     </Flex>
   );
 };

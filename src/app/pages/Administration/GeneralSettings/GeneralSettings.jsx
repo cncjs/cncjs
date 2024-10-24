@@ -66,15 +66,15 @@ const GeneralSettings = () => {
   useEffect(() => {
     if (query.isSuccess) {
       setFormState(query.data);
-      console.log('### query.data:', query.data);
     }
   }, [query.isSuccess, query.data]);
 
   return (
     <Flex
-      flexDirection="column"
-      height="100%"
-      position="relative"
+      sx={{
+        flexDirection: 'column',
+        height: '100%',
+      }}
     >
       <Form
         initialValues={formState}
@@ -172,6 +172,7 @@ const GeneralSettings = () => {
 
                 return (
                   <Flex
+                    flex="none"
                     backgroundColor={colorStyle?.background?.secondary}
                     alignItems="center"
                     justifyContent="flex-start"

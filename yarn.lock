@@ -7219,7 +7219,6 @@ __metadata:
     ensure-array: ~1.0.0
     ensure-type: ~1.5.1
     errorhandler: ~1.5.1
-    es5-shim: ~4.6.5
     escodegen: ~2.0.0
     eslint: ~8.27.0
     eslint-config-trendmicro: ^3.2.0
@@ -9628,13 +9627,6 @@ __metadata:
     is-date-object: ^1.0.1
     is-symbol: ^1.0.2
   checksum: 4ead6671a2c1402619bdd77f3503991232ca15e17e46222b0a41a5d81aebc8740a77822f5b3c965008e631153e9ef0580540007744521e72de8e33599fca2eed
-  languageName: node
-  linkType: hard
-
-"es5-shim@npm:~4.6.5":
-  version: 4.6.7
-  resolution: "es5-shim@npm:4.6.7"
-  checksum: f2f60cf3d9c682106c51a70d27d41273d2edb3b90fa8795a2765be4a214574b71ddf9147a7972eb82998d94f96ca015d29f5915efd3af0a6c09673abd4299ee8
   languageName: node
   linkType: hard
 

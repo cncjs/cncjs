@@ -5,15 +5,16 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import {
+  Box,
   Collapse,
-  Flex,
   Table,
+  TableBody,
+  TableCell,
   TableHeader,
   TableHeaderRow,
   TableHeaderCell,
-  TableBody,
   TableRow,
-  TableCell,
+  TableScrollbar,
   useColorMode,
   useTheme,
 } from '@tonic-ui/react';
@@ -22,9 +23,18 @@ import React, {
   Fragment,
   forwardRef,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
+
+const ConditionalWrapper = ({
+  children,
+  condition,
+  wrapper,
+}) => {
+  return condition ? wrapper(children) : children;
+};
 
 /**
  * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
@@ -50,13 +60,14 @@ const BaseTable = forwardRef((
     layout = 'flexbox', // One of: 'flexbox', 'table'
     variant = 'default', // One of: 'default', 'outline'
     renderExpandedRow,
-    state: stateProp,
     enableRowSelection: enableRowSelectionProp = false,
+    rowSelection: rowSelectionProp,
     onRowSelectionChange: onRowSelectionChangeProp,
     ...rest
   },
   ref,
 ) => {
+  const tableHeaderRef = useRef();
   const [colorMode] = useColorMode();
   const theme = useTheme();
   const hoverBackgroundColor = {
@@ -75,7 +86,7 @@ const BaseTable = forwardRef((
       minSize: 80,
     },
     state: {
-      ...stateProp,
+      rowSelection: rowSelectionProp,
     },
     enableRowSelection: enableRowSelectionProp,
     getCoreRowModel: getCoreRowModel(),
@@ -210,25 +221,36 @@ const BaseTable = forwardRef((
   }, [columns, table, tableWidth, theme]);
 
   return (
-    <Flex
+    <Box
       ref={ref}
+      sx={{
+        height: '100%',
+        overflow: 'hidden',
+      }}
       {...rest}
     >
       <AutoSizer
-        disableHeight
         onResize={({ width }) => {
           if (tableWidth !== width) {
             setTableWidth(width);
           }
         }}
       >
-        {({ width }) => (
+        {({ width, height }) => (
           <Table
             layout={layout}
             variant={variant}
-            width={width}
+            sx={{
+              height,
+              width,
+            }}
           >
-            <TableHeader>
+            <TableHeader
+              ref={tableHeaderRef}
+              sx={{
+                overflowX: 'hidden', // Enable programmatic control of the scroll position
+              }}
+            >
               {table.getHeaderGroups().map(headerGroup => (
                 <TableHeaderRow key={headerGroup.id}>
                   {headerGroup.headers.map(header => {
@@ -251,59 +273,83 @@ const BaseTable = forwardRef((
                 </TableHeaderRow>
               ))}
             </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows.map(row => (
-                <Fragment key={row.id}>
-                  <TableRow
-                    data-selected={dataAttr(row.getIsSelected())}
-                    _hover={{
-                      backgroundColor: hoverBackgroundColor,
-                    }}
-                    _selected={{
-                      backgroundColor: selectedBackgroundColor,
-                    }}
-                  >
-                    {row.getVisibleCells().map(cell => {
-                      const styleProps = {
-                        minWidth: cell.column.columnDef.minSize,
-                        width: cell.column.getSize(),
-                        ...cell.column.columnDef.cellStyle,
-                      };
-                      return (
-                        <TableCell
-                          key={cell.id}
-                          {...styleProps}
-                        >
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                  {(row.getCanExpand() && layout === 'flexbox') && (
-                    <Collapse in={row.getIsExpanded()}>
-                      {typeof renderExpandedRow === 'function' && renderExpandedRow({ row })}
-                    </Collapse>
-                  )}
-                  {(row.getCanExpand() && layout === 'table') && (
-                    <TableRow>
-                      <TableCell
-                        padding={0}
-                        borderBottom={0}
-                        colSpan={row.getVisibleCells().length}
-                      >
-                        <Collapse in={row.getIsExpanded()}>
-                          {typeof renderExpandedRow === 'function' && renderExpandedRow({ row })}
-                        </Collapse>
-                      </TableCell>
+            <ConditionalWrapper
+              condition={layout === 'flexbox'}
+              wrapper={children => (
+                <TableScrollbar
+                  height="100%"
+                  overflowY="visible" // Display vertical scrollbar when content overflows
+                  overflowX="auto" // Display horizontal scrollbar when content overflows and is interacted with
+                  onUpdate={({ scrollLeft }) => {
+                    if (tableHeaderRef.current && tableHeaderRef.current.scrollLeft !== scrollLeft) {
+                      tableHeaderRef.current.scrollLeft = scrollLeft;
+                    }
+                  }}
+                >
+                  {children}
+                </TableScrollbar>
+              )}
+            >
+              <TableBody>
+                {table.getRowModel().rows.map(row => (
+                  <Fragment key={row.id}>
+                    <TableRow
+                      data-selected={dataAttr(row.getIsSelected())}
+                      _hover={{
+                        backgroundColor: hoverBackgroundColor,
+                      }}
+                      _selected={{
+                        backgroundColor: selectedBackgroundColor,
+                      }}
+                    >
+                      {row.getVisibleCells().map(cell => {
+                        const styleProps = {
+                          minWidth: cell.column.columnDef.minSize,
+                          width: cell.column.getSize(),
+                          ...cell.column.columnDef.cellStyle,
+                        };
+                        return (
+                          <TableCell
+                            key={cell.id}
+                            {...styleProps}
+                          >
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </TableCell>
+                        );
+                      })}
                     </TableRow>
-                  )}
-                </Fragment>
-              ))}
-            </TableBody>
+                    {(row.getCanExpand() && layout === 'flexbox') && (
+                      <Collapse
+                        in={row.getIsExpanded()}
+                        unmountOnExit
+                      >
+                        {typeof renderExpandedRow === 'function' && renderExpandedRow({ row })}
+                      </Collapse>
+                    )}
+                    {(row.getCanExpand() && layout === 'table') && (
+                      <TableRow>
+                        <TableCell
+                          padding={0}
+                          borderBottom={0}
+                          colSpan={row.getVisibleCells().length}
+                        >
+                          <Collapse
+                            in={row.getIsExpanded()}
+                            unmountOnExit
+                          >
+                            {typeof renderExpandedRow === 'function' && renderExpandedRow({ row })}
+                          </Collapse>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </Fragment>
+                ))}
+              </TableBody>
+            </ConditionalWrapper>
           </Table>
         )}
       </AutoSizer>
-    </Flex>
+    </Box>
   );
 });
 

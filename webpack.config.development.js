@@ -27,16 +27,23 @@ module.exports = {
   context: path.resolve(__dirname, 'src/app'),
   devtool: 'eval-cheap-module-source-map',
   entry: {
-    polyfill: [
-      path.resolve(__dirname, 'src/app/polyfill/index.js'),
-    ],
-    app: [
+    main: [
       path.resolve(__dirname, 'src/app/index.jsx'),
     ],
   },
   output: {
+    clean: {
+      keep: (asset) => {
+        const keep = [
+          'assets',
+          'favicon.icon',
+          'i18n',
+          'images',
+        ].some(x => asset.startsWith(x));
+        return keep;
+      },
+    },
     path: path.resolve(__dirname, 'output/cncjs/app'),
-    chunkFilename: '[name].[chunkhash].chunk.js',
     filename: '[name].[contenthash].bundle.js',
     pathinfo: true,
     publicPath: publicPath,
@@ -48,11 +55,6 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           ...babelConfig(),
-          env: {
-            development: {
-              plugins: ['react-refresh/babel'],
-            }
-          }
         },
         exclude: /node_modules/
       },
@@ -197,12 +199,19 @@ module.exports = {
     allowedHosts: 'all',
     compress: true,
     client: {
-      overlay: true,
+      overlay: {
+        errors: true,
+        warnings: false,
+        runtimeErrors: true,
+      },
       progress: true,
     },
-    devMiddleware: {},
+    devMiddleware: {
+      writeToDisk: true,
+    },
     host: process.env.WEBPACK_DEV_SERVER_HOST,
-    liveReload: true,
+    hot: true,
+    liveReload: false,
     proxy: [
       {
         context: ['/api'],
@@ -219,5 +228,8 @@ module.exports = {
       directory: path.resolve(__dirname, 'output/cncjs/app'),
       watch: true,
     },
+    watchFiles: [
+      'src/app/**/*',
+    ],
   },
 };

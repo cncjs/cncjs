@@ -4,10 +4,13 @@ import axios from '@app/api/axios';
 export const API_COMMANDS_QUERY_KEY = ['api/commands'];
 
 const useFetchCommandsQuery = (options) => {
+  const query = options?.meta?.query;
   return useQuery({
-    queryKey: API_COMMANDS_QUERY_KEY,
-    queryFn: async () => {
-      const url = 'api/commands';
+    queryKey: [...API_COMMANDS_QUERY_KEY, query].filter(Boolean),
+    queryFn: async ({ queryKey, meta }) => {
+      const url = meta.query
+        ? 'api/commands?' + meta.query
+        : 'api/commands';
       const response = await axios.get(url);
       return response.data;
     },

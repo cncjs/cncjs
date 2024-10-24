@@ -137,8 +137,12 @@ const WorkspaceSettings = () => {
 
   return (
     <Box
-      px="6x"
-      py="4x"
+      sx={{
+        height: '100%',
+        overflowY: 'auto',
+        px: '6x',
+        py: '4x',
+      }}
     >
       <Box mb="4x">
         <Flex

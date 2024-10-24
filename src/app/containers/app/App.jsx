@@ -66,6 +66,7 @@ function Layout(props) {
             color: ${colors[color]};
             font-size: ${fontSizes.sm};
             line-height: ${lineHeights.sm};
+            overflow-y: hidden;
           }
           pre {
             margin: 0;
@@ -120,7 +121,7 @@ function App({
       toast({
         appearance: code === 0 ? 'success' : 'warning',
         content: (
-          <Stack spacing="4x">
+          <Stack spacing="2x">
             <Text>
               {i18n._('The command "{{command}}" has completed with exit code {{code}}.', { command: context?.name, code })}
             </Text>
@@ -147,7 +148,7 @@ function App({
       toast({
         appearance: 'error',
         content: (
-          <Stack spacing="4x">
+          <Stack spacing="2x">
             <Text>
               {i18n._('The command "{{command}}" encountered an error. Details: {{error}}', { command: context?.name, error })}
             </Text>
