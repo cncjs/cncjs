@@ -38,17 +38,13 @@ module.exports = {
   context: path.resolve(__dirname, 'src/app'),
   devtool: 'cheap-module-source-map',
   entry: {
-    polyfill: [
-      path.resolve(__dirname, 'src/app/polyfill/index.js')
+    main: [
+      path.resolve(__dirname, 'src/app/index.jsx')
     ],
     vendor: findImports([
       'src/app/**/*.{js,jsx}',
-      '!src/app/polyfill/**/*.js',
       '!src/app/**/*.development.js'
     ], { flatten: true }),
-    app: [
-      path.resolve(__dirname, 'src/app/index.jsx')
-    ]
   },
   output: {
     path: path.resolve(__dirname, 'dist/cncjs/app'),

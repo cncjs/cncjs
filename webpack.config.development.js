@@ -22,8 +22,7 @@ module.exports = {
   context: path.resolve(__dirname, 'src/app'),
   devtool: 'eval-cheap-module-source-map',
   entry: {
-    polyfill: path.resolve(__dirname, 'src/app/polyfill/index.js'),
-    app: path.resolve(__dirname, 'src/app/index.jsx')
+    main: path.resolve(__dirname, 'src/app/index.jsx')
   },
   output: {
     clean: {
@@ -54,12 +53,7 @@ module.exports = {
         test: /\.jsx?$/,
         loader: 'babel-loader',
         options: {
-          ...babelConfig,
-          env: {
-            development: {
-              plugins: ['react-refresh/babel'],
-            }
-          }
+          ...babelConfig(),
         },
         exclude: /node_modules/
       },
@@ -192,15 +186,19 @@ module.exports = {
     allowedHosts: 'all',
     compress: true,
     client: {
-      overlay: true,
+      overlay: {
+        errors: true,
+        warnings: false,
+        runtimeErrors: true,
+      },
       progress: true,
     },
     devMiddleware: {
       writeToDisk: true,
     },
     host: process.env.WEBPACK_DEV_SERVER_HOST,
-    hot: false,
-    liveReload: true,
+    hot: true,
+    liveReload: false,
     proxy: [
       {
         context: ['/api'],
