@@ -6,7 +6,6 @@ import {
   Flex,
   Icon,
   LinkButton,
-  Spinner,
   Switch,
   TextLabel,
   Tooltip,
@@ -38,27 +37,6 @@ import {
   useRunCommandMutation,
 } from './queries';
 
-const Loader = (props) => {
-  const [colorMode] = useColorMode();
-  const backgroundColor = {
-    dark: 'rgba(0, 0, 0, .7)',
-    light: 'rgba(0, 0, 0, .7)',
-  }[colorMode];
-
-  return (
-    <Flex
-      position="absolute"
-      inset={0}
-      backgroundColor={backgroundColor}
-      alignItems="center"
-      justifyContent="center"
-      {...props}
-    >
-      <Spinner />
-    </Flex>
-  );
-};
-
 const Commands = () => {
   // pagination
   const rowsPerPageOptions = [25, 50, 100];
@@ -68,6 +46,9 @@ const Commands = () => {
 
   // row selection
   const [rowSelection, setRowSelection] = useState({});
+  const clearRowSelection = useCallback(() => {
+    setRowSelection({});
+  }, []);
 
   const queryClient = useQueryClient();
   const fetchCommandsQuery = useFetchCommandsQuery({
@@ -100,6 +81,13 @@ const Commands = () => {
   const runCommandMutation = useRunCommandMutation();
   const portal = usePortalManager();
   const [colorMode] = useColorMode();
+  const selectedRowCount = Object.keys(rowSelection).length;
+  const isRowSelectionDisabled = fetchCommandsQuery.isFetching;
+  const isLoadingData = fetchCommandsQuery.isFetching;
+  const data = ensureArray(fetchCommandsQuery.data?.records);
+  const totalCount = fetchCommandsQuery.data?.pagination?.totalRecords;
+  const totalPages = Math.ceil(totalCount / rowsPerPage);
+  const displayPagination = totalCount > minRowsPerPage;
 
   const handleClickAdd = useCallback(() => {
     portal((close) => (
@@ -124,12 +112,17 @@ const Commands = () => {
           // Close the modal
           close();
 
-          // Update row selection state
-          setRowSelection([]);
+          // Clear row selection
+          clearRowSelection();
         }}
       />
     ));
-  }, [rowSelection, portal, bulkDeleteCommandsMutation]);
+  }, [
+    rowSelection,
+    portal,
+    bulkDeleteCommandsMutation,
+    clearRowSelection,
+  ]);
 
   const handleClickRefresh = useCallback(() => {
     fetchCommandsQuery.refetch();
@@ -168,6 +161,7 @@ const Commands = () => {
       header: ({ table }) => (
         <Flex alignItems="center" justifyContent="center">
           <Checkbox
+            disabled={isRowSelectionDisabled}
             checked={table.getIsAllRowsSelected()}
             indeterminate={table.getIsSomeRowsSelected()}
             onChange={table.getToggleAllRowsSelectedHandler()}
@@ -177,6 +171,7 @@ const Commands = () => {
       cell: ({ row }) => (
         <Flex alignItems="center" justifyContent="center">
           <Checkbox
+            disabled={isRowSelectionDisabled}
             checked={row.getIsSelected()}
             indeterminate={row.getIsSomeSelected()}
             onChange={row.getToggleSelectedHandler()}
@@ -237,7 +232,7 @@ const Commands = () => {
     },
     {
       id: 'status',
-      header: i18n._('Enabled'),
+      header: i18n._('Status'),
       cell: ({ row }) => (
         <Flex
           alignItems="center"
@@ -260,13 +255,10 @@ const Commands = () => {
       minSize: 80,
     },
   ]), [
+    isRowSelectionDisabled,
     handleClickViewCommandDetailsById,
     handleToggleStatusById,
   ]);
-
-  const totalCount = fetchCommandsQuery.data?.pagination?.totalRecords;
-  const data = ensureArray(fetchCommandsQuery.data?.records);
-  const displayPagination = totalCount > minRowsPerPage;
 
   const renderExpandedRow = useCallback(({ row }) => {
     const tableBorderColor = {
@@ -330,8 +322,6 @@ const Commands = () => {
     colorMode,
     handleClickRunCommandById,
   ]);
-
-  const selectedRowCount = Object.keys(rowSelection).length;
 
   return (
     <Flex
@@ -398,10 +388,8 @@ const Commands = () => {
           position: 'relative',
         }}
       >
-        {fetchCommandsQuery.isFetching && (
-          <Loader />
-        )}
         <BaseTable
+          isLoading={isLoadingData}
           columns={columns}
           data={data}
           renderExpandedRow={renderExpandedRow}
@@ -414,11 +402,23 @@ const Commands = () => {
         {displayPagination && (
           <TablePagination
             count={totalCount}
-            onPageChange={setPage}
-            onRowsPerPageChange={setRowsPerPage}
+            onPageChange={(page) => {
+              setPage(page);
+
+              // Clear row selection when the page changes
+              clearRowSelection();
+            }}
+            onRowsPerPageChange={(rowsPerPage) => {
+              setRowsPerPage(rowsPerPage);
+
+              // Clear row selection when the number of rows per page changes
+              clearRowSelection();
+            }}
             page={page}
             rowsPerPage={rowsPerPage}
             rowsPerPageOptions={rowsPerPageOptions}
+            showFirstButton={totalPages > 4}
+            showLastButton={totalPages > 4}
           />
         )}
       </Box>

@@ -100,11 +100,10 @@ const CreateCommandDrawer = ({
               <FormGroup>
                 <Flex
                   alignItems="center"
-                  justifyContent="space-between"
                   columnGap="3x"
                 >
                   <FieldTextLabel>
-                    {i18n._('Enabled:')}
+                    {i18n._('Status:')}
                   </FieldTextLabel>
                   <Field name="enabled">
                     {({ input, meta }) => {

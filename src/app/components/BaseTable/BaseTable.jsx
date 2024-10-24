@@ -7,6 +7,7 @@ import {
 import {
   Box,
   Collapse,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -18,7 +19,7 @@ import {
   useColorMode,
   useTheme,
 } from '@tonic-ui/react';
-import { dataAttr } from '@tonic-ui/utils';
+import { dataAttr, runIfFn } from '@tonic-ui/utils';
 import React, {
   Fragment,
   forwardRef,
@@ -27,14 +28,9 @@ import React, {
   useState,
 } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
-
-const ConditionalWrapper = ({
-  children,
-  condition,
-  wrapper,
-}) => {
-  return condition ? wrapper(children) : children;
-};
+import i18n from '@app/lib/i18n';
+import EmptyData from './EmptyData';
+import Overlay from './Overlay';
 
 /**
  * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
@@ -53,16 +49,21 @@ const getTextWidth = (text, font) => {
   return metrics.width || 0;
 };
 
+const defaultLabelEmptyData = () => {
+  return i18n._('No data to display');
+};
+
 const BaseTable = forwardRef((
   {
+    isLoading,
     columns,
     data,
-    layout = 'flexbox', // One of: 'flexbox', 'table'
     variant = 'default', // One of: 'default', 'outline'
     renderExpandedRow,
     enableRowSelection: enableRowSelectionProp = false,
     rowSelection: rowSelectionProp,
     onRowSelectionChange: onRowSelectionChangeProp,
+    labelEmptyData = defaultLabelEmptyData,
     ...rest
   },
   ref,
@@ -238,7 +239,7 @@ const BaseTable = forwardRef((
       >
         {({ width, height }) => (
           <Table
-            layout={layout}
+            layout="flexbox"
             variant={variant}
             sx={{
               height,
@@ -273,79 +274,68 @@ const BaseTable = forwardRef((
                 </TableHeaderRow>
               ))}
             </TableHeader>
-            <ConditionalWrapper
-              condition={layout === 'flexbox'}
-              wrapper={children => (
-                <TableScrollbar
-                  height="100%"
-                  overflowY="visible" // Display vertical scrollbar when content overflows
-                  overflowX="auto" // Display horizontal scrollbar when content overflows and is interacted with
-                  onUpdate={({ scrollLeft }) => {
-                    if (tableHeaderRef.current && tableHeaderRef.current.scrollLeft !== scrollLeft) {
-                      tableHeaderRef.current.scrollLeft = scrollLeft;
-                    }
-                  }}
-                >
-                  {children}
-                </TableScrollbar>
-              )}
-            >
-              <TableBody>
-                {table.getRowModel().rows.map(row => (
-                  <Fragment key={row.id}>
-                    <TableRow
-                      data-selected={dataAttr(row.getIsSelected())}
-                      _hover={{
-                        backgroundColor: hoverBackgroundColor,
-                      }}
-                      _selected={{
-                        backgroundColor: selectedBackgroundColor,
-                      }}
-                    >
-                      {row.getVisibleCells().map(cell => {
-                        const styleProps = {
-                          minWidth: cell.column.columnDef.minSize,
-                          width: cell.column.getSize(),
-                          ...cell.column.columnDef.cellStyle,
-                        };
-                        return (
-                          <TableCell
-                            key={cell.id}
-                            {...styleProps}
-                          >
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                    {(row.getCanExpand() && layout === 'flexbox') && (
-                      <Collapse
-                        in={row.getIsExpanded()}
-                        unmountOnExit
+            {isLoading && (
+              <Overlay>
+                <Spinner />
+              </Overlay>
+            )}
+            {table.getRowModel().rows.length === 0 && (
+              <EmptyData>
+                {runIfFn(labelEmptyData)}
+              </EmptyData>
+            )}
+            {(table.getRowModel().rows.length > 0) && (
+              <TableScrollbar
+                height="100%"
+                overflowY="visible" // Display vertical scrollbar when content overflows
+                overflowX="auto" // Display horizontal scrollbar when content overflows and is interacted with
+                onUpdate={({ scrollLeft }) => {
+                  if (tableHeaderRef.current && tableHeaderRef.current.scrollLeft !== scrollLeft) {
+                    tableHeaderRef.current.scrollLeft = scrollLeft;
+                  }
+                }}
+              >
+                <TableBody>
+                  {table.getRowModel().rows.map(row => (
+                    <Fragment key={row.id}>
+                      <TableRow
+                        data-selected={dataAttr(row.getIsSelected())}
+                        _hover={{
+                          backgroundColor: hoverBackgroundColor,
+                        }}
+                        _selected={{
+                          backgroundColor: selectedBackgroundColor,
+                        }}
                       >
-                        {typeof renderExpandedRow === 'function' && renderExpandedRow({ row })}
-                      </Collapse>
-                    )}
-                    {(row.getCanExpand() && layout === 'table') && (
-                      <TableRow>
-                        <TableCell
-                          padding={0}
-                          borderBottom={0}
-                          colSpan={row.getVisibleCells().length}
-                        >
-                          <Collapse
-                            in={row.getIsExpanded()}
-                            unmountOnExit
-                          >
-                            {typeof renderExpandedRow === 'function' && renderExpandedRow({ row })}
-                          </Collapse>
-                        </TableCell>
+                        {row.getVisibleCells().map(cell => {
+                          const styleProps = {
+                            minWidth: cell.column.columnDef.minSize,
+                            width: cell.column.getSize(),
+                            ...cell.column.columnDef.cellStyle,
+                          };
+                          return (
+                            <TableCell
+                              key={cell.id}
+                              {...styleProps}
+                            >
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </TableCell>
+                          );
+                        })}
                       </TableRow>
-                    )}
-                  </Fragment>
-                ))}
-              </TableBody>
-            </ConditionalWrapper>
+                      {row.getCanExpand() && (
+                        <Collapse
+                          in={row.getIsExpanded()}
+                          unmountOnExit
+                        >
+                          {typeof renderExpandedRow === 'function' && renderExpandedRow({ row })}
+                        </Collapse>
+                      )}
+                    </Fragment>
+                  ))}
+                </TableBody>
+              </TableScrollbar>
+            )}
           </Table>
         )}
       </AutoSizer>

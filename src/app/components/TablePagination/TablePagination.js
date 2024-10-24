@@ -14,7 +14,9 @@ import {
 } from '@tonic-ui/react';
 import {
   AngleLeftIcon,
+  CollapseLeftIcon,
   AngleRightIcon,
+  CollapseRightIcon,
 } from '@tonic-ui/react-icons';
 import { ensureArray, ensureNumber } from 'ensure-type';
 import React, { forwardRef, useCallback, useEffect, useState } from 'react';
@@ -125,7 +127,9 @@ const TablePagination = forwardRef((
       <Menu
         placement="top"
       >
-        <MenuButton variant="ghost">
+        <MenuButton
+          variant="ghost"
+        >
           {labelRowsPerPage({ rowsPerPage })}
         </MenuButton>
         <MenuList
@@ -167,6 +171,17 @@ const TablePagination = forwardRef((
           }
         }}
       >
+        {showFirstButton && (
+          <Button
+            width="8x"
+            disabled={!canPreviousPage}
+            onClick={(event) => {
+              onPageChange(1);
+            }}
+          >
+            <CollapseLeftIcon />
+          </Button>
+        )}
         <Button
           width="8x"
           disabled={!canPreviousPage}
@@ -185,6 +200,17 @@ const TablePagination = forwardRef((
         >
           <AngleRightIcon />
         </Button>
+        {showLastButton && (
+          <Button
+            width="8x"
+            disabled={!canNextPage}
+            onClick={(event) => {
+              onPageChange(totalPages);
+            }}
+          >
+            <CollapseRightIcon />
+          </Button>
+        )}
       </ButtonGroup>
     </Flex>
   );
