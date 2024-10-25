@@ -21,6 +21,9 @@ import {
 import { ensureArray, ensureNumber } from 'ensure-type';
 import React, { forwardRef, useCallback, useEffect, useState } from 'react';
 import i18n from '@app/lib/i18n';
+import {
+  DEFAULT_ROWS_PER_PAGE_OPTIONS,
+} from './constants';
 
 const defaultLabelRowsPerPage = ({ rowsPerPage }) => {
   return i18n._('{{rowsPerPage}} per page', { rowsPerPage });
@@ -33,6 +36,7 @@ const defaultLabelTotalCount = ({ count }) => {
 const TablePagination = forwardRef((
   {
     count,
+    disabled: disabledProp,
     defaultPage = 1,
     defaultRowsPerPage: defaultRowsPerPageProp,
     labelRowsPerPage = defaultLabelRowsPerPage,
@@ -41,7 +45,7 @@ const TablePagination = forwardRef((
     onRowsPerPageChange: onRowsPerPageChangeProp,
     page: pageProp,
     rowsPerPage: rowsPerPageProp,
-    rowsPerPageOptions = [50, 100],
+    rowsPerPageOptions = DEFAULT_ROWS_PER_PAGE_OPTIONS,
     showFirstButton = false,
     showLastButton = false,
   },
@@ -114,6 +118,7 @@ const TablePagination = forwardRef((
       alignItems="center"
       justifyContent="flex-end"
       backgroundColor={colorStyle.background.secondary}
+      color={disabledProp ? colorStyle.color.disabled : undefined}
       px="6x"
       py="3x"
     >
@@ -128,6 +133,7 @@ const TablePagination = forwardRef((
         placement="top"
       >
         <MenuButton
+          disabled={disabledProp}
           variant="ghost"
         >
           {labelRowsPerPage({ rowsPerPage })}
@@ -152,6 +158,7 @@ const TablePagination = forwardRef((
       />
       <Space width="2x" />
       <Input
+        disabled={disabledProp}
         width="10x"
         px={0}
         textAlign="center"
@@ -164,6 +171,7 @@ const TablePagination = forwardRef((
       <Text>{totalPages}</Text>
       <Space width="2x" />
       <ButtonGroup
+        disabled={disabledProp}
         variant="secondary"
         sx={{
           '> *:not(:first-of-type)': {

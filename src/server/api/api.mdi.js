@@ -115,29 +115,38 @@ const api = {
   },
   bulkDelete: (req, res) => {
     const ids = ensureArray(req.body?.ids);
+    if (!ids.length) {
+      res.status(400);
+      res.send({ status: 'error', message: 'No valid IDs provided.' });
+      return;
+    }
+
     const records = getSanitizedRecords();
+    const requestCount = ids.length;
+    let mutationCount = 0;
+
     const filteredRecords = records.filter(record => {
-      // Keep records that are not in the ids array
-      return !ids.includes(record.id);
+      if (ids.includes(record.id)) {
+        ++mutationCount;
+        return false;
+      }
+      return true;
     });
-    const totalCount = records.length;
-    const requestedCount = ids.length;
-    const deletedCount = totalCount - filteredRecords.length;
+
+    userStore.set(CONFIG_KEY, filteredRecords);
 
     let status = '';
     let message = '';
-    if (deletedCount === requestedCount) {
+    if (mutationCount === requestCount) {
       status = 'ok';
       message = 'All requested items were successfully deleted.';
-    } else if (deletedCount > 0) {
+    } else if (mutationCount > 0) {
       status = 'partial';
-      message = `${deletedCount} of ${requestedCount} requested items were deleted.`;
+      message = `${mutationCount} out of ${requestCount} requested items were deleted.`;
     } else {
       status = 'not_found';
-      message = 'No requested items were found for deletion.';
+      message = 'None of the requested items were found.';
     }
-
-    userStore.set(CONFIG_KEY, filteredRecords);
 
     res.send({ status, message });
   },
@@ -202,6 +211,7 @@ const api = {
       });
     }
   },
+  // FIXME: Refactor the Axes widget and remove the bulkUpdate API
   bulkUpdate: (req, res) => {
     const { records } = { ...req.body };
 

@@ -1,0 +1,1 @@
+export const DEFAULT_ROWS_PER_PAGE_OPTIONS = [20, 50, 100];

@@ -98,8 +98,6 @@ function App({
             {i18n._('The command "{{command}}" has started.', { command: context?.name })}
           </Text>
         ),
-        duration: 5 * 1000, // 5 seconds
-        placement: 'bottom-right',
       });
     };
     const onTaskData = (taskId, data) => {
@@ -118,8 +116,10 @@ function App({
         win.document.write('<pre>' + task.data + '</pre>');
       };
 
+      const isZeroExitCode = (code === 0);
+
       toast({
-        appearance: code === 0 ? 'success' : 'warning',
+        appearance: isZeroExitCode ? 'success' : 'warning',
         content: (
           <Stack spacing="2x">
             <Text>
@@ -130,8 +130,6 @@ function App({
             </LinkButton>
           </Stack>
         ),
-        duration: 10 * 1000, // 10 seconds
-        placement: 'bottom-right',
       });
 
       taskMap.delete(taskId);
@@ -157,8 +155,6 @@ function App({
             </LinkButton>
           </Stack>
         ),
-        duration: null,
-        placement: 'bottom-right',
       });
 
       taskMap.delete(taskId);
@@ -182,8 +178,8 @@ function App({
     const subscriber = pubsub.subscribe('toast.notify', (msg, data) => {
       const {
         appearance,
-        placement,
         duration,
+        placement,
         render,
       } = data;
 

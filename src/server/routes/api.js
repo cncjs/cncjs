@@ -26,7 +26,9 @@ const createProtectedApiRouter = () => {
   // Commands
   router.get('/commands', commands.fetch);
   router.post('/commands', commands.create);
-  router.delete('/commands', commands.bulkDelete);
+  router.post('/commands/delete', commands.bulkDelete);
+  router.post('/commands/enable', commands.bulkEnable);
+  router.post('/commands/disable', commands.bulkDisable);
   router.get('/commands/:id', commands.read);
   router.put('/commands/:id', commands.update);
   router.delete('/commands/:id', commands.delete);
@@ -40,7 +42,9 @@ const createProtectedApiRouter = () => {
   // Events
   router.get('/events', events.fetch);
   router.post('/events/', events.create);
-  router.delete('/events/', events.bulkDelete);
+  router.post('/events/delete', events.bulkDelete);
+  router.post('/events/enable', events.bulkEnable);
+  router.post('/events/disable', events.bulkDisable);
   router.put('/events/:id', events.update);
   router.delete('/events/:id', events.delete);
   router.post('/events/:id/enable', events.enable);
@@ -55,7 +59,7 @@ const createProtectedApiRouter = () => {
   // Machines
   router.get('/machines', machines.fetch);
   router.post('/machines', machines.create);
-  router.delete('/machines', machines.bulkDelete);
+  router.post('/machines/delete', machines.bulkDelete);
   router.get('/machines/:id', machines.read);
   router.put('/machines/:id', machines.update);
   router.delete('/machines/:id', machines.delete);
@@ -64,7 +68,7 @@ const createProtectedApiRouter = () => {
   router.get('/macros', macros.fetch);
   router.post('/macros/export', macros.exportCSV);
   router.post('/macros', macros.create);
-  router.delete('/macros', macros.bulkDelete);
+  router.post('/macros/delete', macros.bulkDelete);
   router.get('/macros/:id', macros.read);
   router.put('/macros/:id', macros.update);
   router.delete('/macros/:id', macros.delete);
@@ -72,7 +76,7 @@ const createProtectedApiRouter = () => {
   // MDI
   router.get('/mdi', mdi.fetch);
   router.post('/mdi', mdi.create);
-  router.delete('/mdi', mdi.bulkDelete);
+  router.post('/mdi/delete', mdi.bulkDelete);
   router.put('/mdi', mdi.bulkUpdate);
   router.get('/mdi/:id', mdi.read);
   router.put('/mdi/:id', mdi.update);
@@ -89,7 +93,9 @@ const createProtectedApiRouter = () => {
   // Users
   router.get('/users', users.fetch);
   router.post('/users/', users.create);
-  router.delete('/users/', users.bulkDelete);
+  router.post('/users/delete', users.bulkDelete);
+  router.post('/users/enable', users.bulkEnable);
+  router.post('/users/disable', users.bulkDisable);
   router.get('/users/:id', users.read);
   router.put('/users/:id', users.update);
   router.delete('/users/:id', users.delete);

@@ -26,13 +26,22 @@ const ToastLayout = (props) => {
 const useToast = () => {
   const toast = useToastManager();
 
+  /**
+   * Positive information toast can be dismissed automatically in 5 seconds.
+   * Error and warning toasts should be persistent until dismissed by the user.
+   */
   return useCallback(({
     appearance,
     content,
-    duration = 3000,
+    duration,
     placement = 'bottom-right',
     width = 320,
   }) => {
+    if (duration === undefined) {
+      const isPositiveInformation = (!appearance || appearance === 'none' || appearance === 'success' || appearance === 'info');
+      duration = isPositiveInformation ? 5000 : null;
+    }
+
     const render = ({ onClose, placement }) => {
       const isTop = placement.includes('top');
       const toastSpacingKey = isTop ? 'pb' : 'pt';
@@ -54,7 +63,7 @@ const useToast = () => {
       );
     };
     const options = {
-      placement: 'bottom-right',
+      placement,
       duration,
     };
 

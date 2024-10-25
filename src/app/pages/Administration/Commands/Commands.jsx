@@ -6,8 +6,9 @@ import {
   Flex,
   Icon,
   LinkButton,
+  OverflowTooltip,
   Switch,
-  TextLabel,
+  Text,
   Tooltip,
   useColorMode,
   usePortalManager,
@@ -15,7 +16,7 @@ import {
 import {
   RefreshIcon,
 } from '@tonic-ui/react-icons';
-import { format } from 'date-fns';
+import * as dateFns from 'date-fns';
 import { ensureArray } from 'ensure-type';
 import qs from 'qs';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -23,6 +24,9 @@ import BaseTable from '@app/components/BaseTable';
 import CodePreview from '@app/components/CodePreview';
 import IconButton from '@app/components/IconButton';
 import TablePagination from '@app/components/TablePagination';
+import {
+  DEFAULT_ROWS_PER_PAGE_OPTIONS,
+} from '@app/components/TablePagination/constants';
 import i18n from '@app/lib/i18n';
 import TableRowToggleIcon from '../components/TableRowToggleIcon';
 import CreateCommandDrawer from './drawers/CreateCommandDrawer';
@@ -32,6 +36,8 @@ import {
   API_COMMANDS_QUERY_KEY,
   useFetchCommandsQuery,
   useBulkDeleteCommandsMutation,
+  useBulkEnableCommandsMutation,
+  useBulkDisableCommandsMutation,
   useEnableCommandMutation,
   useDisableCommandMutation,
   useRunCommandMutation,
@@ -39,10 +45,9 @@ import {
 
 const Commands = () => {
   // pagination
-  const rowsPerPageOptions = [25, 50, 100];
-  const minRowsPerPage = Math.min(...rowsPerPageOptions);
+  const rowsPerPageOptions = ensureArray(DEFAULT_ROWS_PER_PAGE_OPTIONS);
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(minRowsPerPage);
+  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
 
   // row selection
   const [rowSelection, setRowSelection] = useState({});
@@ -61,6 +66,18 @@ const Commands = () => {
     },
   });
   const bulkDeleteCommandsMutation = useBulkDeleteCommandsMutation({
+    onSuccess: () => {
+      // Invalidate `useFetchCommandsQuery`
+      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+    },
+  });
+  const bulkEnableCommandsMutation = useBulkEnableCommandsMutation({
+    onSuccess: () => {
+      // Invalidate `useFetchCommandsQuery`
+      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+    },
+  });
+  const bulkDisableCommandsMutation = useBulkDisableCommandsMutation({
     onSuccess: () => {
       // Invalidate `useFetchCommandsQuery`
       queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
@@ -87,7 +104,6 @@ const Commands = () => {
   const data = ensureArray(fetchCommandsQuery.data?.records);
   const totalCount = fetchCommandsQuery.data?.pagination?.totalRecords;
   const totalPages = Math.ceil(totalCount / rowsPerPage);
-  const displayPagination = totalCount > minRowsPerPage;
 
   const handleClickAdd = useCallback(() => {
     portal((close) => (
@@ -97,7 +113,7 @@ const Commands = () => {
     ));
   }, [portal]);
 
-  const handleClickDelete = useCallback(() => {
+  const handleClickBulkDelete = useCallback(() => {
     const rowIds = Object.keys(rowSelection);
     portal((close) => (
       <ConfirmBulkDeleteCommandsModal
@@ -117,12 +133,29 @@ const Commands = () => {
         }}
       />
     ));
-  }, [
-    rowSelection,
-    portal,
-    bulkDeleteCommandsMutation,
-    clearRowSelection,
-  ]);
+  }, [portal, rowSelection, bulkDeleteCommandsMutation, clearRowSelection]);
+
+  const handleClickBulkEnable = useCallback(() => {
+    const rowIds = Object.keys(rowSelection);
+    const data = {
+      ids: rowIds,
+    };
+    bulkEnableCommandsMutation.mutate({ data });
+
+    // Clear row selection
+    clearRowSelection();
+  }, [rowSelection, bulkEnableCommandsMutation, clearRowSelection]);
+
+  const handleClickBulkDisable = useCallback(() => {
+    const rowIds = Object.keys(rowSelection);
+    const data = {
+      ids: rowIds,
+    };
+    bulkDisableCommandsMutation.mutate({ data });
+
+    // Clear row selection
+    clearRowSelection();
+  }, [rowSelection, bulkDisableCommandsMutation, clearRowSelection]);
 
   const handleClickRefresh = useCallback(() => {
     fetchCommandsQuery.refetch();
@@ -216,9 +249,18 @@ const Commands = () => {
     {
       header: i18n._('Command Name'),
       cell: ({ row }) => (
-        <LinkButton onClick={handleClickViewCommandDetailsById(row.original.id)}>
-          {row.original.title}
-        </LinkButton>
+        <OverflowTooltip label={row.original.title}>
+          {({ ref, style }) => (
+            <LinkButton
+              onClick={handleClickViewCommandDetailsById(row.original.id)}
+              width="100%"
+            >
+              <Text ref={ref} {...style}>
+                {row.original.title}
+              </Text>
+            </LinkButton>
+          )}
+        </OverflowTooltip>
       ),
       size: 'auto',
     },
@@ -226,33 +268,43 @@ const Commands = () => {
       header: i18n._('Date Modified'),
       cell: ({ row }) => {
         const dt = new Date(row.original.mtime);
-        return format(dt, 'PPpp');
+        const value = dateFns.format(dt, 'PPpp');
+
+        return (
+          <OverflowTooltip label={value}>
+            {value}
+          </OverflowTooltip>
+        );
       },
       size: 200,
     },
     {
       id: 'status',
       header: i18n._('Status'),
-      cell: ({ row }) => (
-        <Flex
-          alignItems="center"
-          columnGap="2x"
-        >
-          <Switch
-            checked={row.original.enabled}
-            onChange={handleToggleStatusById(row.original.id)}
-          />
-          <TextLabel>
-            {row.original.enabled === true ? i18n._('ON') : i18n._('OFF')}
-          </TextLabel>
-        </Flex>
-      ),
+      cell: ({ row }) => {
+        const textLabel = row.original.enabled === true ? i18n._('ON') : i18n._('OFF');
+        return (
+          <Flex
+            alignItems="center"
+            columnGap="2x"
+            width="100%"
+          >
+            <Switch
+              checked={row.original.enabled}
+              onChange={handleToggleStatusById(row.original.id)}
+            />
+            <OverflowTooltip label={textLabel}>
+              {textLabel}
+            </OverflowTooltip>
+          </Flex>
+        );
+      },
       cellStyle: {
         display: 'flex',
         alignItems: 'center',
         py: 0,
       },
-      minSize: 80,
+      minSize: 100,
     },
   ]), [
     isRowSelectionDisabled,
@@ -328,6 +380,7 @@ const Commands = () => {
       sx={{
         flexDirection: 'column',
         height: '100%',
+        overflowY: 'auto',
       }}
     >
       <Box flex="none">
@@ -341,7 +394,7 @@ const Commands = () => {
         >
           <Flex
             alignItems="center"
-            columnGap="4x"
+            columnGap="2x"
           >
             <Button
               variant="primary"
@@ -355,12 +408,32 @@ const Commands = () => {
             <Button
               disabled={selectedRowCount === 0}
               variant="secondary"
-              onClick={handleClickDelete}
+              onClick={handleClickBulkDelete}
               sx={{
                 minWidth: 80,
               }}
             >
               {i18n._('Delete')}
+            </Button>
+            <Button
+              disabled={selectedRowCount === 0}
+              variant="secondary"
+              onClick={handleClickBulkEnable}
+              sx={{
+                minWidth: 80,
+              }}
+            >
+              {i18n._('Enable')}
+            </Button>
+            <Button
+              disabled={selectedRowCount === 0}
+              variant="secondary"
+              onClick={handleClickBulkDisable}
+              sx={{
+                minWidth: 80,
+              }}
+            >
+              {i18n._('Disable')}
             </Button>
           </Flex>
           <Flex
@@ -384,8 +457,7 @@ const Commands = () => {
         sx={{
           flex: 'auto',
           height: '100%',
-          overflowY: 'auto',
-          position: 'relative',
+          minHeight: 100,
         }}
       >
         <BaseTable
@@ -399,28 +471,27 @@ const Commands = () => {
         />
       </Box>
       <Box flex="none">
-        {displayPagination && (
-          <TablePagination
-            count={totalCount}
-            onPageChange={(page) => {
-              setPage(page);
+        <TablePagination
+          count={totalCount}
+          disabled={totalCount === 0}
+          onPageChange={(page) => {
+            setPage(page);
 
-              // Clear row selection when the page changes
-              clearRowSelection();
-            }}
-            onRowsPerPageChange={(rowsPerPage) => {
-              setRowsPerPage(rowsPerPage);
+            // Clear row selection when the page changes
+            clearRowSelection();
+          }}
+          onRowsPerPageChange={(rowsPerPage) => {
+            setRowsPerPage(rowsPerPage);
 
-              // Clear row selection when the number of rows per page changes
-              clearRowSelection();
-            }}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            rowsPerPageOptions={rowsPerPageOptions}
-            showFirstButton={totalPages > 4}
-            showLastButton={totalPages > 4}
-          />
-        )}
+            // Clear row selection when the number of rows per page changes
+            clearRowSelection();
+          }}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={rowsPerPageOptions}
+          showFirstButton={totalPages > 4}
+          showLastButton={totalPages > 4}
+        />
       </Box>
     </Flex>
   );
