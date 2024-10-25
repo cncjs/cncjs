@@ -4,6 +4,7 @@ import {
   Flex,
   Icon,
   Menu,
+  MenuDivider,
   MenuItem,
   MenuList,
   Scrollbar,
@@ -33,10 +34,11 @@ const MiniNav = forwardRef((
       <Box
         as="nav"
         ref={ref}
-        backgroundColor={colorStyle?.background?.primary}
-        color={colorStyle?.color?.primary}
-        borderRight={1}
-        borderRightColor={colorStyle?.divider}
+        sx={{
+          backgroundColor: colorStyle?.background?.primary,
+          color: colorStyle?.color?.primary,
+          boxShadow: `1px 0 0 0 ${colorStyle.divider}`,
+        }}
         {...rest}
       >
         <Box mb="2x" />
@@ -70,11 +72,11 @@ const MiniNav = forwardRef((
                     alignItems="center"
                     columnGap="4x"
                   >
-                    {route.icon && (
-                      <Icon
-                        icon={route.icon}
-                        size="6x"
-                      />
+                    {(route.icon && typeof route.icon === 'string') && (
+                      <Icon icon={route.icon} size="6x" />
+                    )}
+                    {(route.icon && typeof route.icon !== 'string') && (
+                      <Icon as={route.icon} size="6x" />
                     )}
                     <Text>
                       {mapRoutePathToPageTitle(route.path)}
@@ -87,22 +89,26 @@ const MiniNav = forwardRef((
             return (
               <Box key={key}>
                 <Divider my="2x" />
-                <Box
-                  pt="1x"
-                  pb="2x"
+                <Flex
                   px="6x"
+                  py="2x"
+                  alignItems="center"
+                  columnGap="4x"
+                  color={colorStyle.color.secondary}
                 >
-                  <Text
-                    fontWeight="semibold"
-                    fontSize="md"
-                    lineHeight="md"
-                  >
+                  {(route.icon && typeof route.icon === 'string') && (
+                    <Icon icon={route.icon} size="6x" />
+                  )}
+                  {(route.icon && typeof route.icon !== 'string') && (
+                    <Icon as={route.icon} size="6x" />
+                  )}
+                  <Text>
                     {mapRoutePathToPageTitle(route.path)}
                   </Text>
-                </Box>
+                </Flex>
                 {ensureArray(route.routes).map((childRoute, index) => {
                   const key = childRoute.path;
-                  const isHidden = !!childRoute.hidden;
+                  const isHidden = !!childRoute.hidden || !!childRoute.divider;
                   const isSelected = ensureString(location.pathname).startsWith(childRoute.path);
 
                   if (isHidden) {
@@ -125,12 +131,17 @@ const MiniNav = forwardRef((
                         alignItems="center"
                         columnGap="4x"
                       >
-                        {!!childRoute.icon && (
-                          <Icon
-                            icon={childRoute.icon}
-                            size="6x"
-                          />
-                        )}
+                        <Flex
+                          minWidth="6x"
+                          justifyContent="center"
+                        >
+                          {(childRoute.icon && typeof childRoute.icon === 'string') && (
+                            <Icon icon={childRoute.icon} size="4x" />
+                          )}
+                          {(childRoute.icon && typeof childRoute.icon !== 'string') && (
+                            <Icon as={childRoute.icon} size="4x" />
+                          )}
+                        </Flex>
                         <Text>
                           {mapRoutePathToPageTitle(childRoute.path)}
                         </Text>
@@ -150,10 +161,11 @@ const MiniNav = forwardRef((
     <Box
       as="nav"
       ref={ref}
-      backgroundColor={colorStyle?.background?.primary}
-      color={colorStyle?.color?.primary}
-      borderRight={1}
-      borderRightColor={colorStyle?.divider}
+      sx={{
+        backgroundColor: colorStyle?.background?.primary,
+        color: colorStyle?.color?.primary,
+        boxShadow: `1px 0 0 0 ${colorStyle.divider}`,
+      }}
       {...rest}
     >
       {routes.map((route, index) => {
@@ -194,14 +206,17 @@ const MiniNav = forwardRef((
               alignItems="center"
               rowGap="1x"
             >
-              <Icon
-                icon={route.icon}
-                size="6x"
-              />
+              {(route.icon && typeof route.icon === 'string') && (
+                <Icon icon={route.icon} size="6x" />
+              )}
+              {(route.icon && typeof route.icon !== 'string') && (
+                <Icon as={route.icon} size="6x" />
+              )}
               <Text
                 fontSize={10}
                 lineHeight={1}
                 textAlign="center"
+                wordBreak="break-word"
               >
                 {mapRoutePathToPageTitle(route.path)}
               </Text>
@@ -220,8 +235,21 @@ const MiniNav = forwardRef((
                   <MenuList
                     width="max-content"
                   >
-                    {childRoutes.map((childRoute) => {
+                    {childRoutes.map((childRoute, childIndex) => {
                       const childKey = childRoute.path;
+                      const isHidden = !!childRoute.hidden;
+                      const isDivider = !!childRoute.divider;
+
+                      if (isHidden) {
+                        return null;
+                      }
+
+                      if (isDivider) {
+                        const childKey = `menu-divider-${childIndex}`;
+                        return (
+                          <MenuDivider key={childKey} />
+                        );
+                      }
 
                       return (
                         <MenuItem

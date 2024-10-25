@@ -1,6 +1,5 @@
 import { Global, css } from '@emotion/react';
 import {
-  Box,
   ButtonBase,
   Divider,
   Drawer,
@@ -63,12 +62,14 @@ const SideNav = forwardRef((
       <DrawerOverlay />
       <DrawerContent
         ref={ref}
-        backgroundColor={colorStyle?.background?.primary}
-        color={colorStyle?.color?.primary}
-        borderY="none"
-        borderLeft="none"
-        width={layout.sidenav.width}
-        whiteSpace="nowrap"
+        sx={{
+          backgroundColor: colorStyle?.background?.primary,
+          color: colorStyle?.color?.primary,
+          border: 0,
+          boxShadow: `1px 0 0 0 ${colorStyle.divider}`,
+          width: layout.sidenav.width,
+          whiteSpace: 'nowrap',
+        }}
         {...rest}
       >
         <Flex
@@ -83,7 +84,7 @@ const SideNav = forwardRef((
             height="10x"
             onClick={onClose}
           >
-            <Icon icon=":menu" size="6x"/>
+            <Icon icon=":nav-menu" size="6x"/>
           </IconButton>
           <Space minWidth="2x" />
           <ButtonBase
@@ -153,11 +154,11 @@ const SideNav = forwardRef((
                     alignItems="center"
                     columnGap="4x"
                   >
-                    {!!route.icon && (
-                      <Icon
-                        icon={route.icon}
-                        size="6x"
-                      />
+                    {(route.icon && typeof route.icon === 'string') && (
+                      <Icon icon={route.icon} size="6x" />
+                    )}
+                    {(route.icon && typeof route.icon !== 'string') && (
+                      <Icon as={route.icon} size="6x" />
                     )}
                     <Text>
                       {mapRoutePathToPageTitle(route.path)}
@@ -170,22 +171,26 @@ const SideNav = forwardRef((
             return (
               <>
                 <Divider my="2x" />
-                <Box
-                  pt="1x"
-                  pb="2x"
+                <Flex
                   px="6x"
+                  py="2x"
+                  alignItems="center"
+                  columnGap="4x"
+                  color={colorStyle.color.secondary}
                 >
-                  <Text
-                    fontWeight="semibold"
-                    fontSize="md"
-                    lineHeight="md"
-                  >
+                  {(route.icon && typeof route.icon === 'string') && (
+                    <Icon icon={route.icon} size="6x" />
+                  )}
+                  {(route.icon && typeof route.icon !== 'string') && (
+                    <Icon as={route.icon} size="6x" />
+                  )}
+                  <Text>
                     {mapRoutePathToPageTitle(route.path)}
                   </Text>
-                </Box>
+                </Flex>
                 {ensureArray(route.routes).map((childRoute, index) => {
                   const key = childRoute.path;
-                  const isHidden = !!childRoute.hidden;
+                  const isHidden = !!childRoute.hidden || !!childRoute.divider;
                   const isSelected = ensureString(location.pathname).startsWith(childRoute.path);
 
                   if (isHidden) {
@@ -208,12 +213,17 @@ const SideNav = forwardRef((
                         alignItems="center"
                         columnGap="4x"
                       >
-                        {!!childRoute.icon && (
-                          <Icon
-                            icon={childRoute.icon}
-                            size="6x"
-                          />
-                        )}
+                        <Flex
+                          minWidth="6x"
+                          justifyContent="center"
+                        >
+                          {(childRoute.icon && typeof childRoute.icon === 'string') && (
+                            <Icon icon={childRoute.icon} size="4x" />
+                          )}
+                          {(childRoute.icon && typeof childRoute.icon !== 'string') && (
+                            <Icon as={childRoute.icon} size="4x" />
+                          )}
+                        </Flex>
                         <Text>
                           {mapRoutePathToPageTitle(childRoute.path)}
                         </Text>
