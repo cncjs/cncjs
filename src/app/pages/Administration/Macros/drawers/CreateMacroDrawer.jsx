@@ -9,15 +9,13 @@ import {
   DrawerFooter,
   DrawerOverlay,
   Flex,
-  Switch,
   Text,
-  TextLabel,
 } from '@tonic-ui/react';
 import {
   useConst,
 } from '@tonic-ui/react-hooks';
 import React, { useCallback } from 'react';
-import { Field, Form, FormSpy } from 'react-final-form';
+import { Form, FormSpy } from 'react-final-form';
 import FormGroup from '@app/components/FormGroup';
 import {
   InlineToastContainer,
@@ -62,7 +60,7 @@ const CreateMacroDrawer = ({
   });
   const initialValues = useConst(() => ({
     name: '',
-    content: '',
+    data: '',
   }));
   const handleFormSubmit = useCallback((values) => {
     createMacroMutation.mutate({
@@ -119,7 +117,7 @@ const CreateMacroDrawer = ({
                   </FieldTextLabel>
                 </Box>
                 <FieldTextarea
-                  name="content"
+                  name="data"
                   rows="10"
                   validate={required}
                 />

@@ -221,7 +221,7 @@ const Macros = () => {
       dark: 'gray:60',
       light: 'gray:30',
     }[colorMode];
-    const data = row.original.content;
+    const data = row.original.data;
 
     return (
       <Flex

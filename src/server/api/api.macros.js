@@ -1,4 +1,4 @@
-import { ensureArray, ensureFiniteNumber } from 'ensure-type';
+import { ensureArray, ensureFiniteNumber, ensureString } from 'ensure-type';
 import * as json2csv from 'json2csv';
 import _find from 'lodash/find';
 import _isPlainObject from 'lodash/isPlainObject';
@@ -36,6 +36,16 @@ const getSanitizedRecords = () => {
       record.id = uuidv4();
       shouldUpdate = true;
     }
+
+    if (record.data === undefined) {
+      record.data = record.content ?? '';
+      shouldUpdate = true;
+    }
+
+    if (record.content !== undefined) {
+      delete record.content;
+      shouldUpdate = true;
+    }
   }
 
   if (shouldUpdate) {
@@ -66,15 +76,15 @@ const api = {
           totalRecords: ensureFiniteNumber(totalRecords)
         },
         records: pagedRecords.map(record => {
-          const { id, mtime, name, content } = { ...record };
-          return { id, mtime, name, content };
+          const { id, mtime, name, data } = { ...record };
+          return { id, mtime, name, data };
         })
       });
     } else {
       res.send({
         records: records.map(record => {
-          const { id, mtime, name, content } = { ...record };
-          return { id, mtime, name, content };
+          const { id, mtime, name, data } = { ...record };
+          return { id, mtime, name, data };
         })
       });
     }
@@ -87,7 +97,7 @@ const api = {
       id: 'ID',
       mtime: 'Date Modified',
       name: 'Name',
-      content: 'Content',
+      data: 'Data',
     };
     const fields = _values(fieldMap);
 
@@ -107,7 +117,7 @@ const api = {
           [fieldMap.id]: x.id,
           [fieldMap.mtime]: new Date(x.mtime).toISOString(),
           [fieldMap.name]: x.name,
-          [fieldMap.content]: x.content,
+          [fieldMap.data]: x.data,
         }));
       const csv = json2csv.parse(data, { fields });
       res.send(csv).end();
@@ -117,14 +127,14 @@ const api = {
           [fieldMap.id]: x.id,
           [fieldMap.mtime]: new Date(x.mtime).toISOString(),
           [fieldMap.name]: x.name,
-          [fieldMap.content]: x.content,
+          [fieldMap.data]: x.data,
         }));
       const csv = json2csv.parse(data, { fields });
       res.send(csv).end();
     }
   },
   create: (req, res) => {
-    const { name, content } = { ...req.body };
+    const { name, data } = { ...req.body };
 
     if (!name) {
       res.status(ERR_BAD_REQUEST).send({
@@ -133,9 +143,9 @@ const api = {
       return;
     }
 
-    if (!content) {
+    if (!data) {
       res.status(ERR_BAD_REQUEST).send({
-        msg: 'The "content" parameter must not be empty',
+        msg: 'The "data" parameter must not be empty',
       });
       return;
     }
@@ -146,7 +156,7 @@ const api = {
         id: uuidv4(),
         mtime: new Date().getTime(),
         name: name,
-        content: content
+        data: data,
       };
 
       records.push(record);
@@ -208,8 +218,8 @@ const api = {
       return;
     }
 
-    const { mtime, name, content } = { ...record };
-    res.send({ id, mtime, name, content });
+    const { mtime, name, data } = { ...record };
+    res.send({ id, mtime, name, data });
   },
   update: (req, res) => {
     const id = req.params.id;
@@ -225,7 +235,7 @@ const api = {
 
     const {
       name = record.name,
-      content = record.content
+      data = record.data,
     } = { ...req.body };
 
     if (!name) {
@@ -235,17 +245,17 @@ const api = {
       return;
     }
 
-    if (!content) {
+    if (!data) {
       res.status(ERR_BAD_REQUEST).send({
-        msg: 'The "content" parameter must not be empty',
+        msg: 'The "data" parameter must not be empty',
       });
       return;
     }
 
     try {
       record.mtime = new Date().getTime();
-      record.name = String(name ?? '');
-      record.content = String(content ?? '');
+      record.name = ensureString(name);
+      record.data = ensureString(data);
 
       userStore.set(CONFIG_KEY, records);
 

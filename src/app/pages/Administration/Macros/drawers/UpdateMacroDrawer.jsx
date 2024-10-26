@@ -10,13 +10,11 @@ import {
   DrawerOverlay,
   Flex,
   Spinner,
-  Switch,
   Text,
-  TextLabel,
 } from '@tonic-ui/react';
 import memoize from 'micro-memoize';
 import React, { useCallback } from 'react';
-import { Field, Form, FormSpy } from 'react-final-form';
+import { Form, FormSpy } from 'react-final-form';
 import FormGroup from '@app/components/FormGroup';
 import {
   InlineToastContainer,
@@ -71,7 +69,7 @@ const UpdateMacroDrawer = ({
 
   const initialValues = getMemoizedState({
     name: readMacroQuery.data?.name,
-    content: readMacroQuery.data?.content,
+    data: readMacroQuery.data?.data,
   });
 
   const handleFormSubmit = useCallback((values) => {
@@ -137,7 +135,7 @@ const UpdateMacroDrawer = ({
                       </FieldTextLabel>
                     </Box>
                     <FieldTextarea
-                      name="content"
+                      name="data"
                       rows="10"
                       validate={required}
                     />

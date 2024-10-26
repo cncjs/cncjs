@@ -10,7 +10,6 @@ import {
   Switch,
   Text,
   Tooltip,
-  useColorMode,
   usePortalManager,
 } from '@tonic-ui/react';
 import {
@@ -21,14 +20,12 @@ import { ensureArray } from 'ensure-type';
 import qs from 'qs';
 import React, { useCallback, useMemo, useState } from 'react';
 import BaseTable from '@app/components/BaseTable';
-import CodePreview from '@app/components/CodePreview';
 import IconButton from '@app/components/IconButton';
 import TablePagination from '@app/components/TablePagination';
 import {
   DEFAULT_ROWS_PER_PAGE_OPTIONS,
 } from '@app/components/TablePagination/constants';
 import i18n from '@app/lib/i18n';
-import TableRowToggleIcon from '../components/TableRowToggleIcon';
 import ConfirmBulkDeleteRecordsModal from '../modals/ConfirmBulkDeleteRecordsModal';
 import CreateUserDrawer from './drawers/CreateUserDrawer';
 import UpdateUserDrawer from './drawers/UpdateUserDrawer';
@@ -95,7 +92,6 @@ const Users = () => {
     },
   });
   const portal = usePortalManager();
-  const [colorMode] = useColorMode();
   const selectedRowCount = Object.keys(rowSelection).length;
   const isRowSelectionDisabled = fetchUsersQuery.isFetching;
   const isLoadingData = fetchUsersQuery.isFetching;
