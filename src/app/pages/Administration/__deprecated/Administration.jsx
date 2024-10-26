@@ -35,12 +35,6 @@ class Administration extends Component {
 
   sections = [
     {
-      id: 'macros',
-      path: 'macros',
-      title: i18n._('Macros'),
-      component: (props) => <Macros {...props} />
-    },
-    {
       id: 'commands',
       path: 'commands',
       title: i18n._('Commands'),
@@ -51,6 +45,12 @@ class Administration extends Component {
       path: 'events',
       title: i18n._('Events'),
       component: (props) => <Events {...props} />
+    },
+    {
+      id: 'macros',
+      path: 'macros',
+      title: i18n._('Macros'),
+      component: (props) => <Macros {...props} />
     },
     {
       id: 'general-settings',

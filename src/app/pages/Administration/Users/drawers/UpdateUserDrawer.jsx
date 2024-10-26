@@ -28,35 +28,35 @@ import FieldInput from '@app/pages/Administration/components/FieldInput';
 import FieldTextarea from '@app/pages/Administration/components/FieldTextarea';
 import FieldTextLabel from '@app/pages/Administration/components/FieldTextLabel';
 import {
-  API_COMMANDS_QUERY_KEY,
-  useReadCommandQuery,
-  useUpdateCommandMutation,
+  API_USERS_QUERY_KEY,
+  useReadUserQuery,
+  useUpdateUserMutation,
 } from '../queries';
 
 const required = value => (value ? undefined : i18n._('This field is required.'));
 
 const getMemoizedState = memoize(state => ({ ...state }));
 
-const UpdateCommandDrawer = ({
+const UpdateUserDrawer = ({
   id,
   onClose,
   ...rest
 }) => {
   const { toasts, notify: notifyToast } = useInlineToasts();
   const queryClient = useQueryClient();
-  const readCommandQuery = useReadCommandQuery({
+  const readUserQuery = useReadUserQuery({
     meta: {
       id,
     },
   });
-  const updateCommandMutation = useUpdateCommandMutation({
+  const updateUserMutation = useUpdateUserMutation({
     onSuccess: () => {
       if (typeof onClose === 'function') {
         onClose();
       }
 
-      // Invalidate `useFetchCommandsQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+      // Invalidate `useFetchUsersQuery`
+      queryClient.invalidateQueries({ queryKey: API_USERS_QUERY_KEY });
     },
     onError: () => {
       notifyToast({
@@ -70,19 +70,19 @@ const UpdateCommandDrawer = ({
   });
 
   const initialValues = getMemoizedState({
-    enabled: readCommandQuery.data?.enabled,
-    name: readCommandQuery.data?.name,
-    data: readCommandQuery.data?.data,
+    enabled: readUserQuery.data?.enabled,
+    title: readUserQuery.data?.title,
+    commands: readUserQuery.data?.commands,
   });
 
   const handleFormSubmit = useCallback((values) => {
-    updateCommandMutation.mutate({
+    updateUserMutation.mutate({
       meta: {
         id,
       },
       data: values,
     });
-  }, [updateCommandMutation, id]);
+  }, [updateUserMutation, id]);
 
   return (
     <Drawer
@@ -106,14 +106,14 @@ const UpdateCommandDrawer = ({
             </InlineToastContainer>
             <DrawerHeader>
               <Text>
-                {i18n._('Command Details')}
+                {i18n._('User Details')}
               </Text>
             </DrawerHeader>
             <DrawerBody>
-              {readCommandQuery.isFetching && (
+              {readUserQuery.isFetching && (
                 <Spinner />
               )}
-              {!(readCommandQuery.isFetching) && (
+              {!(readUserQuery.isFetching) && (
                 <>
                   <FormGroup>
                     <Flex
@@ -148,11 +148,11 @@ const UpdateCommandDrawer = ({
                       <FieldTextLabel
                         required
                       >
-                        {i18n._('Command name:')}
+                        {i18n._('User name:')}
                       </FieldTextLabel>
                     </Box>
                     <FieldInput
-                      name="name"
+                      name="title"
                       placeholder={i18n._('e.g., Activate Air Purifier')}
                       validate={required}
                     />
@@ -161,13 +161,13 @@ const UpdateCommandDrawer = ({
                     <Box mb="1x">
                       <FieldTextLabel
                         required
-                        infoTipLabel={i18n._('Input the shell commands to execute with this command.')}
+                        infoTipLabel={i18n._('Enter the shell commands to be executed when this command runs. Each line will be executed sequentially.')}
                       >
                         {i18n._('Shell commands:')}
                       </FieldTextLabel>
                     </Box>
                     <FieldTextarea
-                      name="data"
+                      name="commands"
                       rows="10"
                       placeholder="/home/cncjs/bin/activate-air-purifier"
                       validate={required}
@@ -184,13 +184,13 @@ const UpdateCommandDrawer = ({
               >
                 {({ invalid }) => {
                   const canSubmit = (() => {
-                    if (readCommandQuery.isError) {
+                    if (readUserQuery.isError) {
                       return false;
                     }
-                    if (readCommandQuery.isFetching) {
+                    if (readUserQuery.isFetching) {
                       return false;
                     }
-                    if (updateCommandMutation.isLoading) {
+                    if (updateUserMutation.isLoading) {
                       return false;
                     }
                     if (invalid) {
@@ -237,4 +237,4 @@ const UpdateCommandDrawer = ({
   );
 };
 
-export default UpdateCommandDrawer;
+export default UpdateUserDrawer;

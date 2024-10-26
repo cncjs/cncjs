@@ -1,4 +1,4 @@
-import { ensureArray, ensureFiniteNumber } from 'ensure-type';
+import { ensureArray, ensureFiniteNumber, ensureString } from 'ensure-type';
 import _find from 'lodash/find';
 import _isPlainObject from 'lodash/isPlainObject';
 import { v4 as uuidv4 } from 'uuid';
@@ -36,15 +36,29 @@ const getSanitizedRecords = () => {
       shouldUpdate = true;
     }
 
+    if (record.name === undefined) {
+      record.name = record.title ?? '';
+      shouldUpdate = true;
+    }
+
+    if (record.data === undefined) {
+      record.data = record.commands ?? record.command ?? '';
+      shouldUpdate = true;
+    }
+
+    if (record.command !== undefined) {
+      delete record.command;
+      shouldUpdate = true;
+    }
+
+    if (record.commands !== undefined) {
+      delete record.commands;
+      shouldUpdate = true;
+    }
+
     // Defaults to true
     if (record.enabled === undefined) {
       record.enabled = true;
-    }
-
-    // Alias command
-    if (!record.commands) {
-      record.commands = record.command ?? '';
-      delete record.command;
     }
   }
 
@@ -76,15 +90,15 @@ const api = {
           totalRecords: ensureFiniteNumber(totalRecords)
         },
         records: pagedRecords.map(record => {
-          const { id, mtime, enabled, title, commands } = { ...record };
-          return { id, mtime, enabled, title, commands };
+          const { id, mtime, enabled, name, data } = { ...record };
+          return { id, mtime, enabled, name, data };
         })
       });
     } else {
       res.send({
         records: records.map(record => {
-          const { id, mtime, enabled, title, commands } = { ...record };
-          return { id, mtime, enabled, title, commands };
+          const { id, mtime, enabled, name, data } = { ...record };
+          return { id, mtime, enabled, name, data };
         })
       });
     }
@@ -92,20 +106,20 @@ const api = {
   create: (req, res) => {
     const {
       enabled = true,
-      title = '',
-      commands = ''
+      name = '',
+      data = '',
     } = { ...req.body };
 
-    if (!title) {
+    if (!name) {
       res.status(ERR_BAD_REQUEST).send({
-        msg: 'The "title" parameter must not be empty'
+        msg: 'The "name" parameter must not be empty'
       });
       return;
     }
 
-    if (!commands) {
+    if (!data) {
       res.status(ERR_BAD_REQUEST).send({
-        msg: 'The "commands" parameter must not be empty'
+        msg: 'The "data" parameter must not be empty'
       });
       return;
     }
@@ -116,8 +130,8 @@ const api = {
         id: uuidv4(),
         mtime: new Date().getTime(),
         enabled: !!enabled,
-        title: title,
-        commands: commands
+        name,
+        data,
       };
 
       records.push(record);
@@ -253,8 +267,8 @@ const api = {
       return;
     }
 
-    const { mtime, enabled, title, commands } = { ...record };
-    res.send({ id, mtime, enabled, title, commands });
+    const { mtime, enabled, name, data } = { ...record };
+    res.send({ id, mtime, enabled, name, data });
   },
   update: (req, res) => {
     const id = req.params.id;
@@ -270,22 +284,17 @@ const api = {
 
     const {
       enabled = record.enabled,
-      title = record.title,
-      commands = record.commands
+      name = record.name,
+      data = record.data,
     } = { ...req.body };
 
-    // Skip validation for "enabled", "title", and "commands"
+    // Skip validation for "enabled", "name", and "data"
 
     try {
       record.mtime = new Date().getTime();
       record.enabled = Boolean(enabled);
-      record.title = String(title ?? '');
-      record.commands = String(commands ?? '');
-
-      // Remove deprecated parameter
-      if (record.command !== undefined) {
-        delete record.command;
-      }
+      record.name = ensureString(name);
+      record.data = ensureString(data);
 
       userStore.set(CONFIG_KEY, records);
 
@@ -333,16 +342,13 @@ const api = {
       return;
     }
 
-    const title = record.title;
-    const commands = record.commands;
-
-    log.info(`run: title="${title}", commands="${commands}"`);
-
+    const name = record.name;
+    const data = record.data;
     const context = {
       id,
-      name: title,
+      name,
     };
-    const taskId = shellCommand.spawn(commands, context);
+    const taskId = shellCommand.spawn(data, context);
 
     res.send({ taskId: taskId });
   },

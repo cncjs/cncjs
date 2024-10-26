@@ -23,11 +23,6 @@ const routes = [
     path: '/administration',
     routes: [
       {
-        icon: CaretSquareRightIcon,
-        key: 'administration/macros',
-        path: '/administration/macros',
-      },
-      {
         icon: TerminalIcon,
         key: 'administration/commands',
         path: '/administration/commands',
@@ -38,6 +33,16 @@ const routes = [
         path: '/administration/events',
       },
       {
+        icon: CaretSquareRightIcon,
+        key: 'administration/macros',
+        path: '/administration/macros',
+      },
+      {
+        icon: ToolsConfigurationIcon,
+        key: 'administration/machine-profiles',
+        path: '/administration/machine-profiles',
+      },
+      {
         divider: true,
       },
       {
@@ -46,19 +51,14 @@ const routes = [
         path: '/administration/general-settings',
       },
       {
-        icon: ToolsConfigurationIcon,
-        key: 'administration/machine-profiles',
-        path: '/administration/machine-profiles',
+        icon: UserManagedIcon,
+        key: 'administration/user-accounts',
+        path: '/administration/user-accounts',
       },
       {
         icon: WorkspaceIcon,
         key: 'administration/workspace-settings',
         path: '/administration/workspace-settings',
-      },
-      {
-        icon: UserManagedIcon,
-        key: 'administration/user-accounts',
-        path: '/administration/user-accounts',
       },
     ],
   },

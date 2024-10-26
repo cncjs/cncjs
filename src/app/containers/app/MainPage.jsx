@@ -18,7 +18,7 @@ import x from '@app/lib/json-stringify';
 import log from '@app/lib/log';
 import * as user from '@app/lib/user';
 import About from '@app/pages/About';
-import Administration from '@app/pages/Administration';
+import * as Administration from '@app/pages/Administration';
 import Workspace from '@app/pages/Workspace';
 import Header from './Header';
 import MiniNav from './MiniNav';
@@ -82,6 +82,8 @@ const MainPage = forwardRef((props, ref) => {
     );
   }
 
+  const isWorkspace = location.pathname.startsWith('/workspace');
+
   return (
     <Box
       ref={ref}
@@ -133,7 +135,7 @@ const MainPage = forwardRef((props, ref) => {
         }}
         pt={layout.header.height}
       >
-        {(location.pathname !== '/workspace') && (
+        {!isWorkspace && (
           <Box
             sx={{
               height: `calc(100vh - ${layout.header.height}px)`,
@@ -142,13 +144,31 @@ const MainPage = forwardRef((props, ref) => {
             {location.pathname.startsWith('/about') && (
               <About />
             )}
-            {location.pathname.startsWith('/administration') && (
-              <Administration />
+            {location.pathname.startsWith('/administration/commands') && (
+              <Administration.Commands />
+            )}
+            {location.pathname.startsWith('/administration/events') && (
+              <Administration.Events />
+            )}
+            {location.pathname.startsWith('/administration/general-settings') && (
+              <Administration.GeneralSettings />
+            )}
+            {location.pathname.startsWith('/administration/machine-profiles') && (
+              <Administration.Machines />
+            )}
+            {location.pathname.startsWith('/administration/macros') && (
+              <Administration.Macros />
+            )}
+            {location.pathname.startsWith('/administration/user-accounts') && (
+              <Administration.Users />
+            )}
+            {location.pathname.startsWith('/administration/workspace-settings') && (
+              <Administration.WorkspaceSettings />
             )}
           </Box>
         )}
         <Box
-          display={(location.pathname !== '/workspace') ? 'none' : 'block'}
+          display={isWorkspace ? 'block' : 'none'}
         >
           <Workspace />
         </Box>

@@ -30,20 +30,20 @@ import {
 import i18n from '@app/lib/i18n';
 import TableRowToggleIcon from '../components/TableRowToggleIcon';
 import ConfirmBulkDeleteRecordsModal from '../modals/ConfirmBulkDeleteRecordsModal';
-import CreateCommandDrawer from './drawers/CreateCommandDrawer';
-import UpdateCommandDrawer from './drawers/UpdateCommandDrawer';
+import CreateEventDrawer from './drawers/CreateEventDrawer';
+import UpdateEventDrawer from './drawers/UpdateEventDrawer';
 import {
-  API_COMMANDS_QUERY_KEY,
-  useFetchCommandsQuery,
-  useBulkDeleteCommandsMutation,
-  useBulkEnableCommandsMutation,
-  useBulkDisableCommandsMutation,
-  useEnableCommandMutation,
-  useDisableCommandMutation,
-  useRunCommandMutation,
+  API_EVENTS_QUERY_KEY,
+  useFetchEventsQuery,
+  useBulkDeleteEventsMutation,
+  useBulkEnableEventsMutation,
+  useBulkDisableEventsMutation,
+  useEnableEventMutation,
+  useDisableEventMutation,
+  useRunEventMutation,
 } from './queries';
 
-const Commands = () => {
+const Events = () => {
   // pagination
   const rowsPerPageOptions = ensureArray(DEFAULT_ROWS_PER_PAGE_OPTIONS);
   const [page, setPage] = useState(1);
@@ -56,7 +56,7 @@ const Commands = () => {
   }, []);
 
   const queryClient = useQueryClient();
-  const fetchCommandsQuery = useFetchCommandsQuery({
+  const fetchEventsQuery = useFetchEventsQuery({
     meta: {
       query: qs.stringify({
         paging: true,
@@ -65,49 +65,49 @@ const Commands = () => {
       }),
     },
   });
-  const bulkDeleteCommandsMutation = useBulkDeleteCommandsMutation({
+  const bulkDeleteEventsMutation = useBulkDeleteEventsMutation({
     onSuccess: () => {
-      // Invalidate `useFetchCommandsQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+      // Invalidate `useFetchEventsQuery`
+      queryClient.invalidateQueries({ queryKey: API_EVENTS_QUERY_KEY });
     },
   });
-  const bulkEnableCommandsMutation = useBulkEnableCommandsMutation({
+  const bulkEnableEventsMutation = useBulkEnableEventsMutation({
     onSuccess: () => {
-      // Invalidate `useFetchCommandsQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+      // Invalidate `useFetchEventsQuery`
+      queryClient.invalidateQueries({ queryKey: API_EVENTS_QUERY_KEY });
     },
   });
-  const bulkDisableCommandsMutation = useBulkDisableCommandsMutation({
+  const bulkDisableEventsMutation = useBulkDisableEventsMutation({
     onSuccess: () => {
-      // Invalidate `useFetchCommandsQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+      // Invalidate `useFetchEventsQuery`
+      queryClient.invalidateQueries({ queryKey: API_EVENTS_QUERY_KEY });
     },
   });
-  const enableCommandMutation = useEnableCommandMutation({
+  const enableEventMutation = useEnableEventMutation({
     onSuccess: () => {
-      // Invalidate `useFetchCommandsQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+      // Invalidate `useFetchEventsQuery`
+      queryClient.invalidateQueries({ queryKey: API_EVENTS_QUERY_KEY });
     },
   });
-  const disableCommandMutation = useDisableCommandMutation({
+  const disableEventMutation = useDisableEventMutation({
     onSuccess: () => {
-      // Invalidate `useFetchCommandsQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+      // Invalidate `useFetchEventsQuery`
+      queryClient.invalidateQueries({ queryKey: API_EVENTS_QUERY_KEY });
     },
   });
-  const runCommandMutation = useRunCommandMutation();
+  const runEventMutation = useRunEventMutation();
   const portal = usePortalManager();
   const [colorMode] = useColorMode();
   const selectedRowCount = Object.keys(rowSelection).length;
-  const isRowSelectionDisabled = fetchCommandsQuery.isFetching;
-  const isLoadingData = fetchCommandsQuery.isFetching;
-  const data = ensureArray(fetchCommandsQuery.data?.records);
-  const totalCount = fetchCommandsQuery.data?.pagination?.totalRecords;
+  const isRowSelectionDisabled = fetchEventsQuery.isFetching;
+  const isLoadingData = fetchEventsQuery.isFetching;
+  const data = ensureArray(fetchEventsQuery.data?.records);
+  const totalCount = fetchEventsQuery.data?.pagination?.totalRecords;
   const totalPages = Math.ceil(totalCount / rowsPerPage);
 
   const handleClickAdd = useCallback(() => {
     portal((close) => (
-      <CreateCommandDrawer
+      <CreateEventDrawer
         onClose={close}
       />
     ));
@@ -123,7 +123,7 @@ const Commands = () => {
           const data = {
             ids: rowIds,
           };
-          bulkDeleteCommandsMutation.mutate({ data });
+          bulkDeleteEventsMutation.mutate({ data });
 
           // Close the modal
           close();
@@ -133,37 +133,37 @@ const Commands = () => {
         }}
       />
     ));
-  }, [portal, rowSelection, bulkDeleteCommandsMutation, clearRowSelection]);
+  }, [portal, rowSelection, bulkDeleteEventsMutation, clearRowSelection]);
 
   const handleClickBulkEnable = useCallback(() => {
     const rowIds = Object.keys(rowSelection);
     const data = {
       ids: rowIds,
     };
-    bulkEnableCommandsMutation.mutate({ data });
+    bulkEnableEventsMutation.mutate({ data });
 
     // Clear row selection
     clearRowSelection();
-  }, [rowSelection, bulkEnableCommandsMutation, clearRowSelection]);
+  }, [rowSelection, bulkEnableEventsMutation, clearRowSelection]);
 
   const handleClickBulkDisable = useCallback(() => {
     const rowIds = Object.keys(rowSelection);
     const data = {
       ids: rowIds,
     };
-    bulkDisableCommandsMutation.mutate({ data });
+    bulkDisableEventsMutation.mutate({ data });
 
     // Clear row selection
     clearRowSelection();
-  }, [rowSelection, bulkDisableCommandsMutation, clearRowSelection]);
+  }, [rowSelection, bulkDisableEventsMutation, clearRowSelection]);
 
   const handleClickRefresh = useCallback(() => {
-    fetchCommandsQuery.refetch();
-  }, [fetchCommandsQuery]);
+    fetchEventsQuery.refetch();
+  }, [fetchEventsQuery]);
 
-  const handleClickViewCommandDetailsById = useCallback((id) => () => {
+  const handleClickViewEventDetailsById = useCallback((id) => () => {
     portal((close) => (
-      <UpdateCommandDrawer
+      <UpdateEventDrawer
         id={id}
         onClose={close}
       />
@@ -172,21 +172,21 @@ const Commands = () => {
 
   const handleToggleStatusById = useCallback((id) => (event) => {
     const checked = event.currentTarget.checked;
-    const mutation = checked ? enableCommandMutation : disableCommandMutation;
+    const mutation = checked ? enableEventMutation : disableEventMutation;
     mutation.mutate({
       meta: {
         id,
       },
     });
-  }, [enableCommandMutation, disableCommandMutation]);
+  }, [enableEventMutation, disableEventMutation]);
 
-  const handleClickRunCommandById = useCallback((id) => () => {
-    runCommandMutation.mutate({
+  const handleClickRunEventById = useCallback((id) => () => {
+    runEventMutation.mutate({
       meta: {
         id,
       },
     });
-  }, [runCommandMutation]);
+  }, [runEventMutation]);
 
   const columns = useMemo(() => ([
     {
@@ -247,16 +247,16 @@ const Commands = () => {
       size: 24,
     },
     {
-      header: i18n._('Command Name'),
+      header: i18n._('Event Name'),
       cell: ({ row }) => (
-        <OverflowTooltip label={row.original.name}>
+        <OverflowTooltip label={row.original.title}>
           {({ ref, style }) => (
             <LinkButton
-              onClick={handleClickViewCommandDetailsById(row.original.id)}
+              onClick={handleClickViewEventDetailsById(row.original.id)}
               width="100%"
             >
               <Text ref={ref} {...style}>
-                {row.original.name}
+                {row.original.title}
               </Text>
             </LinkButton>
           )}
@@ -308,7 +308,7 @@ const Commands = () => {
     },
   ]), [
     isRowSelectionDisabled,
-    handleClickViewCommandDetailsById,
+    handleClickViewEventDetailsById,
     handleToggleStatusById,
   ]);
 
@@ -321,7 +321,7 @@ const Commands = () => {
       dark: 'gray:60',
       light: 'gray:30',
     }[colorMode];
-    const data = row.original.data;
+    const data = row.original.events;
 
     return (
       <Flex
@@ -348,12 +348,12 @@ const Commands = () => {
               <Button
                 disabled={!row.original.enabled}
                 variant="secondary"
-                onClick={handleClickRunCommandById(row.original.id)}
+                onClick={handleClickRunEventById(row.original.id)}
                 sx={{
                   columnGap: '2x',
                 }}
               >
-                {i18n._('Run Command')}
+                {i18n._('Run Event')}
               </Button>
             </Box>
             <CodePreview
@@ -372,7 +372,7 @@ const Commands = () => {
     );
   }, [
     colorMode,
-    handleClickRunCommandById,
+    handleClickRunEventById,
   ]);
 
   return (
@@ -446,7 +446,7 @@ const Commands = () => {
               >
                 <Icon
                   as={RefreshIcon}
-                  spin={fetchCommandsQuery.isFetching}
+                  spin={fetchEventsQuery.isFetching}
                 />
               </IconButton>
             </Tooltip>
@@ -497,4 +497,4 @@ const Commands = () => {
   );
 };
 
-export default Commands;
+export default Events;

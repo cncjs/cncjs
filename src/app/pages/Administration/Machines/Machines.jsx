@@ -7,7 +7,6 @@ import {
   Icon,
   LinkButton,
   OverflowTooltip,
-  Switch,
   Text,
   Tooltip,
   useColorMode,
@@ -30,20 +29,15 @@ import {
 import i18n from '@app/lib/i18n';
 import TableRowToggleIcon from '../components/TableRowToggleIcon';
 import ConfirmBulkDeleteRecordsModal from '../modals/ConfirmBulkDeleteRecordsModal';
-import CreateCommandDrawer from './drawers/CreateCommandDrawer';
-import UpdateCommandDrawer from './drawers/UpdateCommandDrawer';
+import CreateMachineDrawer from './drawers/CreateMachineDrawer';
+import UpdateMachineDrawer from './drawers/UpdateMachineDrawer';
 import {
-  API_COMMANDS_QUERY_KEY,
-  useFetchCommandsQuery,
-  useBulkDeleteCommandsMutation,
-  useBulkEnableCommandsMutation,
-  useBulkDisableCommandsMutation,
-  useEnableCommandMutation,
-  useDisableCommandMutation,
-  useRunCommandMutation,
+  API_MACHINES_QUERY_KEY,
+  useFetchMachinesQuery,
+  useBulkDeleteMachinesMutation,
 } from './queries';
 
-const Commands = () => {
+const Machines = () => {
   // pagination
   const rowsPerPageOptions = ensureArray(DEFAULT_ROWS_PER_PAGE_OPTIONS);
   const [page, setPage] = useState(1);
@@ -56,7 +50,7 @@ const Commands = () => {
   }, []);
 
   const queryClient = useQueryClient();
-  const fetchCommandsQuery = useFetchCommandsQuery({
+  const fetchMachinesQuery = useFetchMachinesQuery({
     meta: {
       query: qs.stringify({
         paging: true,
@@ -65,49 +59,24 @@ const Commands = () => {
       }),
     },
   });
-  const bulkDeleteCommandsMutation = useBulkDeleteCommandsMutation({
+  const bulkDeleteMachinesMutation = useBulkDeleteMachinesMutation({
     onSuccess: () => {
-      // Invalidate `useFetchCommandsQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+      // Invalidate `useFetchMachinesQuery`
+      queryClient.invalidateQueries({ queryKey: API_MACHINES_QUERY_KEY });
     },
   });
-  const bulkEnableCommandsMutation = useBulkEnableCommandsMutation({
-    onSuccess: () => {
-      // Invalidate `useFetchCommandsQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
-    },
-  });
-  const bulkDisableCommandsMutation = useBulkDisableCommandsMutation({
-    onSuccess: () => {
-      // Invalidate `useFetchCommandsQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
-    },
-  });
-  const enableCommandMutation = useEnableCommandMutation({
-    onSuccess: () => {
-      // Invalidate `useFetchCommandsQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
-    },
-  });
-  const disableCommandMutation = useDisableCommandMutation({
-    onSuccess: () => {
-      // Invalidate `useFetchCommandsQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
-    },
-  });
-  const runCommandMutation = useRunCommandMutation();
   const portal = usePortalManager();
   const [colorMode] = useColorMode();
   const selectedRowCount = Object.keys(rowSelection).length;
-  const isRowSelectionDisabled = fetchCommandsQuery.isFetching;
-  const isLoadingData = fetchCommandsQuery.isFetching;
-  const data = ensureArray(fetchCommandsQuery.data?.records);
-  const totalCount = fetchCommandsQuery.data?.pagination?.totalRecords;
+  const isRowSelectionDisabled = fetchMachinesQuery.isFetching;
+  const isLoadingData = fetchMachinesQuery.isFetching;
+  const data = ensureArray(fetchMachinesQuery.data?.records);
+  const totalCount = fetchMachinesQuery.data?.pagination?.totalRecords;
   const totalPages = Math.ceil(totalCount / rowsPerPage);
 
   const handleClickAdd = useCallback(() => {
     portal((close) => (
-      <CreateCommandDrawer
+      <CreateMachineDrawer
         onClose={close}
       />
     ));
@@ -123,7 +92,7 @@ const Commands = () => {
           const data = {
             ids: rowIds,
           };
-          bulkDeleteCommandsMutation.mutate({ data });
+          bulkDeleteMachinesMutation.mutate({ data });
 
           // Close the modal
           close();
@@ -133,60 +102,20 @@ const Commands = () => {
         }}
       />
     ));
-  }, [portal, rowSelection, bulkDeleteCommandsMutation, clearRowSelection]);
-
-  const handleClickBulkEnable = useCallback(() => {
-    const rowIds = Object.keys(rowSelection);
-    const data = {
-      ids: rowIds,
-    };
-    bulkEnableCommandsMutation.mutate({ data });
-
-    // Clear row selection
-    clearRowSelection();
-  }, [rowSelection, bulkEnableCommandsMutation, clearRowSelection]);
-
-  const handleClickBulkDisable = useCallback(() => {
-    const rowIds = Object.keys(rowSelection);
-    const data = {
-      ids: rowIds,
-    };
-    bulkDisableCommandsMutation.mutate({ data });
-
-    // Clear row selection
-    clearRowSelection();
-  }, [rowSelection, bulkDisableCommandsMutation, clearRowSelection]);
+  }, [portal, rowSelection, bulkDeleteMachinesMutation, clearRowSelection]);
 
   const handleClickRefresh = useCallback(() => {
-    fetchCommandsQuery.refetch();
-  }, [fetchCommandsQuery]);
+    fetchMachinesQuery.refetch();
+  }, [fetchMachinesQuery]);
 
-  const handleClickViewCommandDetailsById = useCallback((id) => () => {
+  const handleClickViewMachineDetailsById = useCallback((id) => () => {
     portal((close) => (
-      <UpdateCommandDrawer
+      <UpdateMachineDrawer
         id={id}
         onClose={close}
       />
     ));
   }, [portal]);
-
-  const handleToggleStatusById = useCallback((id) => (event) => {
-    const checked = event.currentTarget.checked;
-    const mutation = checked ? enableCommandMutation : disableCommandMutation;
-    mutation.mutate({
-      meta: {
-        id,
-      },
-    });
-  }, [enableCommandMutation, disableCommandMutation]);
-
-  const handleClickRunCommandById = useCallback((id) => () => {
-    runCommandMutation.mutate({
-      meta: {
-        id,
-      },
-    });
-  }, [runCommandMutation]);
 
   const columns = useMemo(() => ([
     {
@@ -247,12 +176,12 @@ const Commands = () => {
       size: 24,
     },
     {
-      header: i18n._('Command Name'),
+      header: i18n._('Machine Name'),
       cell: ({ row }) => (
         <OverflowTooltip label={row.original.name}>
           {({ ref, style }) => (
             <LinkButton
-              onClick={handleClickViewCommandDetailsById(row.original.id)}
+              onClick={handleClickViewMachineDetailsById(row.original.id)}
               width="100%"
             >
               <Text ref={ref} {...style}>
@@ -278,38 +207,9 @@ const Commands = () => {
       },
       size: 200,
     },
-    {
-      id: 'status',
-      header: i18n._('Status'),
-      cell: ({ row }) => {
-        const textLabel = row.original.enabled === true ? i18n._('ON') : i18n._('OFF');
-        return (
-          <Flex
-            alignItems="center"
-            columnGap="2x"
-            width="100%"
-          >
-            <Switch
-              checked={row.original.enabled}
-              onChange={handleToggleStatusById(row.original.id)}
-            />
-            <OverflowTooltip label={textLabel}>
-              {textLabel}
-            </OverflowTooltip>
-          </Flex>
-        );
-      },
-      cellStyle: {
-        display: 'flex',
-        alignItems: 'center',
-        py: 0,
-      },
-      minSize: 100,
-    },
   ]), [
     isRowSelectionDisabled,
-    handleClickViewCommandDetailsById,
-    handleToggleStatusById,
+    handleClickViewMachineDetailsById,
   ]);
 
   const renderExpandedRow = useCallback(({ row }) => {
@@ -321,7 +221,7 @@ const Commands = () => {
       dark: 'gray:60',
       light: 'gray:30',
     }[colorMode];
-    const data = row.original.data;
+    const data = row.original.content;
 
     return (
       <Flex
@@ -344,18 +244,6 @@ const Commands = () => {
           p="4x"
         >
           <Box width="100%">
-            <Box mb="4x">
-              <Button
-                disabled={!row.original.enabled}
-                variant="secondary"
-                onClick={handleClickRunCommandById(row.original.id)}
-                sx={{
-                  columnGap: '2x',
-                }}
-              >
-                {i18n._('Run Command')}
-              </Button>
-            </Box>
             <CodePreview
               data={data}
               language="shell"
@@ -372,7 +260,6 @@ const Commands = () => {
     );
   }, [
     colorMode,
-    handleClickRunCommandById,
   ]);
 
   return (
@@ -415,26 +302,6 @@ const Commands = () => {
             >
               {i18n._('Delete')}
             </Button>
-            <Button
-              disabled={selectedRowCount === 0}
-              variant="secondary"
-              onClick={handleClickBulkEnable}
-              sx={{
-                minWidth: 80,
-              }}
-            >
-              {i18n._('Enable')}
-            </Button>
-            <Button
-              disabled={selectedRowCount === 0}
-              variant="secondary"
-              onClick={handleClickBulkDisable}
-              sx={{
-                minWidth: 80,
-              }}
-            >
-              {i18n._('Disable')}
-            </Button>
           </Flex>
           <Flex
             alignItems="center"
@@ -446,7 +313,7 @@ const Commands = () => {
               >
                 <Icon
                   as={RefreshIcon}
-                  spin={fetchCommandsQuery.isFetching}
+                  spin={fetchMachinesQuery.isFetching}
                 />
               </IconButton>
             </Tooltip>
@@ -497,4 +364,4 @@ const Commands = () => {
   );
 };
 
-export default Commands;
+export default Machines;

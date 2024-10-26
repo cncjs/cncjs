@@ -30,24 +30,24 @@ import FieldTextarea from '@app/pages/Administration/components/FieldTextarea';
 import FieldTextLabel from '@app/pages/Administration/components/FieldTextLabel';
 import {
   API_COMMANDS_QUERY_KEY,
-  useCreateMacroMutation,
+  useCreateCommandMutation,
 } from '../queries';
 
 const required = value => (value ? undefined : i18n._('This field is required.'));
 
-const CreateMacroDrawer = ({
+const CreateCommandDrawer = ({
   onClose,
   ...rest
 }) => {
   const { toasts, notify: notifyToast } = useInlineToasts();
   const queryClient = useQueryClient();
-  const createMacroMutation = useCreateMacroMutation({
+  const createCommandMutation = useCreateCommandMutation({
     onSuccess: () => {
       if (typeof onClose === 'function') {
         onClose();
       }
 
-      // Invalidate `useFetchMacrosQuery`
+      // Invalidate `useFetchCommandsQuery`
       queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
     },
     onError: () => {
@@ -61,14 +61,15 @@ const CreateMacroDrawer = ({
     },
   });
   const initialValues = useConst(() => ({
-    name: '',
-    content: '',
+    title: '',
+    commands: '',
+    enabled: true,
   }));
   const handleFormSubmit = useCallback((values) => {
-    createMacroMutation.mutate({
+    createCommandMutation.mutate({
       data: values,
     });
-  }, [createMacroMutation]);
+  }, [createCommandMutation]);
 
   return (
     <Drawer
@@ -92,20 +93,49 @@ const CreateMacroDrawer = ({
             </InlineToastContainer>
             <DrawerHeader>
               <Text>
-                {i18n._('New Macro')}
+                {i18n._('New Command')}
               </Text>
             </DrawerHeader>
             <DrawerBody>
+              <FormGroup>
+                <Flex
+                  alignItems="center"
+                  columnGap="3x"
+                >
+                  <FieldTextLabel>
+                    {i18n._('Status:')}
+                  </FieldTextLabel>
+                  <Field name="enabled">
+                    {({ input, meta }) => {
+                      return (
+                        <Flex
+                          alignItems="center"
+                          columnGap="2x"
+                        >
+                          <Switch
+                            {...input}
+                            checked={input.value}
+                          />
+                          <TextLabel>
+                            {input.value === true ? i18n._('ON') : i18n._('OFF')}
+                          </TextLabel>
+                        </Flex>
+                      );
+                    }}
+                  </Field>
+                </Flex>
+              </FormGroup>
               <FormGroup>
                 <Box mb="1x">
                   <FieldTextLabel
                     required
                   >
-                    {i18n._('Macro name:')}
+                    {i18n._('Command name:')}
                   </FieldTextLabel>
                 </Box>
                 <FieldInput
-                  name="name"
+                  name="title"
+                  placeholder={i18n._('e.g., Activate Air Purifier')}
                   validate={required}
                 />
               </FormGroup>
@@ -113,14 +143,15 @@ const CreateMacroDrawer = ({
                 <Box mb="1x">
                   <FieldTextLabel
                     required
-                    infoTipLabel={i18n._('Input the G-code commands to execute with this macro.')}
+                    infoTipLabel={i18n._('Enter the shell commands to be executed when this command runs. Each line will be executed sequentially.')}
                   >
-                    {i18n._('G-code commands:')}
+                    {i18n._('Shell commands:')}
                   </FieldTextLabel>
                 </Box>
                 <FieldTextarea
-                  name="content"
+                  name="commands"
                   rows="10"
+                  placeholder="/home/cncjs/bin/activate-air-purifier"
                   validate={required}
                 />
               </FormGroup>
@@ -133,7 +164,7 @@ const CreateMacroDrawer = ({
               >
                 {({ invalid }) => {
                   const canSubmit = (() => {
-                    if (createMacroMutation.isLoading) {
+                    if (createCommandMutation.isLoading) {
                       return false;
                     }
                     if (invalid) {
@@ -181,4 +212,4 @@ const CreateMacroDrawer = ({
   );
 };
 
-export default CreateMacroDrawer;
+export default CreateCommandDrawer;

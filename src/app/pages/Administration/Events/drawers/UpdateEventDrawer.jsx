@@ -71,8 +71,8 @@ const UpdateCommandDrawer = ({
 
   const initialValues = getMemoizedState({
     enabled: readCommandQuery.data?.enabled,
-    name: readCommandQuery.data?.name,
-    data: readCommandQuery.data?.data,
+    title: readCommandQuery.data?.title,
+    commands: readCommandQuery.data?.commands,
   });
 
   const handleFormSubmit = useCallback((values) => {
@@ -152,7 +152,7 @@ const UpdateCommandDrawer = ({
                       </FieldTextLabel>
                     </Box>
                     <FieldInput
-                      name="name"
+                      name="title"
                       placeholder={i18n._('e.g., Activate Air Purifier')}
                       validate={required}
                     />
@@ -161,13 +161,13 @@ const UpdateCommandDrawer = ({
                     <Box mb="1x">
                       <FieldTextLabel
                         required
-                        infoTipLabel={i18n._('Input the shell commands to execute with this command.')}
+                        infoTipLabel={i18n._('Enter the shell commands to be executed when this command runs. Each line will be executed sequentially.')}
                       >
                         {i18n._('Shell commands:')}
                       </FieldTextLabel>
                     </Box>
                     <FieldTextarea
-                      name="data"
+                      name="commands"
                       rows="10"
                       placeholder="/home/cncjs/bin/activate-air-purifier"
                       validate={required}

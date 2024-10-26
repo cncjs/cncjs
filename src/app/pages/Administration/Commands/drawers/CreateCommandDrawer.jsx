@@ -61,9 +61,9 @@ const CreateCommandDrawer = ({
     },
   });
   const initialValues = useConst(() => ({
-    title: '',
-    commands: '',
     enabled: true,
+    name: '',
+    data: '',
   }));
   const handleFormSubmit = useCallback((values) => {
     createCommandMutation.mutate({
@@ -134,7 +134,7 @@ const CreateCommandDrawer = ({
                   </FieldTextLabel>
                 </Box>
                 <FieldInput
-                  name="title"
+                  name="name"
                   placeholder={i18n._('e.g., Activate Air Purifier')}
                   validate={required}
                 />
@@ -143,13 +143,13 @@ const CreateCommandDrawer = ({
                 <Box mb="1x">
                   <FieldTextLabel
                     required
-                    infoTipLabel={i18n._('Enter the shell commands to be executed when this command runs. Each line will be executed sequentially.')}
+                    infoTipLabel={i18n._('Input the shell commands to execute with this command.')}
                   >
                     {i18n._('Shell commands:')}
                   </FieldTextLabel>
                 </Box>
                 <FieldTextarea
-                  name="commands"
+                  name="data"
                   rows="10"
                   placeholder="/home/cncjs/bin/activate-air-purifier"
                   validate={required}

@@ -70,9 +70,8 @@ const UpdateMacroDrawer = ({
   });
 
   const initialValues = getMemoizedState({
-    enabled: readMacroQuery.data?.enabled,
-    title: readMacroQuery.data?.title,
-    commands: readMacroQuery.data?.commands,
+    name: readMacroQuery.data?.name,
+    content: readMacroQuery.data?.content,
   });
 
   const handleFormSubmit = useCallback((values) => {
@@ -116,34 +115,6 @@ const UpdateMacroDrawer = ({
               {!(readMacroQuery.isFetching) && (
                 <>
                   <FormGroup>
-                    <Flex
-                      alignItems="center"
-                      columnGap="3x"
-                    >
-                      <FieldTextLabel>
-                        {i18n._('Status:')}
-                      </FieldTextLabel>
-                      <Field name="enabled">
-                        {({ input, meta }) => {
-                          return (
-                            <Flex
-                              alignItems="center"
-                              columnGap="2x"
-                            >
-                              <Switch
-                                {...input}
-                                checked={input.value}
-                              />
-                              <TextLabel>
-                                {input.value === true ? i18n._('ON') : i18n._('OFF')}
-                              </TextLabel>
-                            </Flex>
-                          );
-                        }}
-                      </Field>
-                    </Flex>
-                  </FormGroup>
-                  <FormGroup>
                     <Box mb="1x">
                       <FieldTextLabel
                         required
@@ -152,8 +123,7 @@ const UpdateMacroDrawer = ({
                       </FieldTextLabel>
                     </Box>
                     <FieldInput
-                      name="title"
-                      placeholder={i18n._('e.g., Activate Air Purifier')}
+                      name="name"
                       validate={required}
                     />
                   </FormGroup>
@@ -161,15 +131,14 @@ const UpdateMacroDrawer = ({
                     <Box mb="1x">
                       <FieldTextLabel
                         required
-                        infoTipLabel={i18n._('Enter the shell commands to be executed when this command runs. Each line will be executed sequentially.')}
+                        infoTipLabel={i18n._('Input the G-code commands to execute with this macro.')}
                       >
-                        {i18n._('Shell commands:')}
+                        {i18n._('G-code commands:')}
                       </FieldTextLabel>
                     </Box>
                     <FieldTextarea
-                      name="commands"
+                      name="content"
                       rows="10"
-                      placeholder="/home/cncjs/bin/activate-air-purifier"
                       validate={required}
                     />
                   </FormGroup>
