@@ -16,12 +16,13 @@ import {
 import withRouter from '@app/components/withRouter'; // withRouter is deprecated
 import i18n from '@app/lib/i18n';
 import config from '@app/store/config';
-import GeneralSettings from './GeneralSettings';
-import WorkspaceSettings from './WorkspaceSettings';
-import MachineProfiles from './MachineProfiles';
-import UserAccounts from './UserAccounts';
 import Commands from './Commands';
+import GeneralSettings from './GeneralSettings';
+import MachineProfiles from './MachineProfiles';
+import Macros from './Macros';
 import Events from './Events';
+import UserAccounts from './UserAccounts';
+import WorkspaceSettings from './WorkspaceSettings';
 
 const mapSectionPathToId = (path = '') => {
   return _camelCase(path.split('/')[0] || '');
@@ -34,28 +35,10 @@ class Administration extends Component {
 
   sections = [
     {
-      id: 'generalSettings',
-      path: 'general-settings',
-      title: i18n._('General Settings'),
-      component: (props) => <GeneralSettings {...props} />
-    },
-    {
-      id: 'workspaceSettings',
-      path: 'workspace-settings',
-      title: i18n._('Workspace Settings'),
-      component: (props) => <WorkspaceSettings {...props} />
-    },
-    {
-      id: 'machineProfiles',
-      path: 'machine-profiles',
-      title: i18n._('Machine Profiles'),
-      component: (props) => <MachineProfiles {...props} />
-    },
-    {
-      id: 'userAccounts',
-      path: 'user-accounts',
-      title: i18n._('User Accounts'),
-      component: (props) => <UserAccounts {...props} />
+      id: 'macros',
+      path: 'macros',
+      title: i18n._('Macros'),
+      component: (props) => <Macros {...props} />
     },
     {
       id: 'commands',
@@ -68,6 +51,30 @@ class Administration extends Component {
       path: 'events',
       title: i18n._('Events'),
       component: (props) => <Events {...props} />
+    },
+    {
+      id: 'general-settings',
+      path: 'general-settings',
+      title: i18n._('General Settings'),
+      component: (props) => <GeneralSettings {...props} />
+    },
+    {
+      id: 'machine-profiles',
+      path: 'machine-profiles',
+      title: i18n._('Machine Profiles'),
+      component: (props) => <MachineProfiles {...props} />
+    },
+    {
+      id: 'workspace-settings',
+      path: 'workspace-settings',
+      title: i18n._('Workspace Settings'),
+      component: (props) => <WorkspaceSettings {...props} />
+    },
+    {
+      id: 'userAccounts',
+      path: 'user-accounts',
+      title: i18n._('User Accounts'),
+      component: (props) => <UserAccounts {...props} />
     },
   ];
 

@@ -10,15 +10,18 @@ import {
   Text,
   useColorStyle,
 } from '@tonic-ui/react';
-import React from 'react';
+import React, { forwardRef } from 'react';
 import i18n from '@app/lib/i18n';
 
-const ConfirmBulkDeleteRecordsModal = ({
-  data,
-  onClose,
-  onConfirm,
-  ...rest
-}) => {
+const ConfirmBulkDeleteRecordsModal = forwardRef((
+  {
+    data,
+    onClose,
+    onConfirm,
+    ...rest
+  },
+  ref,
+) => {
   const [colorStyle] = useColorStyle();
 
   return (
@@ -66,6 +69,6 @@ const ConfirmBulkDeleteRecordsModal = ({
       </ModalContent>
     </Modal>
   );
-};
+});
 
 export default ConfirmBulkDeleteRecordsModal;
