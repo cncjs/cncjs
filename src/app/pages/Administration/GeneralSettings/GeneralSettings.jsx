@@ -12,7 +12,7 @@ import {
 } from '@tonic-ui/react';
 import { WarningCircleIcon } from '@tonic-ui/react-icons';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Field, Form, FormSpy } from 'react-final-form';
+import { Field, Form } from 'react-final-form';
 import useToast from '@app/hooks/useToast';
 import i18n from '@app/lib/i18n';
 import Overlay from '@app/pages/Administration/components/Overlay';
@@ -61,13 +61,13 @@ const GeneralSettings = () => {
     });
   }, [mutation, toast]);
 
-  const isFormDisabled = query.isFetching || query.error;
-
   useEffect(() => {
     if (query.isSuccess) {
       setFormState(query.data);
     }
   }, [query.isSuccess, query.data]);
+
+  const isFormDisabled = query.isFetching || query.error;
 
   return (
     <Flex
@@ -79,7 +79,10 @@ const GeneralSettings = () => {
       <Form
         initialValues={formState}
         onSubmit={handleFormSubmit}
-        subscription={{}}
+        validate={(values) => {
+          const errors = {};
+          return errors;
+        }}
         render={({ form }) => (
           <>
             {query.isFetching && (
@@ -151,48 +154,27 @@ const GeneralSettings = () => {
                 </Field>
               </Box>
             </Box>
-            <FormSpy
-              subscription={{
-                invalid: true,
-              }}
+            <Flex
+              flex="none"
+              backgroundColor={colorStyle?.background?.secondary}
+              alignItems="center"
+              justifyContent="flex-start"
+              px="6x"
+              py="4x"
             >
-              {({ invalid }) => {
-                const canSave = (() => {
-                  if (isFormDisabled) {
-                    return false;
-                  }
-                  if (invalid) {
-                    return false;
-                  }
-                  return true;
-                })();
-                const handleClickSave = () => {
+              <Button
+                variant="primary"
+                disabled={isFormDisabled}
+                onClick={() => {
                   form.submit();
-                };
-
-                return (
-                  <Flex
-                    flex="none"
-                    backgroundColor={colorStyle?.background?.secondary}
-                    alignItems="center"
-                    justifyContent="flex-start"
-                    px="6x"
-                    py="4x"
-                  >
-                    <Button
-                      variant="primary"
-                      disabled={!canSave}
-                      onClick={handleClickSave}
-                      sx={{
-                        minWidth: 80,
-                      }}
-                    >
-                      {i18n._('Save')}
-                    </Button>
-                  </Flex>
-                );
-              }}
-            </FormSpy>
+                }}
+                sx={{
+                  minWidth: 80,
+                }}
+              >
+                {i18n._('Save')}
+              </Button>
+            </Flex>
           </>
         )}
       />

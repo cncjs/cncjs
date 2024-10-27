@@ -17,7 +17,7 @@ import {
   useConst,
 } from '@tonic-ui/react-hooks';
 import React, { useCallback } from 'react';
-import { Field, Form, FormSpy } from 'react-final-form';
+import { Field, Form } from 'react-final-form';
 import FormGroup from '@app/components/FormGroup';
 import {
   InlineToastContainer,
@@ -28,27 +28,26 @@ import i18n from '@app/lib/i18n';
 import FieldInput from '@app/pages/Administration/components/FieldInput';
 import FieldTextarea from '@app/pages/Administration/components/FieldTextarea';
 import FieldTextLabel from '@app/pages/Administration/components/FieldTextLabel';
+import * as validations from '@app/pages/Administration/validations';
 import {
-  API_COMMANDS_QUERY_KEY,
-  useCreateCommandMutation,
+  API_EVENTS_QUERY_KEY,
+  useCreateEventMutation,
 } from '../queries';
 
-const required = value => (value ? undefined : i18n._('This field is required.'));
-
-const CreateCommandDrawer = ({
+const CreateEventDrawer = ({
   onClose,
   ...rest
 }) => {
   const { toasts, notify: notifyToast } = useInlineToasts();
   const queryClient = useQueryClient();
-  const createCommandMutation = useCreateCommandMutation({
+  const createEventMutation = useCreateEventMutation({
     onSuccess: () => {
       if (typeof onClose === 'function') {
         onClose();
       }
 
-      // Invalidate `useFetchCommandsQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+      // Invalidate `useFetchEventsQuery`
+      queryClient.invalidateQueries({ queryKey: API_EVENTS_QUERY_KEY });
     },
     onError: () => {
       notifyToast({
@@ -66,10 +65,11 @@ const CreateCommandDrawer = ({
     enabled: true,
   }));
   const handleFormSubmit = useCallback((values) => {
-    createCommandMutation.mutate({
+    createEventMutation.mutate({
       data: values,
     });
-  }, [createCommandMutation]);
+  }, [createEventMutation]);
+  const isFormDisabled = createEventMutation.isLoading;
 
   return (
     <Drawer
@@ -85,7 +85,12 @@ const CreateCommandDrawer = ({
       <Form
         initialValues={initialValues}
         onSubmit={handleFormSubmit}
-        subscription={{}}
+        validate={(values) => {
+          const errors = {};
+          errors.name = validations.required(values.name);
+          errors.data = validations.required(values.data);
+          return errors;
+        }}
         render={({ form }) => (
           <DrawerContent>
             <InlineToastContainer>
@@ -93,7 +98,7 @@ const CreateCommandDrawer = ({
             </InlineToastContainer>
             <DrawerHeader>
               <Text>
-                {i18n._('New Command')}
+                {i18n._('New Event')}
               </Text>
             </DrawerHeader>
             <DrawerBody>
@@ -130,13 +135,12 @@ const CreateCommandDrawer = ({
                   <FieldTextLabel
                     required
                   >
-                    {i18n._('Command name:')}
+                    {i18n._('Event name:')}
                   </FieldTextLabel>
                 </Box>
                 <FieldInput
                   name="title"
                   placeholder={i18n._('e.g., Activate Air Purifier')}
-                  validate={required}
                 />
               </FormGroup>
               <FormGroup>
@@ -152,58 +156,35 @@ const CreateCommandDrawer = ({
                   name="commands"
                   rows="10"
                   placeholder="/home/cncjs/bin/activate-air-purifier"
-                  validate={required}
                 />
               </FormGroup>
             </DrawerBody>
             <DrawerFooter>
-              <FormSpy
-                subscription={{
-                  invalid: true,
-                }}
+              <Flex
+                alignItems="center"
+                columnGap="2x"
               >
-                {({ invalid }) => {
-                  const canSubmit = (() => {
-                    if (createCommandMutation.isLoading) {
-                      return false;
-                    }
-                    if (invalid) {
-                      return false;
-                    }
-                    return true;
-                  })();
-                  const canClickAdd = canSubmit;
-                  const handleClickAdd = () => {
+                <Button
+                  onClick={onClose}
+                  sx={{
+                    minWidth: 80,
+                  }}
+                >
+                  {i18n._('Cancel')}
+                </Button>
+                <Button
+                  variant="primary"
+                  disabled={isFormDisabled}
+                  onClick={() => {
                     form.submit();
-                  };
-
-                  return (
-                    <Flex
-                      alignItems="center"
-                      columnGap="2x"
-                    >
-                      <Button
-                        onClick={onClose}
-                        sx={{
-                          minWidth: 80,
-                        }}
-                      >
-                        {i18n._('Cancel')}
-                      </Button>
-                      <Button
-                        variant="primary"
-                        disabled={!canClickAdd}
-                        onClick={handleClickAdd}
-                        sx={{
-                          minWidth: 80,
-                        }}
-                      >
-                        {i18n._('Add')}
-                      </Button>
-                    </Flex>
-                  );
-                }}
-              </FormSpy>
+                  }}
+                  sx={{
+                    minWidth: 80,
+                  }}
+                >
+                  {i18n._('Add')}
+                </Button>
+              </Flex>
             </DrawerFooter>
           </DrawerContent>
         )}
@@ -212,4 +193,4 @@ const CreateCommandDrawer = ({
   );
 };
 
-export default CreateCommandDrawer;
+export default CreateEventDrawer;

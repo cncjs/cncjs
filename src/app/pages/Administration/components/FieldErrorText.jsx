@@ -24,11 +24,11 @@ const FieldErrorText = forwardRef((
       name={name}
       subscription={{
         error: true,
-        touched: true,
+        submitFailed: true,
       }}
       render={({ meta }) => {
         const isEmpty = !meta.error;
-        const isInvalid = meta.touched && !isNullOrUndefined(meta.error);
+        const isInvalid = meta.submitFailed && !isNullOrUndefined(meta.error);
         const isValid = !isInvalid;
 
         if (isEmpty || isValid) {

@@ -7,6 +7,6 @@ export const insertAtCaret = (textarea, text = '') => {
   textarea.value = front + text + back;
   textarea.selectionStart = caretPos + text.length;
   textarea.selectionEnd = caretPos + text.length;
-  textarea.focus();
   textarea.scrollTop = scrollPos;
+  return textarea.value;
 };

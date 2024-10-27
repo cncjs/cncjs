@@ -16,7 +16,7 @@ import {
 } from '@tonic-ui/react';
 import memoize from 'micro-memoize';
 import React, { useCallback } from 'react';
-import { Field, Form, FormSpy } from 'react-final-form';
+import { Field, Form } from 'react-final-form';
 import FormGroup from '@app/components/FormGroup';
 import {
   InlineToastContainer,
@@ -27,13 +27,12 @@ import i18n from '@app/lib/i18n';
 import FieldInput from '@app/pages/Administration/components/FieldInput';
 import FieldTextarea from '@app/pages/Administration/components/FieldTextarea';
 import FieldTextLabel from '@app/pages/Administration/components/FieldTextLabel';
+import * as validations from '@app/pages/Administration/validations';
 import {
   API_COMMANDS_QUERY_KEY,
   useReadMachineQuery,
   useUpdateMachineMutation,
 } from '../queries';
-
-const required = value => (value ? undefined : i18n._('This field is required.'));
 
 const getMemoizedState = memoize(state => ({ ...state }));
 
@@ -83,6 +82,7 @@ const UpdateMachineDrawer = ({
       data: values,
     });
   }, [updateMachineMutation, id]);
+  const isFormDisabled = (readMachineQuery.isError || readMachineQuery.isFetching || updateMachineMutation.isLoading);
 
   return (
     <Drawer
@@ -98,7 +98,12 @@ const UpdateMachineDrawer = ({
       <Form
         initialValues={initialValues}
         onSubmit={handleFormSubmit}
-        subscription={{}}
+        validate={(values) => {
+          const errors = {};
+          errors.name = validations.required(values.name);
+          errors.data = validations.required(values.data);
+          return errors;
+        }}
         render={({ form }) => (
           <DrawerContent>
             <InlineToastContainer>
@@ -154,7 +159,6 @@ const UpdateMachineDrawer = ({
                     <FieldInput
                       name="title"
                       placeholder={i18n._('e.g., Activate Air Purifier')}
-                      validate={required}
                     />
                   </FormGroup>
                   <FormGroup>
@@ -170,65 +174,37 @@ const UpdateMachineDrawer = ({
                       name="commands"
                       rows="10"
                       placeholder="/home/cncjs/bin/activate-air-purifier"
-                      validate={required}
                     />
                   </FormGroup>
                 </>
               )}
             </DrawerBody>
             <DrawerFooter>
-              <FormSpy
-                subscription={{
-                  invalid: true,
-                }}
+              <Flex
+                alignItems="center"
+                columnGap="2x"
               >
-                {({ invalid }) => {
-                  const canSubmit = (() => {
-                    if (readMachineQuery.isError) {
-                      return false;
-                    }
-                    if (readMachineQuery.isFetching) {
-                      return false;
-                    }
-                    if (updateMachineMutation.isLoading) {
-                      return false;
-                    }
-                    if (invalid) {
-                      return false;
-                    }
-                    return true;
-                  })();
-                  const handleClickSave = () => {
+                <Button
+                  onClick={onClose}
+                  sx={{
+                    minWidth: 80,
+                  }}
+                >
+                  {i18n._('Cancel')}
+                </Button>
+                <Button
+                  variant="primary"
+                  disabled={isFormDisabled}
+                  onClick={() => {
                     form.submit();
-                  };
-
-                  return (
-                    <Flex
-                      alignItems="center"
-                      columnGap="2x"
-                    >
-                      <Button
-                        onClick={onClose}
-                        sx={{
-                          minWidth: 80,
-                        }}
-                      >
-                        {i18n._('Cancel')}
-                      </Button>
-                      <Button
-                        variant="primary"
-                        disabled={!canSubmit}
-                        onClick={handleClickSave}
-                        sx={{
-                          minWidth: 80,
-                        }}
-                      >
-                        {i18n._('Save')}
-                      </Button>
-                    </Flex>
-                  );
-                }}
-              </FormSpy>
+                  }}
+                  sx={{
+                    minWidth: 80,
+                  }}
+                >
+                  {i18n._('Save')}
+                </Button>
+              </Flex>
             </DrawerFooter>
           </DrawerContent>
         )}

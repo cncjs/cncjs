@@ -21,7 +21,7 @@ const FieldInput = forwardRef((
 ) => (
   <Field name={name} validate={validate}>
     {({ input, meta }) => {
-      const error = meta.touched && !isNullOrUndefined(meta.error);
+      const error = meta.submitFailed && !isNullOrUndefined(meta.error);
 
       return (
         <>

@@ -8,14 +8,20 @@ import {
   DrawerBody,
   DrawerFooter,
   DrawerOverlay,
+  LinkButton,
+  Menu,
+  MenuToggle,
+  MenuList,
+  MenuGroup,
+  MenuItem,
   Flex,
   Text,
 } from '@tonic-ui/react';
 import {
   useConst,
 } from '@tonic-ui/react-hooks';
-import React, { useCallback } from 'react';
-import { Form, FormSpy } from 'react-final-form';
+import React, { useCallback, useRef } from 'react';
+import { Form } from 'react-final-form';
 import FormGroup from '@app/components/FormGroup';
 import {
   InlineToastContainer,
@@ -26,17 +32,23 @@ import i18n from '@app/lib/i18n';
 import FieldInput from '@app/pages/Administration/components/FieldInput';
 import FieldTextarea from '@app/pages/Administration/components/FieldTextarea';
 import FieldTextLabel from '@app/pages/Administration/components/FieldTextLabel';
+import * as validations from '@app/pages/Administration/validations';
+import {
+  MACRO_VARIABLE_EXAMPLES,
+} from '../constants';
 import {
   API_COMMANDS_QUERY_KEY,
   useCreateMacroMutation,
 } from '../queries';
-
-const required = value => (value ? undefined : i18n._('This field is required.'));
+import {
+  insertAtCaret,
+} from '../utils';
 
 const CreateMacroDrawer = ({
   onClose,
   ...rest
 }) => {
+  const gcodeInputRef = useRef();
   const { toasts, notify: notifyToast } = useInlineToasts();
   const queryClient = useQueryClient();
   const createMacroMutation = useCreateMacroMutation({
@@ -67,6 +79,7 @@ const CreateMacroDrawer = ({
       data: values,
     });
   }, [createMacroMutation]);
+  const isFormDisabled = createMacroMutation.isLoading;
 
   return (
     <Drawer
@@ -82,7 +95,12 @@ const CreateMacroDrawer = ({
       <Form
         initialValues={initialValues}
         onSubmit={handleFormSubmit}
-        subscription={{}}
+        validate={(values) => {
+          const errors = {};
+          errors.name = validations.required(values.name);
+          errors.data = validations.required(values.data);
+          return errors;
+        }}
         render={({ form }) => (
           <DrawerContent>
             <InlineToastContainer>
@@ -104,73 +122,88 @@ const CreateMacroDrawer = ({
                 </Box>
                 <FieldInput
                   name="name"
-                  validate={required}
                 />
               </FormGroup>
               <FormGroup>
-                <Box mb="1x">
+                <Flex
+                  mb="1x"
+                  justifyContent="space-between"
+                >
                   <FieldTextLabel
                     required
                     infoTipLabel={i18n._('Input the G-code commands to execute with this macro.')}
                   >
                     {i18n._('G-code commands:')}
                   </FieldTextLabel>
-                </Box>
+                  <Menu
+                    placement="bottom-end"
+                  >
+                    <MenuToggle>
+                      <LinkButton>
+                        {i18n._('Select variables')}
+                      </LinkButton>
+                    </MenuToggle>
+                    <MenuList
+                      maxHeight="50vh"
+                      overflow="auto"
+                    >
+                      {MACRO_VARIABLE_EXAMPLES.map(group => (
+                        <MenuGroup
+                          key={group.title}
+                          title={group.title}
+                        >
+                          {group.data.map(item => (
+                            <MenuItem
+                              key={item}
+                              value={item}
+                              onClick={(event) => {
+                                const el = gcodeInputRef.current;
+                                const value = event.currentTarget.value;
+                                const textareaValue = insertAtCaret(el, value);
+                                form.change('data', textareaValue);
+                              }}
+                            >
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </MenuGroup>
+                      ))}
+                    </MenuList>
+                  </Menu>
+                </Flex>
                 <FieldTextarea
+                  ref={gcodeInputRef}
                   name="data"
                   rows="10"
-                  validate={required}
                 />
               </FormGroup>
             </DrawerBody>
             <DrawerFooter>
-              <FormSpy
-                subscription={{
-                  invalid: true,
-                }}
+              <Flex
+                alignItems="center"
+                columnGap="2x"
               >
-                {({ invalid }) => {
-                  const canSubmit = (() => {
-                    if (createMacroMutation.isLoading) {
-                      return false;
-                    }
-                    if (invalid) {
-                      return false;
-                    }
-                    return true;
-                  })();
-                  const canClickAdd = canSubmit;
-                  const handleClickAdd = () => {
+                <Button
+                  onClick={onClose}
+                  sx={{
+                    minWidth: 80,
+                  }}
+                >
+                  {i18n._('Cancel')}
+                </Button>
+                <Button
+                  variant="primary"
+                  disabled={isFormDisabled}
+                  onClick={() => {
                     form.submit();
-                  };
-
-                  return (
-                    <Flex
-                      alignItems="center"
-                      columnGap="2x"
-                    >
-                      <Button
-                        onClick={onClose}
-                        sx={{
-                          minWidth: 80,
-                        }}
-                      >
-                        {i18n._('Cancel')}
-                      </Button>
-                      <Button
-                        variant="primary"
-                        disabled={!canClickAdd}
-                        onClick={handleClickAdd}
-                        sx={{
-                          minWidth: 80,
-                        }}
-                      >
-                        {i18n._('Add')}
-                      </Button>
-                    </Flex>
-                  );
-                }}
-              </FormSpy>
+                  }}
+                  sx={{
+                    minWidth: 80,
+                  }}
+                >
+                  {i18n._('Add')}
+                </Button>
+              </Flex>
             </DrawerFooter>
           </DrawerContent>
         )}

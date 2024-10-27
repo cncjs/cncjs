@@ -16,7 +16,7 @@ import {
 } from '@tonic-ui/react';
 import memoize from 'micro-memoize';
 import React, { useCallback } from 'react';
-import { Field, Form, FormSpy } from 'react-final-form';
+import { Field, Form } from 'react-final-form';
 import FormGroup from '@app/components/FormGroup';
 import {
   InlineToastContainer,
@@ -27,36 +27,35 @@ import i18n from '@app/lib/i18n';
 import FieldInput from '@app/pages/Administration/components/FieldInput';
 import FieldTextarea from '@app/pages/Administration/components/FieldTextarea';
 import FieldTextLabel from '@app/pages/Administration/components/FieldTextLabel';
+import * as validations from '@app/pages/Administration/validations';
 import {
-  API_COMMANDS_QUERY_KEY,
-  useReadCommandQuery,
-  useUpdateCommandMutation,
+  API_EVENTS_QUERY_KEY,
+  useReadEventQuery,
+  useUpdateEventMutation,
 } from '../queries';
-
-const required = value => (value ? undefined : i18n._('This field is required.'));
 
 const getMemoizedState = memoize(state => ({ ...state }));
 
-const UpdateCommandDrawer = ({
+const UpdateEventDrawer = ({
   id,
   onClose,
   ...rest
 }) => {
   const { toasts, notify: notifyToast } = useInlineToasts();
   const queryClient = useQueryClient();
-  const readCommandQuery = useReadCommandQuery({
+  const readEventQuery = useReadEventQuery({
     meta: {
       id,
     },
   });
-  const updateCommandMutation = useUpdateCommandMutation({
+  const updateEventMutation = useUpdateEventMutation({
     onSuccess: () => {
       if (typeof onClose === 'function') {
         onClose();
       }
 
-      // Invalidate `useFetchCommandsQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+      // Invalidate `useFetchEventsQuery`
+      queryClient.invalidateQueries({ queryKey: API_EVENTS_QUERY_KEY });
     },
     onError: () => {
       notifyToast({
@@ -68,21 +67,20 @@ const UpdateCommandDrawer = ({
       });
     },
   });
-
   const initialValues = getMemoizedState({
-    enabled: readCommandQuery.data?.enabled,
-    title: readCommandQuery.data?.title,
-    commands: readCommandQuery.data?.commands,
+    enabled: readEventQuery.data?.enabled,
+    title: readEventQuery.data?.title,
+    commands: readEventQuery.data?.commands,
   });
-
   const handleFormSubmit = useCallback((values) => {
-    updateCommandMutation.mutate({
+    updateEventMutation.mutate({
       meta: {
         id,
       },
       data: values,
     });
-  }, [updateCommandMutation, id]);
+  }, [updateEventMutation, id]);
+  const isFormDisabled = (readEventQuery.isError || readEventQuery.isFetching || updateEventMutation.isLoading);
 
   return (
     <Drawer
@@ -98,7 +96,12 @@ const UpdateCommandDrawer = ({
       <Form
         initialValues={initialValues}
         onSubmit={handleFormSubmit}
-        subscription={{}}
+        validate={(values) => {
+          const errors = {};
+          errors.name = validations.required(values.name);
+          errors.data = validations.required(values.data);
+          return errors;
+        }}
         render={({ form }) => (
           <DrawerContent>
             <InlineToastContainer>
@@ -106,14 +109,14 @@ const UpdateCommandDrawer = ({
             </InlineToastContainer>
             <DrawerHeader>
               <Text>
-                {i18n._('Command Details')}
+                {i18n._('Event Details')}
               </Text>
             </DrawerHeader>
             <DrawerBody>
-              {readCommandQuery.isFetching && (
+              {readEventQuery.isFetching && (
                 <Spinner />
               )}
-              {!(readCommandQuery.isFetching) && (
+              {!(readEventQuery.isFetching) && (
                 <>
                   <FormGroup>
                     <Flex
@@ -148,13 +151,12 @@ const UpdateCommandDrawer = ({
                       <FieldTextLabel
                         required
                       >
-                        {i18n._('Command name:')}
+                        {i18n._('Event name:')}
                       </FieldTextLabel>
                     </Box>
                     <FieldInput
                       name="title"
                       placeholder={i18n._('e.g., Activate Air Purifier')}
-                      validate={required}
                     />
                   </FormGroup>
                   <FormGroup>
@@ -170,65 +172,37 @@ const UpdateCommandDrawer = ({
                       name="commands"
                       rows="10"
                       placeholder="/home/cncjs/bin/activate-air-purifier"
-                      validate={required}
                     />
                   </FormGroup>
                 </>
               )}
             </DrawerBody>
             <DrawerFooter>
-              <FormSpy
-                subscription={{
-                  invalid: true,
-                }}
+              <Flex
+                alignItems="center"
+                columnGap="2x"
               >
-                {({ invalid }) => {
-                  const canSubmit = (() => {
-                    if (readCommandQuery.isError) {
-                      return false;
-                    }
-                    if (readCommandQuery.isFetching) {
-                      return false;
-                    }
-                    if (updateCommandMutation.isLoading) {
-                      return false;
-                    }
-                    if (invalid) {
-                      return false;
-                    }
-                    return true;
-                  })();
-                  const handleClickSave = () => {
+                <Button
+                  onClick={onClose}
+                  sx={{
+                    minWidth: 80,
+                  }}
+                >
+                  {i18n._('Cancel')}
+                </Button>
+                <Button
+                  variant="primary"
+                  disabled={isFormDisabled}
+                  onClick={() => {
                     form.submit();
-                  };
-
-                  return (
-                    <Flex
-                      alignItems="center"
-                      columnGap="2x"
-                    >
-                      <Button
-                        onClick={onClose}
-                        sx={{
-                          minWidth: 80,
-                        }}
-                      >
-                        {i18n._('Cancel')}
-                      </Button>
-                      <Button
-                        variant="primary"
-                        disabled={!canSubmit}
-                        onClick={handleClickSave}
-                        sx={{
-                          minWidth: 80,
-                        }}
-                      >
-                        {i18n._('Save')}
-                      </Button>
-                    </Flex>
-                  );
-                }}
-              </FormSpy>
+                  }}
+                  sx={{
+                    minWidth: 80,
+                  }}
+                >
+                  {i18n._('Save')}
+                </Button>
+              </Flex>
             </DrawerFooter>
           </DrawerContent>
         )}
@@ -237,4 +211,4 @@ const UpdateCommandDrawer = ({
   );
 };
 
-export default UpdateCommandDrawer;
+export default UpdateEventDrawer;
