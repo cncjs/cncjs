@@ -2,6 +2,7 @@ import {
   Flex,
   useColorMode,
 } from '@tonic-ui/react';
+import React from 'react';
 
 const Overlay = (props) => {
   const [colorMode] = useColorMode();

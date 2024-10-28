@@ -36,6 +36,7 @@ module.exports = {
     'jest',
   ],
   rules: {
+    'import/no-relative-packages': 0,
     'max-lines-per-function': ['warn', {
       max: 1024,
       skipBlankLines: true,
@@ -46,18 +47,20 @@ module.exports = {
       // https://eslint.org/docs/latest/rules/no-unused-vars#args
       args: 'none', // do not check arguments
     }],
-    'react/jsx-curly-newline': 'warn',
-    'react/jsx-no-bind': ['warn', {
-      allowArrowFunctions: true,
-    }],
-    'react/jsx-no-leaked-render': 0, // TODO
-    'react/no-access-state-in-setstate': 0,
-    'react/prefer-stateless-function': 0,
-    'react/prop-types': 0,
     'react/jsx-curly-brace-presence': ['error', {
       'props': 'never',
       'children': 'ignore',
     }],
+    'react/jsx-curly-newline': 'warn',
+    'react/jsx-no-bind': ['warn', {
+      allowArrowFunctions: true,
+    }],
+    'react/jsx-no-leaked-render': 0, // FIXME
+    'react/no-access-state-in-setstate': 0,
+    'react/no-unstable-nested-components': 0, // FIXME
+    'react/prefer-stateless-function': 0,
+    'react/prop-types': 0,
+    'react/react-in-jsx-scope': 2,
     'react/static-property-placement': 0,
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'error',

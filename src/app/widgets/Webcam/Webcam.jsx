@@ -174,7 +174,6 @@ function Webcam({
             className={styles.center}
             height="auto"
             muted={muted}
-            src={mapMetaAddressToHostname(url)}
             autoPlay={true}
           />
         )}

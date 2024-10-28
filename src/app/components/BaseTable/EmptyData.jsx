@@ -1,6 +1,7 @@
 import {
   Flex,
 } from '@tonic-ui/react';
+import React from 'react';
 
 const EmptyData = (props) => {
   return (

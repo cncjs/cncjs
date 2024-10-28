@@ -84,7 +84,7 @@ const SideNav = forwardRef((
             height="10x"
             onClick={onClose}
           >
-            <Icon icon=":nav-menu" size="6x"/>
+            <Icon icon=":nav-menu" size="6x" />
           </IconButton>
           <Space minWidth="2x" />
           <ButtonBase

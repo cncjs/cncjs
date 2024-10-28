@@ -145,7 +145,12 @@ module.exports = {
       LANGUAGES: buildConfig.languages,
       TRACKING_ID: buildConfig.analytics.trackingId,
     }),
-    new ESLintPlugin(),
+    new ESLintPlugin({
+      extensions: ['js', 'jsx'],
+      exclude: [
+        '/node_modules/',
+      ],
+    }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[id].css',
@@ -158,8 +163,6 @@ module.exports = {
   resolve: {
     alias: {
       '@app': path.resolve(__dirname, 'src/app'),
-      'react-spring$': 'react-spring/web.cjs',
-      'react-spring/renderprops$': 'react-spring/renderprops.cjs',
     },
     extensions: ['.js', '.jsx'],
     fallback: {
