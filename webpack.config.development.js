@@ -167,10 +167,10 @@ module.exports = {
     new ReactRefreshWebpackPlugin(),
   ],
   resolve: {
-    modules: [
-      path.resolve(__dirname, 'src'),
-      'node_modules'
-    ],
+    alias: {
+      '@app': path.resolve(__dirname, 'src/app'),
+    },
+    extensions: ['.js', '.jsx'],
     fallback: {
       crypto: require.resolve('crypto-browserify'),
       fs: false,
@@ -180,7 +180,10 @@ module.exports = {
       timers: require.resolve('timers-browserify'),
       tls: false,
     },
-    extensions: ['.js', '.jsx']
+    modules: [
+      path.resolve(__dirname, 'src'),
+      'node_modules'
+    ],
   },
   devServer: {
     allowedHosts: 'all',
