@@ -8,8 +8,8 @@ class GridLine {
   colorGrid = new THREE.Color(0x888888);
 
   constructor(sizeX, stepX, sizeY, stepY, colorCenterLine, colorGrid) {
-    colorCenterLine = new THREE.Color(colorCenterLine) || this.colorCenterLine;
-    colorGrid = new THREE.Color(colorGrid) || this.colorGrid;
+    colorCenterLine = new THREE.Color(colorCenterLine);
+    colorGrid = new THREE.Color(colorGrid);
 
     sizeY = (typeof sizeY === 'undefined') ? sizeX : sizeY;
     stepY = (typeof stepY === 'undefined') ? stepX : stepY;
