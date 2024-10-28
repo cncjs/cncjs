@@ -133,7 +133,6 @@ export default {
       'zh-tw', // Traditional Chinese
     ],
 
-
     // array of languages to preload
     preload: [],
 

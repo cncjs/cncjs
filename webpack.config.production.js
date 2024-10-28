@@ -3,13 +3,13 @@ const path = require('path');
 const boolean = require('boolean');
 const dotenv = require('dotenv');
 const findImports = require('find-imports');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CSSMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
 const pkg = require('./src/package.json');
@@ -18,7 +18,6 @@ dotenv.config({
   path: path.resolve('webpack.config.app.production.env')
 });
 
-const USE_ESLINT_LOADER = boolean(process.env.USE_ESLINT_LOADER);
 const USE_TERSER_PLUGIN = boolean(process.env.USE_TERSER_PLUGIN);
 const USE_OPTIMIZE_CSS_ASSETS_PLUGIN = boolean(process.env.USE_OPTIMIZE_CSS_ASSETS_PLUGIN);
 
@@ -53,12 +52,6 @@ module.exports = {
   },
   module: {
     rules: [
-      USE_ESLINT_LOADER && {
-        test: /\.jsx?$/,
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        exclude: /node_modules/
-      },
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
@@ -165,9 +158,11 @@ module.exports = {
       /moment[\/\\]locale$/,
       new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$')
     ),
-    // Generates a manifest.json file in your root output directory with a mapping of all source file names to their corresponding output file.
-    new WebpackManifestPlugin({
-      fileName: 'manifest.json'
+    new ESLintPlugin({
+      extensions: ['js', 'jsx'],
+      exclude: [
+        '/node_modules/',
+      ],
     }),
     new MiniCssExtractPlugin({
       filename: '[name].css',

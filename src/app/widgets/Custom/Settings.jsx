@@ -36,7 +36,7 @@ class Settings extends PureComponent {
       const url = this.fields.url.value;
       this.config.set('title', title);
       this.config.set('url', url);
-    }
+    };
 
     render() {
       const {
