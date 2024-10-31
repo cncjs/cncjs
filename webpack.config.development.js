@@ -1,10 +1,11 @@
 const path = require('path');
 const dotenv = require('dotenv');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
 const pkg = require('./src/package.json');
@@ -13,7 +14,6 @@ dotenv.config();
 
 const publicPath = process.env.PUBLIC_PATH || '';
 const buildVersion = pkg.version;
-const timestamp = new Date().getTime();
 
 module.exports = {
   mode: 'development',
@@ -22,13 +22,22 @@ module.exports = {
   context: path.resolve(__dirname, 'src/app'),
   devtool: 'eval-cheap-module-source-map',
   entry: {
-    polyfill: path.resolve(__dirname, 'src/app/polyfill/index.js'),
-    app: path.resolve(__dirname, 'src/app/index.jsx')
+    main: path.resolve(__dirname, 'src/app/index.jsx')
   },
   output: {
+    clean: {
+      keep: (asset) => {
+        const keep = [
+          'assets',
+          'favicon.icon',
+          'i18n',
+          'images',
+        ].some(x => asset.startsWith(x));
+        return keep;
+      },
+    },
     path: path.resolve(__dirname, 'output/cncjs/app'),
-    chunkFilename: `[name].[hash].bundle.js?_=${timestamp}`,
-    filename: `[name].[hash].bundle.js?_=${timestamp}`,
+    filename: '[name].[contenthash].bundle.js',
     pathinfo: true,
     publicPath: publicPath
   },
@@ -36,20 +45,9 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        exclude: /node_modules/
-      },
-      {
-        test: /\.jsx?$/,
         loader: 'babel-loader',
         options: {
-          ...babelConfig,
-          env: {
-            development: {
-              plugins: ['react-hot-loader/babel']
-            }
-          }
+          ...babelConfig(),
         },
         exclude: /node_modules/
       },
@@ -132,15 +130,15 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('development'),
         BUILD_VERSION: JSON.stringify(buildVersion),
         LANGUAGES: JSON.stringify(buildConfig.languages),
-        TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId)
+        TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId),
       }
     }),
+    new webpack.HotModuleReplacementPlugin(),
     new webpack.LoaderOptionsPlugin({
       debug: true
     }),
@@ -148,24 +146,27 @@ module.exports = {
       /moment[\/\\]locale$/,
       new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$')
     ),
-    // Generates a manifest.json file in your root output directory with a mapping of all source file names to their corresponding output file.
-    new WebpackManifestPlugin({
-      fileName: 'manifest.json'
+    new ESLintPlugin({
+      extensions: ['js', 'jsx'],
+      exclude: [
+        '/node_modules/',
+      ],
     }),
     new MiniCssExtractPlugin({
-      filename: `[name].css?_=${timestamp}`,
-      chunkFilename: `[id].css?_=${timestamp}`
+      filename: '[name].css',
+      chunkFilename: '[id].css',
     }),
     new HtmlWebpackPlugin({
       filename: 'index.hbs',
       template: path.resolve(__dirname, 'index.hbs'),
-    })
+    }),
+    new ReactRefreshWebpackPlugin(),
   ],
   resolve: {
-    modules: [
-      path.resolve(__dirname, 'src'),
-      'node_modules'
-    ],
+    alias: {
+      '@app': path.resolve(__dirname, 'src/app'),
+    },
+    extensions: ['.js', '.jsx'],
     fallback: {
       crypto: require.resolve('crypto-browserify'),
       fs: false,
@@ -175,29 +176,46 @@ module.exports = {
       timers: require.resolve('timers-browserify'),
       tls: false,
     },
-    extensions: ['.js', '.jsx']
+    modules: [
+      path.resolve(__dirname, 'src'),
+      'node_modules'
+    ],
   },
   devServer: {
     allowedHosts: 'all',
     compress: true,
+    client: {
+      overlay: {
+        errors: true,
+        warnings: false,
+        runtimeErrors: true,
+      },
+      progress: true,
+    },
     devMiddleware: {
       writeToDisk: true,
     },
     host: process.env.WEBPACK_DEV_SERVER_HOST,
     hot: true,
-    proxy: {
-      '/api': {
+    liveReload: false,
+    proxy: [
+      {
+        context: ['/api'],
         target: process.env.PROXY_TARGET,
         changeOrigin: true,
       },
-      '/socket.io': {
+      {
+        context: ['/socket.io'],
         target: process.env.PROXY_TARGET,
         changeOrigin: true,
       },
-    },
+    ],
     static: {
       directory: path.resolve(__dirname, 'output/cncjs/app'),
       watch: true,
     },
+    watchFiles: [
+      'src/app/**/*',
+    ],
   },
 };

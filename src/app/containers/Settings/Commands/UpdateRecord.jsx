@@ -28,7 +28,6 @@ class UpdateRecord extends PureComponent {
         commands
       } = this.form.getValues();
 
-
       return {
         enabled: !!_.get(this.fields.enabled, 'state.checked'),
         title: title,
