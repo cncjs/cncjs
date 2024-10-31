@@ -1,13 +1,11 @@
 const crypto = require('crypto');
 const path = require('path');
 const { boolean } = require('boolean');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const dotenv = require('dotenv');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const findImports = require('find-imports');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
@@ -16,9 +14,6 @@ const pkg = require('./src/package.json');
 dotenv.config({
   path: path.resolve('webpack.config.production.env'),
 });
-
-const USE_TERSER_PLUGIN = boolean(process.env.USE_TERSER_PLUGIN);
-const USE_CSS_MINIMIZER_PLUGIN = boolean(process.env.USE_CSS_MINIMIZER_PLUGIN);
 
 // Use publicPath for production
 const publicPath = ((payload) => {
@@ -56,7 +51,9 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        options: babelConfig(),
+        options: {
+          ...babelConfig(),
+        },
         exclude: /node_modules/,
       },
       {
@@ -67,6 +64,7 @@ module.exports = {
             loader: 'css-loader',
             options: {
               modules: {
+                mode: 'local',
                 localIdentName: '[path][name]__[local]--[hash:base64:5]',
                 exportLocalsConvention: 'camelCase',
               },
@@ -89,8 +87,12 @@ module.exports = {
             loader: 'css-loader',
             options: {
               modules: {
+                mode: 'global',
                 exportLocalsConvention: 'camelCase',
               },
+              importLoaders: 1,
+              // 0 => no loaders (default)
+              // 1 => stylus-loader
             }
           },
           'stylus-loader',
@@ -129,14 +131,6 @@ module.exports = {
   },
   optimization: {
     minimize: true,
-    minimizer: [
-      USE_TERSER_PLUGIN && (
-        new TerserPlugin()
-      ),
-      USE_CSS_MINIMIZER_PLUGIN && (
-        new CssMinimizerPlugin()
-      ),
-    ].filter(Boolean)
   },
   plugins: [
     new webpack.EnvironmentPlugin({

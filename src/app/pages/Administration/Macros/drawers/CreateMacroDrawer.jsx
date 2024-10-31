@@ -37,7 +37,7 @@ import {
   MACRO_VARIABLE_EXAMPLES,
 } from '../constants';
 import {
-  API_COMMANDS_QUERY_KEY,
+  API_MACROS_QUERY_KEY,
   useCreateMacroMutation,
 } from '../queries';
 import {
@@ -58,7 +58,7 @@ const CreateMacroDrawer = ({
       }
 
       // Invalidate `useFetchMacrosQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: API_MACROS_QUERY_KEY });
     },
     onError: () => {
       notifyToast({

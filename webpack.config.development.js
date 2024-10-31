@@ -56,7 +56,7 @@ module.exports = {
         options: {
           ...babelConfig(),
         },
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.styl$/,
@@ -75,10 +75,10 @@ module.exports = {
               // 1 => stylus-loader
             }
           },
-          'stylus-loader'
+          'stylus-loader',
         ],
         exclude: [
-          path.resolve(__dirname, 'src/app/styles')
+          path.resolve(__dirname, 'src/app/styles'),
         ]
       },
       {
@@ -130,6 +130,9 @@ module.exports = {
         loader: 'file-loader',
       },
     ].filter(Boolean),
+  },
+  optimization: {
+    minimize: false,
   },
   plugins: [
     new webpack.EnvironmentPlugin({

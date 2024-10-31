@@ -29,7 +29,7 @@ import FieldTextarea from '@app/pages/Administration/components/FieldTextarea';
 import FieldTextLabel from '@app/pages/Administration/components/FieldTextLabel';
 import * as validations from '@app/pages/Administration/validations';
 import {
-  API_COMMANDS_QUERY_KEY,
+  API_MACHINES_QUERY_KEY,
   useReadMachineQuery,
   useUpdateMachineMutation,
 } from '../queries';
@@ -55,7 +55,7 @@ const UpdateMachineDrawer = ({
       }
 
       // Invalidate `useFetchMachinesQuery`
-      queryClient.invalidateQueries({ queryKey: API_COMMANDS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: API_MACHINES_QUERY_KEY });
     },
     onError: () => {
       notifyToast({
