@@ -18,7 +18,7 @@
   "controller": "",
   "state": {
     "allowAnonymousUsageDataCollection": false,
-    "checkForUpdates": true
+    "checkForUpdates": true,
     "controller": {
       "exception": {
         "ignoreErrors": false

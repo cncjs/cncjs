@@ -11,6 +11,7 @@ import logger from '../lib/logger';
 const log = logger('user-store-service');
 
 const defaultState = { // default state
+  allowAnonymousUsageDataCollection: false,
   checkForUpdates: true,
   controller: {
     exception: {
