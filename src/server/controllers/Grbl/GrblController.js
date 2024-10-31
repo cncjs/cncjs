@@ -617,7 +617,13 @@ class GrblController {
         if (this.isOpen()) {
           this.connection.write('?');
         }
-      }, 2000, { trailing: true });
+      }, 2000, {
+        // For grbl-Mega, it is essential to allow a specific delay before querying the status report to avoid blocking the connection.
+        // Therefore, the `leading` option must be set to false.
+        // @see https://github.com/cncjs/cncjs/issues/889
+        leading: false,
+        trailing: true,
+      });
 
       const queryStatusReport = () => {
         // Check the ready flag
