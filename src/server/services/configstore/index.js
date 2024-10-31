@@ -7,6 +7,7 @@ import logger from '../../lib/logger';
 const log = logger('service:configstore');
 
 const defaultState = { // default state
+  allowAnonymousUsageDataCollection: false,
   checkForUpdates: true,
   controller: {
     exception: {
