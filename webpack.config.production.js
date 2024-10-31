@@ -2,24 +2,18 @@ const crypto = require('crypto');
 const path = require('path');
 const boolean = require('boolean');
 const dotenv = require('dotenv');
-const findImports = require('find-imports');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CSSMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
 const pkg = require('./src/package.json');
 
 dotenv.config({
-  path: path.resolve('webpack.config.app.production.env')
+  path: path.resolve('webpack.config.production.env'),
 });
-
-const USE_TERSER_PLUGIN = boolean(process.env.USE_TERSER_PLUGIN);
-const USE_OPTIMIZE_CSS_ASSETS_PLUGIN = boolean(process.env.USE_OPTIMIZE_CSS_ASSETS_PLUGIN);
 
 // Use publicPath for production
 const publicPath = ((payload) => {
@@ -40,10 +34,6 @@ module.exports = {
     main: [
       path.resolve(__dirname, 'src/app/index.jsx')
     ],
-    vendor: findImports([
-      'src/app/**/*.{js,jsx}',
-      '!src/app/**/*.development.js'
-    ], { flatten: true }),
   },
   output: {
     path: path.resolve(__dirname, 'dist/cncjs/app'),
@@ -55,7 +45,9 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        options: babelConfig,
+        options: {
+          ...babelConfig(),
+        },
         exclude: /node_modules/
       },
       {
@@ -77,13 +69,13 @@ module.exports = {
             options: {
               stylusOptions: {
                 use: ['nib'],
-                import: ['nib']
+                import: ['nib'],
               }
             }
           }
         ],
         exclude: [
-          path.resolve(__dirname, 'src/app/styles')
+          path.resolve(__dirname, 'src/app/styles'),
         ]
       },
       {
@@ -93,20 +85,21 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              modules: false
+              localsConvention: 'camelCase',
+              modules: false,
             }
           },
-          'stylus-loader'
+          'stylus-loader',
         ],
         include: [
-          path.resolve(__dirname, 'src/app/styles')
+          path.resolve(__dirname, 'src/app/styles'),
         ]
       },
       {
         test: /\.css$/,
         use: [
           'style-loader',
-          'css-loader'
+          'css-loader',
         ]
       },
       {
@@ -136,14 +129,7 @@ module.exports = {
     ].filter(Boolean)
   },
   optimization: {
-    minimizer: [
-      USE_TERSER_PLUGIN && (
-        new TerserPlugin()
-      ),
-      USE_OPTIMIZE_CSS_ASSETS_PLUGIN && (
-        new CSSMinimizerWebpackPlugin()
-      ),
-    ].filter(Boolean)
+    minimize: true,
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -151,7 +137,7 @@ module.exports = {
         NODE_ENV: JSON.stringify('production'),
         BUILD_VERSION: JSON.stringify(buildVersion),
         LANGUAGES: JSON.stringify(buildConfig.languages),
-        TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId)
+        TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId),
       }
     }),
     new webpack.ContextReplacementPlugin(

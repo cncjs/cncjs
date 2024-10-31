@@ -10,7 +10,9 @@ const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
 const pkg = require('./src/package.json');
 
-dotenv.config();
+dotenv.config({
+  path: path.resolve('webpack.config.development.env'),
+});
 
 const publicPath = process.env.PUBLIC_PATH || '';
 const buildVersion = pkg.version;
@@ -22,7 +24,9 @@ module.exports = {
   context: path.resolve(__dirname, 'src/app'),
   devtool: 'eval-cheap-module-source-map',
   entry: {
-    main: path.resolve(__dirname, 'src/app/index.jsx')
+    main: [
+      path.resolve(__dirname, 'src/app/index.jsx')
+    ],
   },
   output: {
     clean: {
@@ -73,10 +77,10 @@ module.exports = {
                 import: ['nib']
               }
             }
-          }
+          },
         ],
         exclude: [
-          path.resolve(__dirname, 'src/app/styles')
+          path.resolve(__dirname, 'src/app/styles'),
         ]
       },
       {
@@ -86,8 +90,8 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              modules: false,
               localsConvention: 'camelCase',
+              modules: false,
             }
           },
           'stylus-loader'
@@ -100,7 +104,7 @@ module.exports = {
         test: /\.css$/,
         use: [
           'style-loader',
-          'css-loader'
+          'css-loader',
         ]
       },
       {
@@ -127,7 +131,10 @@ module.exports = {
           esModule: false
         }
       }
-    ]
+    ].filter(Boolean)
+  },
+  optimization: {
+    minimize: false,
   },
   plugins: [
     new webpack.DefinePlugin({
