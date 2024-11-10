@@ -3,11 +3,14 @@ import {
   Box,
   Button,
   Checkbox,
+  Divider,
   Flex,
   Icon,
   LinkButton,
   OverflowTooltip,
+  Stack,
   Text,
+  TextLabel,
   Tooltip,
   useColorMode,
   usePortalManager,
@@ -172,8 +175,8 @@ const Macros = () => {
         px: 0,
         py: 0,
       },
-      minSize: 24,
-      size: 24,
+      minSize: 48,
+      size: 48,
     },
     {
       header: i18n._('Macro Name'),
@@ -241,20 +244,36 @@ const Macros = () => {
         />
         <Flex
           flex="auto"
-          p="4x"
         >
-          <Box width="100%">
+          <Stack width="100%">
+            <Flex
+              alignItems="center"
+              px="4x"
+            >
+              <TextLabel my="3x">
+                {i18n._('Macro Action')}
+              </TextLabel>
+              <Divider
+                variant="solid"
+                orientation="vertical"
+                sx={{
+                  height: '8x',
+                  mx: '4x',
+                  my: '1x',
+                }}
+              />
+            </Flex>
             <CodePreview
               data={data}
               language="shell"
               style={{
-                padding: 12,
+                padding: 16,
                 width: '100%',
                 maxHeight: 180,
                 overflowY: 'auto',
               }}
             />
-          </Box>
+          </Stack>
         </Flex>
       </Flex>
     );

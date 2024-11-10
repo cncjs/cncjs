@@ -165,7 +165,7 @@ const UpdateCommandDrawer = ({
                         required
                         infoTipLabel={i18n._('Input the shell commands to execute with this command.')}
                       >
-                        {i18n._('Shell commands:')}
+                        {i18n._('Command action:')}
                       </FieldTextLabel>
                     </Box>
                     <FieldTextarea

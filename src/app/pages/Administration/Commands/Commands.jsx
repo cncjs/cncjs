@@ -3,17 +3,21 @@ import {
   Box,
   Button,
   Checkbox,
+  Divider,
   Flex,
   Icon,
   LinkButton,
   OverflowTooltip,
+  Stack,
   Switch,
   Text,
+  TextLabel,
   Tooltip,
   useColorMode,
   usePortalManager,
 } from '@tonic-ui/react';
 import {
+  PlayIcon,
   RefreshIcon,
 } from '@tonic-ui/react-icons';
 import * as dateFns from 'date-fns';
@@ -243,8 +247,8 @@ const Commands = () => {
         px: 0,
         py: 0,
       },
-      minSize: 24,
-      size: 24,
+      minSize: 48,
+      size: 48,
     },
     {
       header: i18n._('Command Name'),
@@ -336,37 +340,51 @@ const Commands = () => {
           sx={{
             borderRight: 2,
             borderColor: dividerColor,
-            width: '15x',
+            width: '12x',
           }}
         />
         <Flex
           flex="auto"
-          p="4x"
         >
-          <Box width="100%">
-            <Box mb="4x">
-              <Button
-                disabled={!row.original.enabled}
-                variant="secondary"
-                onClick={handleClickRunCommandById(row.original.id)}
+          <Stack width="100%">
+            <Flex
+              alignItems="center"
+              px="4x"
+            >
+              <TextLabel my="3x">
+                {i18n._('Command Action')}
+              </TextLabel>
+              <Divider
+                variant="solid"
+                orientation="vertical"
                 sx={{
-                  columnGap: '2x',
+                  height: '8x',
+                  mx: '4x',
+                  my: '1x',
                 }}
-              >
-                {i18n._('Run Command')}
-              </Button>
+              />
+              <Tooltip label={i18n._('Run')}>
+                <IconButton
+                  disabled={!row.original.enabled}
+                  onClick={handleClickRunCommandById(row.original.id)}
+                >
+                  <PlayIcon />
+                </IconButton>
+              </Tooltip>
+            </Flex>
+            <Box>
+              <CodePreview
+                data={data}
+                language="shell"
+                style={{
+                  padding: 16,
+                  width: '100%',
+                  maxHeight: 180,
+                  overflowY: 'auto',
+                }}
+              />
             </Box>
-            <CodePreview
-              data={data}
-              language="shell"
-              style={{
-                padding: 12,
-                width: '100%',
-                maxHeight: 180,
-                overflowY: 'auto',
-              }}
-            />
-          </Box>
+          </Stack>
         </Flex>
       </Flex>
     );

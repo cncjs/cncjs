@@ -287,8 +287,8 @@ const BaseTable = forwardRef((
             {(table.getRowModel().rows.length > 0) && (
               <TableScrollbar
                 height="100%"
-                overflowY="visible" // Display vertical scrollbar when content overflows
-                overflowX="auto" // Display horizontal scrollbar when content overflows and is interacted with
+                overflowY="auto"
+                overflowX="auto"
                 onUpdate={({ scrollLeft }) => {
                   if (tableHeaderRef.current && tableHeaderRef.current.scrollLeft !== scrollLeft) {
                     tableHeaderRef.current.scrollLeft = scrollLeft;

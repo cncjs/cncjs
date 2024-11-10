@@ -41,7 +41,7 @@ const createProtectedApiRouter = () => {
 
   // Events
   router.get('/events', events.fetch);
-  router.post('/events/', events.create);
+  router.post('/events', events.create);
   router.post('/events/delete', events.bulkDelete);
   router.post('/events/enable', events.bulkEnable);
   router.post('/events/disable', events.bulkDisable);

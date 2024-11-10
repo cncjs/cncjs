@@ -60,9 +60,10 @@ const CreateEventDrawer = ({
     },
   });
   const initialValues = useConst(() => ({
-    title: '',
-    commands: '',
     enabled: true,
+    event: '',
+    trigger: '',
+    commands: '',
   }));
   const handleFormSubmit = useCallback((values) => {
     createEventMutation.mutate({
@@ -87,8 +88,9 @@ const CreateEventDrawer = ({
         onSubmit={handleFormSubmit}
         validate={(values) => {
           const errors = {};
-          errors.name = validations.required(values.name);
-          errors.data = validations.required(values.data);
+          errors.event = validations.required(values.event);
+          errors.trigger = validations.required(values.trigger);
+          errors.commands = validations.required(values.commands);
           return errors;
         }}
         render={({ form }) => (
@@ -139,23 +141,32 @@ const CreateEventDrawer = ({
                   </FieldTextLabel>
                 </Box>
                 <FieldInput
-                  name="title"
-                  placeholder={i18n._('e.g., Activate Air Purifier')}
+                  name="event"
                 />
               </FormGroup>
               <FormGroup>
                 <Box mb="1x">
                   <FieldTextLabel
                     required
-                    infoTipLabel={i18n._('Enter the shell commands to be executed when this command runs. Each line will be executed sequentially.')}
                   >
-                    {i18n._('Shell commands:')}
+                    {i18n._('Event trigger:')}
+                  </FieldTextLabel>
+                </Box>
+                <FieldInput
+                  name="trigger"
+                />
+              </FormGroup>
+              <FormGroup>
+                <Box mb="1x">
+                  <FieldTextLabel
+                    required
+                  >
+                    {i18n._('Event action:')}
                   </FieldTextLabel>
                 </Box>
                 <FieldTextarea
                   name="commands"
                   rows="10"
-                  placeholder="/home/cncjs/bin/activate-air-purifier"
                 />
               </FormGroup>
             </DrawerBody>

@@ -60,9 +60,9 @@ const CreateUserDrawer = ({
     },
   });
   const initialValues = useConst(() => ({
+    enabled: true,
     title: '',
     commands: '',
-    enabled: true,
   }));
   const handleFormSubmit = useCallback((values) => {
     createUserMutation.mutate({

@@ -3,12 +3,15 @@ import {
   Box,
   Button,
   Checkbox,
+  Divider,
   Flex,
   Icon,
   LinkButton,
   OverflowTooltip,
+  Stack,
   Switch,
   Text,
+  TextLabel,
   Tooltip,
   useColorMode,
   usePortalManager,
@@ -40,7 +43,6 @@ import {
   useBulkDisableEventsMutation,
   useEnableEventMutation,
   useDisableEventMutation,
-  useRunEventMutation,
 } from './queries';
 
 const Events = () => {
@@ -95,7 +97,6 @@ const Events = () => {
       queryClient.invalidateQueries({ queryKey: API_EVENTS_QUERY_KEY });
     },
   });
-  const runEventMutation = useRunEventMutation();
   const portal = usePortalManager();
   const [colorMode] = useColorMode();
   const selectedRowCount = Object.keys(rowSelection).length;
@@ -180,14 +181,6 @@ const Events = () => {
     });
   }, [enableEventMutation, disableEventMutation]);
 
-  const handleClickRunEventById = useCallback((id) => () => {
-    runEventMutation.mutate({
-      meta: {
-        id,
-      },
-    });
-  }, [runEventMutation]);
-
   const columns = useMemo(() => ([
     {
       id: 'selection',
@@ -243,8 +236,8 @@ const Events = () => {
         px: 0,
         py: 0,
       },
-      minSize: 24,
-      size: 24,
+      minSize: 48,
+      size: 48,
     },
     {
       header: i18n._('Event Name'),
@@ -262,6 +255,18 @@ const Events = () => {
           )}
         </OverflowTooltip>
       ),
+      size: 'auto',
+    },
+    {
+      header: i18n._('Event Trigger'),
+      cell: ({ row }) => {
+        const value = row.original.trigger;
+        return (
+          <OverflowTooltip label={value}>
+            {value}
+          </OverflowTooltip>
+        );
+      },
       size: 'auto',
     },
     {
@@ -321,7 +326,7 @@ const Events = () => {
       dark: 'gray:60',
       light: 'gray:30',
     }[colorMode];
-    const data = row.original.events;
+    const data = row.original.commands;
 
     return (
       <Flex
@@ -336,43 +341,46 @@ const Events = () => {
           sx={{
             borderRight: 2,
             borderColor: dividerColor,
-            width: '15x',
+            width: '12x',
           }}
         />
         <Flex
           flex="auto"
-          p="4x"
         >
-          <Box width="100%">
-            <Box mb="4x">
-              <Button
-                disabled={!row.original.enabled}
-                variant="secondary"
-                onClick={handleClickRunEventById(row.original.id)}
+          <Stack width="100%">
+            <Flex
+              alignItems="center"
+              px="4x"
+            >
+              <TextLabel my="3x">
+                {i18n._('Event Action')}
+              </TextLabel>
+              <Divider
+                variant="solid"
+                orientation="vertical"
                 sx={{
-                  columnGap: '2x',
+                  height: '8x',
+                  mx: '4x',
+                  my: '1x',
                 }}
-              >
-                {i18n._('Run Event')}
-              </Button>
-            </Box>
+              />
+            </Flex>
             <CodePreview
               data={data}
               language="shell"
               style={{
-                padding: 12,
+                padding: 16,
                 width: '100%',
                 maxHeight: 180,
                 overflowY: 'auto',
               }}
             />
-          </Box>
+          </Stack>
         </Flex>
       </Flex>
     );
   }, [
     colorMode,
-    handleClickRunEventById,
   ]);
 
   return (

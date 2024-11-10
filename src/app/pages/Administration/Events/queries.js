@@ -123,18 +123,6 @@ const useDisableEventMutation = (options) => {
   });
 };
 
-const useRunEventMutation = (options) => {
-  return useMutation({
-    mutationFn: async ({ meta }) => {
-      const id = meta?.id;
-      const url = `api/events/${id}/run`;
-      const response = await axios.post(url);
-      return response.data;
-    },
-    ...options,
-  });
-};
-
 export {
   useFetchEventsQuery,
   useBulkDeleteEventsMutation,
@@ -146,5 +134,4 @@ export {
   useDeleteEventMutation,
   useEnableEventMutation,
   useDisableEventMutation,
-  useRunEventMutation,
 };
