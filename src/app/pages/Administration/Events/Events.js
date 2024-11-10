@@ -241,26 +241,31 @@ const Events = () => {
     },
     {
       header: i18n._('Event Name'),
-      cell: ({ row }) => (
-        <OverflowTooltip label={row.original.title}>
-          {({ ref, style }) => (
-            <LinkButton
-              onClick={handleClickViewEventDetailsById(row.original.id)}
-              width="100%"
-            >
-              <Text ref={ref} {...style}>
-                {row.original.title}
-              </Text>
-            </LinkButton>
-          )}
-        </OverflowTooltip>
-      ),
+      cell: ({ row }) => {
+        const value = row.original.name;
+
+        return (
+          <OverflowTooltip label={value}>
+            {({ ref, style }) => (
+              <LinkButton
+                onClick={handleClickViewEventDetailsById(row.original.id)}
+                width="100%"
+              >
+                <Text ref={ref} {...style}>
+                  {value}
+                </Text>
+              </LinkButton>
+            )}
+          </OverflowTooltip>
+        );
+      },
       size: 'auto',
     },
     {
       header: i18n._('Event Trigger'),
       cell: ({ row }) => {
         const value = row.original.trigger;
+
         return (
           <OverflowTooltip label={value}>
             {value}
@@ -288,6 +293,7 @@ const Events = () => {
       header: i18n._('Status'),
       cell: ({ row }) => {
         const textLabel = row.original.enabled === true ? i18n._('ON') : i18n._('OFF');
+
         return (
           <Flex
             alignItems="center"
@@ -326,7 +332,7 @@ const Events = () => {
       dark: 'gray:60',
       light: 'gray:30',
     }[colorMode];
-    const data = row.original.commands;
+    const value = row.original.action;
 
     return (
       <Flex
@@ -366,7 +372,7 @@ const Events = () => {
               />
             </Flex>
             <CodePreview
-              data={data}
+              data={value}
               language="shell"
               style={{
                 padding: 16,

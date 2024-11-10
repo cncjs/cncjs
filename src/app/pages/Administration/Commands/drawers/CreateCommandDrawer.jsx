@@ -62,7 +62,7 @@ const CreateCommandDrawer = ({
   const initialValues = useConst(() => ({
     enabled: true,
     name: '',
-    data: '',
+    action: '',
   }));
   const handleFormSubmit = useCallback((values) => {
     createCommandMutation.mutate({
@@ -88,7 +88,7 @@ const CreateCommandDrawer = ({
         validate={(values) => {
           const errors = {};
           errors.name = validations.required(values.name);
-          errors.data = validations.required(values.data);
+          errors.action = validations.required(values.action);
           return errors;
         }}
         render={({ form }) => (
@@ -132,9 +132,7 @@ const CreateCommandDrawer = ({
               </FormGroup>
               <FormGroup>
                 <Box mb="1x">
-                  <FieldTextLabel
-                    required
-                  >
+                  <FieldTextLabel required>
                     {i18n._('Command name:')}
                   </FieldTextLabel>
                 </Box>
@@ -153,7 +151,7 @@ const CreateCommandDrawer = ({
                   </FieldTextLabel>
                 </Box>
                 <FieldTextarea
-                  name="data"
+                  name="action"
                   rows="10"
                   placeholder="/home/cncjs/bin/activate-air-purifier"
                 />

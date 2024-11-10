@@ -37,11 +37,16 @@ const getSanitizedRecords = () => {
       shouldUpdate = true;
     }
 
-    if (record.data === undefined) {
-      record.data = record.content ?? '';
+    if (record.action === undefined) {
+      record.action = record.data ?? record.content ?? '';
       shouldUpdate = true;
     }
 
+    // Remove deprecated keys
+    if (record.data !== undefined) {
+      delete record.data;
+      shouldUpdate = true;
+    }
     if (record.content !== undefined) {
       delete record.content;
       shouldUpdate = true;
@@ -76,15 +81,15 @@ const api = {
           totalRecords: ensureFiniteNumber(totalRecords)
         },
         records: pagedRecords.map(record => {
-          const { id, mtime, name, data } = { ...record };
-          return { id, mtime, name, data };
+          const { id, mtime, name, action } = { ...record };
+          return { id, mtime, name, action };
         })
       });
     } else {
       res.send({
         records: records.map(record => {
-          const { id, mtime, name, data } = { ...record };
-          return { id, mtime, name, data };
+          const { id, mtime, name, action } = { ...record };
+          return { id, mtime, name, action };
         })
       });
     }
@@ -94,10 +99,10 @@ const api = {
     const paging = !!req.query.paging;
     const { filename = 'macros.csv' } = { ...req.body };
     const fieldMap = {
-      id: 'ID',
+      id: 'Macro ID',
+      name: 'Macro Name',
+      action: 'Macro Action',
       mtime: 'Date Modified',
-      name: 'Name',
-      data: 'Data',
     };
     const fields = _values(fieldMap);
 
@@ -111,30 +116,30 @@ const api = {
       const { page = 1, pageLength = 10 } = req.query;
       const totalRecords = records.length;
       const [begin, end] = getPagingRange({ page, pageLength, totalRecords });
-      const data = records
+      const transformedRecords = records
         .slice(begin, end)
         .map(x => ({
           [fieldMap.id]: x.id,
           [fieldMap.mtime]: new Date(x.mtime).toISOString(),
           [fieldMap.name]: x.name,
-          [fieldMap.data]: x.data,
+          [fieldMap.action]: x.action,
         }));
-      const csv = json2csv.parse(data, { fields });
+      const csv = json2csv.parse(transformedRecords, { fields });
       res.send(csv).end();
     } else {
-      const data = records
+      const transformedRecords = records
         .map(x => ({
           [fieldMap.id]: x.id,
           [fieldMap.mtime]: new Date(x.mtime).toISOString(),
           [fieldMap.name]: x.name,
-          [fieldMap.data]: x.data,
+          [fieldMap.action]: x.action,
         }));
-      const csv = json2csv.parse(data, { fields });
+      const csv = json2csv.parse(transformedRecords, { fields });
       res.send(csv).end();
     }
   },
   create: (req, res) => {
-    const { name, data } = { ...req.body };
+    const { name, action } = { ...req.body };
 
     if (!name) {
       res.status(ERR_BAD_REQUEST).send({
@@ -143,9 +148,9 @@ const api = {
       return;
     }
 
-    if (!data) {
+    if (!action) {
       res.status(ERR_BAD_REQUEST).send({
-        msg: 'The "data" parameter must not be empty',
+        msg: 'The "action" parameter must not be empty',
       });
       return;
     }
@@ -156,7 +161,7 @@ const api = {
         id: uuidv4(),
         mtime: new Date().getTime(),
         name: name,
-        data: data,
+        action: action,
       };
 
       records.push(record);
@@ -218,8 +223,8 @@ const api = {
       return;
     }
 
-    const { mtime, name, data } = { ...record };
-    res.send({ id, mtime, name, data });
+    const { mtime, name, action } = { ...record };
+    res.send({ id, mtime, name, action });
   },
   update: (req, res) => {
     const id = req.params.id;
@@ -235,7 +240,7 @@ const api = {
 
     const {
       name = record.name,
-      data = record.data,
+      action = record.action,
     } = { ...req.body };
 
     if (!name) {
@@ -245,9 +250,9 @@ const api = {
       return;
     }
 
-    if (!data) {
+    if (!action) {
       res.status(ERR_BAD_REQUEST).send({
-        msg: 'The "data" parameter must not be empty',
+        msg: 'The "action" parameter must not be empty',
       });
       return;
     }
@@ -255,7 +260,7 @@ const api = {
     try {
       record.mtime = new Date().getTime();
       record.name = ensureString(name);
-      record.data = ensureString(data);
+      record.action = ensureString(action);
 
       userStore.set(CONFIG_KEY, records);
 

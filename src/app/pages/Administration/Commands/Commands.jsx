@@ -325,7 +325,7 @@ const Commands = () => {
       dark: 'gray:60',
       light: 'gray:30',
     }[colorMode];
-    const data = row.original.data;
+    const value = row.original.action;
 
     return (
       <Flex
@@ -374,7 +374,7 @@ const Commands = () => {
             </Flex>
             <Box>
               <CodePreview
-                data={data}
+                data={value}
                 language="shell"
                 style={{
                   padding: 16,

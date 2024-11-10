@@ -34,6 +34,17 @@ const getSanitizedRecords = () => {
       record.id = uuidv4();
       shouldUpdate = true;
     }
+
+    if (record.action === undefined) {
+      record.action = record.command ?? '';
+      shouldUpdate = true;
+    }
+
+    // Remove deprecated keys
+    if (record.command !== undefined) {
+      delete record.command;
+      shouldUpdate = true;
+    }
   }
 
   if (shouldUpdate) {
@@ -64,21 +75,21 @@ const api = {
           totalRecords: ensureFiniteNumber(totalRecords)
         },
         records: pagedRecords.map(record => {
-          const { id, name, command, grid = {} } = { ...record };
-          return { id, name, command, grid };
+          const { id, name, action, grid = {} } = { ...record };
+          return { id, name, action, grid };
         })
       });
     } else {
       res.send({
         records: records.map(record => {
-          const { id, name, command, grid = {} } = { ...record };
-          return { id, name, command, grid };
+          const { id, name, action, grid = {} } = { ...record };
+          return { id, name, action, grid };
         })
       });
     }
   },
   create: (req, res) => {
-    const { name, command, grid = {} } = { ...req.body };
+    const { name, action, grid = {} } = { ...req.body };
 
     if (!name) {
       res.status(ERR_BAD_REQUEST).send({
@@ -87,9 +98,9 @@ const api = {
       return;
     }
 
-    if (!command) {
+    if (!action) {
       res.status(ERR_BAD_REQUEST).send({
-        msg: 'The "command" parameter must not be empty'
+        msg: 'The "action" parameter must not be empty'
       });
       return;
     }
@@ -99,8 +110,8 @@ const api = {
       const record = {
         id: uuidv4(),
         name: name,
-        command: command,
-        grid: grid
+        action: action,
+        grid: grid,
       };
 
       records.push(record);
@@ -162,8 +173,8 @@ const api = {
       return;
     }
 
-    const { name, command, grid = {} } = { ...record };
-    res.send({ id, name, command, grid });
+    const { name, action, grid = {} } = { ...record };
+    res.send({ id, name, action, grid });
   },
   update: (req, res) => {
     const id = req.params.id;
@@ -179,8 +190,8 @@ const api = {
 
     const {
       name = record.name,
-      command = record.command,
-      grid = record.grid
+      action = record.action,
+      grid = record.grid,
     } = { ...req.body };
 
     if (!name) {
@@ -190,16 +201,16 @@ const api = {
       return;
     }
 
-    if (!command) {
+    if (!action) {
       res.status(ERR_BAD_REQUEST).send({
-        msg: 'The "command" parameter must not be empty'
+        msg: 'The "action" parameter must not be empty'
       });
       return;
     }
 
     try {
       record.name = String(name ?? '');
-      record.command = String(command ?? '');
+      record.action = String(action ?? '');
       record.grid = _isPlainObject(grid) ? grid : {};
 
       userStore.set(CONFIG_KEY, records);
@@ -227,13 +238,13 @@ const api = {
 
     for (let i = 0; i < filteredRecords.length; ++i) {
       const record = filteredRecords[i];
-      const { id, name, command, grid = {} } = { ...record };
+      const { id, name, action, grid = {} } = { ...record };
 
       if (!id) {
         record.id = uuidv4();
       }
       record.name = String(name ?? '');
-      record.command = String(command ?? '');
+      record.action = String(action ?? '');
       record.grid = _isPlainObject(grid) ? grid : {};
     }
 

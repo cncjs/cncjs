@@ -180,20 +180,24 @@ const Macros = () => {
     },
     {
       header: i18n._('Macro Name'),
-      cell: ({ row }) => (
-        <OverflowTooltip label={row.original.name}>
-          {({ ref, style }) => (
-            <LinkButton
-              onClick={handleClickViewMacroDetailsById(row.original.id)}
-              width="100%"
-            >
-              <Text ref={ref} {...style}>
-                {row.original.name}
-              </Text>
-            </LinkButton>
-          )}
-        </OverflowTooltip>
-      ),
+      cell: ({ row }) => {
+        const value = row.original.name;
+
+        return (
+          <OverflowTooltip label={value}>
+            {({ ref, style }) => (
+              <LinkButton
+                onClick={handleClickViewMacroDetailsById(row.original.id)}
+                width="100%"
+              >
+                <Text ref={ref} {...style}>
+                  {value}
+                </Text>
+              </LinkButton>
+            )}
+          </OverflowTooltip>
+        );
+      },
       size: 'auto',
     },
     {
@@ -224,7 +228,7 @@ const Macros = () => {
       dark: 'gray:60',
       light: 'gray:30',
     }[colorMode];
-    const data = row.original.data;
+    const value = row.original.action;
 
     return (
       <Flex
@@ -264,7 +268,7 @@ const Macros = () => {
               />
             </Flex>
             <CodePreview
-              data={data}
+              data={value}
               language="shell"
               style={{
                 padding: 16,

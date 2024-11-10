@@ -53,9 +53,9 @@ const getSanitizedRecords = () => {
       shouldUpdate = true;
     }
 
-    // Defaults to true
     if (record.enabled === undefined) {
       record.enabled = true;
+      shouldUpdate = true;
     }
   }
 

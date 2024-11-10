@@ -35,15 +35,33 @@ const getSanitizedRecords = () => {
       shouldUpdate = true;
     }
 
-    // Defaults to true
     if (record.enabled === undefined) {
       record.enabled = true;
+      shouldUpdate = true;
     }
 
-    // Alias command
-    if (!record.commands) {
-      record.commands = record.command ?? '';
+    if (record.name === undefined) {
+      record.name = record.event ?? '';
+      shouldUpdate = true;
+    }
+
+    if (record.action === undefined) {
+      record.action = record.command ?? record.commands ?? '';
+      shouldUpdate = true;
+    }
+
+    // Remove deprecated keys
+    if (record.event !== undefined) {
+      delete record.event;
+      shouldUpdate = true;
+    }
+    if (record.command !== undefined) {
       delete record.command;
+      shouldUpdate = true;
+    }
+    if (record.commands !== undefined) {
+      delete record.commands;
+      shouldUpdate = true;
     }
   }
 
@@ -75,15 +93,15 @@ const api = {
           totalRecords: ensureFiniteNumber(totalRecords)
         },
         records: pagedRecords.map(record => {
-          const { id, mtime, enabled, event, trigger, commands } = { ...record };
-          return { id, mtime, enabled, event, trigger, commands };
+          const { id, mtime, enabled, name, trigger, action } = { ...record };
+          return { id, mtime, enabled, name, trigger, action };
         })
       });
     } else {
       res.send({
         records: records.map(record => {
-          const { id, mtime, enabled, event, trigger, commands } = { ...record };
-          return { id, mtime, enabled, event, trigger, commands };
+          const { id, mtime, enabled, name, trigger, action } = { ...record };
+          return { id, mtime, enabled, name, trigger, action };
         })
       });
     }
@@ -91,14 +109,14 @@ const api = {
   create: (req, res) => {
     const {
       enabled = true,
-      event = '',
+      name = '',
       trigger = '',
-      commands = ''
+      action = ''
     } = { ...req.body };
 
-    if (!event) {
+    if (!name) {
       res.status(ERR_BAD_REQUEST).send({
-        msg: 'The "event" parameter must not be empty'
+        msg: 'The "name" parameter must not be empty'
       });
       return;
     }
@@ -110,9 +128,9 @@ const api = {
       return;
     }
 
-    if (!commands) {
+    if (!action) {
       res.status(ERR_BAD_REQUEST).send({
-        msg: 'The "commands" parameter must not be empty'
+        msg: 'The "action" parameter must not be empty'
       });
       return;
     }
@@ -123,9 +141,9 @@ const api = {
         id: uuidv4(),
         mtime: new Date().getTime(),
         enabled: !!enabled,
-        event: event,
+        name: name,
         trigger: trigger,
-        commands: commands
+        action: action
       };
 
       records.push(record);
@@ -261,8 +279,8 @@ const api = {
       return;
     }
 
-    const { mtime, enabled, event, trigger, commands } = { ...record };
-    res.send({ id, mtime, enabled, event, trigger, commands });
+    const { mtime, enabled, name, trigger, action } = { ...record };
+    res.send({ id, mtime, enabled, name, trigger, action });
   },
   update: (req, res) => {
     const id = req.params.id;
@@ -278,24 +296,19 @@ const api = {
 
     const {
       enabled = record.enabled,
-      event = record.event,
+      name = record.name,
       trigger = record.trigger,
-      commands = record.commands
+      action = record.action
     } = { ...req.body };
 
-    // Skip validation for "enabled", "event", "trigger", and "commands"
+    // Skip validation for "enabled", "name", "trigger", and "action"
 
     try {
       record.mtime = new Date().getTime();
       record.enabled = Boolean(enabled);
-      record.event = String(event ?? '');
+      record.name = String(name ?? '');
       record.trigger = String(trigger ?? '');
-      record.commands = String(commands ?? '');
-
-      // Remove deprecated parameter
-      if (record.command !== undefined) {
-        delete record.command;
-      }
+      record.action = String(action ?? '');
 
       userStore.set(CONFIG_KEY, records);
 

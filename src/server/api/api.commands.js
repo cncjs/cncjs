@@ -36,29 +36,37 @@ const getSanitizedRecords = () => {
       shouldUpdate = true;
     }
 
+    if (record.enabled === undefined) {
+      record.enabled = true;
+      shouldUpdate = true;
+    }
+
     if (record.name === undefined) {
       record.name = record.title ?? '';
       shouldUpdate = true;
     }
 
-    if (record.data === undefined) {
-      record.data = record.commands ?? record.command ?? '';
+    if (record.action === undefined) {
+      record.action = record.data ?? record.commands ?? record.command ?? '';
       shouldUpdate = true;
     }
 
+    // Remove deprecated keys
+    if (record.title !== undefined) {
+      delete record.title;
+      shouldUpdate = true;
+    }
+    if (record.data !== undefined) {
+      delete record.data;
+      shouldUpdate = true;
+    }
     if (record.command !== undefined) {
       delete record.command;
       shouldUpdate = true;
     }
-
     if (record.commands !== undefined) {
       delete record.commands;
       shouldUpdate = true;
-    }
-
-    // Defaults to true
-    if (record.enabled === undefined) {
-      record.enabled = true;
     }
   }
 
@@ -90,15 +98,15 @@ const api = {
           totalRecords: ensureFiniteNumber(totalRecords)
         },
         records: pagedRecords.map(record => {
-          const { id, mtime, enabled, name, data } = { ...record };
-          return { id, mtime, enabled, name, data };
+          const { id, mtime, enabled, name, action } = { ...record };
+          return { id, mtime, enabled, name, action };
         })
       });
     } else {
       res.send({
         records: records.map(record => {
-          const { id, mtime, enabled, name, data } = { ...record };
-          return { id, mtime, enabled, name, data };
+          const { id, mtime, enabled, name, action } = { ...record };
+          return { id, mtime, enabled, name, action };
         })
       });
     }
@@ -107,7 +115,7 @@ const api = {
     const {
       enabled = true,
       name = '',
-      data = '',
+      action = '',
     } = { ...req.body };
 
     if (!name) {
@@ -117,9 +125,9 @@ const api = {
       return;
     }
 
-    if (!data) {
+    if (!action) {
       res.status(ERR_BAD_REQUEST).send({
-        msg: 'The "data" parameter must not be empty'
+        msg: 'The "action" parameter must not be empty'
       });
       return;
     }
@@ -131,7 +139,7 @@ const api = {
         mtime: new Date().getTime(),
         enabled: !!enabled,
         name,
-        data,
+        action,
       };
 
       records.push(record);
@@ -267,8 +275,8 @@ const api = {
       return;
     }
 
-    const { mtime, enabled, name, data } = { ...record };
-    res.send({ id, mtime, enabled, name, data });
+    const { mtime, enabled, name, action } = { ...record };
+    res.send({ id, mtime, enabled, name, action });
   },
   update: (req, res) => {
     const id = req.params.id;
@@ -285,16 +293,16 @@ const api = {
     const {
       enabled = record.enabled,
       name = record.name,
-      data = record.data,
+      action = record.action,
     } = { ...req.body };
 
-    // Skip validation for "enabled", "name", and "data"
+    // Skip validation for "enabled", "name", and "action"
 
     try {
       record.mtime = new Date().getTime();
       record.enabled = Boolean(enabled);
       record.name = ensureString(name);
-      record.data = ensureString(data);
+      record.action = ensureString(action);
 
       userStore.set(CONFIG_KEY, records);
 
@@ -343,12 +351,12 @@ const api = {
     }
 
     const name = record.name;
-    const data = record.data;
+    const action = record.action;
     const context = {
       id,
       name,
     };
-    const taskId = shellCommand.spawn(data, context);
+    const taskId = shellCommand.spawn(action, context);
 
     res.send({ taskId: taskId });
   },

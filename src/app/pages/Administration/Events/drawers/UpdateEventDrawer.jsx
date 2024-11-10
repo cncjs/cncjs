@@ -69,9 +69,9 @@ const UpdateEventDrawer = ({
   });
   const initialValues = getMemoizedState({
     enabled: readEventQuery.data?.enabled,
-    event: readEventQuery.data?.event,
+    name: readEventQuery.data?.name,
     trigger: readEventQuery.data?.trigger,
-    commands: readEventQuery.data?.commands,
+    action: readEventQuery.data?.action,
   });
   const handleFormSubmit = useCallback((values) => {
     updateEventMutation.mutate({
@@ -99,9 +99,9 @@ const UpdateEventDrawer = ({
         onSubmit={handleFormSubmit}
         validate={(values) => {
           const errors = {};
-          errors.event = validations.required(values.event);
+          errors.name = validations.required(values.name);
           errors.trigger = validations.required(values.trigger);
-          errors.commands = validations.required(values.commands);
+          errors.action = validations.required(values.action);
           return errors;
         }}
         render={({ form }) => (
@@ -150,38 +150,28 @@ const UpdateEventDrawer = ({
                   </FormGroup>
                   <FormGroup>
                     <Box mb="1x">
-                      <FieldTextLabel
-                        required
-                      >
+                      <FieldTextLabel required>
                         {i18n._('Event name:')}
                       </FieldTextLabel>
                     </Box>
-                    <FieldInput
-                      name="event"
-                    />
+                    <FieldInput name="name" />
                   </FormGroup>
                   <FormGroup>
                     <Box mb="1x">
-                      <FieldTextLabel
-                        required
-                      >
+                      <FieldTextLabel required>
                         {i18n._('Event trigger:')}
                       </FieldTextLabel>
                     </Box>
-                    <FieldInput
-                      name="trigger"
-                    />
+                    <FieldInput name="trigger" />
                   </FormGroup>
                   <FormGroup>
                     <Box mb="1x">
-                      <FieldTextLabel
-                        required
-                      >
+                      <FieldTextLabel required>
                         {i18n._('Event action:')}
                       </FieldTextLabel>
                     </Box>
                     <FieldTextarea
-                      name="commands"
+                      name="action"
                       rows="10"
                     />
                   </FormGroup>

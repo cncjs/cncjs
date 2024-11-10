@@ -80,7 +80,7 @@ const UpdateMacroDrawer = ({
   });
   const initialValues = getMemoizedState({
     name: readMacroQuery.data?.name,
-    data: readMacroQuery.data?.data,
+    action: readMacroQuery.data?.action,
   });
   const handleFormSubmit = useCallback((values) => {
     updateMacroMutation.mutate({
@@ -109,7 +109,7 @@ const UpdateMacroDrawer = ({
         validate={(values) => {
           const errors = {};
           errors.name = validations.required(values.name);
-          errors.data = validations.required(values.data);
+          errors.action = validations.required(values.action);
           return errors;
         }}
         render={({ form }) => (
@@ -136,9 +136,7 @@ const UpdateMacroDrawer = ({
                         {i18n._('Macro name:')}
                       </FieldTextLabel>
                     </Box>
-                    <FieldInput
-                      name="name"
-                    />
+                    <FieldInput name="name" />
                   </FormGroup>
                   <FormGroup>
                     <Flex
@@ -176,7 +174,7 @@ const UpdateMacroDrawer = ({
                                     const el = gcodeInputRef.current;
                                     const value = event.currentTarget.value;
                                     const textareaValue = insertAtCaret(el, value);
-                                    form.change('data', textareaValue);
+                                    form.change('action', textareaValue);
                                   }}
                                 >
                                   {item}
@@ -189,7 +187,7 @@ const UpdateMacroDrawer = ({
                     </Flex>
                     <FieldTextarea
                       ref={gcodeInputRef}
-                      name="data"
+                      name="action"
                       rows="10"
                     />
                   </FormGroup>
