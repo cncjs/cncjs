@@ -25,6 +25,9 @@ import taskRunner from '../../services/taskrunner';
 import store from '../../store';
 import {
   GLOBAL_OBJECTS as globalObjects,
+  TOOL_CHANGE_POLICY_SEND,
+  TOOL_CHANGE_POLICY_IGNORE,
+  TOOL_CHANGE_POLICY_PAUSE,
   WRITE_SOURCE_CLIENT,
   WRITE_SOURCE_FEEDER
 } from '../constants';
@@ -243,7 +246,18 @@ class TinyGController {
           // M6 Tool Change
           if (_.includes(words, 'M6')) {
             log.debug('M6 Tool Change');
-            this.feeder.hold({ data: 'M6', msg: originalLine }); // Hold reason
+
+            const toolChangePolicy = config.get('state.controller.toolChangePolicy', TOOL_CHANGE_POLICY_PAUSE);
+            if (toolChangePolicy === TOOL_CHANGE_POLICY_SEND) {
+              // Send M6 commands
+            } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE) {
+              // Ignore M6 commands
+              line = line.replace(/\bM6\b/g, '(M6)'); // replace `M6` with `(M6)`
+            } else {
+              // Pause for manual tool change
+              line = line.replace(/\bM6\b/g, '(M6)'); // replace `M6` with `(M6)`
+              this.feeder.hold({ data: 'M6', msg: originalLine }); // Hold reason
+            }
           }
 
           return line;
@@ -333,9 +347,18 @@ class TinyGController {
           if (_.includes(words, 'M6')) {
             log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
 
-            this.event.trigger('gcode:pause');
-
-            this.workflow.pause({ data: 'M6', msg: originalLine });
+            const toolChangePolicy = config.get('state.controller.toolChangePolicy', TOOL_CHANGE_POLICY_PAUSE);
+            if (toolChangePolicy === TOOL_CHANGE_POLICY_SEND) {
+              // Send M6 commands
+            } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE) {
+              // Ignore M6 commands
+              line = line.replace(/\bM6\b/g, '(M6)'); // replace `M6` with `(M6)`
+            } else {
+              // Pause for manual tool change
+              line = line.replace(/\bM6\b/g, '(M6)'); // replace `M6` with `(M6)`
+              this.event.trigger('gcode:pause');
+              this.workflow.pause({ data: 'M6', msg: originalLine });
+            }
           }
 
           return line;
