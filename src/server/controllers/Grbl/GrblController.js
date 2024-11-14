@@ -1,5 +1,6 @@
 import {
   ensureArray,
+  ensurePositiveNumber,
   ensureString,
 } from 'ensure-type';
 import * as parser from 'gcode-parser';
@@ -14,8 +15,8 @@ import Workflow, {
   WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
-import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
+import { isM0, isM1, isM6, replaceM6Commands } from '../../lib/gcode-utils';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
 import config from '../../services/configstore';
@@ -223,19 +224,22 @@ class GrblController {
           const data = parser.parseLine(line, { flatten: true });
           const words = ensureArray(data.words);
 
-          { // Program Mode: M0, M1
-            const programMode = _.intersection(words, ['M0', 'M1'])[0];
-            if (programMode === 'M0') {
-              log.debug('M0 Program Pause');
-              this.feeder.hold({ data: 'M0', msg: originalLine }); // Hold reason
-            } else if (programMode === 'M1') {
-              log.debug('M1 Program Pause');
-              this.feeder.hold({ data: 'M1', msg: originalLine }); // Hold reason
-            }
+          // M0 Program Pause
+          if (words.find(isM0)) {
+            log.debug('M0 Program Pause');
+
+            this.feeder.hold({ data: 'M0', msg: originalLine }); // Hold reason
+          }
+
+          // M1 Program Pause
+          if (words.find(isM1)) {
+            log.debug('M1 Program Pause');
+
+            this.feeder.hold({ data: 'M1', msg: originalLine }); // Hold reason
           }
 
           // M6 Tool Change
-          if (_.includes(words, 'M6')) {
+          if (words.find(isM6)) {
             log.debug('M6 Tool Change');
 
             const toolChangePolicy = config.get('state.controller.toolChangePolicy', TOOL_CHANGE_POLICY_PAUSE);
@@ -243,10 +247,10 @@ class GrblController {
               // Send M6 commands
             } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE) {
               // Ignore M6 commands
-              line = line.replace(/\bM6\b/g, '(M6)'); // replace `M6` with `(M6)`
+              line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
             } else {
               // Pause for manual tool change
-              line = line.replace(/\bM6\b/g, '(M6)'); // replace `M6` with `(M6)`
+              line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
               this.feeder.hold({ data: 'M6', msg: originalLine }); // Hold reason
             }
           }
@@ -289,9 +293,9 @@ class GrblController {
         dataFilter: (line, context) => {
           const originalLine = line;
           /**
-                 * line = 'G0X10 ; comment text'
-                 * parts = ['G0X10 ', ' comment text', '']
-                 */
+           * line = 'G0X10 ; comment text'
+           * parts = ['G0X10 ', ' comment text', '']
+           */
           const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
           line = ensureString(parts[0]).trim();
           context = this.populateContext(context);
@@ -318,25 +322,24 @@ class GrblController {
           const data = parser.parseLine(line, { flatten: true });
           const words = ensureArray(data.words);
 
-          { // Program Mode: M0, M1
-            const programMode = _.intersection(words, ['M0', 'M1'])[0];
-            if (programMode === 'M0') {
-              log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
+          // M0 Program Pause
+          if (words.find(isM0)) {
+            log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
 
-              this.event.trigger('gcode:pause');
+            this.event.trigger('gcode:pause');
+            this.workflow.pause({ data: 'M0', msg: originalLine });
+          }
 
-              this.workflow.pause({ data: 'M0', msg: originalLine });
-            } else if (programMode === 'M1') {
-              log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
+          // M1 Program Pause
+          if (words.find(isM1)) {
+            log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
 
-              this.event.trigger('gcode:pause');
-
-              this.workflow.pause({ data: 'M1', msg: originalLine });
-            }
+            this.event.trigger('gcode:pause');
+            this.workflow.pause({ data: 'M1', msg: originalLine });
           }
 
           // M6 Tool Change
-          if (_.includes(words, 'M6')) {
+          if (words.find(isM6)) {
             log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
 
             const toolChangePolicy = config.get('state.controller.toolChangePolicy', TOOL_CHANGE_POLICY_PAUSE);
@@ -344,10 +347,10 @@ class GrblController {
               // Send M6 commands
             } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE) {
               // Ignore M6 commands
-              line = line.replace(/\bM6\b/g, '(M6)'); // replace `M6` with `(M6)`
+              line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
             } else {
               // Pause for manual tool change
-              line = line.replace(/\bM6\b/g, '(M6)'); // replace `M6` with `(M6)`
+              line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
               this.event.trigger('gcode:pause');
               this.workflow.pause({ data: 'M6', msg: originalLine });
             }
