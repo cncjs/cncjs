@@ -4,11 +4,6 @@ import FacebookLoading from 'react-facebook-loading';
 import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 import styles from './index.styl';
-import {
-  TOOL_CHANGE_POLICY_SEND,
-  TOOL_CHANGE_POLICY_IGNORE,
-  TOOL_CHANGE_POLICY_PAUSE,
-} from './constants';
 
 class Controller extends PureComponent {
     static propTypes = {
@@ -26,11 +21,6 @@ class Controller extends PureComponent {
       handleChangeIgnoreErrors: (event) => {
         const { actions } = this.props;
         actions.toggleIgnoreErrors();
-      },
-      handleChangeToolChangePolicy: (event) => {
-        const { actions } = this.props;
-        const value = Number(event.currentTarget.value);
-        actions.updateToolChangePolicy(value);
       },
       cancel: (event) => {
         const { actions } = this.props;
@@ -89,49 +79,6 @@ class Controller extends PureComponent {
                     <Space width="4" />
                     <span>{i18n._('Enabling this option may cause machine damage if you don\'t have an Emergency Stop button to prevent a dangerous situation.')}</span>
                   </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div style={{ marginBottom: 24 }}>
-            <h5>{i18n._('Tool Change Policy (M6)')}</h5>
-            <div className={styles.formFields}>
-              <div className={styles.formGroup}>
-                <div className="radio">
-                  <label style={{ marginBottom: 4 }}>
-                    <input
-                      type="radio"
-                      name="tool_change_policy"
-                      value={String(TOOL_CHANGE_POLICY_SEND)}
-                      checked={state.toolChangePolicy === Number(TOOL_CHANGE_POLICY_SEND)}
-                      onChange={this.handlers.handleChangeToolChangePolicy}
-                    />
-                    {i18n._('Send M6 commands')}
-                  </label>
-                </div>
-                <div className="radio">
-                  <label style={{ marginBottom: 4 }}>
-                    <input
-                      type="radio"
-                      name="tool_change_policy"
-                      value={String(TOOL_CHANGE_POLICY_IGNORE)}
-                      checked={String(state.toolChangePolicy) === String(TOOL_CHANGE_POLICY_IGNORE)}
-                      onChange={this.handlers.handleChangeToolChangePolicy}
-                    />
-                    {i18n._('Ignore M6 commands')}
-                  </label>
-                </div>
-                <div className="radio">
-                  <label style={{ marginBottom: 4 }}>
-                    <input
-                      type="radio"
-                      name="tool_change_policy"
-                      value={String(TOOL_CHANGE_POLICY_PAUSE)}
-                      checked={String(state.toolChangePolicy) === String(TOOL_CHANGE_POLICY_PAUSE)}
-                      onChange={this.handlers.handleChangeToolChangePolicy}
-                    />
-                    {i18n._('Pause for manual tool change')}
-                  </label>
                 </div>
               </div>
             </div>

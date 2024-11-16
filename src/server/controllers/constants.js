@@ -22,10 +22,12 @@ export const GLOBAL_OBJECTS = {
   JSON,
 };
 
-// Tool Change Policy (M6)
-export const TOOL_CHANGE_POLICY_SEND = 0; // Send M6 commands
-export const TOOL_CHANGE_POLICY_IGNORE = 1; // Ignore M6 commands
-export const TOOL_CHANGE_POLICY_PAUSE = 2; // Pause for manual tool change
+// M6 Tool Change
+export const TOOL_CHANGE_POLICY_SEND_M6_COMMANDS = 0;
+export const TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS = 1;
+export const TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_NO_PROBING = 2;
+export const TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING = 3;
+export const TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING = 4;
 
 // Write Source
 export const WRITE_SOURCE_CLIENT = 'client';

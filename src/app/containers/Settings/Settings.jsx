@@ -28,9 +28,6 @@ import Commands from './Commands';
 import Events from './Events';
 import About from './About';
 import styles from './index.styl';
-import {
-  TOOL_CHANGE_POLICY_PAUSE,
-} from './Controller/constants';
 
 const mapSectionPathToId = (path = '') => {
   return _camelCase(path.split('/')[0] || '');
@@ -272,7 +269,6 @@ class Settings extends PureComponent {
 
           api.getState().then((res) => {
             const ignoreErrors = _get(res.body, 'controller.exception.ignoreErrors');
-            const toolChangePolicy = _get(res.body, 'controller.toolChangePolicy', TOOL_CHANGE_POLICY_PAUSE);
 
             const nextState = {
               ...this.state.controller,
@@ -283,7 +279,6 @@ class Settings extends PureComponent {
               },
               // followed by data
               ignoreErrors: !!ignoreErrors,
-              toolChangePolicy: toolChangePolicy,
             };
 
             this.initialState.controller = nextState;
@@ -319,7 +314,6 @@ class Settings extends PureComponent {
               exception: {
                 ignoreErrors: this.state.controller.ignoreErrors,
               },
-              toolChangePolicy: this.state.controller.toolChangePolicy,
             }
           };
 
@@ -361,14 +355,6 @@ class Settings extends PureComponent {
             controller: {
               ...state.controller,
               ignoreErrors: !state.controller.ignoreErrors
-            }
-          }));
-        },
-        updateToolChangePolicy: (value) => {
-          this.setState(state => ({
-            controller: {
-              ...state.controller,
-              toolChangePolicy: value,
             }
           }));
         },
@@ -1165,7 +1151,6 @@ class Settings extends PureComponent {
             saving: false
           },
           ignoreErrors: false,
-          toolChangeAction: 'pause',
         },
         // Commands
         commands: {

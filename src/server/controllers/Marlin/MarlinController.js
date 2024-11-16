@@ -25,9 +25,11 @@ import taskRunner from '../../services/taskrunner';
 import store from '../../store';
 import {
   GLOBAL_OBJECTS as globalObjects,
-  TOOL_CHANGE_POLICY_SEND,
-  TOOL_CHANGE_POLICY_IGNORE,
-  TOOL_CHANGE_POLICY_PAUSE,
+  TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
+  TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_NO_PROBING,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING,
   WRITE_SOURCE_CLIENT,
   WRITE_SOURCE_SERVER,
   WRITE_SOURCE_FEEDER,
@@ -414,14 +416,20 @@ class MarlinController {
           if (words.find(isM6)) {
             log.debug('M6 Tool Change');
 
-            const toolChangePolicy = config.get('state.controller.toolChangePolicy', TOOL_CHANGE_POLICY_PAUSE);
-            if (toolChangePolicy === TOOL_CHANGE_POLICY_SEND) {
+            const toolChangePolicy = config.get('tool.toolChangePolicy');
+            const isManualToolChange = [
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_NO_PROBING,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING,
+            ].includes(toolChangePolicy);
+
+            if (toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS) {
               // Send M6 commands
-            } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE) {
+            } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS) {
               // Ignore M6 commands
               line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
-            } else {
-              // Pause for manual tool change
+            } else if (isManualToolChange) {
+              // Manual Tool Change
               line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
               this.feeder.hold({ data: 'M6', msg: originalLine }); // Hold reason
             }
@@ -529,14 +537,20 @@ class MarlinController {
           if (words.find(isM6)) {
             log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
 
-            const toolChangePolicy = config.get('state.controller.toolChangePolicy', TOOL_CHANGE_POLICY_PAUSE);
-            if (toolChangePolicy === TOOL_CHANGE_POLICY_SEND) {
+            const toolChangePolicy = config.get('tool.toolChangePolicy');
+            const isManualToolChange = [
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_NO_PROBING,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING,
+            ].includes(toolChangePolicy);
+
+            if (toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS) {
               // Send M6 commands
-            } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE) {
+            } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS) {
               // Ignore M6 commands
               line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
-            } else {
-              // Pause for manual tool change
+            } else if (isManualToolChange) {
+              // Manual Tool Change
               line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
               this.event.trigger('gcode:pause');
               this.workflow.pause({ data: 'M6', msg: originalLine });
