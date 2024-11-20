@@ -8059,9 +8059,9 @@ __metadata:
     find-imports: ~1.1.0
     font-awesome: ~4.7.0
     frac: ~1.1.2
-    gcode-interpreter: ~2.1.0
-    gcode-parser: ~1.3.6
-    gcode-toolpath: ~2.2.0
+    gcode-interpreter: ^3.0.0
+    gcode-parser: ^2.1.1
+    gcode-toolpath: ^3.0.0
     github-release-cli: ~2.0.0
     glob: ~7.1.3
     history: ~4.9.0
@@ -11889,28 +11889,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gcode-interpreter@npm:^2.0.2, gcode-interpreter@npm:~2.1.0":
-  version: 2.1.0
-  resolution: "gcode-interpreter@npm:2.1.0"
+"gcode-interpreter@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "gcode-interpreter@npm:3.0.0"
   dependencies:
-    gcode-parser: ^1.3.6
-  checksum: 4bf7107092ba616f1365e9797013fed33f826f3cc184d7b381fe5a0c6cb0bbebd366a80c0eddbe52193b55c7c5814593b3264d9ee70d5f5f0ff874072653630a
+    gcode-parser: ^2.0.0
+  checksum: 06a3ed2ce2ef1ad132d01f62d651b5425c720e6001c44e068ed1168a88d7c978e09eac4a3941dcde75d4bd81296066ae6c44f50434d57cd2da67d4353fa1962c
   languageName: node
   linkType: hard
 
-"gcode-parser@npm:^1.3.6, gcode-parser@npm:~1.3.6":
-  version: 1.3.7
-  resolution: "gcode-parser@npm:1.3.7"
-  checksum: 8c55127fa16cdf6719642f5b74c67b0266a24a4ade4d182dda69a3df276d862e92f3792a086e0c5382d237de0d92542df7298f2de869a72a896dffdaf1bd42f8
+"gcode-parser@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "gcode-parser@npm:2.0.0"
+  checksum: b6deb04544a39f5701e58422051e3b16f1e336dd821837f29f82583c1ebda8b07cc05b0fb3bceae8d010f7efed91b82e4c13507bba611a09d8937a2ec0adc3a8
   languageName: node
   linkType: hard
 
-"gcode-toolpath@npm:~2.2.0":
-  version: 2.2.0
-  resolution: "gcode-toolpath@npm:2.2.0"
+"gcode-parser@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "gcode-parser@npm:2.1.1"
+  checksum: 66216b397cc676265bbb671881943a3c85021efc54b26f18f0963fd4bb12d0a604cdab91db1de183f195ab0c8ac37d0b5402fbaffe59ca0eaa73be0abcaf4b59
+  languageName: node
+  linkType: hard
+
+"gcode-toolpath@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "gcode-toolpath@npm:3.0.0"
   dependencies:
-    gcode-interpreter: ^2.0.2
-  checksum: 1f66581964f7ced7f34fc791c8a5cf05cd5a921d223856110f8c7b67f4172ad59e692e01154014aff01d7345c06a973a1c484198f5e80ab06156707b0d0fd0a5
+    gcode-interpreter: ^3.0.0
+  checksum: eca4002806560f153d1f5214bb3b5512b38583ca3b6817aeaaca9ebbf05bed9b3eeee4d995bebb83d37d11c8979c6710589b0c09e3db2701eda1616de92a0886
   languageName: node
   linkType: hard
 
