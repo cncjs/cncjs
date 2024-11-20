@@ -8060,7 +8060,7 @@ __metadata:
     font-awesome: ~4.7.0
     frac: ~1.1.2
     gcode-interpreter: ^3.0.0
-    gcode-parser: ^2.1.1
+    gcode-parser: ^2.2.0
     gcode-toolpath: ^3.0.0
     github-release-cli: ~2.0.0
     glob: ~7.1.3
@@ -11905,10 +11905,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gcode-parser@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "gcode-parser@npm:2.1.1"
-  checksum: 66216b397cc676265bbb671881943a3c85021efc54b26f18f0963fd4bb12d0a604cdab91db1de183f195ab0c8ac37d0b5402fbaffe59ca0eaa73be0abcaf4b59
+"gcode-parser@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "gcode-parser@npm:2.2.0"
+  checksum: f12ae239212af9b177e880703c4309809e620dfbdcf4f40bb51ca6859bebf2ba88c101c9a20a86a5b5421c5390fa41f4b125181493cebc757abf73c0b2cd0ff8
   languageName: node
   linkType: hard
 
