@@ -2,7 +2,6 @@ import {
   ensureArray,
   ensureNumber,
   ensurePositiveNumber,
-  ensureString,
 } from 'ensure-type';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
@@ -17,7 +16,7 @@ import Workflow, {
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
-import { isM0, isM1, isM6, replaceM6Commands } from '../../lib/gcode-utils';
+import x from '../../lib/json-stringify';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
 import config from '../../services/configstore';
@@ -26,14 +25,24 @@ import taskRunner from '../../services/taskrunner';
 import store from '../../store';
 import {
   GLOBAL_OBJECTS as globalObjects,
+  // Builtin Commands
+  BUILTIN_COMMAND_MSG,
+  BUILTIN_COMMAND_WAIT,
+  // M6 Tool Change
   TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
   TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_NO_PROBING,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING,
+  // Units
+  //IMPERIAL_UNITS,
+  //METRIC_UNITS,
+  // Write Source
   WRITE_SOURCE_CLIENT,
   WRITE_SOURCE_FEEDER
 } from '../constants';
+import * as builtinCommand from '../utils/builtin-command';
+import { isM0, isM1, isM6, replaceM6, stripComment } from '../utils/gcode';
 import TinyGRunner from './TinyGRunner';
 import {
   TINYG,
@@ -46,9 +55,6 @@ import {
 const SENDER_STATUS_NONE = 'none';
 const SENDER_STATUS_NEXT = 'next';
 const SENDER_STATUS_ACK = 'ack';
-
-// % commands
-const WAIT = '%wait';
 
 const log = logger('controller:TinyG');
 const noop = () => {};
@@ -207,33 +213,41 @@ class TinyGController {
         // https://github.com/synthetos/g2/wiki/JSON-Active-Comments
         dataFilter: (line, context) => {
           const originalLine = line;
-          /**
-           * line = 'G0X10 ; comment text'
-           * parts = ['G0X10 ', ' comment text', '']
-           */
-          const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
-          line = ensureString(parts[0]).trim();
+          line = stripComment(line).trim();
           context = this.populateContext(context);
 
           if (line[0] === '%') {
+            const cmd = builtinCommand.match(line);
+
+            // %msg
+            if (cmd === BUILTIN_COMMAND_MSG) {
+              log.debug(`${cmd}: line=${x(originalLine)}`);
+              // TODO: send notification message
+              return '';
+            }
+
             // %wait
-            if (line === WAIT) {
-              log.debug('Wait for the planner to empty');
-              this.feeder.hold({ data: WAIT, msg: originalLine }); // Hold reason
+            if (cmd === BUILTIN_COMMAND_WAIT) {
+              log.debug(`${cmd}: line=${x(originalLine)}`);
+              this.sender.hold({ data: BUILTIN_COMMAND_WAIT, msg: originalLine }); // Hold reason
               return 'G4 P0.5'; // dwell
             }
 
             // Expression
             // %_x=posx,_y=posy,_z=posz
-            evaluateAssignmentExpression(line.slice(1), context);
+            log.debug(`%: line=${x(originalLine)}`);
+            const expr = line.slice(1);
+            evaluateAssignmentExpression(expr, context);
             return '';
           }
 
-          // line="G0 X[posx - 8] Y[ymax]"
-          // > "G0 X2 Y50"
-          line = translateExpression(line, context);
-          const data = parser.parseLine(line, { flatten: true });
-          const words = ensureArray(data.words);
+          const { line: strippedLine, words } = parser.parseLine(line, {
+            flatten: true,
+            lineMode: 'stripped',
+          });
+
+          // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
+          line = translateExpression(strippedLine, context);
 
           // M0 Program Pause
           if (words.find(isM0)) {
@@ -264,10 +278,10 @@ class TinyGController {
               // Send M6 commands
             } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS) {
               // Ignore M6 commands
-              line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
+              line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
             } else if (isManualToolChange) {
               // Manual Tool Change
-              line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
+              line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
               this.feeder.hold({ data: 'M6', msg: originalLine }); // Hold reason
             }
           }
@@ -308,35 +322,42 @@ class TinyGController {
         // https://github.com/synthetos/g2/wiki/JSON-Active-Comments
         dataFilter: (line, context) => {
           const originalLine = line;
-          /**
-           * line = 'G0X10 ; comment text'
-           * parts = ['G0X10 ', ' comment text', '']
-           */
-          const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
-          line = ensureString(parts[0]).trim();
+          const { sent, received } = this.sender.state;
+          line = stripComment(line).trim();
           context = this.populateContext(context);
 
-          const { sent, received } = this.sender.state;
-
           if (line[0] === '%') {
+            const cmd = builtinCommand.match(line);
+
+            // %msg
+            if (cmd === BUILTIN_COMMAND_MSG) {
+              log.debug(`${cmd}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+              // TODO: send notification message
+              return '';
+            }
+
             // %wait
-            if (line === WAIT) {
-              log.debug(`Wait for the planner to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
-              this.sender.hold({ data: WAIT, msg: originalLine }); // Hold reason
+            if (cmd === BUILTIN_COMMAND_WAIT) {
+              log.debug(`${cmd}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+              this.sender.hold({ data: BUILTIN_COMMAND_WAIT, msg: originalLine }); // Hold reason
               return 'G4 P0.5'; // dwell
             }
 
             // Expression
             // %_x=posx,_y=posy,_z=posz
-            evaluateAssignmentExpression(line.slice(1), context);
+            log.debug(`%: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+            const expr = line.slice(1);
+            evaluateAssignmentExpression(expr, context);
             return '';
           }
 
-          // line="G0 X[posx - 8] Y[ymax]"
-          // > "G0 X2 Y50"
-          line = translateExpression(line, context);
-          const data = parser.parseLine(line, { flatten: true });
-          const words = ensureArray(data.words);
+          const { line: strippedLine, words } = parser.parseLine(line, {
+            flatten: true,
+            lineMode: 'stripped',
+          });
+
+          // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
+          line = translateExpression(strippedLine, context);
 
           // M0 Program Pause
           if (words.find(isM0)) {
@@ -369,10 +390,10 @@ class TinyGController {
               // Send M6 commands
             } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS) {
               // Ignore M6 commands
-              line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
+              line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
             } else if (isManualToolChange) {
               // Manual Tool Change
-              line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
+              line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
               this.event.trigger('gcode:pause');
               this.workflow.pause({ data: 'M6', msg: originalLine });
             }
@@ -586,7 +607,7 @@ class TinyGController {
         // Feeder
         if (this.feeder.state.hold) {
           const { data } = { ...this.feeder.state.holdReason };
-          if ((data === WAIT) && (qr >= this.runner.plannerBufferPoolSize)) {
+          if ((data === BUILTIN_COMMAND_WAIT) && (qr >= this.runner.plannerBufferPoolSize)) {
             this.feeder.unhold();
           }
         }

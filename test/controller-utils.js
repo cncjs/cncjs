@@ -1,5 +1,5 @@
 import { test } from 'tap';
-import { replaceM6Commands } from '../src/server/lib/gcode-utils';
+import { replaceM6 } from '../src/server/controllers/utils/gcode';
 
 test('replaceM6Commands', (t) => {
   t.test('replaces M6 commands with parentheses', t => {
@@ -47,7 +47,7 @@ test('replaceM6Commands', (t) => {
       MM66
     `;
 
-    const result = replaceM6Commands(gcode, (x) => `(${x})`);
+    const result = replaceM6(gcode, (x) => `(${x})`);
     t.equal(result, expectedOutput, 'should replace specified commands with parentheses');
     t.end();
   });

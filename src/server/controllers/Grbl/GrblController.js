@@ -1,7 +1,7 @@
 import {
   ensureArray,
+  ensureFiniteNumber,
   ensurePositiveNumber,
-  ensureString,
 } from 'ensure-type';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
@@ -16,7 +16,7 @@ import Workflow, {
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
-import { isM0, isM1, isM6, replaceM6Commands } from '../../lib/gcode-utils';
+import x from '../../lib/json-stringify';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
 import config from '../../services/configstore';
@@ -25,14 +25,25 @@ import taskRunner from '../../services/taskrunner';
 import store from '../../store';
 import {
   GLOBAL_OBJECTS as globalObjects,
+  // Builtin Commands
+  BUILTIN_COMMAND_MSG,
+  BUILTIN_COMMAND_WAIT,
+  // M6 Tool Change
   TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
   TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_NO_PROBING,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING,
+  // Units
+  IMPERIAL_UNITS,
+  METRIC_UNITS,
+  // Write Source
   WRITE_SOURCE_CLIENT,
   WRITE_SOURCE_FEEDER
 } from '../constants';
+import * as builtinCommand from '../utils/builtin-command';
+import { isM0, isM1, isM6, replaceM6, stripComment } from '../utils/gcode';
+import { mm2in } from '../utils/units';
 import GrblRunner from './GrblRunner';
 import {
   GRBL,
@@ -43,9 +54,6 @@ import {
   GRBL_ERRORS,
   GRBL_SETTINGS,
 } from './constants';
-
-// % commands
-const WAIT = '%wait';
 
 const log = logger('controller:Grbl');
 const noop = _.noop;
@@ -199,50 +207,59 @@ class GrblController {
       this.feeder = new Feeder({
         dataFilter: (line, context) => {
           const originalLine = line;
-          /**
-           * line = 'G0X10 ; comment text'
-           * parts = ['G0X10 ', ' comment text', '']
-           */
-          const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
-          line = ensureString(parts[0]).trim();
+          line = stripComment(line).trim();
           context = this.populateContext(context);
 
           if (line[0] === '%') {
+            const cmd = builtinCommand.match(line);
+
+            // %msg
+            if (cmd === BUILTIN_COMMAND_MSG) {
+              log.debug(`${cmd}: line=${x(originalLine)}`);
+              // TODO: send notification message
+              return '';
+            }
+
             // %wait
-            if (line === WAIT) {
-              log.debug('Wait for the planner to empty');
+            if (cmd === BUILTIN_COMMAND_WAIT) {
+              log.debug(`${cmd}: line=${x(originalLine)}`);
+              this.sender.hold({ data: BUILTIN_COMMAND_WAIT, msg: originalLine }); // Hold reason
               return 'G4 P0.5'; // dwell
             }
 
             // Expression
             // %_x=posx,_y=posy,_z=posz
-            evaluateAssignmentExpression(line.slice(1), context);
+            log.debug(`%: line=${x(originalLine)}`);
+            const expr = line.slice(1);
+            evaluateAssignmentExpression(expr, context);
             return '';
           }
 
-          // line="G0 X[posx - 8] Y[ymax]"
-          // > "G0 X2 Y50"
-          line = translateExpression(line, context);
-          const data = parser.parseLine(line, { flatten: true });
-          const words = ensureArray(data.words);
+          const { line: strippedLine, words } = parser.parseLine(line, {
+            flatten: true,
+            lineMode: 'stripped',
+          });
+
+          // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
+          line = translateExpression(strippedLine, context);
 
           // M0 Program Pause
           if (words.find(isM0)) {
-            log.debug('M0 Program Pause');
+            log.debug(`M0 Program Pause: line=${x(originalLine)}`);
 
             this.feeder.hold({ data: 'M0', msg: originalLine }); // Hold reason
           }
 
           // M1 Program Pause
           if (words.find(isM1)) {
-            log.debug('M1 Program Pause');
+            log.debug(`M1 Program Pause: line=${x(originalLine)}`);
 
             this.feeder.hold({ data: 'M1', msg: originalLine }); // Hold reason
           }
 
           // M6 Tool Change
           if (words.find(isM6)) {
-            log.debug('M6 Tool Change');
+            log.debug(`M6 Tool Change: line=${x(originalLine)}`);
 
             const toolChangePolicy = config.get('tool.toolChangePolicy');
             const isManualToolChange = [
@@ -255,11 +272,14 @@ class GrblController {
               // Send M6 commands
             } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS) {
               // Ignore M6 commands
-              line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
+              line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
             } else if (isManualToolChange) {
-              // Manual Tool Change
-              line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
               this.feeder.hold({ data: 'M6', msg: originalLine }); // Hold reason
+
+              // Manual Tool Change
+              line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
+
+              this.command('tool:change');
             }
           }
 
@@ -300,39 +320,46 @@ class GrblController {
         bufferSize: (128 - 8), // The default buffer size is 128 bytes
         dataFilter: (line, context) => {
           const originalLine = line;
-          /**
-           * line = 'G0X10 ; comment text'
-           * parts = ['G0X10 ', ' comment text', '']
-           */
-          const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
-          line = ensureString(parts[0]).trim();
+          const { sent, received } = this.sender.state;
+          line = stripComment(line).trim();
           context = this.populateContext(context);
 
-          const { sent, received } = this.sender.state;
-
           if (line[0] === '%') {
+            const cmd = builtinCommand.match(line);
+
+            // %msg
+            if (cmd === BUILTIN_COMMAND_MSG) {
+              log.debug(`${cmd}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+              // TODO: send notification message
+              return '';
+            }
+
             // %wait
-            if (line === WAIT) {
-              log.debug(`Wait for the planner to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
-              this.sender.hold({ data: WAIT, msg: originalLine }); // Hold reason
+            if (cmd === BUILTIN_COMMAND_WAIT) {
+              log.debug(`${cmd}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+              this.sender.hold({ data: BUILTIN_COMMAND_WAIT, msg: originalLine }); // Hold reason
               return 'G4 P0.5'; // dwell
             }
 
             // Expression
             // %_x=posx,_y=posy,_z=posz
-            evaluateAssignmentExpression(line.slice(1), context);
+            log.debug(`%: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+            const expr = line.slice(1);
+            evaluateAssignmentExpression(expr, context);
             return '';
           }
 
-          // line="G0 X[posx - 8] Y[ymax]"
-          // > "G0 X2 Y50"
-          line = translateExpression(line, context);
-          const data = parser.parseLine(line, { flatten: true });
-          const words = ensureArray(data.words);
+          const { line: strippedLine, words } = parser.parseLine(line, {
+            flatten: true,
+            lineMode: 'stripped',
+          });
+
+          // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
+          line = translateExpression(strippedLine, context);
 
           // M0 Program Pause
           if (words.find(isM0)) {
-            log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
+            log.debug(`M0 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             this.event.trigger('gcode:pause');
             this.workflow.pause({ data: 'M0', msg: originalLine });
@@ -340,7 +367,7 @@ class GrblController {
 
           // M1 Program Pause
           if (words.find(isM1)) {
-            log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
+            log.debug(`M1 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             this.event.trigger('gcode:pause');
             this.workflow.pause({ data: 'M1', msg: originalLine });
@@ -348,7 +375,7 @@ class GrblController {
 
           // M6 Tool Change
           if (words.find(isM6)) {
-            log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
+            log.debug(`M6 Tool Change: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             const toolChangePolicy = config.get('tool.toolChangePolicy');
             const isManualToolChange = [
@@ -361,12 +388,15 @@ class GrblController {
               // Send M6 commands
             } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS) {
               // Ignore M6 commands
-              line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
+              line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
             } else if (isManualToolChange) {
-              // Manual Tool Change
-              line = replaceM6Commands(line, (x) => `(${x})`); // replace with parentheses
               this.event.trigger('gcode:pause');
               this.workflow.pause({ data: 'M6', msg: originalLine });
+
+              // Manual Tool Change
+              line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
+
+              this.command('tool:change');
             }
           }
 
@@ -1447,7 +1477,54 @@ class GrblController {
 
             this.command('gcode:load', file, data, context, callback);
           });
-        }
+        },
+        'tool:change': () => {
+          const modal = this.runner.getModalGroup();
+          const units = {
+            'G20': IMPERIAL_UNITS,
+            'G21': METRIC_UNITS,
+          }[modal.units];
+          const mapValueToUnits = (value) => {
+            value = ensureFiniteNumber(value);
+            return (units === IMPERIAL_UNITS) ? mm2in(value) : value;
+          };
+          const toolChangeX = mapValueToUnits(config.get('tool.toolChangeX'));
+          const toolChangeY = mapValueToUnits(config.get('tool.toolChangeY'));
+          const toolChangeZ = mapValueToUnits(config.get('tool.toolChangeZ'));
+          const toolProbeCommand = config.get('tool.toolProbeCommand');
+          const toolProbeDistance = mapValueToUnits(config.get('tool.toolProbeDistance'));
+          const toolProbeFeedrate = mapValueToUnits(config.get('tool.toolProbeFeedrate'));
+          const toolProbeX = mapValueToUnits(config.get('tool.toolProbeX'));
+          const toolProbeY = mapValueToUnits(config.get('tool.toolProbeY'));
+          const toolProbeZ = mapValueToUnits(config.get('tool.toolProbeZ'));
+          //const touchPlateHeight = config.get('tool.touchPlateHeight');
+
+          const context = {
+            'tool_change_x': toolChangeX,
+            'tool_change_y': toolChangeY,
+            'tool_change_z': toolChangeZ,
+            'tool_probe_command': toolProbeCommand,
+            'tool_probe_distance': toolProbeDistance,
+            'tool_probe_feedrate': toolProbeFeedrate,
+            'tool_probe_x': toolProbeX,
+            'tool_probe_y': toolProbeY,
+            'tool_probe_z': toolProbeZ,
+          };
+
+          const lines = [];
+          lines.append('M5'); // stop spindle
+          lines.append('%wait');
+          lines.append('%_posx,_posy,_posz = posx,posy,posz'); // remember position
+          lines.append('G53 G0 Z[tool_change_z]');
+          lines.append('G53 G0 X[tool_change_x] Y[tool_change_y]');
+          lines.append('%wait');
+
+          lines.append('%msg Tool Change T[tool]');
+
+          lines.append('M0');
+
+          this.command('gcode', lines, context); // FIXME: lines must be prepended to the feeder
+        },
       }[cmd];
 
       if (!handler) {

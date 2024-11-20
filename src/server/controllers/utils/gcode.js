@@ -1,4 +1,4 @@
-import { ensureArray } from 'ensure-type';
+import { ensureArray, ensureString } from 'ensure-type';
 
 export const isM0 = (x) => {
   const pattern = /^M0*0$/i; // matches 'M0', 'M00', 'm0', 'm00', and 'M000' (case-insensitive)
@@ -12,6 +12,16 @@ export const isM1 = (x) => {
 
 export const isM6 = (x) => {
   const pattern = /^M0*6$/i; // matches 'M6', 'M06', 'm6', 'm06', and 'M006' (case-insensitive)
+  return pattern.test(x);
+};
+
+export const isM109 = (x) => {
+  const pattern = /^M0*109$/i;
+  return pattern.test(x);
+};
+
+export const isM190 = (x) => {
+  const pattern = /^M0*190$/i;
   return pattern.test(x);
 };
 
@@ -34,7 +44,12 @@ export const replaceCommands = (gcode, commands, callback) => {
   return updatedLines.join('\n');
 };
 
-export const replaceM6Commands = (gcode, callback) => {
+export const replaceM6 = (gcode, callback) => {
   // M6, M06, m6, m06, and M006 all refer to the same command "M6"
   return replaceCommands(gcode, ['M0*6'], callback);
+};
+
+export const stripComment = (line) => {
+  const re = new RegExp(/;.*$/); // Match anything after a semi-colon to the end of the line
+  return ensureString(line).replace(re, '');
 };
