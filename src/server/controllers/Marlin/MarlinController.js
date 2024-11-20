@@ -1,6 +1,7 @@
 import {
   ensureArray,
   ensurePositiveNumber,
+  ensureString,
 } from 'ensure-type';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
@@ -404,33 +405,35 @@ class MarlinController {
 
           // M109 Set extruder temperature and wait for the target temperature to be reached
           if (words.find(isM109)) {
-            log.debug(`Wait for extruder temperature to reach target temperature (${line})`);
+            log.debug(`M109 Wait for extruder temperature to reach target temperature: line=${x(originalLine)}`);
+
             this.feeder.hold({ data: 'M109', msg: originalLine }); // Hold reason
           }
 
           // M190 Set heated bed temperature and wait for the target temperature to be reached
           if (words.find(isM190)) {
-            log.debug(`Wait for heated bed temperature to reach target temperature (${line})`);
+            log.debug(`M190 Wait for heated bed temperature to reach target temperature: line=${x(originalLine)}`);
+
             this.feeder.hold({ data: 'M190', msg: originalLine }); // Hold reason
           }
 
           // M0 Program Pause
           if (words.find(isM0)) {
-            log.debug('M0 Program Pause');
+            log.debug(`M0 Program Pause: line=${x(originalLine)}`);
 
             this.feeder.hold({ data: 'M0', msg: originalLine }); // Hold reason
           }
 
           // M1 Program Pause
           if (words.find(isM1)) {
-            log.debug('M1 Program Pause');
+            log.debug(`M1 Program Pause: line=${x(originalLine)}`);
 
             this.feeder.hold({ data: 'M1', msg: originalLine }); // Hold reason
           }
 
           // M6 Tool Change
           if (words.find(isM6)) {
-            log.debug('M6 Tool Change');
+            log.debug(`M6 Tool Change: line=${x(originalLine)}`);
 
             const toolChangePolicy = config.get('tool.toolChangePolicy');
             const isManualToolChange = [
@@ -530,19 +533,21 @@ class MarlinController {
 
           // M109 Set extruder temperature and wait for the target temperature to be reached
           if (words.find(isM109)) {
-            log.debug(`Wait for extruder temperature to reach target temperature (${line}): line=${sent + 1}, sent=${sent}, received=${received}`);
+            log.debug(`M109 Wait for extruder temperature to reach target temperature: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+
             this.sender.hold({ data: 'M109', msg: originalLine }); // Hold reason
           }
 
           // M190 Set heated bed temperature and wait for the target temperature to be reached
           if (words.find(isM190)) {
-            log.debug(`Wait for heated bed temperature to reach target temperature (${line}): line=${sent + 1}, sent=${sent}, received=${received}`);
+            log.debug(`M190 Wait for heated bed temperature to reach target temperature: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+
             this.sender.hold({ data: 'M190', msg: originalLine }); // Hold reason
           }
 
           // M0 Program Pause
           if (words.find(isM0)) {
-            log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
+            log.debug(`M0 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             this.event.trigger('gcode:pause');
             this.workflow.pause({ data: 'M0', msg: originalLine });
@@ -550,7 +555,7 @@ class MarlinController {
 
           // M1 Program Pause
           if (words.find(isM1)) {
-            log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
+            log.debug(`M1 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             this.event.trigger('gcode:pause');
             this.workflow.pause({ data: 'M1', msg: originalLine });
@@ -558,7 +563,7 @@ class MarlinController {
 
           // M6 Tool Change
           if (words.find(isM6)) {
-            log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
+            log.debug(`M6 Tool Change: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             const toolChangePolicy = config.get('tool.toolChangePolicy');
             const isManualToolChange = [
@@ -756,9 +761,10 @@ class MarlinController {
           const ignoreErrors = config.get('state.controller.exception.ignoreErrors');
           const pauseError = !ignoreErrors;
           const { lines, received } = this.sender.state;
-          const line = lines[received] || '';
+          const line = ensureString(lines[received - 1]).trim();
+          const ln = received + 1;
 
-          this.emit('serialport:read', `> ${line.trim()} (line=${received + 1})`);
+          this.emit('serialport:read', `> ${line} (ln=${ln})`);
           this.emit('serialport:read', res.raw);
 
           if (pauseError) {

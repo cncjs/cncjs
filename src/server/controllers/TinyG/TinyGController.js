@@ -2,6 +2,7 @@ import {
   ensureArray,
   ensureNumber,
   ensurePositiveNumber,
+  ensureString,
 } from 'ensure-type';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
@@ -361,7 +362,7 @@ class TinyGController {
 
           // M0 Program Pause
           if (words.find(isM0)) {
-            log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
+            log.debug(`M0 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             this.event.trigger('gcode:pause');
             this.workflow.pause({ data: 'M0', msg: originalLine });
@@ -369,7 +370,7 @@ class TinyGController {
 
           // M1 Program Pause
           if (words.find(isM1)) {
-            log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
+            log.debug(`M1 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             this.event.trigger('gcode:pause');
             this.workflow.pause({ data: 'M1', msg: originalLine });
@@ -377,7 +378,7 @@ class TinyGController {
 
           // M6 Tool Change
           if (words.find(isM6)) {
-            log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
+            log.debug(`M6 Tool Change: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             const toolChangePolicy = config.get('tool.toolChangePolicy');
             const isManualToolChange = [
@@ -629,44 +630,26 @@ class TinyGController {
 
         if (statusCode !== 0) {
           const code = Number(statusCode);
-          const err = _.find(TINYG_STATUS_CODES, { code: code }) || {};
+          const error = _.find(TINYG_STATUS_CODES, { code: code }) || {};
 
           if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
             const ignoreErrors = config.get('state.controller.exception.ignoreErrors');
             const pauseError = !ignoreErrors;
             const { lines, received } = this.sender.state;
-            const line = lines[received - 1] || '';
+            const line = ensureString(lines[received - 1]).trim();
+            const ln = received + 1;
 
-            this.emit('serialport:read', `> ${line}`);
-            this.emit('serialport:read', JSON.stringify({
-              err: {
-                code: code,
-                msg: err.msg,
-                line: received,
-                data: line.trim()
-              }
-            }));
-
-            log.error('Error:', {
-              code: code,
-              msg: err.msg,
-              line: received,
-              data: line.trim()
-            });
+            this.emit('serialport:read', `> ${line} (ln=${ln})`);
+            this.emit('serialport:read', `error:${code} (${error.msg})`);
 
             if (pauseError) {
-              this.workflow.pause({ err: true, msg: err.msg });
+              this.workflow.pause({ err: true, msg: error.msg });
             }
 
             return;
           }
 
-          this.emit('serialport:read', JSON.stringify({
-            err: {
-              code: code,
-              msg: err.msg
-            }
-          }));
+          this.emit('serialport:read', `error:${code} (${error.msg})`);
         }
 
         if (this.workflow.state === WORKFLOW_STATE_IDLE) {

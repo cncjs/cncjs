@@ -1,6 +1,7 @@
 import {
   ensureArray,
   ensurePositiveNumber,
+  ensureString,
 } from 'ensure-type';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
@@ -328,7 +329,7 @@ class SmoothieController {
 
           // M0 Program Pause
           if (words.find(isM0)) {
-            log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
+            log.debug(`M0 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             this.event.trigger('gcode:pause');
             this.workflow.pause({ data: 'M0', msg: originalLine });
@@ -336,7 +337,7 @@ class SmoothieController {
 
           // M1 Program Pause
           if (words.find(isM1)) {
-            log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
+            log.debug(`M1 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             this.event.trigger('gcode:pause');
             this.workflow.pause({ data: 'M1', msg: originalLine });
@@ -344,7 +345,7 @@ class SmoothieController {
 
           // M6 Tool Change
           if (words.find(isM6)) {
-            log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
+            log.debug(`M6 Tool Change: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             const toolChangePolicy = config.get('tool.toolChangePolicy');
             const isManualToolChange = [
@@ -515,9 +516,10 @@ class SmoothieController {
           const ignoreErrors = config.get('state.controller.exception.ignoreErrors');
           const pauseError = !ignoreErrors;
           const { lines, received } = this.sender.state;
-          const line = lines[received] || '';
+          const line = ensureString(lines[received - 1]).trim();
+          const ln = received + 1;
 
-          this.emit('serialport:read', `> ${line.trim()} (line=${received + 1})`);
+          this.emit('serialport:read', `> ${line} (ln=${ln})`);
           this.emit('serialport:read', res.raw);
 
           if (pauseError) {

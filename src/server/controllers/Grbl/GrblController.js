@@ -2,6 +2,7 @@ import {
   ensureArray,
   ensureFiniteNumber,
   ensurePositiveNumber,
+  ensureString,
 } from 'ensure-type';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
@@ -569,9 +570,10 @@ class GrblController {
           const ignoreErrors = config.get('state.controller.exception.ignoreErrors');
           const pauseError = !ignoreErrors;
           const { lines, received } = this.sender.state;
-          const line = lines[received] || '';
+          const line = ensureString(lines[received - 1]).trim();
+          const ln = received + 1;
 
-          this.emit('serialport:read', `> ${line.trim()} (line=${received + 1})`);
+          this.emit('serialport:read', `> ${line} (ln=${ln})`);
           if (error) {
             // Grbl v1.1
             this.emit('serialport:read', `error:${code} (${error.message})`);
