@@ -3,7 +3,6 @@ import Uri from 'jsuri';
 import _get from 'lodash/get';
 import pubsub from 'pubsub-js';
 import React, { useEffect, useRef } from 'react';
-import ResizeObserver from 'resize-observer-polyfill';
 import styled from 'styled-components';
 import settings from '@app/config/settings';
 import Iframe from '@app/components/Iframe';
@@ -166,7 +165,7 @@ function Custom({
         }
 
         iframeRef.current = iframe;
-
+        /*
         const target = iframe.contentDocument.body;
         const nextHeight = target.offsetHeight;
         iframe.style.height = `${nextHeight}px`;
@@ -177,6 +176,7 @@ function Custom({
           iframe.style.height = `${nextHeight}px`;
         });
         observer.observe(target);
+        */
       }}
       onBeforeUnload={({ event }) => {
         iframeRef.current = null;
