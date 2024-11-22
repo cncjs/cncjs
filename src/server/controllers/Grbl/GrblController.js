@@ -993,7 +993,7 @@ class GrblController {
 
     // Restrict the function to execute once within the specified time interval, occurring only on the trailing edge of the timeout.
     const queryActivity = _.throttle(() => {
-      if (this.isOpen()) {
+      if (this.isOpen) {
         this.connection.write('?');
       }
     }, 2000, {
