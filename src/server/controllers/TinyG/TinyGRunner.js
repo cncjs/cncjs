@@ -459,6 +459,11 @@ class TinyGRunner extends events.EventEmitter {
       return _.get(state, 'sr.wpos', {});
     }
 
+    getWorkCoordinateSystem(state = this.state) {
+      const defaultWCS = 'G54';
+      return _.get(state, 'sr.modal.wcs', defaultWCS);
+    }
+
     getModalGroup(state = this.state) {
       return _.get(state, 'sr.modal', {});
     }

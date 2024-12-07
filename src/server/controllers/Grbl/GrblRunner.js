@@ -217,6 +217,11 @@ class GrblRunner extends events.EventEmitter {
       return _.get(state, 'parserstate.modal', {});
     }
 
+    getWorkCoordinateSystem(state = this.state) {
+      const defaultWCS = 'G54';
+      return _.get(state, 'parserstate.modal.wcs', defaultWCS);
+    }
+
     getTool(state = this.state) {
       return Number(_.get(state, 'parserstate.tool')) || 0;
     }

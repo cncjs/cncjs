@@ -4,7 +4,7 @@ import {
   ensurePositiveNumber,
   ensureString,
 } from 'ensure-type';
-import * as parser from 'gcode-parser';
+import * as gcodeParser from 'gcode-parser';
 import _ from 'lodash';
 import SerialConnection from '../../lib/SerialConnection';
 import EventTrigger from '../../lib/EventTrigger';
@@ -43,7 +43,7 @@ import {
   WRITE_SOURCE_FEEDER
 } from '../constants';
 import * as builtinCommand from '../utils/builtin-command';
-import { isM0, isM1, isM6, replaceM6, stripComment } from '../utils/gcode';
+import { isM0, isM1, isM6, replaceM6 } from '../utils/gcode';
 import { mm2in } from '../utils/units';
 import GrblRunner from './GrblRunner';
 import {
@@ -208,24 +208,26 @@ class GrblController {
       this.feeder = new Feeder({
         dataFilter: (line, context) => {
           const originalLine = line;
-          line = stripComment(line).trim();
+          line = line.trim();
           context = this.populateContext(context);
 
           if (line[0] === '%') {
-            const cmd = builtinCommand.match(line);
+            const [command, commandArgs] = ensureArray(builtinCommand.match(line));
 
             // %msg
-            if (cmd === BUILTIN_COMMAND_MSG) {
-              log.debug(`${cmd}: line=${x(originalLine)}`);
+            if (command === BUILTIN_COMMAND_MSG) {
+              log.debug(`${command}: line=${x(originalLine)}`);
               // TODO: send notification message
               return '';
             }
 
             // %wait
-            if (cmd === BUILTIN_COMMAND_WAIT) {
-              log.debug(`${cmd}: line=${x(originalLine)}`);
+            if (command === BUILTIN_COMMAND_WAIT) {
+              log.debug(`${command}: line=${x(originalLine)}`);
               this.sender.hold({ data: BUILTIN_COMMAND_WAIT, msg: originalLine }); // Hold reason
-              return 'G4 P0.5'; // dwell
+              const delay = parseFloat(commandArgs) || 0.5; // in seconds
+              const pauseValue = delay.toFixed(3) * 1;
+              return `G4 P${pauseValue}`; // dwell
             }
 
             // Expression
@@ -236,13 +238,14 @@ class GrblController {
             return '';
           }
 
-          const { line: strippedLine, words } = parser.parseLine(line, {
+          // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
+          line = translateExpression(line, context);
+
+          const { line: strippedLine, words } = gcodeParser.parseLine(line, {
             flatten: true,
             lineMode: 'stripped',
           });
-
-          // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
-          line = translateExpression(strippedLine, context);
+          line = strippedLine;
 
           // M0 Program Pause
           if (words.find(isM0)) {
@@ -322,24 +325,26 @@ class GrblController {
         dataFilter: (line, context) => {
           const originalLine = line;
           const { sent, received } = this.sender.state;
-          line = stripComment(line).trim();
+          line = line.trim();
           context = this.populateContext(context);
 
           if (line[0] === '%') {
-            const cmd = builtinCommand.match(line);
+            const [command, commandArgs] = ensureArray(builtinCommand.match(line));
 
             // %msg
-            if (cmd === BUILTIN_COMMAND_MSG) {
-              log.debug(`${cmd}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+            if (command === BUILTIN_COMMAND_MSG) {
+              log.debug(`${command}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
               // TODO: send notification message
               return '';
             }
 
             // %wait
-            if (cmd === BUILTIN_COMMAND_WAIT) {
-              log.debug(`${cmd}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+            if (command === BUILTIN_COMMAND_WAIT) {
+              log.debug(`${command}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
               this.sender.hold({ data: BUILTIN_COMMAND_WAIT, msg: originalLine }); // Hold reason
-              return 'G4 P0.5'; // dwell
+              const delay = parseFloat(commandArgs) || 0.5; // in seconds
+              const pauseValue = delay.toFixed(3) * 1;
+              return `G4 P${pauseValue}`; // dwell
             }
 
             // Expression
@@ -350,13 +355,14 @@ class GrblController {
             return '';
           }
 
-          const { line: strippedLine, words } = parser.parseLine(line, {
+          // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
+          line = translateExpression(line, context);
+
+          const { line: strippedLine, words } = gcodeParser.parseLine(line, {
             flatten: true,
             lineMode: 'stripped',
           });
-
-          // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
-          line = translateExpression(strippedLine, context);
+          line = strippedLine;
 
           // M0 Program Pause
           if (words.find(isM0)) {
@@ -1490,6 +1496,7 @@ class GrblController {
             value = ensureFiniteNumber(value);
             return (units === IMPERIAL_UNITS) ? mm2in(value) : value;
           };
+          const toolChangePolicy = config.get('tool.toolChangePolicy');
           const toolChangeX = mapValueToUnits(config.get('tool.toolChangeX'));
           const toolChangeY = mapValueToUnits(config.get('tool.toolChangeY'));
           const toolChangeZ = mapValueToUnits(config.get('tool.toolChangeZ'));
@@ -1499,7 +1506,7 @@ class GrblController {
           const toolProbeX = mapValueToUnits(config.get('tool.toolProbeX'));
           const toolProbeY = mapValueToUnits(config.get('tool.toolProbeY'));
           const toolProbeZ = mapValueToUnits(config.get('tool.toolProbeZ'));
-          //const touchPlateHeight = config.get('tool.touchPlateHeight');
+          const touchPlateHeight = config.get('tool.touchPlateHeight');
 
           const context = {
             'tool_change_x': toolChangeX,
@@ -1511,21 +1518,82 @@ class GrblController {
             'tool_probe_x': toolProbeX,
             'tool_probe_y': toolProbeY,
             'tool_probe_z': toolProbeZ,
+            'touch_plate_height': touchPlateHeight,
+            'mapWCSToP': function (wcs) {
+              return {
+                'G54': 1,
+                'G55': 2,
+                'G56': 3,
+                'G57': 4,
+                'G58': 5,
+                'G59': 6,
+              }[wcs] || 0;
+            },
           };
 
           const lines = [];
-          lines.append('M5'); // stop spindle
-          lines.append('%wait');
-          lines.append('%_posx,_posy,_posz = posx,posy,posz'); // remember position
-          lines.append('G53 G0 Z[tool_change_z]');
-          lines.append('G53 G0 X[tool_change_x] Y[tool_change_y]');
-          lines.append('%wait');
 
-          lines.append('%msg Tool Change T[tool]');
+          // Wait until the planner queue is empty
+          lines.push('%wait');
 
-          lines.append('M0');
+          // Remember original position and spindle state
+          lines.push('%_posx=posx');
+          lines.push('%_posy=posy');
+          lines.push('%_posz=posz');
+          lines.push('%_modal_spindle=modal.spindle');
 
-          this.command('gcode', lines, context); // FIXME: lines must be prepended to the feeder
+          // Stop the spindle
+          lines.push('M5');
+
+          // Absolute positioning
+          lines.push('G90');
+
+          // Move to the tool change position
+          lines.push('G53 G0 Z[tool_change_z]');
+          lines.push('G53 G0 X[tool_change_x] Y[tool_change_y]');
+          lines.push('%wait');
+
+          // Prompt the user to change the tool
+          lines.push('%msg Tool Change T[tool]');
+          lines.push('M0');
+
+          // Move to the tool probe position
+          lines.push('G53 G0 X[tool_probe_x] Y[tool_probe_y]');
+          lines.push('G53 G0 Z[tool_probe_z]');
+          lines.push('%wait');
+
+          // Probe the tool
+          lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
+
+          if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING) {
+            // Set coordinate system offset
+            lines.push('G10 L20 P[mapWCSToP(modal.wcs)] Z[touch_plate_height]');
+          } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING) {
+            // Wait 1 second
+            lines.push('%wait 1');
+            // Set tool length offset
+            lines.push('G43.1 Z[posz - touch_plate_height]');
+          }
+
+          // Move to the tool change position
+          lines.push('G53 G0 Z[tool_change_z]');
+          lines.push('G53 G0 X[tool_change_x] Y[tool_change_y]');
+          lines.push('%wait');
+
+          // Prompt the user to restart the spindle
+          lines.push('%msg Restart Spindle');
+          lines.push('M0');
+
+          // Restore the position and spindle state
+          lines.push('G90');
+          lines.push('G0 X[_posx] Y[_posy]');
+          lines.push('G0 Z[_posz]');
+          lines.push('[_modal_spindle]');
+
+          // Wait 5 seconds for the spindle to speed up
+          lines.push('%wait 5');
+
+          this.command('gcode', lines, context);
         },
       }[cmd];
 

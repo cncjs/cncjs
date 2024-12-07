@@ -1,4 +1,4 @@
-import { ensureArray, ensureString } from 'ensure-type';
+import { ensureArray } from 'ensure-type';
 
 export const isM0 = (x) => {
   const pattern = /^M0*0$/i; // matches 'M0', 'M00', 'm0', 'm00', and 'M000' (case-insensitive)
@@ -47,9 +47,4 @@ export const replaceCommands = (gcode, commands, callback) => {
 export const replaceM6 = (gcode, callback) => {
   // M6, M06, m6, m06, and M006 all refer to the same command "M6"
   return replaceCommands(gcode, ['M0*6'], callback);
-};
-
-export const stripComment = (line) => {
-  const re = new RegExp(/;.*$/); // Match anything after a semi-colon to the end of the line
-  return ensureString(line).replace(re, '');
 };

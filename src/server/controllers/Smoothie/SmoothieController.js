@@ -3,7 +3,7 @@ import {
   ensurePositiveNumber,
   ensureString,
 } from 'ensure-type';
-import * as parser from 'gcode-parser';
+import * as gcodeParser from 'gcode-parser';
 import _ from 'lodash';
 import SerialConnection from '../../lib/SerialConnection';
 import EventTrigger from '../../lib/EventTrigger';
@@ -42,7 +42,7 @@ import {
   WRITE_SOURCE_FEEDER
 } from '../constants';
 import * as builtinCommand from '../utils/builtin-command';
-import { isM0, isM1, isM6, replaceM6, stripComment } from '../utils/gcode';
+import { isM0, isM1, isM6, replaceM6 } from '../utils/gcode';
 import SmoothieRunner from './SmoothieRunner';
 import {
   SMOOTHIE,
@@ -180,24 +180,28 @@ class SmoothieController {
       this.feeder = new Feeder({
         dataFilter: (line, context) => {
           const originalLine = line;
-          line = stripComment(line).trim();
+          line = line.trim();
           context = this.populateContext(context);
 
           if (line[0] === '%') {
-            const cmd = builtinCommand.match(line);
+            const [command, commandArgs] = ensureArray(builtinCommand.match(line));
 
             // %msg
-            if (cmd === BUILTIN_COMMAND_MSG) {
-              log.debug(`${cmd}: line=${x(originalLine)}`);
+            if (command === BUILTIN_COMMAND_MSG) {
+              log.debug(`${command}: line=${x(originalLine)}`);
               // TODO: send notification message
               return '';
             }
 
             // %wait
-            if (cmd === BUILTIN_COMMAND_WAIT) {
-              log.debug(`${cmd}: line=${x(originalLine)}`);
+            if (command === BUILTIN_COMMAND_WAIT) {
+              log.debug(`${command}: line=${x(originalLine)}`);
               this.sender.hold({ data: BUILTIN_COMMAND_WAIT, msg: originalLine }); // Hold reason
-              return 'G4 P0.5'; // dwell
+              // On Marlin and Smoothie, the "S" parameter will wait for seconds, while the "P" parameter will wait for milliseconds.
+              // "G4 S2" and "G4 P2000" are equivalent.
+              const delay = parseFloat(commandArgs) || 0.5; // in seconds
+              const pauseValue = delay.toFixed(3) * 1;
+              return `G4 S${pauseValue}`; // dwell
             }
 
             // Expression
@@ -208,13 +212,14 @@ class SmoothieController {
             return '';
           }
 
-          const { line: strippedLine, words } = parser.parseLine(line, {
+          // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
+          line = translateExpression(line, context);
+
+          const { line: strippedLine, words } = gcodeParser.parseLine(line, {
             flatten: true,
             lineMode: 'stripped',
           });
-
-          // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
-          line = translateExpression(strippedLine, context);
+          line = strippedLine;
 
           // M0 Program Pause
           if (words.find(isM0)) {
@@ -291,24 +296,28 @@ class SmoothieController {
         dataFilter: (line, context) => {
           const originalLine = line;
           const { sent, received } = this.sender.state;
-          line = stripComment(line).trim();
+          line = line.trim();
           context = this.populateContext(context);
 
           if (line[0] === '%') {
-            const cmd = builtinCommand.match(line);
+            const [command, commandArgs] = ensureArray(builtinCommand.match(line));
 
             // %msg
-            if (cmd === BUILTIN_COMMAND_MSG) {
-              log.debug(`${cmd}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+            if (command === BUILTIN_COMMAND_MSG) {
+              log.debug(`${command}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
               // TODO: send notification message
               return '';
             }
 
             // %wait
-            if (cmd === BUILTIN_COMMAND_WAIT) {
-              log.debug(`${cmd}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+            if (command === BUILTIN_COMMAND_WAIT) {
+              log.debug(`${command}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
               this.sender.hold({ data: BUILTIN_COMMAND_WAIT, msg: originalLine }); // Hold reason
-              return 'G4 P0.5'; // dwell
+              // On Marlin and Smoothie, the "S" parameter will wait for seconds, while the "P" parameter will wait for milliseconds.
+              // "G4 S2" and "G4 P2000" are equivalent.
+              const delay = parseFloat(commandArgs) || 0.5; // in seconds
+              const pauseValue = delay.toFixed(3) * 1;
+              return `G4 S${pauseValue}`; // dwell
             }
 
             // Expression
@@ -319,13 +328,14 @@ class SmoothieController {
             return '';
           }
 
-          const { line: strippedLine, words } = parser.parseLine(line, {
+          // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
+          line = translateExpression(line, context);
+
+          const { line: strippedLine, words } = gcodeParser.parseLine(line, {
             flatten: true,
             lineMode: 'stripped',
           });
-
-          // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
-          line = translateExpression(strippedLine, context);
+          line = strippedLine;
 
           // M0 Program Pause
           if (words.find(isM0)) {
