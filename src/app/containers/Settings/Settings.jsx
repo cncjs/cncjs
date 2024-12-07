@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import i18next from 'i18next';
 import Uri from 'jsuri';
 import _camelCase from 'lodash/camelCase';

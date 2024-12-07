@@ -8034,7 +8034,6 @@ __metadata:
     electron-builder: ~23.6.0
     electron-rebuild: ~3.2.7
     electron-store: ~8.1.0
-    ensure-array: ~1.0.0
     ensure-type: ^1.5.1
     errorhandler: ~1.5.0
     escodegen: ~1.11.1
@@ -10013,7 +10012,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ensure-array@npm:^1.0.0, ensure-array@npm:~1.0.0":
+"ensure-array@npm:^1.0.0":
   version: 1.0.0
   resolution: "ensure-array@npm:1.0.0"
   checksum: d071cd8c5a33fc6d3006db2c9abf12b0245b92045f0fd49d80e306566e94515a7e63dd9979c95365d9556c9f53395c0f747270ee6afd1950549692c507b92b88

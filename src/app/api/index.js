@@ -1,4 +1,4 @@
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import superagent from 'superagent';
 import superagentUse from 'superagent-use';
 import store from '../store';

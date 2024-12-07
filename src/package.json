@@ -26,7 +26,6 @@
     "debug": "~4.1.1",
     "deep-keys": "~0.5.0",
     "electron-store": "~8.1.0",
-    "ensure-array": "~1.0.0",
     "ensure-type": "^1.5.1",
     "errorhandler": "~1.5.0",
     "escodegen": "~1.11.1",

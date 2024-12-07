@@ -1,4 +1,4 @@
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 import mapValues from 'lodash/mapValues';

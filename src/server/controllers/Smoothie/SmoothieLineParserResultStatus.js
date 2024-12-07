@@ -1,6 +1,5 @@
 /* eslint no-bitwise: ["error", { "allow": ["&", "<<"] }] */
-import ensureArray from 'ensure-array';
-import { ensureNumber } from 'ensure-type';
+import { ensureArray, ensureNumber } from 'ensure-type';
 import _ from 'lodash';
 
 const floatPointNumber = '[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)';

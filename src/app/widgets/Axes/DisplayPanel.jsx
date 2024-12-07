@@ -1,5 +1,5 @@
 import chainedFunction from 'chained-function';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import includes from 'lodash/includes';
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
