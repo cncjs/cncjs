@@ -35,8 +35,8 @@ import {
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING,
   // Units
-  //IMPERIAL_UNITS,
-  //METRIC_UNITS,
+  IMPERIAL_UNITS,
+  METRIC_UNITS,
   // Write Source
   WRITE_SOURCE_CLIENT,
   WRITE_SOURCE_SERVER,
@@ -45,6 +45,7 @@ import {
 } from '../constants';
 import * as builtinCommand from '../utils/builtin-command';
 import { isM0, isM1, isM6, isM109, isM190, replaceM6 } from '../utils/gcode';
+import { mapPositionToUnits, mapValueToUnits } from '../utils/units';
 import MarlinRunner from './MarlinRunner';
 import interpret from './interpret';
 import {
@@ -1450,7 +1451,112 @@ class MarlinController {
 
             this.command('gcode:load', file, data, context, callback);
           });
-        }
+        },
+        'tool:change': () => {
+          const modal = this.runner.getModalGroup();
+          const units = {
+            'G20': IMPERIAL_UNITS,
+            'G21': METRIC_UNITS,
+          }[modal.units];
+          const toolChangePolicy = config.get('tool.toolChangePolicy');
+          const toolChangeX = mapPositionToUnits(config.get('tool.toolChangeX'), units);
+          const toolChangeY = mapPositionToUnits(config.get('tool.toolChangeY'), units);
+          const toolChangeZ = mapPositionToUnits(config.get('tool.toolChangeZ'), units);
+          const toolProbeCommand = config.get('tool.toolProbeCommand');
+          const toolProbeDistance = mapValueToUnits(config.get('tool.toolProbeDistance'), units);
+          const toolProbeFeedrate = mapValueToUnits(config.get('tool.toolProbeFeedrate'), units);
+          const toolProbeX = mapPositionToUnits(config.get('tool.toolProbeX'), units);
+          const toolProbeY = mapPositionToUnits(config.get('tool.toolProbeY'), units);
+          const toolProbeZ = mapPositionToUnits(config.get('tool.toolProbeZ'), units);
+          const touchPlateHeight = mapValueToUnits(config.get('tool.touchPlateHeight'), units);
+
+          const context = {
+            'tool_change_x': toolChangeX,
+            'tool_change_y': toolChangeY,
+            'tool_change_z': toolChangeZ,
+            'tool_probe_command': toolProbeCommand,
+            'tool_probe_distance': toolProbeDistance,
+            'tool_probe_feedrate': toolProbeFeedrate,
+            'tool_probe_x': toolProbeX,
+            'tool_probe_y': toolProbeY,
+            'tool_probe_z': toolProbeZ,
+            'touch_plate_height': touchPlateHeight,
+            'mapWCSToP': function (wcs) {
+              return {
+                'G54': 1,
+                'G55': 2,
+                'G56': 3,
+                'G57': 4,
+                'G58': 5,
+                'G59': 6,
+              }[wcs] || 0;
+            },
+          };
+
+          const lines = [];
+
+          // Wait until the planner queue is empty
+          lines.push('%wait');
+
+          // Remember original position and spindle state
+          lines.push('%_posx=posx');
+          lines.push('%_posy=posy');
+          lines.push('%_posz=posz');
+          lines.push('%_modal_spindle=modal.spindle');
+
+          // Stop the spindle
+          lines.push('M5');
+
+          // Absolute positioning
+          lines.push('G90');
+
+          // Move to the tool change position
+          lines.push('G53 G0 Z[tool_change_z]');
+          lines.push('G53 G0 X[tool_change_x] Y[tool_change_y]');
+          lines.push('%wait');
+
+          // Prompt the user to change the tool
+          lines.push('%msg Tool Change T[tool]');
+          lines.push('M0');
+
+          // Move to the tool probe position
+          lines.push('G53 G0 X[tool_probe_x] Y[tool_probe_y]');
+          lines.push('G53 G0 Z[tool_probe_z]');
+          lines.push('%wait');
+
+          // Probe the tool
+          lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
+
+          if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING) {
+            // Set the current work Z position (posz) to the touch plate height
+            lines.push('G92 Z[touch_plate_height]');
+          } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING) {
+            // Pause for 1 second
+            lines.push('%wait 1');
+            // Adjust the work Z position by subtracting the touch plate height from the current work Z position (posz)
+            lines.push('G92 Z[posz - touch_plate_height]');
+          }
+
+          // Move to the tool change position
+          lines.push('G53 G0 Z[tool_change_z]');
+          lines.push('G53 G0 X[tool_change_x] Y[tool_change_y]');
+          lines.push('%wait');
+
+          // Prompt the user to restart the spindle
+          lines.push('%msg Restart Spindle');
+          lines.push('M0');
+
+          // Restore the position and spindle state
+          lines.push('G90');
+          lines.push('G0 X[_posx] Y[_posy]');
+          lines.push('G0 Z[_posz]');
+          lines.push('[_modal_spindle]');
+
+          // Wait 5 seconds for the spindle to speed up
+          lines.push('%wait 5');
+
+          this.command('gcode', lines, context);
+        },
       }[cmd];
 
       if (!handler) {

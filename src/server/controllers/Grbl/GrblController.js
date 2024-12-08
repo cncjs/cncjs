@@ -1,6 +1,5 @@
 import {
   ensureArray,
-  ensureFiniteNumber,
   ensurePositiveNumber,
   ensureString,
 } from 'ensure-type';
@@ -44,7 +43,7 @@ import {
 } from '../constants';
 import * as builtinCommand from '../utils/builtin-command';
 import { isM0, isM1, isM6, replaceM6 } from '../utils/gcode';
-import { mm2in } from '../utils/units';
+import { mapPositionToUnits, mapValueToUnits } from '../utils/units';
 import GrblRunner from './GrblRunner';
 import {
   GRBL,
@@ -1492,21 +1491,17 @@ class GrblController {
             'G20': IMPERIAL_UNITS,
             'G21': METRIC_UNITS,
           }[modal.units];
-          const mapValueToUnits = (value) => {
-            value = ensureFiniteNumber(value);
-            return (units === IMPERIAL_UNITS) ? mm2in(value) : value;
-          };
           const toolChangePolicy = config.get('tool.toolChangePolicy');
-          const toolChangeX = mapValueToUnits(config.get('tool.toolChangeX'));
-          const toolChangeY = mapValueToUnits(config.get('tool.toolChangeY'));
-          const toolChangeZ = mapValueToUnits(config.get('tool.toolChangeZ'));
+          const toolChangeX = mapPositionToUnits(config.get('tool.toolChangeX'), units);
+          const toolChangeY = mapPositionToUnits(config.get('tool.toolChangeY'), units);
+          const toolChangeZ = mapPositionToUnits(config.get('tool.toolChangeZ'), units);
           const toolProbeCommand = config.get('tool.toolProbeCommand');
-          const toolProbeDistance = mapValueToUnits(config.get('tool.toolProbeDistance'));
-          const toolProbeFeedrate = mapValueToUnits(config.get('tool.toolProbeFeedrate'));
-          const toolProbeX = mapValueToUnits(config.get('tool.toolProbeX'));
-          const toolProbeY = mapValueToUnits(config.get('tool.toolProbeY'));
-          const toolProbeZ = mapValueToUnits(config.get('tool.toolProbeZ'));
-          const touchPlateHeight = config.get('tool.touchPlateHeight');
+          const toolProbeDistance = mapValueToUnits(config.get('tool.toolProbeDistance'), units);
+          const toolProbeFeedrate = mapValueToUnits(config.get('tool.toolProbeFeedrate'), units);
+          const toolProbeX = mapPositionToUnits(config.get('tool.toolProbeX'), units);
+          const toolProbeY = mapPositionToUnits(config.get('tool.toolProbeY'), units);
+          const toolProbeZ = mapPositionToUnits(config.get('tool.toolProbeZ'), units);
+          const touchPlateHeight = mapValueToUnits(config.get('tool.touchPlateHeight'), units);
 
           const context = {
             'tool_change_x': toolChangeX,
@@ -1569,7 +1564,7 @@ class GrblController {
             // Set coordinate system offset
             lines.push('G10 L20 P[mapWCSToP(modal.wcs)] Z[touch_plate_height]');
           } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING) {
-            // Wait 1 second
+            // Pause for 1 second
             lines.push('%wait 1');
             // Set tool length offset
             lines.push('G43.1 Z[posz - touch_plate_height]');
