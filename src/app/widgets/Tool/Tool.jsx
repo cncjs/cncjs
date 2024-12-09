@@ -10,7 +10,6 @@ import {
   METRIC_UNITS
 } from '../../constants';
 import {
-  MODAL_PREVIEW,
   TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
   TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING,
@@ -47,6 +46,7 @@ class Tool extends PureComponent {
     const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
     const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
     const step = (units === METRIC_UNITS) ? 1 : 0.1;
+    const canGetMachinePosition = canClick;
 
     if (!toolConfig) {
       return (
@@ -176,12 +176,15 @@ class Tool extends PureComponent {
                       </div>
                       <button
                         type="button"
+                        disabled={!canGetMachinePosition}
+                        onClick={() => {
+                          const value = state.machinePosition?.[axis];
+                          if (value !== undefined) {
+                            actions.setToolChangePosition({ [axis]: value });
+                          }
+                        }}
                         className="btn btn-default"
                         style={{ padding: '4px 8px' }}
-                        onClick={() => {
-                          const value = state.machinePosition[axis];
-                          actions.setToolChangePosition({ [axis]: value });
-                        }}
                         title={i18n._('Use the current machine position as the tool change position.')}
                       >
                         <Image src={iconPin} width="14" height="14" />
@@ -239,12 +242,15 @@ class Tool extends PureComponent {
                           </div>
                           <button
                             type="button"
+                            disabled={!canGetMachinePosition}
+                            onClick={() => {
+                              const value = state.machinePosition?.[axis];
+                              if (value !== undefined) {
+                                actions.setToolProbePosition({ [axis]: value });
+                              }
+                            }}
                             className="btn btn-default"
                             style={{ padding: '4px 8px' }}
-                            onClick={() => {
-                              const value = state.machinePosition[axis];
-                              actions.setToolProbePosition({ [axis]: value });
-                            }}
                             title={i18n._('Use the current machine position as the tool probe position.')}
                           >
                             <Image src={iconPin} width="14" height="14" />
@@ -393,20 +399,6 @@ class Tool extends PureComponent {
                         <span className="input-group-addon">{displayUnits}</span>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div className="row no-gutters">
-                  <div className="col-xs-12">
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-default"
-                      onClick={() => {
-                        actions.openModal(MODAL_PREVIEW);
-                      }}
-                      disabled={!canClick}
-                    >
-                      {i18n._('Preview Probe Commands')}
-                    </button>
                   </div>
                 </div>
               </div>

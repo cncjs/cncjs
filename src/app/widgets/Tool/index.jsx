@@ -22,23 +22,15 @@ import {
   METRIC_UNITS,
   // Grbl
   GRBL,
-  GRBL_ACTIVE_STATE_IDLE,
   // Marlin
   MARLIN,
   // Smoothie
   SMOOTHIE,
-  SMOOTHIE_ACTIVE_STATE_IDLE,
   // TinyG
   TINYG,
-  TINYG_MACHINE_STATE_READY,
-  TINYG_MACHINE_STATE_STOP,
-  TINYG_MACHINE_STATE_END,
-  // Workflow
-  WORKFLOW_STATE_IDLE
 } from '../../constants';
 import {
   MODAL_NONE,
-  //MODAL_PREVIEW
   TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
 } from './constants';
 import styles from './index.styl';
@@ -490,52 +482,15 @@ class ToolWidget extends PureComponent {
   }
 
   canClick() {
-    const { port, workflow } = this.state;
+    const { port } = this.state;
     const controllerType = this.state.controller.type;
-    const controllerState = this.state.controller.state;
 
     if (!port) {
-      return false;
-    }
-    if (workflow.state !== WORKFLOW_STATE_IDLE) {
       return false;
     }
     if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {
       return false;
     }
-    if (controllerType === GRBL) {
-      const activeState = get(controllerState, 'status.activeState');
-      const states = [
-        GRBL_ACTIVE_STATE_IDLE
-      ];
-      if (!includes(states, activeState)) {
-        return false;
-      }
-    }
-    if (controllerType === MARLIN) {
-      // Marlin does not have machine state
-    }
-    if (controllerType === SMOOTHIE) {
-      const activeState = get(controllerState, 'status.activeState');
-      const states = [
-        SMOOTHIE_ACTIVE_STATE_IDLE
-      ];
-      if (!includes(states, activeState)) {
-        return false;
-      }
-    }
-    if (controllerType === TINYG) {
-      const machineState = get(controllerState, 'sr.machineState');
-      const states = [
-        TINYG_MACHINE_STATE_READY,
-        TINYG_MACHINE_STATE_STOP,
-        TINYG_MACHINE_STATE_END
-      ];
-      if (!includes(states, machineState)) {
-        return false;
-      }
-    }
-
     return true;
   }
 
@@ -622,9 +577,6 @@ class ToolWidget extends PureComponent {
             { [styles.hidden]: minimized }
           )}
         >
-          {/*state.modal.name === MODAL_PREVIEW &&
-            <RunProbe state={state} actions={actions} />
-          */}
           <Tool
             state={state}
             actions={actions}

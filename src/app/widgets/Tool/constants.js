@@ -9,8 +9,6 @@ export const TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING = 4;
 
 export const {
   MODAL_NONE,
-  MODAL_PREVIEW
-} = constants('widgets/Probe', [
+} = constants('widgets/Tool', [
   'MODAL_NONE',
-  'MODAL_PREVIEW'
 ]);
