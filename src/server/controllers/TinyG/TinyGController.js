@@ -124,9 +124,6 @@ class TinyGController {
       admo: true, // arc distance mode
       frmo: true, // feed rate mode
       tool: true, // active tool
-      tofx: true,
-      tofy: true,
-      tofz: true,
       posx: true,
       posy: true,
       posz: true,
@@ -144,7 +141,14 @@ class TinyGController {
       spc: true, // [edge-101.03] Spindle control
       sps: true, // [edge-082.10] Spindle speed
       com: true, // [edge-082.10] Mist coolant
-      cof: true // [edge-082.10] Flood coolant
+      cof: true, // [edge-082.10] Flood coolant
+      // Tool table offsets
+      tofx: true,
+      tofy: true,
+      tofz: true,
+      tofa: true,
+      tofb: true,
+      tofc: true,
     };
 
     timer = {
