@@ -139,8 +139,8 @@ class TinyGController {
       mpoa: true,
       mpob: true,
       mpoc: true,
-      spe: true, // [edge-082.10] Spindle enable (removed in edge-101.03)
-      spd: true, // [edge-082.10] Spindle direction (removed in edge-101.03)
+      //spe: true, // [edge-082.10] Spindle enable (removed in edge-101.03)
+      //spd: true, // [edge-082.10] Spindle direction (removed in edge-101.03)
       spc: true, // [edge-101.03] Spindle control
       sps: true, // [edge-082.10] Spindle speed
       com: true, // [edge-082.10] Mist coolant
@@ -772,8 +772,8 @@ class TinyGController {
       send('{sv:1}');
 
       // Status report interval
-      // in milliseconds (50ms minimum interval)
-      send('{si:100}');
+      // Set the status interval to 200ms
+      send('{si:200}');
 
       // Check whether the spindle and coolant commands are supported
       await delay(100);
@@ -1585,7 +1585,7 @@ class TinyGController {
             // Pause for 1 second
             lines.push('%wait 1');
             // Set tool length offset
-            lines.push('{{tofz:[posz - touch_plate_height]}}');
+            lines.push('{tofz:[posz - touch_plate_height]}');
           }
 
           // Move to the tool change position
