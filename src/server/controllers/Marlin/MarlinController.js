@@ -8,6 +8,7 @@ import _ from 'lodash';
 import SerialConnection from '../../lib/SerialConnection';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
+import MessageSlot from '../../lib/MessageSlot';
 import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/Sender';
 import Workflow, {
   WORKFLOW_STATE_IDLE,
@@ -120,6 +121,9 @@ class MarlinController {
 
       writeLine: ''
     };
+
+    // Message Slot
+    messageSlot = null;
 
     // Event Trigger
     event = null;
@@ -351,6 +355,9 @@ class MarlinController {
         }
       });
 
+      // Message Slot
+      this.messageSlot = new MessageSlot();
+
       // Event Trigger
       this.event = new EventTrigger((event, trigger, commands) => {
         log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
@@ -374,14 +381,18 @@ class MarlinController {
             // %msg
             if (command === BUILTIN_COMMAND_MSG) {
               log.debug(`${command}: line=${x(originalLine)}`);
-              // TODO: send notification message
+              const msg = translateExpression(commandArgs, context);
+              this.messageSlot.put(msg);
               return '';
             }
 
             // %wait
             if (command === BUILTIN_COMMAND_WAIT) {
               log.debug(`${command}: line=${x(originalLine)}`);
-              this.sender.hold({ data: BUILTIN_COMMAND_WAIT, msg: originalLine }); // Hold reason
+              this.sender.hold({
+                data: BUILTIN_COMMAND_WAIT,
+                msg: this.messageSlot.take() ?? originalLine,
+              });
               // On Marlin and Smoothie, the "S" parameter will wait for seconds, while the "P" parameter will wait for milliseconds.
               // "G4 S2" and "G4 P2000" are equivalent.
               const delay = parseFloat(commandArgs) || 0.5; // in seconds
@@ -410,28 +421,40 @@ class MarlinController {
           if (words.find(isM109)) {
             log.debug(`M109 Wait for extruder temperature to reach target temperature: line=${x(originalLine)}`);
 
-            this.feeder.hold({ data: 'M109', msg: originalLine }); // Hold reason
+            this.feeder.hold({
+              data: 'M109',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M190 Set heated bed temperature and wait for the target temperature to be reached
           if (words.find(isM190)) {
             log.debug(`M190 Wait for heated bed temperature to reach target temperature: line=${x(originalLine)}`);
 
-            this.feeder.hold({ data: 'M190', msg: originalLine }); // Hold reason
+            this.feeder.hold({
+              data: 'M190',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M0 Program Pause
           if (words.find(isM0)) {
             log.debug(`M0 Program Pause: line=${x(originalLine)}`);
 
-            this.feeder.hold({ data: 'M0', msg: originalLine }); // Hold reason
+            this.feeder.hold({
+              data: 'M0',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M1 Program Pause
           if (words.find(isM1)) {
             log.debug(`M1 Program Pause: line=${x(originalLine)}`);
 
-            this.feeder.hold({ data: 'M1', msg: originalLine }); // Hold reason
+            this.feeder.hold({
+              data: 'M1',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M6 Tool Change
@@ -453,7 +476,13 @@ class MarlinController {
             } else if (isManualToolChange) {
               // Manual Tool Change
               line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
-              this.feeder.hold({ data: 'M6', msg: originalLine }); // Hold reason
+
+              this.feeder.hold({
+                data: 'M6',
+                msg: this.messageSlot.take() ?? originalLine,
+              });
+
+              this.command('tool:change');
             }
           }
 
@@ -504,14 +533,18 @@ class MarlinController {
             // %msg
             if (command === BUILTIN_COMMAND_MSG) {
               log.debug(`${command}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
-              // TODO: send notification message
+              const msg = translateExpression(commandArgs, context);
+              this.messageSlot.put(msg);
               return '';
             }
 
             // %wait
             if (command === BUILTIN_COMMAND_WAIT) {
               log.debug(`${command}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
-              this.sender.hold({ data: BUILTIN_COMMAND_WAIT, msg: originalLine }); // Hold reason
+              this.sender.hold({
+                data: BUILTIN_COMMAND_WAIT,
+                msg: this.messageSlot.take() ?? originalLine,
+              });
               // On Marlin and Smoothie, the "S" parameter will wait for seconds, while the "P" parameter will wait for milliseconds.
               // "G4 S2" and "G4 P2000" are equivalent.
               const delay = parseFloat(commandArgs) || 0.5; // in seconds
@@ -540,14 +573,20 @@ class MarlinController {
           if (words.find(isM109)) {
             log.debug(`M109 Wait for extruder temperature to reach target temperature: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
-            this.sender.hold({ data: 'M109', msg: originalLine }); // Hold reason
+            this.sender.hold({
+              data: 'M109',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M190 Set heated bed temperature and wait for the target temperature to be reached
           if (words.find(isM190)) {
             log.debug(`M190 Wait for heated bed temperature to reach target temperature: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
-            this.sender.hold({ data: 'M190', msg: originalLine }); // Hold reason
+            this.sender.hold({
+              data: 'M190',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M0 Program Pause
@@ -555,7 +594,10 @@ class MarlinController {
             log.debug(`M0 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             this.event.trigger('gcode:pause');
-            this.workflow.pause({ data: 'M0', msg: originalLine });
+            this.workflow.pause({
+              data: 'M0',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M1 Program Pause
@@ -563,7 +605,10 @@ class MarlinController {
             log.debug(`M1 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             this.event.trigger('gcode:pause');
-            this.workflow.pause({ data: 'M1', msg: originalLine });
+            this.workflow.pause({
+              data: 'M1',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M6 Tool Change
@@ -585,8 +630,14 @@ class MarlinController {
             } else if (isManualToolChange) {
               // Manual Tool Change
               line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
+
               this.event.trigger('gcode:pause');
-              this.workflow.pause({ data: 'M6', msg: originalLine });
+              this.workflow.pause({
+                data: 'M6',
+                msg: this.messageSlot.take() ?? originalLine,
+              });
+
+              this.command('tool:change');
             }
           }
 
@@ -773,7 +824,10 @@ class MarlinController {
           this.emit('serialport:read', res.raw);
 
           if (pauseError) {
-            this.workflow.pause({ err: true, msg: res.raw });
+            this.workflow.pause({
+              err: true,
+              msg: res.raw,
+            });
           }
 
           this.sender.ack();
@@ -940,6 +994,10 @@ class MarlinController {
 
       if (this.connection) {
         this.connection = null;
+      }
+
+      if (this.messageSlot) {
+        this.messageSlot = null;
       }
 
       if (this.event) {
@@ -1524,13 +1582,14 @@ class MarlinController {
           lines.push('G53 G0 Z[tool_probe_z]');
           lines.push('%wait');
 
-          // Probe the tool
-          lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
-
           if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING) {
+            // Probe the tool
+            lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - posz - tool_probe_distance]');
             // Set the current work Z position (posz) to the touch plate height
             lines.push('G92 Z[touch_plate_height]');
           } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING) {
+            // Probe the tool
+            lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - posz - tool_probe_distance]');
             // Pause for 1 second
             lines.push('%wait 1');
             // Adjust the work Z position by subtracting the touch plate height from the current work Z position (posz)

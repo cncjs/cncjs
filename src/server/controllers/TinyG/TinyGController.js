@@ -9,6 +9,7 @@ import _ from 'lodash';
 import SerialConnection from '../../lib/SerialConnection';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
+import MessageSlot from '../../lib/MessageSlot';
 import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/Sender';
 import Workflow, {
   WORKFLOW_STATE_IDLE,
@@ -167,6 +168,9 @@ class TinyGController {
       senderFinishTime: 0
     };
 
+    // Message Slot
+    messageSlot = null;
+
     // Event Trigger
     event = null;
 
@@ -207,6 +211,9 @@ class TinyGController {
         }
       });
 
+      // Message Slot
+      this.messageSlot = new MessageSlot();
+
       // Event Trigger
       this.event = new EventTrigger((event, trigger, commands) => {
         log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
@@ -231,14 +238,18 @@ class TinyGController {
             // %msg
             if (command === BUILTIN_COMMAND_MSG) {
               log.debug(`${command}: line=${x(originalLine)}`);
-              // TODO: send notification message
+              const msg = translateExpression(commandArgs, context);
+              this.messageSlot.put(msg);
               return '';
             }
 
             // %wait
             if (command === BUILTIN_COMMAND_WAIT) {
               log.debug(`${command}: line=${x(originalLine)}`);
-              this.sender.hold({ data: BUILTIN_COMMAND_WAIT, msg: originalLine }); // Hold reason
+              this.sender.hold({
+                data: BUILTIN_COMMAND_WAIT,
+                msg: this.messageSlot.take() ?? originalLine,
+              });
               const delay = parseFloat(commandArgs) || 0.5; // in seconds
               const pauseValue = delay.toFixed(3) * 1;
               return `G4 P${pauseValue}`; // dwell
@@ -265,14 +276,20 @@ class TinyGController {
           if (words.find(isM0)) {
             log.debug('M0 Program Pause');
 
-            this.feeder.hold({ data: 'M0', msg: originalLine }); // Hold reason
+            this.feeder.hold({
+              data: 'M0',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M1 Program Pause
           if (words.find(isM1)) {
             log.debug('M1 Program Pause');
 
-            this.feeder.hold({ data: 'M1', msg: originalLine }); // Hold reason
+            this.feeder.hold({
+              data: 'M1',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M6 Tool Change
@@ -294,7 +311,13 @@ class TinyGController {
             } else if (isManualToolChange) {
               // Manual Tool Change
               line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
-              this.feeder.hold({ data: 'M6', msg: originalLine }); // Hold reason
+
+              this.feeder.hold({
+                data: 'M6',
+                msg: this.messageSlot.take() ?? originalLine,
+              });
+
+              this.command('tool:change');
             }
           }
 
@@ -344,14 +367,18 @@ class TinyGController {
             // %msg
             if (command === BUILTIN_COMMAND_MSG) {
               log.debug(`${command}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
-              // TODO: send notification message
+              const msg = translateExpression(commandArgs, context);
+              this.messageSlot.put(msg);
               return '';
             }
 
             // %wait
             if (command === BUILTIN_COMMAND_WAIT) {
               log.debug(`${command}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
-              this.sender.hold({ data: BUILTIN_COMMAND_WAIT, msg: originalLine }); // Hold reason
+              this.sender.hold({
+                data: BUILTIN_COMMAND_WAIT,
+                msg: this.messageSlot.take() ?? originalLine,
+              });
               const delay = parseFloat(commandArgs) || 0.5; // in seconds
               const pauseValue = delay.toFixed(3) * 1;
               return `G4 P${pauseValue}`; // dwell
@@ -379,7 +406,10 @@ class TinyGController {
             log.debug(`M0 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             this.event.trigger('gcode:pause');
-            this.workflow.pause({ data: 'M0', msg: originalLine });
+            this.workflow.pause({
+              data: 'M0',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M1 Program Pause
@@ -387,7 +417,10 @@ class TinyGController {
             log.debug(`M1 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
             this.event.trigger('gcode:pause');
-            this.workflow.pause({ data: 'M1', msg: originalLine });
+            this.workflow.pause({
+              data: 'M1',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M6 Tool Change
@@ -409,8 +442,14 @@ class TinyGController {
             } else if (isManualToolChange) {
               // Manual Tool Change
               line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
+
               this.event.trigger('gcode:pause');
-              this.workflow.pause({ data: 'M6', msg: originalLine });
+              this.workflow.pause({
+                data: 'M6',
+                msg: this.messageSlot.take() ?? originalLine,
+              });
+
+              this.command('tool:change');
             }
           }
 
@@ -657,7 +696,10 @@ class TinyGController {
             this.emit('serialport:read', `error:${code} (${error.msg})`);
 
             if (pauseError) {
-              this.workflow.pause({ err: true, msg: error.msg });
+              this.workflow.pause({
+                err: true,
+                msg: error.msg,
+              });
             }
 
             return;
@@ -927,6 +969,10 @@ class TinyGController {
 
       if (this.connection) {
         this.connection = null;
+      }
+
+      if (this.messageSlot) {
+        this.messageSlot = null;
       }
 
       if (this.event) {
@@ -1579,13 +1625,14 @@ class TinyGController {
           lines.push('G53 G0 Z[tool_probe_z]');
           lines.push('%wait');
 
-          // Probe the tool
-          lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
-
           if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING) {
+            // Probe the tool
+            lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
             // Set coordinate system offset
             lines.push('G10 L20 P[mapWCSToP(modal.wcs)] Z[touch_plate_height]');
           } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING) {
+            // Probe the tool
+            lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
             // Pause for 1 second
             lines.push('%wait 1');
             // Set tool length offset
