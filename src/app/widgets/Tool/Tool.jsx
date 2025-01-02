@@ -12,9 +12,9 @@ import {
 import {
   TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
   TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
-  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING,
-  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING,
-  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_NO_PROBING,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
 } from './constants';
 import iconPin from './images/pin.svg';
 import styles from './index.styl';
@@ -68,13 +68,13 @@ class Tool extends PureComponent {
     const toolProbeZ = get(toolConfig, 'toolProbeZ');
     const touchPlateHeight = get(toolConfig, 'touchPlateHeight');
     const isManualToolChange = [
-      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING,
-      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING,
-      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_NO_PROBING,
+      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
     ].includes(toolChangePolicy);
-    const isManualToolChangeWithProbing = [
-      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING,
-      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING,
+    const isProbingEnabledForManualToolChange = [
+      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
     ].includes(toolChangePolicy);
 
     return (
@@ -101,16 +101,16 @@ class Tool extends PureComponent {
                 label: i18n._('Ignore M6 commands'),
               },
               {
-                value: String(TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_NO_PROBING),
-                label: i18n._('Manual Tool Change (No Probing)'),
-              },
-              {
-                value: String(TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING),
+                value: String(TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS),
                 label: i18n._('Manual Tool Change (WCS)'),
               },
               {
-                value: String(TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING),
+                value: String(TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO),
                 label: i18n._('Manual Tool Change (TLO)'),
+              },
+              {
+                value: String(TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM),
+                label: i18n._('Manual Tool Change (Custom)'),
               },
             ]}
             searchable={false}
@@ -194,7 +194,7 @@ class Tool extends PureComponent {
                 })}
               </div>
             </div>
-            {isManualToolChangeWithProbing && (
+            {isProbingEnabledForManualToolChange && (
               <div>
                 <div className="form-group">
                   <label className="control-label">

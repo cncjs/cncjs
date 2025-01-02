@@ -32,9 +32,9 @@ import {
   // M6 Tool Change
   TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
   TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
-  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_NO_PROBING,
-  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING,
-  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
   // Units
   IMPERIAL_UNITS,
   METRIC_UNITS,
@@ -259,9 +259,9 @@ class SmoothieController {
 
             const toolChangePolicy = config.get('tool.toolChangePolicy');
             const isManualToolChange = [
-              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_NO_PROBING,
-              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING,
-              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
             ].includes(toolChangePolicy);
 
             if (toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS) {
@@ -393,9 +393,9 @@ class SmoothieController {
 
             const toolChangePolicy = config.get('tool.toolChangePolicy');
             const isManualToolChange = [
-              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_NO_PROBING,
-              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING,
-              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
             ].includes(toolChangePolicy);
 
             if (toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS) {
@@ -1491,12 +1491,12 @@ class SmoothieController {
           lines.push('G53 G0 Z[tool_probe_z]');
           lines.push('%wait');
 
-          if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS_PROBING) {
+          if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
             // Probe the tool
             lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
             // Set coordinate system offset
             lines.push('G10 L20 P[mapWCSToP(modal.wcs)] Z[touch_plate_height]');
-          } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO_PROBING) {
+          } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
             // Probe the tool
             lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
             // Pause for 1 second
