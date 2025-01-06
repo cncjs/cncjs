@@ -1539,16 +1539,8 @@ class MarlinController {
             'tool_probe_y': toolProbeY,
             'tool_probe_z': toolProbeZ,
             'touch_plate_height': touchPlateHeight,
-            'mapWCSToP': function (wcs) {
-              return {
-                'G54': 1,
-                'G55': 2,
-                'G56': 3,
-                'G57': 4,
-                'G58': 5,
-                'G59': 6,
-              }[wcs] || 0;
-            },
+
+            // Note: Marlin does not support the World Coordinate System (WCS)
           };
 
           const lines = [];

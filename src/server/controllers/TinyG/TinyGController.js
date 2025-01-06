@@ -1582,7 +1582,7 @@ class TinyGController {
             'tool_probe_y': toolProbeY,
             'tool_probe_z': toolProbeZ,
             'touch_plate_height': touchPlateHeight,
-            'mapWCSToP': function (wcs) {
+            'mapWCSToPValue': function (wcs) {
               return {
                 'G54': 1,
                 'G55': 2,
@@ -1629,7 +1629,7 @@ class TinyGController {
             // Probe the tool
             lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
             // Set coordinate system offset
-            lines.push('G10 L20 P[mapWCSToP(modal.wcs)] Z[touch_plate_height]');
+            lines.push('G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height]');
           } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
             // Probe the tool
             lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
