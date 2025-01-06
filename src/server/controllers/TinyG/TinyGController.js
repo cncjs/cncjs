@@ -1559,17 +1559,18 @@ class TinyGController {
             'G20': IMPERIAL_UNITS,
             'G21': METRIC_UNITS,
           }[modal.units];
-          const toolChangePolicy = config.get('tool.toolChangePolicy');
-          const toolChangeX = mapPositionToUnits(config.get('tool.toolChangeX'), units);
-          const toolChangeY = mapPositionToUnits(config.get('tool.toolChangeY'), units);
-          const toolChangeZ = mapPositionToUnits(config.get('tool.toolChangeZ'), units);
-          const toolProbeCommand = config.get('tool.toolProbeCommand');
-          const toolProbeDistance = mapValueToUnits(config.get('tool.toolProbeDistance'), units);
-          const toolProbeFeedrate = mapValueToUnits(config.get('tool.toolProbeFeedrate'), units);
-          const toolProbeX = mapPositionToUnits(config.get('tool.toolProbeX'), units);
-          const toolProbeY = mapPositionToUnits(config.get('tool.toolProbeY'), units);
-          const toolProbeZ = mapPositionToUnits(config.get('tool.toolProbeZ'), units);
-          const touchPlateHeight = mapValueToUnits(config.get('tool.touchPlateHeight'), units);
+          const toolChangePolicy = config.get('tool.toolChangePolicy', TOOL_CHANGE_POLICY_SEND_M6_COMMANDS);
+          const toolChangeX = mapPositionToUnits(config.get('tool.toolChangeX', 0), units);
+          const toolChangeY = mapPositionToUnits(config.get('tool.toolChangeY', 0), units);
+          const toolChangeZ = mapPositionToUnits(config.get('tool.toolChangeZ', 0), units);
+          const toolProbeCommand = config.get('tool.toolProbeCommand', 'G38.2');
+          const toolProbeCustomCommands = ensureString(config.get('tool.toolProbeCustomCommands')).split('\n');
+          const toolProbeDistance = mapValueToUnits(config.get('tool.toolProbeDistance', 0), units);
+          const toolProbeFeedrate = mapValueToUnits(config.get('tool.toolProbeFeedrate', 10), units);
+          const toolProbeX = mapPositionToUnits(config.get('tool.toolProbeX', 0), units);
+          const toolProbeY = mapPositionToUnits(config.get('tool.toolProbeY', 0), units);
+          const toolProbeZ = mapPositionToUnits(config.get('tool.toolProbeZ', 0), units);
+          const touchPlateHeight = mapValueToUnits(config.get('tool.touchPlateHeight', 0), units);
 
           const context = {
             'tool_change_x': toolChangeX,
@@ -1637,6 +1638,8 @@ class TinyGController {
             lines.push('%wait 1');
             // Set tool length offset
             lines.push('{tofz:[posz - touch_plate_height]}');
+          } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM) {
+            lines.push(...toolProbeCustomCommands);
           }
 
           // Move to the tool change position
