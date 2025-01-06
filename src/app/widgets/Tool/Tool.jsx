@@ -60,22 +60,20 @@ class Tool extends PureComponent {
     const toolChangeX = get(toolConfig, 'toolChangeX');
     const toolChangeY = get(toolConfig, 'toolChangeY');
     const toolChangeZ = get(toolConfig, 'toolChangeZ');
-    const toolProbeCommand = get(toolConfig, 'toolProbeCommand');
-    const toolProbeDistance = get(toolConfig, 'toolProbeDistance');
-    const toolProbeFeedrate = get(toolConfig, 'toolProbeFeedrate');
     const toolProbeX = get(toolConfig, 'toolProbeX');
     const toolProbeY = get(toolConfig, 'toolProbeY');
     const toolProbeZ = get(toolConfig, 'toolProbeZ');
+    const toolProbeOverrides = get(toolConfig, 'toolProbeOverrides');
+    const toolProbeCommand = get(toolConfig, 'toolProbeCommand');
+    const toolProbeDistance = get(toolConfig, 'toolProbeDistance');
+    const toolProbeFeedrate = get(toolConfig, 'toolProbeFeedrate');
     const touchPlateHeight = get(toolConfig, 'touchPlateHeight');
     const isManualToolChange = [
       TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
       TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
       TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
     ].includes(toolChangePolicy);
-    const isProbingEnabledForManualToolChange = [
-      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
-      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
-    ].includes(toolChangePolicy);
+    const isToolProbeOverrides = (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM);
 
     return (
       <div>
@@ -194,72 +192,88 @@ class Tool extends PureComponent {
                 })}
               </div>
             </div>
-            {isProbingEnabledForManualToolChange && (
-              <div>
-                <div className="form-group">
-                  <label className="control-label">
-                    {i18n._('Probe Position')}
-                  </label>
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      rowGap: 8,
-                    }}
-                  >
-                    {['x', 'y', 'z'].map(axis => {
-                      const axisLabel = {
-                        x: 'X',
-                        y: 'Y',
-                        z: 'Z',
-                      }[axis];
-                      const toolProbeAxisValue = {
-                        x: toolProbeX,
-                        y: toolProbeY,
-                        z: toolProbeZ,
-                      }[axis];
+            <div className="form-group">
+              <label className="control-label">
+                {i18n._('Probe Position')}
+              </label>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  rowGap: 8,
+                }}
+              >
+                {['x', 'y', 'z'].map(axis => {
+                  const axisLabel = {
+                    x: 'X',
+                    y: 'Y',
+                    z: 'Z',
+                  }[axis];
+                  const toolProbeAxisValue = {
+                    x: toolProbeX,
+                    y: toolProbeY,
+                    z: toolProbeZ,
+                  }[axis];
 
-                      return (
-                        <div
-                          key={axis}
-                          style={{ display: 'flex', columnGap: 8 }}
-                        >
-                          <div className="input-group input-group-sm">
-                            <div className="input-group-addon">
-                              {axisLabel}
-                            </div>
-                            <input
-                              type="number"
-                              className="form-control"
-                              placeholder="0.00"
-                              onChange={(event) => {
-                                const value = event.target.value;
-                                actions.setToolProbePosition({ [axis]: value });
-                              }}
-                              value={toolProbeAxisValue}
-                            />
-                            <div className="input-group-addon">{displayUnits}</div>
-                          </div>
-                          <button
-                            type="button"
-                            disabled={!canGetMachinePosition}
-                            onClick={() => {
-                              const value = state.machinePosition?.[axis];
-                              if (value !== undefined) {
-                                actions.setToolProbePosition({ [axis]: value });
-                              }
-                            }}
-                            className="btn btn-default"
-                            style={{ padding: '4px 8px' }}
-                            title={i18n._('Use the current machine position as the tool probe position.')}
-                          >
-                            <Image src={iconPin} width="14" height="14" />
-                          </button>
+                  return (
+                    <div
+                      key={axis}
+                      style={{ display: 'flex', columnGap: 8 }}
+                    >
+                      <div className="input-group input-group-sm">
+                        <div className="input-group-addon">
+                          {axisLabel}
                         </div>
-                      );
-                    })}
-                  </div>
-                </div>
+                        <input
+                          type="number"
+                          className="form-control"
+                          placeholder="0.00"
+                          onChange={(event) => {
+                            const value = event.target.value;
+                            actions.setToolProbePosition({ [axis]: value });
+                          }}
+                          value={toolProbeAxisValue}
+                        />
+                        <div className="input-group-addon">{displayUnits}</div>
+                      </div>
+                      <button
+                        type="button"
+                        disabled={!canGetMachinePosition}
+                        onClick={() => {
+                          const value = state.machinePosition?.[axis];
+                          if (value !== undefined) {
+                            actions.setToolProbePosition({ [axis]: value });
+                          }
+                        }}
+                        className="btn btn-default"
+                        style={{ padding: '4px 8px' }}
+                        title={i18n._('Use the current machine position as the tool probe position.')}
+                      >
+                        <Image src={iconPin} width="14" height="14" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            {isToolProbeOverrides && (
+              <div>
+                <label className="control-label">
+                  {i18n._('Custom Probe Commands')}
+                </label>
+                <textarea
+                  rows="10"
+                  className="form-control"
+                  value={toolProbeOverrides}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    actions.setToolProbeOverrides(value);
+                  }}
+                />
+              </div>
+            )}
+            {!isToolProbeOverrides && (
+              <div>
                 <div className="form-group">
                   <label className="control-label">
                     {i18n._('Probe Command')}

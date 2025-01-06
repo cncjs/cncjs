@@ -115,6 +115,25 @@ class ToolWidget extends PureComponent {
         },
       });
     },
+    setToolProbePosition: (pos) => {
+      const { x, y, z } = pos;
+      this.setState({
+        toolConfig: {
+          ...this.state.toolConfig,
+          toolProbeX: x ?? this.state.toolConfig.toolProbeX,
+          toolProbeY: y ?? this.state.toolConfig.toolProbeY,
+          toolProbeZ: z ?? this.state.toolConfig.toolProbeZ,
+        },
+      });
+    },
+    setToolProbeOverrides: (value) => {
+      this.setState({
+        toolConfig: {
+          ...this.state.toolConfig,
+          toolProbeOverrides: value,
+        },
+      });
+    },
     setToolProbeCommand: (value) => {
       this.setState({
         toolConfig: {
@@ -136,17 +155,6 @@ class ToolWidget extends PureComponent {
         toolConfig: {
           ...this.state.toolConfig,
           toolProbeFeedrate: value,
-        },
-      });
-    },
-    setToolProbePosition: (pos) => {
-      const { x, y, z } = pos;
-      this.setState({
-        toolConfig: {
-          ...this.state.toolConfig,
-          toolProbeX: x ?? this.state.toolConfig.toolProbeX,
-          toolProbeY: y ?? this.state.toolConfig.toolProbeY,
-          toolProbeZ: z ?? this.state.toolConfig.toolProbeZ,
         },
       });
     },
@@ -321,12 +329,13 @@ class ToolWidget extends PureComponent {
       this.toolConfig.set('toolChangeX', ensureNumber(get(tool, 'toolChangeX', 0)));
       this.toolConfig.set('toolChangeY', ensureNumber(get(tool, 'toolChangeY', 0)));
       this.toolConfig.set('toolChangeZ', ensureNumber(get(tool, 'toolChangeZ', 0)));
-      this.toolConfig.set('toolProbeCommand', ensureString(get(tool, 'toolProbeCommand', 'G38.2')));
-      this.toolConfig.set('toolProbeDistance', ensureNumber(get(tool, 'toolProbeDistance', 0)));
-      this.toolConfig.set('toolProbeFeedrate', ensureNumber(get(tool, 'toolProbeFeedrate', 10)));
       this.toolConfig.set('toolProbeX', ensureNumber(get(tool, 'toolProbeX', 0)));
       this.toolConfig.set('toolProbeY', ensureNumber(get(tool, 'toolProbeY', 0)));
       this.toolConfig.set('toolProbeZ', ensureNumber(get(tool, 'toolProbeZ', 0)));
+      this.toolConfig.set('toolProbeOverrides', ensureString(get(tool, 'toolProbeOverrides')));
+      this.toolConfig.set('toolProbeCommand', ensureString(get(tool, 'toolProbeCommand', 'G38.2')));
+      this.toolConfig.set('toolProbeDistance', ensureNumber(get(tool, 'toolProbeDistance', 0)));
+      this.toolConfig.set('toolProbeFeedrate', ensureNumber(get(tool, 'toolProbeFeedrate', 10)));
       this.toolConfig.set('touchPlateHeight', ensureNumber(get(tool, 'touchPlateHeight', 0)));
 
       // The state reflects the values in the current display units
@@ -336,12 +345,13 @@ class ToolWidget extends PureComponent {
           toolChangeX: mapPositionToUnits(this.toolConfig.get('toolChangeX'), units),
           toolChangeY: mapPositionToUnits(this.toolConfig.get('toolChangeY'), units),
           toolChangeZ: mapPositionToUnits(this.toolConfig.get('toolChangeZ'), units),
-          toolProbeCommand: this.toolConfig.get('toolProbeCommand'),
-          toolProbeDistance: mapValueToUnits(this.toolConfig.get('toolProbeDistance'), units),
-          toolProbeFeedrate: mapValueToUnits(this.toolConfig.get('toolProbeFeedrate'), units),
           toolProbeX: mapPositionToUnits(this.toolConfig.get('toolProbeX'), units),
           toolProbeY: mapPositionToUnits(this.toolConfig.get('toolProbeY'), units),
           toolProbeZ: mapPositionToUnits(this.toolConfig.get('toolProbeZ'), units),
+          toolProbeOverrides: this.toolConfig.get('toolProbeOverrides'),
+          toolProbeCommand: this.toolConfig.get('toolProbeCommand'),
+          toolProbeDistance: mapValueToUnits(this.toolConfig.get('toolProbeDistance'), units),
+          toolProbeFeedrate: mapValueToUnits(this.toolConfig.get('toolProbeFeedrate'), units),
           touchPlateHeight: mapValueToUnits(this.toolConfig.get('touchPlateHeight'), units),
         },
       });
@@ -399,6 +409,7 @@ class ToolWidget extends PureComponent {
       toolChangeY,
       toolChangeZ,
       toolProbeCommand,
+      toolProbeOverrides,
       toolProbeDistance,
       toolProbeFeedrate,
       toolProbeX,
@@ -413,6 +424,7 @@ class ToolWidget extends PureComponent {
     this.toolConfig.set('toolChangeY', toMetric(toolChangeY));
     this.toolConfig.set('toolChangeZ', toMetric(toolChangeZ));
     this.toolConfig.set('toolProbeCommand', ensureString(toolProbeCommand));
+    this.toolConfig.set('toolProbeOverrides', ensureString(toolProbeOverrides));
     this.toolConfig.set('toolProbeDistance', toMetric(toolProbeDistance));
     this.toolConfig.set('toolProbeFeedrate', toMetric(toolProbeFeedrate));
     this.toolConfig.set('toolProbeX', toMetric(toolProbeX));

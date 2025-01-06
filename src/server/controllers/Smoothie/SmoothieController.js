@@ -1429,26 +1429,29 @@ class SmoothieController {
           const toolChangeX = mapPositionToUnits(config.get('tool.toolChangeX', 0), units);
           const toolChangeY = mapPositionToUnits(config.get('tool.toolChangeY', 0), units);
           const toolChangeZ = mapPositionToUnits(config.get('tool.toolChangeZ', 0), units);
-          const toolProbeCommand = config.get('tool.toolProbeCommand', 'G38.2');
-          const toolProbeCustomCommands = ensureString(config.get('tool.toolProbeCustomCommands')).split('\n');
-          const toolProbeDistance = mapValueToUnits(config.get('tool.toolProbeDistance', 0), units);
-          const toolProbeFeedrate = mapValueToUnits(config.get('tool.toolProbeFeedrate', 10), units);
           const toolProbeX = mapPositionToUnits(config.get('tool.toolProbeX', 0), units);
           const toolProbeY = mapPositionToUnits(config.get('tool.toolProbeY', 0), units);
           const toolProbeZ = mapPositionToUnits(config.get('tool.toolProbeZ', 0), units);
+          const toolProbeOverrides = ensureString(config.get('tool.toolProbeOverrides')).split('\n');
+          const toolProbeCommand = config.get('tool.toolProbeCommand', 'G38.2');
+          const toolProbeDistance = mapValueToUnits(config.get('tool.toolProbeDistance', 0), units);
+          const toolProbeFeedrate = mapValueToUnits(config.get('tool.toolProbeFeedrate', 10), units);
           const touchPlateHeight = mapValueToUnits(config.get('tool.touchPlateHeight', 0), units);
 
           const context = {
             'tool_change_x': toolChangeX,
             'tool_change_y': toolChangeY,
             'tool_change_z': toolChangeZ,
-            'tool_probe_command': toolProbeCommand,
-            'tool_probe_distance': toolProbeDistance,
-            'tool_probe_feedrate': toolProbeFeedrate,
             'tool_probe_x': toolProbeX,
             'tool_probe_y': toolProbeY,
             'tool_probe_z': toolProbeZ,
+            'tool_probe_overrides': toolProbeOverrides,
+            'tool_probe_command': toolProbeCommand,
+            'tool_probe_distance': toolProbeDistance,
+            'tool_probe_feedrate': toolProbeFeedrate,
             'touch_plate_height': touchPlateHeight,
+
+            // internal functions
             'mapWCSToPValue': function (wcs) {
               return {
                 'G54': 1,
@@ -1505,7 +1508,7 @@ class SmoothieController {
             // Set tool length offset
             lines.push('G43.1 Z[posz - touch_plate_height]');
           } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM) {
-            lines.push(...toolProbeCustomCommands);
+            lines.push(...toolProbeOverrides);
           }
 
           // Move to the tool change position
