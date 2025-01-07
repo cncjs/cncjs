@@ -4,9 +4,15 @@ import { ensureNumber } from 'ensure-type';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Select from 'react-select';
+import styled from 'styled-components';
 import Image from 'app/components/Image';
+import { Tooltip } from 'app/components/Tooltip';
 import i18n from 'app/lib/i18n';
 import {
+  GRBL,
+  MARLIN,
+  SMOOTHIE,
+  TINYG,
   METRIC_UNITS
 } from '../../constants';
 import {
@@ -19,10 +25,59 @@ import {
 import iconPin from './images/pin.svg';
 import styles from './index.styl';
 
+const copyToClipboard = value => {
+  const el = document.createElement('textarea');
+  el.value = value;
+  el.setAttribute('readonly', '');
+  el.style.position = 'absolute';
+  el.style.left = '-9999px';
+  document.body.appendChild(el);
+
+  const selected =
+    document.getSelection().rangeCount > 0
+      ? document.getSelection().getRangeAt(0)
+      : false;
+  el.select();
+
+  document.execCommand('copy');
+  document.body.removeChild(el);
+
+  if (selected) {
+    document.getSelection().removeAllRanges();
+    document.getSelection().addRange(selected);
+  }
+};
+
+const IconButton = styled('button')`
+  appearance: none;
+  display: inline-block;
+  font-weight: normal;
+  text-align: center;
+  white-space: nowrap;
+  touch-action: manipulation;
+  cursor: pointer;
+  user-select: none;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 24px;
+  filter: invert(40%);
+  &:hover {
+    filter: none;
+  }
+`;
+
 class Tool extends PureComponent {
   static propTypes = {
     state: PropTypes.object,
     actions: PropTypes.object
+  };
+
+  timer = null;
+
+  state = {
+    isToolProbeCommandsCopied: false,
   };
 
   renderToolChangePolicy = (option) => {
@@ -43,6 +98,7 @@ class Tool extends PureComponent {
       units,
       toolConfig,
     } = state;
+    const controllerType = state.controller.type;
     const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
     const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
     const step = (units === METRIC_UNITS) ? 1 : 0.1;
@@ -74,6 +130,71 @@ class Tool extends PureComponent {
       TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
     ].includes(toolChangePolicy);
     const isToolProbeOverrides = (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM);
+
+    const toolProbeCommands = (() => {
+      const lines = [];
+
+      if (controllerType === MARLIN) {
+        lines.push('; Probe the tool');
+        lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - posz - tool_probe_distance]');
+        if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
+          lines.push('; Set the current work Z position (posz) to the touch plate height');
+          lines.push('G92 Z[touch_plate_height]');
+        } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
+          lines.push('; Pause for 1 second');
+          lines.push('%wait 1');
+          lines.push('; Adjust the work Z position by subtracting the touch plate height from the current work Z position (posz)');
+          lines.push('G92 Z[posz - touch_plate_height]');
+        }
+        return lines;
+      }
+
+      if (controllerType === GRBL || controllerType === SMOOTHIE) {
+        lines.push('; Probe the tool');
+        lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
+        if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
+          lines.push('; Set coordinate system offset');
+          lines.push('G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height]');
+        } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
+          lines.push('; Pause for 1 second');
+          lines.push('%wait 1');
+          lines.push('; Set tool length offset');
+          lines.push('G43.1 Z[posz - touch_plate_height]');
+        }
+        return lines;
+      }
+
+      if (controllerType === TINYG) {
+        lines.push('; Probe the tool');
+        lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
+        if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
+          lines.push('; Set coordinate system offset');
+          lines.push('G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height]');
+        } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
+          lines.push('; Pause for 1 second');
+          lines.push('%wait 1');
+          lines.push('; Set tool length offset');
+          lines.push('{tofz:[posz - touch_plate_height]}');
+        }
+        return lines;
+      }
+
+      return lines;
+    })();
+
+    const handleClickCopyToolProbeCommands = (event) => {
+      copyToClipboard(toolProbeCommands);
+      this.setState({ isToolProbeCommandsCopied: true });
+
+      if (this.timer) {
+        clearTimeout(this.timer);
+        this.timer = null;
+      }
+
+      this.timer = setTimeout(() => {
+        this.setState({ isToolProbeCommandsCopied: false });
+      }, 1500);
+    };
 
     return (
       <div>
@@ -194,7 +315,7 @@ class Tool extends PureComponent {
             </div>
             <div className="form-group">
               <label className="control-label">
-                {i18n._('Probe Position')}
+                {i18n._('Tool Probe Position')}
               </label>
               <div
                 style={{
@@ -259,11 +380,18 @@ class Tool extends PureComponent {
             {isToolProbeOverrides && (
               <div>
                 <label className="control-label">
-                  {i18n._('Custom Probe Commands')}
+                  {i18n._('Tool Probe Overrides')}
                 </label>
                 <textarea
-                  rows="10"
                   className="form-control"
+                  style={{
+                    whiteSpace: 'pre',
+                    overflowWrap: 'normal',
+                    minHeight: 120,
+                    maxHeight: 180,
+                    resize: 'vertical',
+                    overflow: 'auto',
+                  }}
                   value={toolProbeOverrides}
                   onChange={(event) => {
                     const value = event.target.value;
@@ -415,6 +543,41 @@ class Tool extends PureComponent {
                     </div>
                   </div>
                 </div>
+                {!!controllerType && (
+                  // Establish a connection to the controller to view the preview commands
+                  <div>
+                    <div style={{ display: 'flex', columnGap: 16 }}>
+                      <label className="control-label">
+                        {i18n._('Tool Probe Commands')}
+                      </label>
+                      <Tooltip
+                        placement="bottom"
+                        content={this.state.isToolProbeCommandsCopied ? i18n._('Copied') : i18n._('Copy')}
+                        onMouseLeave={() => {
+                          this.setState({ isToolProbeCommandsCopied: false });
+                        }}
+                      >
+                        <IconButton
+                          onClick={handleClickCopyToolProbeCommands}
+                        >
+                          <i className="fa fa-copy" />
+                        </IconButton>
+                      </Tooltip>
+                    </div>
+                    <pre
+                      style={{
+                        minHeight: 120,
+                        maxHeight: 180,
+                        resize: 'vertical',
+                        overflow: 'auto',
+                      }}
+                    >
+                      <code style={{ whiteSpace: 'pre' }}>
+                        {toolProbeCommands}
+                      </code>
+                    </pre>
+                  </div>
+                )}
               </div>
             )}
           </div>

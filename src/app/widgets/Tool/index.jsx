@@ -423,13 +423,13 @@ class ToolWidget extends PureComponent {
     this.toolConfig.set('toolChangeX', toMetric(toolChangeX));
     this.toolConfig.set('toolChangeY', toMetric(toolChangeY));
     this.toolConfig.set('toolChangeZ', toMetric(toolChangeZ));
-    this.toolConfig.set('toolProbeCommand', ensureString(toolProbeCommand));
-    this.toolConfig.set('toolProbeOverrides', ensureString(toolProbeOverrides));
-    this.toolConfig.set('toolProbeDistance', toMetric(toolProbeDistance));
-    this.toolConfig.set('toolProbeFeedrate', toMetric(toolProbeFeedrate));
     this.toolConfig.set('toolProbeX', toMetric(toolProbeX));
     this.toolConfig.set('toolProbeY', toMetric(toolProbeY));
     this.toolConfig.set('toolProbeZ', toMetric(toolProbeZ));
+    this.toolConfig.set('toolProbeOverrides', ensureString(toolProbeOverrides));
+    this.toolConfig.set('toolProbeCommand', ensureString(toolProbeCommand));
+    this.toolConfig.set('toolProbeDistance', toMetric(toolProbeDistance));
+    this.toolConfig.set('toolProbeFeedrate', toMetric(toolProbeFeedrate));
     this.toolConfig.set('touchPlateHeight', toMetric(touchPlateHeight));
   }
 
