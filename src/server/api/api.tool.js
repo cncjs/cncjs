@@ -19,12 +19,13 @@ export const set = (req, res) => {
     'toolChangeX',
     'toolChangeY',
     'toolChangeZ',
-    'toolProbeCommand',
-    'toolProbeDistance',
-    'toolProbeFeedrate',
     'toolProbeX',
     'toolProbeY',
     'toolProbeZ',
+    'toolProbeOverrides',
+    'toolProbeCommand',
+    'toolProbeDistance',
+    'toolProbeFeedrate',
     'touchPlateHeight',
   ]);
   const invalidKeys = keys.filter((key) => !allowedKeySet.has(key));
