@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Select from 'react-select';
 import styled from 'styled-components';
+import { Button } from 'app/components/Buttons';
 import Image from 'app/components/Image';
 import { Tooltip } from 'app/components/Tooltip';
 import i18n from 'app/lib/i18n';
@@ -77,6 +78,8 @@ class Tool extends PureComponent {
   timer = null;
 
   state = {
+    toolProbeOverrides: '',
+    isToolProbeOverridesEditable: false,
     isToolProbeCommandsCopied: false,
   };
 
@@ -95,10 +98,11 @@ class Tool extends PureComponent {
     const { state, actions } = this.props;
     const {
       canClick,
+      controller,
+      isReady,
       units,
       toolConfig,
     } = state;
-    const controllerType = state.controller.type;
     const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
     const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
     const step = (units === METRIC_UNITS) ? 1 : 0.1;
@@ -129,12 +133,16 @@ class Tool extends PureComponent {
       TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
       TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
     ].includes(toolChangePolicy);
-    const isToolProbeOverrides = (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM);
+    const isToolProbeDefaultView = [
+      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+    ].includes(toolChangePolicy);
+    const isToolProbeOverridesView = (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM);
 
     const toolProbeCommands = (() => {
       const lines = [];
 
-      if (controllerType === MARLIN) {
+      if (controller.type === MARLIN) {
         lines.push('; Probe the tool');
         lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - posz - tool_probe_distance]');
         if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
@@ -149,7 +157,7 @@ class Tool extends PureComponent {
         return lines;
       }
 
-      if (controllerType === GRBL || controllerType === SMOOTHIE) {
+      if (controller.type === GRBL || controller.type === SMOOTHIE) {
         lines.push('; Probe the tool');
         lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
         if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
@@ -164,7 +172,7 @@ class Tool extends PureComponent {
         return lines;
       }
 
-      if (controllerType === TINYG) {
+      if (controller.type === TINYG) {
         lines.push('; Probe the tool');
         lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
         if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
@@ -377,30 +385,98 @@ class Tool extends PureComponent {
                 })}
               </div>
             </div>
-            {isToolProbeOverrides && (
+            {isToolProbeOverridesView && (
               <div>
-                <label className="control-label">
-                  {i18n._('Tool Probe Overrides')}
-                </label>
-                <textarea
-                  className="form-control"
+                <div
                   style={{
-                    whiteSpace: 'pre',
-                    overflowWrap: 'normal',
-                    minHeight: 120,
-                    maxHeight: 180,
-                    resize: 'vertical',
-                    overflow: 'auto',
+                    display: 'flex',
+                    columnGap: 8,
+                    alignItems: 'center',
                   }}
-                  value={toolProbeOverrides}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    actions.setToolProbeOverrides(value);
-                  }}
-                />
+                >
+                  <label className="control-label">
+                    {i18n._('Custom Tool Probe Commands')}
+                  </label>
+                  {!this.state.isToolProbeOverridesEditable && (
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 5 }}>
+                      <Tooltip
+                        placement="bottom"
+                        content={i18n._('Edit')}
+                        hideOnClick
+                      >
+                        <IconButton
+                          onClick={() => {
+                            this.setState({ isToolProbeOverridesEditable: true });
+                          }}
+                        >
+                          <i className="fa fa-edit" />
+                        </IconButton>
+                      </Tooltip>
+                    </div>
+                  )}
+                </div>
+                {!this.state.isToolProbeOverridesEditable && (
+                  <pre
+                    style={{
+                      minHeight: 120,
+                      maxHeight: 180,
+                      resize: 'vertical',
+                      overflow: 'auto',
+                    }}
+                  >
+                    <code style={{ whiteSpace: 'pre' }}>
+                      {toolProbeOverrides}
+                    </code>
+                  </pre>
+                )}
+                {this.state.isToolProbeOverridesEditable && (
+                  <div>
+                    <div style={{ marginBottom: 8 }}>
+                      <textarea
+                        className="form-control"
+                        style={{
+                          whiteSpace: 'pre',
+                          overflowWrap: 'normal',
+                          minHeight: 120,
+                          maxHeight: 180,
+                          resize: 'vertical',
+                          overflow: 'auto',
+                        }}
+                        defaultValue={toolProbeOverrides}
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          this.setState({ toolProbeOverrides: value });
+                        }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', columnGap: 8 }}>
+                      <Button
+                        btnSize="sm"
+                        btnStyle="flat"
+                        onClick={() => {
+                          const value = this.state.toolProbeOverrides;
+                          actions.setToolProbeOverrides(value);
+
+                          this.setState({ isToolProbeOverridesEditable: false });
+                        }}
+                      >
+                        {i18n._('OK')}
+                      </Button>
+                      <Button
+                        btnSize="sm"
+                        btnStyle="flat"
+                        onClick={() => {
+                          this.setState({ isToolProbeOverridesEditable: false });
+                        }}
+                      >
+                        {i18n._('Cancel')}
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
-            {!isToolProbeOverrides && (
+            {isToolProbeDefaultView && (
               <div>
                 <div className="form-group">
                   <label className="control-label">
@@ -543,26 +619,33 @@ class Tool extends PureComponent {
                     </div>
                   </div>
                 </div>
-                {!!controllerType && (
-                  // Establish a connection to the controller to view the preview commands
+                {isReady && (
                   <div>
-                    <div style={{ display: 'flex', columnGap: 16 }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        columnGap: 8,
+                        alignItems: 'center',
+                      }}
+                    >
                       <label className="control-label">
                         {i18n._('Tool Probe Commands')}
                       </label>
-                      <Tooltip
-                        placement="bottom"
-                        content={this.state.isToolProbeCommandsCopied ? i18n._('Copied') : i18n._('Copy')}
-                        onMouseLeave={() => {
-                          this.setState({ isToolProbeCommandsCopied: false });
-                        }}
-                      >
-                        <IconButton
-                          onClick={handleClickCopyToolProbeCommands}
+                      <div style={{ marginBottom: 5 }}>
+                        <Tooltip
+                          placement="bottom"
+                          content={this.state.isToolProbeCommandsCopied ? i18n._('Copied') : i18n._('Copy')}
+                          onMouseLeave={() => {
+                            this.setState({ isToolProbeCommandsCopied: false });
+                          }}
                         >
-                          <i className="fa fa-copy" />
-                        </IconButton>
-                      </Tooltip>
+                          <IconButton
+                            onClick={handleClickCopyToolProbeCommands}
+                          >
+                            <i className="fa fa-copy" />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
                     </div>
                     <pre
                       style={{

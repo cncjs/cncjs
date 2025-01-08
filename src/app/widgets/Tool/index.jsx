@@ -170,8 +170,11 @@ class ToolWidget extends PureComponent {
 
   controllerEvents = {
     'serialport:open': (options) => {
-      const { port } = options;
-      this.setState({ port: port });
+      const { port, controllerType } = options;
+      this.setState({
+        isReady: !!controllerType,
+        port: port,
+      });
     },
     'serialport:close': (options) => {
       const initialState = this.getInitialState();
@@ -436,6 +439,7 @@ class ToolWidget extends PureComponent {
   getInitialState() {
     return {
       minimized: this.config.get('minimized', false),
+      isReady: (controller.loadedControllers.length > 0),
       isFullscreen: false,
       canClick: true, // Defaults to true
       port: controller.port,
