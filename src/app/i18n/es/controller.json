@@ -19,12 +19,12 @@
   },
   "Grbl": {
     "activeState": {
-      "idle": "Parado",
-      "run": "Iniciar",
+      "idle": "Inactivo",
+      "run": "Ejecutar",
       "hold": "Pausar",
-      "door": "Entrada",
+      "door": "Puerta",
       "home": "Inicio",
-      "sleep": "dormir",
+      "sleep": "Suspender",
       "alarm": "Alarma",
       "check": "Comprobar"
     }
