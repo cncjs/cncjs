@@ -562,5 +562,9 @@
   "Touch Plate Height": "Висота плити торкання",
   "Tool Probe Commands": "Команди зонда інструмента",
   "Copied": "Скопійовано",
-  "Copy": "Копіювати"
+  "Copy": "Копіювати",
+  "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Імпортувати попередньо визначені команди зондом інструменту для оновлення зсуву по осі Z в системі робочих координат (WCS)",
+  "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Імпортувати попередньо визначені команди зондом інструменту для оновлення зсуву довжини інструменту (TLO)",
+  "Warning: No custom tool probe commands are defined": "Попередження: Не визначено власних команд зонда інструменту",
+  "Connect to the controller to view the tool probe commands.": "Підключіться до контролера для перегляду команд зонда інструменту."
 }

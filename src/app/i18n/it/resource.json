@@ -562,5 +562,9 @@
   "Touch Plate Height": "Altezza Piastra di Contatto",
   "Tool Probe Commands": "Comandi Sonda Utensile",
   "Copied": "Copiato",
-  "Copy": "Copia"
+  "Copy": "Copia",
+  "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Importa i comandi predefiniti della sonda utensile per aggiornare l'offset dell'asse Z nel Sistema di Coordinate di Lavoro (WCS)",
+  "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Importa i comandi predefiniti della sonda utensile per aggiornare l'offset della lunghezza utensile (TLO)",
+  "Warning: No custom tool probe commands are defined": "Avviso: Non sono definiti comandi personalizzati della sonda utensile",
+  "Connect to the controller to view the tool probe commands.": "Connettiti al controller per visualizzare i comandi della sonda utensile."
 }

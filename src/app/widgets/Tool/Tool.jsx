@@ -1,6 +1,6 @@
 import get from 'lodash/get';
 import classNames from 'classnames';
-import { ensureNumber } from 'ensure-type';
+import { ensureNumber, ensureString } from 'ensure-type';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Select from 'react-select';
@@ -25,6 +25,22 @@ import {
 } from './constants';
 import iconPin from './images/pin.svg';
 import styles from './index.styl';
+
+const TOOL_PROBE_OVERRIDE_WCS_EXAMPLE = `
+; Probe the tool
+G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]
+; Set coordinate system offset
+G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height]
+`.trim();
+
+const TOOL_PROBE_OVERRIDE_TLO_EXAMPLE = `
+; Probe the tool
+G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]
+; Pause for 1 second
+%wait 1
+; Set tool length offset
+G43.1 Z[posz - touch_plate_height]
+`.trim();
 
 const copyToClipboard = value => {
   const el = document.createElement('textarea');
@@ -69,6 +85,30 @@ const IconButton = styled('button')`
   }
 `;
 
+const TextPreview = styled('div')`
+  font-family: "Segoe UI Mono", "SFMono-Medium", "SF Mono", Menlo, Consolas, Courier, monospace;
+  font-size: 13px;
+  line-height: 18px;
+  overflow: auto;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  white-space: pre;
+`;
+
+const TextEditable = styled('textarea')`
+  font-family: "Segoe UI Mono", "SFMono-Medium", "SF Mono", Menlo, Consolas, Courier, monospace;
+  font-size: 13px;
+  line-height: 18px;
+  padding: 8px;
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow-wrap: normal;
+  white-space: pre;
+  width: 100%;
+`;
+
 class Tool extends PureComponent {
   static propTypes = {
     state: PropTypes.object,
@@ -93,6 +133,15 @@ class Tool extends PureComponent {
       <div style={style} title={option.label}>{option.label}</div>
     );
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    const prevToolProbeOverrides = get(prevProps.state.toolConfig, 'toolProbeOverrides');
+    const toolProbeOverrides = get(this.props.state.toolConfig, 'toolProbeOverrides');
+
+    if ((prevToolProbeOverrides !== toolProbeOverrides) && (toolProbeOverrides !== this.state.toolProbeOverrides)) {
+      this.setState({ toolProbeOverrides });
+    }
+  }
 
   render() {
     const { state, actions } = this.props;
@@ -203,6 +252,8 @@ class Tool extends PureComponent {
         this.setState({ isToolProbeCommandsCopied: false });
       }, 1500);
     };
+
+    console.log('### render:', toolProbeOverrides, this.state);
 
     return (
       <div>
@@ -409,40 +460,85 @@ class Tool extends PureComponent {
                             this.setState({ isToolProbeOverridesEditable: true });
                           }}
                         >
-                          <i className="fa fa-edit" />
+                          <i className="fa fa-fw fa-edit" />
                         </IconButton>
                       </Tooltip>
                     </div>
                   )}
+                  {this.state.isToolProbeOverridesEditable && (
+                    <div
+                      style={{
+                        marginBottom: 4,
+                      }}
+                    >
+                      <Tooltip
+                        placement="bottom"
+                        content={i18n._('Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)')}
+                      >
+                        <Button
+                          btnSize="xs"
+                          btnStyle="flat"
+                          style={{
+                            minWidth: 'auto',
+                          }}
+                          onClick={() => {
+                            const value = TOOL_PROBE_OVERRIDE_WCS_EXAMPLE;
+                            this.setState({ toolProbeOverrides: value });
+                          }}
+                        >
+                          <i className="fa fa-fw fa-upload" />
+                          WCS
+                        </Button>
+                      </Tooltip>
+                      <Tooltip
+                        placement="bottom"
+                        content={i18n._('Import predefined tool probe commands to update the Tool Length Offset (TLO)')}
+                      >
+                        <Button
+                          btnSize="xs"
+                          btnStyle="flat"
+                          style={{
+                            minWidth: 'auto',
+                          }}
+                          onClick={() => {
+                            const value = TOOL_PROBE_OVERRIDE_TLO_EXAMPLE;
+                            this.setState({ toolProbeOverrides: value });
+                          }}
+                        >
+                          <i className="fa fa-fw fa-upload" />
+                          TLO
+                        </Button>
+                      </Tooltip>
+                    </div>
+                  )}
                 </div>
-                {!this.state.isToolProbeOverridesEditable && (
-                  <pre
+                {!this.state.isToolProbeOverridesEditable && ensureString(toolProbeOverrides).length > 0 && (
+                  <TextPreview
                     style={{
-                      minHeight: 120,
-                      maxHeight: 180,
-                      resize: 'vertical',
-                      overflow: 'auto',
+                      maxHeight: 150,
                     }}
                   >
-                    <code style={{ whiteSpace: 'pre' }}>
-                      {toolProbeOverrides}
-                    </code>
-                  </pre>
+                    {toolProbeOverrides}
+                  </TextPreview>
+                )}
+                {!this.state.isToolProbeOverridesEditable && ensureString(toolProbeOverrides).length === 0 && (
+                  <div className="text-error">
+                    {i18n._('Warning: No custom tool probe commands are defined')}
+                  </div>
                 )}
                 {this.state.isToolProbeOverridesEditable && (
                   <div>
                     <div style={{ marginBottom: 8 }}>
-                      <textarea
-                        className="form-control"
+                      <TextEditable
                         style={{
                           whiteSpace: 'pre',
                           overflowWrap: 'normal',
-                          minHeight: 120,
-                          maxHeight: 180,
+                          minHeight: 150,
+                          maxHeight: 200,
                           resize: 'vertical',
                           overflow: 'auto',
                         }}
-                        defaultValue={toolProbeOverrides}
+                        value={this.state.toolProbeOverrides}
                         onChange={(event) => {
                           const value = event.target.value;
                           this.setState({ toolProbeOverrides: value });
@@ -466,7 +562,10 @@ class Tool extends PureComponent {
                         btnSize="sm"
                         btnStyle="flat"
                         onClick={() => {
-                          this.setState({ isToolProbeOverridesEditable: false });
+                          this.setState({
+                            toolProbeOverrides: toolProbeOverrides, // revert back
+                            isToolProbeOverridesEditable: false,
+                          });
                         }}
                       >
                         {i18n._('Cancel')}
@@ -619,18 +718,18 @@ class Tool extends PureComponent {
                     </div>
                   </div>
                 </div>
-                {isReady && (
-                  <div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        columnGap: 8,
-                        alignItems: 'center',
-                      }}
-                    >
-                      <label className="control-label">
-                        {i18n._('Tool Probe Commands')}
-                      </label>
+                <div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      columnGap: 8,
+                      alignItems: 'center',
+                    }}
+                  >
+                    <label className="control-label">
+                      {i18n._('Tool Probe Commands')}
+                    </label>
+                    {isReady && (
                       <div style={{ marginBottom: 5 }}>
                         <Tooltip
                           placement="bottom"
@@ -646,21 +745,23 @@ class Tool extends PureComponent {
                           </IconButton>
                         </Tooltip>
                       </div>
-                    </div>
-                    <pre
-                      style={{
-                        minHeight: 120,
-                        maxHeight: 180,
-                        resize: 'vertical',
-                        overflow: 'auto',
-                      }}
-                    >
-                      <code style={{ whiteSpace: 'pre' }}>
-                        {toolProbeCommands}
-                      </code>
-                    </pre>
+                    )}
                   </div>
-                )}
+                  {isReady && (
+                  <TextPreview
+                    style={{
+                      maxHeight: 150,
+                    }}
+                  >
+                    {toolProbeCommands}
+                  </TextPreview>
+                  )}
+                  {!isReady && (
+                    <div>
+                      <i>{i18n._('Connect to the controller to view the tool probe commands.')}</i>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>

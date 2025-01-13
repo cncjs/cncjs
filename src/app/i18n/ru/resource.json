@@ -562,5 +562,9 @@
   "Touch Plate Height": "Высота сенсорной пластины",
   "Tool Probe Commands": "Команды зонда инструмента",
   "Copied": "Скопировано",
-  "Copy": "Копировать"
+  "Copy": "Копировать",
+  "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Импортировать предустановленные команды зондирования инструмента для обновления смещения по оси Z в системе рабочих координат (WCS)",
+  "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Импортировать предустановленные команды зондирования инструмента для обновления смещения длины инструмента (TLO)",
+  "Warning: No custom tool probe commands are defined": "Предупреждение: не определены пользовательские команды зондирования инструмента",
+  "Connect to the controller to view the tool probe commands.": "Подключитесь к контроллеру, чтобы просмотреть команды зондирования инструмента."
 }

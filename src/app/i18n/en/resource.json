@@ -562,5 +562,9 @@
   "Touch Plate Height": "Touch Plate Height",
   "Tool Probe Commands": "Tool Probe Commands",
   "Copied": "Copied",
-  "Copy": "Copy"
+  "Copy": "Copy",
+  "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)",
+  "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Import predefined tool probe commands to update the Tool Length Offset (TLO)",
+  "Warning: No custom tool probe commands are defined": "Warning: No custom tool probe commands are defined",
+  "Connect to the controller to view the tool probe commands.": "Connect to the controller to view the tool probe commands."
 }

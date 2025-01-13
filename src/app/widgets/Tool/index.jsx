@@ -439,7 +439,7 @@ class ToolWidget extends PureComponent {
   getInitialState() {
     return {
       minimized: this.config.get('minimized', false),
-      isReady: (controller.loadedControllers.length > 0),
+      isReady: !!controller.type,
       isFullscreen: false,
       canClick: true, // Defaults to true
       port: controller.port,

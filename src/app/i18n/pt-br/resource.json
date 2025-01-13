@@ -562,5 +562,9 @@
   "Touch Plate Height": "Altura da Placa de Toque",
   "Tool Probe Commands": "Comandos de Sonda de Ferramenta",
   "Copied": "Copiado",
-  "Copy": "Copiar"
+  "Copy": "Copiar",
+  "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Importar comandos de sondagem de ferramenta predefinidos para atualizar o deslocamento do eixo Z no Sistema de Coordenadas de Trabalho (WCS)",
+  "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Importar comandos de sondagem de ferramenta predefinidos para atualizar o Deslocamento de Comprimento da Ferramenta (TLO)",
+  "Warning: No custom tool probe commands are defined": "Aviso: Nenhum comando de sondagem de ferramenta personalizado está definido",
+  "Connect to the controller to view the tool probe commands.": "Conecte-se ao controlador para visualizar os comandos de sondagem de ferramenta."
 }

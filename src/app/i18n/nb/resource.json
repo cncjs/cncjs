@@ -562,5 +562,9 @@
   "Touch Plate Height": "Berøringsplatens høyde",
   "Tool Probe Commands": "Verktøymålekommandoer",
   "Copied": "Kopiert",
-  "Copy": "Kopier"
+  "Copy": "Kopier",
+  "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Importer forhåndsdefinerte verktøyprobekommandoer for å oppdatere Z-akseforskyvningen i arbeidskoordinatsystemet (WCS)",
+  "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Importer forhåndsdefinerte verktøyprobekommandoer for å oppdatere verktøylengdeforskyvningen (TLO)",
+  "Warning: No custom tool probe commands are defined": "Advarsel: Ingen tilpassede verktøyprobekommandoer er definert",
+  "Connect to the controller to view the tool probe commands.": "Koble til kontrolleren for å vise verktøyprobekommandoene."
 }

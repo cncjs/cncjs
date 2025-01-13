@@ -562,5 +562,9 @@
   "Touch Plate Height": "Érintőlap Magasság",
   "Tool Probe Commands": "Szerszámérzékelő Parancsok",
   "Copied": "Másolva",
-  "Copy": "Másol"
+  "Copy": "Másol",
+  "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Előre definiált szerszámérintkező parancsok importálása a Z-tengely eltérésének frissítéséhez a Munkakoordináta-rendszerben (WCS).",
+  "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Előre definiált szerszámérintkező parancsok importálása a Szerszámhossz-eltérés (TLO) frissítéséhez.",
+  "Warning: No custom tool probe commands are defined": "Figyelmeztetés: Nincsenek egyéni szerszámérintkező parancsok definiálva.",
+  "Connect to the controller to view the tool probe commands.": "Csatlakozzon a vezérlőhöz a szerszámérintkező parancsok megtekintéséhez."
 }

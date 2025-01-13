@@ -562,5 +562,9 @@
   "Touch Plate Height": "触板高度",
   "Tool Probe Commands": "工具探针命令",
   "Copied": "已复制",
-  "Copy": "复制"
+  "Copy": "复制",
+  "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "导入预定义的工具探测命令以更新工作坐标系 (WCS) 中的 Z 轴偏移",
+  "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "导入预定义的工具探测命令以更新工具长度偏移 (TLO)",
+  "Warning: No custom tool probe commands are defined": "警告：未定义自定义工具探测命令",
+  "Connect to the controller to view the tool probe commands.": "连接到控制器以查看工具探测命令。"
 }

@@ -562,5 +562,9 @@
   "Touch Plate Height": "Höhe der Tastplatte",
   "Tool Probe Commands": "Werkzeugtastbefehle",
   "Copied": "Kopiert",
-  "Copy": "Kopieren"
+  "Copy": "Kopieren",
+  "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Vordefinierte Werkzeugabtastbefehle importieren, um den Z-Achsen-Versatz im Werkstück-Koordinatensystem (WKS) zu aktualisieren.",
+  "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Vordefinierte Werkzeugabtastbefehle importieren, um den Werkzeuglängenkorrekturwert (TLO) zu aktualisieren.",
+  "Warning: No custom tool probe commands are defined": "Warnung: Es sind keine benutzerdefinierten Werkzeugabtastbefehle definiert.",
+  "Connect to the controller to view the tool probe commands.": "Verbinden Sie sich mit dem Controller, um die Werkzeugabtastbefehle anzuzeigen."
 }
