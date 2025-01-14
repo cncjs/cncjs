@@ -31,10 +31,10 @@
   },
   "Smoothie": {
     "activeState": {
-      "idle": "Parado",
-      "run": "Iniciar",
+      "idle": "Inactivo",
+      "run": "Ejecutar",
       "hold": "Pausar",
-      "door": "Entrada",
+      "door": "Puerta",
       "home": "Inicio",
       "alarm": "Alarma",
       "check": "Comprobar"
