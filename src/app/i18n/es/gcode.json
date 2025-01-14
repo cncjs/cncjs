@@ -25,7 +25,7 @@
   "Absolute (G90)": "Absoluto (G90)",
   "Relative (G91)": "Relativo (G91)",
   "Inverse Time (G93)": "Tiempo inverso (G93)",
-  "Units/Min (G94)": "Unidades/Mín (G94)",
+  "Units/Min (G94)": "Unidades/Min (G94)",
   "Active Tool Offset (G43.1)": "Desplazamiento activo de la herramienta (G43.1)",
   "No Tool Offset (G49)": "Sin desplazamiento de la herramienta (G49)",
   "Program Stop (M0)": "Detener programa (M0)",
