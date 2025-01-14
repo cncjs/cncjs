@@ -260,6 +260,10 @@ const appMain = () => {
     app.post(urljoin(settings.route, 'api/state'), api.state.set);
     app.delete(urljoin(settings.route, 'api/state'), api.state.unset);
 
+    // Tool Config
+    app.get(urljoin(settings.route, 'api/tool'), api.tool.get);
+    app.post(urljoin(settings.route, 'api/tool'), api.tool.set);
+
     // G-code
     app.get(urljoin(settings.route, 'api/gcode'), api.gcode.fetch);
     app.post(urljoin(settings.route, 'api/gcode'), api.gcode.upload);

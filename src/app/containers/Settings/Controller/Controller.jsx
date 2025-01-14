@@ -14,7 +14,7 @@ class Controller extends PureComponent {
     };
 
     fields = {
-      ignoreErrors: null
+      ignoreErrors: null,
     };
 
     handlers = {
@@ -51,29 +51,35 @@ class Controller extends PureComponent {
       }
 
       return (
-        <form style={{ marginTop: -10 }}>
-          <h5>{i18n._('Exception')}</h5>
-          <div className={styles.formFields}>
-            <div className={styles.formGroup}>
-              <div className="checkbox">
-                <label>
-                  <input
-                    ref={(node) => {
-                      this.fields.ignoreErrors = node;
-                    }}
-                    type="checkbox"
-                    checked={state.ignoreErrors}
-                    onChange={this.handlers.handleChangeIgnoreErrors}
-                  />
-                  {i18n._('Continue execution when an error is detected in the G-code program')}
-                </label>
-                <p style={{ marginLeft: 20 }}>
-                  <span className="text-warning">
-                    <i className="fa fa-exclamation-circle" />
-                  </span>
-                  <Space width="4" />
-                  <span>{i18n._('Enabling this option may cause machine damage if you don\'t have an Emergency Stop button to prevent a dangerous situation.')}</span>
-                </p>
+        <form
+          style={{
+            marginTop: -10,
+          }}
+        >
+          <div style={{ marginBottom: 24 }}>
+            <h5>{i18n._('Exception')}</h5>
+            <div className={styles.formFields}>
+              <div className={styles.formGroup}>
+                <div className="checkbox">
+                  <label>
+                    <input
+                      ref={(node) => {
+                        this.fields.ignoreErrors = node;
+                      }}
+                      type="checkbox"
+                      checked={state.ignoreErrors}
+                      onChange={this.handlers.handleChangeIgnoreErrors}
+                    />
+                    {i18n._('Continue execution when an error is detected in the G-code program')}
+                  </label>
+                  <p style={{ marginLeft: 20 }}>
+                    <span className="text-warning">
+                      <i className="fa fa-exclamation-circle" />
+                    </span>
+                    <Space width="4" />
+                    <span>{i18n._('Enabling this option may cause machine damage if you don\'t have an Emergency Stop button to prevent a dangerous situation.')}</span>
+                  </p>
+                </div>
               </div>
             </div>
           </div>

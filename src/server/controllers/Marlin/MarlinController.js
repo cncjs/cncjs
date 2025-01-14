@@ -1,12 +1,14 @@
 import {
   ensureArray,
+  ensurePositiveNumber,
   ensureString,
 } from 'ensure-type';
-import * as parser from 'gcode-parser';
+import * as gcodeParser from 'gcode-parser';
 import _ from 'lodash';
 import SerialConnection from '../../lib/SerialConnection';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
+import MessageSlot from '../../lib/MessageSlot';
 import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/Sender';
 import Workflow, {
   WORKFLOW_STATE_IDLE,
@@ -14,8 +16,8 @@ import Workflow, {
   WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
-import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
+import x from '../../lib/json-stringify';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
 import config from '../../services/configstore';
@@ -24,11 +26,27 @@ import taskRunner from '../../services/taskrunner';
 import store from '../../store';
 import {
   GLOBAL_OBJECTS as globalObjects,
+  // Builtin Commands
+  BUILTIN_COMMAND_MSG,
+  BUILTIN_COMMAND_WAIT,
+  // M6 Tool Change
+  TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
+  TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
+  // Units
+  IMPERIAL_UNITS,
+  METRIC_UNITS,
+  // Write Source
   WRITE_SOURCE_CLIENT,
   WRITE_SOURCE_SERVER,
   WRITE_SOURCE_FEEDER,
   WRITE_SOURCE_SENDER
 } from '../constants';
+import * as builtinCommand from '../utils/builtin-command';
+import { isM0, isM1, isM6, isM109, isM190, replaceM6 } from '../utils/gcode';
+import { mapPositionToUnits, mapValueToUnits } from '../utils/units';
 import MarlinRunner from './MarlinRunner';
 import interpret from './interpret';
 import {
@@ -36,9 +54,6 @@ import {
   QUERY_TYPE_POSITION,
   QUERY_TYPE_TEMPERATURE
 } from './constants';
-
-// % commands
-const WAIT = '%wait';
 
 const log = logger('controller:Marlin');
 const noop = _.noop;
@@ -106,6 +121,9 @@ class MarlinController {
 
       writeLine: ''
     };
+
+    // Message Slot
+    messageSlot = null;
 
     // Event Trigger
     event = null;
@@ -337,6 +355,9 @@ class MarlinController {
         }
       });
 
+      // Message Slot
+      this.messageSlot = new MessageSlot();
+
       // Event Trigger
       this.event = new EventTrigger((event, trigger, commands) => {
         log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
@@ -351,62 +372,118 @@ class MarlinController {
       this.feeder = new Feeder({
         dataFilter: (line, context) => {
           const originalLine = line;
-          /**
-           * line = 'G0X10 ; comment text'
-           * parts = ['G0X10 ', ' comment text', '']
-           */
-          const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
-          line = ensureString(parts[0]).trim();
+          line = line.trim();
           context = this.populateContext(context);
 
           if (line[0] === '%') {
+            const [command, commandArgs] = ensureArray(builtinCommand.match(line));
+
+            // %msg
+            if (command === BUILTIN_COMMAND_MSG) {
+              log.debug(`${command}: line=${x(originalLine)}`);
+              const msg = translateExpression(commandArgs, context);
+              this.messageSlot.put(msg);
+              return '';
+            }
+
             // %wait
-            if (line === WAIT) {
-              log.debug('Wait for the planner to empty');
-              // G4 [P<time in ms>] [S<time in sec>]
-              // If both S and P are included, S takes precedence.
-              return 'G4 P500'; // dwell
+            if (command === BUILTIN_COMMAND_WAIT) {
+              log.debug(`${command}: line=${x(originalLine)}`);
+              this.sender.hold({
+                data: BUILTIN_COMMAND_WAIT,
+                msg: this.messageSlot.take() ?? originalLine,
+              });
+              // On Marlin and Smoothie, the "S" parameter will wait for seconds, while the "P" parameter will wait for milliseconds.
+              // "G4 S2" and "G4 P2000" are equivalent.
+              const delay = parseFloat(commandArgs) || 0.5; // in seconds
+              const pauseValue = delay.toFixed(3) * 1;
+              return `G4 S${pauseValue}`; // dwell
             }
 
             // Expression
             // %_x=posx,_y=posy,_z=posz
-            evaluateAssignmentExpression(line.slice(1), context);
+            log.debug(`%: line=${x(originalLine)}`);
+            const expr = line.slice(1);
+            evaluateAssignmentExpression(expr, context);
             return '';
           }
 
-          // line="G0 X[posx - 8] Y[ymax]"
-          // > "G0 X2 Y50"
+          // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
           line = translateExpression(line, context);
-          const data = parser.parseLine(line, { flatten: true });
-          const words = ensureArray(data.words);
+
+          const { line: strippedLine, words } = gcodeParser.parseLine(line, {
+            flatten: true,
+            lineMode: 'stripped',
+          });
+          line = strippedLine;
 
           // M109 Set extruder temperature and wait for the target temperature to be reached
-          if (_.includes(words, 'M109')) {
-            log.debug(`Wait for extruder temperature to reach target temperature (${line})`);
-            this.feeder.hold({ data: 'M109', msg: originalLine }); // Hold reason
+          if (words.find(isM109)) {
+            log.debug(`M109 Wait for extruder temperature to reach target temperature: line=${x(originalLine)}`);
+
+            this.feeder.hold({
+              data: 'M109',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M190 Set heated bed temperature and wait for the target temperature to be reached
-          if (_.includes(words, 'M190')) {
-            log.debug(`Wait for heated bed temperature to reach target temperature (${line})`);
-            this.feeder.hold({ data: 'M190', msg: originalLine }); // Hold reason
+          if (words.find(isM190)) {
+            log.debug(`M190 Wait for heated bed temperature to reach target temperature: line=${x(originalLine)}`);
+
+            this.feeder.hold({
+              data: 'M190',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
-          { // Program Mode: M0, M1
-            const programMode = _.intersection(words, ['M0', 'M1'])[0];
-            if (programMode === 'M0') {
-              log.debug('M0 Program Pause');
-              this.feeder.hold({ data: 'M0', msg: originalLine }); // Hold reason
-            } else if (programMode === 'M1') {
-              log.debug('M1 Program Pause');
-              this.feeder.hold({ data: 'M1', msg: originalLine }); // Hold reason
-            }
+          // M0 Program Pause
+          if (words.find(isM0)) {
+            log.debug(`M0 Program Pause: line=${x(originalLine)}`);
+
+            this.feeder.hold({
+              data: 'M0',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
+          }
+
+          // M1 Program Pause
+          if (words.find(isM1)) {
+            log.debug(`M1 Program Pause: line=${x(originalLine)}`);
+
+            this.feeder.hold({
+              data: 'M1',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M6 Tool Change
-          if (_.includes(words, 'M6')) {
-            log.debug('M6 Tool Change');
-            this.feeder.hold({ data: 'M6', msg: originalLine }); // Hold reason
+          if (words.find(isM6)) {
+            log.debug(`M6 Tool Change: line=${x(originalLine)}`);
+
+            const toolChangePolicy = config.get('tool.toolChangePolicy');
+            const isManualToolChange = [
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
+            ].includes(toolChangePolicy);
+
+            if (toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS) {
+              // Send M6 commands
+            } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS) {
+              // Ignore M6 commands
+              line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
+            } else if (isManualToolChange) {
+              // Manual Tool Change
+              line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
+
+              this.feeder.hold({
+                data: 'M6',
+                msg: this.messageSlot.take() ?? originalLine,
+              });
+
+              this.command('tool:change');
+            }
           }
 
           return line;
@@ -446,75 +523,122 @@ class MarlinController {
       this.sender = new Sender(SP_TYPE_SEND_RESPONSE, {
         dataFilter: (line, context) => {
           const originalLine = line;
-          /**
-                 * line = 'G0X10 ; comment text'
-                 * parts = ['G0X10 ', ' comment text', '']
-                 */
-          const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
-          line = ensureString(parts[0]).trim();
+          const { sent, received } = this.sender.state;
+          line = line.trim();
           context = this.populateContext(context);
 
-          const { sent, received } = this.sender.state;
-
           if (line[0] === '%') {
-            // %wait
-            if (line === WAIT) {
-              log.debug(`Wait for the planner to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
-              this.sender.hold({ data: WAIT, msg: originalLine }); // Hold reason
+            const [command, commandArgs] = ensureArray(builtinCommand.match(line));
 
-              // G4 [P<time in ms>] [S<time in sec>]
-              // If both S and P are included, S takes precedence.
-              return 'G4 P500'; // dwell
+            // %msg
+            if (command === BUILTIN_COMMAND_MSG) {
+              log.debug(`${command}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+              const msg = translateExpression(commandArgs, context);
+              this.messageSlot.put(msg);
+              return '';
+            }
+
+            // %wait
+            if (command === BUILTIN_COMMAND_WAIT) {
+              log.debug(`${command}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+              this.sender.hold({
+                data: BUILTIN_COMMAND_WAIT,
+                msg: this.messageSlot.take() ?? originalLine,
+              });
+              // On Marlin and Smoothie, the "S" parameter will wait for seconds, while the "P" parameter will wait for milliseconds.
+              // "G4 S2" and "G4 P2000" are equivalent.
+              const delay = parseFloat(commandArgs) || 0.5; // in seconds
+              const pauseValue = delay.toFixed(3) * 1;
+              return `G4 S${pauseValue}`; // dwell
             }
 
             // Expression
             // %_x=posx,_y=posy,_z=posz
-            evaluateAssignmentExpression(line.slice(1), context);
+            log.debug(`%: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+            const expr = line.slice(1);
+            evaluateAssignmentExpression(expr, context);
             return '';
           }
 
-          // line="G0 X[posx - 8] Y[ymax]"
-          // > "G0 X2 Y50"
+          // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
           line = translateExpression(line, context);
-          const data = parser.parseLine(line, { flatten: true });
-          const words = ensureArray(data.words);
+
+          const { line: strippedLine, words } = gcodeParser.parseLine(line, {
+            flatten: true,
+            lineMode: 'stripped',
+          });
+          line = strippedLine;
 
           // M109 Set extruder temperature and wait for the target temperature to be reached
-          if (_.includes(words, 'M109')) {
-            log.debug(`Wait for extruder temperature to reach target temperature (${line}): line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.sender.hold({ data: 'M109', msg: originalLine }); // Hold reason
+          if (words.find(isM109)) {
+            log.debug(`M109 Wait for extruder temperature to reach target temperature: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+
+            this.sender.hold({
+              data: 'M109',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M190 Set heated bed temperature and wait for the target temperature to be reached
-          if (_.includes(words, 'M190')) {
-            log.debug(`Wait for heated bed temperature to reach target temperature (${line}): line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.sender.hold({ data: 'M190', msg: originalLine }); // Hold reason
+          if (words.find(isM190)) {
+            log.debug(`M190 Wait for heated bed temperature to reach target temperature: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+
+            this.sender.hold({
+              data: 'M190',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
-          { // Program Mode: M0, M1
-            const programMode = _.intersection(words, ['M0', 'M1'])[0];
-            if (programMode === 'M0') {
-              log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
+          // M0 Program Pause
+          if (words.find(isM0)) {
+            log.debug(`M0 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
-              this.event.trigger('gcode:pause');
+            this.event.trigger('gcode:pause');
+            this.workflow.pause({
+              data: 'M0',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
+          }
 
-              this.workflow.pause({ data: 'M0', msg: originalLine });
-            } else if (programMode === 'M1') {
-              log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
+          // M1 Program Pause
+          if (words.find(isM1)) {
+            log.debug(`M1 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
-              this.event.trigger('gcode:pause');
-
-              this.workflow.pause({ data: 'M1', msg: originalLine });
-            }
+            this.event.trigger('gcode:pause');
+            this.workflow.pause({
+              data: 'M1',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
           }
 
           // M6 Tool Change
-          if (_.includes(words, 'M6')) {
-            log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
+          if (words.find(isM6)) {
+            log.debug(`M6 Tool Change: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
-            this.event.trigger('gcode:pause');
+            const toolChangePolicy = config.get('tool.toolChangePolicy');
+            const isManualToolChange = [
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
+            ].includes(toolChangePolicy);
 
-            this.workflow.pause({ data: 'M6', msg: originalLine });
+            if (toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS) {
+              // Send M6 commands
+            } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS) {
+              // Ignore M6 commands
+              line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
+            } else if (isManualToolChange) {
+              // Manual Tool Change
+              line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
+
+              this.event.trigger('gcode:pause');
+              this.workflow.pause({
+                data: 'M6',
+                msg: this.messageSlot.take() ?? originalLine,
+              });
+
+              this.command('tool:change');
+            }
           }
 
           return line;
@@ -693,13 +817,17 @@ class MarlinController {
           const ignoreErrors = config.get('state.controller.exception.ignoreErrors');
           const pauseError = !ignoreErrors;
           const { lines, received } = this.sender.state;
-          const line = lines[received] || '';
+          const line = ensureString(lines[received - 1]).trim();
+          const ln = received + 1;
 
-          this.emit('serialport:read', `> ${line.trim()} (line=${received + 1})`);
+          this.emit('serialport:read', `> ${line} (ln=${ln})`);
           this.emit('serialport:read', res.raw);
 
           if (pauseError) {
-            this.workflow.pause({ err: true, msg: res.raw });
+            this.workflow.pause({
+              err: true,
+              msg: res.raw,
+            });
           }
 
           this.sender.ack();
@@ -735,8 +863,8 @@ class MarlinController {
         }
 
         const zeroOffset = _.isEqual(
-          this.runner.getPosition(this.state),
-          this.runner.getPosition(this.runner.state)
+          this.runner.getWorkPosition(this.state),
+          this.runner.getWorkPosition(this.runner.state)
         );
 
         // Marlin settings
@@ -803,7 +931,7 @@ class MarlinController {
         y: posy,
         z: posz,
         e: pose
-      } = this.runner.getPosition();
+      } = this.runner.getWorkPosition();
 
       // Modal group
       const modal = this.runner.getModalGroup();
@@ -866,6 +994,10 @@ class MarlinController {
 
       if (this.connection) {
         this.connection = null;
+      }
+
+      if (this.messageSlot) {
+        this.messageSlot = null;
       }
 
       if (this.event) {
@@ -1377,7 +1509,109 @@ class MarlinController {
 
             this.command('gcode:load', file, data, context, callback);
           });
-        }
+        },
+        'tool:change': () => {
+          const modal = this.runner.getModalGroup();
+          const units = {
+            'G20': IMPERIAL_UNITS,
+            'G21': METRIC_UNITS,
+          }[modal.units];
+          const toolChangePolicy = config.get('tool.toolChangePolicy', TOOL_CHANGE_POLICY_SEND_M6_COMMANDS);
+          const toolChangeX = mapPositionToUnits(config.get('tool.toolChangeX', 0), units);
+          const toolChangeY = mapPositionToUnits(config.get('tool.toolChangeY', 0), units);
+          const toolChangeZ = mapPositionToUnits(config.get('tool.toolChangeZ', 0), units);
+          const toolProbeX = mapPositionToUnits(config.get('tool.toolProbeX', 0), units);
+          const toolProbeY = mapPositionToUnits(config.get('tool.toolProbeY', 0), units);
+          const toolProbeZ = mapPositionToUnits(config.get('tool.toolProbeZ', 0), units);
+          const toolProbeOverrides = ensureString(config.get('tool.toolProbeOverrides')).split('\n');
+          const toolProbeCommand = config.get('tool.toolProbeCommand', 'G38.2');
+          const toolProbeDistance = mapValueToUnits(config.get('tool.toolProbeDistance', 0), units);
+          const toolProbeFeedrate = mapValueToUnits(config.get('tool.toolProbeFeedrate', 10), units);
+          const touchPlateHeight = mapValueToUnits(config.get('tool.touchPlateHeight', 0), units);
+
+          const context = {
+            'tool_change_x': toolChangeX,
+            'tool_change_y': toolChangeY,
+            'tool_change_z': toolChangeZ,
+            'tool_probe_x': toolProbeX,
+            'tool_probe_y': toolProbeY,
+            'tool_probe_z': toolProbeZ,
+            'tool_probe_overrides': toolProbeOverrides,
+            'tool_probe_command': toolProbeCommand,
+            'tool_probe_distance': toolProbeDistance,
+            'tool_probe_feedrate': toolProbeFeedrate,
+            'touch_plate_height': touchPlateHeight,
+
+            // Note: Marlin does not support the World Coordinate System (WCS)
+          };
+
+          const lines = [];
+
+          // Wait until the planner queue is empty
+          lines.push('%wait');
+
+          // Remember original position and spindle state
+          lines.push('%_posx=posx');
+          lines.push('%_posy=posy');
+          lines.push('%_posz=posz');
+          lines.push('%_modal_spindle=modal.spindle');
+
+          // Stop the spindle
+          lines.push('M5');
+
+          // Absolute positioning
+          lines.push('G90');
+
+          // Move to the tool change position
+          lines.push('G53 G0 Z[tool_change_z]');
+          lines.push('G53 G0 X[tool_change_x] Y[tool_change_y]');
+          lines.push('%wait');
+
+          // Prompt the user to change the tool
+          lines.push('%msg Tool Change T[tool]');
+          lines.push('M0');
+
+          // Move to the tool probe position
+          lines.push('G53 G0 X[tool_probe_x] Y[tool_probe_y]');
+          lines.push('G53 G0 Z[tool_probe_z]');
+          lines.push('%wait');
+
+          if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
+            // Probe the tool
+            lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - posz - tool_probe_distance]');
+            // Set the current work Z position (posz) to the touch plate height
+            lines.push('G92 Z[touch_plate_height]');
+          } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
+            // Probe the tool
+            lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - posz - tool_probe_distance]');
+            // Pause for 1 second
+            lines.push('%wait 1');
+            // Adjust the work Z position by subtracting the touch plate height from the current work Z position (posz)
+            lines.push('G92 Z[posz - touch_plate_height]');
+          } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM) {
+            lines.push(...toolProbeOverrides);
+          }
+
+          // Move to the tool change position
+          lines.push('G53 G0 Z[tool_change_z]');
+          lines.push('G53 G0 X[tool_change_x] Y[tool_change_y]');
+          lines.push('%wait');
+
+          // Prompt the user to restart the spindle
+          lines.push('%msg Restart Spindle');
+          lines.push('M0');
+
+          // Restore the position and spindle state
+          lines.push('G90');
+          lines.push('G0 X[_posx] Y[_posy]');
+          lines.push('G0 Z[_posz]');
+          lines.push('[_modal_spindle]');
+
+          // Wait 5 seconds for the spindle to speed up
+          lines.push('%wait 5');
+
+          this.command('gcode', lines, context);
+        },
       }[cmd];
 
       if (!handler) {

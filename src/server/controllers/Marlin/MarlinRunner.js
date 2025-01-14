@@ -149,12 +149,21 @@ class MarlinRunner extends events.EventEmitter {
       }
     }
 
-    getPosition(state = this.state) {
+    getMachinePosition(state = this.state) {
+      return _.get(state, 'pos', {});
+    }
+
+    getWorkPosition(state = this.state) {
       return _.get(state, 'pos', {});
     }
 
     getModalGroup(state = this.state) {
       return _.get(state, 'modal', {});
+    }
+
+    getWorkCoordinateSystem(state = this.state) {
+      const defaultWCS = 'G54';
+      return _.get(state, 'modal.wcs', defaultWCS);
     }
 
     getTool(state = this.state) {

@@ -5,15 +5,17 @@ import {
   ERR_NOT_FOUND
 } from '../constants';
 
+const CONFIG_KEY = 'state';
+
 export const get = (req, res) => {
   const query = req.query || {};
 
   if (!query.key) {
-    res.send(config.get('state'));
+    res.send(config.get(CONFIG_KEY));
     return;
   }
 
-  const key = `state.${query.key}`;
+  const key = `${CONFIG_KEY}.${query.key}`;
   if (!config.has(key)) {
     res.status(ERR_NOT_FOUND).send({
       msg: 'Not found'
@@ -29,11 +31,11 @@ export const unset = (req, res) => {
   const query = req.query || {};
 
   if (!query.key) {
-    res.send(config.get('state'));
+    res.send(config.get(CONFIG_KEY));
     return;
   }
 
-  const key = `state.${query.key}`;
+  const key = `${CONFIG_KEY}.${query.key}`;
   if (!config.has(key)) {
     res.status(ERR_NOT_FOUND).send({
       msg: 'Not found'
@@ -50,22 +52,23 @@ export const set = (req, res) => {
   const data = { ...req.body };
 
   if (query.key) {
-    config.set(`state.${query.key}`, data);
+    const key = `${CONFIG_KEY}.${query.key}`;
+    config.set(key, data);
     res.send({ err: false });
     return;
   }
 
   deepKeys(data).forEach((key) => {
-    const oldValue = config.get(`state.${key}`);
+    const oldValue = config.get(`${CONFIG_KEY}.${key}`);
     const newValue = _.get(data, key);
 
     if (typeof oldValue === 'object' && typeof newValue === 'object') {
-      config.set(`state.${key}`, {
+      config.set(`${CONFIG_KEY}.${key}`, {
         ...oldValue,
         ...newValue
       });
     } else {
-      config.set(`state.${key}`, newValue);
+      config.set(`${CONFIG_KEY}.${key}`, newValue);
     }
   });
 
