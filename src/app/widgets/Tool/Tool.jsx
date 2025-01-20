@@ -468,7 +468,6 @@ class Tool extends PureComponent {
                       <Tooltip
                         placement="bottom"
                         content={i18n._('Edit')}
-                        hideOnClick
                       >
                         <IconButton
                           onClick={() => {

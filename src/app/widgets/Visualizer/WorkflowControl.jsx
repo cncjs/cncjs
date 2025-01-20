@@ -1,10 +1,10 @@
-import classNames from 'classnames';
 import get from 'lodash/get';
 import includes from 'lodash/includes';
 import pick from 'lodash/pick';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Dropdown, MenuItem } from 'react-bootstrap';
+import { Button, ButtonGroup, ButtonToolbar } from 'app/components/Buttons';
+import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
@@ -153,26 +153,33 @@ class WorkflowControl extends PureComponent {
             multiple={false}
             onChange={this.handleChangeFile}
           />
-          <div className="btn-toolbar">
-            <div className="btn-group btn-group-sm">
-              <button
-                type="button"
-                className="btn btn-primary"
+          <ButtonToolbar>
+            <ButtonGroup
+              style={{
+                backgroundColor: 'white',
+              }}
+            >
+              <Button
+                btnStyle="primary"
+                btnSize="sm"
                 title={i18n._('Upload G-code')}
                 onClick={this.handleClickUpload}
                 disabled={!canUpload}
+                style={{ minWidth: 0 }}
               >
                 {i18n._('Upload G-code')}
-              </button>
+              </Button>
               <Dropdown
-                id="upload-dropdown"
+                btnStyle="primary"
+                btnSize="sm"
                 disabled={!canUpload}
               >
                 <Dropdown.Toggle
-                  bsStyle="primary"
+                  btnStyle="primary"
                   noCaret
+                  style={{ minWidth: 0, padding: '4px 8px' }}
                 >
-                  <i className="fa fa-caret-down" />
+                  <i className="fa fa-fw fa-caret-down" style={{ marginRight: 0 }} />
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <MenuItem header>
@@ -189,68 +196,48 @@ class WorkflowControl extends PureComponent {
                   </MenuItem>
                 </Dropdown.Menu>
               </Dropdown>
-            </div>
-            <div className="btn-group btn-group-sm">
-              <button
-                type="button"
-                className="btn btn-default"
+            </ButtonGroup>
+            <ButtonGroup
+              btnStyle="flat"
+              btnSize="sm"
+              style={{
+                backgroundColor: 'white',
+              }}
+            >
+              <Button
                 title={workflow.state === WORKFLOW_STATE_PAUSED ? i18n._('Resume') : i18n._('Run')}
                 onClick={actions.handleRun}
                 disabled={!canRun}
+                style={{ minWidth: 0, padding: '4px 8px' }}
               >
-                <i className="fa fa-play" />
-              </button>
-              <button
-                type="button"
-                className="btn btn-default"
+                <i className="fa fa-fw fa-play" style={{ marginRight: 0 }} />
+              </Button>
+              <Button
                 title={i18n._('Pause')}
                 onClick={actions.handlePause}
                 disabled={!canPause}
+                style={{ minWidth: 0, padding: '4px 8px' }}
               >
-                <i className="fa fa-pause" />
-              </button>
-              <button
-                type="button"
-                className="btn btn-default"
+                <i className="fa fa-fw fa-pause" style={{ marginRight: 0 }} />
+              </Button>
+              <Button
                 title={i18n._('Stop')}
                 onClick={actions.handleStop}
                 disabled={!canStop}
+                style={{ minWidth: 0, padding: '4px 8px' }}
               >
-                <i className="fa fa-stop" />
-              </button>
-              <button
-                type="button"
-                className="btn btn-default"
+                <i className="fa fa-fw fa-stop" style={{ marginRight: 0 }} />
+              </Button>
+              <Button
                 title={i18n._('Close')}
                 onClick={actions.handleClose}
                 disabled={!canClose}
+                style={{ minWidth: 0, padding: '4px 8px' }}
               >
-                <i className="fa fa-close" />
-              </button>
-            </div>
-            <Dropdown
-              className="hidden"
-              bsSize="sm"
-              id="toolbar-dropdown"
-              pullRight
-            >
-              <Dropdown.Toggle
-                noCaret
-                style={{
-                  paddingLeft: 8,
-                  paddingRight: 8
-                }}
-              >
-                <i className="fa fa-list-alt" />
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <MenuItem>
-                  <i className={classNames(styles.icon, styles.iconPerimeterTracingSquare)} />
-                  <Space width="4" />
-                </MenuItem>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
+                <i className="fa fa-fw fa-close" style={{ marginRight: 0 }} />
+              </Button>
+            </ButtonGroup>
+          </ButtonToolbar>
         </div>
       );
     }

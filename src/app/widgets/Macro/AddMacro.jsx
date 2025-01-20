@@ -2,10 +2,9 @@ import uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
-import { Dropdown, MenuItem } from 'react-bootstrap';
 import { Button } from 'app/components/Buttons';
+import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import Modal from 'app/components/Modal';
-import Space from 'app/components/Space';
 import { Form, Input, Textarea } from 'app/components/Validation';
 import i18n from 'app/lib/i18n';
 import * as validations from 'app/lib/validations';
@@ -73,7 +72,6 @@ class AddMacro extends PureComponent {
                 <div>
                   <label>{i18n._('Macro Commands')}</label>
                   <Dropdown
-                    id="add-macro-dropdown"
                     className="pull-right"
                     onSelect={(eventKey) => {
                       const textarea = ReactDOM.findDOMNode(this.fields.content).querySelector('textarea');
@@ -88,18 +86,18 @@ class AddMacro extends PureComponent {
                     pullRight
                   >
                     <Dropdown.Toggle
-                      className={styles.btnLink}
-                      style={{ boxShadow: 'none' }}
-                      useAnchor
-                      noCaret
+                      btnStyle="link"
+                      btnSize="xs"
                     >
                       <i className="fa fa-plus" />
-                      <Space width="8" />
                       {i18n._('Macro Variables')}
-                      <Space width="4" />
-                      <i className="fa fa-caret-down" />
                     </Dropdown.Toggle>
-                    <Dropdown.Menu className={styles.macroVariablesDropdown}>
+                    <Dropdown.Menu
+                      className={styles.macroVariablesDropdown}
+                      style={{
+                        minWidth: 'max-content',
+                      }}
+                    >
                       {variables.map(v => {
                         if (typeof v === 'object') {
                           return (
