@@ -212,7 +212,7 @@ class Tool extends PureComponent {
           lines.push('; Adjust the work Z position by subtracting the touch plate height from the current work Z position (posz)');
           lines.push('G92 Z[posz - touch_plate_height]');
         }
-        return lines;
+        return lines.join('\n');
       }
 
       if (controller.type === GRBL || controller.type === SMOOTHIE) {
@@ -227,7 +227,7 @@ class Tool extends PureComponent {
           lines.push('; Set tool length offset');
           lines.push('G43.1 Z[posz - touch_plate_height]');
         }
-        return lines;
+        return lines.join('\n');
       }
 
       if (controller.type === TINYG) {
@@ -242,10 +242,10 @@ class Tool extends PureComponent {
           lines.push('; Set tool length offset');
           lines.push('{tofz:[posz - touch_plate_height]}');
         }
-        return lines;
+        return lines.join('\n');
       }
 
-      return lines;
+      return lines.join('\n');
     })();
 
     const handleClickCopyToolProbeCommands = (event) => {
@@ -261,8 +261,6 @@ class Tool extends PureComponent {
         this.setState({ isToolProbeCommandsCopied: false });
       }, 1500);
     };
-
-    console.log('### render:', toolProbeOverrides, this.state);
 
     return (
       <div>

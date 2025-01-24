@@ -198,7 +198,7 @@ class GrblController {
       });
 
       // Message Slot
-      this.messageSlot = new MessageSlot()();
+      this.messageSlot = new MessageSlot();
 
       // Event Trigger
       this.event = new EventTrigger((event, trigger, commands) => {
