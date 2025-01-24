@@ -1554,7 +1554,6 @@ class GrblController {
             'tool_probe_x': toolProbeX,
             'tool_probe_y': toolProbeY,
             'tool_probe_z': toolProbeZ,
-            'tool_probe_overrides': toolProbeOverrides,
             'tool_probe_command': toolProbeCommand,
             'tool_probe_distance': toolProbeDistance,
             'tool_probe_feedrate': toolProbeFeedrate,

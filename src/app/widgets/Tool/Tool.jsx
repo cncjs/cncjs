@@ -1,11 +1,14 @@
 import get from 'lodash/get';
 import classNames from 'classnames';
 import { ensureNumber, ensureString } from 'ensure-type';
+import uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import ReactDOM from 'react-dom';
 import Select from 'react-select';
 import styled from 'styled-components';
 import { Button } from 'app/components/Buttons';
+import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import Image from 'app/components/Image';
 import { Tooltip } from 'app/components/Tooltip';
 import i18n from 'app/lib/i18n';
@@ -25,6 +28,8 @@ import {
 } from './constants';
 import iconPin from './images/pin.svg';
 import styles from './index.styl';
+import insertAtCaret from './insertAtCaret';
+import variables from './variables';
 
 const TOOL_PROBE_OVERRIDE_WCS_EXAMPLE = `
 ; Probe the tool
@@ -113,6 +118,10 @@ class Tool extends PureComponent {
   static propTypes = {
     state: PropTypes.object,
     actions: PropTypes.object
+  };
+
+  fields = {
+    toolProbeOverrides: null,
   };
 
   timer = null;
@@ -449,11 +458,16 @@ class Tool extends PureComponent {
                     {i18n._('Custom Tool Probe Commands')}
                   </label>
                   {!this.state.isToolProbeOverridesEditable && (
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 5 }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginBottom: 5,
+                      }}
+                    >
                       <Tooltip
                         placement="bottom"
                         content={i18n._('Edit')}
-                        hideOnClick
                       >
                         <IconButton
                           onClick={() => {
@@ -465,10 +479,19 @@ class Tool extends PureComponent {
                       </Tooltip>
                     </div>
                   )}
-                  {this.state.isToolProbeOverridesEditable && (
-                    <div
-                      style={{
-                        marginBottom: 4,
+                </div>
+                {this.state.isToolProbeOverridesEditable && (
+                  <div
+                    style={{
+                      marginBottom: 8,
+                    }}
+                  >
+                    <Dropdown
+                      onSelect={(eventKey) => {
+                        const el = ReactDOM.findDOMNode(this.fields.toolProbeOverrides);
+                        if (el) {
+                          insertAtCaret(el, eventKey);
+                        }
                       }}
                     >
                       <Tooltip
@@ -509,9 +532,38 @@ class Tool extends PureComponent {
                           TLO
                         </Button>
                       </Tooltip>
-                    </div>
-                  )}
-                </div>
+                      <Dropdown.Toggle btnSize="xs" />
+                      <Dropdown.Menu
+                        style={{
+                          height: 180,
+                          overflowY: 'auto',
+                        }}
+                      >
+                        {variables.map(v => {
+                          if (typeof v === 'object') {
+                            return (
+                              <MenuItem
+                                header={v.type === 'header'}
+                                key={uniqueId()}
+                              >
+                                {v.text}
+                              </MenuItem>
+                            );
+                          }
+
+                          return (
+                            <MenuItem
+                              eventKey={v}
+                              key={uniqueId()}
+                            >
+                              {v}
+                            </MenuItem>
+                          );
+                        })}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </div>
+                )}
                 {!this.state.isToolProbeOverridesEditable && ensureString(toolProbeOverrides).length > 0 && (
                   <TextPreview
                     style={{
@@ -530,6 +582,9 @@ class Tool extends PureComponent {
                   <div>
                     <div style={{ marginBottom: 8 }}>
                       <TextEditable
+                        ref={c => {
+                          this.fields.toolProbeOverrides = c;
+                        }}
                         style={{
                           whiteSpace: 'pre',
                           overflowWrap: 'normal',
