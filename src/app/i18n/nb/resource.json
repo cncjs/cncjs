@@ -550,9 +550,7 @@
   "Ignore M6 commands": "Ignorer M6-kommandoer",
   "Manual Tool Change (WCS)": "Manuelt verktøyskift (WCS)",
   "Manual Tool Change (TLO)": "Manuelt verktøyskift (TLO)",
-  "Manual Tool Change (Custom)": "Manuelt verktøyskift (Tilpasset)",
   "This will send the line exactly as it is to the controller.": "Dette vil sende linjen nøyaktig som den er til kontrolleren.",
-  "This will completely skip the M6 command and prevent it from being sent to the controller.": "Dette vil hoppe over M6-kommandoen fullstendig og forhindre at den sendes til kontrolleren.",
   "Tool Change Position": "Verktøyskiftposisjon",
   "Use the current machine position as the tool change position.": "Bruk maskinens nåværende posisjon som verktøyskiftposisjon.",
   "Tool Probe Position": "Verktøymåleposisjon",
@@ -566,5 +564,7 @@
   "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Importer forhåndsdefinerte verktøyprobekommandoer for å oppdatere Z-akseforskyvningen i arbeidskoordinatsystemet (WCS)",
   "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Importer forhåndsdefinerte verktøyprobekommandoer for å oppdatere verktøylengdeforskyvningen (TLO)",
   "Warning: No custom tool probe commands are defined": "Advarsel: Ingen tilpassede verktøyprobekommandoer er definert",
-  "Connect to the controller to view the tool probe commands.": "Koble til kontrolleren for å vise verktøyprobekommandoene."
+  "Connect to the controller to view the tool probe commands.": "Koble til kontrolleren for å vise verktøyprobekommandoene.",
+  "Manual Tool Change (Custom Probing)": "Manuell verktøyskift (Egendefinert probing)",
+  "This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.": "Denne innstillingen hopper over M6-kommandoen og pauser kontrollerens operasjoner, og gir deg full manuell kontroll over verktøyskiftprosessen."
 }

@@ -550,9 +550,7 @@
   "Ignore M6 commands": "Ignorovat příkazy M6",
   "Manual Tool Change (WCS)": "Manuální výměna nástroje (WCS)",
   "Manual Tool Change (TLO)": "Manuální výměna nástroje (TLO)",
-  "Manual Tool Change (Custom)": "Manuální výměna nástroje (vlastní)",
   "This will send the line exactly as it is to the controller.": "Tímto se odešle řádek přesně tak, jak je, do řídicí jednotky.",
-  "This will completely skip the M6 command and prevent it from being sent to the controller.": "Tímto se příkaz M6 úplně přeskočí a neodešle se do řídicí jednotky.",
   "Tool Change Position": "Pozice pro výměnu nástroje",
   "Use the current machine position as the tool change position.": "Použít aktuální pozici stroje jako pozici pro výměnu nástroje.",
   "Tool Probe Position": "Pozice nástroje pro sondování",
@@ -566,5 +564,7 @@
   "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Importujte předdefinované příkazy pro sondování nástroje k aktualizaci posunu osy Z v pracovním souřadnicovém systému (WCS).",
   "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Importujte předdefinované příkazy pro sondování nástroje k aktualizaci posunu délky nástroje (TLO).",
   "Warning: No custom tool probe commands are defined": "Upozornění: Nejsou definovány žádné vlastní příkazy pro sondování nástroje.",
-  "Connect to the controller to view the tool probe commands.": "Připojte se k řadiči, abyste zobrazili příkazy pro sondování nástroje."
+  "Connect to the controller to view the tool probe commands.": "Připojte se k řadiči, abyste zobrazili příkazy pro sondování nástroje.",
+  "Manual Tool Change (Custom Probing)": "Manuální výměna nástroje (Vlastní sondování)",
+  "This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.": "Tato možnost přeskočí příkaz M6 a pozastaví operace řadiče, čímž vám poskytne plnou manuální kontrolu nad procesem výměny nástroje."
 }

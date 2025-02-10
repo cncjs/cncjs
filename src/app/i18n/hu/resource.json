@@ -550,9 +550,7 @@
   "Ignore M6 commands": "M6 parancsok figyelmen kívül hagyása",
   "Manual Tool Change (WCS)": "Kézi Szerszámcsere (WCS)",
   "Manual Tool Change (TLO)": "Kézi Szerszámcsere (TLO)",
-  "Manual Tool Change (Custom)": "Kézi Szerszámcsere (Egyéni)",
   "This will send the line exactly as it is to the controller.": "Ez a sor pontosan úgy lesz elküldve a vezérlőnek, ahogy van.",
-  "This will completely skip the M6 command and prevent it from being sent to the controller.": "Ez teljesen kihagyja az M6 parancsot, és megakadályozza, hogy elküldésre kerüljön a vezérlőnek.",
   "Tool Change Position": "Szerszámcsere Pozíció",
   "Use the current machine position as the tool change position.": "Használja az aktuális gép pozícióját szerszámcsere pozícióként.",
   "Tool Probe Position": "Szerszámérzékelő Pozíció",
@@ -566,5 +564,7 @@
   "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Előre definiált szerszámérintkező parancsok importálása a Z-tengely eltérésének frissítéséhez a Munkakoordináta-rendszerben (WCS).",
   "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Előre definiált szerszámérintkező parancsok importálása a Szerszámhossz-eltérés (TLO) frissítéséhez.",
   "Warning: No custom tool probe commands are defined": "Figyelmeztetés: Nincsenek egyéni szerszámérintkező parancsok definiálva.",
-  "Connect to the controller to view the tool probe commands.": "Csatlakozzon a vezérlőhöz a szerszámérintkező parancsok megtekintéséhez."
+  "Connect to the controller to view the tool probe commands.": "Csatlakozzon a vezérlőhöz a szerszámérintkező parancsok megtekintéséhez.",
+  "Manual Tool Change (Custom Probing)": "Kézi Szerszámcsere (Egyedi mérés)",
+  "This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.": "Ez az opció kihagyja az M6 parancsot, és szünetelteti a vezérlő műveleteit, teljes manuális irányítást biztosítva a szerszámcsere folyamatában."
 }

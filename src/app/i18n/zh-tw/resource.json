@@ -550,9 +550,7 @@
   "Ignore M6 commands": "忽略 M6 指令",
   "Manual Tool Change (WCS)": "手動工具更換 (WCS)",
   "Manual Tool Change (TLO)": "手動工具更換 (TLO)",
-  "Manual Tool Change (Custom)": "手動工具更換 (自訂)",
   "This will send the line exactly as it is to the controller.": "這將會將該行完全原樣發送到控制器。",
-  "This will completely skip the M6 command and prevent it from being sent to the controller.": "這將完全跳過 M6 指令，並防止它發送到控制器。",
   "Tool Change Position": "工具更換位置",
   "Use the current machine position as the tool change position.": "使用當前機器位置作為工具更換位置。",
   "Tool Probe Position": "工具探測位置",
@@ -566,5 +564,7 @@
   "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "匯入預定義工具探針命令以更新工作座標系統（WCS）中的Z軸偏移量",
   "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "匯入預定義工具探針命令以更新工具長度偏移量（TLO）",
   "Warning: No custom tool probe commands are defined": "警告：未定義自訂工具探針命令",
-  "Connect to the controller to view the tool probe commands.": "連接到控制器以查看工具探針命令"
+  "Connect to the controller to view the tool probe commands.": "連接到控制器以查看工具探針命令",
+  "Manual Tool Change (Custom Probing)": "手動工具更換（自訂探測）",
+  "This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.": "此選項跳過M6指令並暫停控制器操作，讓您完全手動控制換刀過程。"
 }

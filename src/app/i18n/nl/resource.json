@@ -550,9 +550,7 @@
   "Ignore M6 commands": "Negeer M6-commando's",
   "Manual Tool Change (WCS)": "Handmatige gereedschapswissel (WCS)",
   "Manual Tool Change (TLO)": "Handmatige gereedschapswissel (TLO)",
-  "Manual Tool Change (Custom)": "Handmatige gereedschapswissel (Aangepast)",
   "This will send the line exactly as it is to the controller.": "Dit zal de regel precies zoals deze is naar de controller sturen.",
-  "This will completely skip the M6 command and prevent it from being sent to the controller.": "Dit zal het M6-commando volledig overslaan en voorkomen dat het naar de controller wordt gestuurd.",
   "Tool Change Position": "Gereedschapswisselpositie",
   "Use the current machine position as the tool change position.": "Gebruik de huidige machinepositie als de gereedschapswisselpositie.",
   "Tool Probe Position": "Gereedschapstestpositie",
@@ -566,5 +564,7 @@
   "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Importeer vooraf gedefinieerde gereedschapsmeetcommando's om de Z-as offset in het Werk Coördinatensysteem (WCS) bij te werken",
   "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Importeer vooraf gedefinieerde gereedschapsmeetcommando's om de Gereedschapslengte-offset (TLO) bij te werken",
   "Warning: No custom tool probe commands are defined": "Waarschuwing: Er zijn geen aangepaste gereedschapsmeetcommando's gedefinieerd",
-  "Connect to the controller to view the tool probe commands.": "Verbind met de controller om de gereedschapsmeetcommando's te bekijken"
+  "Connect to the controller to view the tool probe commands.": "Verbind met de controller om de gereedschapsmeetcommando's te bekijken",
+  "Manual Tool Change (Custom Probing)": "Handmatige gereedschapswissel (Aangepaste meting)",
+  "This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.": "Deze optie slaat de M6-opdracht over en pauzeert de controlleroperaties, waardoor je volledige handmatige controle krijgt over het gereedschapswisselproces."
 }
