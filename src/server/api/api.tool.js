@@ -22,7 +22,7 @@ export const set = (req, res) => {
     'toolProbeX',
     'toolProbeY',
     'toolProbeZ',
-    'toolProbeOverrides',
+    'toolProbeCustomCommands',
     'toolProbeCommand',
     'toolProbeDistance',
     'toolProbeFeedrate',

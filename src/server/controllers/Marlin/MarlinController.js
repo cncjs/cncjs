@@ -34,7 +34,7 @@ import {
   TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
-  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING,
   // Units
   IMPERIAL_UNITS,
   METRIC_UNITS,
@@ -465,7 +465,7 @@ class MarlinController {
             const isManualToolChange = [
               TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
               TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
-              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING,
             ].includes(toolChangePolicy);
 
             if (toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS) {
@@ -473,6 +473,11 @@ class MarlinController {
             } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS) {
               // Ignore M6 commands
               line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
+
+              this.feeder.hold({
+                data: 'M6',
+                msg: this.messageSlot.take() ?? originalLine,
+              });
             } else if (isManualToolChange) {
               // Manual Tool Change
               line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
@@ -619,7 +624,7 @@ class MarlinController {
             const isManualToolChange = [
               TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
               TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
-              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
+              TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING,
             ].includes(toolChangePolicy);
 
             if (toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS) {
@@ -627,6 +632,12 @@ class MarlinController {
             } else if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS) {
               // Ignore M6 commands
               line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
+
+              this.event.trigger('gcode:pause');
+              this.workflow.pause({
+                data: 'M6',
+                msg: this.messageSlot.take() ?? originalLine,
+              });
             } else if (isManualToolChange) {
               // Manual Tool Change
               line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
@@ -1516,14 +1527,14 @@ class MarlinController {
             'G20': IMPERIAL_UNITS,
             'G21': METRIC_UNITS,
           }[modal.units];
-          const toolChangePolicy = config.get('tool.toolChangePolicy', TOOL_CHANGE_POLICY_SEND_M6_COMMANDS);
+          const toolChangePolicy = config.get('tool.toolChangePolicy', TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS);
           const toolChangeX = mapPositionToUnits(config.get('tool.toolChangeX', 0), units);
           const toolChangeY = mapPositionToUnits(config.get('tool.toolChangeY', 0), units);
           const toolChangeZ = mapPositionToUnits(config.get('tool.toolChangeZ', 0), units);
           const toolProbeX = mapPositionToUnits(config.get('tool.toolProbeX', 0), units);
           const toolProbeY = mapPositionToUnits(config.get('tool.toolProbeY', 0), units);
           const toolProbeZ = mapPositionToUnits(config.get('tool.toolProbeZ', 0), units);
-          const toolProbeOverrides = ensureString(config.get('tool.toolProbeOverrides')).split('\n');
+          const toolProbeCustomCommands = ensureString(config.get('tool.toolProbeCustomCommands')).split('\n');
           const toolProbeCommand = config.get('tool.toolProbeCommand', 'G38.2');
           const toolProbeDistance = mapValueToUnits(config.get('tool.toolProbeDistance', 0), units);
           const toolProbeFeedrate = mapValueToUnits(config.get('tool.toolProbeFeedrate', 10), units);
@@ -1587,8 +1598,8 @@ class MarlinController {
             lines.push('%wait 1');
             // Adjust the work Z position by subtracting the touch plate height from the current work Z position (posz)
             lines.push('G92 Z[posz - touch_plate_height]');
-          } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM) {
-            lines.push(...toolProbeOverrides);
+          } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING) {
+            lines.push(...toolProbeCustomCommands);
           }
 
           // Move to the tool change position
