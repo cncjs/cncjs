@@ -279,7 +279,7 @@ class Tool extends PureComponent {
             options={[
               {
                 value: String(TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS),
-                label: i18n._('Ignore M6 commands'),
+                label: i18n._('Ignore M6 commands (Default)'),
               },
               {
                 value: String(TOOL_CHANGE_POLICY_SEND_M6_COMMANDS),
