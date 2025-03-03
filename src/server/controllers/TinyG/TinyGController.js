@@ -296,7 +296,7 @@ class TinyGController {
           if (words.find(isM6)) {
             log.debug('M6 Tool Change');
 
-            const toolChangePolicy = config.get('tool.toolChangePolicy');
+            const toolChangePolicy = config.get('tool.toolChangePolicy', TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS);
             const isManualToolChange = [
               TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
               TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
@@ -432,7 +432,7 @@ class TinyGController {
           if (words.find(isM6)) {
             log.debug(`M6 Tool Change: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
-            const toolChangePolicy = config.get('tool.toolChangePolicy');
+            const toolChangePolicy = config.get('tool.toolChangePolicy', TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS);
             const isManualToolChange = [
               TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
               TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
