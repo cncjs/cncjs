@@ -20,8 +20,8 @@ import {
   METRIC_UNITS
 } from '../../constants';
 import {
-  TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
   TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
+  TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING,
@@ -278,12 +278,12 @@ class Tool extends PureComponent {
             }}
             options={[
               {
-                value: String(TOOL_CHANGE_POLICY_SEND_M6_COMMANDS),
-                label: i18n._('Send M6 commands'),
-              },
-              {
                 value: String(TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS),
                 label: i18n._('Ignore M6 commands'),
+              },
+              {
+                value: String(TOOL_CHANGE_POLICY_SEND_M6_COMMANDS),
+                label: i18n._('Send M6 commands'),
               },
               {
                 value: String(TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS),
@@ -302,14 +302,14 @@ class Tool extends PureComponent {
             value={toolChangePolicy}
             valueRenderer={this.renderToolChangePolicy}
           />
-          {toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS &&
-            <p style={{ marginTop: 4 }}>
-              <i>{i18n._('This will send the line exactly as it is to the controller.')}</i>
-            </p>
-          }
           {toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS &&
             <p style={{ marginTop: 4 }}>
               <i>{i18n._('This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.')}</i>
+            </p>
+          }
+          {toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS &&
+            <p style={{ marginTop: 4 }}>
+              <i>{i18n._('This will send the line exactly as it is to the controller.')}</i>
             </p>
           }
         </div>
