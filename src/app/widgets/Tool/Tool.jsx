@@ -12,6 +12,7 @@ import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import Image from 'app/components/Image';
 import { Tooltip } from 'app/components/Tooltip';
 import i18n from 'app/lib/i18n';
+import { mapValueToUnits } from 'app/lib/units';
 import {
   GRBL,
   MARLIN,
@@ -163,7 +164,7 @@ class Tool extends PureComponent {
     } = state;
     const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
     const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
-    const step = (units === METRIC_UNITS) ? 1 : 0.1;
+    const step = (units === METRIC_UNITS) ? 1 : (1 / 16);
     const canGetMachinePosition = canClick;
 
     if (!toolConfig) {
@@ -350,7 +351,6 @@ class Tool extends PureComponent {
                         <input
                           type="number"
                           className="form-control"
-                          placeholder="0.00"
                           onChange={(event) => {
                             const value = event.target.value;
                             actions.setToolChangePosition({ [axis]: value });
@@ -414,7 +414,6 @@ class Tool extends PureComponent {
                         <input
                           type="number"
                           className="form-control"
-                          placeholder="0.00"
                           onChange={(event) => {
                             const value = event.target.value;
                             actions.setToolProbePosition({ [axis]: value });
@@ -716,12 +715,17 @@ class Tool extends PureComponent {
                           type="number"
                           className="form-control"
                           value={toolProbeDistance}
-                          placeholder="0.00"
                           min={0}
                           step={step}
                           onChange={(event) => {
-                            const value = event.target.value;
-                            actions.setToolProbeDistance(value);
+                            const value = ensureNumber(event.target.value);
+                            if (value > 0) {
+                              actions.setToolProbeDistance(value);
+                            } else {
+                              const defaultToolProbeDistance = 1;
+                              const adjustedValue = mapValueToUnits(defaultToolProbeDistance, units);
+                              actions.setToolProbeDistance(adjustedValue);
+                            }
                           }}
                         />
                         <div className="input-group-addon">{displayUnits}</div>
@@ -736,12 +740,17 @@ class Tool extends PureComponent {
                           type="number"
                           className="form-control"
                           value={toolProbeFeedrate}
-                          placeholder="0.00"
                           min={0}
                           step={step}
                           onChange={(event) => {
                             const value = event.target.value;
-                            actions.setToolProbeFeedrate(value);
+                            if (value > 0) {
+                              actions.setToolProbeFeedrate(value);
+                            } else {
+                              const defaultToolProbeFeedrate = 10;
+                              const adjustedValue = mapValueToUnits(defaultToolProbeFeedrate, units);
+                              actions.setToolProbeFeedrate(adjustedValue);
+                            }
                           }}
                         />
                         <span className="input-group-addon">{feedrateUnits}</span>
@@ -758,7 +767,6 @@ class Tool extends PureComponent {
                           type="number"
                           className="form-control"
                           value={touchPlateHeight}
-                          placeholder="0.00"
                           min={0}
                           step={step}
                           onChange={(event) => {

@@ -337,7 +337,7 @@ class ToolWidget extends PureComponent {
       this.toolConfig.set('toolProbeZ', ensureNumber(get(tool, 'toolProbeZ', 0)));
       this.toolConfig.set('toolProbeCustomCommands', ensureString(get(tool, 'toolProbeCustomCommands')));
       this.toolConfig.set('toolProbeCommand', ensureString(get(tool, 'toolProbeCommand', 'G38.2')));
-      this.toolConfig.set('toolProbeDistance', ensureNumber(get(tool, 'toolProbeDistance', 0)));
+      this.toolConfig.set('toolProbeDistance', ensureNumber(get(tool, 'toolProbeDistance', 1)));
       this.toolConfig.set('toolProbeFeedrate', ensureNumber(get(tool, 'toolProbeFeedrate', 10)));
       this.toolConfig.set('touchPlateHeight', ensureNumber(get(tool, 'touchPlateHeight', 0)));
 

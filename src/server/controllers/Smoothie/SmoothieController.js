@@ -1445,7 +1445,7 @@ class SmoothieController {
           const toolProbeZ = mapPositionToUnits(config.get('tool.toolProbeZ', 0), units);
           const toolProbeCustomCommands = ensureString(config.get('tool.toolProbeCustomCommands')).split('\n');
           const toolProbeCommand = config.get('tool.toolProbeCommand', 'G38.2');
-          const toolProbeDistance = mapValueToUnits(config.get('tool.toolProbeDistance', 0), units);
+          const toolProbeDistance = mapValueToUnits(config.get('tool.toolProbeDistance', 1), units);
           const toolProbeFeedrate = mapValueToUnits(config.get('tool.toolProbeFeedrate', 10), units);
           const touchPlateHeight = mapValueToUnits(config.get('tool.touchPlateHeight', 0), units);
 
