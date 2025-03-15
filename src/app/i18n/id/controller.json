@@ -1,0 +1,43 @@
+{
+  "TinyG": {
+    "machineState": {
+      "initializing": "Inisialisasi",
+      "ready": "Siap",
+      "alarm": "Alarm",
+      "stop": "Program Berhenti",
+      "end": "Program Berakhir",
+      "run": "Jalankan",
+      "hold": "Menunda",
+      "probe": "Probe",
+      "cycle": "Cycle",
+      "homing": "Homing",
+      "jog": "Jog",
+      "interlock": "Interlock",
+      "shutdown": "Shutdown",
+      "panic": "Panik"
+    }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "Idle",
+      "run": "Jalankan",
+      "hold": "Menunda",
+      "door": "door",
+      "home": "Home",
+      "sleep": "sleep",
+      "alarm": "Alarm",
+      "check": "Check"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "Idle",
+      "run": "Jalankan",
+      "hold": "Menunda",
+      "door": "door",
+      "home": "Home",
+      "alarm": "Alarm",
+      "check": "Cek"
+    }
+  }
+}

@@ -344,5 +344,6 @@
   "collective": {
     "type": "opencollective",
     "url": "https://opencollective.com/cncjs"
-  }
+  },
+  "packageManager": "yarn@4.7.0"
 }
