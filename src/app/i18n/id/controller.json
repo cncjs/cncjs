@@ -8,8 +8,8 @@
       "end": "Program Berakhir",
       "run": "Jalankan",
       "hold": "Menunda",
-      "probe": "Probe",
-      "cycle": "Cycle",
+      "probe": "Periksa",
+      "cycle": "Siklus",
       "homing": "Homing",
       "jog": "Jog",
       "interlock": "Interlock",
@@ -22,9 +22,9 @@
       "idle": "Idle",
       "run": "Jalankan",
       "hold": "Menunda",
-      "door": "door",
-      "home": "Home",
-      "sleep": "sleep",
+      "door": "pintu",
+      "home": "home",
+      "sleep": "mode tidur",
       "alarm": "Alarm",
       "check": "Check"
     }
@@ -34,8 +34,8 @@
       "idle": "Idle",
       "run": "Jalankan",
       "hold": "Menunda",
-      "door": "door",
-      "home": "Home",
+      "door": "pintu",
+      "home": "home",
       "alarm": "Alarm",
       "check": "Cek"
     }
