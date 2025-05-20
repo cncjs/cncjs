@@ -4,15 +4,15 @@
       "initializing": "Inicializando",
       "ready": "Listo",
       "alarm": "Alarma",
-      "stop": "Detener Programa",
-      "end": "Fin del Programa",
-      "run": "Ejecutar",
-      "hold": "Sostener",
+      "stop": "Detener programa",
+      "end": "Finalizar programa",
+      "run": "Iniciar",
+      "hold": "Pausar",
       "probe": "Sonda",
       "cycle": "Ciclo",
-      "homing": "Homaje",
-      "jog": "Movimiento Manual",
-      "interlock": "Interbloqueo",
+      "homing": "Mover a inicio",
+      "jog": "Mover",
+      "interlock": "Parado",
       "shutdown": "Apagar",
       "panic": "Pánico"
     }
@@ -21,10 +21,10 @@
     "activeState": {
       "idle": "Inactivo",
       "run": "Ejecutar",
-      "hold": "Sostener",
+      "hold": "Pausar",
       "door": "Puerta",
       "home": "Inicio",
-      "sleep": "Dormir",
+      "sleep": "Suspender",
       "alarm": "Alarma",
       "check": "Comprobar"
     }
@@ -33,7 +33,7 @@
     "activeState": {
       "idle": "Inactivo",
       "run": "Ejecutar",
-      "hold": "Sostener",
+      "hold": "Pausar",
       "door": "Puerta",
       "home": "Inicio",
       "alarm": "Alarma",

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt-nodejs';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import isPlainObject from 'lodash/isPlainObject';
 import find from 'lodash/find';
 import some from 'lodash/some';

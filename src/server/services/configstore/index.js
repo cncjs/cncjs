@@ -3,6 +3,7 @@ import fs from 'fs';
 import _ from 'lodash';
 import chalk from 'chalk';
 import logger from '../../lib/logger';
+import x from '../../lib/json-stringify';
 
 const log = logger('service:configstore');
 
@@ -42,11 +43,11 @@ class ConfigStore extends events.EventEmitter {
           fs.writeFileSync(this.file, content, 'utf8');
         }
 
-        this.watcher = fs.watch(this.file, (eventType, filename) => {
-          log.debug(`fs.watch(eventType='${eventType}', filename='${filename}')`);
+        this.watcher = fs.watchFile(this.file, (curr, prev) => {
+          log.debug(`fs.watchFile(curr=${x(curr)}, prev=${x(prev)})`);
 
-          if (eventType === 'change') {
-            log.debug(`"${filename}" has been changed`);
+          if (curr?.mtimeMs !== prev?.mtimeMs) {
+            log.info(`"${this.file}" has been changed`);
             const ok = this.reload();
             ok && this.emit('change', this.config); // it is ok to emit change event
           }

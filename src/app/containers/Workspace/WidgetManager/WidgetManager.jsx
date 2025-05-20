@@ -107,6 +107,13 @@ class WidgetManager extends PureComponent {
         disabled: false
       },
       {
+        id: 'tool',
+        caption: i18n._('Tool Widget'),
+        details: i18n._('This widget manages workflows for tool changes.'),
+        visible: true,
+        disabled: false
+      },
+      {
         id: 'spindle',
         caption: i18n._('Spindle Widget'),
         details: i18n._('This widget provides the spindle control.'),

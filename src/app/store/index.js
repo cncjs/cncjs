@@ -1,5 +1,5 @@
 import isElectron from 'is-electron';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import debounce from 'lodash/debounce';
 import difference from 'lodash/difference';
 import get from 'lodash/get';

@@ -1,7 +1,6 @@
 /* eslint no-bitwise: ["error", { "allow": ["&", "<<"] }] */
-import ensureArray from 'ensure-array';
+import { ensureArray, ensureNumber } from 'ensure-type';
 import _ from 'lodash';
-import { ensureNumber } from '../../lib/ensure-type';
 
 const floatPointNumber = '[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)';
 const pattern = new RegExp(`[a-zA-Z]+(:${floatPointNumber}(,${floatPointNumber}){0,5})?`, 'g');

@@ -22,7 +22,7 @@ const defaultState = {
       secondary: {
         show: true,
         widgets: [
-          'axes', 'gcode', 'macro', 'probe', 'spindle', 'laser'
+          'axes', 'gcode', 'macro', 'probe', 'tool', 'spindle', 'laser',
         ]
       }
     },
@@ -185,6 +185,9 @@ const defaultState = {
           expanded: true
         }
       }
+    },
+    tool: {
+      minimized: false,
     },
     visualizer: {
       minimized: false,

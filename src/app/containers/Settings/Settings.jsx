@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import i18next from 'i18next';
 import Uri from 'jsuri';
 import _camelCase from 'lodash/camelCase';
@@ -278,7 +278,7 @@ class Settings extends PureComponent {
                 loading: false
               },
               // followed by data
-              ignoreErrors: !!ignoreErrors
+              ignoreErrors: !!ignoreErrors,
             };
 
             this.initialState.controller = nextState;
@@ -312,8 +312,8 @@ class Settings extends PureComponent {
           const data = {
             controller: {
               exception: {
-                ignoreErrors: this.state.controller.ignoreErrors
-              }
+                ignoreErrors: this.state.controller.ignoreErrors,
+              },
             }
           };
 
@@ -357,7 +357,7 @@ class Settings extends PureComponent {
               ignoreErrors: !state.controller.ignoreErrors
             }
           }));
-        }
+        },
       },
       // Machine Profiles
       machineProfiles: {
@@ -1150,7 +1150,7 @@ class Settings extends PureComponent {
             loading: true, // defaults to true
             saving: false
           },
-          ignoreErrors: false
+          ignoreErrors: false,
         },
         // Commands
         commands: {

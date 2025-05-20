@@ -1,4 +1,4 @@
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import superagent from 'superagent';
 import superagentUse from 'superagent-use';
 import store from '../store';
@@ -99,6 +99,35 @@ const unsetState = (options) => new Promise((resolve, reject) => {
   authrequest
     .delete('/api/state')
     .query({ key: key })
+    .end((err, res) => {
+      if (err) {
+        reject(res);
+      } else {
+        resolve(res);
+      }
+    });
+});
+
+//
+// Tool Config
+//
+const getToolConfig = (options) => new Promise((resolve, reject) => {
+  authrequest
+    .get('/api/tool')
+    .end((err, res) => {
+      if (err) {
+        reject(res);
+      } else {
+        resolve(res);
+      }
+    });
+});
+
+const setToolConfig = (options) => new Promise((resolve, reject) => {
+  const data = { ...options };
+  authrequest
+    .post('/api/tool')
+    .send(data)
     .end((err, res) => {
       if (err) {
         reject(res);
@@ -670,6 +699,10 @@ export default {
   getState,
   setState,
   unsetState,
+
+  // Tool
+  getToolConfig,
+  setToolConfig,
 
   // G-code
   loadGCode,

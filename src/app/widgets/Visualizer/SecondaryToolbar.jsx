@@ -2,7 +2,7 @@ import cx from 'classnames';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
 import _isEqual from 'lodash/isEqual';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import PropTypes from 'prop-types';
 import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';

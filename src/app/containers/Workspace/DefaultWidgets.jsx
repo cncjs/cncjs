@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import React, { PureComponent } from 'react';
 import store from 'app/store';
 import Widget from './Widget';
