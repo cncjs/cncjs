@@ -546,13 +546,11 @@
   "Tool": "Utensile",
   "No available tool configuration": "Nessuna configurazione utensile disponibile",
   "Tool Change Policy": "Politica di Cambio Utensile",
+  "Ignore M6 commands (Default)": "Ignora comandi M6 (Predefinito)",
   "Send M6 commands": "Invia comandi M6",
-  "Ignore M6 commands": "Ignora comandi M6",
   "Manual Tool Change (WCS)": "Cambio Utensile Manuale (WCS)",
   "Manual Tool Change (TLO)": "Cambio Utensile Manuale (TLO)",
-  "Manual Tool Change (Custom)": "Cambio Utensile Manuale (Personalizzato)",
   "This will send the line exactly as it is to the controller.": "Questa invierà la riga esattamente com'è al controller.",
-  "This will completely skip the M6 command and prevent it from being sent to the controller.": "Questo salterà completamente il comando M6 e impedirà che venga inviato al controller.",
   "Tool Change Position": "Posizione Cambio Utensile",
   "Use the current machine position as the tool change position.": "Usa la posizione attuale della macchina come posizione di cambio utensile.",
   "Tool Probe Position": "Posizione Sonda Utensile",
@@ -566,5 +564,7 @@
   "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Importa i comandi predefiniti della sonda utensile per aggiornare l'offset dell'asse Z nel Sistema di Coordinate di Lavoro (WCS)",
   "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Importa i comandi predefiniti della sonda utensile per aggiornare l'offset della lunghezza utensile (TLO)",
   "Warning: No custom tool probe commands are defined": "Avviso: Non sono definiti comandi personalizzati della sonda utensile",
-  "Connect to the controller to view the tool probe commands.": "Connettiti al controller per visualizzare i comandi della sonda utensile."
+  "Connect to the controller to view the tool probe commands.": "Connettiti al controller per visualizzare i comandi della sonda utensile.",
+  "Manual Tool Change (Custom Probing)": "Cambio Utensile Manuale (Misurazione personalizzata)",
+  "This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.": "Questa opzione salta il comando M6 e pausa le operazioni del controller, dandoti il pieno controllo manuale sul processo di cambio utensile."
 }

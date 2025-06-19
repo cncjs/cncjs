@@ -546,13 +546,11 @@
   "Tool": "Инструмент",
   "No available tool configuration": "Нет доступной конфигурации инструмента",
   "Tool Change Policy": "Политика смены инструмента",
+  "Ignore M6 commands (Default)": "Игнорировать команды M6 (По умолчанию)",
   "Send M6 commands": "Отправить команды M6",
-  "Ignore M6 commands": "Игнорировать команды M6",
   "Manual Tool Change (WCS)": "Ручная смена инструмента (WCS)",
   "Manual Tool Change (TLO)": "Ручная смена инструмента (TLO)",
-  "Manual Tool Change (Custom)": "Ручная смена инструмента (Пользовательская)",
   "This will send the line exactly as it is to the controller.": "Это отправит строку точно так, как она есть, в контроллер.",
-  "This will completely skip the M6 command and prevent it from being sent to the controller.": "Это полностью пропустит команду M6 и предотвратит её отправку в контроллер.",
   "Tool Change Position": "Позиция смены инструмента",
   "Use the current machine position as the tool change position.": "Использовать текущую позицию машины как позицию смены инструмента.",
   "Tool Probe Position": "Позиция зонда инструмента",
@@ -566,5 +564,7 @@
   "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Импортировать предустановленные команды зондирования инструмента для обновления смещения по оси Z в системе рабочих координат (WCS)",
   "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Импортировать предустановленные команды зондирования инструмента для обновления смещения длины инструмента (TLO)",
   "Warning: No custom tool probe commands are defined": "Предупреждение: не определены пользовательские команды зондирования инструмента",
-  "Connect to the controller to view the tool probe commands.": "Подключитесь к контроллеру, чтобы просмотреть команды зондирования инструмента."
+  "Connect to the controller to view the tool probe commands.": "Подключитесь к контроллеру, чтобы просмотреть команды зондирования инструмента.",
+  "Manual Tool Change (Custom Probing)": "Ручная смена инструмента (Пользовательское зондирование)",
+  "This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.": "Эта опция пропускает команду M6 и приостанавливает работу контроллера, предоставляя полный ручной контроль над процессом смены инструмента."
 }

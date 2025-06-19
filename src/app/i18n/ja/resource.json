@@ -546,13 +546,11 @@
   "Tool": "ツール",
   "No available tool configuration": "利用可能なツール設定がありません",
   "Tool Change Policy": "ツール交換ポリシー",
+  "Ignore M6 commands (Default)": "M6コマンドを無視 (デフォルト)",
   "Send M6 commands": "M6コマンドを送信",
-  "Ignore M6 commands": "M6コマンドを無視",
   "Manual Tool Change (WCS)": "手動ツール交換（WCS）",
   "Manual Tool Change (TLO)": "手動ツール交換（TLO）",
-  "Manual Tool Change (Custom)": "手動ツール交換（カスタム）",
   "This will send the line exactly as it is to the controller.": "この行をそのままコントローラーに送信します。",
-  "This will completely skip the M6 command and prevent it from being sent to the controller.": "M6コマンドを完全にスキップし、コントローラーに送信されないようにします。",
   "Tool Change Position": "ツール交換位置",
   "Use the current machine position as the tool change position.": "現在の機械位置をツール交換位置として使用します。",
   "Tool Probe Position": "ツールプローブ位置",
@@ -566,5 +564,7 @@
   "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "作業座標系 (WCS) のZ軸オフセットを更新するための事前定義された工具プローブコマンドをインポートします。",
   "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "工具長オフセット (TLO) を更新するための事前定義された工具プローブコマンドをインポートします。",
   "Warning: No custom tool probe commands are defined": "警告: カスタム工具プローブコマンドが定義されていません。",
-  "Connect to the controller to view the tool probe commands.": "工具プローブコマンドを確認するには、コントローラーに接続してください。"
+  "Connect to the controller to view the tool probe commands.": "工具プローブコマンドを確認するには、コントローラーに接続してください。",
+  "Manual Tool Change (Custom Probing)": "手動ツール交換（カスタムプロービング）",
+  "This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.": "このオプションはM6コマンドをスキップし、コントローラーの操作を一時停止して、工具交換プロセスに対する完全な手動制御を提供します。"
 }

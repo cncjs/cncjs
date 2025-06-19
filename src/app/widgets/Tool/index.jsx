@@ -31,7 +31,7 @@ import {
 } from '../../constants';
 import {
   MODAL_NONE,
-  TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
+  TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
 } from './constants';
 import styles from './index.styl';
 
@@ -126,11 +126,11 @@ class ToolWidget extends PureComponent {
         },
       });
     },
-    setToolProbeOverrides: (value) => {
+    setToolProbeCustomCommands: (value) => {
       this.setState({
         toolConfig: {
           ...this.state.toolConfig,
-          toolProbeOverrides: value,
+          toolProbeCustomCommands: value,
         },
       });
     },
@@ -328,16 +328,16 @@ class ToolWidget extends PureComponent {
       const units = this.state.units;
 
       // Tool configuration values are stored in the metric system
-      this.toolConfig.set('toolChangePolicy', ensureNumber(get(tool, 'toolChangePolicy', TOOL_CHANGE_POLICY_SEND_M6_COMMANDS)));
+      this.toolConfig.set('toolChangePolicy', ensureNumber(get(tool, 'toolChangePolicy', TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS)));
       this.toolConfig.set('toolChangeX', ensureNumber(get(tool, 'toolChangeX', 0)));
       this.toolConfig.set('toolChangeY', ensureNumber(get(tool, 'toolChangeY', 0)));
       this.toolConfig.set('toolChangeZ', ensureNumber(get(tool, 'toolChangeZ', 0)));
       this.toolConfig.set('toolProbeX', ensureNumber(get(tool, 'toolProbeX', 0)));
       this.toolConfig.set('toolProbeY', ensureNumber(get(tool, 'toolProbeY', 0)));
       this.toolConfig.set('toolProbeZ', ensureNumber(get(tool, 'toolProbeZ', 0)));
-      this.toolConfig.set('toolProbeOverrides', ensureString(get(tool, 'toolProbeOverrides')));
+      this.toolConfig.set('toolProbeCustomCommands', ensureString(get(tool, 'toolProbeCustomCommands')));
       this.toolConfig.set('toolProbeCommand', ensureString(get(tool, 'toolProbeCommand', 'G38.2')));
-      this.toolConfig.set('toolProbeDistance', ensureNumber(get(tool, 'toolProbeDistance', 0)));
+      this.toolConfig.set('toolProbeDistance', ensureNumber(get(tool, 'toolProbeDistance', 1)));
       this.toolConfig.set('toolProbeFeedrate', ensureNumber(get(tool, 'toolProbeFeedrate', 10)));
       this.toolConfig.set('touchPlateHeight', ensureNumber(get(tool, 'touchPlateHeight', 0)));
 
@@ -351,7 +351,7 @@ class ToolWidget extends PureComponent {
           toolProbeX: mapPositionToUnits(this.toolConfig.get('toolProbeX'), units),
           toolProbeY: mapPositionToUnits(this.toolConfig.get('toolProbeY'), units),
           toolProbeZ: mapPositionToUnits(this.toolConfig.get('toolProbeZ'), units),
-          toolProbeOverrides: this.toolConfig.get('toolProbeOverrides'),
+          toolProbeCustomCommands: this.toolConfig.get('toolProbeCustomCommands'),
           toolProbeCommand: this.toolConfig.get('toolProbeCommand'),
           toolProbeDistance: mapValueToUnits(this.toolConfig.get('toolProbeDistance'), units),
           toolProbeFeedrate: mapValueToUnits(this.toolConfig.get('toolProbeFeedrate'), units),
@@ -412,7 +412,7 @@ class ToolWidget extends PureComponent {
       toolChangeY,
       toolChangeZ,
       toolProbeCommand,
-      toolProbeOverrides,
+      toolProbeCustomCommands,
       toolProbeDistance,
       toolProbeFeedrate,
       toolProbeX,
@@ -429,7 +429,7 @@ class ToolWidget extends PureComponent {
     this.toolConfig.set('toolProbeX', toMetric(toolProbeX));
     this.toolConfig.set('toolProbeY', toMetric(toolProbeY));
     this.toolConfig.set('toolProbeZ', toMetric(toolProbeZ));
-    this.toolConfig.set('toolProbeOverrides', ensureString(toolProbeOverrides));
+    this.toolConfig.set('toolProbeCustomCommands', ensureString(toolProbeCustomCommands));
     this.toolConfig.set('toolProbeCommand', ensureString(toolProbeCommand));
     this.toolConfig.set('toolProbeDistance', toMetric(toolProbeDistance));
     this.toolConfig.set('toolProbeFeedrate', toMetric(toolProbeFeedrate));

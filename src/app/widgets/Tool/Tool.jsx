@@ -12,6 +12,7 @@ import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import Image from 'app/components/Image';
 import { Tooltip } from 'app/components/Tooltip';
 import i18n from 'app/lib/i18n';
+import { mapValueToUnits } from 'app/lib/units';
 import {
   GRBL,
   MARLIN,
@@ -20,11 +21,11 @@ import {
   METRIC_UNITS
 } from '../../constants';
 import {
-  TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
   TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
+  TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
   TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
-  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING,
 } from './constants';
 import iconPin from './images/pin.svg';
 import styles from './index.styl';
@@ -121,14 +122,14 @@ class Tool extends PureComponent {
   };
 
   fields = {
-    toolProbeOverrides: null,
+    toolProbeCustomCommands: null,
   };
 
   timer = null;
 
   state = {
-    toolProbeOverrides: '',
-    isToolProbeOverridesEditable: false,
+    toolProbeCustomCommands: '',
+    isToolProbeCustomCommandsEditable: false,
     isToolProbeCommandsCopied: false,
   };
 
@@ -144,11 +145,11 @@ class Tool extends PureComponent {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const prevToolProbeOverrides = get(prevProps.state.toolConfig, 'toolProbeOverrides');
-    const toolProbeOverrides = get(this.props.state.toolConfig, 'toolProbeOverrides');
+    const prevToolProbeCustomCommands = get(prevProps.state.toolConfig, 'toolProbeCustomCommands');
+    const toolProbeCustomCommands = get(this.props.state.toolConfig, 'toolProbeCustomCommands');
 
-    if ((prevToolProbeOverrides !== toolProbeOverrides) && (toolProbeOverrides !== this.state.toolProbeOverrides)) {
-      this.setState({ toolProbeOverrides });
+    if ((prevToolProbeCustomCommands !== toolProbeCustomCommands) && (toolProbeCustomCommands !== this.state.toolProbeCustomCommands)) {
+      this.setState({ toolProbeCustomCommands });
     }
   }
 
@@ -163,7 +164,7 @@ class Tool extends PureComponent {
     } = state;
     const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
     const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
-    const step = (units === METRIC_UNITS) ? 1 : 0.1;
+    const step = (units === METRIC_UNITS) ? 1 : (1 / 16);
     const canGetMachinePosition = canClick;
 
     if (!toolConfig) {
@@ -181,7 +182,7 @@ class Tool extends PureComponent {
     const toolProbeX = get(toolConfig, 'toolProbeX');
     const toolProbeY = get(toolConfig, 'toolProbeY');
     const toolProbeZ = get(toolConfig, 'toolProbeZ');
-    const toolProbeOverrides = get(toolConfig, 'toolProbeOverrides');
+    const toolProbeCustomCommands = get(toolConfig, 'toolProbeCustomCommands');
     const toolProbeCommand = get(toolConfig, 'toolProbeCommand');
     const toolProbeDistance = get(toolConfig, 'toolProbeDistance');
     const toolProbeFeedrate = get(toolConfig, 'toolProbeFeedrate');
@@ -189,13 +190,13 @@ class Tool extends PureComponent {
     const isManualToolChange = [
       TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
       TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
-      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM,
+      TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING,
     ].includes(toolChangePolicy);
     const isToolProbeDefaultView = [
       TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
       TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
     ].includes(toolChangePolicy);
-    const isToolProbeOverridesView = (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM);
+    const isToolProbeCustomCommandsView = (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING);
 
     const toolProbeCommands = (() => {
       const lines = [];
@@ -278,12 +279,12 @@ class Tool extends PureComponent {
             }}
             options={[
               {
-                value: String(TOOL_CHANGE_POLICY_SEND_M6_COMMANDS),
-                label: i18n._('Send M6 commands'),
+                value: String(TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS),
+                label: i18n._('Ignore M6 commands (Default)'),
               },
               {
-                value: String(TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS),
-                label: i18n._('Ignore M6 commands'),
+                value: String(TOOL_CHANGE_POLICY_SEND_M6_COMMANDS),
+                label: i18n._('Send M6 commands'),
               },
               {
                 value: String(TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS),
@@ -294,22 +295,22 @@ class Tool extends PureComponent {
                 label: i18n._('Manual Tool Change (TLO)'),
               },
               {
-                value: String(TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM),
-                label: i18n._('Manual Tool Change (Custom)'),
+                value: String(TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING),
+                label: i18n._('Manual Tool Change (Custom Probing)'),
               },
             ]}
             searchable={false}
             value={toolChangePolicy}
             valueRenderer={this.renderToolChangePolicy}
           />
+          {toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS &&
+            <p style={{ marginTop: 4 }}>
+              <i>{i18n._('This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.')}</i>
+            </p>
+          }
           {toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS &&
             <p style={{ marginTop: 4 }}>
               <i>{i18n._('This will send the line exactly as it is to the controller.')}</i>
-            </p>
-          }
-          {toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS &&
-            <p style={{ marginTop: 4 }}>
-              <i>{i18n._('This will completely skip the M6 command and prevent it from being sent to the controller.')}</i>
             </p>
           }
         </div>
@@ -350,7 +351,6 @@ class Tool extends PureComponent {
                         <input
                           type="number"
                           className="form-control"
-                          placeholder="0.00"
                           onChange={(event) => {
                             const value = event.target.value;
                             actions.setToolChangePosition({ [axis]: value });
@@ -414,7 +414,6 @@ class Tool extends PureComponent {
                         <input
                           type="number"
                           className="form-control"
-                          placeholder="0.00"
                           onChange={(event) => {
                             const value = event.target.value;
                             actions.setToolProbePosition({ [axis]: value });
@@ -443,7 +442,7 @@ class Tool extends PureComponent {
                 })}
               </div>
             </div>
-            {isToolProbeOverridesView && (
+            {isToolProbeCustomCommandsView && (
               <div>
                 <div
                   style={{
@@ -455,7 +454,7 @@ class Tool extends PureComponent {
                   <label className="control-label">
                     {i18n._('Custom Tool Probe Commands')}
                   </label>
-                  {!this.state.isToolProbeOverridesEditable && (
+                  {!this.state.isToolProbeCustomCommandsEditable && (
                     <div
                       style={{
                         display: 'flex',
@@ -469,7 +468,7 @@ class Tool extends PureComponent {
                       >
                         <IconButton
                           onClick={() => {
-                            this.setState({ isToolProbeOverridesEditable: true });
+                            this.setState({ isToolProbeCustomCommandsEditable: true });
                           }}
                         >
                           <i className="fa fa-fw fa-edit" />
@@ -478,7 +477,7 @@ class Tool extends PureComponent {
                     </div>
                   )}
                 </div>
-                {this.state.isToolProbeOverridesEditable && (
+                {this.state.isToolProbeCustomCommandsEditable && (
                   <div
                     style={{
                       marginBottom: 8,
@@ -486,7 +485,7 @@ class Tool extends PureComponent {
                   >
                     <Dropdown
                       onSelect={(eventKey) => {
-                        const el = ReactDOM.findDOMNode(this.fields.toolProbeOverrides);
+                        const el = ReactDOM.findDOMNode(this.fields.toolProbeCustomCommands);
                         if (el) {
                           insertAtCaret(el, eventKey);
                         }
@@ -504,7 +503,7 @@ class Tool extends PureComponent {
                           }}
                           onClick={() => {
                             const value = TOOL_PROBE_OVERRIDE_WCS_EXAMPLE;
-                            this.setState({ toolProbeOverrides: value });
+                            this.setState({ toolProbeCustomCommands: value });
                           }}
                         >
                           <i className="fa fa-fw fa-upload" />
@@ -523,7 +522,7 @@ class Tool extends PureComponent {
                           }}
                           onClick={() => {
                             const value = TOOL_PROBE_OVERRIDE_TLO_EXAMPLE;
-                            this.setState({ toolProbeOverrides: value });
+                            this.setState({ toolProbeCustomCommands: value });
                           }}
                         >
                           <i className="fa fa-fw fa-upload" />
@@ -562,26 +561,26 @@ class Tool extends PureComponent {
                     </Dropdown>
                   </div>
                 )}
-                {!this.state.isToolProbeOverridesEditable && ensureString(toolProbeOverrides).length > 0 && (
+                {!this.state.isToolProbeCustomCommandsEditable && ensureString(toolProbeCustomCommands).length > 0 && (
                   <TextPreview
                     style={{
                       maxHeight: 150,
                     }}
                   >
-                    {toolProbeOverrides}
+                    {toolProbeCustomCommands}
                   </TextPreview>
                 )}
-                {!this.state.isToolProbeOverridesEditable && ensureString(toolProbeOverrides).length === 0 && (
+                {!this.state.isToolProbeCustomCommandsEditable && ensureString(toolProbeCustomCommands).length === 0 && (
                   <div className="text-error">
                     {i18n._('Warning: No custom tool probe commands are defined')}
                   </div>
                 )}
-                {this.state.isToolProbeOverridesEditable && (
+                {this.state.isToolProbeCustomCommandsEditable && (
                   <div>
                     <div style={{ marginBottom: 8 }}>
                       <TextEditable
                         ref={c => {
-                          this.fields.toolProbeOverrides = c;
+                          this.fields.toolProbeCustomCommands = c;
                         }}
                         style={{
                           whiteSpace: 'pre',
@@ -591,10 +590,10 @@ class Tool extends PureComponent {
                           resize: 'vertical',
                           overflow: 'auto',
                         }}
-                        value={this.state.toolProbeOverrides}
+                        value={this.state.toolProbeCustomCommands}
                         onChange={(event) => {
                           const value = event.target.value;
-                          this.setState({ toolProbeOverrides: value });
+                          this.setState({ toolProbeCustomCommands: value });
                         }}
                       />
                     </div>
@@ -603,10 +602,10 @@ class Tool extends PureComponent {
                         btnSize="sm"
                         btnStyle="flat"
                         onClick={() => {
-                          const value = this.state.toolProbeOverrides;
-                          actions.setToolProbeOverrides(value);
+                          const value = this.state.toolProbeCustomCommands;
+                          actions.setToolProbeCustomCommands(value);
 
-                          this.setState({ isToolProbeOverridesEditable: false });
+                          this.setState({ isToolProbeCustomCommandsEditable: false });
                         }}
                       >
                         {i18n._('OK')}
@@ -616,8 +615,8 @@ class Tool extends PureComponent {
                         btnStyle="flat"
                         onClick={() => {
                           this.setState({
-                            toolProbeOverrides: toolProbeOverrides, // revert back
-                            isToolProbeOverridesEditable: false,
+                            toolProbeCustomCommands: toolProbeCustomCommands, // revert back
+                            isToolProbeCustomCommandsEditable: false,
                           });
                         }}
                       >
@@ -716,12 +715,17 @@ class Tool extends PureComponent {
                           type="number"
                           className="form-control"
                           value={toolProbeDistance}
-                          placeholder="0.00"
                           min={0}
                           step={step}
                           onChange={(event) => {
-                            const value = event.target.value;
-                            actions.setToolProbeDistance(value);
+                            const value = ensureNumber(event.target.value);
+                            if (value > 0) {
+                              actions.setToolProbeDistance(value);
+                            } else {
+                              const defaultToolProbeDistance = 1;
+                              const adjustedValue = mapValueToUnits(defaultToolProbeDistance, units);
+                              actions.setToolProbeDistance(adjustedValue);
+                            }
                           }}
                         />
                         <div className="input-group-addon">{displayUnits}</div>
@@ -736,12 +740,17 @@ class Tool extends PureComponent {
                           type="number"
                           className="form-control"
                           value={toolProbeFeedrate}
-                          placeholder="0.00"
                           min={0}
                           step={step}
                           onChange={(event) => {
                             const value = event.target.value;
-                            actions.setToolProbeFeedrate(value);
+                            if (value > 0) {
+                              actions.setToolProbeFeedrate(value);
+                            } else {
+                              const defaultToolProbeFeedrate = 10;
+                              const adjustedValue = mapValueToUnits(defaultToolProbeFeedrate, units);
+                              actions.setToolProbeFeedrate(adjustedValue);
+                            }
                           }}
                         />
                         <span className="input-group-addon">{feedrateUnits}</span>
@@ -758,7 +767,6 @@ class Tool extends PureComponent {
                           type="number"
                           className="form-control"
                           value={touchPlateHeight}
-                          placeholder="0.00"
                           min={0}
                           step={step}
                           onChange={(event) => {

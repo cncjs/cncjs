@@ -546,13 +546,11 @@
   "Tool": "Ferramenta",
   "No available tool configuration": "Nenhuma configuração de ferramenta disponível",
   "Tool Change Policy": "Política de Troca de Ferramentas",
+  "Ignore M6 commands (Default)": "Ignorar comandos M6 (Padrão)",
   "Send M6 commands": "Enviar comandos M6",
-  "Ignore M6 commands": "Ignorar comandos M6",
   "Manual Tool Change (WCS)": "Troca de Ferramenta Manual (WCS)",
   "Manual Tool Change (TLO)": "Troca de Ferramenta Manual (TLO)",
-  "Manual Tool Change (Custom)": "Troca de Ferramenta Manual (Personalizada)",
   "This will send the line exactly as it is to the controller.": "Isto enviará a linha exatamente como está para o controlador.",
-  "This will completely skip the M6 command and prevent it from being sent to the controller.": "Isto irá ignorar completamente o comando M6 e impedir que seja enviado para o controlador.",
   "Tool Change Position": "Posição de Troca de Ferramenta",
   "Use the current machine position as the tool change position.": "Usar a posição atual da máquina como a posição de troca de ferramenta.",
   "Tool Probe Position": "Posição da Sonda de Ferramenta",
@@ -566,5 +564,7 @@
   "Import predefined tool probe commands to update the Z-axis offset in the Work Coordinate System (WCS)": "Importar comandos predefinidos de sondagem de ferramenta para atualizar o desvio do eixo Z no Sistema de Coordenadas de Trabalho (WCS)",
   "Import predefined tool probe commands to update the Tool Length Offset (TLO)": "Importar comandos predefinidos de sondagem de ferramenta para atualizar o desvio de comprimento da ferramenta (TLO)",
   "Warning: No custom tool probe commands are defined": "Aviso: Nenhum comando personalizado de sondagem de ferramenta está definido",
-  "Connect to the controller to view the tool probe commands.": "Conecte-se ao controlador para visualizar os comandos de sondagem de ferramenta."
+  "Connect to the controller to view the tool probe commands.": "Conecte-se ao controlador para visualizar os comandos de sondagem de ferramenta.",
+  "Manual Tool Change (Custom Probing)": "Troca de Ferramenta Manual (Sondagem Personalizada)",
+  "This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.": "Esta opção ignora o comando M6 e pausa as operações do controlador, dando-lhe controlo manual total sobre o processo de troca de ferramenta."
 }
