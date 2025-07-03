@@ -235,10 +235,12 @@ class TerminalWrapper extends PureComponent {
         const { onData } = this.props;
         const lines = String(data).replace(/(\r\n|\r|\n)/g, '\n').split('\n');
         for (let i = 0; i < lines.length; ++i) {
-          const line = lines[i];
-          onData(line);
-          this.term.write(chalk.white(line));
-          this.term.prompt();
+          const line = lines[i].trim();
+          if (line.length) {
+            onData(line + '\n');
+            this.term.write(chalk.white(line));
+            this.term.prompt();
+          }
         }
       }
     };
