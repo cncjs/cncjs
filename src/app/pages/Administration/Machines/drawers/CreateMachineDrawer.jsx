@@ -138,10 +138,7 @@ const CreateMachineDrawer = ({
                     {i18n._('Machine name:')}
                   </FieldTextLabel>
                 </Box>
-                <FieldInput
-                  name="name"
-                  placeholder={i18n._('e.g., Activate Air Purifier')}
-                />
+                <FieldInput name="name" />
               </FormGroup>
               <FormGroup>
                 <Box mb="1x">
@@ -155,7 +152,6 @@ const CreateMachineDrawer = ({
                 <FieldTextarea
                   name="data"
                   rows="10"
-                  placeholder="/home/cncjs/bin/activate-air-purifier"
                 />
               </FormGroup>
             </DrawerBody>
