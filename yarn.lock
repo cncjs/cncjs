@@ -8397,13 +8397,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cncjs-controller@npm:~2.0.0-alpha.2":
-  version: 2.0.0-alpha.2
-  resolution: "cncjs-controller@npm:2.0.0-alpha.2"
-  checksum: 0e3d633a9ce2557240a9e1cfdf2bd25b65c3cf7182517a4337a0b9f366753b0f1b2cd1de896980d6659afa6fefcc4c93c3aec4842e054d99b0e92e9f9fb1d58c
-  languageName: node
-  linkType: hard
-
 "cncjs@workspace:.":
   version: 0.0.0-use.local
   resolution: "cncjs@workspace:."
@@ -8451,7 +8444,6 @@ __metadata:
     chained-function: ~0.5.0
     chalk: ~4.1.0
     classnames: ~2.3.1
-    cncjs-controller: ~2.0.0-alpha.2
     colornames: ~1.1.1
     commander: ~9.1.0
     compression: ~1.7.4
