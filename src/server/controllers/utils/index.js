@@ -14,7 +14,7 @@ import {
   CONTROLLER_COMMAND_MACRO_LOAD,
   CONTROLLER_COMMAND_MACRO_RUN,
   CONTROLLER_COMMAND_WATCHDIR_LOAD,
-} from './constants';
+} from '../constants';
 
 const getDeprecatedCommandHandler = (deprecatedCommand) => ({
   'start': (fn) => {

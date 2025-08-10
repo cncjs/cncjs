@@ -21,6 +21,7 @@ export const CONTROLLER_COMMAND_SPINDLE_OVERRIDE = 'spindle_override';
 export const CONTROLLER_COMMAND_LASER_TEST = 'laser_test';
 export const CONTROLLER_COMMAND_MACRO_LOAD = 'macro_load';
 export const CONTROLLER_COMMAND_MACRO_RUN = 'macro_run';
+export const CONTROLLER_COMMAND_TOOL_CHANGE = 'tool_change';
 export const CONTROLLER_COMMAND_WATCHDIR_LOAD = 'watchdir_load';
 
 // Controller Event Trigger
@@ -61,6 +62,21 @@ export const GLOBAL_OBJECTS = {
   // Structured data
   JSON,
 };
+
+// Builtin Commands
+export const BUILTIN_COMMAND_MSG = '%msg';
+export const BUILTIN_COMMAND_WAIT = '%wait';
+
+// M6 Tool Change
+export const TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS = 0;
+export const TOOL_CHANGE_POLICY_SEND_M6_COMMANDS = 1;
+export const TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS = 2;
+export const TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO = 3;
+export const TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING = 4;
+
+// Units
+export const IMPERIAL_UNITS = 'in';
+export const METRIC_UNITS = 'mm';
 
 // Write Source
 export const WRITE_SOURCE_CLIENT = 'client';

@@ -8,16 +8,18 @@ import {
 
 const userStore = serviceContainer.resolve('userStore');
 
+const CONFIG_KEY = 'state';
+
 const api = {
   get: (req, res) => {
     const query = ensurePlainObject(req.query);
 
     if (!query.key) {
-      res.send(userStore.get('state'));
+      res.send(userStore.get(CONFIG_KEY));
       return;
     }
 
-    const key = `state.${query.key}`;
+    const key = `${CONFIG_KEY}.${query.key}`;
     if (!userStore.has(key)) {
       res.status(ERR_NOT_FOUND).send({
         msg: 'Not found'
@@ -32,11 +34,11 @@ const api = {
     const query = ensurePlainObject(req.query);
 
     if (!query.key) {
-      res.send(userStore.get('state'));
+      res.send(userStore.get(CONFIG_KEY));
       return;
     }
 
-    const key = `state.${query.key}`;
+    const key = `${CONFIG_KEY}.${query.key}`;
     if (!userStore.has(key)) {
       res.status(ERR_NOT_FOUND).send({
         msg: 'Not found'
@@ -52,22 +54,22 @@ const api = {
     const data = { ...req.body };
 
     if (query.key) {
-      userStore.set(`state.${query.key}`, data);
+      userStore.set(`${CONFIG_KEY}.${query.key}`, data);
       res.send({ err: false });
       return;
     }
 
     deepKeys(data).forEach((key) => {
-      const oldValue = userStore.get(`state.${key}`);
+      const oldValue = userStore.get(`${CONFIG_KEY}.${key}`);
       const newValue = _get(data, key);
 
       if (typeof oldValue === 'object' && typeof newValue === 'object') {
-        userStore.set(`state.${key}`, {
+        userStore.set(`${CONFIG_KEY}.${key}`, {
           ...oldValue,
           ...newValue
         });
       } else {
-        userStore.set(`state.${key}`, newValue);
+        userStore.set(`${CONFIG_KEY}.${key}`, newValue);
       }
     });
 

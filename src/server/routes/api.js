@@ -8,6 +8,7 @@ import macros from '../api/api.macros';
 import mdi from '../api/api.mdi';
 import state from '../api/api.state';
 import system from '../api/api.system';
+import tool from '../api/api.tool';
 import users from '../api/api.users';
 import version from '../api/api.version';
 import watch from '../api/api.watch';
@@ -90,6 +91,10 @@ const createProtectedApiRouter = () => {
 
   // System
   router.get('/system/info', system.getInformation);
+
+  // Tool Config
+  router.get('/tool', tool.get);
+  router.post('/tool', tool.set);
 
   // Users
   router.get('/users', users.fetch);

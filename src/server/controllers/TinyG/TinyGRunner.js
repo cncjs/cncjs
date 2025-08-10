@@ -83,6 +83,11 @@ class TinyGRunner extends events.EventEmitter {
       coolant: '', // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
     },
     tool: 0,
+    tlo: { // tool length offset
+      x: 0,
+      y: 0,
+      z: 0,
+    },
     spe: 0, // [edge-082.10] Spindle enable
     spd: 0, // [edge-082.10] Spindle direction
     spc: 0, // [edge-101.03] Spindle control
@@ -338,6 +343,14 @@ class TinyGRunner extends events.EventEmitter {
             _.set(target, 'modal.coolant', 'M8');
           },
 
+          // Tool Length Offset
+          'tofx': 'tlo.x',
+          'tofy': 'tlo.y',
+          'tofz': 'tlo.z',
+          'tofa': 'tlo.a',
+          'tofb': 'tlo.b',
+          'tofc': 'tlo.c',
+
           // Work Position
           // {posx: ... through {posa:... are reported in the currently
           // active Units mode (G20/G21), and also apply any offsets,
@@ -449,6 +462,11 @@ class TinyGRunner extends events.EventEmitter {
 
   getWorkPosition(state = this.state) {
     return _.get(state, 'wpos', {});
+  }
+
+  getWorkCoordinateSystem(state = this.state) {
+    const defaultWCS = 'G54';
+    return _.get(state, 'sr.modal.wcs', defaultWCS);
   }
 
   getModalGroup(state = this.state) {

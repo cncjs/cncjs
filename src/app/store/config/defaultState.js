@@ -26,7 +26,7 @@ const defaultState = Object.freeze({ // Freezes the default state
       secondary: {
         show: true,
         widgets: [
-          'axes', 'gcode', 'macro', 'probe', 'spindle', 'laser'
+          'axes', 'gcode', 'macro', 'probe', 'tool', 'spindle', 'laser'
         ]
       }
     },
@@ -195,6 +195,9 @@ const defaultState = Object.freeze({ // Freezes the default state
           expanded: true
         }
       }
+    },
+    tool: {
+      minimized: false,
     },
     visualizer: {
       minimized: false,

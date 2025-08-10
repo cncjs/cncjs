@@ -79,6 +79,35 @@ const getSystemInformation = async (config) => {
 };
 
 //
+// Tool Config
+//
+const getToolConfig = (options) => new Promise((resolve, reject) => {
+  authrequest
+    .get('/api/tool')
+    .end((err, res) => {
+      if (err) {
+        reject(res);
+      } else {
+        resolve(res);
+      }
+    });
+});
+
+const setToolConfig = (options) => new Promise((resolve, reject) => {
+  const data = { ...options };
+  authrequest
+    .post('/api/tool')
+    .send(data)
+    .end((err, res) => {
+      if (err) {
+        reject(res);
+      } else {
+        resolve(res);
+      }
+    });
+});
+
+//
 // G-code
 //
 const loadGCode = (meta, context) => new Promise((resolve, reject) => {
@@ -573,6 +602,10 @@ export default {
 
   // System
   getSystemInformation,
+
+  // Tool
+  getToolConfig,
+  setToolConfig,
 
   // G-code
   loadGCode,

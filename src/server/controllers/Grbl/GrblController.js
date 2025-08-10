@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import { ensureArray, ensureFiniteNumber, ensurePositiveNumber, ensureString } from 'ensure-type';
-import * as parser from 'gcode-parser';
+import * as gcodeParser from 'gcode-parser';
 import _ from 'lodash';
 import {
   CONNECTION_TYPE_SERIAL,
@@ -10,6 +10,7 @@ import {
 } from '../../constants/connection';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
+import MessageSlot from '../../lib/MessageSlot';
 import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/Sender';
 import SerialConnection from '../../lib/SerialConnection';
 import SocketConnection from '../../lib/SocketConnection';
@@ -48,6 +49,7 @@ import {
   CONTROLLER_COMMAND_LASER_TEST,
   CONTROLLER_COMMAND_MACRO_LOAD,
   CONTROLLER_COMMAND_MACRO_RUN,
+  CONTROLLER_COMMAND_TOOL_CHANGE,
   CONTROLLER_COMMAND_WATCHDIR_LOAD,
   CONTROLLER_EVENT_TRIGGER_CONTROLLER_READY,
   CONTROLLER_EVENT_TRIGGER_SENDER_LOAD,
@@ -63,12 +65,28 @@ import {
   CONTROLLER_EVENT_TRIGGER_MACRO_LOAD,
   CONTROLLER_EVENT_TRIGGER_MACRO_RUN,
   GLOBAL_OBJECTS as globalObjects,
+  // Builtin Commands
+  BUILTIN_COMMAND_MSG,
+  BUILTIN_COMMAND_WAIT,
+  // M6 Tool Change
+  TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
+  TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+  TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING,
+  // Units
+  IMPERIAL_UNITS,
+  METRIC_UNITS,
+  // Write Source
   WRITE_SOURCE_CLIENT,
   WRITE_SOURCE_FEEDER
 } from '../constants';
 import {
   getDeprecatedCommandHandler,
 } from '../utils';
+import * as builtinCommand from '../utils/builtin-command';
+import { isM0, isM1, isM6, replaceM6 } from '../utils/gcode';
+import { mapPositionToUnits, mapValueToUnits } from '../utils/units';
 import GrblRunner from './GrblRunner';
 import {
   GRBL,
@@ -83,9 +101,6 @@ import {
 const userStore = serviceContainer.resolve('userStore');
 const directoryWatcher = serviceContainer.resolve('directoryWatcher');
 const shellCommand = serviceContainer.resolve('shellCommand');
-
-// % commands
-const WAIT = '%wait';
 
 const log = logger('controller:Grbl');
 const noop = _.noop;
@@ -163,6 +178,9 @@ class GrblController {
     queryStatusReport: 0,
     senderFinishTime: 0
   };
+
+  // Message Slot
+  messageSlot = null;
 
   // Event Trigger
   event = null;
@@ -462,6 +480,117 @@ class GrblController {
       };
       this.command(CONTROLLER_COMMAND_SENDER_LOAD, meta, context, callback);
     },
+    [CONTROLLER_COMMAND_TOOL_CHANGE]: () => {
+      const modal = this.runner.getModalGroup();
+      const units = {
+        'G20': IMPERIAL_UNITS,
+        'G21': METRIC_UNITS,
+      }[modal.units];
+      const toolChangePolicy = userStore.get('tool.toolChangePolicy', TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS);
+      const toolChangeX = mapPositionToUnits(userStore.get('tool.toolChangeX', 0), units);
+      const toolChangeY = mapPositionToUnits(userStore.get('tool.toolChangeY', 0), units);
+      const toolChangeZ = mapPositionToUnits(userStore.get('tool.toolChangeZ', 0), units);
+      const toolProbeX = mapPositionToUnits(userStore.get('tool.toolProbeX', 0), units);
+      const toolProbeY = mapPositionToUnits(userStore.get('tool.toolProbeY', 0), units);
+      const toolProbeZ = mapPositionToUnits(userStore.get('tool.toolProbeZ', 0), units);
+      const toolProbeCustomCommands = ensureString(userStore.get('tool.toolProbeCustomCommands')).split('\n');
+      const toolProbeCommand = userStore.get('tool.toolProbeCommand', 'G38.2');
+      const toolProbeDistance = mapValueToUnits(userStore.get('tool.toolProbeDistance', 1), units);
+      const toolProbeFeedrate = mapValueToUnits(userStore.get('tool.toolProbeFeedrate', 10), units);
+      const touchPlateHeight = mapValueToUnits(userStore.get('tool.touchPlateHeight', 0), units);
+
+      const context = {
+        'tool_change_x': toolChangeX,
+        'tool_change_y': toolChangeY,
+        'tool_change_z': toolChangeZ,
+        'tool_probe_x': toolProbeX,
+        'tool_probe_y': toolProbeY,
+        'tool_probe_z': toolProbeZ,
+        'tool_probe_command': toolProbeCommand,
+        'tool_probe_distance': toolProbeDistance,
+        'tool_probe_feedrate': toolProbeFeedrate,
+        'touch_plate_height': touchPlateHeight,
+
+        // internal functions
+        'mapWCSToPValue': function (wcs) {
+          return {
+            'G54': 1,
+            'G55': 2,
+            'G56': 3,
+            'G57': 4,
+            'G58': 5,
+            'G59': 6,
+          }[wcs] || 0;
+        },
+      };
+
+      const lines = [];
+
+      // Wait until the planner queue is empty
+      lines.push('%wait');
+
+      // Remember original position and spindle state
+      lines.push('%_posx=posx');
+      lines.push('%_posy=posy');
+      lines.push('%_posz=posz');
+      lines.push('%_modal_spindle=modal.spindle');
+
+      // Stop the spindle
+      lines.push('M5');
+
+      // Absolute positioning
+      lines.push('G90');
+
+      // Move to the tool change position
+      lines.push('G53 G0 Z[tool_change_z]');
+      lines.push('G53 G0 X[tool_change_x] Y[tool_change_y]');
+      lines.push('%wait');
+
+      // Prompt the user to change the tool
+      lines.push('%msg Tool Change T[tool]');
+      lines.push('M0');
+
+      // Move to the tool probe position
+      lines.push('G53 G0 X[tool_probe_x] Y[tool_probe_y]');
+      lines.push('G53 G0 Z[tool_probe_z]');
+      lines.push('%wait');
+
+      if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
+        // Probe the tool
+        lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
+        // Set coordinate system offset
+        lines.push('G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height]');
+      } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
+        // Probe the tool
+        lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
+        // Pause for 1 second
+        lines.push('%wait 1');
+        // Set tool length offset
+        lines.push('G43.1 Z[posz - touch_plate_height]');
+      } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING) {
+        lines.push(...toolProbeCustomCommands);
+      }
+
+      // Move to the tool change position
+      lines.push('G53 G0 Z[tool_change_z]');
+      lines.push('G53 G0 X[tool_change_x] Y[tool_change_y]');
+      lines.push('%wait');
+
+      // Prompt the user to restart the spindle
+      lines.push('%msg Restart Spindle');
+      lines.push('M0');
+
+      // Restore the position and spindle state
+      lines.push('G90');
+      lines.push('G0 X[_posx] Y[_posy]');
+      lines.push('G0 Z[_posz]');
+      lines.push('[_modal_spindle]');
+
+      // Wait 5 seconds for the spindle to speed up
+      lines.push('%wait 5');
+
+      this.command(CONTROLLER_COMMAND_GCODE, lines, context);
+    },
     [CONTROLLER_COMMAND_WATCHDIR_LOAD]: (...args) => {
       const [name, callback = noop] = args;
       const context = {}; // empty context
@@ -564,6 +693,9 @@ class GrblController {
       this.connection = new SocketConnection(connectionOptions);
     }
 
+    // Message Slot
+    this.messageSlot = new MessageSlot();
+
     // Event Trigger
     this.event = new EventTrigger((event, trigger, commands) => {
       log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
@@ -578,55 +710,101 @@ class GrblController {
     this.feeder = new Feeder({
       dataFilter: (line, context) => {
         const originalLine = line;
-        /**
-         * line = 'G0X10 ; comment text'
-         * parts = ['G0X10 ', ' comment text', '']
-         */
-        const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
-        line = ensureString(parts[0]).trim();
+        line = line.trim();
         context = this.populateContext(context);
 
         if (line[0] === '%') {
+          const [command, commandArgs] = ensureArray(builtinCommand.match(line));
+
+          // %msg
+          if (command === BUILTIN_COMMAND_MSG) {
+            log.debug(`${command}: line=${x(originalLine)}`);
+            const msg = translateExpression(commandArgs, context);
+            this.messageSlot.put(msg);
+            return '';
+          }
+
           // %wait
-          if (line === WAIT) {
-            log.debug('Wait for the planner to empty');
-            return 'G4 P0.5'; // dwell
+          if (command === BUILTIN_COMMAND_WAIT) {
+            log.debug(`${command}: line=${x(originalLine)}`);
+            this.sender.hold({
+              data: BUILTIN_COMMAND_WAIT,
+              msg: this.messageSlot.take() ?? originalLine,
+            });
+            const delay = parseFloat(commandArgs) || 0.5; // in seconds
+            const pauseValue = delay.toFixed(3) * 1;
+            return `G4 P${pauseValue}`; // dwell
           }
 
           // Expression
           // %_x=posx,_y=posy,_z=posz
-          evaluateAssignmentExpression(line.slice(1), context);
+          log.debug(`%: line=${x(originalLine)}`);
+          const expr = line.slice(1);
+          evaluateAssignmentExpression(expr, context);
           return '';
         }
 
-        // line="G0 X[posx - 8] Y[ymax]"
-        // > "G0 X2 Y50"
+        // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
         line = translateExpression(line, context);
-        const data = parser.parseLine(line, { flatten: true });
-        const words = ensureArray(data.words);
 
-        { // Program Mode: M0, M1
-          const programMode = _.intersection(words, ['M0', 'M1'])[0];
-          if (programMode === 'M0') {
-            log.debug('M0 Program Pause');
-            this.feeder.hold({ data: 'M0', msg: originalLine }); // Hold reason
-          } else if (programMode === 'M1') {
-            log.debug('M1 Program Pause');
-            this.feeder.hold({ data: 'M1', msg: originalLine }); // Hold reason
-          }
+        const { line: strippedLine, words } = gcodeParser.parseLine(line, {
+          flatten: true,
+          lineMode: 'stripped',
+        });
+        line = strippedLine;
+
+        // M0 Program Pause
+        if (words.find(isM0)) {
+          log.debug(`M0 Program Pause: line=${x(originalLine)}`);
+
+          this.feeder.hold({
+            data: 'M0',
+            msg: this.messageSlot.take() ?? originalLine,
+          });
+        }
+
+        // M1 Program Pause
+        if (words.find(isM1)) {
+          log.debug(`M1 Program Pause: line=${x(originalLine)}`);
+
+          this.feeder.hold({
+            data: 'M1',
+            msg: this.messageSlot.take() ?? originalLine,
+          });
         }
 
         // M6 Tool Change
-        if (_.includes(words, 'M6')) {
-          log.debug('M6 Tool Change');
-          this.feeder.hold({ data: 'M6', msg: originalLine }); // Hold reason
+        if (words.find(isM6)) {
+          log.debug(`M6 Tool Change: line=${x(originalLine)}`);
 
-          // Surround M6 with parentheses to ignore
-          // unsupported command error. If we nuke the whole
-          // line, then we'll likely lose other commands that
-          // share the line, like a T~.  This makes tool
-          // changes complicated.
-          line = line.replace('M6', '(M6)');
+          const toolChangePolicy = userStore.get('tool.toolChangePolicy', TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS);
+          const isManualToolChange = [
+            TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+            TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+            TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING,
+          ].includes(toolChangePolicy);
+
+          if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS) {
+            // Ignore M6 commands
+            line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
+
+            this.feeder.hold({
+              data: 'M6',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
+          } else if (toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS) {
+            // Send M6 commands
+          } else if (isManualToolChange) {
+            // Manual Tool Change
+            line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
+
+            this.feeder.hold({
+              data: 'M6',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
+
+            this.command(CONTROLLER_COMMAND_TOOL_CHANGE);
+          }
         }
 
         return line;
@@ -666,61 +844,110 @@ class GrblController {
       bufferSize: (128 - 8), // The default buffer size is 128 bytes
       dataFilter: (line, context) => {
         const originalLine = line;
-        /**
-         * line = 'G0X10 ; comment text'
-         * parts = ['G0X10 ', ' comment text', '']
-         */
-        const parts = originalLine.split(/;(.*)/s); // `s` is the modifier for single-line mode
-        line = ensureString(parts[0]).trim();
+        const { sent, received } = this.sender.state;
+        line = line.trim();
         context = this.populateContext(context);
 
-        const { sent, received } = this.sender.state;
-
         if (line[0] === '%') {
+          const [command, commandArgs] = ensureArray(builtinCommand.match(line));
+
+          // %msg
+          if (command === BUILTIN_COMMAND_MSG) {
+            log.debug(`${command}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+            const msg = translateExpression(commandArgs, context);
+            this.messageSlot.put(msg);
+            return '';
+          }
+
           // %wait
-          if (line === WAIT) {
-            log.debug(`Wait for the planner to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.sender.hold({ data: WAIT, msg: originalLine }); // Hold reason
-            return 'G4 P0.5'; // dwell
+          if (command === BUILTIN_COMMAND_WAIT) {
+            log.debug(`${command}: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+            this.sender.hold({
+              data: BUILTIN_COMMAND_WAIT,
+              msg: this.messageSlot.take() ?? originalLine,
+            });
+            const delay = parseFloat(commandArgs) || 0.5; // in seconds
+            const pauseValue = delay.toFixed(3) * 1;
+            return `G4 P${pauseValue}`; // dwell
           }
 
           // Expression
           // %_x=posx,_y=posy,_z=posz
-          evaluateAssignmentExpression(line.slice(1), context);
+          log.debug(`%: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+          const expr = line.slice(1);
+          evaluateAssignmentExpression(expr, context);
           return '';
         }
 
-        // line="G0 X[posx - 8] Y[ymax]"
-        // > "G0 X2 Y50"
+        // Example: `G0 X[posx - 8] Y[ymax]` is converted to `G0 X2 Y50`
         line = translateExpression(line, context);
-        const data = parser.parseLine(line, { flatten: true });
-        const words = ensureArray(data.words);
 
-        { // Program Mode: M0, M1
-          const programMode = _.intersection(words, ['M0', 'M1'])[0];
-          if (programMode === 'M0') {
-            log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
-            this.workflow.pause({ data: 'M0', msg: originalLine });
-          } else if (programMode === 'M1') {
-            log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-            this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
-            this.workflow.pause({ data: 'M1', msg: originalLine });
-          }
+        const { line: strippedLine, words } = gcodeParser.parseLine(line, {
+          flatten: true,
+          lineMode: 'stripped',
+        });
+        line = strippedLine;
+
+        // M0 Program Pause
+        if (words.find(isM0)) {
+          log.debug(`M0 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+
+          this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
+          this.workflow.pause({
+            data: 'M0',
+            msg: this.messageSlot.take() ?? originalLine,
+          });
+        }
+
+        // M1 Program Pause
+        if (words.find(isM1)) {
+          log.debug(`M1 Program Pause: line=${x(originalLine)}, sent=${sent}, received=${received}`);
+
+          this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
+          this.workflow.pause({
+            data: 'M1',
+            msg: this.messageSlot.take() ?? originalLine,
+          });
         }
 
         // M6 Tool Change
-        if (_.includes(words, 'M6')) {
-          log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
-          this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
-          this.workflow.pause({ data: 'M6', msg: originalLine });
+        if (words.find(isM6)) {
+          log.debug(`M6 Tool Change: line=${x(originalLine)}, sent=${sent}, received=${received}`);
 
-          // Surround M6 with parentheses to ignore unsupported command error
-          line = line.replace('M6', '(M6)');
+          const toolChangePolicy = userStore.get('tool.toolChangePolicy', TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS);
+          const isManualToolChange = [
+            TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
+            TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO,
+            TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING,
+          ].includes(toolChangePolicy);
+
+          if (toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS) {
+            // Ignore M6 commands
+            line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
+
+            this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
+            this.workflow.pause({
+              data: 'M6',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
+          } else if (toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS) {
+            // Send M6 commands
+          } else if (isManualToolChange) {
+            // Manual Tool Change
+            line = replaceM6(line, (x) => `(${x})`); // replace with parentheses
+
+            this.event.trigger(CONTROLLER_EVENT_TRIGGER_SENDER_PAUSE);
+            this.workflow.pause({
+              data: 'M6',
+              msg: this.messageSlot.take() ?? originalLine,
+            });
+
+            this.command(CONTROLLER_COMMAND_TOOL_CHANGE);
+          }
         }
 
         return line;
-      }
+      },
     });
     this.sender.on('data', (line = '', context = {}) => {
       if (this.isClose) {
@@ -888,9 +1115,11 @@ class GrblController {
         const ignoreErrors = userStore.get('state.controller.exception.ignoreErrors');
         const pauseError = !ignoreErrors;
         const { lines, received } = this.sender.state;
-        const line = lines[received] || '';
+        //const line = lines[received] || '';
+        const line = ensureString(lines[received - 1]).trim();
+        const ln = received + 1;
 
-        this.emit('connection:read', this.connectionState, `> ${line.trim()} (line=${received + 1})`);
+        this.emit('connection:read', this.connectionState, `> ${line} (ln=${ln})`);
         if (error) {
           // Grbl v1.1
           this.emit('connection:read', this.connectionState, `error:${code} (${error.message})`);
@@ -1264,6 +1493,10 @@ class GrblController {
       this.connection = null;
     }
 
+    if (this.messageSlot) {
+      this.messageSlot = null;
+    }
+
     if (this.event) {
       this.event = null;
     }
@@ -1320,7 +1553,7 @@ class GrblController {
 
       if (this.sender.state.gcode) {
         // Unload G-code
-        this.command('unload');
+        this.command(CONTROLLER_COMMAND_SENDER_UNLOAD);
       }
     });
   }
