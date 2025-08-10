@@ -445,6 +445,7 @@ class Visualizer extends Component {
 
     this.controls.handleResize();
 
+    this.renderer.setPixelRatio(window.devicePixelRatio || 1);
     this.renderer.setSize(width, height);
 
     // Update the scene
@@ -610,6 +611,7 @@ class Visualizer extends Component {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.setClearColor(new THREE.Color(colornames('white')), 1);
+    this.renderer.setPixelRatio(window.devicePixelRatio || 1);
     this.renderer.setSize(width, height);
     this.renderer.clear();
 
