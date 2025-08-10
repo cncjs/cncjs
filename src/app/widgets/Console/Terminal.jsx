@@ -230,10 +230,12 @@ class TerminalWrapper extends Component {
       .slice(0, 10000); // up to 10K lines
 
     for (let i = 0; i < lines.length; ++i) {
-      const line = lines[i];
-      if (typeof onData === 'function') {
-        onData(line);
+      const line = lines[i].trim();
+      if (!line.length) {
+        continue;
       }
+
+      onData?.(line + '\n');
       this.term.write(chalk.white(line));
       this.term.prompt();
     }
