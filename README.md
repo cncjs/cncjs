@@ -122,7 +122,7 @@ Check out [https://github.com/cncjs/cncjs/wiki/Installation](https://github.com/
 
 ### Upgrade
 
-Run `npm install -g cncjs@latest` to install the latest version. To determine the version, use `cncjs -V`.
+Run `npm install -g cncjs@latest` to install the latest version. To determine the version, use `cncjs --version`.
 
 ### Usage
 
@@ -136,7 +136,7 @@ pi@rpi3$ cncjs -h
 
   Options:
 
-    -V, --version                       output the version number
+    --version                       output the version number
     -p, --port <port>                   Set listen port (default: 8000)
     -H, --host <host>                   Set listen address or hostname (default: 0.0.0.0)
     -b, --backlog <backlog>             Set listen backlog (default: 511)
