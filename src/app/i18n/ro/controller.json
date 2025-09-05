@@ -1,0 +1,43 @@
+{
+  "TinyG": {
+    "machineState": {
+      "initializing": "Inițializare",
+      "ready": "Pregatit",
+      "alarm": "Alarmă",
+      "stop": "Oprire program",
+      "end": "Sfârșit program",
+      "run": "Rulare",
+      "hold": "Pauză",
+      "probe": "Palpator",
+      "cycle": "Ciclu",
+      "homing": "Aducere la origine",
+      "jog": "Avans",
+      "interlock": "Interblocare",
+      "shutdown": "Oprire",
+      "panic": "Panică"
+    }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "Inactiv",
+      "run": "Rulare",
+      "hold": "Pauză",
+      "door": "Ușă",
+      "home": "Origine",
+      "sleep": "Repauz",
+      "alarm": "Alarmă",
+      "check": "Verificare"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "Inactiv",
+      "run": "Rulare",
+      "hold": "Pauză",
+      "door": "Ușă",
+      "home": "Origine",
+      "alarm": "Alarmă",
+      "check": "Verificare"
+    }
+  }
+}
