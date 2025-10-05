@@ -1,7 +1,7 @@
 {
   "ports": [
      {
-       "comName": "/dev/ttyAMA0",
+       "path": "/dev/ttyAMA0",
        "manufacturer": ""
      }
   ],
@@ -17,7 +17,13 @@
   "allowRemoteAccess": false,
   "controller": "",
   "state": {
-    "checkForUpdates": true
+    "allowAnonymousUsageDataCollection": false,
+    "checkForUpdates": true,
+    "controller": {
+      "exception": {
+        "ignoreErrors": false
+      }
+    }
   },
   "commands": [
     {

@@ -1,44 +1,43 @@
 {
-    "TinyG": {
-        "machineState": {
-            "initializing": "初期化",
-            "ready": "待機",
-            "alarm": "アラーム",
-            "stop": "停止",
-            "end": "終了",
-            "run": "実行",
-            "hold": "一時停止",
-            "probe": "プローブ",
-            "cycle": "サイクル",
-            "homing": "ホーミング",
-            "jog": "ジョギング",
-            "interlock": "インターロック",
-            "shutdown": "シャットダウン",
-            "panic": "パニック"
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "待機",
-            "run": "実行",
-            "hold": "一時停止",
-            "door": "ドア",
-            "home": "ホーム",
-            "sleep": "スリープ",
-            "alarm": "アラーム",
-            "check": "確認"
-        }
-    },
-    "Smoothie": {
-        "activeState": {
-            "idle": "待機",
-            "run": "実行",
-            "hold": "一時停止",
-            "door": "ドア",
-            "home": "ホーム",
-            "sleep": "スリープ",
-            "alarm": "アラーム",
-            "check": "確認"
-        }
+  "TinyG": {
+    "machineState": {
+      "initializing": "初期化中",
+      "ready": "準備完了",
+      "alarm": "アラーム",
+      "stop": "プログラム停止",
+      "end": "プログラム終了",
+      "run": "実行",
+      "hold": "保持",
+      "probe": "プローブ",
+      "cycle": "サイクル",
+      "homing": "ホーム",
+      "jog": "ジョグ",
+      "interlock": "インターロック",
+      "shutdown": "シャットダウン",
+      "panic": "パニック"
     }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "アイドル",
+      "run": "実行",
+      "hold": "保持",
+      "door": "ドア",
+      "home": "ホーム",
+      "sleep": "スリープ",
+      "alarm": "アラーム",
+      "check": "チェック"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "アイドル",
+      "run": "実行",
+      "hold": "保持",
+      "door": "ドア",
+      "home": "ホーム",
+      "alarm": "アラーム",
+      "check": "チェック"
+    }
+  }
 }

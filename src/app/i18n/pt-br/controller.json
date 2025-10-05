@@ -1,44 +1,43 @@
 {
-    "TinyG": {
-        "machineState": {
-            "initializing": "iniciando",
-            "ready": "pronto",
-            "alarm": "alarme",
-            "stop": "parar",
-            "end": "fim",
-            "run": "rodar",
-            "hold": "manter",
-            "probe": "sonda",
-            "cycle": "ciclo",
-            "homing": "ir para origem",
-            "jog": "movimento",
-            "interlock": "bloqueio",
-            "shutdown": "Desligar",
-            "panic": "pânico"
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "inativo",
-            "run": "rodar",
-            "hold": "manter",
-            "door": "porta",
-            "home": "origem",
-            "sleep": "dormir",
-            "alarm": "alarme",
-            "check": "checar"
-        }
-    },
-    "Smoothie": {
-        "activeState": {
-            "idle": "inativo",
-            "run": "rodar",
-            "hold": "manter",
-            "door": "porta",
-            "home": "origem",
-            "sleep": "dormir",
-            "alarm": "alarme",
-            "check": "checar"
-        }
+  "TinyG": {
+    "machineState": {
+      "initializing": "Inicializando",
+      "ready": "Pronto",
+      "alarm": "Alarme",
+      "stop": "Parada do Programa",
+      "end": "Fim do Programa",
+      "run": "Executar",
+      "hold": "Pausa",
+      "probe": "Sonda",
+      "cycle": "Ciclo",
+      "homing": "Referenciamento",
+      "jog": "Movimentação",
+      "interlock": "Intertravamento",
+      "shutdown": "Desligar",
+      "panic": "Pânico"
     }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "Ocioso",
+      "run": "Executar",
+      "hold": "Pausa",
+      "door": "Porta",
+      "home": "Referência",
+      "sleep": "Dormir",
+      "alarm": "Alarme",
+      "check": "Verificar"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "Ocioso",
+      "run": "Executar",
+      "hold": "Pausa",
+      "door": "Porta",
+      "home": "Referência",
+      "alarm": "Alarme",
+      "check": "Verificar"
+    }
+  }
 }

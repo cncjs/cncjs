@@ -1,44 +1,43 @@
 {
-    "TinyG": {
-        "machineState": {
-            "initializing": "",
-            "ready": "",
-            "alarm": "",
-            "stop": "",
-            "end": "",
-            "run": "",
-            "hold": "",
-            "probe": "",
-            "cycle": "",
-            "homing": "",
-            "jog": "",
-            "interlock": "",
-            "shutdown": "",
-            "panic": ""
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "Bereit",
-            "run": "Programmlauf",
-            "hold": "Angehalten",
-            "door": "Tür offen",
-            "home": "Referenzfahrt",
-            "sleep": "schlafen",
-            "alarm": "Alarm",
-            "check": "Überprüfen"
-        }
-    },
-    "Smoothie": {
-        "activeState": {
-            "idle": "",
-            "run": "",
-            "hold": "",
-            "door": "",
-            "home": "",
-            "sleep": "",
-            "alarm": "",
-            "check": ""
-        }
+  "TinyG": {
+    "machineState": {
+      "initializing": "Initialisierung",
+      "ready": "Bereit",
+      "alarm": "Alarm",
+      "stop": "Programmstopp",
+      "end": "Programmen Ende",
+      "run": "Lauf",
+      "hold": "Anhalten",
+      "probe": "Sondierung",
+      "cycle": "Zyklus",
+      "homing": "Referenzfahrt",
+      "jog": "Joggen",
+      "interlock": "Sicherheitsverriegelung",
+      "shutdown": "Herunterfahren",
+      "panic": "Panik"
     }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "Leerlauf",
+      "run": "Lauf",
+      "hold": "Anhalten",
+      "door": "Tür",
+      "home": "Referenzfahrt",
+      "sleep": "Schlafen",
+      "alarm": "Alarm",
+      "check": "Überprüfen"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "Leerlauf",
+      "run": "Lauf",
+      "hold": "Anhalten",
+      "door": "Tür",
+      "home": "Referenzfahrt",
+      "alarm": "Alarm",
+      "check": "Überprüfen"
+    }
+  }
 }

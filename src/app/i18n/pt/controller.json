@@ -1,0 +1,43 @@
+{
+  "TinyG": {
+    "machineState": {
+      "initializing": "A iniciar",
+      "ready": "Pronto",
+      "alarm": "Alarme",
+      "stop": "Paragem do Programa",
+      "end": "Fim do Programa",
+      "run": "Executar",
+      "hold": "Pausar",
+      "probe": "Sonda",
+      "cycle": "Ciclo",
+      "homing": "Retorno à Origem",
+      "jog": "Movimento Manual",
+      "interlock": "Intertravamento",
+      "shutdown": "Desligar",
+      "panic": "Pânico"
+    }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "Ocioso",
+      "run": "Executar",
+      "hold": "Pausar",
+      "door": "Porta",
+      "home": "Origem",
+      "sleep": "Suspenso",
+      "alarm": "Alarme",
+      "check": "Verificar"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "Ocioso",
+      "run": "Executar",
+      "hold": "Pausar",
+      "door": "Porta",
+      "home": "Origem",
+      "alarm": "Alarme",
+      "check": "Verificar"
+    }
+  }
+}

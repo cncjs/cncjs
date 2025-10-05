@@ -4,21 +4,21 @@ import React from 'react';
 import styles from './index.styl';
 
 const Header = ({ fixed, className, ...props }) => (
-    <div
-        {...props}
-        className={classNames(
-            className,
-            styles.widgetHeader,
-            { [styles.widgetHeaderFixed]: fixed }
-        )}
-    />
+  <div
+    {...props}
+    className={classNames(
+      className,
+      styles.widgetHeader,
+      { [styles.widgetHeaderFixed]: fixed }
+    )}
+  />
 );
 
 Header.propTypes = {
-    fixed: PropTypes.bool
+  fixed: PropTypes.bool
 };
 Header.defaultProps = {
-    fixed: false
+  fixed: false
 };
 
 export default Header;

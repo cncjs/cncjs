@@ -1,44 +1,43 @@
 {
-    "TinyG": {
-        "machineState": {
-            "initializing": "Inicializando",
-            "ready": "Listo",
-            "alarm": "Alarma",
-            "stop": "Detener",
-            "end": "Finalizar",
-            "run": "Iniciar",
-            "hold": "Pausar",
-            "probe": "Centrar",
-            "cycle": "Ciclo",
-            "homing": "Mover ejes hasta los finales de carrera",
-            "jog": "Mover",
-            "interlock": "Parado",
-            "shutdown": "Apagar",
-            "panic": "Panico"
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "Parado",
-            "run": "Iniciar",
-            "hold": "Pausar",
-            "door": "Entrada",
-            "home": "Home",
-            "sleep": "Dormir",
-            "alarm": "Alarma",
-            "check": "Comprobar"
-        }
-    },
-    "Smoothie": {
-        "activeState": {
-            "idle": "Parado",
-            "run": "Iniciar",
-            "hold": "Pausar",
-            "door": "Entrada",
-            "home": "Home",
-            "sleep": "Dormir",
-            "alarm": "Alarma",
-            "check": "Comprobar"
-        }
+  "TinyG": {
+    "machineState": {
+      "initializing": "Inicializando",
+      "ready": "Listo",
+      "alarm": "Alarma",
+      "stop": "Detener programa",
+      "end": "Finalizar programa",
+      "run": "Iniciar",
+      "hold": "Pausar",
+      "probe": "Sonda",
+      "cycle": "Ciclo",
+      "homing": "Mover a inicio",
+      "jog": "Mover",
+      "interlock": "Parado",
+      "shutdown": "Apagar",
+      "panic": "Pánico"
     }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "Inactivo",
+      "run": "Ejecutar",
+      "hold": "Pausar",
+      "door": "Puerta",
+      "home": "Inicio",
+      "sleep": "Suspender",
+      "alarm": "Alarma",
+      "check": "Comprobar"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "Inactivo",
+      "run": "Ejecutar",
+      "hold": "Pausar",
+      "door": "Puerta",
+      "home": "Inicio",
+      "alarm": "Alarma",
+      "check": "Comprobar"
+    }
+  }
 }

@@ -3,36 +3,36 @@ import React, { PureComponent } from 'react';
 
 class Circle extends PureComponent {
     static propTypes = {
-        style: PropTypes.object,
-        color: PropTypes.string,
-        opacity: PropTypes.number,
-        diameter: PropTypes.number,
-        width: PropTypes.number
+      style: PropTypes.object,
+      color: PropTypes.string,
+      opacity: PropTypes.number,
+      diameter: PropTypes.number,
+      width: PropTypes.number
     };
 
     static defaultProps = {
-        color: '#fff',
-        opacity: 0.8,
-        diameter: 0,
-        width: 1
+      color: '#fff',
+      opacity: 0.8,
+      diameter: 0,
+      width: 1
     };
 
     render() {
-        const { style, color, opacity, diameter, width, ...props } = this.props;
-        const componentStyle = {
-            ...style,
-            backgroundClip: 'padding-box',
-            borderRadius: '50%',
-            borderColor: color,
-            borderStyle: 'solid',
-            borderWidth: width,
-            opacity: opacity,
-            width: diameter,
-            height: diameter
-        };
-        return (
-            <div {...props} style={componentStyle} />
-        );
+      const { style, color, opacity, diameter, width, ...props } = this.props;
+      const componentStyle = {
+        ...style,
+        backgroundClip: 'padding-box',
+        borderRadius: '50%',
+        borderColor: color,
+        borderStyle: 'solid',
+        borderWidth: width,
+        opacity: opacity,
+        width: diameter,
+        height: diameter
+      };
+      return (
+        <div {...props} style={componentStyle} />
+      );
     }
 }
 

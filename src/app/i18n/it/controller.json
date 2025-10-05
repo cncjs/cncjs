@@ -1,44 +1,43 @@
 {
-    "TinyG": {
-        "machineState": {
-            "initializing": "Inizializza",
-            "ready": "Pronta",
-            "alarm": "Allarme",
-            "stop": "Stop",
-            "end": "Fine",
-            "run": "Movimento",
-            "hold": "Pausa",
-            "probe": "Sonda",
-            "cycle": "Ciclo",
-            "homing": "Azzera",
-            "jog": "Muovi",
-            "interlock": "",
-            "shutdown": "Spegni",
-            "panic": ""
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "Inattivo",
-            "run": "Movimento",
-            "hold": "Pausa",
-            "door": "Finecorsa",
-            "home": "Home",
-            "sleep": "",
-            "alarm": "Allarme",
-            "check": "Controllo"
-        }
-    },
-    "Smoothie": {
-        "activeState": {
-            "idle": "Inattivo",
-            "run": "Movimento",
-            "hold": "Pausa",
-            "door": "Finecorsa",
-            "home": "Home",
-            "sleep": "",
-            "alarm": "Allarme",
-            "check": "Controllo"
-        }
+  "TinyG": {
+    "machineState": {
+      "initializing": "Inizializzazione",
+      "ready": "Pronto",
+      "alarm": "Allarme",
+      "stop": "Arresto Programma",
+      "end": "Fine Programma",
+      "run": "Esegui",
+      "hold": "In Attesa",
+      "probe": "Sonda",
+      "cycle": "Ciclo",
+      "homing": "Homing",
+      "jog": "Movimento Manuale",
+      "interlock": "Interblocco",
+      "shutdown": "Spegnimento",
+      "panic": "Panico"
     }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "Inattivo",
+      "run": "Esegui",
+      "hold": "In Attesa",
+      "door": "Porta",
+      "home": "Home",
+      "sleep": "Sonno",
+      "alarm": "Allarme",
+      "check": "Controlla"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "Inattivo",
+      "run": "Esegui",
+      "hold": "In Attesa",
+      "door": "Porta",
+      "home": "Home",
+      "alarm": "Allarme",
+      "check": "Controlla"
+    }
+  }
 }

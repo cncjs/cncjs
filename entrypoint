@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+
+const launchServer = require('/opt/cncjs/server-cli');
+
+launchServer().catch(err => {
+  console.error('Error:', err);
+});

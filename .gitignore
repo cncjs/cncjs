@@ -1,8 +1,10 @@
 node_modules
 npm-debug.log
-package-lock.json
+yarn-debug.log*
+yarn-error.log
 /.eslintcache
 /.nyc_output
+/.tap
 /coverage
 /dist
 /output
@@ -10,4 +12,12 @@ package-lock.json
 
 # Ignore Apple hidden files
 .DS_Store
-._*
+
+# https://next.yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

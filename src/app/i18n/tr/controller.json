@@ -1,44 +1,43 @@
 {
-    "TinyG": {
-        "machineState": {
-            "initializing": "Initializing",
-            "ready": "Ready",
-            "alarm": "Alarm",
-            "stop": "Program Stop",
-            "end": "Program End",
-            "run": "Run",
-            "hold": "Hold",
-            "probe": "Probe",
-            "cycle": "Cycle",
-            "homing": "Homing",
-            "jog": "Jog",
-            "interlock": "Interlock",
-            "shutdown": "Shutdown",
-            "panic": "Panic"
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "Idle",
-            "run": "Çalışıyor",
-            "hold": "Kilitle",
-            "door": "Kapı",
-            "home": "Başlangıç",
-            "sleep": "Uyku",
-            "alarm": "Alarm",
-            "check": "Kontrol"
-        }
-    },
-    "Smoothie": {
-        "activeState": {
-            "idle": "Idle",
-            "run": "Run",
-            "hold": "Hold",
-            "door": "Door",
-            "home": "Home",
-            "sleep": "sleep",
-            "alarm": "Alarm",
-            "check": "Check"
-        }
+  "TinyG": {
+    "machineState": {
+      "initializing": "Başlatılıyor",
+      "ready": "Hazır",
+      "alarm": "Alarm",
+      "stop": "Program Durdur",
+      "end": "Program Son",
+      "run": "Çalıştır",
+      "hold": "Beklet",
+      "probe": "Problama",
+      "cycle": "Döngü",
+      "homing": "Sıfırlama",
+      "jog": "Jog",
+      "interlock": "Kilitleme",
+      "shutdown": "Kapat",
+      "panic": "Acelesi"
     }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "Boşta",
+      "run": "Çalıştır",
+      "hold": "Beklet",
+      "door": "Kapı",
+      "home": "Ana",
+      "sleep": "Uyku",
+      "alarm": "Alarm",
+      "check": "Kontrol"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "Boşta",
+      "run": "Çalıştır",
+      "hold": "Beklet",
+      "door": "Kapı",
+      "home": "Ana",
+      "alarm": "Alarm",
+      "check": "Kontrol"
+    }
+  }
 }

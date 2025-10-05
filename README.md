@@ -50,6 +50,7 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 ### Existing Pendants
 
 * [cncjs-pendant-keyboard](https://github.com/cncjs/cncjs-pendant-keyboard) - A simple pendant (using wireless keyboard or usb) to CNCJS.
+* [cncjs-pendant-numpad](https://github.com/mariolukas/cncjs-pendant-numpad) - A simple pendant (using wireless numpad or usb) to CNCJS.
 * [cncjs-pendant-lcd](https://github.com/cncjs/cncjs-pendant-lcd) - CNCjs Web Kiosk for Raspberry Pi Touch Displays.
 * [cncjs-pendant-ps3](https://github.com/cncjs/cncjs-pendant-ps3) - Dual Shock / PS3 Bluetooth Remote Pendant for CNCjs.
 * [cncjs-pendant-raspi-gpio](https://github.com/cncjs/cncjs-pendant-raspi-gpio) - Simple Raspberry Pi GPIO Pendant control for CNCjs.
@@ -69,19 +70,17 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 
 ## Supported Node.js Versions
 
- Version | Supported Level
-:------- |:---------------
- 4       | Dropped support
- 6       | Supported
- 8       | Supported
- 10      | Recommended
- 12      | Recommended
+| Version | Supported Level |
+| :------ |:--------------- |
+| <= 10   | Not supported   |
+| 12      | Supported       |
+| >= 14   | Recommended     |
 
 ## Getting Started
 
 ### Node.js Installation
 
-Node.js 8 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
+Node.js 14 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
 ```
 git clone https://github.com/creationix/nvm.git ~/.nvm
 cd ~/.nvm
@@ -98,8 +97,8 @@ export NVM_DIR="$HOME/.nvm"
 
 Once installed, you can select Node.js versions with:
 ```
-nvm install 10
-nvm use 10
+nvm install 14
+nvm use 14
 ```
 
 It's also recommended that you upgrade npm to the latest version. To upgrade, run:
@@ -211,7 +210,7 @@ See https://github.com/cncjs/cncjs/issues/242#issuecomment-352294549 for a detai
 {
   "ports": [
      {
-       "comName": "/dev/ttyAMA0",
+       "path": "/dev/ttyAMA0",
        "manufacturer": ""
      }
   ],
@@ -278,23 +277,24 @@ Pull requests welcome! Learn how to [contribute](CONTRIBUTING.md).
 
 ## Localization
 
-You can help translate resource files in both of [app](https://github.com/cncjs/cncjs/tree/master/src/app/i18n) and [web](https://github.com/cncjs/cncjs/tree/master/src/web/i18n) directories from English to other languages. Check out [Localization guide](https://github.com/cncjs/cncjs/blob/master/CONTRIBUTING.md#localization) to learn how to get started. If you are not familiar with GitHub development, you can [open an issue](https://github.com/cncjs/cncjs/issues) or send your translations to cheton@gmail.com.
+You can help translate resource files in both of [app](https://github.com/cncjs/cncjs/tree/master/src/app/i18n) and [server](https://github.com/cncjs/cncjs/tree/master/src/server/i18n) directories from English to other languages. Check out [Localization guide](https://github.com/cncjs/cncjs/blob/master/CONTRIBUTING.md#localization) to learn how to get started. If you are not familiar with GitHub development, you can [open an issue](https://github.com/cncjs/cncjs/issues) or send your translations to cheton@gmail.com.
 
 Locale | Language | Status | Contributors 
 :----- | :------- | :----- | :-----------
-[cs](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/cs) | Čeština (Czech) | ✔ | [Miroslav Zuzelka](https://github.com/dronecz)
-[de](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/de) | Deutsch (German) | ✔ | [Thorsten Godau](https://github.com/dl9sec), [Max B.](https://github.com/mbs38)
-[es](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/es) | Español (Spanish) | ✔ | [Juan Biondi](https://github.com/yeyeto2788)
-[fr](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/fr) | Français (French) | ✔ | [Simon Maillard](https://github.com/maisim), [CorentinBrulé](https://github.com/CorentinBrule)
-[hu](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/hu) | Magyar (Hungarian) | ✔ | Sipos Péter
-[it](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/it) | Italiano (Italian) | ✔ | [vince87](https://github.com/vince87)
-[ja](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/ja) | 日本語 (Japanese) | ✔ | [Naoki Okamoto](https://github.com/toonaoki)
-[nl](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/nl) | Nederlands (Netherlands) | ✔ | [dutchpatriot](https://github.com/dutchpatriot)
-[pt-br](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/pt-br) | Português (Brasil) | ✔ | [cmsteinBR](https://github.com/cmsteinBR)
-[ru](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/ru) | Ру́сский (Russian) | ✔ | [Denis Yusupov](https://github.com/minithc)
-[tr](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/tr) | Türkçe (Turkish) | ✔ | Ali GÜNDOĞDU
-[zh-cn](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/zh-cn) | 简体中文 (Simplified Chinese) | ✔ | [Mandy Chien](https://github.com/MandyChien), [Terry Lee](https://github.com/TerryShampoo)
-[zh-tw](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/zh-tw) | 繁體中文 (Traditional Chinese) | ✔ | [Cheton Wu](https://github.com/cheton)
+[cs](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/cs) | Čeština (Czech) | ✔ | [Miroslav Zuzelka](https://github.com/dronecz)
+[de](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/de) | Deutsch (German) | ✔ | [Thorsten Godau](https://github.com/dl9sec), [Max B.](https://github.com/mbs38)
+[es](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/es) | Español (Spanish) | ✔ | [Juan Biondi](https://github.com/yeyeto2788), [hasecilu](https://github.com/hasecilu)
+[fr](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/fr) | Français (French) | ✔ | [Simon Maillard](https://github.com/maisim), [CorentinBrulé](https://github.com/CorentinBrule)
+[hu](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/hu) | Magyar (Hungarian) | ✔ | Sipos Péter
+[it](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/it) | Italiano (Italian) | ✔ | [vince87](https://github.com/vince87)
+[ja](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/ja) | 日本語 (Japanese) | ✔ | [Naoki Okamoto](https://github.com/toonaoki)
+[nl](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/nl) | Nederlands (Netherlands) | ✔ | [dutchpatriot](https://github.com/dutchpatriot)
+[pt-br](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/pt-br) | Português (Brasil) | ✔ | [cmsteinBR](https://github.com/cmsteinBR)
+[ru](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/ru) | Ру́сский (Russian) | ✔ | [Denis Yusupov](https://github.com/minithc)
+[uk](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/uk) | українська (Ukrainian) | ✔ | [khvalera](https://github.com/khvalera)
+[tr](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/tr) | Türkçe (Turkish) | ✔ | Ali GÜNDOĞDU
+[zh-cn](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/zh-cn) | 简体中文 (Simplified Chinese) | ✔ | [Mandy Chien](https://github.com/MandyChien), [Terry Lee](https://github.com/TerryShampoo)
+[zh-tw](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/zh-tw) | 繁體中文 (Traditional Chinese) | ✔ | [Cheton Wu](https://github.com/cheton)
 
 ## Donate
 

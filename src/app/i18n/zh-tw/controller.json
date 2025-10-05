@@ -1,44 +1,43 @@
 {
-    "TinyG": {
-        "machineState": {
-            "initializing": "",
-            "ready": "",
-            "alarm": "",
-            "stop": "",
-            "end": "",
-            "run": "",
-            "hold": "",
-            "probe": "",
-            "cycle": "",
-            "homing": "",
-            "jog": "",
-            "interlock": "",
-            "shutdown": "",
-            "panic": ""
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "",
-            "run": "",
-            "hold": "",
-            "door": "",
-            "home": "",
-            "sleep": "",
-            "alarm": "",
-            "check": ""
-        }
-    },
-    "Smoothie": {
-        "activeState": {
-            "idle": "",
-            "run": "",
-            "hold": "",
-            "door": "",
-            "home": "",
-            "sleep": "",
-            "alarm": "",
-            "check": ""
-        }
+  "TinyG": {
+    "machineState": {
+      "initializing": "初始化中",
+      "ready": "準備就緒",
+      "alarm": "警報",
+      "stop": "程序停止",
+      "end": "程序結束",
+      "run": "運行",
+      "hold": "暫停",
+      "probe": "探測",
+      "cycle": "循環",
+      "homing": "回原點",
+      "jog": "手動控制",
+      "interlock": "互鎖",
+      "shutdown": "關機",
+      "panic": "緊急停止"
     }
+  },
+  "Grbl": {
+    "activeState": {
+      "idle": "閒置",
+      "run": "運行",
+      "hold": "暫停",
+      "door": "門",
+      "home": "回原點",
+      "sleep": "睡眠",
+      "alarm": "警報",
+      "check": "檢查"
+    }
+  },
+  "Smoothie": {
+    "activeState": {
+      "idle": "閒置",
+      "run": "運行",
+      "hold": "暫停",
+      "door": "門",
+      "home": "回原點",
+      "alarm": "警報",
+      "check": "檢查"
+    }
+  }
 }

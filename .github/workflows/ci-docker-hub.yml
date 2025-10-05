@@ -1,0 +1,103 @@
+name: ci-docker-hub
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      CI_TAG: ${{ steps.step_setup_env.outputs.CI_TAG }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        # Fetch the entire Git history to access the latest tag release
+        fetch-depth: 0
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+    - name: Configure environment variables
+      id: step_setup_env
+      run: |
+        # https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+        echo "• GITHUB_REF_NAME=$GITHUB_REF_NAME"
+        echo "• GITHUB_REF_TYPE=$GITHUB_REF_TYPE" # `branch` or `tag`
+        echo "• GITHUB_RUN_NUMBER=$GITHUB_RUN_NUMBER"
+        echo "• GITHUB_SHA=$GITHUB_SHA"
+        echo "• RUNNER_ARCH=$RUNNER_ARCH"
+        echo "• RUNNER_NAME=$RUNNER_NAME"
+        echo "• RUNNER_OS=$RUNNER_OS"
+        echo "• RUNNER_TEMP=$RUNNER_TEMP"
+        echo "• RUNNER_TOOL_CACHE=$RUNNER_TOOL_CACHE"
+        echo "CI_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        # $GITHUB_OUTPUT is shared between all steps in a job
+        echo "CI_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+    - name: Install Yarn package manager
+      run: npm install -g yarn
+    - name: Install necessary dependencies and perform initial checks
+      run: |
+        yarn up
+        yarn install
+        yarn lint
+        yarn test
+    - name: Run "build" script
+      if: github.ref_type == 'tag'
+      run: yarn run build
+    - name: Prepare artifact
+      run: |
+        mkdir -p ${{ github.workspace }}/artifact
+        tar -zcvf ${{ github.workspace }}/artifact/ci.tar.gz --directory dist cncjs
+      continue-on-error: true
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ci-artifact
+        path: |
+          artifact/ci.tar.gz
+        if-no-files-found: error
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Configure environment variables
+      env:
+        CI_TAG: "${{ needs.build.outputs.CI_TAG }}"
+      run: |
+        echo "CI_TAG=${CI_TAG}" >> $GITHUB_ENV
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: ci-artifact
+        path: artifact
+    - name: Extract artifact
+      run: |
+        mkdir -p dist
+        tar -zxvf artifact/ci.tar.gz --directory dist
+    - name: Build Docker image
+      run: |
+        DOCKER_IMAGE_TAG=$(echo $CI_TAG | sed -e 's/\//-/g')
+        DOCKER_REPO=cncjs/cncjs
+        echo "DOCKER_IMAGE_TAG=$DOCKER_IMAGE_TAG"
+        echo "DOCKER_REPO=$DOCKER_REPO"
+        docker build -f Dockerfile -t $DOCKER_REPO:$DOCKER_IMAGE_TAG .
+        docker images
+        docker push $DOCKER_REPO:$DOCKER_IMAGE_TAG
+        docker tag $DOCKER_REPO:$DOCKER_IMAGE_TAG $DOCKER_REPO:latest
+        docker push $DOCKER_REPO:latest
