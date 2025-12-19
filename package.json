@@ -64,7 +64,7 @@
     "appId": "org.cncjs",
     "asar": false,
     "asarUnpack": [],
-    "productName": "CNCjs",
+    "productName": "Siemer CNC",
     "directories": {
       "buildResources": "electron-build",
       "output": "output",
