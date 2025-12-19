@@ -1,7 +1,7 @@
 {
   "name": "cncjs-app",
   "version": "1.10.5",
-  "productName": "CNCjs",
+  "productName": "Siemer CNC",
   "description": "CNC Milling Controller",
   "homepage": "https://github.com/cncjs/cncjs",
   "author": "Cheton Wu <cheton@gmail.com>",
