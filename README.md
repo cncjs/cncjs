@@ -99,8 +99,8 @@ export NVM_DIR="$HOME/.nvm"
 
 Once installed, you can select Node.js versions with:
 ```
-#nvm install 14
-#nvm use 14
+# nvm install 14
+# nvm use 14
 nvm install node # "node" is an alias for the latest version
 nvm use node
 ```
