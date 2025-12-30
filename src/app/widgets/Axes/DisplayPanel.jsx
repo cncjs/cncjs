@@ -199,10 +199,10 @@ class DisplayPanel extends PureComponent {
               {i18n._('Set Machine Zero (G28.3 X0 Y0 Z0)')}
             </MenuItem>
             <MenuItem
-              eventKey="G28.2 X0 Y0 Z0"
+              eventKey="G28 X0 Y0 Z0"
               disabled={!canClick}
             >
-              {i18n._('Homing Sequence (G28.2 X0 Y0 Z0)')}
+              {i18n._('Homing Sequence (G28 X0 Y0 Z0)')}
             </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
@@ -462,10 +462,10 @@ class DisplayPanel extends PureComponent {
               {i18n._('Zero Out Machine Y Axis (G28.3 Y0)')}
             </MenuItem>
             <MenuItem
-              eventKey="G28.2 Y0"
+              eventKey="G28 Y0"
               disabled={!canClick}
             >
-              {i18n._('Home Machine Y Axis (G28.2 Y0)')}
+              {i18n._('Home Machine Y Axis (G28 Y0)')}
             </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
@@ -591,10 +591,10 @@ class DisplayPanel extends PureComponent {
               {i18n._('Zero Out Machine Z Axis (G28.3 Z0)')}
             </MenuItem>
             <MenuItem
-              eventKey="G28.2 Z0"
+              eventKey="G28 Z0"
               disabled={!canClick}
             >
-              {i18n._('Home Machine Z Axis (G28.2 Z0)')}
+              {i18n._('Home Machine Z Axis (G28 Z0)')}
             </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
@@ -1055,7 +1055,7 @@ class DisplayPanel extends PureComponent {
                   <TaskbarButton
                     disabled={!canHomeMachine}
                     onClick={() => {
-                      controller.command('gcode', `G28.2 ${axisLabel}0`);
+                      controller.command('gcode', `G28 ${axisLabel}0`);
                     }}
                   >
                     <Tooltip
