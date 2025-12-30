@@ -199,10 +199,10 @@ class DisplayPanel extends PureComponent {
               {i18n._('Set Machine Zero (G28.3 X0 Y0 Z0)')}
             </MenuItem>
             <MenuItem
-              eventKey="G28 X0 Y0 Z0"
+              eventKey="$H"
               disabled={!canClick}
             >
-              {i18n._('Homing Sequence (G28 X0 Y0 Z0)')}
+              {i18n._('Homing Sequence ($H)')}
             </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
@@ -333,10 +333,10 @@ class DisplayPanel extends PureComponent {
               {i18n._('Zero Out Machine X Axis (G28.3 X0)')}
             </MenuItem>
             <MenuItem
-              eventKey="G28.2 X0"
+              eventKey="$HX"
               disabled={!canClick}
             >
-              {i18n._('Home Machine X Axis (G28.2 X0)')}
+              {i18n._('Home Machine X Axis ($HX)')}
             </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
@@ -462,10 +462,10 @@ class DisplayPanel extends PureComponent {
               {i18n._('Zero Out Machine Y Axis (G28.3 Y0)')}
             </MenuItem>
             <MenuItem
-              eventKey="G28 Y0"
+              eventKey="$HY"
               disabled={!canClick}
             >
-              {i18n._('Home Machine Y Axis (G28 Y0)')}
+              {i18n._('Home Machine Y Axis ($HY)')}
             </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
@@ -591,10 +591,10 @@ class DisplayPanel extends PureComponent {
               {i18n._('Zero Out Machine Z Axis (G28.3 Z0)')}
             </MenuItem>
             <MenuItem
-              eventKey="G28 Z0"
+              eventKey="$HZ"
               disabled={!canClick}
             >
-              {i18n._('Home Machine Z Axis (G28 Z0)')}
+              {i18n._('Home Machine Z Axis ($HZ)')}
             </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
