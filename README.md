@@ -99,10 +99,12 @@ export NVM_DIR="$HOME/.nvm"
 
 Once installed, you can select Node.js versions with:
 ```
+nvm install node  # "node" is an alias for the latest version
+nvm use node
+
+# Or to use specific version:
 # nvm install 14
 # nvm use 14
-nvm install node # "node" is an alias for the latest version
-nvm use node
 ```
 
 It's also recommended that you upgrade npm to the latest version. To upgrade, run:
@@ -110,23 +112,32 @@ It's also recommended that you upgrade npm to the latest version. To upgrade, ru
 npm install npm@latest -g
 ```
 
-### Installation
+### Installation (using Git)
 
-Install cncjs as a non-root user, or the [serialport](https://github.com/node-serialport/node-serialport) module may not install correctly on some platforms like Raspberry Pi.
+If you prefer to use Git instead of `npm install`, You can create a local clone of the repository on your computer and sync from GitHub. Type the following commands to install and run `cncjs`:
 ```
-npm install -g cncjs
+git clone https://github.com/Gordannius/cncjs-fluidnc.git
+cd cncjs-fluidnc
+git checkout master
+
+yarn install
+yarn build-prod
+
+node bin/cncjs
+```
+For running only the generated `dist` folder and `bin\cncjs` script is required, you can copy this to other drives etc.
+
+To update your local copy with latest changes, use:
+```
+git checkout master
+git pull origin master
+npm install
+npm run prepare
+./bin/cncjs
 ```
 
-If you're going to use sudo or root to install cncjs, you need to specify the `--unsafe-perm` option to run npm as the root account.
-```
-sudo npm install --unsafe-perm -g cncjs
-```
+This is the fastest method to bring your local copy up-to-date.
 
-Check out [https://github.com/cncjs/cncjs/wiki/Installation](https://github.com/cncjs/cncjs/wiki/Installation) for other installation methods.
-
-### Upgrade
-
-Run `npm install -g cncjs@latest` to install the latest version. To determine the version, use `cncjs -V`.
 
 ### Usage
 
