@@ -76,7 +76,7 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 | 12      | Supported       |
 | >= 14   | Recommended     |
 
-!! NOTE: Use the latest version of Node.js and not version 14 (for some reason it worked for me) !!
+!! NOTE: It is highly recommeded to install the latest version of Node.js or the latest LTS and not version 14 !!
 
 ## Getting Started
 
