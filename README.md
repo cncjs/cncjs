@@ -76,6 +76,8 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 | 12      | Supported       |
 | >= 14   | Recommended     |
 
+!! NOTE: Use the latest version of Node.js and not version 14 (for some reason it worked for me) !!
+
 ## Getting Started
 
 ### Node.js Installation
@@ -97,8 +99,10 @@ export NVM_DIR="$HOME/.nvm"
 
 Once installed, you can select Node.js versions with:
 ```
-nvm install 14
-nvm use 14
+#nvm install 14
+#nvm use 14
+nvm install node # "node" is an alias for the latest version
+nvm use node
 ```
 
 It's also recommended that you upgrade npm to the latest version. To upgrade, run:
