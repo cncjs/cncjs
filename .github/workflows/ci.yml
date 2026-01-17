@@ -117,7 +117,7 @@ jobs:
 
   build-macos-x64:
     # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
-    runs-on: macos-13
+    runs-on: macos-15-intel
     strategy:
       matrix:
         node-version: [20.x]
@@ -204,7 +204,7 @@ jobs:
 
   build-macos-arm64:
     # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
-    runs-on: macos-15
+    runs-on: macos-latest
     strategy:
       matrix:
         node-version: [20.x]
