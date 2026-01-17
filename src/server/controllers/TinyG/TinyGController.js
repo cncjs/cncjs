@@ -257,8 +257,9 @@ class TinyGController {
 
             // Expression
             // %_x=posx,_y=posy,_z=posz
-            log.debug(`%: line=${x(originalLine)}`);
-            const expr = line.slice(1);
+            const parts = line.split(/;(.*)/s); // `s` is the modifier for single-line mode
+            const expr = ensureString(parts[0]).trim().slice(1);
+            log.debug(`%: expr=${x(expr)}, line=${x(originalLine)}`);
             evaluateAssignmentExpression(expr, context);
             return '';
           }
@@ -391,8 +392,9 @@ class TinyGController {
 
             // Expression
             // %_x=posx,_y=posy,_z=posz
-            log.debug(`%: line=${x(originalLine)}, sent=${sent}, received=${received}`);
-            const expr = line.slice(1);
+            const parts = line.split(/;(.*)/s); // `s` is the modifier for single-line mode
+            const expr = ensureString(parts[0]).trim().slice(1);
+            log.debug(`%: expr=${x(expr)}, line=${x(originalLine)}, sent=${sent}, received=${received}`);
             evaluateAssignmentExpression(expr, context);
             return '';
           }
