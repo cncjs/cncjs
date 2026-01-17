@@ -29,7 +29,19 @@ class QuickAccessToolbar extends PureComponent {
       },
       'reset': () => {
         controller.command('reset');
-      }
+      },
+      'autoleveling': () => {
+        controller.command('autoleveling', {
+          startX: 0,
+          endX: 10,
+          stepX: 5,
+          startY: 0,
+          endY: 0,
+          stepY: 5,
+          startZ: 10,
+          endZ: -10,
+        });
+      },
     };
 
     render() {
@@ -98,6 +110,16 @@ class QuickAccessToolbar extends PureComponent {
                 <i className="fa fa-undo" />
                 <Space width="8" />
                 {i18n._('Reset')}
+              </button>
+            </li>
+            <li className="btn-group btn-group-sm" role="group">
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={this.command.autoleveling}
+                title={i18n._('Auto Leveling')}
+              >
+                {i18n._('Auto Leveling')}
               </button>
             </li>
           </ul>
