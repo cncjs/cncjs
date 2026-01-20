@@ -8,7 +8,7 @@
 const net = require('net');
 
 class GrblTestClient {
-    constructor(port = 3000, host = 'localhost') {
+    constructor(port = 5000, host = 'localhost') {
         this.port = port;
         this.host = host;
         this.client = null;

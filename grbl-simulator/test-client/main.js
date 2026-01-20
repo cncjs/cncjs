@@ -34,7 +34,7 @@ function printUsage() {
         console.log(`  ${key.padEnd(12)} - ${testSuites[key].name}`);
     });
     console.log('\nExamples:');
-    console.log('  node run-all.js              # Run all tests on port 3000');
+    console.log('  node run-all.js              # Run all tests on port 5000');
     console.log('  node run-all.js 8888         # Run all tests on port 8888');
     console.log('  node run-all.js client       # Run only client tests');
     console.log('  node run-all.js motion jog   # Run motion and jog tests');
@@ -50,7 +50,7 @@ async function runTests() {
     }
 
     // Parse port (first numeric argument)
-    let port = 3000;
+    let port = 5000;
     const portIndex = args.findIndex(arg => /^\d+$/.test(arg));
     if (portIndex !== -1) {
         port = parseInt(args[portIndex]);

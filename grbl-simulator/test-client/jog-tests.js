@@ -63,7 +63,7 @@ async function runJogTests(client) {
 
 // Run standalone
 if (require.main === module) {
-    const port = parseInt(process.argv[2]) || 3000;
+    const port = parseInt(process.argv[2]) || 5000;
     const client = new GrblTestClient(port);
 
     client.connect()

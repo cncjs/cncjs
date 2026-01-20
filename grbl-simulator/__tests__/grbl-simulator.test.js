@@ -87,7 +87,7 @@ function expect(actual) {
 describe('GrblSimulator - Initialization', () => {
     it('should initialize with default state', () => {
         const sim = new GrblSimulator();
-        expect(sim.state).toBe('Idle');
+        expect(sim.machineState).toBe('Idle');
         expect(sim.alarmCode).toBe(0);
     });
 
@@ -132,16 +132,16 @@ describe('GrblSimulator - Real-time Commands', () => {
 
     it('should handle feed hold (!)', () => {
         const sim = new GrblSimulator();
-        sim.state = 'Run';
+        sim.machineState = 'Run';
         sim.processRealtimeCommand('!');
-        expect(sim.state).toBe('Hold');
+        expect(sim.machineState).toBe('Hold');
     });
 
     it('should handle cycle start (~)', () => {
         const sim = new GrblSimulator();
-        sim.state = 'Hold';
+        sim.machineState = 'Hold';
         sim.processRealtimeCommand('~');
-        expect(sim.state).toBe('Idle');
+        expect(sim.machineState).toBe('Idle');
     });
 
     it('should handle soft reset (Ctrl-X)', () => {
@@ -206,25 +206,25 @@ describe('GrblSimulator - System Commands', () => {
 
     it('should toggle check mode ($C)', () => {
         const sim = new GrblSimulator();
-        expect(sim.state).toBe('Idle');
+        expect(sim.machineState).toBe('Idle');
 
         let response = sim.processLine('$C');
         expect(response).toContain('Check mode enabled');
-        expect(sim.state).toBe('Check');
+        expect(sim.machineState).toBe('Check');
 
         response = sim.processLine('$C');
         expect(response).toContain('Check mode disabled');
-        expect(sim.state).toBe('Idle');
+        expect(sim.machineState).toBe('Idle');
     });
 
     it('should kill alarm lock ($X)', () => {
         const sim = new GrblSimulator();
-        sim.state = 'Alarm';
+        sim.machineState = 'Alarm';
         sim.alarmCode = 1;
 
         const response = sim.processLine('$X');
         expect(response).toContain('Unlocked');
-        expect(sim.state).toBe('Idle');
+        expect(sim.machineState).toBe('Idle');
         expect(sim.alarmCode).toBe(0);
     });
 
@@ -232,7 +232,7 @@ describe('GrblSimulator - System Commands', () => {
         const sim = new GrblSimulator();
         const response = sim.processLine('$SLP');
         expect(response).toContain('Sleeping');
-        expect(sim.state).toBe('Sleep');
+        expect(sim.machineState).toBe('Sleep');
     });
 });
 
@@ -479,7 +479,7 @@ describe('GrblSimulator - G10 L2 Work Coordinate Offset', () => {
 describe('GrblSimulator - Error Handling', () => {
     it('should reject commands in alarm state', () => {
         const sim = new GrblSimulator();
-        sim.state = 'Alarm';
+        sim.machineState = 'Alarm';
 
         const response = sim.processLine('G0 X10');
         expect(response).toBe('error:8\r\n');
@@ -522,7 +522,7 @@ describe('GrblSimulator - Error Handling', () => {
 describe('GrblSimulator - Jogging', () => {
     it('should accept jog command in Idle state', () => {
         const sim = new GrblSimulator();
-        expect(sim.state).toBe('Idle');
+        expect(sim.machineState).toBe('Idle');
 
         const result = sim.processJogCommand('X10 F500');
         expect(result.error).toBe(null);
@@ -544,7 +544,7 @@ describe('GrblSimulator - Jogging', () => {
 
     it('should reject jog in non-Idle state', () => {
         const sim = new GrblSimulator();
-        sim.state = 'Alarm';
+        sim.machineState = 'Alarm';
 
         const response = sim.processJogCommand('X10 F500');
         expect(response).toBe('error:16\r\n');
@@ -613,42 +613,42 @@ describe('GrblSimulator - Status Report', () => {
 describe('GrblSimulator - Motion State', () => {
     it('should initialize with inactive motion', () => {
         const sim = new GrblSimulator();
-        expect(sim.motion.active).toBe(false);
+        expect(sim.motionState.active).toBe(false);
     });
 
     it('should have default motion state', () => {
         const sim = new GrblSimulator();
-        const defaultState = sim.getDefaultMotionState();
+        const motionState = sim.motionState;
 
-        expect(defaultState.active).toBe(false);
-        expect(defaultState.type).toBe('linear');
-        expect(defaultState.startTime).toBe(0);
-        expect(defaultState.endTime).toBe(0);
+        expect(motionState.active).toBe(false);
+        expect(motionState.type).toBe('linear');
+        expect(motionState.startTime).toBe(0);
+        expect(motionState.endTime).toBe(0);
     });
 
     it('should set motion state', () => {
         const sim = new GrblSimulator();
-        sim.setMotion({
+        sim.setMotionState({
             active: true,
             type: 'arc',
             startTime: 1000,
             endTime: 2000
         });
 
-        expect(sim.motion.active).toBe(true);
-        expect(sim.motion.type).toBe('arc');
-        expect(sim.motion.startTime).toBe(1000);
-        expect(sim.motion.endTime).toBe(2000);
+        expect(sim.motionState.active).toBe(true);
+        expect(sim.motionState.type).toBe('arc');
+        expect(sim.motionState.startTime).toBe(1000);
+        expect(sim.motionState.endTime).toBe(2000);
     });
 
     it('should reset motion state', () => {
         const sim = new GrblSimulator();
-        sim.setMotion({ active: true, type: 'arc' });
+        sim.setMotionState({ active: true, type: 'arc' });
 
-        sim.resetMotion();
+        sim.resetMotionState();
 
-        expect(sim.motion.active).toBe(false);
-        expect(sim.motion.type).toBe('linear');
+        expect(sim.motionState.active).toBe(false);
+        expect(sim.motionState.type).toBe('linear');
     });
 });
 
@@ -667,7 +667,7 @@ describe('GrblSimulator - Linear Interpolation', () => {
         const sim = new GrblSimulator();
         const now = Date.now();
 
-        sim.setMotion({
+        sim.setMotionState({
             active: true,
             type: 'linear',
             startTime: now - 500,  // Started 500ms ago
@@ -689,7 +689,7 @@ describe('GrblSimulator - Arc Interpolation', () => {
         const sim = new GrblSimulator();
 
         // Setup arc motion data
-        sim.setMotion({
+        sim.setMotionState({
             active: true,
             type: 'arc',
             startTime: Date.now() - 500,
@@ -746,7 +746,7 @@ describe('GrblSimulator - Planner Buffer', () => {
         const sim = new GrblSimulator();
         sim.machinePosition = { x: 0, y: 0, z: 0 };
 
-        sim.setMotion({
+        sim.setMotionState({
             active: true,
             endPosition: { x: 50, y: 50, z: 0 }
         });
@@ -770,8 +770,8 @@ describe('GrblSimulator - Planner Buffer', () => {
 describe('GrblSimulator - Soft Reset', () => {
     it('should clear buffers on reset', () => {
         const sim = new GrblSimulator();
-        sim.rxBuffer.queue.push({ line: 'test', length: 5 });
-        sim.rxBuffer.used = 5;
+        sim.receiveBuffer.queue.push({ line: 'test', length: 5 });
+        sim.receiveBuffer.used = 5;
         sim.plannerBuffer.queue.push({
             endPosition: { x: 0, y: 0, z: 0 },
             execute: () => {} // Mock execute function
@@ -779,8 +779,8 @@ describe('GrblSimulator - Soft Reset', () => {
 
         sim.reset();
 
-        expect(sim.rxBuffer.queue.length).toBe(0);
-        expect(sim.rxBuffer.used).toBe(0);
+        expect(sim.receiveBuffer.queue.length).toBe(0);
+        expect(sim.receiveBuffer.used).toBe(0);
         expect(sim.plannerBuffer.queue.length).toBe(0);
     });
 
@@ -799,11 +799,11 @@ describe('GrblSimulator - Soft Reset', () => {
 
     it('should trigger alarm if reset during motion', () => {
         const sim = new GrblSimulator();
-        sim.setMotion({ active: true });
+        sim.setMotionState({ active: true });
 
         const response = sim.reset();
 
-        expect(sim.state).toBe('Alarm');
+        expect(sim.machineState).toBe('Alarm');
         expect(sim.alarmCode).toBe(3);
         expect(response).toContain('ALARM:3');
     });
@@ -815,7 +815,7 @@ describe('GrblSimulator - Alarm System', () => {
 
         const response = sim.triggerAlarm(1);
 
-        expect(sim.state).toBe('Alarm');
+        expect(sim.machineState).toBe('Alarm');
         expect(sim.alarmCode).toBe(1);
         expect(response).toBe('ALARM:1\r\n');
     });
@@ -834,11 +834,11 @@ describe('GrblSimulator - Alarm System', () => {
 
     it('should stop motion on alarm', () => {
         const sim = new GrblSimulator();
-        sim.setMotion({ active: true });
+        sim.setMotionState({ active: true });
 
         sim.triggerAlarm(2);
 
-        expect(sim.motion.active).toBe(false);
+        expect(sim.motionState.active).toBe(false);
     });
 });
 
@@ -880,6 +880,139 @@ describe('GrblSimulator - Dwell (G4)', () => {
 
         const response = sim.processLine('G4');
         expect(response).toBe('error:27\r\n');
+    });
+});
+
+describe('GrblSimulator - Laser Mode ($32)', () => {
+    it('should initialize with laser mode disabled', () => {
+        const sim = new GrblSimulator();
+        expect(sim.settings[32]).toBe(0);
+        expect(sim.laserPower).toBe(0);
+    });
+
+    it('should turn off laser when laser mode disabled', () => {
+        const sim = new GrblSimulator();
+        sim.settings[32] = 0; // Laser mode OFF
+        sim.processLine('M3 S1000');
+        sim.processLine('G1 X10 F500');
+
+        // Laser power should be 0 (laser mode disabled)
+        expect(sim.laserPower).toBe(0);
+    });
+
+    it('should turn off laser during G0 in laser mode', () => {
+        const sim = new GrblSimulator();
+        sim.settings[32] = 1; // Laser mode ON
+        sim.processLine('M3 S1000');
+        sim.parserState.motion = 'G0';
+        sim.updateLaserPower();
+
+        expect(sim.laserPower).toBe(0);
+    });
+
+    it('should enable laser during G1 with M3 in laser mode', () => {
+        const sim = new GrblSimulator();
+        sim.settings[32] = 1; // Laser mode ON
+        sim.processLine('M3 S750');
+        sim.parserState.motion = 'G1';
+        sim.motionState.active = true;
+        sim.updateLaserPower();
+
+        expect(sim.laserPower).toBe(750);
+    });
+
+    it('should enable laser during G2/G3 arcs in laser mode', () => {
+        const sim = new GrblSimulator();
+        sim.settings[32] = 1; // Laser mode ON
+        sim.processLine('M3 S500');
+        sim.parserState.motion = 'G2';
+        sim.motionState.active = true;
+        sim.updateLaserPower();
+
+        expect(sim.laserPower).toBe(500);
+    });
+
+    it('should turn off laser when S0 in laser mode', () => {
+        const sim = new GrblSimulator();
+        sim.settings[32] = 1; // Laser mode ON
+        sim.processLine('M3 S1000');
+        sim.parserState.motion = 'G1';
+        sim.motionState.active = true;
+        sim.updateLaserPower();
+        expect(sim.laserPower).toBe(1000);
+
+        // Set S0 to turn off laser
+        sim.spindleSpeed = 0;
+        sim.updateLaserPower();
+        expect(sim.laserPower).toBe(0);
+    });
+
+    it('should turn off laser when M5 in laser mode', () => {
+        const sim = new GrblSimulator();
+        sim.settings[32] = 1; // Laser mode ON
+        sim.processLine('M3 S1000');
+        sim.parserState.motion = 'G1';
+        sim.motionState.active = true;
+        sim.updateLaserPower();
+        expect(sim.laserPower).toBe(1000);
+
+        // M5 turns off spindle/laser
+        sim.processLine('M5');
+        sim.updateLaserPower();
+        expect(sim.laserPower).toBe(0);
+    });
+
+    it('should turn off laser during Hold state', () => {
+        const sim = new GrblSimulator();
+        sim.settings[32] = 1; // Laser mode ON
+        sim.processLine('M3 S1000');
+        sim.parserState.motion = 'G1';
+        sim.motionState.active = true;
+        sim.updateLaserPower();
+        expect(sim.laserPower).toBe(1000);
+
+        // Feed hold should turn off laser
+        sim.machineState = 'Hold';
+        sim.updateLaserPower();
+        expect(sim.laserPower).toBe(0);
+    });
+
+    it('should turn off laser during Door state', () => {
+        const sim = new GrblSimulator();
+        sim.settings[32] = 1; // Laser mode ON
+        sim.processLine('M3 S1000');
+        sim.parserState.motion = 'G1';
+        sim.motionState.active = true;
+        sim.updateLaserPower();
+        expect(sim.laserPower).toBe(1000);
+
+        // Door open should turn off laser immediately
+        sim.machineState = 'Door';
+        sim.updateLaserPower();
+        expect(sim.laserPower).toBe(0);
+    });
+
+    it('should support M4 dynamic laser mode', () => {
+        const sim = new GrblSimulator();
+        sim.settings[32] = 1; // Laser mode ON
+        sim.processLine('M4 S800'); // M4 = dynamic power mode
+        sim.parserState.motion = 'G1';
+        sim.motionState.active = true;
+        sim.updateLaserPower();
+
+        expect(sim.parserState.spindle).toBe('M4');
+        expect(sim.laserPower).toBe(800);
+    });
+
+    it('should turn off laser when no motion is active', () => {
+        const sim = new GrblSimulator();
+        sim.settings[32] = 1; // Laser mode ON
+        sim.processLine('M3 S1000');
+        sim.parserState.motion = 'G1';
+        sim.motionState.active = false; // No motion
+        sim.updateLaserPower();
+
+        expect(sim.laserPower).toBe(0);
     });
 });
 

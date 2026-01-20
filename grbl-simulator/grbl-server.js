@@ -9,7 +9,7 @@
 const net = require('net');
 const GrblSimulator = require('./grbl-simulator');
 
-const defaultPort = 3000;
+const defaultPort = 5000;
 
 class GrblServer {
     constructor(port = defaultPort) {

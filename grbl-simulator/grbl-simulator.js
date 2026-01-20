@@ -42,10 +42,49 @@ const SETTINGS = {
     Z_MAX_TRAVEL: 132
 };
 
+/**
+ * Get default motion state
+ * @returns {object} New motion state object
+ */
+function getDefaultMotionState() {
+    return {
+        active: false,
+        type: 'linear',
+        startTime: 0,
+        endTime: 0,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 0, y: 0, z: 0 },
+        currentFeedRate: 0,
+        data: null,
+    };
+}
+
 class GrblSimulator {
+    // Constants
+    static VERSION = '1.1h';
+    static BUILD_DATE = '20180617';
+
+    // Private fields
+    #machineState = 'Idle'; // Idle, Run, Hold, Jog, Alarm, Door, Check, Home, Sleep
+
+    #motionState = getDefaultMotionState();
+
+    #receiveBuffer = {
+        size: 128, // RX buffer size in characters
+        used: 0, // Current buffer usage
+        queue: [] // Queue of received lines awaiting acknowledgment [{line, length}]
+    };
+
+    #plannerBuffer = {
+        size: 15, // Number of planner blocks
+        queue: [], // Commands queued for execution
+        executing: null // Currently executing command
+    };
+
+    #waitingQueue = [];
+
     constructor() {
         // System state
-        this.state = 'Idle'; // Idle, Run, Hold, Jog, Alarm, Door, Check, Home, Sleep
         this.alarmCode = 0;
 
         // Machine position (absolute machine coordinates)
@@ -124,37 +163,12 @@ class GrblSimulator {
         // Runtime state
         this.feedRate = 0;
         this.spindleSpeed = 0;
-
-        // Buffer management (character-counting protocol)
-        // Grbl has a 128-byte RX buffer for incoming serial data
-        this.rxBuffer = {
-            size: 128, // RX buffer size in characters
-            used: 0, // Current buffer usage
-            queue: [] // Queue of received lines awaiting acknowledgment [{line, length}]
-        };
-
-        // Planner buffer for command execution
-        this.plannerBuffer = {
-            size: 15, // Number of planner blocks
-            queue: [], // Commands queued for execution
-            executing: null // Currently executing command
-        };
-
-        // Waiting queue for commands blocked by full planner
-        // Ensures commands are processed in FIFO order
-        this.waitingQueue = [];
+        this.laserPower = 0; // Current laser power output (0-100%)
 
         // Overrides
         this.feedOverride = 100;
         this.rapidOverride = 100;
         this.spindleOverride = 100;
-
-        // Version info
-        this.version = '1.1h';
-        this.buildDate = '20180617';
-
-        // Motion tracking for real-time interpolation
-        this.motion = this.getDefaultMotionState();
 
         // Probe state
         this.probePosition = { x: 0, y: 0, z: 0 };
@@ -166,35 +180,130 @@ class GrblSimulator {
     }
 
     /**
-     * Get default motion state
-     * @returns {object} Default motion state
+     * Get machine state
+     * @returns {string} Current machine state
      */
-    getDefaultMotionState() {
-        return {
-            active: false,
-            type: 'linear', // 'linear' | 'arc' - interpolation method
-            startTime: 0,
-            endTime: 0,
-            startPosition: { x: 0, y: 0, z: 0 },
-            endPosition: { x: 0, y: 0, z: 0 },
-            currentFeedRate: 0, // Actual feed rate for this motion (mm/min)
-            data: null // Context-specific data: { source, isRapid, arc params, etc. }
-        };
+    get machineState() {
+        return this.#machineState;
+    }
+
+    /**
+     * Set machine state
+     * @param {string} state - New machine state
+     */
+    set machineState(state) {
+        this.#machineState = state;
+
+        // Update laser power when machine state changes (for Hold/Door safety shutoff)
+        this.updateLaserPower();
+    }
+
+    /**
+     * Get motion state
+     * @returns {object} Current motion state
+     */
+    get motionState() {
+        return this.#motionState;
+    }
+
+    /**
+     * Get receive buffer
+     * @returns {object} Receive buffer state
+     */
+    get receiveBuffer() {
+        return this.#receiveBuffer;
+    }
+
+    /**
+     * Get planner buffer
+     * @returns {object} Planner buffer state
+     */
+    get plannerBuffer() {
+        return this.#plannerBuffer;
+    }
+
+    /**
+     * Get waiting queue
+     * @returns {Array} Waiting queue
+     */
+    get waitingQueue() {
+        return this.#waitingQueue;
     }
 
     /**
      * Set motion state (React-like setState pattern)
+     * Automatically updates motion-dependent state (laser power, etc.)
      * @param {object} updates - Properties to update
      */
-    setMotion(updates) {
-        Object.assign(this.motion, updates);
+    setMotionState(updates) {
+        Object.assign(this.#motionState, updates);
+
+        // Update laser power based on new motion state
+        this.updateLaserPower();
     }
 
     /**
      * Reset motion to default state
      */
-    resetMotion() {
-        this.motion = this.getDefaultMotionState();
+    resetMotionState() {
+        this.#motionState = getDefaultMotionState();
+
+        // Update laser power after motion reset
+        this.updateLaserPower();
+    }
+
+    /**
+     * Implements Grbl v1.1 laser mode behavior:
+     * - $32=0: Laser mode disabled (spindle behaves normally)
+     * - $32=1: Laser mode enabled with special behaviors:
+     *   - G0 rapid moves turn laser off
+     *   - G1/G2/G3 feed moves: M3 = constant power, M4 = dynamic power
+     *   - Feed hold/Door state turns laser off immediately
+     *   - S0 turns laser off without stopping motion
+     */
+    updateLaserPower() {
+        const laserMode = this.settings[SETTINGS.LASER_MODE] === 1;
+        const spindleOn = this.parserState.spindle === 'M3' || this.parserState.spindle === 'M4';
+
+        // Turn off laser if not in laser mode or spindle is off (M5)
+        if (!laserMode || !spindleOn) {
+            this.laserPower = 0;
+            return;
+        }
+
+        // S0 turns off laser (even if M3/M4 is active)
+        if (this.spindleSpeed === 0) {
+            this.laserPower = 0;
+            return;
+        }
+
+        // Turn off laser during Hold or Door states (immediate safety shutoff)
+        if (this.machineState === 'Hold' || this.machineState === 'Door') {
+            this.laserPower = 0;
+            return;
+        }
+
+        // Turn off laser if no motion is active
+        if (!this.#motionState.active) {
+            this.laserPower = 0;
+            return;
+        }
+
+        // Determine if motion is laser-enabled (G1, G2, G3)
+        const laserEnabledMotion = ['G1', 'G2', 'G3'].includes(this.parserState.motion);
+
+        if (!laserEnabledMotion) {
+            // G0 (rapid), G80 (cancel), G38.x (probe) disable laser
+            this.laserPower = 0;
+        } else if (this.parserState.spindle === 'M3') {
+            // M3: Constant power mode - laser at programmed S-value
+            this.laserPower = this.spindleSpeed;
+        } else if (this.parserState.spindle === 'M4') {
+            // M4: Dynamic power mode - laser power scales with actual speed
+            // In M4, laser turns off when not moving
+            // For the simulator, we approximate this with motion state
+            this.laserPower = this.spindleSpeed;
+        }
     }
 
     /**
@@ -215,7 +324,7 @@ class GrblSimulator {
         const debug = process.env.DEBUG_PLANNER === '1';
 
         // Update current motion state
-        if (this.motion.active) {
+        if (this.#motionState.active) {
             const now = Date.now();
 
             // Check soft limits during execution (only if enabled)
@@ -228,48 +337,48 @@ class GrblSimulator {
                     if (debug) {
                         console.log('[PLANNER] SOFT LIMIT EXCEEDED on axis:', softLimitCheck.axis);
                     }
-                    this.state = 'Alarm';
+                    this.machineState = 'Alarm';
                     this.alarmCode = 2;
-                    this.setMotion({ active: false });
-                    this.plannerBuffer.queue = []; // Clear remaining commands
-                    this.plannerBuffer.executing = null;
+                    this.setMotionState({ active: false });
+                    this.#plannerBuffer.queue = []; // Clear remaining commands
+                    this.#plannerBuffer.executing = null;
                     // Note: In real scenario, server should send ALARM:2 message
                     return;
                 }
             }
 
-            if (now >= this.motion.endTime) {
+            if (now >= this.#motionState.endTime) {
                 // Current motion complete
                 if (debug) {
-                    console.log('[PLANNER] Motion complete, updating position to:', this.motion.endPosition);
+                    console.log('[PLANNER] Motion complete, updating position to:', this.#motionState.endPosition);
                 }
-                this.state = 'Idle';
-                this.machinePosition = { ...this.motion.endPosition };
+                this.machineState = 'Idle';
+                this.machinePosition = { ...this.#motionState.endPosition };
                 this.updateWorkPosition();
-                this.resetMotion();
+                this.resetMotionState();
 
                 // Free planner block
-                if (this.plannerBuffer.executing) {
-                    this.plannerBuffer.executing = null;
+                if (this.#plannerBuffer.executing) {
+                    this.#plannerBuffer.executing = null;
                 }
             }
         }
 
         // Start next command if nothing is executing
-        if (!this.motion.active && this.plannerBuffer.queue.length > 0) {
-            const nextCommand = this.plannerBuffer.queue.shift();
-            this.plannerBuffer.executing = nextCommand;
+        if (!this.#motionState.active && this.#plannerBuffer.queue.length > 0) {
+            const nextCommand = this.#plannerBuffer.queue.shift();
+            this.#plannerBuffer.executing = nextCommand;
 
             // Execute the command
             nextCommand.execute();
         }
 
         // Process waiting commands if planner has space
-        while (this.waitingQueue.length > 0) {
-            const plannerUsed = this.plannerBuffer.queue.length + (this.plannerBuffer.executing ? 1 : 0);
-            if (plannerUsed < this.plannerBuffer.size) {
+        while (this.#waitingQueue.length > 0) {
+            const plannerUsed = this.#plannerBuffer.queue.length + (this.#plannerBuffer.executing ? 1 : 0);
+            if (plannerUsed < this.#plannerBuffer.size) {
                 // Space available - process next waiting command
-                const waiting = this.waitingQueue.shift();
+                const waiting = this.#waitingQueue.shift();
                 if (debug) {
                     console.log('[PLANNER] Processing waiting command:', waiting.line.substring(0, 40));
                 }
@@ -283,7 +392,7 @@ class GrblSimulator {
                 } else if (result && result.waitForPlannerEmpty) {
                     // Handle dwell
                     const waitForPlannerEmpty = () => {
-                        const plannerEmpty = this.plannerBuffer.queue.length === 0 && !this.motion.active;
+                        const plannerEmpty = this.#plannerBuffer.queue.length === 0 && !this.#motionState.active;
                         if (plannerEmpty) {
                             setTimeout(() => waiting.callback('ok\r\n'), result.duration);
                         } else {
@@ -337,10 +446,10 @@ class GrblSimulator {
         const isMotionCmd = isJogCmd || isG2830 || isG38 || isG0123WithAxis;
 
         if (isMotionCmd) {
-            const plannerUsed = this.plannerBuffer.queue.length + (this.plannerBuffer.executing ? 1 : 0);
-            if (plannerUsed >= this.plannerBuffer.size) {
+            const plannerUsed = this.#plannerBuffer.queue.length + (this.#plannerBuffer.executing ? 1 : 0);
+            if (plannerUsed >= this.#plannerBuffer.size) {
                 // Buffer full - add to waiting queue to maintain FIFO order
-                this.waitingQueue.push({ line: line, callback: callback });
+                this.#waitingQueue.push({ line: line, callback: callback });
                 return; // Don't process yet - will be processed when space available
             }
         }
@@ -355,7 +464,7 @@ class GrblSimulator {
         } else if (result && result.isDwell) {
             // G4 Dwell: Wait for planner to empty, then delay, then send ok
             const waitForPlannerEmpty = () => {
-                const plannerEmpty = this.plannerBuffer.queue.length === 0 && !this.motion.active;
+                const plannerEmpty = this.#plannerBuffer.queue.length === 0 && !this.#motionState.active;
                 if (plannerEmpty) {
                     // Planner empty - now dwell for specified duration
                     setTimeout(() => {
@@ -401,7 +510,7 @@ class GrblSimulator {
         const lineLength = line.length + 1; // +1 for \n character
 
         // Check if buffer has space (only for G-code, not system commands)
-        if (!line.startsWith('$') && this.rxBuffer.used + lineLength > this.rxBuffer.size) {
+        if (!line.startsWith('$') && this.#receiveBuffer.used + lineLength > this.#receiveBuffer.size) {
             // Buffer overflow - this shouldn't happen in normal operation
             // In real Grbl, this would be prevented by the serial communication layer
             return 'error:11\r\n'; // Overflow
@@ -409,11 +518,11 @@ class GrblSimulator {
 
         // Add to buffer queue for character counting
         if (!line.startsWith('$')) {
-            this.rxBuffer.queue.push({
+            this.#receiveBuffer.queue.push({
                 line: line,
                 length: lineLength
             });
-            this.rxBuffer.used += lineLength;
+            this.#receiveBuffer.used += lineLength;
         }
 
         // Process the command immediately
@@ -435,9 +544,9 @@ class GrblSimulator {
         }
 
         // After processing, dequeue and free buffer space
-        if (!line.startsWith('$') && this.rxBuffer.queue.length > 0) {
-            const completed = this.rxBuffer.queue.shift();
-            this.rxBuffer.used -= completed.length;
+        if (!line.startsWith('$') && this.#receiveBuffer.queue.length > 0) {
+            const completed = this.#receiveBuffer.queue.shift();
+            this.#receiveBuffer.used -= completed.length;
         }
 
         return response;
@@ -452,13 +561,13 @@ class GrblSimulator {
     getBufferAvailable() {
         // Calculate bytes used by commands in waitingQueue (haven't received 'ok' yet)
         let waitingBytes = 0;
-        for (const waiting of this.waitingQueue) {
+        for (const waiting of this.#waitingQueue) {
             waitingBytes += waiting.line.length + 1; // +1 for newline
         }
 
         // Total RX buffer used = current buffer + waiting queue bytes
-        const totalUsed = this.rxBuffer.used + waitingBytes;
-        return Math.max(0, this.rxBuffer.size - totalUsed);
+        const totalUsed = this.#receiveBuffer.used + waitingBytes;
+        return Math.max(0, this.#receiveBuffer.size - totalUsed);
     }
 
     /**
@@ -468,9 +577,9 @@ class GrblSimulator {
     getBufferState() {
         return {
             available: this.getBufferAvailable(),
-            used: this.rxBuffer.used,
-            size: this.rxBuffer.size,
-            plannerBlocks: this.rxBuffer.plannerBlocks
+            used: this.#receiveBuffer.used,
+            size: this.#receiveBuffer.size,
+            plannerBlocks: this.#receiveBuffer.plannerBlocks
         };
     }
 
@@ -489,15 +598,15 @@ class GrblSimulator {
 
             case '!':
                 // Feed hold
-                if (this.state === 'Run' || this.state === 'Jog') {
-                    this.state = 'Hold';
+                if (this.machineState === 'Run' || this.machineState === 'Jog') {
+                    this.machineState = 'Hold';
                 }
                 return '';
 
             case '~':
                 // Cycle start / resume
-                if (this.state === 'Hold') {
-                    this.state = 'Idle';
+                if (this.machineState === 'Hold') {
+                    this.machineState = 'Idle';
                 }
                 return '';
 
@@ -509,7 +618,7 @@ class GrblSimulator {
                 // Extended real-time commands (0x80-0xFF)
                 if (code === 0x85) {
                     // Jog cancel
-                    if (this.state === 'Jog') {
+                    if (this.machineState === 'Jog') {
                         this.cancelJog();
                     }
                 }
@@ -521,8 +630,8 @@ class GrblSimulator {
      * Cancel active jog motion
      */
     cancelJog() {
-        this.resetMotion();
-        this.state = 'Idle';
+        this.resetMotionState();
+        this.machineState = 'Idle';
         // In real Grbl, this would flush the planner buffer
     }
 
@@ -564,11 +673,11 @@ class GrblSimulator {
 
         // Check mode toggle
         if (line === '$C') {
-            if (this.state === 'Check') {
-                this.state = 'Idle';
+            if (this.machineState === 'Check') {
+                this.machineState = 'Idle';
                 return '[MSG:Check mode disabled]\r\nok\r\n';
-            } else if (this.state === 'Idle') {
-                this.state = 'Check';
+            } else if (this.machineState === 'Idle') {
+                this.machineState = 'Check';
                 return '[MSG:Check mode enabled]\r\nok\r\n';
             }
             return 'error:8\r\n'; // Not idle
@@ -576,8 +685,8 @@ class GrblSimulator {
 
         // Kill alarm lock
         if (line === '$X') {
-            if (this.state === 'Alarm') {
-                this.state = 'Idle';
+            if (this.machineState === 'Alarm') {
+                this.machineState = 'Idle';
                 this.alarmCode = 0;
                 return '[MSG:Caution: Unlocked]\r\nok\r\n';
             }
@@ -586,7 +695,7 @@ class GrblSimulator {
 
         // Sleep mode
         if (line === '$SLP') {
-            this.state = 'Sleep';
+            this.machineState = 'Sleep';
             return '[MSG:Sleeping]\r\nok\r\n';
         }
 
@@ -633,7 +742,7 @@ class GrblSimulator {
      */
     processGCode(line) {
         // Check if in alarm state
-        if (this.state === 'Alarm') {
+        if (this.machineState === 'Alarm') {
             return 'error:8\r\n'; // Alarm lock
         }
 
@@ -839,11 +948,11 @@ class GrblSimulator {
         const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
         const probeTime = (distance / this.feedRate) * 60 * 1000;
 
-        this.plannerBuffer.queue.push({
+        this.#plannerBuffer.queue.push({
             endPosition,
             execute: () => {
-                this.state = 'Run';
-                this.setMotion({
+                this.machineState = 'Run';
+                this.setMotionState({
                     active: true,
                     type: 'linear', // Probe uses linear interpolation
                     startTime: Date.now(),
@@ -853,6 +962,7 @@ class GrblSimulator {
                     currentFeedRate: this.feedRate,
                     data: {},
                 });
+                this.updateMotionState();
 
                 // Store probe result
                 this.probePosition = endPosition;
@@ -871,7 +981,7 @@ class GrblSimulator {
      */
     processJogCommand(jogLine) {
         // Only accept jog commands in Idle or Jog state
-        if (this.state !== 'Idle' && this.state !== 'Jog') {
+        if (this.machineState !== 'Idle' && this.machineState !== 'Jog') {
             return 'error:16\r\n'; // Invalid jog command
         }
 
@@ -937,11 +1047,11 @@ class GrblSimulator {
         const motionTime = (distance / parsed.words.F) * 60 * 1000;
         const jogFeedRate = parsed.words.F;
 
-        this.plannerBuffer.queue.push({
+        this.#plannerBuffer.queue.push({
             endPosition,
             execute: () => {
-                this.state = 'Jog';
-                this.setMotion({
+                this.machineState = 'Jog';
+                this.setMotionState({
                     active: true,
                     type: 'linear', // Jog uses linear interpolation
                     startTime: Date.now(),
@@ -1002,11 +1112,11 @@ class GrblSimulator {
         }
 
         // Queue motion for asynchronous execution
-        this.plannerBuffer.queue.push({
+        this.#plannerBuffer.queue.push({
             endPosition,
             execute: () => {
-                this.state = 'Run';
-                this.setMotion({
+                this.machineState = 'Run';
+                this.setMotionState({
                     active: true,
                     type: 'linear', // G0/G1 use linear interpolation
                     startTime: Date.now(),
@@ -1029,13 +1139,13 @@ class GrblSimulator {
      */
     getPlannedEndPosition() {
         // If there are queued commands, return the target position of the last one
-        if (this.plannerBuffer.queue.length > 0) {
-            return { ...this.plannerBuffer.queue[this.plannerBuffer.queue.length - 1].endPosition };
+        if (this.#plannerBuffer.queue.length > 0) {
+            return { ...this.#plannerBuffer.queue[this.#plannerBuffer.queue.length - 1].endPosition };
         }
 
         // If a command is executing, return its end position
-        if (this.motion.active) {
-            return { ...this.motion.endPosition };
+        if (this.#motionState.active) {
+            return { ...this.#motionState.endPosition };
         }
 
         // Otherwise, return current position
@@ -1164,11 +1274,11 @@ class GrblSimulator {
         const currentPlane = this.parserState.plane;
 
         // Queue arc motion for asynchronous execution
-        this.plannerBuffer.queue.push({
+        this.#plannerBuffer.queue.push({
             endPosition,
             execute: () => {
-                this.state = 'Run';
-                this.setMotion({
+                this.machineState = 'Run';
+                this.setMotionState({
                     active: true,
                     type: 'arc', // G2/G3 use arc interpolation
                     startTime: Date.now(),
@@ -1347,30 +1457,30 @@ class GrblSimulator {
      * @returns {object} Current position
      */
     getCurrentPosition() {
-        if (!this.motion.active) {
+        if (!this.#motionState.active) {
             return { ...this.machinePosition };
         }
 
         const now = Date.now();
-        if (now >= this.motion.endTime) {
-            return { ...this.motion.endPosition };
+        if (now >= this.#motionState.endTime) {
+            return { ...this.#motionState.endPosition };
         }
 
         // Calculate progress (0 to 1)
-        const elapsed = now - this.motion.startTime;
-        const duration = this.motion.endTime - this.motion.startTime;
+        const elapsed = now - this.#motionState.startTime;
+        const duration = this.#motionState.endTime - this.#motionState.startTime;
         const progress = duration > 0 ? elapsed / duration : 1;
 
         // Arc interpolation for G2/G3
-        if (this.motion.type === 'arc' && this.motion.data) {
+        if (this.#motionState.type === 'arc' && this.#motionState.data) {
             return this.interpolateArcPosition(progress);
         }
 
         // Linear interpolation for G0/G1 and other motion types
         return {
-            x: this.motion.startPosition.x + (this.motion.endPosition.x - this.motion.startPosition.x) * progress,
-            y: this.motion.startPosition.y + (this.motion.endPosition.y - this.motion.startPosition.y) * progress,
-            z: this.motion.startPosition.z + (this.motion.endPosition.z - this.motion.startPosition.z) * progress
+            x: this.#motionState.startPosition.x + (this.#motionState.endPosition.x - this.#motionState.startPosition.x) * progress,
+            y: this.#motionState.startPosition.y + (this.#motionState.endPosition.y - this.#motionState.startPosition.y) * progress,
+            z: this.#motionState.startPosition.z + (this.#motionState.endPosition.z - this.#motionState.startPosition.z) * progress
         };
     }
 
@@ -1380,13 +1490,13 @@ class GrblSimulator {
      * @returns {object} Interpolated position
      */
     interpolateArcPosition(progress) {
-        const { center, radius, startAngle, angularTravel, axis0, axis1 } = this.motion.data;
+        const { center, radius, startAngle, angularTravel, axis0, axis1 } = this.#motionState.data;
 
         // Calculate current angle along the arc
         const currentAngle = startAngle + angularTravel * progress;
 
         // Calculate position on the arc in the current plane
-        const pos = { ...this.motion.startPosition };
+        const pos = { ...this.#motionState.startPosition };
 
         // Set position in the arc plane
         pos[axis0] = center[axis0] + radius * Math.cos(currentAngle);
@@ -1394,8 +1504,8 @@ class GrblSimulator {
 
         // Linear interpolation for the axis perpendicular to the arc plane (helical arcs)
         const linearAxis = this.getLinearAxis();
-        pos[linearAxis] = this.motion.startPosition[linearAxis] +
-                         (this.motion.endPosition[linearAxis] - this.motion.startPosition[linearAxis]) * progress;
+        pos[linearAxis] = this.#motionState.startPosition[linearAxis] +
+                         (this.#motionState.endPosition[linearAxis] - this.#motionState.startPosition[linearAxis]) * progress;
 
         return pos;
     }
@@ -1427,19 +1537,19 @@ class GrblSimulator {
         // During motion, use the motion's actual feed rate
         // When idle, show the programmed feed rate
         let reportedFeedRate = this.feedRate;
-        if (this.motion.active && this.motion.currentFeedRate > 0) {
-            reportedFeedRate = this.motion.currentFeedRate;
+        if (this.#motionState.active && this.#motionState.currentFeedRate > 0) {
+            reportedFeedRate = this.#motionState.currentFeedRate;
         }
 
-        let report = `<${this.state}|${posType}:${posValue}|FS:${reportedFeedRate.toFixed(1)},${this.spindleSpeed.toFixed(0)}`;
+        let report = `<${this.machineState}|${posType}:${posValue}|FS:${reportedFeedRate.toFixed(1)},${this.spindleSpeed.toFixed(0)}`;
 
         // Add buffer state (Bf: planner blocks available, RX buffer available)
         // In real Grbl, this is controlled by $10 bit 1 (BITFLAG_RT_STATUS_BUFFER_STATE)
         // IMPORTANT: Only count ACTUAL planner blocks, not waiting commands!
         // Waiting commands are in RX buffer or waitingQueue, NOT in planner
-        const plannerBlocksUsed = this.plannerBuffer.queue.length +
-                                  (this.plannerBuffer.executing ? 1 : 0);
-        const plannerBlocksAvail = Math.max(0, this.plannerBuffer.size - plannerBlocksUsed);
+        const plannerBlocksUsed = this.#plannerBuffer.queue.length +
+                                  (this.#plannerBuffer.executing ? 1 : 0);
+        const plannerBlocksAvail = Math.max(0, this.#plannerBuffer.size - plannerBlocksUsed);
 
         // RX buffer availability (128 bytes total - used by waiting commands)
         // Each waiting command uses approximately its line length in the RX buffer
@@ -1518,7 +1628,7 @@ class GrblSimulator {
      * @returns {string} Build info
      */
     getBuildInfo() {
-        return `[VER:${this.version}.${this.buildDate}:Grbl Simulator]\r\n[OPT:V,15,128]\r\nok\r\n`;
+        return `[VER:${GrblSimulator.VERSION}.${GrblSimulator.BUILD_DATE}:Grbl Simulator]\r\n[OPT:V,15,128]\r\nok\r\n`;
     }
 
     /**
@@ -1556,11 +1666,11 @@ class GrblSimulator {
         const startPosition = { ...this.machinePosition };
         const endPosition = { x: 0, y: 0, z: 0 };
 
-        this.plannerBuffer.queue.push({
+        this.#plannerBuffer.queue.push({
             endPosition,
             execute: () => {
-                this.state = 'Home';
-                this.setMotion({
+                this.machineState = 'Home';
+                this.setMotionState({
                     active: true,
                     type: 'linear', // Homing uses linear interpolation
                     startTime: Date.now(),
@@ -1583,17 +1693,17 @@ class GrblSimulator {
      */
     reset() {
         // Check if reset during motion - triggers alarm
-        const wasInMotion = this.motion.active || this.plannerBuffer.queue.length > 0;
+        const wasInMotion = this.#motionState.active || this.#plannerBuffer.queue.length > 0;
 
         // Clear all buffers
-        this.rxBuffer.queue = [];
-        this.rxBuffer.used = 0;
-        this.plannerBuffer.queue = [];
-        this.plannerBuffer.executing = null;
-        this.waitingQueue = [];
+        this.#receiveBuffer.queue = [];
+        this.#receiveBuffer.used = 0;
+        this.#plannerBuffer.queue = [];
+        this.#plannerBuffer.executing = null;
+        this.#waitingQueue = [];
 
         // Stop current motion
-        this.resetMotion();
+        this.resetMotionState();
 
         // Clear parser state
         this.feedRate = 0;
@@ -1616,11 +1726,11 @@ class GrblSimulator {
 
         // If reset during motion, trigger alarm 3
         if (wasInMotion) {
-            this.state = 'Alarm';
+            this.machineState = 'Alarm';
             this.alarmCode = 3;
             return `ALARM:3\r\n${this.getStartupMessage()}`;
         } else {
-            this.state = 'Idle';
+            this.machineState = 'Idle';
             this.alarmCode = 0;
             return this.getStartupMessage();
         }
@@ -1632,11 +1742,11 @@ class GrblSimulator {
      * @returns {string} Alarm message
      */
     triggerAlarm(alarmCode) {
-        this.state = 'Alarm';
+        this.machineState = 'Alarm';
         this.alarmCode = alarmCode;
         // Stop all motion
-        this.resetMotion();
-        this.plannerBuffer.queue = [];
+        this.resetMotionState();
+        this.#plannerBuffer.queue = [];
         return `ALARM:${alarmCode}\r\n`;
     }
 
@@ -1671,7 +1781,7 @@ class GrblSimulator {
      * @returns {string} Startup message
      */
     getStartupMessage() {
-        return `\r\nGrbl ${this.version} ['$' for help]\r\n`;
+        return `\r\nGrbl ${GrblSimulator.VERSION} ['$' for help]\r\n`;
     }
 }
 
