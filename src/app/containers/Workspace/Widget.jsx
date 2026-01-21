@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import AutoLevelWidget from 'app/widgets/AutoLevel';
 import AxesWidget from 'app/widgets/Axes';
 import ConnectionWidget from 'app/widgets/Connection';
 import ConsoleWidget from 'app/widgets/Console';
@@ -19,6 +20,7 @@ import WebcamWidget from 'app/widgets/Webcam';
 
 const getWidgetByName = (name) => {
   return {
+    'autolevel': AutoLevelWidget,
     'axes': AxesWidget,
     'connection': ConnectionWidget,
     'console': ConsoleWidget,

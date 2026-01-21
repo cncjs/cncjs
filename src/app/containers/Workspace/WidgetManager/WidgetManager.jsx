@@ -107,6 +107,13 @@ class WidgetManager extends PureComponent {
         disabled: false
       },
       {
+        id: 'autolevel',
+        caption: i18n._('AutoLevel Widget'),
+        details: i18n._('This widget lets you probe a grid for auto-leveling PCBs or uneven surfaces.'),
+        visible: true,
+        disabled: false
+      },
+      {
         id: 'tool',
         caption: i18n._('Tool Widget'),
         details: i18n._('This widget manages workflows for tool changes.'),
