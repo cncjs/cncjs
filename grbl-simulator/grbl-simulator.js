@@ -926,7 +926,7 @@ class GrblSimulator {
         }
 
         // Get the expected start position and end position
-        const startPosition = { ...this.machinePosition };
+        const startPosition = this.getPlannedEndPosition();
         const endPosition = this.calculateMachinePosition(coords, startPosition);
 
         // Check initial probe state
@@ -942,9 +942,9 @@ class GrblSimulator {
         }
 
         // Calculate 3D distance and time
-        const dx = endPosition.x - this.machinePosition.x;
-        const dy = endPosition.y - this.machinePosition.y;
-        const dz = endPosition.z - this.machinePosition.z;
+        const dx = endPosition.x - startPosition.x;
+        const dy = endPosition.y - startPosition.y;
+        const dz = endPosition.z - startPosition.z;
         const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
         const probeTime = (distance / this.feedRate) * 60 * 1000;
 
