@@ -1709,7 +1709,7 @@ class GrblController {
           this.command('gcode', lines, context);
         },
         'autolevel': () => {
-          const [params] = args[0];
+          const [params] = args;
           const {
             startX,
             endX,
