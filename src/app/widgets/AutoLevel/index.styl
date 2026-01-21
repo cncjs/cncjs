@@ -1,0 +1,78 @@
+.widget-content {
+    position: relative;
+    padding: 10px;
+
+    &.hidden {
+        display: none;
+    }
+}
+
+.probing-table {
+    width: 100%;
+    margin-bottom: 10px;
+
+    th, td {
+        padding: 4px 8px;
+        text-align: right;
+        font-size: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f5f5f5;
+        font-weight: 600;
+    }
+
+    td.axis {
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .table-container {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+}
+
+.button-group {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+
+    .btn {
+        flex: 1;
+    }
+}
+
+.probing-info {
+    margin-bottom: 10px;
+    padding: 8px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    font-size: 12px;
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .info-label {
+        color: #666;
+    }
+
+    .info-value {
+        font-weight: 500;
+    }
+}
+
+.no-data {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+    font-style: italic;
+}
