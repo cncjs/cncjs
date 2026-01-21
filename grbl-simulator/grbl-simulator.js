@@ -962,7 +962,6 @@ class GrblSimulator {
                     currentFeedRate: this.feedRate,
                     data: {},
                 });
-                this.updateMotionState();
 
                 // Store probe result
                 this.probePosition = endPosition;
