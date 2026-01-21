@@ -6,7 +6,7 @@
 SERIAL_PATH="/tmp/ttyGRBL"
 
 # Find an available port using Node.js
-GRBL_PORT=$(node -e "
+PORT=$(node -e "
 const net = require('net');
 const server = net.createServer();
 server.listen(0, () => {
@@ -14,9 +14,6 @@ server.listen(0, () => {
     server.close();
 });
 ")
-
-echo "Using port: $GRBL_PORT"
-echo ""
 
 # Check if socat is installed
 if ! command -v socat &> /dev/null; then
@@ -32,21 +29,24 @@ if [ ! -f "grbl-server.js" ]; then
     exit 1
 fi
 
-node grbl-server.js $GRBL_PORT &
-SERVER_PID=$!
-sleep 2
+npx concurrently \
+    --kill-others \
+    --success first \
+    --names "grbl-server,serial-bridge" \
+    "node grbl-server.js $PORT" \
+    "sleep 2; node serial-bridge.js $PORT $SERIAL_PATH" &
+CONCURRENTLY_PID=$!
 
-node serial-bridge.js $GRBL_PORT $SERIAL_PATH &
-BRIDGE_PID=$!
-sleep 2
+# Wait until the virtual serial path is available
+until [ -e "$SERIAL_PATH" ]; do
+  sleep 0.5
+done
 
 echo ""
-echo "Virtual serial path: $SERIAL_PATH"
+echo "Virtual serial device available:"
+echo "  $SERIAL_PATH"
 echo ""
-echo "To connect cncjs:"
-echo "  cncjs -p $SERIAL_PATH"
-echo ""
-echo "Or add to ~/.cncrc:"
+echo "To connect cncjs, add the following configuration to \"~/.cncrc\":"
 echo '  {
     "ports": [
       {
@@ -63,8 +63,7 @@ echo ""
 cleanup() {
     echo ""
     echo "Stopping services..."
-    kill $SERVER_PID 2>/dev/null
-    kill $BRIDGE_PID 2>/dev/null
+    kill $CONCURRENRLY_PID 2>/dev/null
     rm -f $SERIAL_PATH
     echo "✓ Stopped"
     exit 0

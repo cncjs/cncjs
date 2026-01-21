@@ -27,7 +27,7 @@ class GrblServer {
         });
 
         this.server.listen(this.port, () => {
-            console.log(`Listening on port ${this.port}...`);
+            console.log(`Listening on port ${this.port}`);
         });
 
         this.server.on('error', (err) => {
@@ -167,9 +167,7 @@ class GrblServer {
 if (require.main === module) {
     const port = parseInt(process.argv[2]) || defaultPort;
 
-    console.log('');
-    console.log('Grbl simulator - TCP server');
-    console.log('');
+    console.log('Grbl Simulator - TCP Server');
 
     const server = new GrblServer(port);
     server.start();
