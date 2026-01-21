@@ -1740,6 +1740,41 @@ class GrblController {
           log.info(`[autoLeveling] probeGCodes=${x(probeGCodes)}`);
           this.command('gcode', probeGCodes);
         },
+        'autolevel:apply': () => {
+          const [params, callback] = args;
+          const {
+            gcode: gcodeStr,
+            probingData,
+            stepX = 10,
+            stepY = 10,
+          } = params;
+
+          // Load probing data into autoLeveling state
+          if (Array.isArray(probingData) && probingData.length >= 3) {
+            this.autoLeveling.setState({
+              probePointCount: probingData.length,
+              probedPositions: probingData.map(p => ({
+                x: Number(p.x),
+                y: Number(p.y),
+                z: Number(p.z),
+              })),
+              minZ: Math.min(...probingData.map(p => p.z)),
+              maxZ: Math.max(...probingData.map(p => p.z)),
+            });
+          }
+
+          // Apply Z compensation
+          const compensatedGcode = this.autoLeveling.applyZCompensation(gcodeStr, {
+            stepX,
+            stepY,
+          });
+
+          log.info('[autoLeveling] Z compensation applied');
+
+          if (typeof callback === 'function') {
+            callback(null, { compensatedGcode });
+          }
+        },
       }[cmd];
 
       if (!handler) {
