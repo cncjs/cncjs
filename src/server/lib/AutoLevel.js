@@ -19,7 +19,7 @@ import {
 import x from './json-stringify';
 import logger from './logger';
 
-const log = logger('auto-leveling');
+const log = logger('AutoLevel');
 
 // Vector subtraction: p1 - p2
 const sub3 = (p1, p2) => ({
@@ -127,7 +127,7 @@ const defaultState = Object.freeze({
   maxZ: 0,
 });
 
-class AutoLeveling extends events.EventEmitter {
+class AutoLevel extends events.EventEmitter {
   state = {
     ...defaultState,
   };
@@ -586,4 +586,4 @@ class AutoLeveling extends events.EventEmitter {
   }
 }
 
-export default AutoLeveling;
+export default AutoLevel;
