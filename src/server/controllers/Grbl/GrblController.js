@@ -6,7 +6,7 @@ import {
 } from 'ensure-type';
 import * as gcodeParser from 'gcode-parser';
 import _ from 'lodash';
-import AutoLeveling from '../../lib/AutoLeveling';
+import AutoLevel from '../../lib/AutoLevel';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
 import MessageSlot from '../../lib/MessageSlot';
@@ -138,8 +138,8 @@ class GrblController {
     // Event Trigger
     event = null;
 
-    // Auto Leveling
-    autoLeveling = null;
+    // Auto Level
+    autoLevel = null;
 
     // Feeder
     feeder = null;
@@ -205,8 +205,8 @@ class GrblController {
       // Message Slot
       this.messageSlot = new MessageSlot();
 
-      // AutoLeveling
-      this.autoLeveling = new AutoLeveling();
+      // Auto Level
+      this.autoLevel = new AutoLevel();
 
       // Event Trigger
       this.event = new EventTrigger((event, trigger, commands) => {
@@ -742,7 +742,7 @@ class GrblController {
               b: ensureFiniteNumber(value.b) - Number(wco.b),
               c: ensureFiniteNumber(value.c) - Number(wco.c),
             };
-            this.autoLeveling.emit('probe_update', { pos: probedPos });
+            this.autoLevel.emit('probe_update', { pos: probedPos });
           }
         }
       });
@@ -1722,7 +1722,7 @@ class GrblController {
             feedrate,
             probeFeedrate,
           } = params;
-          const positions = this.autoLeveling.getProbeXYPositions({
+          const positions = this.autoLevel.getProbeXYPositions({
             startX,
             endX,
             stepX,
@@ -1730,14 +1730,14 @@ class GrblController {
             endY,
             stepY,
           });
-          const probeGCodes = this.autoLeveling.start({
+          const probeGCodes = this.autoLevel.start({
             positions,
             startZ,
             endZ,
             feedrate,
             probeFeedrate,
           });
-          log.info(`[autoLeveling] probeGCodes=${x(probeGCodes)}`);
+          log.info(`[autolevel] probeGCodes=${x(probeGCodes)}`);
           this.command('gcode', probeGCodes);
         },
         'autolevel:apply': () => {
@@ -1749,9 +1749,9 @@ class GrblController {
             stepY = 10,
           } = params;
 
-          // Load probing data into autoLeveling state
+          // Load probing data into autoLevel state
           if (Array.isArray(probingData) && probingData.length >= 3) {
-            this.autoLeveling.setState({
+            this.autoLevel.setState({
               probePointCount: probingData.length,
               probedPositions: probingData.map(p => ({
                 x: Number(p.x),
@@ -1764,12 +1764,12 @@ class GrblController {
           }
 
           // Apply Z compensation
-          const compensatedGcode = this.autoLeveling.applyZCompensation(gcodeStr, {
+          const compensatedGcode = this.autoLevel.applyZCompensation(gcodeStr, {
             stepX,
             stepY,
           });
 
-          log.info('[autoLeveling] Z compensation applied');
+          log.info('[autolevel:apply] Z compensation applied');
 
           if (typeof callback === 'function') {
             callback(null, { compensatedGcode });
