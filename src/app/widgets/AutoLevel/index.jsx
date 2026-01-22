@@ -167,8 +167,8 @@ class AutoLevelWidget extends PureComponent {
       // Clear existing probing data
       this.setState({ probingData: [] });
 
-      // Use server-side autolevel command
-      controller.command('autolevel', {
+      // Use server-side autolevel:start command
+      controller.command('autolevel:start', {
         startX,
         endX,
         stepX,

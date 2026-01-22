@@ -56,11 +56,9 @@ class ApplyAutoLevel extends PureComponent {
     this.setState({ isApplying: true });
 
     // Send to server for Z compensation
-    controller.command('autolevel:apply', {
+    controller.command('autolevel:applyProbeCompensation', {
       gcode,
-      probingData,
-      stepX,
-      stepY,
+      probeData: probingData,
     }, (err, result) => {
       this.setState({ isApplying: false });
 
@@ -98,11 +96,9 @@ class ApplyAutoLevel extends PureComponent {
     this.setState({ isApplying: true });
 
     // Send to server for Z compensation
-    controller.command('autolevel:apply', {
+    controller.command('autolevel:applyProbeCompensation', {
       gcode,
-      probingData,
-      stepX,
-      stepY,
+      probeData: probingData,
     }, (err, result) => {
       this.setState({ isApplying: false });
 

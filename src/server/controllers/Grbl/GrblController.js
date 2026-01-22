@@ -4,9 +4,10 @@ import {
   ensureFiniteNumber,
   ensureString,
 } from 'ensure-type';
+import fsp from 'fs/promises';
 import * as gcodeParser from 'gcode-parser';
 import _ from 'lodash';
-import AutoLevel from '../../lib/AutoLevel';
+import * as autoLevel from '../../lib/auto-level';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
 import MessageSlot from '../../lib/MessageSlot';
@@ -138,8 +139,15 @@ class GrblController {
     // Event Trigger
     event = null;
 
-    // Auto Level
-    autoLevel = null;
+    // Auto Level - Probe state tracking
+    probeState = {
+      probedPositions: [],
+      currentPointIndex: 0,
+      probePointCount: 0,
+      minZ: 0,
+      maxZ: 0,
+      probeConfig: null,
+    };
 
     // Feeder
     feeder = null;
@@ -204,9 +212,6 @@ class GrblController {
 
       // Message Slot
       this.messageSlot = new MessageSlot();
-
-      // Auto Level
-      this.autoLevel = new AutoLevel();
 
       // Event Trigger
       this.event = new EventTrigger((event, trigger, commands) => {
@@ -742,7 +747,51 @@ class GrblController {
               b: ensureFiniteNumber(value.b) - Number(wco.b),
               c: ensureFiniteNumber(value.c) - Number(wco.c),
             };
-            this.autoLevel.emit('probe_update', { pos: probedPos });
+
+            // Track probe data if probing is active
+            if (this.probeState.probePointCount > 0 && this.probeState.probedPositions.length < this.probeState.probePointCount) {
+              const newProbedPositions = [...this.probeState.probedPositions, probedPos];
+              const isCompleted = newProbedPositions.length >= this.probeState.probePointCount;
+
+              if (this.probeState.probedPositions.length === 0) {
+                this.probeState.minZ = probedPos.z;
+                this.probeState.maxZ = probedPos.z;
+              } else {
+                this.probeState.minZ = Math.min(this.probeState.minZ, probedPos.z);
+                this.probeState.maxZ = Math.max(this.probeState.maxZ, probedPos.z);
+              }
+
+              this.probeState.probedPositions = newProbedPositions;
+              this.probeState.currentPointIndex = newProbedPositions.length;
+
+              log.debug(`[autolevel] Probed ${newProbedPositions.length}/${this.probeState.probePointCount}: posX=${probedPos.x.toFixed(3)}, posY=${probedPos.y.toFixed(3)}, posZ=${probedPos.z.toFixed(3)}`);
+
+              this.emit('autolevel:point', {
+                index: this.probeState.currentPointIndex,
+                x: probedPos.x,
+                y: probedPos.y,
+                z: probedPos.z,
+              });
+
+              this.emit('autolevel:progress', {
+                current: this.probeState.currentPointIndex,
+                total: this.probeState.probePointCount,
+                percentage: Math.round((this.probeState.currentPointIndex / this.probeState.probePointCount) * 100),
+                currentPoint: { x: probedPos.x, y: probedPos.y },
+              });
+
+              if (isCompleted) {
+                const statistics = {
+                  pointCount: newProbedPositions.length,
+                  minZ: this.probeState.minZ,
+                  maxZ: this.probeState.maxZ,
+                  maxDeviation: this.probeState.maxZ - this.probeState.minZ,
+                  gridConfig: this.probeState.probeConfig,
+                };
+                this.emit('autolevel:complete', statistics);
+                log.info('[autolevel] Probing completed');
+              }
+            }
           }
         }
       });
@@ -1708,7 +1757,7 @@ class GrblController {
 
           this.command('gcode', lines, context);
         },
-        'autolevel': () => {
+        'autolevel:startProbing': () => {
           const [params] = args;
           const {
             startX,
@@ -1722,7 +1771,9 @@ class GrblController {
             feedrate,
             probeFeedrate,
           } = params;
-          const positions = this.autoLevel.getProbeXYPositions({
+
+          // Generate probe positions using AutoLevel utility
+          const positions = autoLevel.generateProbePositions({
             startX,
             endX,
             stepX,
@@ -1730,46 +1781,137 @@ class GrblController {
             endY,
             stepY,
           });
-          const probeGCodes = this.autoLevel.start({
-            positions,
-            startZ,
-            endZ,
-            feedrate,
-            probeFeedrate,
+
+          // Reset probe state
+          this.probeState = {
+            probedPositions: [],
+            currentPointIndex: 0,
+            probePointCount: positions.length,
+            minZ: 0,
+            maxZ: 0,
+            probeConfig: {
+              startX,
+              endX,
+              stepX,
+              startY,
+              endY,
+              stepY,
+            },
+          };
+
+          // Generate probe G-code
+          const probeGCodes = [];
+          positions.forEach((position, index) => {
+            const { x, y } = position;
+
+            probeGCodes.push(`(Auto Level: probing point ${index})`);
+
+            if (index === 0) {
+              probeGCodes.push('G90'); // Absolute positioning
+              probeGCodes.push(`G0 Z${startZ}`);
+              probeGCodes.push(`G0 X${x} Y${y} F${feedrate}`);
+              probeGCodes.push(`G38.2 Z${endZ} F${probeFeedrate / 2}`);
+              probeGCodes.push(`G0 Z${startZ}`);
+            } else {
+              probeGCodes.push('G90'); // Absolute positioning
+              probeGCodes.push(`G0 X${x} Y${y} F${feedrate}`);
+              probeGCodes.push(`G38.2 Z${endZ} F${probeFeedrate}`);
+              probeGCodes.push(`G0 Z${startZ}`);
+            }
           });
-          log.info(`[autolevel] probeGCodes=${x(probeGCodes)}`);
+
+          log.info(`[autolevel:startProbing] Starting probing with ${positions.length} points`);
           this.command('gcode', probeGCodes);
         },
-        'autolevel:apply': () => {
+        'autolevel:runTestProbe': () => {
+          const [params = {}] = args;
+          const { depth = -10, feedrate = 5 } = params;
+          const testGCode = `G38.2 Z${depth} F${feedrate}`;
+          log.info(`[autolevel:runTestProbe] Running test probe: ${testGCode}`);
+          this.command('gcode', testGCode);
+        },
+        'autolevel:getProbeState': () => {
+          const [, callback] = args;
+          if (typeof callback === 'function') {
+            callback(null, { state: this.probeState });
+          }
+        },
+        'autolevel:loadFromFile': async () => {
+          const [filepath, callback] = args;
+
+          try {
+            const data = await fsp.readFile(filepath, 'utf8');
+            const lines = data.split('\n').filter(line => line.trim().length > 0);
+
+            const probedPositions = [];
+            let minZ = Infinity;
+            let maxZ = -Infinity;
+
+            lines.forEach(line => {
+              const regex = /(-?\d*\.?\d+)?(\s+|$)/g;
+              const matches = [...line.matchAll(regex)];
+              const values = matches.map(match => (match[1] ? Number(match[1]) : undefined));
+              const [x, y, z] = values;
+
+              probedPositions.push({ x, y, z });
+              minZ = Math.min(z, minZ);
+              maxZ = Math.max(z, maxZ);
+            });
+
+            this.probeState.probedPositions = probedPositions;
+            this.probeState.probePointCount = probedPositions.length;
+            this.probeState.minZ = minZ;
+            this.probeState.maxZ = maxZ;
+            this.probeState.currentPointIndex = probedPositions.length;
+
+            if (typeof callback === 'function') {
+              callback(null, { success: true, state: this.probeState });
+            }
+
+            log.info(`[autolevel:load] Loaded ${probedPositions.length} points from ${filepath}`);
+          } catch (err) {
+            log.error('[autolevel:load] Error loading probe data:', err);
+            if (typeof callback === 'function') {
+              callback(err.message, { success: false, state: null });
+            }
+          }
+        },
+        'autolevel:saveToFile': async () => {
+          const [filepath, callback] = args;
+
+          try {
+            const { probedPositions } = this.probeState;
+            const data = probedPositions.map(({ x, y, z }) => {
+              const a = 0, b = 0, c = 0;
+              const u = 0, v = 0, w = 0;
+              return `${x} ${y} ${z} ${a} ${b} ${c} ${u} ${v} ${w}`;
+            }).join('\n');
+
+            await fsp.writeFile(filepath, data, 'utf8');
+
+            if (typeof callback === 'function') {
+              callback(null, { success: true, filepath });
+            }
+
+            log.info(`[autolevel:saveToFile] Saved ${probedPositions.length} points to ${filepath}`);
+          } catch (err) {
+            log.error('[autolevel:saveToFile] Error saving probe data:', err);
+            if (typeof callback === 'function') {
+              callback(err.message, { success: false, filepath });
+            }
+          }
+        },
+        'autolevel:applyProbeCompensation': () => {
           const [params, callback] = args;
           const {
             gcode: gcodeStr,
-            probingData,
-            stepX = 10,
-            stepY = 10,
+            probeData,
           } = params;
 
-          // Load probing data into autoLevel state
-          if (Array.isArray(probingData) && probingData.length >= 3) {
-            this.autoLevel.setState({
-              probePointCount: probingData.length,
-              probedPositions: probingData.map(p => ({
-                x: Number(p.x),
-                y: Number(p.y),
-                z: Number(p.z),
-              })),
-              minZ: Math.min(...probingData.map(p => p.z)),
-              maxZ: Math.max(...probingData.map(p => p.z)),
-            });
-          }
+          // Use AutoLevel static method for compensation (step size auto-detected from probeData)
+          const compensatedGcode = autoLevel.applyProbeCompensation(gcodeStr, probeData);
 
-          // Apply Z compensation
-          const compensatedGcode = this.autoLevel.applyZCompensation(gcodeStr, {
-            stepX,
-            stepY,
-          });
-
-          log.info('[autolevel:apply] Z compensation applied');
+          log.info('[autolevel:applyProbeCompensation] Probe compensation applied');
 
           if (typeof callback === 'function') {
             callback(null, { compensatedGcode });
