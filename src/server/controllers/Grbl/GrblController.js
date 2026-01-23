@@ -141,11 +141,17 @@ class GrblController {
 
     // Auto Level - Probe state tracking
     probeState = {
+      // The probed positions in the form of [{x, y, z}, ...]
       probedPositions: [],
-      currentPointIndex: 0,
-      probePointCount: 0,
-      minZ: 0,
-      maxZ: 0,
+
+      // The minimum and maximum Z values among the probed positions
+      minZ: null,
+      maxZ: null,
+
+      // The probe points in the form of [{x, y}, ...]
+      probePoints: [],
+
+      // The probe grid configuration
       probeConfig: null,
     };
 
@@ -749,9 +755,9 @@ class GrblController {
             };
 
             // Track probe data if probing is active
-            if (this.probeState.probePointCount > 0 && this.probeState.probedPositions.length < this.probeState.probePointCount) {
+            if (this.probeState.probePoints.length > 0 && this.probeState.probedPositions.length < this.probeState.probePoints.length) {
               const newProbedPositions = [...this.probeState.probedPositions, probedPos];
-              const isCompleted = newProbedPositions.length >= this.probeState.probePointCount;
+              const isCompleted = newProbedPositions.length >= this.probeState.probePoints.length;
 
               if (this.probeState.probedPositions.length === 0) {
                 this.probeState.minZ = probedPos.z;
@@ -762,33 +768,20 @@ class GrblController {
               }
 
               this.probeState.probedPositions = newProbedPositions;
-              this.probeState.currentPointIndex = newProbedPositions.length;
 
-              log.debug(`[autolevel] Probed ${newProbedPositions.length}/${this.probeState.probePointCount}: posX=${probedPos.x.toFixed(3)}, posY=${probedPos.y.toFixed(3)}, posZ=${probedPos.z.toFixed(3)}`);
+              log.debug(`[autolevel] Probed ${newProbedPositions.length}/${this.probeState.probePoints.length}: posX=${probedPos.x.toFixed(3)}, posY=${probedPos.y.toFixed(3)}, posZ=${probedPos.z.toFixed(3)}`);
 
-              this.emit('autolevel:point', {
-                index: this.probeState.currentPointIndex,
-                x: probedPos.x,
-                y: probedPos.y,
-                z: probedPos.z,
-              });
-
-              this.emit('autolevel:progress', {
-                current: this.probeState.currentPointIndex,
-                total: this.probeState.probePointCount,
-                percentage: Math.round((this.probeState.currentPointIndex / this.probeState.probePointCount) * 100),
-                currentPoint: { x: probedPos.x, y: probedPos.y },
+              this.emit('autolevel:update', {
+                current: newProbedPositions.length,
+                total: this.probeState.probePoints.length,
+                probedPos: { ...probedPos },
+                minZ: this.probeState.minZ,
+                maxZ: this.probeState.maxZ,
+                maxDeviation: this.probeState.maxZ - this.probeState.minZ,
               });
 
               if (isCompleted) {
-                const statistics = {
-                  pointCount: newProbedPositions.length,
-                  minZ: this.probeState.minZ,
-                  maxZ: this.probeState.maxZ,
-                  maxDeviation: this.probeState.maxZ - this.probeState.minZ,
-                  gridConfig: this.probeState.probeConfig,
-                };
-                this.emit('autolevel:complete', statistics);
+                this.emit('autolevel:complete');
                 log.info('[autolevel] Probing completed');
               }
             }
@@ -1772,8 +1765,8 @@ class GrblController {
             probeFeedrate,
           } = params;
 
-          // Generate probe positions using AutoLevel utility
-          const positions = autoLevel.generateProbePositions({
+          // Generate probe XY points using auto-level utility
+          const probePoints = autoLevel.createProbeXYPoints({
             startX,
             endX,
             stepX,
@@ -1785,10 +1778,9 @@ class GrblController {
           // Reset probe state
           this.probeState = {
             probedPositions: [],
-            currentPointIndex: 0,
-            probePointCount: positions.length,
-            minZ: 0,
-            maxZ: 0,
+            probePoints,
+            minZ: null,
+            maxZ: null,
             probeConfig: {
               startX,
               endX,
@@ -1796,13 +1788,17 @@ class GrblController {
               startY,
               endY,
               stepY,
+              startZ,
+              endZ,
+              feedrate,
+              probeFeedrate,
             },
           };
 
           // Generate probe G-code
           const probeGCodes = [];
-          positions.forEach((position, index) => {
-            const { x, y } = position;
+          probePoints.forEach((point, index) => {
+            const { x, y } = point;
 
             probeGCodes.push(`(Auto Level: probing point ${index})`);
 
@@ -1820,7 +1816,7 @@ class GrblController {
             }
           });
 
-          log.info(`[autolevel:startProbing] Starting probing with ${positions.length} points`);
+          log.info(`[autolevel:start] Starting probing with ${probePoints.length} points`);
           this.command('gcode', probeGCodes);
         },
         'autolevel:runTestProbe': () => {
@@ -1859,10 +1855,8 @@ class GrblController {
             });
 
             this.probeState.probedPositions = probedPositions;
-            this.probeState.probePointCount = probedPositions.length;
             this.probeState.minZ = minZ;
             this.probeState.maxZ = maxZ;
-            this.probeState.currentPointIndex = probedPositions.length;
 
             if (typeof callback === 'function') {
               callback(null, { success: true, state: this.probeState });
