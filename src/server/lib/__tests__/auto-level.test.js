@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { createProbeXYPoints, applyProbeCompensation } from './auto-level';
+import { createProbeXYPoints, applyProbeCompensation } from '../auto-level';
 
 describe('auto-level', () => {
   describe('createProbeXYPoints', () => {
