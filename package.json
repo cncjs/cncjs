@@ -51,13 +51,11 @@
     "start-app-dev": "cross-env NODE_ENV=development webpack serve --progress --config webpack.config.development.js",
     "start-server-dev": "cross-env NODE_ENV=development ./bin/cncjs --port 8000 -m /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v1/",
     "lint": "concurrently --kill-others-on-fail --names \"i18nlint,eslint,stylint\" \"yarn run i18nlint\" \"yarn run eslint\" \"yarn run stylint\"",
-    "eslint": "eslint --color src/**/*.js src/app/**/*.jsx scripts/**/*.js test/**/*.js",
-    "eslint-debug": "DEBUG=\"eslint:glob-util,eslint:config-*,eslint:cli*\" eslint --cache --color --quiet src/**/*.js src/app/**/*.jsx scripts/**/*.js test/**/*.js",
+    "eslint": "eslint --color src/**/*.js src/app/**/*.jsx scripts/**/*.js",
+    "eslint-debug": "DEBUG=\"eslint:glob-util,eslint:config-*,eslint:cli*\" eslint --cache --color --quiet src/**/*.js src/app/**/*.jsx scripts/**/*.js",
     "i18nlint": "bash -c 'find src/{app,server}/i18n -type f -name \"*.json\" | xargs -L1 -I{} -- bash -c \"echo Linting {}; jsonlint -q {}\"'",
     "stylint": "stylint src/app",
-    "test": "tap test/*.js --no-timeout --node-arg=--require --node-arg=@babel/register",
-    "test:jest": "jest",
-    "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=@babel/register",
+    "test": "jest",
     "prepare": "husky install"
   },
   "build": {
@@ -346,7 +344,6 @@
     "stylint-loader": "~1.0.0",
     "stylus": "~0.54.8",
     "stylus-loader": "~5.0.0",
-    "tap": "~16.3.0",
     "text-table": "~0.2.0",
     "timers-browserify": "~2.0.12",
     "uncontrollable": "~7.2.1",
@@ -356,23 +353,52 @@
     "webpack-dev-server": "^5.1.0"
   },
   "jest": {
-    "setupFiles": [
-      "<rootDir>/jest.env-setup.js"
-    ],
-    "testMatch": [
-      "<rootDir>/test/**/*.js"
-    ],
+    "transform": {
+      "^.+\\.js$": [
+        "babel-jest",
+        {
+          "configFile": false,
+          "presets": [
+            [
+              "@babel/preset-env",
+              {
+                "targets": {
+                  "node": "current"
+                }
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "clearMocks": true,
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "<rootDir>/src/**/*.js"
+      "<rootDir>/src/server/**/*.js",
+      "!<rootDir>/src/server/**/*.test.js",
+      "!<rootDir>/src/server/**/__tests__/**"
     ],
     "coverageReporters": [
       "lcov",
       "text",
       "html"
     ],
-    "testTimeout": 10000,
-    "testEnvironment": "node"
+    "modulePathIgnorePatterns": [
+      "<rootDir>/build"
+    ],
+    "setupFiles": [],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest-setup.js"
+    ],
+    "snapshotSerializers": [],
+    "testEnvironment": "node",
+    "testMatch": [
+      "<rootDir>/src/server/**/__tests__/**/*.test.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "testTimeout": 10000
   },
   "pre-push": [
     "lint"

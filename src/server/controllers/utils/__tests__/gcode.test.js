@@ -1,8 +1,8 @@
-import { test } from 'tap';
-import { replaceM6 } from '../src/server/controllers/utils/gcode';
+/* eslint-env jest */
+import { replaceM6 } from '../gcode';
 
-test('replaceM6Commands', (t) => {
-  t.test('replaces M6 commands with parentheses', t => {
+describe('replaceM6Commands', () => {
+  test('replaces M6 commands with parentheses', () => {
     const gcode = `
       m6
       m06
@@ -48,9 +48,6 @@ test('replaceM6Commands', (t) => {
     `;
 
     const result = replaceM6(gcode, (x) => `(${x})`);
-    t.equal(result, expectedOutput, 'should replace specified commands with parentheses');
-    t.end();
+    expect(result).toEqual(expectedOutput);
   });
-
-  t.end();
 });
