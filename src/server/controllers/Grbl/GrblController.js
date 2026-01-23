@@ -151,8 +151,8 @@ class GrblController {
       // The probe points in the form of [{x, y}, ...]
       probePoints: [],
 
-      // The probe grid configuration
-      probeConfig: null,
+      // The probe configuration
+      config: null,
     };
 
     // Feeder
@@ -1781,7 +1781,7 @@ class GrblController {
             probePoints,
             minZ: null,
             maxZ: null,
-            probeConfig: {
+            config: {
               startX,
               endX,
               stepX,
