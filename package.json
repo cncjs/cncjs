@@ -51,13 +51,11 @@
     "start-app-dev": "cross-env NODE_ENV=development webpack serve --progress --config webpack.config.development.js",
     "start-server-dev": "cross-env NODE_ENV=development ./bin/cncjs --port 8000 -m /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v1/",
     "lint": "concurrently --kill-others-on-fail --names \"i18nlint,eslint,stylint\" \"yarn i18nlint\" \"yarn eslint\" \"yarn stylint\"",
-    "eslint": "eslint --color src/**/*.js src/app/**/*.jsx scripts/**/*.js test/**/*.js",
-    "eslint-debug": "DEBUG=\"eslint:glob-util,eslint:config-*,eslint:cli*\" eslint --cache --color --quiet src/**/*.js src/app/**/*.jsx scripts/**/*.js test/**/*.js",
+    "eslint": "eslint --color src/**/*.js src/app/**/*.jsx scripts/**/*.js",
+    "eslint-debug": "DEBUG=\"eslint:glob-util,eslint:config-*,eslint:cli*\" eslint --cache --color --quiet src/**/*.js src/app/**/*.jsx scripts/**/*.js",
     "i18nlint": "bash -c 'find src/{app,server}/i18n -type f -name \"*.json\" | xargs -L1 -I{} -- bash -c \"echo Linting {}; jsonlint -q {}\"'",
     "stylint": "stylint src/app",
-    "test": "tap test/*.js --allow-incomplete-coverage --timeout=0 --node-arg=--require --node-arg=@babel/register",
-    "test:jest": "jest",
-    "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=@babel/register",
+    "test": "jest",
     "postinstall": "opencollective postinstall"
   },
   "build": {
@@ -313,6 +311,7 @@
     "html-webpack-plugin": "~5.6.0",
     "i18next-scanner": "~4.6.0",
     "imports-loader": "~0.8.0",
+    "jest": "^29.3.1",
     "json-loader": "~0.5.7",
     "jsonlint": "^1.6.3",
     "mini-css-extract-plugin": "~2.9.0",
@@ -329,7 +328,6 @@
     "stylint-loader": "~1.0.0",
     "stylus": "~0.63.0",
     "stylus-loader": "~8.1.0",
-    "tap": "~21.0.0",
     "text-table": "~0.2.0",
     "timers-browserify": "^2.0.12",
     "transform-loader": "~0.2.4",
@@ -338,6 +336,54 @@
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.1.0",
     "webpack-node-externals": "~1.7.2"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.js$": [
+        "babel-jest",
+        {
+          "configFile": false,
+          "presets": [
+            [
+              "@babel/preset-env",
+              {
+                "targets": {
+                  "node": "current"
+                }
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "clearMocks": true,
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "<rootDir>/src/server/**/*.js",
+      "!<rootDir>/src/server/**/*.test.js",
+      "!<rootDir>/src/server/**/__tests__/**"
+    ],
+    "coverageReporters": [
+      "lcov",
+      "text",
+      "html"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/build"
+    ],
+    "setupFiles": [],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest-setup.js"
+    ],
+    "snapshotSerializers": [],
+    "testEnvironment": "node",
+    "testMatch": [
+      "<rootDir>/src/server/**/__tests__/**/*.test.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "testTimeout": 10000
   },
   "pre-push": [
     "eslint-debug"
