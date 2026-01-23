@@ -14,7 +14,6 @@ module.exports = (api) => {
   }
 
   return {
-    extends: '@trendmicro/babel-config',
     presets: [
       '@babel/preset-env',
       '@babel/preset-react'

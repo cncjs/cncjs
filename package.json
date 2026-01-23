@@ -278,7 +278,6 @@
     "@babel/register": "^7.25.9",
     "@electron/rebuild": "^3.7.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.15",
-    "@trendmicro/babel-config": "~1.0.2",
     "babel-core": "~7.0.0-bridge.0",
     "babel-eslint": "~10.0.1",
     "babel-loader": "~8.0.5",

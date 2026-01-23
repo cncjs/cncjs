@@ -1066,7 +1066,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-proposal-function-sent@npm:^7.0.0, @babel/plugin-proposal-function-sent@npm:^7.1.0":
+"@babel/plugin-proposal-function-sent@npm:^7.0.0":
   version: 7.18.6
   resolution: "@babel/plugin-proposal-function-sent@npm:7.18.6"
   dependencies:
@@ -4482,32 +4482,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trendmicro/babel-config@npm:~1.0.2":
-  version: 1.0.2
-  resolution: "@trendmicro/babel-config@npm:1.0.2"
-  dependencies:
-    "@babel/plugin-proposal-class-properties": ^7.0.0
-    "@babel/plugin-proposal-do-expressions": ^7.0.0
-    "@babel/plugin-proposal-export-default-from": ^7.0.0
-    "@babel/plugin-proposal-export-namespace-from": ^7.0.0
-    "@babel/plugin-proposal-function-bind": ^7.0.0
-    "@babel/plugin-proposal-function-sent": ^7.1.0
-    "@babel/plugin-proposal-json-strings": ^7.0.0
-    "@babel/plugin-proposal-logical-assignment-operators": ^7.0.0
-    "@babel/plugin-proposal-nullish-coalescing-operator": ^7.0.0
-    "@babel/plugin-proposal-numeric-separator": ^7.0.0
-    "@babel/plugin-proposal-optional-chaining": ^7.0.0
-    "@babel/plugin-proposal-pipeline-operator": ^7.0.0
-    "@babel/plugin-proposal-throw-expressions": ^7.0.0
-    "@babel/plugin-syntax-dynamic-import": ^7.0.0
-    "@babel/plugin-syntax-import-meta": ^7.0.0
-    semver: ^7.3.5
-  peerDependencies:
-    "@babel/core": ^7.0.0
-  checksum: 6fd244817c083c8e352ac60906cbe3496c3bb524ebe908f4049b9ac0343bfc984c62f0729673bda67f5053bf63cb173f7523089b6227499449b1e15dc5492aee
-  languageName: node
-  linkType: hard
-
 "@trendmicro/react-anchor@npm:^0.5.4, @trendmicro/react-anchor@npm:^0.5.5, @trendmicro/react-anchor@npm:^0.5.6, @trendmicro/react-anchor@npm:~0.5.6":
   version: 0.5.6
   resolution: "@trendmicro/react-anchor@npm:0.5.6"
@@ -7920,7 +7894,6 @@ __metadata:
     "@electron/rebuild": ^3.7.2
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.15
     "@serialport/parser-readline": ^10.0.0
-    "@trendmicro/babel-config": ~1.0.2
     "@trendmicro/react-anchor": ~0.5.6
     "@trendmicro/react-breadcrumbs": ~0.5.5
     "@trendmicro/react-buttons": ~1.3.1
