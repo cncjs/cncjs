@@ -184,7 +184,7 @@ const compensatePoint = (pt, probedPositions, units = METRIC_UNITS) => {
 };
 
 /**
- * Generates probe positions based on the given range and step configuration.
+ * Creates probe XY points based on the given range and step configuration.
  *
  * @param {object} options - Configuration options
  * @param {number} options.startX - X-axis minimum
@@ -193,9 +193,9 @@ const compensatePoint = (pt, probedPositions, units = METRIC_UNITS) => {
  * @param {number} options.startY - Y-axis minimum
  * @param {number} options.endY - Y-axis maximum
  * @param {number} options.stepY - Y-axis step size
- * @returns {array} Array of probe positions [{x, y}, ...]
+ * @returns {array} Array of probe XY points [{x, y}, ...]
  */
-export const generateProbePositions = (options) => {
+export const createProbeXYPoints = (options) => {
   const {
     startX = 0,
     endX = 0,

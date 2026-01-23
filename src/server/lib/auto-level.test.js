@@ -1,10 +1,10 @@
 /* eslint-env jest */
-import { generateProbePositions, applyProbeCompensation } from './auto-level';
+import { createProbeXYPoints, applyProbeCompensation } from './auto-level';
 
 describe('auto-level', () => {
-  describe('generateProbePositions', () => {
+  describe('createProbeXYPoints', () => {
     test('should generate 3x3 grid (9 points)', () => {
-      const positions = generateProbePositions({
+      const positions = createProbeXYPoints({
         startX: 0,
         endX: 20,
         stepX: 10,
@@ -28,7 +28,7 @@ describe('auto-level', () => {
     });
 
     test('should generate points within range when end does not align with step', () => {
-      const positions = generateProbePositions({
+      const positions = createProbeXYPoints({
         startX: 0,
         endX: 35,
         stepX: 10,
