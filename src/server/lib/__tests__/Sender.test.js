@@ -111,13 +111,9 @@ describe('Sender', () => {
           resolve();
         });
 
-        const timer = setInterval(() => {
+        while (sender.state.sent < sender.state.total) {
           sender.next();
-
-          if (sender.state.sent >= sender.state.total) {
-            clearInterval(timer);
-          }
-        }, 0);
+        }
       });
     });
   });
@@ -236,13 +232,9 @@ describe('Sender', () => {
           resolve();
         });
 
-        const timer = setInterval(() => {
-          sender.next();
-
-          if (sender.state.sent >= sender.state.total) {
-            clearInterval(timer);
-          }
-        }, 0);
+      while (sender.state.sent < sender.state.total) {
+        sender.next();
+      }
       });
     });
   });
