@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Container, Row, Col } from '@app/components/GridSystem';
 import { Button } from '@app/components/Buttons';
 import controller from '@app/lib/controller';
+
+const gapSize = 5;
 
 class MDI extends Component {
   static propTypes = {
@@ -17,23 +18,30 @@ class MDI extends Component {
     const { canClick, mdi } = this.props;
 
     return mdi.commands.map(c => {
-      const grid = Object.keys(c.grid || {})
-        .filter(size => ['xs', 'sm', 'md', 'lg', 'xl'].indexOf(size) >= 0)
-        .reduce((acc, size) => {
-          if (c.grid[size] >= 1 && c.grid[size] <= 12) {
-            acc[size] = Math.floor(c.grid[size]);
-          }
-          return acc;
-        }, {});
+      // Calculate flex-basis from grid configuration (default to 4 = 3 columns per row)
+      const grid = c.grid || {};
+      const gridSize = grid.xs || grid.sm || grid.md || grid.lg || grid.xl || 4;
+      const itemsPerRow = 12 / gridSize;
+      const gapsPerRow = itemsPerRow - 1;
+
+      // Calculate flex-basis accounting for gaps: (100% - total gap space) / items per row
+      const flexBasis = `calc((100% - ${gapsPerRow * gapSize}px) / ${itemsPerRow})`;
 
       return (
-        <Col {...grid} key={c.id} style={{ padding: '0 4px', marginTop: 5 }}>
+        <div
+          key={c.id}
+          style={{
+            flexBasis: flexBasis,
+            maxWidth: flexBasis,
+            boxSizing: 'border-box'
+          }}
+        >
           <Button
-            sm
-            btnStyle="default"
+            btnSize="sm"
+            btnStyle="flat"
             style={{
               minWidth: 'auto',
-              width: '100%'
+              width: '100%',
             }}
             disabled={!canClick}
             onClick={() => {
@@ -42,7 +50,7 @@ class MDI extends Component {
           >
             {c.name}
           </Button>
-        </Col>
+        </div>
       );
     });
   }
@@ -55,11 +63,16 @@ class MDI extends Component {
     }
 
     return (
-      <Container fluid style={{ padding: 0, margin: '-5px -4px 0 -4px' }}>
-        <Row>
-          {this.renderMDIButtons()}
-        </Row>
-      </Container>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          marginTop: gapSize,
+          gap: gapSize,
+        }}
+      >
+        {this.renderMDIButtons()}
+      </div>
     );
   }
 }
