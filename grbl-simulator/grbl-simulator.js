@@ -4,6 +4,8 @@
  * Based on https://github.com/gnea/grbl
  */
 
+/* eslint-disable no-bitwise */
+
 // Grbl Settings Constants
 const SETTINGS = {
     STEP_PULSE_TIME: 0,
@@ -41,6 +43,13 @@ const SETTINGS = {
     Y_MAX_TRAVEL: 131,
     Z_MAX_TRAVEL: 132
 };
+
+// Status report refresh counts (matching Grbl's config.h)
+// These control how frequently WCO and override values are reported
+const REPORT_WCO_REFRESH_BUSY_COUNT = 30; // WCO refresh when machine is busy (Run/Hold/Jog/etc.)
+const REPORT_WCO_REFRESH_IDLE_COUNT = 10; // WCO refresh when machine is idle
+const REPORT_OVR_REFRESH_BUSY_COUNT = 20; // Override refresh when machine is busy
+const REPORT_OVR_REFRESH_IDLE_COUNT = 10; // Override refresh when machine is idle
 
 /**
  * Get default motion state
@@ -91,6 +100,24 @@ class GrblSimulator {
         this.machinePosition = { x: 0, y: 0, z: 0 };
         this.workPosition = { x: 0, y: 0, z: 0 };
 
+        // Status report counters (matching Grbl's implementation)
+        // These counters decrement on each status report and trigger reporting when they reach 0
+        this.reportWcoCounter = 0; // WCO (Work Coordinate Offset) reporting counter
+        this.reportOvrCounter = 0; // Override values reporting counter
+        this.lineNumber = 0; // Current executing line number (Ln:) - TODO: Implement line number tracking during G-code execution
+
+        // Input pin states
+        this.pinState = {
+            x: false, // X limit
+            y: false, // Y limit
+            z: false, // Z limit
+            probe: false, // Probe (P)
+            door: false, // Door (D)
+            hold: false, // Hold (H)
+            softReset: false, // Soft reset (R)
+            cycleStart: false // Cycle start (S)
+        };
+
         // Work coordinate systems (G54-G59)
         // WCS offsets: MPos = WPos + WCS + G92
         this.workCoordinateOffsets = {
@@ -118,7 +145,7 @@ class GrblSimulator {
             toolLength: 'G49', // G43.1, G49
             program: 'M0', // M0, M1, M2, M30
             spindle: 'M5', // M3, M4, M5
-            coolant: 'M9', // M7, M8, M9
+            coolant: 'M9', // M7, M8, "M7 M8", M9
         };
 
         // Settings (default generic values from Grbl)
@@ -765,8 +792,7 @@ class GrblSimulator {
             plane: ['G17', 'G18', 'G19'],
             distance: ['G90', 'G91'],
             units: ['G20', 'G21'],
-            spindle: ['M3', 'M4', 'M5'],
-            coolant: ['M7', 'M8', 'M9']
+            spindle: ['M3', 'M4', 'M5']
         };
 
         for (const [group, commands] of Object.entries(modalCommands)) {
@@ -777,9 +803,40 @@ class GrblSimulator {
                     // Update active WCS if coordinate system changed
                     if (group === 'coordinate') {
                         this.activeWCS = cmd;
+                        this.reportWcoCounter = 0; // Report WCO immediately on next status report
                     }
                 }
             }
+        }
+
+        // Handle coolant commands separately (M7 and M8 can be active simultaneously)
+        // Grbl uses bit flags: PL_COND_FLAG_COOLANT_MIST and PL_COND_FLAG_COOLANT_FLOOD
+        // M9 turns off both, M7 turns on mist (independent of flood), M8 turns on flood (independent of mist)
+        if (parsed.commands.includes('M9')) {
+            // M9 turns off both coolant modes
+            this.parserState.coolant = 'M9';
+        } else {
+            // Get current state
+            let hasMist = this.parserState.coolant.includes('M7');
+            let hasFlood = this.parserState.coolant.includes('M8');
+
+            // Update based on commands in this line
+            if (parsed.commands.includes('M7')) {
+                hasMist = true;
+            }
+            if (parsed.commands.includes('M8')) {
+                hasFlood = true;
+            }
+
+            // Build coolant state string (space-separated, matching Grbl output format)
+            if (hasMist && hasFlood) {
+                this.parserState.coolant = 'M7 M8'; // Both active
+            } else if (hasMist) {
+                this.parserState.coolant = 'M7'; // Mist only
+            } else if (hasFlood) {
+                this.parserState.coolant = 'M8'; // Flood only
+            }
+            // If neither M7 nor M8 in this command and neither already active, keep current state
         }
 
         // Handle G10 L2 (Set Work Coordinate System)
@@ -806,6 +863,7 @@ class GrblSimulator {
                         this.workCoordinateOffsets[wcsName].z = parsed.coords.z;
                     }
 
+                    this.reportWcoCounter = 0; // Report WCO immediately on next status report
                     this.updateWorkPosition();
                     return 'ok\r\n';
                 }
@@ -826,6 +884,7 @@ class GrblSimulator {
                 }
             }
 
+            this.reportWcoCounter = 0; // Report WCO immediately on next status report
             this.updateWorkPosition();
             return 'ok\r\n';
         }
@@ -833,6 +892,7 @@ class GrblSimulator {
         // Handle G92.1 (Cancel G92 Offset)
         if (parsed.commands.includes('G92.1')) {
             this.g92Offset = { x: 0, y: 0, z: 0 };
+            this.reportWcoCounter = 0; // Report WCO immediately on next status report
             this.updateWorkPosition();
             return 'ok\r\n';
         }
@@ -1542,6 +1602,13 @@ class GrblSimulator {
 
         let report = `<${this.machineState}|${posType}:${posValue}|FS:${reportedFeedRate.toFixed(1)},${this.spindleSpeed.toFixed(0)}`;
 
+        // Add line number if available (Ln:)
+        // $10 bit 2 controls line number reporting (BITFLAG_RT_STATUS_LINE_NUMBERS)
+        const showLineNumber = (this.settings[SETTINGS.STATUS_REPORT_MASK] & 4) !== 0;
+        if (showLineNumber && this.lineNumber > 0) {
+            report += `|Ln:${this.lineNumber}`;
+        }
+
         // Add buffer state (Bf: planner blocks available, RX buffer available)
         // In real Grbl, this is controlled by $10 bit 1 (BITFLAG_RT_STATUS_BUFFER_STATE)
         // IMPORTANT: Only count ACTUAL planner blocks, not waiting commands!
@@ -1555,19 +1622,122 @@ class GrblSimulator {
         const rxBytesAvail = this.getBufferAvailable();
 
         // Show Bf if $10 bit 1 is set (default is on)
-        // For now, always show it for debugging purposes
-        const showBuffer = true; // Could check: (this.settings[SETTINGS.STATUS_REPORT_MASK] & 2) !== 0;
+        const showBuffer = (this.settings[SETTINGS.STATUS_REPORT_MASK] & 2) !== 0;
         if (showBuffer) {
             report += `|Bf:${plannerBlocksAvail},${rxBytesAvail}`;
         }
 
-        // Add overrides if not 100%
-        if (this.feedOverride !== 100 || this.rapidOverride !== 100 || this.spindleOverride !== 100) {
+        // Report WCO using counter-based logic (matching Grbl's implementation)
+        // WCO is reported periodically to reduce bandwidth, and immediately when WCS/G92 changes
+        // Counter decrements each status report, and when it reaches 0, WCO is reported
+        if (this.reportWcoCounter > 0) {
+            this.reportWcoCounter--;
+        } else {
+            // Check if machine is in a busy state
+            const isBusy = ['Run', 'Hold', 'Jog', 'Home', 'Door'].includes(this.machineState);
+            // Reset counter based on machine state
+            this.reportWcoCounter = isBusy
+                ? (REPORT_WCO_REFRESH_BUSY_COUNT - 1)
+                : (REPORT_WCO_REFRESH_IDLE_COUNT - 1);
+            // When WCO is reported, trigger override reporting on next report
+            if (this.reportOvrCounter === 0) {
+                this.reportOvrCounter = 1;
+            }
+            // Report WCO
+            const totalWCO = {
+                x: wcsOffset.x + this.g92Offset.x,
+                y: wcsOffset.y + this.g92Offset.y,
+                z: wcsOffset.z + this.g92Offset.z
+            };
+            report += `|WCO:${totalWCO.x.toFixed(3)},${totalWCO.y.toFixed(3)},${totalWCO.z.toFixed(3)}`;
+        }
+
+        // Report override values using counter-based logic (matching Grbl's implementation)
+        // Overrides are reported periodically based on machine state
+        if (this.reportOvrCounter > 0) {
+            this.reportOvrCounter--;
+        } else {
+            // Check if machine is in a busy state
+            const isBusy = ['Run', 'Hold', 'Jog', 'Home', 'Door'].includes(this.machineState);
+            // Reset counter based on machine state
+            this.reportOvrCounter = isBusy
+                ? (REPORT_OVR_REFRESH_BUSY_COUNT - 1)
+                : (REPORT_OVR_REFRESH_IDLE_COUNT - 1);
+            // Report overrides
             report += `|Ov:${this.feedOverride},${this.rapidOverride},${this.spindleOverride}`;
+        }
+
+        // Add input pin state (Pn:) - only if any pins are triggered
+        const pinStateStr = this.getInputPinStateString();
+        if (pinStateStr) {
+            report += `|Pn:${pinStateStr}`;
+        }
+
+        // Add accessory state (A:) - only if any accessories are active
+        const accessoryStateStr = this.getAccessoryStateString();
+        if (accessoryStateStr) {
+            report += `|A:${accessoryStateStr}`;
         }
 
         report += '>\r\n';
         return report;
+    }
+
+    /**
+     * Get input pin state string for status report
+     * @returns {string} Pin state string (e.g., "XYZ" or "P" or "")
+     */
+    getInputPinStateString() {
+        let pins = '';
+        if (this.pinState.x) {
+            pins += 'X';
+        }
+        if (this.pinState.y) {
+            pins += 'Y';
+        }
+        if (this.pinState.z) {
+            pins += 'Z';
+        }
+        if (this.pinState.probe || this.probeTriggered) {
+            pins += 'P';
+        }
+        if (this.pinState.door) {
+            pins += 'D';
+        }
+        if (this.pinState.hold) {
+            pins += 'H';
+        }
+        if (this.pinState.softReset) {
+            pins += 'R';
+        }
+        if (this.pinState.cycleStart) {
+            pins += 'S';
+        }
+        return pins;
+    }
+
+    /**
+     * Get accessory state string for status report
+     * @returns {string} Accessory state string (e.g., "SFM" or "")
+     */
+    getAccessoryStateString() {
+        let accessories = '';
+        // Spindle state
+        if (this.parserState.spindle === 'M3') {
+            accessories += 'S'; // Spindle CW
+        } else if (this.parserState.spindle === 'M4') {
+            accessories += 'C'; // Spindle CCW
+        }
+        // Coolant state
+        // Parser state reports: 'M7', 'M8', 'M7 M8' (space-separated), or 'M9'
+        const coolant = this.parserState.coolant;
+        if (coolant.includes('M8')) {
+            accessories += 'F'; // Flood coolant
+        }
+        if (coolant.includes('M7')) {
+            accessories += 'M'; // Mist coolant
+        }
+        return accessories;
     }
 
     /**
@@ -1720,7 +1890,7 @@ class GrblSimulator {
             toolLength: 'G49',
             program: 'M0',
             spindle: 'M5',
-            coolant: 'M9'
+            coolant: 'M9',
         };
 
         // If reset during motion, trigger alarm 3

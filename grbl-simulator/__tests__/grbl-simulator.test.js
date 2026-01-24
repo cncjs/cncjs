@@ -5,85 +5,6 @@
 
 const GrblSimulator = require('../grbl-simulator');
 
-// Simple test framework
-let passed = 0;
-let failed = 0;
-const failures = [];
-
-function describe(name, fn) {
-    console.log(`\n${name}`);
-    fn();
-}
-
-function it(name, fn) {
-    try {
-        fn();
-        passed++;
-        console.log(`  ✓ ${name}`);
-    } catch (err) {
-        failed++;
-        console.log(`  ✗ ${name}`);
-        console.log(`    ${err.message}`);
-        failures.push({ name, error: err.message });
-    }
-}
-
-function expect(actual) {
-    return {
-        toBe(expected) {
-            if (actual !== expected) {
-                throw new Error(`Expected ${JSON.stringify(expected)} but got ${JSON.stringify(actual)}`);
-            }
-        },
-        toEqual(expected) {
-            if (JSON.stringify(actual) !== JSON.stringify(expected)) {
-                throw new Error(`Expected ${JSON.stringify(expected)} but got ${JSON.stringify(actual)}`);
-            }
-        },
-        toContain(expected) {
-            if (!actual.includes(expected)) {
-                throw new Error(`Expected "${actual}" to contain "${expected}"`);
-            }
-        },
-        toMatch(regex) {
-            if (!regex.test(actual)) {
-                throw new Error(`Expected "${actual}" to match ${regex}`);
-            }
-        },
-        toBeGreaterThan(expected) {
-            if (actual <= expected) {
-                throw new Error(`Expected ${actual} to be greater than ${expected}`);
-            }
-        },
-        toBeLessThan(expected) {
-            if (actual >= expected) {
-                throw new Error(`Expected ${actual} to be less than ${expected}`);
-            }
-        },
-        toBeCloseTo(expected, precision = 2) {
-            const diff = Math.abs(actual - expected);
-            const epsilon = Math.pow(10, -precision) / 2;
-            if (diff >= epsilon) {
-                throw new Error(`Expected ${actual} to be close to ${expected} (diff: ${diff})`);
-            }
-        },
-        toBeTruthy() {
-            if (!actual) {
-                throw new Error(`Expected ${actual} to be truthy`);
-            }
-        },
-        toBeFalsy() {
-            if (actual) {
-                throw new Error(`Expected ${actual} to be falsy`);
-            }
-        }
-    };
-}
-
-// =============================================================================
-// Tests
-// =============================================================================
-
 describe('GrblSimulator - Initialization', () => {
     it('should initialize with default state', () => {
         const sim = new GrblSimulator();
@@ -589,6 +510,7 @@ describe('GrblSimulator - Status Report', () => {
 
     it('should include buffer state in status report', () => {
         const sim = new GrblSimulator();
+        sim.settings[10] = 3; // Set bits 0 and 1 (MPos + Buffer state)
         const report = sim.generateStatusReport();
         expect(report).toContain('Bf:');
     });
@@ -607,6 +529,333 @@ describe('GrblSimulator - Status Report', () => {
 
         const report = sim.generateStatusReport();
         expect(report).toContain('WPos:');
+    });
+});
+
+describe('GrblSimulator - WCO and Override Reporting', () => {
+    it('should report WCO every 10 status reports in Idle state', () => {
+        const sim = new GrblSimulator();
+        sim.machineState = 'Idle';
+        sim.reportWcoCounter = 0;
+        sim.reportOvrCounter = 0;
+
+        const wcoReports = [];
+        for (let i = 1; i <= 35; i++) {
+            const report = sim.generateStatusReport();
+            if (report.includes('|WCO:')) {
+                wcoReports.push(i);
+            }
+        }
+
+        // WCO should be reported on reports 1, 11, 21, 31
+        expect(wcoReports.length).toBe(4);
+        expect(wcoReports[0]).toBe(1);
+        expect(wcoReports[1]).toBe(11);
+        expect(wcoReports[2]).toBe(21);
+        expect(wcoReports[3]).toBe(31);
+    });
+
+    it('should report WCO every 30 status reports in Run state', () => {
+        const sim = new GrblSimulator();
+        sim.machineState = 'Run';
+        sim.reportWcoCounter = 0;
+        sim.reportOvrCounter = 0;
+
+        const wcoReports = [];
+        for (let i = 1; i <= 65; i++) {
+            const report = sim.generateStatusReport();
+            if (report.includes('|WCO:')) {
+                wcoReports.push(i);
+            }
+        }
+
+        // WCO should be reported on reports 1, 31, 61
+        expect(wcoReports.length).toBe(3);
+        expect(wcoReports[0]).toBe(1);
+        expect(wcoReports[1]).toBe(31);
+        expect(wcoReports[2]).toBe(61);
+    });
+
+    it('should report overrides every 10 status reports in Idle state', () => {
+        const sim = new GrblSimulator();
+        sim.machineState = 'Idle';
+        sim.reportWcoCounter = 0;
+        sim.reportOvrCounter = 0;
+
+        const ovrReports = [];
+        for (let i = 1; i <= 35; i++) {
+            const report = sim.generateStatusReport();
+            if (report.includes('|Ov:')) {
+                ovrReports.push(i);
+            }
+        }
+
+        // Ovr should be reported on reports 2, 12, 22, 32 (one after WCO)
+        expect(ovrReports.length).toBe(4);
+        expect(ovrReports[0]).toBe(2);
+        expect(ovrReports[1]).toBe(12);
+        expect(ovrReports[2]).toBe(22);
+        expect(ovrReports[3]).toBe(32);
+    });
+
+    it('should report overrides every 20 status reports in Run state', () => {
+        const sim = new GrblSimulator();
+        sim.machineState = 'Run';
+        sim.reportWcoCounter = 0;
+        sim.reportOvrCounter = 0;
+
+        const ovrReports = [];
+        for (let i = 1; i <= 65; i++) {
+            const report = sim.generateStatusReport();
+            if (report.includes('|Ov:')) {
+                ovrReports.push(i);
+            }
+        }
+
+        // Ovr should be reported on reports 2, 22, 42, 62 (one after WCO or every 20)
+        expect(ovrReports.length).toBe(4);
+        expect(ovrReports[0]).toBe(2);
+        expect(ovrReports[1]).toBe(22);
+        expect(ovrReports[2]).toBe(42);
+        expect(ovrReports[3]).toBe(62);
+    });
+
+    it('should report WCO immediately after G92 command', () => {
+        const sim = new GrblSimulator();
+        sim.machinePosition = { x: 50, y: 50, z: 50 };
+        sim.reportWcoCounter = 5; // Set to middle of cycle
+
+        // Execute G92
+        sim.processLine('G92 X10 Y20 Z5');
+
+        // Counter should be set to 0 for immediate reporting
+        expect(sim.reportWcoCounter).toBe(0);
+
+        // Next status report should include WCO
+        const report = sim.generateStatusReport();
+        expect(report).toContain('|WCO:');
+    });
+
+    it('should report WCO immediately after G54-G59 command', () => {
+        const sim = new GrblSimulator();
+        sim.reportWcoCounter = 5; // Set to middle of cycle
+
+        // Execute G55
+        sim.processLine('G55');
+
+        // Counter should be set to 0 for immediate reporting
+        expect(sim.reportWcoCounter).toBe(0);
+
+        // Next status report should include WCO
+        const report = sim.generateStatusReport();
+        expect(report).toContain('|WCO:');
+    });
+
+    it('should report WCO immediately after G10 L2 command', () => {
+        const sim = new GrblSimulator();
+        sim.reportWcoCounter = 5; // Set to middle of cycle
+
+        // Execute G10 L2 P1
+        sim.processLine('G10 L2 P1 X10 Y20');
+
+        // Counter should be set to 0 for immediate reporting
+        expect(sim.reportWcoCounter).toBe(0);
+
+        // Next status report should include WCO
+        const report = sim.generateStatusReport();
+        expect(report).toContain('|WCO:');
+    });
+
+    it('should trigger override reporting after WCO is reported', () => {
+        const sim = new GrblSimulator();
+        sim.machineState = 'Idle';
+        sim.reportWcoCounter = 0;
+        sim.reportOvrCounter = 5; // Set to middle of cycle
+
+        // First report should have WCO (counter is 0)
+        const report1 = sim.generateStatusReport();
+        expect(report1).toContain('|WCO:');
+
+        // Override counter should be decremented: was 5, now 4
+        expect(sim.reportOvrCounter).toBe(4);
+
+        // However, when WCO is reported and reportOvrCounter is 0, it sets it to 1
+        // Let's test the correct scenario
+        sim.reportWcoCounter = 0;
+        sim.reportOvrCounter = 0;
+
+        const report = sim.generateStatusReport();
+        expect(report).toContain('|WCO:');
+        // When WCO reports and ovr counter is 0, it sets it to 1, then ovr section decrements to 0
+        expect(sim.reportOvrCounter).toBe(0);
+    });
+
+    it('should include WCO values correctly', () => {
+        const sim = new GrblSimulator();
+        sim.workCoordinateOffsets['G54'] = { x: 10, y: 20, z: 5 };
+        sim.g92Offset = { x: 1, y: 2, z: 0.5 };
+        sim.reportWcoCounter = 0;
+
+        const report = sim.generateStatusReport();
+
+        // Total WCO = WCS + G92 = (10+1, 20+2, 5+0.5) = (11, 22, 5.5)
+        expect(report).toContain('|WCO:11.000,22.000,5.500');
+    });
+
+    it('should include override values in status report', () => {
+        const sim = new GrblSimulator();
+        sim.feedOverride = 110;
+        sim.rapidOverride = 75;
+        sim.spindleOverride = 90;
+        sim.reportWcoCounter = 5; // Set WCO counter to non-zero so it doesn't report
+        sim.reportOvrCounter = 0; // Set override counter to 0 so it reports
+
+        const report = sim.generateStatusReport();
+
+        expect(report).toContain('|Ov:110,75,90');
+    });
+});
+
+describe('GrblSimulator - Coolant State Reporting', () => {
+    it('should handle M7 (mist coolant)', () => {
+        const sim = new GrblSimulator();
+        sim.processLine('M7');
+
+        expect(sim.parserState.coolant).toBe('M7');
+
+        const report = sim.generateStatusReport();
+        expect(report).toContain('|A:M'); // M = Mist
+    });
+
+    it('should handle M8 (flood coolant)', () => {
+        const sim = new GrblSimulator();
+        sim.processLine('M8');
+
+        expect(sim.parserState.coolant).toBe('M8');
+
+        const report = sim.generateStatusReport();
+        expect(report).toContain('|A:F'); // F = Flood
+    });
+
+    it('should handle M7 and M8 simultaneously (both active)', () => {
+        const sim = new GrblSimulator();
+        sim.processLine('M7');
+        sim.processLine('M8');
+
+        // Both should be active (space-separated)
+        expect(sim.parserState.coolant).toBe('M7 M8');
+
+        const report = sim.generateStatusReport();
+        expect(report).toContain('|A:FM'); // F = Flood, M = Mist
+    });
+
+    it('should handle M9 (turn off all coolant)', () => {
+        const sim = new GrblSimulator();
+        sim.processLine('M7');
+        sim.processLine('M8');
+        expect(sim.parserState.coolant).toBe('M7 M8');
+
+        sim.processLine('M9');
+        expect(sim.parserState.coolant).toBe('M9');
+
+        const report = sim.generateStatusReport();
+        // Should not contain coolant indicators
+        expect(report.includes('|A:F') || report.includes('|A:M')).toBe(false);
+    });
+
+    it('should report correct $G parser state for M7 M8', () => {
+        const sim = new GrblSimulator();
+        sim.processLine('M7');
+        sim.processLine('M8');
+
+        const response = sim.processLine('$G');
+
+        // Should show "M7 M8" (space-separated, not "M78")
+        expect(response).toContain('M7');
+        expect(response).toContain('M8');
+        expect(response).not.toContain('M78');
+    });
+});
+
+describe('GrblSimulator - Accessory State Reporting', () => {
+    it('should report spindle CW (M3) in accessory state', () => {
+        const sim = new GrblSimulator();
+        sim.processLine('M3 S1000');
+
+        const report = sim.generateStatusReport();
+        expect(report).toContain('|A:S'); // S = Spindle CW
+    });
+
+    it('should report spindle CCW (M4) in accessory state', () => {
+        const sim = new GrblSimulator();
+        sim.processLine('M4 S1000');
+
+        const report = sim.generateStatusReport();
+        expect(report).toContain('|A:C'); // C = Spindle CCW
+    });
+
+    it('should report combined spindle and coolant states', () => {
+        const sim = new GrblSimulator();
+        sim.processLine('M3 S1000');
+        sim.processLine('M7'); // Mist
+        sim.processLine('M8'); // Flood
+
+        const report = sim.generateStatusReport();
+        // Should contain S (spindle CW), F (flood), M (mist)
+        expect(report).toContain('|A:');
+        expect(report.includes('S')).toBe(true);
+        expect(report.includes('F')).toBe(true);
+        expect(report.includes('M')).toBe(true);
+    });
+
+    it('should not include accessory state when all are off', () => {
+        const sim = new GrblSimulator();
+        // All accessories off by default
+
+        const report = sim.generateStatusReport();
+        // Should not contain |A: field
+        expect(report.includes('|A:')).toBe(false);
+    });
+});
+
+describe('GrblSimulator - Input Pin State Reporting', () => {
+    it('should report probe pin state', () => {
+        const sim = new GrblSimulator();
+        sim.pinState.probe = true;
+
+        const report = sim.generateStatusReport();
+        expect(report).toContain('|Pn:P');
+    });
+
+    it('should report limit pins', () => {
+        const sim = new GrblSimulator();
+        sim.pinState.x = true;
+        sim.pinState.y = true;
+        sim.pinState.z = true;
+
+        const report = sim.generateStatusReport();
+        expect(report).toContain('|Pn:XYZ');
+    });
+
+    it('should report control pins', () => {
+        const sim = new GrblSimulator();
+        sim.pinState.door = true;
+        sim.pinState.hold = true;
+
+        const report = sim.generateStatusReport();
+        const pnMatch = report.match(/\|Pn:([A-Z]+)/);
+        expect(pnMatch).not.toBe(null);
+        expect(pnMatch[1].includes('D')).toBe(true); // Door
+        expect(pnMatch[1].includes('H')).toBe(true); // Hold
+    });
+
+    it('should not include pin state when no pins triggered', () => {
+        const sim = new GrblSimulator();
+        // All pins off by default
+
+        const report = sim.generateStatusReport();
+        // Should not contain |Pn: field
+        expect(report.includes('|Pn:')).toBe(false);
     });
 });
 
@@ -1015,29 +1264,3 @@ describe('GrblSimulator - Laser Mode ($32)', () => {
         expect(sim.laserPower).toBe(0);
     });
 });
-
-// =============================================================================
-// Run Tests
-// =============================================================================
-
-console.log('Running GrblSimulator Unit Tests...');
-console.log('='.repeat(60));
-
-// Wait for planner executor interval to be created, then run tests
-setTimeout(() => {
-    // Tests will have run synchronously above
-
-    console.log('\n' + '='.repeat(60));
-    console.log(`Results: ${passed} passed, ${failed} failed`);
-
-    if (failed > 0) {
-        console.log('\nFailed tests:');
-        failures.forEach(f => {
-            console.log(`  - ${f.name}: ${f.error}`);
-        });
-        process.exit(1);
-    } else {
-        console.log('\nAll tests passed!');
-        process.exit(0);
-    }
-}, 100);

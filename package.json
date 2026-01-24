@@ -377,7 +377,8 @@
     "snapshotSerializers": [],
     "testEnvironment": "node",
     "testMatch": [
-      "<rootDir>/src/server/**/__tests__/**/*.test.js"
+      "<rootDir>/src/server/**/__tests__/**/*.test.js",
+      "<rootDir>/grbl-simulator/__tests__/**/*.test.js"
     ],
     "testPathIgnorePatterns": [
       "/node_modules/"
