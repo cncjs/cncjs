@@ -92,9 +92,15 @@ class GrblServer {
         // Process character by character for real-time commands
         for (let i = 0; i < input.length; i++) {
             const char = input[i];
+            const code = char.charCodeAt(0);
 
-            // Check for real-time commands (?, !, ~, Ctrl-X, 0x85)
-            if (char === '?' || char === '!' || char === '~' || char === '\x18' || char.charCodeAt(0) === 0x85) {
+            // Check for real-time commands
+            // Single character commands: ?, !, ~, Ctrl-X
+            // Extended real-time commands: 0x80-0xFF (includes jog cancel, feed/rapid/spindle overrides)
+            const isRealtimeCommand = char === '?' || char === '!' || char === '~' || char === '\x18' ||
+                                      (code >= 0x80 && code <= 0xFF);
+
+            if (isRealtimeCommand) {
                 const response = simulator.processRealtimeCommand(char);
                 if (response) {
                     socket.write(response);
@@ -126,7 +132,25 @@ class GrblServer {
     escapeChar(char) {
         const code = char.charCodeAt(0);
         if (code === 0x18) return 'Ctrl-X';
-        if (code < 32) return `\\x${code.toString(16).padStart(2, '0')}`;
+        if (code === 0x85) return 'JogCancel';
+        // Feed override commands
+        if (code === 0x90) return 'FeedReset';
+        if (code === 0x91) return 'Feed+10%';
+        if (code === 0x92) return 'Feed-10%';
+        if (code === 0x93) return 'Feed+1%';
+        if (code === 0x94) return 'Feed-1%';
+        // Rapid override commands
+        if (code === 0x95) return 'Rapid100%';
+        if (code === 0x96) return 'Rapid50%';
+        if (code === 0x97) return 'Rapid25%';
+        // Spindle override commands
+        if (code === 0x99) return 'SpindleReset';
+        if (code === 0x9A) return 'Spindle+10%';
+        if (code === 0x9B) return 'Spindle-10%';
+        if (code === 0x9C) return 'Spindle+1%';
+        if (code === 0x9D) return 'Spindle-1%';
+        if (code === 0x9E) return 'SpindleStop';
+        if (code < 32 || code >= 0x80) return `0x${code.toString(16).toUpperCase()}`;
         return char;
     }
 

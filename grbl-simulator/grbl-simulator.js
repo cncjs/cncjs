@@ -648,6 +648,63 @@ class GrblSimulator {
                     if (this.machineState === 'Jog') {
                         this.cancelJog();
                     }
+                } else if (code === 0x90) {
+                    // Feed override reset to 100%
+                    this.feedOverride = 100;
+                    this.reportOvrCounter = 0; // Report immediately
+                } else if (code === 0x91) {
+                    // Feed override +10%
+                    this.feedOverride = Math.min(200, this.feedOverride + 10);
+                    this.reportOvrCounter = 0;
+                } else if (code === 0x92) {
+                    // Feed override -10%
+                    this.feedOverride = Math.max(10, this.feedOverride - 10);
+                    this.reportOvrCounter = 0;
+                } else if (code === 0x93) {
+                    // Feed override +1%
+                    this.feedOverride = Math.min(200, this.feedOverride + 1);
+                    this.reportOvrCounter = 0;
+                } else if (code === 0x94) {
+                    // Feed override -1%
+                    this.feedOverride = Math.max(10, this.feedOverride - 1);
+                    this.reportOvrCounter = 0;
+                } else if (code === 0x95) {
+                    // Rapid override reset to 100%
+                    this.rapidOverride = 100;
+                    this.reportOvrCounter = 0;
+                } else if (code === 0x96) {
+                    // Rapid override set to 50%
+                    this.rapidOverride = 50;
+                    this.reportOvrCounter = 0;
+                } else if (code === 0x97) {
+                    // Rapid override set to 25%
+                    this.rapidOverride = 25;
+                    this.reportOvrCounter = 0;
+                } else if (code === 0x99) {
+                    // Spindle override reset to 100%
+                    this.spindleOverride = 100;
+                    this.reportOvrCounter = 0;
+                } else if (code === 0x9A) {
+                    // Spindle override +10%
+                    this.spindleOverride = Math.min(200, this.spindleOverride + 10);
+                    this.reportOvrCounter = 0;
+                } else if (code === 0x9B) {
+                    // Spindle override -10%
+                    this.spindleOverride = Math.max(10, this.spindleOverride - 10);
+                    this.reportOvrCounter = 0;
+                } else if (code === 0x9C) {
+                    // Spindle override +1%
+                    this.spindleOverride = Math.min(200, this.spindleOverride + 1);
+                    this.reportOvrCounter = 0;
+                } else if (code === 0x9D) {
+                    // Spindle override -1%
+                    this.spindleOverride = Math.max(10, this.spindleOverride - 1);
+                    this.reportOvrCounter = 0;
+                } else if (code === 0x9E) {
+                    // Toggle spindle stop (M5 override)
+                    // In Grbl, this doesn't change the override value, it temporarily stops spindle
+                    // For simulator simplicity, we'll just acknowledge it
+                    // TODO: Implement spindle stop override if needed
                 }
                 return '';
         }
