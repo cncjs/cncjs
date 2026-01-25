@@ -18,9 +18,7 @@ class SerialBridge {
     }
 
     async start() {
-        console.log('');
-        console.log('Grbl simulator - serial bridge');
-        console.log('');
+        console.log('Grbl Simulator - Serial Bridge');
 
         // Check if socat is installed
         try {
@@ -32,8 +30,8 @@ class SerialBridge {
         }
 
         // Create virtual serial port with socat
-        console.log(`Creating virtual serial path "${this.serialPath}" and bridging to port ${this.tcpPort}...`);
-        console.log();
+        console.log(`Creating virtual serial device at "${this.serialPath}"`);
+        console.log(`Bridging to TCP port ${this.tcpPort}`);
 
         this.socatProcess = spawn('socat', [
             `-d`, `-d`,

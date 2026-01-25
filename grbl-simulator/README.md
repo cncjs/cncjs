@@ -5,14 +5,23 @@ A Grbl v1.1 CNC controller simulator with TCP socket server for testing CNC soft
 ## Quick Start
 
 ```bash
+# Start server (default port: 3000)
 node grbl-server.js
+
+# Or specify a port
+node grbl-server.js 8080
+
+# Connect with telnet
 telnet localhost 3000
 ```
 
 ## Usage with CNCjs
 
 ```bash
+# Automatically finds an available port and creates virtual serial port
 ./start-with-cncjs.sh
+
+# Connect cncjs to virtual serial port
 cncjs -p /tmp/ttyGRBL
 ```
 
