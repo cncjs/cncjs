@@ -1063,7 +1063,9 @@ class GrblSimulator {
         const dy = endPosition.y - startPosition.y;
         const dz = endPosition.z - startPosition.z;
         const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        const probeTime = (distance / this.feedRate) * 60 * 1000;
+        // Apply feed override (10-200%)
+        const probeFeedRate = this.feedRate * (this.feedOverride / 100);
+        const probeTime = (distance / probeFeedRate) * 60 * 1000;
 
         this.#plannerBuffer.queue.push({
             endPosition,
@@ -1076,7 +1078,7 @@ class GrblSimulator {
                     endTime: Date.now() + probeTime,
                     startPosition,
                     endPosition,
-                    currentFeedRate: this.feedRate,
+                    currentFeedRate: probeFeedRate,
                     data: {},
                 });
 
@@ -1160,8 +1162,9 @@ class GrblSimulator {
             return 'ok\r\n';
         }
 
-        const motionTime = (distance / parsed.words.F) * 60 * 1000;
-        const jogFeedRate = parsed.words.F;
+        // Apply feed override (10-200%)
+        const jogFeedRate = parsed.words.F * (this.feedOverride / 100);
+        const motionTime = (distance / jogFeedRate) * 60 * 1000;
 
         this.#plannerBuffer.queue.push({
             endPosition,
@@ -1212,18 +1215,21 @@ class GrblSimulator {
 
         if (isRapid) {
             // G0 uses rapid rate (from settings $110-$112, use maximum)
-            motionFeedRate = Math.max(
+            const baseRapidRate = Math.max(
                 this.settings[SETTINGS.X_MAX_RATE],
                 this.settings[SETTINGS.Y_MAX_RATE],
                 this.settings[SETTINGS.Z_MAX_RATE]
             );
+            // Apply rapid override (25%, 50%, or 100%)
+            motionFeedRate = baseRapidRate * (this.rapidOverride / 100);
             motionTime = (distance / motionFeedRate) * 60 * 1000; // Convert mm/min to milliseconds
         } else {
             // G1 uses programmed feed rate
             if (this.feedRate === 0) {
                 return { error: 'error:22\r\n' }; // Undefined feed rate
             }
-            motionFeedRate = this.feedRate;
+            // Apply feed override (10-200%)
+            motionFeedRate = this.feedRate * (this.feedOverride / 100);
             motionTime = (distance / motionFeedRate) * 60 * 1000; // Convert mm/min to milliseconds
         }
 
@@ -1376,7 +1382,8 @@ class GrblSimulator {
         if (this.feedRate === 0) {
             return { error: 'error:22\r\n' }; // Undefined feed rate
         }
-        const arcFeedRate = this.feedRate; // Capture for closure
+        // Apply feed override (10-200%)
+        const arcFeedRate = this.feedRate * (this.feedOverride / 100); // Capture for closure
         const motionTime = (totalDistance / arcFeedRate) * 60 * 1000; // Convert mm/min to milliseconds
 
         // Calculate center position for arc interpolation
