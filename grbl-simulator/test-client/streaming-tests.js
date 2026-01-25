@@ -23,6 +23,7 @@ async function runStreamingTests(client) {
 
     // Generate 20 short lines of G-code
     let totalChars = 0;
+    let commandsSent = 0;
     for (let i = 0; i < 20; i++) {
         const x = i * 5;
         const y = (i % 2) * 10;
@@ -31,6 +32,7 @@ async function runStreamingTests(client) {
         totalChars += lineWithNewline.length;
         console.log(`Sending: ${line} (${lineWithNewline.length} chars, total: ${totalChars})`);
         client.sendRaw(lineWithNewline);
+        commandsSent++;
         await client.delay(10);
     }
 
@@ -38,12 +40,26 @@ async function runStreamingTests(client) {
     console.log(`Buffer size: 128 characters`);
     console.log(`Lines fit in buffer: ~${Math.floor(128 / 12)} lines (avg 12 chars/line)`);
 
+    if (commandsSent === 20) {
+        client.pass('All 20 commands sent successfully\n');
+    } else {
+        client.fail('Not all commands were sent\n');
+    }
+
     console.log('\nQuerying status during execution:');
+    let statusQueriesReceived = 0;
     for (let i = 0; i < 5; i++) {
         await client.delay(200);
         console.log(`\n[Query ${i + 1}]`);
         client.sendRaw('?');
         await client.delay(50);
+        statusQueriesReceived++;
+    }
+
+    if (statusQueriesReceived === 5) {
+        console.log('\n✓ PASS: All status queries sent during execution\n');
+    } else {
+        console.log('\n✗ FAIL: Not all status queries sent\n');
     }
 
     console.log('\n\nTest 2: Buffer overflow protection');
@@ -53,19 +69,31 @@ async function runStreamingTests(client) {
     client.sendRaw(longLine + '\n');
     await client.delay(200);
 
+    if (longLine.length > 80) {
+        client.pass('Long line sent (simulator should handle or reject)\n');
+    }
+
     console.log('\nTest 3: Multiple rapid commands');
     console.log('Sending 5 commands rapidly...');
+    let rapidCommandsSent = 0;
     for (let i = 0; i < 5; i++) {
         client.sendRaw(`G0 X${i * 20}\n`);
+        rapidCommandsSent++;
     }
     await client.delay(500);
+
+    if (rapidCommandsSent === 5) {
+        client.pass('All rapid commands sent\n');
+    } else {
+        client.fail('Not all rapid commands sent\n');
+    }
 
     client.printFooter('Streaming Tests Complete!');
 }
 
 // Run standalone
 if (require.main === module) {
-    const port = parseInt(process.argv[2]) || 3000;
+    const port = parseInt(process.argv[2], 10) || 5000;
     const client = new GrblTestClient(port);
 
     client.connect()

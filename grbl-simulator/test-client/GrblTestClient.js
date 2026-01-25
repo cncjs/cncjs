@@ -6,14 +6,19 @@
  */
 
 const net = require('net');
+const chalk = require('chalk');
 
 class GrblTestClient {
-    constructor(port = 3000, host = 'localhost') {
+    constructor(port = 5000, host = 'localhost') {
         this.port = port;
         this.host = host;
         this.client = null;
         this.connected = false;
         this.buffer = '';
+        this.testResults = {
+            passed: [],
+            failed: []
+        };
     }
 
     connect() {
@@ -84,6 +89,19 @@ class GrblTestClient {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    // Wait for machine to reach Idle state
+    async waitForIdle(maxWait = 10000, pollInterval = 100) {
+        const startTime = Date.now();
+        while (Date.now() - startTime < maxWait) {
+            const status = await this.sendRealtime('?');
+            if (status.includes('<Idle')) {
+                return status;
+            }
+            await this.delay(pollInterval);
+        }
+        return await this.sendRealtime('?'); // Return final status even if not idle
+    }
+
     close() {
         if (this.client) {
             this.client.end();
@@ -101,6 +119,56 @@ class GrblTestClient {
         console.log('\n' + '='.repeat(70));
         console.log(title);
         console.log('='.repeat(70));
+    }
+
+    // Track test results
+    pass(testName) {
+        this.testResults.passed.push(testName);
+        console.log(chalk.green('✓ PASS:'), testName);
+    }
+
+    fail(testName) {
+        this.testResults.failed.push(testName);
+        console.log(chalk.red('✗ FAIL:'), testName);
+    }
+
+    notice(message) {
+        console.log(chalk.yellow('⚠ NOTICE:'), message);
+    }
+
+    // Print test summary
+    printSummary(suiteName) {
+        const total = this.testResults.passed.length + this.testResults.failed.length;
+        const passRate = total > 0 ? ((this.testResults.passed.length / total) * 100).toFixed(1) : 0;
+
+        console.log('\n' + '='.repeat(70));
+        console.log(`${suiteName} - Test Summary`);
+        console.log('='.repeat(70));
+        console.log(chalk.green(`Passed: ${this.testResults.passed.length}/${total} (${passRate}%)`));
+
+        if (this.testResults.failed.length > 0) {
+            console.log(chalk.red(`Failed: ${this.testResults.failed.length}/${total}`));
+            console.log('\n' + chalk.red.bold('Failed Tests:'));
+            this.testResults.failed.forEach((test, index) => {
+                console.log(chalk.red(`  ${index + 1}. ${test}`));
+            });
+        }
+        console.log('='.repeat(70));
+    }
+
+    // Reset results for next suite
+    resetResults() {
+        this.testResults.passed = [];
+        this.testResults.failed = [];
+    }
+
+    // Get results for overall summary
+    getResults() {
+        return {
+            passed: this.testResults.passed.length,
+            failed: this.testResults.failed.length,
+            failedTests: [...this.testResults.failed]
+        };
     }
 }
 
