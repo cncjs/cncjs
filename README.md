@@ -151,7 +151,7 @@ pi@rpi3$ cncjs -h
 
   Options:
 
-    -V, --version                       output the version number
+    --version                       output the version number
     -p, --port <port>                   Set listen port (default: 8000)
     -H, --host <host>                   Set listen address or hostname (default: 0.0.0.0)
     -b, --backlog <backlog>             Set listen backlog (default: 511)

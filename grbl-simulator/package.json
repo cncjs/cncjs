@@ -1,0 +1,26 @@
+{
+  "name": "grbl-simulator",
+  "version": "1.0.0",
+  "description": "Grbl v1.1 CNC Controller Simulator - TCP socket server for testing and development",
+  "main": "grbl-server.js",
+  "scripts": {
+    "test": "node __tests__/*.test.js",
+    "test-grbl-server": "npx concurrently --kill-others --success first --names \"grbl-server,test-client\" \"node grbl-server.js\" \"sleep 2 && node test-client/main.js\""
+  },
+  "keywords": [
+    "grbl",
+    "cnc",
+    "simulator",
+    "gcode",
+    "tcp",
+    "socket"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bin": {
+    "grbl-simulator": "./grbl-server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
