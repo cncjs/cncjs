@@ -1,6 +1,5 @@
 import get from 'lodash/get';
 import includes from 'lodash/includes';
-import map from 'lodash/map';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
@@ -10,9 +9,11 @@ import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import WidgetConfig from '../WidgetConfig';
-import AutoLevel from './AutoLevel';
-import ProbingSetup from './ProbingSetup';
-import ApplyAutoLevel from './ApplyAutoLevel';
+import LandingView from './LandingView';
+import SetupProbeView from './SetupProbeView';
+import LoadProbeView from './LoadProbeView';
+import ApplyView from './ApplyView';
+import StartProbeModal from './StartProbeModal';
 import {
   // Units
   IMPERIAL_UNITS,
@@ -34,16 +35,18 @@ import {
   WORKFLOW_STATE_IDLE
 } from '../../constants';
 import {
+  VIEW_LANDING,
+  VIEW_SETUP_PROBE,
+  VIEW_PROBING,
+  VIEW_LOAD_PROBE,
+  VIEW_APPLY,
+  PROBE_STATE_IDLE,
+  PROBE_STATE_RUNNING,
+  PROBE_STATE_COMPLETED,
   MODAL_NONE,
-  MODAL_PROBING_SETUP,
-  MODAL_APPLY_AUTOLEVEL,
+  MODAL_START_PROBE_CONFIRM,
 } from './constants';
 import styles from './index.styl';
-
-const gcode = (cmd, params) => {
-  const s = map(params, (value, letter) => String(letter + value)).join(' ');
-  return (s.length > 0) ? (cmd + ' ' + s) : cmd;
-};
 
 class AutoLevelWidget extends PureComponent {
   static propTypes = {
@@ -67,6 +70,7 @@ class AutoLevelWidget extends PureComponent {
   state = this.getInitialState();
 
   actions = {
+    // Widget controls
     toggleFullscreen: () => {
       const { minimized, isFullscreen } = this.state;
       this.setState({
@@ -78,6 +82,8 @@ class AutoLevelWidget extends PureComponent {
       const { minimized } = this.state;
       this.setState({ minimized: !minimized });
     },
+
+    // Modal management
     openModal: (name = MODAL_NONE, params = {}) => {
       this.setState({
         modal: {
@@ -94,120 +100,226 @@ class AutoLevelWidget extends PureComponent {
         }
       });
     },
-    // Probing parameter handlers
+
+    // Navigation actions
+    startNewProbe: () => {
+      this.setState({ wizardView: VIEW_SETUP_PROBE });
+    },
+    loadProbeFile: () => {
+      // Open file dialog
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.probe';
+      input.onchange = (event) => {
+        const file = event.target.files[0];
+        if (!file) {
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const filepath = file.name;
+          const data = e.target.result;
+          this.actions.handleProbeFileLoaded(filepath, data);
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    },
+    handleProbeFileLoaded: (filepath, data) => {
+      try {
+        const lines = data.split('\n').filter(line => line.trim().length > 0);
+        const probedPositions = [];
+        let minZ = Infinity;
+        let maxZ = -Infinity;
+
+        lines.forEach(line => {
+          const values = line.trim().split(/\s+/).map(Number);
+          const [x, y, z] = values;
+          if (!Number.isNaN(x) && !Number.isNaN(y) && !Number.isNaN(z)) {
+            probedPositions.push({ x, y, z });
+            minZ = Math.min(z, minZ);
+            maxZ = Math.max(z, maxZ);
+          }
+        });
+
+        this.setState({
+          wizardView: VIEW_APPLY,
+          probeFileName: filepath,
+          probedPositions,
+          probeStats: {
+            points: probedPositions.length,
+            minZ,
+            maxZ,
+            maxDeviation: maxZ - minZ,
+          },
+        });
+
+        log.info(`Loaded ${probedPositions.length} points from ${filepath}`);
+      } catch (err) {
+        log.error('Error loading probe file:', err);
+      }
+    },
+    backToLanding: () => {
+      this.setState({
+        wizardView: VIEW_LANDING,
+        probeState: PROBE_STATE_IDLE,
+      });
+    },
+    goToApply: () => {
+      this.setState({ wizardView: VIEW_APPLY });
+    },
+
+    // Probe configuration handlers
+    handleStepSizeChange: (event) => {
+      this.setState({ stepSize: Number(event.target.value) });
+    },
     handleStartXChange: (event) => {
       this.setState({ startX: Number(event.target.value) });
-    },
-    handleEndXChange: (event) => {
-      this.setState({ endX: Number(event.target.value) });
     },
     handleStartYChange: (event) => {
       this.setState({ startY: Number(event.target.value) });
     },
+    handleEndXChange: (event) => {
+      this.setState({ endX: Number(event.target.value) });
+    },
     handleEndYChange: (event) => {
       this.setState({ endY: Number(event.target.value) });
     },
-    handleStepXChange: (event) => {
-      this.setState({ stepX: Number(event.target.value) });
+    handleClearanceHeightChange: (event) => {
+      this.setState({ clearanceHeight: Number(event.target.value) });
     },
-    handleStepYChange: (event) => {
-      this.setState({ stepY: Number(event.target.value) });
+    handleProbeStartZChange: (event) => {
+      this.setState({ probeStartZ: Number(event.target.value) });
+    },
+    handleProbeEndZChange: (event) => {
+      this.setState({ probeEndZ: Number(event.target.value) });
+    },
+    handleProbeFeedrateChange: (event) => {
+      this.setState({ probeFeedrate: Number(event.target.value) });
     },
     handleFeedXYChange: (event) => {
       this.setState({ feedXY: Number(event.target.value) });
     },
-    handleFeedZChange: (event) => {
-      this.setState({ feedZ: Number(event.target.value) });
+
+    // Probe operations
+    runTestProbe: () => {
+      const { probeEndZ, probeFeedrate } = this.state;
+      controller.command('autolevel:runTestProbe', {
+        depth: probeEndZ,
+        feedrate: probeFeedrate,
+      });
+      log.info('Running test probe');
     },
-    handleDepthChange: (event) => {
-      this.setState({ depth: Number(event.target.value) });
+    showStartProbeConfirmation: () => {
+      this.actions.openModal(MODAL_START_PROBE_CONFIRM);
     },
-    handleHeightChange: (event) => {
-      this.setState({ height: Number(event.target.value) });
-    },
-    // Generate probing G-code
-    generateProbingGcode: () => {
+    startProbing: () => {
       const {
-        startX, endX, stepX,
-        startY, endY, stepY,
-        feedXY, feedZ,
-        depth, height
+        startX, endX, stepSize,
+        startY, endY,
+        probeStartZ, probeEndZ,
+        feedXY, probeFeedrate,
       } = this.state;
 
-      const commands = [];
-      commands.push(gcode('(AutoLevel: Probing Start)'));
-      commands.push(gcode('G21')); // Metric units
-      commands.push(gcode('G90')); // Absolute positioning
-      commands.push(gcode('G0', { Z: height }));
+      this.actions.closeModal();
+      this.setState({
+        probeState: PROBE_STATE_RUNNING,
+        probedPositions: [],
+      });
 
-      // Generate probe positions
-      let firstPoint = true;
-      for (let y = startY; y <= endY; y += stepY) {
-        for (let x = startX; x <= endX; x += stepX) {
-          commands.push(gcode(`(AutoLevel: Probing X${x} Y${y})`));
-          commands.push(gcode('G0', { X: x, Y: y, F: feedXY }));
-          commands.push(gcode('G38.2', { Z: depth, F: firstPoint ? feedZ / 2 : feedZ }));
-          commands.push(gcode('G0', { Z: height }));
-          firstPoint = false;
-        }
-      }
-
-      commands.push(gcode('(AutoLevel: Probing End)'));
-      return commands;
-    },
-    // Run probing sequence
-    runProbing: () => {
-      const {
-        startX, endX, stepX,
-        startY, endY, stepY,
-        feedXY, feedZ,
-        depth, height
-      } = this.state;
-
-      // Clear existing probing data
-      this.setState({ probingData: [] });
-
-      // Use server-side autolevel:start command
-      controller.command('autolevel:start', {
+      controller.command('autolevel:startProbing', {
         startX,
         endX,
-        stepX,
+        stepX: stepSize,
         startY,
         endY,
-        stepY,
+        stepY: stepSize,
+        startZ: probeStartZ,
+        endZ: probeEndZ,
         feedrate: feedXY,
-        probeFeedrate: feedZ,
-        startZ: height,
-        endZ: depth,
+        probeFeedrate,
+      });
+
+      log.info('Starting probe sequence');
+    },
+
+    // Probe data management
+    saveProbeData: () => {
+      const { probedPositions, probeFileName } = this.state;
+      const data = probedPositions.map(({ x, y, z }) => {
+        const a = 0, b = 0, c = 0;
+        const u = 0, v = 0, w = 0;
+        return `${x} ${y} ${z} ${a} ${b} ${c} ${u} ${v} ${w}`;
+      }).join('\n');
+
+      const blob = new Blob([data], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = probeFileName || `probe_${Date.now()}.probe`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      log.info('Probe data saved');
+    },
+
+    // G-code operations
+    applyToGcode: (gcode, gcodeFileName) => {
+      const { probedPositions } = this.state;
+
+      controller.command('autolevel:applyProbeCompensation', {
+        gcode,
+        probeData: probedPositions,
+      }, (err, result) => {
+        if (err) {
+          log.error('Error applying auto-level:', err);
+          return;
+        }
+
+        const { compensatedGcode } = result;
+        this.setState({ gcodeApplied: true });
+
+        // Load compensated G-code
+        const name = `AL_${gcodeFileName}`;
+        controller.command('gcode:load', name, compensatedGcode, this.state.port);
+
+        log.info('Auto-level applied to G-code');
       });
     },
-    // Save probing G-code to file
-    saveProbingGcode: () => {
-      const commands = this.actions.generateProbingGcode();
-      const content = commands.join('\n');
-      const blob = new Blob([content], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'probing.ngc';
-      a.click();
-      URL.revokeObjectURL(url);
+    exportLevelledGcode: (gcode, gcodeFileName) => {
+      const { probedPositions } = this.state;
+
+      controller.command('autolevel:applyProbeCompensation', {
+        gcode,
+        probeData: probedPositions,
+      }, (err, result) => {
+        if (err) {
+          log.error('Error applying auto-level:', err);
+          return;
+        }
+
+        const { compensatedGcode } = result;
+
+        const blob = new Blob([compensatedGcode], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `AL_${gcodeFileName}`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        log.info('Levelled G-code exported');
+      });
     },
-    // Clear probing data
-    clearProbingData: () => {
-      this.setState({ probingData: [] });
-    },
-    // Save probing data to file
-    saveProbingData: () => {
-      const { probingData } = this.state;
-      const content = JSON.stringify(probingData, null, 2);
-      const blob = new Blob([content], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `probing_${Date.now()}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
+    closeWidget: () => {
+      this.setState({
+        wizardView: VIEW_LANDING,
+        probeState: PROBE_STATE_IDLE,
+        probedPositions: [],
+        probeStats: null,
+        gcodeApplied: false,
+      });
     },
   };
 
@@ -220,23 +332,6 @@ class AutoLevelWidget extends PureComponent {
       const initialState = this.getInitialState();
       this.setState({ ...initialState });
     },
-    'serialport:read': (data) => {
-      // Handle probing results
-      if (data.type === 'probing') {
-        const { result } = data;
-        if (result) {
-          const point = {
-            x: Number(result.x),
-            y: Number(result.y),
-            z: Number(result.z),
-          };
-          this.setState(state => ({
-            probingData: [...state.probingData, point]
-          }));
-          log.debug('Probing point received:', point);
-        }
-      }
-    },
     'workflow:state': (workflowState) => {
       this.setState(state => ({
         workflow: {
@@ -247,7 +342,7 @@ class AutoLevelWidget extends PureComponent {
     'controller:state': (type, controllerState) => {
       let units = this.state.units;
 
-      // Grbl
+      // Update units based on controller type
       if (type === GRBL) {
         const { parserstate } = { ...controllerState };
         const { modal = {} } = { ...parserstate };
@@ -257,7 +352,6 @@ class AutoLevelWidget extends PureComponent {
         }[modal.units] || units;
       }
 
-      // Marlin
       if (type === MARLIN) {
         const { modal = {} } = { ...controllerState };
         units = {
@@ -266,7 +360,6 @@ class AutoLevelWidget extends PureComponent {
         }[modal.units] || units;
       }
 
-      // Smoothie
       if (type === SMOOTHIE) {
         const { parserstate } = { ...controllerState };
         const { modal = {} } = { ...parserstate };
@@ -276,7 +369,6 @@ class AutoLevelWidget extends PureComponent {
         }[modal.units] || units;
       }
 
-      // TinyG
       if (type === TINYG) {
         const { sr } = { ...controllerState };
         const { modal = {} } = { ...sr };
@@ -293,7 +385,34 @@ class AutoLevelWidget extends PureComponent {
           state: controllerState
         }
       });
-    }
+    },
+    'autolevel:update': (data) => {
+      const { current, total, probedPos, minZ, maxZ, maxDeviation } = data;
+
+      this.setState(state => ({
+        probedPositions: [...state.probedPositions, probedPos],
+        probeProgress: {
+          current,
+          total,
+          percentage: Math.round((current / total) * 100),
+        },
+        probeStats: {
+          points: current,
+          minZ,
+          maxZ,
+          maxDeviation,
+        },
+      }));
+
+      log.debug(`Probed ${current}/${total} points`);
+    },
+    'autolevel:complete': () => {
+      this.setState({
+        probeState: PROBE_STATE_COMPLETED,
+        wizardView: VIEW_APPLY,
+      });
+      log.info('Probing completed');
+    },
   };
 
   componentDidMount() {
@@ -307,23 +426,23 @@ class AutoLevelWidget extends PureComponent {
   componentDidUpdate(prevProps, prevState) {
     const {
       minimized,
-      startX, endX, stepX,
-      startY, endY, stepY,
-      feedXY, feedZ,
-      depth, height
+      stepSize,
+      startX, startY, endX, endY,
+      clearanceHeight, probeStartZ, probeEndZ,
+      probeFeedrate, feedXY,
     } = this.state;
 
     this.config.set('minimized', minimized);
+    this.config.set('stepSize', stepSize);
     this.config.set('startX', startX);
-    this.config.set('endX', endX);
-    this.config.set('stepX', stepX);
     this.config.set('startY', startY);
+    this.config.set('endX', endX);
     this.config.set('endY', endY);
-    this.config.set('stepY', stepY);
+    this.config.set('clearanceHeight', clearanceHeight);
+    this.config.set('probeStartZ', probeStartZ);
+    this.config.set('probeEndZ', probeEndZ);
+    this.config.set('probeFeedrate', probeFeedrate);
     this.config.set('feedXY', feedXY);
-    this.config.set('feedZ', feedZ);
-    this.config.set('depth', depth);
-    this.config.set('height', height);
   }
 
   getInitialState() {
@@ -344,19 +463,27 @@ class AutoLevelWidget extends PureComponent {
         name: MODAL_NONE,
         params: {}
       },
-      // Probing parameters
+      // Wizard state
+      wizardView: VIEW_LANDING,
+      // Probe configuration
+      stepSize: this.config.get('stepSize', 10),
       startX: this.config.get('startX', 0),
-      endX: this.config.get('endX', 100),
-      stepX: this.config.get('stepX', 10),
       startY: this.config.get('startY', 0),
-      endY: this.config.get('endY', 100),
-      stepY: this.config.get('stepY', 10),
+      endX: this.config.get('endX', 10),
+      endY: this.config.get('endY', 10),
+      clearanceHeight: this.config.get('clearanceHeight', 10),
+      probeStartZ: this.config.get('probeStartZ', 5),
+      probeEndZ: this.config.get('probeEndZ', -5),
+      probeFeedrate: this.config.get('probeFeedrate', 5),
       feedXY: this.config.get('feedXY', 1000),
-      feedZ: this.config.get('feedZ', 100),
-      depth: this.config.get('depth', -5),
-      height: this.config.get('height', 5),
-      // Probing results
-      probingData: [],
+      // Probe state
+      probeState: PROBE_STATE_IDLE,
+      probeProgress: { current: 0, total: 0, percentage: 0 },
+      probedPositions: [],
+      probeStats: null,
+      probeFileName: '',
+      // G-code state
+      gcodeApplied: false,
     };
   }
 
@@ -417,14 +544,46 @@ class AutoLevelWidget extends PureComponent {
     return true;
   }
 
-  render() {
-    const { widgetId } = this.props;
-    const { minimized, isFullscreen } = this.state;
-    const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
+  renderContent() {
+    const { wizardView, modal } = this.state;
     const state = {
       ...this.state,
       canClick: this.canClick()
     };
+    const actions = this.actions;
+
+    return (
+      <div>
+        {modal.name === MODAL_START_PROBE_CONFIRM && (
+          <StartProbeModal
+            state={state}
+            actions={actions}
+          />
+        )}
+
+        {wizardView === VIEW_LANDING && (
+          <LandingView actions={actions} />
+        )}
+
+        {(wizardView === VIEW_SETUP_PROBE || wizardView === VIEW_PROBING) && (
+          <SetupProbeView state={state} actions={actions} />
+        )}
+
+        {wizardView === VIEW_LOAD_PROBE && (
+          <LoadProbeView state={state} actions={actions} />
+        )}
+
+        {wizardView === VIEW_APPLY && (
+          <ApplyView state={state} actions={actions} />
+        )}
+      </div>
+    );
+  }
+
+  render() {
+    const { widgetId } = this.props;
+    const { minimized, isFullscreen } = this.state;
+    const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
     const actions = this.actions;
 
     return (
@@ -438,7 +597,7 @@ class AutoLevelWidget extends PureComponent {
             {isForkedWidget &&
               <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
             }
-            {i18n._('AutoLevel')}
+            {i18n._('Auto Level')}
           </Widget.Title>
           <Widget.Controls className={this.props.sortable.filterClassName}>
             <Widget.Button
@@ -498,13 +657,7 @@ class AutoLevelWidget extends PureComponent {
             { [styles.hidden]: minimized }
           )}
         >
-          {state.modal.name === MODAL_PROBING_SETUP && (
-            <ProbingSetup state={state} actions={actions} />
-          )}
-          {state.modal.name === MODAL_APPLY_AUTOLEVEL && (
-            <ApplyAutoLevel state={state} actions={actions} />
-          )}
-          <AutoLevel state={state} actions={actions} />
+          {this.renderContent()}
         </Widget.Content>
       </Widget>
     );
