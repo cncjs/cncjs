@@ -222,10 +222,20 @@ class AutoLevelWidget extends PureComponent {
         feedXY, probeFeedrate,
       } = this.state;
 
+      // Calculate total points
+      const numPointsX = Math.floor((endX - startX) / stepSize) + 1;
+      const numPointsY = Math.floor((endY - startY) / stepSize) + 1;
+      const totalPoints = numPointsX * numPointsY;
+
       this.actions.closeModal();
       this.setState({
         probeState: PROBE_STATE_RUNNING,
         probedPositions: [],
+        probeProgress: {
+          current: 0,
+          total: totalPoints,
+          percentage: 0,
+        },
       });
 
       controller.command('autolevel:startProbing', {
