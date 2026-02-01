@@ -293,6 +293,7 @@ class Visualizer extends Component {
           this.updateCuttingToolPosition();
           this.updateCuttingPointerPosition();
           this.updateLimitsPosition();
+          this.updateProbeVisualizationPosition();
         }
       }
 
@@ -350,9 +351,21 @@ class Visualizer extends Component {
           log.info('[Visualizer] Received updateProbeVisualization event:', data);
 
           if (this.probeVisualization && typeof this.probeVisualization.updateBounds === 'function') {
-            const { startX, startY, endX, endY } = data.config;
-            log.info('[Visualizer] Updating bounds to:', { startX, startY, endX, endY });
+            const { startX, startY, endX, endY, snapSize, interactable } = data.config;
+            log.info('[Visualizer] Updating bounds to:', { startX, startY, endX, endY, snapSize, interactable });
+
+            // Update snapSize in config if provided
+            if (snapSize !== undefined && this.probeVisualization.config) {
+              this.probeVisualization.config.snapSize = snapSize;
+            }
+
             this.probeVisualization.updateBounds(startX, startY, endX, endY);
+
+            // Enable or disable interactions based on interactable flag
+            if (typeof this.probeVisualization.setInteractable === 'function' && interactable !== undefined) {
+              this.probeVisualization.setInteractable(interactable);
+            }
+
             this.updateScene({ forceUpdate: true });
             log.debug('[Visualizer] Updated probe visualization bounds from AutoLevel');
           } else {
@@ -390,7 +403,26 @@ class Visualizer extends Component {
         log.info('[Visualizer] Created and added probe visualization to group');
       } else {
         // Update existing visualization with new config
-        const { startX, startY, endX, endY } = config;
+        const { startX, startY, endX, endY, snapSize, interactable, units } = config;
+
+        // Update all config values
+        if (this.probeVisualization.config) {
+          if (snapSize !== undefined) {
+            this.probeVisualization.config.snapSize = snapSize;
+          }
+          if (units !== undefined) {
+            this.probeVisualization.config.units = units;
+          }
+          if (interactable !== undefined) {
+            this.probeVisualization.config.interactable = interactable;
+          }
+        }
+
+        // Update probe data (surface and points) - call with empty array to clear old data
+        if (typeof this.probeVisualization.updateProbeData === 'function') {
+          this.probeVisualization.updateProbeData(probeData);
+        }
+
         if (typeof this.probeVisualization.updateBounds === 'function') {
           this.probeVisualization.updateBounds(startX, startY, endX, endY);
         }
@@ -398,11 +430,14 @@ class Visualizer extends Component {
         if (typeof this.probeVisualization.recreateInteractiveElements === 'function') {
           this.probeVisualization.recreateInteractiveElements();
         }
-        // Re-bind events in case they were unbound
-        if (typeof this.probeVisualization.bindEvents === 'function') {
-          this.probeVisualization.bindEvents();
+        // Enable or disable interactions based on interactable flag
+        if (typeof this.probeVisualization.setInteractable === 'function') {
+          this.probeVisualization.setInteractable(interactable !== undefined ? interactable : false);
         }
       }
+
+      // Position the group to account for pivot point (like cutting tool)
+      this.updateProbeVisualizationPosition();
 
       // Make visible
       this.probeVisualization.group.visible = true;
@@ -1036,6 +1071,16 @@ class Visualizer extends Component {
       this.limits.position.set(x0, y0, z0);
     }
 
+    // Update probe visualization position
+    updateProbeVisualizationPosition() {
+      if (!this.probeVisualization) {
+        return;
+      }
+
+      const pivotPoint = this.pivotPoint.get();
+      this.probeVisualization.group.position.set(-pivotPoint.x, -pivotPoint.y, -pivotPoint.z);
+    }
+
     // Make the controls look at the specified position
     lookAt(x, y, z) {
       this.controls.target.x = x;
@@ -1082,6 +1127,7 @@ class Visualizer extends Component {
       this.updateCuttingToolPosition();
       this.updateCuttingPointerPosition();
       this.updateLimitsPosition();
+      this.updateProbeVisualizationPosition();
 
       if (this.viewport && dX > 0 && dY > 0) {
         // The minimum viewport is 50x50mm
@@ -1110,6 +1156,12 @@ class Visualizer extends Component {
       if (this.pivotPoint) {
         // Set the pivot point to the origin point (0, 0, 0)
         this.pivotPoint.set(0, 0, 0);
+
+        // Update positions after resetting pivot point
+        this.updateCuttingToolPosition();
+        this.updateCuttingPointerPosition();
+        this.updateLimitsPosition();
+        this.updateProbeVisualizationPosition();
       }
 
       if (this.controls) {

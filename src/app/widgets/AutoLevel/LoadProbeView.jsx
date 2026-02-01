@@ -9,7 +9,23 @@ const LoadProbeView = ({ state, actions }) => {
 
   return (
     <div className={styles.loadProbeView}>
-      <div className={styles.sectionHeader}>{i18n._('Load Probe Data')}</div>
+      <div className={styles.sectionHeader}>
+        <button
+          type="button"
+          onClick={actions.backToLanding}
+          style={{
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            font: 'inherit',
+            cursor: 'pointer',
+            marginRight: '8px'
+          }}
+        >
+          <i className="fa fa-chevron-left" />
+        </button>
+        {i18n._('Load Probe Data')}
+      </div>
 
       <div className={styles.section}>
         <div className={styles.sectionTitle}>{i18n._('Probe Data')}</div>
@@ -53,24 +69,17 @@ const LoadProbeView = ({ state, actions }) => {
         </button>
       </div>
 
-      <div className={styles.navigationFooter}>
-        <button
-          type="button"
-          className="btn btn-sm btn-default"
-          onClick={actions.backToLanding}
-        >
-          ← {i18n._('Back')}
-        </button>
-        {hasProbeData && (
+      {hasProbeData && (
+        <div style={{ marginTop: '10px' }}>
           <button
             type="button"
-            className="btn btn-sm btn-primary"
+            className="btn btn-sm btn-primary btn-block"
             onClick={actions.goToApply}
           >
             {i18n._('Continue to Apply')} →
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

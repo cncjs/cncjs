@@ -256,7 +256,23 @@ class ApplyView extends PureComponent {
 
     return (
       <div className={styles.applyView}>
-        <div className={styles.sectionHeader}>{i18n._('APPLY AUTO LEVEL')}</div>
+        <div className={styles.sectionHeader}>
+          <button
+            type="button"
+            onClick={actions.backToLanding}
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              font: 'inherit',
+              cursor: 'pointer',
+              marginRight: '8px'
+            }}
+          >
+            <i className="fa fa-chevron-left" />
+          </button>
+          {i18n._('APPLY AUTO LEVEL')}
+        </div>
 
         {/* Probe Results Summary - Always visible */}
         <div className={styles.section}>
@@ -427,17 +443,6 @@ class ApplyView extends PureComponent {
               <span role="img" aria-label="Upload">📤</span> {i18n._('Export Levelled')}<br />{i18n._('G-code')}
             </button>
           </div>
-        </div>
-
-        {/* Navigation footer */}
-        <div className={styles.navigationFooter}>
-          <button
-            type="button"
-            className="btn btn-sm btn-default"
-            onClick={actions.backToLanding}
-          >
-            <span>← </span>{i18n._('Back')}
-          </button>
         </div>
       </div>
     );

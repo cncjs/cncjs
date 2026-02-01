@@ -9,16 +9,25 @@ const SetupProbeView = ({ state, actions }) => {
   const {
     stepSize, startX, startY, endX, endY,
     clearanceHeight, probeStartZ, probeEndZ, probeFeedrate,
-    probeState, probeProgress, canClick, showProbePreview
+    probeState, probeProgress, canClick, units
   } = state;
 
   const displayUnits = i18n._('mm');
   const step = 1;
 
+  // Define step size options based on units
+  const METRIC_STEP_SIZES = [0.5, 1, 2, 5, 10, 20];
+  const IMPERIAL_STEP_SIZES = [1 / 64, 1 / 32, 1 / 16, 1 / 8, 1 / 4, 1 / 2, 1].map(v => v * 25.4);
+  const stepSizes = units === 'in' ? IMPERIAL_STEP_SIZES : METRIC_STEP_SIZES;
+  const stepLabels = units === 'in'
+    ? ['1/64"', '1/32"', '1/16"', '1/8"', '1/4"', '1/2" (default)', '1"']
+    : ['0.5mm', '1mm', '2mm', '5mm', '10mm (default)', '20mm'];
+
   const numPointsX = Math.floor((endX - startX) / stepSize) + 1;
   const numPointsY = Math.floor((endY - startY) / stepSize) + 1;
   const totalPoints = numPointsX * numPointsY;
-  const area = (endX - startX) * (endY - startY);
+  const width = endX - startX;
+  const height = endY - startY;
 
   const isProbing = probeState === PROBE_STATE_RUNNING;
   const isPaused = probeState === PROBE_STATE_PAUSED;
@@ -27,38 +36,57 @@ const SetupProbeView = ({ state, actions }) => {
 
   return (
     <div className={styles.setupProbeView}>
-      <div className={styles.sectionHeader}>{i18n._('PROBE NEW SURFACE')}</div>
+      <div className={styles.sectionHeader}>
+        <button
+          type="button"
+          onClick={actions.backToLanding}
+          disabled={!canGoBack}
+          style={{
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            font: 'inherit',
+            cursor: canGoBack ? 'pointer' : 'not-allowed',
+            opacity: canGoBack ? 1 : 0.5,
+            marginRight: '8px'
+          }}
+        >
+          <i className="fa fa-chevron-left" />
+        </button>
+        {i18n._('PROBE NEW SURFACE')}
+      </div>
+
+      <div className={styles.areaInfo} style={{ marginBottom: '10px', marginTop: '10px', lineHeight: '1.6' }}>
+        <div><span role="img" aria-label="Pin">📍</span> {totalPoints} {i18n._('points')}</div>
+        <div><span role="img" aria-label="Ruler">📐</span> {width.toFixed(1)} {displayUnits} × {height.toFixed(1)} {displayUnits}</div>
+      </div>
 
       <div className={styles.section}>
-        <div className={styles.sectionTitle}>{i18n._('Probe Grid')}</div>
+        <div className={styles.sectionTitle} style={{ fontSize: '14px' }}>{i18n._('Probe Grid')}</div>
         <div className="row no-gutters">
-          <div className="col-xs-6" style={{ paddingRight: 5 }}>
+          <div className="col-xs-12">
             <div className="form-group">
               <label className="control-label">{i18n._('Step Size')}</label>
-              <div className="input-group input-group-sm">
-                <input
-                  type="number"
-                  className="form-control"
-                  value={stepSize}
-                  min={1}
-                  step={step}
-                  onChange={actions.handleStepSizeChange}
-                  disabled={isProbing}
-                />
-                <div className="input-group-addon">{displayUnits}</div>
-              </div>
-            </div>
-          </div>
-          <div className="col-xs-6" style={{ paddingLeft: 5 }}>
-            <div className={styles.gridInfo}>
-              {i18n._('Grid')}: {numPointsX}×{numPointsY} ({totalPoints} {i18n._('points')})
+              <select
+                className="form-control input-sm"
+                value={stepSize}
+                onChange={actions.handleStepSizeChange}
+                disabled={isProbing}
+              >
+                {stepSizes.map((size, index) => (
+                  <option key={size} value={size}>
+                    {stepLabels[index]}
+                  </option>
+                ))}
+              </select>
+              <small className="text-muted">{i18n._('(snap = step ÷ 2)')}</small>
             </div>
           </div>
         </div>
       </div>
 
       <div className={styles.section}>
-        <div className={styles.sectionTitle}>{i18n._('Probe Area')}</div>
+        <div className={styles.sectionTitle} style={{ fontSize: '14px' }}>{i18n._('Probe Area')}</div>
         <div className="row no-gutters">
           <div className="col-xs-6" style={{ paddingRight: 5 }}>
             <div className="form-group">
@@ -99,13 +127,10 @@ const SetupProbeView = ({ state, actions }) => {
             </div>
           </div>
         </div>
-        <div className={styles.areaInfo}>
-          <span role="img" aria-label="Ruler">📐</span> {i18n._('Area')}: {area.toFixed(1)} {displayUnits}² | <span role="img" aria-label="Pin">📍</span> {i18n._('Points')}: {totalPoints}
-        </div>
       </div>
 
       <div className={styles.section}>
-        <div className={styles.sectionTitle}>{i18n._('Z-Axis Settings')}</div>
+        <div className={styles.sectionTitle} style={{ fontSize: '14px' }}>{i18n._('Z-Axis Settings')}</div>
         <div className="row no-gutters">
           <div className="col-xs-6" style={{ paddingRight: 5 }}>
             <div className="form-group">
@@ -151,24 +176,8 @@ const SetupProbeView = ({ state, actions }) => {
         </div>
       </div>
 
-      <div className={styles.section}>
-        <div className={styles.sectionTitle}>{i18n._('Preview')}</div>
-        <div style={{ marginBottom: 10 }}>
-          <label>
-            <input
-              type="checkbox"
-              checked={showProbePreview}
-              onChange={actions.toggleProbePreview}
-            />
-            {' '}
-            {i18n._('Show probe area in 3D viewer')}
-          </label>
-        </div>
-      </div>
-
-      <div className={styles.section}>
-        <div className={styles.sectionTitle}>{i18n._('Test & Start')}</div>
-        <div className={styles.buttonRow}>
+      <div className={styles.section} style={{ marginBottom: 0 }}>
+        <div className={styles.buttonRow} style={{ display: 'flex', justifyContent: 'space-between' }}>
           <button type="button" className="btn btn-sm btn-default" onClick={actions.runTestProbe} disabled={!canClick || isProbing}>
             <span role="img" aria-label="Microscope">🔬</span> {i18n._('Run Test Probe')}
           </button>
@@ -185,12 +194,6 @@ const SetupProbeView = ({ state, actions }) => {
       </div>
 
       {isProbing && <ProbeProgressDisplay progress={probeProgress} actions={actions} />}
-
-      <div className={styles.navigationFooter}>
-        <button type="button" className="btn btn-sm btn-default" onClick={actions.backToLanding} disabled={!canGoBack}>
-          ← {i18n._('Back')}
-        </button>
-      </div>
     </div>
   );
 };

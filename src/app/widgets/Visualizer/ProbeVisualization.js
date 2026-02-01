@@ -17,10 +17,12 @@ class ProbeVisualization {
       endX = 10,
       endY = 10,
       units = METRIC_UNITS,
+      snapSize = (units === IMPERIAL_UNITS) ? (25.4 / 64) : 5, // Default: 5mm metric, 1/64" imperial
+      interactable = false, // Whether dragging/resizing is enabled
     } = config;
 
     // Store config for later updates
-    this.config = { startX, startY, endX, endY, units };
+    this.config = { startX, startY, endX, endY, units, snapSize, interactable };
 
     // Calculate text sizes based on units
     this.labelSize = (units === IMPERIAL_UNITS) ? (25.4 / 2) : (10 / 2);
@@ -48,20 +50,35 @@ class ProbeVisualization {
     // Always draw boundary rectangle with dashed lines
     this.drawBoundary(startX, startY, endX, endY);
 
-    // Draw "Probe Area" label at top
-    this.labels.push(this.drawLabel('Probe Area', (startX + endX) / 2, endY + 5, 0));
+    // Draw "PROBE AREA" label at top
+    this.labels.push(this.drawLabel('PROBE AREA', (startX + endX) / 2, endY + 5, 0));
 
-    // Draw "Start" label at first corner
-    this.labels.push(this.drawLabel('Start', startX - 5, startY - 5, 0));
+    // Draw "START" label at first corner
+    this.labels.push(this.drawLabel('START', startX - 5, startY - 5, 0));
 
-    // Draw "End" label at opposite corner
-    this.labels.push(this.drawLabel('End', endX + 5, endY + 5, 0));
+    // Draw "END" label at opposite corner
+    this.labels.push(this.drawLabel('END', endX + 5, endY + 5, 0));
 
     // Create interactive elements only if no probe data (setup mode)
     if (probeData.length === 0) {
       this.createInteractiveElements();
 
+      // Set initial visibility based on interactable flag
+      this.cornerHandles.forEach(handle => {
+        handle.visible = interactable;
+      });
+      if (this.interactionPlane) {
+        this.interactionPlane.visible = interactable;
+      }
+      if (this.boundaryLine) {
+        this.boundaryLine.visible = interactable;
+      }
+      this.labels.forEach(label => {
+        label.visible = interactable;
+      });
+
       // Bind interaction events if camera and domElement are provided
+      // (visibility controls whether they're actually interactive)
       if (this.camera && this.domElement) {
         this.bindEvents();
       }
@@ -352,6 +369,54 @@ class ProbeVisualization {
     this.group.add(plane);
   }
 
+  updateProbeData(probeData) {
+    // Remove old probe points and surface
+    const objectsToRemove = [];
+    this.group.children.forEach(child => {
+      if (child !== this.boundaryLine &&
+          !this.cornerHandles.includes(child) &&
+          child !== this.interactionPlane &&
+          !this.labels.includes(child)) {
+        objectsToRemove.push(child);
+      }
+    });
+
+    objectsToRemove.forEach(obj => {
+      this.group.remove(obj);
+      if (obj.geometry) {
+        obj.geometry.dispose();
+      }
+      if (obj.material) {
+        obj.material.dispose();
+      }
+    });
+
+    // Redraw probe points and surface if we have data
+    if (probeData && probeData.length > 0) {
+      const zValues = probeData.map(p => p.z);
+      const minZ = Math.min(...zValues);
+      const maxZ = Math.max(...zValues);
+      const zRange = maxZ - minZ;
+
+      // Create mesh surface if we have enough points
+      if (probeData.length >= 4) {
+        this.drawProbeSurface(probeData, minZ, maxZ, zRange, this.config.startX, this.config.endX, this.config.startY, this.config.endY);
+      }
+
+      // Draw probe points with Z-offset labels
+      probeData.forEach((point, index) => {
+        const { x, y, z } = point;
+        const zOffset = index === 0 ? 0 : z - probeData[0].z;
+        const normalizedZ = zRange > 0 ? (z - minZ) / zRange : 0;
+        const color = new THREE.Color();
+        color.setHSL(0.33 - normalizedZ * 0.33, 0.8, 0.4);
+
+        this.drawProbePoint(x, y, z, color);
+        this.drawZOffsetLabel(x, y, z, zOffset);
+      });
+    }
+  }
+
   updateBounds(startX, startY, endX, endY) {
     // Update stored config
     this.config.startX = startX;
@@ -418,9 +483,8 @@ class ProbeVisualization {
 
   setHoverState(isHovered, elementType) {
     if (elementType === 'corner') {
-      // Highlight corner handles
+      // Highlight corner handles by increasing opacity only
       this.cornerHandles.forEach(handle => {
-        handle.material.color.set(isHovered ? colornames('red') : colornames('orange'));
         handle.material.opacity = isHovered ? 1.0 : 0.8;
       });
     } else if (elementType === 'area') {
@@ -431,7 +495,6 @@ class ProbeVisualization {
     } else {
       // Reset all to default
       this.cornerHandles.forEach(handle => {
-        handle.material.color.set(colornames('orange'));
         handle.material.opacity = 0.8;
       });
       if (this.boundaryLine) {
@@ -479,8 +542,31 @@ class ProbeVisualization {
     log.debug('[ProbeVisualization] Event listeners unbound');
   }
 
-  snapToGrid(value, units) {
-    const gridSize = (units === IMPERIAL_UNITS) ? 25.4 : 10;
+  setInteractable(enabled) {
+    // Update config
+    this.config.interactable = enabled;
+
+    // Show or hide interactive elements (simpler than binding/unbinding events)
+    this.cornerHandles.forEach(handle => {
+      handle.visible = enabled;
+    });
+    if (this.interactionPlane) {
+      this.interactionPlane.visible = enabled;
+    }
+
+    // Also hide boundary line and labels when not interactable
+    if (this.boundaryLine) {
+      this.boundaryLine.visible = enabled;
+    }
+    this.labels.forEach(label => {
+      label.visible = enabled;
+    });
+
+    log.info(`[ProbeVisualization] Interactions ${enabled ? 'enabled' : 'disabled'} (interactive elements ${enabled ? 'visible' : 'hidden'})`);
+  }
+
+  snapToGrid(value) {
+    const gridSize = this.config.snapSize || 5; // Use configured snap size, fallback to 5mm
     return Math.round(value / gridSize) * gridSize;
   }
 
@@ -513,6 +599,11 @@ class ProbeVisualization {
   }
 
   raycastProbeElements(event) {
+    // Don't raycast if interactions are disabled
+    if (!this.config.interactable) {
+      return null;
+    }
+
     // Get mouse world position on Z=0 plane
     const worldPos = this.screenToWorld(event.clientX, event.clientY);
     if (!worldPos) {
@@ -643,7 +734,6 @@ class ProbeVisualization {
     const localPos = this.group.worldToLocal(worldPos.clone());
     const localStartWorld = this.group.worldToLocal(this.dragStartWorld.clone());
 
-    const { units } = this.config;
     const deltaX = localPos.x - localStartWorld.x;
     const deltaY = localPos.y - localStartWorld.y;
 
@@ -654,10 +744,10 @@ class ProbeVisualization {
     let newEndY = this.initialBounds.endY + deltaY;
 
     // Snap to grid during drag for smooth grid-aligned movement
-    newStartX = this.snapToGrid(newStartX, units);
-    newStartY = this.snapToGrid(newStartY, units);
-    newEndX = this.snapToGrid(newEndX, units);
-    newEndY = this.snapToGrid(newEndY, units);
+    newStartX = this.snapToGrid(newStartX);
+    newStartY = this.snapToGrid(newStartY);
+    newEndX = this.snapToGrid(newEndX);
+    newEndY = this.snapToGrid(newEndY);
 
     // Update visualization with grid-snapped values
     this.updateBounds(newStartX, newStartY, newEndX, newEndY);
@@ -672,12 +762,11 @@ class ProbeVisualization {
     // Convert world position to group's local coordinate system
     const localPos = this.group.worldToLocal(worldPos.clone());
 
-    const { units } = this.config;
     let { startX, startY, endX, endY } = this.initialBounds;
 
     // Snap local position to grid during drag
-    const snappedX = this.snapToGrid(localPos.x, units);
-    const snappedY = this.snapToGrid(localPos.y, units);
+    const snappedX = this.snapToGrid(localPos.x);
+    const snappedY = this.snapToGrid(localPos.y);
 
     // Update the appropriate corner with snapped values
     switch (this.activeCornerIndex) {
@@ -702,7 +791,7 @@ class ProbeVisualization {
     }
 
     // Prevent negative areas
-    const minSize = (units === IMPERIAL_UNITS) ? 25.4 : 10;
+    const minSize = (this.config.units === IMPERIAL_UNITS) ? 25.4 : 10;
     if (endX <= startX) {
       if (this.activeCornerIndex === 0 || this.activeCornerIndex === 3) {
         startX = endX - minSize;
@@ -726,16 +815,16 @@ class ProbeVisualization {
     log.debug('[ProbeVisualization] End interaction, state:', this.interactionState);
 
     // Snap to grid on release
-    const { startX, startY, endX, endY, units } = this.config;
-    const snappedStartX = this.snapToGrid(startX, units);
-    const snappedStartY = this.snapToGrid(startY, units);
-    const snappedEndX = this.snapToGrid(endX, units);
-    const snappedEndY = this.snapToGrid(endY, units);
+    const { startX, startY, endX, endY } = this.config;
+    const snappedStartX = this.snapToGrid(startX);
+    const snappedStartY = this.snapToGrid(startY);
+    const snappedEndX = this.snapToGrid(endX);
+    const snappedEndY = this.snapToGrid(endY);
 
     log.info('[ProbeVisualization] Snapping to grid:', {
       before: { startX, startY, endX, endY },
       after: { startX: snappedStartX, startY: snappedStartY, endX: snappedEndX, endY: snappedEndY },
-      units
+      snapSize: this.config.snapSize
     });
 
     // Always update to snapped values

@@ -87,23 +87,6 @@ class AutoLevelWidget extends PureComponent {
       const { minimized } = this.state;
       this.setState({ minimized: !minimized });
     },
-    toggleProbePreview: () => {
-      const { showProbePreview } = this.state;
-      const newValue = !showProbePreview;
-      this.setState({ showProbePreview: newValue });
-
-      if (newValue) {
-        // Show visualization
-        const { probedPositions, startX, startY, endX, endY } = this.state;
-        pubsub.publish('autolevel:showProbeVisualization', {
-          probeData: probedPositions,
-          config: { startX, startY, endX, endY },
-        });
-      } else {
-        // Hide visualization
-        pubsub.publish('autolevel:hideProbeVisualization');
-      }
-    },
 
     // Modal management
     openModal: (name = MODAL_NONE, params = {}) => {
@@ -125,7 +108,7 @@ class AutoLevelWidget extends PureComponent {
 
     // Navigation actions
     startNewProbe: () => {
-      const { startX, startY, endX, endY, units } = this.state;
+      const { startX, startY, endX, endY, units, stepSize } = this.state;
       this.setState({ wizardView: VIEW_SETUP_PROBE });
 
       // Force hide any existing probe visualization first
@@ -137,7 +120,7 @@ class AutoLevelWidget extends PureComponent {
         log.info('[AutoLevel] Publishing probe visualization', { startX, startY, endX, endY });
         pubsub.publish('autolevel:showProbeVisualization', {
           probeData: [],
-          config: { startX, startY, endX, endY, units },
+          config: { startX, startY, endX, endY, units, snapSize: stepSize / 2, interactable: true },
         });
       }, 50);
     },
@@ -199,7 +182,7 @@ class AutoLevelWidget extends PureComponent {
           },
         });
 
-        // Show probe visualization in 3D viewer
+        // Show probe visualization in 3D viewer (no interaction in Apply view)
         pubsub.publish('autolevel:showProbeVisualization', {
           probeData: probedPositions,
           config: {
@@ -208,6 +191,8 @@ class AutoLevelWidget extends PureComponent {
             endX: maxX,
             endY: maxY,
             units: this.state.units,
+            snapSize: this.state.stepSize / 2,
+            interactable: false,
           },
         });
 
@@ -217,9 +202,19 @@ class AutoLevelWidget extends PureComponent {
       }
     },
     backToLanding: () => {
+      // Reset all probe-related state to initial values
       this.setState({
         wizardView: VIEW_LANDING,
         probeState: PROBE_STATE_IDLE,
+        probeProgress: { current: 0, total: 0, percentage: 0 },
+        probedPositions: [], // Clear probe data
+        probeStats: null, // Clear probe stats
+        probeFileName: '',
+        gcodeApplied: false,
+        modal: {
+          name: MODAL_NONE,
+          params: {}
+        }
       });
 
       // Hide probe visualization
@@ -228,12 +223,12 @@ class AutoLevelWidget extends PureComponent {
     goToApply: () => {
       this.setState({ wizardView: VIEW_APPLY });
 
-      // Update visualization when going to apply view
-      const { probedPositions, startX, startY, endX, endY, units } = this.state;
+      // Update visualization when going to apply view (no interaction in Apply view)
+      const { probedPositions, startX, startY, endX, endY, units, stepSize } = this.state;
       if (probedPositions.length > 0) {
         pubsub.publish('autolevel:showProbeVisualization', {
           probeData: probedPositions,
-          config: { startX, startY, endX, endY, units },
+          config: { startX, startY, endX, endY, units, snapSize: stepSize / 2, interactable: false },
         });
       }
     },
@@ -540,15 +535,13 @@ class AutoLevelWidget extends PureComponent {
       this.setState(state => {
         const updatedPositions = [...state.probedPositions, probedPos];
 
-        // Update 3D visualizer with current probe data
-        const { startX, startY, endX, endY, showProbePreview, units } = state;
-        if (showProbePreview) {
-          log.debug('[AutoLevel] Updating visualization with point', current, '/', total);
-          pubsub.publish('autolevel:showProbeVisualization', {
-            probeData: updatedPositions,
-            config: { startX, startY, endX, endY, units },
-          });
-        }
+        // Update 3D visualizer with current probe data (no interaction during probing)
+        const { startX, startY, endX, endY, units, stepSize } = state;
+        log.debug('[AutoLevel] Updating visualization with point', current, '/', total);
+        pubsub.publish('autolevel:showProbeVisualization', {
+          probeData: updatedPositions,
+          config: { startX, startY, endX, endY, units, snapSize: stepSize / 2, interactable: false },
+        });
 
         return {
           probedPositions: updatedPositions,
@@ -639,12 +632,13 @@ class AutoLevelWidget extends PureComponent {
           },
         });
 
-        // Show visualization
+        // Show visualization (interaction based on view)
         const { startX, startY, endX, endY } = config;
-        if (startX !== undefined && this.state.showProbePreview) {
+        if (startX !== undefined) {
+          const interactable = wizardView === VIEW_SETUP_PROBE;
           pubsub.publish('autolevel:showProbeVisualization', {
             probeData: probedPositions,
-            config: { startX, startY, endX, endY, units: this.state.units },
+            config: { startX, startY, endX, endY, units: this.state.units, snapSize: this.state.stepSize / 2, interactable },
           });
         }
 
@@ -687,10 +681,9 @@ class AutoLevelWidget extends PureComponent {
     this.config.set('probeEndZ', probeEndZ);
     this.config.set('probeFeedrate', probeFeedrate);
     this.config.set('feedXY', feedXY);
-    this.config.set('showProbePreview', this.state.showProbePreview);
 
     // Update 3D visualizer when probe configuration changes in Setup view
-    if ((wizardView === VIEW_SETUP_PROBE || wizardView === VIEW_PROBING) && this.state.showProbePreview) {
+    if (wizardView === VIEW_SETUP_PROBE || wizardView === VIEW_PROBING) {
       const configChanged = (
         prevState.startX !== startX ||
         prevState.startY !== startY ||
@@ -700,9 +693,11 @@ class AutoLevelWidget extends PureComponent {
       );
 
       if (configChanged || prevState.wizardView !== wizardView) {
+        // Only allow interaction in PROBE NEW SURFACE view
+        const interactable = wizardView === VIEW_SETUP_PROBE;
         pubsub.publish('autolevel:showProbeVisualization', {
           probeData: probedPositions,
-          config: { startX, startY, endX, endY, units: this.state.units },
+          config: { startX, startY, endX, endY, units: this.state.units, snapSize: stepSize / 2, interactable },
         });
       }
     }
@@ -747,8 +742,6 @@ class AutoLevelWidget extends PureComponent {
       probeFileName: '',
       // G-code state
       gcodeApplied: false,
-      // UI state
-      showProbePreview: this.config.get('showProbePreview', true),
     };
   }
 
