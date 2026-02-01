@@ -9,7 +9,7 @@ const SetupProbeView = ({ state, actions }) => {
   const {
     stepSize, startX, startY, endX, endY,
     clearanceHeight, probeStartZ, probeEndZ, probeFeedrate,
-    probeState, probeProgress, canClick
+    probeState, probeProgress, canClick, showProbePreview
   } = state;
 
   const displayUnits = i18n._('mm');
@@ -64,7 +64,7 @@ const SetupProbeView = ({ state, actions }) => {
             <div className="form-group">
               <label className="control-label">{i18n._('Start X')}</label>
               <div className="input-group input-group-sm">
-                <input type="number" className="form-control" value={startX} step={step} onChange={actions.handleStartXChange} disabled={isProbing} />
+                <input type="number" className="form-control" name="startX" value={startX} step={step} min={-1000} onChange={actions.handleStartXChange} onFocus={actions.handleInputFocus} onBlur={actions.handleProbeAreaBlur} disabled={isProbing} />
                 <div className="input-group-addon">{displayUnits}</div>
               </div>
             </div>
@@ -73,7 +73,7 @@ const SetupProbeView = ({ state, actions }) => {
             <div className="form-group">
               <label className="control-label">{i18n._('Start Y')}</label>
               <div className="input-group input-group-sm">
-                <input type="number" className="form-control" value={startY} step={step} onChange={actions.handleStartYChange} disabled={isProbing} />
+                <input type="number" className="form-control" name="startY" value={startY} step={step} min={-1000} onChange={actions.handleStartYChange} onFocus={actions.handleInputFocus} onBlur={actions.handleProbeAreaBlur} disabled={isProbing} />
                 <div className="input-group-addon">{displayUnits}</div>
               </div>
             </div>
@@ -84,7 +84,7 @@ const SetupProbeView = ({ state, actions }) => {
             <div className="form-group">
               <label className="control-label">{i18n._('End X')}</label>
               <div className="input-group input-group-sm">
-                <input type="number" className="form-control" value={endX} step={step} onChange={actions.handleEndXChange} disabled={isProbing} />
+                <input type="number" className="form-control" name="endX" value={endX} step={step} min={-1000} onChange={actions.handleEndXChange} onFocus={actions.handleInputFocus} onBlur={actions.handleProbeAreaBlur} disabled={isProbing} />
                 <div className="input-group-addon">{displayUnits}</div>
               </div>
             </div>
@@ -93,7 +93,7 @@ const SetupProbeView = ({ state, actions }) => {
             <div className="form-group">
               <label className="control-label">{i18n._('End Y')}</label>
               <div className="input-group input-group-sm">
-                <input type="number" className="form-control" value={endY} step={step} onChange={actions.handleEndYChange} disabled={isProbing} />
+                <input type="number" className="form-control" name="endY" value={endY} step={step} min={-1000} onChange={actions.handleEndYChange} onFocus={actions.handleInputFocus} onBlur={actions.handleProbeAreaBlur} disabled={isProbing} />
                 <div className="input-group-addon">{displayUnits}</div>
               </div>
             </div>
@@ -152,14 +152,35 @@ const SetupProbeView = ({ state, actions }) => {
       </div>
 
       <div className={styles.section}>
+        <div className={styles.sectionTitle}>{i18n._('Preview')}</div>
+        <div style={{ marginBottom: 10 }}>
+          <label>
+            <input
+              type="checkbox"
+              checked={showProbePreview}
+              onChange={actions.toggleProbePreview}
+            />
+            {' '}
+            {i18n._('Show probe area in 3D viewer')}
+          </label>
+        </div>
+      </div>
+
+      <div className={styles.section}>
         <div className={styles.sectionTitle}>{i18n._('Test & Start')}</div>
         <div className={styles.buttonRow}>
           <button type="button" className="btn btn-sm btn-default" onClick={actions.runTestProbe} disabled={!canClick || isProbing}>
             <span role="img" aria-label="Microscope">🔬</span> {i18n._('Run Test Probe')}
           </button>
-          <button type="button" className="btn btn-sm btn-primary" onClick={actions.showStartProbeConfirmation} disabled={!canClick || isProbing}>
-            ▶ {i18n._('Start Probing')}
-          </button>
+          {!isProbing ? (
+            <button type="button" className="btn btn-sm btn-primary" onClick={actions.showStartProbeConfirmation} disabled={!canClick}>
+              ▶ {i18n._('Start Probing')}
+            </button>
+          ) : (
+            <button type="button" className="btn btn-sm btn-danger" onClick={actions.showStopProbeConfirmation}>
+              ⏹ {i18n._('Stop Probing')}
+            </button>
+          )}
         </div>
       </div>
 

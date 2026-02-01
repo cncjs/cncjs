@@ -712,6 +712,7 @@ class GrblController {
         const { name, value } = res;
 
         if (name === 'PRB') {
+          log.debug('[autolevel] PRB parameter received:', value);
           // Machine position
           const {
             x: mposx,
@@ -755,6 +756,11 @@ class GrblController {
             };
 
             // Track probe data if probing is active
+            log.debug('[autolevel] Checking probe state:', {
+              probePoints: this.probeState.probePoints.length,
+              probedPositions: this.probeState.probedPositions.length,
+              probedPos
+            });
             if (this.probeState.probePoints.length > 0 && this.probeState.probedPositions.length < this.probeState.probePoints.length) {
               const newProbedPositions = [...this.probeState.probedPositions, probedPos];
               const isCompleted = newProbedPositions.length >= this.probeState.probePoints.length;
@@ -1794,6 +1800,8 @@ class GrblController {
               probeFeedrate,
             },
           };
+
+          log.info(`[autolevel:start] Initialized probeState with ${probePoints.length} points`);
 
           // Generate probe G-code
           const probeGCodes = [];

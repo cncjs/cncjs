@@ -27,6 +27,7 @@ import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
 import GCodeVisualizer from './GCodeVisualizer';
+import ProbeVisualization from './ProbeVisualization';
 import {
   CAMERA_MODE_PAN,
   CAMERA_MODE_ROTATE
@@ -76,6 +77,8 @@ class Visualizer extends Component {
     machineProfile = store.get('workspace.machineProfile');
 
     group = new THREE.Group();
+
+    probeVisualization = null;
 
     pivotPoint = new PivotPoint3({ x: 0, y: 0, z: 0 }, (x, y, z) => { // relative position
       _each(this.group.children, (o) => {
@@ -336,6 +339,25 @@ class Visualizer extends Component {
       const tokens = [
         pubsub.subscribe('resize', (msg) => {
           this.resizeRenderer();
+        }),
+        pubsub.subscribe('autolevel:showProbeVisualization', (msg, data) => {
+          this.showProbeVisualization(data);
+        }),
+        pubsub.subscribe('autolevel:hideProbeVisualization', (msg) => {
+          this.hideProbeVisualization();
+        }),
+        pubsub.subscribe('autolevel:updateProbeVisualization', (msg, data) => {
+          log.info('[Visualizer] Received updateProbeVisualization event:', data);
+
+          if (this.probeVisualization && typeof this.probeVisualization.updateBounds === 'function') {
+            const { startX, startY, endX, endY } = data.config;
+            log.info('[Visualizer] Updating bounds to:', { startX, startY, endX, endY });
+            this.probeVisualization.updateBounds(startX, startY, endX, endY);
+            this.updateScene({ forceUpdate: true });
+            log.debug('[Visualizer] Updated probe visualization bounds from AutoLevel');
+          } else {
+            log.warn('[Visualizer] Cannot update bounds - probeVisualization or updateBounds not available');
+          }
         })
       ];
       this.pubsubTokens = this.pubsubTokens.concat(tokens);
@@ -346,6 +368,55 @@ class Visualizer extends Component {
         pubsub.unsubscribe(token);
       });
       this.pubsubTokens = [];
+    }
+
+    showProbeVisualization(data) {
+      const { probeData = [], config = {} } = data;
+
+      log.debug('[Visualizer] showProbeVisualization', { probeData: probeData.length, config });
+
+      // If probe visualization doesn't exist, create it once
+      if (!this.probeVisualization) {
+        this.probeVisualization = new ProbeVisualization(
+          probeData,
+          config,
+          this.camera,
+          this.renderer.domElement,
+          this.controls,
+          () => this.updateScene({ forceUpdate: true }) // Scene update callback for smooth drag
+        );
+        this.probeVisualization.group.visible = false; // Start hidden
+        this.group.add(this.probeVisualization.group);
+        log.info('[Visualizer] Created and added probe visualization to group');
+      } else {
+        // Update existing visualization with new config
+        const { startX, startY, endX, endY } = config;
+        if (typeof this.probeVisualization.updateBounds === 'function') {
+          this.probeVisualization.updateBounds(startX, startY, endX, endY);
+        }
+        // Recreate interactive elements with new bounds
+        if (typeof this.probeVisualization.recreateInteractiveElements === 'function') {
+          this.probeVisualization.recreateInteractiveElements();
+        }
+        // Re-bind events in case they were unbound
+        if (typeof this.probeVisualization.bindEvents === 'function') {
+          this.probeVisualization.bindEvents();
+        }
+      }
+
+      // Make visible
+      this.probeVisualization.group.visible = true;
+      this.updateScene({ forceUpdate: true });
+    }
+
+    hideProbeVisualization() {
+      if (this.probeVisualization) {
+        log.debug('[Visualizer] hideProbeVisualization');
+
+        // Just hide, don't dispose (keeps events bound for next show)
+        this.probeVisualization.group.visible = false;
+        this.updateScene({ forceUpdate: true });
+      }
     }
 
     // https://tylercipriani.com/blog/2014/07/12/crossbrowser-javascript-scrollbar-detection/
@@ -751,6 +822,28 @@ class Visualizer extends Component {
         this.updateLimitsPosition();
       }
 
+      { // Probe Visualization
+        // Create with default bounds, will be updated when shown
+        const defaultConfig = {
+          startX: 0,
+          startY: 0,
+          endX: 10,
+          endY: 10,
+          units: units
+        };
+        this.probeVisualization = new ProbeVisualization(
+          [], // No probe data initially
+          defaultConfig,
+          this.camera,
+          this.renderer.domElement,
+          this.controls,
+          () => this.updateScene({ forceUpdate: true })
+        );
+        this.probeVisualization.group.name = 'ProbeVisualization';
+        this.probeVisualization.group.visible = false; // Hidden by default
+        this.group.add(this.probeVisualization.group);
+      }
+
       this.scene.add(this.group);
     }
 
@@ -766,6 +859,11 @@ class Visualizer extends Component {
     }
 
     clearScene() {
+      // Dispose probe visualization events before clearing
+      if (this.probeVisualization && typeof this.probeVisualization.dispose === 'function') {
+        this.probeVisualization.dispose();
+      }
+
       // to iterrate over all children (except the first) in a scene
       const objsToRemove = _tail(this.scene.children);
       _each(objsToRemove, (obj) => {

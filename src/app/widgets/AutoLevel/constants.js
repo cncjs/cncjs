@@ -34,7 +34,9 @@ export const {
 export const {
   MODAL_NONE,
   MODAL_START_PROBE_CONFIRM,
+  MODAL_STOP_PROBE_CONFIRM,
 } = constants('widgets/AutoLevel/modals', [
   'MODAL_NONE',
   'MODAL_START_PROBE_CONFIRM',
+  'MODAL_STOP_PROBE_CONFIRM',
 ]);
