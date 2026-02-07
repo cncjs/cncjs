@@ -1,51 +1,45 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Button } from 'app/components/Buttons';
 import i18n from 'app/lib/i18n';
 import styles from './LandingView.styl';
 
 const LandingView = ({ actions }) => {
   return (
     <div className={styles.landingView}>
-      <div className={styles.landingPrompt}>
-        {i18n._('Choose how to proceed:')}
-      </div>
-
       <div className={styles.pathCard}>
-        <div className={styles.pathIcon}>
-          <span role="img" aria-label="Target">🎯</span>
-        </div>
+
         <div className={styles.pathTitle}>
+          <span role="img" aria-label="Target" style={{ fontSize: 22 }}>🎯</span>
           {i18n._('PROBE NEW SURFACE')}
         </div>
         <div className={styles.pathDescription}>
           {i18n._('Configure probe region and run auto-leveling on your PCB to create new probe data.')}
         </div>
-        <button
-          type="button"
-          className="btn btn-primary btn-block"
+        <Button
+          btnStyle="flat"
+          btnSize="md"
           onClick={actions.startNewProbe}
         >
-          {i18n._('Start Setup')} →
-        </button>
+          {i18n._('Start New Probe')}
+        </Button>
       </div>
 
       <div className={styles.pathCard}>
-        <div className={styles.pathIcon}>
-          <span role="img" aria-label="Folder">📂</span>
-        </div>
         <div className={styles.pathTitle}>
-          {i18n._('LOAD EXISTING PROBE DATA')}
+          <span role="img" aria-label="Wrench" style={{ fontSize: 22 }}>🔧</span>
+          {i18n._('APPLY AUTO-LEVEL')}
         </div>
         <div className={styles.pathDescription}>
           {i18n._('Load a previously saved .probe file and apply it directly to your G-code.')}
         </div>
-        <button
-          type="button"
-          className="btn btn-default btn-block"
+        <Button
+          btnStyle="flat"
+          btnSize="md"
           onClick={actions.loadProbeFile}
         >
-          {i18n._('Load .probe File')}
-        </button>
+          {i18n._('Load Probe Data')}
+        </Button>
       </div>
 
       <div className={styles.landingTip}>

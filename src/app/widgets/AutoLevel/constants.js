@@ -40,3 +40,14 @@ export const {
   'MODAL_START_PROBE_CONFIRM',
   'MODAL_STOP_PROBE_CONFIRM',
 ]);
+
+// Processing phases for G-code compensation pipeline
+export const {
+  PROCESSING_PHASE_READING,
+  PROCESSING_PHASE_COMPENSATING,
+  PROCESSING_PHASE_LOADING,
+} = constants('widgets/AutoLevel/processingPhases', [
+  'PROCESSING_PHASE_READING',
+  'PROCESSING_PHASE_COMPENSATING',
+  'PROCESSING_PHASE_LOADING',
+]);

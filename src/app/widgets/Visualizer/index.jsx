@@ -133,26 +133,46 @@ const displayWebGLErrorMessage = () => {
   ));
 };
 
-const GCodeName = ({ name, style, ...props }) => {
+const GCodeName = ({ name, isAutoLevelled, style, ...props }) => {
   if (!name) {
     return null;
   }
 
   return (
-    <div
-      style={{
-        display: 'inline-block',
-        position: 'absolute',
-        bottom: 8,
-        left: 8,
-        fontSize: '1.5rem',
-        color: '#000',
-        opacity: 0.5,
-        ...style,
-      }}
-      {...props}
-    >
-      {name}
+    <div>
+      <div
+        style={{
+          display: 'inline-block',
+          position: 'absolute',
+          bottom: 8,
+          left: 8,
+          fontSize: '1.5rem',
+          color: '#000',
+          opacity: 0.5,
+          ...style,
+        }}
+        {...props}
+      >
+        {name}
+      </div>
+      {isAutoLevelled && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            fontSize: '1.2rem',
+            color: '#d9534f',
+            fontWeight: 'bold',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            padding: '4px 8px',
+            borderRadius: '3px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+          }}
+        >
+          Auto Levelled
+        </div>
+      )}
     </div>
   );
 };
@@ -263,7 +283,7 @@ class VisualizerWidget extends PureComponent {
           log.debug(data); // TODO
         });
       },
-      loadGCode: (name, gcode) => {
+      loadGCode: (name, gcode, isAutoLevelled = false) => {
         const capable = {
           view3D: !!this.visualizer
         };
@@ -275,6 +295,7 @@ class VisualizerWidget extends PureComponent {
             rendering: capable.view3D,
             ready: !capable.view3D,
             content: gcode,
+            isAutoLevelled: isAutoLevelled,
             bbox: {
               min: {
                 x: 0,
@@ -359,6 +380,7 @@ class VisualizerWidget extends PureComponent {
             rendering: false,
             ready: false,
             content: '',
+            isAutoLevelled: false,
             bbox: {
               min: {
                 x: 0,
@@ -605,7 +627,9 @@ class VisualizerWidget extends PureComponent {
       },
       'gcode:load': (name, gcode, context) => {
         gcode = translateExpression(gcode, context); // e.g. xmin,xmax,ymin,ymax,zmin,zmax
-        this.actions.loadGCode(name, gcode);
+        // Preserve existing isAutoLevelled flag when loading from controller
+        const isAutoLevelled = this.state.gcode.isAutoLevelled;
+        this.actions.loadGCode(name, gcode, isAutoLevelled);
       },
       'gcode:unload': () => {
         this.actions.unloadGCode();
@@ -832,6 +856,20 @@ class VisualizerWidget extends PureComponent {
     componentDidMount() {
       this.addControllerEvents();
 
+      // Subscribe to gcode:load pubsub events for metadata (e.g., isAutoLevelled flag)
+      this.pubsubTokens.push(
+        pubsub.subscribe('gcode:load', (_msg, data) => {
+          if (data && typeof data === 'object' && 'isAutoLevelled' in data) {
+            this.setState((state) => ({
+              gcode: {
+                ...state.gcode,
+                isAutoLevelled: !!data.isAutoLevelled
+              }
+            }));
+          }
+        })
+      );
+
       if (!WebGL.isWebGLAvailable() && !this.state.disabled) {
         displayWebGLErrorMessage();
 
@@ -845,6 +883,12 @@ class VisualizerWidget extends PureComponent {
 
     componentWillUnmount() {
       this.removeControllerEvents();
+
+      // Unsubscribe from pubsub events
+      this.pubsubTokens.forEach(token => {
+        pubsub.unsubscribe(token);
+      });
+      this.pubsubTokens = [];
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -927,7 +971,8 @@ class VisualizerWidget extends PureComponent {
           size: 0,
           total: 0,
           sent: 0,
-          received: 0
+          received: 0,
+          isAutoLevelled: false
         },
         disabled: this.config.get('disabled', false),
         projection: this.config.get('projection', 'orthographic'),
@@ -1076,6 +1121,7 @@ class VisualizerWidget extends PureComponent {
             {(showVisualizer && state.gcode.displayName) && (
               <GCodeName
                 name={state.gcode.name}
+                isAutoLevelled={state.gcode.isAutoLevelled}
               />
             )}
             {showNotifications && (

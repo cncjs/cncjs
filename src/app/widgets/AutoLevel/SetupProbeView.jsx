@@ -45,7 +45,6 @@ const SetupProbeView = ({ state, actions }) => {
             background: 'none',
             border: 'none',
             padding: 0,
-            font: 'inherit',
             cursor: canGoBack ? 'pointer' : 'not-allowed',
             opacity: canGoBack ? 1 : 0.5,
             marginRight: '8px'
@@ -62,7 +61,7 @@ const SetupProbeView = ({ state, actions }) => {
       </div>
 
       <div className={styles.section}>
-        <div className={styles.sectionTitle} style={{ fontSize: '14px' }}>{i18n._('Probe Grid')}</div>
+        <div className={styles.sectionTitle}>{i18n._('Probe Grid')}</div>
         <div className="row no-gutters">
           <div className="col-xs-12">
             <div className="form-group">
@@ -86,7 +85,7 @@ const SetupProbeView = ({ state, actions }) => {
       </div>
 
       <div className={styles.section}>
-        <div className={styles.sectionTitle} style={{ fontSize: '14px' }}>{i18n._('Probe Area')}</div>
+        <div className={styles.sectionTitle}>{i18n._('Probe Area')}</div>
         <div className="row no-gutters">
           <div className="col-xs-6" style={{ paddingRight: 5 }}>
             <div className="form-group">
@@ -130,7 +129,7 @@ const SetupProbeView = ({ state, actions }) => {
       </div>
 
       <div className={styles.section}>
-        <div className={styles.sectionTitle} style={{ fontSize: '14px' }}>{i18n._('Z-Axis Settings')}</div>
+        <div className={styles.sectionTitle}>{i18n._('Z-Axis Settings')}</div>
         <div className="row no-gutters">
           <div className="col-xs-6" style={{ paddingRight: 5 }}>
             <div className="form-group">

@@ -50,6 +50,8 @@ import {
   MODAL_NONE,
   MODAL_START_PROBE_CONFIRM,
   MODAL_STOP_PROBE_CONFIRM,
+  PROCESSING_PHASE_COMPENSATING,
+  PROCESSING_PHASE_LOADING,
 } from './constants';
 import styles from './index.styl';
 
@@ -394,8 +396,12 @@ class AutoLevelWidget extends PureComponent {
     },
 
     // G-code operations
-    applyToGcode: (gcode, gcodeFileName, port) => {
+    applyToGcode: (gcode, gcodeFileName, port, onSuccess, onError, onProgress) => {
       const { probedPositions } = this.state;
+
+      if (onProgress) {
+        onProgress(PROCESSING_PHASE_COMPENSATING);
+      }
 
       controller.command('autolevel:applyProbeCompensation', {
         gcode,
@@ -403,22 +409,44 @@ class AutoLevelWidget extends PureComponent {
       }, (err, result) => {
         if (err) {
           log.error('Error applying auto-level:', err);
+          if (onError) {
+            onError(String(err));
+          }
+          return;
+        }
+
+        if (!result || !result.compensatedGcode) {
+          log.error('Invalid result from compensation:', result);
+          if (onError) {
+            onError('Invalid compensation result');
+          }
           return;
         }
 
         const { compensatedGcode } = result;
+
+        if (onProgress) {
+          onProgress(PROCESSING_PHASE_LOADING);
+        }
 
         // Load compensated G-code to server
         const name = `AL_${gcodeFileName}`;
         api.loadGCode({ port, name, gcode: compensatedGcode })
           .then((res) => {
             const { name: loadedName = '', gcode: loadedGcode = '' } = { ...res.body };
-            pubsub.publish('gcode:load', { name: loadedName, gcode: loadedGcode });
+            pubsub.publish('gcode:load', { name: loadedName, gcode: loadedGcode, isAutoLevelled: true });
             this.setState({ gcodeApplied: true });
             log.info('Auto-level applied and G-code loaded to server');
+
+            if (onSuccess) {
+              onSuccess(compensatedGcode);
+            }
           })
-          .catch(() => {
-            log.error('Failed to load compensated G-code to server');
+          .catch((error) => {
+            log.error('Failed to load compensated G-code to server:', error);
+            if (onError) {
+              onError('Failed to load compensated G-code to workspace');
+            }
           });
       });
     },
@@ -447,6 +475,10 @@ class AutoLevelWidget extends PureComponent {
         log.info('Levelled G-code exported');
       });
     },
+    resetGcodeApplied: () => {
+      this.setState({ gcodeApplied: false });
+      log.info('[AutoLevel] Reset apply state for new G-code file');
+    },
     closeWidget: () => {
       this.setState({
         wizardView: VIEW_LANDING,
@@ -458,10 +490,6 @@ class AutoLevelWidget extends PureComponent {
 
       // Hide probe visualization
       pubsub.publish('autolevel:hideProbeVisualization');
-    },
-    resetGcodeApplied: () => {
-      this.setState({ gcodeApplied: false });
-      log.info('[AutoLevel] Reset apply state for new G-code file');
     },
   };
 

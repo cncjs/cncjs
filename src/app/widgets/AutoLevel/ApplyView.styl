@@ -1,43 +1,65 @@
 // Apply View
 .apply-view {
-  padding: 5px 0;
+  padding: 8px 0;
 }
 
 .section-header {
   font-size: 14px;
   font-weight: 600;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
   border-bottom: 2px solid #e0e0e0;
   color: #333;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .section {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
 }
 
 .section-title {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   margin-bottom: 8px;
   color: #555;
-  border-bottom: 1px solid #e8e8e8;
-  padding-bottom: 4px;
 }
 
 // Probe data info
 .probe-data-info {
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 4px;
+  padding: 12px;
+  background-color: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 3px;
+  font-size: 12px;  
+}
+
+// G-code data info
+.gcode-data-info {
+  padding: 12px;
+  background-color: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 3px;
   font-size: 12px;
 }
 
 .info-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 6px;
+  align-items: baseline;
+  margin-bottom: 8px;
+  line-height: 1.4;
 
   &:last-child {
     margin-bottom: 0;
@@ -45,105 +67,156 @@
 }
 
 .info-label {
-  color: #666;
+  color: #888;
+  font-size: 12px;
 }
 
 .info-value {
   font-weight: 500;
   color: #333;
+  font-size: 12px;
 }
 
 // No G-code state
 .no-gcode-section {
   text-align: center;
-  padding: 20px 10px;
+  padding: 24px 12px;
 }
 
 .no-gcode-text {
-  color: #666;
-  font-size: 13px;
-  margin-bottom: 8px;
-}
-
-.load-prompt {
-  color: #888;
-  font-size: 11px;
-  margin-bottom: 5px;
-}
-
-// G-code loaded state
-.file-info-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.file-info {
+  color: #999;
   font-size: 12px;
-  padding: 8px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-bottom: 6px;
 }
 
-.gcode-toggle {
-  margin: 10px 0;
+// Warning box (insufficient probe data)
+.warning-box {
   font-size: 12px;
-
-  label {
-    cursor: pointer;
-    user-select: none;
-    display: block;
-    margin-bottom: 5px;
-
-    input[type="radio"] {
-      margin-right: 4px;
-    }
-  }
+  color: #856404;
+  padding: 12px;
+  background-color: #fff9e6;
+  border: 1px solid #ffeaa7;
+  border-radius: 3px;
+  line-height: 1.5;
 }
 
-.gcode-info {
-  font-size: 11px;
-  color: #666;
-  margin-top: 8px;
+// Pipeline progress state
+.pipeline-progress {
+  padding: 16px 12px;
+  background-color: #f7fbff;
+  border: 1px solid #e3f0ff;
+  border-radius: 3px;
+  text-align: center;
 }
 
-.loading-message {
+.progress-text {
   font-size: 12px;
   color: #0275d8;
-  padding: 8px;
-  background-color: #f0f7ff;
-  border-radius: 4px;
-  text-align: center;
-  margin-top: 8px;
+  margin-bottom: 12px;
+  font-weight: 500;
 }
 
-// Success message
-.success-message {
-  font-size: 12px;
-  color: #5cb85c;
-  padding: 8px;
-  background-color: #f0f8f0;
-  border-radius: 4px;
-  text-align: center;
+.progress-bar {
+  height: 4px;
+  background-color: #d4e5f7;
+  border-radius: 2px;
+  overflow: hidden;
 }
 
-// Action buttons (side by side)
-.action-buttons {
-  display: flex;
-  gap: 8px;
+.progress-bar-indeterminate {
+  height: 100%;
+  width: 40%;
+  background-color: #0275d8;
+  border-radius: 2px;
+  animation: indeterminate 1.5s ease-in-out infinite;
+}
 
-  button {
-    flex: 1;
-    white-space: normal;
-    height: auto;
-    padding: 8px 4px;
-    line-height: 1.3;
+@keyframes indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
   }
 }
+
+// Pipeline success state
+.pipeline-success {
+  display: flex;
+  align-items: center;
+  padding: 14px 12px;
+  background-color: #f8fdf8;
+  border: 1px solid #e3f2e3;
+  border-radius: 3px;
+  margin-bottom: 12px;
+}
+
+.success-icon {
+  font-size: 18px;
+  color: #5cb85c;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.success-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.success-file-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #2d2d2d;
+  word-break: break-all;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.success-message {
+  font-size: 10px;
+  color: #5cb85c;
+  margin-top: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+// Pipeline error state
+.pipeline-error {
+  display: flex;
+  align-items: flex-start;
+  padding: 14px 12px;
+  background-color: #fff5f5;
+  border: 1px solid #ffe0e0;
+  border-radius: 3px;
+  margin-bottom: 12px;
+}
+
+.error-icon {
+  font-size: 16px;
+  color: #d9534f;
+  margin-right: 12px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.error-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.error-file-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #c9302c;
+}
+
+.error-detail {
+  font-size: 10px;
+  color: #999;
+  margin-top: 4px;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
 
 // Navigation
 .navigation-footer {
@@ -156,8 +229,8 @@
 
 .no-data {
   text-align: center;
-  padding: 20px;
-  color: #999;
+  padding: 24px 16px;
+  color: #aaa;
   font-style: italic;
-  font-size: 12px;
+  font-size: 11px;
 }
