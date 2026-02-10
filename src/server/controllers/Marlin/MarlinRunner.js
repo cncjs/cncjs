@@ -5,18 +5,18 @@ import MarlinLineParserResultStart from './MarlinLineParserResultStart';
 import MarlinLineParserResultFirmware from './MarlinLineParserResultFirmware';
 import MarlinLineParserResultPosition from './MarlinLineParserResultPosition';
 import MarlinLineParserResultOk from './MarlinLineParserResultOk';
+import MarlinLineParserResultAdvancedOk from './MarlinLineParserResultAdvancedOk';
 import MarlinLineParserResultEcho from './MarlinLineParserResultEcho';
 import MarlinLineParserResultError from './MarlinLineParserResultError';
 import MarlinLineParserResultTemperature from './MarlinLineParserResultTemperature';
 
 class MarlinRunner extends events.EventEmitter {
   state = {
-    machineState: '',
     pos: {
       x: '0.000',
       y: '0.000',
       z: '0.000',
-      e: '0.000',
+      e: '0.000'
     },
     modal: {
       motion: 'G0', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
@@ -27,15 +27,16 @@ class MarlinRunner extends events.EventEmitter {
       feedrate: 'G94', // G93: Inverse time mode, G94: Units per minute
       program: 'M0', // M0, M1, M2, M30
       spindle: 'M5', // M3: Spindle (cw), M4: Spindle (ccw), M5: Spindle off
-      coolant: 'M9', // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
+      coolant: 'M9' // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
     },
     ovF: 100,
     ovS: 100,
     extruder: {}, // { deg, degTarget, power }
     heatedBed: {}, // { deg, degTarget, power }
+    hotend: {}, // { T0: { deg, degTarget, power }, T1: { deg, degTarget, power }, ... }
     rapidFeedrate: 0, // Related to G0
     feedrate: 0, // Related to G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
-    spindle: 0, // Related to M3, M4, M5
+    spindle: 0 // Related to M3, M4, M5
   };
 
   settings = {
@@ -96,7 +97,7 @@ class MarlinRunner extends events.EventEmitter {
       this.emit('pos', payload);
       return;
     }
-    if (type === MarlinLineParserResultOk) {
+    if (type === MarlinLineParserResultOk || type === MarlinLineParserResultAdvancedOk) {
       this.emit('ok', payload);
       return;
     }
@@ -113,16 +114,21 @@ class MarlinRunner extends events.EventEmitter {
         ...this.state,
         extruder: {
           ...this.state.extruder,
-          ...payload.extruder
+          ...payload.extruder,
         },
         heatedBed: {
           ...this.state.heatedBed,
-          ...payload.heatedBed
-        }
+          ...payload.heatedBed,
+        },
+        hotend: {
+          ...this.state.hotend,
+          ...payload.hotend,
+        },
       };
 
       if (!_.isEqual(this.state.extruder, nextState.extruder) ||
-              !_.isEqual(this.state.heatedBed, nextState.heatedBed)) {
+          !_.isEqual(this.state.heatedBed, nextState.heatedBed) ||
+          !_.isEqual(this.state.hotend, nextState.hotend)) {
         this.state = nextState; // enforce change
       }
 

@@ -3,6 +3,7 @@ import MarlinLineParserResultEcho from './MarlinLineParserResultEcho';
 import MarlinLineParserResultError from './MarlinLineParserResultError';
 import MarlinLineParserResultFirmware from './MarlinLineParserResultFirmware';
 import MarlinLineParserResultOk from './MarlinLineParserResultOk';
+import MarlinLineParserResultAdvancedOk from './MarlinLineParserResultAdvancedOk';
 import MarlinLineParserResultPosition from './MarlinLineParserResultPosition';
 import MarlinLineParserResultStart from './MarlinLineParserResultStart';
 import MarlinLineParserResultTemperature from './MarlinLineParserResultTemperature';
@@ -19,9 +20,6 @@ class MarlinLineParser {
       // X:0.00 Y:0.00 Z:0.00 E:0.00 Count X:0 Y:0 Z:0
       MarlinLineParserResultPosition,
 
-      // ok
-      MarlinLineParserResultOk,
-
       // echo:
       MarlinLineParserResultEcho,
 
@@ -30,7 +28,13 @@ class MarlinLineParser {
 
       // ok T:293.0 /0.0 B:25.9 /0.0 @:0 B@:0
       //  T:293.0 /0.0 B:25.9 /0.0 @:0 B@:0
-      MarlinLineParserResultTemperature
+      MarlinLineParserResultTemperature,
+
+      // ok
+      MarlinLineParserResultOk,
+
+      // ok N10 P15 B3
+      MarlinLineParserResultAdvancedOk,
     ];
 
     for (let parser of parsers) {
