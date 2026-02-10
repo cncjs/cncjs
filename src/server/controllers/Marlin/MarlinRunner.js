@@ -97,7 +97,7 @@ class MarlinRunner extends events.EventEmitter {
         this.emit('pos', payload);
         return;
       }
-      if (type === MarlinLineParserResultOk || type == MarlinLineParserResultAdvancedOk) {
+      if (type === MarlinLineParserResultOk || type === MarlinLineParserResultAdvancedOk) {
         this.emit('ok', payload);
         return;
       }
