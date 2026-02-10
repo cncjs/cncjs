@@ -1,12 +1,7 @@
 class MarlinLineParserResultOk {
   // ok
   static parse(line) {
-    //Fix issues on latest marlin where responses can look like:
-    //M105
-    //ok T:0
-    //S_XYZ:0 
-    //ok P15 B3
-    const r = line.match(/^ok(\s|$)/i);
+    const r = line.match(/^ok$/);
     if (!r) {
       return null;
     }

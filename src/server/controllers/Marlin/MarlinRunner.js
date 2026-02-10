@@ -5,6 +5,7 @@ import MarlinLineParserResultStart from './MarlinLineParserResultStart';
 import MarlinLineParserResultFirmware from './MarlinLineParserResultFirmware';
 import MarlinLineParserResultPosition from './MarlinLineParserResultPosition';
 import MarlinLineParserResultOk from './MarlinLineParserResultOk';
+import MarlinLineParserResultAdvancedOk from './MarlinLineParserResultAdvancedOk';
 import MarlinLineParserResultEcho from './MarlinLineParserResultEcho';
 import MarlinLineParserResultError from './MarlinLineParserResultError';
 import MarlinLineParserResultTemperature from './MarlinLineParserResultTemperature';
@@ -96,7 +97,7 @@ class MarlinRunner extends events.EventEmitter {
         this.emit('pos', payload);
         return;
       }
-      if (type === MarlinLineParserResultOk) {
+      if (type === MarlinLineParserResultOk || type == MarlinLineParserResultAdvancedOk) {
         this.emit('ok', payload);
         return;
       }
