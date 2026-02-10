@@ -32,10 +32,9 @@ class MarlinLineParser {
 
       // ok
       MarlinLineParserResultOk,
-      
+
       // ok N10 P15 B3
-      MarlinLineParserResultAdvancedOk
-      
+      MarlinLineParserResultAdvancedOk,
     ];
 
     for (let parser of parsers) {

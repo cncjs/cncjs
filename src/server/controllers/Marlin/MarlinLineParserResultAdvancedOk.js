@@ -31,11 +31,11 @@ class MarlinLineParserResultAdvancedOk {
     const payload = {
       n: r[1] ? parseInt(r[1], 10) : undefined,
       p: parseInt(r[2], 10),
-      b: parseInt(r[3], 10)
+      b: parseInt(r[3], 10),
     };
     return {
       type: MarlinLineParserResultAdvancedOk,
-      payload: payload
+      payload: payload,
     };
   }
 }
