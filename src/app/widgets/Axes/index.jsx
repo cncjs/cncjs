@@ -163,6 +163,7 @@ class AxesWidget extends PureComponent {
         return defaultWCS;
       },
       setWorkOffsets: (axis, value) => {
+        const controllerType = this.state.controller.type;
         const wcs = this.actions.getWorkCoordinateSystem();
         const p = {
           'G54': 1,
@@ -175,8 +176,14 @@ class AxesWidget extends PureComponent {
         axis = (axis || '').toUpperCase();
         value = Number(value) || 0;
 
-        const gcode = `G10 L20 P${p} ${axis}${value}`;
-        controller.command('gcode', gcode);
+        if (controllerType === MARLIN) {
+          // Marlin will change the offset for the currently set workspace.
+          const gcode = `G92 ${axis}${value}`; // https://marlinfw.org/docs/gcode/G092.html
+          controller.command('gcode', gcode);
+        } else {
+          const gcode = `G10 L20 P${p} ${axis}${value}`;
+          controller.command('gcode', gcode);
+        }
       },
       jog: (params = {}) => {
         const s = map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
