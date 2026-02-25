@@ -169,7 +169,7 @@ const renderer = (node, treeOptions) => {
         <div style={{ paddingLeft: paddingLeft }}>
           <TreeNodeToggler
             show={more || loadOnDemand}
-            expanded={more && open}
+            expanded={more ? open : null}
           />
           <i
             className={classNames(

@@ -48,7 +48,7 @@ class Probe extends PureComponent {
                   title={i18n._('Probe Z Axis')}
                   onClick={() => actions.changeProbeAxis('Z')}
                 >
-                                Z
+                  Z
                 </button>
                 <button
                   type="button"
@@ -60,7 +60,7 @@ class Probe extends PureComponent {
                   title={i18n._('Probe X Axis')}
                   onClick={() => actions.changeProbeAxis('X')}
                 >
-                                X
+                  X
                 </button>
                 <button
                   type="button"
@@ -72,20 +72,17 @@ class Probe extends PureComponent {
                   title={i18n._('Probe Y Axis')}
                   onClick={() => actions.changeProbeAxis('Y')}
                 >
-                                Y
+                  Y
                 </button>
               </div>
             </div>
             <p className={styles.probeAxisDescription}>
               {probeAxis === 'Z' &&
-                <i>{i18n._('Probe Z Axis')}</i>
-              }
+                <i>{i18n._('Probe Z Axis')}</i>}
               {probeAxis === 'X' &&
-                <i>{i18n._('Probe X Axis')}</i>
-              }
+                <i>{i18n._('Probe X Axis')}</i>}
               {probeAxis === 'Y' &&
-                <i>{i18n._('Probe Y Axis')}</i>
-              }
+                <i>{i18n._('Probe Y Axis')}</i>}
             </p>
           </div>
           <div className="form-group">
@@ -102,7 +99,7 @@ class Probe extends PureComponent {
                   title={i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}
                   onClick={() => actions.changeProbeCommand('G38.2')}
                 >
-                                G38.2
+                  G38.2
                 </button>
                 <button
                   type="button"
@@ -114,7 +111,7 @@ class Probe extends PureComponent {
                   title={i18n._('G38.3 probe toward workpiece, stop on contact')}
                   onClick={() => actions.changeProbeCommand('G38.3')}
                 >
-                                G38.3
+                  G38.3
                 </button>
                 <button
                   type="button"
@@ -126,7 +123,7 @@ class Probe extends PureComponent {
                   title={i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}
                   onClick={() => actions.changeProbeCommand('G38.4')}
                 >
-                                G38.4
+                  G38.4
                 </button>
                 <button
                   type="button"
@@ -138,23 +135,19 @@ class Probe extends PureComponent {
                   title={i18n._('G38.5 probe away from workpiece, stop on loss of contact')}
                   onClick={() => actions.changeProbeCommand('G38.5')}
                 >
-                                G38.5
+                  G38.5
                 </button>
               </div>
             </div>
             <p className={styles.probeCommandDescription}>
               {probeCommand === 'G38.2' &&
-                <i>{i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}</i>
-              }
+                <i>{i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}</i>}
               {probeCommand === 'G38.3' &&
-                <i>{i18n._('G38.3 probe toward workpiece, stop on contact')}</i>
-              }
+                <i>{i18n._('G38.3 probe toward workpiece, stop on contact')}</i>}
               {probeCommand === 'G38.4' &&
-                <i>{i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}</i>
-              }
+                <i>{i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}</i>}
               {probeCommand === 'G38.5' &&
-                <i>{i18n._('G38.5 probe away from workpiece, stop on loss of contact')}</i>
-              }
+                <i>{i18n._('G38.5 probe away from workpiece, stop on loss of contact')}</i>}
             </p>
           </div>
           <div className="row no-gutters">

@@ -68,7 +68,7 @@ class UpdateRecord extends Component {
               <FormGroup>
                 <label><Axis value="X" sub="min" /></label>
                 <Input {...input} type="number" aria-label={i18n._('X minimum')} />
-                {meta.touched && meta.error && <Error>{meta.error}</Error>}
+                {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
               </FormGroup>
             )}
           </Field>
@@ -80,7 +80,7 @@ class UpdateRecord extends Component {
               <FormGroup>
                 <label><Axis value="X" sub="max" /></label>
                 <Input {...input} type="number" aria-label={i18n._('X maximum')} />
-                {meta.touched && meta.error && <Error>{meta.error}</Error>}
+                {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
               </FormGroup>
             )}
           </Field>
@@ -93,7 +93,7 @@ class UpdateRecord extends Component {
               <FormGroup>
                 <label><Axis value="Y" sub="min" /></label>
                 <Input {...input} type="number" aria-label={i18n._('Y minimum')} />
-                {meta.touched && meta.error && <Error>{meta.error}</Error>}
+                {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
               </FormGroup>
             )}
           </Field>
@@ -105,7 +105,7 @@ class UpdateRecord extends Component {
               <FormGroup>
                 <label><Axis value="Y" sub="max" /></label>
                 <Input {...input} type="number" aria-label={i18n._('Y maximum')} />
-                {meta.touched && meta.error && <Error>{meta.error}</Error>}
+                {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
               </FormGroup>
             )}
           </Field>
@@ -118,7 +118,7 @@ class UpdateRecord extends Component {
               <FormGroup>
                 <label><Axis value="Z" sub="min" /></label>
                 <Input {...input} type="number" aria-label={i18n._('Z minimum')} />
-                {meta.touched && meta.error && <Error>{meta.error}</Error>}
+                {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
               </FormGroup>
             )}
           </Field>
@@ -130,7 +130,7 @@ class UpdateRecord extends Component {
               <FormGroup>
                 <label><Axis value="Z" sub="max" /></label>
                 <Input {...input} type="number" aria-label={i18n._('Z maximum')} />
-                {meta.touched && meta.error && <Error>{meta.error}</Error>}
+                {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
               </FormGroup>
             )}
           </Field>
@@ -156,7 +156,7 @@ class UpdateRecord extends Component {
                 </Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                {alertMessage && (
+                {alertMessage ? (
                   <ToastNotification
                     style={{ margin: '-16px -24px 10px -24px' }}
                     type="error"
@@ -166,14 +166,14 @@ class UpdateRecord extends Component {
                   >
                     {alertMessage}
                   </ToastNotification>
-                )}
+) : null}
                 <SectionGroup>
                   <Field name="name" validate={validations.required}>
                     {({ input, meta }) => (
                       <FormGroup>
                         <label>{i18n._('Name')}</label>
                         <Input {...input} type="text" aria-label={i18n._('Profile name')} />
-                        {meta.touched && meta.error && <Error>{meta.error}</Error>}
+                        {meta.touched && meta.error ? <Error>{meta.error}</Error> : null}
                       </FormGroup>
                     )}
                   </Field>

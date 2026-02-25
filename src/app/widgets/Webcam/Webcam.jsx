@@ -129,7 +129,7 @@ class Webcam extends PureComponent {
               />
             )
         )}
-        {crosshair && (
+        {crosshair ? (
           <div>
             <Line
               className={classNames(
@@ -161,7 +161,7 @@ class Webcam extends PureComponent {
               diameter={40}
             />
           </div>
-        )}
+) : null}
         <div className={styles.toolbar}>
           <div className={styles.scaleText}>{scale}x</div>
           <div className="pull-right">

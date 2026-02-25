@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
+import i18n from '../lib/i18n';
+import store from '../store';
 import { trackPage } from '../lib/analytics';
 import Header from './Header';
 import Sidebar from './Sidebar';
@@ -10,6 +12,24 @@ import styles from './App.styl';
 class App extends PureComponent {
     static propTypes = {
       ...withRouter.propTypes
+    };
+
+    componentDidMount() {
+      this.updateAccessibilityStyles();
+      store.on('change', this.updateAccessibilityStyles);
+    }
+
+    componentWillUnmount() {
+      store.removeListener('change', this.updateAccessibilityStyles);
+    }
+
+    updateAccessibilityStyles = () => {
+      const focusIndicators = store.get('accessibility.focusIndicators');
+      if (focusIndicators) {
+        document.body.classList.add('a11y-focus');
+      } else {
+        document.body.classList.remove('a11y-focus');
+      }
     };
 
     render() {
@@ -44,11 +64,16 @@ class App extends PureComponent {
 
       return (
         <div>
-          <Header {...this.props} />
+          <a href="#main-content" className={styles.skipLink}>
+            {i18n._('Skip to main content')}
+          </a>
+          <div role="banner">
+            <Header {...this.props} />
+          </div>
           <aside className={styles.sidebar} id="sidebar">
             <Sidebar {...this.props} />
           </aside>
-          <div className={styles.main}>
+          <div className={styles.main} role="main" id="main-content">
             <div className={styles.content}>
               <Workspace
                 {...this.props}
@@ -57,8 +82,7 @@ class App extends PureComponent {
                 }}
               />
               {location.pathname.indexOf('/settings') === 0 &&
-                <Settings {...this.props} />
-              }
+                <Settings {...this.props} />}
             </div>
           </div>
         </div>

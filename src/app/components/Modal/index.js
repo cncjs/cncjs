@@ -9,7 +9,8 @@ class ModalWrapper extends PureComponent {
     };
 
     static defaultProps = {
-      ...Modal.defaultProps
+      ...Modal.defaultProps,
+      showCloseButton: false
     };
 
     componentWillReceiveProps(nextProps) {

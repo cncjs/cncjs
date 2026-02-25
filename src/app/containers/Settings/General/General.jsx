@@ -25,6 +25,10 @@ class General extends PureComponent {
         const { actions } = this.props;
         actions.toggleAllowAnonymousUsageDataCollection();
       },
+      changeAccessibilitySetting: (key) => (event) => {
+        const { actions } = this.props;
+        actions.toggleAccessibilitySetting(key);
+      },
       changeLanguage: (event) => {
         const { actions } = this.props;
         const target = event.target;
@@ -46,7 +50,7 @@ class General extends PureComponent {
     }
 
     render() {
-      const { state, stateChanged } = this.props;
+      const { state, stateChanged, actions } = this.props;
       const lang = get(state, 'lang', 'en');
 
       if (state.api.loading) {
@@ -109,6 +113,73 @@ class General extends PureComponent {
               </div>
             </div>
           </div>
+          <div style={{ marginBottom: 24 }}>
+            <h5>{i18n._('Accessibility')}</h5>
+            <div className={styles.formFields}>
+              <div className={styles.formGroup}>
+                <div className="checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={state.accessibility.focusIndicators}
+                      onChange={this.handlers.changeAccessibilitySetting('focusIndicators')}
+                    />
+                    {i18n._('Enable high-contrast focus indicators')}
+                  </label>
+                </div>
+                <div className="checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={state.accessibility.liveRegions}
+                      onChange={this.handlers.changeAccessibilitySetting('liveRegions')}
+                    />
+                    {i18n._('Enable screen reader live regions for status updates')}
+                  </label>
+                </div>
+                <div className="checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={state.accessibility.consoleAccessibility}
+                      onChange={this.handlers.changeAccessibilitySetting('consoleAccessibility')}
+                    />
+                    {i18n._('Enable console accessibility (screen reader mode)')}
+                  </label>
+                </div>
+                <div className="checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={state.accessibility.visualizerText}
+                      onChange={this.handlers.changeAccessibilitySetting('visualizerText')}
+                    />
+                    {i18n._('Enable textual description for 3D visualizer')}
+                  </label>
+                </div>
+                <div className="checkbox" style={{ marginLeft: 20 }}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      disabled={!state.accessibility.visualizerText}
+                      checked={state.accessibility.visualizerTextVisible}
+                      onChange={this.handlers.changeAccessibilitySetting('visualizerTextVisible')}
+                    />
+                    {i18n._('Show visualizer text description (visually hidden if unchecked)')}
+                  </label>
+                </div>
+                <div style={{ marginTop: 10 }}>
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={() => actions.openModal('keyboard-shortcuts')}
+                  >
+                    {i18n._('Keyboard Shortcuts')}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className={styles.formActions}>
             <div className="row">
               <div className="col-md-12">
@@ -127,8 +198,7 @@ class General extends PureComponent {
                 >
                   {state.api.saving
                     ? <i className="fa fa-circle-o-notch fa-spin" />
-                    : <i className="fa fa-save" />
-                  }
+                    : <i className="fa fa-save" />}
                   <Space width="8" />
                   {i18n._('Save Changes')}
                 </button>

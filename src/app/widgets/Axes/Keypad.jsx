@@ -54,7 +54,7 @@ class Keypad extends PureComponent {
   renderRationalNumberWithBoundedDenominator(value) {
     // https://github.com/SheetJS/frac
     const denominatorDigits = 4;
-    const maximumDenominator = Math.pow(10, Number(denominatorDigits) || 0) - 1; // 10^4 - 1 = 9999
+    const maximumDenominator = 10 ** (Number(denominatorDigits) || 0) - 1; // 10^4 - 1 = 9999
     const [quot, numerator, denominator] = frac(value, maximumDenominator, true);
 
     if (numerator > 0) {
@@ -196,6 +196,7 @@ class Keypad extends PureComponent {
                       }}
                       disabled={!canClickY}
                       title={i18n._('Move Y+')}
+                      aria-label={i18n._('Move Y positive')}
                     >
                       <KeypadText>Y</KeypadText>
                       <KeypadDirectionText>+</KeypadDirectionText>
@@ -214,7 +215,7 @@ class Keypad extends PureComponent {
                       }}
                       disabled={!canClickXY}
                       title={i18n._('Move X+ Y+')}
-                      aria-label={i18n._('Move X+ Y+')}
+                      aria-label={i18n._('Move X positive Y positive')}
                     >
                       <i className={cx('fa', 'fa-arrow-circle-up', styles['rotate-45deg'])} style={{ fontSize: 16 }} aria-hidden="true" />
                     </Button>
@@ -235,6 +236,7 @@ class Keypad extends PureComponent {
                       }}
                       disabled={!canClickZ}
                       title={i18n._('Move Z+')}
+                      aria-label={i18n._('Move Z positive')}
                     >
                       <KeypadText>Z</KeypadText>
                       <KeypadDirectionText>+</KeypadDirectionText>
@@ -260,6 +262,7 @@ class Keypad extends PureComponent {
                       }}
                       disabled={!canClickX}
                       title={i18n._('Move X-')}
+                      aria-label={i18n._('Move X negative')}
                     >
                       <KeypadText>X</KeypadText>
                       <KeypadDirectionText>-</KeypadDirectionText>
@@ -275,6 +278,7 @@ class Keypad extends PureComponent {
                       onClick={() => actions.move({ X: 0, Y: 0 })}
                       disabled={!canClickXY}
                       title={i18n._('Move To XY Zero (G0 X0 Y0)')}
+                      aria-label={i18n._('Move To X Y zero')}
                     >
                       <KeypadText>X</KeypadText>
                       <KeypadSubscriptText>0</KeypadSubscriptText>
@@ -298,6 +302,7 @@ class Keypad extends PureComponent {
                       }}
                       disabled={!canClickX}
                       title={i18n._('Move X+')}
+                      aria-label={i18n._('Move X positive')}
                     >
                       <KeypadText>X</KeypadText>
                       <KeypadDirectionText>+</KeypadDirectionText>
@@ -313,6 +318,7 @@ class Keypad extends PureComponent {
                       onClick={() => actions.move({ Z: 0 })}
                       disabled={!canClickZ}
                       title={i18n._('Move To Z Zero (G0 Z0)')}
+                      aria-label={i18n._('Move To Z zero')}
                     >
                       <KeypadText>Z</KeypadText>
                       <KeypadSubscriptText>0</KeypadSubscriptText>
@@ -356,6 +362,7 @@ class Keypad extends PureComponent {
                       }}
                       disabled={!canClickY}
                       title={i18n._('Move Y-')}
+                      aria-label={i18n._('Move Y negative')}
                     >
                       <KeypadText>Y</KeypadText>
                       <KeypadDirectionText>-</KeypadDirectionText>
@@ -374,7 +381,7 @@ class Keypad extends PureComponent {
                       }}
                       disabled={!canClickXY}
                       title={i18n._('Move X+ Y-')}
-                      aria-label={i18n._('Move X+ Y-')}
+                      aria-label={i18n._('Move X positive Y negative')}
                     >
                       <i className={cx('fa', 'fa-arrow-circle-down', styles['rotate--45deg'])} style={{ fontSize: 16 }} aria-hidden="true" />
                     </Button>
@@ -395,6 +402,7 @@ class Keypad extends PureComponent {
                       }}
                       disabled={!canClickZ}
                       title={i18n._('Move Z-')}
+                      aria-label={i18n._('Move Z negative')}
                     >
                       <KeypadText>Z</KeypadText>
                       <KeypadDirectionText>-</KeypadDirectionText>

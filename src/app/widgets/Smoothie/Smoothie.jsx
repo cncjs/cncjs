@@ -48,7 +48,7 @@ class Smoothie extends PureComponent {
                 />
               </Toggler>
             </Panel.Heading>
-            {panel.statusReports.expanded && (
+            {panel.statusReports.expanded ? (
               <Panel.Body>
                 <div className="row no-gutters">
                   <div className="col col-xs-4">
@@ -99,7 +99,7 @@ class Smoothie extends PureComponent {
                   </div>
                 </div>
               </Panel.Body>
-            )}
+) : null}
           </Panel>
           <Panel className={styles.panel}>
             <Panel.Heading className={styles.panelHeading}>
@@ -117,7 +117,7 @@ class Smoothie extends PureComponent {
                 />
               </Toggler>
             </Panel.Heading>
-            {panel.modalGroups.expanded && (
+            {panel.modalGroups.expanded ? (
               <Panel.Body>
                 <div className="row no-gutters">
                   <div className="col col-xs-4">
@@ -230,7 +230,7 @@ class Smoothie extends PureComponent {
                   </div>
                 </div>
               </Panel.Body>
-            )}
+) : null}
           </Panel>
         </div>
       );

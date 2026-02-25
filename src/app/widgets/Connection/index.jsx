@@ -471,9 +471,7 @@ class ConnectionWidget extends PureComponent {
               <i className="fa fa-bars" aria-hidden="true" />
               <Space width="8" />
             </Widget.Sortable>
-            {isForkedWidget &&
-              <i className="fa fa-code-fork" style={{ marginRight: 5 }} aria-hidden="true" />
-            }
+            {isForkedWidget ? <i className="fa fa-code-fork" style={{ marginRight: 5 }} aria-hidden="true" /> : null}
             {i18n._('Connection')}
           </Widget.Title>
           <Widget.Controls className={this.props.sortable.filterClassName}>

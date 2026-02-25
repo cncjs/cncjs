@@ -76,7 +76,7 @@ class Grbl extends PureComponent {
                   />
                 </Toggler>
               </Panel.Heading>
-              {panel.queueReports.expanded && (
+              {panel.queueReports.expanded ? (
                 <Panel.Body>
                   <div className="row no-gutters">
                     <div className="col col-xs-4">
@@ -121,7 +121,7 @@ class Grbl extends PureComponent {
                     </div>
                   </div>
                 </Panel.Body>
-              )}
+) : null}
             </Panel>
           )}
           <Panel className={styles.panel}>
@@ -140,7 +140,7 @@ class Grbl extends PureComponent {
                 />
               </Toggler>
             </Panel.Heading>
-            {panel.statusReports.expanded && (
+            {panel.statusReports.expanded ? (
               <Panel.Body>
                 <div className="row no-gutters">
                   <div className="col col-xs-4">
@@ -191,7 +191,7 @@ class Grbl extends PureComponent {
                   </div>
                 </div>
               </Panel.Body>
-            )}
+) : null}
           </Panel>
           <Panel className={styles.panel}>
             <Panel.Heading className={styles['panel-heading']}>
@@ -209,7 +209,7 @@ class Grbl extends PureComponent {
                 />
               </Toggler>
             </Panel.Heading>
-            {panel.modalGroups.expanded && (
+            {panel.modalGroups.expanded ? (
               <Panel.Body>
                 <div className="row no-gutters">
                   <div className="col col-xs-4">
@@ -322,7 +322,7 @@ class Grbl extends PureComponent {
                   </div>
                 </div>
               </Panel.Body>
-            )}
+) : null}
           </Panel>
         </div>
       );

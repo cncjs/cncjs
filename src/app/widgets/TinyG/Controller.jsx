@@ -15,7 +15,7 @@ const Controller = (props) => {
     <Modal disableOverlay size="lg" onClose={actions.closeModal}>
       <Modal.Header>
         <Modal.Title>
-                    TinyG
+          TinyG
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>

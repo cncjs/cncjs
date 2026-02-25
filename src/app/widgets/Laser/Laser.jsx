@@ -156,7 +156,7 @@ class Laser extends PureComponent {
               />
             </Toggler>
           </Panel.Heading>
-          {panel.laserTest.expanded && (
+          {panel.laserTest.expanded ? (
             <Panel.Body>
               <div className="table-form" style={{ marginBottom: 15 }}>
                 <div className="table-form-row">
@@ -242,7 +242,7 @@ class Laser extends PureComponent {
                 </div>
               </div>
             </Panel.Body>
-          )}
+) : null}
         </Panel>
       </div>
     );

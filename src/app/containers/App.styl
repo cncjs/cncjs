@@ -24,3 +24,17 @@
     position: relative;
     background-color: $content-background-color;
 }
+
+.skipLink {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    background: #fff;
+    color: #000;
+    padding: 8px;
+    z-index: 2000;
+
+    &:focus {
+        top: 0;
+    }
+}

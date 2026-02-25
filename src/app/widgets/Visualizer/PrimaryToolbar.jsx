@@ -312,14 +312,12 @@ class PrimaryToolbar extends PureComponent {
               btnStyle="flat"
               title={(!WebGL.isWebGLAvailable() || disabled)
                 ? i18n._('Enable 3D View')
-                : i18n._('Disable 3D View')
-              }
+                : i18n._('Disable 3D View')}
               onClick={actions.toggle3DView}
             >
               {(!WebGL.isWebGLAvailable() || disabled)
                 ? <i className="fa fa-toggle-off" aria-hidden="true" />
-                : <i className="fa fa-toggle-on" aria-hidden="true" />
-              }
+                : <i className="fa fa-toggle-on" aria-hidden="true" />}
               {i18n._('3D View')}
             </Button>
             <Dropdown.Toggle btnSize="sm" aria-label={i18n._('3D View options')} />
@@ -372,8 +370,7 @@ class PrimaryToolbar extends PureComponent {
               >
                 {gcode.displayName
                   ? <i className="fa fa-toggle-on fa-fw" aria-hidden="true" />
-                  : <i className="fa fa-toggle-off fa-fw" aria-hidden="true" />
-                }
+                  : <i className="fa fa-toggle-off fa-fw" aria-hidden="true" />}
                 <Space width={8} />
                 {i18n._('Display G-code Filename')}
               </MenuItem>
@@ -383,13 +380,11 @@ class PrimaryToolbar extends PureComponent {
               >
                 {objects.limits.visible
                   ? <i className="fa fa-toggle-on fa-fw" aria-hidden="true" />
-                  : <i className="fa fa-toggle-off fa-fw" aria-hidden="true" />
-                }
+                  : <i className="fa fa-toggle-off fa-fw" aria-hidden="true" />}
                 <Space width={8} />
                 {objects.limits.visible
                   ? i18n._('Hide Limits')
-                  : i18n._('Show Limits')
-                }
+                  : i18n._('Show Limits')}
               </MenuItem>
               <MenuItem
                 disabled={!canToggleOptions}
@@ -397,13 +392,11 @@ class PrimaryToolbar extends PureComponent {
               >
                 {objects.coordinateSystem.visible
                   ? <i className="fa fa-toggle-on fa-fw" aria-hidden="true" />
-                  : <i className="fa fa-toggle-off fa-fw" aria-hidden="true" />
-                }
+                  : <i className="fa fa-toggle-off fa-fw" aria-hidden="true" />}
                 <Space width={8} />
                 {objects.coordinateSystem.visible
                   ? i18n._('Hide Coordinate System')
-                  : i18n._('Show Coordinate System')
-                }
+                  : i18n._('Show Coordinate System')}
               </MenuItem>
               <MenuItem
                 disabled={!canToggleOptions}
@@ -411,13 +404,11 @@ class PrimaryToolbar extends PureComponent {
               >
                 {objects.gridLineNumbers.visible
                   ? <i className="fa fa-toggle-on fa-fw" aria-hidden="true" />
-                  : <i className="fa fa-toggle-off fa-fw" aria-hidden="true" />
-                }
+                  : <i className="fa fa-toggle-off fa-fw" aria-hidden="true" />}
                 <Space width={8} />
                 {objects.gridLineNumbers.visible
                   ? i18n._('Hide Grid Line Numbers')
-                  : i18n._('Show Grid Line Numbers')
-                }
+                  : i18n._('Show Grid Line Numbers')}
               </MenuItem>
               <MenuItem
                 disabled={!canToggleOptions}
@@ -425,13 +416,11 @@ class PrimaryToolbar extends PureComponent {
               >
                 {objects.cuttingTool.visible
                   ? <i className="fa fa-toggle-on fa-fw" aria-hidden="true" />
-                  : <i className="fa fa-toggle-off fa-fw" aria-hidden="true" />
-                }
+                  : <i className="fa fa-toggle-off fa-fw" aria-hidden="true" />}
                 <Space width={8} />
                 {objects.cuttingTool.visible
                   ? i18n._('Hide Cutting Tool')
-                  : i18n._('Show Cutting Tool')
-                }
+                  : i18n._('Show Cutting Tool')}
               </MenuItem>
             </Dropdown.Menu>
           </Dropdown>

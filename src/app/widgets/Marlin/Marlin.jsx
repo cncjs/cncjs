@@ -89,7 +89,7 @@ class Marlin extends PureComponent {
                 />
               </Toggler>
             </Panel.Heading>
-            {panel.heaterControl.expanded && (
+            {panel.heaterControl.expanded ? (
               <Panel.Body>
                 <div
                   className="table-form"
@@ -218,7 +218,7 @@ class Marlin extends PureComponent {
                     </div>
                   </div>
                 </div>
-                {showExtruderTemperature && (
+                {showExtruderTemperature ? (
                   <div className="row no-gutters">
                     <div className="col col-xs-7">
                       <div className={styles.textEllipsis} title={i18n._('Extruder Temperature')}>
@@ -231,8 +231,8 @@ class Marlin extends PureComponent {
                       </div>
                     </div>
                   </div>
-                )}
-                {showHeatedBedTemperature && (
+) : null}
+                {showHeatedBedTemperature ? (
                   <div className="row no-gutters">
                     <div className="col col-xs-7">
                       <div className={styles.textEllipsis} title={i18n._('Heated Bed Temperature')}>
@@ -245,8 +245,8 @@ class Marlin extends PureComponent {
                       </div>
                     </div>
                   </div>
-                )}
-                {showExtruderPower && (
+) : null}
+                {showExtruderPower ? (
                   <div className="row no-gutters">
                     <div className="col col-xs-7">
                       <div className={styles.textEllipsis} title={i18n._('Extruder Power')}>
@@ -268,8 +268,8 @@ class Marlin extends PureComponent {
                       />
                     </div>
                   </div>
-                )}
-                {showHeatedBedPower && (
+) : null}
+                {showHeatedBedPower ? (
                   <div className="row no-gutters">
                     <div className="col col-xs-7">
                       <div className={styles.textEllipsis} title={i18n._('Heated Bed Power')}>
@@ -291,9 +291,9 @@ class Marlin extends PureComponent {
                       />
                     </div>
                   </div>
-                )}
+) : null}
               </Panel.Body>
-            )}
+) : null}
           </Panel>
           <Panel className={styles.panel}>
             <Panel.Heading className={styles.panelHeading}>
@@ -311,7 +311,7 @@ class Marlin extends PureComponent {
                 />
               </Toggler>
             </Panel.Heading>
-            {panel.statusReports.expanded && (
+            {panel.statusReports.expanded ? (
               <Panel.Body>
                 <div className="row no-gutters">
                   <div className="col col-xs-4">
@@ -338,7 +338,7 @@ class Marlin extends PureComponent {
                   </div>
                 </div>
               </Panel.Body>
-            )}
+) : null}
           </Panel>
           <Panel className={styles.panel}>
             <Panel.Heading className={styles.panelHeading}>
@@ -356,7 +356,7 @@ class Marlin extends PureComponent {
                 />
               </Toggler>
             </Panel.Heading>
-            {panel.modalGroups.expanded && (
+            {panel.modalGroups.expanded ? (
               <Panel.Body>
                 <div className="row no-gutters">
                   <div className="col col-xs-4">
@@ -469,7 +469,7 @@ class Marlin extends PureComponent {
                   </div>
                 </div>
               </Panel.Body>
-            )}
+) : null}
           </Panel>
         </div>
       );

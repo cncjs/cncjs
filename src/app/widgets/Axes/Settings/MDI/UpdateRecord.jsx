@@ -61,7 +61,7 @@ class UpdateRecord extends PureComponent {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {alertMessage && (
+          {alertMessage ? (
             <ToastNotification
               style={{ margin: '-16px -24px 10px -24px' }}
               type="error"
@@ -71,7 +71,7 @@ class UpdateRecord extends PureComponent {
             >
               {alertMessage}
             </ToastNotification>
-          )}
+) : null}
           <Form
             ref={node => {
               this.form = node;

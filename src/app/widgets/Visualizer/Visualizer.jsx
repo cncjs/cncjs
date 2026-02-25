@@ -16,6 +16,7 @@ import {
 import CombinedCamera from 'app/lib/three/CombinedCamera';
 import TrackballControls from 'app/lib/three/TrackballControls';
 import * as WebGL from 'app/lib/three/WebGL';
+import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import store from 'app/store';
 import { getBoundingBox, loadSTL, loadTexture } from './helpers';
@@ -145,6 +146,10 @@ class Visualizer extends Component {
     constructor(props) {
       super(props);
 
+      this.state = {
+        accessibility: store.get('accessibility')
+      };
+
       // Three.js
       this.renderer = null;
       this.scene = null;
@@ -161,6 +166,7 @@ class Visualizer extends Component {
       this.subscribe();
       this.addResizeEventListener();
       store.on('change', this.changeMachineProfile);
+      store.on('change', this.onStoreChange);
       if (this.node) {
         const el = ReactDOM.findDOMNode(this.node);
         this.createScene(el);
@@ -325,10 +331,17 @@ class Visualizer extends Component {
       }
     }
 
+    onStoreChange = () => {
+      this.setState({
+        accessibility: store.get('accessibility')
+      });
+    };
+
     componentWillUnmount() {
       this.unsubscribe();
       this.removeResizeEventListener();
       store.removeListener('change', this.changeMachineProfile);
+      store.removeListener('change', this.onStoreChange);
       this.clearScene();
     }
 
@@ -1202,13 +1215,54 @@ class Visualizer extends Component {
         return null;
       }
 
+      const { state: appState } = this.props;
+      const { accessibility } = this.state;
+      const limits = _get(this.machineProfile, 'limits');
+      const gcodeName = _get(appState, 'gcode.name', i18n._('None'));
+
       return (
         <div
-          style={{
-            visibility: this.props.show ? 'visible' : 'hidden'
-          }}
           ref={this.setRef}
-        />
+          style={{
+            visibility: this.props.show ? 'visible' : 'hidden',
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            minHeight: 400 // Ensure it's detectable even if parent has no height initially
+          }}
+        >
+          {!!accessibility.visualizerText && (
+            <div
+              className={accessibility.visualizerTextVisible ? '' : 'sr-only'}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                padding: '10px',
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                border: '1px solid #ccc',
+                fontSize: '12px',
+                lineHeight: '1.5',
+                zIndex: 100
+              }}
+            >
+              <div><strong>{i18n._('Visualizer Description')}</strong></div>
+              <div>{i18n._('Loaded G-code: {{name}}', { name: gcodeName })}</div>
+              <div>
+                {i18n._('Machine Position:')} X={this.machinePosition.x}, Y={this.machinePosition.y}, Z={this.machinePosition.z}
+              </div>
+              <div>
+                {i18n._('Work Position:')} X={this.workPosition.x}, Y={this.workPosition.y}, Z={this.workPosition.z}
+              </div>
+              {!!limits && (
+                <div>
+                  {i18n._('Machine Limits:')} X({limits.xmin} to {limits.xmax}), Y({limits.ymin} to {limits.ymax}), Z({limits.zmin} to {limits.zmax})
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       );
     }
 }

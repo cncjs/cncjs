@@ -252,13 +252,11 @@ class SmoothieWidget extends PureComponent {
               <i className="fa fa-bars" aria-hidden="true" />
               <Space width="8" />
             </Widget.Sortable>
-            {isForkedWidget &&
-              <i className="fa fa-code-fork" style={{ marginRight: 5 }} aria-hidden="true" />
-            }
+            {isForkedWidget ? <i className="fa fa-code-fork" style={{ marginRight: 5 }} aria-hidden="true" /> : null}
             Smoothie
           </Widget.Title>
           <Widget.Controls className={this.props.sortable.filterClassName}>
-            {isReady && (
+            {isReady ? (
               <Widget.Button
                 aria-label={i18n._('Smoothie controller info')}
                 onClick={(event) => {
@@ -267,8 +265,8 @@ class SmoothieWidget extends PureComponent {
               >
                 <i className="fa fa-info" aria-hidden="true" />
               </Widget.Button>
-            )}
-            {isReady && (
+) : null}
+            {isReady ? (
               <Widget.DropdownButton
                 aria-label={i18n._('Smoothie commands')}
                 toggle={<i className="fa fa-th-large" aria-hidden="true" />}
@@ -311,8 +309,8 @@ class SmoothieWidget extends PureComponent {
                   {i18n._('View G-code Parser State ($G)')}
                 </Widget.DropdownMenuItem>
               </Widget.DropdownButton>
-            )}
-            {isReady && (
+) : null}
+            {isReady ? (
               <Widget.Button
                 disabled={isFullscreen}
                 title={minimized ? i18n._('Expand') : i18n._('Collapse')}
@@ -329,7 +327,7 @@ class SmoothieWidget extends PureComponent {
                   aria-hidden="true"
                 />
               </Widget.Button>
-            )}
+) : null}
             <Widget.DropdownButton
               title={i18n._('More')}
               aria-label={i18n._('More options')}
@@ -370,7 +368,7 @@ class SmoothieWidget extends PureComponent {
             </Widget.DropdownButton>
           </Widget.Controls>
         </Widget.Header>
-        {isReady && (
+        {isReady ? (
           <Widget.Content
             className={classNames(
               styles['widget-content'],
@@ -379,14 +377,13 @@ class SmoothieWidget extends PureComponent {
             aria-hidden={minimized}
           >
             {state.modal.name === MODAL_CONTROLLER &&
-              <Controller state={state} actions={actions} />
-            }
+            <Controller state={state} actions={actions} />}
             <Smoothie
               state={state}
               actions={actions}
             />
           </Widget.Content>
-        )}
+) : null}
       </Widget>
     );
   }

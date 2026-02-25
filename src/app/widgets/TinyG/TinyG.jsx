@@ -108,7 +108,7 @@ class TinyG extends PureComponent {
                 />
               </Toggler>
             </Panel.Heading>
-            {panel.powerManagement.expanded && pwr && (
+            {panel.powerManagement.expanded && pwr ? (
               <Panel.Body>
                 <div className="row no-gutters" style={{ marginBottom: 10 }}>
                   <div className="col col-xs-6" style={{ paddingRight: 5 }}>
@@ -154,7 +154,7 @@ class TinyG extends PureComponent {
                   </div>
                 ))}
               </Panel.Body>
-            )}
+) : null}
           </Panel>
           <Panel className={styles.panel}>
             <Panel.Heading className={styles['panel-heading']}>
@@ -170,7 +170,7 @@ class TinyG extends PureComponent {
                 />
               </Toggler>
             </Panel.Heading>
-            {panel.queueReports.expanded && (
+            {panel.queueReports.expanded ? (
               <Panel.Body>
                 <div className="row no-gutters">
                   <div className="col col-xs-4">
@@ -190,7 +190,7 @@ class TinyG extends PureComponent {
                   </div>
                 </div>
               </Panel.Body>
-            )}
+) : null}
           </Panel>
           <Panel className={styles.panel}>
             <Panel.Heading className={styles['panel-heading']}>
@@ -206,7 +206,7 @@ class TinyG extends PureComponent {
                 />
               </Toggler>
             </Panel.Heading>
-            {panel.statusReports.expanded && (
+            {panel.statusReports.expanded ? (
               <Panel.Body>
                 <div className="row no-gutters">
                   <div className="col col-xs-4">
@@ -249,7 +249,7 @@ class TinyG extends PureComponent {
                   </div>
                 </div>
               </Panel.Body>
-            )}
+) : null}
           </Panel>
           <Panel className={styles.panel}>
             <Panel.Heading className={styles['panel-heading']}>
@@ -265,7 +265,7 @@ class TinyG extends PureComponent {
                 />
               </Toggler>
             </Panel.Heading>
-            {panel.modalGroups.expanded && (
+            {panel.modalGroups.expanded ? (
               <Panel.Body>
                 <div className="row no-gutters">
                   <div className="col col-xs-4">
@@ -378,7 +378,7 @@ class TinyG extends PureComponent {
                   </div>
                 </div>
               </Panel.Body>
-            )}
+) : null}
           </Panel>
         </div>
       );

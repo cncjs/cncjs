@@ -49,12 +49,8 @@ class TableRecords extends PureComponent {
 
     return (
       <Table
-        bordered={false}
-        justified={false}
-        data={(state.api.err || state.api.fetching) ? [] : state.records}
-        rowKey={(record) => {
-          return record.id;
-        }}
+        bordered
+        data={state.records}
         emptyText={() => {
           if (state.api.err) {
             return (
@@ -101,8 +97,8 @@ class TableRecords extends PureComponent {
               onPageChange={({ page, pageLength }) => {
                 actions.fetchRecords({ page, pageLength });
               }}
-              prevPageRenderer={() => <i className="fa fa-angle-left" />}
-              nextPageRenderer={() => <i className="fa fa-angle-right" />}
+              prevPageRenderer={() => <i className="fa fa-angle-left" aria-hidden="true" />}
+              nextPageRenderer={() => <i className="fa fa-angle-right" aria-hidden="true" />}
             />
           </div>
         )}
@@ -119,6 +115,7 @@ class TableRecords extends PureComponent {
                   checked={enabled}
                   size="sm"
                   title={title}
+                  aria-label={i18n._('Enable event: {{event}}', { event: mapEventToTextString(row.event) })}
                   onChange={(event) => {
                     actions.updateRecord(id, { enabled: !enabled });
                   }}
@@ -263,12 +260,11 @@ class TableRecords extends PureComponent {
                   </button>
                 </div>
               );
-            }
-          }
-        ]}
+                        }
+                      }
+                    ]}
       />
     );
-  }
-}
-
-export default TableRecords;
+              }
+            }
+            export default TableRecords;

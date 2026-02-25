@@ -7,6 +7,10 @@ export const TablePagination = (props) => {
   return (
     <Paginations.TablePagination
       {...props}
+      prevPageTitle={i18n._('Previous page')}
+      nextPageTitle={i18n._('Next page')}
+      prevPageAriaLabel={i18n._('Previous page')}
+      nextPageAriaLabel={i18n._('Next page')}
       pageRecordsRenderer={({ totalRecords, from, to }) => {
         if (totalRecords > 0) {
           return i18n._('Records: {{from}} - {{to}} / {{total}}', {

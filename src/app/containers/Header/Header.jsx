@@ -313,7 +313,7 @@ class Header extends PureComponent {
               >
                 {settings.version}
               </div>
-              {newUpdateAvailable && (
+              {newUpdateAvailable ? (
                 <span
                   className="label label-primary"
                   aria-label={i18n._('New update available')}
@@ -326,7 +326,7 @@ class Header extends PureComponent {
                 >
                   <span aria-hidden="true">N</span>
                 </span>
-              )}
+) : null}
             </Anchor>
           </Tooltip>
           <Navbar.Toggle />
@@ -421,34 +421,34 @@ class Header extends PureComponent {
                   )}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  {showCommands && (
+                  {showCommands ? (
                     <MenuItem header>
                       {i18n._('Command')}
                       {pushPermission === Push.Permission.GRANTED && (
-                        <span className="pull-right" aria-label={i18n._('Notifications allowed')}>
-                          <i className="fa fa-fw fa-bell-o" aria-hidden="true" />
-                        </span>
+                      <span className="pull-right" aria-label={i18n._('Notifications allowed')}>
+                        <i className="fa fa-fw fa-bell-o" aria-hidden="true" />
+                      </span>
                       )}
                       {pushPermission === Push.Permission.DENIED && (
-                        <span className="pull-right" aria-label={i18n._('Notifications blocked')}>
-                          <i className="fa fa-fw fa-bell-slash-o" aria-hidden="true" />
-                        </span>
+                      <span className="pull-right" aria-label={i18n._('Notifications blocked')}>
+                        <i className="fa fa-fw fa-bell-slash-o" aria-hidden="true" />
+                      </span>
                       )}
                       {pushPermission === Push.Permission.DEFAULT && (
-                        <span className="pull-right">
-                          <Anchor
-                            className={styles.btnIcon}
-                            onClick={this.actions.requestPushPermission}
-                            title={i18n._('Show notifications')}
-                            aria-label={i18n._('Enable notifications')}
-                          >
-                            <i className="fa fa-fw fa-bell" aria-hidden="true" />
-                          </Anchor>
-                        </span>
+                      <span className="pull-right">
+                        <Anchor
+                          className={styles.btnIcon}
+                          onClick={this.actions.requestPushPermission}
+                          title={i18n._('Show notifications')}
+                          aria-label={i18n._('Enable notifications')}
+                        >
+                          <i className="fa fa-fw fa-bell" aria-hidden="true" />
+                        </Anchor>
+                      </span>
                       )}
                     </MenuItem>
-                  )}
-                  {showCommands && commands.map((cmd) => {
+) : null}
+                  {showCommands ? commands.map((cmd) => {
                     const isTaskRunning = runningTasks.indexOf(cmd.taskId) >= 0;
 
                     return (
@@ -476,10 +476,8 @@ class Header extends PureComponent {
                         </span>
                       </MenuItem>
                     );
-                  })}
-                  {showCommands &&
-                    <MenuItem divider />
-                  }
+                  }) : null}
+                  {showCommands ? <MenuItem divider /> : null}
                   <MenuItem>
                     <MenuItemLink
                       href="https://github.com/cncjs/cncjs/wiki"

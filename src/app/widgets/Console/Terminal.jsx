@@ -8,6 +8,7 @@ import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
 import chalk from 'app/lib/chalk';
 import log from 'app/lib/log';
+import store from 'app/store';
 import History from './History';
 import styles from './index.styl';
 
@@ -247,11 +248,16 @@ class TerminalWrapper extends PureComponent {
 
     componentDidMount() {
       const { cursorBlink, scrollback, tabStopWidth } = this.props;
+      const screenReaderMode = store.get('accessibility.consoleAccessibility');
+
       this.term = new Terminal({
         cursorBlink,
         scrollback,
-        tabStopWidth
+        tabStopWidth,
+        screenReaderMode,
       });
+
+      store.on('change', this.onStoreChange);
       this.term.prompt = () => {
         this.term.write('\r\n');
         this.term.write(chalk.white(this.prompt));
@@ -275,7 +281,16 @@ class TerminalWrapper extends PureComponent {
       this.resize();
     }
 
+    onStoreChange = () => {
+      const screenReaderMode = store.get('accessibility.consoleAccessibility');
+      if (this.term && this.term.getOption('screenReaderMode') !== screenReaderMode) {
+        this.term.setOption('screenReaderMode', screenReaderMode);
+      }
+    };
+
     componentWillUnmount() {
+      store.removeListener('change', this.onStoreChange);
+
       if (this.verticalScrollbar) {
         this.verticalScrollbar.destroy();
         this.verticalScrollbar = null;

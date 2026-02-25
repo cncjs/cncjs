@@ -100,7 +100,15 @@ series([
         if (authenticated) {
           try {
             const res = await api.getState();
-            const { allowAnonymousUsageDataCollection } = res.body || {};
+            const {
+              allowAnonymousUsageDataCollection,
+              accessibility,
+            } = res.body || {};
+
+            if (accessibility) {
+              store.merge('accessibility', accessibility);
+            }
+
             if (allowAnonymousUsageDataCollection && !GoogleAnalytics4.isInitialized) {
               GoogleAnalytics4.initialize([
                 {

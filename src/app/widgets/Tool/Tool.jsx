@@ -303,18 +303,18 @@ class Tool extends PureComponent {
             value={toolChangePolicy}
             valueRenderer={this.renderToolChangePolicy}
           />
-          {toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS &&
+          {toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS && (
             <p style={{ marginTop: 4 }}>
               <i>{i18n._('This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.')}</i>
             </p>
-          }
-          {toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS &&
+          )}
+          {toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS && (
             <p style={{ marginTop: 4 }}>
               <i>{i18n._('This will send the line exactly as it is to the controller.')}</i>
             </p>
-          }
+          )}
         </div>
-        {isManualToolChange && (
+        {isManualToolChange ? (
           <div>
             <div className="form-group">
               <label className="control-label">
@@ -442,7 +442,7 @@ class Tool extends PureComponent {
                 })}
               </div>
             </div>
-            {isToolProbeCustomCommandsView && (
+            {isToolProbeCustomCommandsView ? (
               <div>
                 <div
                   style={{
@@ -455,29 +455,29 @@ class Tool extends PureComponent {
                     {i18n._('Custom Tool Probe Commands')}
                   </label>
                   {!this.state.isToolProbeCustomCommandsEditable && (
-                    <div
-                      style={{
+                  <div
+                    style={{
                         display: 'flex',
                         alignItems: 'center',
                         marginBottom: 5,
                       }}
+                  >
+                    <Tooltip
+                      placement="bottom"
+                      content={i18n._('Edit')}
                     >
-                      <Tooltip
-                        placement="bottom"
-                        content={i18n._('Edit')}
+                      <IconButton
+                        onClick={() => {
+                          this.setState({ isToolProbeCustomCommandsEditable: true });
+                        }}
                       >
-                        <IconButton
-                          onClick={() => {
-                            this.setState({ isToolProbeCustomCommandsEditable: true });
-                          }}
-                        >
-                          <i className="fa fa-fw fa-edit" />
-                        </IconButton>
-                      </Tooltip>
-                    </div>
+                        <i className="fa fa-fw fa-edit" />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
                   )}
                 </div>
-                {this.state.isToolProbeCustomCommandsEditable && (
+                {this.state.isToolProbeCustomCommandsEditable ? (
                   <div
                     style={{
                       marginBottom: 8,
@@ -560,22 +560,22 @@ class Tool extends PureComponent {
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
-                )}
+) : null}
                 {!this.state.isToolProbeCustomCommandsEditable && ensureString(toolProbeCustomCommands).length > 0 && (
-                  <TextPreview
-                    style={{
+                <TextPreview
+                  style={{
                       maxHeight: 150,
                     }}
-                  >
-                    {toolProbeCustomCommands}
-                  </TextPreview>
+                >
+                  {toolProbeCustomCommands}
+                </TextPreview>
                 )}
                 {!this.state.isToolProbeCustomCommandsEditable && ensureString(toolProbeCustomCommands).length === 0 && (
-                  <div className="text-error">
-                    {i18n._('Warning: No custom tool probe commands are defined')}
-                  </div>
+                <div className="text-error">
+                  {i18n._('Warning: No custom tool probe commands are defined')}
+                </div>
                 )}
-                {this.state.isToolProbeCustomCommandsEditable && (
+                {this.state.isToolProbeCustomCommandsEditable ? (
                   <div>
                     <div style={{ marginBottom: 8 }}>
                       <TextEditable
@@ -624,10 +624,10 @@ class Tool extends PureComponent {
                       </Button>
                     </div>
                   </div>
-                )}
+) : null}
               </div>
-            )}
-            {isToolProbeDefaultView && (
+) : null}
+            {isToolProbeDefaultView ? (
               <div>
                 <div className="form-group">
                   <label className="control-label">
@@ -685,26 +685,26 @@ class Tool extends PureComponent {
                       </button>
                     </div>
                   </div>
-                  {toolProbeCommand === 'G38.2' &&
-                    <p style={{ marginTop: 4 }}>
-                      <i>{i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}</i>
-                    </p>
-                  }
-                  {toolProbeCommand === 'G38.3' &&
-                    <p style={{ marginTop: 4 }}>
-                      <i>{i18n._('G38.3 probe toward workpiece, stop on contact')}</i>
-                    </p>
-                  }
-                  {toolProbeCommand === 'G38.4' &&
-                    <p style={{ marginTop: 4 }}>
-                      <i>{i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}</i>
-                    </p>
-                  }
-                  {toolProbeCommand === 'G38.5' &&
-                    <p style={{ marginTop: 4 }}>
-                      <i>{i18n._('G38.5 probe away from workpiece, stop on loss of contact')}</i>
-                    </p>
-                  }
+                  {toolProbeCommand === 'G38.2' && (
+                  <p style={{ marginTop: 4 }}>
+                    <i>{i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}</i>
+                  </p>
+                  )}
+                  {toolProbeCommand === 'G38.3' && (
+                  <p style={{ marginTop: 4 }}>
+                    <i>{i18n._('G38.3 probe toward workpiece, stop on contact')}</i>
+                  </p>
+                  )}
+                  {toolProbeCommand === 'G38.4' && (
+                  <p style={{ marginTop: 4 }}>
+                    <i>{i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}</i>
+                  </p>
+                  )}
+                  {toolProbeCommand === 'G38.5' && (
+                  <p style={{ marginTop: 4 }}>
+                    <i>{i18n._('G38.5 probe away from workpiece, stop on loss of contact')}</i>
+                  </p>
+                  )}
                 </div>
                 <div className="row no-gutters">
                   <div className="col-xs-6" style={{ paddingRight: 5 }}>
@@ -790,7 +790,7 @@ class Tool extends PureComponent {
                     <label className="control-label">
                       {i18n._('Tool Probe Commands')}
                     </label>
-                    {isReady && (
+                    {isReady ? (
                       <div style={{ marginBottom: 5 }}>
                         <Tooltip
                           placement="bottom"
@@ -806,17 +806,17 @@ class Tool extends PureComponent {
                           </IconButton>
                         </Tooltip>
                       </div>
-                    )}
+                    ) : null}
                   </div>
-                  {isReady && (
-                  <TextPreview
-                    style={{
-                      maxHeight: 150,
-                    }}
-                  >
-                    {toolProbeCommands}
-                  </TextPreview>
-                  )}
+                  {isReady ? (
+                    <TextPreview
+                      style={{
+                        maxHeight: 150,
+                      }}
+                    >
+                      {toolProbeCommands}
+                    </TextPreview>
+                  ) : null}
                   {!isReady && (
                     <div>
                       <i>{i18n._('Connect to the controller to view the tool probe commands.')}</i>
@@ -824,9 +824,9 @@ class Tool extends PureComponent {
                   )}
                 </div>
               </div>
-            )}
+            ) : null}
           </div>
-        )}
+        ) : null}
       </div>
     );
   }

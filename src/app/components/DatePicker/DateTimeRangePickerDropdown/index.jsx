@@ -351,7 +351,7 @@ class DateTimeRangePickerDropdown extends PureComponent {
                 {mapPeriodToString('custom')}
               </MenuItem>
             </Dropdown.Menu>
-            {showDateTimeRangePicker && (
+            {showDateTimeRangePicker ? (
               <div
                 style={{
                   display: 'inline-block',
@@ -386,7 +386,7 @@ class DateTimeRangePickerDropdown extends PureComponent {
                   </div>
                 </div>
               </div>
-            )}
+) : null}
           </Dropdown.MenuWrapper>
         </Dropdown>
       );

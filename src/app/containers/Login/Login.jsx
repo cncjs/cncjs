@@ -127,7 +127,7 @@ class Login extends PureComponent {
 
     return (
       <div className={styles.container}>
-        {alertMessage && (
+        {alertMessage ? (
           <div role="alert" aria-live="assertive">
             <Notification
               style={{ marginBottom: 10 }}
@@ -138,7 +138,7 @@ class Login extends PureComponent {
               <div>{alertMessage}</div>
             </Notification>
           </div>
-        )}
+) : null}
         <div className={styles.login}>
           <div className={styles.logo}>
             <img src="images/logo-square-256x256.png" alt="CNCjs logo" />

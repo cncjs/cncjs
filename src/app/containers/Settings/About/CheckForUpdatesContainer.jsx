@@ -47,6 +47,7 @@ class CheckForUpdatesContainer extends PureComponent {
           <ToggleSwitch
             checked={this.state.checkForUpdates}
             size="sm"
+            aria-label={i18n._('Automatically check for updates')}
             onChange={async () => {
               const nextValue = !this.state.checkForUpdates;
               await this.actions.mutateCheckForUpdates(nextValue);

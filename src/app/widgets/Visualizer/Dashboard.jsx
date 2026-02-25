@@ -108,7 +108,7 @@ class Dashboard extends PureComponent {
           >
             <div className="clearfix" style={{ marginBottom: 10 }}>
               <div className="pull-left text-nowrap">
-                {state.gcode.ready && (
+                {state.gcode.ready ? (
                   <Anchor
                     onClick={() => {
                       api.downloadGCode({ port: state.port });
@@ -116,7 +116,7 @@ class Dashboard extends PureComponent {
                   >
                     <strong>{filename}</strong>
                   </Anchor>
-                )}
+) : null}
                 {!state.gcode.ready && i18n._('G-code not loaded')}
               </div>
               <div className="pull-right text-nowrap">

@@ -44,54 +44,42 @@ const Notifications = ({ show, type, data, onDismiss, style, ...props }) => (
       {type === NOTIFICATION_PROGRAM_ERROR && (
         <div>
           <div><strong>{i18n._('Error')}</strong></div>
-          {data && (
-            <code>{data}</code>
-          )}
+          {data ? <code>{data}</code> : null}
           <div>{i18n._('Click the Resume button to resume program execution.')}</div>
         </div>
       )}
       {type === NOTIFICATION_M0_PROGRAM_PAUSE && (
         <div>
           <div><strong>{i18n._('M0 Program Pause')}</strong></div>
-          {data && (
-            <code>{data}</code>
-          )}
+          {data ? <code>{data}</code> : null}
           <div>{i18n._('Click the Resume button to resume program execution.')}</div>
         </div>
       )}
       {type === NOTIFICATION_M1_PROGRAM_PAUSE && (
         <div>
           <div><strong>{i18n._('M1 Program Pause')}</strong></div>
-          {data && (
-            <code>{data}</code>
-          )}
+          {data ? <code>{data}</code> : null}
           <div>{i18n._('Click the Resume button to resume program execution.')}</div>
         </div>
       )}
       {type === NOTIFICATION_M2_PROGRAM_END && (
         <div>
           <div><strong>{i18n._('M2 Program End')}</strong></div>
-          {data && (
-            <code>{data}</code>
-          )}
+          {data ? <code>{data}</code> : null}
           <div>{i18n._('Click the Stop button to stop program execution.')}</div>
         </div>
       )}
       {type === NOTIFICATION_M30_PROGRAM_END && (
         <div>
           <div><strong>{i18n._('M30 Program End')}</strong></div>
-          {data && (
-            <code>{data}</code>
-          )}
+          {data ? <code>{data}</code> : null}
           <div>{i18n._('Click the Stop button to stop program execution.')}</div>
         </div>
       )}
       {type === NOTIFICATION_M6_TOOL_CHANGE && (
         <div>
           <div><strong>{i18n._('M6 Tool Change')}</strong></div>
-          {data && (
-            <code>{data}</code>
-          )}
+          {data ? <code>{data}</code> : null}
           <div>
             {i18n._('Run a tool change macro to change the tool and adjust the Z-axis offset. Afterwards, click the Resume button to resume program execution.')}
             <Space width="4" />
@@ -107,18 +95,14 @@ const Notifications = ({ show, type, data, onDismiss, style, ...props }) => (
       {type === NOTIFICATION_M109_SET_EXTRUDER_TEMPERATURE && (
         <div>
           <div><strong>{i18n._('M109 Set Extruder Temperature')}</strong></div>
-          {data && (
-            <code>{data}</code>
-          )}
+          {data ? <code>{data}</code> : null}
           <div>{i18n._('Waiting for the target temperature to be reached...')}</div>
         </div>
       )}
       {type === NOTIFICATION_M190_SET_HEATED_BED_TEMPERATURE && (
         <div>
           <div><strong>{i18n._('M190 Set Heated Bed Temperature')}</strong></div>
-          {data && (
-            <code>{data}</code>
-          )}
+          {data ? <code>{data}</code> : null}
           <div>{i18n._('Waiting for the target temperature to be reached...')}</div>
         </div>
       )}

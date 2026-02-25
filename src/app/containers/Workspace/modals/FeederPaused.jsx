@@ -20,9 +20,7 @@ const FeederPaused = ({
     <Modal.Body>
       <ModalTemplate type="warning">
         <h5>{title}</h5>
-        {message &&
-          <p>{message}</p>
-        }
+        {message ? <p>{message}</p> : null}
         <p>{i18n._('Click the Continue button to resume execution.')}</p>
       </ModalTemplate>
     </Modal.Body>

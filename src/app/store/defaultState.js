@@ -8,6 +8,13 @@ const defaultState = {
     name: '',
     token: ''
   },
+  accessibility: {
+    focusIndicators: true,
+    liveRegions: true,
+    consoleAccessibility: false,
+    visualizerText: true,
+    visualizerTextVisible: false,
+  },
   workspace: {
     container: {
       default: {

@@ -183,7 +183,7 @@ class SecondaryToolbar extends PureComponent {
           }}
         >
           <Col width="auto">
-            {is3DView && (
+            {!!is3DView && (
               <ButtonToolbar>
                 <ButtonGroup btnSize="sm">
                   <IconButton
@@ -199,7 +199,10 @@ class SecondaryToolbar extends PureComponent {
                       content={i18n._('Top View')}
                       hideOnClick
                     >
-                      <Image src={iconTopView} width="20" height="20" alt="" />
+                      <Image
+                        src={iconTopView} width="20" height="20"
+                        alt={i18n._('Top View')}
+                      />
                     </Tooltip>
                   </IconButton>
                   <IconButton
@@ -215,7 +218,10 @@ class SecondaryToolbar extends PureComponent {
                       content={i18n._('Front View')}
                       hideOnClick
                     >
-                      <Image src={iconFrontView} width="20" height="20" alt="" />
+                      <Image
+                        src={iconFrontView} width="20" height="20"
+                        alt={i18n._('Front View')}
+                      />
                     </Tooltip>
                   </IconButton>
                   <IconButton
@@ -231,7 +237,10 @@ class SecondaryToolbar extends PureComponent {
                       content={i18n._('Right Side View')}
                       hideOnClick
                     >
-                      <Image src={iconRightSideView} width="20" height="20" alt="" />
+                      <Image
+                        src={iconRightSideView} width="20" height="20"
+                        alt={i18n._('Right Side View')}
+                      />
                     </Tooltip>
                   </IconButton>
                   <IconButton
@@ -247,7 +256,10 @@ class SecondaryToolbar extends PureComponent {
                       content={i18n._('Left Side View')}
                       hideOnClick
                     >
-                      <Image src={iconLeftSideView} width="20" height="20" alt="" />
+                      <Image
+                        src={iconLeftSideView} width="20" height="20"
+                        alt={i18n._('Left Side View')}
+                      />
                     </Tooltip>
                   </IconButton>
                   <IconButton
@@ -263,7 +275,10 @@ class SecondaryToolbar extends PureComponent {
                       content={i18n._('3D View')}
                       hideOnClick
                     >
-                      <Image src={icon3DView} width="20" height="20" alt="" />
+                      <Image
+                        src={icon3DView} width="20" height="20"
+                        alt={i18n._('3D View')}
+                      />
                     </Tooltip>
                   </IconButton>
                   <Repeatable
@@ -277,7 +292,10 @@ class SecondaryToolbar extends PureComponent {
                       content={i18n._('Zoom to Fit')}
                       hideOnClick
                     >
-                      <Image src={iconZoomFit} width="20" height="20" alt="" />
+                      <Image
+                        src={iconZoomFit} width="20" height="20"
+                        alt={i18n._('Zoom to Fit')}
+                      />
                     </Tooltip>
                   </Repeatable>
                   <Repeatable
@@ -291,7 +309,10 @@ class SecondaryToolbar extends PureComponent {
                       content={i18n._('Zoom In')}
                       hideOnClick
                     >
-                      <Image src={iconZoomIn} width="20" height="20" alt="" />
+                      <Image
+                        src={iconZoomIn} width="20" height="20"
+                        alt={i18n._('Zoom In')}
+                      />
                     </Tooltip>
                   </Repeatable>
                   <Repeatable
@@ -305,7 +326,10 @@ class SecondaryToolbar extends PureComponent {
                       content={i18n._('Zoom Out')}
                       hideOnClick
                     >
-                      <Image src={iconZoomOut} width="20" height="20" alt="" />
+                      <Image
+                        src={iconZoomOut} width="20" height="20"
+                        alt={i18n._('Zoom Out')}
+                      />
                     </Tooltip>
                   </Repeatable>
                 </ButtonGroup>
@@ -326,21 +350,33 @@ class SecondaryToolbar extends PureComponent {
                     componentClass={IconButton}
                     title={cameraMode === CAMERA_MODE_PAN ? i18n._('Camera mode: Pan') : i18n._('Camera mode: Rotate')}
                   >
-                    {(cameraMode === CAMERA_MODE_PAN) &&
-                      <Image src={iconMoveCamera} width="20" height="20" alt={i18n._('Pan camera')} />
-                    }
-                    {(cameraMode === CAMERA_MODE_ROTATE) &&
-                      <Image src={iconRotateCamera} width="20" height="20" alt={i18n._('Rotate camera')} />
-                    }
+                    {!!(cameraMode === CAMERA_MODE_PAN) && (
+                      <Image
+                        src={iconMoveCamera} width="20" height="20"
+                        alt={i18n._('Pan camera')}
+                      />
+                    )}
+                    {!!(cameraMode === CAMERA_MODE_ROTATE) && (
+                      <Image
+                        src={iconRotateCamera} width="20" height="20"
+                        alt={i18n._('Rotate camera')}
+                      />
+                    )}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <MenuItem eventKey={CAMERA_MODE_PAN}>
-                      <Image src={iconMoveCamera} width="20" height="20" alt="" />
+                      <Image
+                        src={iconMoveCamera} width="20" height="20"
+                        alt=""
+                      />
                       <Space width="4" />
                       {i18n._('Move the camera')}
                     </MenuItem>
                     <MenuItem eventKey={CAMERA_MODE_ROTATE}>
-                      <Image src={iconRotateCamera} width="20" height="20" alt="" />
+                      <Image
+                        src={iconRotateCamera} width="20" height="20"
+                        alt=""
+                      />
                       <Space width="4" />
                       {i18n._('Rotate the camera')}
                     </MenuItem>

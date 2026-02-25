@@ -10,7 +10,7 @@ const AboutContainer = ({ version }) => {
 
   return (
     <div className={styles.aboutContainer}>
-      <img src="images/logo-square-256x256.png" alt="" className={styles.productLogo} />
+      <img src="images/logo-square-256x256.png" alt={settings.productName} className={styles.productLogo} />
       <div className={styles.productDetails}>
         <div className={styles.aboutProductName}>
           {`${settings.productName} ${version.current}`}
@@ -24,7 +24,7 @@ const AboutContainer = ({ version }) => {
           target="_blank"
         >
           {i18n._('Learn more')}
-          <i className="fa fa-arrow-circle-right" style={{ marginLeft: 5 }} />
+          <i className="fa fa-arrow-circle-right" style={{ marginLeft: 5 }} aria-hidden="true" />
         </Anchor>
       </div>
     </div>

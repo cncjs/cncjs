@@ -27,6 +27,7 @@ import Controller from './Controller';
 import Commands from './Commands';
 import Events from './Events';
 import About from './About';
+import KeyboardShortcutsModal from './General/KeyboardShortcutsModal';
 import styles from './index.styl';
 
 const mapSectionPathToId = (path = '') => {
@@ -112,6 +113,7 @@ class Settings extends PureComponent {
             .then((res) => {
               const {
                 allowAnonymousUsageDataCollection,
+                accessibility = {},
               } = { ...res.body };
 
               const nextState = {
@@ -123,7 +125,11 @@ class Settings extends PureComponent {
                 },
                 // followed by data
                 allowAnonymousUsageDataCollection: !!allowAnonymousUsageDataCollection,
-                lang: i18next.language // TODO: Store language settings into the state
+                lang: i18next.language, // TODO: Store language settings into the state
+                accessibility: {
+                  ...this.state.general.accessibility,
+                  ...accessibility,
+                }
               };
 
               this.initialState.general = nextState;
@@ -147,6 +153,7 @@ class Settings extends PureComponent {
           const {
             allowAnonymousUsageDataCollection,
             lang = 'en',
+            accessibility = {},
           } = this.state.general;
 
           this.setState({
@@ -162,6 +169,7 @@ class Settings extends PureComponent {
 
           const data = {
             allowAnonymousUsageDataCollection,
+            accessibility,
           };
 
           api.setState(data)
@@ -174,6 +182,9 @@ class Settings extends PureComponent {
                   saving: false
                 }
               };
+
+              // Sync accessibility settings to store
+              store.merge('accessibility', nextState.accessibility);
 
               // Update settings to initialState
               this.initialState.general = nextState;
@@ -224,6 +235,39 @@ class Settings extends PureComponent {
             general: {
               ...this.state.general,
               lang: lang
+            }
+          });
+        },
+        toggleAccessibilitySetting: (key) => {
+          this.setState({
+            general: {
+              ...this.state.general,
+              accessibility: {
+                ...this.state.general.accessibility,
+                [key]: !this.state.general.accessibility[key]
+              }
+            }
+          });
+        },
+        openModal: (name = '', params = {}) => {
+          this.setState({
+            general: {
+              ...this.state.general,
+              modal: {
+                name: name,
+                params: params
+              }
+            }
+          });
+        },
+        closeModal: () => {
+          this.setState({
+            general: {
+              ...this.state.general,
+              modal: {
+                name: '',
+                params: {}
+              }
             }
           });
         }
@@ -1095,7 +1139,18 @@ class Settings extends PureComponent {
             saving: false
           },
           allowAnonymousUsageDataCollection: false,
-          lang: i18next.language
+          lang: i18next.language,
+          accessibility: {
+            focusIndicators: true,
+            liveRegions: true,
+            consoleAccessibility: false,
+            visualizerText: true,
+            visualizerTextVisible: false,
+          },
+          modal: {
+            name: '',
+            params: {}
+          }
         },
         // Workspace
         workspace: {
@@ -1196,6 +1251,18 @@ class Settings extends PureComponent {
             latest: settings.version,
             lastUpdate: ''
           }
+        },
+        // Accessibility
+        accessibility: {
+          focusIndicators: true,
+          liveRegions: true,
+          consoleAccessibility: false,
+          visualizerText: true,
+          visualizerTextVisible: false,
+          modal: {
+            name: '',
+            params: {}
+          }
         }
       };
     }
@@ -1257,6 +1324,12 @@ class Settings extends PureComponent {
                     actions={sectionActions}
                   />
                 </div>
+                {!!(sectionState.modal && sectionState.modal.name === 'keyboard-shortcuts') && (
+                  <KeyboardShortcutsModal
+                    show={true}
+                    onClose={sectionActions.closeModal}
+                  />
+                )}
               </div>
             </div>
           </div>
