@@ -8,7 +8,11 @@ const Sortable = (props) => {
 
   return (
     <div className={classNames(className, styles.widgetSortable)} style={style}>
-      <Anchor {...rest}>
+      <Anchor
+        role="button"
+        aria-label="Drag to reorder widget"
+        {...rest}
+      >
         {children}
       </Anchor>
     </div>

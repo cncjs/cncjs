@@ -273,6 +273,7 @@ class Header extends PureComponent {
         fixedTop
         fluid
         inverse
+        aria-label={i18n._('Main navigation')}
         style={{
           border: 'none',
           margin: 0
@@ -300,7 +301,7 @@ class Header extends PureComponent {
                   margin: '4px auto 0 auto'
                 }}
                 src="images/logo-badge-32x32.png"
-                alt=""
+                alt="CNCjs logo"
               />
               <div
                 style={{
@@ -315,6 +316,7 @@ class Header extends PureComponent {
               {newUpdateAvailable && (
                 <span
                   className="label label-primary"
+                  aria-label={i18n._('New update available')}
                   style={{
                     fontSize: '50%',
                     position: 'absolute',
@@ -322,7 +324,7 @@ class Header extends PureComponent {
                     right: 2
                   }}
                 >
-                              N
+                  <span aria-hidden="true">N</span>
                 </span>
               )}
             </Anchor>
@@ -358,8 +360,9 @@ class Header extends PureComponent {
                   noCaret
                   className={styles.navDropdownToggle}
                   title={i18n._('My Account')}
+                  aria-label={i18n._('My Account')}
                 >
-                  <i className="fa fa-fw fa-user" style={{ fontSize: '20px', marginRight: 0 }} />
+                  <i className="fa fa-fw fa-user" style={{ fontSize: '20px', marginRight: 0 }} aria-hidden="true" />
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <MenuItem header>
@@ -369,7 +372,7 @@ class Header extends PureComponent {
                   <MenuItem
                     href="#/settings/user-accounts"
                   >
-                    <i className="fa fa-fw fa-user" />
+                    <i className="fa fa-fw fa-user" aria-hidden="true" />
                     <Space width="8" />
                     {i18n._('Account')}
                   </MenuItem>
@@ -386,7 +389,7 @@ class Header extends PureComponent {
                       }
                     }}
                   >
-                    <i className="fa fa-fw fa-sign-out" />
+                    <i className="fa fa-fw fa-sign-out" aria-hidden="true" />
                     <Space width="8" />
                     {i18n._('Sign Out')}
                   </MenuItem>
@@ -400,18 +403,20 @@ class Header extends PureComponent {
                   noCaret
                   className={styles.navDropdownToggle}
                   title={i18n._('Options')}
+                  aria-label={i18n._('Options')}
                 >
-                  <i className="fa fa-fw fa-ellipsis-v" style={{ fontSize: '20px', marginRight: 0 }} />
+                  <i className="fa fa-fw fa-ellipsis-v" style={{ fontSize: '20px', marginRight: 0 }} aria-hidden="true" />
                   {this.state.runningTasks.length > 0 && (
                     <span
                       className="label label-primary"
+                      aria-label={i18n._('Tasks running')}
                       style={{
                         position: 'absolute',
                         top: -4,
                         right: -8,
                       }}
                     >
-                      N
+                      <span aria-hidden="true">N</span>
                     </span>
                   )}
                 </Dropdown.Toggle>
@@ -420,13 +425,13 @@ class Header extends PureComponent {
                     <MenuItem header>
                       {i18n._('Command')}
                       {pushPermission === Push.Permission.GRANTED && (
-                        <span className="pull-right">
-                          <i className="fa fa-fw fa-bell-o" />
+                        <span className="pull-right" aria-label={i18n._('Notifications allowed')}>
+                          <i className="fa fa-fw fa-bell-o" aria-hidden="true" />
                         </span>
                       )}
                       {pushPermission === Push.Permission.DENIED && (
-                        <span className="pull-right">
-                          <i className="fa fa-fw fa-bell-slash-o" />
+                        <span className="pull-right" aria-label={i18n._('Notifications blocked')}>
+                          <i className="fa fa-fw fa-bell-slash-o" aria-hidden="true" />
                         </span>
                       )}
                       {pushPermission === Push.Permission.DEFAULT && (
@@ -435,8 +440,9 @@ class Header extends PureComponent {
                             className={styles.btnIcon}
                             onClick={this.actions.requestPushPermission}
                             title={i18n._('Show notifications')}
+                            aria-label={i18n._('Enable notifications')}
                           >
-                            <i className="fa fa-fw fa-bell" />
+                            <i className="fa fa-fw fa-bell" aria-hidden="true" />
                           </Anchor>
                         </span>
                       )}
@@ -465,6 +471,7 @@ class Header extends PureComponent {
                               { 'text-error': cmd.err }
                             )}
                             title={cmd.err}
+                            aria-hidden="true"
                           />
                         </span>
                       </MenuItem>

@@ -521,11 +521,11 @@ class ToolWidget extends PureComponent {
     };
 
     return (
-      <Widget fullscreen={isFullscreen}>
+      <Widget fullscreen={isFullscreen} aria-label={i18n._('Tool')}>
         <Widget.Header>
           <Widget.Title>
             <Widget.Sortable className={this.props.sortable.handleClassName}>
-              <i className="fa fa-bars" />
+              <i className="fa fa-bars" aria-hidden="true" />
               <Space width="8" />
             </Widget.Sortable>
             {i18n._('Tool')}
@@ -533,6 +533,7 @@ class ToolWidget extends PureComponent {
           <Widget.Controls className={this.props.sortable.filterClassName}>
             <Widget.Button
               title={i18n._('Refresh')}
+              aria-label={i18n._('Refresh tool configuration')}
               onClick={this.loadToolConfig}
             >
               <i
@@ -541,11 +542,14 @@ class ToolWidget extends PureComponent {
                   'fa-refresh',
                   { 'fa-spin': state.isFetchingToolConfig },
                 )}
+                aria-hidden="true"
               />
             </Widget.Button>
             <Widget.Button
               disabled={isFullscreen}
               title={minimized ? i18n._('Expand') : i18n._('Collapse')}
+              aria-label={minimized ? i18n._('Expand') : i18n._('Collapse')}
+              aria-expanded={!minimized}
               onClick={actions.toggleMinimized}
             >
               <i
@@ -554,11 +558,13 @@ class ToolWidget extends PureComponent {
                   { 'fa-chevron-up': !minimized },
                   { 'fa-chevron-down': minimized }
                 )}
+                aria-hidden="true"
               />
             </Widget.Button>
             <Widget.DropdownButton
               title={i18n._('More')}
-              toggle={<i className="fa fa-ellipsis-v" />}
+              aria-label={i18n._('More options')}
+              toggle={<i className="fa fa-ellipsis-v" aria-hidden="true" />}
               onSelect={(eventKey) => {
                 if (eventKey === 'fullscreen') {
                   actions.toggleFullscreen();
@@ -575,12 +581,13 @@ class ToolWidget extends PureComponent {
                     { 'fa-expand': !isFullscreen },
                     { 'fa-compress': isFullscreen }
                   )}
+                  aria-hidden="true"
                 />
                 <Space width="4" />
                 {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
               </Widget.DropdownMenuItem>
               <Widget.DropdownMenuItem eventKey="remove">
-                <i className="fa fa-fw fa-times" />
+                <i className="fa fa-fw fa-times" aria-hidden="true" />
                 <Space width="4" />
                 {i18n._('Remove Widget')}
               </Widget.DropdownMenuItem>
@@ -592,6 +599,7 @@ class ToolWidget extends PureComponent {
             styles['widget-content'],
             { [styles.hidden]: minimized }
           )}
+          aria-hidden={minimized}
         >
           <Tool
             state={state}

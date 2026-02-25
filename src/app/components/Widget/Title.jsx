@@ -4,6 +4,8 @@ import styles from './index.styl';
 
 const Title = ({ className, ...props }) => (
   <div
+    role="heading"
+    aria-level="2"
     {...props}
     className={classNames(className, styles.widgetTitle)}
   />

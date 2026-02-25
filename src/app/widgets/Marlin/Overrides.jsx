@@ -25,7 +25,7 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-down" style={{ fontSize: 14 }} />
             <span style={{ marginLeft: 5 }}>
-                        -10%
+              -10%
             </span>
           </RepeatButton>
           <RepeatButton
@@ -37,7 +37,7 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-down" style={{ fontSize: 10 }} />
             <span style={{ marginLeft: 5 }}>
-                        -1%
+              -1%
             </span>
           </RepeatButton>
           <RepeatButton
@@ -49,7 +49,7 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-up" style={{ fontSize: 10 }} />
             <span style={{ marginLeft: 5 }}>
-                        1%
+              1%
             </span>
           </RepeatButton>
           <RepeatButton
@@ -61,18 +61,19 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-up" style={{ fontSize: 14 }} />
             <span style={{ marginLeft: 5 }}>
-                        10%
+              10%
             </span>
           </RepeatButton>
           <button
             type="button"
             className="btn btn-default"
             style={{ padding: 5 }}
+            aria-label="Reset feed rate override"
             onClick={() => {
               controller.command('feedOverride', 0);
             }}
           >
-            <i className="fa fa-undo fa-fw" />
+            <i className="fa fa-undo fa-fw" aria-hidden="true" />
           </button>
         </DigitalReadout>
       )}
@@ -87,7 +88,7 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-down" style={{ fontSize: 14 }} />
             <span style={{ marginLeft: 5 }}>
-                        -10%
+              -10%
             </span>
           </RepeatButton>
           <RepeatButton
@@ -99,7 +100,7 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-down" style={{ fontSize: 10 }} />
             <span style={{ marginLeft: 5 }}>
-                        -1%
+              -1%
             </span>
           </RepeatButton>
           <RepeatButton
@@ -111,7 +112,7 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-up" style={{ fontSize: 10 }} />
             <span style={{ marginLeft: 5 }}>
-                        1%
+              1%
             </span>
           </RepeatButton>
           <RepeatButton
@@ -123,18 +124,19 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-up" style={{ fontSize: 14 }} />
             <span style={{ marginLeft: 5 }}>
-                        10%
+              10%
             </span>
           </RepeatButton>
           <button
             type="button"
             className="btn btn-default"
             style={{ padding: 5 }}
+            aria-label="Reset spindle override"
             onClick={() => {
               controller.command('spindleOverride', 0);
             }}
           >
-            <i className="fa fa-undo fa-fw" />
+            <i className="fa fa-undo fa-fw" aria-hidden="true" />
           </button>
         </DigitalReadout>
       )}

@@ -5,67 +5,72 @@ import Dropdown from '../Dropdown';
 import styles from './index.styl';
 
 class DropdownButton extends PureComponent {
-    static propTypes = {
-      ...Dropdown.propTypes,
+  static propTypes = {
+    ...Dropdown.propTypes,
 
-      // One of: 'lg', 'md', 'sm', 'xs'
-      btnSize: Button.propTypes.btnSize,
+    // One of: 'lg', 'md', 'sm', 'xs'
+    btnSize: Button.propTypes.btnSize,
 
-      // One of: 'default', 'primary', 'emphasis', 'flat', 'link'
-      btnStyle: Button.propTypes.btnStyle,
+    // One of: 'default', 'primary', 'emphasis', 'flat', 'link'
+    btnStyle: Button.propTypes.btnStyle,
 
-      // toggle
-      toggle: PropTypes.node.isRequired,
+    // toggle
+    toggle: PropTypes.node.isRequired,
 
-      // Align the menu to the right side of the dropdown toggle.
-      pullRight: PropTypes.bool,
+    // Accessible label for the toggle button (for icon-only usage)
+    'aria-label': PropTypes.string,
 
-      // Whether to prevent a caret from being rendered next to the title.
-      noCaret: PropTypes.bool
-    };
+    // Align the menu to the right side of the dropdown toggle.
+    pullRight: PropTypes.bool,
 
-    static defaultProps = {
-      pullRight: true,
-      noCaret: true
-    };
+    // Whether to prevent a caret from being rendered next to the title.
+    noCaret: PropTypes.bool
+  };
 
-    render() {
-      const { btnSize, toggle, style, children, ...props } = this.props;
+  static defaultProps = {
+    pullRight: true,
+    noCaret: true
+  };
 
-      // Split component props
-      const dropdownProps = {};
-      const toggleProps = {};
-      Object.keys(props).forEach(propName => {
-        const propValue = props[propName];
-        if (Dropdown.ControlledComponent.propTypes[propName]) {
-          dropdownProps[propName] = propValue;
-        } else {
-          toggleProps[propName] = propValue;
-        }
-      });
+  render() {
+    const { btnSize, toggle, style, children, 'aria-label': ariaLabel, ...props } = this.props;
 
-      return (
-        <Dropdown
-          {...dropdownProps}
-          style={{
-            ...style,
-            float: 'left'
-          }}
-          btnSize={btnSize}
+    // Split component props
+    const dropdownProps = {};
+    const toggleProps = {};
+    Object.keys(props).forEach(propName => {
+      const propValue = props[propName];
+      if (Dropdown.ControlledComponent.propTypes[propName]) {
+        dropdownProps[propName] = propValue;
+      } else {
+        toggleProps[propName] = propValue;
+      }
+    });
+
+    return (
+      <Dropdown
+        {...dropdownProps}
+        style={{
+          ...style,
+          float: 'left'
+        }}
+        btnSize={btnSize}
+      >
+        <Dropdown.Toggle
+          {...toggleProps}
+          className={styles.widgetButton}
+          componentClass="a"
+          aria-label={ariaLabel}
+          aria-haspopup="true"
         >
-          <Dropdown.Toggle
-            {...toggleProps}
-            className={styles.widgetButton}
-            componentClass="a"
-          >
-            {toggle}
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            {children}
-          </Dropdown.Menu>
-        </Dropdown>
-      );
-    }
+          {toggle}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          {children}
+        </Dropdown.Menu>
+      </Dropdown>
+    );
+  }
 }
 
 export default DropdownButton;

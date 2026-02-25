@@ -26,7 +26,7 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-down" style={{ fontSize: 14 }} />
             <span style={{ marginLeft: 5 }}>
-                        -10%
+              -10%
             </span>
           </RepeatButton>
           <RepeatButton
@@ -38,7 +38,7 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-down" style={{ fontSize: 10 }} />
             <span style={{ marginLeft: 5 }}>
-                        -1%
+              -1%
             </span>
           </RepeatButton>
           <RepeatButton
@@ -50,7 +50,7 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-up" style={{ fontSize: 10 }} />
             <span style={{ marginLeft: 5 }}>
-                        1%
+              1%
             </span>
           </RepeatButton>
           <RepeatButton
@@ -62,18 +62,19 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-up" style={{ fontSize: 14 }} />
             <span style={{ marginLeft: 5 }}>
-                        10%
+              10%
             </span>
           </RepeatButton>
           <button
             type="button"
             className="btn btn-default"
             style={{ padding: 5 }}
+            aria-label="Reset feed rate override"
             onClick={() => {
               controller.command('feedOverride', 0);
             }}
           >
-            <i className="fa fa-undo fa-fw" />
+            <i className="fa fa-undo fa-fw" aria-hidden="true" />
           </button>
         </DigitalReadout>
       )}
@@ -88,7 +89,7 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-down" style={{ fontSize: 14 }} />
             <span style={{ marginLeft: 5 }}>
-                        -10%
+              -10%
             </span>
           </RepeatButton>
           <RepeatButton
@@ -100,7 +101,7 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-down" style={{ fontSize: 10 }} />
             <span style={{ marginLeft: 5 }}>
-                        -1%
+              -1%
             </span>
           </RepeatButton>
           <RepeatButton
@@ -112,7 +113,7 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-up" style={{ fontSize: 10 }} />
             <span style={{ marginLeft: 5 }}>
-                        1%
+              1%
             </span>
           </RepeatButton>
           <RepeatButton
@@ -124,18 +125,19 @@ const Overrides = (props) => {
           >
             <i className="fa fa-arrow-up" style={{ fontSize: 14 }} />
             <span style={{ marginLeft: 5 }}>
-                        10%
+              10%
             </span>
           </RepeatButton>
           <button
             type="button"
             className="btn btn-default"
             style={{ padding: 5 }}
+            aria-label="Reset spindle override"
             onClick={() => {
               controller.command('spindleOverride', 0);
             }}
           >
-            <i className="fa fa-undo fa-fw" />
+            <i className="fa fa-undo fa-fw" aria-hidden="true" />
           </button>
         </DigitalReadout>
       )}
@@ -144,35 +146,38 @@ const Overrides = (props) => {
           <button
             type="button"
             className="btn btn-default"
+            aria-label="Rapid override 100%"
             onClick={() => {
               controller.command('rapidOverride', 100);
             }}
           >
-            <i className="fa fa-battery-full" />
+            <i className="fa fa-battery-full" aria-hidden="true" />
             <Space width="8" />
-                    100%
+            100%
           </button>
           <button
             type="button"
             className="btn btn-default"
+            aria-label="Rapid override 50%"
             onClick={() => {
               controller.command('rapidOverride', 50);
             }}
           >
-            <i className="fa fa-battery-half" />
+            <i className="fa fa-battery-half" aria-hidden="true" />
             <Space width="8" />
-                    50%
+            50%
           </button>
           <button
             type="button"
             className="btn btn-default"
+            aria-label="Rapid override 25%"
             onClick={() => {
               controller.command('rapidOverride', 25);
             }}
           >
-            <i className="fa fa-battery-quarter" />
+            <i className="fa fa-battery-quarter" aria-hidden="true" />
             <Space width="8" />
-                    25%
+            25%
           </button>
         </DigitalReadout>
       )}
