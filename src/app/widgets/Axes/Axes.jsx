@@ -17,6 +17,7 @@ const Axes = (props) => {
         workPosition={state.workPosition}
         jog={state.jog}
         actions={actions}
+        controllerType={state.controller.type}
       />
       <Keypad
         canClick={state.canClick}
