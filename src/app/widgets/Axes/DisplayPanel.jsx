@@ -108,12 +108,18 @@ const getHomeCommand = (controllerType, axes = ['x', 'y', 'z']) => {
   if (controllerType === GRBL) {
     return '$H';
   }
+
   if (controllerType === MARLIN || controllerType === SMOOTHIE) {
     return 'G28';
   }
-  // TinyG/g2core requires explicit axis parameters
-  const axisParams = axes.map(axis => axis.toUpperCase() + '0').join(' ');
-  return 'G28.2 ' + axisParams;
+
+  if (controllerType === TINYG) {
+    // TinyG/g2core requires explicit axis parameters
+    const axisParams = axes.map(axis => axis.toUpperCase() + '0').join(' ');
+    return 'G28.2 ' + axisParams;
+  }
+
+  return '';
 };
 
 // Returns the single-axis homing command for the given controller type and axis.
@@ -128,10 +134,16 @@ const getAxisHomeCommand = (controllerType, axis) => {
   if (controllerType === GRBL) {
     return `$H${axis.toUpperCase()}`;
   }
+
   if (controllerType === MARLIN || controllerType === SMOOTHIE) {
     return `G28 ${axis.toUpperCase()}`;
   }
-  return `G28.2 ${axis.toUpperCase()}0`;
+
+  if (controllerType === TINYG) {
+    return `G28.2 ${axis.toUpperCase()}0`;
+  }
+
+  return '';
 };
 
 class DisplayPanel extends PureComponent {
