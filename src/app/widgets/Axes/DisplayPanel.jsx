@@ -41,15 +41,14 @@ import iconPencil from './images/pencil.svg';
 // Declares which gcode commands each controller supports in the axis dropdown.
 // Grouped by dropdown section (Work Coordinate System → Temporary Offsets → Machine Coordinate System).
 //
-// Command               | G-code   | Description
-// --------------------- | -------- | ----------------------------------------------------
-// canGoToWork           | G0       | rapid move to work zero
-// canSetWCSOffset       | G10 L20  | set work coordinate offset
-// canZeroTempOffset     | G92      | zero out temporary position offset
-// canCancelTempOffset   | G92.1    | cancel G92 offsets
-// canGoToMachine        | G53 G0   | move in machine coordinates
-// canZeroOutMachine     | G28.3    | set axis position without motion (TinyG/g2core only)
-// canHomeMachine        | G28.2    | run homing cycle on axis (TinyG/g2core only)
+// Command               | G-code          | Description
+// --------------------- | --------------- | ----------------------------------------------------
+// canGoToWork           | G0              | rapid move to work zero
+// canSetWCSOffset       | G10 L20         | set work coordinate offset
+// canZeroTempOffset     | G92             | zero out temporary position offset
+// canCancelTempOffset   | G92.1           | cancel G92 offsets
+// canGoToMachine        | G53 G0          | move in machine coordinates
+// canZeroOutMachine     | G28.3           | set axis position without motion (TinyG/g2core only)
 const SUPPORTED_COMMANDS = {
   [GRBL]: {
     // Work Coordinate System
@@ -61,7 +60,6 @@ const SUPPORTED_COMMANDS = {
     // Machine Coordinate System
     canGoToMachine: true,
     canZeroOutMachine: false, // Grbl does not support setting machine zero without motion
-    canHomeMachine: false, // Grbl does not support homing a single axis
   },
   [MARLIN]: {
     // Work Coordinate System
@@ -73,7 +71,6 @@ const SUPPORTED_COMMANDS = {
     // Machine Coordinate System
     canGoToMachine: true,
     canZeroOutMachine: false, // Marlin does not support setting machine zero without motion
-    canHomeMachine: false, // Marlin does not support homing a single axis
   },
   [SMOOTHIE]: {
     // Work Coordinate System
@@ -85,7 +82,6 @@ const SUPPORTED_COMMANDS = {
     // Machine Coordinate System
     canGoToMachine: true,
     canZeroOutMachine: false, // Smoothie does not support setting machine zero without motion
-    canHomeMachine: false, // Smoothie does not support homing a single axis
   },
   [TINYG]: {
     // Work Coordinate System
@@ -97,8 +93,45 @@ const SUPPORTED_COMMANDS = {
     // Machine Coordinate System
     canGoToMachine: true,
     canZeroOutMachine: true,
-    canHomeMachine: true,
   },
+};
+
+// Returns the all-axes homing command for the given controller type and reported axes.
+//
+// Controller     | Command
+// -------------- | ----------------
+// Grbl           | $H
+// TinyG/g2core   | G28.2 X0 Y0 Z0 (composed from reported axes)
+// Marlin         | G28
+// Smoothie       | G28
+const getHomeCommand = (controllerType, axes = ['x', 'y', 'z']) => {
+  if (controllerType === GRBL) {
+    return '$H';
+  }
+  if (controllerType === MARLIN || controllerType === SMOOTHIE) {
+    return 'G28';
+  }
+  // TinyG/g2core requires explicit axis parameters
+  const axisParams = axes.map(axis => axis.toUpperCase() + '0').join(' ');
+  return 'G28.2 ' + axisParams;
+};
+
+// Returns the single-axis homing command for the given controller type and axis.
+//
+// Controller     | Command                        | Notes
+// -------------- | ------------------------------ | -----------------------------------
+// Grbl           | $HX, $HY, $HZ                  | Requires compile-time flag
+// TinyG/g2core   | G28.2 X0, G28.2 Y0, G28.2 Z0   | Value after axis letter is ignored
+// Marlin         | G28 X, G28 Y, G28 Z            |
+// Smoothie       | G28 X, G28 Y, G28 Z            |
+const getAxisHomeCommand = (controllerType, axis) => {
+  if (controllerType === GRBL) {
+    return `$H${axis.toUpperCase()}`;
+  }
+  if (controllerType === MARLIN || controllerType === SMOOTHIE) {
+    return `G28 ${axis.toUpperCase()}`;
+  }
+  return `G28.2 ${axis.toUpperCase()}0`;
 };
 
 class DisplayPanel extends PureComponent {
@@ -149,7 +182,7 @@ class DisplayPanel extends PureComponent {
     };
 
     renderActionDropdown = ({ wcs }) => {
-      const { canClick, controllerType } = this.props;
+      const { canClick, controllerType, axes } = this.props;
       const {
         canGoToWork,
         canSetWCSOffset,
@@ -157,8 +190,8 @@ class DisplayPanel extends PureComponent {
         canCancelTempOffset,
         canGoToMachine,
         canZeroOutMachine,
-        canHomeMachine,
       } = SUPPORTED_COMMANDS[controllerType] || {};
+      const homingCommand = getHomeCommand(controllerType, axes);
 
       return (
         <Dropdown
@@ -285,14 +318,12 @@ class DisplayPanel extends PureComponent {
                 {i18n._('Set Machine Zero (G28.3 X0 Y0 Z0)')}
               </MenuItem>
             )}
-            {canHomeMachine && (
-              <MenuItem
-                eventKey="G28.2 X0 Y0 Z0"
-                disabled={!canClick}
-              >
-                {i18n._('Homing Sequence (G28.2 X0 Y0 Z0)')}
-              </MenuItem>
-            )}
+            <MenuItem
+              eventKey={homingCommand}
+              disabled={!canClick}
+            >
+              {i18n._('Home Machine ({{command}})', { command: homingCommand })}
+            </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
       );
@@ -312,8 +343,8 @@ class DisplayPanel extends PureComponent {
         canCancelTempOffset,
         canGoToMachine,
         canZeroOutMachine,
-        canHomeMachine,
       } = SUPPORTED_COMMANDS[controllerType] || {};
+      const axisHomingCommand = getAxisHomeCommand(controllerType, 'X');
 
       return (
         <Dropdown
@@ -440,14 +471,12 @@ class DisplayPanel extends PureComponent {
                 {i18n._('Zero Out Machine X Axis (G28.3 X0)')}
               </MenuItem>
             )}
-            {canHomeMachine && (
-              <MenuItem
-                eventKey="G28.2 X0"
-                disabled={!canClick}
-              >
-                {i18n._('Home Machine X Axis (G28.2 X0)')}
-              </MenuItem>
-            )}
+            <MenuItem
+              eventKey={axisHomingCommand}
+              disabled={!canClick}
+            >
+              {i18n._('Home Machine X Axis ({{command}})', { command: axisHomingCommand })}
+            </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
       );
@@ -462,8 +491,8 @@ class DisplayPanel extends PureComponent {
         canCancelTempOffset,
         canGoToMachine,
         canZeroOutMachine,
-        canHomeMachine,
       } = SUPPORTED_COMMANDS[controllerType] || {};
+      const axisHomingCommand = getAxisHomeCommand(controllerType, 'Y');
 
       return (
         <Dropdown
@@ -590,14 +619,12 @@ class DisplayPanel extends PureComponent {
                 {i18n._('Zero Out Machine Y Axis (G28.3 Y0)')}
               </MenuItem>
             )}
-            {canHomeMachine && (
-              <MenuItem
-                eventKey="G28.2 Y0"
-                disabled={!canClick}
-              >
-                {i18n._('Home Machine Y Axis (G28.2 Y0)')}
-              </MenuItem>
-            )}
+            <MenuItem
+              eventKey={axisHomingCommand}
+              disabled={!canClick}
+            >
+              {i18n._('Home Machine Y Axis ({{command}})', { command: axisHomingCommand })}
+            </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
       );
@@ -612,8 +639,8 @@ class DisplayPanel extends PureComponent {
         canCancelTempOffset,
         canGoToMachine,
         canZeroOutMachine,
-        canHomeMachine,
       } = SUPPORTED_COMMANDS[controllerType] || {};
+      const axisHomingCommand = getAxisHomeCommand(controllerType, 'Z');
 
       return (
         <Dropdown
@@ -740,14 +767,12 @@ class DisplayPanel extends PureComponent {
                 {i18n._('Zero Out Machine Z Axis (G28.3 Z0)')}
               </MenuItem>
             )}
-            {canHomeMachine && (
-              <MenuItem
-                eventKey="G28.2 Z0"
-                disabled={!canClick}
-              >
-                {i18n._('Home Machine Z Axis (G28.2 Z0)')}
-              </MenuItem>
-            )}
+            <MenuItem
+              eventKey={axisHomingCommand}
+              disabled={!canClick}
+            >
+              {i18n._('Home Machine Z Axis ({{command}})', { command: axisHomingCommand })}
+            </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
       );
@@ -762,8 +787,8 @@ class DisplayPanel extends PureComponent {
         canCancelTempOffset,
         canGoToMachine,
         canZeroOutMachine,
-        canHomeMachine,
       } = SUPPORTED_COMMANDS[controllerType] || {};
+      const axisHomingCommand = getAxisHomeCommand(controllerType, 'A');
 
       return (
         <Dropdown
@@ -890,14 +915,12 @@ class DisplayPanel extends PureComponent {
                 {i18n._('Zero Out Machine A Axis (G28.3 A0)')}
               </MenuItem>
             )}
-            {canHomeMachine && (
-              <MenuItem
-                eventKey="G28.2 A0"
-                disabled={!canClick}
-              >
-                {i18n._('Home Machine A Axis (G28.2 A0)')}
-              </MenuItem>
-            )}
+            <MenuItem
+              eventKey={axisHomingCommand}
+              disabled={!canClick}
+            >
+              {i18n._('Home Machine A Axis ({{command}})', { command: axisHomingCommand })}
+            </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
       );
@@ -912,8 +935,8 @@ class DisplayPanel extends PureComponent {
         canCancelTempOffset,
         canGoToMachine,
         canZeroOutMachine,
-        canHomeMachine,
       } = SUPPORTED_COMMANDS[controllerType] || {};
+      const axisHomingCommand = getAxisHomeCommand(controllerType, 'B');
 
       return (
         <Dropdown
@@ -1040,14 +1063,12 @@ class DisplayPanel extends PureComponent {
                 {i18n._('Zero Out Machine B Axis (G28.3 B0)')}
               </MenuItem>
             )}
-            {canHomeMachine && (
-              <MenuItem
-                eventKey="G28.2 B0"
-                disabled={!canClick}
-              >
-                {i18n._('Home Machine B Axis (G28.2 B0)')}
-              </MenuItem>
-            )}
+            <MenuItem
+              eventKey={axisHomingCommand}
+              disabled={!canClick}
+            >
+              {i18n._('Home Machine B Axis ({{command}})', { command: axisHomingCommand })}
+            </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
       );
@@ -1062,8 +1083,8 @@ class DisplayPanel extends PureComponent {
         canCancelTempOffset,
         canGoToMachine,
         canZeroOutMachine,
-        canHomeMachine,
       } = SUPPORTED_COMMANDS[controllerType] || {};
+      const axisHomingCommand = getAxisHomeCommand(controllerType, 'C');
 
       return (
         <Dropdown
@@ -1190,14 +1211,12 @@ class DisplayPanel extends PureComponent {
                 {i18n._('Zero Out Machine C Axis (G28.3 C0)')}
               </MenuItem>
             )}
-            {canHomeMachine && (
-              <MenuItem
-                eventKey="G28.2 C0"
-                disabled={!canClick}
-              >
-                {i18n._('Home Machine C Axis (G28.2 C0)')}
-              </MenuItem>
-            )}
+            <MenuItem
+              eventKey={axisHomingCommand}
+              disabled={!canClick}
+            >
+              {i18n._('Home Machine C Axis ({{command}})', { command: axisHomingCommand })}
+            </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
       );
@@ -1232,7 +1251,7 @@ class DisplayPanel extends PureComponent {
         [AXIS_C]: this.renderActionDropdownForAxisC
       }[axis] || noop;
       const canZeroOutMachine = canClick && supportedCommands.canZeroOutMachine;
-      const canHomeMachine = canClick && supportedCommands.canHomeMachine;
+      const axisHomingCommand = getAxisHomeCommand(controllerType, axisLabel);
       const canMoveBackward = canClick;
       const canMoveForward = canClick;
       const canZeroOutWorkOffsets = canClick;
@@ -1269,15 +1288,15 @@ class DisplayPanel extends PureComponent {
                     </Tooltip>
                   </TaskbarButton>
                   <TaskbarButton
-                    disabled={!canHomeMachine}
+                    disabled={!canClick}
                     onClick={() => {
-                      controller.command('gcode', `G28.2 ${axisLabel}0`);
+                      controller.command('gcode', axisHomingCommand);
                     }}
                   >
                     <Tooltip
                       placement="bottom"
                       content={i18n._('Home Machine')}
-                      disabled={!canHomeMachine}
+                      disabled={!canClick}
                       hideOnClick
                     >
                       <Image src={iconHome} width="14" height="14" />
