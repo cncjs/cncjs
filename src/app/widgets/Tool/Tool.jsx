@@ -144,7 +144,7 @@ class Tool extends PureComponent {
     );
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const toolProbeCustomCommands = get(nextProps.state.toolConfig, 'toolProbeCustomCommands');
     if (toolProbeCustomCommands !== this.state.toolProbeCustomCommands) {
       this.setState({ toolProbeCustomCommands });
