@@ -676,7 +676,6 @@ class DisplayPanel extends PureComponent {
               </MenuItem>
             )}
             {canSetWCSOffset && wcs === 'G54' && (
-
               <MenuItem
                 eventKey="G10 L20 P1 Z0"
                 disabled={!canClick}
