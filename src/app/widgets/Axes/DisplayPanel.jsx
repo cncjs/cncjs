@@ -90,32 +90,27 @@ class DisplayPanel extends PureComponent {
           onSelect={this.handleSelect}
         >
           <Dropdown.Toggle
+            aria-label="Select work coordinate system"
             className={styles.actionDropdown}
             btnStyle="link"
             compact
             noCaret
           >
-            <i className="fa fa-fw fa-caret-down" />
+            <i aria-hidden="true" className="fa fa-fw fa-caret-down" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {wcs === 'G54' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>}
             {wcs === 'G55' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>}
             {wcs === 'G56' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>}
             {wcs === 'G57' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>}
             {wcs === 'G58' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>}
             {wcs === 'G59' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>}
             <MenuItem
               eventKey="G0 X0 Y0 Z0"
               disabled={!canClick}
@@ -224,32 +219,27 @@ class DisplayPanel extends PureComponent {
           onSelect={this.handleSelect}
         >
           <Dropdown.Toggle
+            aria-label="X axis actions"
             className={styles.actionDropdown}
             btnStyle="link"
             compact
             noCaret
           >
-            <i className="fa fa-fw fa-ellipsis-v" />
+            <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {wcs === 'G54' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>}
             {wcs === 'G55' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>}
             {wcs === 'G56' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>}
             {wcs === 'G57' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>}
             {wcs === 'G58' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>}
             {wcs === 'G59' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>}
             <MenuItem
               eventKey="G0 X0"
               disabled={!canClick}
@@ -353,32 +343,27 @@ class DisplayPanel extends PureComponent {
           onSelect={this.handleSelect}
         >
           <Dropdown.Toggle
+            aria-label="Y axis actions"
             className={styles.actionDropdown}
             btnStyle="link"
             compact
             noCaret
           >
-            <i className="fa fa-fw fa-ellipsis-v" />
+            <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {wcs === 'G54' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>}
             {wcs === 'G55' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>}
             {wcs === 'G56' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>}
             {wcs === 'G57' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>}
             {wcs === 'G58' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>}
             {wcs === 'G59' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>}
             <MenuItem
               eventKey="G0 Y0"
               disabled={!canClick}
@@ -482,32 +467,27 @@ class DisplayPanel extends PureComponent {
           onSelect={this.handleSelect}
         >
           <Dropdown.Toggle
+            aria-label="Z axis actions"
             className={styles.actionDropdown}
             btnStyle="link"
             compact
             noCaret
           >
-            <i className="fa fa-fw fa-ellipsis-v" />
+            <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {wcs === 'G54' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>}
             {wcs === 'G55' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>}
             {wcs === 'G56' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>}
             {wcs === 'G57' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>}
             {wcs === 'G58' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>}
             {wcs === 'G59' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>}
             <MenuItem
               eventKey="G0 Z0"
               disabled={!canClick}
@@ -611,32 +591,27 @@ class DisplayPanel extends PureComponent {
           onSelect={this.handleSelect}
         >
           <Dropdown.Toggle
+            aria-label="A axis actions"
             className={styles.actionDropdown}
             btnStyle="link"
             compact
             noCaret
           >
-            <i className="fa fa-fw fa-ellipsis-v" />
+            <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {wcs === 'G54' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>}
             {wcs === 'G55' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>}
             {wcs === 'G56' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>}
             {wcs === 'G57' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>}
             {wcs === 'G58' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>}
             {wcs === 'G59' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>}
             <MenuItem
               eventKey="G0 A0"
               disabled={!canClick}
@@ -740,32 +715,27 @@ class DisplayPanel extends PureComponent {
           onSelect={this.handleSelect}
         >
           <Dropdown.Toggle
+            aria-label="B axis actions"
             className={styles.actionDropdown}
             btnStyle="link"
             compact
             noCaret
           >
-            <i className="fa fa-fw fa-ellipsis-v" />
+            <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {wcs === 'G54' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>}
             {wcs === 'G55' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>}
             {wcs === 'G56' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>}
             {wcs === 'G57' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>}
             {wcs === 'G58' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>}
             {wcs === 'G59' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>}
             <MenuItem
               eventKey="G0 B0"
               disabled={!canClick}
@@ -869,32 +839,27 @@ class DisplayPanel extends PureComponent {
           onSelect={this.handleSelect}
         >
           <Dropdown.Toggle
+            aria-label="C axis actions"
             className={styles.actionDropdown}
             btnStyle="link"
             compact
             noCaret
           >
-            <i className="fa fa-fw fa-ellipsis-v" />
+            <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {wcs === 'G54' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>}
             {wcs === 'G55' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>}
             {wcs === 'G56' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>}
             {wcs === 'G57' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>}
             {wcs === 'G58' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>}
             {wcs === 'G59' &&
-              <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-            }
+              <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>}
             <MenuItem
               eventKey="G0 C0"
               disabled={!canClick}
@@ -1038,6 +1003,7 @@ class DisplayPanel extends PureComponent {
               <div className="clearfix">
                 <div className="pull-right">
                   <TaskbarButton
+                    aria-label={`Go to zero: ${axisLabel}`}
                     disabled={!canZeroOutMachine}
                     onClick={() => {
                       controller.command('gcode', `G28.3 ${axisLabel}0`);
@@ -1053,6 +1019,7 @@ class DisplayPanel extends PureComponent {
                     </Tooltip>
                   </TaskbarButton>
                   <TaskbarButton
+                    aria-label={`Home: ${axisLabel}`}
                     disabled={!canHomeMachine}
                     onClick={() => {
                       controller.command('gcode', `G28.2 ${axisLabel}0`);
@@ -1085,12 +1052,12 @@ class DisplayPanel extends PureComponent {
               />
             )}
             {!showPositionInput &&
-              <PositionLabel value={wpos} />
-            }
+              <PositionLabel value={wpos} />}
             <Taskbar>
               <div className="clearfix">
                 <div className="pull-right">
                   <TaskbarButton
+                    aria-label={`Move ${axisLabel} backward`}
                     disabled={!canMoveBackward}
                     onClick={() => {
                       const distance = actions.getJogDistance();
@@ -1107,6 +1074,7 @@ class DisplayPanel extends PureComponent {
                     </Tooltip>
                   </TaskbarButton>
                   <TaskbarButton
+                    aria-label={`Move ${axisLabel} forward`}
                     disabled={!canMoveForward}
                     onClick={() => {
                       const distance = actions.getJogDistance();
@@ -1123,6 +1091,7 @@ class DisplayPanel extends PureComponent {
                     </Tooltip>
                   </TaskbarButton>
                   <TaskbarButton
+                    aria-label={`Zero out ${axisLabel} work offsets`}
                     disabled={!canZeroOutWorkOffsets}
                     onClick={() => {
                       actions.setWorkOffsets(axis, 0);
@@ -1138,6 +1107,7 @@ class DisplayPanel extends PureComponent {
                     </Tooltip>
                   </TaskbarButton>
                   <TaskbarButton
+                    aria-label={`Set ${axisLabel} work offsets`}
                     active={showPositionInput}
                     disabled={!canModifyWorkPosition}
                     onClick={this.showPositionInput(axis)}

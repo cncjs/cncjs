@@ -52,7 +52,7 @@ class Spindle extends PureComponent {
                         )}
                       />
                       <Space width="4" />
-                                        M3
+                      M3
                     </button>
                   </div>
                   <div className="btn-group btn-group-sm" role="group">
@@ -78,7 +78,7 @@ class Spindle extends PureComponent {
                         )}
                       />
                       <Space width="4" />
-                                        M4
+                      M4
                     </button>
                   </div>
                   <div className="btn-group btn-group-sm" role="group">
@@ -92,7 +92,7 @@ class Spindle extends PureComponent {
                     >
                       <i className="fa fa-power-off" />
                       <Space width="4" />
-                                        M5
+                      M5
                     </button>
                   </div>
                 </div>
@@ -119,7 +119,7 @@ class Spindle extends PureComponent {
                         )}
                       />
                       <Space width="4" />
-                                        M7
+                      M7
                     </button>
                   </div>
                   <div className="btn-group btn-group-sm" role="group">
@@ -141,7 +141,7 @@ class Spindle extends PureComponent {
                         )}
                       />
                       <Space width="4" />
-                                        M8
+                      M8
                     </button>
                   </div>
                   <div className="btn-group btn-group-sm" role="group">
@@ -157,7 +157,7 @@ class Spindle extends PureComponent {
                     >
                       <i className="fa fa-power-off" />
                       <Space width="4" />
-                                        M9
+                      M9
                     </button>
                   </div>
                 </div>

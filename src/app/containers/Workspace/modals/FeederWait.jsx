@@ -21,8 +21,7 @@ const FeederWait = ({
       <ModalTemplate type="warning">
         <h5>{title}</h5>
         {message &&
-          <p>{message}</p>
-        }
+          <p>{message}</p>}
         <p>{i18n._('Waiting for the planner to empty...')}</p>
       </ModalTemplate>
     </Modal.Body>
