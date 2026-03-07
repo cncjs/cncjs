@@ -106,7 +106,7 @@ class UpdateRecord extends PureComponent {
                   <label>{changePassword ? i18n._('Old Password') : i18n._('Password')}</label>
                   <div className="clearfix">
                     <Input
-                      aria-label={changePassword ? "Old Password" : "Password"}
+                      aria-label={changePassword ? 'Old Password' : 'Password'}
                       ref={node => {
                         this.fields.oldPassword = node;
                       }}
