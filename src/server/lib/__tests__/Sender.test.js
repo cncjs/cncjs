@@ -232,9 +232,9 @@ describe('Sender', () => {
           resolve();
         });
 
-      while (sender.state.sent < sender.state.total) {
-        sender.next();
-      }
+        while (sender.state.sent < sender.state.total) {
+          sender.next();
+        }
       });
     });
   });
