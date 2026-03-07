@@ -6,6 +6,9 @@ import React, { forwardRef } from 'react';
 const InlineToastContainer = forwardRef((inProps, ref) => (
   <Box
     ref={ref}
+    role="status"
+    aria-live="polite"
+    aria-atomic="false"
     flexDirection="column"
     alignItems="center"
     position="absolute"

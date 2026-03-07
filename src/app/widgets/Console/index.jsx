@@ -71,7 +71,7 @@ class ConsoleWidget extends Component {
       <WidgetConfigProvider widgetId={widgetId}>
         <WidgetEventProvider>
           {(emitter) => (
-            <Widget fullscreen={isFullscreen}>
+            <Widget aria-label="Console widget" fullscreen={isFullscreen}>
               <Widget.Header>
                 <Widget.Title>
                   <Widget.Sortable className={this.props.sortable.handleClassName}>
@@ -84,12 +84,15 @@ class ConsoleWidget extends Component {
                 </Widget.Title>
                 <Widget.Controls className={this.props.sortable.filterClassName}>
                   <Widget.Button
+                    aria-label="Clear console"
                     title={i18n._('Clear all')}
                     onClick={this.clearAll}
                   >
                     <FontAwesomeIcon icon="trash-alt" fixedWidth />
                   </Widget.Button>
                   <Widget.Button
+                    aria-label={minimized ? 'Expand' : 'Collapse'}
+                    aria-expanded={!minimized}
                     disabled={isFullscreen}
                     title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                     onClick={this.toggleMinimized}
@@ -100,6 +103,7 @@ class ConsoleWidget extends Component {
                       <FontAwesomeIcon icon="chevron-up" fixedWidth />}
                   </Widget.Button>
                   <Widget.Button
+                    aria-label={!isFullscreen ? 'Enter full screen' : 'Exit full screen'}
                     title={!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                     onClick={this.toggleFullscreen}
                   >
@@ -109,6 +113,7 @@ class ConsoleWidget extends Component {
                       <FontAwesomeIcon icon="expand" fixedWidth />}
                   </Widget.Button>
                   <Widget.DropdownButton
+                    aria-label="More options"
                     title={i18n._('More')}
                     toggle={(
                       <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
@@ -184,6 +189,7 @@ class ConsoleWidget extends Component {
                 </Widget.Controls>
               </Widget.Header>
               <Widget.Content
+                aria-hidden={minimized}
                 className={cx(
                   styles.widgetContent,
                   { [styles.hidden]: minimized },

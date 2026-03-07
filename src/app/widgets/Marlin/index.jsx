@@ -300,7 +300,7 @@ class MarlinWidget extends Component {
 
     return (
       <WidgetConfigProvider widgetId={widgetId}>
-        <Widget fullscreen={isFullscreen}>
+        <Widget aria-label="Marlin widget" fullscreen={isFullscreen}>
           <Widget.Header>
             <Widget.Title>
               <Widget.Sortable className={this.props.sortable.handleClassName}>
@@ -314,16 +314,18 @@ class MarlinWidget extends Component {
             <Widget.Controls className={this.props.sortable.filterClassName}>
               {isReady && (
                 <Widget.Button
+                  aria-label="Marlin controller info"
                   onClick={(event) => {
                     actions.openModal(MODAL_CONTROLLER);
                   }}
                 >
-                  <i className="fa fa-info" />
+                  <i aria-hidden="true" className="fa fa-info" />
                 </Widget.Button>
               )}
               {isReady && (
                 <Widget.DropdownButton
-                  toggle={<i className="fa fa-th-large" />}
+                  aria-label="Marlin commands"
+                  toggle={<i aria-hidden="true" className="fa fa-th-large" />}
                 >
                   <Widget.DropdownMenuItem
                     onSelect={() => controller.writeln('M105')}
@@ -347,6 +349,8 @@ class MarlinWidget extends Component {
               )}
               {isReady && (
                 <Widget.Button
+                  aria-label={minimized ? 'Expand' : 'Collapse'}
+                  aria-expanded={!minimized}
                   disabled={isFullscreen}
                   title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                   onClick={this.toggleMinimized}
@@ -366,6 +370,7 @@ class MarlinWidget extends Component {
                 </Widget.Button>
               )}
               <Widget.DropdownButton
+                aria-label="More options"
                 title={i18n._('More')}
                 toggle={(<FontAwesomeIcon icon="ellipsis-v" fixedWidth />)}
                 onSelect={(eventKey) => {
@@ -403,6 +408,7 @@ class MarlinWidget extends Component {
           </Widget.Header>
           {isReady && (
             <Widget.Content
+              aria-hidden={minimized}
               className={classNames(
                 styles['widget-content'],
                 { [styles.hidden]: minimized }

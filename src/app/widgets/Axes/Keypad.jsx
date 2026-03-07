@@ -168,6 +168,7 @@ class Keypad extends Component {
                 <div className="col-xs-3">
                   <div className={styles.colSpace}>
                     <Button
+                      aria-label="Move X negative Y positive"
                       btnStyle="default"
                       compact
                       className={styles.btnKeypad}
@@ -178,13 +179,14 @@ class Keypad extends Component {
                       disabled={!canClickXY}
                       title={i18n._('Move X- Y+')}
                     >
-                      <i className={cx('fa', 'fa-arrow-circle-up', styles['rotate--45deg'])} style={{ fontSize: 16 }} />
+                      <i aria-hidden="true" className={cx('fa', 'fa-arrow-circle-up', styles['rotate--45deg'])} style={{ fontSize: 16 }} />
                     </Button>
                   </div>
                 </div>
                 <div className="col-xs-3">
                   <div className={styles.colSpace}>
                     <Button
+                      aria-label="Move Y positive"
                       btnStyle="default"
                       compact
                       className={cx(
@@ -206,6 +208,7 @@ class Keypad extends Component {
                 <div className="col-xs-3">
                   <div className={styles.colSpace}>
                     <Button
+                      aria-label="Move X positive Y positive"
                       btnStyle="default"
                       compact
                       className={styles.btnKeypad}
@@ -216,13 +219,14 @@ class Keypad extends Component {
                       disabled={!canClickXY}
                       title={i18n._('Move X+ Y+')}
                     >
-                      <i className={cx('fa', 'fa-arrow-circle-up', styles['rotate-45deg'])} style={{ fontSize: 16 }} />
+                      <i aria-hidden="true" className={cx('fa', 'fa-arrow-circle-up', styles['rotate-45deg'])} style={{ fontSize: 16 }} />
                     </Button>
                   </div>
                 </div>
                 <div className="col-xs-3">
                   <div className={styles.colSpace}>
                     <Button
+                      aria-label="Move Z positive"
                       btnStyle="default"
                       compact
                       className={cx(
@@ -248,6 +252,7 @@ class Keypad extends Component {
                 <div className="col-xs-3">
                   <div className={styles.colSpace}>
                     <Button
+                      aria-label="Move X negative"
                       btnStyle="default"
                       compact
                       className={cx(
@@ -286,6 +291,7 @@ class Keypad extends Component {
                 <div className="col-xs-3">
                   <div className={styles.colSpace}>
                     <Button
+                      aria-label="Move X positive"
                       btnStyle="default"
                       compact
                       className={cx(
@@ -326,6 +332,7 @@ class Keypad extends Component {
                 <div className="col-xs-3">
                   <div className={styles.colSpace}>
                     <Button
+                      aria-label="Move X negative Y negative"
                       btnStyle="default"
                       compact
                       className={styles.btnKeypad}
@@ -336,13 +343,14 @@ class Keypad extends Component {
                       disabled={!canClickXY}
                       title={i18n._('Move X- Y-')}
                     >
-                      <i className={cx('fa', 'fa-arrow-circle-down', styles['rotate-45deg'])} style={{ fontSize: 16 }} />
+                      <i aria-hidden="true" className={cx('fa', 'fa-arrow-circle-down', styles['rotate-45deg'])} style={{ fontSize: 16 }} />
                     </Button>
                   </div>
                 </div>
                 <div className="col-xs-3">
                   <div className={styles.colSpace}>
                     <Button
+                      aria-label="Move Y negative"
                       btnStyle="default"
                       compact
                       className={cx(
@@ -364,6 +372,7 @@ class Keypad extends Component {
                 <div className="col-xs-3">
                   <div className={styles.colSpace}>
                     <Button
+                      aria-label="Move X positive Y negative"
                       btnStyle="default"
                       compact
                       className={styles.btnKeypad}
@@ -374,13 +383,14 @@ class Keypad extends Component {
                       disabled={!canClickXY}
                       title={i18n._('Move X+ Y-')}
                     >
-                      <i className={cx('fa', 'fa-arrow-circle-down', styles['rotate--45deg'])} style={{ fontSize: 16 }} />
+                      <i aria-hidden="true" className={cx('fa', 'fa-arrow-circle-down', styles['rotate--45deg'])} style={{ fontSize: 16 }} />
                     </Button>
                   </div>
                 </div>
                 <div className="col-xs-3">
                   <div className={styles.colSpace}>
                     <Button
+                      aria-label="Move Z negative"
                       btnStyle="default"
                       compact
                       className={cx(
@@ -522,19 +532,21 @@ class Keypad extends Component {
               <div className="row no-gutters">
                 <div className="col-xs-6">
                   <RepeatableButton
+                    aria-label="Decrease step size"
                     disabled={!canStepBackward}
                     style={{ marginRight: 2.5 }}
                     onClick={actions.stepBackward}
                   >
-                    <i className="fa fa-minus" />
+                    <i aria-hidden="true" className="fa fa-minus" />
                   </RepeatableButton>
                 </div>
                 <div className="col-xs-6">
                   <RepeatableButton
+                    aria-label="Increase step size"
                     disabled={!canStepForward}
                     onClick={actions.stepForward}
                   >
-                    <i className="fa fa-plus" />
+                    <i aria-hidden="true" className="fa fa-plus" />
                   </RepeatableButton>
                 </div>
               </div>

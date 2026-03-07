@@ -5,6 +5,8 @@ import styles from './index.styl';
 function Controls({ className, ...props }) {
   return (
     <div
+      role="toolbar"
+      aria-label="Widget controls"
       {...props}
       className={cx(className, styles.widgetControls)}
     />

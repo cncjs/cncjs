@@ -118,6 +118,7 @@ const CreateCommandDrawer = ({
                           columnGap="2x"
                         >
                           <Switch
+                            aria-label="Enable command"
                             {...input}
                             checked={input.value}
                           />
@@ -137,6 +138,7 @@ const CreateCommandDrawer = ({
                   </FieldTextLabel>
                 </Box>
                 <FieldInput
+                  aria-label="Title"
                   name="name"
                   placeholder={i18n._('e.g., Activate Air Purifier')}
                 />
@@ -151,6 +153,7 @@ const CreateCommandDrawer = ({
                   </FieldTextLabel>
                 </Box>
                 <FieldTextarea
+                  aria-label="Commands"
                   name="action"
                   rows="10"
                   placeholder="/home/cncjs/bin/activate-air-purifier"

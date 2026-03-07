@@ -483,6 +483,9 @@ class TerminalWrapper extends Component {
 
     return (
       <div
+        role="log"
+        aria-live="polite"
+        aria-label="Console output"
         ref={this.terminalRef}
         className={cx(className, styles.terminalContainer)}
         style={style}

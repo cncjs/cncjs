@@ -294,6 +294,7 @@ const Commands = () => {
             width="100%"
           >
             <Switch
+              aria-label={`Enable command: ${row.original.name}`}
               checked={row.original.enabled}
               onChange={handleToggleStatusById(row.original.id)}
             />

@@ -121,6 +121,7 @@ class UpdateRecord extends Component {
                   {i18n._('Button Width')}
                 </TextLabel>
                 <Slider
+                  aria-label="Button width"
                   ref={node => {
                     this.slider = node;
                   }}

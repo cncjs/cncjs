@@ -85,7 +85,7 @@ class CustomWidget extends Component {
               <ModalRoot />
               <ModalConsumer>
                 {({ openModal }) => (
-                  <Widget fullscreen={isFullscreen}>
+                  <Widget aria-label="Custom widget" fullscreen={isFullscreen}>
                     <Widget.Header>
                       <WidgetConfigConsumer>
                         {(config) => {
@@ -108,6 +108,7 @@ class CustomWidget extends Component {
                       </WidgetConfigConsumer>
                       <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
+                          aria-label={disabled ? 'Enable widget' : 'Disable widget'}
                           title={disabled ? i18n._('Enable') : i18n._('Disable')}
                           type="default"
                           onClick={this.toggleDisabled}
@@ -118,6 +119,7 @@ class CustomWidget extends Component {
                             <FontAwesomeIcon icon="toggle-on" fixedWidth />}
                         </Widget.Button>
                         <Widget.Button
+                          aria-label="Refresh content"
                           disabled={disabled}
                           title={i18n._('Refresh')}
                           onClick={() => {
@@ -128,6 +130,8 @@ class CustomWidget extends Component {
                           <FontAwesomeIcon icon="redo-alt" fixedWidth />
                         </Widget.Button>
                         <Widget.Button
+                          aria-label={minimized ? 'Expand' : 'Collapse'}
+                          aria-expanded={!minimized}
                           disabled={isFullscreen}
                           title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                           onClick={this.toggleMinimized}
@@ -146,6 +150,7 @@ class CustomWidget extends Component {
                           </Widget.Button>
                         )}
                         <Widget.DropdownButton
+                          aria-label="More options"
                           title={i18n._('More')}
                           toggle={(
                             <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
@@ -191,6 +196,7 @@ class CustomWidget extends Component {
                       </Widget.Controls>
                     </Widget.Header>
                     <Widget.Content
+                      aria-hidden={minimized}
                       style={{
                         display: (minimized ? 'none' : 'block'),
                       }}

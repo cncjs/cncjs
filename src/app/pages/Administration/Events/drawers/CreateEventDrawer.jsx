@@ -120,6 +120,7 @@ const CreateEventDrawer = ({
                           columnGap="2x"
                         >
                           <Switch
+                            aria-label="Enable event"
                             {...input}
                             checked={input.value}
                           />

@@ -134,6 +134,7 @@ const UpdateUserDrawer = ({
                               columnGap="2x"
                             >
                               <Switch
+                                aria-label="Enable account"
                                 {...input}
                                 checked={input.value}
                               />
@@ -155,6 +156,7 @@ const UpdateUserDrawer = ({
                       </FieldTextLabel>
                     </Box>
                     <FieldInput
+                      aria-label="Username"
                       name="title"
                       placeholder={i18n._('e.g., Activate Air Purifier')}
                     />

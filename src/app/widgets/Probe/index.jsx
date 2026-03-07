@@ -70,7 +70,7 @@ class ProbeWidget extends Component {
       <WidgetConfigProvider widgetId={widgetId}>
         <ModalProvider>
           <ModalRoot />
-          <Widget fullscreen={isFullscreen}>
+          <Widget aria-label="Probe widget" fullscreen={isFullscreen}>
             <Widget.Header>
               <Widget.Title>
                 <Widget.Sortable className={this.props.sortable.handleClassName}>
@@ -83,6 +83,8 @@ class ProbeWidget extends Component {
               </Widget.Title>
               <Widget.Controls className={this.props.sortable.filterClassName}>
                 <Widget.Button
+                  aria-label={minimized ? 'Expand' : 'Collapse'}
+                  aria-expanded={!minimized}
                   disabled={isFullscreen}
                   title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                   onClick={this.toggleMinimized}
@@ -101,6 +103,7 @@ class ProbeWidget extends Component {
                   </Widget.Button>
                 )}
                 <Widget.DropdownButton
+                  aria-label="More options"
                   title={i18n._('More')}
                   toggle={(
                     <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
@@ -139,6 +142,7 @@ class ProbeWidget extends Component {
               </Widget.Controls>
             </Widget.Header>
             <Widget.Content
+              aria-hidden={minimized}
               style={{
                 display: (minimized ? 'none' : 'block'),
               }}

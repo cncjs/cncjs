@@ -83,6 +83,7 @@ function LaserTest({
                                     <>
                                       <Text>{input.value}%</Text>
                                       <Slider
+                                        aria-label="Laser power"
                                         style={{ padding: 0 }}
                                         value={input.value}
                                         min={0}
@@ -111,6 +112,7 @@ function LaserTest({
                                   {({ input, meta }) => (
                                     <InputGroup sm>
                                       <Input
+                                        aria-label="Test duration in milliseconds"
                                         type="number"
                                         value={input.value}
                                         min={0}
@@ -149,6 +151,7 @@ function LaserTest({
                                         </InputGroup.Text>
                                       </InputGroup.Prepend>
                                       <Input
+                                        aria-label="Maximum S value"
                                         type="number"
                                         value={input.value}
                                         min={0}

@@ -78,7 +78,7 @@ class WebcamWidget extends Component {
       <WidgetConfigProvider widgetId={widgetId}>
         <WidgetEventProvider>
           {emitter => (
-            <Widget fullscreen={isFullscreen}>
+            <Widget aria-label="Webcam widget" fullscreen={isFullscreen}>
               <Widget.Header>
                 <Widget.Title>
                   <Widget.Sortable className={this.props.sortable.handleClassName}>
@@ -91,6 +91,7 @@ class WebcamWidget extends Component {
                 </Widget.Title>
                 <Widget.Controls className={this.props.sortable.filterClassName}>
                   <Widget.Button
+                    aria-label={disabled ? 'Enable Webcam' : 'Disable Webcam'}
                     title={disabled ? i18n._('Enable') : i18n._('Disable')}
                     type="default"
                     onClick={(event) => this.setState(state => ({ disabled: !state.disabled }))}
@@ -101,6 +102,7 @@ class WebcamWidget extends Component {
                     <FontAwesomeIcon icon="toggle-on" fixedWidth />}
                   </Widget.Button>
                   <Widget.Button
+                    aria-label="Refresh webcam"
                     disabled={disabled}
                     title={i18n._('Refresh')}
                     onClick={() => {
@@ -110,6 +112,8 @@ class WebcamWidget extends Component {
                     <FontAwesomeIcon icon="sync-alt" fixedWidth />
                   </Widget.Button>
                   <Widget.Button
+                    aria-label={minimized ? 'Expand' : 'Collapse'}
+                    aria-expanded={!minimized}
                     disabled={isFullscreen}
                     title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                     onClick={this.toggleMinimized}
@@ -128,6 +132,7 @@ class WebcamWidget extends Component {
                     </Widget.Button>
                   )}
                   <Widget.DropdownButton
+                    aria-label="More options"
                     title={i18n._('More')}
                     toggle={(
                       <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
@@ -176,6 +181,7 @@ class WebcamWidget extends Component {
                 </Widget.Controls>
               </Widget.Header>
               <Widget.Content
+                aria-hidden={minimized}
                 style={{
                   display: (minimized ? 'none' : 'block'),
                 }}

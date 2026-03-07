@@ -244,6 +244,7 @@ const Users = () => {
             width="100%"
           >
             <Switch
+              aria-label={`Enable account: ${row.original.title}`}
               checked={row.original.enabled}
               onChange={handleToggleStatusById(row.original.id)}
             />

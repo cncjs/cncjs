@@ -14,6 +14,9 @@ class DropdownButton extends Component {
     // toggle
     toggle: PropTypes.node.isRequired,
 
+    // Accessible label for the toggle button
+    'aria-label': PropTypes.string,
+
     // Align the menu to the right side of the dropdown toggle.
     pullRight: PropTypes.bool,
 
@@ -50,6 +53,7 @@ class DropdownButton extends Component {
         }}
       >
         <Dropdown.Toggle
+          aria-haspopup="menu"
           {...toggleProps}
           className={styles.widgetButton}
           componentClass="a"

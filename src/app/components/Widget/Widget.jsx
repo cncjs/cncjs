@@ -19,6 +19,7 @@ class Widget extends Component {
 
     return (
       <div
+        role="region"
         {...props}
         className={cx(
           className,

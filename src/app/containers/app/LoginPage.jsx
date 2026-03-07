@@ -128,6 +128,8 @@ const LoginPage = () => {
     <Box height="100vh">
       {state.alertMessage && (
         <Alert
+          role="alert"
+          aria-live="assertive"
           variant="solid"
           severity="error"
           isClosable

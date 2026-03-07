@@ -144,11 +144,9 @@ class Tool extends PureComponent {
     );
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    const prevToolProbeCustomCommands = get(prevProps.state.toolConfig, 'toolProbeCustomCommands');
-    const toolProbeCustomCommands = get(this.props.state.toolConfig, 'toolProbeCustomCommands');
-
-    if ((prevToolProbeCustomCommands !== toolProbeCustomCommands) && (toolProbeCustomCommands !== this.state.toolProbeCustomCommands)) {
+  componentWillReceiveProps(nextProps) {
+    const toolProbeCustomCommands = get(nextProps.state.toolConfig, 'toolProbeCustomCommands');
+    if (toolProbeCustomCommands !== this.state.toolProbeCustomCommands) {
       this.setState({ toolProbeCustomCommands });
     }
   }

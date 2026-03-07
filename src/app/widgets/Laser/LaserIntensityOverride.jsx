@@ -79,6 +79,7 @@ function LaserIntensityOverride({
         </ButtonGroup>
         <Space width={8} />
         <Clickable
+          aria-label="Reset"
           onClick={() => {
             controller.command('spindle_override', 0);
           }}

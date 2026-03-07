@@ -62,6 +62,7 @@ const SideNav = forwardRef((
       <DrawerOverlay />
       <DrawerContent
         ref={ref}
+        aria-label="Main navigation"
         sx={{
           backgroundColor: colorStyle?.background?.primary,
           color: colorStyle?.color?.primary,

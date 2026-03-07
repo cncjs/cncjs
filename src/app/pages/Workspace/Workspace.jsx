@@ -502,10 +502,11 @@ class Workspace extends Component {
                       <Row>
                         <Col width="auto">
                           <Button
+                            aria-label="Hide left panel"
                             sm
                             onClick={this.togglePrimaryContainer}
                           >
-                            <FontAwesomeIcon icon="chevron-left" fixedWidth />
+                            <FontAwesomeIcon aria-hidden="true" icon="chevron-left" fixedWidth />
                           </Button>
                           <Space width={10} />
                         </Col>
@@ -515,7 +516,7 @@ class Workspace extends Component {
                             sm
                             onClick={this.updateWidgetsForPrimaryContainer}
                           >
-                            <FontAwesomeIcon icon="list-alt" />
+                            <FontAwesomeIcon aria-hidden="true" icon="list-alt" />
                             <Space width={8} />
                             {i18n._('Manage Widgets ({{inactiveCount}})', {
                               inactiveCount: inactiveCount
@@ -526,20 +527,22 @@ class Workspace extends Component {
                           <Space width={10} />
                           <ButtonGroup sm>
                             <Button
+                              aria-label="Collapse all left panel widgets"
                               title={i18n._('Collapse All')}
                               onClick={event => {
                                 this.primaryWidgets.collapseAll();
                               }}
                             >
-                              <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                              <FontAwesomeIcon aria-hidden="true" icon="chevron-up" fixedWidth />
                             </Button>
                             <Button
+                              aria-label="Expand all left panel widgets"
                               title={i18n._('Expand All')}
                               onClick={event => {
                                 this.primaryWidgets.expandAll();
                               }}
                             >
-                              <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                              <FontAwesomeIcon aria-hidden="true" icon="chevron-down" fixedWidth />
                             </Button>
                           </ButtonGroup>
                         </Col>
@@ -563,10 +566,11 @@ class Workspace extends Component {
                       className={styles.primaryToggler}
                     >
                       <Button
+                        aria-label="Show left panel"
                         sm
                         onClick={this.togglePrimaryContainer}
                       >
-                        <FontAwesomeIcon icon="chevron-right" fixedWidth />
+                        <FontAwesomeIcon aria-hidden="true" icon="chevron-right" fixedWidth />
                       </Button>
                     </div>
                   )}
@@ -589,10 +593,11 @@ class Workspace extends Component {
                       className={styles.secondaryToggler}
                     >
                       <Button
+                        aria-label="Show right panel"
                         sm
                         onClick={this.toggleSecondaryContainer}
                       >
-                        <FontAwesomeIcon icon="chevron-left" fixedWidth />
+                        <FontAwesomeIcon aria-hidden="true" icon="chevron-left" fixedWidth />
                       </Button>
                     </div>
                   )}
@@ -610,20 +615,22 @@ class Workspace extends Component {
                         <Col width="auto">
                           <ButtonGroup sm>
                             <Button
+                              aria-label="Collapse all right panel widgets"
                               title={i18n._('Collapse All')}
                               onClick={event => {
                                 this.secondaryWidgets.collapseAll();
                               }}
                             >
-                              <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                              <FontAwesomeIcon aria-hidden="true" icon="chevron-up" fixedWidth />
                             </Button>
                             <Button
+                              aria-label="Expand all right panel widgets"
                               title={i18n._('Expand All')}
                               onClick={event => {
                                 this.secondaryWidgets.expandAll();
                               }}
                             >
-                              <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                              <FontAwesomeIcon aria-hidden="true" icon="chevron-down" fixedWidth />
                             </Button>
                           </ButtonGroup>
                           <Space width={10} />
@@ -634,7 +641,7 @@ class Workspace extends Component {
                             sm
                             onClick={this.updateWidgetsForSecondaryContainer}
                           >
-                            <FontAwesomeIcon icon="list-alt" />
+                            <FontAwesomeIcon aria-hidden="true" icon="list-alt" />
                             <Space width={8} />
                             {i18n._('Manage Widgets ({{inactiveCount}})', {
                               inactiveCount: inactiveCount
@@ -644,10 +651,11 @@ class Workspace extends Component {
                         <Col width="auto">
                           <Space width={10} />
                           <Button
+                            aria-label="Hide right panel"
                             sm
                             onClick={this.toggleSecondaryContainer}
                           >
-                            <FontAwesomeIcon icon="chevron-right" fixedWidth />
+                            <FontAwesomeIcon aria-hidden="true" icon="chevron-right" fixedWidth />
                           </Button>
                         </Col>
                       </Row>

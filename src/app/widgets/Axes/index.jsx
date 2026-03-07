@@ -820,7 +820,7 @@ class AxesWidget extends Component {
 
     return (
       <WidgetConfigProvider widgetId={widgetId}>
-        <Widget fullscreen={isFullscreen}>
+        <Widget aria-label="Axes widget" fullscreen={isFullscreen}>
           <Widget.Header>
             <Widget.Title>
               <Widget.Sortable className={this.props.sortable.handleClassName}>
@@ -836,6 +836,7 @@ class AxesWidget extends Component {
                 show={state.canClick && state.jog.keypad}
               >
                 <Widget.Button
+                  aria-label="Toggle keypad jogging"
                   title={i18n._('Keypad jogging')}
                   onClick={actions.toggleKeypadJogging}
                   inverted={state.jog.keypad}
@@ -845,6 +846,7 @@ class AxesWidget extends Component {
                 </Widget.Button>
               </KeypadOverlay>
               <Widget.Button
+                aria-label="Toggle manual data input mode"
                 title={i18n._('Manual Data Input')}
                 onClick={actions.toggleMDIMode}
                 inverted={!state.mdi.disabled}
@@ -854,6 +856,8 @@ class AxesWidget extends Component {
                 <Space width={8} />
               </Widget.Button>
               <Widget.Button
+                aria-label={minimized ? 'Expand' : 'Collapse'}
+                aria-expanded={!minimized}
                 disabled={isFullscreen}
                 title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                 onClick={this.toggleMinimized}
@@ -872,6 +876,7 @@ class AxesWidget extends Component {
                 </Widget.Button>
               )}
               <Widget.DropdownButton
+                aria-label="More options"
                 title={i18n._('More')}
                 toggle={(
                   <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
@@ -917,6 +922,7 @@ class AxesWidget extends Component {
             </Widget.Controls>
           </Widget.Header>
           <Widget.Content
+            aria-hidden={minimized}
             className={cx(
               styles['widget-content'],
               { [styles.hidden]: minimized }

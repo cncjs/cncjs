@@ -106,6 +106,7 @@ const AppearanceMenuItems = forwardRef((props, ref) => {
       <Flex alignItems="center" px="3x">
         <Flex flex="none" mr="3x">
           <ButtonBase
+            aria-label="Back"
             onClick={(event) => {
               // Prevent the menu from closing
               event.preventDefault();
@@ -186,6 +187,7 @@ const LanguageMenuItems = forwardRef((props, ref) => {
       <Flex alignItems="center" px="3x">
         <Flex flex="none" mr="3x">
           <ButtonBase
+            aria-label="Back"
             onClick={(event) => {
               // Prevent the menu from closing
               event.preventDefault();
@@ -393,6 +395,7 @@ const Header = forwardRef((
     <Flex
       as="header"
       ref={ref}
+      aria-label="Application header"
       backgroundColor={colorStyle?.background?.secondary}
       color={colorStyle?.color?.primary}
       justifyContent="space-between"
@@ -411,6 +414,7 @@ const Header = forwardRef((
         </IconButton>
         <Space minWidth="2x" />
         <ButtonBase
+          aria-label={`${settings.productName} ${settings.version} - View release notes`}
           onClick={(event) => {
             const url = settings.url.releases;
             window.open(url, '_blank');

@@ -157,6 +157,7 @@ const UpdateMachineDrawer = ({
                       </FieldTextLabel>
                     </Box>
                     <FieldInput
+                      aria-label="Name"
                       name="title"
                       placeholder={i18n._('e.g., Activate Air Purifier')}
                     />

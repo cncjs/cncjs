@@ -252,7 +252,7 @@ class SmoothieWidget extends Component {
 
     return (
       <WidgetConfigProvider widgetId={widgetId}>
-        <Widget fullscreen={isFullscreen}>
+        <Widget aria-label="Smoothie widget" fullscreen={isFullscreen}>
           <Widget.Header>
             <Widget.Title>
               <Widget.Sortable className={this.props.sortable.handleClassName}>
@@ -266,16 +266,18 @@ class SmoothieWidget extends Component {
             <Widget.Controls className={this.props.sortable.filterClassName}>
               {isReady && (
                 <Widget.Button
+                  aria-label="Smoothie controller info"
                   onClick={(event) => {
                     actions.openModal(MODAL_CONTROLLER);
                   }}
                 >
-                  <i className="fa fa-info" />
+                  <i aria-hidden="true" className="fa fa-info" />
                 </Widget.Button>
               )}
               {isReady && (
                 <Widget.DropdownButton
-                  toggle={<i className="fa fa-th-large" />}
+                  aria-label="Smoothie commands"
+                  toggle={<i aria-hidden="true" className="fa fa-th-large" />}
                 >
                   <Widget.DropdownMenuItem
                     onSelect={() => controller.write('?')}
@@ -318,6 +320,8 @@ class SmoothieWidget extends Component {
               )}
               {isReady && (
                 <Widget.Button
+                  aria-label={minimized ? 'Expand' : 'Collapse'}
+                  aria-expanded={!minimized}
                   disabled={isFullscreen}
                   title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                   onClick={this.toggleMinimized}
@@ -337,6 +341,7 @@ class SmoothieWidget extends Component {
                 </Widget.Button>
               )}
               <Widget.DropdownButton
+                aria-label="More options"
                 title={i18n._('More')}
                 toggle={(
                   <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
@@ -376,6 +381,7 @@ class SmoothieWidget extends Component {
           </Widget.Header>
           {isReady && (
             <Widget.Content
+              aria-hidden={minimized}
               className={cx(
                 styles['widget-content'],
                 { [styles.hidden]: minimized }

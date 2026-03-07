@@ -301,6 +301,7 @@ const Events = () => {
             width="100%"
           >
             <Switch
+              aria-label={`Enable event: ${row.original.trigger}`}
               checked={row.original.enabled}
               onChange={handleToggleStatusById(row.original.id)}
             />

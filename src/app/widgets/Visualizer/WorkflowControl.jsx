@@ -175,7 +175,7 @@ class WorkflowControl extends Component {
                 btnStyle="primary"
                 noCaret
               >
-                <i className="fa fa-caret-down" />
+                <i aria-hidden="true" className="fa fa-caret-down" />
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <MenuItem header>
@@ -186,7 +186,7 @@ class WorkflowControl extends Component {
                     actions.openModal(MODAL_WATCH_DIRECTORY);
                   }}
                 >
-                  <i className="fa fa-search" />
+                  <i aria-hidden="true" className="fa fa-search" />
                   <Space width={8} />
                   {i18n._('Browse...')}
                 </MenuItem>
@@ -196,36 +196,40 @@ class WorkflowControl extends Component {
           <Space width={8} />
           <ButtonGroup>
             <Button
+              aria-label="Run"
               btnStyle="default"
               title={workflow.state === WORKFLOW_STATE_PAUSED ? i18n._('Resume') : i18n._('Run')}
               onClick={actions.handleRun}
               disabled={!canRun}
             >
-              <i className="fa fa-play" />
+              <i aria-hidden="true" className="fa fa-play" />
             </Button>
             <Button
+              aria-label="Pause"
               btnStyle="default"
               title={i18n._('Pause')}
               onClick={actions.handlePause}
               disabled={!canPause}
             >
-              <i className="fa fa-pause" />
+              <i aria-hidden="true" className="fa fa-pause" />
             </Button>
             <Button
+              aria-label="Stop"
               btnStyle="default"
               title={i18n._('Stop')}
               onClick={actions.handleStop}
               disabled={!canStop}
             >
-              <i className="fa fa-stop" />
+              <i aria-hidden="true" className="fa fa-stop" />
             </Button>
             <Button
+              aria-label="Close G-code file"
               btnStyle="default"
               title={i18n._('Close')}
               onClick={actions.handleClose}
               disabled={!canClose}
             >
-              <i className="fa fa-close" />
+              <i aria-hidden="true" className="fa fa-close" />
             </Button>
           </ButtonGroup>
         </ButtonToolbar>

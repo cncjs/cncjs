@@ -73,6 +73,7 @@ function SpindleOverride({
       </ButtonGroup>
       <Space width={8} />
       <Clickable
+        aria-label="Reset spindle override"
         onClick={() => {
           controller.command('spindle_override', 0);
         }}

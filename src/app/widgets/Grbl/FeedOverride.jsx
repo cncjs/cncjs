@@ -73,6 +73,7 @@ function FeedOverride({
       </ButtonGroup>
       <Space width={8} />
       <Clickable
+        aria-label="Reset feed rate override"
         onClick={() => {
           controller.command('feed_override', 0);
         }}

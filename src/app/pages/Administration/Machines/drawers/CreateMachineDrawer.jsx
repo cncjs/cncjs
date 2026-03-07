@@ -138,7 +138,7 @@ const CreateMachineDrawer = ({
                     {i18n._('Machine name:')}
                   </FieldTextLabel>
                 </Box>
-                <FieldInput name="name" />
+                <FieldInput aria-label="Name" name="name" />
               </FormGroup>
               <FormGroup>
                 <Box mb="1x">

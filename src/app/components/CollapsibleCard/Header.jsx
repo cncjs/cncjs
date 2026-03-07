@@ -8,7 +8,16 @@ function Header({ children, style, ...props }) {
 
   return (
     <Clickable
+      role="button"
+      tabIndex={0}
+      aria-expanded={!collapsed}
       onClick={toggle}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggle();
+        }
+      }}
       style={{ width: '100%' }}
     >
       {({ hovered }) => (

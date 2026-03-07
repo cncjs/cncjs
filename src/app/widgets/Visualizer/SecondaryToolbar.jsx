@@ -189,6 +189,7 @@ class SecondaryToolbar extends Component {
               <ButtonToolbar>
                 <ButtonGroup sm>
                   <IconButton
+                    aria-label="Top view"
                     className={cx({
                       'highlight': cameraPosition === 'top'
                     })}
@@ -199,10 +200,11 @@ class SecondaryToolbar extends Component {
                       hideOnClick
                       placement="top"
                     >
-                      <Image src={iconTopView} width="20" height="20" />
+                      <Image aria-hidden="true" src={iconTopView} width="20" height="20" />
                     </Tooltip>
                   </IconButton>
                   <IconButton
+                    aria-label="Front view"
                     className={cx({
                       'highlight': cameraPosition === 'front'
                     })}
@@ -213,10 +215,11 @@ class SecondaryToolbar extends Component {
                       hideOnClick
                       placement="top"
                     >
-                      <Image src={iconFrontView} width="20" height="20" />
+                      <Image aria-hidden="true" src={iconFrontView} width="20" height="20" />
                     </Tooltip>
                   </IconButton>
                   <IconButton
+                    aria-label="Right side view"
                     className={cx({
                       'highlight': cameraPosition === 'right'
                     })}
@@ -227,10 +230,11 @@ class SecondaryToolbar extends Component {
                       hideOnClick
                       placement="top"
                     >
-                      <Image src={iconRightSideView} width="20" height="20" />
+                      <Image aria-hidden="true" src={iconRightSideView} width="20" height="20" />
                     </Tooltip>
                   </IconButton>
                   <IconButton
+                    aria-label="Left side view"
                     className={cx({
                       'highlight': cameraPosition === 'left'
                     })}
@@ -241,10 +245,11 @@ class SecondaryToolbar extends Component {
                       hideOnClick
                       placement="top"
                     >
-                      <Image src={iconLeftSideView} width="20" height="20" />
+                      <Image aria-hidden="true" src={iconLeftSideView} width="20" height="20" />
                     </Tooltip>
                   </IconButton>
                   <IconButton
+                    aria-label="3D view"
                     className={cx({
                       'highlight': cameraPosition === '3d'
                     })}
@@ -255,10 +260,11 @@ class SecondaryToolbar extends Component {
                       hideOnClick
                       placement="top"
                     >
-                      <Image src={icon3DView} width="20" height="20" />
+                      <Image aria-hidden="true" src={icon3DView} width="20" height="20" />
                     </Tooltip>
                   </IconButton>
                   <RepeatableButton
+                    aria-label="Zoom to fit"
                     tag={IconButton}
                     onClick={camera.zoomFit}
                   >
@@ -267,10 +273,11 @@ class SecondaryToolbar extends Component {
                       hideOnClick
                       placement="top"
                     >
-                      <Image src={iconZoomFit} width="20" height="20" />
+                      <Image aria-hidden="true" src={iconZoomFit} width="20" height="20" />
                     </Tooltip>
                   </RepeatableButton>
                   <RepeatableButton
+                    aria-label="Zoom in"
                     tag={IconButton}
                     onClick={camera.zoomIn}
                   >
@@ -279,10 +286,11 @@ class SecondaryToolbar extends Component {
                       hideOnClick
                       placement="top"
                     >
-                      <Image src={iconZoomIn} width="20" height="20" />
+                      <Image aria-hidden="true" src={iconZoomIn} width="20" height="20" />
                     </Tooltip>
                   </RepeatableButton>
                   <RepeatableButton
+                    aria-label="Zoom out"
                     tag={IconButton}
                     onClick={camera.zoomOut}
                   >
@@ -291,7 +299,7 @@ class SecondaryToolbar extends Component {
                       hideOnClick
                       placement="top"
                     >
-                      <Image src={iconZoomOut} width="20" height="20" />
+                      <Image aria-hidden="true" src={iconZoomOut} width="20" height="20" />
                     </Tooltip>
                   </RepeatableButton>
                 </ButtonGroup>
@@ -309,12 +317,13 @@ class SecondaryToolbar extends Component {
                   }}
                 >
                   <Dropdown.Toggle
+                    aria-label={cameraMode === CAMERA_MODE_PAN ? 'Camera mode: Pan' : 'Camera mode: Rotate'}
                     componentClass={IconButton}
                   >
                     {(cameraMode === CAMERA_MODE_PAN) &&
-                      <Image src={iconMoveCamera} width="20" height="20" />}
+                      <Image aria-hidden="true" src={iconMoveCamera} width="20" height="20" />}
                     {(cameraMode === CAMERA_MODE_ROTATE) &&
-                      <Image src={iconRotateCamera} width="20" height="20" />}
+                      <Image aria-hidden="true" src={iconRotateCamera} width="20" height="20" />}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <MenuItem eventKey={CAMERA_MODE_PAN}>
@@ -345,6 +354,7 @@ class SecondaryToolbar extends Component {
                 }}
               >
                 <Dropdown.Toggle
+                  aria-label="Select machine profile"
                   componentClass={IconButton}
                 >
                   {!!selectedMachineProfile && (

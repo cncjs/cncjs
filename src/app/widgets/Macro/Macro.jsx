@@ -145,6 +145,7 @@ function Macro({
       >
         <Box>
           <Button
+            aria-label="New macro"
             variant="secondary"
             onClick={handleNewMacro}
           >
@@ -229,6 +230,7 @@ function Macro({
                 >
                   <Box flex="auto">
                     <Button
+                      aria-label={`Run macro: ${macro.name}`}
                       disabled={!canRunMacro}
                       onClick={handleRunMacro(macro)}
                       title={i18n._('Run Macro')}
@@ -240,6 +242,7 @@ function Macro({
                   </Box>
                   <Box>
                     <Button
+                      aria-label={`Load macro: ${macro.name}`}
                       disabled={!canLoadMacro}
                       onClick={handleLoadMacro(macro)}
                       title={i18n._('Load Macro')}
@@ -247,6 +250,7 @@ function Macro({
                       <FontAwesomeIcon icon="chevron-up" fixedWidth />
                     </Button>
                     <Button
+                      aria-label={`Edit macro: ${macro.name}`}
                       onClick={handleEditMacro(macro)}
                     >
                       <FontAwesomeIcon icon="edit" fixedWidth />

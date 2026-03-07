@@ -1038,7 +1038,7 @@ class VisualizerWidget extends Component {
 
     return (
       <WidgetConfigProvider widgetId={widgetId}>
-        <Widget borderless>
+        <Widget aria-label="3D Visualizer widget" borderless>
           <Widget.Header className={styles.widgetHeader} fixed>
             <PrimaryToolbar
               state={state}

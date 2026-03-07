@@ -269,7 +269,7 @@ class TinyGWidget extends Component {
 
     return (
       <WidgetConfigProvider widgetId={widgetId}>
-        <Widget fullscreen={isFullscreen}>
+        <Widget aria-label="TinyG widget" fullscreen={isFullscreen}>
           <Widget.Header>
             <Widget.Title>
               <Widget.Sortable className={this.props.sortable.handleClassName}>
@@ -283,16 +283,18 @@ class TinyGWidget extends Component {
             <Widget.Controls className={this.props.sortable.filterClassName}>
               {isReady && (
                 <Widget.Button
+                  aria-label="TinyG controller info"
                   onClick={(event) => {
                     actions.openModal(MODAL_CONTROLLER);
                   }}
                 >
-                  <i className="fa fa-info" />
+                  <i aria-hidden="true" className="fa fa-info" />
                 </Widget.Button>
               )}
               {isReady && (
                 <Widget.DropdownButton
-                  toggle={<i className="fa fa-th-large" />}
+                  aria-label="TinyG commands"
+                  toggle={<i aria-hidden="true" className="fa fa-th-large" />}
                 >
                   <Widget.DropdownMenuItem
                     onSelect={() => controller.writeln('?')}
@@ -357,6 +359,8 @@ class TinyGWidget extends Component {
               )}
               {isReady && (
                 <Widget.Button
+                  aria-label={minimized ? 'Expand' : 'Collapse'}
+                  aria-expanded={!minimized}
                   disabled={isFullscreen}
                   title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                   onClick={this.toggleMinimized}
@@ -376,6 +380,7 @@ class TinyGWidget extends Component {
                 </Widget.Button>
               )}
               <Widget.DropdownButton
+                aria-label="More options"
                 title={i18n._('More')}
                 toggle={(
                   <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
@@ -415,6 +420,7 @@ class TinyGWidget extends Component {
           </Widget.Header>
           {isReady && (
             <Widget.Content
+              aria-hidden={minimized}
               className={cx(
                 styles.widgetContent,
                 { [styles.hidden]: minimized }
