@@ -302,9 +302,8 @@ class MarlinWidget extends PureComponent {
                 <Space width="8" />
               </Widget.Sortable>
               {isForkedWidget &&
-                <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />
-              }
-                        Marlin
+                <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />}
+              Marlin
             </Widget.Title>
             <Widget.Controls className={this.props.sortable.filterClassName}>
               {isReady && (
@@ -409,8 +408,7 @@ class MarlinWidget extends PureComponent {
               )}
             >
               {state.modal.name === MODAL_CONTROLLER &&
-                <Controller state={state} actions={actions} />
-              }
+                <Controller state={state} actions={actions} />}
               <Marlin
                 state={state}
                 actions={actions}

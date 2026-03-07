@@ -348,8 +348,7 @@ class MacroWidget extends PureComponent {
                 <Space width="8" />
               </Widget.Sortable>
               {isForkedWidget &&
-                <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />
-              }
+                <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />}
               {i18n._('Macro')}
             </Widget.Title>
             <Widget.Controls className={this.props.sortable.filterClassName}>
@@ -424,14 +423,11 @@ class MacroWidget extends PureComponent {
             )}
           >
             {state.modal.name === MODAL_ADD_MACRO &&
-              <AddMacro state={state} actions={actions} />
-            }
+              <AddMacro state={state} actions={actions} />}
             {state.modal.name === MODAL_EDIT_MACRO &&
-              <EditMacro state={state} actions={actions} />
-            }
+              <EditMacro state={state} actions={actions} />}
             {state.modal.name === MODAL_RUN_MACRO &&
-              <RunMacro state={state} actions={actions} />
-            }
+              <RunMacro state={state} actions={actions} />}
             <Macro state={state} actions={actions} />
           </Widget.Content>
         </Widget>

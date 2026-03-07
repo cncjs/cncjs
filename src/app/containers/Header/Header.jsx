@@ -323,7 +323,7 @@ class Header extends PureComponent {
                     right: 2
                   }}
                 >
-                              N
+                  N
                 </span>
               )}
             </Anchor>
@@ -476,8 +476,7 @@ class Header extends PureComponent {
                     );
                   })}
                   {showCommands &&
-                    <MenuItem divider />
-                  }
+                    <MenuItem divider />}
                   <MenuItem>
                     <MenuItemLink
                       href="https://github.com/cncjs/cncjs/wiki"

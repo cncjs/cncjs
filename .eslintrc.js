@@ -55,6 +55,7 @@ module.exports = {
     'react/jsx-no-bind': ['warn', {
       allowArrowFunctions: true,
     }],
+    'react/jsx-no-leaked-render': 0,
     'react/static-property-placement': 0,
     'react/no-access-state-in-setstate': 0,
     'react/prefer-stateless-function': 0,

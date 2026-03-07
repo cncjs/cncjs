@@ -52,8 +52,7 @@ class Connection extends PureComponent {
             {label}
           </div>
           {manufacturer &&
-            <i>{i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}</i>
-          }
+            <i>{i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}</i>}
         </div>
       );
     };

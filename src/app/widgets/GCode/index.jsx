@@ -293,8 +293,7 @@ class GCodeWidget extends PureComponent {
                 <Space width="8" />
               </Widget.Sortable>
               {isForkedWidget &&
-                <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />
-              }
+                <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />}
               {i18n._('G-code')}
             </Widget.Title>
             <Widget.Controls className={this.props.sortable.filterClassName}>

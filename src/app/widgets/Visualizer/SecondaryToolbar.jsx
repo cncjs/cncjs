@@ -198,7 +198,12 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('Top View')}
                         hideOnClick
                       >
-                        <Image aria-hidden="true" src={iconTopView} width="20" height="20" />
+                        <Image
+                          aria-hidden="true"
+                          src={iconTopView}
+                          width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </IconButton>
                     <IconButton
@@ -213,7 +218,10 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('Front View')}
                         hideOnClick
                       >
-                        <Image aria-hidden="true" src={iconFrontView} width="20" height="20" />
+                        <Image
+                          aria-hidden="true" src={iconFrontView} width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </IconButton>
                     <IconButton
@@ -228,7 +236,10 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('Right Side View')}
                         hideOnClick
                       >
-                        <Image aria-hidden="true" src={iconRightSideView} width="20" height="20" />
+                        <Image
+                          aria-hidden="true" src={iconRightSideView} width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </IconButton>
                     <IconButton
@@ -243,7 +254,10 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('Left Side View')}
                         hideOnClick
                       >
-                        <Image aria-hidden="true" src={iconLeftSideView} width="20" height="20" />
+                        <Image
+                          aria-hidden="true" src={iconLeftSideView} width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </IconButton>
                     <IconButton
@@ -258,7 +272,10 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('3D View')}
                         hideOnClick
                       >
-                        <Image aria-hidden="true" src={icon3DView} width="20" height="20" />
+                        <Image
+                          aria-hidden="true" src={icon3DView} width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </IconButton>
                     <Repeatable
@@ -272,7 +289,10 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('Zoom to Fit')}
                         hideOnClick
                       >
-                        <Image aria-hidden="true" src={iconZoomFit} width="20" height="20" />
+                        <Image
+                          aria-hidden="true" src={iconZoomFit} width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </Repeatable>
                     <Repeatable
@@ -286,7 +306,10 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('Zoom In')}
                         hideOnClick
                       >
-                        <Image aria-hidden="true" src={iconZoomIn} width="20" height="20" />
+                        <Image
+                          aria-hidden="true" src={iconZoomIn} width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </Repeatable>
                     <Repeatable
@@ -300,7 +323,10 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('Zoom Out')}
                         hideOnClick
                       >
-                        <Image aria-hidden="true" src={iconZoomOut} width="20" height="20" />
+                        <Image
+                          aria-hidden="true" src={iconZoomOut} width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </Repeatable>
                   </ButtonGroup>

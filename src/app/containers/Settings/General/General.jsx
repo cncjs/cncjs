@@ -127,8 +127,7 @@ class General extends PureComponent {
                 >
                   {state.api.saving
                     ? <i className="fa fa-circle-o-notch fa-spin" />
-                    : <i className="fa fa-save" />
-                  }
+                    : <i className="fa fa-save" />}
                   <Space width="8" />
                   {i18n._('Save Changes')}
                 </button>

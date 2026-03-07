@@ -481,8 +481,7 @@ class ProbeWidget extends PureComponent {
                 <Space width="8" />
               </Widget.Sortable>
               {isForkedWidget &&
-                <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />
-              }
+                <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />}
               {i18n._('Probe')}
             </Widget.Title>
             <Widget.Controls className={this.props.sortable.filterClassName}>
@@ -550,8 +549,7 @@ class ProbeWidget extends PureComponent {
             )}
           >
             {state.modal.name === MODAL_PREVIEW &&
-              <RunProbe state={state} actions={actions} />
-            }
+              <RunProbe state={state} actions={actions} />}
             <Probe
               state={state}
               actions={actions}

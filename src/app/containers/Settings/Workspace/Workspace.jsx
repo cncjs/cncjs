@@ -57,7 +57,7 @@ class Workspace extends PureComponent {
                 <Modal.Title>
                   {i18n._('Settings')}
                   <Space width="8" />
-                                &rsaquo;
+                  &rsaquo;
                   <Space width="8" />
                   {i18n._('Workspace')}
                 </Modal.Title>
@@ -130,11 +130,9 @@ class Workspace extends PureComponent {
       return (
         <div>
           {state.modal.name === MODAL_RESTORE_DEFAULTS &&
-            <RestoreDefaults state={state} actions={actions} />
-          }
+            <RestoreDefaults state={state} actions={actions} />}
           {state.modal.name === MODAL_IMPORT_SETTINGS &&
-            <ImportSettings state={state} actions={actions} />
-          }
+            <ImportSettings state={state} actions={actions} />}
           <form>
             <input
               ref={(node) => {

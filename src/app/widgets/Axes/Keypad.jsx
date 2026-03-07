@@ -54,7 +54,7 @@ class Keypad extends PureComponent {
     renderRationalNumberWithBoundedDenominator(value) {
       // https://github.com/SheetJS/frac
       const denominatorDigits = 4;
-      const maximumDenominator = Math.pow(10, Number(denominatorDigits) || 0) - 1; // 10^4 - 1 = 9999
+      const maximumDenominator = 10 ** (Number(denominatorDigits) || 0) - 1; // 10^4 - 1 = 9999
       const [quot, numerator, denominator] = frac(value, maximumDenominator, true);
 
       if (numerator > 0) {

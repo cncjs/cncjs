@@ -253,9 +253,8 @@ class SmoothieWidget extends PureComponent {
                 <Space width="8" />
               </Widget.Sortable>
               {isForkedWidget &&
-                <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />
-              }
-                        Smoothie
+                <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />}
+              Smoothie
             </Widget.Title>
             <Widget.Controls className={this.props.sortable.filterClassName}>
               {isReady && (
@@ -379,8 +378,7 @@ class SmoothieWidget extends PureComponent {
               )}
             >
               {state.modal.name === MODAL_CONTROLLER &&
-                <Controller state={state} actions={actions} />
-              }
+                <Controller state={state} actions={actions} />}
               <Smoothie
                 state={state}
                 actions={actions}

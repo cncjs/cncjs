@@ -147,11 +147,9 @@ class MDI extends PureComponent {
       return (
         <div>
           {state.modal.name === MODAL_CREATE_RECORD &&
-            <CreateRecord state={state} action={action} />
-          }
+            <CreateRecord state={state} action={action} />}
           {state.modal.name === MODAL_UPDATE_RECORD &&
-            <UpdateRecord state={state} action={action} />
-          }
+            <UpdateRecord state={state} action={action} />}
           <TableRecords state={state} action={action} />
         </div>
       );

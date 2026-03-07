@@ -448,8 +448,7 @@ class Workspace extends PureComponent {
             />
           )}
           {modal.name === MODAL_SERVER_DISCONNECTED &&
-            <ServerDisconnected />
-          }
+            <ServerDisconnected />}
           <div
             className={classNames(
               styles.dropzoneOverlay,
