@@ -75,6 +75,7 @@ class UpdateRecord extends PureComponent {
                   <label>{i18n._('Account status')}</label>
                   <div>
                     <ToggleSwitch
+                      aria-label="Enable account"
                       ref={node => {
                         this.fields.enabled = node;
                       }}
@@ -86,6 +87,7 @@ class UpdateRecord extends PureComponent {
                 <div className={styles.formGroup}>
                   <label>{i18n._('Username')}</label>
                   <Input
+                    aria-label="Username"
                     ref={node => {
                       this.fields.name = node;
                     }}
@@ -104,6 +106,7 @@ class UpdateRecord extends PureComponent {
                   <label>{changePassword ? i18n._('Old Password') : i18n._('Password')}</label>
                   <div className="clearfix">
                     <Input
+                      aria-label={changePassword ? "Old Password" : "Password"}
                       ref={node => {
                         this.fields.oldPassword = node;
                       }}
@@ -135,6 +138,7 @@ class UpdateRecord extends PureComponent {
                   <div className={styles.formGroup}>
                     <label>{i18n._('New Password')}</label>
                     <Input
+                      aria-label="New Password"
                       ref={node => {
                         this.fields.newPassword = node;
                       }}

@@ -19,6 +19,7 @@ class Widget extends PureComponent {
 
       return (
         <div
+          role="region"
           {...props}
           className={classNames(
             className,

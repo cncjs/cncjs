@@ -187,6 +187,7 @@ class TableRecords extends PureComponent {
                 return (
                   <div>
                     <button
+                      aria-label={`Edit profile: ${row.name}`}
                       type="button"
                       className="btn btn-xs btn-default"
                       title={i18n._('Update')}
@@ -194,9 +195,10 @@ class TableRecords extends PureComponent {
                         actions.openModal(MODAL_UPDATE_RECORD, row);
                       }}
                     >
-                      <i className="fa fa-fw fa-edit" />
+                      <i aria-hidden="true" className="fa fa-fw fa-edit" />
                     </button>
                     <button
+                      aria-label={`Delete profile: ${row.name}`}
                       type="button"
                       className="btn btn-xs btn-default"
                       title={i18n._('Delete')}
@@ -235,7 +237,7 @@ class TableRecords extends PureComponent {
                         ));
                       }}
                     >
-                      <i className="fa fa-fw fa-trash" />
+                      <i aria-hidden="true" className="fa fa-fw fa-trash" />
                     </button>
                   </div>
                 );

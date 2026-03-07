@@ -308,6 +308,7 @@ class PrimaryToolbar extends PureComponent {
               pullRight
             >
               <Button
+                aria-label="3D View options"
                 btnSize="sm"
                 btnStyle="flat"
                 title={(!WebGL.isWebGLAvailable() || disabled)
@@ -317,8 +318,8 @@ class PrimaryToolbar extends PureComponent {
                 onClick={actions.toggle3DView}
               >
                 {(!WebGL.isWebGLAvailable() || disabled)
-                  ? <i className="fa fa-toggle-off" />
-                  : <i className="fa fa-toggle-on" />
+                  ? <i aria-hidden="true" className="fa fa-toggle-off" />
+                  : <i aria-hidden="true" className="fa fa-toggle-on" />
                 }
                 {i18n._('3D View')}
               </Button>
@@ -353,7 +354,7 @@ class PrimaryToolbar extends PureComponent {
                   disabled={!canToggleOptions}
                   onSelect={actions.toPerspectiveProjection}
                 >
-                  <i className={classNames('fa', 'fa-fw', { 'fa-check': projection !== 'orthographic' })} />
+                  <i aria-hidden="true" className={classNames('fa', 'fa-fw', { 'fa-check': projection !== 'orthographic' })} />
                   <Space width={8} />
                   {i18n._('Perspective Projection')}
                 </MenuItem>
@@ -361,7 +362,7 @@ class PrimaryToolbar extends PureComponent {
                   disabled={!canToggleOptions}
                   onSelect={actions.toOrthographicProjection}
                 >
-                  <i className={classNames('fa', 'fa-fw', { 'fa-check': projection === 'orthographic' })} />
+                  <i aria-hidden="true" className={classNames('fa', 'fa-fw', { 'fa-check': projection === 'orthographic' })} />
                   <Space width={8} />
                   {i18n._('Orthographic Projection')}
                 </MenuItem>
@@ -371,8 +372,8 @@ class PrimaryToolbar extends PureComponent {
                   onSelect={actions.toggleGCodeFilename}
                 >
                   {gcode.displayName
-                    ? <i className="fa fa-toggle-on fa-fw" />
-                    : <i className="fa fa-toggle-off fa-fw" />
+                    ? <i aria-hidden="true" className="fa fa-toggle-on fa-fw" />
+                    : <i aria-hidden="true" className="fa fa-toggle-off fa-fw" />
                   }
                   <Space width={8} />
                   {i18n._('Display G-code Filename')}
@@ -382,8 +383,8 @@ class PrimaryToolbar extends PureComponent {
                   onSelect={actions.toggleLimitsVisibility}
                 >
                   {objects.limits.visible
-                    ? <i className="fa fa-toggle-on fa-fw" />
-                    : <i className="fa fa-toggle-off fa-fw" />
+                    ? <i aria-hidden="true" className="fa fa-toggle-on fa-fw" />
+                    : <i aria-hidden="true" className="fa fa-toggle-off fa-fw" />
                   }
                   <Space width={8} />
                   {objects.limits.visible
@@ -396,8 +397,8 @@ class PrimaryToolbar extends PureComponent {
                   onSelect={actions.toggleCoordinateSystemVisibility}
                 >
                   {objects.coordinateSystem.visible
-                    ? <i className="fa fa-toggle-on fa-fw" />
-                    : <i className="fa fa-toggle-off fa-fw" />
+                    ? <i aria-hidden="true" className="fa fa-toggle-on fa-fw" />
+                    : <i aria-hidden="true" className="fa fa-toggle-off fa-fw" />
                   }
                   <Space width={8} />
                   {objects.coordinateSystem.visible
@@ -410,8 +411,8 @@ class PrimaryToolbar extends PureComponent {
                   onSelect={actions.toggleGridLineNumbersVisibility}
                 >
                   {objects.gridLineNumbers.visible
-                    ? <i className="fa fa-toggle-on fa-fw" />
-                    : <i className="fa fa-toggle-off fa-fw" />
+                    ? <i aria-hidden="true" className="fa fa-toggle-on fa-fw" />
+                    : <i aria-hidden="true" className="fa fa-toggle-off fa-fw" />
                   }
                   <Space width={8} />
                   {objects.gridLineNumbers.visible
@@ -424,8 +425,8 @@ class PrimaryToolbar extends PureComponent {
                   onSelect={actions.toggleCuttingToolVisibility}
                 >
                   {objects.cuttingTool.visible
-                    ? <i className="fa fa-toggle-on fa-fw" />
-                    : <i className="fa fa-toggle-off fa-fw" />
+                    ? <i aria-hidden="true" className="fa fa-toggle-on fa-fw" />
+                    : <i aria-hidden="true" className="fa fa-toggle-off fa-fw" />
                   }
                   <Space width={8} />
                   {objects.cuttingTool.visible

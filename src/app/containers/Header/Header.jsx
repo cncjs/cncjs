@@ -270,6 +270,7 @@ class Header extends PureComponent {
 
     return (
       <Navbar
+        aria-label="Application header"
         fixedTop
         fluid
         inverse
@@ -354,12 +355,13 @@ class Header extends PureComponent {
                 pullRight
               >
                 <Dropdown.Toggle
+                  aria-label="My Account"
                   btnStyle="link"
                   noCaret
                   className={styles.navDropdownToggle}
                   title={i18n._('My Account')}
                 >
-                  <i className="fa fa-fw fa-user" style={{ fontSize: '20px', marginRight: 0 }} />
+                  <i aria-hidden="true" className="fa fa-fw fa-user" style={{ fontSize: '20px', marginRight: 0 }} />
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <MenuItem header>
@@ -369,7 +371,7 @@ class Header extends PureComponent {
                   <MenuItem
                     href="#/settings/user-accounts"
                   >
-                    <i className="fa fa-fw fa-user" />
+                    <i aria-hidden="true" className="fa fa-fw fa-user" />
                     <Space width="8" />
                     {i18n._('Account')}
                   </MenuItem>
@@ -386,7 +388,7 @@ class Header extends PureComponent {
                       }
                     }}
                   >
-                    <i className="fa fa-fw fa-sign-out" />
+                    <i aria-hidden="true" className="fa fa-fw fa-sign-out" />
                     <Space width="8" />
                     {i18n._('Sign Out')}
                   </MenuItem>
@@ -396,12 +398,13 @@ class Header extends PureComponent {
                 pullRight
               >
                 <Dropdown.Toggle
+                  aria-label="Options"
                   btnStyle="link"
                   noCaret
                   className={styles.navDropdownToggle}
                   title={i18n._('Options')}
                 >
-                  <i className="fa fa-fw fa-ellipsis-v" style={{ fontSize: '20px', marginRight: 0 }} />
+                  <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" style={{ fontSize: '20px', marginRight: 0 }} />
                   {this.state.runningTasks.length > 0 && (
                     <span
                       className="label label-primary"
@@ -421,22 +424,23 @@ class Header extends PureComponent {
                       {i18n._('Command')}
                       {pushPermission === Push.Permission.GRANTED && (
                         <span className="pull-right">
-                          <i className="fa fa-fw fa-bell-o" />
+                          <i aria-hidden="true" className="fa fa-fw fa-bell-o" />
                         </span>
                       )}
                       {pushPermission === Push.Permission.DENIED && (
                         <span className="pull-right">
-                          <i className="fa fa-fw fa-bell-slash-o" />
+                          <i aria-hidden="true" className="fa fa-fw fa-bell-slash-o" />
                         </span>
                       )}
                       {pushPermission === Push.Permission.DEFAULT && (
                         <span className="pull-right">
                           <Anchor
+                            aria-label="Show notifications"
                             className={styles.btnIcon}
                             onClick={this.actions.requestPushPermission}
                             title={i18n._('Show notifications')}
                           >
-                            <i className="fa fa-fw fa-bell" />
+                            <i aria-hidden="true" className="fa fa-fw fa-bell" />
                           </Anchor>
                         </span>
                       )}
@@ -456,6 +460,7 @@ class Header extends PureComponent {
                         <span title={cmd.command}>{cmd.title || cmd.command}</span>
                         <span className="pull-right">
                           <i
+                            aria-hidden="true"
                             className={classNames(
                               'fa',
                               'fa-fw',

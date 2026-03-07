@@ -179,7 +179,7 @@ class WorkflowControl extends PureComponent {
                   noCaret
                   style={{ minWidth: 0, padding: '4px 8px' }}
                 >
-                  <i className="fa fa-fw fa-caret-down" style={{ marginRight: 0 }} />
+                  <i aria-hidden="true" className="fa fa-fw fa-caret-down" style={{ marginRight: 0 }} />
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <MenuItem header>
@@ -190,7 +190,7 @@ class WorkflowControl extends PureComponent {
                       actions.openModal(MODAL_WATCH_DIRECTORY);
                     }}
                   >
-                    <i className="fa fa-search" />
+                    <i aria-hidden="true" className="fa fa-search" />
                     <Space width="4" />
                     {i18n._('Browse...')}
                   </MenuItem>
@@ -205,36 +205,40 @@ class WorkflowControl extends PureComponent {
               }}
             >
               <Button
+                aria-label="Run"
                 title={workflow.state === WORKFLOW_STATE_PAUSED ? i18n._('Resume') : i18n._('Run')}
                 onClick={actions.handleRun}
                 disabled={!canRun}
                 style={{ minWidth: 0, padding: '4px 8px' }}
               >
-                <i className="fa fa-fw fa-play" style={{ marginRight: 0 }} />
+                <i aria-hidden="true" className="fa fa-fw fa-play" style={{ marginRight: 0 }} />
               </Button>
               <Button
+                aria-label="Pause"
                 title={i18n._('Pause')}
                 onClick={actions.handlePause}
                 disabled={!canPause}
                 style={{ minWidth: 0, padding: '4px 8px' }}
               >
-                <i className="fa fa-fw fa-pause" style={{ marginRight: 0 }} />
+                <i aria-hidden="true" className="fa fa-fw fa-pause" style={{ marginRight: 0 }} />
               </Button>
               <Button
+                aria-label="Stop"
                 title={i18n._('Stop')}
                 onClick={actions.handleStop}
                 disabled={!canStop}
                 style={{ minWidth: 0, padding: '4px 8px' }}
               >
-                <i className="fa fa-fw fa-stop" style={{ marginRight: 0 }} />
+                <i aria-hidden="true" className="fa fa-fw fa-stop" style={{ marginRight: 0 }} />
               </Button>
               <Button
+                aria-label="Close G-code file"
                 title={i18n._('Close')}
                 onClick={actions.handleClose}
                 disabled={!canClose}
                 style={{ minWidth: 0, padding: '4px 8px' }}
               >
-                <i className="fa fa-fw fa-close" style={{ marginRight: 0 }} />
+                <i aria-hidden="true" className="fa fa-fw fa-close" style={{ marginRight: 0 }} />
               </Button>
             </ButtonGroup>
           </ButtonToolbar>

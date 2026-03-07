@@ -63,7 +63,7 @@ class CreateRecord extends Component {
               {({ input, meta }) => (
                 <FormGroup>
                   <label><Axis value="X" sub="min" /></label>
-                  <Input {...input} type="number" />
+                  <Input aria-label="X min" {...input} type="number" />
                   {meta.touched && meta.error && <Error>{meta.error}</Error>}
                 </FormGroup>
               )}
@@ -75,7 +75,7 @@ class CreateRecord extends Component {
               {({ input, meta }) => (
                 <FormGroup>
                   <label><Axis value="X" sub="max" /></label>
-                  <Input {...input} type="number" />
+                  <Input aria-label="X max" {...input} type="number" />
                   {meta.touched && meta.error && <Error>{meta.error}</Error>}
                 </FormGroup>
               )}
@@ -88,7 +88,7 @@ class CreateRecord extends Component {
               {({ input, meta }) => (
                 <FormGroup>
                   <label><Axis value="Y" sub="min" /></label>
-                  <Input {...input} type="number" />
+                  <Input aria-label="Y min" {...input} type="number" />
                   {meta.touched && meta.error && <Error>{meta.error}</Error>}
                 </FormGroup>
               )}
@@ -100,7 +100,7 @@ class CreateRecord extends Component {
               {({ input, meta }) => (
                 <FormGroup>
                   <label><Axis value="Y" sub="max" /></label>
-                  <Input {...input} type="number" />
+                  <Input aria-label="Y max" {...input} type="number" />
                   {meta.touched && meta.error && <Error>{meta.error}</Error>}
                 </FormGroup>
               )}
@@ -113,7 +113,7 @@ class CreateRecord extends Component {
               {({ input, meta }) => (
                 <FormGroup>
                   <label><Axis value="Z" sub="min" /></label>
-                  <Input {...input} type="number" />
+                  <Input aria-label="Z min" {...input} type="number" />
                   {meta.touched && meta.error && <Error>{meta.error}</Error>}
                 </FormGroup>
               )}
@@ -125,7 +125,7 @@ class CreateRecord extends Component {
               {({ input, meta }) => (
                 <FormGroup>
                   <label><Axis value="Z" sub="max" /></label>
-                  <Input {...input} type="number" />
+                  <Input aria-label="Z max" {...input} type="number" />
                   {meta.touched && meta.error && <Error>{meta.error}</Error>}
                 </FormGroup>
               )}
@@ -168,7 +168,7 @@ class CreateRecord extends Component {
                       {({ input, meta }) => (
                         <FormGroup>
                           <label>{i18n._('Name')}</label>
-                          <Input {...input} type="text" />
+                          <Input aria-label="Name" {...input} type="text" />
                           {meta.touched && meta.error && <Error>{meta.error}</Error>}
                         </FormGroup>
                       )}

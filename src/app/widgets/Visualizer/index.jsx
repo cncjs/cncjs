@@ -1027,7 +1027,7 @@ class VisualizerWidget extends PureComponent {
       const showNotifications = !!state.notification.type;
 
       return (
-        <Widget borderless>
+        <Widget aria-label="3D Visualizer widget" borderless>
           <Widget.Header className={styles.widgetHeader} fixed>
             <PrimaryToolbar
               state={state}

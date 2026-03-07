@@ -24,7 +24,7 @@ const AboutContainer = ({ version }) => {
           target="_blank"
         >
           {i18n._('Learn more')}
-          <i className="fa fa-arrow-circle-right" style={{ marginLeft: 5 }} />
+          <i aria-hidden="true" className="fa fa-arrow-circle-right" style={{ marginLeft: 5 }} />
         </Anchor>
       </div>
     </div>

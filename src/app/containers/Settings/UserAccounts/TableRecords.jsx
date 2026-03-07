@@ -97,6 +97,7 @@ class TableRecords extends PureComponent {
 
                 return (
                   <ToggleSwitch
+                    aria-label={`Enable account: ${row.name}`}
                     checked={enabled}
                     size="sm"
                     title={title}
@@ -145,6 +146,7 @@ class TableRecords extends PureComponent {
                 return (
                   <div>
                     <button
+                      aria-label={`Edit account: ${row.name}`}
                       type="button"
                       className="btn btn-xs btn-default"
                       title={i18n._('Edit Account')}
@@ -152,9 +154,10 @@ class TableRecords extends PureComponent {
                         actions.openModal(MODAL_UPDATE_RECORD, row);
                       }}
                     >
-                      <i className="fa fa-fw fa-edit" />
+                      <i aria-hidden="true" className="fa fa-fw fa-edit" />
                     </button>
                     <button
+                      aria-label={`Delete account: ${row.name}`}
                       type="button"
                       className="btn btn-xs btn-default"
                       title={i18n._('Delete Account')}
@@ -200,7 +203,7 @@ class TableRecords extends PureComponent {
                         ));
                       }}
                     >
-                      <i className="fa fa-fw fa-trash" />
+                      <i aria-hidden="true" className="fa fa-fw fa-trash" />
                     </button>
                   </div>
                 );

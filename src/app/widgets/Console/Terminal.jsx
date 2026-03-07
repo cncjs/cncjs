@@ -375,6 +375,9 @@ class TerminalWrapper extends PureComponent {
 
       return (
         <div
+          role="log"
+          aria-live="polite"
+          aria-label="Console output"
           ref={node => {
             this.terminalContainer = node;
           }}

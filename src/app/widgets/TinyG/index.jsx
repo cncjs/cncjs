@@ -262,31 +262,33 @@ class TinyGWidget extends PureComponent {
       };
 
       return (
-        <Widget fullscreen={isFullscreen}>
+        <Widget aria-label="TinyG widget" fullscreen={isFullscreen}>
           <Widget.Header>
             <Widget.Title>
               <Widget.Sortable className={this.props.sortable.handleClassName}>
-                <i className="fa fa-bars" />
+                <i aria-hidden="true" className="fa fa-bars" />
                 <Space width="8" />
               </Widget.Sortable>
               {isForkedWidget &&
-                <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
+                <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />
               }
                         TinyG
             </Widget.Title>
             <Widget.Controls className={this.props.sortable.filterClassName}>
               {isReady && (
                 <Widget.Button
+                  aria-label="TinyG controller info"
                   onClick={(event) => {
                     actions.openModal(MODAL_CONTROLLER);
                   }}
                 >
-                  <i className="fa fa-info" />
+                  <i aria-hidden="true" className="fa fa-info" />
                 </Widget.Button>
               )}
               {isReady && (
                 <Widget.DropdownButton
-                  toggle={<i className="fa fa-th-large" />}
+                  aria-label="TinyG commands"
+                  toggle={<i aria-hidden="true" className="fa fa-th-large" />}
                 >
                   <Widget.DropdownMenuItem
                     onSelect={() => controller.writeln('?')}
@@ -351,11 +353,14 @@ class TinyGWidget extends PureComponent {
               )}
               {isReady && (
                 <Widget.Button
+                  aria-label={minimized ? 'Expand' : 'Collapse'}
+                  aria-expanded={!minimized}
                   disabled={isFullscreen}
                   title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                   onClick={actions.toggleMinimized}
                 >
                   <i
+                    aria-hidden="true"
                     className={classNames(
                       'fa',
                       { 'fa-chevron-up': !minimized },
@@ -365,8 +370,9 @@ class TinyGWidget extends PureComponent {
                 </Widget.Button>
               )}
               <Widget.DropdownButton
+                aria-label="More options"
                 title={i18n._('More')}
-                toggle={<i className="fa fa-ellipsis-v" />}
+                toggle={<i aria-hidden="true" className="fa fa-ellipsis-v" />}
                 onSelect={(eventKey) => {
                   if (eventKey === 'fullscreen') {
                     actions.toggleFullscreen();
@@ -379,6 +385,7 @@ class TinyGWidget extends PureComponent {
               >
                 <Widget.DropdownMenuItem eventKey="fullscreen" disabled={!isReady}>
                   <i
+                    aria-hidden="true"
                     className={classNames(
                       'fa',
                       'fa-fw',
@@ -390,12 +397,12 @@ class TinyGWidget extends PureComponent {
                   {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                 </Widget.DropdownMenuItem>
                 <Widget.DropdownMenuItem eventKey="fork">
-                  <i className="fa fa-fw fa-code-fork" />
+                  <i aria-hidden="true" className="fa fa-fw fa-code-fork" />
                   <Space width="4" />
                   {i18n._('Fork Widget')}
                 </Widget.DropdownMenuItem>
                 <Widget.DropdownMenuItem eventKey="remove">
-                  <i className="fa fa-fw fa-times" />
+                  <i aria-hidden="true" className="fa fa-fw fa-times" />
                   <Space width="4" />
                   {i18n._('Remove Widget')}
                 </Widget.DropdownMenuItem>
@@ -404,6 +411,7 @@ class TinyGWidget extends PureComponent {
           </Widget.Header>
           {isReady && (
             <Widget.Content
+              aria-hidden={minimized}
               className={classNames(
                 styles.widgetContent,
                 { [styles.hidden]: minimized }

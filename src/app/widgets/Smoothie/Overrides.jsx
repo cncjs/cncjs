@@ -23,7 +23,7 @@ const Overrides = (props) => {
               controller.command('feedOverride', -10);
             }}
           >
-            <i className="fa fa-arrow-down" style={{ fontSize: 14 }} />
+            <i aria-hidden="true" className="fa fa-arrow-down" style={{ fontSize: 14 }} />
             <span style={{ marginLeft: 5 }}>
                         -10%
             </span>
@@ -35,7 +35,7 @@ const Overrides = (props) => {
               controller.command('feedOverride', -1);
             }}
           >
-            <i className="fa fa-arrow-down" style={{ fontSize: 10 }} />
+            <i aria-hidden="true" className="fa fa-arrow-down" style={{ fontSize: 10 }} />
             <span style={{ marginLeft: 5 }}>
                         -1%
             </span>
@@ -47,7 +47,7 @@ const Overrides = (props) => {
               controller.command('feedOverride', 1);
             }}
           >
-            <i className="fa fa-arrow-up" style={{ fontSize: 10 }} />
+            <i aria-hidden="true" className="fa fa-arrow-up" style={{ fontSize: 10 }} />
             <span style={{ marginLeft: 5 }}>
                         1%
             </span>
@@ -59,12 +59,13 @@ const Overrides = (props) => {
               controller.command('feedOverride', 10);
             }}
           >
-            <i className="fa fa-arrow-up" style={{ fontSize: 14 }} />
+            <i aria-hidden="true" className="fa fa-arrow-up" style={{ fontSize: 14 }} />
             <span style={{ marginLeft: 5 }}>
                         10%
             </span>
           </RepeatButton>
           <button
+            aria-label="Reset feed rate override"
             type="button"
             className="btn btn-default"
             style={{ padding: 5 }}
@@ -72,7 +73,7 @@ const Overrides = (props) => {
               controller.command('feedOverride', 0);
             }}
           >
-            <i className="fa fa-undo fa-fw" />
+            <i aria-hidden="true" className="fa fa-undo fa-fw" />
           </button>
         </DigitalReadout>
       )}
@@ -85,7 +86,7 @@ const Overrides = (props) => {
               controller.command('spindleOverride', -10);
             }}
           >
-            <i className="fa fa-arrow-down" style={{ fontSize: 14 }} />
+            <i aria-hidden="true" className="fa fa-arrow-down" style={{ fontSize: 14 }} />
             <span style={{ marginLeft: 5 }}>
                         -10%
             </span>
@@ -97,7 +98,7 @@ const Overrides = (props) => {
               controller.command('spindleOverride', -1);
             }}
           >
-            <i className="fa fa-arrow-down" style={{ fontSize: 10 }} />
+            <i aria-hidden="true" className="fa fa-arrow-down" style={{ fontSize: 10 }} />
             <span style={{ marginLeft: 5 }}>
                         -1%
             </span>
@@ -109,7 +110,7 @@ const Overrides = (props) => {
               controller.command('spindleOverride', 1);
             }}
           >
-            <i className="fa fa-arrow-up" style={{ fontSize: 10 }} />
+            <i aria-hidden="true" className="fa fa-arrow-up" style={{ fontSize: 10 }} />
             <span style={{ marginLeft: 5 }}>
                         1%
             </span>
@@ -121,12 +122,13 @@ const Overrides = (props) => {
               controller.command('spindleOverride', 10);
             }}
           >
-            <i className="fa fa-arrow-up" style={{ fontSize: 14 }} />
+            <i aria-hidden="true" className="fa fa-arrow-up" style={{ fontSize: 14 }} />
             <span style={{ marginLeft: 5 }}>
                         10%
             </span>
           </RepeatButton>
           <button
+            aria-label="Reset spindle override"
             type="button"
             className="btn btn-default"
             style={{ padding: 5 }}
@@ -134,7 +136,7 @@ const Overrides = (props) => {
               controller.command('spindleOverride', 0);
             }}
           >
-            <i className="fa fa-undo fa-fw" />
+            <i aria-hidden="true" className="fa fa-undo fa-fw" />
           </button>
         </DigitalReadout>
       )}

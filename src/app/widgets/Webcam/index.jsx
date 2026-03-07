@@ -148,25 +148,27 @@ class WebcamWidget extends PureComponent {
       };
 
       return (
-        <Widget fullscreen={isFullscreen}>
+        <Widget aria-label="Webcam widget" fullscreen={isFullscreen}>
           <Widget.Header>
             <Widget.Title>
               <Widget.Sortable className={this.props.sortable.handleClassName}>
-                <i className="fa fa-bars" />
+                <i aria-hidden="true" className="fa fa-bars" />
                 <Space width="8" />
               </Widget.Sortable>
               {isForkedWidget &&
-                <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
+                <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />
               }
               {i18n._('Webcam')}
             </Widget.Title>
             <Widget.Controls className={this.props.sortable.filterClassName}>
               <Widget.Button
+                aria-label={disabled ? 'Enable Webcam' : 'Disable Webcam'}
                 title={disabled ? i18n._('Enable') : i18n._('Disable')}
                 type="default"
                 onClick={(event) => this.setState({ disabled: !disabled })}
               >
                 <i
+                  aria-hidden="true"
                   className={cx('fa', 'fa-fw', {
                     'fa-toggle-on': !disabled,
                     'fa-toggle-off': disabled
@@ -174,13 +176,15 @@ class WebcamWidget extends PureComponent {
                 />
               </Widget.Button>
               <Widget.Button
+                aria-label="Refresh webcam"
                 disabled={disabled}
                 title={i18n._('Refresh')}
                 onClick={(event) => this.webcam.refresh()}
               >
-                <i className="fa fa-refresh" />
+                <i aria-hidden="true" className="fa fa-refresh" />
               </Widget.Button>
               <Widget.Button
+                aria-label="Webcam settings"
                 title={i18n._('Edit')}
                 onClick={(event) => {
                   const { mediaSource, deviceId, url } = this.state;
@@ -202,14 +206,17 @@ class WebcamWidget extends PureComponent {
                   ));
                 }}
               >
-                <i className="fa fa-cog" />
+                <i aria-hidden="true" className="fa fa-cog" />
               </Widget.Button>
               <Widget.Button
+                aria-label={minimized ? 'Expand' : 'Collapse'}
+                aria-expanded={!minimized}
                 disabled={isFullscreen}
                 title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                 onClick={actions.toggleMinimized}
               >
                 <i
+                  aria-hidden="true"
                   className={cx('fa', 'fa-fw', {
                     'fa-chevron-up': !minimized,
                     'fa-chevron-down': minimized
@@ -217,8 +224,9 @@ class WebcamWidget extends PureComponent {
                 />
               </Widget.Button>
               <Widget.DropdownButton
+                aria-label="More options"
                 title={i18n._('More')}
-                toggle={<i className="fa fa-ellipsis-v" />}
+                toggle={<i aria-hidden="true" className="fa fa-ellipsis-v" />}
                 onSelect={(eventKey) => {
                   if (eventKey === 'fullscreen') {
                     actions.toggleFullscreen();
@@ -231,6 +239,7 @@ class WebcamWidget extends PureComponent {
               >
                 <Widget.DropdownMenuItem eventKey="fullscreen">
                   <i
+                    aria-hidden="true"
                     className={cx('fa', 'fa-fw', {
                       'fa-expand': !isFullscreen,
                       'fa-compress': isFullscreen
@@ -240,12 +249,12 @@ class WebcamWidget extends PureComponent {
                   {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                 </Widget.DropdownMenuItem>
                 <Widget.DropdownMenuItem eventKey="fork">
-                  <i className="fa fa-fw fa-code-fork" />
+                  <i aria-hidden="true" className="fa fa-fw fa-code-fork" />
                   <Space width="4" />
                   {i18n._('Fork Widget')}
                 </Widget.DropdownMenuItem>
                 <Widget.DropdownMenuItem eventKey="remove">
-                  <i className="fa fa-fw fa-times" />
+                  <i aria-hidden="true" className="fa fa-fw fa-times" />
                   <Space width="4" />
                   {i18n._('Remove Widget')}
                 </Widget.DropdownMenuItem>
@@ -253,6 +262,7 @@ class WebcamWidget extends PureComponent {
             </Widget.Controls>
           </Widget.Header>
           <Widget.Content
+            aria-hidden={minimized}
             className={cx(styles.widgetContent, {
               [styles.hidden]: minimized,
               [styles.fullscreen]: isFullscreen

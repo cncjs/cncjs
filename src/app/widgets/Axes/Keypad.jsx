@@ -166,6 +166,7 @@ class Keypad extends PureComponent {
                   <div className="col-xs-3">
                     <div className={styles.colSpace}>
                       <Button
+                        aria-label="Move X negative Y positive"
                         btnStyle="flat"
                         compact
                         className={styles.btnKeypad}
@@ -176,13 +177,14 @@ class Keypad extends PureComponent {
                         disabled={!canClickXY}
                         title={i18n._('Move X- Y+')}
                       >
-                        <i className={cx('fa', 'fa-arrow-circle-up', styles['rotate--45deg'])} style={{ fontSize: 16 }} />
+                        <i aria-hidden="true" className={cx('fa', 'fa-arrow-circle-up', styles['rotate--45deg'])} style={{ fontSize: 16 }} />
                       </Button>
                     </div>
                   </div>
                   <div className="col-xs-3">
                     <div className={styles.colSpace}>
                       <Button
+                        aria-label="Move Y positive"
                         btnStyle="flat"
                         compact
                         className={cx(
@@ -204,6 +206,7 @@ class Keypad extends PureComponent {
                   <div className="col-xs-3">
                     <div className={styles.colSpace}>
                       <Button
+                        aria-label="Move X positive Y positive"
                         btnStyle="flat"
                         compact
                         className={styles.btnKeypad}
@@ -214,13 +217,14 @@ class Keypad extends PureComponent {
                         disabled={!canClickXY}
                         title={i18n._('Move X+ Y+')}
                       >
-                        <i className={cx('fa', 'fa-arrow-circle-up', styles['rotate-45deg'])} style={{ fontSize: 16 }} />
+                        <i aria-hidden="true" className={cx('fa', 'fa-arrow-circle-up', styles['rotate-45deg'])} style={{ fontSize: 16 }} />
                       </Button>
                     </div>
                   </div>
                   <div className="col-xs-3">
                     <div className={styles.colSpace}>
                       <Button
+                        aria-label="Move Z positive"
                         btnStyle="flat"
                         compact
                         className={cx(
@@ -246,6 +250,7 @@ class Keypad extends PureComponent {
                   <div className="col-xs-3">
                     <div className={styles.colSpace}>
                       <Button
+                        aria-label="Move X negative"
                         btnStyle="flat"
                         compact
                         className={cx(
@@ -284,6 +289,7 @@ class Keypad extends PureComponent {
                   <div className="col-xs-3">
                     <div className={styles.colSpace}>
                       <Button
+                        aria-label="Move X positive"
                         btnStyle="flat"
                         compact
                         className={cx(
@@ -324,6 +330,7 @@ class Keypad extends PureComponent {
                   <div className="col-xs-3">
                     <div className={styles.colSpace}>
                       <Button
+                        aria-label="Move X negative Y negative"
                         btnStyle="flat"
                         compact
                         className={styles.btnKeypad}
@@ -334,13 +341,14 @@ class Keypad extends PureComponent {
                         disabled={!canClickXY}
                         title={i18n._('Move X- Y-')}
                       >
-                        <i className={cx('fa', 'fa-arrow-circle-down', styles['rotate-45deg'])} style={{ fontSize: 16 }} />
+                        <i aria-hidden="true" className={cx('fa', 'fa-arrow-circle-down', styles['rotate-45deg'])} style={{ fontSize: 16 }} />
                       </Button>
                     </div>
                   </div>
                   <div className="col-xs-3">
                     <div className={styles.colSpace}>
                       <Button
+                        aria-label="Move Y negative"
                         btnStyle="flat"
                         compact
                         className={cx(
@@ -362,6 +370,7 @@ class Keypad extends PureComponent {
                   <div className="col-xs-3">
                     <div className={styles.colSpace}>
                       <Button
+                        aria-label="Move X positive Y negative"
                         btnStyle="flat"
                         compact
                         className={styles.btnKeypad}
@@ -372,13 +381,14 @@ class Keypad extends PureComponent {
                         disabled={!canClickXY}
                         title={i18n._('Move X+ Y-')}
                       >
-                        <i className={cx('fa', 'fa-arrow-circle-down', styles['rotate--45deg'])} style={{ fontSize: 16 }} />
+                        <i aria-hidden="true" className={cx('fa', 'fa-arrow-circle-down', styles['rotate--45deg'])} style={{ fontSize: 16 }} />
                       </Button>
                     </div>
                   </div>
                   <div className="col-xs-3">
                     <div className={styles.colSpace}>
                       <Button
+                        aria-label="Move Z negative"
                         btnStyle="flat"
                         compact
                         className={cx(
@@ -528,13 +538,14 @@ class Keypad extends PureComponent {
                       onRelease={actions.stepBackward}
                     >
                       <Button
+                        aria-label="Decrease step size"
                         disabled={!canStepBackward}
                         style={{ width: '100%' }}
                         compact
                         btnStyle="flat"
                         className="pull-left"
                       >
-                        <i className="fa fa-minus" />
+                        <i aria-hidden="true" className="fa fa-minus" />
                       </Button>
                     </Repeatable>
                   </div>
@@ -548,13 +559,14 @@ class Keypad extends PureComponent {
                       onRelease={actions.stepForward}
                     >
                       <Button
+                        aria-label="Increase step size"
                         disabled={!canStepForward}
                         style={{ width: '100%' }}
                         compact
                         btnStyle="flat"
                         className="pull-right"
                       >
-                        <i className="fa fa-plus" />
+                        <i aria-hidden="true" className="fa fa-plus" />
                       </Button>
                     </Repeatable>
                   </div>

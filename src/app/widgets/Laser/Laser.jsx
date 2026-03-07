@@ -81,7 +81,7 @@ class Laser extends PureComponent {
                         controller.command('spindleOverride', -10);
                       }}
                     >
-                      <i className="fa fa-arrow-down" style={{ fontSize: 14 }} />
+                      <i aria-hidden="true" className="fa fa-arrow-down" style={{ fontSize: 14 }} />
                       <span style={{ marginLeft: 5 }}>
                                             -10%
                       </span>
@@ -94,7 +94,7 @@ class Laser extends PureComponent {
                         controller.command('spindleOverride', -1);
                       }}
                     >
-                      <i className="fa fa-arrow-down" style={{ fontSize: 10 }} />
+                      <i aria-hidden="true" className="fa fa-arrow-down" style={{ fontSize: 10 }} />
                       <span style={{ marginLeft: 5 }}>
                                             -1%
                       </span>
@@ -107,7 +107,7 @@ class Laser extends PureComponent {
                         controller.command('spindleOverride', 1);
                       }}
                     >
-                      <i className="fa fa-arrow-up" style={{ fontSize: 10 }} />
+                      <i aria-hidden="true" className="fa fa-arrow-up" style={{ fontSize: 10 }} />
                       <span style={{ marginLeft: 5 }}>
                                             1%
                       </span>
@@ -120,12 +120,13 @@ class Laser extends PureComponent {
                         controller.command('spindleOverride', 10);
                       }}
                     >
-                      <i className="fa fa-arrow-up" style={{ fontSize: 14 }} />
+                      <i aria-hidden="true" className="fa fa-arrow-up" style={{ fontSize: 14 }} />
                       <span style={{ marginLeft: 5 }}>
                                             10%
                       </span>
                     </RepeatButton>
                     <button
+                      aria-label="Reset"
                       type="button"
                       className="btn btn-default"
                       style={{ padding: 5 }}
@@ -134,7 +135,7 @@ class Laser extends PureComponent {
                         controller.command('spindleOverride', 0);
                       }}
                     >
-                      <i className="fa fa-undo fa-fw" />
+                      <i aria-hidden="true" className="fa fa-undo fa-fw" />
                     </button>
                   </div>
                 </div>
@@ -165,6 +166,7 @@ class Laser extends PureComponent {
                     <div className="table-form-col">
                       <div className="text-center">{test.power}%</div>
                       <Slider
+                        aria-label="Laser power"
                         style={{ padding: 0 }}
                         defaultValue={test.power}
                         min={0}
@@ -181,6 +183,7 @@ class Laser extends PureComponent {
                     <div className="table-form-col">
                       <div className="input-group input-group-sm" style={{ width: '100%' }}>
                         <input
+                          aria-label="Test duration in milliseconds"
                           type="number"
                           className="form-control"
                           style={{ borderRadius: 0 }}
@@ -201,6 +204,7 @@ class Laser extends PureComponent {
                       <div className="input-group input-group-sm" style={{ width: '100%' }}>
                         <span className="input-group-addon">S</span>
                         <input
+                          aria-label="Maximum S value"
                           type="number"
                           className="form-control"
                           style={{ borderRadius: 0 }}

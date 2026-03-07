@@ -90,12 +90,13 @@ class DisplayPanel extends PureComponent {
           onSelect={this.handleSelect}
         >
           <Dropdown.Toggle
+            aria-label="Select work coordinate system"
             className={styles.actionDropdown}
             btnStyle="link"
             compact
             noCaret
           >
-            <i className="fa fa-fw fa-caret-down" />
+            <i aria-hidden="true" className="fa fa-fw fa-caret-down" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {wcs === 'G54' &&
@@ -224,12 +225,13 @@ class DisplayPanel extends PureComponent {
           onSelect={this.handleSelect}
         >
           <Dropdown.Toggle
+            aria-label="X axis actions"
             className={styles.actionDropdown}
             btnStyle="link"
             compact
             noCaret
           >
-            <i className="fa fa-fw fa-ellipsis-v" />
+            <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {wcs === 'G54' &&
@@ -353,12 +355,13 @@ class DisplayPanel extends PureComponent {
           onSelect={this.handleSelect}
         >
           <Dropdown.Toggle
+            aria-label="Y axis actions"
             className={styles.actionDropdown}
             btnStyle="link"
             compact
             noCaret
           >
-            <i className="fa fa-fw fa-ellipsis-v" />
+            <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {wcs === 'G54' &&
@@ -482,12 +485,13 @@ class DisplayPanel extends PureComponent {
           onSelect={this.handleSelect}
         >
           <Dropdown.Toggle
+            aria-label="Z axis actions"
             className={styles.actionDropdown}
             btnStyle="link"
             compact
             noCaret
           >
-            <i className="fa fa-fw fa-ellipsis-v" />
+            <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {wcs === 'G54' &&
@@ -611,12 +615,13 @@ class DisplayPanel extends PureComponent {
           onSelect={this.handleSelect}
         >
           <Dropdown.Toggle
+            aria-label="A axis actions"
             className={styles.actionDropdown}
             btnStyle="link"
             compact
             noCaret
           >
-            <i className="fa fa-fw fa-ellipsis-v" />
+            <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {wcs === 'G54' &&
@@ -740,12 +745,13 @@ class DisplayPanel extends PureComponent {
           onSelect={this.handleSelect}
         >
           <Dropdown.Toggle
+            aria-label="B axis actions"
             className={styles.actionDropdown}
             btnStyle="link"
             compact
             noCaret
           >
-            <i className="fa fa-fw fa-ellipsis-v" />
+            <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {wcs === 'G54' &&
@@ -869,12 +875,13 @@ class DisplayPanel extends PureComponent {
           onSelect={this.handleSelect}
         >
           <Dropdown.Toggle
+            aria-label="C axis actions"
             className={styles.actionDropdown}
             btnStyle="link"
             compact
             noCaret
           >
-            <i className="fa fa-fw fa-ellipsis-v" />
+            <i aria-hidden="true" className="fa fa-fw fa-ellipsis-v" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {wcs === 'G54' &&
@@ -1038,6 +1045,7 @@ class DisplayPanel extends PureComponent {
               <div className="clearfix">
                 <div className="pull-right">
                   <TaskbarButton
+                    aria-label={`Go to zero: ${axisLabel}`}
                     disabled={!canZeroOutMachine}
                     onClick={() => {
                       controller.command('gcode', `G28.3 ${axisLabel}0`);
@@ -1053,6 +1061,7 @@ class DisplayPanel extends PureComponent {
                     </Tooltip>
                   </TaskbarButton>
                   <TaskbarButton
+                    aria-label={`Home: ${axisLabel}`}
                     disabled={!canHomeMachine}
                     onClick={() => {
                       controller.command('gcode', `G28.2 ${axisLabel}0`);
@@ -1091,6 +1100,7 @@ class DisplayPanel extends PureComponent {
               <div className="clearfix">
                 <div className="pull-right">
                   <TaskbarButton
+                    aria-label={`Move ${axisLabel} backward`}
                     disabled={!canMoveBackward}
                     onClick={() => {
                       const distance = actions.getJogDistance();
@@ -1107,6 +1117,7 @@ class DisplayPanel extends PureComponent {
                     </Tooltip>
                   </TaskbarButton>
                   <TaskbarButton
+                    aria-label={`Move ${axisLabel} forward`}
                     disabled={!canMoveForward}
                     onClick={() => {
                       const distance = actions.getJogDistance();
@@ -1123,6 +1134,7 @@ class DisplayPanel extends PureComponent {
                     </Tooltip>
                   </TaskbarButton>
                   <TaskbarButton
+                    aria-label={`Zero out ${axisLabel} work offsets`}
                     disabled={!canZeroOutWorkOffsets}
                     onClick={() => {
                       actions.setWorkOffsets(axis, 0);
@@ -1138,6 +1150,7 @@ class DisplayPanel extends PureComponent {
                     </Tooltip>
                   </TaskbarButton>
                   <TaskbarButton
+                    aria-label={`Set ${axisLabel} work offsets`}
                     active={showPositionInput}
                     disabled={!canModifyWorkPosition}
                     onClick={this.showPositionInput(axis)}

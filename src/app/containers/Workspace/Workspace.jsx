@@ -521,11 +521,12 @@ class Workspace extends PureComponent {
                       btnStyle="flat"
                     >
                       <Button
+                        aria-label="Hide left panel"
                         style={{ minWidth: 30 }}
                         compact
                         onClick={this.togglePrimaryContainer}
                       >
-                        <i className="fa fa-chevron-left" />
+                        <i aria-hidden="true" className="fa fa-chevron-left" />
                       </Button>
                     </ButtonGroup>
                     <ButtonGroup
@@ -537,7 +538,7 @@ class Workspace extends PureComponent {
                         style={{ width: 230 }}
                         onClick={this.updateWidgetsForPrimaryContainer}
                       >
-                        <i className="fa fa-list-alt" />
+                        <i aria-hidden="true" className="fa fa-list-alt" />
                         {i18n._('Manage Widgets ({{inactiveCount}})', {
                           inactiveCount: inactiveCount
                         })}
@@ -549,6 +550,7 @@ class Workspace extends PureComponent {
                       btnStyle="flat"
                     >
                       <Button
+                        aria-label="Collapse all left panel widgets"
                         style={{ minWidth: 30 }}
                         compact
                         title={i18n._('Collapse All')}
@@ -556,9 +558,10 @@ class Workspace extends PureComponent {
                           this.primaryWidgets.collapseAll();
                         }}
                       >
-                        <i className="fa fa-chevron-up" style={{ fontSize: 14 }} />
+                        <i aria-hidden="true" className="fa fa-chevron-up" style={{ fontSize: 14 }} />
                       </Button>
                       <Button
+                        aria-label="Expand all left panel widgets"
                         style={{ minWidth: 30 }}
                         compact
                         title={i18n._('Expand All')}
@@ -566,7 +569,7 @@ class Workspace extends PureComponent {
                           this.primaryWidgets.expandAll();
                         }}
                       >
-                        <i className="fa fa-chevron-down" style={{ fontSize: 14 }} />
+                        <i aria-hidden="true" className="fa fa-chevron-down" style={{ fontSize: 14 }} />
                       </Button>
                     </ButtonGroup>
                   </ButtonToolbar>
@@ -592,11 +595,12 @@ class Workspace extends PureComponent {
                       btnStyle="flat"
                     >
                       <Button
+                        aria-label="Show left panel"
                         style={{ minWidth: 30 }}
                         compact
                         onClick={this.togglePrimaryContainer}
                       >
-                        <i className="fa fa-chevron-right" />
+                        <i aria-hidden="true" className="fa fa-chevron-right" />
                       </Button>
                     </ButtonGroup>
                   </div>
@@ -624,11 +628,12 @@ class Workspace extends PureComponent {
                       btnStyle="flat"
                     >
                       <Button
+                        aria-label="Show right panel"
                         style={{ minWidth: 30 }}
                         compact
                         onClick={this.toggleSecondaryContainer}
                       >
-                        <i className="fa fa-chevron-left" />
+                        <i aria-hidden="true" className="fa fa-chevron-left" />
                       </Button>
                     </ButtonGroup>
                   </div>
@@ -650,6 +655,7 @@ class Workspace extends PureComponent {
                         btnStyle="flat"
                       >
                         <Button
+                          aria-label="Collapse all right panel widgets"
                           style={{ minWidth: 30 }}
                           compact
                           title={i18n._('Collapse All')}
@@ -657,9 +663,10 @@ class Workspace extends PureComponent {
                             this.secondaryWidgets.collapseAll();
                           }}
                         >
-                          <i className="fa fa-chevron-up" style={{ fontSize: 14 }} />
+                          <i aria-hidden="true" className="fa fa-chevron-up" style={{ fontSize: 14 }} />
                         </Button>
                         <Button
+                          aria-label="Expand all right panel widgets"
                           style={{ minWidth: 30 }}
                           compact
                           title={i18n._('Expand All')}
@@ -667,7 +674,7 @@ class Workspace extends PureComponent {
                             this.secondaryWidgets.expandAll();
                           }}
                         >
-                          <i className="fa fa-chevron-down" style={{ fontSize: 14 }} />
+                          <i aria-hidden="true" className="fa fa-chevron-down" style={{ fontSize: 14 }} />
                         </Button>
                       </ButtonGroup>
                       <ButtonGroup
@@ -679,7 +686,7 @@ class Workspace extends PureComponent {
                           style={{ width: 230 }}
                           onClick={this.updateWidgetsForSecondaryContainer}
                         >
-                          <i className="fa fa-list-alt" />
+                          <i aria-hidden="true" className="fa fa-list-alt" />
                           {i18n._('Manage Widgets ({{inactiveCount}})', {
                             inactiveCount: inactiveCount
                           })}
@@ -691,11 +698,12 @@ class Workspace extends PureComponent {
                         btnStyle="flat"
                       >
                         <Button
+                          aria-label="Hide right panel"
                           style={{ minWidth: 30 }}
                           compact
                           onClick={this.toggleSecondaryContainer}
                         >
-                          <i className="fa fa-chevron-right" />
+                          <i aria-hidden="true" className="fa fa-chevron-right" />
                         </Button>
                       </ButtonGroup>
                     </div>
