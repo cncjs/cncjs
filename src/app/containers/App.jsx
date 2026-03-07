@@ -48,7 +48,7 @@ class App extends PureComponent {
           <aside className={styles.sidebar} id="sidebar">
             <Sidebar {...this.props} />
           </aside>
-          <div className={styles.main}>
+          <div role="main" className={styles.main}>
             <div className={styles.content}>
               <Workspace
                 {...this.props}
@@ -57,8 +57,7 @@ class App extends PureComponent {
                 }}
               />
               {location.pathname.indexOf('/settings') === 0 &&
-                <Settings {...this.props} />
-              }
+                <Settings {...this.props} />}
             </div>
           </div>
         </div>

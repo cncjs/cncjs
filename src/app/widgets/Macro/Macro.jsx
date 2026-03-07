@@ -95,6 +95,7 @@ class Macro extends PureComponent {
                   <tr key={macro.id}>
                     <td>
                       <Button
+                        aria-label={`Run macro: ${macro.name}`}
                         compact
                         btnSize="xs"
                         btnStyle="flat"
@@ -102,7 +103,7 @@ class Macro extends PureComponent {
                         onClick={this.handleRunMacro(macro)}
                         title={i18n._('Run Macro')}
                       >
-                        <i className="fa fa-play" />
+                        <i aria-hidden="true" className="fa fa-play" />
                       </Button>
                       <Space width="8" />
                       {macro.name}
@@ -110,6 +111,7 @@ class Macro extends PureComponent {
                     <td style={{ width: '1%' }}>
                       <div className="nowrap">
                         <Button
+                          aria-label={`Load macro: ${macro.name}`}
                           compact
                           btnSize="xs"
                           btnStyle="flat"
@@ -117,15 +119,16 @@ class Macro extends PureComponent {
                           onClick={this.handleLoadMacro(macro)}
                           title={i18n._('Load Macro')}
                         >
-                          <i className="fa fa-chevron-up" />
+                          <i aria-hidden="true" className="fa fa-chevron-up" />
                         </Button>
                         <Button
+                          aria-label={`Edit macro: ${macro.name}`}
                           compact
                           btnSize="xs"
                           btnStyle="flat"
                           onClick={this.handleEditMacro(macro)}
                         >
-                          <i className="fa fa-edit" />
+                          <i aria-hidden="true" className="fa fa-edit" />
                         </Button>
                       </div>
                     </td>

@@ -144,11 +144,9 @@ class Tool extends PureComponent {
     );
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    const prevToolProbeCustomCommands = get(prevProps.state.toolConfig, 'toolProbeCustomCommands');
-    const toolProbeCustomCommands = get(this.props.state.toolConfig, 'toolProbeCustomCommands');
-
-    if ((prevToolProbeCustomCommands !== toolProbeCustomCommands) && (toolProbeCustomCommands !== this.state.toolProbeCustomCommands)) {
+  componentWillReceiveProps(nextProps) {
+    const toolProbeCustomCommands = get(nextProps.state.toolConfig, 'toolProbeCustomCommands');
+    if (toolProbeCustomCommands !== this.state.toolProbeCustomCommands) {
       this.setState({ toolProbeCustomCommands });
     }
   }
@@ -303,16 +301,16 @@ class Tool extends PureComponent {
             value={toolChangePolicy}
             valueRenderer={this.renderToolChangePolicy}
           />
-          {toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS &&
+          {toolChangePolicy === TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS && (
             <p style={{ marginTop: 4 }}>
               <i>{i18n._('This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.')}</i>
             </p>
-          }
-          {toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS &&
+          )}
+          {toolChangePolicy === TOOL_CHANGE_POLICY_SEND_M6_COMMANDS && (
             <p style={{ marginTop: 4 }}>
               <i>{i18n._('This will send the line exactly as it is to the controller.')}</i>
             </p>
-          }
+          )}
         </div>
         {isManualToolChange && (
           <div>
@@ -685,26 +683,26 @@ class Tool extends PureComponent {
                       </button>
                     </div>
                   </div>
-                  {toolProbeCommand === 'G38.2' &&
+                  {toolProbeCommand === 'G38.2' && (
                     <p style={{ marginTop: 4 }}>
                       <i>{i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}</i>
                     </p>
-                  }
-                  {toolProbeCommand === 'G38.3' &&
+                  )}
+                  {toolProbeCommand === 'G38.3' && (
                     <p style={{ marginTop: 4 }}>
                       <i>{i18n._('G38.3 probe toward workpiece, stop on contact')}</i>
                     </p>
-                  }
-                  {toolProbeCommand === 'G38.4' &&
+                  )}
+                  {toolProbeCommand === 'G38.4' && (
                     <p style={{ marginTop: 4 }}>
                       <i>{i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}</i>
                     </p>
-                  }
-                  {toolProbeCommand === 'G38.5' &&
+                  )}
+                  {toolProbeCommand === 'G38.5' && (
                     <p style={{ marginTop: 4 }}>
                       <i>{i18n._('G38.5 probe away from workpiece, stop on loss of contact')}</i>
                     </p>
-                  }
+                  )}
                 </div>
                 <div className="row no-gutters">
                   <div className="col-xs-6" style={{ paddingRight: 5 }}>

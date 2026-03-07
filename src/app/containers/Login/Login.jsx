@@ -129,6 +129,8 @@ class Login extends PureComponent {
         <div className={styles.container}>
           {alertMessage && (
             <Notification
+              role="alert"
+              aria-live="assertive"
               style={{ marginBottom: 10 }}
               type="error"
               onDismiss={actions.clearAlertMessage}
@@ -172,6 +174,7 @@ class Login extends PureComponent {
                   onClick={this.actions.handleSignIn}
                 >
                   <i
+                    aria-hidden="true"
                     className={cx(
                       'fa',
                       'fa-fw',

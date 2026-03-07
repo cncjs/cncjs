@@ -45,15 +45,14 @@ class Connection extends PureComponent {
           <div>
             {inuse && (
               <span>
-                <i className="fa fa-lock" />
+                <i aria-hidden="true" className="fa fa-lock" />
                 <Space width="8" />
               </span>
             )}
             {label}
           </div>
           {manufacturer &&
-            <i>{i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}</i>
-          }
+            <i>{i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}</i>}
         </div>
       );
     };
@@ -72,7 +71,7 @@ class Connection extends PureComponent {
         <div style={style} title={label}>
           {inuse && (
             <span>
-              <i className="fa fa-lock" />
+              <i aria-hidden="true" className="fa fa-lock" />
               <Space width="8" />
             </span>
           )}
@@ -132,6 +131,8 @@ class Connection extends PureComponent {
         <div>
           {alertMessage && (
             <ToastNotification
+              role="alert"
+              aria-live="assertive"
               style={{ margin: '-10px -10px 10px -10px' }}
               type="error"
               onDismiss={actions.clearAlert}
@@ -236,6 +237,7 @@ class Connection extends PureComponent {
               />
               <div className="input-group-btn">
                 <button
+                  aria-label="Refresh ports"
                   type="button"
                   className="btn btn-default"
                   name="btn-refresh"
@@ -244,6 +246,7 @@ class Connection extends PureComponent {
                   disabled={!canRefresh}
                 >
                   <i
+                    aria-hidden="true"
                     className={cx(
                       'fa',
                       'fa-refresh',
@@ -397,7 +400,7 @@ class Connection extends PureComponent {
                 disabled={!canOpenPort}
                 onClick={actions.handleOpenPort}
               >
-                <i className="fa fa-toggle-off" />
+                <i aria-hidden="true" className="fa fa-toggle-off" />
                 <Space width="8" />
                 {i18n._('Open')}
               </button>
@@ -409,7 +412,7 @@ class Connection extends PureComponent {
                 disabled={!canClosePort}
                 onClick={actions.handleClosePort}
               >
-                <i className="fa fa-toggle-on" />
+                <i aria-hidden="true" className="fa fa-toggle-on" />
                 <Space width="8" />
                 {i18n._('Close')}
               </button>

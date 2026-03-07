@@ -27,11 +27,9 @@ class UserAccounts extends PureComponent {
       return (
         <div style={{ margin: -15 }}>
           {state.modal.name === MODAL_CREATE_RECORD &&
-            <CreateRecord state={state} actions={actions} />
-          }
+            <CreateRecord state={state} actions={actions} />}
           {state.modal.name === MODAL_UPDATE_RECORD &&
-            <UpdateRecord state={state} actions={actions} />
-          }
+            <UpdateRecord state={state} actions={actions} />}
           <TableRecords state={state} actions={actions} />
         </div>
       );

@@ -13,7 +13,7 @@ class Sidebar extends PureComponent {
       const { pathname = '' } = this.props.location;
 
       return (
-        <nav className={styles.navbar}>
+        <nav aria-label="Main navigation" className={styles.navbar}>
           <ul className={styles.nav}>
             <li
               className={classNames(
@@ -21,8 +21,9 @@ class Sidebar extends PureComponent {
                 { [styles.active]: pathname.indexOf('/workspace') === 0 }
               )}
             >
-              <Link to="/workspace" title={i18n._('Workspace')}>
+              <Link aria-label="Workspace" to="/workspace" title={i18n._('Workspace')}>
                 <i
+                  aria-hidden="true"
                   className={classNames(
                     styles.icon,
                     styles.iconInvert,
@@ -37,8 +38,9 @@ class Sidebar extends PureComponent {
                 { [styles.active]: pathname.indexOf('/settings') === 0 }
               )}
             >
-              <Link to="/settings" title={i18n._('Settings')}>
+              <Link aria-label="Settings" to="/settings" title={i18n._('Settings')}>
                 <i
+                  aria-hidden="true"
                   className={classNames(
                     styles.icon,
                     styles.iconInvert,

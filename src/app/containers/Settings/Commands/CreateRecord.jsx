@@ -72,6 +72,7 @@ class CreateRecord extends PureComponent {
                   <label>{i18n._('Enabled')}</label>
                   <div>
                     <ToggleSwitch
+                      aria-label="Enable command"
                       ref={node => {
                         this.fields.enabled = node;
                       }}
@@ -83,6 +84,7 @@ class CreateRecord extends PureComponent {
                 <div className={styles.formGroup}>
                   <label>{i18n._('Title')}</label>
                   <Input
+                    aria-label="Title"
                     type="text"
                     name="title"
                     value=""
@@ -97,6 +99,7 @@ class CreateRecord extends PureComponent {
                 <div className={styles.formGroup}>
                   <label>{i18n._('Commands')}</label>
                   <Textarea
+                    aria-label="Commands"
                     name="commands"
                     value=""
                     rows="5"
