@@ -680,7 +680,5 @@
   "Home Machine B Axis ({{command}})": "B轴归位 ({{command}})",
   "Home Machine C Axis ({{command}})": "C轴归位 ({{command}})",
   "Total: {{count}}_other": "共计：{{count}}",
-  "Count: {{count}}_other": "数量：{{count}}",
-  "Total: {{count}}": "共计：{{count}}",
-  "Count: {{count}}": "数量：{{count}}"
+  "Count: {{count}}_other": "数量：{{count}}"
 }

@@ -686,7 +686,5 @@
   "Count: {{count}}_one": "Количество: {{count}}",
   "Count: {{count}}_few": "Количество: {{count}}",
   "Count: {{count}}_many": "Количество: {{count}}",
-  "Count: {{count}}_other": "Количество: {{count}}",
-  "Total: {{count}}": "Всего: {{count}}",
-  "Count: {{count}}": "Количество: {{count}}"
+  "Count: {{count}}_other": "Количество: {{count}}"
 }

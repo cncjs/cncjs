@@ -686,7 +686,5 @@
   "Count: {{count}}_one": "Počet: {{count}}",
   "Count: {{count}}_few": "Počet: {{count}}",
   "Count: {{count}}_many": "Počet: {{count}}",
-  "Count: {{count}}_other": "Počet: {{count}}",
-  "Total: {{count}}": "Celkem: {{count}}",
-  "Count: {{count}}": "Počet: {{count}}"
+  "Count: {{count}}_other": "Počet: {{count}}"
 }

@@ -680,7 +680,5 @@
   "Home Machine B Axis ({{command}})": "B軸を原点へ移動 ({{command}})",
   "Home Machine C Axis ({{command}})": "C軸を原点へ移動 ({{command}})",
   "Total: {{count}}_other": "合計: {{count}}",
-  "Count: {{count}}_other": "件数: {{count}}",
-  "Total: {{count}}": "合計: {{count}}",
-  "Count: {{count}}": "件数: {{count}}"
+  "Count: {{count}}_other": "件数: {{count}}"
 }
