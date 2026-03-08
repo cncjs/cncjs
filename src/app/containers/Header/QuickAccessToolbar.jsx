@@ -34,7 +34,7 @@ class QuickAccessToolbar extends PureComponent {
 
     render() {
       return (
-        <div className={styles.quickAccessToolbar}>
+        <div role="toolbar" aria-label="Quick access toolbar" className={styles.quickAccessToolbar}>
           <ul className="nav navbar-nav">
             <li className="btn-group btn-group-sm" role="group">
               <button
@@ -43,7 +43,7 @@ class QuickAccessToolbar extends PureComponent {
                 onClick={this.command.cyclestart}
                 title={i18n._('Cycle Start')}
               >
-                <i className="fa fa-repeat" />
+                <i aria-hidden="true" className="fa fa-repeat" />
                 <Space width="8" />
                 {i18n._('Cycle Start')}
               </button>
@@ -53,7 +53,7 @@ class QuickAccessToolbar extends PureComponent {
                 onClick={this.command.feedhold}
                 title={i18n._('Feedhold')}
               >
-                <i className="fa fa-hand-paper-o" />
+                <i aria-hidden="true" className="fa fa-hand-paper-o" />
                 <Space width="8" />
                 {i18n._('Feedhold')}
               </button>
@@ -65,7 +65,7 @@ class QuickAccessToolbar extends PureComponent {
                 onClick={this.command.homing}
                 title={i18n._('Homing')}
               >
-                <i className="fa fa-home" />
+                <i aria-hidden="true" className="fa fa-home" />
                 <Space width="8" />
                 {i18n._('Homing')}
               </button>
@@ -75,7 +75,7 @@ class QuickAccessToolbar extends PureComponent {
                 onClick={this.command.sleep}
                 title={i18n._('Sleep')}
               >
-                <i className="fa fa-bed" />
+                <i aria-hidden="true" className="fa fa-bed" />
                 <Space width="8" />
                 {i18n._('Sleep')}
               </button>
@@ -85,7 +85,7 @@ class QuickAccessToolbar extends PureComponent {
                 onClick={this.command.unlock}
                 title={i18n._('Unlock')}
               >
-                <i className="fa fa-unlock-alt" />
+                <i aria-hidden="true" className="fa fa-unlock-alt" />
                 <Space width="8" />
                 {i18n._('Unlock')}
               </button>
@@ -95,7 +95,7 @@ class QuickAccessToolbar extends PureComponent {
                 onClick={this.command.reset}
                 title={i18n._('Reset')}
               >
-                <i className="fa fa-undo" />
+                <i aria-hidden="true" className="fa fa-undo" />
                 <Space width="8" />
                 {i18n._('Reset')}
               </button>

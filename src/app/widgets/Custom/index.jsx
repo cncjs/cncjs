@@ -170,29 +170,30 @@ class CustomWidget extends PureComponent {
       const buttonCount = 5; // [Disabled] [Refresh] [Edit] [Toggle] [More]
 
       return (
-        <Widget fullscreen={isFullscreen}>
+        <Widget aria-label="Custom widget" fullscreen={isFullscreen}>
           <Widget.Header>
             <Widget.Title
               style={{ width: `calc(100% - ${buttonWidth * buttonCount}px)` }}
               title={title}
             >
               <Widget.Sortable className={this.props.sortable.handleClassName}>
-                <i className="fa fa-bars" />
+                <i aria-hidden="true" className="fa fa-bars" />
                 <Space width="8" />
               </Widget.Sortable>
               {isForkedWidget &&
-                <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
-              }
+                <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />}
               {title}
             </Widget.Title>
             <Widget.Controls className={this.props.sortable.filterClassName}>
               <Widget.Button
+                aria-label={disabled ? 'Enable widget' : 'Disable widget'}
                 disabled={!state.url}
                 title={disabled ? i18n._('Enable') : i18n._('Disable')}
                 type="default"
                 onClick={action.toggleDisabled}
               >
                 <i
+                  aria-hidden="true"
                   className={cx('fa', {
                     'fa-toggle-on': !disabled,
                     'fa-toggle-off': disabled
@@ -200,26 +201,31 @@ class CustomWidget extends PureComponent {
                 />
               </Widget.Button>
               <Widget.Button
+                aria-label="Refresh content"
                 disabled={disabled}
                 title={i18n._('Refresh')}
                 onClick={action.refreshContent}
               >
-                <i className="fa fa-refresh" />
+                <i aria-hidden="true" className="fa fa-refresh" />
               </Widget.Button>
               <Widget.Button
+                aria-label="Edit widget settings"
                 title={i18n._('Edit')}
                 onClick={() => {
                   action.openModal(MODAL_SETTINGS);
                 }}
               >
-                <i className="fa fa-cog" />
+                <i aria-hidden="true" className="fa fa-cog" />
               </Widget.Button>
               <Widget.Button
+                aria-label={minimized ? 'Expand' : 'Collapse'}
+                aria-expanded={!minimized}
                 disabled={isFullscreen}
                 title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                 onClick={action.toggleMinimized}
               >
                 <i
+                  aria-hidden="true"
                   className={cx(
                     'fa',
                     { 'fa-chevron-up': !minimized },
@@ -228,8 +234,9 @@ class CustomWidget extends PureComponent {
                 />
               </Widget.Button>
               <Widget.DropdownButton
+                aria-label="More options"
                 title={i18n._('More')}
-                toggle={<i className="fa fa-ellipsis-v" />}
+                toggle={<i aria-hidden="true" className="fa fa-ellipsis-v" />}
                 onSelect={(eventKey) => {
                   if (eventKey === 'fullscreen') {
                     action.toggleFullscreen();
@@ -242,6 +249,7 @@ class CustomWidget extends PureComponent {
               >
                 <Widget.DropdownMenuItem eventKey="fullscreen">
                   <i
+                    aria-hidden="true"
                     className={cx(
                       'fa',
                       'fa-fw',
@@ -253,12 +261,12 @@ class CustomWidget extends PureComponent {
                   {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                 </Widget.DropdownMenuItem>
                 <Widget.DropdownMenuItem eventKey="fork">
-                  <i className="fa fa-fw fa-code-fork" />
+                  <i aria-hidden="true" className="fa fa-fw fa-code-fork" />
                   <Space width="4" />
                   {i18n._('Fork Widget')}
                 </Widget.DropdownMenuItem>
                 <Widget.DropdownMenuItem eventKey="remove">
-                  <i className="fa fa-fw fa-times" />
+                  <i aria-hidden="true" className="fa fa-fw fa-times" />
                   <Space width="4" />
                   {i18n._('Remove Widget')}
                 </Widget.DropdownMenuItem>
@@ -266,6 +274,7 @@ class CustomWidget extends PureComponent {
             </Widget.Controls>
           </Widget.Header>
           <Widget.Content
+            aria-hidden={minimized}
             className={cx(styles.widgetContent, {
               [styles.hidden]: minimized,
               [styles.fullscreen]: isFullscreen

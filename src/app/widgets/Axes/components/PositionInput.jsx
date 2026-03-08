@@ -45,6 +45,7 @@ class PositionInput extends PureComponent {
           style={{ ...style, width: '100%' }}
         >
           <input
+            aria-label="Position value"
             ref={node => {
               this.node = node;
             }}
@@ -75,6 +76,7 @@ class PositionInput extends PureComponent {
           />
           <div className="input-group-btn">
             <button
+              aria-label="Save position"
               type="button"
               className="btn btn-default"
               disabled={!isNumber}
@@ -82,16 +84,17 @@ class PositionInput extends PureComponent {
                 onSave(this.state.value);
               }}
             >
-              <i className="fa fa-fw fa-check" />
+              <i aria-hidden="true" className="fa fa-fw fa-check" />
             </button>
             <button
+              aria-label="Cancel"
               type="button"
               className="btn btn-default"
               onClick={(event) => {
                 onCancel();
               }}
             >
-              <i className="fa fa-fw fa-close" />
+              <i aria-hidden="true" className="fa fa-fw fa-close" />
             </button>
           </div>
         </div>

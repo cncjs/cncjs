@@ -187,6 +187,7 @@ class SecondaryToolbar extends PureComponent {
                 <ButtonToolbar>
                   <ButtonGroup btnSize="sm">
                     <IconButton
+                      aria-label="Top view"
                       className={cx({
                         'highlight': cameraPosition === 'top'
                       })}
@@ -197,10 +198,16 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('Top View')}
                         hideOnClick
                       >
-                        <Image src={iconTopView} width="20" height="20" />
+                        <Image
+                          aria-hidden="true"
+                          src={iconTopView}
+                          width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </IconButton>
                     <IconButton
+                      aria-label="Front view"
                       className={cx({
                         'highlight': cameraPosition === 'front'
                       })}
@@ -211,10 +218,14 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('Front View')}
                         hideOnClick
                       >
-                        <Image src={iconFrontView} width="20" height="20" />
+                        <Image
+                          aria-hidden="true" src={iconFrontView} width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </IconButton>
                     <IconButton
+                      aria-label="Right side view"
                       className={cx({
                         'highlight': cameraPosition === 'right'
                       })}
@@ -225,10 +236,14 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('Right Side View')}
                         hideOnClick
                       >
-                        <Image src={iconRightSideView} width="20" height="20" />
+                        <Image
+                          aria-hidden="true" src={iconRightSideView} width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </IconButton>
                     <IconButton
+                      aria-label="Left side view"
                       className={cx({
                         'highlight': cameraPosition === 'left'
                       })}
@@ -239,10 +254,14 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('Left Side View')}
                         hideOnClick
                       >
-                        <Image src={iconLeftSideView} width="20" height="20" />
+                        <Image
+                          aria-hidden="true" src={iconLeftSideView} width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </IconButton>
                     <IconButton
+                      aria-label="3D view"
                       className={cx({
                         'highlight': cameraPosition === '3d'
                       })}
@@ -253,10 +272,14 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('3D View')}
                         hideOnClick
                       >
-                        <Image src={icon3DView} width="20" height="20" />
+                        <Image
+                          aria-hidden="true" src={icon3DView} width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </IconButton>
                     <Repeatable
+                      aria-label="Zoom to fit"
                       componentClass={IconButton}
                       onClick={camera.zoomFit}
                       onHold={camera.zoomFit}
@@ -266,10 +289,14 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('Zoom to Fit')}
                         hideOnClick
                       >
-                        <Image src={iconZoomFit} width="20" height="20" />
+                        <Image
+                          aria-hidden="true" src={iconZoomFit} width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </Repeatable>
                     <Repeatable
+                      aria-label="Zoom in"
                       componentClass={IconButton}
                       onClick={camera.zoomIn}
                       onHold={camera.zoomIn}
@@ -279,10 +306,14 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('Zoom In')}
                         hideOnClick
                       >
-                        <Image src={iconZoomIn} width="20" height="20" />
+                        <Image
+                          aria-hidden="true" src={iconZoomIn} width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </Repeatable>
                     <Repeatable
+                      aria-label="Zoom out"
                       componentClass={IconButton}
                       onClick={camera.zoomOut}
                       onHold={camera.zoomOut}
@@ -292,7 +323,10 @@ class SecondaryToolbar extends PureComponent {
                         content={i18n._('Zoom Out')}
                         hideOnClick
                       >
-                        <Image src={iconZoomOut} width="20" height="20" />
+                        <Image
+                          aria-hidden="true" src={iconZoomOut} width="20"
+                          height="20"
+                        />
                       </Tooltip>
                     </Repeatable>
                   </ButtonGroup>
@@ -310,14 +344,25 @@ class SecondaryToolbar extends PureComponent {
                     }}
                   >
                     <Dropdown.Toggle
+                      aria-label={cameraMode === CAMERA_MODE_PAN ? 'Camera mode: Pan' : 'Camera mode: Rotate'}
                       componentClass={IconButton}
                     >
-                      {(cameraMode === CAMERA_MODE_PAN) &&
-                        <Image src={iconMoveCamera} width="20" height="20" />
-                      }
-                      {(cameraMode === CAMERA_MODE_ROTATE) &&
-                        <Image src={iconRotateCamera} width="20" height="20" />
-                      }
+                      {(cameraMode === CAMERA_MODE_PAN) && (
+                        <Image
+                          aria-hidden="true"
+                          src={iconMoveCamera}
+                          width="20"
+                          height="20"
+                        />
+                      )}
+                      {(cameraMode === CAMERA_MODE_ROTATE) && (
+                        <Image
+                          aria-hidden="true"
+                          src={iconRotateCamera}
+                          width="20"
+                          height="20"
+                        />
+                      )}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       <MenuItem eventKey={CAMERA_MODE_PAN}>
@@ -348,6 +393,7 @@ class SecondaryToolbar extends PureComponent {
                   }}
                 >
                   <Dropdown.Toggle
+                    aria-label="Select machine profile"
                     componentClass={IconButton}
                   >
                     {!!selectedMachineProfile && (

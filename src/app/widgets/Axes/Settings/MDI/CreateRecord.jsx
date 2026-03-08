@@ -50,7 +50,7 @@ class CreateRecord extends PureComponent {
             <Modal.Title>
               {i18n._('Custom Commands')}
               <Space width="8" />
-                        &rsaquo;
+              &rsaquo;
               <Space width="8" />
               {i18n._('New')}
             </Modal.Title>
@@ -106,6 +106,7 @@ class CreateRecord extends PureComponent {
               <FormGroup>
                 <label>{i18n._('Button Width')}</label>
                 <Slider
+                  aria-label="Button width"
                   ref={node => {
                     this.slider = node;
                   }}

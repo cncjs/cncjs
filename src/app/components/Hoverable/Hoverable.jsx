@@ -21,8 +21,7 @@ class Hoverable extends Component {
         >
           {typeof this.props.children === 'function'
             ? this.props.children(this.state.hovered)
-            : this.porps.children
-          }
+            : this.porps.children}
         </div>
       );
     }

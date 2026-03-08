@@ -1354,6 +1354,7 @@ class Visualizer extends Component {
 
       return (
         <div
+          aria-label="3D Visualizer"
           style={{
             visibility: this.props.show ? 'visible' : 'hidden'
           }}

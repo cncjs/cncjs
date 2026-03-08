@@ -95,6 +95,7 @@ class CreateRecord extends PureComponent {
                   <label>{i18n._('Enabled')}</label>
                   <div>
                     <ToggleSwitch
+                      aria-label="Enable event"
                       ref={node => {
                         this.fields.enabled = node;
                       }}

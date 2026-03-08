@@ -22,7 +22,7 @@ class RestoreDefaults extends PureComponent {
             <Modal.Title>
               {i18n._('Workspace')}
               <Space width="8" />
-                        &rsaquo;
+              &rsaquo;
               <Space width="8" />
               {i18n._('Restore Defaults')}
             </Modal.Title>

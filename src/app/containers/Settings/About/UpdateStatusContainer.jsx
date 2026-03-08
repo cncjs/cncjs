@@ -17,7 +17,7 @@ const UpdateStatusContainer = (props) => {
     return (
       <div className={styles.updateStatusContainer}>
         <div className={styles.updateStatusIcon}>
-          <i className="fa fa-fw fa-spin fa-circle-o-notch" />
+          <i aria-hidden="true" className="fa fa-fw fa-spin fa-circle-o-notch" />
         </div>
         <div className={styles.updateStatusMessageContainer}>
           <div className={styles.updateStatusMessage}>
@@ -32,7 +32,7 @@ const UpdateStatusContainer = (props) => {
     return (
       <div className={styles.updateStatusContainer}>
         <div className={classNames(styles.updateStatusIcon, styles.warning)}>
-          <i className="fa fa-exclamation-circle fa-fw" />
+          <i aria-hidden="true" className="fa fa-exclamation-circle fa-fw" />
         </div>
         <div className={styles.updateStatusMessageContainer}>
           <div className={styles.updateStatusMessage}>
@@ -52,7 +52,7 @@ const UpdateStatusContainer = (props) => {
             <span className={styles.label}>
               {i18n._('Latest version')}
               <Space width="8" />
-              <i className="fa fa-external-link fa-fw" />
+              <i aria-hidden="true" className="fa fa-external-link fa-fw" />
             </span>
           </Anchor>
         </div>
@@ -63,7 +63,7 @@ const UpdateStatusContainer = (props) => {
   return (
     <div className={styles.updateStatusContainer}>
       <div className={classNames(styles.updateStatusIcon, styles.info)}>
-        <i className="fa fa-check-circle fa-fw" />
+        <i aria-hidden="true" className="fa fa-check-circle fa-fw" />
       </div>
       <div className={styles.updateStatusMessageContainer}>
         <div className={styles.updateStatusMessage}>

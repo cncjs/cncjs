@@ -101,23 +101,23 @@ const displayWebGLErrorMessage = () => {
     <Modal disableOverlay size="xs" onClose={onClose}>
       <Modal.Header>
         <Modal.Title>
-                    WebGL Error Message
+          WebGL Error Message
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <ModalTemplate type="warning">
           {window.WebGLRenderingContext && (
             <div>
-                        Your graphics card does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
+              Your graphics card does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
               <br />
-                        Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
+              Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
             </div>
           )}
           {!window.WebGLRenderingContext && (
             <div>
-                        Your browser does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
+              Your browser does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
               <br />
-                        Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
+              Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
             </div>
           )}
         </ModalTemplate>
@@ -1072,7 +1072,7 @@ class VisualizerWidget extends PureComponent {
       const showNotifications = !!state.notification.type;
 
       return (
-        <Widget borderless>
+        <Widget aria-label="3D Visualizer widget" borderless>
           <Widget.Header className={styles.widgetHeader} fixed>
             <PrimaryToolbar
               state={state}
@@ -1089,11 +1089,9 @@ class VisualizerWidget extends PureComponent {
             )}
           >
             {state.gcode.loading &&
-              <Loading />
-            }
+              <Loading />}
             {state.gcode.rendering &&
-              <Rendering />
-            }
+              <Rendering />}
             {state.modal.name === MODAL_WATCH_DIRECTORY && (
               <WatchDirectory
                 state={state}

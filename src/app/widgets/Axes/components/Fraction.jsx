@@ -33,7 +33,7 @@ const Fraction = (props) => {
           overflow: 'hidden'
         }}
       >
-                /
+        /
       </span>
       <span
         style={{
