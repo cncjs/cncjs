@@ -672,5 +672,17 @@
   "Tool Probe Commands": "Tool Probe Commands",
   "Copied": "Copied",
   "Copy": "Copy",
-  "Connect to the controller to view the tool probe commands.": "Connect to the controller to view the tool probe commands."
+  "Connect to the controller to view the tool probe commands.": "Connect to the controller to view the tool probe commands.",
+  "e.g., Activate Air Purifier": "e.g., Activate Air Purifier",
+  "Home Machine ({{command}})": "Home Machine ({{command}})",
+  "Home Machine X Axis ({{command}})": "Home Machine X Axis ({{command}})",
+  "Home Machine Y Axis ({{command}})": "Home Machine Y Axis ({{command}})",
+  "Home Machine Z Axis ({{command}})": "Home Machine Z Axis ({{command}})",
+  "Home Machine A Axis ({{command}})": "Home Machine A Axis ({{command}})",
+  "Home Machine B Axis ({{command}})": "Home Machine B Axis ({{command}})",
+  "Home Machine C Axis ({{command}})": "Home Machine C Axis ({{command}})",
+  "Total: {{count}}_one": "Total: {{count}}",
+  "Total: {{count}}_other": "Total: {{count}}",
+  "Count: {{count}}_one": "Count: {{count}}",
+  "Count: {{count}}_other": "Count: {{count}}"
 }

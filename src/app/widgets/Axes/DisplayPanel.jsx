@@ -18,6 +18,12 @@ import {
   IMPERIAL_UNITS,
   METRIC_UNITS,
 } from '@app/constants';
+import {
+  GRBL,
+  MARLIN,
+  SMOOTHIE,
+  TINYG,
+} from '@app/constants/controller';
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import AxisLabel from './components/AxisLabel';
@@ -34,6 +40,114 @@ import iconPin from './images/pin.svg';
 import iconPencil from './images/pencil.svg';
 import styles from './index.styl';
 
+// Declares which gcode commands each controller supports in the axis dropdown.
+// Grouped by dropdown section (Work Coordinate System → Temporary Offsets → Machine Coordinate System).
+//
+// Command               | G-code          | Description
+// --------------------- | --------------- | ----------------------------------------------------
+// canGoToWork           | G0              | rapid move to work zero
+// canSetWCSOffset       | G10 L20         | set work coordinate offset
+// canZeroTempOffset     | G92             | zero out temporary position offset
+// canCancelTempOffset   | G92.1           | cancel G92 offsets
+// canGoToMachine        | G53 G0          | move in machine coordinates
+// canZeroOutMachine     | G28.3           | set axis position without motion (TinyG/g2core only)
+const SUPPORTED_COMMANDS = {
+  [GRBL]: {
+    // Work Coordinate System
+    canGoToWork: true,
+    canSetWCSOffset: true,
+    // Temporary Offsets
+    canZeroTempOffset: true,
+    canCancelTempOffset: true,
+    // Machine Coordinate System
+    canGoToMachine: true,
+    canZeroOutMachine: false, // Grbl does not support setting machine zero without motion
+  },
+  [MARLIN]: {
+    // Work Coordinate System
+    canGoToWork: true,
+    canSetWCSOffset: false, // Marlin uses G92 for work offsets, not G10 L20
+    // Temporary Offsets
+    canZeroTempOffset: true,
+    canCancelTempOffset: false, // G92.1 requires CNC_COORDINATE_SYSTEMS compile flag
+    // Machine Coordinate System
+    canGoToMachine: true,
+    canZeroOutMachine: false, // Marlin does not support setting machine zero without motion
+  },
+  [SMOOTHIE]: {
+    // Work Coordinate System
+    canGoToWork: true,
+    canSetWCSOffset: true,
+    // Temporary Offsets
+    canZeroTempOffset: true,
+    canCancelTempOffset: true,
+    // Machine Coordinate System
+    canGoToMachine: true,
+    canZeroOutMachine: false, // Smoothie does not support setting machine zero without motion
+  },
+  [TINYG]: {
+    // Work Coordinate System
+    canGoToWork: true,
+    canSetWCSOffset: true,
+    // Temporary Offsets
+    canZeroTempOffset: true,
+    canCancelTempOffset: true,
+    // Machine Coordinate System
+    canGoToMachine: true,
+    canZeroOutMachine: true,
+  },
+};
+
+// Returns the all-axes homing command for the given controller type and reported axes.
+//
+// Controller     | Command
+// -------------- | ----------------
+// Grbl           | $H
+// TinyG/g2core   | G28.2 X0 Y0 Z0 (composed from reported axes)
+// Marlin         | G28
+// Smoothie       | G28
+const getHomeCommand = (controllerType, axes = ['x', 'y', 'z']) => {
+  if (controllerType === GRBL) {
+    return '$H';
+  }
+
+  if (controllerType === MARLIN || controllerType === SMOOTHIE) {
+    return 'G28';
+  }
+
+  if (controllerType === TINYG) {
+    // TinyG/g2core requires explicit axis parameters
+    const axisParams = axes.map(axis => axis.toUpperCase() + '0').join(' ');
+    return 'G28.2 ' + axisParams;
+  }
+
+  return '';
+};
+
+// Returns the single-axis homing command for the given controller type and axis.
+//
+// Controller     | Command                        | Notes
+// -------------- | ------------------------------ | -----------------------------------
+// Grbl           | $HX, $HY, $HZ                  | Requires compile-time flag
+// TinyG/g2core   | G28.2 X0, G28.2 Y0, G28.2 Z0   | Value after axis letter is ignored
+// Marlin         | G28 X, G28 Y, G28 Z            |
+// Smoothie       | G28 X, G28 Y, G28 Z            |
+const getAxisHomeCommand = (controllerType, axis) => {
+  if (controllerType === GRBL) {
+    return `$H${axis.toUpperCase()}`;
+  }
+
+  if (controllerType === MARLIN || controllerType === SMOOTHIE) {
+    return `G28 ${axis.toUpperCase()}`;
+  }
+
+  if (controllerType === TINYG) {
+    return `G28.2 ${axis.toUpperCase()}0`;
+  }
+
+  return '';
+};
+
 class DisplayPanel extends Component {
   static propTypes = {
     canClick: PropTypes.bool,
@@ -42,7 +156,8 @@ class DisplayPanel extends Component {
     machinePosition: PropTypes.object,
     workPosition: PropTypes.object,
     jog: PropTypes.object,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    controllerType: PropTypes.string,
   };
 
   state = {
@@ -81,7 +196,16 @@ class DisplayPanel extends Component {
   };
 
   renderActionDropdown = ({ wcs }) => {
-    const { canClick } = this.props;
+    const { canClick, controllerType, axes } = this.props;
+    const {
+      canGoToWork,
+      canSetWCSOffset,
+      canZeroTempOffset,
+      canCancelTempOffset,
+      canGoToMachine,
+      canZeroOutMachine,
+    } = SUPPORTED_COMMANDS[controllerType] || {};
+    const homingCommand = getHomeCommand(controllerType, axes);
 
     return (
       <Dropdown
@@ -111,13 +235,15 @@ class DisplayPanel extends Component {
             <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>}
           {wcs === 'G59' &&
             <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>}
-          <MenuItem
-            eventKey="G0 X0 Y0 Z0"
-            disabled={!canClick}
-          >
-            {i18n._('Go To Work Zero (G0 X0 Y0 Z0)')}
-          </MenuItem>
-          {wcs === 'G54' && (
+          {canGoToWork && (
+            <MenuItem
+              eventKey="G0 X0 Y0 Z0"
+              disabled={!canClick}
+            >
+              {i18n._('Go To Work Zero (G0 X0 Y0 Z0)')}
+            </MenuItem>
+          )}
+          {canSetWCSOffset && wcs === 'G54' && (
             <MenuItem
               eventKey="G10 L20 P1 X0 Y0 Z0"
               disabled={!canClick}
@@ -125,7 +251,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Offsets (G10 L20 P1 X0 Y0 Z0)')}
             </MenuItem>
           )}
-          {wcs === 'G55' && (
+          {canSetWCSOffset && wcs === 'G55' && (
             <MenuItem
               eventKey="G10 L20 P2 X0 Y0 Z0"
               disabled={!canClick}
@@ -133,7 +259,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Offsets (G10 L20 P2 X0 Y0 Z0)')}
             </MenuItem>
           )}
-          {wcs === 'G56' && (
+          {canSetWCSOffset && wcs === 'G56' && (
             <MenuItem
               eventKey="G10 L20 P3 X0 Y0 Z0"
               disabled={!canClick}
@@ -141,7 +267,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Offsets (G10 L20 P3 X0 Y0 Z0)')}
             </MenuItem>
           )}
-          {wcs === 'G57' && (
+          {canSetWCSOffset && wcs === 'G57' && (
             <MenuItem
               eventKey="G10 L20 P4 X0 Y0 Z0"
               disabled={!canClick}
@@ -149,7 +275,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Offsets (G10 L20 P4 X0 Y0 Z0)')}
             </MenuItem>
           )}
-          {wcs === 'G58' && (
+          {canSetWCSOffset && wcs === 'G58' && (
             <MenuItem
               eventKey="G10 L20 P5 X0 Y0 Z0"
               disabled={!canClick}
@@ -157,7 +283,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Offsets (G10 L20 P5 X0 Y0 Z0)')}
             </MenuItem>
           )}
-          {wcs === 'G59' && (
+          {canSetWCSOffset && wcs === 'G59' && (
             <MenuItem
               eventKey="G10 L20 P6 X0 Y0 Z0"
               disabled={!canClick}
@@ -167,37 +293,45 @@ class DisplayPanel extends Component {
           )}
           <MenuItem divider />
           <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-          <MenuItem
-            eventKey="G92 X0 Y0 Z0"
-            disabled={!canClick}
-          >
-            {i18n._('Zero Out Temporary Offsets (G92 X0 Y0 Z0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G92.1 X0 Y0 Z0"
-            disabled={!canClick}
-          >
-            {i18n._('Un-Zero Out Temporary Offsets (G92.1 X0 Y0 Z0)')}
-          </MenuItem>
+          {canZeroTempOffset && (
+            <MenuItem
+              eventKey="G92 X0 Y0 Z0"
+              disabled={!canClick}
+            >
+              {i18n._('Zero Out Temporary Offsets (G92 X0 Y0 Z0)')}
+            </MenuItem>
+          )}
+          {canCancelTempOffset && (
+            <MenuItem
+              eventKey="G92.1 X0 Y0 Z0"
+              disabled={!canClick}
+            >
+              {i18n._('Un-Zero Out Temporary Offsets (G92.1 X0 Y0 Z0)')}
+            </MenuItem>
+          )}
           <MenuItem divider />
           <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+          {canGoToMachine && (
+            <MenuItem
+              eventKey="G53 G0 X0 Y0 Z0"
+              disabled={!canClick}
+            >
+              {i18n._('Go To Machine Zero (G53 G0 X0 Y0 Z0)')}
+            </MenuItem>
+          )}
+          {canZeroOutMachine && (
+            <MenuItem
+              eventKey="G28.3 X0 Y0 Z0"
+              disabled={!canClick}
+            >
+              {i18n._('Set Machine Zero (G28.3 X0 Y0 Z0)')}
+            </MenuItem>
+          )}
           <MenuItem
-            eventKey="G53 G0 X0 Y0 Z0"
+            eventKey={homingCommand}
             disabled={!canClick}
           >
-            {i18n._('Go To Machine Zero (G53 G0 X0 Y0 Z0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G28.3 X0 Y0 Z0"
-            disabled={!canClick}
-          >
-            {i18n._('Set Machine Zero (G28.3 X0 Y0 Z0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G28.2 X0 Y0 Z0"
-            disabled={!canClick}
-          >
-            {i18n._('Homing Sequence (G28.2 X0 Y0 Z0)')}
+            {i18n._('Home Machine ({{command}})', { command: homingCommand })}
           </MenuItem>
         </Dropdown.Menu>
       </Dropdown>
@@ -210,7 +344,16 @@ class DisplayPanel extends Component {
   };
 
   renderActionDropdownForAxisX = ({ wcs }) => {
-    const { canClick } = this.props;
+    const { canClick, controllerType } = this.props;
+    const {
+      canGoToWork,
+      canSetWCSOffset,
+      canZeroTempOffset,
+      canCancelTempOffset,
+      canGoToMachine,
+      canZeroOutMachine,
+    } = SUPPORTED_COMMANDS[controllerType] || {};
+    const axisHomingCommand = getAxisHomeCommand(controllerType, 'X');
 
     return (
       <Dropdown
@@ -240,13 +383,15 @@ class DisplayPanel extends Component {
             <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>}
           {wcs === 'G59' &&
             <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>}
-          <MenuItem
-            eventKey="G0 X0"
-            disabled={!canClick}
-          >
-            {i18n._('Go To Work Zero On X Axis (G0 X0)')}
-          </MenuItem>
-          {wcs === 'G54' && (
+          {canGoToWork && (
+            <MenuItem
+              eventKey="G0 X0"
+              disabled={!canClick}
+            >
+              {i18n._('Go To Work Zero On X Axis (G0 X0)')}
+            </MenuItem>
+          )}
+          {canSetWCSOffset && wcs === 'G54' && (
             <MenuItem
               eventKey="G10 L20 P1 X0"
               disabled={!canClick}
@@ -254,7 +399,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work X Axis (G10 L20 P1 X0)')}
             </MenuItem>
           )}
-          {wcs === 'G55' && (
+          {canSetWCSOffset && wcs === 'G55' && (
             <MenuItem
               eventKey="G10 L20 P2 X0"
               disabled={!canClick}
@@ -262,7 +407,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work X Axis (G10 L20 P2 X0)')}
             </MenuItem>
           )}
-          {wcs === 'G56' && (
+          {canSetWCSOffset && wcs === 'G56' && (
             <MenuItem
               eventKey="G10 L20 P3 X0"
               disabled={!canClick}
@@ -270,7 +415,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work X Axis (G10 L20 P3 X0)')}
             </MenuItem>
           )}
-          {wcs === 'G57' && (
+          {canSetWCSOffset && wcs === 'G57' && (
             <MenuItem
               eventKey="G10 L20 P4 X0"
               disabled={!canClick}
@@ -278,7 +423,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work X Axis (G10 L20 P4 X0)')}
             </MenuItem>
           )}
-          {wcs === 'G58' && (
+          {canSetWCSOffset && wcs === 'G58' && (
             <MenuItem
               eventKey="G10 L20 P5 X0"
               disabled={!canClick}
@@ -286,7 +431,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work X Axis (G10 L20 P5 X0)')}
             </MenuItem>
           )}
-          {wcs === 'G59' && (
+          {canSetWCSOffset && wcs === 'G59' && (
             <MenuItem
               eventKey="G10 L20 P6 X0"
               disabled={!canClick}
@@ -296,37 +441,45 @@ class DisplayPanel extends Component {
           )}
           <MenuItem divider />
           <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-          <MenuItem
-            eventKey="G92 X0"
-            disabled={!canClick}
-          >
-            {i18n._('Zero Out Temporary X Axis (G92 X0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G92.1 X0"
-            disabled={!canClick}
-          >
-            {i18n._('Un-Zero Out Temporary X Axis (G92.1 X0)')}
-          </MenuItem>
+          {canZeroTempOffset && (
+            <MenuItem
+              eventKey="G92 X0"
+              disabled={!canClick}
+            >
+              {i18n._('Zero Out Temporary X Axis (G92 X0)')}
+            </MenuItem>
+          )}
+          {canCancelTempOffset && (
+            <MenuItem
+              eventKey="G92.1 X0"
+              disabled={!canClick}
+            >
+              {i18n._('Un-Zero Out Temporary X Axis (G92.1 X0)')}
+            </MenuItem>
+          )}
           <MenuItem divider />
           <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+          {canGoToMachine && (
+            <MenuItem
+              eventKey="G53 G0 X0"
+              disabled={!canClick}
+            >
+              {i18n._('Go To Machine Zero On X Axis (G53 G0 X0)')}
+            </MenuItem>
+          )}
+          {canZeroOutMachine && (
+            <MenuItem
+              eventKey="G28.3 X0"
+              disabled={!canClick}
+            >
+              {i18n._('Zero Out Machine X Axis (G28.3 X0)')}
+            </MenuItem>
+          )}
           <MenuItem
-            eventKey="G53 G0 X0"
+            eventKey={axisHomingCommand}
             disabled={!canClick}
           >
-            {i18n._('Go To Machine Zero On X Axis (G53 G0 X0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G28.3 X0"
-            disabled={!canClick}
-          >
-            {i18n._('Zero Out Machine X Axis (G28.3 X0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G28.2 X0"
-            disabled={!canClick}
-          >
-            {i18n._('Home Machine X Axis (G28.2 X0)')}
+            {i18n._('Home Machine X Axis ({{command}})', { command: axisHomingCommand })}
           </MenuItem>
         </Dropdown.Menu>
       </Dropdown>
@@ -334,7 +487,16 @@ class DisplayPanel extends Component {
   };
 
   renderActionDropdownForAxisY = ({ wcs }) => {
-    const { canClick } = this.props;
+    const { canClick, controllerType } = this.props;
+    const {
+      canGoToWork,
+      canSetWCSOffset,
+      canZeroTempOffset,
+      canCancelTempOffset,
+      canGoToMachine,
+      canZeroOutMachine,
+    } = SUPPORTED_COMMANDS[controllerType] || {};
+    const axisHomingCommand = getAxisHomeCommand(controllerType, 'Y');
 
     return (
       <Dropdown
@@ -364,13 +526,15 @@ class DisplayPanel extends Component {
             <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>}
           {wcs === 'G59' &&
             <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>}
-          <MenuItem
-            eventKey="G0 Y0"
-            disabled={!canClick}
-          >
-            {i18n._('Go To Work Zero On Y Axis (G0 Y0)')}
-          </MenuItem>
-          {wcs === 'G54' && (
+          {canGoToWork && (
+            <MenuItem
+              eventKey="G0 Y0"
+              disabled={!canClick}
+            >
+              {i18n._('Go To Work Zero On Y Axis (G0 Y0)')}
+            </MenuItem>
+          )}
+          {canSetWCSOffset && wcs === 'G54' && (
             <MenuItem
               eventKey="G10 L20 P1 Y0"
               disabled={!canClick}
@@ -378,7 +542,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Y Axis (G10 L20 P1 Y0)')}
             </MenuItem>
           )}
-          {wcs === 'G55' && (
+          {canSetWCSOffset && wcs === 'G55' && (
             <MenuItem
               eventKey="G10 L20 P2 Y0"
               disabled={!canClick}
@@ -386,7 +550,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Y Axis (G10 L20 P2 Y0)')}
             </MenuItem>
           )}
-          {wcs === 'G56' && (
+          {canSetWCSOffset && wcs === 'G56' && (
             <MenuItem
               eventKey="G10 L20 P3 Y0"
               disabled={!canClick}
@@ -394,7 +558,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Y Axis (G10 L20 P3 Y0)')}
             </MenuItem>
           )}
-          {wcs === 'G57' && (
+          {canSetWCSOffset && wcs === 'G57' && (
             <MenuItem
               eventKey="G10 L20 P4 Y0"
               disabled={!canClick}
@@ -402,7 +566,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Y Axis (G10 L20 P4 Y0)')}
             </MenuItem>
           )}
-          {wcs === 'G58' && (
+          {canSetWCSOffset && wcs === 'G58' && (
             <MenuItem
               eventKey="G10 L20 P5 Y0"
               disabled={!canClick}
@@ -410,7 +574,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Y Axis (G10 L20 P5 Y0)')}
             </MenuItem>
           )}
-          {wcs === 'G59' && (
+          {canSetWCSOffset && wcs === 'G59' && (
             <MenuItem
               eventKey="G10 L20 P6 Y0"
               disabled={!canClick}
@@ -420,37 +584,45 @@ class DisplayPanel extends Component {
           )}
           <MenuItem divider />
           <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-          <MenuItem
-            eventKey="G92 Y0"
-            disabled={!canClick}
-          >
-            {i18n._('Zero Out Temporary Y Axis (G92 Y0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G92.1 Y0"
-            disabled={!canClick}
-          >
-            {i18n._('Un-Zero Out Temporary Y Axis (G92.1 Y0)')}
-          </MenuItem>
+          {canZeroTempOffset && (
+            <MenuItem
+              eventKey="G92 Y0"
+              disabled={!canClick}
+            >
+              {i18n._('Zero Out Temporary Y Axis (G92 Y0)')}
+            </MenuItem>
+          )}
+          {canCancelTempOffset && (
+            <MenuItem
+              eventKey="G92.1 Y0"
+              disabled={!canClick}
+            >
+              {i18n._('Un-Zero Out Temporary Y Axis (G92.1 Y0)')}
+            </MenuItem>
+          )}
           <MenuItem divider />
           <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+          {canGoToMachine && (
+            <MenuItem
+              eventKey="G53 G0 Y0"
+              disabled={!canClick}
+            >
+              {i18n._('Go To Machine Zero On Y Axis (G53 G0 Y0)')}
+            </MenuItem>
+          )}
+          {canZeroOutMachine && (
+            <MenuItem
+              eventKey="G28.3 Y0"
+              disabled={!canClick}
+            >
+              {i18n._('Zero Out Machine Y Axis (G28.3 Y0)')}
+            </MenuItem>
+          )}
           <MenuItem
-            eventKey="G53 G0 Y0"
+            eventKey={axisHomingCommand}
             disabled={!canClick}
           >
-            {i18n._('Go To Machine Zero On Y Axis (G53 G0 Y0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G28.3 Y0"
-            disabled={!canClick}
-          >
-            {i18n._('Zero Out Machine Y Axis (G28.3 Y0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G28.2 Y0"
-            disabled={!canClick}
-          >
-            {i18n._('Home Machine Y Axis (G28.2 Y0)')}
+            {i18n._('Home Machine Y Axis ({{command}})', { command: axisHomingCommand })}
           </MenuItem>
         </Dropdown.Menu>
       </Dropdown>
@@ -458,7 +630,16 @@ class DisplayPanel extends Component {
   };
 
   renderActionDropdownForAxisZ = ({ wcs }) => {
-    const { canClick } = this.props;
+    const { canClick, controllerType } = this.props;
+    const {
+      canGoToWork,
+      canSetWCSOffset,
+      canZeroTempOffset,
+      canCancelTempOffset,
+      canGoToMachine,
+      canZeroOutMachine,
+    } = SUPPORTED_COMMANDS[controllerType] || {};
+    const axisHomingCommand = getAxisHomeCommand(controllerType, 'Z');
 
     return (
       <Dropdown
@@ -488,13 +669,15 @@ class DisplayPanel extends Component {
             <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>}
           {wcs === 'G59' &&
             <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>}
-          <MenuItem
-            eventKey="G0 Z0"
-            disabled={!canClick}
-          >
-            {i18n._('Go To Work Zero On Z Axis (G0 Z0)')}
-          </MenuItem>
-          {wcs === 'G54' && (
+          {canGoToWork && (
+            <MenuItem
+              eventKey="G0 Z0"
+              disabled={!canClick}
+            >
+              {i18n._('Go To Work Zero On Z Axis (G0 Z0)')}
+            </MenuItem>
+          )}
+          {canSetWCSOffset && wcs === 'G54' && (
             <MenuItem
               eventKey="G10 L20 P1 Z0"
               disabled={!canClick}
@@ -502,7 +685,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Z Axis (G10 L20 P1 Z0)')}
             </MenuItem>
           )}
-          {wcs === 'G55' && (
+          {canSetWCSOffset && wcs === 'G55' && (
             <MenuItem
               eventKey="G10 L20 P2 Z0"
               disabled={!canClick}
@@ -510,7 +693,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Z Axis (G10 L20 P2 Z0)')}
             </MenuItem>
           )}
-          {wcs === 'G56' && (
+          {canSetWCSOffset && wcs === 'G56' && (
             <MenuItem
               eventKey="G10 L20 P3 Z0"
               disabled={!canClick}
@@ -518,7 +701,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Z Axis (G10 L20 P3 Z0)')}
             </MenuItem>
           )}
-          {wcs === 'G57' && (
+          {canSetWCSOffset && wcs === 'G57' && (
             <MenuItem
               eventKey="G10 L20 P4 Z0"
               disabled={!canClick}
@@ -526,7 +709,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Z Axis (G10 L20 P4 Z0)')}
             </MenuItem>
           )}
-          {wcs === 'G58' && (
+          {canSetWCSOffset && wcs === 'G58' && (
             <MenuItem
               eventKey="G10 L20 P5 Z0"
               disabled={!canClick}
@@ -534,7 +717,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work Z Axis (G10 L20 P5 Z0)')}
             </MenuItem>
           )}
-          {wcs === 'G59' && (
+          {canSetWCSOffset && wcs === 'G59' && (
             <MenuItem
               eventKey="G10 L20 P6 Z0"
               disabled={!canClick}
@@ -544,37 +727,45 @@ class DisplayPanel extends Component {
           )}
           <MenuItem divider />
           <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-          <MenuItem
-            eventKey="G92 Z0"
-            disabled={!canClick}
-          >
-            {i18n._('Zero Out Temporary Z Axis (G92 Z0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G92.1 Z0"
-            disabled={!canClick}
-          >
-            {i18n._('Un-Zero Out Temporary Z Axis (G92.1 Z0)')}
-          </MenuItem>
+          {canZeroTempOffset && (
+            <MenuItem
+              eventKey="G92 Z0"
+              disabled={!canClick}
+            >
+              {i18n._('Zero Out Temporary Z Axis (G92 Z0)')}
+            </MenuItem>
+          )}
+          {canCancelTempOffset && (
+            <MenuItem
+              eventKey="G92.1 Z0"
+              disabled={!canClick}
+            >
+              {i18n._('Un-Zero Out Temporary Z Axis (G92.1 Z0)')}
+            </MenuItem>
+          )}
           <MenuItem divider />
           <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+          {canGoToMachine && (
+            <MenuItem
+              eventKey="G53 G0 Z0"
+              disabled={!canClick}
+            >
+              {i18n._('Go To Machine Zero On Z Axis (G53 G0 Z0)')}
+            </MenuItem>
+          )}
+          {canZeroOutMachine && (
+            <MenuItem
+              eventKey="G28.3 Z0"
+              disabled={!canClick}
+            >
+              {i18n._('Zero Out Machine Z Axis (G28.3 Z0)')}
+            </MenuItem>
+          )}
           <MenuItem
-            eventKey="G53 G0 Z0"
+            eventKey={axisHomingCommand}
             disabled={!canClick}
           >
-            {i18n._('Go To Machine Zero On Z Axis (G53 G0 Z0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G28.3 Z0"
-            disabled={!canClick}
-          >
-            {i18n._('Zero Out Machine Z Axis (G28.3 Z0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G28.2 Z0"
-            disabled={!canClick}
-          >
-            {i18n._('Home Machine Z Axis (G28.2 Z0)')}
+            {i18n._('Home Machine Z Axis ({{command}})', { command: axisHomingCommand })}
           </MenuItem>
         </Dropdown.Menu>
       </Dropdown>
@@ -582,7 +773,16 @@ class DisplayPanel extends Component {
   };
 
   renderActionDropdownForAxisA = ({ wcs }) => {
-    const { canClick } = this.props;
+    const { canClick, controllerType } = this.props;
+    const {
+      canGoToWork,
+      canSetWCSOffset,
+      canZeroTempOffset,
+      canCancelTempOffset,
+      canGoToMachine,
+      canZeroOutMachine,
+    } = SUPPORTED_COMMANDS[controllerType] || {};
+    const axisHomingCommand = getAxisHomeCommand(controllerType, 'A');
 
     return (
       <Dropdown
@@ -612,13 +812,15 @@ class DisplayPanel extends Component {
             <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>}
           {wcs === 'G59' &&
             <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>}
-          <MenuItem
-            eventKey="G0 A0"
-            disabled={!canClick}
-          >
-            {i18n._('Go To Work Zero On A Axis (G0 A0)')}
-          </MenuItem>
-          {wcs === 'G54' && (
+          {canGoToWork && (
+            <MenuItem
+              eventKey="G0 A0"
+              disabled={!canClick}
+            >
+              {i18n._('Go To Work Zero On A Axis (G0 A0)')}
+            </MenuItem>
+          )}
+          {canSetWCSOffset && wcs === 'G54' && (
             <MenuItem
               eventKey="G10 L20 P1 A0"
               disabled={!canClick}
@@ -626,7 +828,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work A Axis (G10 L20 P1 A0)')}
             </MenuItem>
           )}
-          {wcs === 'G55' && (
+          {canSetWCSOffset && wcs === 'G55' && (
             <MenuItem
               eventKey="G10 L20 P2 A0"
               disabled={!canClick}
@@ -634,7 +836,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work A Axis (G10 L20 P2 A0)')}
             </MenuItem>
           )}
-          {wcs === 'G56' && (
+          {canSetWCSOffset && wcs === 'G56' && (
             <MenuItem
               eventKey="G10 L20 P3 A0"
               disabled={!canClick}
@@ -642,7 +844,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work A Axis (G10 L20 P3 A0)')}
             </MenuItem>
           )}
-          {wcs === 'G57' && (
+          {canSetWCSOffset && wcs === 'G57' && (
             <MenuItem
               eventKey="G10 L20 P4 A0"
               disabled={!canClick}
@@ -650,7 +852,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work A Axis (G10 L20 P4 A0)')}
             </MenuItem>
           )}
-          {wcs === 'G58' && (
+          {canSetWCSOffset && wcs === 'G58' && (
             <MenuItem
               eventKey="G10 L20 P5 A0"
               disabled={!canClick}
@@ -658,7 +860,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work A Axis (G10 L20 P5 A0)')}
             </MenuItem>
           )}
-          {wcs === 'G59' && (
+          {canSetWCSOffset && wcs === 'G59' && (
             <MenuItem
               eventKey="G10 L20 P6 A0"
               disabled={!canClick}
@@ -668,37 +870,45 @@ class DisplayPanel extends Component {
           )}
           <MenuItem divider />
           <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-          <MenuItem
-            eventKey="G92 A0"
-            disabled={!canClick}
-          >
-            {i18n._('Zero Out Temporary A Axis (G92 A0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G92.1 A0"
-            disabled={!canClick}
-          >
-            {i18n._('Un-Zero Out Temporary A Axis (G92.1 A0)')}
-          </MenuItem>
+          {canZeroTempOffset && (
+            <MenuItem
+              eventKey="G92 A0"
+              disabled={!canClick}
+            >
+              {i18n._('Zero Out Temporary A Axis (G92 A0)')}
+            </MenuItem>
+          )}
+          {canCancelTempOffset && (
+            <MenuItem
+              eventKey="G92.1 A0"
+              disabled={!canClick}
+            >
+              {i18n._('Un-Zero Out Temporary A Axis (G92.1 A0)')}
+            </MenuItem>
+          )}
           <MenuItem divider />
           <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+          {canGoToMachine && (
+            <MenuItem
+              eventKey="G53 G0 A0"
+              disabled={!canClick}
+            >
+              {i18n._('Go To Machine Zero On A Axis (G53 G0 A0)')}
+            </MenuItem>
+          )}
+          {canZeroOutMachine && (
+            <MenuItem
+              eventKey="G28.3 A0"
+              disabled={!canClick}
+            >
+              {i18n._('Zero Out Machine A Axis (G28.3 A0)')}
+            </MenuItem>
+          )}
           <MenuItem
-            eventKey="G53 G0 A0"
+            eventKey={axisHomingCommand}
             disabled={!canClick}
           >
-            {i18n._('Go To Machine Zero On A Axis (G53 G0 A0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G28.3 A0"
-            disabled={!canClick}
-          >
-            {i18n._('Zero Out Machine A Axis (G28.3 A0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G28.2 A0"
-            disabled={!canClick}
-          >
-            {i18n._('Home Machine A Axis (G28.2 A0)')}
+            {i18n._('Home Machine A Axis ({{command}})', { command: axisHomingCommand })}
           </MenuItem>
         </Dropdown.Menu>
       </Dropdown>
@@ -706,7 +916,16 @@ class DisplayPanel extends Component {
   };
 
   renderActionDropdownForAxisB = ({ wcs }) => {
-    const { canClick } = this.props;
+    const { canClick, controllerType } = this.props;
+    const {
+      canGoToWork,
+      canSetWCSOffset,
+      canZeroTempOffset,
+      canCancelTempOffset,
+      canGoToMachine,
+      canZeroOutMachine,
+    } = SUPPORTED_COMMANDS[controllerType] || {};
+    const axisHomingCommand = getAxisHomeCommand(controllerType, 'B');
 
     return (
       <Dropdown
@@ -736,13 +955,15 @@ class DisplayPanel extends Component {
             <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>}
           {wcs === 'G59' &&
             <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>}
-          <MenuItem
-            eventKey="G0 B0"
-            disabled={!canClick}
-          >
-            {i18n._('Go To Work Zero On B Axis (G0 B0)')}
-          </MenuItem>
-          {wcs === 'G54' && (
+          {canGoToWork && (
+            <MenuItem
+              eventKey="G0 B0"
+              disabled={!canClick}
+            >
+              {i18n._('Go To Work Zero On B Axis (G0 B0)')}
+            </MenuItem>
+          )}
+          {canSetWCSOffset && wcs === 'G54' && (
             <MenuItem
               eventKey="G10 L20 P1 B0"
               disabled={!canClick}
@@ -750,7 +971,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work B Axis (G10 L20 P1 B0)')}
             </MenuItem>
           )}
-          {wcs === 'G55' && (
+          {canSetWCSOffset && wcs === 'G55' && (
             <MenuItem
               eventKey="G10 L20 P2 B0"
               disabled={!canClick}
@@ -758,7 +979,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work B Axis (G10 L20 P2 B0)')}
             </MenuItem>
           )}
-          {wcs === 'G56' && (
+          {canSetWCSOffset && wcs === 'G56' && (
             <MenuItem
               eventKey="G10 L20 P3 B0"
               disabled={!canClick}
@@ -766,7 +987,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work B Axis (G10 L20 P3 B0)')}
             </MenuItem>
           )}
-          {wcs === 'G57' && (
+          {canSetWCSOffset && wcs === 'G57' && (
             <MenuItem
               eventKey="G10 L20 P4 B0"
               disabled={!canClick}
@@ -774,7 +995,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work B Axis (G10 L20 P4 B0)')}
             </MenuItem>
           )}
-          {wcs === 'G58' && (
+          {canSetWCSOffset && wcs === 'G58' && (
             <MenuItem
               eventKey="G10 L20 P5 B0"
               disabled={!canClick}
@@ -782,7 +1003,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work B Axis (G10 L20 P5 B0)')}
             </MenuItem>
           )}
-          {wcs === 'G59' && (
+          {canSetWCSOffset && wcs === 'G59' && (
             <MenuItem
               eventKey="G10 L20 P6 B0"
               disabled={!canClick}
@@ -792,37 +1013,45 @@ class DisplayPanel extends Component {
           )}
           <MenuItem divider />
           <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-          <MenuItem
-            eventKey="G92 B0"
-            disabled={!canClick}
-          >
-            {i18n._('Zero Out Temporary B Axis (G92 B0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G92.1 B0"
-            disabled={!canClick}
-          >
-            {i18n._('Un-Zero Out Temporary B Axis (G92.1 B0)')}
-          </MenuItem>
+          {canZeroTempOffset && (
+            <MenuItem
+              eventKey="G92 B0"
+              disabled={!canClick}
+            >
+              {i18n._('Zero Out Temporary B Axis (G92 B0)')}
+            </MenuItem>
+          )}
+          {canCancelTempOffset && (
+            <MenuItem
+              eventKey="G92.1 B0"
+              disabled={!canClick}
+            >
+              {i18n._('Un-Zero Out Temporary B Axis (G92.1 B0)')}
+            </MenuItem>
+          )}
           <MenuItem divider />
           <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+          {canGoToMachine && (
+            <MenuItem
+              eventKey="G53 G0 B0"
+              disabled={!canClick}
+            >
+              {i18n._('Go To Machine Zero On B Axis (G53 G0 B0)')}
+            </MenuItem>
+          )}
+          {canZeroOutMachine && (
+            <MenuItem
+              eventKey="G28.3 B0"
+              disabled={!canClick}
+            >
+              {i18n._('Zero Out Machine B Axis (G28.3 B0)')}
+            </MenuItem>
+          )}
           <MenuItem
-            eventKey="G53 G0 B0"
+            eventKey={axisHomingCommand}
             disabled={!canClick}
           >
-            {i18n._('Go To Machine Zero On B Axis (G53 G0 B0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G28.3 B0"
-            disabled={!canClick}
-          >
-            {i18n._('Zero Out Machine B Axis (G28.3 B0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G28.2 B0"
-            disabled={!canClick}
-          >
-            {i18n._('Home Machine B Axis (G28.2 B0)')}
+            {i18n._('Home Machine B Axis ({{command}})', { command: axisHomingCommand })}
           </MenuItem>
         </Dropdown.Menu>
       </Dropdown>
@@ -830,7 +1059,16 @@ class DisplayPanel extends Component {
   };
 
   renderActionDropdownForAxisC = ({ wcs }) => {
-    const { canClick } = this.props;
+    const { canClick, controllerType } = this.props;
+    const {
+      canGoToWork,
+      canSetWCSOffset,
+      canZeroTempOffset,
+      canCancelTempOffset,
+      canGoToMachine,
+      canZeroOutMachine,
+    } = SUPPORTED_COMMANDS[controllerType] || {};
+    const axisHomingCommand = getAxisHomeCommand(controllerType, 'C');
 
     return (
       <Dropdown
@@ -860,13 +1098,15 @@ class DisplayPanel extends Component {
             <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>}
           {wcs === 'G59' &&
             <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>}
-          <MenuItem
-            eventKey="G0 C0"
-            disabled={!canClick}
-          >
-            {i18n._('Go To Work Zero On C Axis (G0 C0)')}
-          </MenuItem>
-          {wcs === 'G54' && (
+          {canGoToWork && (
+            <MenuItem
+              eventKey="G0 C0"
+              disabled={!canClick}
+            >
+              {i18n._('Go To Work Zero On C Axis (G0 C0)')}
+            </MenuItem>
+          )}
+          {canSetWCSOffset && wcs === 'G54' && (
             <MenuItem
               eventKey="G10 L20 P1 C0"
               disabled={!canClick}
@@ -874,7 +1114,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work C Axis (G10 L20 P1 C0)')}
             </MenuItem>
           )}
-          {wcs === 'G55' && (
+          {canSetWCSOffset && wcs === 'G55' && (
             <MenuItem
               eventKey="G10 L20 P2 C0"
               disabled={!canClick}
@@ -882,7 +1122,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work C Axis (G10 L20 P2 C0)')}
             </MenuItem>
           )}
-          {wcs === 'G56' && (
+          {canSetWCSOffset && wcs === 'G56' && (
             <MenuItem
               eventKey="G10 L20 P3 C0"
               disabled={!canClick}
@@ -890,7 +1130,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work C Axis (G10 L20 P3 C0)')}
             </MenuItem>
           )}
-          {wcs === 'G57' && (
+          {canSetWCSOffset && wcs === 'G57' && (
             <MenuItem
               eventKey="G10 L20 P4 C0"
               disabled={!canClick}
@@ -898,7 +1138,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work C Axis (G10 L20 P4 C0)')}
             </MenuItem>
           )}
-          {wcs === 'G58' && (
+          {canSetWCSOffset && wcs === 'G58' && (
             <MenuItem
               eventKey="G10 L20 P5 C0"
               disabled={!canClick}
@@ -906,7 +1146,7 @@ class DisplayPanel extends Component {
               {i18n._('Zero Out Work C Axis (G10 L20 P5 C0)')}
             </MenuItem>
           )}
-          {wcs === 'G59' && (
+          {canSetWCSOffset && wcs === 'G59' && (
             <MenuItem
               eventKey="G10 L20 P6 C0"
               disabled={!canClick}
@@ -916,37 +1156,45 @@ class DisplayPanel extends Component {
           )}
           <MenuItem divider />
           <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-          <MenuItem
-            eventKey="G92 C0"
-            disabled={!canClick}
-          >
-            {i18n._('Zero Out Temporary C Axis (G92 C0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G92.1 C0"
-            disabled={!canClick}
-          >
-            {i18n._('Un-Zero Out Temporary C Axis (G92.1 C0)')}
-          </MenuItem>
+          {canZeroTempOffset && (
+            <MenuItem
+              eventKey="G92 C0"
+              disabled={!canClick}
+            >
+              {i18n._('Zero Out Temporary C Axis (G92 C0)')}
+            </MenuItem>
+          )}
+          {canCancelTempOffset && (
+            <MenuItem
+              eventKey="G92.1 C0"
+              disabled={!canClick}
+            >
+              {i18n._('Un-Zero Out Temporary C Axis (G92.1 C0)')}
+            </MenuItem>
+          )}
           <MenuItem divider />
           <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+          {canGoToMachine && (
+            <MenuItem
+              eventKey="G53 G0 C0"
+              disabled={!canClick}
+            >
+              {i18n._('Go To Machine Zero On C Axis (G53 G0 C0)')}
+            </MenuItem>
+          )}
+          {canZeroOutMachine && (
+            <MenuItem
+              eventKey="G28.3 C0"
+              disabled={!canClick}
+            >
+              {i18n._('Zero Out Machine C Axis (G28.3 C0)')}
+            </MenuItem>
+          )}
           <MenuItem
-            eventKey="G53 G0 C0"
+            eventKey={axisHomingCommand}
             disabled={!canClick}
           >
-            {i18n._('Go To Machine Zero On C Axis (G53 G0 C0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G28.3 C0"
-            disabled={!canClick}
-          >
-            {i18n._('Zero Out Machine C Axis (G28.3 C0)')}
-          </MenuItem>
-          <MenuItem
-            eventKey="G28.2 C0"
-            disabled={!canClick}
-          >
-            {i18n._('Home Machine C Axis (G28.2 C0)')}
+            {i18n._('Home Machine C Axis ({{command}})', { command: axisHomingCommand })}
           </MenuItem>
         </Dropdown.Menu>
       </Dropdown>
@@ -954,7 +1202,8 @@ class DisplayPanel extends Component {
   };
 
   renderAxis = (axis) => {
-    const { canClick, units, machinePosition, workPosition, jog } = this.props;
+    const { canClick, units, machinePosition, workPosition, jog, controllerType } = this.props;
+    const supportedCommands = SUPPORTED_COMMANDS[controllerType] || {};
     const { actions } = this.props;
     const wcs = actions.getWorkCoordinateSystem();
     const lengthUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
@@ -980,8 +1229,8 @@ class DisplayPanel extends Component {
       [AXIS_B]: this.renderActionDropdownForAxisB,
       [AXIS_C]: this.renderActionDropdownForAxisC
     }[axis] || noop;
-    const canZeroOutMachine = canClick;
-    const canHomeMachine = canClick;
+    const canZeroOutMachine = canClick && supportedCommands.canZeroOutMachine;
+    const axisHomingCommand = getAxisHomeCommand(controllerType, axisLabel);
     const canMoveBackward = canClick;
     const canMoveForward = canClick;
     const canZeroOutWorkOffsets = canClick;
@@ -1020,14 +1269,14 @@ class DisplayPanel extends Component {
                 </TaskbarButton>
                 <TaskbarButton
                   aria-label={`Home: ${axisLabel}`}
-                  disabled={!canHomeMachine}
+                  disabled={!canClick}
                   onClick={() => {
-                    controller.command('gcode', `G28.2 ${axisLabel}0`);
+                    controller.command('gcode', axisHomingCommand);
                   }}
                 >
                   <Tooltip
                     content={i18n._('Home Machine')}
-                    disabled={!canHomeMachine}
+                    disabled={!canClick}
                     hideOnClick
                     placement="bottom"
                   >
