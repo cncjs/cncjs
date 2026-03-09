@@ -101,15 +101,25 @@ class Visualizer extends Component {
     changeMachineProfile = () => {
       const machineProfile = store.get('workspace.machineProfile');
 
-      if (!machineProfile) {
-        return;
-      }
-
       if (_isEqual(machineProfile, this.machineProfile)) {
         return;
       }
 
-      this.machineProfile = { ...machineProfile };
+      this.machineProfile = machineProfile ? { ...machineProfile } : null;
+
+      // Profile removed — reset to defaults and return
+      if (!machineProfile) {
+        this.pivotPoint.set(0, 0, 0);
+        this.updateCuttingToolPosition();
+        this.updateCuttingPointerPosition();
+        this.updateLimitsPosition();
+        this.updateProbeVisualizationPosition();
+        if (this.group) {
+          this.rebuildCoordinateSystems();
+        }
+        this.updateScene();
+        return;
+      }
 
       if (this.limits) {
         this.group.remove(this.limits);
@@ -124,7 +134,20 @@ class Visualizer extends Component {
       this.limits.visible = state.objects.limits.visible;
       this.group.add(this.limits);
 
+      // Set pivot to the center of the machine profile work area (XY only; Z origin stays at 0)
+      const centerX = (xmin + xmax) / 2;
+      const centerY = (ymin + ymax) / 2;
+      this.pivotPoint.set(centerX, centerY, 0);
+
+      this.updateCuttingToolPosition();
+      this.updateCuttingPointerPosition();
       this.updateLimitsPosition();
+      this.updateProbeVisualizationPosition();
+
+      // Rebuild grid and axes to match the new machine profile dimensions
+      if (this.group) {
+        this.rebuildCoordinateSystems();
+      }
 
       this.updateScene();
     };
@@ -586,21 +609,48 @@ class Visualizer extends Component {
       return limits;
     }
 
-    createCoordinateSystem(units) {
-      const axisLength = (units === IMPERIAL_UNITS) ? IMPERIAL_AXIS_LENGTH : METRIC_AXIS_LENGTH;
-      const gridCount = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_COUNT : METRIC_GRID_COUNT;
+    // Derive grid and axis bounds from machine profile limits (if set) or
+    // fall back to the fixed defaults for the given unit system.
+    getCoordinateBounds(units) {
       const gridSpacing = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_SPACING : METRIC_GRID_SPACING;
+      const limits = _get(this.machineProfile, 'limits');
+      const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = { ...limits };
+      const hasMachineProfile = (xmax - xmin) > 0 || (ymax - ymin) > 0;
+
+      if (hasMachineProfile) {
+        return {
+          minX: xmin,
+          maxX: xmax,
+          minY: ymin,
+          maxY: ymax,
+          minZ: zmin,
+          maxZ: zmax,
+          gridSpacing,
+        };
+      }
+
+      // Default symmetric grid
+      const gridCount = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_COUNT : METRIC_GRID_COUNT;
+      const axisLength = (units === IMPERIAL_UNITS) ? IMPERIAL_AXIS_LENGTH : METRIC_AXIS_LENGTH;
+      const size = gridCount * gridSpacing;
+      return {
+        minX: -size,
+        maxX: size,
+        minY: -size,
+        maxY: size,
+        minZ: -axisLength,
+        maxZ: axisLength,
+        gridSpacing,
+      };
+    }
+
+    createCoordinateSystem(units) {
+      const { minX, maxX, minY, maxY, minZ, maxZ, gridSpacing } = this.getCoordinateBounds(units);
+      const labelOffset = gridSpacing * 2;
       const group = new THREE.Group();
 
       { // Coordinate Grid
-        const gridLine = new GridLine(
-          gridCount * gridSpacing,
-          gridSpacing,
-          gridCount * gridSpacing,
-          gridSpacing,
-          colornames('blue'), // center line
-          colornames('gray 44') // grid
-        );
+        const gridLine = new GridLine(minX, maxX, gridSpacing, minY, maxY, gridSpacing, colornames('blue'), colornames('gray 44'));
         _each(gridLine.children, (o) => {
           o.material.opacity = 0.15;
           o.material.transparent = true;
@@ -610,15 +660,15 @@ class Visualizer extends Component {
         group.add(gridLine);
       }
 
-      { // Coordinate Axes
-        const coordinateAxes = new CoordinateAxes(axisLength);
+      { // Coordinate Axes — extend to the full grid extent
+        const coordinateAxes = new CoordinateAxes({ minX, maxX, minY, maxY, minZ, maxZ });
         coordinateAxes.name = 'CoordinateAxes';
         group.add(coordinateAxes);
       }
 
-      { // Axis Labels
+      { // Axis Labels — placed just beyond the positive end of each axis
         const axisXLabel = new TextSprite({
-          x: axisLength + 10,
+          x: maxX + labelOffset,
           y: 0,
           z: 0,
           size: 20,
@@ -627,7 +677,7 @@ class Visualizer extends Component {
         });
         const axisYLabel = new TextSprite({
           x: 0,
-          y: axisLength + 10,
+          y: maxY + labelOffset,
           z: 0,
           size: 20,
           text: 'Y',
@@ -636,7 +686,7 @@ class Visualizer extends Component {
         const axisZLabel = new TextSprite({
           x: 0,
           y: 0,
-          z: axisLength + 10,
+          z: maxZ + labelOffset,
           size: 20,
           text: 'Z',
           color: colornames('blue')
@@ -651,46 +701,79 @@ class Visualizer extends Component {
     }
 
     createGridLineNumbers(units) {
-      const gridCount = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_COUNT : METRIC_GRID_COUNT;
-      const gridSpacing = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_SPACING : METRIC_GRID_SPACING;
+      const { minX, maxX, minY, maxY, gridSpacing } = this.getCoordinateBounds(units);
       const textSize = (units === IMPERIAL_UNITS) ? (25.4 / 3) : (10 / 3);
       const textOffset = (units === IMPERIAL_UNITS) ? (25.4 / 5) : (10 / 5);
       const group = new THREE.Group();
 
-      for (let i = -gridCount; i <= gridCount; ++i) {
-        if (i !== 0) {
-          const textLabel = new TextSprite({
-            x: i * gridSpacing,
+      // X-axis labels
+      for (let x = minX; x <= maxX; x += gridSpacing) {
+        if (x !== 0) {
+          group.add(new TextSprite({
+            x,
             y: textOffset,
             z: 0,
             size: textSize,
-            text: (units === IMPERIAL_UNITS) ? i : i * 10,
+            text: Math.round(x),
             textAlign: 'center',
             textBaseline: 'bottom',
             color: colornames('red'),
             opacity: 0.5
-          });
-          group.add(textLabel);
+          }));
         }
       }
-      for (let i = -gridCount; i <= gridCount; ++i) {
-        if (i !== 0) {
-          const textLabel = new TextSprite({
+
+      // Y-axis labels
+      for (let y = minY; y <= maxY; y += gridSpacing) {
+        if (y !== 0) {
+          group.add(new TextSprite({
             x: -textOffset,
-            y: i * gridSpacing,
+            y,
             z: 0,
             size: textSize,
-            text: (units === IMPERIAL_UNITS) ? i : i * 10,
+            text: Math.round(y),
             textAlign: 'right',
             textBaseline: 'middle',
             color: colornames('green'),
             opacity: 0.5
-          });
-          group.add(textLabel);
+          }));
         }
       }
 
       return group;
+    }
+
+    rebuildCoordinateSystems() {
+      const { state } = this.props;
+      const { units, objects } = state;
+
+      ['ImperialCoordinateSystem', 'MetricCoordinateSystem',
+        'ImperialGridLineNumbers', 'MetricGridLineNumbers'].forEach(name => {
+        const obj = this.group.getObjectByName(name);
+        if (obj) {
+          this.group.remove(obj);
+        }
+      });
+
+      const imperialCoordinateSystem = this.createCoordinateSystem(IMPERIAL_UNITS);
+      imperialCoordinateSystem.name = 'ImperialCoordinateSystem';
+      imperialCoordinateSystem.visible = objects.coordinateSystem.visible && (units === IMPERIAL_UNITS);
+      this.group.add(imperialCoordinateSystem);
+
+      const metricCoordinateSystem = this.createCoordinateSystem(METRIC_UNITS);
+      metricCoordinateSystem.name = 'MetricCoordinateSystem';
+      metricCoordinateSystem.visible = objects.coordinateSystem.visible && (units === METRIC_UNITS);
+      this.group.add(metricCoordinateSystem);
+
+      const imperialGridLineNumbers = this.createGridLineNumbers(IMPERIAL_UNITS);
+      imperialGridLineNumbers.name = 'ImperialGridLineNumbers';
+      imperialGridLineNumbers.visible = objects.gridLineNumbers.visible && (units === IMPERIAL_UNITS);
+      this.group.add(imperialGridLineNumbers);
+
+      const metricGridLineNumbers = this.createGridLineNumbers(METRIC_UNITS);
+      metricGridLineNumbers.name = 'MetricGridLineNumbers';
+      metricGridLineNumbers.visible = objects.gridLineNumbers.visible && (units === METRIC_UNITS);
+      this.group.add(metricGridLineNumbers);
     }
 
     //
@@ -968,7 +1051,7 @@ class Visualizer extends Component {
     createTrackballControls(object, domElement) {
       const controls = new TrackballControls(object, domElement);
 
-      controls.rotateSpeed = 1.0;
+      controls.rotateSpeed = 2 * Math.PI;
       controls.zoomSpeed = 1.2;
       controls.panSpeed = 1.0;
       controls.noZoom = false;
