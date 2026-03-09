@@ -335,7 +335,14 @@ const TrackballControls = function ( object, domElement ) {
 
             if ( mouseChange.lengthSq() ) {
 
-                mouseChange.multiplyScalar( _eye.length() * _this.panSpeed );
+                // In orthographic mode the camera distance (_eye.length) does not
+                // change with zoom — only the frustum shrinks. Use the actual frustum
+                // width so panning always covers a constant fraction of the visible area
+                // regardless of zoom level. In perspective mode keep the original formula.
+                var panScale = ( _this.object.inOrthographicMode && _this.object.cameraO )
+                    ? ( _this.object.cameraO.right - _this.object.cameraO.left )
+                    : _eye.length();
+                mouseChange.multiplyScalar( panScale * _this.panSpeed );
 
                 pan.copy( _eye ).cross( _this.object.up ).setLength( mouseChange.x );
                 pan.add( objectUp.copy( _this.object.up ).setLength( mouseChange.y ) );
