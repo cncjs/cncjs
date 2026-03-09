@@ -446,23 +446,10 @@ class ProbeVisualization {
       this.cornerHandles[3].position.set(startX, endY, 0); // top-left
     }
 
-    // Update interaction plane - scale and reposition instead of recreating
+    // Reposition the interaction plane (geometry is not recreated because
+    // raycastProbeElements uses manual bounds-checking, not mesh raycasting)
     if (this.interactionPlane) {
-      const width = Math.abs(endX - startX);
-      const height = Math.abs(endY - startY);
-      const centerX = (startX + endX) / 2;
-      const centerY = (startY + endY) / 2;
-
-      // Update scale instead of creating new geometry
-      this.interactionPlane.scale.set(width / 10, height / 10, 1); // Assuming original size was 10x10
-      this.interactionPlane.position.set(centerX, centerY, 0);
-
-      // If original geometry doesn't match, recreate
-      if (this.interactionPlane.geometry.parameters.width !== 10 || this.interactionPlane.geometry.parameters.height !== 10) {
-        this.interactionPlane.geometry.dispose();
-        this.interactionPlane.geometry = new THREE.PlaneGeometry(10, 10); // Base size
-        this.interactionPlane.scale.set(width / 10, height / 10, 1);
-      }
+      this.interactionPlane.position.set((startX + endX) / 2, (startY + endY) / 2, 0);
     }
 
     // Update labels
@@ -481,11 +468,11 @@ class ProbeVisualization {
     }
   }
 
-  setHoverState(isHovered, elementType) {
+  setHoverState(isHovered, elementType, cornerIndex) {
     if (elementType === 'corner') {
-      // Highlight corner handles by increasing opacity only
-      this.cornerHandles.forEach(handle => {
-        handle.material.opacity = isHovered ? 1.0 : 0.8;
+      // Highlight only the hovered corner handle
+      this.cornerHandles.forEach((handle, index) => {
+        handle.material.opacity = (isHovered && index === cornerIndex) ? 1.0 : 0.8;
       });
     } else if (elementType === 'area') {
       // Highlight boundary line
@@ -550,6 +537,7 @@ class ProbeVisualization {
     this.cornerHandles.forEach(handle => {
       handle.visible = enabled;
     });
+
     if (this.interactionPlane) {
       this.interactionPlane.visible = enabled;
     }
@@ -571,10 +559,15 @@ class ProbeVisualization {
   }
 
   getActualCamera() {
-    // CombinedCamera has internal cameraP (perspective) or cameraO (orthographic)
-    // Use the currently active one
+    // CombinedCamera has internal cameraP (perspective) or cameraO (orthographic).
+    // These sub-cameras have the correct projection matrix but their matrixWorld
+    // is NOT updated by TrackballControls — only the parent CombinedCamera's
+    // position/rotation is. We must sync the sub-camera's matrixWorld from the
+    // parent so the raycaster computes rays from the correct camera position.
     if (this.camera && this.camera.inOrthographicMode !== undefined) {
-      return this.camera.inOrthographicMode ? this.camera.cameraO : this.camera.cameraP;
+      const subCamera = this.camera.inOrthographicMode ? this.camera.cameraO : this.camera.cameraP;
+      subCamera.matrixWorld.copy(this.camera.matrixWorld);
+      return subCamera;
     }
     return this.camera;
   }
@@ -591,11 +584,28 @@ class ProbeVisualization {
     const actualCamera = this.getActualCamera();
     this.raycaster.setFromCamera(this.mouse, actualCamera);
 
-    // Intersect with Z=0 plane
-    const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    // Intersect at the group's Z level so the projection is correct when the
+    // camera is rotated (parallax between world Z=0 and the probe area's Z).
+    const groupZ = this.group.position.z;
+    const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -groupZ);
     const target = new THREE.Vector3();
-    this.raycaster.ray.intersectPlane(plane, target);
-    return target;
+    return this.raycaster.ray.intersectPlane(plane, target);
+  }
+
+  // Returns world-space distance corresponding to `pixels` screen pixels at the current zoom level.
+  getPixelToWorldScale() {
+    if (!this.domElement) {
+      return 1;
+    }
+    const rect = this.domElement.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const worldCenter = this.screenToWorld(cx, cy);
+    const worldRight = this.screenToWorld(cx + 1, cy);
+    if (!worldCenter || !worldRight) {
+      return 1;
+    }
+    return worldCenter.distanceTo(worldRight); // world units per pixel
   }
 
   raycastProbeElements(event) {
@@ -604,14 +614,20 @@ class ProbeVisualization {
       return null;
     }
 
-    // Get mouse world position on Z=0 plane
+    // Compute zoom-aware threshold BEFORE screenToWorld for the mouse position,
+    // because getPixelToWorldScale calls screenToWorld internally and changes
+    // the raycaster state.
+    const CORNER_THRESHOLD_PIXELS = 15;
+    const cornerThreshold = Math.max(10, CORNER_THRESHOLD_PIXELS * this.getPixelToWorldScale());
+
+    // Get mouse world position on Z=0 plane (must be AFTER getPixelToWorldScale
+    // so the raycaster is set from the actual mouse position last)
     const worldPos = this.screenToWorld(event.clientX, event.clientY);
     if (!worldPos) {
       return null;
     }
 
     const { startX, startY, endX, endY } = this.config;
-    const cornerThreshold = 10; // 10mm radius for corner detection
 
     // Convert corner local coordinates to world coordinates
     const corners = [
@@ -632,7 +648,8 @@ class ProbeVisualization {
       if (distance <= cornerThreshold) {
         return {
           userData: { type: 'corner', cornerIndex: corner.index },
-          name: `corner-${corner.index}`
+          name: `corner-${corner.index}`,
+          worldPos
         };
       }
     }
@@ -645,11 +662,23 @@ class ProbeVisualization {
         worldPos.y >= minWorld.y && worldPos.y <= maxWorld.y) {
       return {
         userData: { type: 'area' },
-        name: 'interaction-plane'
+        name: 'interaction-plane',
+        worldPos
       };
     }
 
     return null;
+  }
+
+  isSameIntersection(a, b) {
+    if (a === b) {
+      return true;
+    }
+    if (!a || !b) {
+      return false;
+    }
+    return a.userData.type === b.userData.type &&
+      a.userData.cornerIndex === b.userData.cornerIndex;
   }
 
   onMouseMove(event) {
@@ -657,12 +686,12 @@ class ProbeVisualization {
       const intersected = this.raycastProbeElements(event);
 
       // Update hover state
-      if (intersected !== this.lastIntersected) {
+      if (!this.isSameIntersection(intersected, this.lastIntersected)) {
         if (this.lastIntersected) {
           this.setHoverState(false, null);
         }
         if (intersected) {
-          this.setHoverState(true, intersected.userData.type);
+          this.setHoverState(true, intersected.userData.type, intersected.userData.cornerIndex);
         }
         this.lastIntersected = intersected;
       }
@@ -689,19 +718,24 @@ class ProbeVisualization {
     if (intersected) {
       event.preventDefault();
       event.stopPropagation();
-      this.startInteraction(intersected, event);
+      this.startInteraction(intersected);
     }
   }
 
   onMouseUp(event) {
+    if (event.button !== 0) {
+      return;
+    }
     if (this.interactionState !== 'NONE') {
       this.endInteraction();
       this.publishBoundsUpdate();
     }
   }
 
-  startInteraction(intersected, event) {
-    const worldPos = this.screenToWorld(event.clientX, event.clientY);
+  startInteraction(intersected) {
+    // Use the world position already computed by raycastProbeElements to avoid
+    // a second screenToWorld call that could return a stale raycaster result.
+    const worldPos = intersected.worldPos;
     if (!worldPos) {
       return;
     }
@@ -737,20 +771,15 @@ class ProbeVisualization {
     const deltaX = localPos.x - localStartWorld.x;
     const deltaY = localPos.y - localStartWorld.y;
 
-    // Apply delta to all bounds and snap to grid during drag
-    let newStartX = this.initialBounds.startX + deltaX;
-    let newStartY = this.initialBounds.startY + deltaY;
-    let newEndX = this.initialBounds.endX + deltaX;
-    let newEndY = this.initialBounds.endY + deltaY;
-
-    // Snap to grid during drag for smooth grid-aligned movement
-    newStartX = this.snapToGrid(newStartX);
-    newStartY = this.snapToGrid(newStartY);
-    newEndX = this.snapToGrid(newEndX);
-    newEndY = this.snapToGrid(newEndY);
+    // Snap the start corner and preserve the original dimensions so the
+    // area doesn't change size during drag
+    const width = this.initialBounds.endX - this.initialBounds.startX;
+    const height = this.initialBounds.endY - this.initialBounds.startY;
+    const newStartX = this.snapToGrid(this.initialBounds.startX + deltaX);
+    const newStartY = this.snapToGrid(this.initialBounds.startY + deltaY);
 
     // Update visualization with grid-snapped values
-    this.updateBounds(newStartX, newStartY, newEndX, newEndY);
+    this.updateBounds(newStartX, newStartY, newStartX + width, newStartY + height);
   }
 
   handleResizeCorner(event) {
@@ -876,6 +905,15 @@ class ProbeVisualization {
 
   dispose() {
     this.unbindEvents();
+
+    this.group.traverse(obj => {
+      if (obj.geometry) {
+        obj.geometry.dispose();
+      }
+      if (obj.material) {
+        obj.material.dispose();
+      }
+    });
   }
 }
 
