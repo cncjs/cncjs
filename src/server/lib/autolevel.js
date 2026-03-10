@@ -12,7 +12,7 @@ import {
 } from '../controllers/utils/units';
 import logger from './logger';
 
-const log = logger('AutoLevel');
+const log = logger('autolevel');
 
 // Vector subtraction: p1 - p2
 const sub3 = (p1, p2) => ({

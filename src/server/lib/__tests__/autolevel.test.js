@@ -1,7 +1,7 @@
 /* eslint-env jest */
-import { createProbeXYPoints, applyProbeCompensation } from '../auto-level';
+import { createProbeXYPoints, applyProbeCompensation } from '../autolevel';
 
-describe('auto-level', () => {
+describe('autolevel', () => {
   describe('createProbeXYPoints', () => {
     test('should generate 3x3 grid (9 points)', () => {
       const positions = createProbeXYPoints({

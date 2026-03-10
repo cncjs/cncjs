@@ -7,7 +7,7 @@ import {
 import fsp from 'fs/promises';
 import * as gcodeParser from 'gcode-parser';
 import _ from 'lodash';
-import * as autoLevel from '../../lib/auto-level';
+import * as autolevel from '../../lib/autolevel';
 import SerialConnection from '../../lib/SerialConnection';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
@@ -1663,7 +1663,7 @@ class SmoothieController {
           } = params;
 
           // Generate probe XY points using auto-level utility
-          const probePoints = autoLevel.createProbeXYPoints({
+          const probePoints = autolevel.createProbeXYPoints({
             startX,
             endX,
             stepX,
@@ -1802,7 +1802,7 @@ class SmoothieController {
           } = params;
 
           // Use AutoLevel static method for compensation (step size auto-detected from probeData)
-          const compensatedGcode = autoLevel.applyProbeCompensation(gcodeStr, probeData);
+          const compensatedGcode = autolevel.applyProbeCompensation(gcodeStr, probeData);
 
           log.info('[autolevel:applyProbeCompensation] Probe compensation applied');
 
