@@ -1051,7 +1051,7 @@ class Visualizer extends Component {
     createTrackballControls(object, domElement) {
       const controls = new TrackballControls(object, domElement);
 
-      controls.rotateSpeed = 2 * Math.PI;
+      controls.rotateSpeed = Math.PI;
       controls.zoomSpeed = 1.2;
       controls.panSpeed = 1.0;
       controls.noZoom = false;
