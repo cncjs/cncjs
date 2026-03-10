@@ -22,21 +22,24 @@ const _ = (...args) => {
   const key = ((value, options) => {
     const { context, count } = { ...options };
     const containsContext = (context !== undefined) && (context !== null);
-    const containsPlural = (typeof count === 'number');
+    const containsPlural = Number.isFinite(count);
     if (containsContext) {
-      value = value + i18next.options.contextSeparator + options.context;
+      value += i18next.options.contextSeparator + options.context;
     }
     if (containsPlural) {
-      value = value + i18next.options.pluralSeparator + 'plural';
+      const lng = i18next.language || 'en';
+      const suffix = i18next.services?.pluralResolver?.getSuffix(lng, count)
+        ?? (i18next.options.pluralSeparator + 'other');
+      value += suffix;
     }
     return sha1(value);
   })(value, options);
 
-  options.defaultValue = value;
+  const tOptions = { ...options, defaultValue: value };
 
-  let text = i18next.t(key, options);
+  let text = i18next.t(key, tOptions);
   if (typeof text !== 'string' || text.length === 0) {
-    text = i18next.t(key, { ...options, lng: 'en' });
+    text = i18next.t(key, { ...tOptions, lng: 'en' });
   }
 
   return text;

@@ -14,6 +14,7 @@ module.exports = {
   ],
   dest: './',
   options: {
+    compatibilityJSON: 'v4',
     debug: false,
     // Available since 4.6.0
     // @param {string} lng The language of the unused translation key.

@@ -1,4 +1,3 @@
-import endsWith from 'lodash/endsWith';
 import mapKeys from 'lodash/mapKeys';
 import sha1 from 'sha1';
 import log from 'app/lib/log';
@@ -23,6 +22,8 @@ const settings = {
     trackingId: process.env.TRACKING_ID,
   },
   i18next: {
+    compatibilityJSON: 'v4',
+
     lowerCaseLng: true,
 
     // logs out more info (console)
@@ -41,7 +42,7 @@ const settings = {
     defaultNS: 'resource',
 
     // @see webpack.webconfig.xxx.js
-    whitelist: process.env.LANGUAGES,
+    supportedLngs: process.env.LANGUAGES,
 
     // array of languages to preload
     preload: [],
@@ -78,7 +79,7 @@ const settings = {
       caches: ['localStorage', 'cookie']
     },
     // options for backend
-    // https://github.com/i18next/i18next-xhr-backend
+    // https://github.com/i18next/i18next-http-backend
     backend: {
       // path where resources get loaded from
       loadPath: webroot + 'i18n/{{lng}}/{{ns}}.json',
@@ -86,17 +87,13 @@ const settings = {
       // path to post missing resources
       addPath: 'api/i18n/sendMissing/{{lng}}/{{ns}}',
 
-      // your backend server supports multiloading
-      // /locales/resources.json?lng=de+en&ns=ns1+ns2
-      allowMultiLoading: false,
-
       // parse data after it has been fetched
-      parse: function(data, url) {
-        log.debug(`Loading resource: url="${url}"`);
+      // i18next-http-backend passes (data, languages, namespaces)
+      parse: function(data, languages, namespaces) {
+        log.debug(`Loading resource: lng="${languages}", ns="${namespaces}"`);
 
-        // gcode.json
-        // resource.json
-        if (endsWith(url, '/gcode.json') || endsWith(url, '/resource.json')) {
+        // SHA1-hash keys for 'gcode' and 'resource' namespaces
+        if (namespaces === 'gcode' || namespaces === 'resource') {
           return mapKeys(JSON.parse(data), (value, key) => sha1(key));
         }
 
