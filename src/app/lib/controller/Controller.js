@@ -51,8 +51,20 @@ class Controller {
         'controller:state': [],
         'message': [],
 
-        // Auto Level Events
+        /**
+         * [Autolevel] Fired when the auto-leveling process starts.
+         * @event autolevel:update
+         * @param {number} index - The 0-based index of the current probe point
+         * @param {number} total - The total number of probe points
+         * @param {Array<{x: number, y: number, z: number}>} probedPositions - Probe results collected so far
+         */
         'autolevel:update': [],
+
+        /**
+         * [Autolevel] Fired when the auto-leveling process is complete.
+         * @event autolevel:complete
+         * @param {Array<{x: number, y: number, z: number}>} probedPositions - The full array of probe results
+         */
         'autolevel:complete': []
     };
 
@@ -272,10 +284,6 @@ class Controller {
     //   controller.command('autolevel:applyProbeCompensation', { gcode, probeData }, callback)
     //   controller.command('autolevel:loadFromFile', filepath, callback)
     //   controller.command('autolevel:saveToFile', filepath, callback)
-    //
-    // Auto Level Events (use addListener / removeListener):
-    //   'autolevel:update'    { index, total, probedPositions } — emitted after each probe point
-    //   'autolevel:complete'                                    — emitted when all points are probed
     command(cmd, ...args) {
         const { port } = this;
         if (!port) {
