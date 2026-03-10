@@ -406,17 +406,17 @@ class ApplyView extends PureComponent {
           {probeStats ? (
             <div className={styles.probeDataInfo}>
               <div className={styles.infoRow}>
-                <span className={styles.infoLabel}>{i18n._('Points Probed')}:</span>
+                <span className={styles.infoLabel}>{i18n._('Points Probed:')}</span>
                 <span className={styles.infoValue}>{probeStats.points} &#10003;</span>
               </div>
               <div className={styles.infoRow}>
-                <span className={styles.infoLabel}>{i18n._('Z-Range')}:</span>
+                <span className={styles.infoLabel}>{i18n._('Z-Range:')}</span>
                 <span className={styles.infoValue}>
                   {probeStats.minZ.toFixed(3)} ~ {probeStats.maxZ.toFixed(3)} mm
                 </span>
               </div>
               <div className={styles.infoRow}>
-                <span className={styles.infoLabel}>{i18n._('Max Deviation')}:</span>
+                <span className={styles.infoLabel}>{i18n._('Max Deviation:')}</span>
                 <span className={styles.infoValue}>{probeStats.maxDeviation.toFixed(3)} mm</span>
               </div>
             </div>

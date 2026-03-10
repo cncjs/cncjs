@@ -56,7 +56,7 @@ const SetupProbeView = ({ state, actions }) => {
       </div>
 
       <div className={styles.areaInfo} style={{ marginBottom: '10px', marginTop: '10px', lineHeight: '1.6' }}>
-        <div><span role="img" aria-label="Pin">📍</span> {totalPoints} {i18n._('points')}</div>
+        <div><span role="img" aria-label="Pin">📍</span> {i18n._('{{count}} points', { count: totalPoints })}</div>
         <div><span role="img" aria-label="Ruler">📐</span> {width.toFixed(1)} {displayUnits} × {height.toFixed(1)} {displayUnits}</div>
       </div>
 
