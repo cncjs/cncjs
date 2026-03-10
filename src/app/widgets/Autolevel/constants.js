@@ -7,7 +7,7 @@ export const {
   VIEW_PROBING,
   VIEW_LOAD_PROBE,
   VIEW_APPLY,
-} = constants('widgets/AutoLevel/views', [
+} = constants('widgets/Autolevel/views', [
   'VIEW_LANDING',
   'VIEW_SETUP_PROBE',
   'VIEW_PROBING',
@@ -22,7 +22,7 @@ export const {
   PROBE_STATE_PAUSED,
   PROBE_STATE_STOPPED,
   PROBE_STATE_COMPLETED,
-} = constants('widgets/AutoLevel/probeStates', [
+} = constants('widgets/Autolevel/probeStates', [
   'PROBE_STATE_IDLE',
   'PROBE_STATE_RUNNING',
   'PROBE_STATE_PAUSED',
@@ -35,7 +35,7 @@ export const {
   MODAL_NONE,
   MODAL_START_PROBE_CONFIRM,
   MODAL_STOP_PROBE_CONFIRM,
-} = constants('widgets/AutoLevel/modals', [
+} = constants('widgets/Autolevel/modals', [
   'MODAL_NONE',
   'MODAL_START_PROBE_CONFIRM',
   'MODAL_STOP_PROBE_CONFIRM',
@@ -46,7 +46,7 @@ export const {
   PROCESSING_PHASE_READING,
   PROCESSING_PHASE_COMPENSATING,
   PROCESSING_PHASE_LOADING,
-} = constants('widgets/AutoLevel/processingPhases', [
+} = constants('widgets/Autolevel/processingPhases', [
   'PROCESSING_PHASE_READING',
   'PROCESSING_PHASE_COMPENSATING',
   'PROCESSING_PHASE_LOADING',

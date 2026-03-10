@@ -48,7 +48,7 @@ class ApplyView extends PureComponent {
             compensatedGcode: '',
             errorMessage: '',
           });
-          log.info('[ApplyView] Reset state after G-code unload');
+          log.info('Reset state after G-code unload');
         }
       })
     );
@@ -123,7 +123,7 @@ class ApplyView extends PureComponent {
         processingPhase: null,
         gcodeFileName: fileName,
         originalGcode: gcode,
-        errorMessage: i18n._('Insufficient probe data (minimum 3 points required)'),
+        errorMessage: i18n._('Insufficient probe data — minimum 3 points required'),
       });
       return;
     }
@@ -138,7 +138,7 @@ class ApplyView extends PureComponent {
       errorMessage: '',
     });
 
-    log.info(`[ApplyView] Starting compensation for ${fileName}, probe points: ${probedPositions.length}`);
+    log.info(`Starting compensation for ${fileName}, probe points: ${probedPositions.length}`);
 
     // Call parent action with callbacks
     actions.applyToGcode(
@@ -152,7 +152,7 @@ class ApplyView extends PureComponent {
           processingPhase: null,
           compensatedGcode,
         });
-        log.info('[ApplyView] Pipeline completed successfully');
+        log.info('Pipeline completed successfully');
       },
       // Error callback
       (errorMessage) => {
@@ -161,7 +161,7 @@ class ApplyView extends PureComponent {
           processingPhase: null,
           errorMessage,
         });
-        log.error('[ApplyView] Pipeline failed:', errorMessage);
+        log.error('Pipeline failed:', errorMessage);
       },
       // Progress callback
       (phase) => {
@@ -242,7 +242,7 @@ class ApplyView extends PureComponent {
             style={{ marginTop: 10 }}
           >
             <i className="fa fa-folder-open" />
-            {i18n._('Load & Apply Auto-Level')}
+            {i18n._('Load and Apply Compensation')}
           </Button>
           {this.renderFileInput()}
         </div>
@@ -300,7 +300,7 @@ class ApplyView extends PureComponent {
             disabled={!compensatedGcode}
           >
             <i className="fa fa-download" />
-            {i18n._('Export compensated G-code')}
+            {i18n._('Export Compensated G-code')}
           </Button>
         </div>
         <div className="form-group">
@@ -313,7 +313,7 @@ class ApplyView extends PureComponent {
           onClick={this.handleLoadGcodeClick}
         >
           <i className="fa fa-folder-open" />
-          {i18n._('Change G-code file')}
+          {i18n._('Change G-code File')}
         </Button>
         {this.renderFileInput()}
       </div>
@@ -357,7 +357,7 @@ class ApplyView extends PureComponent {
           style={{ marginTop: 5 }}
         >
           <i className="fa fa-folder-open" style={{ marginRight: 5 }} />
-          {i18n._('Choose different file')}
+          {i18n._('Choose Different File')}
         </Button>
         {this.renderFileInput()}
       </div>
@@ -385,7 +385,7 @@ class ApplyView extends PureComponent {
           >
             <i className="fa fa-chevron-left" />
           </button>
-          {i18n._('APPLY AUTO-LEVEL')}
+          {i18n._('APPLY COMPENSATION')}
         </div>
 
         {/* Probe Results - Always visible */}
@@ -399,7 +399,7 @@ class ApplyView extends PureComponent {
                 onClick={actions.saveProbeData}
               >
                 <i className="fa fa-download" />
-                {i18n._('Export probe data')}
+                {i18n._('Export Probe Data')}
               </Button>
             </div>
           )}

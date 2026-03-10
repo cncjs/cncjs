@@ -55,7 +55,7 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-class AutoLevelWidget extends PureComponent {
+class AutolevelWidget extends PureComponent {
   static propTypes = {
     widgetId: PropTypes.string.isRequired,
     onFork: PropTypes.func.isRequired,
@@ -113,13 +113,18 @@ class AutoLevelWidget extends PureComponent {
       const { startX, startY, endX, endY, units, stepSize } = this.state;
       this.setState({ wizardView: VIEW_SETUP_PROBE });
 
-      // Force hide any existing probe visualization first
+      // Hide any existing probe visualization before re-showing with fresh config.
+      // This forces the visualizer to reinitialize the probe area (e.g. after a
+      // previous probe run left behind result markers), ensuring a clean slate
+      // before the upcoming showProbeVisualization call.
       pubsub.publish('autolevel:hideProbeVisualization');
 
-      // Small delay to ensure cleanup completes
+      // Small delay to ensure the hide event is processed before re-showing.
       setTimeout(() => {
-        // Show probe area boundary in 3D visualizer with current form values
-        log.info('[AutoLevel] Publishing probe visualization', { startX, startY, endX, endY });
+        // Show the probe area boundary in the 3D visualizer using the current
+        // form values. interactable:true allows the user to drag/resize the
+        // area directly in the viewport while on the Setup Probe view.
+        log.debug('Publishing probe visualization', { startX, startY, endX, endY });
         pubsub.publish('autolevel:showProbeVisualization', {
           probeData: [],
           config: { startX, startY, endX, endY, units, snapSize: stepSize / 2, interactable: true },
@@ -184,7 +189,10 @@ class AutoLevelWidget extends PureComponent {
           },
         });
 
-        // Show probe visualization in 3D viewer (no interaction in Apply view)
+        // A probe file was loaded — display the imported probe points in the
+        // 3D visualizer. The bounds are derived from the data itself (min/max
+        // of loaded X/Y values). interactable:false because the user is in the
+        // Apply view and should not be able to modify the probe area.
         pubsub.publish('autolevel:showProbeVisualization', {
           probeData: probedPositions,
           config: {
@@ -219,13 +227,17 @@ class AutoLevelWidget extends PureComponent {
         }
       });
 
-      // Hide probe visualization
+      // The user navigated back to the landing page, resetting all probe state.
+      // Remove the probe area overlay from the 3D visualizer since there is no
+      // active probe session to display.
       pubsub.publish('autolevel:hideProbeVisualization');
     },
     goToApply: () => {
       this.setState({ wizardView: VIEW_APPLY });
 
-      // Update visualization when going to apply view (no interaction in Apply view)
+      // Entering the Apply view after a completed probe run — show the collected
+      // probe points for reference. interactable:false because the probe area
+      // should not be editable from the Apply view.
       const { probedPositions, startX, startY, endX, endY, units, stepSize } = this.state;
       if (probedPositions.length > 0) {
         pubsub.publish('autolevel:showProbeVisualization', {
@@ -279,7 +291,7 @@ class AutoLevelWidget extends PureComponent {
       // If invalid, restore previous valid value
       if (!isValid && inputName && this.previousValidValues && this.previousValidValues[inputName] !== undefined) {
         this.setState({ [inputName]: this.previousValidValues[inputName] });
-        log.warn('[AutoLevel] Invalid value entered, restoring previous:', this.previousValidValues[inputName]);
+        log.warn('Invalid value entered, restoring previous:', this.previousValidValues[inputName]);
         return;
       }
 
@@ -345,6 +357,11 @@ class AutoLevelWidget extends PureComponent {
         },
       });
 
+      // Probing has started — the interactive probe area overlay is no longer
+      // needed and would be visually confusing during an active probing run.
+      // The visualizer will show probe result markers as points are collected.
+      pubsub.publish('autolevel:hideProbeVisualization');
+
       controller.command('autolevel:startProbing', {
         startX,
         endX,
@@ -369,7 +386,8 @@ class AutoLevelWidget extends PureComponent {
       // Send feed hold to stop ongoing operations
       controller.command('feedhold');
 
-      // Hide visualization
+      // The user manually stopped an in-progress probe run. Clear the probe
+      // area overlay so the visualizer returns to its default state.
       pubsub.publish('autolevel:hideProbeVisualization');
 
       log.info('Probing stopped by user');
@@ -477,7 +495,7 @@ class AutoLevelWidget extends PureComponent {
     },
     resetGcodeApplied: () => {
       this.setState({ gcodeApplied: false });
-      log.info('[AutoLevel] Reset apply state for new G-code file');
+      log.debug('Reset apply state for new G-code file');
     },
     closeWidget: () => {
       this.setState({
@@ -488,7 +506,9 @@ class AutoLevelWidget extends PureComponent {
         gcodeApplied: false,
       });
 
-      // Hide probe visualization
+      // The widget is being closed/collapsed. Always clean up the probe area
+      // overlay so it does not persist in the 3D visualizer after the widget
+      // is no longer visible.
       pubsub.publish('autolevel:hideProbeVisualization');
     },
   };
@@ -557,15 +577,18 @@ class AutoLevelWidget extends PureComponent {
       });
     },
     'autolevel:update': (data) => {
-      log.info('[AutoLevel] Received autolevel:update event', data);
+      log.debug('Received autolevel:update event', data);
       const { current, total, probedPos, minZ, maxZ, maxDeviation } = data;
 
       this.setState(state => {
         const updatedPositions = [...state.probedPositions, probedPos];
 
-        // Update 3D visualizer with current probe data (no interaction during probing)
+        // A new probe point was received from the controller (autolevel:update).
+        // Incrementally update the 3D visualizer so the user can watch the
+        // probe map build in real time. interactable:false — the probe area
+        // must not be moved while a probing run is actively in progress.
         const { startX, startY, endX, endY, units, stepSize } = state;
-        log.debug('[AutoLevel] Updating visualization with point', current, '/', total);
+        log.debug(`Updating visualization with point ${current}/${total}:`, probedPos);
         pubsub.publish('autolevel:showProbeVisualization', {
           probeData: updatedPositions,
           config: { startX, startY, endX, endY, units, snapSize: stepSize / 2, interactable: false },
@@ -617,21 +640,21 @@ class AutoLevelWidget extends PureComponent {
           endY: Math.round(endY * 100) / 100,
         });
 
-        log.info('[AutoLevel] Probe area updated from visualizer:', data);
+        log.debug('Probe area updated from visualizer:', data);
       })
     );
 
     // Restore probe state if probing was in progress before refresh
     controller.command('autolevel:getProbeState', null, (err, result) => {
-      log.info('[AutoLevel] getProbeState callback', { err, result });
+      log.debug('getProbeState callback', { err, result });
 
       if (err || !result || !result.state) {
-        log.warn('[AutoLevel] No probe state to restore:', err);
+        log.warn('No probe state to restore:', err);
         return;
       }
 
       const { probedPositions = [], probePoints = [], minZ, maxZ, config = {} } = result.state;
-      log.info('[AutoLevel] Probe state from server:', {
+      log.debug('Probe state from server:', {
         probedPositions: probedPositions.length,
         probePoints: probePoints.length
       });
@@ -660,7 +683,10 @@ class AutoLevelWidget extends PureComponent {
           },
         });
 
-        // Show visualization (interaction based on view)
+        // Restore probe visualization after the widget reconnects to the server
+        // and recovers an in-progress or completed probe session. interactable
+        // is true only when the user is on the Setup Probe view — all other
+        // views (Apply, Probing) show the overlay in read-only mode.
         const { startX, startY, endX, endY } = config;
         if (startX !== undefined) {
           const interactable = wizardView === VIEW_SETUP_PROBE;
@@ -710,7 +736,9 @@ class AutoLevelWidget extends PureComponent {
     this.config.set('probeFeedrate', probeFeedrate);
     this.config.set('feedXY', feedXY);
 
-    // Update 3D visualizer when probe configuration changes in Setup view
+    // Keep the 3D visualizer in sync whenever the probe configuration changes
+    // while the user is on the Setup Probe or Probing view. Skipped on other
+    // views (Apply, Landing) to avoid unnecessary renders.
     if (wizardView === VIEW_SETUP_PROBE || wizardView === VIEW_PROBING) {
       const configChanged = (
         prevState.startX !== startX ||
@@ -721,7 +749,9 @@ class AutoLevelWidget extends PureComponent {
       );
 
       if (configChanged || prevState.wizardView !== wizardView) {
-        // Only allow interaction in PROBE NEW SURFACE view
+        // interactable:true only on the Setup Probe view so the user can drag
+        // and resize the probe area directly in the viewport. On the Probing
+        // view the overlay is read-only (probing is already in progress).
         const interactable = wizardView === VIEW_SETUP_PROBE;
         pubsub.publish('autolevel:showProbeVisualization', {
           probeData: probedPositions,
@@ -777,7 +807,7 @@ class AutoLevelWidget extends PureComponent {
     Object.keys(this.controllerEvents).forEach(eventName => {
       const callback = this.controllerEvents[eventName];
       const result = controller.addListener(eventName, callback);
-      log.info(`[AutoLevel] Registered listener for '${eventName}':`, result);
+      log.debug(`Registered listener for '${eventName}':`, result);
     });
   }
 
@@ -891,7 +921,7 @@ class AutoLevelWidget extends PureComponent {
             {isForkedWidget &&
               <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
             }
-            {i18n._('Auto Level')}
+            {i18n._('Autolevel')}
           </Widget.Title>
           <Widget.Controls className={this.props.sortable.filterClassName}>
             <Widget.Button
@@ -958,4 +988,4 @@ class AutoLevelWidget extends PureComponent {
   }
 }
 
-export default AutoLevelWidget;
+export default AutolevelWidget;

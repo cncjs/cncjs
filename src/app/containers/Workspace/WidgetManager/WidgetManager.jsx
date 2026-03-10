@@ -108,8 +108,8 @@ class WidgetManager extends PureComponent {
       },
       {
         id: 'autolevel',
-        caption: i18n._('AutoLevel Widget'),
-        details: i18n._('This widget lets you probe a grid for auto-leveling PCBs or uneven surfaces.'),
+        caption: i18n._('Autolevel Widget'),
+        details: i18n._('Probe a surface grid and apply Z-height compensation to your G-code.'),
         visible: true,
         disabled: false
       },

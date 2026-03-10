@@ -23,12 +23,12 @@ class StopProbeModal extends PureComponent {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>{i18n._('Are you sure you want to stop the probing process?')}</p>
+          <p>{i18n._('Are you sure you want to stop probing?')}</p>
 
           <div className={styles.warningBox}>
             <div className={styles.warningContent}>
-              <p>{i18n._('Progress')}: {current}/{total} {i18n._('points completed')}</p>
-              <p>{i18n._('Stopping will:')}</p>
+              <p>{i18n._('Progress: {{current}}/{{total}} points completed', { current, total })}</p>
+              <p>{i18n._('Stopping probing will:')}</p>
               <ul>
                 <li>{i18n._('Halt all remaining probe operations')}</li>
                 <li>{i18n._('Keep the data from completed points')}</li>

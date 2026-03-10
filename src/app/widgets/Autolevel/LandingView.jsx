@@ -14,7 +14,7 @@ const LandingView = ({ actions }) => {
           {i18n._('PROBE NEW SURFACE')}
         </div>
         <div className={styles.pathDescription}>
-          {i18n._('Configure probe region and run auto-leveling on your PCB to create new probe data.')}
+          {i18n._('Configure the probe region and run autolevel to generate surface compensation data.')}
         </div>
         <Button
           btnStyle="flat"
@@ -28,10 +28,10 @@ const LandingView = ({ actions }) => {
       <div className={styles.pathCard}>
         <div className={styles.pathTitle}>
           <span role="img" aria-label="Wrench" style={{ fontSize: 22 }}>🔧</span>
-          {i18n._('APPLY AUTO-LEVEL')}
+          {i18n._('APPLY COMPENSATION')}
         </div>
         <div className={styles.pathDescription}>
-          {i18n._('Load a previously saved .probe file and apply it directly to your G-code.')}
+          {i18n._('Load a previously saved .probe file and apply it to your G-code.')}
         </div>
         <Button
           btnStyle="flat"
@@ -47,7 +47,7 @@ const LandingView = ({ actions }) => {
           <span role="img" aria-label="Light bulb">💡</span>
         </div>
         <div className={styles.tipText}>
-          {i18n._('Tip: Save probe data after probing to reuse it for multiple jobs on the same PCB fixture.')}
+          {i18n._('Tip: Save probe data to reuse it for multiple jobs on the same workpiece fixture.')}
         </div>
       </div>
     </div>

@@ -78,7 +78,7 @@ const SetupProbeView = ({ state, actions }) => {
                   </option>
                 ))}
               </select>
-              <small className="text-muted">{i18n._('(snap = step ÷ 2)')}</small>
+              <small className="text-muted">{i18n._('(snap interval = step ÷ 2)')}</small>
             </div>
           </div>
         </div>
@@ -148,7 +148,7 @@ const SetupProbeView = ({ state, actions }) => {
                 <input type="number" className="form-control" value={probeStartZ} step={step} onChange={actions.handleProbeStartZChange} disabled={isProbing} />
                 <div className="input-group-addon">{displayUnits}</div>
               </div>
-              <small className="text-muted">{i18n._('(begin probing from)')}</small>
+              <small className="text-muted">{i18n._('(start probing from this height)')}</small>
             </div>
           </div>
         </div>
@@ -160,7 +160,7 @@ const SetupProbeView = ({ state, actions }) => {
                 <input type="number" className="form-control" value={probeEndZ} step={step} onChange={actions.handleProbeEndZChange} disabled={isProbing} />
                 <div className="input-group-addon">{displayUnits}</div>
               </div>
-              <small className="text-muted">{i18n._('(max probe depth)')}</small>
+              <small className="text-muted">{i18n._('(maximum probe depth)')}</small>
             </div>
           </div>
           <div className="col-xs-6" style={{ paddingLeft: 5 }}>

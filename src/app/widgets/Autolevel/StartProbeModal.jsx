@@ -30,11 +30,11 @@ class StartProbeModal extends PureComponent {
       <Modal disableOverlay size="sm" onClose={actions.closeModal}>
         <Modal.Header>
           <Modal.Title>
-            <span role="img" aria-label="Warning">⚠️</span> {i18n._('Starting Auto-Level Probing')}
+            <span role="img" aria-label="Warning">⚠️</span> {i18n._('Confirm Surface Probe')}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>{i18n._('You are about to probe your PCB surface.')}</p>
+          <p>{i18n._('You are about to probe your workpiece surface.')}</p>
 
           <div className={styles.warningBox}>
             <div className={styles.warningTitle}>
@@ -43,8 +43,8 @@ class StartProbeModal extends PureComponent {
             <div className={styles.warningContent}>
               <p>{i18n._('The Z-axis will descend until electrical contact is detected. If probe wires are not connected:')}</p>
               <ul>
-                <li><span role="img" aria-label="Cross mark">❌</span> {i18n._('Endmill WILL be damaged')}</li>
-                <li><span role="img" aria-label="Cross mark">❌</span> {i18n._('PCB WILL be damaged')}</li>
+                <li><span role="img" aria-label="Cross mark">❌</span> {i18n._('Tool or probe may break')}</li>
+                <li><span role="img" aria-label="Cross mark">❌</span> {i18n._('Workpiece will be damaged')}</li>
                 <li><span role="img" aria-label="Cross mark">❌</span> {i18n._('CNC machine may be damaged')}</li>
               </ul>
             </div>
