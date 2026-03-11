@@ -390,8 +390,8 @@ class AutolevelWidget extends PureComponent {
         probeState: PROBE_STATE_STOPPED,
       });
 
-      // Send feed hold to stop ongoing operations
-      controller.command('feedhold');
+      // Reset the controller to immediately cancel the probe cycle
+      controller.command('reset');
 
       // The user manually stopped an in-progress probe run. Clear the probe
       // area overlay so the visualizer returns to its default state.
