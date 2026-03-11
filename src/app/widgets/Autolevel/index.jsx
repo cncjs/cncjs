@@ -111,7 +111,7 @@ class AutolevelWidget extends PureComponent {
 
     // Navigation actions
     startNewProbe: () => {
-      const { startX, startY, endX, endY, units, stepSize } = this.state;
+      const { startX, startY, endX, endY, units, stepX, stepY } = this.state;
       this.setState({ wizardView: VIEW_SETUP_PROBE });
 
       // Hide any existing probe visualization before re-showing with fresh config.
@@ -128,7 +128,7 @@ class AutolevelWidget extends PureComponent {
         log.debug('Publishing probe visualization', { startX, startY, endX, endY });
         pubsub.publish('autolevel:showProbeVisualization', {
           probeData: [],
-          config: { startX, startY, endX, endY, units, snapSize: stepSize / 2, interactable: true },
+          config: { startX, startY, endX, endY, units, snapX: stepX / 2, snapY: stepY / 2, interactable: true },
         });
       }, 50);
     },
@@ -202,7 +202,8 @@ class AutolevelWidget extends PureComponent {
             endX: maxX,
             endY: maxY,
             units: this.state.units,
-            snapSize: this.state.stepSize / 2,
+            snapX: this.state.stepX / 2,
+            snapY: this.state.stepY / 2,
             interactable: false,
           },
         });
@@ -239,21 +240,21 @@ class AutolevelWidget extends PureComponent {
       // Entering the Apply view after a completed probe run — show the collected
       // probe points for reference. interactable:false because the probe area
       // should not be editable from the Apply view.
-      const { probedPositions, startX, startY, endX, endY, units, stepSize } = this.state;
+      const { probedPositions, startX, startY, endX, endY, units, stepX, stepY } = this.state;
       if (probedPositions.length > 0) {
         pubsub.publish('autolevel:showProbeVisualization', {
           probeData: probedPositions,
-          config: { startX, startY, endX, endY, units, snapSize: stepSize / 2, interactable: false },
+          config: { startX, startY, endX, endY, units, snapX: stepX / 2, snapY: stepY / 2, interactable: false },
         });
       }
     },
 
     // Probe configuration handlers
-    handleStepSizeChange: (event) => {
-      this.setState({ stepSize: Number(event.target.value) });
+    handleStepXChange: (event) => {
+      this.setState({ stepX: this.parseInputValue(event.target.value) });
     },
-    handleStepSizeSelect: (size) => {
-      this.setState({ stepSize: size });
+    handleStepYChange: (event) => {
+      this.setState({ stepY: this.parseInputValue(event.target.value) });
     },
     handleStartXChange: (event) => {
       this.setState({ startX: this.parseInputValue(event.target.value) });
@@ -344,14 +345,14 @@ class AutolevelWidget extends PureComponent {
     },
     startProbing: () => {
       const {
-        startX, endX, stepSize,
-        startY, endY,
+        startX, endX, stepX,
+        startY, endY, stepY,
         clearanceZ, startZ, endZ,
         feedrate,
       } = this.state;
       // Calculate total points
-      const numPointsX = Math.floor((endX - startX) / stepSize) + 1;
-      const numPointsY = Math.floor((endY - startY) / stepSize) + 1;
+      const numPointsX = Math.floor((endX - startX) / stepX) + 1;
+      const numPointsY = Math.floor((endY - startY) / stepY) + 1;
       const totalPoints = numPointsX * numPointsY;
 
       this.actions.closeModal();
@@ -376,10 +377,10 @@ class AutolevelWidget extends PureComponent {
         mode: 'full',
         startX,
         endX,
-        stepX: stepSize,
+        stepX,
         startY,
         endY,
-        stepY: stepSize,
+        stepY,
         clearanceZ,
         startZ,
         endZ,
@@ -586,7 +587,8 @@ class AutolevelWidget extends PureComponent {
       this.setState({
         units: units,
         controller: { type, state: controllerState },
-        stepSize: mapValueToUnits(this.config.get('stepSize', 10), units),
+        stepX: mapValueToUnits(this.config.get('stepX', 10), units),
+        stepY: mapValueToUnits(this.config.get('stepY', 10), units),
         startX: mapValueToUnits(this.config.get('startX', 0), units),
         startY: mapValueToUnits(this.config.get('startY', 0), units),
         endX: mapValueToUnits(this.config.get('endX', 10), units),
@@ -608,11 +610,11 @@ class AutolevelWidget extends PureComponent {
         // Incrementally update the 3D visualizer so the user can watch the
         // probe map build in real time. interactable:false — the probe area
         // must not be moved while a probing run is actively in progress.
-        const { startX, startY, endX, endY, units, stepSize } = state;
+        const { startX, startY, endX, endY, units, stepX, stepY } = state;
         log.debug(`Updating visualization with point ${current}/${total}:`, probedPos);
         pubsub.publish('autolevel:showProbeVisualization', {
           probeData: updatedPositions,
-          config: { startX, startY, endX, endY, units, snapSize: stepSize / 2, interactable: false },
+          config: { startX, startY, endX, endY, units, snapX: stepX / 2, snapY: stepY / 2, interactable: false },
         });
 
         return {
@@ -713,7 +715,7 @@ class AutolevelWidget extends PureComponent {
           const interactable = wizardView === VIEW_SETUP_PROBE;
           pubsub.publish('autolevel:showProbeVisualization', {
             probeData: probedPositions,
-            config: { startX, startY, endX, endY, units: this.state.units, snapSize: this.state.stepSize / 2, interactable },
+            config: { startX, startY, endX, endY, units: this.state.units, snapX: this.state.stepX / 2, snapY: this.state.stepY / 2, interactable },
           });
         }
 
@@ -739,7 +741,7 @@ class AutolevelWidget extends PureComponent {
   componentDidUpdate(prevProps, prevState) {
     const {
       minimized, units, wizardView, probedPositions,
-      stepSize,
+      stepX, stepY,
       startX, startY, endX, endY,
       clearanceZ, startZ, endZ,
       feedrate,
@@ -755,7 +757,8 @@ class AutolevelWidget extends PureComponent {
 
     // Save in mm
     const toMetric = (value) => Number((units === IMPERIAL_UNITS) ? in2mm(value) : value);
-    this.config.set('stepSize', toMetric(stepSize));
+    this.config.set('stepX', toMetric(stepX));
+    this.config.set('stepY', toMetric(stepY));
     this.config.set('startX', toMetric(startX));
     this.config.set('startY', toMetric(startY));
     this.config.set('endX', toMetric(endX));
@@ -774,7 +777,8 @@ class AutolevelWidget extends PureComponent {
         prevState.startY !== startY ||
         prevState.endX !== endX ||
         prevState.endY !== endY ||
-        prevState.stepSize !== stepSize
+        prevState.stepX !== stepX ||
+        prevState.stepY !== stepY
       );
 
       if (configChanged || prevState.wizardView !== wizardView) {
@@ -784,7 +788,7 @@ class AutolevelWidget extends PureComponent {
         const interactable = wizardView === VIEW_SETUP_PROBE;
         pubsub.publish('autolevel:showProbeVisualization', {
           probeData: probedPositions,
-          config: { startX, startY, endX, endY, units: this.state.units, snapSize: stepSize / 2, interactable },
+          config: { startX, startY, endX, endY, units: this.state.units, snapX: stepX / 2, snapY: stepY / 2, interactable },
         });
       }
     }
@@ -811,15 +815,16 @@ class AutolevelWidget extends PureComponent {
       // Wizard state
       wizardView: VIEW_LANDING,
       // Probe configuration
-      stepSize: this.config.get('stepSize', 10),
+      stepX: this.config.get('stepX', 10),
+      stepY: this.config.get('stepY', 10),
       startX: this.config.get('startX', 0),
       startY: this.config.get('startY', 0),
-      endX: this.config.get('endX', 10),
-      endY: this.config.get('endY', 10),
-      clearanceZ: this.config.get('clearanceZ', 10),
+      endX: this.config.get('endX', 100),
+      endY: this.config.get('endY', 100),
+      clearanceZ: this.config.get('clearanceZ', 5),
       startZ: this.config.get('startZ', 5),
       endZ: this.config.get('endZ', -5),
-      feedrate: this.config.get('feedrate', 5),
+      feedrate: this.config.get('feedrate', 25),
       // Probe state
       probeState: PROBE_STATE_IDLE,
       probeProgress: { current: 0, total: 0, percentage: 0 },
@@ -904,11 +909,13 @@ class AutolevelWidget extends PureComponent {
   getValidationErrors() {
     const {
       startX, startY, endX, endY,
+      stepX, stepY,
       clearanceZ, startZ, endZ,
       feedrate,
     } = this.state;
     const errors = {};
-    const invalidMsg = i18n._('Invalid number');
+    const invalidMsg = i18n._('Must be a number');
+    const positiveMsg = i18n._('Must be greater than zero');
 
     if (!this.isValidNumber(startX)) {
       errors.startX = invalidMsg;
@@ -921,6 +928,16 @@ class AutolevelWidget extends PureComponent {
     }
     if (!this.isValidNumber(endY)) {
       errors.endY = invalidMsg;
+    }
+    if (!this.isValidNumber(stepX)) {
+      errors.stepX = invalidMsg;
+    } else if (stepX <= 0) {
+      errors.stepX = positiveMsg;
+    }
+    if (!this.isValidNumber(stepY)) {
+      errors.stepY = invalidMsg;
+    } else if (stepY <= 0) {
+      errors.stepY = positiveMsg;
     }
     if (!this.isValidNumber(clearanceZ)) {
       errors.clearanceZ = invalidMsg;

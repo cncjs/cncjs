@@ -15,14 +15,15 @@ const ProbeAreaDiagram = ({
   startY,
   endX,
   endY,
-  stepSize,
+  stepX,
+  stepY,
   units,
 }) => {
   const displayUnits = toDisplayUnits(units);
   const width = endX - startX;
   const height = endY - startY;
-  const numPointsX = Math.max(2, Math.floor(width / stepSize) + 1);
-  const numPointsY = Math.max(2, Math.floor(height / stepSize) + 1);
+  const numPointsX = Math.max(2, Math.floor(width / stepX) + 1);
+  const numPointsY = Math.max(2, Math.floor(height / stepY) + 1);
 
   // Cap display grid to max ~20 per axis to avoid SVG clutter
   const maxPerAxis = 20;
@@ -137,7 +138,8 @@ ProbeAreaDiagram.propTypes = {
   startY: PropTypes.number,
   endX: PropTypes.number,
   endY: PropTypes.number,
-  stepSize: PropTypes.number,
+  stepX: PropTypes.number,
+  stepY: PropTypes.number,
   units: PropTypes.string,
 };
 

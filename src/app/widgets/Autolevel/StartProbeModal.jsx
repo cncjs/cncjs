@@ -29,12 +29,12 @@ class StartProbeModal extends PureComponent {
   render() {
     const { state, actions } = this.props;
     const {
-      startX, startY, endX, endY, stepSize,
+      startX, startY, endX, endY, stepX, stepY,
       clearanceZ, startZ, endZ, feedrate,
       units,
     } = state;
-    const numPointsX = Math.floor((endX - startX) / stepSize) + 1;
-    const numPointsY = Math.floor((endY - startY) / stepSize) + 1;
+    const numPointsX = Math.floor((endX - startX) / stepX) + 1;
+    const numPointsY = Math.floor((endY - startY) / stepY) + 1;
     const totalPoints = numPointsX * numPointsY;
     const { safetyConfirmed } = this.state;
 
@@ -75,7 +75,8 @@ class StartProbeModal extends PureComponent {
                   startY={startY}
                   endX={endX}
                   endY={endY}
-                  stepSize={stepSize}
+                  stepX={stepX}
+                  stepY={stepY}
                   units={units}
                 />
               </div>

@@ -2,10 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import { Button } from 'app/components/Buttons';
-import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import { Infotip } from 'app/components/Tooltip';
 import i18n from 'app/lib/i18n';
-import { IMPERIAL_UNITS } from 'app/constants';
 import { toDisplayUnits } from 'app/lib/units';
 import ProbeAreaDiagram from './ProbeAreaDiagram';
 import ZProbeDiagram from './ZProbeDiagram';
@@ -14,7 +12,7 @@ import styles from './SetupProbeView.styl';
 
 const SetupProbeView = ({ state, actions }) => {
   const {
-    stepSize, startX, startY, endX, endY,
+    stepX, stepY, startX, startY, endX, endY,
     clearanceZ, startZ, endZ, feedrate,
     probeState, probeProgress, canClick, units,
     validationErrors = {},
@@ -22,17 +20,8 @@ const SetupProbeView = ({ state, actions }) => {
 
   const step = 1;
 
-  // Define step size options based on units
-  const IMPERIAL_STEP_SIZES = [1 / 16, 1 / 8, 1 / 4, 1 / 2, 1, 2, 4].map(v => v * 25.4);
-  const METRIC_STEP_SIZES = [1, 2, 5, 10, 20, 50, 100];
-  const isImperial = units === IMPERIAL_UNITS;
-  const stepSizes = isImperial ? IMPERIAL_STEP_SIZES : METRIC_STEP_SIZES;
-  const stepLabels = isImperial
-    ? [i18n._('1/16"'), i18n._('1/8"'), i18n._('1/4"'), i18n._('1/2"'), i18n._('1"'), i18n._('2"'), i18n._('4"')]
-    : [i18n._('1mm'), i18n._('2mm'), i18n._('5mm'), i18n._('10mm'), i18n._('20mm'), i18n._('50mm'), i18n._('100mm')];
-
-  const numPointsX = Math.floor((endX - startX) / stepSize) + 1;
-  const numPointsY = Math.floor((endY - startY) / stepSize) + 1;
+  const numPointsX = Math.floor((endX - startX) / stepX) + 1;
+  const numPointsY = Math.floor((endY - startY) / stepY) + 1;
   const totalPoints = numPointsX * numPointsY;
 
   const isProbing = probeState === PROBE_STATE_RUNNING;
@@ -178,48 +167,10 @@ const SetupProbeView = ({ state, actions }) => {
           startY={startY}
           endX={endX}
           endY={endY}
-          stepSize={stepSize}
+          stepX={stepX}
+          stepY={stepY}
           units={units}
         />
-        <div className="row no-gutters">
-          <div className="col-xs-12">
-            <div className="form-group">
-              <div>
-                <label className="control-label">
-                  {i18n._('Step Size')}
-                  {' '}
-                  <Infotip
-                    placement="top"
-                    content={i18n._('The XY spacing between probe points')}
-                  >
-                    <i className="fa fa-info-circle text-muted" />
-                  </Infotip>
-                </label>
-              </div>
-              <Dropdown
-                disabled={isProbing}
-              >
-                <Dropdown.Toggle
-                  btnStyle="flat"
-                  btnSize="sm"
-                >
-                  {stepLabels[stepSizes.indexOf(stepSize)] || stepSize}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  {stepSizes.map((size, index) => (
-                    <MenuItem
-                      key={size}
-                      active={size === stepSize}
-                      onSelect={() => actions.handleStepSizeSelect(size)}
-                    >
-                      {stepLabels[index]}
-                    </MenuItem>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
-            </div>
-          </div>
-        </div>
         <div className="row no-gutters">
           <div className="col-xs-6" style={{ paddingRight: 5 }}>
             <div className="form-group">
@@ -268,6 +219,64 @@ const SetupProbeView = ({ state, actions }) => {
               </div>
               {validationErrors.endY && (
                 <small style={{ color: '#a94442' }}>{validationErrors.endY}</small>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="row no-gutters">
+          <div className="col-xs-6" style={{ paddingRight: 5 }}>
+            <div className="form-group">
+              <label className="control-label">
+                {i18n._('Step X')}
+                {' '}
+                <Infotip
+                  placement="top"
+                  content={i18n._('The X spacing between probe points')}
+                >
+                  <i className="fa fa-info-circle text-muted" />
+                </Infotip>
+              </label>
+              <div className="input-group input-group-sm">
+                <input
+                  type="number"
+                  className="form-control"
+                  value={stepX}
+                  step={step}
+                  onChange={actions.handleStepXChange}
+                  disabled={isProbing}
+                />
+                <div className="input-group-addon">{toDisplayUnits(units)}</div>
+              </div>
+              {validationErrors.stepX && (
+                <small style={{ color: '#a94442' }}>{validationErrors.stepX}</small>
+              )}
+            </div>
+          </div>
+          <div className="col-xs-6" style={{ paddingLeft: 5 }}>
+            <div className="form-group">
+              <label className="control-label">
+                {i18n._('Step Y')}
+                {' '}
+                <Infotip
+                  placement="top"
+                  content={i18n._('The Y spacing between probe points')}
+                >
+                  <i className="fa fa-info-circle text-muted" />
+                </Infotip>
+              </label>
+              <div className="input-group input-group-sm">
+                <input
+                  type="number"
+                  className="form-control"
+                  value={stepY}
+                  step={step}
+                  onChange={actions.handleStepYChange}
+                  disabled={isProbing}
+                />
+                <div className="input-group-addon">{toDisplayUnits(units)}</div>
+              </div>
+              {validationErrors.stepY && (
+                <small style={{ color: '#a94442' }}>{validationErrors.stepY}</small>
               )}
             </div>
           </div>

@@ -374,12 +374,17 @@ class Visualizer extends Component {
           log.info('[Visualizer] Received updateProbeVisualization event:', data);
 
           if (this.probeVisualization && typeof this.probeVisualization.updateBounds === 'function') {
-            const { startX, startY, endX, endY, snapSize, interactable } = data.config;
-            log.info('[Visualizer] Updating bounds to:', { startX, startY, endX, endY, snapSize, interactable });
+            const { startX, startY, endX, endY, snapX, snapY, interactable } = data.config;
+            log.info('[Visualizer] Updating bounds to:', { startX, startY, endX, endY, snapX, snapY, interactable });
 
-            // Update snapSize in config if provided
-            if (snapSize !== undefined && this.probeVisualization.config) {
-              this.probeVisualization.config.snapSize = snapSize;
+            // Update snap config if provided
+            if (this.probeVisualization.config) {
+              if (snapX !== undefined) {
+                this.probeVisualization.config.snapX = snapX;
+              }
+              if (snapY !== undefined) {
+                this.probeVisualization.config.snapY = snapY;
+              }
             }
 
             this.probeVisualization.updateBounds(startX, startY, endX, endY);
@@ -426,12 +431,15 @@ class Visualizer extends Component {
         log.info('[Visualizer] Created and added probe visualization to group');
       } else {
         // Update existing visualization with new config
-        const { startX, startY, endX, endY, snapSize, interactable, units } = config;
+        const { startX, startY, endX, endY, snapX, snapY, interactable, units } = config;
 
         // Update all config values
         if (this.probeVisualization.config) {
-          if (snapSize !== undefined) {
-            this.probeVisualization.config.snapSize = snapSize;
+          if (snapX !== undefined) {
+            this.probeVisualization.config.snapX = snapX;
+          }
+          if (snapY !== undefined) {
+            this.probeVisualization.config.snapY = snapY;
           }
           if (units !== undefined) {
             this.probeVisualization.config.units = units;

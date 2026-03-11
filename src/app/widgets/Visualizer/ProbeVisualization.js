@@ -13,17 +13,18 @@ class ProbeVisualization {
     this.group.name = 'ProbeVisualization';
 
     const {
-      startX = 0,
-      startY = 0,
-      endX = 10,
-      endY = 10,
       units = METRIC_UNITS,
-      snapSize = (units === IMPERIAL_UNITS) ? (25.4 / 64) : 5, // Default: 5mm metric, 1/64" imperial
+      startX,
+      startY,
+      endX,
+      endY,
+      snapX,
+      snapY,
       interactable = false, // Whether dragging/resizing is enabled
     } = config;
 
     // Store config for later updates
-    this.config = { startX, startY, endX, endY, units, snapSize, interactable };
+    this.config = { startX, startY, endX, endY, units, snapX, snapY, interactable };
 
     // Calculate text sizes based on units
     this.labelSize = (units === IMPERIAL_UNITS) ? (25.4 / 2) : (10 / 2);
@@ -554,8 +555,13 @@ class ProbeVisualization {
     log.info(`[ProbeVisualization] Interactions ${enabled ? 'enabled' : 'disabled'} (interactive elements ${enabled ? 'visible' : 'hidden'})`);
   }
 
-  snapToGrid(value) {
-    const gridSize = this.config.snapSize || 5; // Use configured snap size, fallback to 5mm
+  snapToGridX(value) {
+    const gridSize = this.config.snapX || 5;
+    return Math.round(value / gridSize) * gridSize;
+  }
+
+  snapToGridY(value) {
+    const gridSize = this.config.snapY || 5;
     return Math.round(value / gridSize) * gridSize;
   }
 
@@ -776,8 +782,8 @@ class ProbeVisualization {
     // area doesn't change size during drag
     const width = this.initialBounds.endX - this.initialBounds.startX;
     const height = this.initialBounds.endY - this.initialBounds.startY;
-    const newStartX = this.snapToGrid(this.initialBounds.startX + deltaX);
-    const newStartY = this.snapToGrid(this.initialBounds.startY + deltaY);
+    const newStartX = this.snapToGridX(this.initialBounds.startX + deltaX);
+    const newStartY = this.snapToGridY(this.initialBounds.startY + deltaY);
 
     // Update visualization with grid-snapped values
     this.updateBounds(newStartX, newStartY, newStartX + width, newStartY + height);
@@ -795,8 +801,8 @@ class ProbeVisualization {
     let { startX, startY, endX, endY } = this.initialBounds;
 
     // Snap local position to grid during drag
-    const snappedX = this.snapToGrid(localPos.x);
-    const snappedY = this.snapToGrid(localPos.y);
+    const snappedX = this.snapToGridX(localPos.x);
+    const snappedY = this.snapToGridY(localPos.y);
 
     // Update the appropriate corner with snapped values
     switch (this.activeCornerIndex) {
@@ -846,15 +852,16 @@ class ProbeVisualization {
 
     // Snap to grid on release
     const { startX, startY, endX, endY } = this.config;
-    const snappedStartX = this.snapToGrid(startX);
-    const snappedStartY = this.snapToGrid(startY);
-    const snappedEndX = this.snapToGrid(endX);
-    const snappedEndY = this.snapToGrid(endY);
+    const snappedStartX = this.snapToGridX(startX);
+    const snappedStartY = this.snapToGridY(startY);
+    const snappedEndX = this.snapToGridX(endX);
+    const snappedEndY = this.snapToGridY(endY);
 
     log.info('[ProbeVisualization] Snapping to grid:', {
       before: { startX, startY, endX, endY },
       after: { startX: snappedStartX, startY: snappedStartY, endX: snappedEndX, endY: snappedEndY },
-      snapSize: this.config.snapSize
+      snapX: this.config.snapX,
+      snapY: this.config.snapY,
     });
 
     // Always update to snapped values
