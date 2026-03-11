@@ -18,7 +18,6 @@ const LandingView = ({ actions }) => {
         </div>
         <Button
           btnStyle="flat"
-          btnSize="md"
           onClick={actions.startNewProbe}
         >
           {i18n._('Start New Probe')}
@@ -35,21 +34,12 @@ const LandingView = ({ actions }) => {
         </div>
         <Button
           btnStyle="flat"
-          btnSize="md"
           onClick={actions.loadProbeFile}
         >
           {i18n._('Load Probe Data')}
         </Button>
       </div>
 
-      <div className={styles.landingTip}>
-        <div className={styles.tipIcon}>
-          <span role="img" aria-label="Light bulb">💡</span>
-        </div>
-        <div className={styles.tipText}>
-          {i18n._('Tip: Save probe data to reuse it for multiple jobs on the same workpiece fixture.')}
-        </div>
-      </div>
     </div>
   );
 };

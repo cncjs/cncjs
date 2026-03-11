@@ -5,13 +5,11 @@ export const {
   VIEW_LANDING,
   VIEW_SETUP_PROBE,
   VIEW_PROBING,
-  VIEW_LOAD_PROBE,
   VIEW_APPLY,
 } = constants('widgets/Autolevel/views', [
   'VIEW_LANDING',
   'VIEW_SETUP_PROBE',
   'VIEW_PROBING',
-  'VIEW_LOAD_PROBE',
   'VIEW_APPLY',
 ]);
 

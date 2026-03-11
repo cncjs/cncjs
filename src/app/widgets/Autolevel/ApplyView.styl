@@ -15,6 +15,10 @@
 
 .section {
   margin-bottom: 20px;
+
+  :global(.form-group):last-child {
+    margin-bottom: 0;
+  }
 }
 
 .section:last-child {
@@ -47,11 +51,28 @@
 
 // G-code data info
 .gcode-data-info {
-  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
   background-color: #fafafa;
   border: 1px solid #f0f0f0;
   border-radius: 3px;
   font-size: 12px;
+  word-break: break-all;
+}
+
+.gcode-close-btn {
+  background: none;
+  border: none;
+  padding: 0 0 0 8px;
+  cursor: pointer;
+  color: #999;
+  flex-shrink: 0;
+
+  &:hover {
+    color: #333;
+  }
 }
 
 .info-row {
@@ -83,11 +104,6 @@
   padding: 24px 12px;
 }
 
-.no-gcode-text {
-  color: #999;
-  font-size: 12px;
-  margin-bottom: 6px;
-}
 
 // Warning box (insufficient probe data)
 .warning-box {

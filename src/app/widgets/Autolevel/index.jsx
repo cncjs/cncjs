@@ -13,7 +13,6 @@ import log from 'app/lib/log';
 import WidgetConfig from '../WidgetConfig';
 import LandingView from './LandingView';
 import SetupProbeView from './SetupProbeView';
-import LoadProbeView from './LoadProbeView';
 import ApplyView from './ApplyView';
 import StartProbeModal from './StartProbeModal';
 import StopProbeModal from './StopProbeModal';
@@ -42,7 +41,6 @@ import {
   VIEW_LANDING,
   VIEW_SETUP_PROBE,
   VIEW_PROBING,
-  VIEW_LOAD_PROBE,
   VIEW_APPLY,
   PROBE_STATE_IDLE,
   PROBE_STATE_RUNNING,
@@ -461,7 +459,7 @@ class AutolevelWidget extends PureComponent {
         api.loadGCode({ port, name, gcode: compensatedGcode })
           .then((res) => {
             const { name: loadedName = '', gcode: loadedGcode = '' } = { ...res.body };
-            pubsub.publish('gcode:load', { name: loadedName, gcode: loadedGcode, isAutoLevelled: true });
+            pubsub.publish('gcode:load', { name: loadedName, gcode: loadedGcode, isProbeCompensationApplied: true });
             this.setState({ gcodeApplied: true });
             log.info('Auto-level applied and G-code loaded to server');
 
@@ -968,10 +966,6 @@ class AutolevelWidget extends PureComponent {
 
         {(wizardView === VIEW_SETUP_PROBE || wizardView === VIEW_PROBING) && (
           <SetupProbeView state={state} actions={actions} />
-        )}
-
-        {wizardView === VIEW_LOAD_PROBE && (
-          <LoadProbeView state={state} actions={actions} />
         )}
 
         {wizardView === VIEW_APPLY && (

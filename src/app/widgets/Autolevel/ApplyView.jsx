@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
 import i18n from 'app/lib/i18n';
+import controller from 'app/lib/controller';
 import log from 'app/lib/log';
 import { Button } from 'app/components/Buttons';
 import {
@@ -37,7 +38,7 @@ class ApplyView extends PureComponent {
   fileInputEl = null;
 
   componentDidMount() {
-    // Subscribe to gcode:unload to reset state when G-code is unloaded
+    // Reset state when G-code is unloaded
     this.pubsubTokens.push(
       pubsub.subscribe('gcode:unload', () => {
         if (this.state.pipelineState === PIPELINE_DONE) {
@@ -49,6 +50,22 @@ class ApplyView extends PureComponent {
             errorMessage: '',
           });
           log.info('Reset state after G-code unload');
+        }
+      })
+    );
+
+    // Reset state when a new G-code is loaded from outside (e.g. Visualizer)
+    this.pubsubTokens.push(
+      pubsub.subscribe('gcode:load', (_msg, data = {}) => {
+        if (!data.isProbeCompensationApplied && this.state.pipelineState === PIPELINE_DONE) {
+          this.setState({
+            pipelineState: PIPELINE_EMPTY,
+            gcodeFileName: '',
+            originalGcode: '',
+            compensatedGcode: '',
+            errorMessage: '',
+          });
+          log.info('Reset state after new G-code load');
         }
       })
     );
@@ -170,6 +187,19 @@ class ApplyView extends PureComponent {
     );
   };
 
+  handleClearGcode = () => {
+    controller.command('gcode:unload');
+    pubsub.publish('gcode:unload');
+
+    this.setState({
+      pipelineState: PIPELINE_EMPTY,
+      gcodeFileName: '',
+      originalGcode: '',
+      compensatedGcode: '',
+      errorMessage: '',
+    });
+  };
+
   handleRetry = () => {
     const { gcodeFileName, originalGcode } = this.state;
     if (originalGcode) {
@@ -220,7 +250,7 @@ class ApplyView extends PureComponent {
     if (!hasProbeData) {
       return (
         <div className={styles.section}>
-          <div className={styles.sectionTitle}>{i18n._('G-code Compensation')}</div>
+          <div className={styles.sectionTitle}>{i18n._('Probe Compensation')}</div>
           <div className={styles.warningBox}>
             <i className="fa fa-exclamation-triangle" style={{ marginRight: 5 }} />
             {i18n._('Insufficient probe data. At least 3 points are required for surface compensation.')}
@@ -231,19 +261,18 @@ class ApplyView extends PureComponent {
 
     return (
       <div className={styles.section}>
-        <div className={styles.sectionTitle}>{i18n._('G-code Compensation')}</div>
-        <div className={styles.noGcodeSection}>
-          <div className={styles.noGcodeText}>
-            {i18n._('No G-code loaded in workspace')}
-          </div>
+        <div className={styles.sectionTitle}>{i18n._('Probe Compensation')}</div>
+        <div className="form-group">
           <Button
-            btnStyle="primary"
+            btnStyle="flat"
             onClick={this.handleLoadGcodeClick}
-            style={{ marginTop: 10 }}
           >
             <i className="fa fa-folder-open" />
-            {i18n._('Load and Apply Compensation')}
+            {i18n._('Load G-code file')}
           </Button>
+          <div className="help-block">
+            {i18n._('Load a G-code file to apply probe compensation and send it to the workspace.')}
+          </div>
           {this.renderFileInput()}
         </div>
       </div>
@@ -270,7 +299,7 @@ class ApplyView extends PureComponent {
 
     return (
       <div className={styles.section}>
-        <div className={styles.sectionTitle}>{i18n._('G-code Compensation')}</div>
+        <div className={styles.sectionTitle}>{i18n._('Probe Compensation')}</div>
         <div className={styles.pipelineProgress}>
           <div className={styles.progressText}>
             <i className="fa fa-spinner fa-spin" style={{ marginRight: 5 }} />
@@ -290,32 +319,36 @@ class ApplyView extends PureComponent {
     return (
       <div className={styles.section}>
         <div className={styles.sectionTitle}>
-          {i18n._('G-code Compensation')}
+          {i18n._('Probe Compensation')}
+        </div>
+        <div className="form-group">
+          <div className={styles.gcodeDataInfo}>
+            <span>AL_{gcodeFileName}</span>
+            <button
+              type="button"
+              className={styles.gcodeCloseBtn}
+              onClick={this.handleClearGcode}
+              aria-label="Clear G-code"
+            >
+              <i className="fa fa-close" />
+            </button>
+          </div>
         </div>
         <div className="form-group">
           <Button
             btnStyle="flat"
-            btnSize="sm"
             onClick={this.handleExport}
             disabled={!compensatedGcode}
           >
             <i className="fa fa-download" />
             {i18n._('Export Compensated G-code')}
           </Button>
-        </div>
-        <div className="form-group">
-          <div className={styles.gcodeDataInfo}>
-            AL_{gcodeFileName}
+          <div className="help-block">
+            <span role="img" aria-label="Light bulb">💡</span>
+            {' '}
+            {i18n._('Download the compensated G-code file for use with other programs.')}
           </div>
         </div>
-        <Button
-          btnStyle="primary"
-          onClick={this.handleLoadGcodeClick}
-        >
-          <i className="fa fa-folder-open" />
-          {i18n._('Change G-code File')}
-        </Button>
-        {this.renderFileInput()}
       </div>
     );
   }
@@ -325,7 +358,7 @@ class ApplyView extends PureComponent {
 
     return (
       <div className={styles.section}>
-        <div className={styles.sectionTitle}>{i18n._('G-code Compensation')}</div>
+        <div className={styles.sectionTitle}>{i18n._('Probe Compensation')}</div>
         <div className={styles.pipelineError}>
           <div className={styles.errorIcon}>
             <i className="fa fa-exclamation-triangle" />
@@ -391,37 +424,46 @@ class ApplyView extends PureComponent {
         {/* Probe Results - Always visible */}
         <div className={styles.section}>
           <div className={styles.sectionTitle}>{i18n._('Probe Results')}</div>
-          {!!probeStats && (
+          {!probeStats && (
             <div className="form-group">
-              <Button
-                btnStyle="flat"
-                btnSize="sm"
-                onClick={actions.saveProbeData}
-              >
-                <i className="fa fa-download" />
-                {i18n._('Export Probe Data')}
-              </Button>
+              <div className={styles.noData}>{i18n._('No probe data available')}</div>
             </div>
           )}
-          {probeStats ? (
-            <div className={styles.probeDataInfo}>
-              <div className={styles.infoRow}>
-                <span className={styles.infoLabel}>{i18n._('Points Probed:')}</span>
-                <span className={styles.infoValue}>{probeStats.points} &#10003;</span>
+          {!!probeStats && (
+            <div>
+              <div className="form-group">
+                <div className={styles.probeDataInfo}>
+                  <div className={styles.infoRow}>
+                    <span className={styles.infoLabel}>{i18n._('Points Probed:')}</span>
+                    <span className={styles.infoValue}>{probeStats.points} &#10003;</span>
+                  </div>
+                  <div className={styles.infoRow}>
+                    <span className={styles.infoLabel}>{i18n._('Z-Range:')}</span>
+                    <span className={styles.infoValue}>
+                      {probeStats.minZ.toFixed(3)} ~ {probeStats.maxZ.toFixed(3)} mm
+                    </span>
+                  </div>
+                  <div className={styles.infoRow}>
+                    <span className={styles.infoLabel}>{i18n._('Max Deviation:')}</span>
+                    <span className={styles.infoValue}>{probeStats.maxDeviation.toFixed(3)} mm</span>
+                  </div>
+                </div>
               </div>
-              <div className={styles.infoRow}>
-                <span className={styles.infoLabel}>{i18n._('Z-Range:')}</span>
-                <span className={styles.infoValue}>
-                  {probeStats.minZ.toFixed(3)} ~ {probeStats.maxZ.toFixed(3)} mm
-                </span>
-              </div>
-              <div className={styles.infoRow}>
-                <span className={styles.infoLabel}>{i18n._('Max Deviation:')}</span>
-                <span className={styles.infoValue}>{probeStats.maxDeviation.toFixed(3)} mm</span>
+              <div className="form-group">
+                <Button
+                  btnStyle="flat"
+                  onClick={actions.saveProbeData}
+                >
+                  <i className="fa fa-download" />
+                  {i18n._('Export Probe Data')}
+                </Button>
+                <div className="help-block">
+                  <span role="img" aria-label="Light bulb">💡</span>
+                  {' '}
+                  {i18n._('Save probe data to reuse it for multiple jobs on the same workpiece fixture.')}
+                </div>
               </div>
             </div>
-          ) : (
-            <div className={styles.noData}>{i18n._('No probe data available')}</div>
           )}
         </div>
 

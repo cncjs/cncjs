@@ -64,12 +64,11 @@ const SetupProbeView = ({ state, actions }) => {
         <div className={styles.sectionTitle}>{i18n._('Z-Axis Settings')}</div>
         <div className="form-group">
           <Button
-            btnSize="sm"
             btnStyle="flat"
             onClick={actions.showTestProbeConfirmation}
             disabled={!canClick || isProbing}
           >
-            <span role="img" aria-label="Microscope">🔬</span> {i18n._('Run Test Probe')}
+            {i18n._('Run Test Probe')}
           </Button>
         </div>
         <div className="form-group">
