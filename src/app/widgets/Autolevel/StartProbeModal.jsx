@@ -30,7 +30,8 @@ class StartProbeModal extends PureComponent {
     const { state, actions } = this.props;
     const {
       startX, startY, endX, endY, stepSize,
-      clearanceHeight, probeStartZ, probeEndZ, probeFeedrate,
+      clearanceZ, startZ, endZ, feedrate,
+      units,
     } = state;
     const numPointsX = Math.floor((endX - startX) / stepSize) + 1;
     const numPointsY = Math.floor((endY - startY) / stepSize) + 1;
@@ -58,10 +59,11 @@ class StartProbeModal extends PureComponent {
             <div style={{ display: 'flex', gap: 16 }}>
               <div style={{ flex: 1 }}>
                 <ZProbeDiagram
-                  clearanceHeight={clearanceHeight}
-                  probeStartZ={probeStartZ}
-                  probeEndZ={probeEndZ}
-                  probeFeedrate={probeFeedrate}
+                  clearanceZ={clearanceZ}
+                  startZ={startZ}
+                  endZ={endZ}
+                  feedrate={feedrate}
+                  units={units}
                 />
               </div>
               <div style={{ flex: 1 }}>
@@ -74,6 +76,7 @@ class StartProbeModal extends PureComponent {
                   endX={endX}
                   endY={endY}
                   stepSize={stepSize}
+                  units={units}
                 />
               </div>
             </div>

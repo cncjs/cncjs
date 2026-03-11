@@ -21,13 +21,13 @@ class TestProbeModal extends PureComponent {
     this.setState({ safetyConfirmed: !this.state.safetyConfirmed });
   };
 
-  handleRunTestProbe = () => {
-    this.props.actions.runTestProbe();
+  handleStartTestProbe = () => {
+    this.props.actions.startTestProbe();
   };
 
   render() {
     const { state, actions } = this.props;
-    const { clearanceHeight, probeStartZ, probeEndZ, probeFeedrate } = state;
+    const { clearanceZ, startZ, endZ, feedrate, units } = state;
     const { safetyConfirmed } = this.state;
 
     return (
@@ -51,10 +51,11 @@ class TestProbeModal extends PureComponent {
           </div>
           <div className="form-group" style={{ width: 320 }}>
             <ZProbeDiagram
-              clearanceHeight={clearanceHeight}
-              probeStartZ={probeStartZ}
-              probeEndZ={probeEndZ}
-              probeFeedrate={probeFeedrate}
+              clearanceZ={clearanceZ}
+              startZ={startZ}
+              endZ={endZ}
+              feedrate={feedrate}
+              units={units}
             />
           </div>
           <Checkbox
@@ -73,7 +74,7 @@ class TestProbeModal extends PureComponent {
           </Button>
           <Button
             btnStyle="primary"
-            onClick={this.handleRunTestProbe}
+            onClick={this.handleStartTestProbe}
             disabled={!safetyConfirmed}
           >
             {i18n._('Start Test Probe')}

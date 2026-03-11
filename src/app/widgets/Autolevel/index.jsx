@@ -10,6 +10,7 @@ import api from 'app/api';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
+import { in2mm, mapValueToUnits } from 'app/lib/units';
 import WidgetConfig from '../WidgetConfig';
 import LandingView from './LandingView';
 import SetupProbeView from './SetupProbeView';
@@ -305,32 +306,33 @@ class AutolevelWidget extends PureComponent {
         });
       }
     },
-    handleClearanceHeightChange: (event) => {
-      this.setState({ clearanceHeight: this.parseInputValue(event.target.value) });
+    handleClearanceZChange: (event) => {
+      this.setState({ clearanceZ: this.parseInputValue(event.target.value) });
     },
-    handleProbeStartZChange: (event) => {
-      this.setState({ probeStartZ: this.parseInputValue(event.target.value) });
+    handleStartZChange: (event) => {
+      this.setState({ startZ: this.parseInputValue(event.target.value) });
     },
-    handleProbeEndZChange: (event) => {
-      this.setState({ probeEndZ: this.parseInputValue(event.target.value) });
+    handleEndZChange: (event) => {
+      this.setState({ endZ: this.parseInputValue(event.target.value) });
     },
     handleProbeFeedrateChange: (event) => {
-      this.setState({ probeFeedrate: this.parseInputValue(event.target.value) });
-    },
-    handleFeedXYChange: (event) => {
-      this.setState({ feedXY: this.parseInputValue(event.target.value) });
+      this.setState({ feedrate: this.parseInputValue(event.target.value) });
     },
 
     // Probe operations
     showTestProbeConfirmation: () => {
       this.actions.openModal(MODAL_TEST_PROBE_CONFIRM);
     },
-    runTestProbe: () => {
+    startTestProbe: () => {
       this.actions.closeModal();
-      const { probeEndZ, probeFeedrate } = this.state;
-      controller.command('autolevel:runTestProbe', {
-        depth: probeEndZ,
-        feedrate: probeFeedrate,
+      const { clearanceZ, startZ, endZ, feedrate } = this.state;
+      // Test mode: single probe at current XY, no probe results generated
+      controller.command('autolevel:start', {
+        mode: 'test',
+        clearanceZ,
+        startZ,
+        endZ,
+        feedrate,
       });
       log.info('Running test probe');
     },
@@ -344,10 +346,9 @@ class AutolevelWidget extends PureComponent {
       const {
         startX, endX, stepSize,
         startY, endY,
-        probeStartZ, probeEndZ,
-        feedXY, probeFeedrate,
+        clearanceZ, startZ, endZ,
+        feedrate,
       } = this.state;
-
       // Calculate total points
       const numPointsX = Math.floor((endX - startX) / stepSize) + 1;
       const numPointsY = Math.floor((endY - startY) / stepSize) + 1;
@@ -369,17 +370,20 @@ class AutolevelWidget extends PureComponent {
       // The visualizer will show probe result markers as points are collected.
       pubsub.publish('autolevel:hideProbeVisualization');
 
-      controller.command('autolevel:startProbing', {
+      // Values are in the current display units (G20/G21) — the server
+      // passes them directly into G-code without unit conversion
+      controller.command('autolevel:start', {
+        mode: 'full',
         startX,
         endX,
         stepX: stepSize,
         startY,
         endY,
         stepY: stepSize,
-        startZ: probeStartZ,
-        endZ: probeEndZ,
-        feedrate: feedXY,
-        probeFeedrate,
+        clearanceZ,
+        startZ,
+        endZ,
+        feedrate,
       });
 
       log.info('Starting probe sequence');
@@ -390,8 +394,8 @@ class AutolevelWidget extends PureComponent {
         probeState: PROBE_STATE_STOPPED,
       });
 
-      // Reset the controller to immediately cancel the probe cycle
-      controller.command('reset');
+      // Stop probing: reset machine and clear probe state on the server
+      controller.command('autolevel:stop');
 
       // The user manually stopped an in-progress probe run. Clear the probe
       // area overlay so the visualizer returns to its default state.
@@ -575,12 +579,22 @@ class AutolevelWidget extends PureComponent {
         }[modal.units] || units;
       }
 
+      if (this.state.units !== units) {
+        this.unitsDidChange = true;
+      }
+
       this.setState({
         units: units,
-        controller: {
-          type: type,
-          state: controllerState
-        }
+        controller: { type, state: controllerState },
+        stepSize: mapValueToUnits(this.config.get('stepSize', 10), units),
+        startX: mapValueToUnits(this.config.get('startX', 0), units),
+        startY: mapValueToUnits(this.config.get('startY', 0), units),
+        endX: mapValueToUnits(this.config.get('endX', 10), units),
+        endY: mapValueToUnits(this.config.get('endY', 10), units),
+        clearanceZ: mapValueToUnits(this.config.get('clearanceZ', 10), units),
+        startZ: mapValueToUnits(this.config.get('startZ', 5), units),
+        endZ: mapValueToUnits(this.config.get('endZ', -5), units),
+        feedrate: mapValueToUnits(this.config.get('feedrate', 5), units),
       });
     },
     'autolevel:update': (data) => {
@@ -720,37 +734,36 @@ class AutolevelWidget extends PureComponent {
     }
   }
 
+  unitsDidChange = false;
+
   componentDidUpdate(prevProps, prevState) {
     const {
-      minimized,
+      minimized, units, wizardView, probedPositions,
       stepSize,
       startX, startY, endX, endY,
-      clearanceHeight, probeStartZ, probeEndZ,
-      probeFeedrate, feedXY,
-      wizardView,
-      probedPositions,
+      clearanceZ, startZ, endZ,
+      feedrate,
     } = this.state;
 
     this.config.set('minimized', minimized);
-    this.config.set('stepSize', stepSize);
 
-    // Only persist valid numeric values to the config store
-    const numericFields = {
-      startX,
-      startY,
-      endX,
-      endY,
-      clearanceHeight,
-      probeStartZ,
-      probeEndZ,
-      probeFeedrate,
-      feedXY,
-    };
-    Object.entries(numericFields).forEach(([key, value]) => {
-      if (this.isValidNumber(value)) {
-        this.config.set(key, Number(value));
-      }
-    });
+    // Do not save config settings if the units just changed between in and mm
+    if (this.unitsDidChange) {
+      this.unitsDidChange = false;
+      return;
+    }
+
+    // Save in mm
+    const toMetric = (value) => Number((units === IMPERIAL_UNITS) ? in2mm(value) : value);
+    this.config.set('stepSize', toMetric(stepSize));
+    this.config.set('startX', toMetric(startX));
+    this.config.set('startY', toMetric(startY));
+    this.config.set('endX', toMetric(endX));
+    this.config.set('endY', toMetric(endY));
+    this.config.set('clearanceZ', toMetric(clearanceZ));
+    this.config.set('startZ', toMetric(startZ));
+    this.config.set('endZ', toMetric(endZ));
+    this.config.set('feedrate', toMetric(feedrate));
 
     // Keep the 3D visualizer in sync whenever the probe configuration changes
     // while the user is on the Setup Probe or Probing view. Skipped on other
@@ -803,11 +816,10 @@ class AutolevelWidget extends PureComponent {
       startY: this.config.get('startY', 0),
       endX: this.config.get('endX', 10),
       endY: this.config.get('endY', 10),
-      clearanceHeight: this.config.get('clearanceHeight', 10),
-      probeStartZ: this.config.get('probeStartZ', 5),
-      probeEndZ: this.config.get('probeEndZ', -5),
-      probeFeedrate: this.config.get('probeFeedrate', 5),
-      feedXY: this.config.get('feedXY', 1000),
+      clearanceZ: this.config.get('clearanceZ', 10),
+      startZ: this.config.get('startZ', 5),
+      endZ: this.config.get('endZ', -5),
+      feedrate: this.config.get('feedrate', 5),
       // Probe state
       probeState: PROBE_STATE_IDLE,
       probeProgress: { current: 0, total: 0, percentage: 0 },
@@ -892,8 +904,8 @@ class AutolevelWidget extends PureComponent {
   getValidationErrors() {
     const {
       startX, startY, endX, endY,
-      clearanceHeight, probeStartZ, probeEndZ,
-      probeFeedrate,
+      clearanceZ, startZ, endZ,
+      feedrate,
     } = this.state;
     const errors = {};
     const invalidMsg = i18n._('Invalid number');
@@ -910,17 +922,17 @@ class AutolevelWidget extends PureComponent {
     if (!this.isValidNumber(endY)) {
       errors.endY = invalidMsg;
     }
-    if (!this.isValidNumber(clearanceHeight)) {
-      errors.clearanceHeight = invalidMsg;
+    if (!this.isValidNumber(clearanceZ)) {
+      errors.clearanceZ = invalidMsg;
     }
-    if (!this.isValidNumber(probeStartZ)) {
-      errors.probeStartZ = invalidMsg;
+    if (!this.isValidNumber(startZ)) {
+      errors.startZ = invalidMsg;
     }
-    if (!this.isValidNumber(probeEndZ)) {
-      errors.probeEndZ = invalidMsg;
+    if (!this.isValidNumber(endZ)) {
+      errors.endZ = invalidMsg;
     }
-    if (!this.isValidNumber(probeFeedrate)) {
-      errors.probeFeedrate = invalidMsg;
+    if (!this.isValidNumber(feedrate)) {
+      errors.feedrate = invalidMsg;
     }
 
     return errors;

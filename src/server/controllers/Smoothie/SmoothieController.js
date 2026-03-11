@@ -47,7 +47,7 @@ import {
 } from '../constants';
 import * as builtinCommand from '../utils/builtin-command';
 import { isM0, isM1, isM6, replaceM6 } from '../utils/gcode';
-import { mapPositionToUnits, mapValueToUnits } from '../utils/units';
+import { in2mm, mapPositionToUnits, mapValueToUnits } from '../utils/units';
 import SmoothieRunner from './SmoothieRunner';
 import {
   SMOOTHIE,
@@ -702,14 +702,21 @@ class SmoothieController {
           // The `PRB:` probe parameter message includes an additional `:` and suffix value is a boolean.
           // It denotes whether the last probe cycle was successful or not.
           if (value.result === 1) {
+            const modal = this.runner.getModalGroup();
+            const isImperial = modal.units === 'G20';
+
+            // Convert probe result to work coordinates, then to mm
+            // Probe data is always stored in mm for consistent compensation math
             const probedPos = {
               x: ensureFiniteNumber(value.x) - Number(wco.x),
               y: ensureFiniteNumber(value.y) - Number(wco.y),
               z: ensureFiniteNumber(value.z) - Number(wco.z),
-              a: ensureFiniteNumber(value.a) - Number(wco.a),
-              b: ensureFiniteNumber(value.b) - Number(wco.b),
-              c: ensureFiniteNumber(value.c) - Number(wco.c),
             };
+            if (isImperial) {
+              probedPos.x = in2mm(probedPos.x);
+              probedPos.y = in2mm(probedPos.y);
+              probedPos.z = in2mm(probedPos.z);
+            }
 
             // Track probe data if probing is active
             log.debug('[autolevel] Checking probe state:', {
@@ -1647,22 +1654,37 @@ class SmoothieController {
 
           this.command('gcode', lines, context);
         },
-        'autolevel:startProbing': () => {
-          const [params] = args;
+        'autolevel:start': () => {
+          const [params = {}] = args;
           const {
+            mode = 'full',
             startX,
             endX,
             stepX,
             startY,
             endY,
             stepY,
+            clearanceZ,
             startZ,
             endZ,
             feedrate,
-            probeFeedrate,
           } = params;
 
-          // Generate probe XY points using auto-level utility
+          if (mode === 'test') {
+            // Test mode: single probe at current XY position, no probe results
+            const testGCode = [
+              'G90',
+              `G0 Z${clearanceZ}`,
+              `G0 Z${startZ}`,
+              `G38.2 Z${endZ} F${feedrate}`,
+              `G0 Z${clearanceZ}`,
+            ];
+            log.info(`[autolevel:start] Test probe: clearanceZ=${clearanceZ}, startZ=${startZ}, endZ=${endZ}, F=${feedrate}`);
+            this.command('gcode', testGCode);
+            return;
+          }
+
+          // Full mode: multi-point probe grid
           const probePoints = autolevel.createProbeXYPoints({
             startX,
             endX,
@@ -1685,14 +1707,14 @@ class SmoothieController {
               startY,
               endY,
               stepY,
+              clearanceZ,
               startZ,
               endZ,
               feedrate,
-              probeFeedrate,
             },
           };
 
-          log.info(`[autolevel:start] Initialized probeState with ${probePoints.length} points`);
+          log.info(`[autolevel:start] Start probing with ${probePoints.length} points`);
 
           // Generate probe G-code
           const probeGCodes = [];
@@ -1701,30 +1723,37 @@ class SmoothieController {
 
             probeGCodes.push(`(Auto Level: probing point ${index})`);
 
+            probeGCodes.push('G90'); // Absolute positioning
+            probeGCodes.push(`G0 Z${clearanceZ}`);
+            probeGCodes.push(`G0 X${x} Y${y}`);
+            probeGCodes.push(`G0 Z${startZ}`);
             if (index === 0) {
-              probeGCodes.push('G90'); // Absolute positioning
-              probeGCodes.push(`G0 Z${startZ}`);
-              probeGCodes.push(`G0 X${x} Y${y} F${feedrate}`);
-              probeGCodes.push(`G38.2 Z${endZ} F${probeFeedrate / 2}`);
-              probeGCodes.push(`G0 Z${startZ}`);
+              probeGCodes.push(`G38.2 Z${endZ} F${feedrate / 2}`);
             } else {
-              probeGCodes.push('G90'); // Absolute positioning
-              probeGCodes.push(`G0 X${x} Y${y} F${feedrate}`);
-              probeGCodes.push(`G38.2 Z${endZ} F${probeFeedrate}`);
-              probeGCodes.push(`G0 Z${startZ}`);
+              probeGCodes.push(`G38.2 Z${endZ} F${feedrate}`);
             }
+            probeGCodes.push(`G0 Z${clearanceZ}`);
           });
 
           log.info(`[autolevel:start] Starting probing with ${probePoints.length} points`);
           this.command('gcode', probeGCodes);
         },
-        'autolevel:runTestProbe': () => {
-          const [params = {}] = args;
-          const { depth = -10, feedrate = 5 } = params;
-          const testGCode = `G38.2 Z${depth} F${feedrate}`;
-          log.info(`[autolevel:runTestProbe] Running test probe: ${testGCode}`);
-          this.command('gcode', testGCode);
+
+        'autolevel:stop': () => {
+          // Reset the machine to cancel the probe cycle immediately
+          this.command('reset');
+
+          // Clear probe state
+          this.probeState = {
+            probedPositions: [],
+            probePoints: [],
+            minZ: null,
+            maxZ: null,
+            config: null,
+          };
+          log.info('[autolevel:stop] Probe stopped and state cleared');
         },
+
         'autolevel:getProbeState': () => {
           const [, callback] = args;
           if (typeof callback === 'function') {

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import i18n from 'app/lib/i18n';
+import { toDisplayUnits } from 'app/lib/units';
 
 // Fixed layout positions — no dynamic scaling
 const SVG_WIDTH = 230;
@@ -14,7 +15,9 @@ const WORKPIECE_TOP_Y = 68;
 const WORKPIECE_BOTTOM_Y = 88;
 const ARROW_END_Y = 115;
 
-const ZProbeDiagram = ({ clearanceHeight, probeStartZ, probeEndZ, probeFeedrate, ...props }) => (
+const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) => {
+  const displayUnits = toDisplayUnits(units);
+  return (
   <svg
     viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
     {...props}
@@ -58,7 +61,7 @@ const ZProbeDiagram = ({ clearanceHeight, probeStartZ, probeEndZ, probeFeedrate,
       fontSize="9"
       fill="#339933"
     >
-      {`${i18n._('Clearance Z')}: ${clearanceHeight} ${i18n._('mm')}`}
+      {`${i18n._('Clearance Z')}: ${clearanceZ} ${displayUnits}`}
     </text>
 
     {/* Probe tool body */}
@@ -80,14 +83,14 @@ const ZProbeDiagram = ({ clearanceHeight, probeStartZ, probeEndZ, probeFeedrate,
       strokeWidth="1"
     />
 
-    {/* Probe Start Z label */}
+    {/* Start Z label */}
     <text
       x={PROBE_X + 16}
       y={TIP_Y}
       fontSize="9"
       fill="#0066cc"
     >
-      {`${i18n._('Start Z')}: ${probeStartZ} ${i18n._('mm')}`}
+      {`${i18n._('Start Z')}: ${startZ} ${displayUnits}`}
     </text>
 
     {/* Dashed probe path through workpiece */}
@@ -107,14 +110,14 @@ const ZProbeDiagram = ({ clearanceHeight, probeStartZ, probeEndZ, probeFeedrate,
       fill="#cc0000"
     />
 
-    {/* Probe End Z label */}
+    {/* End Z label */}
     <text
       x={PROBE_X + 16}
       y={ARROW_END_Y + 2}
       fontSize="9"
       fill="#cc0000"
     >
-      {`${i18n._('End Z')}: ${probeEndZ} ${i18n._('mm')}`}
+      {`${i18n._('End Z')}: ${endZ} ${displayUnits}`}
     </text>
 
     {/* Feedrate label on the left of the tool */}
@@ -125,16 +128,18 @@ const ZProbeDiagram = ({ clearanceHeight, probeStartZ, probeEndZ, probeFeedrate,
       fontSize="9"
       fill="#666"
     >
-      {`${probeFeedrate} ${i18n._('mm/min')}`}
+      {`${feedrate} ${displayUnits}/${i18n._('min')}`}
     </text>
   </svg>
-);
+  );
+};
 
 ZProbeDiagram.propTypes = {
-  clearanceHeight: PropTypes.number,
-  probeStartZ: PropTypes.number,
-  probeEndZ: PropTypes.number,
-  probeFeedrate: PropTypes.number,
+  clearanceZ: PropTypes.number,
+  startZ: PropTypes.number,
+  endZ: PropTypes.number,
+  feedrate: PropTypes.number,
+  units: PropTypes.string,
 };
 
 export default ZProbeDiagram;

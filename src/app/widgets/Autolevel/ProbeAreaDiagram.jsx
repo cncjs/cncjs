@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import i18n from 'app/lib/i18n';
+import { toDisplayUnits } from 'app/lib/units';
 
 const SVG_WIDTH = 230;
 const SVG_HEIGHT = 140;
@@ -15,7 +16,9 @@ const ProbeAreaDiagram = ({
   endX,
   endY,
   stepSize,
+  units,
 }) => {
+  const displayUnits = toDisplayUnits(units);
   const width = endX - startX;
   const height = endY - startY;
   const numPointsX = Math.max(2, Math.floor(width / stepSize) + 1);
@@ -111,7 +114,7 @@ const ProbeAreaDiagram = ({
         fontSize="9"
         fill="#666"
       >
-        {`${width} ${i18n._('mm')}`}
+        {`${width} ${displayUnits}`}
       </text>
 
       {/* Height dimension label (right) */}
@@ -123,7 +126,7 @@ const ProbeAreaDiagram = ({
         fontSize="9"
         fill="#666"
       >
-        {`${height} ${i18n._('mm')}`}
+        {`${height} ${displayUnits}`}
       </text>
     </svg>
   );
@@ -135,6 +138,7 @@ ProbeAreaDiagram.propTypes = {
   endX: PropTypes.number,
   endY: PropTypes.number,
   stepSize: PropTypes.number,
+  units: PropTypes.string,
 };
 
 export default ProbeAreaDiagram;

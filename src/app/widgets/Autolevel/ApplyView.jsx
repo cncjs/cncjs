@@ -5,6 +5,7 @@ import i18n from 'app/lib/i18n';
 import controller from 'app/lib/controller';
 import log from 'app/lib/log';
 import { Button } from 'app/components/Buttons';
+import { mapPositionToUnits, toDisplayUnits } from 'app/lib/units';
 import {
   PROCESSING_PHASE_READING,
   PROCESSING_PHASE_COMPENSATING,
@@ -399,7 +400,7 @@ class ApplyView extends PureComponent {
 
   render() {
     const { state, actions } = this.props;
-    const { probeStats } = state;
+    const { probeStats, units } = state;
     const { pipelineState } = this.state;
 
     return (
@@ -434,18 +435,20 @@ class ApplyView extends PureComponent {
               <div className="form-group">
                 <div className={styles.probeDataInfo}>
                   <div className={styles.infoRow}>
-                    <span className={styles.infoLabel}>{i18n._('Points Probed:')}</span>
-                    <span className={styles.infoValue}>{probeStats.points} &#10003;</span>
+                    <span className={styles.infoLabel}>{i18n._('Points probed:')}</span>
+                    <span className={styles.infoValue}>{probeStats.points}</span>
                   </div>
                   <div className={styles.infoRow}>
-                    <span className={styles.infoLabel}>{i18n._('Z-Range:')}</span>
-                    <span className={styles.infoValue}>
-                      {probeStats.minZ.toFixed(3)} ~ {probeStats.maxZ.toFixed(3)} mm
-                    </span>
+                    <span className={styles.infoLabel}>{i18n._('Z-min:')}</span>
+                    <span className={styles.infoValue}>{mapPositionToUnits(probeStats.minZ, units)} {toDisplayUnits(units)}</span>
                   </div>
                   <div className={styles.infoRow}>
-                    <span className={styles.infoLabel}>{i18n._('Max Deviation:')}</span>
-                    <span className={styles.infoValue}>{probeStats.maxDeviation.toFixed(3)} mm</span>
+                    <span className={styles.infoLabel}>{i18n._('Z-max:')}</span>
+                    <span className={styles.infoValue}>{mapPositionToUnits(probeStats.maxZ, units)} {toDisplayUnits(units)}</span>
+                  </div>
+                  <div className={styles.infoRow}>
+                    <span className={styles.infoLabel}>{i18n._('Max deviation:')}</span>
+                    <span className={styles.infoValue}>{mapPositionToUnits(probeStats.maxDeviation, units)} {toDisplayUnits(units)}</span>
                   </div>
                 </div>
               </div>

@@ -34,15 +34,14 @@ const defaultState = {
     autolevel: {
       minimized: false,
       startX: 0,
-      endX: 100,
-      stepX: 10,
+      endX: 10,
+      stepSize: 10,
       startY: 0,
-      endY: 100,
-      stepY: 10,
-      feedXY: 1000,
-      feedZ: 100,
-      depth: -5,
-      height: 5
+      endY: 10,
+      clearanceZ: 10,
+      startZ: 5,
+      endZ: -5,
+      feedrate: 5,
     },
     axes: {
       minimized: false,

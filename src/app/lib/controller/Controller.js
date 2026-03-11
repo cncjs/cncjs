@@ -277,9 +277,10 @@ class Controller {
     //   controller.command('macro:run', '<macro-id>', context /* optional */, callback)
     // - Load file from a watch directory
     //   controller.command('watchdir:load', '/path/to/file', callback)
-    // - Auto Level
-    //   controller.command('autolevel:startProbing', { startX, endX, stepX, startY, endY, stepY, startZ, endZ, feedrate, probeFeedrate })
-    //   controller.command('autolevel:runTestProbe', { depth, feedrate })
+    // - Autolevel
+    //   controller.command('autolevel:start', { mode: 'full', startX, endX, stepX, startY, endY, stepY, clearanceZ, startZ, endZ, feedrate })
+    //   controller.command('autolevel:start', { mode: 'test', clearanceZ, startZ, endZ, feedrate })
+    //   controller.command('autolevel:stop')
     //   controller.command('autolevel:getProbeState', null, callback)
     //   controller.command('autolevel:applyProbeCompensation', { gcode, probeData }, callback)
     //   controller.command('autolevel:loadFromFile', filepath, callback)

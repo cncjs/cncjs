@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { ProgressBar } from 'react-bootstrap';
 import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import { Infotip } from 'app/components/Tooltip';
 import i18n from 'app/lib/i18n';
 import { IMPERIAL_UNITS } from 'app/constants';
+import { toDisplayUnits } from 'app/lib/units';
 import ProbeAreaDiagram from './ProbeAreaDiagram';
-import ProbeProgressDisplay from './ProbeProgressDisplay';
 import ZProbeDiagram from './ZProbeDiagram';
 import { PROBE_STATE_IDLE, PROBE_STATE_RUNNING, PROBE_STATE_PAUSED, PROBE_STATE_STOPPED } from './constants';
 import styles from './SetupProbeView.styl';
@@ -14,12 +15,11 @@ import styles from './SetupProbeView.styl';
 const SetupProbeView = ({ state, actions }) => {
   const {
     stepSize, startX, startY, endX, endY,
-    clearanceHeight, probeStartZ, probeEndZ, probeFeedrate,
+    clearanceZ, startZ, endZ, feedrate,
     probeState, probeProgress, canClick, units,
     validationErrors = {},
   } = state;
 
-  const displayUnits = i18n._('mm');
   const step = 1;
 
   // Define step size options based on units
@@ -73,17 +73,18 @@ const SetupProbeView = ({ state, actions }) => {
         </div>
         <div className="form-group">
           <ZProbeDiagram
-            clearanceHeight={clearanceHeight}
-            probeStartZ={probeStartZ}
-            probeEndZ={probeEndZ}
-            probeFeedrate={probeFeedrate}
+            clearanceZ={clearanceZ}
+            startZ={startZ}
+            endZ={endZ}
+            feedrate={feedrate}
+            units={units}
           />
         </div>
         <div className="row no-gutters">
           <div className="col-xs-6" style={{ paddingRight: 5 }}>
             <div className="form-group">
               <label className="control-label">
-                {i18n._('Probe Start Z')}
+                {i18n._('Start Z')}
                 {' '}
                 <Infotip
                   placement="top"
@@ -93,18 +94,18 @@ const SetupProbeView = ({ state, actions }) => {
                 </Infotip>
               </label>
               <div className="input-group input-group-sm">
-                <input type="number" className="form-control" value={probeStartZ} step={step} onChange={actions.handleProbeStartZChange} disabled={isProbing} />
-                <div className="input-group-addon">{displayUnits}</div>
+                <input type="number" className="form-control" value={startZ} step={step} onChange={actions.handleStartZChange} disabled={isProbing} />
+                <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
-              {validationErrors.probeStartZ && (
-                <small style={{ color: '#a94442' }}>{validationErrors.probeStartZ}</small>
+              {validationErrors.startZ && (
+                <small style={{ color: '#a94442' }}>{validationErrors.startZ}</small>
               )}
             </div>
           </div>
           <div className="col-xs-6" style={{ paddingLeft: 5 }}>
             <div className="form-group">
               <label className="control-label">
-                {i18n._('Probe End Z')}
+                {i18n._('End Z')}
                 {' '}
                 <Infotip
                   content={i18n._('The ending Z position for each probe cycle — triggers alarm if no contact')}
@@ -113,11 +114,11 @@ const SetupProbeView = ({ state, actions }) => {
                 </Infotip>
               </label>
               <div className="input-group input-group-sm">
-                <input type="number" className="form-control" value={probeEndZ} step={step} onChange={actions.handleProbeEndZChange} disabled={isProbing} />
-                <div className="input-group-addon">{displayUnits}</div>
+                <input type="number" className="form-control" value={endZ} step={step} onChange={actions.handleEndZChange} disabled={isProbing} />
+                <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
-              {validationErrors.probeEndZ && (
-                <small style={{ color: '#a94442' }}>{validationErrors.probeEndZ}</small>
+              {validationErrors.endZ && (
+                <small style={{ color: '#a94442' }}>{validationErrors.endZ}</small>
               )}
             </div>
           </div>
@@ -136,11 +137,11 @@ const SetupProbeView = ({ state, actions }) => {
                 </Infotip>
               </label>
               <div className="input-group input-group-sm">
-                <input type="number" className="form-control" value={probeFeedrate} min={1} step={1} onChange={actions.handleProbeFeedrateChange} disabled={isProbing} />
-                <div className="input-group-addon">{i18n._('mm/min')}</div>
+                <input type="number" className="form-control" value={feedrate} min={1} step={1} onChange={actions.handleProbeFeedrateChange} disabled={isProbing} />
+                <div className="input-group-addon">{toDisplayUnits(units)}/{i18n._('min')}</div>
               </div>
-              {validationErrors.probeFeedrate && (
-                <small style={{ color: '#a94442' }}>{validationErrors.probeFeedrate}</small>
+              {validationErrors.feedrate && (
+                <small style={{ color: '#a94442' }}>{validationErrors.feedrate}</small>
               )}
             </div>
           </div>
@@ -157,11 +158,11 @@ const SetupProbeView = ({ state, actions }) => {
                 </Infotip>
               </label>
               <div className="input-group input-group-sm">
-                <input type="number" className="form-control" value={clearanceHeight} min={0} step={step} onChange={actions.handleClearanceHeightChange} disabled={isProbing} />
-                <div className="input-group-addon">{displayUnits}</div>
+                <input type="number" className="form-control" value={clearanceZ} min={0} step={step} onChange={actions.handleClearanceZChange} disabled={isProbing} />
+                <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
-              {validationErrors.clearanceHeight && (
-                <small style={{ color: '#a94442' }}>{validationErrors.clearanceHeight}</small>
+              {validationErrors.clearanceZ && (
+                <small style={{ color: '#a94442' }}>{validationErrors.clearanceZ}</small>
               )}
             </div>
           </div>
@@ -178,6 +179,7 @@ const SetupProbeView = ({ state, actions }) => {
           endX={endX}
           endY={endY}
           stepSize={stepSize}
+          units={units}
         />
         <div className="row no-gutters">
           <div className="col-xs-12">
@@ -224,7 +226,7 @@ const SetupProbeView = ({ state, actions }) => {
               <label className="control-label">{i18n._('Start X')}</label>
               <div className="input-group input-group-sm">
                 <input type="number" className="form-control" name="startX" value={startX} step={step} min={-1000} onChange={actions.handleStartXChange} onFocus={actions.handleInputFocus} onBlur={actions.handleProbeAreaBlur} disabled={isProbing} />
-                <div className="input-group-addon">{displayUnits}</div>
+                <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
               {validationErrors.startX && (
                 <small style={{ color: '#a94442' }}>{validationErrors.startX}</small>
@@ -236,7 +238,7 @@ const SetupProbeView = ({ state, actions }) => {
               <label className="control-label">{i18n._('Start Y')}</label>
               <div className="input-group input-group-sm">
                 <input type="number" className="form-control" name="startY" value={startY} step={step} min={-1000} onChange={actions.handleStartYChange} onFocus={actions.handleInputFocus} onBlur={actions.handleProbeAreaBlur} disabled={isProbing} />
-                <div className="input-group-addon">{displayUnits}</div>
+                <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
               {validationErrors.startY && (
                 <small style={{ color: '#a94442' }}>{validationErrors.startY}</small>
@@ -250,7 +252,7 @@ const SetupProbeView = ({ state, actions }) => {
               <label className="control-label">{i18n._('End X')}</label>
               <div className="input-group input-group-sm">
                 <input type="number" className="form-control" name="endX" value={endX} step={step} min={-1000} onChange={actions.handleEndXChange} onFocus={actions.handleInputFocus} onBlur={actions.handleProbeAreaBlur} disabled={isProbing} />
-                <div className="input-group-addon">{displayUnits}</div>
+                <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
               {validationErrors.endX && (
                 <small style={{ color: '#a94442' }}>{validationErrors.endX}</small>
@@ -262,7 +264,7 @@ const SetupProbeView = ({ state, actions }) => {
               <label className="control-label">{i18n._('End Y')}</label>
               <div className="input-group input-group-sm">
                 <input type="number" className="form-control" name="endY" value={endY} step={step} min={-1000} onChange={actions.handleEndYChange} onFocus={actions.handleInputFocus} onBlur={actions.handleProbeAreaBlur} disabled={isProbing} />
-                <div className="input-group-addon">{displayUnits}</div>
+                <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
               {validationErrors.endY && (
                 <small style={{ color: '#a94442' }}>{validationErrors.endY}</small>
@@ -271,7 +273,21 @@ const SetupProbeView = ({ state, actions }) => {
           </div>
         </div>
       </div>
-      <div className={styles.section} style={{ marginBottom: 0 }}>
+      <div className={styles.section}>
+        {isProbing && probeProgress && (
+          <div style={{ marginTop: 16 }}>
+            <div style={{ marginBottom: 8 }}>
+              {i18n._('Probing progress: {{current}}/{{total}} points', { current: probeProgress.current, total: probeProgress.total })}
+            </div>
+            <ProgressBar
+              bsStyle="info"
+              min={0}
+              max={probeProgress.total}
+              now={probeProgress.current}
+              label={`${probeProgress.percentage}%`}
+            />
+          </div>
+        )}
         {!isProbing ? (
           <Button
             btnStyle="primary"
@@ -291,8 +307,6 @@ const SetupProbeView = ({ state, actions }) => {
           </Button>
         )}
       </div>
-
-      {isProbing && <ProbeProgressDisplay progress={probeProgress} actions={actions} />}
     </div>
   );
 };

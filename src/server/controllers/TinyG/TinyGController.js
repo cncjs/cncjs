@@ -48,7 +48,7 @@ import {
 } from '../constants';
 import * as builtinCommand from '../utils/builtin-command';
 import { isM0, isM1, isM6, replaceM6 } from '../utils/gcode';
-import { mapPositionToUnits, mapValueToUnits } from '../utils/units';
+import { in2mm, mapPositionToUnits, mapValueToUnits } from '../utils/units';
 import TinyGRunner from './TinyGRunner';
 import {
   TINYG,
@@ -597,7 +597,7 @@ class TinyGController {
         if (prb && prb.e === 1) {
           log.debug('[autolevel] TinyG probe response received:', prb);
 
-          // Machine position
+          // Machine position (always mm in TinyG/g2core)
           const {
             x: mposx,
             y: mposy,
@@ -607,7 +607,7 @@ class TinyGController {
             c: mposc,
           } = this.runner.getMachinePosition();
 
-          // Work position
+          // Work position (follows G20/G21 in TinyG/g2core)
           const {
             x: posx,
             y: posy,
@@ -617,22 +617,26 @@ class TinyGController {
             c: posc,
           } = this.runner.getWorkPosition();
 
+          // TinyG/g2core: prb and mpos are always in mm, wpos follows G20/G21.
+          // Convert wpos to mm so WCO is computed entirely in mm.
+          const modal = this.runner.getModalGroup();
+          const isImperial = modal.units === 'G20';
+
           const wco = {
-            x: (Number(mposx) - Number(posx)).toFixed(3),
-            y: (Number(mposy) - Number(posy)).toFixed(3),
-            z: (Number(mposz) - Number(posz)).toFixed(3),
-            a: (Number(mposa) - Number(posa)).toFixed(3),
-            b: (Number(mposb) - Number(posb)).toFixed(3),
-            c: (Number(mposc) - Number(posc)).toFixed(3),
+            x: (Number(mposx) - (isImperial ? in2mm(posx) : Number(posx))).toFixed(3),
+            y: (Number(mposy) - (isImperial ? in2mm(posy) : Number(posy))).toFixed(3),
+            z: (Number(mposz) - (isImperial ? in2mm(posz) : Number(posz))).toFixed(3),
+            a: (Number(mposa) - (isImperial ? in2mm(posa) : Number(posa))).toFixed(3),
+            b: (Number(mposb) - (isImperial ? in2mm(posb) : Number(posb))).toFixed(3),
+            c: (Number(mposc) - (isImperial ? in2mm(posc) : Number(posc))).toFixed(3),
           };
 
+          // Probe data is always stored in mm for consistent compensation math
+          // prb(mm) - wco(mm) = work coordinates in mm
           const probedPos = {
             x: ensureFiniteNumber(prb.x) - Number(wco.x),
             y: ensureFiniteNumber(prb.y) - Number(wco.y),
             z: ensureFiniteNumber(prb.z) - Number(wco.z),
-            a: ensureFiniteNumber(prb.a) - Number(wco.a),
-            b: ensureFiniteNumber(prb.b) - Number(wco.b),
-            c: ensureFiniteNumber(prb.c) - Number(wco.c),
           };
 
           // Track probe data if probing is active
@@ -1778,22 +1782,37 @@ class TinyGController {
 
           this.command('gcode', lines, context);
         },
-        'autolevel:startProbing': () => {
-          const [params] = args;
+        'autolevel:start': () => {
+          const [params = {}] = args;
           const {
+            mode = 'full',
             startX,
             endX,
             stepX,
             startY,
             endY,
             stepY,
+            clearanceZ,
             startZ,
             endZ,
             feedrate,
-            probeFeedrate,
           } = params;
 
-          // Generate probe XY points using auto-level utility
+          if (mode === 'test') {
+            // Test mode: single probe at current XY position, no probe results
+            const testGCode = [
+              'G90',
+              `G0 Z${clearanceZ}`,
+              `G0 Z${startZ}`,
+              `G38.2 Z${endZ} F${feedrate}`,
+              `G0 Z${clearanceZ}`,
+            ];
+            log.info(`[autolevel:start] Test probe: clearanceZ=${clearanceZ}, startZ=${startZ}, endZ=${endZ}, F=${feedrate}`);
+            this.command('gcode', testGCode);
+            return;
+          }
+
+          // Full mode: multi-point probe grid
           const probePoints = autolevel.createProbeXYPoints({
             startX,
             endX,
@@ -1816,14 +1835,14 @@ class TinyGController {
               startY,
               endY,
               stepY,
+              clearanceZ,
               startZ,
               endZ,
               feedrate,
-              probeFeedrate,
             },
           };
 
-          log.info(`[autolevel:start] Initialized probeState with ${probePoints.length} points`);
+          log.info(`[autolevel:start] Start probing with ${probePoints.length} points`);
 
           // Generate probe G-code
           const probeGCodes = [];
@@ -1832,30 +1851,37 @@ class TinyGController {
 
             probeGCodes.push(`(Auto Level: probing point ${index})`);
 
+            probeGCodes.push('G90'); // Absolute positioning
+            probeGCodes.push(`G0 Z${clearanceZ}`);
+            probeGCodes.push(`G0 X${x} Y${y}`);
+            probeGCodes.push(`G0 Z${startZ}`);
             if (index === 0) {
-              probeGCodes.push('G90'); // Absolute positioning
-              probeGCodes.push(`G0 Z${startZ}`);
-              probeGCodes.push(`G0 X${x} Y${y} F${feedrate}`);
-              probeGCodes.push(`G38.2 Z${endZ} F${probeFeedrate / 2}`);
-              probeGCodes.push(`G0 Z${startZ}`);
+              probeGCodes.push(`G38.2 Z${endZ} F${feedrate / 2}`);
             } else {
-              probeGCodes.push('G90'); // Absolute positioning
-              probeGCodes.push(`G0 X${x} Y${y} F${feedrate}`);
-              probeGCodes.push(`G38.2 Z${endZ} F${probeFeedrate}`);
-              probeGCodes.push(`G0 Z${startZ}`);
+              probeGCodes.push(`G38.2 Z${endZ} F${feedrate}`);
             }
+            probeGCodes.push(`G0 Z${clearanceZ}`);
           });
 
           log.info(`[autolevel:start] Starting probing with ${probePoints.length} points`);
           this.command('gcode', probeGCodes);
         },
-        'autolevel:runTestProbe': () => {
-          const [params = {}] = args;
-          const { depth = -10, feedrate = 5 } = params;
-          const testGCode = `G38.2 Z${depth} F${feedrate}`;
-          log.info(`[autolevel:runTestProbe] Running test probe: ${testGCode}`);
-          this.command('gcode', testGCode);
+
+        'autolevel:stop': () => {
+          // Reset the machine to cancel the probe cycle immediately
+          this.command('reset');
+
+          // Clear probe state
+          this.probeState = {
+            probedPositions: [],
+            probePoints: [],
+            minZ: null,
+            maxZ: null,
+            config: null,
+          };
+          log.info('[autolevel:stop] Probe stopped and state cleared');
         },
+
         'autolevel:getProbeState': () => {
           const [, callback] = args;
           if (typeof callback === 'function') {
