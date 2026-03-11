@@ -1,8 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Button } from 'app/components/Buttons';
+import Dropdown, { MenuItem } from 'app/components/Dropdown';
+import { Infotip } from 'app/components/Tooltip';
 import i18n from 'app/lib/i18n';
 import { IMPERIAL_UNITS } from 'app/constants';
+import ProbeAreaDiagram from './ProbeAreaDiagram';
 import ProbeProgressDisplay from './ProbeProgressDisplay';
+import ZProbeDiagram from './ZProbeDiagram';
 import { PROBE_STATE_IDLE, PROBE_STATE_RUNNING, PROBE_STATE_PAUSED, PROBE_STATE_STOPPED } from './constants';
 import styles from './SetupProbeView.styl';
 
@@ -10,7 +15,8 @@ const SetupProbeView = ({ state, actions }) => {
   const {
     stepSize, startX, startY, endX, endY,
     clearanceHeight, probeStartZ, probeEndZ, probeFeedrate,
-    probeState, probeProgress, canClick, units
+    probeState, probeProgress, canClick, units,
+    validationErrors = {},
   } = state;
 
   const displayUnits = i18n._('mm');
@@ -28,8 +34,6 @@ const SetupProbeView = ({ state, actions }) => {
   const numPointsX = Math.floor((endX - startX) / stepSize) + 1;
   const numPointsY = Math.floor((endY - startY) / stepSize) + 1;
   const totalPoints = numPointsX * numPointsY;
-  const width = endX - startX;
-  const height = endY - startY;
 
   const isProbing = probeState === PROBE_STATE_RUNNING;
   const isPaused = probeState === PROBE_STATE_PAUSED;
@@ -56,38 +60,165 @@ const SetupProbeView = ({ state, actions }) => {
         </button>
         {i18n._('PROBE NEW SURFACE')}
       </div>
-
-      <div className={styles.areaInfo} style={{ marginBottom: '10px', marginTop: '10px', lineHeight: '1.6' }}>
-        <div><span role="img" aria-label="Pin">📍</span> {i18n._('{{count}} points', { count: totalPoints })}</div>
-        <div><span role="img" aria-label="Ruler">📐</span> {width.toFixed(1)} {displayUnits} × {height.toFixed(1)} {displayUnits}</div>
-      </div>
-
       <div className={styles.section}>
-        <div className={styles.sectionTitle}>{i18n._('Probe Grid')}</div>
+        <div className={styles.sectionTitle}>{i18n._('Z-Axis Settings')}</div>
+        <div className="form-group">
+          <Button
+            btnSize="sm"
+            btnStyle="flat"
+            onClick={actions.showTestProbeConfirmation}
+            disabled={!canClick || isProbing}
+          >
+            <span role="img" aria-label="Microscope">🔬</span> {i18n._('Run Test Probe')}
+          </Button>
+        </div>
+        <div className="form-group">
+          <ZProbeDiagram
+            clearanceHeight={clearanceHeight}
+            probeStartZ={probeStartZ}
+            probeEndZ={probeEndZ}
+            probeFeedrate={probeFeedrate}
+          />
+        </div>
         <div className="row no-gutters">
-          <div className="col-xs-12">
+          <div className="col-xs-6" style={{ paddingRight: 5 }}>
             <div className="form-group">
-              <label className="control-label">{i18n._('Step Size')}</label>
-              <select
-                className="form-control input-sm"
-                value={stepSize}
-                onChange={actions.handleStepSizeChange}
-                disabled={isProbing}
-              >
-                {stepSizes.map((size, index) => (
-                  <option key={size} value={size}>
-                    {stepLabels[index]}
-                  </option>
-                ))}
-              </select>
-              <small className="text-muted">{i18n._('(snap interval = step ÷ 2)')}</small>
+              <label className="control-label">
+                {i18n._('Probe Start Z')}
+                {' '}
+                <Infotip
+                  placement="top"
+                  content={i18n._('The starting Z position for each probe cycle')}
+                >
+                  <i className="fa fa-info-circle text-muted" />
+                </Infotip>
+              </label>
+              <div className="input-group input-group-sm">
+                <input type="number" className="form-control" value={probeStartZ} step={step} onChange={actions.handleProbeStartZChange} disabled={isProbing} />
+                <div className="input-group-addon">{displayUnits}</div>
+              </div>
+              {validationErrors.probeStartZ && (
+                <small style={{ color: '#a94442' }}>{validationErrors.probeStartZ}</small>
+              )}
+            </div>
+          </div>
+          <div className="col-xs-6" style={{ paddingLeft: 5 }}>
+            <div className="form-group">
+              <label className="control-label">
+                {i18n._('Probe End Z')}
+                {' '}
+                <Infotip
+                  content={i18n._('The ending Z position for each probe cycle — triggers alarm if no contact')}
+                >
+                  <i className="fa fa-info-circle text-muted" />
+                </Infotip>
+              </label>
+              <div className="input-group input-group-sm">
+                <input type="number" className="form-control" value={probeEndZ} step={step} onChange={actions.handleProbeEndZChange} disabled={isProbing} />
+                <div className="input-group-addon">{displayUnits}</div>
+              </div>
+              {validationErrors.probeEndZ && (
+                <small style={{ color: '#a94442' }}>{validationErrors.probeEndZ}</small>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="row no-gutters">
+          <div className="col-xs-6" style={{ paddingRight: 5 }}>
+            <div className="form-group">
+              <label className="control-label">
+                {i18n._('Probe Feedrate')}
+                {' '}
+                <Infotip
+                  placement="top"
+                  content={i18n._('The feed rate for the probe descent')}
+                >
+                  <i className="fa fa-info-circle text-muted" />
+                </Infotip>
+              </label>
+              <div className="input-group input-group-sm">
+                <input type="number" className="form-control" value={probeFeedrate} min={1} step={1} onChange={actions.handleProbeFeedrateChange} disabled={isProbing} />
+                <div className="input-group-addon">{i18n._('mm/min')}</div>
+              </div>
+              {validationErrors.probeFeedrate && (
+                <small style={{ color: '#a94442' }}>{validationErrors.probeFeedrate}</small>
+              )}
+            </div>
+          </div>
+          <div className="col-xs-6" style={{ paddingLeft: 5 }}>
+            <div className="form-group">
+              <label className="control-label">
+                {i18n._('Clearance Z')}
+                {' '}
+                <Infotip
+                  placement="top"
+                  content={i18n._('The clearance Z position for rapid moves between probe points')}
+                >
+                  <i className="fa fa-info-circle text-muted" />
+                </Infotip>
+              </label>
+              <div className="input-group input-group-sm">
+                <input type="number" className="form-control" value={clearanceHeight} min={0} step={step} onChange={actions.handleClearanceHeightChange} disabled={isProbing} />
+                <div className="input-group-addon">{displayUnits}</div>
+              </div>
+              {validationErrors.clearanceHeight && (
+                <small style={{ color: '#a94442' }}>{validationErrors.clearanceHeight}</small>
+              )}
             </div>
           </div>
         </div>
       </div>
-
       <div className={styles.section}>
         <div className={styles.sectionTitle}>{i18n._('Probe Area')}</div>
+        <div style={{ textAlign: 'center', color: '#666' }}>
+          {i18n._('{{count}} points', { count: totalPoints })}
+        </div>
+        <ProbeAreaDiagram
+          startX={startX}
+          startY={startY}
+          endX={endX}
+          endY={endY}
+          stepSize={stepSize}
+        />
+        <div className="row no-gutters">
+          <div className="col-xs-12">
+            <div className="form-group">
+              <div>
+                <label className="control-label">
+                  {i18n._('Step Size')}
+                  {' '}
+                  <Infotip
+                    placement="top"
+                    content={i18n._('The XY spacing between probe points')}
+                  >
+                    <i className="fa fa-info-circle text-muted" />
+                  </Infotip>
+                </label>
+              </div>
+              <Dropdown
+                disabled={isProbing}
+              >
+                <Dropdown.Toggle
+                  btnStyle="flat"
+                  btnSize="sm"
+                >
+                  {stepLabels[stepSizes.indexOf(stepSize)] || stepSize}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {stepSizes.map((size, index) => (
+                    <MenuItem
+                      key={size}
+                      active={size === stepSize}
+                      onSelect={() => actions.handleStepSizeSelect(size)}
+                    >
+                      {stepLabels[index]}
+                    </MenuItem>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          </div>
+        </div>
         <div className="row no-gutters">
           <div className="col-xs-6" style={{ paddingRight: 5 }}>
             <div className="form-group">
@@ -96,6 +227,9 @@ const SetupProbeView = ({ state, actions }) => {
                 <input type="number" className="form-control" name="startX" value={startX} step={step} min={-1000} onChange={actions.handleStartXChange} onFocus={actions.handleInputFocus} onBlur={actions.handleProbeAreaBlur} disabled={isProbing} />
                 <div className="input-group-addon">{displayUnits}</div>
               </div>
+              {validationErrors.startX && (
+                <small style={{ color: '#a94442' }}>{validationErrors.startX}</small>
+              )}
             </div>
           </div>
           <div className="col-xs-6" style={{ paddingLeft: 5 }}>
@@ -105,6 +239,9 @@ const SetupProbeView = ({ state, actions }) => {
                 <input type="number" className="form-control" name="startY" value={startY} step={step} min={-1000} onChange={actions.handleStartYChange} onFocus={actions.handleInputFocus} onBlur={actions.handleProbeAreaBlur} disabled={isProbing} />
                 <div className="input-group-addon">{displayUnits}</div>
               </div>
+              {validationErrors.startY && (
+                <small style={{ color: '#a94442' }}>{validationErrors.startY}</small>
+              )}
             </div>
           </div>
         </div>
@@ -116,6 +253,9 @@ const SetupProbeView = ({ state, actions }) => {
                 <input type="number" className="form-control" name="endX" value={endX} step={step} min={-1000} onChange={actions.handleEndXChange} onFocus={actions.handleInputFocus} onBlur={actions.handleProbeAreaBlur} disabled={isProbing} />
                 <div className="input-group-addon">{displayUnits}</div>
               </div>
+              {validationErrors.endX && (
+                <small style={{ color: '#a94442' }}>{validationErrors.endX}</small>
+              )}
             </div>
           </div>
           <div className="col-xs-6" style={{ paddingLeft: 5 }}>
@@ -125,72 +265,29 @@ const SetupProbeView = ({ state, actions }) => {
                 <input type="number" className="form-control" name="endY" value={endY} step={step} min={-1000} onChange={actions.handleEndYChange} onFocus={actions.handleInputFocus} onBlur={actions.handleProbeAreaBlur} disabled={isProbing} />
                 <div className="input-group-addon">{displayUnits}</div>
               </div>
+              {validationErrors.endY && (
+                <small style={{ color: '#a94442' }}>{validationErrors.endY}</small>
+              )}
             </div>
           </div>
         </div>
       </div>
-
-      <div className={styles.section}>
-        <div className={styles.sectionTitle}>{i18n._('Z-Axis Settings')}</div>
-        <div className="form-group">
-          <button type="button" className="btn btn-default" onClick={actions.runTestProbe} disabled={!canClick || isProbing}>
-            <span role="img" aria-label="Microscope">🔬</span> {i18n._('Run Test Probe')}
-          </button>
-        </div>
-        <div className="row no-gutters">
-          <div className="col-xs-6" style={{ paddingRight: 5 }}>
-            <div className="form-group">
-              <label className="control-label">{i18n._('Clearance Height')}</label>
-              <div className="input-group input-group-sm">
-                <input type="number" className="form-control" value={clearanceHeight} min={0} step={step} onChange={actions.handleClearanceHeightChange} disabled={isProbing} />
-                <div className="input-group-addon">{displayUnits}</div>
-              </div>
-              <small className="text-muted">{i18n._('(safe travel height)')}</small>
-            </div>
-          </div>
-          <div className="col-xs-6" style={{ paddingLeft: 5 }}>
-            <div className="form-group">
-              <label className="control-label">{i18n._('Probe Start Z')}</label>
-              <div className="input-group input-group-sm">
-                <input type="number" className="form-control" value={probeStartZ} step={step} onChange={actions.handleProbeStartZChange} disabled={isProbing} />
-                <div className="input-group-addon">{displayUnits}</div>
-              </div>
-              <small className="text-muted">{i18n._('(start probing from this height)')}</small>
-            </div>
-          </div>
-        </div>
-        <div className="row no-gutters">
-          <div className="col-xs-6" style={{ paddingRight: 5 }}>
-            <div className="form-group">
-              <label className="control-label">{i18n._('Probe End Z')}</label>
-              <div className="input-group input-group-sm">
-                <input type="number" className="form-control" value={probeEndZ} step={step} onChange={actions.handleProbeEndZChange} disabled={isProbing} />
-                <div className="input-group-addon">{displayUnits}</div>
-              </div>
-              <small className="text-muted">{i18n._('(maximum probe depth)')}</small>
-            </div>
-          </div>
-          <div className="col-xs-6" style={{ paddingLeft: 5 }}>
-            <div className="form-group">
-              <label className="control-label">{i18n._('Probe Feedrate')}</label>
-              <div className="input-group input-group-sm">
-                <input type="number" className="form-control" value={probeFeedrate} min={1} step={1} onChange={actions.handleProbeFeedrateChange} disabled={isProbing} />
-                <div className="input-group-addon">{i18n._('mm/min')}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div className={styles.section} style={{ marginBottom: 0 }}>
         {!isProbing ? (
-          <button type="button" className="btn btn-sm btn-primary btn-block" onClick={actions.showStartProbeConfirmation} disabled={!canClick}>
+          <Button
+            btnStyle="primary"
+            onClick={actions.showStartProbeConfirmation}
+            disabled={!canClick}
+          >
             ▶ {i18n._('Start Probing')}
-          </button>
+          </Button>
         ) : (
-          <button type="button" className="btn btn-sm btn-danger btn-block" onClick={actions.showStopProbeConfirmation}>
+          <Button
+            btnStyle="danger"
+            onClick={actions.showStopProbeConfirmation}
+          >
             ⏹ {i18n._('Stop Probing')}
-          </button>
+          </Button>
         )}
       </div>
 

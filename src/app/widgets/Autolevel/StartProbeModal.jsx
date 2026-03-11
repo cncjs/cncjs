@@ -1,8 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Checkbox } from 'app/components/Checkbox';
 import Modal from 'app/components/Modal';
+import { ToastNotification } from 'app/components/Notifications';
 import i18n from 'app/lib/i18n';
-import styles from './StartProbeModal.styl';
+import ProbeAreaDiagram from './ProbeAreaDiagram';
+import ZProbeDiagram from './ZProbeDiagram';
 
 class StartProbeModal extends PureComponent {
   static propTypes = {
@@ -23,44 +26,63 @@ class StartProbeModal extends PureComponent {
   };
 
   render() {
-    const { actions } = this.props;
+    const { state, actions } = this.props;
+    const {
+      startX, startY, endX, endY, stepSize,
+      clearanceHeight, probeStartZ, probeEndZ, probeFeedrate,
+    } = state;
+    const numPointsX = Math.floor((endX - startX) / stepSize) + 1;
+    const numPointsY = Math.floor((endY - startY) / stepSize) + 1;
+    const totalPoints = numPointsX * numPointsY;
     const { safetyConfirmed } = this.state;
 
     return (
-      <Modal disableOverlay size="sm" onClose={actions.closeModal}>
+      <Modal disableOverlay size="md" onClose={actions.closeModal}>
         <Modal.Header>
           <Modal.Title>
-            <span role="img" aria-label="Warning">⚠️</span> {i18n._('Confirm Surface Probe')}
+            {i18n._('Start Probing')}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>{i18n._('You are about to probe your workpiece surface.')}</p>
-
-          <div className={styles.warningBox}>
-            <div className={styles.warningTitle}>
-              {i18n._('Critical Safety Warning')}
-            </div>
-            <div className={styles.warningContent}>
-              <p>{i18n._('The Z-axis will descend until electrical contact is detected. If probe wires are not connected:')}</p>
-              <ul>
-                <li><span role="img" aria-label="Cross mark">❌</span> {i18n._('Tool or probe may break')}</li>
-                <li><span role="img" aria-label="Cross mark">❌</span> {i18n._('Workpiece will be damaged')}</li>
-                <li><span role="img" aria-label="Cross mark">❌</span> {i18n._('CNC machine may be damaged')}</li>
-              </ul>
+          <ToastNotification
+            type="warning"
+            style={{ marginBottom: 16 }}
+          >
+            {i18n._('The Z-axis will descend until electrical contact is detected. If probe wires are not connected, the tool, workpiece, or machine may be damaged.')}
+          </ToastNotification>
+          <div className="form-group">
+            {i18n._('You are about to probe your workpiece surface.')}
+          </div>
+          <div className="form-group">
+            <div style={{ display: 'flex', gap: 16 }}>
+              <div style={{ flex: 1 }}>
+                <ZProbeDiagram
+                  clearanceHeight={clearanceHeight}
+                  probeStartZ={probeStartZ}
+                  probeEndZ={probeEndZ}
+                  probeFeedrate={probeFeedrate}
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ textAlign: 'center', color: '#666', marginBottom: 4 }}>
+                  {i18n._('{{count}} points', { count: totalPoints })}
+                </div>
+                <ProbeAreaDiagram
+                  startX={startX}
+                  startY={startY}
+                  endX={endX}
+                  endY={endY}
+                  stepSize={stepSize}
+                />
+              </div>
             </div>
           </div>
-
-          <div style={{ marginTop: 15 }}>
-            <label>
-              <input
-                type="checkbox"
-                checked={safetyConfirmed}
-                onChange={this.handleCheckboxChange}
-              />
-              {' '}
-              {i18n._('I confirm probe wires are correctly connected')}
-            </label>
-          </div>
+          <Checkbox
+            checked={safetyConfirmed}
+            onChange={this.handleCheckboxChange}
+          >
+            {i18n._('I confirm probe wires are correctly connected')}
+          </Checkbox>
         </Modal.Body>
         <Modal.Footer>
           <button
@@ -76,7 +98,7 @@ class StartProbeModal extends PureComponent {
             onClick={this.handleStartProbing}
             disabled={!safetyConfirmed}
           >
-            {i18n._('Start Probing')}
+            {i18n._('Start')}
           </button>
         </Modal.Footer>
       </Modal>

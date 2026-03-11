@@ -17,6 +17,7 @@ import LoadProbeView from './LoadProbeView';
 import ApplyView from './ApplyView';
 import StartProbeModal from './StartProbeModal';
 import StopProbeModal from './StopProbeModal';
+import TestProbeModal from './TestProbeModal';
 import {
   // Units
   IMPERIAL_UNITS,
@@ -50,6 +51,7 @@ import {
   MODAL_NONE,
   MODAL_START_PROBE_CONFIRM,
   MODAL_STOP_PROBE_CONFIRM,
+  MODAL_TEST_PROBE_CONFIRM,
   PROCESSING_PHASE_COMPENSATING,
   PROCESSING_PHASE_LOADING,
 } from './constants';
@@ -251,17 +253,20 @@ class AutolevelWidget extends PureComponent {
     handleStepSizeChange: (event) => {
       this.setState({ stepSize: Number(event.target.value) });
     },
+    handleStepSizeSelect: (size) => {
+      this.setState({ stepSize: size });
+    },
     handleStartXChange: (event) => {
-      this.setState({ startX: Number(event.target.value) });
+      this.setState({ startX: this.parseInputValue(event.target.value) });
     },
     handleStartYChange: (event) => {
-      this.setState({ startY: Number(event.target.value) });
+      this.setState({ startY: this.parseInputValue(event.target.value) });
     },
     handleEndXChange: (event) => {
-      this.setState({ endX: Number(event.target.value) });
+      this.setState({ endX: this.parseInputValue(event.target.value) });
     },
     handleEndYChange: (event) => {
-      this.setState({ endY: Number(event.target.value) });
+      this.setState({ endY: this.parseInputValue(event.target.value) });
     },
     // Select all text on focus for easy value replacement
     handleInputFocus: (event) => {
@@ -303,23 +308,27 @@ class AutolevelWidget extends PureComponent {
       }
     },
     handleClearanceHeightChange: (event) => {
-      this.setState({ clearanceHeight: Number(event.target.value) });
+      this.setState({ clearanceHeight: this.parseInputValue(event.target.value) });
     },
     handleProbeStartZChange: (event) => {
-      this.setState({ probeStartZ: Number(event.target.value) });
+      this.setState({ probeStartZ: this.parseInputValue(event.target.value) });
     },
     handleProbeEndZChange: (event) => {
-      this.setState({ probeEndZ: Number(event.target.value) });
+      this.setState({ probeEndZ: this.parseInputValue(event.target.value) });
     },
     handleProbeFeedrateChange: (event) => {
-      this.setState({ probeFeedrate: Number(event.target.value) });
+      this.setState({ probeFeedrate: this.parseInputValue(event.target.value) });
     },
     handleFeedXYChange: (event) => {
-      this.setState({ feedXY: Number(event.target.value) });
+      this.setState({ feedXY: this.parseInputValue(event.target.value) });
     },
 
     // Probe operations
+    showTestProbeConfirmation: () => {
+      this.actions.openModal(MODAL_TEST_PROBE_CONFIRM);
+    },
     runTestProbe: () => {
+      this.actions.closeModal();
       const { probeEndZ, probeFeedrate } = this.state;
       controller.command('autolevel:runTestProbe', {
         depth: probeEndZ,
@@ -726,15 +735,24 @@ class AutolevelWidget extends PureComponent {
 
     this.config.set('minimized', minimized);
     this.config.set('stepSize', stepSize);
-    this.config.set('startX', startX);
-    this.config.set('startY', startY);
-    this.config.set('endX', endX);
-    this.config.set('endY', endY);
-    this.config.set('clearanceHeight', clearanceHeight);
-    this.config.set('probeStartZ', probeStartZ);
-    this.config.set('probeEndZ', probeEndZ);
-    this.config.set('probeFeedrate', probeFeedrate);
-    this.config.set('feedXY', feedXY);
+
+    // Only persist valid numeric values to the config store
+    const numericFields = {
+      startX,
+      startY,
+      endX,
+      endY,
+      clearanceHeight,
+      probeStartZ,
+      probeEndZ,
+      probeFeedrate,
+      feedXY,
+    };
+    Object.entries(numericFields).forEach(([key, value]) => {
+      if (this.isValidNumber(value)) {
+        this.config.set(key, Number(value));
+      }
+    });
 
     // Keep the 3D visualizer in sync whenever the probe configuration changes
     // while the user is on the Setup Probe or Probing view. Skipped on other
@@ -861,11 +879,63 @@ class AutolevelWidget extends PureComponent {
     return true;
   }
 
+  parseInputValue(raw) {
+    const num = Number(raw);
+    if (raw !== '' && !Number.isNaN(num)) {
+      return num;
+    }
+    return raw; // Keep as string for intermediate states ('', '-')
+  }
+
+  isValidNumber(value) {
+    return typeof value === 'number' && !Number.isNaN(value);
+  }
+
+  getValidationErrors() {
+    const {
+      startX, startY, endX, endY,
+      clearanceHeight, probeStartZ, probeEndZ,
+      probeFeedrate,
+    } = this.state;
+    const errors = {};
+    const invalidMsg = i18n._('Invalid number');
+
+    if (!this.isValidNumber(startX)) {
+      errors.startX = invalidMsg;
+    }
+    if (!this.isValidNumber(startY)) {
+      errors.startY = invalidMsg;
+    }
+    if (!this.isValidNumber(endX)) {
+      errors.endX = invalidMsg;
+    }
+    if (!this.isValidNumber(endY)) {
+      errors.endY = invalidMsg;
+    }
+    if (!this.isValidNumber(clearanceHeight)) {
+      errors.clearanceHeight = invalidMsg;
+    }
+    if (!this.isValidNumber(probeStartZ)) {
+      errors.probeStartZ = invalidMsg;
+    }
+    if (!this.isValidNumber(probeEndZ)) {
+      errors.probeEndZ = invalidMsg;
+    }
+    if (!this.isValidNumber(probeFeedrate)) {
+      errors.probeFeedrate = invalidMsg;
+    }
+
+    return errors;
+  }
+
   renderContent() {
     const { wizardView, modal } = this.state;
+    const validationErrors = this.getValidationErrors();
+    const hasValidationErrors = Object.keys(validationErrors).length > 0;
     const state = {
       ...this.state,
-      canClick: this.canClick()
+      canClick: this.canClick() && !hasValidationErrors,
+      validationErrors,
     };
     const actions = this.actions;
 
@@ -880,6 +950,13 @@ class AutolevelWidget extends PureComponent {
 
         {modal.name === MODAL_STOP_PROBE_CONFIRM && (
           <StopProbeModal
+            state={state}
+            actions={actions}
+          />
+        )}
+
+        {modal.name === MODAL_TEST_PROBE_CONFIRM && (
+          <TestProbeModal
             state={state}
             actions={actions}
           />

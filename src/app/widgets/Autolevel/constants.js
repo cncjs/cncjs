@@ -35,10 +35,12 @@ export const {
   MODAL_NONE,
   MODAL_START_PROBE_CONFIRM,
   MODAL_STOP_PROBE_CONFIRM,
+  MODAL_TEST_PROBE_CONFIRM,
 } = constants('widgets/Autolevel/modals', [
   'MODAL_NONE',
   'MODAL_START_PROBE_CONFIRM',
   'MODAL_STOP_PROBE_CONFIRM',
+  'MODAL_TEST_PROBE_CONFIRM',
 ]);
 
 // Processing phases for G-code compensation pipeline
