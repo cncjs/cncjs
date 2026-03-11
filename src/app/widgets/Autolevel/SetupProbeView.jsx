@@ -68,7 +68,7 @@ const SetupProbeView = ({ state, actions }) => {
             onClick={actions.showTestProbeConfirmation}
             disabled={!canClick || isProbing}
           >
-            {i18n._('Run Test Probe')}
+            {i18n._('Test Probe')}
           </Button>
         </div>
         <div className="form-group">
@@ -278,14 +278,16 @@ const SetupProbeView = ({ state, actions }) => {
             onClick={actions.showStartProbeConfirmation}
             disabled={!canClick}
           >
-            ▶ {i18n._('Start Probing')}
+            <i className="fa fa-play" />
+            {i18n._('Start Probing')}
           </Button>
         ) : (
           <Button
             btnStyle="danger"
             onClick={actions.showStopProbeConfirmation}
           >
-            ⏹ {i18n._('Stop Probing')}
+            <i className="fa fa-stop" />
+            {i18n._('Stop Probing')}
           </Button>
         )}
       </div>

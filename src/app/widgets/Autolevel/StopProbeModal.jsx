@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Modal from 'app/components/Modal';
+import { Button } from 'app/components/Buttons';
 import i18n from 'app/lib/i18n';
 import styles from './StartProbeModal.styl';
 
@@ -38,20 +39,18 @@ class StopProbeModal extends PureComponent {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button
-            type="button"
-            className="btn btn-default"
+          <Button
+            btnStyle="default"
             onClick={actions.closeModal}
           >
             {i18n._('Continue Probing')}
-          </button>
-          <button
-            type="button"
-            className="btn btn-danger"
+          </Button>
+          <Button
+            btnStyle="danger"
             onClick={actions.stopProbing}
           >
-            {i18n._('Stop Probing')}
-          </button>
+            <i className="fa fa-stop" /> {i18n._('Stop Probing')}
+          </Button>
         </Modal.Footer>
       </Modal>
     );

@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import { Checkbox } from 'app/components/Checkbox';
 import Modal from 'app/components/Modal';
 import { ToastNotification } from 'app/components/Notifications';
+import { Button } from 'app/components/Buttons';
 import i18n from 'app/lib/i18n';
 import ProbeAreaDiagram from './ProbeAreaDiagram';
 import ZProbeDiagram from './ZProbeDiagram';
@@ -85,21 +86,19 @@ class StartProbeModal extends PureComponent {
           </Checkbox>
         </Modal.Body>
         <Modal.Footer>
-          <button
-            type="button"
-            className="btn btn-default"
+          <Button
+            btnStyle="default"
             onClick={actions.closeModal}
           >
             {i18n._('Cancel')}
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary"
+          </Button>
+          <Button
+            btnStyle="primary"
             onClick={this.handleStartProbing}
             disabled={!safetyConfirmed}
           >
-            {i18n._('Start')}
-          </button>
+            {i18n._('Start Probing')}
+          </Button>
         </Modal.Footer>
       </Modal>
     );

@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import { Checkbox } from 'app/components/Checkbox';
 import Modal from 'app/components/Modal';
 import { ToastNotification } from 'app/components/Notifications';
+import { Button } from 'app/components/Buttons';
 import i18n from 'app/lib/i18n';
 import ZProbeDiagram from './ZProbeDiagram';
 
@@ -33,7 +34,7 @@ class TestProbeModal extends PureComponent {
       <Modal disableOverlay size="sm" onClose={actions.closeModal}>
         <Modal.Header>
           <Modal.Title>
-            {i18n._('Run Test Probe')}
+            {i18n._('Test Probe')}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -64,21 +65,19 @@ class TestProbeModal extends PureComponent {
           </Checkbox>
         </Modal.Body>
         <Modal.Footer>
-          <button
-            type="button"
-            className="btn btn-default"
+          <Button
+            btnStyle="default"
             onClick={actions.closeModal}
           >
             {i18n._('Cancel')}
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary"
+          </Button>
+          <Button
+            btnStyle="primary"
             onClick={this.handleRunTestProbe}
             disabled={!safetyConfirmed}
           >
-            {i18n._('Start')}
-          </button>
+            {i18n._('Start Test Probe')}
+          </Button>
         </Modal.Footer>
       </Modal>
     );
