@@ -107,6 +107,13 @@ class WidgetManager extends PureComponent {
         disabled: false
       },
       {
+        id: 'autolevel',
+        caption: i18n._('Autolevel Widget'),
+        details: i18n._('Probe a surface grid and apply Z-height compensation to your G-code.'),
+        visible: true,
+        disabled: false
+      },
+      {
         id: 'tool',
         caption: i18n._('Tool Widget'),
         details: i18n._('This widget manages workflows for tool changes.'),

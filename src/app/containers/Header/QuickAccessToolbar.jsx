@@ -29,7 +29,7 @@ class QuickAccessToolbar extends PureComponent {
       },
       'reset': () => {
         controller.command('reset');
-      }
+      },
     };
 
     render() {

@@ -58,8 +58,17 @@ class GrblServer {
         this.clients.set(socket, {
             id: clientId,
             simulator: simulator,
-            buffer: ''
+            buffer: '',
+            dataListener: null
         });
+
+        // Listen for async data from simulator (e.g., PRB responses)
+        const dataListener = (data) => {
+            socket.write(data);
+            console.log(`[${clientId}] ASYNC: ${this.escapeString(data)}`);
+        };
+        simulator.on('data', dataListener);
+        this.clients.get(socket).dataListener = dataListener;
 
         // Send startup message
         socket.write(simulator.getStartupMessage());
@@ -72,6 +81,15 @@ class GrblServer {
         // Handle client disconnect
         socket.on('close', () => {
             console.log(`[${new Date().toISOString()}] Client disconnected: ${clientId}`);
+            const client = this.clients.get(socket);
+            if (client && client.dataListener) {
+                // Clean up event listener to prevent memory leaks
+                const listeners = simulator._eventListeners?.data || [];
+                const index = listeners.indexOf(client.dataListener);
+                if (index > -1) {
+                    listeners.splice(index, 1);
+                }
+            }
             this.clients.delete(socket);
         });
 

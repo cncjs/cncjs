@@ -12,7 +12,7 @@ import {
 } from 'react-router-dom';
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import XHR from 'i18next-xhr-backend';
+import HttpBackend from 'i18next-http-backend';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
 import { Provider as GridSystemProvider } from 'app/components/GridSystem';
 import api from 'app/api';
@@ -74,7 +74,7 @@ series([
   },
   () => promisify(next => {
     i18next
-      .use(XHR)
+      .use(HttpBackend)
       .use(LanguageDetector)
       .init(settings.i18next, (t) => {
         next();

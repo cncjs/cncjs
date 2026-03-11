@@ -96,6 +96,7 @@ export default {
     dir: './tmp/siofu'
   },
   i18next: {
+    compatibilityJSON: 'v4',
     lowerCaseLng: true,
 
     // logs out more info (console)

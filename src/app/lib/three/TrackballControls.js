@@ -22,9 +22,9 @@ const TrackballControls = function ( object, domElement ) {
 
     this.screen = { left: 0, top: 0, width: 0, height: 0 };
 
-    this.rotateSpeed = 1.0;
+    this.rotateSpeed = Math.PI;
     this.zoomSpeed = 1.2;
-    this.panSpeed = 0.8;
+    this.panSpeed = 1.0;
 
     this.noRotate = false;
     this.noZoom = false;
@@ -80,7 +80,9 @@ const TrackballControls = function ( object, domElement ) {
     _touchZoomDistanceEnd = 0,
 
     _panStart = new THREE.Vector2(),
-    _panEnd = new THREE.Vector2();
+    _panEnd = new THREE.Vector2(),
+
+    _constrainHorizontal = false;
 
     // for reset
 
@@ -183,6 +185,7 @@ const TrackballControls = function ( object, domElement ) {
             objectUpDirection = new THREE.Vector3(),
             objectSidewaysDirection = new THREE.Vector3(),
             moveDirection = new THREE.Vector3(),
+            worldUp = new THREE.Vector3( 0, 0, 1 ),
             angle;
 
         return function rotateCamera() {
@@ -195,24 +198,47 @@ const TrackballControls = function ( object, domElement ) {
                 _eye.copy( _this.object.position ).sub( _this.target );
 
                 eyeDirection.copy( _eye ).normalize();
-                objectUpDirection.copy( _this.object.up ).normalize();
-                objectSidewaysDirection.crossVectors( objectUpDirection, eyeDirection ).normalize();
 
-                objectUpDirection.setLength( _moveCurr.y - _movePrev.y );
-                objectSidewaysDirection.setLength( _moveCurr.x - _movePrev.x );
+                if ( _constrainHorizontal ) {
 
-                moveDirection.copy( objectUpDirection.add( objectSidewaysDirection ) );
+                    // Shift held: orbit around world Z to preserve camera elevation
+                    angle = -( _moveCurr.x - _movePrev.x ) * _this.rotateSpeed;
+                    quaternion.setFromAxisAngle( worldUp, angle );
 
-                axis.crossVectors( moveDirection, _eye ).normalize();
+                    _eye.applyQuaternion( quaternion );
 
-                angle *= _this.rotateSpeed;
-                quaternion.setFromAxisAngle( axis, angle );
+                    // Recompute camera.up to stay upright
+                    objectSidewaysDirection.crossVectors( worldUp, _eye ).normalize();
+                    if ( objectSidewaysDirection.lengthSq() > 0.001 ) {
+                        _this.object.up.crossVectors( _eye, objectSidewaysDirection ).normalize();
+                    }
 
-                _eye.applyQuaternion( quaternion );
-                _this.object.up.applyQuaternion( quaternion );
+                    _lastAxis.copy( worldUp );
+                    _lastAngle = angle;
 
-                _lastAxis.copy( axis );
-                _lastAngle = angle;
+                } else {
+
+                    // Normal trackball rotation
+                    objectUpDirection.copy( _this.object.up ).normalize();
+                    objectSidewaysDirection.crossVectors( objectUpDirection, eyeDirection ).normalize();
+
+                    objectUpDirection.setLength( _moveCurr.y - _movePrev.y );
+                    objectSidewaysDirection.setLength( _moveCurr.x - _movePrev.x );
+
+                    moveDirection.copy( objectUpDirection.add( objectSidewaysDirection ) );
+
+                    axis.crossVectors( moveDirection, _eye ).normalize();
+
+                    angle *= _this.rotateSpeed;
+                    quaternion.setFromAxisAngle( axis, angle );
+
+                    _eye.applyQuaternion( quaternion );
+                    _this.object.up.applyQuaternion( quaternion );
+
+                    _lastAxis.copy( axis );
+                    _lastAngle = angle;
+
+                }
 
             } else if ( ! _this.staticMoving && _lastAngle ) {
 
@@ -335,7 +361,14 @@ const TrackballControls = function ( object, domElement ) {
 
             if ( mouseChange.lengthSq() ) {
 
-                mouseChange.multiplyScalar( _eye.length() * _this.panSpeed );
+                // In orthographic mode the camera distance (_eye.length) does not
+                // change with zoom — only the frustum shrinks. Use the actual frustum
+                // width so panning always covers a constant fraction of the visible area
+                // regardless of zoom level. In perspective mode keep the original formula.
+                var panScale = ( _this.object.inOrthographicMode && _this.object.cameraO )
+                    ? ( _this.object.cameraO.right - _this.object.cameraO.left )
+                    : _eye.length();
+                mouseChange.multiplyScalar( panScale * _this.panSpeed );
 
                 pan.copy( _eye ).cross( _this.object.up ).setLength( mouseChange.x );
                 pan.add( objectUp.copy( _this.object.up ).setLength( mouseChange.y ) );
@@ -525,6 +558,12 @@ const TrackballControls = function ( object, domElement ) {
 
             _movePrev.copy( _moveCurr );
             _moveCurr.copy( getMouseOnCircle( event.pageX, event.pageY ) );
+
+            // Hold Shift to constrain rotation to horizontal orbit around world Z
+            _constrainHorizontal = event.shiftKey;
+            if ( _constrainHorizontal ) {
+                _moveCurr.y = _movePrev.y;
+            }
 
         } else if ( _state === STATE.ZOOM && ! _this.noZoom ) {
 

@@ -27,6 +27,7 @@ import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
 import GCodeVisualizer from './GCodeVisualizer';
+import ProbeVisualization from './ProbeVisualization';
 import {
   CAMERA_MODE_PAN,
   CAMERA_MODE_ROTATE
@@ -77,6 +78,8 @@ class Visualizer extends Component {
 
     group = new THREE.Group();
 
+    probeVisualization = null;
+
     pivotPoint = new PivotPoint3({ x: 0, y: 0, z: 0 }, (x, y, z) => { // relative position
       _each(this.group.children, (o) => {
         o.translateX(x);
@@ -98,15 +101,25 @@ class Visualizer extends Component {
     changeMachineProfile = () => {
       const machineProfile = store.get('workspace.machineProfile');
 
-      if (!machineProfile) {
-        return;
-      }
-
       if (_isEqual(machineProfile, this.machineProfile)) {
         return;
       }
 
-      this.machineProfile = { ...machineProfile };
+      this.machineProfile = machineProfile ? { ...machineProfile } : null;
+
+      // Profile removed — reset to defaults and return
+      if (!machineProfile) {
+        this.pivotPoint.set(0, 0, 0);
+        this.updateCuttingToolPosition();
+        this.updateCuttingPointerPosition();
+        this.updateLimitsPosition();
+        this.updateProbeVisualizationPosition();
+        if (this.group) {
+          this.rebuildCoordinateSystems();
+        }
+        this.updateScene();
+        return;
+      }
 
       if (this.limits) {
         this.group.remove(this.limits);
@@ -121,7 +134,20 @@ class Visualizer extends Component {
       this.limits.visible = state.objects.limits.visible;
       this.group.add(this.limits);
 
+      // Set pivot to the center of the machine profile work area (XY only; Z origin stays at 0)
+      const centerX = (xmin + xmax) / 2;
+      const centerY = (ymin + ymax) / 2;
+      this.pivotPoint.set(centerX, centerY, 0);
+
+      this.updateCuttingToolPosition();
+      this.updateCuttingPointerPosition();
       this.updateLimitsPosition();
+      this.updateProbeVisualizationPosition();
+
+      // Rebuild grid and axes to match the new machine profile dimensions
+      if (this.group) {
+        this.rebuildCoordinateSystems();
+      }
 
       this.updateScene();
     };
@@ -290,6 +316,7 @@ class Visualizer extends Component {
           this.updateCuttingToolPosition();
           this.updateCuttingPointerPosition();
           this.updateLimitsPosition();
+          this.updateProbeVisualizationPosition();
         }
       }
 
@@ -336,6 +363,42 @@ class Visualizer extends Component {
       const tokens = [
         pubsub.subscribe('resize', (msg) => {
           this.resizeRenderer();
+        }),
+        pubsub.subscribe('autolevel:showProbeVisualization', (msg, data) => {
+          this.showProbeVisualization(data);
+        }),
+        pubsub.subscribe('autolevel:hideProbeVisualization', (msg) => {
+          this.hideProbeVisualization();
+        }),
+        pubsub.subscribe('autolevel:updateProbeVisualization', (msg, data) => {
+          log.info('[Visualizer] Received updateProbeVisualization event:', data);
+
+          if (this.probeVisualization && typeof this.probeVisualization.updateBounds === 'function') {
+            const { startX, startY, endX, endY, snapX, snapY, interactable } = data.config;
+            log.info('[Visualizer] Updating bounds to:', { startX, startY, endX, endY, snapX, snapY, interactable });
+
+            // Update snap config if provided
+            if (this.probeVisualization.config) {
+              if (snapX !== undefined) {
+                this.probeVisualization.config.snapX = snapX;
+              }
+              if (snapY !== undefined) {
+                this.probeVisualization.config.snapY = snapY;
+              }
+            }
+
+            this.probeVisualization.updateBounds(startX, startY, endX, endY);
+
+            // Enable or disable interactions based on interactable flag
+            if (typeof this.probeVisualization.setInteractable === 'function' && interactable !== undefined) {
+              this.probeVisualization.setInteractable(interactable);
+            }
+
+            this.updateScene({ forceUpdate: true });
+            log.debug('[Visualizer] Updated probe visualization bounds from AutoLevel');
+          } else {
+            log.warn('[Visualizer] Cannot update bounds - probeVisualization or updateBounds not available');
+          }
         })
       ];
       this.pubsubTokens = this.pubsubTokens.concat(tokens);
@@ -346,6 +409,80 @@ class Visualizer extends Component {
         pubsub.unsubscribe(token);
       });
       this.pubsubTokens = [];
+    }
+
+    showProbeVisualization(data) {
+      const { probeData = [], config = {} } = data;
+
+      log.debug('[Visualizer] showProbeVisualization', { probeData: probeData.length, config });
+
+      // If probe visualization doesn't exist, create it once
+      if (!this.probeVisualization) {
+        this.probeVisualization = new ProbeVisualization(
+          probeData,
+          config,
+          this.camera,
+          this.renderer.domElement,
+          this.controls,
+          () => this.updateScene({ forceUpdate: true }) // Scene update callback for smooth drag
+        );
+        this.probeVisualization.group.visible = false; // Start hidden
+        this.group.add(this.probeVisualization.group);
+        log.info('[Visualizer] Created and added probe visualization to group');
+      } else {
+        // Update existing visualization with new config
+        const { startX, startY, endX, endY, snapX, snapY, interactable, units } = config;
+
+        // Update all config values
+        if (this.probeVisualization.config) {
+          if (snapX !== undefined) {
+            this.probeVisualization.config.snapX = snapX;
+          }
+          if (snapY !== undefined) {
+            this.probeVisualization.config.snapY = snapY;
+          }
+          if (units !== undefined) {
+            this.probeVisualization.config.units = units;
+          }
+          if (interactable !== undefined) {
+            this.probeVisualization.config.interactable = interactable;
+          }
+        }
+
+        // Update probe data (surface and points) - call with empty array to clear old data
+        if (typeof this.probeVisualization.updateProbeData === 'function') {
+          this.probeVisualization.updateProbeData(probeData);
+        }
+
+        if (typeof this.probeVisualization.updateBounds === 'function') {
+          this.probeVisualization.updateBounds(startX, startY, endX, endY);
+        }
+        // Recreate interactive elements with new bounds
+        if (typeof this.probeVisualization.recreateInteractiveElements === 'function') {
+          this.probeVisualization.recreateInteractiveElements();
+        }
+        // Enable or disable interactions based on interactable flag
+        if (typeof this.probeVisualization.setInteractable === 'function') {
+          this.probeVisualization.setInteractable(interactable !== undefined ? interactable : false);
+        }
+      }
+
+      // Position the group to account for pivot point (like cutting tool)
+      this.updateProbeVisualizationPosition();
+
+      // Make visible
+      this.probeVisualization.group.visible = true;
+      this.updateScene({ forceUpdate: true });
+    }
+
+    hideProbeVisualization() {
+      if (this.probeVisualization) {
+        log.debug('[Visualizer] hideProbeVisualization');
+
+        // Just hide, don't dispose (keeps events bound for next show)
+        this.probeVisualization.group.visible = false;
+        this.updateScene({ forceUpdate: true });
+      }
     }
 
     // https://tylercipriani.com/blog/2014/07/12/crossbrowser-javascript-scrollbar-detection/
@@ -480,21 +617,48 @@ class Visualizer extends Component {
       return limits;
     }
 
-    createCoordinateSystem(units) {
-      const axisLength = (units === IMPERIAL_UNITS) ? IMPERIAL_AXIS_LENGTH : METRIC_AXIS_LENGTH;
-      const gridCount = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_COUNT : METRIC_GRID_COUNT;
+    // Derive grid and axis bounds from machine profile limits (if set) or
+    // fall back to the fixed defaults for the given unit system.
+    getCoordinateBounds(units) {
       const gridSpacing = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_SPACING : METRIC_GRID_SPACING;
+      const limits = _get(this.machineProfile, 'limits');
+      const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = { ...limits };
+      const hasMachineProfile = (xmax - xmin) > 0 || (ymax - ymin) > 0;
+
+      if (hasMachineProfile) {
+        return {
+          minX: xmin,
+          maxX: xmax,
+          minY: ymin,
+          maxY: ymax,
+          minZ: zmin,
+          maxZ: zmax,
+          gridSpacing,
+        };
+      }
+
+      // Default symmetric grid
+      const gridCount = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_COUNT : METRIC_GRID_COUNT;
+      const axisLength = (units === IMPERIAL_UNITS) ? IMPERIAL_AXIS_LENGTH : METRIC_AXIS_LENGTH;
+      const size = gridCount * gridSpacing;
+      return {
+        minX: -size,
+        maxX: size,
+        minY: -size,
+        maxY: size,
+        minZ: -axisLength,
+        maxZ: axisLength,
+        gridSpacing,
+      };
+    }
+
+    createCoordinateSystem(units) {
+      const { minX, maxX, minY, maxY, minZ, maxZ, gridSpacing } = this.getCoordinateBounds(units);
+      const labelOffset = gridSpacing * 2;
       const group = new THREE.Group();
 
       { // Coordinate Grid
-        const gridLine = new GridLine(
-          gridCount * gridSpacing,
-          gridSpacing,
-          gridCount * gridSpacing,
-          gridSpacing,
-          colornames('blue'), // center line
-          colornames('gray 44') // grid
-        );
+        const gridLine = new GridLine(minX, maxX, gridSpacing, minY, maxY, gridSpacing, colornames('blue'), colornames('gray 44'));
         _each(gridLine.children, (o) => {
           o.material.opacity = 0.15;
           o.material.transparent = true;
@@ -504,15 +668,15 @@ class Visualizer extends Component {
         group.add(gridLine);
       }
 
-      { // Coordinate Axes
-        const coordinateAxes = new CoordinateAxes(axisLength);
+      { // Coordinate Axes — extend to the full grid extent
+        const coordinateAxes = new CoordinateAxes({ minX, maxX, minY, maxY, minZ, maxZ });
         coordinateAxes.name = 'CoordinateAxes';
         group.add(coordinateAxes);
       }
 
-      { // Axis Labels
+      { // Axis Labels — placed just beyond the positive end of each axis
         const axisXLabel = new TextSprite({
-          x: axisLength + 10,
+          x: maxX + labelOffset,
           y: 0,
           z: 0,
           size: 20,
@@ -521,7 +685,7 @@ class Visualizer extends Component {
         });
         const axisYLabel = new TextSprite({
           x: 0,
-          y: axisLength + 10,
+          y: maxY + labelOffset,
           z: 0,
           size: 20,
           text: 'Y',
@@ -530,7 +694,7 @@ class Visualizer extends Component {
         const axisZLabel = new TextSprite({
           x: 0,
           y: 0,
-          z: axisLength + 10,
+          z: maxZ + labelOffset,
           size: 20,
           text: 'Z',
           color: colornames('blue')
@@ -545,46 +709,79 @@ class Visualizer extends Component {
     }
 
     createGridLineNumbers(units) {
-      const gridCount = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_COUNT : METRIC_GRID_COUNT;
-      const gridSpacing = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_SPACING : METRIC_GRID_SPACING;
+      const { minX, maxX, minY, maxY, gridSpacing } = this.getCoordinateBounds(units);
       const textSize = (units === IMPERIAL_UNITS) ? (25.4 / 3) : (10 / 3);
       const textOffset = (units === IMPERIAL_UNITS) ? (25.4 / 5) : (10 / 5);
       const group = new THREE.Group();
 
-      for (let i = -gridCount; i <= gridCount; ++i) {
-        if (i !== 0) {
-          const textLabel = new TextSprite({
-            x: i * gridSpacing,
+      // X-axis labels
+      for (let x = minX; x <= maxX; x += gridSpacing) {
+        if (x !== 0) {
+          group.add(new TextSprite({
+            x,
             y: textOffset,
             z: 0,
             size: textSize,
-            text: (units === IMPERIAL_UNITS) ? i : i * 10,
+            text: Math.round(x),
             textAlign: 'center',
             textBaseline: 'bottom',
             color: colornames('red'),
             opacity: 0.5
-          });
-          group.add(textLabel);
+          }));
         }
       }
-      for (let i = -gridCount; i <= gridCount; ++i) {
-        if (i !== 0) {
-          const textLabel = new TextSprite({
+
+      // Y-axis labels
+      for (let y = minY; y <= maxY; y += gridSpacing) {
+        if (y !== 0) {
+          group.add(new TextSprite({
             x: -textOffset,
-            y: i * gridSpacing,
+            y,
             z: 0,
             size: textSize,
-            text: (units === IMPERIAL_UNITS) ? i : i * 10,
+            text: Math.round(y),
             textAlign: 'right',
             textBaseline: 'middle',
             color: colornames('green'),
             opacity: 0.5
-          });
-          group.add(textLabel);
+          }));
         }
       }
 
       return group;
+    }
+
+    rebuildCoordinateSystems() {
+      const { state } = this.props;
+      const { units, objects } = state;
+
+      ['ImperialCoordinateSystem', 'MetricCoordinateSystem',
+        'ImperialGridLineNumbers', 'MetricGridLineNumbers'].forEach(name => {
+        const obj = this.group.getObjectByName(name);
+        if (obj) {
+          this.group.remove(obj);
+        }
+      });
+
+      const imperialCoordinateSystem = this.createCoordinateSystem(IMPERIAL_UNITS);
+      imperialCoordinateSystem.name = 'ImperialCoordinateSystem';
+      imperialCoordinateSystem.visible = objects.coordinateSystem.visible && (units === IMPERIAL_UNITS);
+      this.group.add(imperialCoordinateSystem);
+
+      const metricCoordinateSystem = this.createCoordinateSystem(METRIC_UNITS);
+      metricCoordinateSystem.name = 'MetricCoordinateSystem';
+      metricCoordinateSystem.visible = objects.coordinateSystem.visible && (units === METRIC_UNITS);
+      this.group.add(metricCoordinateSystem);
+
+      const imperialGridLineNumbers = this.createGridLineNumbers(IMPERIAL_UNITS);
+      imperialGridLineNumbers.name = 'ImperialGridLineNumbers';
+      imperialGridLineNumbers.visible = objects.gridLineNumbers.visible && (units === IMPERIAL_UNITS);
+      this.group.add(imperialGridLineNumbers);
+
+      const metricGridLineNumbers = this.createGridLineNumbers(METRIC_UNITS);
+      metricGridLineNumbers.name = 'MetricGridLineNumbers';
+      metricGridLineNumbers.visible = objects.gridLineNumbers.visible && (units === METRIC_UNITS);
+      this.group.add(metricGridLineNumbers);
     }
 
     //
@@ -751,6 +948,28 @@ class Visualizer extends Component {
         this.updateLimitsPosition();
       }
 
+      { // Probe Visualization
+        // Create with default bounds, will be updated when shown
+        const defaultConfig = {
+          startX: 0,
+          startY: 0,
+          endX: 10,
+          endY: 10,
+          units: units
+        };
+        this.probeVisualization = new ProbeVisualization(
+          [], // No probe data initially
+          defaultConfig,
+          this.camera,
+          this.renderer.domElement,
+          this.controls,
+          () => this.updateScene({ forceUpdate: true })
+        );
+        this.probeVisualization.group.name = 'ProbeVisualization';
+        this.probeVisualization.group.visible = false; // Hidden by default
+        this.group.add(this.probeVisualization.group);
+      }
+
       this.scene.add(this.group);
     }
 
@@ -766,6 +985,11 @@ class Visualizer extends Component {
     }
 
     clearScene() {
+      // Dispose probe visualization events before clearing
+      if (this.probeVisualization && typeof this.probeVisualization.dispose === 'function') {
+        this.probeVisualization.dispose();
+      }
+
       // to iterrate over all children (except the first) in a scene
       const objsToRemove = _tail(this.scene.children);
       _each(objsToRemove, (obj) => {
@@ -835,9 +1059,9 @@ class Visualizer extends Component {
     createTrackballControls(object, domElement) {
       const controls = new TrackballControls(object, domElement);
 
-      controls.rotateSpeed = 1.0;
+      controls.rotateSpeed = Math.PI;
       controls.zoomSpeed = 1.2;
-      controls.panSpeed = 0.8;
+      controls.panSpeed = 1.0;
       controls.noZoom = false;
       controls.noPan = false;
 
@@ -938,6 +1162,16 @@ class Visualizer extends Component {
       this.limits.position.set(x0, y0, z0);
     }
 
+    // Update probe visualization position
+    updateProbeVisualizationPosition() {
+      if (!this.probeVisualization) {
+        return;
+      }
+
+      const pivotPoint = this.pivotPoint.get();
+      this.probeVisualization.group.position.set(-pivotPoint.x, -pivotPoint.y, -pivotPoint.z);
+    }
+
     // Make the controls look at the specified position
     lookAt(x, y, z) {
       this.controls.target.x = x;
@@ -984,6 +1218,7 @@ class Visualizer extends Component {
       this.updateCuttingToolPosition();
       this.updateCuttingPointerPosition();
       this.updateLimitsPosition();
+      this.updateProbeVisualizationPosition();
 
       if (this.viewport && dX > 0 && dY > 0) {
         // The minimum viewport is 50x50mm
@@ -1012,6 +1247,12 @@ class Visualizer extends Component {
       if (this.pivotPoint) {
         // Set the pivot point to the origin point (0, 0, 0)
         this.pivotPoint.set(0, 0, 0);
+
+        // Update positions after resetting pivot point
+        this.updateCuttingToolPosition();
+        this.updateCuttingPointerPosition();
+        this.updateLimitsPosition();
+        this.updateProbeVisualizationPosition();
       }
 
       if (this.controls) {

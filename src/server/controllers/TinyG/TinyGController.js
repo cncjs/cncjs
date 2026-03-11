@@ -1,11 +1,14 @@
 import {
   ensureArray,
+  ensureFiniteNumber,
   ensureNumber,
   ensurePositiveNumber,
   ensureString,
 } from 'ensure-type';
+import fsp from 'fs/promises';
 import * as gcodeParser from 'gcode-parser';
 import _ from 'lodash';
+import * as autolevel from '../../lib/autolevel';
 import SerialConnection from '../../lib/SerialConnection';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
@@ -45,7 +48,7 @@ import {
 } from '../constants';
 import * as builtinCommand from '../utils/builtin-command';
 import { isM0, isM1, isM6, replaceM6 } from '../utils/gcode';
-import { mapPositionToUnits, mapValueToUnits } from '../utils/units';
+import { in2mm, mapPositionToUnits, mapValueToUnits } from '../utils/units';
 import TinyGRunner from './TinyGRunner';
 import {
   TINYG,
@@ -173,6 +176,22 @@ class TinyGController {
 
     // Event Trigger
     event = null;
+
+    // Auto Level - Probe state tracking
+    probeState = {
+      // The probed positions in the form of [{x, y, z}, ...]
+      probedPositions: [],
+
+      // The minimum and maximum Z values among the probed positions
+      minZ: null,
+      maxZ: null,
+
+      // The probe points in the form of [{x, y}, ...]
+      probePoints: [],
+
+      // The probe configuration
+      config: null,
+    };
 
     // Feeder
     feeder = null;
@@ -570,6 +589,92 @@ class TinyGController {
         }
         if (r && r.cof === null) {
           this.sr.cof = false; // No flood coolant
+        }
+
+        // Handle probe response (prb)
+        // TinyG returns probe results in the JSON response as {"r":{"prb":{"e":1,"x":0,"y":0,"z":-1.5}}}
+        const prb = _.get(r, 'r.prb') || _.get(r, 'prb');
+        if (prb && prb.e === 1) {
+          log.debug('[autolevel] TinyG probe response received:', prb);
+
+          // Machine position (always mm in TinyG/g2core)
+          const {
+            x: mposx,
+            y: mposy,
+            z: mposz,
+            a: mposa,
+            b: mposb,
+            c: mposc,
+          } = this.runner.getMachinePosition();
+
+          // Work position (follows G20/G21 in TinyG/g2core)
+          const {
+            x: posx,
+            y: posy,
+            z: posz,
+            a: posa,
+            b: posb,
+            c: posc,
+          } = this.runner.getWorkPosition();
+
+          // TinyG/g2core: prb and mpos are always in mm, wpos follows G20/G21.
+          // Convert wpos to mm so WCO is computed entirely in mm.
+          const modal = this.runner.getModalGroup();
+          const isImperial = modal.units === 'G20';
+
+          const wco = {
+            x: (Number(mposx) - (isImperial ? in2mm(posx) : Number(posx))).toFixed(3),
+            y: (Number(mposy) - (isImperial ? in2mm(posy) : Number(posy))).toFixed(3),
+            z: (Number(mposz) - (isImperial ? in2mm(posz) : Number(posz))).toFixed(3),
+            a: (Number(mposa) - (isImperial ? in2mm(posa) : Number(posa))).toFixed(3),
+            b: (Number(mposb) - (isImperial ? in2mm(posb) : Number(posb))).toFixed(3),
+            c: (Number(mposc) - (isImperial ? in2mm(posc) : Number(posc))).toFixed(3),
+          };
+
+          // Probe data is always stored in mm for consistent compensation math
+          // prb(mm) - wco(mm) = work coordinates in mm
+          const probedPos = {
+            x: ensureFiniteNumber(prb.x) - Number(wco.x),
+            y: ensureFiniteNumber(prb.y) - Number(wco.y),
+            z: ensureFiniteNumber(prb.z) - Number(wco.z),
+          };
+
+          // Track probe data if probing is active
+          log.debug('[autolevel] Checking probe state:', {
+            probePoints: this.probeState.probePoints.length,
+            probedPositions: this.probeState.probedPositions.length,
+            probedPos
+          });
+          if (this.probeState.probePoints.length > 0 && this.probeState.probedPositions.length < this.probeState.probePoints.length) {
+            const newProbedPositions = [...this.probeState.probedPositions, probedPos];
+            const isCompleted = newProbedPositions.length >= this.probeState.probePoints.length;
+
+            if (this.probeState.probedPositions.length === 0) {
+              this.probeState.minZ = probedPos.z;
+              this.probeState.maxZ = probedPos.z;
+            } else {
+              this.probeState.minZ = Math.min(this.probeState.minZ, probedPos.z);
+              this.probeState.maxZ = Math.max(this.probeState.maxZ, probedPos.z);
+            }
+
+            this.probeState.probedPositions = newProbedPositions;
+
+            log.debug(`[autolevel] Probed ${newProbedPositions.length}/${this.probeState.probePoints.length}: posX=${probedPos.x.toFixed(3)}, posY=${probedPos.y.toFixed(3)}, posZ=${probedPos.z.toFixed(3)}`);
+
+            this.emit('autolevel:update', {
+              current: newProbedPositions.length,
+              total: this.probeState.probePoints.length,
+              probedPos: { ...probedPos },
+              minZ: this.probeState.minZ,
+              maxZ: this.probeState.maxZ,
+              maxDeviation: this.probeState.maxZ - this.probeState.minZ,
+            });
+
+            if (isCompleted) {
+              this.emit('autolevel:complete');
+              log.info('[autolevel] Probing completed');
+            }
+          }
         }
 
         const { hold, sent, received } = this.sender.state;
@@ -1676,6 +1781,191 @@ class TinyGController {
           lines.push('%wait 5');
 
           this.command('gcode', lines, context);
+        },
+        'autolevel:start': () => {
+          const [params = {}] = args;
+          const {
+            mode = 'full',
+            startX,
+            endX,
+            stepX,
+            startY,
+            endY,
+            stepY,
+            clearanceZ,
+            startZ,
+            endZ,
+            feedrate,
+          } = params;
+
+          if (mode === 'test') {
+            // Test mode: single probe at current XY position, no probe results
+            const testGCode = [
+              'G90',
+              `G0 Z${clearanceZ}`,
+              `G0 Z${startZ}`,
+              `G38.2 Z${endZ} F${feedrate}`,
+              `G0 Z${clearanceZ}`,
+            ];
+            log.info(`[autolevel:start] Test probe: clearanceZ=${clearanceZ}, startZ=${startZ}, endZ=${endZ}, F=${feedrate}`);
+            this.command('gcode', testGCode);
+            return;
+          }
+
+          // Full mode: multi-point probe grid
+          const probePoints = autolevel.createProbeXYPoints({
+            startX,
+            endX,
+            stepX,
+            startY,
+            endY,
+            stepY,
+          });
+
+          // Reset probe state
+          this.probeState = {
+            probedPositions: [],
+            probePoints,
+            minZ: null,
+            maxZ: null,
+            config: {
+              startX,
+              endX,
+              stepX,
+              startY,
+              endY,
+              stepY,
+              clearanceZ,
+              startZ,
+              endZ,
+              feedrate,
+            },
+          };
+
+          log.info(`[autolevel:start] Start probing with ${probePoints.length} points`);
+
+          // Generate probe G-code
+          const probeGCodes = [];
+          probePoints.forEach((point, index) => {
+            const { x, y } = point;
+
+            probeGCodes.push(`(Auto Level: probing point ${index})`);
+
+            probeGCodes.push('G90'); // Absolute positioning
+            probeGCodes.push(`G0 Z${clearanceZ}`);
+            probeGCodes.push(`G0 X${x} Y${y}`);
+            probeGCodes.push(`G0 Z${startZ}`);
+            if (index === 0) {
+              probeGCodes.push(`G38.2 Z${endZ} F${feedrate / 2}`);
+            } else {
+              probeGCodes.push(`G38.2 Z${endZ} F${feedrate}`);
+            }
+            probeGCodes.push(`G0 Z${clearanceZ}`);
+          });
+
+          log.info(`[autolevel:start] Starting probing with ${probePoints.length} points`);
+          this.command('gcode', probeGCodes);
+        },
+
+        'autolevel:stop': () => {
+          // Reset the machine to cancel the probe cycle immediately
+          this.command('reset');
+
+          // Clear probe state
+          this.probeState = {
+            probedPositions: [],
+            probePoints: [],
+            minZ: null,
+            maxZ: null,
+            config: null,
+          };
+          log.info('[autolevel:stop] Probe stopped and state cleared');
+        },
+
+        'autolevel:getProbeState': () => {
+          const [, callback] = args;
+          if (typeof callback === 'function') {
+            callback(null, { state: this.probeState });
+          }
+        },
+        'autolevel:loadFromFile': async () => {
+          const [filepath, callback] = args;
+
+          try {
+            const data = await fsp.readFile(filepath, 'utf8');
+            const lines = data.split('\n').filter(line => line.trim().length > 0);
+
+            const probedPositions = [];
+            let minZ = Infinity;
+            let maxZ = -Infinity;
+
+            lines.forEach(line => {
+              const regex = /(-?\d*\.?\d+)?(\s+|$)/g;
+              const matches = [...line.matchAll(regex)];
+              const values = matches.map(match => (match[1] ? Number(match[1]) : undefined));
+              const [x, y, z] = values;
+
+              probedPositions.push({ x, y, z });
+              minZ = Math.min(z, minZ);
+              maxZ = Math.max(z, maxZ);
+            });
+
+            this.probeState.probedPositions = probedPositions;
+            this.probeState.minZ = minZ;
+            this.probeState.maxZ = maxZ;
+
+            if (typeof callback === 'function') {
+              callback(null, { success: true, state: this.probeState });
+            }
+
+            log.info(`[autolevel:load] Loaded ${probedPositions.length} points from ${filepath}`);
+          } catch (err) {
+            log.error('[autolevel:load] Error loading probe data:', err);
+            if (typeof callback === 'function') {
+              callback(err.message, { success: false, state: null });
+            }
+          }
+        },
+        'autolevel:saveToFile': async () => {
+          const [filepath, callback] = args;
+
+          try {
+            const { probedPositions } = this.probeState;
+            const data = probedPositions.map(({ x, y, z }) => {
+              const a = 0, b = 0, c = 0;
+              const u = 0, v = 0, w = 0;
+              return `${x} ${y} ${z} ${a} ${b} ${c} ${u} ${v} ${w}`;
+            }).join('\n');
+
+            await fsp.writeFile(filepath, data, 'utf8');
+
+            if (typeof callback === 'function') {
+              callback(null, { success: true, filepath });
+            }
+
+            log.info(`[autolevel:saveToFile] Saved ${probedPositions.length} points to ${filepath}`);
+          } catch (err) {
+            log.error('[autolevel:saveToFile] Error saving probe data:', err);
+            if (typeof callback === 'function') {
+              callback(err.message, { success: false, filepath });
+            }
+          }
+        },
+        'autolevel:applyProbeCompensation': () => {
+          const [params, callback] = args;
+          const {
+            gcode: gcodeStr,
+            probeData,
+          } = params;
+
+          // Use AutoLevel static method for compensation (step size auto-detected from probeData)
+          const compensatedGcode = autolevel.applyProbeCompensation(gcodeStr, probeData);
+
+          log.info('[autolevel:applyProbeCompensation] Probe compensation applied');
+
+          if (typeof callback === 'function') {
+            callback(null, { compensatedGcode });
+          }
         },
       }[cmd];
 
