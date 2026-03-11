@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import i18n from 'app/lib/i18n';
+import { IMPERIAL_UNITS } from 'app/constants';
 import ProbeProgressDisplay from './ProbeProgressDisplay';
 import { PROBE_STATE_IDLE, PROBE_STATE_RUNNING, PROBE_STATE_PAUSED, PROBE_STATE_STOPPED } from './constants';
 import styles from './SetupProbeView.styl';
@@ -16,12 +17,13 @@ const SetupProbeView = ({ state, actions }) => {
   const step = 1;
 
   // Define step size options based on units
-  const METRIC_STEP_SIZES = [0.5, 1, 2, 5, 10, 20];
-  const IMPERIAL_STEP_SIZES = [1 / 64, 1 / 32, 1 / 16, 1 / 8, 1 / 4, 1 / 2, 1].map(v => v * 25.4);
-  const stepSizes = units === 'in' ? IMPERIAL_STEP_SIZES : METRIC_STEP_SIZES;
-  const stepLabels = units === 'in'
-    ? ['1/64"', '1/32"', '1/16"', '1/8"', '1/4"', '1/2" (default)', '1"']
-    : ['0.5mm', '1mm', '2mm', '5mm', '10mm (default)', '20mm'];
+  const IMPERIAL_STEP_SIZES = [1 / 16, 1 / 8, 1 / 4, 1 / 2, 1].map(v => v * 25.4);
+  const METRIC_STEP_SIZES = [1, 2, 5, 10, 20];
+  const isImperial = units === IMPERIAL_UNITS;
+  const stepSizes = isImperial ? IMPERIAL_STEP_SIZES : METRIC_STEP_SIZES;
+  const stepLabels = isImperial
+    ? [i18n._('1/16"'), i18n._('1/8"'), i18n._('1/4"'), i18n._('1/2"'), i18n._('1"')]
+    : [i18n._('1mm'), i18n._('2mm'), i18n._('5mm'), i18n._('10mm'), i18n._('20mm')];
 
   const numPointsX = Math.floor((endX - startX) / stepSize) + 1;
   const numPointsY = Math.floor((endY - startY) / stepSize) + 1;
@@ -130,6 +132,11 @@ const SetupProbeView = ({ state, actions }) => {
 
       <div className={styles.section}>
         <div className={styles.sectionTitle}>{i18n._('Z-Axis Settings')}</div>
+        <div className="form-group">
+          <button type="button" className="btn btn-default" onClick={actions.runTestProbe} disabled={!canClick || isProbing}>
+            <span role="img" aria-label="Microscope">🔬</span> {i18n._('Run Test Probe')}
+          </button>
+        </div>
         <div className="row no-gutters">
           <div className="col-xs-6" style={{ paddingRight: 5 }}>
             <div className="form-group">
@@ -176,20 +183,15 @@ const SetupProbeView = ({ state, actions }) => {
       </div>
 
       <div className={styles.section} style={{ marginBottom: 0 }}>
-        <div className={styles.buttonRow} style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <button type="button" className="btn btn-sm btn-default" onClick={actions.runTestProbe} disabled={!canClick || isProbing}>
-            <span role="img" aria-label="Microscope">🔬</span> {i18n._('Run Test Probe')}
+        {!isProbing ? (
+          <button type="button" className="btn btn-sm btn-primary btn-block" onClick={actions.showStartProbeConfirmation} disabled={!canClick}>
+            ▶ {i18n._('Start Probing')}
           </button>
-          {!isProbing ? (
-            <button type="button" className="btn btn-sm btn-primary" onClick={actions.showStartProbeConfirmation} disabled={!canClick}>
-              ▶ {i18n._('Start Probing')}
-            </button>
-          ) : (
-            <button type="button" className="btn btn-sm btn-danger" onClick={actions.showStopProbeConfirmation}>
-              ⏹ {i18n._('Stop Probing')}
-            </button>
-          )}
-        </div>
+        ) : (
+          <button type="button" className="btn btn-sm btn-danger btn-block" onClick={actions.showStopProbeConfirmation}>
+            ⏹ {i18n._('Stop Probing')}
+          </button>
+        )}
       </div>
 
       {isProbing && <ProbeProgressDisplay progress={probeProgress} actions={actions} />}

@@ -1,6 +1,7 @@
 import colornames from 'colornames';
 import pubsub from 'pubsub-js';
 import * as THREE from 'three';
+import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import TextSprite from './TextSprite';
 import { IMPERIAL_UNITS, METRIC_UNITS } from '../../constants';
@@ -51,13 +52,13 @@ class ProbeVisualization {
     this.drawBoundary(startX, startY, endX, endY);
 
     // Draw "PROBE AREA" label at top
-    this.labels.push(this.drawLabel('PROBE AREA', (startX + endX) / 2, endY + 5, 0));
+    this.labels.push(this.drawLabel(i18n._('PROBE AREA'), (startX + endX) / 2, endY + 5, 0));
 
     // Draw "START" label at first corner
-    this.labels.push(this.drawLabel('START', startX - 5, startY - 5, 0));
+    this.labels.push(this.drawLabel(i18n._('START'), startX - 5, startY - 5, 0));
 
     // Draw "END" label at opposite corner
-    this.labels.push(this.drawLabel('END', endX + 5, endY + 5, 0));
+    this.labels.push(this.drawLabel(i18n._('END'), endX + 5, endY + 5, 0));
 
     // Create interactive elements only if no probe data (setup mode)
     if (probeData.length === 0) {
