@@ -17,13 +17,13 @@ const SetupProbeView = ({ state, actions }) => {
   const step = 1;
 
   // Define step size options based on units
-  const IMPERIAL_STEP_SIZES = [1 / 16, 1 / 8, 1 / 4, 1 / 2, 1].map(v => v * 25.4);
-  const METRIC_STEP_SIZES = [1, 2, 5, 10, 20];
+  const IMPERIAL_STEP_SIZES = [1 / 16, 1 / 8, 1 / 4, 1 / 2, 1, 2, 4].map(v => v * 25.4);
+  const METRIC_STEP_SIZES = [1, 2, 5, 10, 20, 50, 100];
   const isImperial = units === IMPERIAL_UNITS;
   const stepSizes = isImperial ? IMPERIAL_STEP_SIZES : METRIC_STEP_SIZES;
   const stepLabels = isImperial
-    ? [i18n._('1/16"'), i18n._('1/8"'), i18n._('1/4"'), i18n._('1/2"'), i18n._('1"')]
-    : [i18n._('1mm'), i18n._('2mm'), i18n._('5mm'), i18n._('10mm'), i18n._('20mm')];
+    ? [i18n._('1/16"'), i18n._('1/8"'), i18n._('1/4"'), i18n._('1/2"'), i18n._('1"'), i18n._('2"'), i18n._('4"')]
+    : [i18n._('1mm'), i18n._('2mm'), i18n._('5mm'), i18n._('10mm'), i18n._('20mm'), i18n._('50mm'), i18n._('100mm')];
 
   const numPointsX = Math.floor((endX - startX) / stepSize) + 1;
   const numPointsY = Math.floor((endY - startY) / stepSize) + 1;
