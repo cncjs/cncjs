@@ -4,6 +4,7 @@ import { ProgressBar } from 'react-bootstrap';
 import { Button } from 'app/components/Buttons';
 import { Infotip } from 'app/components/Tooltip';
 import i18n from 'app/lib/i18n';
+import { METRIC_UNITS } from 'app/constants';
 import { toDisplayUnits } from 'app/lib/units';
 import ProbeAreaDiagram from './ProbeAreaDiagram';
 import ZProbeDiagram from './ZProbeDiagram';
@@ -19,6 +20,7 @@ const SetupProbeView = ({ state, actions }) => {
   } = state;
 
   const step = 1;
+  const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
 
   const numPointsX = Math.floor((endX - startX) / stepX) + 1;
   const numPointsY = Math.floor((endY - startY) / stepY) + 1;
@@ -127,7 +129,7 @@ const SetupProbeView = ({ state, actions }) => {
               </label>
               <div className="input-group input-group-sm">
                 <input type="number" className="form-control" value={feedrate} min={1} step={1} onChange={actions.handleProbeFeedrateChange} disabled={isProbing} />
-                <div className="input-group-addon">{toDisplayUnits(units)}/{i18n._('min')}</div>
+                <div className="input-group-addon">{feedrateUnits}</div>
               </div>
               {validationErrors.feedrate && (
                 <small style={{ color: '#a94442' }}>{validationErrors.feedrate}</small>
