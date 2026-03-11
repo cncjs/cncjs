@@ -642,5 +642,22 @@
   "Max Deviation:": "Max. Abweichung:",
   "Points:": "Punkte:",
   "{{count}} points_one": "{{count}} Punkt",
-  "{{count}} points_other": "{{count}} Punkte"
+  "{{count}} points_other": "{{count}} Punkte",
+  "1/16\"": "",
+  "1/8\"": "",
+  "1/4\"": "",
+  "1/2\"": "",
+  "1\"": "",
+  "2\"": "",
+  "4\"": "",
+  "1mm": "",
+  "2mm": "",
+  "5mm": "",
+  "10mm": "",
+  "20mm": "",
+  "50mm": "",
+  "100mm": "",
+  "PROBE AREA": "TASTBEREICH",
+  "START": "START",
+  "END": "ENDE"
 }

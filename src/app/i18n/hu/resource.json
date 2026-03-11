@@ -642,5 +642,22 @@
   "Max Deviation:": "Max. eltérés:",
   "Points:": "Pontok:",
   "{{count}} points_one": "{{count}} pont",
-  "{{count}} points_other": "{{count}} pont"
+  "{{count}} points_other": "{{count}} pont",
+  "1/16\"": "",
+  "1/8\"": "",
+  "1/4\"": "",
+  "1/2\"": "",
+  "1\"": "",
+  "2\"": "",
+  "4\"": "",
+  "1mm": "",
+  "2mm": "",
+  "5mm": "",
+  "10mm": "",
+  "20mm": "",
+  "50mm": "",
+  "100mm": "",
+  "PROBE AREA": "SZONDÁZÁSI TERÜLET",
+  "START": "START",
+  "END": "VÉG"
 }

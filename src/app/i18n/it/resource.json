@@ -643,5 +643,22 @@
   "Points:": "Punti:",
   "{{count}} points_one": "{{count}} punto",
   "{{count}} points_many": "{{count}} punti",
-  "{{count}} points_other": "{{count}} punti"
+  "{{count}} points_other": "{{count}} punti",
+  "1/16\"": "",
+  "1/8\"": "",
+  "1/4\"": "",
+  "1/2\"": "",
+  "1\"": "",
+  "2\"": "",
+  "4\"": "",
+  "1mm": "",
+  "2mm": "",
+  "5mm": "",
+  "10mm": "",
+  "20mm": "",
+  "50mm": "",
+  "100mm": "",
+  "PROBE AREA": "AREA DI SONDAGGIO",
+  "START": "INIZIO",
+  "END": "FINE"
 }

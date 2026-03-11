@@ -642,5 +642,22 @@
   "Max Deviation:": "Maks. Sapma:",
   "Points:": "Noktalar:",
   "{{count}} points_one": "{{count}} nokta",
-  "{{count}} points_other": "{{count}} nokta"
+  "{{count}} points_other": "{{count}} nokta",
+  "1/16\"": "",
+  "1/8\"": "",
+  "1/4\"": "",
+  "1/2\"": "",
+  "1\"": "",
+  "2\"": "",
+  "4\"": "",
+  "1mm": "",
+  "2mm": "",
+  "5mm": "",
+  "10mm": "",
+  "20mm": "",
+  "50mm": "",
+  "100mm": "",
+  "PROBE AREA": "PROB ALANI",
+  "START": "BAŞLANGIÇ",
+  "END": "BİTİŞ"
 }
