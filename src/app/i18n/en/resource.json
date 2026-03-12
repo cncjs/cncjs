@@ -568,7 +568,6 @@
   "Home Machine B Axis ({{command}})": "Home Machine B Axis ({{command}})",
   "Home Machine C Axis ({{command}})": "Home Machine C Axis ({{command}})",
   "Autolevel Widget": "Autolevel Widget",
-  "Probe a surface grid and apply Z-height compensation to your G-code.": "Probe a surface grid and apply Z-height compensation to your G-code.",
   "Failed to read file": "Failed to read file",
   "No G-code content": "No G-code content",
   "Insufficient probe data — minimum 3 points required": "Insufficient probe data — minimum 3 points required",
@@ -587,7 +586,6 @@
   "No probe data available": "No probe data available",
   "Autolevel": "Autolevel",
   "PROBE NEW SURFACE": "PROBE NEW SURFACE",
-  "Configure the probe region and run autolevel to generate surface compensation data.": "Configure the probe region and run autolevel to generate surface compensation data.",
   "Start New Probe": "Start New Probe",
   "Load a previously saved .probe file and apply it to your G-code.": "Load a previously saved .probe file and apply it to your G-code.",
   "Load Probe Data": "Load Probe Data",
@@ -637,5 +635,12 @@
   "A single probe test will be performed at the current XY position.": "A single probe test will be performed at the current XY position.",
   "Start Test Probe": "Start Test Probe",
   "Workpiece": "Workpiece",
-  "Probe Compensation Applied": "Probe Compensation Applied"
+  "Probe Compensation Applied": "Probe Compensation Applied",
+  "Probe the work surface to generate Z-axis height compensation data for your G-code.": "Probe the work surface to generate Z-axis height compensation data for your G-code.",
+  "Clearance Z must be above Start Z": "Clearance Z must be above Start Z",
+  "Set up the probe area and probe the work surface to generate height compensation data.": "Set up the probe area and probe the work surface to generate height compensation data.",
+  "{{value}} {{- units}}": "{{value}} {{- units}}",
+  "Clearance Z: {{value}} {{- units}}": "Clearance Z: {{value}} {{- units}}",
+  "Start Z: {{value}} {{- units}}": "Start Z: {{value}} {{- units}}",
+  "End Z: {{value}} {{- units}}": "End Z: {{value}} {{- units}}"
 }

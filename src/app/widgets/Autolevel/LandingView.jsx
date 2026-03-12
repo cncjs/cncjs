@@ -14,7 +14,7 @@ const LandingView = ({ actions }) => {
           {i18n._('PROBE NEW SURFACE')}
         </div>
         <div className={styles.pathDescription}>
-          {i18n._('Configure the probe region and run autolevel to generate surface compensation data.')}
+          {i18n._('Set up the probe area and probe the work surface to generate height compensation data.')}
         </div>
         <Button
           btnStyle="flat"

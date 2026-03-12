@@ -115,7 +115,7 @@ const ProbeAreaDiagram = ({
         fontSize="9"
         fill="#666"
       >
-        {`${width} ${displayUnits}`}
+        {i18n._('{{value}} {{- units}}', { value: width, units: displayUnits })}
       </text>
 
       {/* Height dimension label (right) */}
@@ -127,7 +127,7 @@ const ProbeAreaDiagram = ({
         fontSize="9"
         fill="#666"
       >
-        {`${height} ${displayUnits}`}
+        {i18n._('{{value}} {{- units}}', { value: height, units: displayUnits })}
       </text>
     </svg>
   );

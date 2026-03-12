@@ -568,7 +568,6 @@
   "Home Machine B Axis ({{command}})": "B轴归位 ({{command}})",
   "Home Machine C Axis ({{command}})": "C轴归位 ({{command}})",
   "Autolevel Widget": "自动调平插件",
-  "Probe a surface grid and apply Z-height compensation to your G-code.": "探测表面网格并将Z高度补偿应用于您的G代码。",
   "Failed to read file": "读取文件失败",
   "No G-code content": "无G代码内容",
   "Insufficient probe data — minimum 3 points required": "探测数据不足 — 至少需要3个点",
@@ -587,7 +586,6 @@
   "No probe data available": "没有可用的探测数据",
   "Autolevel": "自动调平",
   "PROBE NEW SURFACE": "探测新表面",
-  "Configure the probe region and run autolevel to generate surface compensation data.": "配置探测区域并运行自动调平以生成表面补偿数据。",
   "Start New Probe": "开始新探测",
   "Load a previously saved .probe file and apply it to your G-code.": "加载之前保存的.probe文件并将其应用于您的G代码。",
   "Load Probe Data": "加载探测数据",
@@ -636,5 +634,12 @@
   "A single probe test will be performed at the current XY position.": "将在当前XY位置执行单次探针测试。",
   "Start Test Probe": "开始探针测试",
   "Workpiece": "工件",
-  "Probe Compensation Applied": "探针补偿已应用"
+  "Probe Compensation Applied": "探针补偿已应用",
+  "Probe the work surface to generate Z-axis height compensation data for your G-code.": "探测工件表面以生成G代码的Z轴高度补偿数据。",
+  "Clearance Z must be above Start Z": "安全高度Z必须高于起始Z",
+  "Set up the probe area and probe the work surface to generate height compensation data.": "设置探测区域并探测工件表面以生成高度补偿数据。",
+  "{{value}} {{- units}}": "{{value}} {{- units}}",
+  "Clearance Z: {{value}} {{- units}}": "安全高度Z: {{value}} {{- units}}",
+  "Start Z: {{value}} {{- units}}": "起始Z: {{value}} {{- units}}",
+  "End Z: {{value}} {{- units}}": "终止Z: {{value}} {{- units}}"
 }

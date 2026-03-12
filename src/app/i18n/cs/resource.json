@@ -568,7 +568,6 @@
   "Home Machine B Axis ({{command}})": "Home stroj osa B ({{command}})",
   "Home Machine C Axis ({{command}})": "Home stroj osa C ({{command}})",
   "Autolevel Widget": "Widget Autolevel",
-  "Probe a surface grid and apply Z-height compensation to your G-code.": "Sondujte síť povrchu a aplikujte kompenzaci výšky Z na váš G-kód.",
   "Failed to read file": "Nepodařilo se přečíst soubor",
   "No G-code content": "Žádný obsah G-kódu",
   "Insufficient probe data — minimum 3 points required": "Nedostatečná data sondy — vyžadovány alespoň 3 body",
@@ -587,7 +586,6 @@
   "No probe data available": "Žádná data sondování nejsou k dispozici",
   "Autolevel": "Autolevel",
   "PROBE NEW SURFACE": "SONDOVAT NOVÝ POVRCH",
-  "Configure the probe region and run autolevel to generate surface compensation data.": "Nakonfigurujte oblast sondování a spusťte autolevel pro generování dat kompenzace povrchu.",
   "Start New Probe": "Zahájit nové sondování",
   "Load a previously saved .probe file and apply it to your G-code.": "Načíst dříve uložený soubor .probe a aplikovat ho na váš G-kód.",
   "Load Probe Data": "Načíst data sondování",
@@ -639,5 +637,12 @@
   "A single probe test will be performed at the current XY position.": "Na aktuální poloze XY bude proveden jednorázový test sondy.",
   "Start Test Probe": "Spustit test sondy",
   "Workpiece": "Obrobek",
-  "Probe Compensation Applied": "Kompenzace sondy použita"
+  "Probe Compensation Applied": "Kompenzace sondy použita",
+  "Probe the work surface to generate Z-axis height compensation data for your G-code.": "Snímejte povrch obrobku a generujte data kompenzace výšky osy Z pro váš G-kód.",
+  "Clearance Z must be above Start Z": "Výška přejezdu Z musí být nad počáteční výškou Z",
+  "Set up the probe area and probe the work surface to generate height compensation data.": "Nastavte oblast měření a snímejte povrch obrobku pro generování dat kompenzace výšky.",
+  "{{value}} {{- units}}": "{{value}} {{- units}}",
+  "Clearance Z: {{value}} {{- units}}": "Výška přejezdu Z: {{value}} {{- units}}",
+  "Start Z: {{value}} {{- units}}": "Počáteční Z: {{value}} {{- units}}",
+  "End Z: {{value}} {{- units}}": "Koncové Z: {{value}} {{- units}}"
 }

@@ -568,7 +568,6 @@
   "Home Machine B Axis ({{command}})": "Home maskinen B-akse ({{command}})",
   "Home Machine C Axis ({{command}})": "Home maskinen C-akse ({{command}})",
   "Autolevel Widget": "Autolevel-widget",
-  "Probe a surface grid and apply Z-height compensation to your G-code.": "Sonder et overflateraster og bruk Z-høydekompensasjon på G-koden din.",
   "Failed to read file": "Kunne ikke lese filen",
   "No G-code content": "Ingen G-kode innhold",
   "Insufficient probe data — minimum 3 points required": "Utilstrekkelige sonderingsdata — minimum 3 punkter kreves",
@@ -587,7 +586,6 @@
   "No probe data available": "Ingen sonderingsdata tilgjengelig",
   "Autolevel": "Autolevel",
   "PROBE NEW SURFACE": "SONDER NY OVERFLATE",
-  "Configure the probe region and run autolevel to generate surface compensation data.": "Konfigurer sonderingsområdet og kjør autolevel for å generere data for overflatekompensasjon.",
   "Start New Probe": "Start ny sondering",
   "Load a previously saved .probe file and apply it to your G-code.": "Last inn en tidligere lagret .probe-fil og bruk den på G-koden din.",
   "Load Probe Data": "Last inn sonderingsdata",
@@ -637,5 +635,12 @@
   "A single probe test will be performed at the current XY position.": "En enkelt sondetest vil bli utført ved gjeldende XY-posisjon.",
   "Start Test Probe": "Start sondetest",
   "Workpiece": "Arbeidsstykke",
-  "Probe Compensation Applied": "Sondekompensasjon anvendt"
+  "Probe Compensation Applied": "Sondekompensasjon anvendt",
+  "Probe the work surface to generate Z-axis height compensation data for your G-code.": "Sond arbeidsflaten for å generere Z-akse høydekompensasjonsdata for G-koden din.",
+  "Clearance Z must be above Start Z": "Frihøyde Z må være over start-Z",
+  "Set up the probe area and probe the work surface to generate height compensation data.": "Sett opp sondeområdet og sond arbeidsflaten for å generere høydekompensasjonsdata.",
+  "{{value}} {{- units}}": "{{value}} {{- units}}",
+  "Clearance Z: {{value}} {{- units}}": "Frihøyde Z: {{value}} {{- units}}",
+  "Start Z: {{value}} {{- units}}": "Start-Z: {{value}} {{- units}}",
+  "End Z: {{value}} {{- units}}": "Slutt-Z: {{value}} {{- units}}"
 }

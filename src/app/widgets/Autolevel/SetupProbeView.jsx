@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import { Button } from 'app/components/Buttons';
+import Space from 'app/components/Space';
 import { Infotip } from 'app/components/Tooltip';
 import i18n from 'app/lib/i18n';
 import { METRIC_UNITS } from 'app/constants';
@@ -34,21 +35,16 @@ const SetupProbeView = ({ state, actions }) => {
   return (
     <div className={styles.setupProbeView}>
       <div className={styles.sectionHeader}>
-        <button
-          type="button"
+        <Button
+          btnStyle="flat"
+          btnSize="sm"
+          compact
           onClick={actions.backToLanding}
           disabled={!canGoBack}
-          style={{
-            background: 'none',
-            border: 'none',
-            padding: 0,
-            cursor: canGoBack ? 'pointer' : 'not-allowed',
-            opacity: canGoBack ? 1 : 0.5,
-            marginRight: '8px'
-          }}
         >
           <i className="fa fa-chevron-left" />
-        </button>
+        </Button>
+        <Space width={12} />
         {i18n._('PROBE NEW SURFACE')}
       </div>
       <div className={styles.section}>

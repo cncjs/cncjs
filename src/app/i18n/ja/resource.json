@@ -568,7 +568,6 @@
   "Home Machine B Axis ({{command}})": "B軸を原点へ移動 ({{command}})",
   "Home Machine C Axis ({{command}})": "C軸を原点へ移動 ({{command}})",
   "Autolevel Widget": "自動レベリングウィジェット",
-  "Probe a surface grid and apply Z-height compensation to your G-code.": "表面グリッドをプロービングし、G-codeにZ高さ補正を適用します。",
   "Failed to read file": "ファイルの読み込みに失敗しました",
   "No G-code content": "G-codeの内容がありません",
   "Insufficient probe data — minimum 3 points required": "プローブデータ不足 — 最低3点が必要です",
@@ -587,7 +586,6 @@
   "No probe data available": "プローブデータがありません",
   "Autolevel": "自動レベリング",
   "PROBE NEW SURFACE": "新しい表面をプロービング",
-  "Configure the probe region and run autolevel to generate surface compensation data.": "プローブ領域を設定して自動レベリングを実行し、表面補正データを生成します。",
   "Start New Probe": "新しいプローブを開始",
   "Load a previously saved .probe file and apply it to your G-code.": "以前に保存した.probeファイルを読み込んで、G-codeに適用します。",
   "Load Probe Data": "プローブデータを読み込む",
@@ -636,5 +634,12 @@
   "A single probe test will be performed at the current XY position.": "現在のXY位置で単一のプローブテストが実行されます。",
   "Start Test Probe": "プローブテスト開始",
   "Workpiece": "ワーク",
-  "Probe Compensation Applied": "プローブ補正適用済み"
+  "Probe Compensation Applied": "プローブ補正適用済み",
+  "Probe the work surface to generate Z-axis height compensation data for your G-code.": "ワーク表面をプローブして、GコードのZ軸高さ補正データを生成します。",
+  "Clearance Z must be above Start Z": "クリアランスZは開始Zより上に設定する必要があります",
+  "Set up the probe area and probe the work surface to generate height compensation data.": "プローブ領域を設定し、ワーク表面をプローブして高さ補正データを生成します。",
+  "{{value}} {{- units}}": "{{value}} {{- units}}",
+  "Clearance Z: {{value}} {{- units}}": "クリアランスZ: {{value}} {{- units}}",
+  "Start Z: {{value}} {{- units}}": "開始Z: {{value}} {{- units}}",
+  "End Z: {{value}} {{- units}}": "終了Z: {{value}} {{- units}}"
 }

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import i18n from 'app/lib/i18n';
+import { METRIC_UNITS } from 'app/constants';
 import { toDisplayUnits } from 'app/lib/units';
 
 // Fixed layout positions — no dynamic scaling
@@ -17,6 +18,7 @@ const ARROW_END_Y = 115;
 
 const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) => {
   const displayUnits = toDisplayUnits(units);
+  const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
   return (
   <svg
     viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
@@ -61,7 +63,7 @@ const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) 
       fontSize="9"
       fill="#339933"
     >
-      {`${i18n._('Clearance Z')}: ${clearanceZ} ${displayUnits}`}
+      {i18n._('Clearance Z: {{value}} {{- units}}', { value: clearanceZ, units: displayUnits })}
     </text>
 
     {/* Probe tool body */}
@@ -90,7 +92,7 @@ const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) 
       fontSize="9"
       fill="#0066cc"
     >
-      {`${i18n._('Start Z')}: ${startZ} ${displayUnits}`}
+      {i18n._('Start Z: {{value}} {{- units}}', { value: startZ, units: displayUnits })}
     </text>
 
     {/* Dashed probe path through workpiece */}
@@ -117,7 +119,7 @@ const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) 
       fontSize="9"
       fill="#cc0000"
     >
-      {`${i18n._('End Z')}: ${endZ} ${displayUnits}`}
+      {i18n._('End Z: {{value}} {{- units}}', { value: endZ, units: displayUnits })}
     </text>
 
     {/* Feedrate label on the left of the tool */}
@@ -128,7 +130,7 @@ const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) 
       fontSize="9"
       fill="#666"
     >
-      {`${feedrate} ${displayUnits}/${i18n._('min')}`}
+      {i18n._('{{value}} {{- units}}', { value: feedrate, units: feedrateUnits })}
     </text>
   </svg>
   );

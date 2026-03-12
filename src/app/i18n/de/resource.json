@@ -568,7 +568,6 @@
   "Home Machine B Axis ({{command}})": "B-Achse referenzieren ({{command}})",
   "Home Machine C Axis ({{command}})": "C-Achse referenzieren ({{command}})",
   "Autolevel Widget": "Autolevel-Widget",
-  "Probe a surface grid and apply Z-height compensation to your G-code.": "Tasten Sie ein Oberflächenraster ab und wenden Sie Z-Höhenkompensation auf Ihren G-Code an.",
   "Failed to read file": "Datei konnte nicht gelesen werden",
   "No G-code content": "Kein G-Code-Inhalt",
   "Insufficient probe data — minimum 3 points required": "Unzureichende Tastdaten — mindestens 3 Punkte erforderlich",
@@ -587,7 +586,6 @@
   "No probe data available": "Keine Tastdaten verfügbar",
   "Autolevel": "Autolevel",
   "PROBE NEW SURFACE": "NEUE OBERFLÄCHE ABTASTEN",
-  "Configure the probe region and run autolevel to generate surface compensation data.": "Konfigurieren Sie den Tastbereich und führen Sie Autolevel aus, um Oberflächenkompensationsdaten zu erzeugen.",
   "Start New Probe": "Neues Abtasten starten",
   "Load a previously saved .probe file and apply it to your G-code.": "Eine zuvor gespeicherte .probe-Datei laden und auf Ihren G-Code anwenden.",
   "Load Probe Data": "Tastdaten laden",
@@ -637,5 +635,12 @@
   "A single probe test will be performed at the current XY position.": "An der aktuellen XY-Position wird ein einzelner Tastertest durchgeführt.",
   "Start Test Probe": "Tastertest starten",
   "Workpiece": "Werkstück",
-  "Probe Compensation Applied": "Taster-Kompensation angewendet"
+  "Probe Compensation Applied": "Taster-Kompensation angewendet",
+  "Probe the work surface to generate Z-axis height compensation data for your G-code.": "Tasten Sie die Werkstückoberfläche ab, um Z-Achsen-Höhenkompensationsdaten für Ihren G-Code zu erzeugen.",
+  "Clearance Z must be above Start Z": "Freifahrhöhe Z muss über der Start-Z-Position liegen",
+  "Set up the probe area and probe the work surface to generate height compensation data.": "Richten Sie den Tastbereich ein und tasten Sie die Werkstückoberfläche ab, um Höhenkompensationsdaten zu erzeugen.",
+  "{{value}} {{- units}}": "{{value}} {{- units}}",
+  "Clearance Z: {{value}} {{- units}}": "Freifahrhöhe Z: {{value}} {{- units}}",
+  "Start Z: {{value}} {{- units}}": "Start-Z: {{value}} {{- units}}",
+  "End Z: {{value}} {{- units}}": "End-Z: {{value}} {{- units}}"
 }
