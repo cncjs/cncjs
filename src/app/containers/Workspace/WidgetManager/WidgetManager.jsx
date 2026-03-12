@@ -109,7 +109,7 @@ class WidgetManager extends PureComponent {
       {
         id: 'autolevel',
         caption: i18n._('Autolevel Widget'),
-        details: i18n._('Probe a surface grid and apply Z-height compensation to your G-code.'),
+        details: i18n._('Probe the work surface to generate Z-axis height compensation data for your G-code.'),
         visible: true,
         disabled: false
       },

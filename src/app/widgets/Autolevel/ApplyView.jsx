@@ -5,6 +5,7 @@ import i18n from 'app/lib/i18n';
 import controller from 'app/lib/controller';
 import log from 'app/lib/log';
 import { Button } from 'app/components/Buttons';
+import Space from 'app/components/Space';
 import { mapPositionToUnits, toDisplayUnits } from 'app/lib/units';
 import {
   PROCESSING_PHASE_READING,
@@ -404,21 +405,17 @@ class ApplyView extends PureComponent {
     const { pipelineState } = this.state;
 
     return (
-      <div className={styles.applyView}>
+      <div>
         <div className={styles.sectionHeader}>
-          <button
-            type="button"
+          <Button
+            btnStyle="flat"
+            btnSize="sm"
+            compact
             onClick={actions.backToLanding}
-            style={{
-              background: 'none',
-              border: 'none',
-              padding: 0,
-              cursor: 'pointer',
-              marginRight: '8px'
-            }}
           >
             <i className="fa fa-chevron-left" />
-          </button>
+          </Button>
+          <Space width={12} />
           {i18n._('APPLY COMPENSATION')}
         </div>
 

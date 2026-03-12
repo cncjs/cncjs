@@ -941,6 +941,8 @@ class AutolevelWidget extends PureComponent {
     }
     if (!this.isValidNumber(clearanceZ)) {
       errors.clearanceZ = invalidMsg;
+    } else if (clearanceZ <= startZ) {
+      errors.clearanceZ = i18n._('Clearance Z must be above Start Z');
     }
     if (!this.isValidNumber(startZ)) {
       errors.startZ = invalidMsg;

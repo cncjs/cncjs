@@ -47,7 +47,7 @@ class WidgetListItem extends PureComponent {
       };
 
       return (
-        <div className="panel panel-default">
+        <div className="panel panel-default" style={{ marginBottom: 0 }}>
           <div className="panel-head text-center" style={styles.thumbnail}>
             <i className="fa fa-list-alt" style={{ fontSize: 'inherit' }} />
           </div>
