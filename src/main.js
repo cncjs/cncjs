@@ -140,6 +140,10 @@ const showMainWindow = async () => {
     }
   });
 
+  mainWindow.on('ready-to-show', () => {
+    mainWindow.show();
+  });
+
   const webContentsSession = mainWindow.webContents.session;
   webContentsSession.setProxy({ proxyRules: 'direct://' })
     .then(() => {
@@ -149,14 +153,6 @@ const showMainWindow = async () => {
     .catch(err => {
       console.log('err', err.message);
     });
-
-  if (process.platform === 'win32') {
-    mainWindow.show();
-  } else {
-    mainWindow.on('ready-to-show', () => {
-      mainWindow.show();
-    });
-  }
 
   // Save window size and position
   mainWindow.on('close', (event) => {
