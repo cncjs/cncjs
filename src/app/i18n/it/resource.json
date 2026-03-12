@@ -568,7 +568,6 @@
   "Home Machine B Axis ({{command}})": "Homing Macchina Asse B ({{command}})",
   "Home Machine C Axis ({{command}})": "Homing Macchina Asse C ({{command}})",
   "Autolevel Widget": "Widget Autolevel",
-  "Probe a surface grid and apply Z-height compensation to your G-code.": "Palpa una griglia di superficie e applica la compensazione dell'altezza Z al tuo G-code.",
   "Failed to read file": "Impossibile leggere il file",
   "No G-code content": "Nessun contenuto G-code",
   "Insufficient probe data — minimum 3 points required": "Dati di palpatura insufficienti — sono richiesti almeno 3 punti",
@@ -587,7 +586,6 @@
   "No probe data available": "Nessun dato di palpatura disponibile",
   "Autolevel": "Autolevel",
   "PROBE NEW SURFACE": "PALPA NUOVA SUPERFICIE",
-  "Configure the probe region and run autolevel to generate surface compensation data.": "Configura la regione di palpatura ed esegui l'autolevel per generare i dati di compensazione della superficie.",
   "Start New Probe": "Avvia nuova palpatura",
   "Load a previously saved .probe file and apply it to your G-code.": "Carica un file .probe precedentemente salvato e applicalo al tuo G-code.",
   "Load Probe Data": "Carica dati di palpatura",
@@ -638,5 +636,12 @@
   "A single probe test will be performed at the current XY position.": "Verrà eseguito un singolo test sonda nella posizione XY attuale.",
   "Start Test Probe": "Avvia test sonda",
   "Workpiece": "Pezzo",
-  "Probe Compensation Applied": "Compensazione sonda applicata"
+  "Probe Compensation Applied": "Compensazione sonda applicata",
+  "Probe the work surface to generate Z-axis height compensation data for your G-code.": "Esegui la tastatura della superficie di lavoro per generare i dati di compensazione dell'altezza sull'asse Z per il tuo G-code.",
+  "Clearance Z must be above Start Z": "La Z di sicurezza deve essere al di sopra della Z iniziale",
+  "Set up the probe area and probe the work surface to generate height compensation data.": "Configura l'area di tastatura ed esegui la tastatura della superficie di lavoro per generare i dati di compensazione dell'altezza.",
+  "{{value}} {{- units}}": "{{value}} {{- units}}",
+  "Clearance Z: {{value}} {{- units}}": "Z di sicurezza: {{value}} {{- units}}",
+  "Start Z: {{value}} {{- units}}": "Z iniziale: {{value}} {{- units}}",
+  "End Z: {{value}} {{- units}}": "Z finale: {{value}} {{- units}}"
 }

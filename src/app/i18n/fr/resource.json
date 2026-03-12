@@ -568,7 +568,6 @@
   "Home Machine B Axis ({{command}})": "Rentrer à l'origine machine axe B ({{command}})",
   "Home Machine C Axis ({{command}})": "Rentrer à l'origine machine axe C ({{command}})",
   "Autolevel Widget": "Widget de mise à niveau automatique",
-  "Probe a surface grid and apply Z-height compensation to your G-code.": "Palpez une grille de surface et appliquez une compensation de hauteur Z à votre G-code.",
   "Failed to read file": "Échec de la lecture du fichier",
   "No G-code content": "Pas de contenu G-code",
   "Insufficient probe data — minimum 3 points required": "Données de palpage insuffisantes — minimum 3 points requis",
@@ -587,7 +586,6 @@
   "No probe data available": "Aucune donnée de palpage disponible",
   "Autolevel": "Autolevel",
   "PROBE NEW SURFACE": "PALPER UNE NOUVELLE SURFACE",
-  "Configure the probe region and run autolevel to generate surface compensation data.": "Configurez la zone de palpage et exécutez la mise à niveau automatique pour générer les données de compensation de surface.",
   "Start New Probe": "Démarrer un nouveau palpage",
   "Load a previously saved .probe file and apply it to your G-code.": "Charger un fichier .probe précédemment sauvegardé et l'appliquer à votre G-code.",
   "Load Probe Data": "Charger les données de palpage",
@@ -638,5 +636,12 @@
   "A single probe test will be performed at the current XY position.": "Un test de sonde unique sera effectué à la position XY actuelle.",
   "Start Test Probe": "Démarrer le test de sonde",
   "Workpiece": "Pièce à usiner",
-  "Probe Compensation Applied": "Compensation de sonde appliquée"
+  "Probe Compensation Applied": "Compensation de sonde appliquée",
+  "Probe the work surface to generate Z-axis height compensation data for your G-code.": "Palpez la surface de travail pour générer les données de compensation de hauteur de l'axe Z pour votre G-code.",
+  "Clearance Z must be above Start Z": "La Z de dégagement doit être au-dessus de la Z de départ",
+  "Set up the probe area and probe the work surface to generate height compensation data.": "Configurez la zone de palpage et palpez la surface de travail pour générer les données de compensation de hauteur.",
+  "{{value}} {{- units}}": "{{value}} {{- units}}",
+  "Clearance Z: {{value}} {{- units}}": "Z de dégagement : {{value}} {{- units}}",
+  "Start Z: {{value}} {{- units}}": "Z de départ : {{value}} {{- units}}",
+  "End Z: {{value}} {{- units}}": "Z de fin : {{value}} {{- units}}"
 }

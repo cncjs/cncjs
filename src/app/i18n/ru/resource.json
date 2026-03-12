@@ -568,7 +568,6 @@
   "Home Machine B Axis ({{command}})": "Возврат оси B на ноль ({{command}})",
   "Home Machine C Axis ({{command}})": "Возврат оси C на ноль ({{command}})",
   "Autolevel Widget": "Виджет автовыравнивания",
-  "Probe a surface grid and apply Z-height compensation to your G-code.": "Выполните щупом обход сетки поверхности и примените компенсацию высоты Z к вашему G-коду.",
   "Failed to read file": "Не удалось прочитать файл",
   "No G-code content": "Нет содержимого G-кода",
   "Insufficient probe data — minimum 3 points required": "Недостаточно данных щупа — требуется минимум 3 точки",
@@ -587,7 +586,6 @@
   "No probe data available": "Нет доступных данных обмера",
   "Autolevel": "Автовыравнивание",
   "PROBE NEW SURFACE": "ОБМЕР НОВОЙ ПОВЕРХНОСТИ",
-  "Configure the probe region and run autolevel to generate surface compensation data.": "Настройте область обмера и запустите автовыравнивание для генерации данных компенсации поверхности.",
   "Start New Probe": "Начать новый обмер",
   "Load a previously saved .probe file and apply it to your G-code.": "Загрузить ранее сохранённый файл .probe и применить его к вашему G-коду.",
   "Load Probe Data": "Загрузить данные обмера",
@@ -639,5 +637,12 @@
   "A single probe test will be performed at the current XY position.": "На текущей позиции XY будет выполнен одиночный тест зонда.",
   "Start Test Probe": "Запустить тест зонда",
   "Workpiece": "Заготовка",
-  "Probe Compensation Applied": "Компенсация зондирования применена"
+  "Probe Compensation Applied": "Компенсация зондирования применена",
+  "Probe the work surface to generate Z-axis height compensation data for your G-code.": "Выполните зондирование рабочей поверхности для генерации данных компенсации высоты по оси Z для вашего G-кода.",
+  "Clearance Z must be above Start Z": "Высота подъёма Z должна быть выше начальной Z",
+  "Set up the probe area and probe the work surface to generate height compensation data.": "Настройте зону зондирования и выполните зондирование рабочей поверхности для генерации данных компенсации высоты.",
+  "{{value}} {{- units}}": "{{value}} {{- units}}",
+  "Clearance Z: {{value}} {{- units}}": "Высота подъёма Z: {{value}} {{- units}}",
+  "Start Z: {{value}} {{- units}}": "Начальная Z: {{value}} {{- units}}",
+  "End Z: {{value}} {{- units}}": "Конечная Z: {{value}} {{- units}}"
 }

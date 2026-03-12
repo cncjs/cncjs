@@ -568,7 +568,6 @@
   "Home Machine B Axis ({{command}})": "Home Machine B-as ({{command}})",
   "Home Machine C Axis ({{command}})": "Home Machine C-as ({{command}})",
   "Autolevel Widget": "Autolevel-widget",
-  "Probe a surface grid and apply Z-height compensation to your G-code.": "Tast een oppervlakteraster af en pas Z-hoogtecorrectie toe op uw G-code.",
   "Failed to read file": "Bestand kon niet worden gelezen",
   "No G-code content": "Geen G-code inhoud",
   "Insufficient probe data — minimum 3 points required": "Onvoldoende tastgegevens — minimaal 3 punten vereist",
@@ -587,7 +586,6 @@
   "No probe data available": "Geen tastgegevens beschikbaar",
   "Autolevel": "Autolevel",
   "PROBE NEW SURFACE": "NIEUW OPPERVLAK AFTASTEN",
-  "Configure the probe region and run autolevel to generate surface compensation data.": "Configureer het tastgebied en voer autolevel uit om oppervlaktecompensatiegegevens te genereren.",
   "Start New Probe": "Nieuwe meting starten",
   "Load a previously saved .probe file and apply it to your G-code.": "Een eerder opgeslagen .probe-bestand laden en toepassen op uw G-code.",
   "Load Probe Data": "Tastgegevens laden",
@@ -637,5 +635,12 @@
   "A single probe test will be performed at the current XY position.": "Er wordt één tastertest uitgevoerd op de huidige XY-positie.",
   "Start Test Probe": "Tastertest starten",
   "Workpiece": "Werkstuk",
-  "Probe Compensation Applied": "Tasterkompensatie toegepast"
+  "Probe Compensation Applied": "Tasterkompensatie toegepast",
+  "Probe the work surface to generate Z-axis height compensation data for your G-code.": "Tast het werkoppervlak af om Z-as hoogtecompensatiegegevens voor uw G-code te genereren.",
+  "Clearance Z must be above Start Z": "Vrijloophoogte Z moet boven start-Z liggen",
+  "Set up the probe area and probe the work surface to generate height compensation data.": "Stel het tastgebied in en tast het werkoppervlak af om hoogtecompensatiegegevens te genereren.",
+  "{{value}} {{- units}}": "{{value}} {{- units}}",
+  "Clearance Z: {{value}} {{- units}}": "Vrijloophoogte Z: {{value}} {{- units}}",
+  "Start Z: {{value}} {{- units}}": "Start-Z: {{value}} {{- units}}",
+  "End Z: {{value}} {{- units}}": "Eind-Z: {{value}} {{- units}}"
 }

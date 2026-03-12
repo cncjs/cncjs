@@ -568,7 +568,6 @@
   "Home Machine B Axis ({{command}})": "Gép referenciapont B tengely ({{command}})",
   "Home Machine C Axis ({{command}})": "Gép referenciapont C tengely ({{command}})",
   "Autolevel Widget": "Autoszintező widget",
-  "Probe a surface grid and apply Z-height compensation to your G-code.": "Tapintsa le a felszínrácsot és alkalmazzon Z-magasság-kompenzációt a G-kódjára.",
   "Failed to read file": "Nem sikerült beolvasni a fájlt",
   "No G-code content": "Nincs G-kód tartalom",
   "Insufficient probe data — minimum 3 points required": "Elégtelen tapintóadatok — minimum 3 pont szükséges",
@@ -587,7 +586,6 @@
   "No probe data available": "Nincs elérhető tapintóadat",
   "Autolevel": "Autoszintezés",
   "PROBE NEW SURFACE": "ÚJ FELSZÍN TAPINTÁSA",
-  "Configure the probe region and run autolevel to generate surface compensation data.": "Konfigurálja a tapintási területet és futtassa az autoszintezést a felszíni kompenzációs adatok generálásához.",
   "Start New Probe": "Új tapintás indítása",
   "Load a previously saved .probe file and apply it to your G-code.": "Töltsön be egy korábban mentett .probe fájlt és alkalmazza a G-kódjára.",
   "Load Probe Data": "Tapintóadatok betöltése",
@@ -637,5 +635,12 @@
   "A single probe test will be performed at the current XY position.": "Az aktuális XY pozícióban egyetlen tapintó teszt kerül végrehajtásra.",
   "Start Test Probe": "Tapintó teszt indítása",
   "Workpiece": "Munkadarab",
-  "Probe Compensation Applied": "Tapintó kompenzáció alkalmazva"
+  "Probe Compensation Applied": "Tapintó kompenzáció alkalmazva",
+  "Probe the work surface to generate Z-axis height compensation data for your G-code.": "Tapintsa le a munkafelületet a Z-tengelyes magasságkompenzációs adatok generálásához a G-kódhoz.",
+  "Clearance Z must be above Start Z": "A Z biztonsági magasságnak a kezdeti Z felett kell lennie",
+  "Set up the probe area and probe the work surface to generate height compensation data.": "Állítsa be a tapintási területet, és tapintsa le a munkafelületet a magasságkompenzációs adatok generálásához.",
+  "{{value}} {{- units}}": "{{value}} {{- units}}",
+  "Clearance Z: {{value}} {{- units}}": "Z biztonsági magasság: {{value}} {{- units}}",
+  "Start Z: {{value}} {{- units}}": "Kezdeti Z: {{value}} {{- units}}",
+  "End Z: {{value}} {{- units}}": "Végső Z: {{value}} {{- units}}"
 }

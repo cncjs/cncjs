@@ -568,7 +568,6 @@
   "Home Machine B Axis ({{command}})": "B Ekseni Referans Dön ({{command}})",
   "Home Machine C Axis ({{command}})": "C Ekseni Referans Dön ({{command}})",
   "Autolevel Widget": "Otomatik Seviyeleme Bileşeni",
-  "Probe a surface grid and apply Z-height compensation to your G-code.": "Yüzey ızgarasını tarayın ve G-kodunuza Z yükseklik kompanzasyonu uygulayın.",
   "Failed to read file": "Dosya okunamadı",
   "No G-code content": "G-kodu içeriği yok",
   "Insufficient probe data — minimum 3 points required": "Yetersiz tarama verisi — en az 3 nokta gerekli",
@@ -587,7 +586,6 @@
   "No probe data available": "Tarama verisi yok",
   "Autolevel": "Otomatik Seviyeleme",
   "PROBE NEW SURFACE": "YENİ YÜZEY TARA",
-  "Configure the probe region and run autolevel to generate surface compensation data.": "Tarama bölgesini yapılandırın ve yüzey kompanzasyon verileri oluşturmak için otomatik seviyelemeyi çalıştırın.",
   "Start New Probe": "Yeni Tarama Başlat",
   "Load a previously saved .probe file and apply it to your G-code.": "Daha önce kaydedilmiş bir .probe dosyası yükleyin ve G-kodunuza uygulayın.",
   "Load Probe Data": "Tarama Verilerini Yükle",
@@ -637,5 +635,12 @@
   "A single probe test will be performed at the current XY position.": "Mevcut XY konumunda tek bir prob testi yapılacaktır.",
   "Start Test Probe": "Prob testini başlat",
   "Workpiece": "İş parçası",
-  "Probe Compensation Applied": "Prob Telafisi Uygulandı"
+  "Probe Compensation Applied": "Prob Telafisi Uygulandı",
+  "Probe the work surface to generate Z-axis height compensation data for your G-code.": "G-kodunuz için Z ekseni yükseklik telafisi verileri oluşturmak üzere çalışma yüzeyini prob ile tarayın.",
+  "Clearance Z must be above Start Z": "Güvenlik Z değeri Başlangıç Z değerinin üzerinde olmalıdır",
+  "Set up the probe area and probe the work surface to generate height compensation data.": "Prob alanını ayarlayın ve yükseklik telafisi verileri oluşturmak için çalışma yüzeyini prob ile tarayın.",
+  "{{value}} {{- units}}": "{{value}} {{- units}}",
+  "Clearance Z: {{value}} {{- units}}": "Güvenlik Z: {{value}} {{- units}}",
+  "Start Z: {{value}} {{- units}}": "Başlangıç Z: {{value}} {{- units}}",
+  "End Z: {{value}} {{- units}}": "Bitiş Z: {{value}} {{- units}}"
 }

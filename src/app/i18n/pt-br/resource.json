@@ -568,7 +568,6 @@
   "Home Machine B Axis ({{command}})": "Origem da Máquina Eixo B ({{command}})",
   "Home Machine C Axis ({{command}})": "Origem da Máquina Eixo C ({{command}})",
   "Autolevel Widget": "Widget de autonivelamento",
-  "Probe a surface grid and apply Z-height compensation to your G-code.": "Apalpе uma grade de superfície e aplique compensação de altura Z ao seu G-code.",
   "Failed to read file": "Falha ao ler o arquivo",
   "No G-code content": "Sem conteúdo G-code",
   "Insufficient probe data — minimum 3 points required": "Dados de apalpagem insuficientes — mínimo de 3 pontos necessários",
@@ -587,7 +586,6 @@
   "No probe data available": "Nenhum dado de apalpagem disponível",
   "Autolevel": "Autonivelamento",
   "PROBE NEW SURFACE": "APALPAR NOVA SUPERFÍCIE",
-  "Configure the probe region and run autolevel to generate surface compensation data.": "Configure a região de apalpagem e execute o autonivelamento para gerar dados de compensação de superfície.",
   "Start New Probe": "Iniciar nova apalpagem",
   "Load a previously saved .probe file and apply it to your G-code.": "Carregar um arquivo .probe salvo anteriormente e aplicá-lo ao seu G-code.",
   "Load Probe Data": "Carregar dados de apalpagem",
@@ -638,5 +636,12 @@
   "A single probe test will be performed at the current XY position.": "Um único teste de apalpador será realizado na posição XY atual.",
   "Start Test Probe": "Iniciar teste do apalpador",
   "Workpiece": "Peça de trabalho",
-  "Probe Compensation Applied": "Compensação de apalpador aplicada"
+  "Probe Compensation Applied": "Compensação de apalpador aplicada",
+  "Probe the work surface to generate Z-axis height compensation data for your G-code.": "Apalpe a superfície de trabalho para gerar dados de compensação de altura do eixo Z para o seu G-code.",
+  "Clearance Z must be above Start Z": "A Z de folga deve estar acima da Z inicial",
+  "Set up the probe area and probe the work surface to generate height compensation data.": "Configure a área de apalpamento e apalpe a superfície de trabalho para gerar dados de compensação de altura.",
+  "{{value}} {{- units}}": "{{value}} {{- units}}",
+  "Clearance Z: {{value}} {{- units}}": "Z de folga: {{value}} {{- units}}",
+  "Start Z: {{value}} {{- units}}": "Z inicial: {{value}} {{- units}}",
+  "End Z: {{value}} {{- units}}": "Z final: {{value}} {{- units}}"
 }
