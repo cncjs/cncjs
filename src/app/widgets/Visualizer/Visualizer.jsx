@@ -74,7 +74,11 @@ class Visualizer extends Component {
       z: 0
     };
 
-    machineProfile = store.get('workspace.machineProfile');
+    // Initialized to null so the first changeMachineProfile() call in
+    // componentDidMount detects a difference against the store value and runs
+    // the full pivot/rebuild pipeline. Pre-hydrating from the store here would
+    // make _isEqual short-circuit and leave pivotPoint at (0, 0, 0).
+    machineProfile = null;
 
     group = new THREE.Group();
 
@@ -98,6 +102,36 @@ class Visualizer extends Component {
       this.resizeRenderer();
     }, 32); // 60hz
 
+    // Pivot policy. The pivot determines the "machine - pivot" frame the
+    // whole scene is rendered in: limits, cutting tool, probe viz, gcode
+    // toolpath, and (via rebuildCoordinateSystems) grid + axes all sit at
+    // "machine_coords - pivot" so the visible workspace center is at world
+    // origin and TrackballControls' default target = (0, 0, 0) orbits that
+    // visible center.
+    //
+    // Pivot is set by this method, load(), and unload(). Combined behavior:
+    //
+    //   Scenario                                | Pivot after        | Gcode position
+    //   ----------------------------------------|--------------------|----------------------
+    //   Reload, profile saved, no gcode         | profile center     | -
+    //   Manual profile selection, no gcode      | profile center     | -
+    //   Manual profile selection, gcode loaded  | gcode bbox center  | at world origin
+    //   Profile removed, no gcode               | (0, 0, 0)          | -
+    //   Profile removed, gcode loaded           | gcode bbox center  | at world origin
+    //   Load gcode                              | gcode bbox center  | at world origin
+    //   Unload gcode, profile selected          | profile center     | -
+    //   Unload gcode, no profile                | (0, 0, 0)          | -
+    //
+    // For the two "gcode loaded" rows above the pivot was already at the
+    // gcode bbox center (set by load()) and is intentionally left alone, so
+    // the toolpath stays visually centered in the viewport across profile
+    // changes; only the limits/grid rebuild for the new profile dimensions.
+    //
+    // The `!this.gcodeVisualizer` check distinguishes the two states.
+    // `this.gcodeVisualizer` is the GCodeVisualizer instance — null until
+    // load() runs, nulled again by unload() — so it is a direct local source
+    // of truth and works the same way regardless of who triggered
+    // changeMachineProfile (mount, store change, etc.).
     changeMachineProfile = () => {
       const machineProfile = store.get('workspace.machineProfile');
 
@@ -109,7 +143,9 @@ class Visualizer extends Component {
 
       // Profile removed — reset to defaults and return
       if (!machineProfile) {
-        this.pivotPoint.set(0, 0, 0);
+        if (!this.gcodeVisualizer) {
+          this.pivotPoint.set(0, 0, 0);
+        }
         this.updateCuttingToolPosition();
         this.updateCuttingPointerPosition();
         this.updateLimitsPosition();
@@ -134,10 +170,13 @@ class Visualizer extends Component {
       this.limits.visible = state.objects.limits.visible;
       this.group.add(this.limits);
 
-      // Set pivot to the center of the machine profile work area (XY only; Z origin stays at 0)
-      const centerX = (xmin + xmax) / 2;
-      const centerY = (ymin + ymax) / 2;
-      this.pivotPoint.set(centerX, centerY, 0);
+      // Set pivot to the center of the machine profile work area (XY only).
+      // Skipped when gcode is loaded so the toolpath stays centered.
+      if (!this.gcodeVisualizer) {
+        const centerX = (xmin + xmax) / 2;
+        const centerY = (ymin + ymax) / 2;
+        this.pivotPoint.set(centerX, centerY, 0);
+      }
 
       this.updateCuttingToolPosition();
       this.updateCuttingPointerPosition();
@@ -180,7 +219,7 @@ class Visualizer extends Component {
       this.cuttingTool = null;
       this.cuttingPointer = null;
       this.limits = null;
-      this.visualizer = null;
+      this.gcodeVisualizer = null;
     }
 
     componentDidMount() {
@@ -192,6 +231,12 @@ class Visualizer extends Component {
         this.createScene(el);
         this.resizeRenderer();
       }
+
+      // Apply any machine profile already in the store (e.g., hydrated from
+      // localStorage on page reload). The store 'change' listener above only
+      // fires on subsequent updates, so without this call the saved profile
+      // never reaches the scene until the user re-selects it.
+      this.changeMachineProfile();
     }
 
     componentDidUpdate(prevProps) {
@@ -209,10 +254,10 @@ class Visualizer extends Component {
         needUpdateScene = true;
       }
 
-      // Update visualizer's frame index
-      if (this.visualizer) {
+      // Update gcode visualizer's frame index
+      if (this.gcodeVisualizer) {
         const frameIndex = state.gcode.sent;
-        this.visualizer.setFrameIndex(frameIndex);
+        this.gcodeVisualizer.setFrameIndex(frameIndex);
       }
 
       // Projection
@@ -763,24 +808,37 @@ class Visualizer extends Component {
         }
       });
 
+      // Grid/axes geometry is built at raw machine coords; shift each group by
+      // -pivotPoint so it shares the same frame as the limits, cutting tool,
+      // probe visualization, and gcode toolpath (all of which render at
+      // "machine coords - pivotPoint").
+      const pp = this.pivotPoint.get();
+      const positionAtPivot = (group) => {
+        group.position.set(-pp.x, -pp.y, -pp.z);
+      };
+
       const imperialCoordinateSystem = this.createCoordinateSystem(IMPERIAL_UNITS);
       imperialCoordinateSystem.name = 'ImperialCoordinateSystem';
       imperialCoordinateSystem.visible = objects.coordinateSystem.visible && (units === IMPERIAL_UNITS);
+      positionAtPivot(imperialCoordinateSystem);
       this.group.add(imperialCoordinateSystem);
 
       const metricCoordinateSystem = this.createCoordinateSystem(METRIC_UNITS);
       metricCoordinateSystem.name = 'MetricCoordinateSystem';
       metricCoordinateSystem.visible = objects.coordinateSystem.visible && (units === METRIC_UNITS);
+      positionAtPivot(metricCoordinateSystem);
       this.group.add(metricCoordinateSystem);
 
       const imperialGridLineNumbers = this.createGridLineNumbers(IMPERIAL_UNITS);
       imperialGridLineNumbers.name = 'ImperialGridLineNumbers';
       imperialGridLineNumbers.visible = objects.gridLineNumbers.visible && (units === IMPERIAL_UNITS);
+      positionAtPivot(imperialGridLineNumbers);
       this.group.add(imperialGridLineNumbers);
 
       const metricGridLineNumbers = this.createGridLineNumbers(METRIC_UNITS);
       metricGridLineNumbers.name = 'MetricGridLineNumbers';
       metricGridLineNumbers.visible = objects.gridLineNumbers.visible && (units === METRIC_UNITS);
+      positionAtPivot(metricGridLineNumbers);
       this.group.add(metricGridLineNumbers);
     }
 
@@ -852,37 +910,10 @@ class Visualizer extends Component {
         this.scene.add(light);
       }
 
-      { // Imperial Coordinate System
-        const visible = objects.coordinateSystem.visible;
-        const imperialCoordinateSystem = this.createCoordinateSystem(IMPERIAL_UNITS);
-        imperialCoordinateSystem.name = 'ImperialCoordinateSystem';
-        imperialCoordinateSystem.visible = visible && (units === IMPERIAL_UNITS);
-        this.group.add(imperialCoordinateSystem);
-      }
-
-      { // Metric Coordinate System
-        const visible = objects.coordinateSystem.visible;
-        const metricCoordinateSystem = this.createCoordinateSystem(METRIC_UNITS);
-        metricCoordinateSystem.name = 'MetricCoordinateSystem';
-        metricCoordinateSystem.visible = visible && (units === METRIC_UNITS);
-        this.group.add(metricCoordinateSystem);
-      }
-
-      { // Imperial Grid Line Numbers
-        const visible = objects.gridLineNumbers.visible;
-        const imperialGridLineNumbers = this.createGridLineNumbers(IMPERIAL_UNITS);
-        imperialGridLineNumbers.name = 'ImperialGridLineNumbers';
-        imperialGridLineNumbers.visible = visible && (units === IMPERIAL_UNITS);
-        this.group.add(imperialGridLineNumbers);
-      }
-
-      { // Metric Grid Line Numbers
-        const visible = objects.gridLineNumbers.visible;
-        const metricGridLineNumbers = this.createGridLineNumbers(METRIC_UNITS);
-        metricGridLineNumbers.name = 'MetricGridLineNumbers';
-        metricGridLineNumbers.visible = visible && (units === METRIC_UNITS);
-        this.group.add(metricGridLineNumbers);
-      }
+      // Coordinate systems and grid line numbers (Imperial + Metric) are
+      // created via rebuildCoordinateSystems so the initial render uses the
+      // same pivot-shifted frame as later rebuilds.
+      this.rebuildCoordinateSystems();
 
       { // Cutting Tool
         Promise.all([
@@ -921,6 +952,13 @@ class Visualizer extends Component {
           this.cuttingTool.visible = objects.cuttingTool.visible;
 
           this.group.add(this.cuttingTool);
+
+          // The STL/texture load is async, so the tool may be added to the
+          // group after changeMachineProfile() has already run during mount.
+          // Sync its position to the current pivot/WPos so it lands at the
+          // correct spot instead of the default (0, 0, 0) (which would be the
+          // visible workspace center under any non-trivial machine profile).
+          this.updateCuttingToolPosition();
 
           // Update the scene
           this.updateScene();
@@ -1150,14 +1188,14 @@ class Visualizer extends Component {
         return;
       }
 
+      // Limits represent the machine's fixed envelope and stay anchored to the
+      // grid regardless of the active work coordinate system.
       const limits = _get(this.machineProfile, 'limits');
       const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = { ...limits };
       const pivotPoint = this.pivotPoint.get();
-      const { x: mpox, y: mpoy, z: mpoz } = this.machinePosition;
-      const { x: wpox, y: wpoy, z: wpoz } = this.workPosition;
-      const x0 = ((xmin + xmax) / 2) - (mpox - wpox) - pivotPoint.x;
-      const y0 = ((ymin + ymax) / 2) - (mpoy - wpoy) - pivotPoint.y;
-      const z0 = ((zmin + zmax) / 2) - (mpoz - wpoz) - pivotPoint.z;
+      const x0 = ((xmin + xmax) / 2) - pivotPoint.x;
+      const y0 = ((ymin + ymax) / 2) - pivotPoint.y;
+      const z0 = ((zmin + zmax) / 2) - pivotPoint.z;
 
       this.limits.position.set(x0, y0, z0);
     }
@@ -1195,9 +1233,9 @@ class Visualizer extends Component {
       // Remove previous G-code object
       this.unload();
 
-      this.visualizer = new GCodeVisualizer();
+      this.gcodeVisualizer = new GCodeVisualizer();
 
-      const obj = this.visualizer.render(gcode);
+      const obj = this.gcodeVisualizer.render(gcode);
       obj.name = 'Visualizer';
       this.group.add(obj);
 
@@ -1213,6 +1251,14 @@ class Visualizer extends Component {
 
       // Set the pivot point to the center of the loaded object
       this.pivotPoint.set(center.x, center.y, center.z);
+
+      // Explicitly anchor the gcode mesh so its bounding-box center lands at
+      // world origin, independent of the pivot-delta callback's translation
+      // history. Without this, when unload() leaves the pivot at the machine
+      // profile's center (rather than (0, 0, 0)), the delta from
+      // profile_center → gcode_center would land the mesh at world
+      // profile_center instead of world origin.
+      obj.position.set(-center.x, -center.y, -center.z);
 
       // Update position
       this.updateCuttingToolPosition();
@@ -1240,19 +1286,35 @@ class Visualizer extends Component {
         this.group.remove(visualizerObject);
       }
 
-      if (this.visualizer) {
-        this.visualizer = null;
+      if (this.gcodeVisualizer) {
+        this.gcodeVisualizer = null;
       }
 
       if (this.pivotPoint) {
-        // Set the pivot point to the origin point (0, 0, 0)
-        this.pivotPoint.set(0, 0, 0);
+        // Reset pivot to the machine profile's XY center (or origin if no
+        // profile) so the scene stays in the same "machine - pivot" frame as
+        // changeMachineProfile produces. This keeps the visible workspace
+        // centered at world origin and the orbit pivot (controls.target =
+        // (0, 0, 0)) at the visible center after unloading gcode.
+        if (!this.machineProfile) {
+          this.pivotPoint.set(0, 0, 0);
+        } else {
+          const limits = _get(this.machineProfile, 'limits');
+          const { xmin = 0, xmax = 0, ymin = 0, ymax = 0 } = { ...limits };
+          const centerX = (xmin + xmax) / 2;
+          const centerY = (ymin + ymax) / 2;
+          this.pivotPoint.set(centerX, centerY, 0);
+        }
 
         // Update positions after resetting pivot point
         this.updateCuttingToolPosition();
         this.updateCuttingPointerPosition();
         this.updateLimitsPosition();
         this.updateProbeVisualizationPosition();
+
+        if (this.group) {
+          this.rebuildCoordinateSystems();
+        }
       }
 
       if (this.controls) {
