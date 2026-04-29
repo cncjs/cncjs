@@ -642,5 +642,6 @@
   "{{value}} {{- units}}": "{{value}} {{- units}}",
   "Clearance Z: {{value}} {{- units}}": "Frihøyde Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Start-Z: {{value}} {{- units}}",
-  "End Z: {{value}} {{- units}}": "Slutt-Z: {{value}} {{- units}}"
+  "End Z: {{value}} {{- units}}": "Slutt-Z: {{value}} {{- units}}",
+  "None": "Ingen"
 }

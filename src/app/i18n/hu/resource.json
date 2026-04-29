@@ -642,5 +642,6 @@
   "{{value}} {{- units}}": "{{value}} {{- units}}",
   "Clearance Z: {{value}} {{- units}}": "Z biztonsági magasság: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Kezdeti Z: {{value}} {{- units}}",
-  "End Z: {{value}} {{- units}}": "Végső Z: {{value}} {{- units}}"
+  "End Z: {{value}} {{- units}}": "Végső Z: {{value}} {{- units}}",
+  "None": "Nincs"
 }

@@ -643,5 +643,6 @@
   "{{value}} {{- units}}": "{{value}} {{- units}}",
   "Clearance Z: {{value}} {{- units}}": "Z de separación: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Z inicial: {{value}} {{- units}}",
-  "End Z: {{value}} {{- units}}": "Z final: {{value}} {{- units}}"
+  "End Z: {{value}} {{- units}}": "Z final: {{value}} {{- units}}",
+  "None": "Ninguno"
 }

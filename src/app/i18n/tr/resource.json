@@ -642,5 +642,6 @@
   "{{value}} {{- units}}": "{{value}} {{- units}}",
   "Clearance Z: {{value}} {{- units}}": "Güvenlik Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Başlangıç Z: {{value}} {{- units}}",
-  "End Z: {{value}} {{- units}}": "Bitiş Z: {{value}} {{- units}}"
+  "End Z: {{value}} {{- units}}": "Bitiş Z: {{value}} {{- units}}",
+  "None": "Yok"
 }
