@@ -17,6 +17,7 @@ import CombinedCamera from 'app/lib/three/CombinedCamera';
 import TrackballControls from 'app/lib/three/TrackballControls';
 import * as WebGL from 'app/lib/three/WebGL';
 import log from 'app/lib/log';
+import { mapValueToUnits } from 'app/lib/units';
 import store from 'app/store';
 import { getBoundingBox, loadSTL, loadTexture } from './helpers';
 import Viewport from './Viewport';
@@ -767,7 +768,9 @@ class Visualizer extends Component {
             y: textOffset,
             z: 0,
             size: textSize,
-            text: Math.round(x),
+            // Scene coords are mm; mapValueToUnits converts and trims
+            // trailing zeros (e.g. 25.4 mm → 1 in, 10 mm → 10 mm).
+            text: mapValueToUnits(x, units),
             textAlign: 'center',
             textBaseline: 'bottom',
             color: colornames('red'),
@@ -784,7 +787,7 @@ class Visualizer extends Component {
             y,
             z: 0,
             size: textSize,
-            text: Math.round(y),
+            text: mapValueToUnits(y, units),
             textAlign: 'right',
             textBaseline: 'middle',
             color: colornames('green'),
