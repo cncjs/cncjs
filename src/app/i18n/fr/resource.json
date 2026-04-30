@@ -643,5 +643,6 @@
   "{{value}} {{- units}}": "{{value}} {{- units}}",
   "Clearance Z: {{value}} {{- units}}": "Z de dégagement : {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Z de départ : {{value}} {{- units}}",
-  "End Z: {{value}} {{- units}}": "Z de fin : {{value}} {{- units}}"
+  "End Z: {{value}} {{- units}}": "Z de fin : {{value}} {{- units}}",
+  "None": "Aucun"
 }

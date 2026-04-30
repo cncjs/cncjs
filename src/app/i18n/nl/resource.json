@@ -642,5 +642,6 @@
   "{{value}} {{- units}}": "{{value}} {{- units}}",
   "Clearance Z: {{value}} {{- units}}": "Vrijloophoogte Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Start-Z: {{value}} {{- units}}",
-  "End Z: {{value}} {{- units}}": "Eind-Z: {{value}} {{- units}}"
+  "End Z: {{value}} {{- units}}": "Eind-Z: {{value}} {{- units}}",
+  "None": "Geen"
 }

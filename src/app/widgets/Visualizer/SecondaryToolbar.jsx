@@ -32,6 +32,9 @@ import {
   CAMERA_MODE_ROTATE
 } from './constants';
 
+// Sentinel eventKey for the "None" item in the machine-profile dropdown.
+const CLEAR_MACHINE_PROFILE = '__clear__';
+
 const IconButton = styled(Button)`
     display: inline-block;
     padding: 8px;
@@ -135,6 +138,13 @@ class SecondaryToolbar extends PureComponent {
       if (machineProfile) {
         store.replace('workspace.machineProfile', machineProfile);
       }
+    };
+
+    clearMachineProfile = () => {
+      // Match the shape used by Settings.jsx when a profile is deleted, so
+      // every reader (Visualizer changeMachineProfile, this toolbar's
+      // updateMachineProfileFromStore) handles "no profile" the same way.
+      store.replace('workspace.machineProfile', { id: null });
     };
 
     subscribe() {
@@ -388,8 +398,11 @@ class SecondaryToolbar extends PureComponent {
                   dropup
                   pullRight
                   onSelect={(eventKey) => {
-                    const id = eventKey;
-                    this.changeMachineProfileById(id);
+                    if (eventKey === CLEAR_MACHINE_PROFILE) {
+                      this.clearMachineProfile();
+                      return;
+                    }
+                    this.changeMachineProfileById(eventKey);
                   }}
                 >
                   <Dropdown.Toggle
@@ -414,10 +427,17 @@ class SecondaryToolbar extends PureComponent {
                       i18n._('No machine profile selected')
                     )}
                   </Dropdown.Toggle>
-                  <Dropdown.Menu>
+                  <Dropdown.Menu style={{ maxHeight: 320, overflowY: 'auto' }}>
                     <MenuItem header>
                       {i18n._('Machine Profiles')}
                     </MenuItem>
+                    <MenuItem
+                      active={!selectedMachineProfile}
+                      eventKey={CLEAR_MACHINE_PROFILE}
+                    >
+                      {i18n._('None')}
+                    </MenuItem>
+                    <MenuItem divider />
                     {machineProfiles.map(({ id, name }) => (
                       <MenuItem
                         active={id === selectedMachineProfileId}

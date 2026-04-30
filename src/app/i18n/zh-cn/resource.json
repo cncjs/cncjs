@@ -641,5 +641,6 @@
   "{{value}} {{- units}}": "{{value}} {{- units}}",
   "Clearance Z: {{value}} {{- units}}": "安全高度Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "起始Z: {{value}} {{- units}}",
-  "End Z: {{value}} {{- units}}": "终止Z: {{value}} {{- units}}"
+  "End Z: {{value}} {{- units}}": "终止Z: {{value}} {{- units}}",
+  "None": "无"
 }
