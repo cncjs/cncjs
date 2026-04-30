@@ -56,7 +56,10 @@
     "i18nlint": "bash -c 'find src/{app,server}/i18n -type f -name \"*.json\" | xargs -L1 -I{} -- bash -c \"echo Linting {}; jsonlint -q {}\"'",
     "stylint": "stylint src/app",
     "test": "jest",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "opencollective postinstall",
+    "ci-version": "changeset version && node scripts/package-sync.js && yarn install --mode=update-lockfile",
+    "ci-publish": "yarn build && changeset publish"
   },
   "build": {
     "appId": "org.cncjs",
@@ -350,7 +353,16 @@
     "url-loader": "~4.1.1",
     "webpack": "~5.75.0",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.1.0"
+    "webpack-dev-server": "^5.1.0",
+    "@changesets/cli": "^2.31.0",
+    "babel-eslint": "~10.0.1",
+    "crypto-browserify": "^3.12.0",
+    "imports-loader": "~0.8.0",
+    "nib": "~1.2.0",
+    "redux-devtools": "~3.5.0",
+    "run-sequence": "~2.2.1",
+    "transform-loader": "~0.2.4",
+    "webpack-node-externals": "~1.7.2"
   },
   "jest": {
     "transform": {
