@@ -1,5 +1,11 @@
 # cncjs
 
+## 1.11.1
+
+### Patch Changes
+
+- 0f1b71b: - fix(visualizer): align machine limits, pivot, and orbit center with machine profiles by [@cheton](https://github.com/cheton) in [#979](https://github.com/cncjs/cncjs/pull/979)
+
 ## 1.11.0
 
 ### Minor Changes
