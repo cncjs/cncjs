@@ -1,6 +1,6 @@
 # This workflow will release the packages with Changesets
 
-name: Release
+name: ci-release
 
 on:
   push:
