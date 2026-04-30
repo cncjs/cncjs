@@ -28,22 +28,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        id: checkout
         uses: actions/checkout@v4
         with:
           # Fetch the entire Git history to ensure `Changesets` can generate changelogs with the correct commits
           fetch-depth: 0
       - name: Setup Node
-        id: setup-node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 24
           registry-url: 'https://registry.npmjs.org'
+      - name: Update npm
+        run: npm install -g npm@latest
       - name: Install Dependencies
-        id: install-dependencies
         run: yarn install
       - name: Create Release Pull Request or Publish to npm
-        id: changesets
         uses: changesets/action@v1
         with:
           title: "chore(release): version packages"
