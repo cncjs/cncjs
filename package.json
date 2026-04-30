@@ -56,7 +56,9 @@
     "i18nlint": "bash -c 'find src/{app,server}/i18n -type f -name \"*.json\" | xargs -L1 -I{} -- bash -c \"echo Linting {}; jsonlint -q {}\"'",
     "stylint": "stylint src/app",
     "test": "jest",
-    "postinstall": "opencollective postinstall"
+    "postinstall": "opencollective postinstall",
+    "ci-version": "changeset version && node scripts/package-sync.js && yarn install --mode=update-lockfile",
+    "ci-publish": "yarn build && changeset publish"
   },
   "build": {
     "appId": "org.cncjs",
@@ -278,6 +280,7 @@
     "@babel/preset-env": "^7.28.6",
     "@babel/preset-react": "^7.25.9",
     "@babel/register": "^7.25.9",
+    "@changesets/cli": "^2.31.0",
     "@electron/rebuild": "^3.7.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.15",
     "babel-core": "~7.0.0-bridge.0",
