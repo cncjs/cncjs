@@ -24,6 +24,9 @@ export default {
   // Allow Remote Access
   allowRemoteAccess: false,
 
+  // Disable authentication
+  authDisabled: false,
+
   // Express view engine
   view: {
     // Set html (w/o dot) as the default extension

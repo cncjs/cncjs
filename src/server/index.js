@@ -89,12 +89,20 @@ const createServer = (options, callback) => {
     }
   }
 
+  { // authDisabled
+    const authDisabled = config.get('authDisabled', false);
+    set(settings, 'authDisabled', !!authDisabled);
+  }
+
   { // allowRemoteAccess
     const allowRemoteAccess = options.allowRemoteAccess || config.get('allowRemoteAccess', false);
 
     if (allowRemoteAccess) {
       if (size(config.get('users')) === 0) {
         log.warn('You\'ve enabled remote access to the server. It\'s recommended to create an user account to protect against malicious attacks.');
+      }
+      if (settings.authDisabled) {
+        log.warn('Authentication is disabled while remote access is enabled. This configuration is unsafe on untrusted networks.');
       }
 
       set(settings, 'allowRemoteAccess', allowRemoteAccess);

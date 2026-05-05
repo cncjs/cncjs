@@ -20,6 +20,10 @@ import {
 
 const log = logger('api:users');
 const CONFIG_KEY = 'users';
+const ANON_USER = {
+  id: 'anonymous',
+  name: 'anonymous'
+};
 
 // Generate access token
 // https://github.com/auth0/node-jsonwebtoken#jwtsignpayload-secretorprivatekey-options-callback
@@ -70,6 +74,17 @@ export const signin = (req, res) => {
   const enabledUsers = users.filter(user => {
     return user.enabled;
   });
+
+  if (settings.authDisabled) {
+    const payload = { ...ANON_USER };
+    const token = generateAccessToken(payload, settings.secret); // generate access token
+    res.send({
+      enabled: false, // session is disabled
+      token: token,
+      name: ANON_USER.name
+    });
+    return;
+  }
 
   if (enabledUsers.length === 0) {
     const user = { id: '', name: '' };

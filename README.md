@@ -176,10 +176,13 @@ Instead of passing command line options for `--watch-directory`, `--access-token
     ],
     "watchDirectory": "/path/to/dir",
     "accessTokenLifetime": "30d",
+    "authDisabled": false,
     "allowRemoteAccess": false,
     "controller": ""
 }
 ```
+
+Set `"authDisabled": true` only when running cncjs on a trusted local network. This disables the normal sign-in requirement and is not recommended for servers exposed to untrusted clients.
 
 To troubleshoot issues, run:
 ```
@@ -223,6 +226,7 @@ See https://github.com/cncjs/cncjs/issues/242#issuecomment-352294549 for a detai
   ],
   "watchDirectory": "/path/to/dir",
   "accessTokenLifetime": "30d",
+  "authDisabled": false,
   "allowRemoteAccess": false,
   "controller": "",
   "state": {
