@@ -36,6 +36,11 @@ export const authorizeIPAddress = (ipaddr) => new Promise((resolve, reject) => {
 });
 
 export const validateUser = (user) => new Promise((resolve, reject) => {
+  if (settings.authDisabled) {
+    resolve();
+    return;
+  }
+
   const { id = null, name = null } = { ...user };
 
   const users = ensureArray(config.get('users'))
