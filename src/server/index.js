@@ -101,6 +101,11 @@ const createServer = (options, callback) => {
     }
   }
 
+  { // authDisabled
+    const authDisabled = config.get('authDisabled', false);
+    set(settings, 'authDisabled', !!authDisabled);
+  }
+
   const { port = 0, host, backlog } = options;
   const mountPoints = uniqWith([
     ...ensureArray(options.mountPoints),
