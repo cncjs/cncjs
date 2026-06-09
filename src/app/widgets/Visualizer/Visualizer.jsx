@@ -17,6 +17,7 @@ import CombinedCamera from 'app/lib/three/CombinedCamera';
 import TrackballControls from 'app/lib/three/TrackballControls';
 import * as WebGL from 'app/lib/three/WebGL';
 import log from 'app/lib/log';
+import { getRenderPixelRatio } from 'app/lib/pixel-ratio';
 import { mapValueToUnits } from 'app/lib/units';
 import store from 'app/store';
 import { getBoundingBox, loadSTL, loadTexture } from './helpers';
@@ -627,7 +628,7 @@ class Visualizer extends Component {
 
       this.controls.handleResize();
 
-      this.renderer.setPixelRatio(window.devicePixelRatio || 1);
+      this.renderer.setPixelRatio(getRenderPixelRatio());
       this.renderer.setSize(width, height);
 
       // Update the scene
@@ -868,7 +869,7 @@ class Visualizer extends Component {
       this.renderer.shadowMap.enabled = true;
       this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       this.renderer.setClearColor(new THREE.Color(colornames('white')), 1);
-      this.renderer.setPixelRatio(window.devicePixelRatio || 1);
+      this.renderer.setPixelRatio(getRenderPixelRatio());
       this.renderer.setSize(width, height);
       this.renderer.clear();
 
