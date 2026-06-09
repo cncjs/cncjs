@@ -17,7 +17,10 @@ class TextSprite {
     const { opacity = 0.6, size = 10 } = options;
 
     const textObject = new THREE.Object3D();
-    const textHeight = 100;
+    // Scale texture resolution by devicePixelRatio for crisp hi-DPI labels;
+    // sprite scale below divides by textHeight, so world size is unchanged.
+    const pixelRatio = window.devicePixelRatio || 1;
+    const textHeight = 100 * pixelRatio;
     let textWidth = 0;
 
     const canvas = document.createElement('canvas');
