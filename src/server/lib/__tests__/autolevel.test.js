@@ -172,7 +172,7 @@ describe('autolevel', () => {
     describe('segment subdivision', () => {
       test('should subdivide long moves based on detected grid size', () => {
         const gcode = 'G0 X0 Y0 Z0\nG0 X50 Y0 Z0';
-        // 10mm grid with non-collinear points (need Y variation for plane interpolation)
+        // 10mm grid; two Y rows so the points form a lattice for bilinear interpolation
         const probeData = [
           { x: 0, y: 0, z: 0 },
           { x: 10, y: 0, z: 0.1 },
@@ -278,6 +278,90 @@ describe('autolevel', () => {
         expect(result).toEqual([
           'G0 X10.000 Y10.000 Z0.150',
         ].join('\n'));
+      });
+    });
+
+    describe('bilinear interpolation', () => {
+      // Bilinear reproduces any tilted plane exactly, even off the grid nodes.
+      test('is exact on a tilted plane at a non-node point', () => {
+        const gcode = 'G0 X7 Y13 Z0';
+        const probeData = [ // surface z = 0.1 * x
+          { x: 0, y: 0, z: 0 },
+          { x: 20, y: 0, z: 2 },
+          { x: 0, y: 20, z: 0 },
+          { x: 20, y: 20, z: 2 },
+        ];
+
+        const result = applyProbeCompensation(gcode, probeData);
+
+        // True surface at x=7 is 0.7
+        expect(result).toBe('G0 X7.000 Y13.000 Z0.700');
+      });
+
+      // The decisive case: at a saddle's center bilinear returns the average of
+      // all four corners (0.5). A 3-point plane fit ignores the 4th corner and
+      // would return 1.0 here.
+      test('returns the four-corner average at a saddle center', () => {
+        const gcode = 'G0 X5 Y5 Z0';
+        const probeData = [
+          { x: 0, y: 0, z: 0 },
+          { x: 10, y: 0, z: 1 },
+          { x: 0, y: 10, z: 1 },
+          { x: 10, y: 10, z: 0 },
+        ];
+
+        const result = applyProbeCompensation(gcode, probeData);
+
+        expect(result).toBe('G0 X5.000 Y5.000 Z0.500');
+      });
+
+      // Cell indexing must work beyond the first cell.
+      test('interpolates within the correct cell on a 3x3 grid', () => {
+        const gcode = 'G0 X15 Y5 Z0'; // second cell in X; surface z = x / 10
+        const probeData = [];
+        for (const y of [0, 10, 20]) {
+          for (const x of [0, 10, 20]) {
+            probeData.push({ x, y, z: x / 10 });
+          }
+        }
+
+        const result = applyProbeCompensation(gcode, probeData);
+
+        // Between x=10 (z=1) and x=20 (z=2), at x=15 -> 1.5
+        expect(result).toBe('G0 X15.000 Y5.000 Z1.500');
+      });
+
+      // Bilinear is continuous across cell boundaries (unlike the plane fit,
+      // whose nearest-3 set switches there and can jump).
+      test('is continuous across a grid cell boundary', () => {
+        const probeData = [ // tent in X: peak at x=10, zero at x=0 and x=20
+          { x: 0, y: 0, z: 0 }, { x: 10, y: 0, z: 1 }, { x: 20, y: 0, z: 0 },
+          { x: 0, y: 10, z: 0 }, { x: 10, y: 10, z: 1 }, { x: 20, y: 10, z: 0 },
+        ];
+        const zOf = (gcode) => {
+          const out = applyProbeCompensation(gcode, probeData);
+          return parseFloat(out.match(/Z(-?\d+\.\d+)/)[1]);
+        };
+
+        const left = zOf('G0 X9.99 Y5 Z0');
+        const right = zOf('G0 X10.01 Y5 Z0');
+
+        expect(Math.abs(left - right)).toBeLessThan(0.005);
+      });
+
+      // Scattered (non-lattice) probe data falls back to the plane fit.
+      test('falls back to plane fit when probe points are not a grid', () => {
+        const gcode = 'G0 X4 Y4 Z0';
+        const probeData = [ // three scattered points on the plane z = 0.1 * x
+          { x: 0, y: 0, z: 0 },
+          { x: 10, y: 2, z: 1 },
+          { x: 3, y: 12, z: 0.3 },
+        ];
+
+        const result = applyProbeCompensation(gcode, probeData);
+
+        // Plane z = 0.1*x -> at x=4 -> 0.4
+        expect(result).toBe('G0 X4.000 Y4.000 Z0.400');
       });
     });
   });
