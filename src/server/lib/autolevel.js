@@ -14,6 +14,23 @@ import logger from './logger';
 
 const log = logger('autolevel');
 
+/**
+ * @typedef {object} Point3
+ * @property {number} x - X coordinate
+ * @property {number} y - Y coordinate
+ * @property {number} z - Z coordinate
+ */
+
+/**
+ * @typedef {object} ProbeGrid
+ * @property {number[]} xs - Sorted unique X grid coordinates
+ * @property {number[]} ys - Sorted unique Y grid coordinates
+ * @property {number[][]} matrix - Heights; matrix[j][i] is the height at (xs[i], ys[j])
+ */
+
+// Default probe-grid spacing (mm) when the data isn't a usable rectangular grid.
+const DEFAULT_GRID_STEP = 5;
+
 // Vector subtraction: p1 - p2
 const sub3 = (p1, p2) => ({
   x: p1.x - p2.x,
@@ -59,13 +76,13 @@ const isColinear = (u, v) => {
  * Example:
  * - Move from (0,0) to (50,50) with maxSegmentLength = 10mm
  * - Creates ~7 intermediate points along the path
- * - Each point gets Z compensation from the 3 closest probed points
+ * - Each point gets Z compensation interpolated from the probe surface
  * - Results in a toolpath that follows the actual surface contour
  *
- * @param {object} p1 - Start point {x, y, z}
- * @param {object} p2 - End point {x, y, z}
+ * @param {Point3} p1 - Start point
+ * @param {Point3} p2 - End point
  * @param {number} maxSegmentLength - Maximum length between subdivided points
- * @returns {array} Array of points from p1 to p2, including both endpoints
+ * @returns {Point3[]} Points from p1 to p2, including both endpoints
  */
 const subdivideSegment = (p1, p2, maxSegmentLength) => {
   const result = [];
@@ -109,10 +126,12 @@ const subdivideSegment = (p1, p2, maxSegmentLength) => {
 
 /**
  * Find three closest non-collinear probed points to a given point.
- * Used for planar interpolation of Z compensation.
- * @param {object} pt - Point with x, y coordinates (in mm)
- * @param {array} probedPositions - Array of probed positions
- * @returns {array} Array of 3 closest non-collinear points, or empty if not enough points
+ * Used as a fallback for non-grid data (see planeFitZ).
+ * @param {object} pt - Query point in mm
+ * @param {number} pt.x - X coordinate
+ * @param {number} pt.y - Y coordinate
+ * @param {Point3[]} probedPositions - Probed positions in mm
+ * @returns {Point3[]} The 3 closest non-collinear points, or empty if not enough points
  */
 const getThreeClosestPoints = (pt, probedPositions) => {
   const result = [];
@@ -143,39 +162,146 @@ const getThreeClosestPoints = (pt, probedPositions) => {
 };
 
 /**
- * Calculate Z compensation for a point using planar interpolation.
- * @param {object} pt - Point {x, y, z} in current units
- * @param {array} probedPositions - Array of probed positions in mm
- * @param {string} units - Current units (METRIC_UNITS or IMPERIAL_UNITS)
- * @returns {object} Compensated point {x, y, z}
+ * Interpolate the probe-surface Z at (x, y) by fitting a plane through the three
+ * closest non-collinear probed points. Used as a fallback when the probe data is
+ * not a complete rectangular grid.
+ * @param {number} x - X in mm
+ * @param {number} y - Y in mm
+ * @param {Point3[]} probedPositions - Probed positions in mm
+ * @returns {number|null} Surface Z in mm, or null if it cannot be computed
  */
-const compensatePoint = (pt, probedPositions, units = METRIC_UNITS) => {
-  // Convert to mm for calculation (probed positions are in mm)
-  const point = {
-    x: units === IMPERIAL_UNITS ? in2mm(pt.x) : pt.x,
-    y: units === IMPERIAL_UNITS ? in2mm(pt.y) : pt.y,
-    z: units === IMPERIAL_UNITS ? in2mm(pt.z) : pt.z,
+const planeFitZ = (x, y, probedPositions) => {
+  const points = getThreeClosestPoints({ x, y }, probedPositions);
+  if (points.length < 3) {
+    return null;
+  }
+  const normal = crossProduct3(sub3(points[1], points[0]), sub3(points[2], points[0]));
+  if (normal.z === 0) {
+    return null;
+  }
+  const base = points[0];
+  return base.z - (normal.x * (x - base.x) + normal.y * (y - base.y)) / normal.z;
+};
+
+/**
+ * Build a lattice for bilinear interpolation from probed points.
+ * @param {Point3[]} probedPositions - Probed positions in mm
+ * @returns {ProbeGrid|null} Grid (see ProbeGrid typedef); matrix[j][i] is
+ *   undefined for an unprobed node. null when there are fewer than two distinct
+ *   X or Y values.
+ */
+const buildProbeGrid = (probedPositions) => {
+  const round = (v) => Math.round(v * 1000) / 1000; // 1 micron tolerance
+  const xs = [...new Set(probedPositions.map(p => round(p.x)))].sort((a, b) => a - b);
+  const ys = [...new Set(probedPositions.map(p => round(p.y)))].sort((a, b) => a - b);
+  if (xs.length < 2 || ys.length < 2) {
+    return null;
+  }
+  const xIndex = new Map(xs.map((x, i) => [x, i]));
+  const yIndex = new Map(ys.map((y, j) => [y, j]));
+  const matrix = ys.map(() => new Array(xs.length).fill(undefined));
+  for (const p of probedPositions) {
+    matrix[yIndex.get(round(p.y))][xIndex.get(round(p.x))] = p.z;
+  }
+  return { xs, ys, matrix };
+};
+
+// Largest cell index i with values[i] <= v, clamped to a valid cell [0, n-2] so
+// points outside the grid extrapolate from the nearest edge cell.
+const findCell = (values, v) => {
+  let i = 0;
+  while ((i < values.length - 2) && (values[i + 1] <= v)) {
+    i += 1;
+  }
+  return i;
+};
+
+// Smallest gap between consecutive sorted grid coordinates (assumes >= 2 values).
+const minSpacing = (sorted) => {
+  let min = Infinity;
+  for (let k = 1; k < sorted.length; k += 1) {
+    const gap = sorted[k] - sorted[k - 1];
+    if (gap > 0 && gap < min) {
+      min = gap;
+    }
+  }
+  return min;
+};
+
+/**
+ * Bilinear interpolation of the probe-surface Z at (x, y) over the grid.
+ * @param {ProbeGrid} grid - Grid from buildProbeGrid (mm)
+ * @param {number} x - X in mm
+ * @param {number} y - Y in mm
+ * @returns {number|null} Surface Z in mm, or null if any of the four surrounding
+ *   grid nodes is missing (caller falls back to plane fit)
+ */
+const bilinearZ = (grid, x, y) => {
+  const { xs, ys, matrix } = grid;
+  const i = findCell(xs, x);
+  const j = findCell(ys, y);
+  const z00 = matrix[j][i];
+  const z10 = matrix[j][i + 1];
+  const z01 = matrix[j + 1][i];
+  const z11 = matrix[j + 1][i + 1];
+  if (z00 === undefined || z10 === undefined || z01 === undefined || z11 === undefined) {
+    return null;
+  }
+  const a = (x - xs[i]) / (xs[i + 1] - xs[i]);
+  const b = (y - ys[j]) / (ys[j + 1] - ys[j]);
+  return z00 * (1 - a) * (1 - b) +
+    z10 * a * (1 - b) +
+    z01 * (1 - a) * b +
+    z11 * a * b;
+};
+
+/**
+ * Build a queryable probe surface. zAt(x, y) returns the surface Z (mm) at a
+ * point (mm), using bilinear interpolation over the grid and falling back to a
+ * 3-point plane fit for non-grid data or grid cells with missing nodes.
+ * @param {Point3[]} probedPositions - Probed positions in mm
+ * @returns {{ zAt: (x: number, y: number) => (number|null), stepX: number, stepY: number }}
+ */
+const buildSurface = (probedPositions) => {
+  // Bilinear interpolation lattice; null when the probe data has fewer than two
+  // distinct X or Y values (per-cell plane-fit fallback handles sparse grids).
+  const grid = buildProbeGrid(probedPositions);
+
+  // Grid spacing controls how finely moves are subdivided; derive it from the
+  // probe lattice instead of rescanning every point pair.
+  const stepX = grid ? minSpacing(grid.xs) : DEFAULT_GRID_STEP;
+  const stepY = grid ? minSpacing(grid.ys) : DEFAULT_GRID_STEP;
+
+  const zAt = (x, y) => {
+    const z = grid ? bilinearZ(grid, x, y) : null;
+    return z !== null ? z : planeFitZ(x, y, probedPositions);
   };
 
-  // Calculate plane from the 3 closest probed points
-  const points = getThreeClosestPoints(point, probedPositions);
-  if (points.length < 3) {
-    log.warn('Cannot find 3 closest points for Z compensation');
+  return { zAt, stepX, stepY };
+};
+
+/**
+ * Calculate Z compensation for a point. Uses bilinear interpolation over the
+ * probe grid, falling back to a 3-point plane fit for non-grid data or grid
+ * cells with missing nodes.
+ * @param {Point3} pt - Point in current units
+ * @param {object} surface - Probe surface from buildSurface
+ * @param {string} units - Current units (METRIC_UNITS or IMPERIAL_UNITS)
+ * @returns {Point3} Compensated point in current units
+ */
+const compensatePoint = (pt, surface, units = METRIC_UNITS) => {
+  // Probed positions are in mm; convert the query point to match.
+  const x = units === IMPERIAL_UNITS ? in2mm(pt.x) : pt.x;
+  const y = units === IMPERIAL_UNITS ? in2mm(pt.y) : pt.y;
+  const z = units === IMPERIAL_UNITS ? in2mm(pt.z) : pt.z;
+
+  const dz = surface.zAt(x, y);
+  if (dz === null) {
+    log.warn('Cannot compute Z compensation for point');
     return pt;
   }
-  const planeNormal = crossProduct3(sub3(points[1], points[0]), sub3(points[2], points[0]));
-  const planePoint = points[0];
 
-  // Z Interpolation
-  let dz = 0;
-  if (planeNormal.z !== 0) {
-    dz = planePoint.z - (planeNormal.x * (point.x - planePoint.x) + planeNormal.y * (point.y - planePoint.y)) / planeNormal.z;
-  } else {
-    log.warn('Plane normal Z is zero, cannot interpolate');
-  }
-  const compensatedZ = point.z + dz;
-
-  // Convert back to original units
+  const compensatedZ = z + dz;
   return {
     x: pt.x,
     y: pt.y,
@@ -237,27 +363,8 @@ export const applyProbeCompensation = (gcodeStr, probeData = []) => {
     return gcodeStr;
   }
 
-  // Auto-detect grid step size from probe data
-  let minXStep = Infinity;
-  let minYStep = Infinity;
-
-  for (let i = 0; i < probedPositions.length; i++) {
-    for (let j = i + 1; j < probedPositions.length; j++) {
-      const dx = Math.abs(probedPositions[j].x - probedPositions[i].x);
-      const dy = Math.abs(probedPositions[j].y - probedPositions[i].y);
-
-      // Track minimum non-zero distances
-      if (dx > 0.001 && dx < minXStep) {
-        minXStep = dx;
-      }
-      if (dy > 0.001 && dy < minYStep) {
-        minYStep = dy;
-      }
-    }
-  }
-
-  const stepX = (minXStep !== Infinity) ? minXStep : 10;
-  const stepY = (minYStep !== Infinity) ? minYStep : 10;
+  const surface = buildSurface(probedPositions);
+  const { stepX, stepY } = surface;
 
   log.info(`Applying Z compensation (auto-detected grid: ${stepX.toFixed(2)}mm × ${stepY.toFixed(2)}mm, ${probedPositions.length} points)...`);
 
@@ -357,7 +464,7 @@ export const applyProbeCompensation = (gcodeStr, probeData = []) => {
       // Average  | (stepX + stepY) / 2        | Balanced
       // Diagonal | Math.sqrt(stepX² + stepY²) | Grid cell diagonal
       //
-      // Using Math.min(stepX, stepY) ensures the segment length is small enough to capture surface variationsin both directions.
+      // Using Math.min(stepX, stepY) ensures the segment length is small enough to capture surface variations in both directions.
       // If stepX = 5mm and stepY = 20mm, using min (5mm) prevents missing detail along the finer X grid.
       const step = Math.min(stepX, stepY);
       const maxSegmentLength = (units === IMPERIAL_UNITS ? mm2in(step) : step) / 2;
@@ -368,13 +475,13 @@ export const applyProbeCompensation = (gcodeStr, probeData = []) => {
         // Skip first segment (it's p0, already output in previous command)
         for (let i = 1; i < segments.length; i++) {
           const seg = segments[i];
-          const cpt = compensatePoint(seg, probedPositions, units);
+          const cpt = compensatePoint(seg, surface, units);
           const newLine = `${lineWithoutXYZ} X${cpt.x.toFixed(3)} Y${cpt.y.toFixed(3)} Z${cpt.z.toFixed(3)}`;
           results.push(newLine.trim());
         }
       } else {
         // First point - just compensate without splitting
-        const cpt = compensatePoint(pt, probedPositions, units);
+        const cpt = compensatePoint(pt, surface, units);
         const newLine = `${lineWithoutXYZ} X${cpt.x.toFixed(3)} Y${cpt.y.toFixed(3)} Z${cpt.z.toFixed(3)}`;
         results.push(newLine.trim());
         p0Initialized = true;
