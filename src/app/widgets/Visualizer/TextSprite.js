@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { getRenderPixelRatio } from 'app/lib/pixel-ratio';
 
 // TextSprite
 class TextSprite {
@@ -17,7 +18,10 @@ class TextSprite {
     const { opacity = 0.6, size = 10 } = options;
 
     const textObject = new THREE.Object3D();
-    const textHeight = 100;
+    // Bake the render pixel ratio into the texture resolution for crisp hi-DPI labels;
+    // sprite scale below divides by textHeight, so world size is unchanged.
+    const pixelRatio = getRenderPixelRatio();
+    const textHeight = 100 * pixelRatio;
     let textWidth = 0;
 
     const canvas = document.createElement('canvas');
