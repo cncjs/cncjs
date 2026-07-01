@@ -1,5 +1,13 @@
 # cncjs
 
+## 1.11.2
+
+### Patch Changes
+
+- feat: add bilinear interpolation to autolevel plugin by @sormy in [#990](https://github.com/cncjs/cncjs/pull/990)
+
+- feat: make text labels crispier on hi-DPI screens by @sormy in [#992](https://github.com/cncjs/cncjs/pull/992)
+
 ## 1.11.1
 
 ### Patch Changes
