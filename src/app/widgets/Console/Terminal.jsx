@@ -468,14 +468,16 @@ class TerminalWrapper extends Component {
     const buffer = this.term._core.buffer;
     const currentLineIndex = buffer.ybase + buffer.y;
     const currentBufferLine = buffer.lines.get(currentLineIndex);
-    const nullCell = buffer.getNullCell();
-    for (let index = this.prompt.length; index < currentBufferLine.length; ++index) {
-      currentBufferLine.setCell(index, nullCell);
-    }
+    const cursorX = buffer.x;
 
-    this.term.write('\r');
-    this.term.write(data, callback);
-    this.term.prompt();
+    const line = _trimEnd(currentBufferLine.translateToString());
+    const input = (line.length > this.prompt.length) ? line.slice(this.prompt.length) : '';
+
+    const cursorOffset = limit(cursorX - this.prompt.length, 0, input.length);
+    const cursorLeft = input.length - cursorOffset;
+    const restoreCursor = (cursorLeft > 0) ? `\x1b[${cursorLeft}D` : '';
+
+    this.term.write(`\x1b[2K\r${data}\r\n${chalk.white(this.prompt + input)}${restoreCursor}`, callback);
   }
 
   render() {
