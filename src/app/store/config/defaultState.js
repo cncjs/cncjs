@@ -26,7 +26,7 @@ const defaultState = Object.freeze({ // Freezes the default state
       secondary: {
         show: true,
         widgets: [
-          'axes', 'gcode', 'macro', 'probe', 'tool', 'spindle', 'laser'
+          'axes', 'gcode', 'macro', 'autolevel', 'probe', 'tool', 'spindle', 'laser'
         ]
       }
     },
@@ -35,6 +35,19 @@ const defaultState = Object.freeze({ // Freezes the default state
     }
   },
   widgets: {
+    autolevel: {
+      minimized: false,
+      startX: 0,
+      endX: 100,
+      stepX: 5,
+      startY: 0,
+      endY: 100,
+      stepY: 5,
+      clearanceZ: 10,
+      startZ: 5,
+      endZ: -10,
+      feedrate: 10,
+    },
     axes: {
       minimized: false,
       axes: ['x', 'y', 'z'],

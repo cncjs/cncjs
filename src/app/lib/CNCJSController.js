@@ -64,6 +64,22 @@ class CNCJSController {
     'sender:unload': [],
     'workflow:state': [],
     'message': [],
+
+    /**
+     * [Autolevel] Fired when the auto-leveling process starts.
+     * @event autolevel:update
+     * @param {number} index - The 0-based index of the current probe point
+     * @param {number} total - The total number of probe points
+     * @param {Array<{x: number, y: number, z: number}>} probedPositions - Probe results collected so far
+     */
+    'autolevel:update': [],
+
+    /**
+     * [Autolevel] Fired when the auto-leveling process is complete.
+     * @event autolevel:complete
+     * @param {Array<{x: number, y: number, z: number}>} probedPositions - The full array of probe results
+     */
+    'autolevel:complete': []
   };
 
   context = {
@@ -313,6 +329,14 @@ class CNCJSController {
   //   controller.command('macro_run', id, [context], [callback])
   // - Load file from a watch directory
   //   controller.command('watchdir_load', '/path/to/file', callback)
+  // - Autolevel
+  //   controller.command('autolevel:start', { mode: 'full', startX, endX, stepX, startY, endY, stepY, clearanceZ, startZ, endZ, feedrate })
+  //   controller.command('autolevel:start', { mode: 'test', clearanceZ, startZ, endZ, feedrate })
+  //   controller.command('autolevel:stop')
+  //   controller.command('autolevel:getProbeState', null, callback)
+  //   controller.command('autolevel:applyProbeCompensation', { gcode, probeData }, callback)
+  //   controller.command('autolevel:loadFromFile', filepath, callback)
+  //   controller.command('autolevel:saveToFile', filepath, callback)
   command(cmd, ...args) {
     if (!this.socket) {
       return;

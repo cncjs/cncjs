@@ -1,13 +1,20 @@
 import fs from 'fs';
+import fsp from 'fs/promises';
 import path from 'path';
 import chalk from 'chalk';
-import { ensureArray, ensureFiniteNumber, ensurePositiveNumber, ensureString } from 'ensure-type';
+import {
+  ensureArray,
+  ensureFiniteNumber,
+  ensurePositiveNumber,
+  ensureString,
+} from 'ensure-type';
 import * as gcodeParser from 'gcode-parser';
 import _ from 'lodash';
 import {
   CONNECTION_TYPE_SERIAL,
   CONNECTION_TYPE_SOCKET,
 } from '../../constants/connection';
+import * as autolevel from '../../lib/autolevel';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
 import MessageSlot from '../../lib/MessageSlot';
@@ -26,6 +33,12 @@ import translateExpression from '../../lib/translate-expression';
 import serviceContainer from '../../service-container';
 import controllers from '../../store/controllers';
 import {
+  CONTROLLER_COMMAND_AUTOLEVEL_START,
+  CONTROLLER_COMMAND_AUTOLEVEL_STOP,
+  CONTROLLER_COMMAND_AUTOLEVEL_GET_PROBE_STATE,
+  CONTROLLER_COMMAND_AUTOLEVEL_LOAD_FROM_FILE,
+  CONTROLLER_COMMAND_AUTOLEVEL_SAVE_TO_FILE,
+  CONTROLLER_COMMAND_AUTOLEVEL_APPLY_PROBE_COMPENSATION,
   CONTROLLER_COMMAND_SENDER_LOAD,
   CONTROLLER_COMMAND_SENDER_UNLOAD,
   CONTROLLER_COMMAND_SENDER_START,
@@ -87,7 +100,7 @@ import {
 } from '../utils';
 import * as builtinCommand from '../utils/builtin-command';
 import { isM0, isM1, isM6, isM109, isM190, replaceM6 } from '../utils/gcode';
-import { mapPositionToUnits, mapValueToUnits } from '../utils/units';
+import { in2mm, mapPositionToUnits, mapValueToUnits } from '../utils/units';
 import MarlinRunner from './MarlinRunner';
 import interpret from './interpret';
 import {
@@ -186,6 +199,25 @@ class MarlinController {
 
   // Shared context
   sharedContext = {};
+
+  // Auto Level - Probe state tracking
+  probeState = {
+    // The probed positions in the form of [{x, y, z}, ...]
+    probedPositions: [],
+
+    // The minimum and maximum Z values among the probed positions
+    minZ: null,
+    maxZ: null,
+
+    // The probe points in the form of [{x, y}, ...]
+    probePoints: [],
+
+    // The probe configuration
+    config: null,
+
+    // Flag indicating we're waiting to capture probe position after M114 query
+    pendingProbeCapture: false,
+  };
 
   // Workflow
   workflow = null;
@@ -659,6 +691,191 @@ class MarlinController {
         };
         this.command(CONTROLLER_COMMAND_SENDER_LOAD, meta, context, callback);
       });
+    },
+    [CONTROLLER_COMMAND_AUTOLEVEL_START]: () => {
+      const [params = {}] = args;
+      const {
+        mode = 'full',
+        startX,
+        endX,
+        stepX,
+        startY,
+        endY,
+        stepY,
+        clearanceZ,
+        startZ,
+        endZ,
+        feedrate,
+      } = params;
+
+      if (mode === 'test') {
+        // Test mode: single probe at current XY position, no probe results
+        const testGCode = [
+          'G90',
+          `G0 Z${clearanceZ}`,
+          `G0 Z${startZ}`,
+          `G38.2 Z${endZ} F${feedrate}`,
+          `G0 Z${clearanceZ}`,
+        ];
+        log.info(`[autolevel:start] Test probe: clearanceZ=${clearanceZ}, startZ=${startZ}, endZ=${endZ}, F=${feedrate}`);
+        this.command('gcode', testGCode);
+        return;
+      }
+
+      // Full mode: multi-point probe grid
+      const probePoints = autolevel.createProbeXYPoints({
+        startX,
+        endX,
+        stepX,
+        startY,
+        endY,
+        stepY,
+      });
+
+      // Reset probe state
+      this.probeState = {
+        probedPositions: [],
+        probePoints,
+        minZ: null,
+        maxZ: null,
+        config: {
+          startX,
+          endX,
+          stepX,
+          startY,
+          endY,
+          stepY,
+          clearanceZ,
+          startZ,
+          endZ,
+          feedrate,
+        },
+      };
+
+      log.info(`[autolevel:start] Start probing with ${probePoints.length} points`);
+
+      // Generate probe G-code
+      const probeGCodes = [];
+      probePoints.forEach((point, index) => {
+        const { x, y } = point;
+
+        probeGCodes.push(`(Auto Level: probing point ${index})`);
+
+        probeGCodes.push('G90'); // Absolute positioning
+        probeGCodes.push(`G0 Z${clearanceZ}`);
+        probeGCodes.push(`G0 X${x} Y${y}`);
+        probeGCodes.push(`G0 Z${startZ}`);
+        if (index === 0) {
+          probeGCodes.push(`G38.2 Z${endZ} F${feedrate / 2}`);
+        } else {
+          probeGCodes.push(`G38.2 Z${endZ} F${feedrate}`);
+        }
+        probeGCodes.push(`G0 Z${clearanceZ}`);
+      });
+
+      log.info(`[autolevel:start] Starting probing with ${probePoints.length} points`);
+      this.command('gcode', probeGCodes);
+    },
+
+    [CONTROLLER_COMMAND_AUTOLEVEL_STOP]: () => {
+      // Reset the machine to cancel the probe cycle immediately
+      this.command('reset');
+
+      // Clear probe state
+      this.probeState = {
+        probedPositions: [],
+        probePoints: [],
+        minZ: null,
+        maxZ: null,
+        config: null,
+      };
+      log.info('[autolevel:stop] Probe stopped and state cleared');
+    },
+
+    [CONTROLLER_COMMAND_AUTOLEVEL_GET_PROBE_STATE]: () => {
+      const [, callback] = args;
+      if (typeof callback === 'function') {
+        callback(null, { state: this.probeState });
+      }
+    },
+    [CONTROLLER_COMMAND_AUTOLEVEL_LOAD_FROM_FILE]: async () => {
+      const [filepath, callback] = args;
+
+      try {
+        const data = await fsp.readFile(filepath, 'utf8');
+        const lines = data.split('\n').filter(line => line.trim().length > 0);
+
+        const probedPositions = [];
+        let minZ = Infinity;
+        let maxZ = -Infinity;
+
+        lines.forEach(line => {
+          const regex = /(-?\d*\.?\d+)?(\s+|$)/g;
+          const matches = [...line.matchAll(regex)];
+          const values = matches.map(match => (match[1] ? Number(match[1]) : undefined));
+          const [x, y, z] = values;
+
+          probedPositions.push({ x, y, z });
+          minZ = Math.min(z, minZ);
+          maxZ = Math.max(z, maxZ);
+        });
+
+        this.probeState.probedPositions = probedPositions;
+        this.probeState.minZ = minZ;
+        this.probeState.maxZ = maxZ;
+
+        if (typeof callback === 'function') {
+          callback(null, { success: true, state: this.probeState });
+        }
+
+        log.info(`[autolevel:load] Loaded ${probedPositions.length} points from ${filepath}`);
+      } catch (err) {
+        log.error('[autolevel:load] Error loading probe data:', err);
+        if (typeof callback === 'function') {
+          callback(err.message, { success: false, state: null });
+        }
+      }
+    },
+    [CONTROLLER_COMMAND_AUTOLEVEL_SAVE_TO_FILE]: async () => {
+      const [filepath, callback] = args;
+
+      try {
+        const { probedPositions } = this.probeState;
+        const data = probedPositions.map(({ x, y, z }) => {
+          const a = 0, b = 0, c = 0;
+          const u = 0, v = 0, w = 0;
+          return `${x} ${y} ${z} ${a} ${b} ${c} ${u} ${v} ${w}`;
+        }).join('\n');
+
+        await fsp.writeFile(filepath, data, 'utf8');
+
+        if (typeof callback === 'function') {
+          callback(null, { success: true, filepath });
+        }
+
+        log.info(`[autolevel:saveToFile] Saved ${probedPositions.length} points to ${filepath}`);
+      } catch (err) {
+        log.error('[autolevel:saveToFile] Error saving probe data:', err);
+        if (typeof callback === 'function') {
+          callback(err.message, { success: false, filepath });
+        }
+      }
+    },
+    [CONTROLLER_COMMAND_AUTOLEVEL_APPLY_PROBE_COMPENSATION]: () => {
+      const [params, callback] = args;
+      const {
+        gcode: gcodeStr,
+        probeData,
+      } = params;
+
+      // Use AutoLevel static method for compensation (step size auto-detected from probeData)
+      const compensatedGcode = autolevel.applyProbeCompensation(gcodeStr, probeData);
+
+      log.info('[autolevel:applyProbeCompensation] Probe compensation applied');
+
+      if (typeof callback === 'function') {
+        callback(null, { compensatedGcode });
+      }
     },
   };
 
@@ -1219,6 +1436,66 @@ class MarlinController {
     this.runner.on('pos', (res) => {
       log.silly(`controller.on('pos'): source=${this.history.writeSource}, line=${JSON.stringify(this.history.writeLine)}, res=${JSON.stringify(res)}`);
 
+      // Auto Level - Capture probe position after M114 query
+      if (this.probeState.pendingProbeCapture) {
+        this.probeState.pendingProbeCapture = false;
+
+        const {
+          x: posx,
+          y: posy,
+          z: posz,
+        } = this.runner.getWorkPosition();
+
+        const modal = this.runner.getModalGroup();
+        const isImperial = modal.units === 'G20';
+
+        // Convert probe result to mm
+        // Probe data is always stored in mm for consistent compensation math
+        const probedPos = {
+          x: ensureFiniteNumber(Number(posx)),
+          y: ensureFiniteNumber(Number(posy)),
+          z: ensureFiniteNumber(Number(posz)),
+        };
+        if (isImperial) {
+          probedPos.x = in2mm(probedPos.x);
+          probedPos.y = in2mm(probedPos.y);
+          probedPos.z = in2mm(probedPos.z);
+        }
+
+        log.debug('[autolevel] Probe position captured:', { probedPos });
+
+        if (this.probeState.probePoints.length > 0 && this.probeState.probedPositions.length < this.probeState.probePoints.length) {
+          const newProbedPositions = [...this.probeState.probedPositions, probedPos];
+          const isCompleted = newProbedPositions.length >= this.probeState.probePoints.length;
+
+          if (this.probeState.probedPositions.length === 0) {
+            this.probeState.minZ = probedPos.z;
+            this.probeState.maxZ = probedPos.z;
+          } else {
+            this.probeState.minZ = Math.min(this.probeState.minZ, probedPos.z);
+            this.probeState.maxZ = Math.max(this.probeState.maxZ, probedPos.z);
+          }
+
+          this.probeState.probedPositions = newProbedPositions;
+
+          log.debug(`[autolevel] Probed ${newProbedPositions.length}/${this.probeState.probePoints.length}: posX=${probedPos.x.toFixed(3)}, posY=${probedPos.y.toFixed(3)}, posZ=${probedPos.z.toFixed(3)}`);
+
+          this.emit('autolevel:update', {
+            current: newProbedPositions.length,
+            total: this.probeState.probePoints.length,
+            probedPos: { ...probedPos },
+            minZ: this.probeState.minZ,
+            maxZ: this.probeState.maxZ,
+            maxDeviation: this.probeState.maxZ - this.probeState.minZ,
+          });
+
+          if (isCompleted) {
+            this.emit('autolevel:complete');
+            log.info('[autolevel] Probing completed');
+          }
+        }
+      }
+
       if (_.includes([WRITE_SOURCE_CLIENT, WRITE_SOURCE_FEEDER], this.history.writeSsource)) {
         this.emit('connection:read', this.connectionState, res.raw);
       }
@@ -1241,6 +1518,29 @@ class MarlinController {
         } else if (!this.history.writeSource) {
           this.emit('connection:read', this.connectionState, res.raw);
           log.error('"history.writeSource" should not be empty');
+        }
+      }
+
+      // Auto Level - Track probe position after G38.x completes
+      // Marlin does not report PRB parameters like Grbl. After probe completes,
+      // we query M114 to get the updated position, then capture it in the 'pos' handler.
+      {
+        const writeLine = this.history.writeLine;
+        if (writeLine && /G38\.[2-5]/i.test(writeLine)) {
+          log.debug('[autolevel] Probe command completed, querying position with M114');
+
+          // Clear history before sending M114
+          this.history.writeSource = null;
+          this.history.writeLine = '';
+
+          // Query position immediately after probe completes
+          this.writeln('M114');
+          // Flag that we're waiting to capture the probe position
+          this.probeState.pendingProbeCapture = true;
+
+          // CRITICAL: Return here to preserve Send-Response protocol.
+          // We must wait for M114 response before sending the next command.
+          return;
         }
       }
 

@@ -3,6 +3,7 @@ import {
   IMPERIAL_UNITS,
   METRIC_UNITS,
 } from '@app/constants';
+import i18n from '@app/lib/i18n';
 
 // Converts value from millimeters to inches
 export const mm2in = (val = 0) => val / 25.4;
@@ -58,4 +59,11 @@ export const mapPositionToUnits = (pos, units = METRIC_UNITS) => {
     return mapPositionToMetricUnits(pos);
   }
   return Number(pos) || 0;
+};
+
+// Returns the display unit label for the given units
+// mm: 'mm'
+// in: 'in'
+export const toDisplayUnits = (units = METRIC_UNITS) => {
+  return (units === IMPERIAL_UNITS) ? i18n._('in') : i18n._('mm');
 };

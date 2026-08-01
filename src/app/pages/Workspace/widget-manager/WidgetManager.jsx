@@ -106,6 +106,13 @@ class WidgetManager extends Component {
       disabled: false
     },
     {
+      id: 'autolevel',
+      caption: i18n._('Autolevel Widget'),
+      details: i18n._('Probe the work surface to generate Z-axis height compensation data for your G-code.'),
+      visible: true,
+      disabled: false
+    },
+    {
       id: 'probe',
       caption: i18n._('Probe Widget'),
       details: i18n._('This widget helps you use a touch plate to set your Z zero offset.'),

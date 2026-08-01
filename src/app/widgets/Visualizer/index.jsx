@@ -140,26 +140,46 @@ const displayWebGLErrorMessage = () => {
   ));
 };
 
-function GCodeName({ name, style, ...props }) {
+function GCodeName({ name, isProbeCompensationApplied, style, ...props }) {
   if (!name) {
     return null;
   }
 
   return (
-    <div
-      style={{
-        display: 'inline-block',
-        position: 'absolute',
-        bottom: 8,
-        left: 8,
-        fontSize: '1.5rem',
-        color: '#000',
-        opacity: 0.5,
-        ...style,
-      }}
-      {...props}
-    >
-      {name}
+    <div>
+      <div
+        style={{
+          display: 'inline-block',
+          position: 'absolute',
+          bottom: 8,
+          left: 8,
+          fontSize: '1.5rem',
+          color: '#000',
+          opacity: 0.5,
+          ...style,
+        }}
+        {...props}
+      >
+        {name}
+      </div>
+      {isProbeCompensationApplied && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            fontSize: '1.2rem',
+            color: '#d9534f',
+            fontWeight: 'bold',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            padding: '4px 8px',
+            borderRadius: '3px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+          }}
+        >
+          {i18n._('Probe Compensation Applied')}
+        </div>
+      )}
     </div>
   );
 }
@@ -245,7 +265,8 @@ class VisualizerWidget extends Component {
           ...state.gcode,
           loading: true,
           rendering: false,
-          ready: false
+          ready: false,
+          isProbeCompensationApplied: false,
         }
       }));
 
@@ -268,7 +289,7 @@ class VisualizerWidget extends Component {
         log.debug(data); // TODO
       });
     },
-    loadGCode: ({ name, content }) => {
+    loadGCode: ({ name, content, isProbeCompensationApplied = false }) => {
       const capable = {
         view3D: !!this.visualizer
       };
@@ -280,6 +301,7 @@ class VisualizerWidget extends Component {
           rendering: capable.view3D,
           ready: !capable.view3D,
           content: content,
+          isProbeCompensationApplied: isProbeCompensationApplied,
           bbox: {
             min: {
               x: 0,
@@ -369,6 +391,7 @@ class VisualizerWidget extends Component {
           rendering: false,
           ready: false,
           content: '',
+          isProbeCompensationApplied: isProbeCompensationApplied,
           bbox: {
             min: {
               x: 0,
@@ -614,7 +637,9 @@ class VisualizerWidget extends Component {
     'sender:load': (meta, context) => {
       const { name, content } = meta;
       const modifiedContent = translateExpression(content, context); // e.g. xmin,xmax,ymin,ymax,zmin,zmax
-      this.actions.loadGCode({ name, content: modifiedContent });
+      // Preserve isProbeCompensationApplied if already set by pubsub (e.g. autolevel compensation)
+      const { isProbeCompensationApplied } = this.state.gcode;
+      this.actions.loadGCode({ name, content: modifiedContent, isProbeCompensationApplied });
     },
     'sender:unload': () => {
       this.actions.unloadGCode();
@@ -841,6 +866,21 @@ class VisualizerWidget extends Component {
   componentDidMount() {
     this.addControllerEvents();
 
+    // Subscribe to gcode:load pubsub events for metadata (e.g., isProbeCompensationApplied flag)
+    // Defaults to false so loading a new G-code clears the compensation badge
+    this.pubsubTokens.push(
+      pubsub.subscribe('gcode:load', (_msg, data) => {
+        if (data && typeof data === 'object') {
+          this.setState((state) => ({
+            gcode: {
+              ...state.gcode,
+              isProbeCompensationApplied: !!data.isProbeCompensationApplied
+            }
+          }));
+        }
+      })
+    );
+
     if (!WebGL.isWebGLAvailable() && !this.state.disabled) {
       displayWebGLErrorMessage();
 
@@ -854,6 +894,12 @@ class VisualizerWidget extends Component {
 
   componentWillUnmount() {
     this.removeControllerEvents();
+
+    // Unsubscribe from pubsub events
+    this.pubsubTokens.forEach(token => {
+      pubsub.unsubscribe(token);
+    });
+    this.pubsubTokens = [];
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -936,7 +982,8 @@ class VisualizerWidget extends Component {
         size: 0,
         total: 0,
         sent: 0,
-        received: 0
+        received: 0,
+        isProbeCompensationApplied: false,
       },
       disabled: this.config.get('disabled', false),
       projection: this.config.get('projection', 'orthographic'),
@@ -1085,6 +1132,7 @@ class VisualizerWidget extends Component {
             {(showVisualizer && state.gcode.displayName) && (
               <GCodeName
                 name={state.gcode.name}
+                isProbeCompensationApplied={state.gcode.isProbeCompensationApplied}
               />
             )}
             {showNotifications && (

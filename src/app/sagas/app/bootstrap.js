@@ -72,7 +72,7 @@ const changeLogLevel = () => {
 const initI18next = () => new Promise((resolve, reject) => {
   // https://www.i18next.com/overview/configuration-options
   const i18nextSettings = {
-    compatibilityJSON: 'v3',
+    compatibilityJSON: 'v4',
 
     /**
      * Logging

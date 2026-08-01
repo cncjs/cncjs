@@ -76,7 +76,7 @@ export default {
   },
   i18next: {
     // https://www.i18next.com/overview/configuration-options
-    compatibilityJSON: 'v3',
+    compatibilityJSON: 'v4',
 
     /**
      * Logging
