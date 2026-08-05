@@ -6,6 +6,7 @@ import includes from 'lodash/includes';
 import get from 'lodash/get';
 import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
+import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
 import {
   UPDATE_BOUNDING_BOX,
@@ -237,7 +238,8 @@ class VisualizerWidget extends Component {
           ...state.gcode,
           loading: true,
           rendering: false,
-          ready: false
+          ready: false,
+          isProbeCompensationApplied: false,
         }
       }));
 
@@ -391,7 +393,7 @@ class VisualizerWidget extends Component {
           rendering: false,
           ready: false,
           content: '',
-          isProbeCompensationApplied: isProbeCompensationApplied,
+          isProbeCompensationApplied: false,
           bbox: {
             min: {
               x: 0,

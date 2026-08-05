@@ -692,7 +692,7 @@ class MarlinController {
         this.command(CONTROLLER_COMMAND_SENDER_LOAD, meta, context, callback);
       });
     },
-    [CONTROLLER_COMMAND_AUTOLEVEL_START]: () => {
+    [CONTROLLER_COMMAND_AUTOLEVEL_START]: (...args) => {
       const [params = {}] = args;
       const {
         mode = 'full',
@@ -792,13 +792,13 @@ class MarlinController {
       log.info('[autolevel:stop] Probe stopped and state cleared');
     },
 
-    [CONTROLLER_COMMAND_AUTOLEVEL_GET_PROBE_STATE]: () => {
+    [CONTROLLER_COMMAND_AUTOLEVEL_GET_PROBE_STATE]: (...args) => {
       const [, callback] = args;
       if (typeof callback === 'function') {
         callback(null, { state: this.probeState });
       }
     },
-    [CONTROLLER_COMMAND_AUTOLEVEL_LOAD_FROM_FILE]: async () => {
+    [CONTROLLER_COMMAND_AUTOLEVEL_LOAD_FROM_FILE]: async (...args) => {
       const [filepath, callback] = args;
 
       try {
@@ -836,7 +836,7 @@ class MarlinController {
         }
       }
     },
-    [CONTROLLER_COMMAND_AUTOLEVEL_SAVE_TO_FILE]: async () => {
+    [CONTROLLER_COMMAND_AUTOLEVEL_SAVE_TO_FILE]: async (...args) => {
       const [filepath, callback] = args;
 
       try {
@@ -861,7 +861,7 @@ class MarlinController {
         }
       }
     },
-    [CONTROLLER_COMMAND_AUTOLEVEL_APPLY_PROBE_COMPENSATION]: () => {
+    [CONTROLLER_COMMAND_AUTOLEVEL_APPLY_PROBE_COMPENSATION]: (...args) => {
       const [params, callback] = args;
       const {
         gcode: gcodeStr,

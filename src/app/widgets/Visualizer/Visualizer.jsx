@@ -20,7 +20,7 @@ import * as WebGL from '@app/lib/three/WebGL';
 import log from '@app/lib/log';
 import { getRenderPixelRatio } from '@app/lib/pixel-ratio';
 import { mapValueToUnits } from '@app/lib/units';
-import config from '@app/store/config'
+import config from '@app/store/config';
 import { getBoundingBox, loadSTL, loadTexture } from './helpers';
 import Viewport from './Viewport';
 import CoordinateAxes from './CoordinateAxes';

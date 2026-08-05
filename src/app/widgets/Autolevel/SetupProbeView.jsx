@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ProgressBar } from 'react-bootstrap';
 import { Button } from '@app/components/Buttons';
+import ProgressBar from '@app/components/ProgressBar';
 import { Infotip } from '@app/components/Tooltip';
-import i18n from '@app/lib/i18n';
 import { METRIC_UNITS } from '@app/constants';
+import i18n from '@app/lib/i18n';
 import { toDisplayUnits } from '@app/lib/units';
 import { Space } from '@tonic-ui/react';
 import ProbeAreaDiagram from './ProbeAreaDiagram';
