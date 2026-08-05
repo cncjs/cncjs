@@ -364,10 +364,22 @@ class TerminalWrapper extends PureComponent {
     }
 
     writeln(data) {
-      this.term.eraseRight(0, this.term.buffer.y);
-      this.term.write('\r');
-      this.term.write(data);
-      this.term.prompt();
+      const line = this.term.buffer.lines.get(this.term.buffer.ybase + this.term.buffer.y);
+      const cursorX = this.term.buffer.x;
+      let input = '';
+
+      if (line) {
+        for (let x = this.prompt.length; x < line.length; ++x) {
+          input += line[x][1] || '';
+        }
+        input = trimEnd(input);
+      }
+
+      const cursorOffset = Math.min(Math.max(0, cursorX - this.prompt.length), input.length);
+      const cursorLeft = input.length - cursorOffset;
+      const restoreCursor = cursorLeft > 0 ? `\x1b[${cursorLeft}D` : '';
+
+      this.term.write(`\x1b[2K\r${data}\r\n${chalk.white(this.prompt + input)}${restoreCursor}`);
     }
 
     render() {
