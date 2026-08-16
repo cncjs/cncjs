@@ -36,7 +36,7 @@ const TOOL_PROBE_OVERRIDE_WCS_EXAMPLE = `
 ; Probe the tool
 G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]
 ; Set coordinate system offset
-G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height]
+G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height + tool_probe_length]
 `.trim();
 
 const TOOL_PROBE_OVERRIDE_TLO_EXAMPLE = `
@@ -45,7 +45,7 @@ G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_pr
 ; Pause for 1 second
 %wait 1
 ; Set tool length offset
-G43.1 Z[posz - touch_plate_height]
+G43.1 Z[posz - touch_plate_height - tool_probe_length]
 `.trim();
 
 const copyToClipboard = value => {
@@ -184,6 +184,7 @@ class Tool extends PureComponent {
     const toolProbeCommand = get(toolConfig, 'toolProbeCommand');
     const toolProbeDistance = get(toolConfig, 'toolProbeDistance');
     const toolProbeFeedrate = get(toolConfig, 'toolProbeFeedrate');
+    const toolProbeLength = get(toolConfig, 'toolProbeLength');
     const touchPlateHeight = get(toolConfig, 'touchPlateHeight');
     const isManualToolChange = [
       TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS,
@@ -203,13 +204,13 @@ class Tool extends PureComponent {
         lines.push('; Probe the tool');
         lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - posz - tool_probe_distance]');
         if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
-          lines.push('; Set the current work Z position (posz) to the touch plate height');
-          lines.push('G92 Z[touch_plate_height]');
+          lines.push('; Set the current work Z position (posz) to the touch plate height plus the probe length');
+          lines.push('G92 Z[touch_plate_height + tool_probe_length]');
         } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
           lines.push('; Pause for 1 second');
           lines.push('%wait 1');
-          lines.push('; Adjust the work Z position by subtracting the touch plate height from the current work Z position (posz)');
-          lines.push('G92 Z[posz - touch_plate_height]');
+          lines.push('; Adjust the work Z position by subtracting the touch plate height and probe length from the current work Z position (posz)');
+          lines.push('G92 Z[posz - touch_plate_height - tool_probe_length]');
         }
         return lines.join('\n');
       }
@@ -219,12 +220,12 @@ class Tool extends PureComponent {
         lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
         if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
           lines.push('; Set coordinate system offset');
-          lines.push('G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height]');
+          lines.push('G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height + tool_probe_length]');
         } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
           lines.push('; Pause for 1 second');
           lines.push('%wait 1');
           lines.push('; Set tool length offset');
-          lines.push('G43.1 Z[posz - touch_plate_height]');
+          lines.push('G43.1 Z[posz - touch_plate_height - tool_probe_length]');
         }
         return lines.join('\n');
       }
@@ -234,12 +235,12 @@ class Tool extends PureComponent {
         lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
         if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_WCS) {
           lines.push('; Set coordinate system offset');
-          lines.push('G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height]');
+          lines.push('G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height + tool_probe_length]');
         } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
           lines.push('; Pause for 1 second');
           lines.push('%wait 1');
           lines.push('; Set tool length offset');
-          lines.push('{tofz:[posz - touch_plate_height]}');
+          lines.push('{tofz:[posz - touch_plate_height - tool_probe_length]}');
         }
         return lines.join('\n');
       }
@@ -776,7 +777,29 @@ class Tool extends PureComponent {
                       </div>
                     </div>
                   </div>
+                  <div className="col-xs-6" style={{ paddingLeft: 5 }}>
+                    <div className="form-group">
+                      <label className="control-label">{i18n._('Probe Length')}</label>
+                      <div className="input-group input-group-sm">
+                        <input
+                          type="number"
+                          className="form-control"
+                          value={toolProbeLength}
+                          min={0}
+                          step={step}
+                          onChange={(event) => {
+                            const value = event.target.value;
+                            actions.setToolProbeLength(value);
+                          }}
+                        />
+                        <span className="input-group-addon">{displayUnits}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                <p style={{ marginTop: -4, marginBottom: 12 }}>
+                  <i>{i18n._('Probe Length is how far the touch probe\'s contact point sits below the tool tip. It is added to Touch Plate Height when computing the Z offset.')}</i>
+                </p>
                 <div>
                   <div
                     style={{
