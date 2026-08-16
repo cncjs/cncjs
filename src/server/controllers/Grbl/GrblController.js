@@ -1670,6 +1670,7 @@ class GrblController {
           const toolProbeCommand = config.get('tool.toolProbeCommand', 'G38.2');
           const toolProbeDistance = mapValueToUnits(config.get('tool.toolProbeDistance', 1), units);
           const toolProbeFeedrate = mapValueToUnits(config.get('tool.toolProbeFeedrate', 10), units);
+          const toolProbeLength = mapValueToUnits(config.get('tool.toolProbeLength', 0), units);
           const touchPlateHeight = mapValueToUnits(config.get('tool.touchPlateHeight', 0), units);
 
           const context = {
@@ -1682,6 +1683,7 @@ class GrblController {
             'tool_probe_command': toolProbeCommand,
             'tool_probe_distance': toolProbeDistance,
             'tool_probe_feedrate': toolProbeFeedrate,
+            'tool_probe_length': toolProbeLength,
             'touch_plate_height': touchPlateHeight,
 
             // internal functions
@@ -1732,14 +1734,14 @@ class GrblController {
             // Probe the tool
             lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
             // Set coordinate system offset
-            lines.push('G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height]');
+            lines.push('G10 L20 P[mapWCSToPValue(modal.wcs)] Z[touch_plate_height + tool_probe_length]');
           } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_TLO) {
             // Probe the tool
             lines.push('G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance]');
             // Pause for 1 second
             lines.push('%wait 1');
             // Set tool length offset
-            lines.push('G43.1 Z[posz - touch_plate_height]');
+            lines.push('G43.1 Z[posz - touch_plate_height - tool_probe_length]');
           } else if (toolChangePolicy === TOOL_CHANGE_POLICY_MANUAL_TOOL_CHANGE_CUSTOM_PROBING) {
             lines.push(...toolProbeCustomCommands);
           }
