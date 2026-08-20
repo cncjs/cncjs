@@ -1,5 +1,11 @@
 # cncjs
 
+## 1.11.3
+
+### Patch Changes
+
+- e140286: feat: preserves partially typed Console commands while serial, jog, and macro output is rendered
+
 ## 1.11.2
 
 ### Patch Changes
