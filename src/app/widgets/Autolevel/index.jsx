@@ -319,6 +319,9 @@ class AutolevelWidget extends PureComponent {
     handleProbeFeedrateChange: (event) => {
       this.setState({ feedrate: this.parseInputValue(event.target.value) });
     },
+    handleSkipUnprobedChange: (event) => {
+      this.setState({ skipUnprobed: event.target.checked });
+    },
 
     // Probe operations
     showTestProbeConfirmation: () => {
@@ -349,27 +352,18 @@ class AutolevelWidget extends PureComponent {
         startY, endY, stepY,
         clearanceZ, startZ, endZ,
         feedrate,
+        skipUnprobed,
       } = this.state;
-      // Calculate total points
-      const numPointsX = Math.floor((endX - startX) / stepX) + 1;
-      const numPointsY = Math.floor((endY - startY) / stepY) + 1;
-      const totalPoints = numPointsX * numPointsY;
 
       this.actions.closeModal();
-      this.setState({
-        probeState: PROBE_STATE_RUNNING,
-        probedPositions: [],
-        probeProgress: {
-          current: 0,
-          total: totalPoints,
-          percentage: 0,
-        },
-      });
+      this.setState({ probeErrorMessage: '' });
 
-      // Probing has started — the interactive probe area overlay is no longer
-      // needed and would be visually confusing during an active probing run.
-      // The visualizer will show probe result markers as points are collected.
-      pubsub.publish('autolevel:hideProbeVisualization');
+      // The probing state is not set here. The controller can refuse this
+      // start — a run already in progress, an alarm, an empty area — and the
+      // refusal is broadcast to every connected client, so a widget that had
+      // already declared itself to be probing could not tell its own refusal
+      // from one provoked by another tab. 'autolevel:started' is what says the
+      // run exists, and it brings the point count with it.
 
       // Values are in the current display units (G20/G21) — the server
       // passes them directly into G-code without unit conversion
@@ -385,6 +379,7 @@ class AutolevelWidget extends PureComponent {
         startZ,
         endZ,
         feedrate,
+        skipUnprobed,
       });
 
       log.info('Starting probe sequence');
@@ -597,14 +592,51 @@ class AutolevelWidget extends PureComponent {
         startZ: mapValueToUnits(this.config.get('startZ', 5), units),
         endZ: mapValueToUnits(this.config.get('endZ', -5), units),
         feedrate: mapValueToUnits(this.config.get('feedrate', 5), units),
+        skipUnprobed: this.config.get('skipUnprobed', false),
+      });
+    },
+    'autolevel:started': ({ total }) => {
+      log.info(`Probing run started with ${total} points`);
+
+      // The interactive probe area overlay is no longer needed and would be
+      // visually confusing during an active run. The visualizer shows probe
+      // result markers as points are collected.
+      pubsub.publish('autolevel:hideProbeVisualization');
+
+      this.setState({
+        probeState: PROBE_STATE_RUNNING,
+        probeErrorMessage: '',
+        probedPositions: [],
+        probeMarkers: [],
+        probeProgress: {
+          current: 0,
+          total,
+          percentage: 0,
+          skipped: 0,
+          retried: 0,
+        },
       });
     },
     'autolevel:update': (data) => {
       log.debug('Received autolevel:update event', data);
-      const { current, total, probedPos, minZ, maxZ, maxDeviation } = data;
+      const { current, total, probedPos, measuredPos, wasRetry, skippedPoint, skippedCount = 0, retriedCount = 0, minZ, maxZ, maxDeviation } = data;
 
       this.setState(state => {
-        const updatedPositions = [...state.probedPositions, probedPos];
+        // probedPos is null when the controller skipped a point with no
+        // contact (skipUnprobed); the compensation grid only ever sees
+        // real measurements, stored at their grid node's XY.
+        const updatedPositions = probedPos
+          ? [...state.probedPositions, probedPos]
+          : state.probedPositions;
+
+        // Markers tell the visual truth the grid cannot: where a nearby
+        // retry REALLY touched, and which nodes found nothing at all.
+        let updatedMarkers = state.probeMarkers;
+        if (wasRetry) {
+          updatedMarkers = [...updatedMarkers, { type: 'retried', ...measuredPos, nodeX: probedPos.x, nodeY: probedPos.y }];
+        } else if (skippedPoint) {
+          updatedMarkers = [...updatedMarkers, { type: 'skipped', x: skippedPoint.x, y: skippedPoint.y, z: 0 }];
+        }
 
         // A new probe point was received from the controller (autolevel:update).
         // Incrementally update the 3D visualizer so the user can watch the
@@ -614,18 +646,24 @@ class AutolevelWidget extends PureComponent {
         log.debug(`Updating visualization with point ${current}/${total}:`, probedPos);
         pubsub.publish('autolevel:showProbeVisualization', {
           probeData: updatedPositions,
+          probeMarkers: updatedMarkers,
           config: { startX, startY, endX, endY, units, snapX: stepX / 2, snapY: stepY / 2, interactable: false },
         });
 
         return {
           probedPositions: updatedPositions,
+          probeMarkers: updatedMarkers,
           probeProgress: {
             current,
             total,
             percentage: Math.round((current / total) * 100),
+            skipped: skippedCount,
+            retried: retriedCount,
           },
           probeStats: {
-            points: current,
+            points: updatedPositions.length,
+            skipped: skippedCount,
+            retried: retriedCount,
             minZ,
             maxZ,
             maxDeviation,
@@ -634,6 +672,46 @@ class AutolevelWidget extends PureComponent {
       });
 
       log.debug(`Probed ${current}/${total} points`);
+    },
+    'autolevel:error': ({ reason, rejected = false, current, total, point, probedPositions = [], skippedPoints = [] }) => {
+      // `rejected` means the controller turned down a start request; nothing
+      // that was running stopped. The refusal still reaches every client,
+      // because the controller has no socket to answer, so a widget watching a
+      // live run must not read it as that run ending: it would drop the
+      // progress bar, put the Start button back in place of Stop, and invite
+      // the user to press Stop on a machine that is probing correctly.
+      if (rejected) {
+        const message = i18n._('Probing did not start: {{reason}}', { reason });
+        log.error(message);
+        if (this.state.probeState !== PROBE_STATE_RUNNING) {
+          this.setState({ probeErrorMessage: message });
+        }
+        return;
+      }
+
+      // The run is over and the controller will not send another probe. Say
+      // where it stopped: with a partial map the numbers are the only clue to
+      // which grid node was the problem.
+      const where = point
+        ? i18n._('Probing stopped at point {{current}}/{{total}} (X{{x}} Y{{y}}): {{reason}}',
+          { current: current + 1, total, x: point.x, y: point.y, reason })
+        : i18n._('Probing stopped at point {{current}}/{{total}}: {{reason}}',
+          { current: current + 1, total, reason });
+
+      log.error(where);
+      this.setState(state => ({
+        probeState: PROBE_STATE_STOPPED,
+        probeErrorMessage: where,
+        // Measurements taken before the abort are worth machine hours, so the
+        // controller sends them along. A client that watched the whole run
+        // already collected them from autolevel:update; one that joined mid-run
+        // (a reload, a second tab) never saw those events and this payload is
+        // the only copy it has.
+        probedPositions: (state.probedPositions.length > 0) ? state.probedPositions : probedPositions,
+        probeMarkers: (state.probeMarkers.length > 0)
+          ? state.probeMarkers
+          : skippedPoints.map(({ x, y }) => ({ type: 'skipped', x, y, z: 0 })),
+      }));
     },
     'autolevel:complete': () => {
       this.setState({
@@ -676,33 +754,56 @@ class AutolevelWidget extends PureComponent {
         return;
       }
 
-      const { probedPositions = [], probePoints = [], minZ, maxZ, config = {} } = result.state;
+      const { probedPositions = [], probePoints = [], attempted = 0, skippedPoints = [], retriedCount = 0, minZ, maxZ, config = {}, abortReason = null, abortedAt = 0 } = result.state;
       log.debug('Probe state from server:', {
         probedPositions: probedPositions.length,
         probePoints: probePoints.length
       });
 
       if (probedPositions.length > 0) {
-        // Determine if probing was completed or still in progress
-        const isCompleted = probedPositions.length >= probePoints.length;
+        // Determine if probing was completed or still in progress. Progress is
+        // measured in resolved grid points, not in measurements: a point that
+        // found no contact is resolved too, and counting measurements would
+        // leave a finished run looking stuck one short of its last point.
+        // A run that was aborted keeps its measurements on the server and its
+        // cursor at the end of the grid, so it reads as resolved -- which it
+        // is, there is no probe still coming. What it is not is complete, and
+        // the map has holes the user has to know about before applying it.
+        const isCompleted = attempted >= probePoints.length;
         const wizardView = isCompleted ? VIEW_APPLY : VIEW_PROBING;
         const probeState = isCompleted ? PROBE_STATE_COMPLETED : PROBE_STATE_RUNNING;
+        // abortedAt, not attempted: the abort parks the cursor at the end of
+        // the grid to close the run, so attempted would report the last point
+        // as the one that failed.
+        const probeErrorMessage = abortReason
+          ? i18n._('Probing stopped at point {{current}}/{{total}}: {{reason}}',
+            { current: abortedAt + 1, total: probePoints.length, reason: abortReason })
+          : '';
+        // Where a retry really touched is not kept across a reconnect, but the
+        // points that found nothing are.
+        const probeMarkers = skippedPoints.map(({ x, y }) => ({ type: 'skipped', x, y, z: 0 }));
 
         // Restore probe data and show visualization
         this.setState({
           wizardView,
           probeState,
+          probeErrorMessage,
           probedPositions,
+          probeMarkers,
           probeStats: {
             points: probedPositions.length,
+            skipped: skippedPoints.length,
+            retried: retriedCount,
             minZ,
             maxZ,
             maxDeviation: maxZ - minZ,
           },
           probeProgress: {
-            current: probedPositions.length,
+            current: attempted,
             total: probePoints.length,
-            percentage: Math.round((probedPositions.length / probePoints.length) * 100),
+            percentage: Math.round((attempted / probePoints.length) * 100),
+            skipped: skippedPoints.length,
+            retried: retriedCount,
           },
         });
 
@@ -715,6 +816,7 @@ class AutolevelWidget extends PureComponent {
           const interactable = wizardView === VIEW_SETUP_PROBE;
           pubsub.publish('autolevel:showProbeVisualization', {
             probeData: probedPositions,
+            probeMarkers,
             config: { startX, startY, endX, endY, units: this.state.units, snapX: this.state.stepX / 2, snapY: this.state.stepY / 2, interactable },
           });
         }
@@ -740,6 +842,7 @@ class AutolevelWidget extends PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     const {
+      skipUnprobed,
       minimized, units, wizardView, probedPositions,
       stepX, stepY,
       startX, startY, endX, endY,
@@ -767,6 +870,7 @@ class AutolevelWidget extends PureComponent {
     this.config.set('startZ', toMetric(startZ));
     this.config.set('endZ', toMetric(endZ));
     this.config.set('feedrate', toMetric(feedrate));
+    this.config.set('skipUnprobed', !!skipUnprobed);
 
     // Keep the 3D visualizer in sync whenever the probe configuration changes
     // while the user is on the Setup Probe or Probing view. Skipped on other
@@ -825,10 +929,18 @@ class AutolevelWidget extends PureComponent {
       startZ: this.config.get('startZ', 5),
       endZ: this.config.get('endZ', -5),
       feedrate: this.config.get('feedrate', 25),
+      // Seeded from config like every field above it. Left undefined, the
+      // first componentDidUpdate -- which runs long before the first
+      // 'controller:state' brings the saved value in -- would persist
+      // `!!undefined` and wipe the user's saved preference.
+      skipUnprobed: this.config.get('skipUnprobed', false),
       // Probe state
       probeState: PROBE_STATE_IDLE,
       probeProgress: { current: 0, total: 0, percentage: 0 },
       probedPositions: [],
+      // Where a nearby retry really touched, and which nodes found nothing.
+      probeMarkers: [],
+      probeErrorMessage: '',
       probeStats: null,
       probeFileName: '',
       // G-code state
@@ -923,11 +1035,18 @@ class AutolevelWidget extends PureComponent {
     if (!this.isValidNumber(startY)) {
       errors.startY = invalidMsg;
     }
+    // An end at or before the start is not a probe area: the grid comes out
+    // empty (or one point wide, which cannot describe a surface), and the
+    // controller has nothing to probe.
     if (!this.isValidNumber(endX)) {
       errors.endX = invalidMsg;
+    } else if (this.isValidNumber(startX) && endX <= startX) {
+      errors.endX = i18n._('Must be greater than the start');
     }
     if (!this.isValidNumber(endY)) {
       errors.endY = invalidMsg;
+    } else if (this.isValidNumber(startY) && endY <= startY) {
+      errors.endY = i18n._('Must be greater than the start');
     }
     if (!this.isValidNumber(stepX)) {
       errors.stepX = invalidMsg;
@@ -947,11 +1066,20 @@ class AutolevelWidget extends PureComponent {
     if (!this.isValidNumber(startZ)) {
       errors.startZ = invalidMsg;
     }
+    // The probe descends from Start Z to End Z. With End Z at or above it
+    // there is nowhere to descend to, and Grbl answers the probe line with
+    // error:33 (invalid target) -- no probe result, no alarm, just a run that
+    // never produces its first measurement.
     if (!this.isValidNumber(endZ)) {
       errors.endZ = invalidMsg;
+    } else if (this.isValidNumber(startZ) && endZ >= startZ) {
+      errors.endZ = i18n._('Must be below Start Z');
     }
+    // A probe at F0 never moves; Grbl rejects the line the same way.
     if (!this.isValidNumber(feedrate)) {
       errors.feedrate = invalidMsg;
+    } else if (feedrate <= 0) {
+      errors.feedrate = positiveMsg;
     }
 
     return errors;

@@ -401,7 +401,7 @@ class ApplyView extends PureComponent {
 
   render() {
     const { state, actions } = this.props;
-    const { probeStats, units } = state;
+    const { probeStats, units, probeErrorMessage } = state;
     const { pipelineState } = this.state;
 
     return (
@@ -429,12 +429,38 @@ class ApplyView extends PureComponent {
           )}
           {!!probeStats && (
             <div>
+              {!!probeErrorMessage && (
+                // The measurements of a run that ended early are kept and can
+                // be applied -- the nodes it never reached interpolate like a
+                // skipped point does. Say it stopped early all the same: this
+                // is the only place a user who reloaded the page after an
+                // abort would ever learn the map has a hole in it.
+                <div className="form-group">
+                  <div style={{ color: '#8a6d3b' }}>
+                    <i className="fa fa-exclamation-triangle" />
+                    <Space width={8} />
+                    {probeErrorMessage}
+                  </div>
+                </div>
+              )}
               <div className="form-group">
                 <div className={styles.probeDataInfo}>
                   <div className={styles.infoRow}>
                     <span className={styles.infoLabel}>{i18n._('Points probed:')}</span>
                     <span className={styles.infoValue}>{probeStats.points}</span>
                   </div>
+                  {probeStats.retried > 0 && (
+                    <div className={styles.infoRow}>
+                      <span className={styles.infoLabel}>{i18n._('Recovered nearby:')}</span>
+                      <span className={styles.infoValue}>{probeStats.retried}</span>
+                    </div>
+                  )}
+                  {probeStats.skipped > 0 && (
+                    <div className={styles.infoRow}>
+                      <span className={styles.infoLabel}>{i18n._('Skipped (no contact):')}</span>
+                      <span className={styles.infoValue}>{probeStats.skipped}</span>
+                    </div>
+                  )}
                   <div className={styles.infoRow}>
                     <span className={styles.infoLabel}>{i18n._('Z-min:')}</span>
                     <span className={styles.infoValue}>{mapPositionToUnits(probeStats.minZ, units)} {toDisplayUnits(units)}</span>
