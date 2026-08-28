@@ -1681,6 +1681,7 @@ class SmoothieController {
             startZ,
             endZ,
             feedrate,
+            serpentine = false,
           } = params;
 
           if (mode === 'test') {
@@ -1705,6 +1706,7 @@ class SmoothieController {
             startY,
             endY,
             stepY,
+            serpentine,
           });
 
           // Reset probe state

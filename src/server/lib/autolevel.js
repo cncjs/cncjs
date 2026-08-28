@@ -319,6 +319,7 @@ const compensatePoint = (pt, surface, units = METRIC_UNITS) => {
  * @param {number} options.startY - Y-axis minimum
  * @param {number} options.endY - Y-axis maximum
  * @param {number} options.stepY - Y-axis step size
+ * @param {boolean} [options.serpentine] - Visit odd rows right-to-left
  * @returns {array} Array of probe XY points [{x, y}, ...]
  */
 export const createProbeXYPoints = (options) => {
@@ -329,14 +330,26 @@ export const createProbeXYPoints = (options) => {
     startY = 0,
     endY = 0,
     stepY = 10,
+    serpentine = false,
   } = ensurePlainObject(options);
 
   const positions = [];
 
+  let row = 0;
   for (let y = startY; y <= endY; y += stepY) {
+    const rowPositions = [];
     for (let x = startX; x <= endX; x += stepX) {
-      positions.push({ x, y });
+      rowPositions.push({ x, y });
     }
+    // Serpentine (zigzag) path: odd rows are probed right-to-left, so the head
+    // continues from where the previous row ended instead of rapiding back to
+    // startX. Same points, same grid -- only the visit order changes, and the
+    // per-row return rapid disappears from the path.
+    if (serpentine && (row % 2 === 1)) {
+      rowPositions.reverse();
+    }
+    positions.push(...rowPositions);
+    row += 1;
   }
 
   return positions;

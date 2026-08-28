@@ -643,5 +643,7 @@
   "None": "無",
   "WebGL:": "WebGL:",
   "Drop files to upload": "將檔案拖曳至此處上傳",
-  "Uploading...": "正在上傳..."
+  "Uploading...": "正在上傳...",
+  "Zigzag scan path": "",
+  "Probe odd rows right-to-left (serpentine) so the head continues from where the previous row ended, without the rapid back to the start of X at every row. Same points, same grid.": ""
 }

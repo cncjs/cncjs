@@ -644,5 +644,7 @@
   "None": "None",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Drop files to upload",
-  "Uploading...": "Uploading..."
+  "Uploading...": "Uploading...",
+  "Zigzag scan path": "Zigzag scan path",
+  "Probe odd rows right-to-left (serpentine) so the head continues from where the previous row ended, without the rapid back to the start of X at every row. Same points, same grid.": "Probe odd rows right-to-left (serpentine) so the head continues from where the previous row ended, without the rapid back to the start of X at every row. Same points, same grid."
 }
