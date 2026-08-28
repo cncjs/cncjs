@@ -642,5 +642,7 @@
   "Clearance Z: {{value}} {{- units}}": "安全高度Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "起始Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "终止Z: {{value}} {{- units}}",
-  "None": "无"
+  "None": "无",
+  "Zigzag scan path": "",
+  "Probe odd rows right-to-left (serpentine) so the head continues from where the previous row ended, without the rapid back to the start of X at every row. Same points, same grid.": ""
 }

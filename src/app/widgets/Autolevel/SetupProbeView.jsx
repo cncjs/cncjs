@@ -16,6 +16,7 @@ const SetupProbeView = ({ state, actions }) => {
   const {
     stepX, stepY, startX, startY, endX, endY,
     clearanceZ, startZ, endZ, feedrate,
+    serpentine,
     probeState, probeProgress, canClick, units,
     validationErrors = {},
   } = state;
@@ -278,6 +279,24 @@ const SetupProbeView = ({ state, actions }) => {
               )}
             </div>
           </div>
+        </div>
+        <div className="checkbox" style={{ marginTop: 0, marginBottom: 5 }}>
+          <label>
+            <input
+              type="checkbox"
+              checked={!!serpentine}
+              onChange={actions.handleSerpentineChange}
+              disabled={isProbing}
+            />
+            {i18n._('Zigzag scan path')}
+            {' '}
+            <Infotip
+              placement="top"
+              content={i18n._('Probe odd rows right-to-left (serpentine) so the head continues from where the previous row ended, without the rapid back to the start of X at every row. Same points, same grid.')}
+            >
+              <i className="fa fa-info-circle text-muted" />
+            </Infotip>
+          </label>
         </div>
       </div>
       <div className={styles.section}>

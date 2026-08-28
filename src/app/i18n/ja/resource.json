@@ -642,5 +642,7 @@
   "Clearance Z: {{value}} {{- units}}": "クリアランスZ: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "開始Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "終了Z: {{value}} {{- units}}",
-  "None": "なし"
+  "None": "なし",
+  "Zigzag scan path": "",
+  "Probe odd rows right-to-left (serpentine) so the head continues from where the previous row ended, without the rapid back to the start of X at every row. Same points, same grid.": ""
 }

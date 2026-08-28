@@ -643,5 +643,7 @@
   "Clearance Z: {{value}} {{- units}}": "Güvenlik Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Başlangıç Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Bitiş Z: {{value}} {{- units}}",
-  "None": "Yok"
+  "None": "Yok",
+  "Zigzag scan path": "",
+  "Probe odd rows right-to-left (serpentine) so the head continues from where the previous row ended, without the rapid back to the start of X at every row. Same points, same grid.": ""
 }

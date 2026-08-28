@@ -319,6 +319,9 @@ class AutolevelWidget extends PureComponent {
     handleProbeFeedrateChange: (event) => {
       this.setState({ feedrate: this.parseInputValue(event.target.value) });
     },
+    handleSerpentineChange: (event) => {
+      this.setState({ serpentine: event.target.checked });
+    },
 
     // Probe operations
     showTestProbeConfirmation: () => {
@@ -349,6 +352,7 @@ class AutolevelWidget extends PureComponent {
         startY, endY, stepY,
         clearanceZ, startZ, endZ,
         feedrate,
+        serpentine,
       } = this.state;
       // Calculate total points
       const numPointsX = Math.floor((endX - startX) / stepX) + 1;
@@ -385,6 +389,7 @@ class AutolevelWidget extends PureComponent {
         startZ,
         endZ,
         feedrate,
+        serpentine,
       });
 
       log.info('Starting probe sequence');
@@ -745,9 +750,11 @@ class AutolevelWidget extends PureComponent {
       startX, startY, endX, endY,
       clearanceZ, startZ, endZ,
       feedrate,
+      serpentine,
     } = this.state;
 
     this.config.set('minimized', minimized);
+    this.config.set('serpentine', serpentine);
 
     // Do not save config settings if the units just changed between in and mm
     if (this.unitsDidChange) {
@@ -825,6 +832,7 @@ class AutolevelWidget extends PureComponent {
       startZ: this.config.get('startZ', 5),
       endZ: this.config.get('endZ', -5),
       feedrate: this.config.get('feedrate', 25),
+      serpentine: this.config.get('serpentine', false),
       // Probe state
       probeState: PROBE_STATE_IDLE,
       probeProgress: { current: 0, total: 0, percentage: 0 },

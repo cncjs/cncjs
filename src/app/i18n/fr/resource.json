@@ -644,5 +644,7 @@
   "Clearance Z: {{value}} {{- units}}": "Z de dégagement : {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Z de départ : {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Z de fin : {{value}} {{- units}}",
-  "None": "Aucun"
+  "None": "Aucun",
+  "Zigzag scan path": "",
+  "Probe odd rows right-to-left (serpentine) so the head continues from where the previous row ended, without the rapid back to the start of X at every row. Same points, same grid.": ""
 }

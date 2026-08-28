@@ -1792,6 +1792,7 @@ class GrblController {
             startZ,
             endZ,
             feedrate,
+            serpentine = false,
           } = params;
 
           if (mode === 'test') {
@@ -1816,6 +1817,7 @@ class GrblController {
             startY,
             endY,
             stepY,
+            serpentine,
           });
 
           // Reset probe state

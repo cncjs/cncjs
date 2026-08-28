@@ -1809,6 +1809,7 @@ class TinyGController {
             startZ,
             endZ,
             feedrate,
+            serpentine = false,
           } = params;
 
           if (mode === 'test') {
@@ -1833,6 +1834,7 @@ class TinyGController {
             startY,
             endY,
             stepY,
+            serpentine,
           });
 
           // Reset probe state

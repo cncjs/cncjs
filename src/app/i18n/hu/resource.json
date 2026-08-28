@@ -643,5 +643,7 @@
   "Clearance Z: {{value}} {{- units}}": "Z biztonsági magasság: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Kezdeti Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Végső Z: {{value}} {{- units}}",
-  "None": "Nincs"
+  "None": "Nincs",
+  "Zigzag scan path": "",
+  "Probe odd rows right-to-left (serpentine) so the head continues from where the previous row ended, without the rapid back to the start of X at every row. Same points, same grid.": ""
 }
