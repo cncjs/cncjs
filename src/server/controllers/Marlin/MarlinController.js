@@ -807,6 +807,19 @@ class MarlinController {
           log.debug('[autolevel] Probe position captured:', { probedPos });
 
           if (this.probeState.probePoints.length > 0 && this.probeState.probedPositions.length < this.probeState.probePoints.length) {
+            // Record the measurement at the intended grid node's XY and keep only the
+            // measured Z. The reported XY is quantised by the motor steps (a commanded
+            // Y60 reads back as 59.999), and mixing quantised readings with exact node
+            // values splits one grid line into two 0.001 mm apart: the detected grid
+            // spacing collapses and the lattice fills with holes, so compensation
+            // subdivides every move into thousands of segments over a broken surface.
+            //
+            // Probe points carry the units the probe G-code was emitted in; probe
+            // data is stored in mm.
+            const gridNode = this.probeState.probePoints[this.probeState.probedPositions.length];
+            probedPos.x = isImperial ? in2mm(gridNode.x) : gridNode.x;
+            probedPos.y = isImperial ? in2mm(gridNode.y) : gridNode.y;
+
             const newProbedPositions = [...this.probeState.probedPositions, probedPos];
             const isCompleted = newProbedPositions.length >= this.probeState.probePoints.length;
 
