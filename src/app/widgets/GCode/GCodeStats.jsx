@@ -1,6 +1,7 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { ProgressBar } from 'react-bootstrap';
 import i18n from 'app/lib/i18n';
 import {
   METRIC_UNITS
@@ -40,6 +41,11 @@ class GCodeStats extends PureComponent {
       const finishTime = formatISODateTime(state.finishTime);
       const elapsedTime = formatElapsedTime(state.elapsedTime);
       const remainingTime = formatRemainingTime(state.remainingTime);
+      // Received, not sent. Sent counts lines handed to the controller, which
+      // runs several seconds behind while its planner buffer drains, so a bar
+      // driven by it reads ahead of the tool and reaches 100% with the job
+      // still cutting. Received counts lines the controller acknowledged.
+      const progress = total > 0 ? Math.min(100, Math.round((received / total) * 100)) : 0;
 
       return (
         <div className={styles['gcode-stats']}>
@@ -77,6 +83,19 @@ class GCodeStats extends PureComponent {
               </table>
             </div>
           </div>
+          {total > 0 && (
+          <div className="row no-gutters" style={{ marginBottom: 10 }}>
+            <div className="col-xs-12">
+              <ProgressBar
+                bsStyle="info"
+                min={0}
+                max={total}
+                now={received}
+                label={`${progress}%`}
+              />
+            </div>
+          </div>
+          )}
           <div className="row no-gutters" style={{ marginBottom: 10 }}>
             <div className="col-xs-6">
               <div>{i18n._('Sent')}</div>
