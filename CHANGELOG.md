@@ -1,5 +1,11 @@
 # cncjs
 
+## 1.11.4
+
+### Patch Changes
+
+- cb58469: fix: Marlin G28 homing fix
+
 ## 1.11.3
 
 ### Patch Changes
