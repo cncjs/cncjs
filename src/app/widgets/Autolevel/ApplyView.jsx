@@ -1,3 +1,4 @@
+import { Space } from '@tonic-ui/react';
 import PropTypes from 'prop-types';
 import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
@@ -6,7 +7,6 @@ import controller from '@app/lib/controller';
 import log from '@app/lib/log';
 import { Button } from '@app/components/Buttons';
 import { mapPositionToUnits, toDisplayUnits } from '@app/lib/units';
-import { Space } from '@tonic-ui/react';
 import {
   PROCESSING_PHASE_READING,
   PROCESSING_PHASE_COMPENSATING,

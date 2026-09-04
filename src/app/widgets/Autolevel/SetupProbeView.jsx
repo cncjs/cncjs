@@ -1,12 +1,12 @@
+import { Space } from '@tonic-ui/react';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from '@app/components/Buttons';
 import ProgressBar from '@app/components/ProgressBar';
-import { Infotip } from '@app/components/Tooltip';
-import { METRIC_UNITS } from '@app/constants';
+import Infotip from '@app/components/Infotip';
 import i18n from '@app/lib/i18n';
+import { METRIC_UNITS } from '@app/constants';
 import { toDisplayUnits } from '@app/lib/units';
-import { Space } from '@tonic-ui/react';
 import ProbeAreaDiagram from './ProbeAreaDiagram';
 import ZProbeDiagram from './ZProbeDiagram';
 import { PROBE_STATE_IDLE, PROBE_STATE_RUNNING, PROBE_STATE_PAUSED, PROBE_STATE_STOPPED } from './constants';
@@ -321,7 +321,7 @@ const SetupProbeView = ({ state, actions }) => {
               {i18n._('Probing progress: {{current}}/{{total}} points', { current: probeProgress.current, total: probeProgress.total })}
             </div>
             <ProgressBar
-              bsStyle="info"
+              variant="info"
               min={0}
               max={probeProgress.total}
               now={probeProgress.current}

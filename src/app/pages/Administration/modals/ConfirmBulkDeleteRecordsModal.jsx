@@ -1,7 +1,6 @@
 import {
   Button,
   Flex,
-  Icon,
   Modal,
   ModalBody,
   ModalContent,
@@ -10,6 +9,7 @@ import {
   Text,
   useColorStyle,
 } from '@tonic-ui/react';
+import ModalInfoIcon from '@app/icons/ModalInfoIcon';
 import React, { forwardRef } from 'react';
 import i18n from '@app/lib/i18n';
 
@@ -36,8 +36,7 @@ const ConfirmBulkDeleteRecordsModal = forwardRef((
       <ModalContent>
         <ModalBody>
           <Flex columnGap="4x" mb="6x">
-            <Icon
-              icon=":modal-info"
+            <ModalInfoIcon
               color={colorStyle?.color?.info}
               size="12x"
             />

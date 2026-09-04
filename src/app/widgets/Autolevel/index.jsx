@@ -1,10 +1,10 @@
+import { Space } from '@tonic-ui/react';
 import get from 'lodash/get';
 import includes from 'lodash/includes';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Space } from '@tonic-ui/react';
 import Widget from '@app/components/Widget';
 import api from '@app/api';
 import controller from '@app/lib/controller';
@@ -12,32 +12,36 @@ import i18n from '@app/lib/i18n';
 import log from '@app/lib/log';
 import { in2mm, mapValueToUnits } from '@app/lib/units';
 import WidgetConfig from '@app/widgets/shared/WidgetConfig';
+import {
+  // Units
+  IMPERIAL_UNITS,
+  METRIC_UNITS,
+} from '@app/constants';
+import {
+  // Grbl
+  GRBL,
+  GRBL_MACHINE_STATE_IDLE,
+  // Marlin
+  MARLIN,
+  // Smoothie
+  SMOOTHIE,
+  SMOOTHIE_MACHINE_STATE_IDLE,
+  // TinyG
+  TINYG,
+  TINYG_MACHINE_STATE_READY,
+  TINYG_MACHINE_STATE_STOP,
+  TINYG_MACHINE_STATE_END,
+} from '@app/constants/controller';
+import {
+  // Workflow
+  WORKFLOW_STATE_IDLE
+} from '@app/constants/workflow';
 import LandingView from './LandingView';
 import SetupProbeView from './SetupProbeView';
 import ApplyView from './ApplyView';
 import StartProbeModal from './StartProbeModal';
 import StopProbeModal from './StopProbeModal';
 import TestProbeModal from './TestProbeModal';
-import {
-  // Units
-  IMPERIAL_UNITS,
-  METRIC_UNITS,
-  // Grbl
-  GRBL,
-  GRBL_ACTIVE_STATE_IDLE,
-  // Marlin
-  MARLIN,
-  // Smoothie
-  SMOOTHIE,
-  SMOOTHIE_ACTIVE_STATE_IDLE,
-  // TinyG
-  TINYG,
-  TINYG_MACHINE_STATE_READY,
-  TINYG_MACHINE_STATE_STOP,
-  TINYG_MACHINE_STATE_END,
-  // Workflow
-  WORKFLOW_STATE_IDLE
-} from '../../constants';
 import {
   VIEW_LANDING,
   VIEW_SETUP_PROBE,
@@ -867,14 +871,14 @@ class AutolevelWidget extends PureComponent {
     }
     if (controllerType === GRBL) {
       const activeState = get(controllerState, 'status.activeState');
-      const states = [GRBL_ACTIVE_STATE_IDLE];
+      const states = [GRBL_MACHINE_STATE_IDLE];
       if (!includes(states, activeState)) {
         return false;
       }
     }
     if (controllerType === SMOOTHIE) {
       const activeState = get(controllerState, 'status.activeState');
-      const states = [SMOOTHIE_ACTIVE_STATE_IDLE];
+      const states = [SMOOTHIE_MACHINE_STATE_IDLE];
       if (!includes(states, activeState)) {
         return false;
       }
@@ -1018,7 +1022,7 @@ class AutolevelWidget extends PureComponent {
           <Widget.Title>
             <Widget.Sortable className={this.props.sortable.handleClassName}>
               <i className="fa fa-bars" />
-              <Space width="8" />
+              <Space width={8} />
             </Widget.Sortable>
             {isForkedWidget &&
               <i className="fa fa-code-fork" style={{ marginRight: 5 }} />}
@@ -1060,17 +1064,17 @@ class AutolevelWidget extends PureComponent {
                     { 'fa-compress': isFullscreen }
                   )}
                 />
-                <Space width="4" />
+                <Space width={4} />
                 {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
               </Widget.DropdownMenuItem>
               <Widget.DropdownMenuItem eventKey="fork">
                 <i className="fa fa-fw fa-code-fork" />
-                <Space width="4" />
+                <Space width={4} />
                 {i18n._('Fork Widget')}
               </Widget.DropdownMenuItem>
               <Widget.DropdownMenuItem eventKey="remove">
                 <i className="fa fa-fw fa-times" />
-                <Space width="4" />
+                <Space width={4} />
                 {i18n._('Remove Widget')}
               </Widget.DropdownMenuItem>
             </Widget.DropdownButton>

@@ -3768,18 +3768,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/babel-plugin-jsx-pragmatic@npm:^0.2.0":
-  version: 0.2.1
-  resolution: "@emotion/babel-plugin-jsx-pragmatic@npm:0.2.1"
+"@emotion/babel-plugin-jsx-pragmatic@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@emotion/babel-plugin-jsx-pragmatic@npm:0.3.0"
   dependencies:
     "@babel/plugin-syntax-jsx": ^7.17.12
   peerDependencies:
     "@babel/core": ^7.0.0
-  checksum: 2c7e9c687c8e12855c9a419e9a8e530b236e1c42f5a196f1abaf5079947d18069733f1f8257e90c6bafa302c87f433577745ea799b63d4211c82d7b3a57917d6
+  checksum: 7e37c5ae1ec7a7a113463cee92f0aa3db2dd51cb9f1f0e859cf8c47a4f4a2fde1bed0196e8d6beff8e73b2a25b6ada38f9e3ba6a58ba96a0b19d0660ec570c60
   languageName: node
   linkType: hard
 
-"@emotion/babel-plugin@npm:^11.10.0, @emotion/babel-plugin@npm:^11.10.8, @emotion/babel-plugin@npm:^11.13.5":
+"@emotion/babel-plugin@npm:^11.12.0, @emotion/babel-plugin@npm:^11.13.5":
   version: 11.13.5
   resolution: "@emotion/babel-plugin@npm:11.13.5"
   dependencies:
@@ -3798,17 +3798,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/babel-preset-css-prop@npm:~11.10.0":
-  version: 11.10.0
-  resolution: "@emotion/babel-preset-css-prop@npm:11.10.0"
+"@emotion/babel-preset-css-prop@npm:~11.12.0":
+  version: 11.12.0
+  resolution: "@emotion/babel-preset-css-prop@npm:11.12.0"
   dependencies:
     "@babel/plugin-transform-react-jsx": ^7.17.12
     "@babel/runtime": ^7.18.3
-    "@emotion/babel-plugin": ^11.10.0
-    "@emotion/babel-plugin-jsx-pragmatic": ^0.2.0
+    "@emotion/babel-plugin": ^11.12.0
+    "@emotion/babel-plugin-jsx-pragmatic": ^0.3.0
   peerDependencies:
     "@babel/core": ^7.0.0
-  checksum: 09d91e89ec5edf105ddcdfcbac5aa45c2c0c19213ee6fcf95fd570ca395b965022fe03a5483802e00eea2436983609cef2b2fcc88169b0a923a8e2c92411ec89
+  checksum: 69ab7f374e521ae2a80163edfca0179d2f65886e8a9f80028ab88e8d29f798772b0225834f6f138ac00ccdde7cd701ec8a74a28e371c0e6b055d8f1554bda360
   languageName: node
   linkType: hard
 
@@ -3824,7 +3824,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/cache@npm:^11.10.8, @emotion/cache@npm:^11.14.0":
+"@emotion/cache@npm:^11.14.0":
   version: 11.14.0
   resolution: "@emotion/cache@npm:11.14.0"
   dependencies:
@@ -3922,27 +3922,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/react@npm:~11.10.5":
-  version: 11.10.8
-  resolution: "@emotion/react@npm:11.10.8"
-  dependencies:
-    "@babel/runtime": ^7.18.3
-    "@emotion/babel-plugin": ^11.10.8
-    "@emotion/cache": ^11.10.8
-    "@emotion/serialize": ^1.1.1
-    "@emotion/use-insertion-effect-with-fallbacks": ^1.0.0
-    "@emotion/utils": ^1.2.0
-    "@emotion/weak-memoize": ^0.3.0
-    hoist-non-react-statics: ^3.3.1
-  peerDependencies:
-    react: ">=16.8.0"
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: ac56ef6375fa3bc7acd5a62eb5b2cf9eb4b1586a6a06cb05caab11a516700cf2f7857e0ad65bac57abd74e1141388e01fe65238f2de0075a912e129271c658b8
-  languageName: node
-  linkType: hard
-
 "@emotion/serialize@npm:^0.11.15, @emotion/serialize@npm:^0.11.16":
   version: 0.11.16
   resolution: "@emotion/serialize@npm:0.11.16"
@@ -3956,7 +3935,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/serialize@npm:^1.1.1, @emotion/serialize@npm:^1.3.3":
+"@emotion/serialize@npm:^1.3.3":
   version: 1.3.3
   resolution: "@emotion/serialize@npm:1.3.3"
   dependencies:
@@ -4024,7 +4003,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/use-insertion-effect-with-fallbacks@npm:^1.0.0, @emotion/use-insertion-effect-with-fallbacks@npm:^1.2.0":
+"@emotion/use-insertion-effect-with-fallbacks@npm:^1.2.0":
   version: 1.2.0
   resolution: "@emotion/use-insertion-effect-with-fallbacks@npm:1.2.0"
   peerDependencies:
@@ -4040,7 +4019,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/utils@npm:^1.2.0, @emotion/utils@npm:^1.4.2":
+"@emotion/utils@npm:^1.4.2":
   version: 1.4.2
   resolution: "@emotion/utils@npm:1.4.2"
   checksum: 04cf76849c6401205c058b82689fd0ec5bf501aed6974880fe9681a1d61543efb97e848f4c38664ac4a9068c7ad2d1cb84f73bde6cf95f1208aa3c28e0190321
@@ -4051,13 +4030,6 @@ __metadata:
   version: 0.2.5
   resolution: "@emotion/weak-memoize@npm:0.2.5"
   checksum: 27d402b0c683b94658220b6d47840346ee582329ca2a15ec9c233492e0f1a27687ccb233b76eedc922f2e185e444cc89f7b97a81a1d3e5ae9f075bab08e965ea
-  languageName: node
-  linkType: hard
-
-"@emotion/weak-memoize@npm:^0.3.0":
-  version: 0.3.1
-  resolution: "@emotion/weak-memoize@npm:0.3.1"
-  checksum: b2be47caa24a8122622ea18cd2d650dbb4f8ad37b636dc41ed420c2e082f7f1e564ecdea68122b546df7f305b159bf5ab9ffee872abd0f052e687428459af594
   languageName: node
   linkType: hard
 
@@ -9405,8 +9377,8 @@ __metadata:
     "@commitlint/cli": ~17.2.0
     "@commitlint/config-conventional": ~17.2.0
     "@electron/rebuild": ^3.7.2
-    "@emotion/babel-preset-css-prop": ~11.10.0
-    "@emotion/react": ~11.10.5
+    "@emotion/babel-preset-css-prop": ~11.12.0
+    "@emotion/react": ^11.14.0
     "@fortawesome/fontawesome-free": ~6.2.0
     "@fortawesome/fontawesome-svg-core": ~6.2.0
     "@fortawesome/free-brands-svg-icons": ~6.2.0

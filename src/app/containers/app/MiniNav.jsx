@@ -72,10 +72,7 @@ const MiniNav = forwardRef((
                     alignItems="center"
                     columnGap="4x"
                   >
-                    {(route.icon && typeof route.icon === 'string') && (
-                      <Icon icon={route.icon} size="6x" />
-                    )}
-                    {(route.icon && typeof route.icon !== 'string') && (
+                    {route.icon && (
                       <Icon as={route.icon} size="6x" />
                     )}
                     <Text>
@@ -96,10 +93,7 @@ const MiniNav = forwardRef((
                   columnGap="4x"
                   color={colorStyle.color.secondary}
                 >
-                  {(route.icon && typeof route.icon === 'string') && (
-                    <Icon icon={route.icon} size="6x" />
-                  )}
-                  {(route.icon && typeof route.icon !== 'string') && (
+                  {route.icon && (
                     <Icon as={route.icon} size="6x" />
                   )}
                   <Text>
@@ -135,10 +129,7 @@ const MiniNav = forwardRef((
                           minWidth="6x"
                           justifyContent="center"
                         >
-                          {(childRoute.icon && typeof childRoute.icon === 'string') && (
-                            <Icon icon={childRoute.icon} size="4x" />
-                          )}
-                          {(childRoute.icon && typeof childRoute.icon !== 'string') && (
+                          {childRoute.icon && (
                             <Icon as={childRoute.icon} size="4x" />
                           )}
                         </Flex>
@@ -206,10 +197,7 @@ const MiniNav = forwardRef((
               alignItems="center"
               rowGap="1x"
             >
-              {(route.icon && typeof route.icon === 'string') && (
-                <Icon icon={route.icon} size="6x" />
-              )}
-              {(route.icon && typeof route.icon !== 'string') && (
+              {route.icon && (
                 <Icon as={route.icon} size="6x" />
               )}
               <Text

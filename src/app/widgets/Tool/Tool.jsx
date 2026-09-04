@@ -7,19 +7,21 @@ import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import Select from 'react-select';
 import styled from 'styled-components';
-import { Button } from 'app/components/Buttons';
-import Dropdown, { MenuItem } from 'app/components/Dropdown';
-import Image from 'app/components/Image';
-import { Tooltip } from 'app/components/Tooltip';
-import i18n from 'app/lib/i18n';
-import { mapValueToUnits } from 'app/lib/units';
+import { Button } from '@app/components/Buttons';
+import Dropdown, { MenuItem } from '@app/components/Dropdown';
+import Image from '@app/components/Image';
+import {
+  METRIC_UNITS
+} from '@app/constants';
 import {
   GRBL,
   MARLIN,
   SMOOTHIE,
   TINYG,
-  METRIC_UNITS
-} from '../../constants';
+} from '@app/constants/controller';
+import Tooltip from '@app/components/Tooltip';
+import i18n from '@app/lib/i18n';
+import { mapValueToUnits } from '@app/lib/units';
 import {
   TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
   TOOL_CHANGE_POLICY_SEND_M6_COMMANDS,

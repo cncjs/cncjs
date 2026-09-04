@@ -18,11 +18,12 @@ import log from '@app/lib/log';
 import { in2mm, mapPositionToUnits, mapValueToUnits } from '@app/lib/units';
 import WidgetConfig from '@app/widgets/shared/WidgetConfig';
 import WidgetConfigProvider from '@app/widgets/shared/WidgetConfigProvider';
-import Tool from './Tool';
 import {
   // Units
   IMPERIAL_UNITS,
   METRIC_UNITS,
+} from '@app/constants';
+import {
   // Grbl
   GRBL,
   // Marlin
@@ -31,7 +32,8 @@ import {
   SMOOTHIE,
   // TinyG
   TINYG,
-} from '../../constants';
+} from '@app/constants/controller';
+import Tool from './Tool';
 import {
   MODAL_NONE,
   TOOL_CHANGE_POLICY_IGNORE_M6_COMMANDS,
