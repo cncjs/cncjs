@@ -1450,7 +1450,8 @@ class MarlinController {
         'homing': () => {
           this.event.trigger('homing');
 
-          this.writeln('G28.2 X Y Z');
+          // G28: Auto Home
+          this.writeln('G28');
         },
         'sleep': () => {
           this.event.trigger('sleep');
