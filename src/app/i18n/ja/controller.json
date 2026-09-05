@@ -18,7 +18,7 @@
     }
   },
   "Grbl": {
-    "activeState": {
+    "machineState": {
       "idle": "アイドル",
       "run": "実行",
       "hold": "保持",
@@ -30,7 +30,7 @@
     }
   },
   "Smoothie": {
-    "activeState": {
+    "machineState": {
       "idle": "アイドル",
       "run": "実行",
       "hold": "保持",

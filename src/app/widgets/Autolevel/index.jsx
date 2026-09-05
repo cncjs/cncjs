@@ -430,7 +430,7 @@ class AutolevelWidget extends PureComponent {
     },
 
     // G-code operations
-    applyToGcode: (gcode, gcodeFileName, port, onSuccess, onError, onProgress) => {
+    applyToGcode: (gcode, gcodeFileName, onSuccess, onError, onProgress) => {
       const { probedPositions } = this.state;
 
       if (onProgress) {
@@ -465,7 +465,7 @@ class AutolevelWidget extends PureComponent {
 
         // Load compensated G-code to server
         const name = `AL_${gcodeFileName}`;
-        api.loadGCode({ port, name, gcode: compensatedGcode })
+        api.loadGCode({ name, gcode: compensatedGcode })
           .then((res) => {
             const { name: loadedName = '', gcode: loadedGcode = '' } = { ...res.body };
             pubsub.publish('gcode:load', { name: loadedName, gcode: loadedGcode, isProbeCompensationApplied: true });

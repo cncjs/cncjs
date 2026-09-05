@@ -125,7 +125,7 @@ class ApplyView extends PureComponent {
 
   runPipeline = (fileName, gcode) => {
     const { state, actions } = this.props;
-    const { probedPositions, port } = state;
+    const { probedPositions } = state;
 
     if (!gcode) {
       this.setState({
@@ -163,7 +163,6 @@ class ApplyView extends PureComponent {
     actions.applyToGcode(
       gcode,
       fileName,
-      port,
       // Success callback
       (compensatedGcode) => {
         this.setState({

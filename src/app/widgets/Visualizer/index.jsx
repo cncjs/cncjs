@@ -626,15 +626,18 @@ class VisualizerWidget extends Component {
   };
 
   controllerEvents = {
-    'serialport:open': (options) => {
-      const { port } = options;
-      this.setState((state) => ({ port: port }));
+    'connection:open': () => {
+      this.setState({ connected: true });
     },
-    'serialport:close': (options) => {
-      this.actions.unloadGCode();
+    'connection:change': (connectionState, connected) => {
+      if (!connected) {
+        this.actions.unloadGCode();
 
-      const initialState = this.getInitialState();
-      this.setState((state) => ({ ...initialState }));
+        const initialState = this.getInitialState();
+        this.setState((state) => ({ ...initialState }));
+        return;
+      }
+      this.setState({ connected: true });
     },
     'sender:load': (meta, context) => {
       const { name, content } = meta;
@@ -933,7 +936,7 @@ class VisualizerWidget extends Component {
 
   getInitialState() {
     return {
-      port: controller.port,
+      connected: !!controller.connection.ident,
       units: METRIC_UNITS,
       controller: {
         type: controller.type,
@@ -1059,7 +1062,7 @@ class VisualizerWidget extends Component {
       }
     }
     if (controllerType === TINYG) {
-      const machineState = get(controllerState, 'sr.machineState');
+      const machineState = get(controllerState, 'machineState');
       if (machineState !== TINYG_MACHINE_STATE_RUN) {
         return false;
       }

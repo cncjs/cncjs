@@ -83,9 +83,11 @@ class RootCloseWrapper extends React.Component {
 
   addEventListeners() {
     const { event } = this.props;
-    // Use capture for this listener so it fires before React's listener, to
-    // avoid false positives in the contains() check below if the target DOM
-    // element is removed in the React mouse callback.
+    // The wrapper can mount during the bubble phase of the very click that
+    // opened it (e.g. a dropdown toggle). The capture-phase listener for that
+    // event has already run by then, so preventMouseRootClose must start as
+    // true; otherwise the same event would immediately close the dropdown.
+    this.preventMouseRootClose = true;
     window.addEventListener(event, this.handleMouseCapture, true);
     window.addEventListener(event, this.handleMouse);
     window.addEventListener('keyup', this.handleKeyUp);

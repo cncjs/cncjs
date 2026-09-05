@@ -174,19 +174,19 @@ class ToolWidget extends PureComponent {
   };
 
   controllerEvents = {
-    'serialport:open': (options) => {
-      const { port, controllerType } = options;
-      this.setState({
-        isReady: !!controllerType,
-        port: port,
-      });
+    'connection:open': () => {
+      this.setState({ connected: true });
     },
-    'serialport:close': (options) => {
-      const initialState = this.getInitialState();
-      this.setState({
-        ...initialState,
-        toolConfig: this.state.toolConfig, // Retain the current tool configuration
-      });
+    'connection:change': (connectionState, connected) => {
+      if (!connected) {
+        const initialState = this.getInitialState();
+        this.setState({
+          ...initialState,
+          toolConfig: this.state.toolConfig, // Retain the current tool configuration
+        });
+        return;
+      }
+      this.setState({ connected: true });
     },
     'workflow:state': (workflowState) => {
       this.setState(state => ({
@@ -444,10 +444,9 @@ class ToolWidget extends PureComponent {
   getInitialState() {
     return {
       minimized: this.config.get('minimized', false),
-      isReady: !!controller.type,
       isFullscreen: false,
       canClick: true, // Defaults to true
-      port: controller.port,
+      connected: !!controller.connection.ident,
       units: METRIC_UNITS,
       controller: {
         type: controller.type,
@@ -496,17 +495,17 @@ class ToolWidget extends PureComponent {
     }
 
     if (controllerType === TINYG) {
-      return get(controllerState, 'sr.modal.wcs') || defaultWCS;
+      return get(controllerState, 'modal.wcs') || defaultWCS;
     }
 
     return defaultWCS;
   }
 
   canClick() {
-    const { port } = this.state;
+    const { connected } = this.state;
     const controllerType = this.state.controller.type;
 
-    if (!port) {
+    if (!connected) {
       return false;
     }
     if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {

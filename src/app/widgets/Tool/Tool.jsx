@@ -157,11 +157,12 @@ class Tool extends PureComponent {
     const { state, actions } = this.props;
     const {
       canClick,
+      connected,
       controller,
-      isReady,
       units,
       toolConfig,
     } = state;
+    const isReady = connected;
     const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
     const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
     const step = (units === METRIC_UNITS) ? 1 : (1 / 16);

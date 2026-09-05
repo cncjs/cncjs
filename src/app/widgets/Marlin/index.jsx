@@ -162,16 +162,16 @@ class MarlinWidget extends Component {
   };
 
   controllerEvents = {
-    'serialport:open': (options) => {
-      const { port, controllerType } = options;
-      this.setState({
-        isReady: controllerType === MARLIN,
-        port: port
-      });
+    'connection:open': () => {
+      this.setState({ connected: true });
     },
-    'serialport:close': (options) => {
-      const initialState = this.getInitialState();
-      this.setState({ ...initialState });
+    'connection:change': (connectionState, connected) => {
+      if (!connected) {
+        const initialState = this.getInitialState();
+        this.setState({ ...initialState });
+        return;
+      }
+      this.setState({ connected: true });
     },
     'controller:settings': (type, controllerSettings) => {
       if (type === MARLIN) {
@@ -228,9 +228,8 @@ class MarlinWidget extends Component {
     return {
       minimized: this.config.get('minimized', false),
       isFullscreen: false,
-      isReady: (controller.availableControllers.length === 1) || (controller.type === MARLIN),
       canClick: true, // Defaults to true
-      port: controller.port,
+      connected: !!controller.connection.ident,
       controller: {
         type: controller.type,
         settings: controller.settings,
@@ -273,10 +272,10 @@ class MarlinWidget extends Component {
   }
 
   canClick() {
-    const { port } = this.state;
+    const { connected } = this.state;
     const { type } = this.state.controller;
 
-    if (!port) {
+    if (!connected) {
       return false;
     }
     if (type !== MARLIN) {
@@ -288,7 +287,8 @@ class MarlinWidget extends Component {
 
   render() {
     const { widgetId } = this.props;
-    const { minimized, isFullscreen, isReady } = this.state;
+    const { minimized, isFullscreen } = this.state;
+    const isReady = this.state.connected && (this.state.controller.type === MARLIN);
     const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
     const state = {
       ...this.state,

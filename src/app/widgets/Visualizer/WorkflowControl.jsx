@@ -86,11 +86,11 @@ class WorkflowControl extends Component {
 
   canRun() {
     const { state } = this.props;
-    const { port, gcode, workflow } = state;
+    const { connected, gcode, workflow } = state;
     const controllerType = state.controller.type;
     const controllerState = state.controller.state;
 
-    if (!port) {
+    if (!connected) {
       return false;
     }
     if (!gcode.ready) {
@@ -121,7 +121,7 @@ class WorkflowControl extends Component {
       }
     }
     if (controllerType === TINYG) {
-      const machineState = get(controllerState, 'sr.machineState');
+      const machineState = get(controllerState, 'machineState');
       const states = [
         TINYG_MACHINE_STATE_ALARM
       ];
@@ -135,8 +135,8 @@ class WorkflowControl extends Component {
 
   render() {
     const { state, actions } = this.props;
-    const { port, gcode, workflow } = state;
-    const canClick = !!port;
+    const { connected, gcode, workflow } = state;
+    const canClick = !!connected;
     const isReady = canClick && gcode.ready;
     const canRun = this.canRun();
     const canPause = isReady && includes([WORKFLOW_STATE_RUNNING], workflow.state);

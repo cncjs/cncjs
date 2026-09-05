@@ -1,4 +1,5 @@
 import {
+  Flex,
   Space,
 } from '@tonic-ui/react';
 import _ from 'lodash';
@@ -64,9 +65,9 @@ class PrimaryToolbar extends Component {
 
   canSendCommand() {
     const { state } = this.props;
-    const { port, controller, workflow } = state;
+    const { connected, controller, workflow } = state;
 
-    if (!port) {
+    if (!connected) {
       return false;
     }
     if (!controller.type || !controller.state) {
@@ -152,7 +153,7 @@ class PrimaryToolbar extends Component {
     }
 
     if (controllerType === TINYG) {
-      const machineState = _.get(controllerState, 'sr.machineState');
+      const machineState = _.get(controllerState, 'machineState');
 
       // https://github.com/synthetos/g2/wiki/Alarm-Processing
       stateStyle = {
@@ -221,7 +222,7 @@ class PrimaryToolbar extends Component {
     }
 
     if (controllerType === TINYG) {
-      return _.get(controllerState, 'sr.modal.wcs') || defaultWCS;
+      return _.get(controllerState, 'modal.wcs') || defaultWCS;
     }
 
     return defaultWCS;
@@ -235,17 +236,18 @@ class PrimaryToolbar extends Component {
     const wcs = this.getWorkCoordinateSystem();
 
     return (
-      <div className={styles.primaryToolbar}>
+      <Flex alignItems="center" className={styles.primaryToolbar}>
         {this.renderControllerType()}
         {this.renderControllerState()}
-        <div className="pull-right">
+        <Flex alignItems="center" marginLeft="auto">
           <Dropdown
             style={{ marginRight: 5 }}
             disabled={!canSendCommand}
+            xs
             pullRight
           >
             <Dropdown.Toggle
-              sm
+              xs
               btnStyle="default"
               title={i18n._('Work Coordinate System')}
             >
@@ -309,11 +311,12 @@ class PrimaryToolbar extends Component {
             </Dropdown.Menu>
           </Dropdown>
           <Dropdown
+            xs
             pullRight
           >
             <Button
               aria-label="3D View options"
-              sm
+              xs
               btnStyle="default"
               title={(!WebGL.isWebGLAvailable() || disabled)
                 ? i18n._('Enable 3D View')
@@ -327,7 +330,7 @@ class PrimaryToolbar extends Component {
               {i18n._('3D View')}
             </Button>
             <Dropdown.Toggle
-              sm
+              xs
               btnStyle="default"
             />
             <Dropdown.Menu>
@@ -433,8 +436,8 @@ class PrimaryToolbar extends Component {
               </MenuItem>
             </Dropdown.Menu>
           </Dropdown>
-        </div>
-      </div>
+        </Flex>
+      </Flex>
     );
   }
 }
