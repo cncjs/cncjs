@@ -764,5 +764,6 @@
   "{{value}} {{- units}}": "{{value}} {{- units}}",
   "Clearance Z: {{value}} {{- units}}": "Высота подъёма Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Начальная Z: {{value}} {{- units}}",
-  "End Z: {{value}} {{- units}}": "Конечная Z: {{value}} {{- units}}"
+  "End Z: {{value}} {{- units}}": "Конечная Z: {{value}} {{- units}}",
+  "None": ""
 }

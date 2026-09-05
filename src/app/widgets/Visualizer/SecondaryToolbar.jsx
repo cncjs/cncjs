@@ -146,7 +146,7 @@ class SecondaryToolbar extends Component {
     // Match the shape used by Settings.jsx when a profile is deleted, so
     // every reader (Visualizer changeMachineProfile, this toolbar's
     // updateMachineProfileFromStore) handles "no profile" the same way.
-    config.replace('workspace.machineProfile', { id: null });
+    config.set('workspace.machineProfile', { id: null });
   };
 
   subscribe() {

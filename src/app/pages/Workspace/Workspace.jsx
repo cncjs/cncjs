@@ -483,14 +483,13 @@ class Workspace extends Component {
                     flex="none"
                     width="360px"
                     minHeight="0"
-                    display={hidePrimaryContainer ? 'none' : 'block'}
+                    display={hidePrimaryContainer ? 'none' : 'flex'}
+                    flexDirection="column"
                     position="relative"
                     backgroundColor="#f6f7f8"
-                    padding="0 10px"
                     borderRight="1px solid #ccc"
-                    overflowY="auto"
                   >
-                    <Box my="3x">
+                    <Box px="3x" py="3x" flex="none">
                       <Row>
                         <Col width="auto">
                           <Button
@@ -540,15 +539,22 @@ class Workspace extends Component {
                         </Col>
                       </Row>
                     </Box>
-                    <PrimaryWidgets
-                      ref={node => {
-                        this.primaryWidgets = node;
-                      }}
-                      onForkWidget={this.widgetEventHandler.onForkWidget}
-                      onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
-                      onDragStart={this.widgetEventHandler.onDragStart}
-                      onDragEnd={this.widgetEventHandler.onDragEnd}
-                    />
+                    <Box
+                      flex="auto"
+                      height="100%"
+                      overflowY="auto"
+                      px="3x"
+                    >
+                      <PrimaryWidgets
+                        ref={node => {
+                          this.primaryWidgets = node;
+                        }}
+                        onForkWidget={this.widgetEventHandler.onForkWidget}
+                        onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
+                        onDragStart={this.widgetEventHandler.onDragStart}
+                        onDragEnd={this.widgetEventHandler.onDragEnd}
+                      />
+                    </Box>
                   </Box>
                   {hidePrimaryContainer && (
                     <Box
@@ -599,14 +605,13 @@ class Workspace extends Component {
                     flex="none"
                     width="360px"
                     minHeight="0"
-                    display={hideSecondaryContainer ? 'none' : 'block'}
+                    display={hideSecondaryContainer ? 'none' : 'flex'}
+                    flexDirection="column"
                     position="relative"
                     backgroundColor="#f6f7f8"
-                    padding="0 10px"
                     borderLeft="1px solid #ccc"
-                    overflowY="auto"
                   >
-                    <Box my="3x">
+                    <Box px="3x" py="3x" flex="none">
                       <Row>
                         <Col width="auto">
                           <ButtonGroup sm>
@@ -656,15 +661,22 @@ class Workspace extends Component {
                         </Col>
                       </Row>
                     </Box>
-                    <SecondaryWidgets
-                      ref={node => {
-                        this.secondaryWidgets = node;
-                      }}
-                      onForkWidget={this.widgetEventHandler.onForkWidget}
-                      onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
-                      onDragStart={this.widgetEventHandler.onDragStart}
-                      onDragEnd={this.widgetEventHandler.onDragEnd}
-                    />
+                    <Box
+                      flex="auto"
+                      height="100%"
+                      overflowY="auto"
+                      px="3x"
+                    >
+                      <SecondaryWidgets
+                        ref={node => {
+                          this.secondaryWidgets = node;
+                        }}
+                        onForkWidget={this.widgetEventHandler.onForkWidget}
+                        onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
+                        onDragStart={this.widgetEventHandler.onDragStart}
+                        onDragEnd={this.widgetEventHandler.onDragEnd}
+                      />
+                    </Box>
                   </Box>
                 </Flex>
               </Box>

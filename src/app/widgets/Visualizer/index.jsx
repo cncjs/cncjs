@@ -1,5 +1,4 @@
 import chainedFunction from 'chained-function';
-import classNames from 'classnames';
 import { ensurePositiveNumber } from 'ensure-type';
 import ExpressionEvaluator from 'expr-eval';
 import includes from 'lodash/includes';
@@ -69,7 +68,6 @@ import {
   NOTIFICATION_M109_SET_EXTRUDER_TEMPERATURE,
   NOTIFICATION_M190_SET_HEATED_BED_TEMPERATURE
 } from './constants';
-import styles from './index.styl';
 
 const translateExpression = (function() {
   const { Parser } = ExpressionEvaluator;
@@ -1090,8 +1088,18 @@ class VisualizerWidget extends Component {
 
     return (
       <WidgetConfigProvider widgetId={widgetId}>
-        <Widget aria-label="3D Visualizer widget" borderless>
-          <Widget.Header className={styles.widgetHeader} fixed>
+        <Widget
+          aria-label="3D Visualizer widget"
+          borderless
+          position="absolute"
+          top={0}
+          right={0}
+          bottom={0}
+          left={0}
+          display="flex"
+          flexDirection="column"
+        >
+          <Widget.Header flex="none" padding="5px 10px" fixed>
             <PrimaryToolbar
               state={state}
               actions={actions}
@@ -1101,10 +1109,11 @@ class VisualizerWidget extends Component {
             ref={node => {
               this.widgetContent = node;
             }}
-            className={classNames(
-              styles.widgetContent,
-              { [styles.view3D]: capable.view3D }
-            )}
+            style={{
+              position: 'relative',
+              flex: '1 1 auto',
+              minHeight: 0,
+            }}
           >
             {state.gcode.loading &&
               <Loading />}
@@ -1150,7 +1159,7 @@ class VisualizerWidget extends Component {
             )}
           </Widget.Content>
           {showVisualizer && (
-            <Widget.Footer className={styles.widgetFooter}>
+            <Widget.Footer flex="none" padding="5px 10px">
               <SecondaryToolbar
                 is3DView={capable.view3D}
                 cameraMode={state.cameraMode}

@@ -137,15 +137,16 @@ class Visualizer extends Component {
   // changeMachineProfile (mount, store change, etc.).
   changeMachineProfile = () => {
     const machineProfile = config.get('workspace.machineProfile');
+    const nextMachineProfile = _get(machineProfile, 'id') ? { ...machineProfile } : null;
 
-    if (_isEqual(machineProfile, this.machineProfile)) {
+    if (_isEqual(nextMachineProfile, this.machineProfile)) {
       return;
     }
 
-    this.machineProfile = machineProfile ? { ...machineProfile } : null;
+    this.machineProfile = nextMachineProfile;
 
     // Profile removed — reset to defaults and return
-    if (!machineProfile) {
+    if (!this.machineProfile) {
       if (!this.gcodeVisualizer) {
         this.pivotPoint.set(0, 0, 0);
       }
@@ -250,6 +251,7 @@ class Visualizer extends Component {
 
     // Enable or disable 3D view
     if ((prevProps.show !== this.props.show) && (this.props.show === true)) {
+      this.resizeRenderer();
       this.viewport.update();
 
       // Set forceUpdate to true when enabling or disabling 3D view
@@ -578,13 +580,8 @@ class Visualizer extends Component {
   }
 
   getVisibleHeight() {
-    const clientHeight = document.documentElement.clientHeight;
-    const navbarHeight = 48; // app header height, keep in sync with $navbar-height (styles/variables.styl)
-    const widgetHeaderHeight = 38;
-    const widgetFooterHeight = 38;
-    const visibleHeight = (
-      clientHeight - navbarHeight - widgetHeaderHeight - widgetFooterHeight - 1
-    );
+    const el = ReactDOM.findDOMNode(this.node);
+    const visibleHeight = ensurePositiveNumber(el && el.parentNode && el.parentNode.clientHeight);
 
     return visibleHeight;
   }

@@ -1,3 +1,4 @@
+import { Box } from '@tonic-ui/react';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -18,7 +19,7 @@ class Widget extends Component {
     const { borderless, fullscreen, className, ...props } = this.props;
 
     return (
-      <div
+      <Box
         role="region"
         {...props}
         className={cx(

@@ -33,8 +33,8 @@ const keypadInfotip = () => {
 
   return (
     <div style={styles.container}>
-      <div className="row no-gutters text-left">
-        <div className="col-xs-12">
+      <div style={{ textAlign: 'left' }}>
+        <div>
           <span style={styles.axisDirection}>X+</span>
           <kbd style={styles.kbd}>
             <i className="fa fa-angle-right" style={styles.icon} />
@@ -42,7 +42,7 @@ const keypadInfotip = () => {
           <Space width={8} />
           {i18n._('Right')}
         </div>
-        <div className="col-xs-12">
+        <div>
           <span style={styles.axisDirection}>X-</span>
           <kbd style={styles.kbd}>
             <i className="fa fa-angle-left" style={styles.icon} />
@@ -50,7 +50,7 @@ const keypadInfotip = () => {
           <Space width={8} />
           {i18n._('Left')}
         </div>
-        <div className="col-xs-12">
+        <div>
           <span style={styles.axisDirection}>Y+</span>
           <kbd style={styles.kbd}>
             <i className="fa fa-angle-up" style={styles.icon} />
@@ -58,7 +58,7 @@ const keypadInfotip = () => {
           <Space width={8} />
           {i18n._('Up')}
         </div>
-        <div className="col-xs-12">
+        <div>
           <span style={styles.axisDirection}>Y-</span>
           <kbd style={styles.kbd}>
             <i className="fa fa-angle-down" style={styles.icon} />
@@ -66,7 +66,7 @@ const keypadInfotip = () => {
           <Space width={8} />
           {i18n._('Down')}
         </div>
-        <div className="col-xs-12">
+        <div>
           <span style={styles.axisDirection}>Z+</span>
           <kbd style={styles.kbd}>
             <i className="fa fa-long-arrow-up" style={styles.icon} />
@@ -74,7 +74,7 @@ const keypadInfotip = () => {
           <Space width={8} />
           {i18n._('Page Up')}
         </div>
-        <div className="col-xs-12">
+        <div>
           <span style={styles.axisDirection}>Z-</span>
           <kbd style={styles.kbd}>
             <i className="fa fa-long-arrow-down" style={styles.icon} />
@@ -82,7 +82,7 @@ const keypadInfotip = () => {
           <Space width={8} />
           {i18n._('Page Down')}
         </div>
-        <div className="col-xs-12">
+        <div>
           <span style={styles.axisDirection}>A+</span>
           <kbd style={styles.kbd}>
             {' ] '}
@@ -90,7 +90,7 @@ const keypadInfotip = () => {
           <Space width={8} />
           {i18n._('Right Square Bracket')}
         </div>
-        <div className="col-xs-12">
+        <div>
           <span style={styles.axisDirection}>A-</span>
           <kbd style={styles.kbd}>
             {' [ '}
@@ -99,11 +99,11 @@ const keypadInfotip = () => {
           {i18n._('Left Square Bracket')}
         </div>
       </div>
-      <div className="row no-gutters">
+      <div>
         <div style={styles.divider} />
       </div>
-      <div className="row no-gutters">
-        <div className="col-xs-12">
+      <div>
+        <div>
           <div className="table-form">
             <div className="table-form-row table-form-row-dense">
               <div className="table-form-col table-form-col-label">{i18n._('0.1x Move')}</div>
