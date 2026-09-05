@@ -643,5 +643,7 @@
   "Clearance Z: {{value}} {{- units}}": "Frihøyde Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Start-Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Slutt-Z: {{value}} {{- units}}",
-  "None": "Ingen"
+  "None": "Ingen",
+  "No watch directory is configured on the server": "",
+  "Save to Watch Directory": ""
 }

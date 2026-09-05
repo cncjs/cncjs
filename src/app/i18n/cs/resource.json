@@ -645,5 +645,7 @@
   "Clearance Z: {{value}} {{- units}}": "Výška přejezdu Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Počáteční Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Koncové Z: {{value}} {{- units}}",
-  "None": "Žádný"
+  "None": "Žádný",
+  "No watch directory is configured on the server": "",
+  "Save to Watch Directory": ""
 }

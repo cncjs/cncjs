@@ -8,6 +8,7 @@ import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Anchor from 'app/components/Anchor';
+import api from 'app/api';
 import { Button } from 'app/components/Buttons';
 import ModalTemplate from 'app/components/ModalTemplate';
 import Modal from 'app/components/Modal';
@@ -253,8 +254,15 @@ class VisualizerWidget extends PureComponent {
         });
       },
       uploadFile: (gcode, meta) => {
-        const { name } = { ...meta };
+        const { name, savePermanently } = { ...meta };
         const context = {};
+
+        if (savePermanently) {
+          api.watch.uploadFile({ file: name, data: gcode })
+            .catch((res) => {
+              log.error(`Failed to save "${name}" to the watch directory`);
+            });
+        }
 
         this.setState((state) => ({
           gcode: {

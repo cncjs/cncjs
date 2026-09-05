@@ -644,5 +644,7 @@
   "Clearance Z: {{value}} {{- units}}": "Z de separación: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Z inicial: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Z final: {{value}} {{- units}}",
-  "None": "Ninguno"
+  "None": "Ninguno",
+  "No watch directory is configured on the server": "",
+  "Save to Watch Directory": ""
 }

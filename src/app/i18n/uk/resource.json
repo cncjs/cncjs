@@ -645,5 +645,7 @@
   "Clearance Z: {{value}} {{- units}}": "Висота підйому Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Початкова Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Кінцева Z: {{value}} {{- units}}",
-  "None": "Немає"
+  "None": "Немає",
+  "No watch directory is configured on the server": "",
+  "Save to Watch Directory": ""
 }

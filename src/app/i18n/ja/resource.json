@@ -642,5 +642,7 @@
   "Clearance Z: {{value}} {{- units}}": "クリアランスZ: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "開始Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "終了Z: {{value}} {{- units}}",
-  "None": "なし"
+  "None": "なし",
+  "No watch directory is configured on the server": "",
+  "Save to Watch Directory": ""
 }
