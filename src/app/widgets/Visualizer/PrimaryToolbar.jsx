@@ -244,7 +244,6 @@ class PrimaryToolbar extends Component {
             style={{ marginRight: 5 }}
             disabled={!canSendCommand}
             xs
-            pullRight
           >
             <Dropdown.Toggle
               xs
@@ -312,7 +311,6 @@ class PrimaryToolbar extends Component {
           </Dropdown>
           <Dropdown
             xs
-            pullRight
           >
             <Button
               aria-label="3D View options"

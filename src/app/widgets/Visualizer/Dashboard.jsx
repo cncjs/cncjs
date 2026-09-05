@@ -1,3 +1,4 @@
+import { Flex } from '@tonic-ui/react';
 import cx from 'classnames';
 import { ensurePositiveNumber } from 'ensure-type';
 import escape from 'lodash/escape';
@@ -107,8 +108,8 @@ class Dashboard extends Component {
         <Panel.Body
           style={{ height: 'calc(100% - 30px)' }}
         >
-          <div className="clearfix" style={{ marginBottom: 10 }}>
-            <div className="pull-left text-nowrap">
+          <Flex justifyContent="space-between" style={{ marginBottom: 10 }}>
+            <div style={{ whiteSpace: 'nowrap' }}>
               {state.gcode.ready && (
                 <Anchor
                   onClick={() => {
@@ -120,10 +121,10 @@ class Dashboard extends Component {
               )}
               {!state.gcode.ready && i18n._('G-code not loaded')}
             </div>
-            <div className="pull-right text-nowrap">
+            <div style={{ whiteSpace: 'nowrap' }}>
               {filesize}
             </div>
-          </div>
+          </Flex>
           <div style={{ marginBottom: 10 }}>
             <ProgressBar
               variant="info"

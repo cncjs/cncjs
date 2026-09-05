@@ -23,7 +23,6 @@ class DropdownMenuWrapper extends Component {
 
     // Dropdown
     open: PropTypes.bool,
-    pullRight: PropTypes.bool,
     onClose: PropTypes.func,
     onSelect: PropTypes.func,
     rootCloseEvent: PropTypes.oneOf([
@@ -73,7 +72,6 @@ class DropdownMenuWrapper extends Component {
             componentType, // eslint-disable-line
       componentClass: Component,
       open,
-      pullRight,
       onClose,
       onSelect,
       rootCloseEvent,
@@ -92,7 +90,6 @@ class DropdownMenuWrapper extends Component {
           {...props}
           className={cx(className, {
             [styles.dropdownMenuWrapper]: true,
-            [styles.pullRight]: !!pullRight
           })}
         >
           {React.Children.map(children, child => {
@@ -104,7 +101,6 @@ class DropdownMenuWrapper extends Component {
               return this.renderMenu(child, {
                 // Do not pass onClose and rootCloseEvent to the dropdown menu
                 open,
-                pullRight,
                 onSelect
               });
             }

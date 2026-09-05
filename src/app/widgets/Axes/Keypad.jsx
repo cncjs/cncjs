@@ -415,7 +415,6 @@ class Keypad extends Component {
           <div className="col-xs-4">
             <div className={styles.rowSpace}>
               <Dropdown
-                pullRight
                 style={{
                   width: '100%'
                 }}
@@ -457,7 +456,6 @@ class Keypad extends Component {
             <div className={styles.rowSpace}>
               {units === IMPERIAL_UNITS && (
                 <Dropdown
-                  pullRight
                   style={{
                     width: '100%'
                   }}
@@ -493,7 +491,6 @@ class Keypad extends Component {
               )}
               {units === METRIC_UNITS && (
                 <Dropdown
-                  pullRight
                   style={{
                     width: '100%'
                   }}

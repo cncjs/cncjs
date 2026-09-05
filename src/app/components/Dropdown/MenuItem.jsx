@@ -36,7 +36,6 @@ class MenuItem extends Component {
 
     // Dropdown
     open: PropTypes.bool,
-    pullRight: PropTypes.bool,
     onClose: PropTypes.func,
     onSelect: PropTypes.func,
     rootCloseEvent: PropTypes.oneOf([
@@ -54,7 +53,6 @@ class MenuItem extends Component {
 
     // DropdownMenu
     open: false,
-    pullRight: false
   };
 
   isMenuItem = match(MenuItem);
@@ -88,7 +86,6 @@ class MenuItem extends Component {
 
       // Dropdown
       open,
-      pullRight,
       onClose,
       onSelect,
       rootCloseEvent,
@@ -163,7 +160,6 @@ class MenuItem extends Component {
         {(menuItems.length > 0) && (
           <DropdownMenu
             open={open}
-            pullRight={pullRight}
             onClose={onClose}
             onSelect={onSelect}
             rootCloseEvent={rootCloseEvent}

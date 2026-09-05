@@ -357,7 +357,6 @@ class SecondaryToolbar extends Component {
                   componentClass={ButtonGroup}
                   style={{ marginLeft: 0 }}
                   dropup
-                  pullRight
                   onSelect={eventKey => {
                     if (eventKey === CAMERA_MODE_PAN) {
                       camera.toPanMode();
@@ -409,7 +408,6 @@ class SecondaryToolbar extends Component {
                 componentClass={ButtonGroup}
                 style={{ marginLeft: 0 }}
                 dropup
-                pullRight
                 onSelect={(eventKey) => {
                   if (eventKey === CLEAR_MACHINE_PROFILE) {
                     this.clearMachineProfile();

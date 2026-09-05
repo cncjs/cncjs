@@ -209,7 +209,6 @@ class DisplayPanel extends Component {
 
     return (
       <Dropdown
-        pullRight
         disabled={!canClick}
         onSelect={this.handleSelect}
       >
@@ -357,7 +356,6 @@ class DisplayPanel extends Component {
 
     return (
       <Dropdown
-        pullRight
         disabled={!canClick}
         onSelect={this.handleSelect}
       >
@@ -500,7 +498,6 @@ class DisplayPanel extends Component {
 
     return (
       <Dropdown
-        pullRight
         disabled={!canClick}
         onSelect={this.handleSelect}
       >
@@ -643,7 +640,6 @@ class DisplayPanel extends Component {
 
     return (
       <Dropdown
-        pullRight
         disabled={!canClick}
         onSelect={this.handleSelect}
       >
@@ -786,7 +782,6 @@ class DisplayPanel extends Component {
 
     return (
       <Dropdown
-        pullRight
         disabled={!canClick}
         onSelect={this.handleSelect}
       >
@@ -929,7 +924,6 @@ class DisplayPanel extends Component {
 
     return (
       <Dropdown
-        pullRight
         disabled={!canClick}
         onSelect={this.handleSelect}
       >
@@ -1072,7 +1066,6 @@ class DisplayPanel extends Component {
 
     return (
       <Dropdown
-        pullRight
         disabled={!canClick}
         onSelect={this.handleSelect}
       >
@@ -1249,41 +1242,39 @@ class DisplayPanel extends Component {
         <td className={styles.machinePosition}>
           <PositionLabel value={mpos} />
           <Taskbar>
-            <div className="clearfix">
-              <div className="pull-right">
-                <TaskbarButton
-                  aria-label={`Go to zero: ${axisLabel}`}
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <TaskbarButton
+                aria-label={`Go to zero: ${axisLabel}`}
+                disabled={!canZeroOutMachine}
+                onClick={() => {
+                  controller.command('gcode', `G28.3 ${axisLabel}0`);
+                }}
+              >
+                <Tooltip
+                  content={i18n._('Zero Out Machine')}
                   disabled={!canZeroOutMachine}
-                  onClick={() => {
-                    controller.command('gcode', `G28.3 ${axisLabel}0`);
-                  }}
+                  hideOnClick
+                  placement="bottom"
                 >
-                  <Tooltip
-                    content={i18n._('Zero Out Machine')}
-                    disabled={!canZeroOutMachine}
-                    hideOnClick
-                    placement="bottom"
-                  >
-                    <Image src={iconPin} width="14" height="14" />
-                  </Tooltip>
-                </TaskbarButton>
-                <TaskbarButton
-                  aria-label={`Home: ${axisLabel}`}
+                  <Image src={iconPin} width="14" height="14" />
+                </Tooltip>
+              </TaskbarButton>
+              <TaskbarButton
+                aria-label={`Home: ${axisLabel}`}
+                disabled={!canClick}
+                onClick={() => {
+                  controller.command('gcode', axisHomingCommand);
+                }}
+              >
+                <Tooltip
+                  content={i18n._('Home Machine')}
                   disabled={!canClick}
-                  onClick={() => {
-                    controller.command('gcode', axisHomingCommand);
-                  }}
+                  hideOnClick
+                  placement="bottom"
                 >
-                  <Tooltip
-                    content={i18n._('Home Machine')}
-                    disabled={!canClick}
-                    hideOnClick
-                    placement="bottom"
-                  >
-                    <Image src={iconHome} width="14" height="14" />
-                  </Tooltip>
-                </TaskbarButton>
-              </div>
+                  <Image src={iconHome} width="14" height="14" />
+                </Tooltip>
+              </TaskbarButton>
             </div>
           </Taskbar>
         </td>
@@ -1303,74 +1294,72 @@ class DisplayPanel extends Component {
           {!showPositionInput &&
             <PositionLabel value={wpos} />}
           <Taskbar>
-            <div className="clearfix">
-              <div className="pull-right">
-                <TaskbarButton
-                  aria-label={`Move ${axisLabel} backward`}
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <TaskbarButton
+                aria-label={`Move ${axisLabel} backward`}
+                disabled={!canMoveBackward}
+                onClick={() => {
+                  const distance = actions.getJogDistance();
+                  actions.jog({ [axis]: -distance });
+                }}
+              >
+                <Tooltip
+                  content={i18n._('Move Backward')}
                   disabled={!canMoveBackward}
-                  onClick={() => {
-                    const distance = actions.getJogDistance();
-                    actions.jog({ [axis]: -distance });
-                  }}
+                  hideOnClick
+                  placement="bottom"
                 >
-                  <Tooltip
-                    content={i18n._('Move Backward')}
-                    disabled={!canMoveBackward}
-                    hideOnClick
-                    placement="bottom"
-                  >
-                    <Image src={iconMinus} width="14" height="14" />
-                  </Tooltip>
-                </TaskbarButton>
-                <TaskbarButton
-                  aria-label={`Move ${axisLabel} forward`}
+                  <Image src={iconMinus} width="14" height="14" />
+                </Tooltip>
+              </TaskbarButton>
+              <TaskbarButton
+                aria-label={`Move ${axisLabel} forward`}
+                disabled={!canMoveForward}
+                onClick={() => {
+                  const distance = actions.getJogDistance();
+                  actions.jog({ [axis]: distance });
+                }}
+              >
+                <Tooltip
+                  content={i18n._('Move Forward')}
                   disabled={!canMoveForward}
-                  onClick={() => {
-                    const distance = actions.getJogDistance();
-                    actions.jog({ [axis]: distance });
-                  }}
+                  hideOnClick
+                  placement="bottom"
                 >
-                  <Tooltip
-                    content={i18n._('Move Forward')}
-                    disabled={!canMoveForward}
-                    hideOnClick
-                    placement="bottom"
-                  >
-                    <Image src={iconPlus} width="14" height="14" />
-                  </Tooltip>
-                </TaskbarButton>
-                <TaskbarButton
-                  aria-label={`Zero out ${axisLabel} work offsets`}
+                  <Image src={iconPlus} width="14" height="14" />
+                </Tooltip>
+              </TaskbarButton>
+              <TaskbarButton
+                aria-label={`Zero out ${axisLabel} work offsets`}
+                disabled={!canZeroOutWorkOffsets}
+                onClick={() => {
+                  actions.setWorkOffsets(axis, 0);
+                }}
+              >
+                <Tooltip
+                  content={i18n._('Zero Out Work Offsets')}
                   disabled={!canZeroOutWorkOffsets}
-                  onClick={() => {
-                    actions.setWorkOffsets(axis, 0);
-                  }}
+                  hideOnClick
+                  placement="bottom"
                 >
-                  <Tooltip
-                    content={i18n._('Zero Out Work Offsets')}
-                    disabled={!canZeroOutWorkOffsets}
-                    hideOnClick
-                    placement="bottom"
-                  >
-                    <Image src={iconPin} width="14" height="14" />
-                  </Tooltip>
-                </TaskbarButton>
-                <TaskbarButton
-                  aria-label={`Set ${axisLabel} work offsets`}
-                  active={showPositionInput}
+                  <Image src={iconPin} width="14" height="14" />
+                </Tooltip>
+              </TaskbarButton>
+              <TaskbarButton
+                aria-label={`Set ${axisLabel} work offsets`}
+                active={showPositionInput}
+                disabled={!canModifyWorkPosition}
+                onClick={this.showPositionInput(axis)}
+              >
+                <Tooltip
+                  content={i18n._('Set Work Offsets')}
                   disabled={!canModifyWorkPosition}
-                  onClick={this.showPositionInput(axis)}
+                  hideOnClick
+                  placement="bottom"
                 >
-                  <Tooltip
-                    content={i18n._('Set Work Offsets')}
-                    disabled={!canModifyWorkPosition}
-                    hideOnClick
-                    placement="bottom"
-                  >
-                    <Image src={iconPencil} width="14" height="14" />
-                  </Tooltip>
-                </TaskbarButton>
-              </div>
+                  <Image src={iconPencil} width="14" height="14" />
+                </Tooltip>
+              </TaskbarButton>
             </div>
           </Taskbar>
         </td>

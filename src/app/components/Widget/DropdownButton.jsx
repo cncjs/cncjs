@@ -17,15 +17,11 @@ class DropdownButton extends Component {
     // Accessible label for the toggle button
     'aria-label': PropTypes.string,
 
-    // Align the menu to the right side of the dropdown toggle.
-    pullRight: PropTypes.bool,
-
     // Whether to prevent a caret from being rendered next to the title.
     noCaret: PropTypes.bool
   };
 
   static defaultProps = {
-    pullRight: true,
     noCaret: true
   };
 

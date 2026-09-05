@@ -23,7 +23,6 @@ class DropdownMenu extends Component {
 
     // Dropdown
     open: PropTypes.bool,
-    pullRight: PropTypes.bool,
     onClose: PropTypes.func,
     onSelect: PropTypes.func,
     rootCloseEvent: PropTypes.oneOf([
@@ -96,7 +95,6 @@ class DropdownMenu extends Component {
             componentType, // eslint-disable-line
       componentClass: Component,
       open,
-      pullRight,
       onClose,
       onSelect,
       rootCloseEvent,
@@ -121,7 +119,6 @@ class DropdownMenu extends Component {
           className={cx(className, {
             [styles.dropdownMenu]: true,
             [styles.selected]: activeMenuItems.length > 0,
-            [styles.pullRight]: !!pullRight
           })}
           style={style}
         >
