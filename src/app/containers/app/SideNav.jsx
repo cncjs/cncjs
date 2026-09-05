@@ -53,13 +53,15 @@ const SideNav = forwardRef((
       onClose={onClose}
       placement="left"
     >
-      <Global
-        styles={css`
-          body {
-            overflow: hidden;
-          }
-        `}
-      />
+      {isOpen && (
+        <Global
+          styles={css`
+            body {
+              overflow: hidden;
+            }
+          `}
+        />
+      )}
       <DrawerOverlay />
       <DrawerContent
         ref={ref}

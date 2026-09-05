@@ -79,11 +79,13 @@
         min-width: 360px;
 
         &.fixed {
+            display: block;
             position: fixed;
             left: 360px;
             right: 360px;
             top: ($navbar-height + 1);
             bottom: 0;
+            overflow-y: auto;
         }
     }
 }

@@ -2,8 +2,10 @@ import { EventEmitter } from 'events';
 import { SerialPort } from 'serialport';
 import { ReadlineParser } from '@serialport/parser-readline';
 import delay from './delay';
-import log from './logger';
+import logger from './logger';
 import x from './json-stringify';
+
+const log = logger('serial-connection');
 
 // Validation
 const DATABITS = Object.freeze([5, 6, 7, 8]);

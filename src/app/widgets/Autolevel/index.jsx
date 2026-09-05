@@ -530,13 +530,11 @@ class AutolevelWidget extends PureComponent {
   };
 
   controllerEvents = {
-    'serialport:open': (options) => {
-      const { port } = options;
-      this.setState({ port: port });
+    'connection:open': () => {
+      this.setState({ connected: true });
     },
-    'serialport:close': (options) => {
-      const initialState = this.getInitialState();
-      this.setState({ ...initialState });
+    'connection:change': (connectionState, connected) => {
+      this.setState({ connected });
     },
     'workflow:state': (workflowState) => {
       this.setState(state => ({
@@ -803,7 +801,7 @@ class AutolevelWidget extends PureComponent {
       minimized: this.config.get('minimized', false),
       isFullscreen: false,
       canClick: true,
-      port: controller.port,
+      connected: !!controller.connection.ident,
       units: METRIC_UNITS,
       controller: {
         type: controller.type,
@@ -856,11 +854,11 @@ class AutolevelWidget extends PureComponent {
   }
 
   canClick() {
-    const { port, workflow } = this.state;
+    const { connected, workflow } = this.state;
     const controllerType = this.state.controller.type;
     const controllerState = this.state.controller.state;
 
-    if (!port) {
+    if (!connected) {
       return false;
     }
     if (workflow.state !== WORKFLOW_STATE_IDLE) {
@@ -870,21 +868,21 @@ class AutolevelWidget extends PureComponent {
       return false;
     }
     if (controllerType === GRBL) {
-      const activeState = get(controllerState, 'status.activeState');
+      const machineState = get(controllerState, 'status.machineState');
       const states = [GRBL_MACHINE_STATE_IDLE];
-      if (!includes(states, activeState)) {
+      if (!includes(states, machineState)) {
         return false;
       }
     }
     if (controllerType === SMOOTHIE) {
-      const activeState = get(controllerState, 'status.activeState');
+      const machineState = get(controllerState, 'status.machineState');
       const states = [SMOOTHIE_MACHINE_STATE_IDLE];
-      if (!includes(states, activeState)) {
+      if (!includes(states, machineState)) {
         return false;
       }
     }
     if (controllerType === TINYG) {
-      const machineState = get(controllerState, 'sr.machineState');
+      const machineState = get(controllerState, 'machineState');
       const states = [
         TINYG_MACHINE_STATE_READY,
         TINYG_MACHINE_STATE_STOP,
