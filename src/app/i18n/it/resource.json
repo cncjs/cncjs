@@ -645,6 +645,5 @@
   "Start Z: {{value}} {{- units}}": "Z iniziale: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Z finale: {{value}} {{- units}}",
   "None": "Nessuno",
-  "No watch directory is configured on the server": "",
   "Save to Watch Directory": ""
 }

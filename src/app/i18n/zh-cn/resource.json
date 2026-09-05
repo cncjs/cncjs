@@ -643,6 +643,5 @@
   "Start Z: {{value}} {{- units}}": "起始Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "终止Z: {{value}} {{- units}}",
   "None": "无",
-  "No watch directory is configured on the server": "",
   "Save to Watch Directory": ""
 }

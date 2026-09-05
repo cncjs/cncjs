@@ -646,6 +646,5 @@
   "Start Z: {{value}} {{- units}}": "Počáteční Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Koncové Z: {{value}} {{- units}}",
   "None": "Žádný",
-  "No watch directory is configured on the server": "",
   "Save to Watch Directory": ""
 }

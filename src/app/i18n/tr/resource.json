@@ -644,6 +644,5 @@
   "Start Z: {{value}} {{- units}}": "Başlangıç Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Bitiş Z: {{value}} {{- units}}",
   "None": "Yok",
-  "No watch directory is configured on the server": "",
   "Save to Watch Directory": ""
 }
