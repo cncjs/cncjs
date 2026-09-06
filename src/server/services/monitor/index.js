@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 import fs from 'fs';
 import path from 'path';
 import minimatch from 'minimatch';
@@ -5,13 +6,27 @@ import FSMonitor from './FSMonitor';
 
 const monitor = new FSMonitor();
 
+const emitter = new EventEmitter();
+
 const start = ({ watchDirectory }) => {
   monitor.watch(watchDirectory);
+
+  monitor.on('created', (file) => {
+    emitter.emit('change', { file });
+  });
+  monitor.on('changed', (file) => {
+    emitter.emit('change', { file });
+  });
+  monitor.on('removed', (file) => {
+    emitter.emit('change', { file });
+  });
 };
 
 const stop = () => {
   monitor.unwatch();
 };
+
+const isConfigured = () => Boolean(monitor.root);
 
 const getFiles = (searchPath) => {
   const root = path.normalize(monitor.root);
@@ -68,9 +83,36 @@ const readFile = (file, callback) => {
   fs.readFile(file, 'utf8', callback);
 };
 
+const writeFile = (file, data, callback) => {
+  const root = monitor.root;
+
+  if (!root) {
+    callback(new Error('Watch directory is not configured'));
+    return;
+  }
+
+  // Strip any directory components to prevent writing outside of the watched directory
+  const filename = path.basename(file);
+  const target = path.join(root, filename);
+
+  fs.writeFile(target, data, 'utf8', callback);
+};
+
+const on = (...args) => {
+  emitter.on(...args);
+};
+
+const removeListener = (...args) => {
+  emitter.removeListener(...args);
+};
+
 export default {
   start,
   stop,
+  isConfigured,
   getFiles,
-  readFile
+  readFile,
+  writeFile,
+  on,
+  removeListener
 };

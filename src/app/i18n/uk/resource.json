@@ -474,8 +474,6 @@
   "Click the Stop button to stop program execution.": "Натисніть кнопку Зупинити, щоб зупинити виконання програми.",
   "Run a tool change macro to change the tool and adjust the Z-axis offset. Afterwards, click the Resume button to resume program execution.": "Щоб змінити інструмент і налаштувати зміщення по осі Z, запустіть макрос зміни інструменту. Після цього натисніть кнопку «Відновити», щоб відновити виконання програми.",
   "Waiting for the target temperature to be reached...": "Очікування досягнення цільової температури...",
-  "WebGL: <1>Enabled</1>": "WebGL: <1>Enabled</1>",
-  "WebGL: <1>Disabled</1>": "WebGL: <1>Disabled</1>",
   "Work Coordinate System": "Робоча система координат",
   "Enable 3D View": "Увімкніть 3D-перегляд",
   "Disable 3D View": "Вимкнути 3D-перегляд",
@@ -645,5 +643,8 @@
   "Clearance Z: {{value}} {{- units}}": "Висота підйому Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Початкова Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Кінцева Z: {{value}} {{- units}}",
-  "None": "Немає"
+  "None": "Немає",
+  "WebGL:": "WebGL:",
+  "Drop files to upload": "Перетягніть файли для завантаження",
+  "Uploading...": "Завантаження..."
 }

@@ -289,7 +289,9 @@ Locale | Language | Status | Contributors
 [hu](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/hu) | Magyar (Hungarian) | ✔ | Sipos Péter
 [it](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/it) | Italiano (Italian) | ✔ | [vince87](https://github.com/vince87)
 [ja](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/ja) | 日本語 (Japanese) | ✔ | [Naoki Okamoto](https://github.com/toonaoki)
+[nb](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/nb) | Norsk (Norwegian) | ✔ | [Stian Kristensen](https://github.com/stianfk)
 [nl](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/nl) | Nederlands (Netherlands) | ✔ | [dutchpatriot](https://github.com/dutchpatriot)
+[pt](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/pt) | Português (Portugal) | ✔ | [Cheton Wu](https://github.com/cheton)
 [pt-br](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/pt-br) | Português (Brasil) | ✔ | [cmsteinBR](https://github.com/cmsteinBR)
 [ru](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/ru) | Ру́сский (Russian) | ✔ | [Denis Yusupov](https://github.com/minithc)
 [uk](https://github.com/cncjs/cncjs/tree/master/src/app/i18n/uk) | українська (Ukrainian) | ✔ | [khvalera](https://github.com/khvalera)

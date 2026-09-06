@@ -519,8 +519,6 @@
   "New Account": "新規アカウント",
   "Hide Limits": "限界を隠す",
   "Show Limits": "限界を表示する",
-  "WebGL: <1>Enabled</1>": "WebGL: <1>有効</1>",
-  "WebGL: <1>Disabled</1>": "WebGL: <1>無効</1>",
   "Hide Cutting Tool": "工具を隠す",
   "Show Cutting Tool": "工具を表示する",
   "Ready to start": "スタートの準備ができました",
@@ -642,5 +640,8 @@
   "Clearance Z: {{value}} {{- units}}": "クリアランスZ: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "開始Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "終了Z: {{value}} {{- units}}",
-  "None": "なし"
+  "None": "なし",
+  "WebGL:": "WebGL:",
+  "Drop files to upload": "アップロードするファイルをここにドラッグ＆ドロップ",
+  "Uploading...": "アップロード中..."
 }

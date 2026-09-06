@@ -519,8 +519,6 @@
   "New Account": "Yeni Hesap",
   "Hide Limits": "Sınırları Gizle",
   "Show Limits": "Sınırları Göster",
-  "WebGL: <1>Enabled</1>": "WebGL: <1>Etkin</1>",
-  "WebGL: <1>Disabled</1>": "WebGL: <1>Engelle</1>",
   "Hide Cutting Tool": "Kesici Aleti Gizle",
   "Show Cutting Tool": "Kesici Aleti Göster",
   "Ready to start": "Başlamaya Hazır",
@@ -643,5 +641,8 @@
   "Clearance Z: {{value}} {{- units}}": "Güvenlik Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Başlangıç Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Bitiş Z: {{value}} {{- units}}",
-  "None": "Yok"
+  "None": "Yok",
+  "WebGL:": "WebGL:",
+  "Drop files to upload": "Yüklenecek dosyaları buraya sürükleyin",
+  "Uploading...": "Yükleniyor..."
 }

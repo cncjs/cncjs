@@ -318,10 +318,12 @@ const appMain = () => {
     app.delete(urljoin(settings.route, 'api/users/:id'), api.users.__delete);
 
     // Watch
+    app.get(urljoin(settings.route, 'api/watch/status'), api.watch.getStatus);
     app.get(urljoin(settings.route, 'api/watch/files'), api.watch.getFiles);
     app.post(urljoin(settings.route, 'api/watch/files'), api.watch.getFiles);
     app.get(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
     app.post(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
+    app.put(urljoin(settings.route, 'api/watch/file'), api.watch.writeFile);
   }
 
   // page

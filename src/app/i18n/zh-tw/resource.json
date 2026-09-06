@@ -519,8 +519,6 @@
   "New Account": "新增帳號",
   "Hide Limits": "隱藏限制",
   "Show Limits": "顯示限制",
-  "WebGL: <1>Enabled</1>": "WebGL: <1>已啟用</1>",
-  "WebGL: <1>Disabled</1>": "WebGL: <1>已停用</1>",
   "Hide Cutting Tool": "隱藏切割刀具",
   "Show Cutting Tool": "顯示切割刀具",
   "Ready to start": "準備開始",
@@ -642,5 +640,8 @@
   "Clearance Z: {{value}} {{- units}}": "安全高度Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "起始Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "終止Z: {{value}} {{- units}}",
-  "None": "無"
+  "None": "無",
+  "WebGL:": "WebGL:",
+  "Drop files to upload": "將檔案拖曳至此處上傳",
+  "Uploading...": "正在上傳..."
 }
