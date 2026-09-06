@@ -54,6 +54,7 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 * [cncjs-pendant-lcd](https://github.com/cncjs/cncjs-pendant-lcd) - CNCjs Web Kiosk for Raspberry Pi Touch Displays.
 * [cncjs-pendant-ps3](https://github.com/cncjs/cncjs-pendant-ps3) - Dual Shock / PS3 Bluetooth Remote Pendant for CNCjs.
 * [cncjs-pendant-raspi-gpio](https://github.com/cncjs/cncjs-pendant-raspi-gpio) - Simple Raspberry Pi GPIO Pendant control for CNCjs.
+* [cncjs-pendant-alexa](https://github.com/thcasssio/cncjs-pendant-alexa) - Voice jog control via a custom Alexa skill ("Alexa, ask mill x plus 20"), with per-axis travel limits and state-gated jogging.
 
 ## Tablet UI
 
