@@ -1939,13 +1939,13 @@ class TinyGController {
     const deprecatedCommandHandler = getDeprecatedCommandHandler(cmd);
     if (typeof deprecatedCommandHandler === 'function') {
       log.warn(`Warning: The ${x(cmd)} command is deprecated and will be removed in a future release.`);
-      deprecatedCommandHandler(this.command, ...args);
+      deprecatedCommandHandler(this.command.bind(this), ...args);
       return;
     }
 
     const handler = this.commandHandler[cmd];
     if (handler) {
-      handler();
+      handler(...args);
       return;
     }
 

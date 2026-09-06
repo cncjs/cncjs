@@ -406,7 +406,8 @@ class MarlinController {
     [CONTROLLER_COMMAND_HOMING]: () => {
       this.event.trigger(CONTROLLER_EVENT_TRIGGER_HOMING);
 
-      this.writeln('G28.2 X Y Z');
+      // G28: Auto Home
+      this.writeln('G28');
     },
     [CONTROLLER_COMMAND_SLEEP]: () => {
       this.event.trigger(CONTROLLER_EVENT_TRIGGER_SLEEP);
@@ -1168,7 +1169,7 @@ class MarlinController {
               msg: this.messageSlot.take() ?? originalLine,
             });
 
-            this.command('tool:change');
+            this.command(CONTROLLER_COMMAND_TOOL_CHANGE);
           }
         }
 
@@ -1177,7 +1178,7 @@ class MarlinController {
     });
     this.feeder.on('data', (line = '', context = {}) => {
       if (this.isClose) {
-        log.error(`Serial port "${this.options.port}" is not accessible`);
+        log.error(`Unable to write data to the connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
         return;
       }
 
@@ -1339,7 +1340,7 @@ class MarlinController {
     });
     this.sender.on('data', (line = '', context = {}) => {
       if (this.isClose) {
-        log.error(`Serial port "${this.options.port}" is not accessible`);
+        log.error(`Unable to write data to the connection: type=${this.connection.type}, options=${JSON.stringify(this.connection.options)}`);
         return;
       }
 
@@ -1703,7 +1704,7 @@ class MarlinController {
       y: posy,
       z: posz,
       e: pose
-    } = this.runner.getWorkfPosition();
+    } = this.runner.getWorkPosition();
 
     // Modal group
     const modal = this.runner.getModalGroup();
@@ -1933,13 +1934,13 @@ class MarlinController {
     const deprecatedCommandHandler = getDeprecatedCommandHandler(cmd);
     if (typeof deprecatedCommandHandler === 'function') {
       log.warn(`Warning: The ${x(cmd)} command is deprecated and will be removed in a future release.`);
-      deprecatedCommandHandler(this.command, ...args);
+      deprecatedCommandHandler(this.command.bind(this), ...args);
       return;
     }
 
     const handler = this.commandHandler[cmd];
     if (handler) {
-      handler();
+      handler(...args);
       return;
     }
 
