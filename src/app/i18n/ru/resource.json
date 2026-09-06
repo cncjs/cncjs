@@ -519,8 +519,6 @@
   "New Account": "Создать учетную запись",
   "Hide Limits": "Скрыть ограничения",
   "Show Limits": "Показать ограничения",
-  "WebGL: <1>Enabled</1>": "WebGL: <1>Включено</1>",
-  "WebGL: <1>Disabled</1>": "WebGL: <1>Отключено</1>",
   "Hide Cutting Tool": "Скрыть режущий инструмент",
   "Show Cutting Tool": "Показать режущий инструмент",
   "Ready to start": "Готов к запуску",
@@ -646,5 +644,7 @@
   "Start Z: {{value}} {{- units}}": "Начальная Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Конечная Z: {{value}} {{- units}}",
   "None": "Нет",
-  "Save to Watch Directory": ""
+  "WebGL:": "WebGL:",
+  "Drop files to upload": "Перетащите файлы для загрузки",
+  "Uploading...": "Загрузка..."
 }

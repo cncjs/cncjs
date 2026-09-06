@@ -519,8 +519,6 @@
   "New Account": "Nova Conta",
   "Hide Limits": "Ocultar Limites",
   "Show Limits": "Mostrar Limites",
-  "WebGL: <1>Enabled</1>": "WebGL: <1>Ativado</1>",
-  "WebGL: <1>Disabled</1>": "WebGL: <1>Desativado</1>",
   "Hide Cutting Tool": "Ocultar Ferramenta de Corte",
   "Show Cutting Tool": "Mostrar Ferramenta de Corte",
   "Ready to start": "Pronto para começar",
@@ -645,5 +643,7 @@
   "Start Z: {{value}} {{- units}}": "Z inicial: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Z final: {{value}} {{- units}}",
   "None": "Nenhum",
-  "Save to Watch Directory": ""
+  "WebGL:": "WebGL:",
+  "Drop files to upload": "Solte os arquivos para enviar",
+  "Uploading...": "Enviando..."
 }

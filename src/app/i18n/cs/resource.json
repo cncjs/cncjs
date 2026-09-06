@@ -519,8 +519,6 @@
   "New Account": "Nový účet",
   "Hide Limits": "Skrýt omezení",
   "Show Limits": "Zobrazit omezení",
-  "WebGL: <1>Enabled</1>": "WebGL: <1>Povoleno</1>",
-  "WebGL: <1>Disabled</1>": "WebGL: <1>Zakázáno</1>",
   "Hide Cutting Tool": "Skrýt řezný nástroj",
   "Show Cutting Tool": "Zobrazit řezný nástroj",
   "Ready to start": "Připraven k zahájení",
@@ -646,5 +644,7 @@
   "Start Z: {{value}} {{- units}}": "Počáteční Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Koncové Z: {{value}} {{- units}}",
   "None": "Žádný",
-  "Save to Watch Directory": ""
+  "WebGL:": "WebGL:",
+  "Drop files to upload": "Přetáhněte sem soubory k nahrání",
+  "Uploading...": "Nahrávání..."
 }

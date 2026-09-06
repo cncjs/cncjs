@@ -519,8 +519,6 @@
   "New Account": "Ny Konto",
   "Hide Limits": "Skjul grenser",
   "Show Limits": "Vis grenser",
-  "WebGL: <1>Enabled</1>": "WebGL: <1>skrudd på</1>",
-  "WebGL: <1>Disabled</1>": "WebGL: <1>skrudd av</1>",
   "Hide Cutting Tool": "Skjul skjæreverktøy",
   "Show Cutting Tool": "Vis skjæreverktøy",
   "Ready to start": "Klar til å starte",
@@ -644,5 +642,7 @@
   "Start Z: {{value}} {{- units}}": "Start-Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Slutt-Z: {{value}} {{- units}}",
   "None": "Ingen",
-  "Save to Watch Directory": ""
+  "WebGL:": "WebGL:",
+  "Drop files to upload": "Slipp filer her for å laste opp",
+  "Uploading...": "Laster opp..."
 }

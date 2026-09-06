@@ -467,7 +467,6 @@
   "Move the camera": "Move the camera",
   "Rotate the camera": "Rotate the camera",
   "Watch Directory": "Watch Directory",
-  "Save to Watch Directory": "Save to Watch Directory",
   "Date modified": "Date modified",
   "Type": "Type",
   "Size": "Size",
@@ -520,8 +519,6 @@
   "New Account": "New Account",
   "Hide Limits": "Hide Limits",
   "Show Limits": "Show Limits",
-  "WebGL: <1>Enabled</1>": "WebGL: <1>Enabled</1>",
-  "WebGL: <1>Disabled</1>": "WebGL: <1>Disabled</1>",
   "Hide Cutting Tool": "Hide Cutting Tool",
   "Show Cutting Tool": "Show Cutting Tool",
   "Ready to start": "Ready to start",
@@ -644,5 +641,8 @@
   "Clearance Z: {{value}} {{- units}}": "Clearance Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Start Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "End Z: {{value}} {{- units}}",
-  "None": "None"
+  "None": "None",
+  "WebGL:": "WebGL:",
+  "Drop files to upload": "Drop files to upload",
+  "Uploading...": "Uploading..."
 }
