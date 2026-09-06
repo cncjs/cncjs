@@ -87,6 +87,7 @@ class GCodeStats extends PureComponent {
           <div className="row no-gutters" style={{ marginBottom: 10 }}>
             <div className="col-xs-12">
               <ProgressBar
+                style={{ marginBottom: 0 }}
                 bsStyle="info"
                 min={0}
                 max={total}
