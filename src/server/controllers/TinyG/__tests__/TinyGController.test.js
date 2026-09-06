@@ -719,6 +719,26 @@ describe('TinyGController', () => {
       });
     });
 
+    test('the probe measurement is stored at the intended grid node with the measured Z', () => {
+      const { controller } = setupController();
+      controller.probeState.probePoints = [{ x: 0, y: 0 }, { x: 10, y: 0 }];
+      controller.runner.state.sr = {
+        mpos: { x: 0.000, y: 0.000, z: 0.000 },
+        wpos: { x: 0.000, y: 0.000, z: 0.000 },
+      };
+
+      // Quantised reports: the commanded nodes (0,0) and (10,0) read back off-node.
+      controller.runner.emit('r', { prb: { e: 1, x: 0.001, y: 0.001, z: -1.5 } });
+      controller.runner.emit('r', { prb: { e: 1, x: 10.001, y: -0.001, z: -1 } });
+
+      expect(controller.probeState.probedPositions).toEqual([
+        { x: 0, y: 0, z: -1.5 },
+        { x: 10, y: 0, z: -1 },
+      ]);
+      expect(controller.probeState.minZ).toBe(-1.5);
+      expect(controller.probeState.maxZ).toBe(-1);
+    });
+
     test('autolevel:stop resets the board and clears the probe state', () => {
       const { controller, writes } = setupController();
 
