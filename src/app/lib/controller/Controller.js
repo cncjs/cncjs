@@ -52,7 +52,20 @@ class Controller {
         'message': [],
 
         /**
-         * [Autolevel] Fired when the auto-leveling process starts.
+         * [Autolevel] Fired when the controller accepts a probing run, and only
+         * then. A client cannot decide on its own that probing started: a
+         * refused start is broadcast to every socket like everything else, so a
+         * client that had already put itself in the probing state could not
+         * tell its own refusal from one another tab provoked.
+         * @event autolevel:started
+         * @param {object} payload
+         * @param {number} payload.total - The number of grid points in the run
+         * @param {boolean} payload.skipUnprobed - Whether points with no contact are skipped
+         */
+        'autolevel:started': [],
+
+        /**
+         * [Autolevel] Fired as each probe point resolves.
          * @event autolevel:update
          * @param {number} index - The 0-based index of the current probe point
          * @param {number} total - The total number of probe points
@@ -65,7 +78,25 @@ class Controller {
          * @event autolevel:complete
          * @param {Array<{x: number, y: number, z: number}>} probedPositions - The full array of probe results
          */
-        'autolevel:complete': []
+        'autolevel:complete': [],
+
+        /**
+         * [Autolevel] Fired when the auto-leveling process is abandoned before
+         * the last probe point. Probing is dispatched one point at a time, so
+         * without this the client would wait forever on a probe result that is
+         * never coming.
+         * @event autolevel:error
+         * @param {object} payload
+         * @param {string} payload.reason - Why the run stopped
+         * @param {boolean} [payload.rejected] - The controller refused this start
+         * request; any run already in progress is untouched and keeps going
+         * @param {number} payload.current - How many probe points were resolved
+         * @param {number} payload.total - The total number of probe points
+         * @param {{x: number, y: number}} [payload.point] - The probe point it stopped on
+         * @param {Array<{x: number, y: number, z: number}>} payload.probedPositions - Measurements taken before the run ended
+         * @param {Array<{x: number, y: number}>} payload.skippedPoints - Grid points that found no contact
+         */
+        'autolevel:error': []
     };
 
     context = {

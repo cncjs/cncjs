@@ -343,6 +343,204 @@ export const createProbeXYPoints = (options) => {
 };
 
 /**
+ * Checks whether a probe area can be probed at all.
+ *
+ * This has to run BEFORE createProbeXYPoints, not on its result: a step of 0
+ * (or a negative one) never advances that function's loop, so an unusable area
+ * does not come back as an empty grid, it hangs. An inverted rectangle (start
+ * beyond end) does come back empty, and an empty grid is just as fatal for a
+ * sequential run -- there is no first point to send, so nothing ever dispatches
+ * a next one and the run hangs waiting for a probe result that was never asked
+ * for.
+ *
+ * Only what makes a run impossible is rejected here; the widget applies the
+ * stricter rules that make a run *useful* (a real rectangle in both axes).
+ *
+ * @param {object} options - Options
+ * @param {number} options.startX - Start X of the probe area
+ * @param {number} options.endX - End X of the probe area
+ * @param {number} options.stepX - Grid spacing in X
+ * @param {number} options.startY - Start Y of the probe area
+ * @param {number} options.endY - End Y of the probe area
+ * @param {number} options.stepY - Grid spacing in Y
+ * @returns {string|null} Why the area cannot be probed, or null when it can
+ */
+export const validateProbeArea = (options) => {
+  const {
+    startX,
+    endX,
+    stepX,
+    startY,
+    endY,
+    stepY,
+  } = ensurePlainObject(options);
+
+  const isFinite = (v) => Number.isFinite(Number(v));
+
+  if (![startX, endX, startY, endY, stepX, stepY].every(isFinite)) {
+    return 'the probe area must be described by numbers';
+  }
+  if (Number(stepX) <= 0 || Number(stepY) <= 0) {
+    return 'the probe grid step must be greater than zero';
+  }
+  if (Number(endX) < Number(startX) || Number(endY) < Number(startY)) {
+    return 'the probe area is empty: the end must not be before the start';
+  }
+
+  return null;
+};
+
+/**
+ * Builds the ordered list of spots to try for one grid node.
+ *
+ * The first entry is the node itself; the rest are nearby offsets, used only
+ * when the probe finds nothing there -- a hole, a slot, an already-milled
+ * pocket. Candidates are clamped to the probe area, and one that lands on a
+ * spot already in the list is dropped: on a node sitting on the area border
+ * the offsets fold back onto the node itself, and probing the same empty spot
+ * again would only spend travel to fail identically.
+ *
+ * @param {object} options - Options
+ * @param {object} options.point - The grid node to probe, {x, y}
+ * @param {number} options.startX - Start X of the probe area
+ * @param {number} options.endX - End X of the probe area
+ * @param {number} options.stepX - Grid spacing in X; offsets are a quarter of it
+ * @param {number} options.startY - Start Y of the probe area
+ * @param {number} options.endY - End Y of the probe area
+ * @param {number} options.stepY - Grid spacing in Y; offsets are a quarter of it
+ * @returns {array} Ordered, de-duplicated candidates [{x, y}, ...]
+ */
+export const createProbeCandidates = (options) => {
+  const {
+    point = null,
+    startX = 0,
+    endX = 0,
+    stepX = 10,
+    startY = 0,
+    endY = 0,
+    stepY = 10,
+  } = ensurePlainObject(options);
+
+  if (!point) {
+    return [];
+  }
+
+  const clamp = (v, lo, hi) => Math.min(Math.max(v, Math.min(lo, hi)), Math.max(lo, hi));
+  const offsets = [
+    [0, 0],
+    [stepX / 4, 0],
+    [-stepX / 4, 0],
+    [0, stepY / 4],
+    [0, -stepY / 4],
+  ];
+
+  const candidates = [];
+  const seen = new Set();
+  for (const [dx, dy] of offsets) {
+    const x = clamp(point.x + dx, startX, endX);
+    const y = clamp(point.y + dy, startY, endY);
+    // Four decimals is far finer than any machine resolves, so this only
+    // ever collapses candidates that really are the same spot.
+    const key = `${x.toFixed(4)},${y.toFixed(4)}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      candidates.push({ x, y });
+    }
+  }
+
+  return candidates;
+};
+
+/**
+ * Decides what a sequential probing run does next, from the outcome of the
+ * probe that just finished.
+ *
+ * One probe does not resolve a grid node: when it finds no contact the run
+ * moves on to the next nearby candidate (see createProbeCandidates) and probes
+ * again, leaving the cursor where it is. The node resolves -- and the cursor
+ * advances -- only when a probe touches, or when the candidates run out.
+ *
+ * @param {object} options - Options
+ * @param {boolean} options.contact - Whether the probe that just finished touched the surface
+ * @param {number} options.attempted - Grid nodes already resolved; also the index of the node being probed
+ * @param {number} options.retryIndex - Which candidate was in flight (0 = the node itself)
+ * @param {number} options.candidateCount - How many candidates the current node has; only consulted when there was no contact
+ * @param {number} options.totalPoints - Number of grid nodes in the run
+ * @returns {object} `{ action, attempted, retryIndex, completed }`, where action
+ *   is 'retry' (probe the next candidate), 'record' (store a measurement for
+ *   this node) or 'skip' (nothing found; the node is interpolated later),
+ *   attempted and retryIndex are the new cursor, and completed is true when no
+ *   node is left to probe.
+ */
+export const nextProbeStep = (options) => {
+  const {
+    contact = false,
+    attempted = 0,
+    retryIndex = 0,
+    candidateCount = 1,
+    totalPoints = 0,
+  } = ensurePlainObject(options);
+
+  if (!contact && ((retryIndex + 1) < candidateCount)) {
+    return {
+      action: 'retry',
+      attempted,
+      retryIndex: retryIndex + 1,
+      completed: false,
+    };
+  }
+
+  const resolved = attempted + 1;
+  return {
+    action: contact ? 'record' : 'skip',
+    attempted: resolved,
+    retryIndex: 0,
+    completed: resolved >= totalPoints,
+  };
+};
+
+// `error:N` codes Grbl raises only for a `$` command -- a setting, a homing
+// request, a build-info or startup line -- or for a `$J=` jog. No G-code line
+// can produce them, so a probe block cannot be the line they answer.
+// @see https://github.com/gnea/grbl/blob/master/doc/csv/error_codes_en_US.csv
+const NON_GCODE_ERROR_CODES = [
+  3, // '$' system command was not recognized
+  4, // Negative value for a positive-only '$' setting
+  5, // Homing is not enabled via settings
+  6, // Step pulse time below the minimum
+  7, // EEPROM read fail
+  8, // '$' command cannot be used unless Grbl is IDLE
+  10, // Soft limits need homing enabled
+  12, // '$' setting value exceeds the maximum step rate
+  14, // Build info or startup line exceeds the EEPROM line length
+  15, // Jog target exceeds machine travel
+  16, // Jog command has no '=' or contains prohibited g-code
+  17, // Laser mode requires PWM output
+];
+
+/**
+ * Whether an `error:N` from the controller has to end a probing run.
+ *
+ * Sequential probing advances only from a probe result, so a probe line the
+ * controller rejects -- `G38.2 Z0` with the tool already at Z0 answers
+ * error:33 -- would leave the run waiting on a result that never comes. The
+ * error line says nothing about which command it answers, though, and a run
+ * keeps the machine out of Idle for minutes, which is exactly when the rest of
+ * the UI collects rejections: jogging stays enabled in Run state and Grbl
+ * refuses `$J=` with error:8, and the Grbl widget's Refresh sends `$#` and
+ * `$$`, refused the same way. Ending a healthy run over one of those costs the
+ * whole run, so the codes no G-code line can raise are not the run's to answer.
+ *
+ * Anything else aborts, including error:20 (unsupported command): a build
+ * without G38.3 answers a skip-enabled run that way, and treating that as
+ * someone else's error would hang the run instead of reporting it.
+ *
+ * @param {number} code - The numeric code from `error:N`
+ * @returns {boolean} True when the error must end a probing run in flight
+ */
+export const isProbeAbortingError = (code) => !NON_GCODE_ERROR_CODES.includes(Number(code));
+
+/**
  * Applies probe-based compensation to G-code to correct positional deviations.
  * Grid step size is automatically detected from probe data spacing.
  *

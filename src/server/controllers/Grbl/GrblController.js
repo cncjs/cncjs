@@ -62,6 +62,61 @@ import {
 const log = logger('controller:Grbl');
 const noop = _.noop;
 
+// The shape of a probing run's state, in one place: the field below, the
+// 'autolevel:stop' handler and abortAutolevel() all start from this.
+const createProbeState = () => ({
+    // The probed positions in the form of [{x, y, z}, ...]
+    probedPositions: [],
+
+    // Number of grid nodes already resolved, whether they were measured or
+    // skipped. Completion is judged against this rather than
+    // probedPositions.length so that a skipped node still advances the run.
+    attempted: 0,
+
+    // Grid nodes where nothing was found, [{x, y}, ...] in mm, like
+    // probedPositions. Only ever populated when skipUnprobed is enabled.
+    skippedPoints: [],
+
+    // How many nodes were recovered by a nearby retry: the node has a valid Z,
+    // but it was measured a quarter step away.
+    retriedCount: 0,
+
+    // When true the run probes with G38.3 (which does not alarm on failure) and
+    // a node with no contact is retried at nearby spots before being recorded
+    // in skippedPoints, instead of aborting the whole run.
+    skipUnprobed: false,
+
+    // Sequential-probing cursor: which candidate of the current node is in
+    // flight (0 = the node itself), and whether the first probe of the run has
+    // been sent (that one descends at half feed).
+    retryIndex: 0,
+    firstProbeSent: false,
+
+    // Whether a probe cycle is actually on the wire right now. `[PRB:...]` is
+    // not exclusive to a probe result -- `$#` dumps the stored probe parameter
+    // in the very same format -- so this flag is what tells a real result from
+    // a replay of an old one. Armed when a probe is sent, disarmed by the
+    // result that consumes it.
+    probeInFlight: false,
+
+    // Why the run ended before its last point, and how many nodes it had
+    // resolved by then. Kept next to the partial map so a client that
+    // reconnects after the abort is told the map is incomplete, instead of
+    // reading a cursor parked at the end of the grid as a clean finish.
+    abortReason: null,
+    abortedAt: 0,
+
+    // The minimum and maximum Z values among the probed positions
+    minZ: null,
+    maxZ: null,
+
+    // The probe points in the form of [{x, y}, ...]
+    probePoints: [],
+
+    // The probe configuration
+    config: null,
+});
+
 class GrblController {
     type = GRBL;
 
@@ -140,20 +195,18 @@ class GrblController {
     event = null;
 
     // Auto Level - Probe state tracking
-    probeState = {
-      // The probed positions in the form of [{x, y, z}, ...]
-      probedPositions: [],
+    probeState = createProbeState();
 
-      // The minimum and maximum Z values among the probed positions
-      minZ: null,
-      maxZ: null,
+    // Auto Level - the last `[PRB:...]` the controller saw, as a signature.
+    // `$#` replays the stored probe parameter verbatim through the same
+    // handler, so a line identical to the one already consumed is a replay and
+    // never a new measurement: two probes in a run are never at the same XY.
+    lastPrbSignature = null;
 
-      // The probe points in the form of [{x, y}, ...]
-      probePoints: [],
-
-      // The probe configuration
-      config: null,
-    };
+    // Auto Level - a single "Test Probe" is on the wire. It answers with a
+    // `[PRB:...]` of its own, at whatever XY the machine happened to be on, so
+    // it has to be consumed rather than left for a grid run to pick up.
+    testProbeInFlight = false;
 
     // Feeder
     feeder = null;
@@ -636,6 +689,33 @@ class GrblController {
         const code = Number(res.message) || undefined;
         const error = _.find(GRBL_ERRORS, { code: code });
 
+        // A line Grbl refuses answers with `error:N` and nothing else: no PRB,
+        // no alarm. A probe line is refusable like any other -- `G38.2 Z0` with
+        // the tool already at Z0 comes back as error:33 (invalid target) -- and
+        // sequential probing would then sit forever waiting on a result that
+        // was rejected before it ever ran. This is also the path a bad probe
+        // configuration takes, so it has to end the run.
+        //
+        // But `error:N` is not addressed to anyone: the controller cannot see
+        // which line it answers, and a probing run keeps Grbl out of Idle for
+        // minutes at a time, which is exactly when the rest of the UI collects
+        // rejections -- jogging stays enabled in Run state and the Grbl
+        // widget's Refresh sends `$#` and `$$`, all answered with error:8.
+        // autolevel.isProbeAbortingError() draws the line: the codes only a `$`
+        // command or a `$J=` jog can raise are none of the run's business.
+        //
+        // abortAutolevel() is a no-op while no probing run is in flight, which
+        // is what keeps an ordinary job's G-code error from touching it.
+        if (autolevel.isProbeAbortingError(code)) {
+          // A rejected line answers with no probe result, a test probe's line
+          // included. Left armed, its flag would swallow the first result of
+          // the next grid run and hang it at 0/N.
+          this.testProbeInFlight = false;
+          this.abortAutolevel(error ? `error:${code} (${error.message})` : 'the controller rejected a probe command');
+        } else if (this.isAutolevelRunning()) {
+          log.debug(`[autolevel] Ignoring error:${code} during a probing run: no G-code line can raise it`);
+        }
+
         if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
           const ignoreErrors = config.get('state.controller.exception.ignoreErrors');
           const pauseError = !ignoreErrors;
@@ -695,6 +775,12 @@ class GrblController {
           // Grbl v0.9
           this.emit('serialport:read', res.raw);
         }
+
+        // An alarm halts Grbl, so the probe in flight will never answer. This
+        // also covers what a probing run cannot see coming: a hard limit hit on
+        // the way to the next node, or an external reset.
+        this.testProbeInFlight = false;
+        this.abortAutolevel(alarm ? `ALARM:${code} (${alarm.message})` : 'alarm raised');
       });
 
       this.runner.on('parserstate', (res) => {
@@ -745,6 +831,65 @@ class GrblController {
           // [PRB:0.000,0.000,0.000:0]
           // The `PRB:` probe parameter message includes an additional `:` and suffix value is a boolean.
           // It denotes whether the last probe cycle was successful or not.
+          //
+          // Probing is sequential, so this result decides what is sent next.
+          // `attempted` counts resolved grid nodes: a retry beside a node that
+          // found nothing does not advance it, which is what keeps the grid the
+          // compensation sees the original rectangular one.
+          //
+          // The line alone does not prove a probe just ran: `$#` dumps the
+          // stored probe parameter as the same `[PRB:...]`, through this very
+          // handler, and the UI sends `$#` on its own (the Grbl widget's
+          // Refresh button). Taken as a result, that ghost would write a Z onto
+          // whatever node the cursor happens to be on, advance the cursor and
+          // dispatch an extra probe, shifting every remaining node of the grid.
+          //
+          // probeInFlight alone does not catch it. The next probe is armed from
+          // inside this very handler, so during a run the window is open almost
+          // continuously and a dump landing between two nodes falls inside it.
+          // What does settle it is that a dump is a replay: byte for byte the
+          // parameter the last probe stored. Two probes of one run are never at
+          // the same XY -- consecutive nodes are a step apart, a retry is a
+          // quarter step off its node -- so an identical line is never a new
+          // measurement. No geometric tolerance is involved, and a real result
+          // can never be mistaken for a replay and hang the run.
+          const prbSignature = `${value.x},${value.y},${value.z}:${value.result}`;
+          const isReplay = (prbSignature === this.lastPrbSignature);
+          this.lastPrbSignature = prbSignature;
+
+          if (isReplay) {
+            log.debug(`[autolevel] Ignoring a replayed probe parameter: [PRB:${prbSignature}]`);
+            return;
+          }
+
+          // A "Test Probe" is a one-off outside any grid: its result belongs to
+          // nobody. Consume it here, or a run started while it is still
+          // descending would record the test's Z -- taken at whatever XY the
+          // machine sat on -- as the measurement of grid node 0 and shift the
+          // whole map by one node.
+          if (this.testProbeInFlight) {
+            this.testProbeInFlight = false;
+            log.debug('[autolevel] Test probe result received');
+            return;
+          }
+
+          const attempted = this.probeState.attempted;
+          const totalPoints = this.probeState.probePoints.length;
+          const probingActive = this.probeState.probeInFlight && (attempted < totalPoints);
+
+          // Consume the in-flight probe: this line is its answer, and the next
+          // one to arrive is a ghost until another probe is sent.
+          if (probingActive) {
+            this.probeState.probeInFlight = false;
+          }
+
+          // Grid nodes carry the units the probe G-code was emitted in, which is
+          // the modal state -- $13 governs the PRB report only. Everything the
+          // controller records or reports for a node is in mm.
+          const nodeToMillimeters = ({ x, y }) => (this.runner.getModalGroup().units === 'G20'
+            ? { x: in2mm(x), y: in2mm(y) }
+            : { x, y });
+
           if (value.result === 1) {
             // $13=1 means Grbl reports positions in inches (including PRB)
             // PRB units follow $13 (firmware setting), NOT G20/G21 modal state
@@ -752,26 +897,37 @@ class GrblController {
 
             // Convert probe result to work coordinates, then to mm
             // Probe data is always stored in mm for consistent compensation math
-            const probedPos = {
+            const measuredPos = {
               x: ensureFiniteNumber(value.x) - Number(wco.x),
               y: ensureFiniteNumber(value.y) - Number(wco.y),
               z: ensureFiniteNumber(value.z) - Number(wco.z),
             };
             if (reportInches) {
-              probedPos.x = in2mm(probedPos.x);
-              probedPos.y = in2mm(probedPos.y);
-              probedPos.z = in2mm(probedPos.z);
+              measuredPos.x = in2mm(measuredPos.x);
+              measuredPos.y = in2mm(measuredPos.y);
+              measuredPos.z = in2mm(measuredPos.z);
             }
 
-            // Track probe data if probing is active
-            log.debug('[autolevel] Checking probe state:', {
-              probePoints: this.probeState.probePoints.length,
-              probedPositions: this.probeState.probedPositions.length,
-              probedPos
-            });
-            if (this.probeState.probePoints.length > 0 && this.probeState.probedPositions.length < this.probeState.probePoints.length) {
+            if (probingActive) {
+              // Record the measurement at the intended grid node's XY and keep only the
+              // measured Z. The reported XY is quantised by the motor steps (a commanded
+              // Y60 reads back as 59.999), and mixing quantised readings with exact node
+              // values splits one grid line into two 0.001 mm apart: the detected grid
+              // spacing collapses and the lattice fills with holes, so compensation
+              // subdivides every move into thousands of segments over a broken surface.
+              // A retry measured a quarter step away is stored at the node for the same
+              // reason -- and so that skipping never shifts the rest of the grid.
+              const gridNode = this.probeState.probePoints[attempted];
+              const wasRetry = this.probeState.retryIndex > 0;
+              const probedPos = { ...nodeToMillimeters(gridNode), z: measuredPos.z };
+              const step = autolevel.nextProbeStep({
+                contact: true,
+                attempted,
+                retryIndex: this.probeState.retryIndex,
+                totalPoints,
+              });
+
               const newProbedPositions = [...this.probeState.probedPositions, probedPos];
-              const isCompleted = newProbedPositions.length >= this.probeState.probePoints.length;
 
               if (this.probeState.probedPositions.length === 0) {
                 this.probeState.minZ = probedPos.z;
@@ -782,23 +938,100 @@ class GrblController {
               }
 
               this.probeState.probedPositions = newProbedPositions;
+              this.probeState.attempted = step.attempted;
+              this.probeState.retryIndex = step.retryIndex;
+              if (wasRetry) {
+                this.probeState.retriedCount += 1;
+              }
 
-              log.debug(`[autolevel] Probed ${newProbedPositions.length}/${this.probeState.probePoints.length}: posX=${probedPos.x.toFixed(3)}, posY=${probedPos.y.toFixed(3)}, posZ=${probedPos.z.toFixed(3)}`);
+              log.debug(`[autolevel] Probed ${step.attempted}/${totalPoints}` +
+                (wasRetry ? ' (nearby retry, stored at the grid node)' : '') +
+                `: posX=${probedPos.x.toFixed(3)}, posY=${probedPos.y.toFixed(3)}, posZ=${probedPos.z.toFixed(3)}`);
 
               this.emit('autolevel:update', {
-                current: newProbedPositions.length,
-                total: this.probeState.probePoints.length,
+                current: step.attempted,
+                total: totalPoints,
                 probedPos: { ...probedPos },
+                // Where the probe really touched. Differs from probedPos only on
+                // a nearby retry; the visualizer marks it at its true spot.
+                measuredPos: { ...measuredPos },
+                wasRetry,
+                skippedCount: this.probeState.skippedPoints.length,
+                retriedCount: this.probeState.retriedCount,
                 minZ: this.probeState.minZ,
                 maxZ: this.probeState.maxZ,
                 maxDeviation: this.probeState.maxZ - this.probeState.minZ,
               });
 
-              if (isCompleted) {
+              if (step.completed) {
                 this.emit('autolevel:complete');
                 log.info('[autolevel] Probing completed');
+              } else {
+                this.sendAutolevelProbe();
               }
             }
+          } else if (probingActive && this.probeState.skipUnprobed) {
+            // No contact at the current target. Probe the next nearby candidate;
+            // only once they are all exhausted is the grid node recorded as
+            // skipped, for the compensation to interpolate from its neighbors.
+            const gridNode = this.probeState.probePoints[attempted];
+            const step = autolevel.nextProbeStep({
+              contact: false,
+              attempted,
+              retryIndex: this.probeState.retryIndex,
+              // A node on the border of the probe area has fewer distinct
+              // candidates than one in the middle: the offsets clamp back onto
+              // the node itself and are dropped.
+              candidateCount: autolevel.createProbeCandidates({
+                point: gridNode,
+                ...this.probeState.config,
+              }).length,
+              totalPoints,
+            });
+
+            this.probeState.attempted = step.attempted;
+            this.probeState.retryIndex = step.retryIndex;
+
+            if (step.action === 'retry') {
+              log.info(`[autolevel] No contact at point ${attempted + 1}/${totalPoints}` +
+                ` -- retrying nearby (candidate ${step.retryIndex})`);
+            } else {
+              const skippedNode = nodeToMillimeters(gridNode);
+              this.probeState.skippedPoints = [...this.probeState.skippedPoints, skippedNode];
+
+              log.info(`[autolevel] No contact at point ${step.attempted}/${totalPoints}` +
+                ` (X${gridNode.x} Y${gridNode.y}) nor at any nearby spot -- skipped`);
+
+              this.emit('autolevel:update', {
+                current: step.attempted,
+                total: totalPoints,
+                probedPos: null,
+                skippedPoint: skippedNode,
+                skippedCount: this.probeState.skippedPoints.length,
+                retriedCount: this.probeState.retriedCount,
+                minZ: this.probeState.minZ,
+                maxZ: this.probeState.maxZ,
+                // Still null while every node so far was skipped.
+                maxDeviation: (this.probeState.minZ !== null)
+                  ? this.probeState.maxZ - this.probeState.minZ
+                  : null,
+              });
+            }
+
+            if (step.completed) {
+              this.emit('autolevel:complete');
+              log.info('[autolevel] Probing completed');
+            } else {
+              this.sendAutolevelProbe();
+            }
+          } else if (probingActive) {
+            // No contact, and no way forward: without "skip points with no
+            // contact" the run probes with G38.2, so Grbl has already alarmed
+            // and there is no Z to record for this node. Stop and say so --
+            // nothing else will send the next probe.
+            this.abortAutolevel('no contact at a grid point', {
+              point: this.probeState.probePoints[attempted],
+            });
           }
         }
       });
@@ -821,6 +1054,13 @@ class GrblController {
 
       this.runner.on('startup', (res) => {
         this.emit('serialport:read', res.raw);
+
+        // The board re-introduced itself, so it rebooted: a brownout, a USB
+        // glitch, or a soft reset. Everything in flight evaporated with it,
+        // the probe cycle included, and a reset from Idle prints this banner
+        // with no ALARM behind it -- nothing else would ever end the run.
+        this.testProbeInFlight = false;
+        this.abortAutolevel('the controller reset');
 
         if (!this.ready) {
           // The startup message always prints upon startup, after a reset, or at program end.
@@ -1098,6 +1338,99 @@ class GrblController {
       this.actionTime.queryParserState = 0;
       this.actionTime.queryStatusReport = 0;
       this.actionTime.senderFinishTime = 0;
+    }
+
+    // Auto Level - send the probe cycle for the current target.
+    //
+    // Probing runs node by node rather than as one pre-queued program: what to
+    // send next (advance, retry beside, or give up and skip) depends on the
+    // result of the probe that just finished, and plain Grbl G-code has no
+    // conditionals to express that.
+    //
+    // retryIndex 0 probes the grid node itself; the rest probe candidates a
+    // quarter step away, clamped to the probe area. A measurement taken at a
+    // retry spot is recorded under the intended node's XY so the compensation
+    // grid stays rectangular; the Z error of that approximation is bounded by
+    // the local slope over a quarter step, against a node that would otherwise
+    // carry no measurement at all.
+    sendAutolevelProbe() {
+      const { probePoints, attempted, retryIndex, config, skipUnprobed } = this.probeState;
+      const point = probePoints[attempted];
+      if (!point) {
+        // No point at the cursor means the cursor is past the end of the grid,
+        // so the run is already resolved and there is nothing to abort. It can
+        // only be reached by dispatching without checking `completed` first
+        // ('autolevel:start' refuses an empty grid, so that is not this), and a
+        // silent return there would look exactly like a hung run -- say it.
+        log.error(`[autolevel] No probe point at index ${attempted} of ${probePoints.length}: nothing sent`);
+        return;
+      }
+
+      const { startX, endX, stepX, startY, endY, stepY, clearanceZ, startZ, endZ, feedrate } = config;
+      const candidates = autolevel.createProbeCandidates({ point, startX, endX, stepX, startY, endY, stepY });
+      const { x, y } = candidates[retryIndex];
+      // G38.3 reports failure without alarming, which is what makes a node with
+      // no contact recoverable; G38.2 keeps the stricter default behaviour.
+      const probeWord = skipUnprobed ? 'G38.3' : 'G38.2';
+      const feed = this.probeState.firstProbeSent ? feedrate : (feedrate / 2);
+      this.probeState.firstProbeSent = true;
+
+      // From here until its `[PRB:...]` comes back, a probe is on the wire:
+      // that is the only window in which a PRB line is this run's result.
+      this.probeState.probeInFlight = true;
+
+      this.command('gcode', [
+        `(Auto Level: probing point ${attempted}${retryIndex > 0 ? `, retry ${retryIndex}` : ''})`,
+        'G90',
+        `G0 Z${clearanceZ}`,
+        `G0 X${x} Y${y}`,
+        `G0 Z${startZ}`,
+        `${probeWord} Z${endZ} F${feed}`,
+        `G0 Z${clearanceZ}`,
+      ]);
+    }
+
+    // Auto Level - whether a probing run owns the machine right now. The cursor
+    // parked at the end of the grid is what marks a run finished or aborted.
+    isAutolevelRunning() {
+      return this.probeState.attempted < this.probeState.probePoints.length;
+    }
+
+    // Auto Level - end a run that cannot continue, and say why. Probing is
+    // dispatched one node at a time, so a path that neither advances nor
+    // reports leaves the widget waiting on a PRB that will never arrive; every
+    // dead end has to come through here.
+    abortAutolevel(reason, detail = {}) {
+      // Nothing in flight: no run was started, or the last one finished and its
+      // measurements are still sitting there waiting to be applied.
+      if (this.probeState.attempted >= this.probeState.probePoints.length) {
+        return;
+      }
+
+      log.error(`[autolevel] Aborting after ${this.probeState.attempted}/${this.probeState.probePoints.length} points: ${reason}`);
+      this.emit('autolevel:error', {
+        reason,
+        current: this.probeState.attempted,
+        total: this.probeState.probePoints.length,
+        // A run that dies at node 60 of 81 still cost an hour of machine time
+        // and 59 good measurements. Hand them over so the client can apply the
+        // partial map (the missing nodes interpolate exactly like the ones a
+        // no-contact skip leaves behind) instead of starting from nothing.
+        probedPositions: [...this.probeState.probedPositions],
+        skippedPoints: [...this.probeState.skippedPoints],
+        ...detail,
+      });
+
+      // Deliberately NOT `createProbeState()`: that threw the same partial map
+      // away on the server, so a browser reload asking 'autolevel:getProbeState'
+      // got an empty run back. Marking the cursor as resolved is enough to end
+      // the run -- the guard above, sendAutolevelProbe and the PRB handler all
+      // judge liveness by it -- and it leaves the measurements readable until
+      // the next 'autolevel:start' replaces them.
+      this.probeState.abortedAt = this.probeState.attempted;
+      this.probeState.attempted = this.probeState.probePoints.length;
+      this.probeState.probeInFlight = false;
+      this.probeState.abortReason = reason;
     }
 
     destroy() {
@@ -1391,6 +1724,21 @@ class GrblController {
           this.command('gcode:start');
         },
         'gcode:start': () => {
+          // A probing run drives the machine through the feeder, one node per
+          // serial round-trip, and it leaves the machine in Idle between nodes
+          // -- long enough for the workspace Play button to light up. Starting
+          // a job there does two irreversible things: feeder.reset() throws
+          // away the probe block still queued, and from then on every `ok` is
+          // consumed by the sender, so feeder.next() is never called again and
+          // the run can neither finish nor fail. It would hang on its progress
+          // bar with the machine cutting. Refuse instead.
+          if (this.isAutolevelRunning()) {
+            const msg = 'Cannot start a G-code program while a probing run is in progress (stop the run, or reset the controller)';
+            log.error(`[gcode:start] ${msg}`);
+            this.emit('serialport:read', `> (${msg})`);
+            return;
+          }
+
           this.event.trigger('gcode:start');
 
           this.workflow.start();
@@ -1445,6 +1793,16 @@ class GrblController {
           this.command('gcode:resume');
         },
         'gcode:resume': () => {
+          // Resuming a paused job puts the sender back in charge of every `ok`,
+          // which starves the feeder the probing run advances through. Same
+          // dead end as 'gcode:start'.
+          if (this.isAutolevelRunning()) {
+            const msg = 'Cannot resume a G-code program while a probing run is in progress (stop the run, or reset the controller)';
+            log.error(`[gcode:resume] ${msg}`);
+            this.emit('serialport:read', `> (${msg})`);
+            return;
+          }
+
           this.event.trigger('gcode:resume');
 
           this.write('~');
@@ -1778,10 +2136,63 @@ class GrblController {
             startZ,
             endZ,
             feedrate,
+            skipUnprobed = false,
           } = params;
 
+          // Every refusal below is a refusal of THIS request, not the end of a
+          // run. It still reaches every socket, because emit() is a broadcast
+          // and the command carries no socket to answer -- so it is tagged
+          // `rejected`, and a client already watching a live run leaves its
+          // progress alone instead of reporting that run as stopped.
+          const refuse = (reason) => {
+            log.error(`[autolevel:start] Refusing to probe: ${reason}`);
+            this.emit('autolevel:error', {
+              reason,
+              rejected: true,
+              current: this.probeState.attempted,
+              total: this.probeState.probePoints.length,
+              probedPositions: [...this.probeState.probedPositions],
+              skippedPoints: [...this.probeState.skippedPoints],
+            });
+          };
+
+          // A run already in flight owns the machine and the sequential cursor.
+          // A second start (a second browser tab, a double click) would point
+          // the same cursor at a new grid while probe results from the old one
+          // are still arriving, interleaving two chains into one displaced map.
+          // The run has to be stopped first -- 'autolevel:stop' does that.
+          //
+          // This comes before the test-mode branch on purpose: a Test Probe is
+          // a bare G38.2 on the current XY, and injected into a live run its
+          // `[PRB:...]` is either recorded as some node's height or, on no
+          // contact, alarms and takes the whole run down with it.
+          if (this.isAutolevelRunning()) {
+            refuse('a probing run is already in progress');
+            return;
+          }
+
+          // A test probe still descending is the same conflict from the other
+          // side: it answers with a `[PRB:...]` of its own, measured wherever
+          // the machine stood, and a grid run armed in the meantime would take
+          // it for the height of node 0 and shift the whole map by one node.
+          if (this.testProbeInFlight) {
+            refuse('a test probe is still running');
+            return;
+          }
+
+          // Grbl refuses G-code in Alarm state with error:9, and the feeder
+          // does not even write it: feeder.on('data') drops the block while
+          // runner.isAlarm(). Sequential probing would then wait on a probe
+          // that was never sent -- silence, forever. Say no up front. The alarm
+          // that started before probeState existed is exactly the one no abort
+          // path could have caught.
+          if (this.runner.isAlarm()) {
+            refuse('the controller is in alarm state -- unlock it first');
+            return;
+          }
+
           if (mode === 'test') {
-            // Test mode: single probe at current XY position, no probe results
+            // Test mode: single probe at current XY position, no grid.
             const testGCode = [
               'G90',
               `G0 Z${clearanceZ}`,
@@ -1790,11 +2201,28 @@ class GrblController {
               `G0 Z${clearanceZ}`,
             ];
             log.info(`[autolevel:start] Test probe: clearanceZ=${clearanceZ}, startZ=${startZ}, endZ=${endZ}, F=${feedrate}`);
+            // Its `[PRB:...]` belongs to no grid node; the PRB handler consumes
+            // it against this flag so a run started meanwhile cannot claim it.
+            this.testProbeInFlight = true;
+            this.lastPrbSignature = null;
             this.command('gcode', testGCode);
             return;
           }
 
-          // Full mode: multi-point probe grid
+          // Full mode: multi-point probe grid.
+          //
+          // Refuse an unusable area BEFORE arming probeState, and say so. An
+          // inverted rectangle (startY=100, endY=0) yields no grid node at all:
+          // there would be no first probe to send, no event of any kind, and
+          // the widget would sit on a progress bar forever -- with probeState
+          // armed at zero points, even abortAutolevel would refuse to fire
+          // because a run of zero points always looks finished.
+          const areaError = autolevel.validateProbeArea({ startX, endX, stepX, startY, endY, stepY });
+          if (areaError) {
+            refuse(areaError);
+            return;
+          }
+
           const probePoints = autolevel.createProbeXYPoints({
             startX,
             endX,
@@ -1806,10 +2234,9 @@ class GrblController {
 
           // Reset probe state
           this.probeState = {
-            probedPositions: [],
+            ...createProbeState(),
             probePoints,
-            minZ: null,
-            maxZ: null,
+            skipUnprobed: !!skipUnprobed,
             config: {
               startX,
               endX,
@@ -1824,42 +2251,36 @@ class GrblController {
             },
           };
 
-          log.info(`[autolevel:start] Start probing with ${probePoints.length} points`);
+          // A run of one point, restarted, would probe the same XY twice and
+          // could stamp the same `[PRB:...]` twice; forget the previous line so
+          // the replay filter in the PRB handler only ever compares within a run.
+          this.lastPrbSignature = null;
 
-          // Generate probe G-code
-          const probeGCodes = [];
-          probePoints.forEach((point, index) => {
-            const { x, y } = point;
+          log.info(`[autolevel:start] Start probing with ${probePoints.length} points, one at a time` +
+            (skipUnprobed ? ', skipping points with no contact' : ''));
 
-            probeGCodes.push(`(Auto Level: probing point ${index})`);
-
-            probeGCodes.push('G90');
-            probeGCodes.push(`G0 Z${clearanceZ}`);
-            probeGCodes.push(`G0 X${x} Y${y}`);
-            probeGCodes.push(`G0 Z${startZ}`);
-            if (index === 0) {
-              probeGCodes.push(`G38.2 Z${endZ} F${feedrate / 2}`);
-            } else {
-              probeGCodes.push(`G38.2 Z${endZ} F${feedrate}`);
-            }
-            probeGCodes.push(`G0 Z${clearanceZ}`);
+          // The run is accepted, and only now. A client does not put itself in
+          // the probing state on its own: it would have no way to tell its own
+          // refusal from the one a second tab provoked, since both arrive on
+          // the same broadcast. This is the event that says a run exists, and
+          // it carries the authoritative point count.
+          this.emit('autolevel:started', {
+            total: probePoints.length,
+            skipUnprobed: !!skipUnprobed,
           });
 
-          log.info(`[autolevel:start] Starting probing with ${probePoints.length} points`);
-          this.command('gcode', probeGCodes);
+          // Only the first probe is sent here. Each PRB result decides the next
+          // command -- advance, retry beside the node, or skip it -- so the
+          // program cannot be queued up front. See sendAutolevelProbe().
+          this.sendAutolevelProbe();
         },
         'autolevel:stop': () => {
           // Reset the machine to cancel the probe cycle immediately
           this.command('reset');
 
           // Clear probe state
-          this.probeState = {
-            probedPositions: [],
-            probePoints: [],
-            minZ: null,
-            maxZ: null,
-            config: null,
-          };
+          this.probeState = createProbeState();
+          this.testProbeInFlight = false;
           log.info('[autolevel:stop] Probe stopped and state cleared');
         },
         'autolevel:getProbeState': () => {

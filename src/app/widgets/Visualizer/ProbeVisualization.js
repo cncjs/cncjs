@@ -371,7 +371,7 @@ class ProbeVisualization {
     this.group.add(plane);
   }
 
-  updateProbeData(probeData) {
+  updateProbeData(probeData, probeMarkers = []) {
     // Remove old probe points and surface
     const objectsToRemove = [];
     this.group.children.forEach(child => {
@@ -415,6 +415,31 @@ class ProbeVisualization {
 
         this.drawProbePoint(x, y, z, color);
         this.drawZOffsetLabel(x, y, z, zOffset);
+      });
+    }
+
+    // Markers carry the visual truth the rectangular grid cannot:
+    //  - 'retried': where the probe REALLY touched after a nearby retry.
+    //    Drawn violet at its true XY, with a thin line back to the grid
+    //    node whose Z it stands in for.
+    //  - 'skipped': a node where no candidate found contact. Drawn as a
+    //    red marker at the node, at the height of the lowest real point
+    //    so it sits visually on the probed surface.
+    if (probeMarkers && probeMarkers.length > 0) {
+      const zFloor = (probeData && probeData.length > 0)
+        ? Math.min(...probeData.map(p => p.z))
+        : 0;
+      probeMarkers.forEach(marker => {
+        if (marker.type === 'retried') {
+          this.drawProbePoint(marker.x, marker.y, marker.z, new THREE.Color(0x8a2be2));
+          const lineGeometry = new THREE.Geometry();
+          lineGeometry.vertices.push(new THREE.Vector3(marker.nodeX, marker.nodeY, marker.z));
+          lineGeometry.vertices.push(new THREE.Vector3(marker.x, marker.y, marker.z));
+          const line = new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({ color: 0x8a2be2 }));
+          this.group.add(line);
+        } else if (marker.type === 'skipped') {
+          this.drawProbePoint(marker.x, marker.y, zFloor, new THREE.Color(0xcc0000));
+        }
       });
     }
   }

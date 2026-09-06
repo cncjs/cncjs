@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { createProbeXYPoints, applyProbeCompensation } from '../autolevel';
+import { createProbeXYPoints, createProbeCandidates, nextProbeStep, validateProbeArea, isProbeAbortingError, applyProbeCompensation } from '../autolevel';
 
 describe('autolevel', () => {
   describe('createProbeXYPoints', () => {
@@ -61,6 +61,305 @@ describe('autolevel', () => {
       const maxY = Math.max(...positions.map(p => p.y));
       expect(maxX).toBeLessThanOrEqual(35);
       expect(maxY).toBeLessThanOrEqual(35);
+    });
+  });
+
+  // A probing run is dispatched one point at a time, so an area that cannot
+  // produce a first point never produces a second one either: the run has to be
+  // refused before it starts, not discovered stuck later.
+  describe('validateProbeArea', () => {
+    test('accepts a usable area', () => {
+      expect(validateProbeArea({
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 0,
+        endY: 20,
+        stepY: 10,
+      })).toBeNull();
+    });
+
+    test('accepts an area one point wide', () => {
+      // Degenerate but dispatchable: the widget refuses it, the controller
+      // only refuses what it cannot probe at all.
+      expect(validateProbeArea({
+        startX: 5,
+        endX: 5,
+        stepX: 10,
+        startY: 0,
+        endY: 20,
+        stepY: 10,
+      })).toBeNull();
+    });
+
+    test('rejects an inverted rectangle, which yields no grid point at all', () => {
+      expect(createProbeXYPoints({
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 100,
+        endY: 0,
+        stepY: 10,
+      })).toHaveLength(0);
+
+      expect(validateProbeArea({
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 100,
+        endY: 0,
+        stepY: 10,
+      })).toMatch(/empty/);
+
+      expect(validateProbeArea({
+        startX: 100,
+        endX: 0,
+        stepX: 10,
+        startY: 0,
+        endY: 20,
+        stepY: 10,
+      })).toMatch(/empty/);
+    });
+
+    test('rejects a non-positive step, which createProbeXYPoints cannot even survive', () => {
+      // Guarding this is why the check runs on the configuration and not on
+      // the generated points: a step of 0 never advances the generator's loop.
+      expect(validateProbeArea({
+        startX: 0,
+        endX: 20,
+        stepX: 0,
+        startY: 0,
+        endY: 20,
+        stepY: 10,
+      })).toMatch(/greater than zero/);
+
+      expect(validateProbeArea({
+        startX: 0,
+        endX: 20,
+        stepX: 10,
+        startY: 0,
+        endY: 20,
+        stepY: -10,
+      })).toMatch(/greater than zero/);
+    });
+
+    test('rejects bounds that are not numbers', () => {
+      expect(validateProbeArea({
+        startX: 0,
+        endX: undefined,
+        stepX: 10,
+        startY: 0,
+        endY: 20,
+        stepY: 10,
+      })).toMatch(/numbers/);
+
+      expect(validateProbeArea({
+        startX: 0,
+        endX: NaN,
+        stepX: 10,
+        startY: 0,
+        endY: 20,
+        stepY: 10,
+      })).toMatch(/numbers/);
+
+      expect(validateProbeArea()).toMatch(/numbers/);
+    });
+  });
+
+  describe('createProbeCandidates', () => {
+    const area = { startX: 0, endX: 20, stepX: 10, startY: 0, endY: 20, stepY: 10 };
+
+    test('should start at the grid node itself', () => {
+      const candidates = createProbeCandidates({ point: { x: 10, y: 10 }, ...area });
+
+      expect(candidates[0]).toEqual({ x: 10, y: 10 });
+    });
+
+    test('should offer four nearby spots a quarter step away for an interior node', () => {
+      const candidates = createProbeCandidates({ point: { x: 10, y: 10 }, ...area });
+
+      expect(candidates).toEqual([
+        { x: 10, y: 10 },
+        { x: 12.5, y: 10 },
+        { x: 7.5, y: 10 },
+        { x: 10, y: 12.5 },
+        { x: 10, y: 7.5 },
+      ]);
+    });
+
+    test('should keep every candidate inside the probe area', () => {
+      const candidates = createProbeCandidates({ point: { x: 0, y: 0 }, ...area });
+
+      candidates.forEach(({ x, y }) => {
+        expect(x).toBeGreaterThanOrEqual(area.startX);
+        expect(x).toBeLessThanOrEqual(area.endX);
+        expect(y).toBeGreaterThanOrEqual(area.startY);
+        expect(y).toBeLessThanOrEqual(area.endY);
+      });
+    });
+
+    test('should not repeat the node on a corner, where two offsets clamp back onto it', () => {
+      const candidates = createProbeCandidates({ point: { x: 0, y: 0 }, ...area });
+
+      expect(candidates).toEqual([
+        { x: 0, y: 0 },
+        { x: 2.5, y: 0 },
+        { x: 0, y: 2.5 },
+      ]);
+    });
+
+    test('should drop only the clamped offset on an edge node', () => {
+      const candidates = createProbeCandidates({ point: { x: 10, y: 0 }, ...area });
+
+      expect(candidates).toEqual([
+        { x: 10, y: 0 },
+        { x: 12.5, y: 0 },
+        { x: 7.5, y: 0 },
+        { x: 10, y: 2.5 },
+      ]);
+    });
+
+    test('should return a single candidate when the area is one point wide', () => {
+      const candidates = createProbeCandidates({
+        point: { x: 5, y: 5 },
+        startX: 5,
+        endX: 5,
+        stepX: 10,
+        startY: 5,
+        endY: 5,
+        stepY: 10,
+      });
+
+      expect(candidates).toEqual([{ x: 5, y: 5 }]);
+    });
+
+    test('should return an empty list without a point', () => {
+      expect(createProbeCandidates({ ...area })).toEqual([]);
+    });
+  });
+
+  describe('nextProbeStep', () => {
+    test('should record the measurement and advance on contact', () => {
+      expect(nextProbeStep({
+        contact: true,
+        attempted: 0,
+        retryIndex: 0,
+        candidateCount: 5,
+        totalPoints: 9,
+      })).toEqual({ action: 'record', attempted: 1, retryIndex: 0, completed: false });
+    });
+
+    test('should reset the retry cursor once a nearby candidate touches', () => {
+      expect(nextProbeStep({
+        contact: true,
+        attempted: 3,
+        retryIndex: 2,
+        candidateCount: 5,
+        totalPoints: 9,
+      })).toEqual({ action: 'record', attempted: 4, retryIndex: 0, completed: false });
+    });
+
+    test('should try the next nearby candidate without advancing on no contact', () => {
+      expect(nextProbeStep({
+        contact: false,
+        attempted: 3,
+        retryIndex: 0,
+        candidateCount: 5,
+        totalPoints: 9,
+      })).toEqual({ action: 'retry', attempted: 3, retryIndex: 1, completed: false });
+    });
+
+    test('should walk through every nearby candidate before giving up', () => {
+      const run = (retryIndex) => nextProbeStep({
+        contact: false,
+        attempted: 3,
+        retryIndex,
+        candidateCount: 5,
+        totalPoints: 9,
+      });
+
+      expect([run(1), run(2), run(3)].map(step => step.retryIndex)).toEqual([2, 3, 4]);
+      expect(run(4).action).toBe('skip');
+    });
+
+    test('should skip the node when its candidates run out', () => {
+      expect(nextProbeStep({
+        contact: false,
+        attempted: 3,
+        retryIndex: 4,
+        candidateCount: 5,
+        totalPoints: 9,
+      })).toEqual({ action: 'skip', attempted: 4, retryIndex: 0, completed: false });
+    });
+
+    // A node on the border of the probe area has fewer distinct candidates,
+    // because the offsets clamp back onto the node itself.
+    test('should skip a node that has no nearby candidate at all', () => {
+      expect(nextProbeStep({
+        contact: false,
+        attempted: 0,
+        retryIndex: 0,
+        candidateCount: 1,
+        totalPoints: 9,
+      })).toEqual({ action: 'skip', attempted: 1, retryIndex: 0, completed: false });
+    });
+
+    test('should report completion on the last node', () => {
+      expect(nextProbeStep({
+        contact: true,
+        attempted: 8,
+        retryIndex: 0,
+        candidateCount: 5,
+        totalPoints: 9,
+      }).completed).toBe(true);
+    });
+
+    test('should report completion when the last node is the one skipped', () => {
+      expect(nextProbeStep({
+        contact: false,
+        attempted: 8,
+        retryIndex: 4,
+        candidateCount: 5,
+        totalPoints: 9,
+      })).toEqual({ action: 'skip', attempted: 9, retryIndex: 0, completed: true });
+    });
+  });
+
+  describe('isProbeAbortingError', () => {
+    test('does not abort on an error only a $ command can raise', () => {
+      // error:8 is what a probing run provokes constantly: it holds Grbl out of
+      // Idle, and the Grbl widget's Refresh ($# and $$) is refused there.
+      expect(isProbeAbortingError(8)).toBe(false);
+      expect(isProbeAbortingError(3)).toBe(false);
+      expect(isProbeAbortingError(5)).toBe(false);
+      expect(isProbeAbortingError(10)).toBe(false);
+      expect(isProbeAbortingError(17)).toBe(false);
+    });
+
+    test('does not abort on a jog error', () => {
+      // Jogging is enabled in Run state, so a touch of +Z mid-run is normal.
+      expect(isProbeAbortingError(15)).toBe(false);
+      expect(isProbeAbortingError(16)).toBe(false);
+    });
+
+    test('aborts on an error a probe block can raise', () => {
+      expect(isProbeAbortingError(33)).toBe(true); // invalid motion target
+      expect(isProbeAbortingError(9)).toBe(true); // G-code locked out (alarm)
+      expect(isProbeAbortingError(20)).toBe(true); // no G38.3 in this build
+      expect(isProbeAbortingError(2)).toBe(true); // bad number format
+      expect(isProbeAbortingError(22)).toBe(true); // undefined feed rate
+    });
+
+    test('aborts on an unknown or unparsable code', () => {
+      // Grbl v0.9 answers with a message rather than a number: nothing is known
+      // about it, so the run cannot assume the probe survived.
+      expect(isProbeAbortingError(undefined)).toBe(true);
+      expect(isProbeAbortingError(99)).toBe(true);
+    });
+
+    test('accepts the code as a string', () => {
+      expect(isProbeAbortingError('8')).toBe(false);
+      expect(isProbeAbortingError('33')).toBe(true);
     });
   });
 
@@ -362,6 +661,58 @@ describe('autolevel', () => {
 
         // Plane z = 0.1*x -> at x=4 -> 0.4
         expect(result).toBe('G0 X4.000 Y4.000 Z0.400');
+      });
+    });
+
+    // A machine reports a probed XY quantised by its motor steps: the same
+    // commanded Y comes back as 10.000 at one node and 9.999 at the next.
+    //
+    // These characterise the compensation's sensitivity to that input -- they
+    // are the reason the controllers now record the intended grid node's XY,
+    // not a regression test for the controllers themselves, which have no test
+    // harness in this repo. Hardening the library against degenerate spacing
+    // would be a fix, not a regression, and would change what they assert.
+    describe('quantised probe XY', () => {
+      const saddleZ = (x, y) => (x / 10) * (y / 10); // bilinear and plane fit disagree here
+      const exactGrid = [];
+      for (const y of [0, 10, 20]) {
+        for (const x of [0, 10, 20]) {
+          exactGrid.push({ x, y, z: saddleZ(x, y) });
+        }
+      }
+      // The middle row splits in two: its outer nodes read 0.001mm short of Y10.
+      const quantisedGrid = exactGrid.map(p => (
+        (p.y === 10 && p.x !== 10) ? { ...p, y: 9.999 } : p
+      ));
+
+      test('collapses the detected grid spacing, exploding the output', () => {
+        const gcode = 'G0 X0 Y5 Z0\nG0 X20 Y5 Z0';
+        const exact = applyProbeCompensation(gcode, exactGrid).split('\n');
+        const quantised = applyProbeCompensation(gcode, quantisedGrid).split('\n');
+
+        // 10mm grid -> 5mm segments -> the 20mm move splits into 4.
+        expect(exact).toHaveLength(5);
+
+        // The split row leaves a Y gap of 0.001mm, which becomes the detected
+        // step, and the move is subdivided three orders of magnitude finer.
+        // The exact count follows the library's segmentation rule, so assert
+        // the collapse rather than the number it happens to produce today.
+        expect(quantised.length).toBeGreaterThan(exact.length * 1000);
+      });
+
+      test('punches holes in the lattice, falling back to the plane fit', () => {
+        const gcode = 'G0 X5 Y5 Z0';
+
+        // Bilinear over an intact cell: the four-corner average.
+        expect(applyProbeCompensation(gcode, exactGrid)).toBe('G0 X5.000 Y5.000 Z0.250');
+
+        // Neither of the two near-duplicate rows is complete, so no cell has
+        // all four corners, and the plane fit through Y0 and the Y9.999 nodes
+        // reports the surface as flat. What matters is that the compensation
+        // is gone, not the exact figure the fallback degrades to.
+        const degraded = applyProbeCompensation(gcode, quantisedGrid);
+        const degradedZ = Number(/Z(-?[\d.]+)/.exec(degraded)[1]);
+        expect(Math.abs(degradedZ)).toBeLessThan(0.05);
       });
     });
   });

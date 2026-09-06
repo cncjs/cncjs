@@ -645,5 +645,16 @@
   "Clearance Z: {{value}} {{- units}}": "Высота подъёма Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Начальная Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Конечная Z: {{value}} {{- units}}",
-  "None": "Нет"
+  "None": "Нет",
+  "Recovered nearby:": "",
+  "Skipped (no contact):": "",
+  "Probing stopped at point {{current}}/{{total}} (X{{x}} Y{{y}}): {{reason}}": "",
+  "Probing stopped at point {{current}}/{{total}}: {{reason}}": "",
+  "Skip points with no contact": "",
+  "Probe with G38.3 instead of G38.2: when a grid point finds no conductive surface (a drilled hole, an already-milled area), nearby spots a quarter step away are probed and the measurement is stored at the original grid node. Only if all nearby spots also fail is the point skipped and later interpolated from its neighbors. The remaining grid is never shifted.": "",
+  "({{skipped}} skipped, no contact)": "",
+  "({{retried}} recovered nearby)": "",
+  "Probing did not start: {{reason}}": "",
+  "Must be greater than the start": "",
+  "Must be below Start Z": ""
 }

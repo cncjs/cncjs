@@ -459,7 +459,7 @@ class Visualizer extends Component {
     }
 
     showProbeVisualization(data) {
-      const { probeData = [], config = {} } = data;
+      const { probeData = [], probeMarkers = [], config = {} } = data;
 
       log.debug('[Visualizer] showProbeVisualization', { probeData: probeData.length, config });
 
@@ -498,7 +498,7 @@ class Visualizer extends Component {
 
         // Update probe data (surface and points) - call with empty array to clear old data
         if (typeof this.probeVisualization.updateProbeData === 'function') {
-          this.probeVisualization.updateProbeData(probeData);
+          this.probeVisualization.updateProbeData(probeData, probeMarkers);
         }
 
         if (typeof this.probeVisualization.updateBounds === 'function') {
