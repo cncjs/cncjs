@@ -1757,6 +1757,7 @@ class MarlinController {
             startZ,
             endZ,
             feedrate,
+            serpentine = false,
           } = params;
 
           if (mode === 'test') {
@@ -1781,6 +1782,7 @@ class MarlinController {
             startY,
             endY,
             stepY,
+            serpentine,
           });
 
           // Reset probe state

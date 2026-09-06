@@ -645,5 +645,7 @@
   "Clearance Z: {{value}} {{- units}}": "Výška přejezdu Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Počáteční Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Koncové Z: {{value}} {{- units}}",
-  "None": "Žádný"
+  "None": "Žádný",
+  "Zigzag scan path": "",
+  "Probe odd rows right-to-left (serpentine) so the head continues from where the previous row ended, without the rapid back to the start of X at every row. Same points, same grid.": ""
 }

@@ -645,5 +645,7 @@
   "Clearance Z: {{value}} {{- units}}": "Висота підйому Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Початкова Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Кінцева Z: {{value}} {{- units}}",
-  "None": "Немає"
+  "None": "Немає",
+  "Zigzag scan path": "",
+  "Probe odd rows right-to-left (serpentine) so the head continues from where the previous row ended, without the rapid back to the start of X at every row. Same points, same grid.": ""
 }
