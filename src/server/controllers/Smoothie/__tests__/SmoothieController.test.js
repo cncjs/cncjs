@@ -701,6 +701,34 @@ describe('SmoothieController', () => {
       expect(controller.probeState.maxZ).toBeNull();
     });
 
+    test('the probe measurement is stored at the intended grid node with the measured Z', () => {
+      const { controller } = create();
+      controller.probeState.probePoints = [{ x: 0, y: 0 }, { x: 10, y: 0 }];
+      controller.runner.state.status = {
+        mpos: { x: '0.000', y: '0.000', z: '0.000' },
+        wpos: { x: '0.000', y: '0.000', z: '0.000' },
+      };
+
+      // Quantised reports: the commanded nodes (0,0) and (10,0) read back off-node.
+      controller.runner.emit('parameters', {
+        raw: '[PRB:0.001,0.001,-1.500:1]',
+        name: 'PRB',
+        value: { result: 1, x: '0.001', y: '0.001', z: '-1.500' },
+      });
+      controller.runner.emit('parameters', {
+        raw: '[PRB:10.001,-0.001,-1.000:1]',
+        name: 'PRB',
+        value: { result: 1, x: '10.001', y: '-0.001', z: '-1.000' },
+      });
+
+      expect(controller.probeState.probedPositions).toEqual([
+        { x: 0, y: 0, z: -1.5 },
+        { x: 10, y: 0, z: -1 },
+      ]);
+      expect(controller.probeState.minZ).toBe(-1.5);
+      expect(controller.probeState.maxZ).toBe(-1);
+    });
+
     test('autolevel:stop resets the connection and clears probe state', () => {
       const { controller, writes } = create();
       controller.probeState = {
