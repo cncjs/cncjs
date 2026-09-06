@@ -197,7 +197,7 @@ const Machines = () => {
       header: i18n._('Date Modified'),
       cell: ({ row }) => {
         const dt = new Date(row.original.mtime);
-        const value = dateFns.format(dt, 'PPpp');
+        const value = Number.isNaN(dt.getTime()) ? '-' : dateFns.format(dt, 'PPpp');
 
         return (
           <OverflowTooltip label={value}>
@@ -221,7 +221,7 @@ const Machines = () => {
       dark: 'gray:60',
       light: 'gray:30',
     }[colorMode];
-    const data = row.original.content;
+    const data = JSON.stringify(row.original.limits, null, 2);
 
     return (
       <Flex
@@ -246,7 +246,7 @@ const Machines = () => {
           <Box width="100%">
             <CodePreview
               data={data}
-              language="shell"
+              language="json"
               style={{
                 padding: 12,
                 width: '100%',

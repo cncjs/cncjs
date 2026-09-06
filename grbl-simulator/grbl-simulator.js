@@ -78,6 +78,11 @@ class GrblSimulator {
 
     #motionState = getDefaultMotionState();
 
+    // Event listeners
+    #eventListeners = {
+        'data': []
+    };
+
     #receiveBuffer = {
         size: 128, // RX buffer size in characters
         used: 0, // Current buffer usage
@@ -383,6 +388,11 @@ class GrblSimulator {
                 this.machinePosition = { ...this.#motionState.endPosition };
                 this.updateWorkPosition();
                 this.resetMotionState();
+
+                // Call onComplete callback if exists (for probe commands)
+                if (this.#plannerBuffer.executing && typeof this.#plannerBuffer.executing.onComplete === 'function') {
+                    this.#plannerBuffer.executing.onComplete();
+                }
 
                 // Free planner block
                 if (this.#plannerBuffer.executing) {
@@ -1058,17 +1068,37 @@ class GrblSimulator {
             return { error: 'error:4\r\n' }; // Probe fail initial
         }
 
-        // Calculate 3D distance and time
-        const dx = endPosition.x - startPosition.x;
-        const dy = endPosition.y - startPosition.y;
-        const dz = endPosition.z - startPosition.z;
+        // Simulate realistic probe contact with surface warpage
+        // Calculate contact Z position based on XY coordinates (simulate warped PCB surface)
+        const simulateProbeContact = (x, y) => {
+            // Base height around -3mm with variation based on position
+            const baseZ = -3.0;
+            // Add warpage variation (±0.3mm) using deterministic function
+            const warpageX = Math.sin(x * 0.1) * 0.15;
+            const warpageY = Math.cos(y * 0.1) * 0.15;
+            const warpageDiagonal = Math.sin((x + y) * 0.05) * 0.1;
+            return baseZ + warpageX + warpageY + warpageDiagonal;
+        };
+
+        // Calculate where probe will contact (in machine coordinates)
+        const contactZ = simulateProbeContact(endPosition.x, endPosition.y);
+        const probeContactPosition = {
+            x: endPosition.x,
+            y: endPosition.y,
+            z: Math.max(contactZ, endPosition.z) // Don't go below target depth
+        };
+
+        // Calculate distance to contact point
+        const dx = probeContactPosition.x - startPosition.x;
+        const dy = probeContactPosition.y - startPosition.y;
+        const dz = probeContactPosition.z - startPosition.z;
         const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
         // Apply feed override (10-200%)
         const probeFeedRate = this.feedRate * (this.feedOverride / 100);
         const probeTime = (distance / probeFeedRate) * 60 * 1000;
 
         this.#plannerBuffer.queue.push({
-            endPosition,
+            endPosition: probeContactPosition,
             execute: () => {
                 this.machineState = 'Run';
                 this.setMotionState({
@@ -1077,14 +1107,25 @@ class GrblSimulator {
                     startTime: Date.now(),
                     endTime: Date.now() + probeTime,
                     startPosition,
-                    endPosition,
+                    endPosition: probeContactPosition,
                     currentFeedRate: probeFeedRate,
                     data: {},
                 });
 
                 // Store probe result
-                this.probePosition = endPosition;
+                this.probePosition = probeContactPosition;
                 this.probeSuccess = true;
+            },
+            onComplete: () => {
+                // Emit PRB response when probe motion completes (simulates real Grbl behavior)
+                const wcsOffset = this.workCoordinateOffsets[this.activeWCS];
+                const workPos = {
+                    x: this.probePosition.x - wcsOffset.x - this.g92Offset.x,
+                    y: this.probePosition.y - wcsOffset.y - this.g92Offset.y,
+                    z: this.probePosition.z - wcsOffset.z - this.g92Offset.z
+                };
+                const prbResponse = `[PRB:${workPos.x.toFixed(3)},${workPos.y.toFixed(3)},${workPos.z.toFixed(3)}:1]\r\n`;
+                this.emit && this.emit('data', prbResponse);
             }
         });
 
@@ -2015,6 +2056,28 @@ class GrblSimulator {
      */
     getStartupMessage() {
         return `\r\nGrbl ${GrblSimulator.VERSION} ['$' for help]\r\n`;
+    }
+
+    /**
+     * Add event listener
+     * @param {string} event - Event name
+     * @param {function} listener - Event listener
+     */
+    on(event, listener) {
+        if (!this.#eventListeners[event]) {
+            this.#eventListeners[event] = [];
+        }
+        this.#eventListeners[event].push(listener);
+    }
+
+    /**
+     * Emit event to listeners
+     * @param {string} event - Event name
+     * @param {*} data - Event data
+     */
+    emit(event, data) {
+        const listeners = this.#eventListeners[event] || [];
+        listeners.forEach(listener => listener(data));
     }
 }
 

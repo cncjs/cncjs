@@ -18,7 +18,7 @@
     }
   },
   "Grbl": {
-    "activeState": {
+    "machineState": {
       "idle": "閒置",
       "run": "運行",
       "hold": "暫停",
@@ -30,7 +30,7 @@
     }
   },
   "Smoothie": {
-    "activeState": {
+    "machineState": {
       "idle": "閒置",
       "run": "運行",
       "hold": "暫停",

@@ -760,5 +760,6 @@
   "{{value}} {{- units}}": "{{value}} {{- units}}",
   "Clearance Z: {{value}} {{- units}}": "Clearance Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Start Z: {{value}} {{- units}}",
-  "End Z: {{value}} {{- units}}": "End Z: {{value}} {{- units}}"
+  "End Z: {{value}} {{- units}}": "End Z: {{value}} {{- units}}",
+  "None": "None"
 }

@@ -98,7 +98,7 @@ function StatusReports({
 
 export default connect(store => {
   const controllerState = _get(store, 'controller.state');
-  const machineState = _get(controllerState, 'machineState');
+  const machineState = _get(controllerState, 'status.machineState');
   const parserstate = _get(controllerState, 'parserstate');
   const feedrate = _get(controllerState, 'status.feedrate', _get(parserstate, 'feedrate'));
   const spindle = _get(controllerState, 'status.spindle', _get(parserstate, 'spindle'));

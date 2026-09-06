@@ -1,15 +1,18 @@
 .widgets {
-    min-height: 240px; // Keep a minimum space for dropping widgets
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+  min-height: 240px; // Keep a minimum space for dropping widgets
 
-    :global {
-        // Class name for the chosen item
-        .sortable-chosen {
-            opacity: .8;
-        }
-
-        // Class name for the drop placeholder
-        .sortable-ghost {
-            opacity: .4;
-        }
+  :global {
+    // Class name for the chosen item
+    .sortable-chosen {
+      opacity: .8;
     }
+
+    // Class name for the drop placeholder
+    .sortable-ghost {
+      opacity: .4;
+    }
+  }
 }

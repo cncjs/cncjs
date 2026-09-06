@@ -3,7 +3,6 @@ import {
   Button,
   Code,
   Flex,
-  Icon,
   Modal,
   ModalBody,
   ModalContent,
@@ -12,6 +11,7 @@ import {
   Text,
   useColorStyle,
 } from '@tonic-ui/react';
+import ModalWarningIcon from '@app/icons/ModalWarningIcon';
 import _get from 'lodash/get';
 import React from 'react';
 import i18n from '@app/lib/i18n';
@@ -38,8 +38,7 @@ const ConfirmRestoreDefaultsModal = ({
       <ModalContent>
         <ModalBody>
           <Flex columnGap="4x">
-            <Icon
-              icon=":modal-warning"
+            <ModalWarningIcon
               color={colorStyle?.color?.warning}
               size="12x"
             />

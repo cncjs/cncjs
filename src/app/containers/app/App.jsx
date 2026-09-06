@@ -66,7 +66,6 @@ function Layout(props) {
             color: ${colors[color]};
             font-size: ${fontSizes.sm};
             line-height: ${lineHeights.sm};
-            overflow: hidden;
           }
           pre {
             margin: 0;

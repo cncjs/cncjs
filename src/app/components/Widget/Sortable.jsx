@@ -1,3 +1,4 @@
+import { Box } from '@tonic-ui/react';
 import cx from 'classnames';
 import React from 'react';
 import Anchor from '../Anchor';
@@ -7,11 +8,11 @@ function Sortable(props) {
   const { children, className, style, ...rest } = props;
 
   return (
-    <div className={cx(className, styles.widgetSortable)} style={style}>
+    <Box className={cx(className, styles.widgetSortable)} style={style}>
       <Anchor {...rest}>
         {children}
       </Anchor>
-    </div>
+    </Box>
   );
 }
 

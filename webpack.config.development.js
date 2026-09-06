@@ -14,7 +14,7 @@ dotenv.config({
   path: path.resolve('webpack.config.development.env'),
 });
 
-const isWebpackDevServer = process.env.WEBPACK_DEV_SERVER;
+const isWebpackDevServer = process.argv.includes('serve');
 const publicPath = process.env.PUBLIC_PATH || '';
 const buildVersion = pkg.version;
 

@@ -1,4 +1,6 @@
 import {
+  Box,
+  Flex,
   Space,
 } from '@tonic-ui/react';
 import _ from 'lodash';
@@ -54,7 +56,39 @@ import {
 import {
   WORKFLOW_STATE_IDLE,
 } from '@app/constants/workflow';
-import styles from './index.styl';
+
+const controllerStateStyles = {
+  'controller-state-default': {
+    color: '#222',
+    backgroundColor: '#fff',
+    border: '1px solid #e3e3e3',
+  },
+  'controller-state-primary': {
+    color: '#fff',
+    backgroundColor: '#337ab7',
+    border: '1px solid #2e6da4',
+  },
+  'controller-state-success': {
+    color: '#fff',
+    backgroundColor: '#5cb85c',
+    border: '1px solid #4cae4c',
+  },
+  'controller-state-info': {
+    color: '#fff',
+    backgroundColor: '#5bc0de',
+    border: '1px solid #46b8da',
+  },
+  'controller-state-warning': {
+    color: '#fff',
+    backgroundColor: '#f0ad4e',
+    border: '1px solid #eea236',
+  },
+  'controller-state-danger': {
+    color: '#fff',
+    backgroundColor: '#d9534f',
+    border: '1px solid #d43f3a',
+  },
+};
 
 class PrimaryToolbar extends Component {
   static propTypes = {
@@ -64,9 +98,9 @@ class PrimaryToolbar extends Component {
 
   canSendCommand() {
     const { state } = this.props;
-    const { port, controller, workflow } = state;
+    const { connected, controller, workflow } = state;
 
-    if (!port) {
+    if (!connected) {
       return false;
     }
     if (!controller.type || !controller.state) {
@@ -84,9 +118,15 @@ class PrimaryToolbar extends Component {
     const controllerType = state.controller.type;
 
     return (
-      <div className={styles.controllerType}>
+      <Box
+        display="inline-block"
+        fontSize="14px"
+        fontWeight="bold"
+        marginRight="10px"
+        padding="4px 0"
+      >
         {controllerType}
-      </div>
+      </Box>
     );
   }
 
@@ -152,7 +192,7 @@ class PrimaryToolbar extends Component {
     }
 
     if (controllerType === TINYG) {
-      const machineState = _.get(controllerState, 'sr.machineState');
+      const machineState = _.get(controllerState, 'machineState');
 
       // https://github.com/synthetos/g2/wiki/Alarm-Processing
       stateStyle = {
@@ -190,15 +230,23 @@ class PrimaryToolbar extends Component {
       }[machineState];
     }
 
+    if (!stateStyle) {
+      return null;
+    }
+
     return (
-      <div
-        className={classNames(
-          styles.controllerState,
-          styles[stateStyle]
-        )}
+      <Box
+        display="inline-block"
+        minWidth="50px"
+        textAlign="center"
+        padding="4px 12px"
+        fontSize="12px"
+        lineHeight="18px"
+        borderRadius="3px"
+        {...controllerStateStyles[stateStyle]}
       >
         {stateText}
-      </div>
+      </Box>
     );
   }
 
@@ -221,7 +269,7 @@ class PrimaryToolbar extends Component {
     }
 
     if (controllerType === TINYG) {
-      return _.get(controllerState, 'sr.modal.wcs') || defaultWCS;
+      return _.get(controllerState, 'modal.wcs') || defaultWCS;
     }
 
     return defaultWCS;
@@ -235,17 +283,15 @@ class PrimaryToolbar extends Component {
     const wcs = this.getWorkCoordinateSystem();
 
     return (
-      <div className={styles.primaryToolbar}>
+      <Flex alignItems="center">
         {this.renderControllerType()}
         {this.renderControllerState()}
-        <div className="pull-right">
+        <Flex alignItems="center" marginLeft="auto">
           <Dropdown
             style={{ marginRight: 5 }}
             disabled={!canSendCommand}
-            pullRight
           >
             <Dropdown.Toggle
-              sm
               btnStyle="default"
               title={i18n._('Work Coordinate System')}
             >
@@ -308,12 +354,9 @@ class PrimaryToolbar extends Component {
               </MenuItem>
             </Dropdown.Menu>
           </Dropdown>
-          <Dropdown
-            pullRight
-          >
+          <Dropdown>
             <Button
               aria-label="3D View options"
-              sm
               btnStyle="default"
               title={(!WebGL.isWebGLAvailable() || disabled)
                 ? i18n._('Enable 3D View')
@@ -327,7 +370,6 @@ class PrimaryToolbar extends Component {
               {i18n._('3D View')}
             </Button>
             <Dropdown.Toggle
-              sm
               btnStyle="default"
             />
             <Dropdown.Menu>
@@ -433,8 +475,8 @@ class PrimaryToolbar extends Component {
               </MenuItem>
             </Dropdown.Menu>
           </Dropdown>
-        </div>
-      </div>
+        </Flex>
+      </Flex>
     );
   }
 }

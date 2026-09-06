@@ -1,4 +1,6 @@
 import {
+  Box,
+  Flex,
   Space,
 } from '@tonic-ui/react';
 import cx from 'classnames';
@@ -161,11 +163,11 @@ class Keypad extends Component {
 
     return (
       <div className={styles.keypad}>
-        <div className="row no-gutters">
-          <div className="col-xs-8">
+        <Flex>
+          <Box flex="8 1 0%">
             <div className={styles.rowSpace}>
-              <div className="row no-gutters">
-                <div className="col-xs-3">
+              <Flex>
+                <Box flex="1 1 0%">
                   <div className={styles.colSpace}>
                     <Button
                       aria-label="Move X negative Y positive"
@@ -182,8 +184,8 @@ class Keypad extends Component {
                       <i aria-hidden="true" className={cx('fa', 'fa-arrow-circle-up', styles['rotate--45deg'])} style={{ fontSize: 16 }} />
                     </Button>
                   </div>
-                </div>
-                <div className="col-xs-3">
+                </Box>
+                <Box flex="1 1 0%">
                   <div className={styles.colSpace}>
                     <Button
                       aria-label="Move Y positive"
@@ -204,8 +206,8 @@ class Keypad extends Component {
                       <KeypadDirectionText>+</KeypadDirectionText>
                     </Button>
                   </div>
-                </div>
-                <div className="col-xs-3">
+                </Box>
+                <Box flex="1 1 0%">
                   <div className={styles.colSpace}>
                     <Button
                       aria-label="Move X positive Y positive"
@@ -222,8 +224,8 @@ class Keypad extends Component {
                       <i aria-hidden="true" className={cx('fa', 'fa-arrow-circle-up', styles['rotate-45deg'])} style={{ fontSize: 16 }} />
                     </Button>
                   </div>
-                </div>
-                <div className="col-xs-3">
+                </Box>
+                <Box flex="1 1 0%">
                   <div className={styles.colSpace}>
                     <Button
                       aria-label="Move Z positive"
@@ -244,12 +246,12 @@ class Keypad extends Component {
                       <KeypadDirectionText>+</KeypadDirectionText>
                     </Button>
                   </div>
-                </div>
-              </div>
+                </Box>
+              </Flex>
             </div>
             <div className={styles.rowSpace}>
-              <div className="row no-gutters">
-                <div className="col-xs-3">
+              <Flex>
+                <Box flex="1 1 0%">
                   <div className={styles.colSpace}>
                     <Button
                       aria-label="Move X negative"
@@ -270,8 +272,8 @@ class Keypad extends Component {
                       <KeypadDirectionText>-</KeypadDirectionText>
                     </Button>
                   </div>
-                </div>
-                <div className="col-xs-3">
+                </Box>
+                <Box flex="1 1 0%">
                   <div className={styles.colSpace}>
                     <Button
                       btnStyle="default"
@@ -287,8 +289,8 @@ class Keypad extends Component {
                       <KeypadSubscriptText>0</KeypadSubscriptText>
                     </Button>
                   </div>
-                </div>
-                <div className="col-xs-3">
+                </Box>
+                <Box flex="1 1 0%">
                   <div className={styles.colSpace}>
                     <Button
                       aria-label="Move X positive"
@@ -309,8 +311,8 @@ class Keypad extends Component {
                       <KeypadDirectionText>+</KeypadDirectionText>
                     </Button>
                   </div>
-                </div>
-                <div className="col-xs-3">
+                </Box>
+                <Box flex="1 1 0%">
                   <div className={styles.colSpace}>
                     <Button
                       btnStyle="default"
@@ -324,12 +326,12 @@ class Keypad extends Component {
                       <KeypadSubscriptText>0</KeypadSubscriptText>
                     </Button>
                   </div>
-                </div>
-              </div>
+                </Box>
+              </Flex>
             </div>
             <div className={styles.rowSpace}>
-              <div className="row no-gutters">
-                <div className="col-xs-3">
+              <Flex>
+                <Box flex="1 1 0%">
                   <div className={styles.colSpace}>
                     <Button
                       aria-label="Move X negative Y negative"
@@ -346,8 +348,8 @@ class Keypad extends Component {
                       <i aria-hidden="true" className={cx('fa', 'fa-arrow-circle-down', styles['rotate-45deg'])} style={{ fontSize: 16 }} />
                     </Button>
                   </div>
-                </div>
-                <div className="col-xs-3">
+                </Box>
+                <Box flex="1 1 0%">
                   <div className={styles.colSpace}>
                     <Button
                       aria-label="Move Y negative"
@@ -368,8 +370,8 @@ class Keypad extends Component {
                       <KeypadDirectionText>-</KeypadDirectionText>
                     </Button>
                   </div>
-                </div>
-                <div className="col-xs-3">
+                </Box>
+                <Box flex="1 1 0%">
                   <div className={styles.colSpace}>
                     <Button
                       aria-label="Move X positive Y negative"
@@ -386,8 +388,8 @@ class Keypad extends Component {
                       <i aria-hidden="true" className={cx('fa', 'fa-arrow-circle-down', styles['rotate--45deg'])} style={{ fontSize: 16 }} />
                     </Button>
                   </div>
-                </div>
-                <div className="col-xs-3">
+                </Box>
+                <Box flex="1 1 0%">
                   <div className={styles.colSpace}>
                     <Button
                       aria-label="Move Z negative"
@@ -408,14 +410,13 @@ class Keypad extends Component {
                       <KeypadDirectionText>-</KeypadDirectionText>
                     </Button>
                   </div>
-                </div>
-              </div>
+                </Box>
+              </Flex>
             </div>
-          </div>
-          <div className="col-xs-4">
+          </Box>
+          <Box flex="4 1 0%">
             <div className={styles.rowSpace}>
               <Dropdown
-                pullRight
                 style={{
                   width: '100%'
                 }}
@@ -457,7 +458,6 @@ class Keypad extends Component {
             <div className={styles.rowSpace}>
               {units === IMPERIAL_UNITS && (
                 <Dropdown
-                  pullRight
                   style={{
                     width: '100%'
                   }}
@@ -493,7 +493,6 @@ class Keypad extends Component {
               )}
               {units === METRIC_UNITS && (
                 <Dropdown
-                  pullRight
                   style={{
                     width: '100%'
                   }}
@@ -529,8 +528,8 @@ class Keypad extends Component {
               )}
             </div>
             <div className={styles.rowSpace}>
-              <div className="row no-gutters">
-                <div className="col-xs-6">
+              <Flex>
+                <Box flex="1 1 0%">
                   <RepeatableButton
                     aria-label="Decrease step size"
                     disabled={!canStepBackward}
@@ -539,8 +538,8 @@ class Keypad extends Component {
                   >
                     <i aria-hidden="true" className="fa fa-minus" />
                   </RepeatableButton>
-                </div>
-                <div className="col-xs-6">
+                </Box>
+                <Box flex="1 1 0%">
                   <RepeatableButton
                     aria-label="Increase step size"
                     disabled={!canStepForward}
@@ -548,11 +547,11 @@ class Keypad extends Component {
                   >
                     <i aria-hidden="true" className="fa fa-plus" />
                   </RepeatableButton>
-                </div>
-              </div>
+                </Box>
+              </Flex>
             </div>
-          </div>
-        </div>
+          </Box>
+        </Flex>
       </div>
     );
   }

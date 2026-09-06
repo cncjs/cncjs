@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Box,
+  Flex,
   Space,
   Text,
 } from '@tonic-ui/react';
@@ -108,19 +109,9 @@ class Workspace extends Component {
     secondary: null
   };
 
-  primaryContainer = null;
-
-  secondaryContainer = null;
-
-  primaryToggler = null;
-
-  secondaryToggler = null;
-
   primaryWidgets = null;
 
   secondaryWidgets = null;
-
-  defaultContainer = null;
 
   controllerEvents = {
     'connect': () => {
@@ -228,12 +219,7 @@ class Workspace extends Component {
     pubsub.publish('resize'); // Also see "widgets/Visualizer"
   };
 
-  resizeDefaultContainer = () => {
-    //const primaryContainer = ReactDOM.findDOMNode(this.primaryContainer);
-    //const secondaryContainer = ReactDOM.findDOMNode(this.secondaryContainer);
-    //const primaryToggler = ReactDOM.findDOMNode(this.primaryToggler);
-    //const secondaryToggler = ReactDOM.findDOMNode(this.secondaryToggler);
-    //const defaultContainer = ReactDOM.findDOMNode(this.defaultContainer);
+  publishResizeEvent = () => {
     const { showPrimaryContainer, showSecondaryContainer } = this.state;
 
     { // Mobile-Friendly View
@@ -250,7 +236,10 @@ class Workspace extends Component {
       }
     }
 
-    // Publish a 'resize' event
+    // The workspace layout is a flex row and the default container is a
+    // flex item (flex: 1 1 auto), so the panels reflow natively when they
+    // are toggled. Publishing 'resize' lets the visualizer re-measure its
+    // canvas against the new width.
     pubsub.publish('resize'); // Also see "widgets/Visualizer"
   };
 
@@ -363,7 +352,7 @@ class Workspace extends Component {
     this.addResizeEventListener();
 
     setTimeout(() => {
-      this.resizeDefaultContainer();
+      this.publishResizeEvent();
     }, 0);
   }
 
@@ -376,7 +365,7 @@ class Workspace extends Component {
     config.set('workspace.container.primary.show', this.state.showPrimaryContainer);
     config.set('workspace.container.secondary.show', this.state.showSecondaryContainer);
 
-    this.resizeDefaultContainer();
+    this.publishResizeEvent();
   }
 
   addControllerEvents() {
@@ -394,7 +383,7 @@ class Workspace extends Component {
   }
 
   addResizeEventListener() {
-    this.onResizeThrottled = _throttle(this.resizeDefaultContainer, 50);
+    this.onResizeThrottled = _throttle(this.publishResizeEvent, 50);
     window.addEventListener('resize', this.onResizeThrottled);
   }
 
@@ -487,18 +476,20 @@ class Workspace extends Component {
                   </Text>
                 </DropzoneOverlay>
               )}
-              <div className={styles.workspaceTable}>
-                <div className={styles.workspaceTableRow}>
-                  <div
-                    ref={node => {
-                      this.primaryContainer = node;
-                    }}
-                    className={cx(
-                      styles.primaryContainer,
-                      { [styles.hidden]: hidePrimaryContainer }
-                    )}
+              {/* The app header is 48px tall — keep in sync with $navbar-height (styles/variables.styl). */}
+              <Box height="calc(100vh - 48px)">
+                <Flex height="calc(100vh - 48px)" minHeight="0">
+                  <Box
+                    flex="none"
+                    width="360px"
+                    minHeight="0"
+                    display={hidePrimaryContainer ? 'none' : 'flex'}
+                    flexDirection="column"
+                    position="relative"
+                    backgroundColor="#f6f7f8"
+                    borderRight="1px solid #ccc"
                   >
-                    <Box my="3x">
+                    <Box px="3x" py="3x" flex="none">
                       <Row>
                         <Col width="auto">
                           <Button
@@ -548,22 +539,31 @@ class Workspace extends Component {
                         </Col>
                       </Row>
                     </Box>
-                    <PrimaryWidgets
-                      ref={node => {
-                        this.primaryWidgets = node;
-                      }}
-                      onForkWidget={this.widgetEventHandler.onForkWidget}
-                      onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
-                      onDragStart={this.widgetEventHandler.onDragStart}
-                      onDragEnd={this.widgetEventHandler.onDragEnd}
-                    />
-                  </div>
+                    <Box
+                      flex="auto"
+                      height="100%"
+                      overflowY="auto"
+                      px="3x"
+                    >
+                      <PrimaryWidgets
+                        ref={node => {
+                          this.primaryWidgets = node;
+                        }}
+                        onForkWidget={this.widgetEventHandler.onForkWidget}
+                        onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
+                        onDragStart={this.widgetEventHandler.onDragStart}
+                        onDragEnd={this.widgetEventHandler.onDragEnd}
+                      />
+                    </Box>
+                  </Box>
                   {hidePrimaryContainer && (
-                    <div
-                      ref={node => {
-                        this.primaryToggler = node;
-                      }}
-                      className={styles.primaryToggler}
+                    <Box
+                      flex="none"
+                      width="50px"
+                      paddingTop="10px"
+                      textAlign="center"
+                      backgroundColor="#f6f7f8"
+                      borderRight="1px solid #ccc"
                     >
                       <Button
                         aria-label="Show left panel"
@@ -572,25 +572,25 @@ class Workspace extends Component {
                       >
                         <FontAwesomeIcon aria-hidden="true" icon="chevron-right" fixedWidth />
                       </Button>
-                    </div>
+                    </Box>
                   )}
-                  <div
-                    ref={node => {
-                      this.defaultContainer = node;
-                    }}
-                    className={cx(
-                      styles.defaultContainer,
-                      styles.fixed
-                    )}
+                  <Box
+                    flex="auto"
+                    minHeight="0"
+                    minWidth="360px"
+                    position="relative"
+                    overflow="hidden"
                   >
                     <DefaultWidgets />
-                  </div>
+                  </Box>
                   {hideSecondaryContainer && (
-                    <div
-                      ref={node => {
-                        this.secondaryToggler = node;
-                      }}
-                      className={styles.secondaryToggler}
+                    <Box
+                      flex="none"
+                      width="50px"
+                      paddingTop="10px"
+                      textAlign="center"
+                      backgroundColor="#f6f7f8"
+                      borderLeft="1px solid #ccc"
                     >
                       <Button
                         aria-label="Show right panel"
@@ -599,18 +599,19 @@ class Workspace extends Component {
                       >
                         <FontAwesomeIcon aria-hidden="true" icon="chevron-left" fixedWidth />
                       </Button>
-                    </div>
+                    </Box>
                   )}
-                  <div
-                    ref={node => {
-                      this.secondaryContainer = node;
-                    }}
-                    className={cx(
-                      styles.secondaryContainer,
-                      { [styles.hidden]: hideSecondaryContainer }
-                    )}
+                  <Box
+                    flex="none"
+                    width="360px"
+                    minHeight="0"
+                    display={hideSecondaryContainer ? 'none' : 'flex'}
+                    flexDirection="column"
+                    position="relative"
+                    backgroundColor="#f6f7f8"
+                    borderLeft="1px solid #ccc"
                   >
-                    <Box my="3x">
+                    <Box px="3x" py="3x" flex="none">
                       <Row>
                         <Col width="auto">
                           <ButtonGroup sm>
@@ -660,18 +661,25 @@ class Workspace extends Component {
                         </Col>
                       </Row>
                     </Box>
-                    <SecondaryWidgets
-                      ref={node => {
-                        this.secondaryWidgets = node;
-                      }}
-                      onForkWidget={this.widgetEventHandler.onForkWidget}
-                      onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
-                      onDragStart={this.widgetEventHandler.onDragStart}
-                      onDragEnd={this.widgetEventHandler.onDragEnd}
-                    />
-                  </div>
-                </div>
-              </div>
+                    <Box
+                      flex="auto"
+                      height="100%"
+                      overflowY="auto"
+                      px="3x"
+                    >
+                      <SecondaryWidgets
+                        ref={node => {
+                          this.secondaryWidgets = node;
+                        }}
+                        onForkWidget={this.widgetEventHandler.onForkWidget}
+                        onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
+                        onDragStart={this.widgetEventHandler.onDragStart}
+                        onDragEnd={this.widgetEventHandler.onDragEnd}
+                      />
+                    </Box>
+                  </Box>
+                </Flex>
+              </Box>
             </Box>
           )}
         </Dropzone>
@@ -696,7 +704,7 @@ const DropzoneOverlay = styled(
   ({ disabled, ...props }) => <div {...props} />
 )`
     position: fixed;
-    top: 60px;
+    top: 48px; // app header height, keep in sync with $navbar-height (styles/variables.styl)
     bottom: 0;
     left: 60px;
     right: 0;

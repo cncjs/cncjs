@@ -14,6 +14,7 @@ import {
   useColorMode,
   useColorStyle,
 } from '@tonic-ui/react';
+import { MenuIcon } from '@tonic-ui/react-icons';
 import { ensureArray, ensureString } from 'ensure-type';
 import React, { forwardRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -52,13 +53,15 @@ const SideNav = forwardRef((
       onClose={onClose}
       placement="left"
     >
-      <Global
-        styles={css`
-          body {
-            overflow: hidden;
-          }
-        `}
-      />
+      {isOpen && (
+        <Global
+          styles={css`
+            body {
+              overflow: hidden;
+            }
+          `}
+        />
+      )}
       <DrawerOverlay />
       <DrawerContent
         ref={ref}
@@ -85,7 +88,7 @@ const SideNav = forwardRef((
             height="10x"
             onClick={onClose}
           >
-            <Icon icon=":nav-menu" size="6x" />
+            <Icon as={MenuIcon} size="6x" />
           </IconButton>
           <Space minWidth="2x" />
           <ButtonBase
@@ -155,10 +158,7 @@ const SideNav = forwardRef((
                     alignItems="center"
                     columnGap="4x"
                   >
-                    {(route.icon && typeof route.icon === 'string') && (
-                      <Icon icon={route.icon} size="6x" />
-                    )}
-                    {(route.icon && typeof route.icon !== 'string') && (
+                    {route.icon && (
                       <Icon as={route.icon} size="6x" />
                     )}
                     <Text>
@@ -179,10 +179,7 @@ const SideNav = forwardRef((
                   columnGap="4x"
                   color={colorStyle.color.secondary}
                 >
-                  {(route.icon && typeof route.icon === 'string') && (
-                    <Icon icon={route.icon} size="6x" />
-                  )}
-                  {(route.icon && typeof route.icon !== 'string') && (
+                  {route.icon && (
                     <Icon as={route.icon} size="6x" />
                   )}
                   <Text>
@@ -218,10 +215,7 @@ const SideNav = forwardRef((
                           minWidth="6x"
                           justifyContent="center"
                         >
-                          {(childRoute.icon && typeof childRoute.icon === 'string') && (
-                            <Icon icon={childRoute.icon} size="4x" />
-                          )}
-                          {(childRoute.icon && typeof childRoute.icon !== 'string') && (
+                          {childRoute.icon && (
                             <Icon as={childRoute.icon} size="4x" />
                           )}
                         </Flex>

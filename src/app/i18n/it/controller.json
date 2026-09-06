@@ -18,7 +18,7 @@
     }
   },
   "Grbl": {
-    "activeState": {
+    "machineState": {
       "idle": "Inattivo",
       "run": "Esegui",
       "hold": "In Attesa",
@@ -30,7 +30,7 @@
     }
   },
   "Smoothie": {
-    "activeState": {
+    "machineState": {
       "idle": "Inattivo",
       "run": "Esegui",
       "hold": "In Attesa",

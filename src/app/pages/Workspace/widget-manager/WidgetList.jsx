@@ -9,8 +9,11 @@ function WidgetList({ data, onChange }) {
       <Row>
         {data.map(widget => (
           <Col
-            key={widget.id} xs={12} md={6}
-            lg={4} style={{ margin: '12px 0' }}
+            key={widget.id}
+            xs={12}
+            md={6}
+            lg={4}
+            style={{ margin: '12px 0' }}
           >
             <WidgetListItem
               id={widget.id}

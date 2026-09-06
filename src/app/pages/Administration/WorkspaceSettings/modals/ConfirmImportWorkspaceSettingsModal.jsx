@@ -1,7 +1,6 @@
 import {
   Button,
   Flex,
-  Icon,
   Modal,
   ModalBody,
   ModalContent,
@@ -11,6 +10,7 @@ import {
   useColorStyle,
 } from '@tonic-ui/react';
 import CodePreview from '@app/components/CodePreview';
+import ModalWarningIcon from '@app/icons/ModalWarningIcon';
 import _set from 'lodash/set';
 import React from 'react';
 import i18n from '@app/lib/i18n';
@@ -38,8 +38,7 @@ const ConfirmImportWorkspaceSettingsModal = ({
       <ModalContent>
         <ModalBody>
           <Flex columnGap="4x" mb="6x">
-            <Icon
-              icon=":modal-warning"
+            <ModalWarningIcon
               color={colorStyle?.color?.warning}
               size="12x"
             />

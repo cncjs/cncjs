@@ -203,14 +203,14 @@ const Users = () => {
     {
       header: i18n._('User Name'),
       cell: ({ row }) => (
-        <OverflowTooltip label={row.original.title}>
+        <OverflowTooltip label={row.original.name}>
           {({ ref, style }) => (
             <LinkButton
               onClick={handleClickViewUserDetailsById(row.original.id)}
               width="100%"
             >
               <Text ref={ref} {...style}>
-                {row.original.title}
+                {row.original.name}
               </Text>
             </LinkButton>
           )}

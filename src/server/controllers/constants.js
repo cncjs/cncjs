@@ -1,4 +1,10 @@
 // Controller Command
+export const CONTROLLER_COMMAND_AUTOLEVEL_START = 'autolevel:start';
+export const CONTROLLER_COMMAND_AUTOLEVEL_STOP = 'autolevel:stop';
+export const CONTROLLER_COMMAND_AUTOLEVEL_GET_PROBE_STATE = 'autolevel:getProbeState';
+export const CONTROLLER_COMMAND_AUTOLEVEL_LOAD_FROM_FILE = 'autolevel:loadFromFile';
+export const CONTROLLER_COMMAND_AUTOLEVEL_SAVE_TO_FILE = 'autolevel:saveToFile';
+export const CONTROLLER_COMMAND_AUTOLEVEL_APPLY_PROBE_COMPENSATION = 'autolevel:applyProbeCompensation';
 export const CONTROLLER_COMMAND_SENDER_LOAD = 'sender_load';
 export const CONTROLLER_COMMAND_SENDER_UNLOAD = 'sender_unload';
 export const CONTROLLER_COMMAND_SENDER_START = 'sender_start';

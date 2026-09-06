@@ -3,5 +3,27 @@
 .dropdown {
     reset-context();
 
+    // The menu (an absolutely positioned flex child) aligns to the right
+    // edge of the toggle via align-items; no alignment flags are needed.
     position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.dropdown-toggle-group {
+    display: flex;
+    align-items: center; // True vertical centering, unlike inline-block +
+    align-self: stretch; // vertical-align: middle.
+
+    // Join the split-button pair (a button followed by another button).
+    > *:not(:last-child) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    > * + * {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
 }

@@ -36,6 +36,11 @@ const getSanitizedRecords = () => {
       record.id = uuidv4();
       shouldUpdate = true;
     }
+
+    if (!record.mtime) {
+      record.mtime = new Date().getTime();
+      shouldUpdate = true;
+    }
   }
 
   if (shouldUpdate) {
@@ -103,7 +108,10 @@ const api = {
 
     try {
       const records = getSanitizedRecords();
-      records.push(ensureMachineProfile(record));
+      records.push({
+        ...ensureMachineProfile(record),
+        mtime: new Date().getTime(),
+      });
       userStore.set(CONFIG_KEY, records);
 
       res.send({ id: record.id });
@@ -195,6 +203,7 @@ const api = {
         _set(record, key, (typeof ensureType === 'function') ? ensureType(value) : value);
       });
 
+      record.mtime = new Date().getTime();
       userStore.set(CONFIG_KEY, records);
 
       res.send({ id: record.id });

@@ -27,6 +27,7 @@ import {
   InfoOIcon,
   InvestigationIcon,
   LanguageIcon,
+  MenuIcon,
 } from '@tonic-ui/react-icons';
 import {
   ensureArray,
@@ -410,7 +411,7 @@ const Header = forwardRef((
           height="10x"
           onClick={onToggle}
         >
-          <Icon icon=":nav-menu" size="6x" />
+          <Icon as={MenuIcon} size="6x" />
         </IconButton>
         <Space minWidth="2x" />
         <ButtonBase

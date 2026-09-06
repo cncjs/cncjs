@@ -12,12 +12,14 @@ import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import {
   IMPERIAL_UNITS,
-  METRIC_UNITS,
+  METRIC_UNITS
 } from '@app/constants';
 import CombinedCamera from '@app/lib/three/CombinedCamera';
 import TrackballControls from '@app/lib/three/TrackballControls';
 import * as WebGL from '@app/lib/three/WebGL';
 import log from '@app/lib/log';
+import { getRenderPixelRatio } from '@app/lib/pixel-ratio';
+import { mapValueToUnits } from '@app/lib/units';
 import config from '@app/store/config';
 import { getBoundingBox, loadSTL, loadTexture } from './helpers';
 import Viewport from './Viewport';
@@ -28,9 +30,10 @@ import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
 import GCodeVisualizer from './GCodeVisualizer';
+import ProbeVisualization from './ProbeVisualization';
 import {
   CAMERA_MODE_PAN,
-  CAMERA_MODE_ROTATE,
+  CAMERA_MODE_ROTATE
 } from './constants';
 
 const IMPERIAL_GRID_COUNT = 32; // 32 in
@@ -74,9 +77,15 @@ class Visualizer extends Component {
     z: 0
   };
 
-  machineProfile = config.get('workspace.machineProfile');
+  // Initialized to null so the first changeMachineProfile() call in
+  // componentDidMount detects a difference against the store value and runs
+  // the full pivot/rebuild pipeline. Pre-hydrating from the store here would
+  // make _isEqual short-circuit and leave pivotPoint at (0, 0, 0).
+  machineProfile = null;
 
   group = new THREE.Group();
+
+  probeVisualization = null;
 
   pivotPoint = new PivotPoint3({ x: 0, y: 0, z: 0 }, (x, y, z) => { // relative position
     _each(this.group.children, (o) => {
@@ -96,18 +105,61 @@ class Visualizer extends Component {
     this.resizeRenderer();
   }, 32); // 60hz
 
+  // Pivot policy. The pivot determines the "machine - pivot" frame the
+  // whole scene is rendered in: limits, cutting tool, probe viz, gcode
+  // toolpath, and (via rebuildCoordinateSystems) grid + axes all sit at
+  // "machine_coords - pivot" so the visible workspace center is at world
+  // origin and TrackballControls' default target = (0, 0, 0) orbits that
+  // visible center.
+  //
+  // Pivot is set by this method, load(), and unload(). Combined behavior:
+  //
+  //   Scenario                                | Pivot after        | Gcode position
+  //   ----------------------------------------|--------------------|----------------------
+  //   Reload, profile saved, no gcode         | profile center     | -
+  //   Manual profile selection, no gcode      | profile center     | -
+  //   Manual profile selection, gcode loaded  | gcode bbox center  | at world origin
+  //   Profile removed, no gcode               | (0, 0, 0)          | -
+  //   Profile removed, gcode loaded           | gcode bbox center  | at world origin
+  //   Load gcode                              | gcode bbox center  | at world origin
+  //   Unload gcode, profile selected          | profile center     | -
+  //   Unload gcode, no profile                | (0, 0, 0)          | -
+  //
+  // For the two "gcode loaded" rows above the pivot was already at the
+  // gcode bbox center (set by load()) and is intentionally left alone, so
+  // the toolpath stays visually centered in the viewport across profile
+  // changes; only the limits/grid rebuild for the new profile dimensions.
+  //
+  // The `!this.gcodeVisualizer` check distinguishes the two states.
+  // `this.gcodeVisualizer` is the GCodeVisualizer instance — null until
+  // load() runs, nulled again by unload() — so it is a direct local source
+  // of truth and works the same way regardless of who triggered
+  // changeMachineProfile (mount, store change, etc.).
   changeMachineProfile = () => {
     const machineProfile = config.get('workspace.machineProfile');
+    const nextMachineProfile = _get(machineProfile, 'id') ? { ...machineProfile } : null;
 
-    if (!machineProfile) {
+    if (_isEqual(nextMachineProfile, this.machineProfile)) {
       return;
     }
 
-    if (_isEqual(machineProfile, this.machineProfile)) {
+    this.machineProfile = nextMachineProfile;
+
+    // Profile removed — reset to defaults and return
+    if (!this.machineProfile) {
+      if (!this.gcodeVisualizer) {
+        this.pivotPoint.set(0, 0, 0);
+      }
+      this.updateCuttingToolPosition();
+      this.updateCuttingPointerPosition();
+      this.updateLimitsPosition();
+      this.updateProbeVisualizationPosition();
+      if (this.group) {
+        this.rebuildCoordinateSystems();
+      }
+      this.updateScene();
       return;
     }
-
-    this.machineProfile = { ...machineProfile };
 
     if (this.limits) {
       this.group.remove(this.limits);
@@ -122,7 +174,23 @@ class Visualizer extends Component {
     this.limits.visible = state.objects.limits.visible;
     this.group.add(this.limits);
 
+    // Set pivot to the center of the machine profile work area (XY only).
+    // Skipped when gcode is loaded so the toolpath stays centered.
+    if (!this.gcodeVisualizer) {
+      const centerX = (xmin + xmax) / 2;
+      const centerY = (ymin + ymax) / 2;
+      this.pivotPoint.set(centerX, centerY, 0);
+    }
+
+    this.updateCuttingToolPosition();
+    this.updateCuttingPointerPosition();
     this.updateLimitsPosition();
+    this.updateProbeVisualizationPosition();
+
+    // Rebuild grid and axes to match the new machine profile dimensions
+    if (this.group) {
+      this.rebuildCoordinateSystems();
+    }
 
     this.updateScene();
   };
@@ -155,7 +223,7 @@ class Visualizer extends Component {
     this.cuttingTool = null;
     this.cuttingPointer = null;
     this.limits = null;
-    this.visualizer = null;
+    this.gcodeVisualizer = null;
   }
 
   componentDidMount() {
@@ -167,6 +235,12 @@ class Visualizer extends Component {
       this.createScene(el);
       this.resizeRenderer();
     }
+
+    // Apply any machine profile already in the store (e.g., hydrated from
+    // localStorage on page reload). The store 'change' listener above only
+    // fires on subsequent updates, so without this call the saved profile
+    // never reaches the scene until the user re-selects it.
+    this.changeMachineProfile();
   }
 
   componentDidUpdate(prevProps) {
@@ -177,6 +251,7 @@ class Visualizer extends Component {
 
     // Enable or disable 3D view
     if ((prevProps.show !== this.props.show) && (this.props.show === true)) {
+      this.resizeRenderer();
       this.viewport.update();
 
       // Set forceUpdate to true when enabling or disabling 3D view
@@ -184,10 +259,10 @@ class Visualizer extends Component {
       needUpdateScene = true;
     }
 
-    // Update visualizer's frame index
-    if (this.visualizer) {
+    // Update gcode visualizer's frame index
+    if (this.gcodeVisualizer) {
       const frameIndex = state.gcode.sent;
-      this.visualizer.setFrameIndex(frameIndex);
+      this.gcodeVisualizer.setFrameIndex(frameIndex);
     }
 
     // Projection
@@ -291,6 +366,7 @@ class Visualizer extends Component {
         this.updateCuttingToolPosition();
         this.updateCuttingPointerPosition();
         this.updateLimitsPosition();
+        this.updateProbeVisualizationPosition();
       }
     }
 
@@ -337,6 +413,42 @@ class Visualizer extends Component {
     const tokens = [
       pubsub.subscribe('resize', (msg) => {
         this.resizeRenderer();
+      }),
+      pubsub.subscribe('autolevel:showProbeVisualization', (msg, data) => {
+        this.showProbeVisualization(data);
+      }),
+      pubsub.subscribe('autolevel:hideProbeVisualization', (msg) => {
+        this.hideProbeVisualization();
+      }),
+      pubsub.subscribe('autolevel:updateProbeVisualization', (msg, data) => {
+        log.info('[Visualizer] Received updateProbeVisualization event:', data);
+
+        if (this.probeVisualization && typeof this.probeVisualization.updateBounds === 'function') {
+          const { startX, startY, endX, endY, snapX, snapY, interactable } = data.config;
+          log.info('[Visualizer] Updating bounds to:', { startX, startY, endX, endY, snapX, snapY, interactable });
+
+          // Update snap config if provided
+          if (this.probeVisualization.config) {
+            if (snapX !== undefined) {
+              this.probeVisualization.config.snapX = snapX;
+            }
+            if (snapY !== undefined) {
+              this.probeVisualization.config.snapY = snapY;
+            }
+          }
+
+          this.probeVisualization.updateBounds(startX, startY, endX, endY);
+
+          // Enable or disable interactions based on interactable flag
+          if (typeof this.probeVisualization.setInteractable === 'function' && interactable !== undefined) {
+            this.probeVisualization.setInteractable(interactable);
+          }
+
+          this.updateScene({ forceUpdate: true });
+          log.debug('[Visualizer] Updated probe visualization bounds from AutoLevel');
+        } else {
+          log.warn('[Visualizer] Cannot update bounds - probeVisualization or updateBounds not available');
+        }
       })
     ];
     this.pubsubTokens = this.pubsubTokens.concat(tokens);
@@ -347,6 +459,80 @@ class Visualizer extends Component {
       pubsub.unsubscribe(token);
     });
     this.pubsubTokens = [];
+  }
+
+  showProbeVisualization(data) {
+    const { probeData = [], config = {} } = data;
+
+    log.debug('[Visualizer] showProbeVisualization', { probeData: probeData.length, config });
+
+    // If probe visualization doesn't exist, create it once
+    if (!this.probeVisualization) {
+      this.probeVisualization = new ProbeVisualization(
+        probeData,
+        config,
+        this.camera,
+        this.renderer.domElement,
+        this.controls,
+        () => this.updateScene({ forceUpdate: true }) // Scene update callback for smooth drag
+      );
+      this.probeVisualization.group.visible = false; // Start hidden
+      this.group.add(this.probeVisualization.group);
+      log.info('[Visualizer] Created and added probe visualization to group');
+    } else {
+      // Update existing visualization with new config
+      const { startX, startY, endX, endY, snapX, snapY, interactable, units } = config;
+
+      // Update all config values
+      if (this.probeVisualization.config) {
+        if (snapX !== undefined) {
+          this.probeVisualization.config.snapX = snapX;
+        }
+        if (snapY !== undefined) {
+          this.probeVisualization.config.snapY = snapY;
+        }
+        if (units !== undefined) {
+          this.probeVisualization.config.units = units;
+        }
+        if (interactable !== undefined) {
+          this.probeVisualization.config.interactable = interactable;
+        }
+      }
+
+      // Update probe data (surface and points) - call with empty array to clear old data
+      if (typeof this.probeVisualization.updateProbeData === 'function') {
+        this.probeVisualization.updateProbeData(probeData);
+      }
+
+      if (typeof this.probeVisualization.updateBounds === 'function') {
+        this.probeVisualization.updateBounds(startX, startY, endX, endY);
+      }
+      // Recreate interactive elements with new bounds
+      if (typeof this.probeVisualization.recreateInteractiveElements === 'function') {
+        this.probeVisualization.recreateInteractiveElements();
+      }
+      // Enable or disable interactions based on interactable flag
+      if (typeof this.probeVisualization.setInteractable === 'function') {
+        this.probeVisualization.setInteractable(interactable !== undefined ? interactable : false);
+      }
+    }
+
+    // Position the group to account for pivot point (like cutting tool)
+    this.updateProbeVisualizationPosition();
+
+    // Make visible
+    this.probeVisualization.group.visible = true;
+    this.updateScene({ forceUpdate: true });
+  }
+
+  hideProbeVisualization() {
+    if (this.probeVisualization) {
+      log.debug('[Visualizer] hideProbeVisualization');
+
+      // Just hide, don't dispose (keeps events bound for next show)
+      this.probeVisualization.group.visible = false;
+      this.updateScene({ forceUpdate: true });
+    }
   }
 
   // https://tylercipriani.com/blog/2014/07/12/crossbrowser-javascript-scrollbar-detection/
@@ -387,20 +573,15 @@ class Visualizer extends Component {
     const el = ReactDOM.findDOMNode(this.node);
     const visibleWidth = Math.max(
       ensurePositiveNumber(el && el.parentNode && el.parentNode.clientWidth),
-      360,
+      360
     );
 
     return visibleWidth;
   }
 
   getVisibleHeight() {
-    const clientHeight = document.documentElement.clientHeight;
-    const navbarHeight = 50;
-    const widgetHeaderHeight = 38;
-    const widgetFooterHeight = 38;
-    const visibleHeight = (
-      clientHeight - navbarHeight - widgetHeaderHeight - widgetFooterHeight - 1
-    );
+    const el = ReactDOM.findDOMNode(this.node);
+    const visibleHeight = ensurePositiveNumber(el && el.parentNode && el.parentNode.clientHeight);
 
     return visibleHeight;
   }
@@ -445,7 +626,7 @@ class Visualizer extends Component {
 
     this.controls.handleResize();
 
-    this.renderer.setPixelRatio(window.devicePixelRatio || 1);
+    this.renderer.setPixelRatio(getRenderPixelRatio());
     this.renderer.setSize(width, height);
 
     // Update the scene
@@ -481,21 +662,48 @@ class Visualizer extends Component {
     return limits;
   }
 
-  createCoordinateSystem(units) {
-    const axisLength = (units === IMPERIAL_UNITS) ? IMPERIAL_AXIS_LENGTH : METRIC_AXIS_LENGTH;
-    const gridCount = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_COUNT : METRIC_GRID_COUNT;
+  // Derive grid and axis bounds from machine profile limits (if set) or
+  // fall back to the fixed defaults for the given unit system.
+  getCoordinateBounds(units) {
     const gridSpacing = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_SPACING : METRIC_GRID_SPACING;
+    const limits = _get(this.machineProfile, 'limits');
+    const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = { ...limits };
+    const hasMachineProfile = (xmax - xmin) > 0 || (ymax - ymin) > 0;
+
+    if (hasMachineProfile) {
+      return {
+        minX: xmin,
+        maxX: xmax,
+        minY: ymin,
+        maxY: ymax,
+        minZ: zmin,
+        maxZ: zmax,
+        gridSpacing,
+      };
+    }
+
+    // Default symmetric grid
+    const gridCount = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_COUNT : METRIC_GRID_COUNT;
+    const axisLength = (units === IMPERIAL_UNITS) ? IMPERIAL_AXIS_LENGTH : METRIC_AXIS_LENGTH;
+    const size = gridCount * gridSpacing;
+    return {
+      minX: -size,
+      maxX: size,
+      minY: -size,
+      maxY: size,
+      minZ: -axisLength,
+      maxZ: axisLength,
+      gridSpacing,
+    };
+  }
+
+  createCoordinateSystem(units) {
+    const { minX, maxX, minY, maxY, minZ, maxZ, gridSpacing } = this.getCoordinateBounds(units);
+    const labelOffset = gridSpacing * 2;
     const group = new THREE.Group();
 
     { // Coordinate Grid
-      const gridLine = new GridLine(
-        gridCount * gridSpacing,
-        gridSpacing,
-        gridCount * gridSpacing,
-        gridSpacing,
-        colornames('blue'), // center line
-        colornames('gray 44') // grid
-      );
+      const gridLine = new GridLine(minX, maxX, gridSpacing, minY, maxY, gridSpacing, colornames('blue'), colornames('gray 44'));
       _each(gridLine.children, (o) => {
         o.material.opacity = 0.15;
         o.material.transparent = true;
@@ -505,15 +713,15 @@ class Visualizer extends Component {
       group.add(gridLine);
     }
 
-    { // Coordinate Axes
-      const coordinateAxes = new CoordinateAxes(axisLength);
+    { // Coordinate Axes — extend to the full grid extent
+      const coordinateAxes = new CoordinateAxes({ minX, maxX, minY, maxY, minZ, maxZ });
       coordinateAxes.name = 'CoordinateAxes';
       group.add(coordinateAxes);
     }
 
-    { // Axis Labels
+    { // Axis Labels — placed just beyond the positive end of each axis
       const axisXLabel = new TextSprite({
-        x: axisLength + 10,
+        x: maxX + labelOffset,
         y: 0,
         z: 0,
         size: 20,
@@ -522,7 +730,7 @@ class Visualizer extends Component {
       });
       const axisYLabel = new TextSprite({
         x: 0,
-        y: axisLength + 10,
+        y: maxY + labelOffset,
         z: 0,
         size: 20,
         text: 'Y',
@@ -531,7 +739,7 @@ class Visualizer extends Component {
       const axisZLabel = new TextSprite({
         x: 0,
         y: 0,
-        z: axisLength + 10,
+        z: maxZ + labelOffset,
         size: 20,
         text: 'Z',
         color: colornames('blue')
@@ -546,46 +754,94 @@ class Visualizer extends Component {
   }
 
   createGridLineNumbers(units) {
-    const gridCount = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_COUNT : METRIC_GRID_COUNT;
-    const gridSpacing = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_SPACING : METRIC_GRID_SPACING;
+    const { minX, maxX, minY, maxY, gridSpacing } = this.getCoordinateBounds(units);
     const textSize = (units === IMPERIAL_UNITS) ? (25.4 / 3) : (10 / 3);
     const textOffset = (units === IMPERIAL_UNITS) ? (25.4 / 5) : (10 / 5);
     const group = new THREE.Group();
 
-    for (let i = -gridCount; i <= gridCount; ++i) {
-      if (i !== 0) {
-        const textLabel = new TextSprite({
-          x: i * gridSpacing,
+    // X-axis labels
+    for (let x = minX; x <= maxX; x += gridSpacing) {
+      if (x !== 0) {
+        group.add(new TextSprite({
+          x,
           y: textOffset,
           z: 0,
           size: textSize,
-          text: (units === IMPERIAL_UNITS) ? i : i * 10,
+          // Scene coords are mm; mapValueToUnits converts and trims
+          // trailing zeros (e.g. 25.4 mm → 1 in, 10 mm → 10 mm).
+          text: mapValueToUnits(x, units),
           textAlign: 'center',
           textBaseline: 'bottom',
           color: colornames('red'),
           opacity: 0.5
-        });
-        group.add(textLabel);
+        }));
       }
     }
-    for (let i = -gridCount; i <= gridCount; ++i) {
-      if (i !== 0) {
-        const textLabel = new TextSprite({
+
+    // Y-axis labels
+    for (let y = minY; y <= maxY; y += gridSpacing) {
+      if (y !== 0) {
+        group.add(new TextSprite({
           x: -textOffset,
-          y: i * gridSpacing,
+          y,
           z: 0,
           size: textSize,
-          text: (units === IMPERIAL_UNITS) ? i : i * 10,
+          text: mapValueToUnits(y, units),
           textAlign: 'right',
           textBaseline: 'middle',
           color: colornames('green'),
           opacity: 0.5
-        });
-        group.add(textLabel);
+        }));
       }
     }
 
     return group;
+  }
+
+  rebuildCoordinateSystems() {
+    const { state } = this.props;
+    const { units, objects } = state;
+
+    ['ImperialCoordinateSystem', 'MetricCoordinateSystem',
+      'ImperialGridLineNumbers', 'MetricGridLineNumbers'].forEach(name => {
+      const obj = this.group.getObjectByName(name);
+      if (obj) {
+        this.group.remove(obj);
+      }
+    });
+
+    // Grid/axes geometry is built at raw machine coords; shift each group by
+    // -pivotPoint so it shares the same frame as the limits, cutting tool,
+    // probe visualization, and gcode toolpath (all of which render at
+    // "machine coords - pivotPoint").
+    const pp = this.pivotPoint.get();
+    const positionAtPivot = (group) => {
+      group.position.set(-pp.x, -pp.y, -pp.z);
+    };
+
+    const imperialCoordinateSystem = this.createCoordinateSystem(IMPERIAL_UNITS);
+    imperialCoordinateSystem.name = 'ImperialCoordinateSystem';
+    imperialCoordinateSystem.visible = objects.coordinateSystem.visible && (units === IMPERIAL_UNITS);
+    positionAtPivot(imperialCoordinateSystem);
+    this.group.add(imperialCoordinateSystem);
+
+    const metricCoordinateSystem = this.createCoordinateSystem(METRIC_UNITS);
+    metricCoordinateSystem.name = 'MetricCoordinateSystem';
+    metricCoordinateSystem.visible = objects.coordinateSystem.visible && (units === METRIC_UNITS);
+    positionAtPivot(metricCoordinateSystem);
+    this.group.add(metricCoordinateSystem);
+
+    const imperialGridLineNumbers = this.createGridLineNumbers(IMPERIAL_UNITS);
+    imperialGridLineNumbers.name = 'ImperialGridLineNumbers';
+    imperialGridLineNumbers.visible = objects.gridLineNumbers.visible && (units === IMPERIAL_UNITS);
+    positionAtPivot(imperialGridLineNumbers);
+    this.group.add(imperialGridLineNumbers);
+
+    const metricGridLineNumbers = this.createGridLineNumbers(METRIC_UNITS);
+    metricGridLineNumbers.name = 'MetricGridLineNumbers';
+    metricGridLineNumbers.visible = objects.gridLineNumbers.visible && (units === METRIC_UNITS);
+    positionAtPivot(metricGridLineNumbers);
+    this.group.add(metricGridLineNumbers);
   }
 
   //
@@ -611,7 +867,7 @@ class Visualizer extends Component {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.setClearColor(new THREE.Color(colornames('white')), 1);
-    this.renderer.setPixelRatio(window.devicePixelRatio || 1);
+    this.renderer.setPixelRatio(getRenderPixelRatio());
     this.renderer.setSize(width, height);
     this.renderer.clear();
 
@@ -656,37 +912,10 @@ class Visualizer extends Component {
       this.scene.add(light);
     }
 
-    { // Imperial Coordinate System
-      const visible = objects.coordinateSystem.visible;
-      const imperialCoordinateSystem = this.createCoordinateSystem(IMPERIAL_UNITS);
-      imperialCoordinateSystem.name = 'ImperialCoordinateSystem';
-      imperialCoordinateSystem.visible = visible && (units === IMPERIAL_UNITS);
-      this.group.add(imperialCoordinateSystem);
-    }
-
-    { // Metric Coordinate System
-      const visible = objects.coordinateSystem.visible;
-      const metricCoordinateSystem = this.createCoordinateSystem(METRIC_UNITS);
-      metricCoordinateSystem.name = 'MetricCoordinateSystem';
-      metricCoordinateSystem.visible = visible && (units === METRIC_UNITS);
-      this.group.add(metricCoordinateSystem);
-    }
-
-    { // Imperial Grid Line Numbers
-      const visible = objects.gridLineNumbers.visible;
-      const imperialGridLineNumbers = this.createGridLineNumbers(IMPERIAL_UNITS);
-      imperialGridLineNumbers.name = 'ImperialGridLineNumbers';
-      imperialGridLineNumbers.visible = visible && (units === IMPERIAL_UNITS);
-      this.group.add(imperialGridLineNumbers);
-    }
-
-    { // Metric Grid Line Numbers
-      const visible = objects.gridLineNumbers.visible;
-      const metricGridLineNumbers = this.createGridLineNumbers(METRIC_UNITS);
-      metricGridLineNumbers.name = 'MetricGridLineNumbers';
-      metricGridLineNumbers.visible = visible && (units === METRIC_UNITS);
-      this.group.add(metricGridLineNumbers);
-    }
+    // Coordinate systems and grid line numbers (Imperial + Metric) are
+    // created via rebuildCoordinateSystems so the initial render uses the
+    // same pivot-shifted frame as later rebuilds.
+    this.rebuildCoordinateSystems();
 
     { // Cutting Tool
       Promise.all([
@@ -726,6 +955,13 @@ class Visualizer extends Component {
 
         this.group.add(this.cuttingTool);
 
+        // The STL/texture load is async, so the tool may be added to the
+        // group after changeMachineProfile() has already run during mount.
+        // Sync its position to the current pivot/WPos so it lands at the
+        // correct spot instead of the default (0, 0, 0) (which would be the
+        // visible workspace center under any non-trivial machine profile).
+        this.updateCuttingToolPosition();
+
         // Update the scene
         this.updateScene();
       });
@@ -752,6 +988,28 @@ class Visualizer extends Component {
       this.updateLimitsPosition();
     }
 
+    { // Probe Visualization
+      // Create with default bounds, will be updated when shown
+      const defaultConfig = {
+        startX: 0,
+        startY: 0,
+        endX: 10,
+        endY: 10,
+        units: units
+      };
+      this.probeVisualization = new ProbeVisualization(
+        [], // No probe data initially
+        defaultConfig,
+        this.camera,
+        this.renderer.domElement,
+        this.controls,
+        () => this.updateScene({ forceUpdate: true })
+      );
+      this.probeVisualization.group.name = 'ProbeVisualization';
+      this.probeVisualization.group.visible = false; // Hidden by default
+      this.group.add(this.probeVisualization.group);
+    }
+
     this.scene.add(this.group);
   }
 
@@ -767,6 +1025,11 @@ class Visualizer extends Component {
   }
 
   clearScene() {
+    // Dispose probe visualization events before clearing
+    if (this.probeVisualization && typeof this.probeVisualization.dispose === 'function') {
+      this.probeVisualization.dispose();
+    }
+
     // to iterrate over all children (except the first) in a scene
     const objsToRemove = _tail(this.scene.children);
     _each(objsToRemove, (obj) => {
@@ -838,9 +1101,9 @@ class Visualizer extends Component {
   createTrackballControls(object, domElement) {
     const controls = new TrackballControls(object, domElement);
 
-    controls.rotateSpeed = 1.0;
+    controls.rotateSpeed = Math.PI;
     controls.zoomSpeed = 1.2;
-    controls.panSpeed = 0.8;
+    controls.panSpeed = 1.0;
     controls.noZoom = false;
     controls.noPan = false;
 
@@ -929,16 +1192,26 @@ class Visualizer extends Component {
       return;
     }
 
+    // Limits represent the machine's fixed envelope and stay anchored to the
+    // grid regardless of the active work coordinate system.
     const limits = _get(this.machineProfile, 'limits');
     const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = { ...limits };
     const pivotPoint = this.pivotPoint.get();
-    const { x: mpox, y: mpoy, z: mpoz } = this.machinePosition;
-    const { x: wpox, y: wpoy, z: wpoz } = this.workPosition;
-    const x0 = ((xmin + xmax) / 2) - (mpox - wpox) - pivotPoint.x;
-    const y0 = ((ymin + ymax) / 2) - (mpoy - wpoy) - pivotPoint.y;
-    const z0 = ((zmin + zmax) / 2) - (mpoz - wpoz) - pivotPoint.z;
+    const x0 = ((xmin + xmax) / 2) - pivotPoint.x;
+    const y0 = ((ymin + ymax) / 2) - pivotPoint.y;
+    const z0 = ((zmin + zmax) / 2) - pivotPoint.z;
 
     this.limits.position.set(x0, y0, z0);
+  }
+
+  // Update probe visualization position
+  updateProbeVisualizationPosition() {
+    if (!this.probeVisualization) {
+      return;
+    }
+
+    const pivotPoint = this.pivotPoint.get();
+    this.probeVisualization.group.position.set(-pivotPoint.x, -pivotPoint.y, -pivotPoint.z);
   }
 
   // Make the controls look at the specified position
@@ -960,13 +1233,13 @@ class Visualizer extends Component {
     this.updateScene();
   }
 
-  load(content, callback) {
+  load(name, gcode, callback) {
     // Remove previous G-code object
     this.unload();
 
-    this.visualizer = new GCodeVisualizer();
+    this.gcodeVisualizer = new GCodeVisualizer();
 
-    const obj = this.visualizer.render(content);
+    const obj = this.gcodeVisualizer.render(gcode);
     obj.name = 'Visualizer';
     this.group.add(obj);
 
@@ -983,10 +1256,19 @@ class Visualizer extends Component {
     // Set the pivot point to the center of the loaded object
     this.pivotPoint.set(center.x, center.y, center.z);
 
+    // Explicitly anchor the gcode mesh so its bounding-box center lands at
+    // world origin, independent of the pivot-delta callback's translation
+    // history. Without this, when unload() leaves the pivot at the machine
+    // profile's center (rather than (0, 0, 0)), the delta from
+    // profile_center → gcode_center would land the mesh at world
+    // profile_center instead of world origin.
+    obj.position.set(-center.x, -center.y, -center.z);
+
     // Update position
     this.updateCuttingToolPosition();
     this.updateCuttingPointerPosition();
     this.updateLimitsPosition();
+    this.updateProbeVisualizationPosition();
 
     if (this.viewport && dX > 0 && dY > 0) {
       // The minimum viewport is 50x50mm
@@ -1008,13 +1290,35 @@ class Visualizer extends Component {
       this.group.remove(visualizerObject);
     }
 
-    if (this.visualizer) {
-      this.visualizer = null;
+    if (this.gcodeVisualizer) {
+      this.gcodeVisualizer = null;
     }
 
     if (this.pivotPoint) {
-      // Set the pivot point to the origin point (0, 0, 0)
-      this.pivotPoint.set(0, 0, 0);
+      // Reset pivot to the machine profile's XY center (or origin if no
+      // profile) so the scene stays in the same "machine - pivot" frame as
+      // changeMachineProfile produces. This keeps the visible workspace
+      // centered at world origin and the orbit pivot (controls.target =
+      // (0, 0, 0)) at the visible center after unloading gcode.
+      if (!this.machineProfile) {
+        this.pivotPoint.set(0, 0, 0);
+      } else {
+        const limits = _get(this.machineProfile, 'limits');
+        const { xmin = 0, xmax = 0, ymin = 0, ymax = 0 } = { ...limits };
+        const centerX = (xmin + xmax) / 2;
+        const centerY = (ymin + ymax) / 2;
+        this.pivotPoint.set(centerX, centerY, 0);
+      }
+
+      // Update positions after resetting pivot point
+      this.updateCuttingToolPosition();
+      this.updateCuttingPointerPosition();
+      this.updateLimitsPosition();
+      this.updateProbeVisualizationPosition();
+
+      if (this.group) {
+        this.rebuildCoordinateSystems();
+      }
     }
 
     if (this.controls) {

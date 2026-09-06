@@ -1,3 +1,4 @@
+import { Box } from '@tonic-ui/react';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -5,7 +6,7 @@ import styles from './index.styl';
 
 function Header({ fixed, className, ...props }) {
   return (
-    <div
+    <Box
       {...props}
       className={cx(
         className,

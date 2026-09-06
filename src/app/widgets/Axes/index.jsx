@@ -165,7 +165,7 @@ class AxesWidget extends Component {
       }
 
       if (controllerType === TINYG) {
-        return get(controllerState, 'sr.modal.wcs') || defaultWCS;
+        return get(controllerState, 'modal.wcs') || defaultWCS;
       }
 
       return defaultWCS;
@@ -437,19 +437,23 @@ class AxesWidget extends Component {
     'config:change': () => {
       this.fetchMDICommands();
     },
-    'serialport:open': (options) => {
-      const { port } = options;
-      this.setState({ port: port });
+    'connection:open': () => {
+      this.setState({ connected: true });
     },
-    'serialport:close': (options) => {
-      const initialState = this.getInitialState();
-      this.setState(state => ({
-        ...initialState,
-        mdi: {
-          ...initialState.mdi,
-          commands: [...state.mdi.commands]
+    'connection:change': (connectionState, connected) => {
+      this.setState(state => {
+        if (connected) {
+          return { connected };
         }
-      }));
+        const initialState = this.getInitialState();
+        return {
+          ...initialState,
+          mdi: {
+            ...initialState.mdi,
+            commands: [...state.mdi.commands]
+          }
+        };
+      });
     },
     'workflow:state': (workflowState) => {
       const canJog = (workflowState !== WORKFLOW_STATE_RUNNING);
@@ -664,7 +668,7 @@ class AxesWidget extends Component {
       minimized: this.config.get('minimized', false),
       isFullscreen: false,
       canClick: true, // Defaults to true
-      port: controller.port,
+      connected: !!controller.connection.ident,
       units: METRIC_UNITS,
       controller: {
         type: controller.type,
@@ -757,11 +761,11 @@ class AxesWidget extends Component {
   }
 
   canClick() {
-    const { port, workflow } = this.state;
+    const { connected, workflow } = this.state;
     const controllerType = this.state.controller.type;
     const controllerState = this.state.controller.state;
 
-    if (!port) {
+    if (!connected) {
       return false;
     }
     if (workflow.state === WORKFLOW_STATE_RUNNING) {
@@ -794,7 +798,7 @@ class AxesWidget extends Component {
       }
     }
     if (controllerType === TINYG) {
-      const machineState = get(controllerState, 'sr.machineState');
+      const machineState = get(controllerState, 'machineState');
       const states = [
         TINYG_MACHINE_STATE_READY,
         TINYG_MACHINE_STATE_STOP,

@@ -1,7 +1,9 @@
 import { EventEmitter } from 'events';
 import net from 'net';
 import { ReadlineParser } from '@serialport/parser-readline';
-import log from './logger';
+import logger from './logger';
+
+const log = logger('socket-connection');
 
 const defaultOptions = Object.freeze({
   port: 23
@@ -96,6 +98,8 @@ class SocketConnection extends EventEmitter {
       return;
     }
 
+    this.socket = net.connect(this.options.port, this.options.host);
+
     if (typeof callback === 'function') {
       let connected = false;
 
@@ -115,7 +119,6 @@ class SocketConnection extends EventEmitter {
       this.socket.once('connect', connectCallback);
     }
 
-    this.socket = net.connect(this.options.port, this.options.host);
     this.socket.on('connect', this.eventListener.open);
     this.socket.on('close', this.eventListener.close);
     this.socket.on('error', this.eventListener.error);

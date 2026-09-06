@@ -41,9 +41,6 @@ class Dropdown extends Component {
     // Whether to open the dropdown on mouse over.
     autoOpen: PropTypes.bool,
 
-    // Align the menu to the right side of the dropdown toggle.
-    pullRight: PropTypes.bool,
-
     // A callback fired when the dropdown closes.
     onClose: PropTypes.func,
 
@@ -79,7 +76,6 @@ class Dropdown extends Component {
     componentClass: ButtonGroup,
     dropup: false,
     disabled: false,
-    pullRight: false,
     open: false
   };
 
@@ -292,7 +288,6 @@ class Dropdown extends Component {
       componentClass: Component,
       dropup,
       disabled,
-      pullRight,
       open,
             autoOpen, // eslint-disable-line
       onClose,
@@ -301,7 +296,7 @@ class Dropdown extends Component {
       rootCloseEvent,
       onMouseEnter,
       onMouseLeave,
-            onToggle, // eslint-disable-line
+        onToggle, // eslint-disable-line
       children,
       ...props
     } = this.props;
@@ -309,6 +304,35 @@ class Dropdown extends Component {
     if (Component === ButtonGroup) {
       props.dropdownOpen = open;
     }
+
+    // Non-menu children (toggles, split-button buttons) share one flex row
+    // with true vertical centering; the menu aligns to the right edge of the
+    // wrapper via the flex column layout.
+    const toggleChildren = [];
+    let menuChild = null;
+
+    React.Children.forEach(children, child => {
+      if (!React.isValidElement(child)) {
+        toggleChildren.push(child);
+        return;
+      }
+
+      if (isDropdownMenu(child) || isDropdownMenuWrapper(child)) {
+        menuChild = this.renderMenu(child, {
+          open,
+          onClose,
+          onSelect,
+          rootCloseEvent
+        });
+        return;
+      }
+
+      toggleChildren.push(
+        isDropdownToggle(child)
+          ? this.renderToggle(child, { disabled, open })
+          : child
+      );
+    });
 
     return (
       <Component
@@ -327,29 +351,10 @@ class Dropdown extends Component {
           [styles.dropup]: dropup
         })}
       >
-        {React.Children.map(children, child => {
-          if (!React.isValidElement(child)) {
-            return child;
-          }
-
-          if (isDropdownToggle(child)) {
-            return this.renderToggle(child, {
-              disabled, open
-            });
-          }
-
-          if (isDropdownMenu(child) || isDropdownMenuWrapper(child)) {
-            return this.renderMenu(child, {
-              open,
-              pullRight,
-              onClose,
-              onSelect,
-              rootCloseEvent
-            });
-          }
-
-          return child;
-        })}
+        <div className={styles.dropdownToggleGroup}>
+          {toggleChildren}
+        </div>
+        {menuChild}
       </Component>
     );
   }
