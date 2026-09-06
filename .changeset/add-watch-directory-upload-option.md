@@ -2,4 +2,4 @@
 "cncjs": minor
 ---
 
-Add an option to save uploaded G-code files to the configured watch directory, so they persist across sessions instead of only being loaded in memory.
+Rework the Watch Directory modal: add an "Add" button and a dropzone to upload files to the configured watch directory, with an upload progress indicator. The file tree updates in real time via server push events and also provides a Refresh button.

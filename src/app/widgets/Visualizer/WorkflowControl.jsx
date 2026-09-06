@@ -3,7 +3,6 @@ import includes from 'lodash/includes';
 import pick from 'lodash/pick';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import api from 'app/api';
 import { Button, ButtonGroup, ButtonToolbar } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import Space from 'app/components/Space';
@@ -37,31 +36,11 @@ class WorkflowControl extends PureComponent {
       actions: PropTypes.object
     };
 
-    state = {
-      savePermanently: false,
-      watchDirectoryConfigured: false
-    };
-
     fileInputEl = null;
-
-    componentDidMount() {
-      api.watch.getStatus()
-        .then((res) => {
-          const { configured = false } = { ...res.body };
-          this.setState({ watchDirectoryConfigured: configured });
-        })
-        .catch((res) => {
-          // Ignore error
-        });
-    }
 
     handleClickUpload = (event) => {
       this.fileInputEl.value = null;
       this.fileInputEl.click();
-    };
-
-    handleChangeSavePermanently = (event) => {
-      this.setState({ savePermanently: event.target.checked });
     };
 
     handleChangeFile = (event) => {
@@ -89,8 +68,7 @@ class WorkflowControl extends PureComponent {
 
         const meta = {
           name: file.name,
-          size: file.size,
-          savePermanently: this.state.savePermanently && this.state.watchDirectoryConfigured
+          size: file.size
         };
         actions.uploadFile(result, meta);
       };
@@ -264,18 +242,6 @@ class WorkflowControl extends PureComponent {
               </Button>
             </ButtonGroup>
           </ButtonToolbar>
-          {this.state.watchDirectoryConfigured && (
-            <div className="checkbox" style={{ marginTop: 5, marginBottom: 0 }}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={this.state.savePermanently}
-                  onChange={this.handleChangeSavePermanently}
-                />
-                {i18n._('Save to Watch Directory')}
-              </label>
-            </div>
-          )}
         </div>
       );
     }

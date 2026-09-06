@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 import fs from 'fs';
 import path from 'path';
 import minimatch from 'minimatch';
@@ -5,8 +6,20 @@ import FSMonitor from './FSMonitor';
 
 const monitor = new FSMonitor();
 
+const emitter = new EventEmitter();
+
 const start = ({ watchDirectory }) => {
   monitor.watch(watchDirectory);
+
+  monitor.on('created', (file) => {
+    emitter.emit('change', { file });
+  });
+  monitor.on('changed', (file) => {
+    emitter.emit('change', { file });
+  });
+  monitor.on('removed', (file) => {
+    emitter.emit('change', { file });
+  });
 };
 
 const stop = () => {
@@ -85,11 +98,21 @@ const writeFile = (file, data, callback) => {
   fs.writeFile(target, data, 'utf8', callback);
 };
 
+const on = (...args) => {
+  emitter.on(...args);
+};
+
+const removeListener = (...args) => {
+  emitter.removeListener(...args);
+};
+
 export default {
   start,
   stop,
   isConfigured,
   getFiles,
   readFile,
-  writeFile
+  writeFile,
+  on,
+  removeListener
 };

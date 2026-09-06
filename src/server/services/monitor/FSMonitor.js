@@ -1,6 +1,7 @@
+import { EventEmitter } from 'events';
 import watch from 'watch';
 
-class FSMonitor {
+class FSMonitor extends EventEmitter {
     root = '';
 
     monitor = null;
@@ -16,12 +17,15 @@ class FSMonitor {
 
         monitor.on('created', (f, stat) => {
           this.files[f] = stat;
+          this.emit('created', f);
         });
         monitor.on('changed', (f, curr, prev) => {
           this.files[f] = curr;
+          this.emit('changed', f);
         });
         monitor.on('removed', (f, stat) => {
           delete this.files[f];
+          this.emit('removed', f);
         });
       });
     }

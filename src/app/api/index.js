@@ -260,18 +260,23 @@ watch.readFile = (options) => new Promise((resolve, reject) => {
 });
 
 watch.uploadFile = (options) => new Promise((resolve, reject) => {
-  const { file, data } = { ...options };
+  const { file, data, onProgress } = { ...options };
 
-  authrequest
+  const request = authrequest
     .put('/api/watch/file')
-    .send({ file, data })
-    .end((err, res) => {
-      if (err) {
-        reject(res);
-      } else {
-        resolve(res);
-      }
-    });
+    .send({ file, data });
+
+  if (typeof onProgress === 'function') {
+    request.on('progress', onProgress);
+  }
+
+  request.end((err, res) => {
+    if (err) {
+      reject(res);
+    } else {
+      resolve(res);
+    }
+  });
 });
 
 //
