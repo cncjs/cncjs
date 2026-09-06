@@ -1,0 +1,135 @@
+{
+  "sourceCommit": "f301cde7",
+  "verification": "Read-only Node probe of existing GCodeVisualizer and Three.js geometry; no browser or renderer test",
+  "results": [
+    {
+      "source": "examples/gcode/arc-xy-plane.gcode",
+      "bounds": {
+        "min": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "max": {
+          "x": 20,
+          "y": 20,
+          "z": 0
+        }
+      },
+      "frames": 3,
+      "vertices": 32,
+      "samples": [
+        {
+          "index": 0,
+          "point": [
+            0,
+            20,
+            0
+          ]
+        },
+        {
+          "index": 16,
+          "point": [
+            14.142135623730951,
+            14.14213562373095,
+            0
+          ]
+        },
+        {
+          "index": 31,
+          "point": [
+            20,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "source": "examples/gcode/arc-xz-plane.gcode",
+      "bounds": {
+        "min": {
+          "x": -20,
+          "y": 0,
+          "z": -20
+        },
+        "max": {
+          "x": 20,
+          "y": 0,
+          "z": 20
+        }
+      },
+      "frames": 3,
+      "vertices": 32,
+      "samples": [
+        {
+          "index": 0,
+          "point": [
+            0,
+            0,
+            20
+          ]
+        },
+        {
+          "index": 16,
+          "point": [
+            -14.142135623730951,
+            0,
+            -14.14213562373095
+          ]
+        },
+        {
+          "index": 31,
+          "point": [
+            20,
+            0,
+            -3.673940397442059e-15
+          ]
+        }
+      ]
+    },
+    {
+      "source": "examples/gcode/arc-yz-plane.gcode",
+      "bounds": {
+        "min": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "max": {
+          "x": 0,
+          "y": 20,
+          "z": 20
+        }
+      },
+      "frames": 3,
+      "vertices": 32,
+      "samples": [
+        {
+          "index": 0,
+          "point": [
+            0,
+            0,
+            20
+          ]
+        },
+        {
+          "index": 16,
+          "point": [
+            0,
+            14.142135623730951,
+            14.14213562373095
+          ]
+        },
+        {
+          "index": 31,
+          "point": [
+            0,
+            20,
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}
