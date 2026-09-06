@@ -48,8 +48,8 @@
 
 - [ ] Toolbar/WorkflowControl 改純 props/actions，Menu/Tooltip/Modal/Progress 直接 Tonic；run/pause/stop 不放任何 mount effect。
 - [ ] machine profile fetch 改 Administration/Machines 既有 Query hooks；updateMachineProfiles event invalidate 同一 prefix。使用者選擇的 profile id 在 config，server list 在 query，不能互相覆盖。
-- [ ] watch directory 依 path 分 key、lazy fetch；展開使用子 function node 的 useQuery，或 event handler 呼叫 queryClient.fetchQuery 同一 query options。pending/error/retry 與目錄切換 race 都測。
-- [ ] Tonic Tree 是否可滿足 lazy loading、選擇、focus、原 infinite-tree 行為，terra 在本 task 先做有範圍的 API 對照。若可則替換；缺少大目錄 virtualization 時保留必要 data/virtualization adapter，UI 用 Tonic，不聲稱 Tonic Tree 自帶未核對能力。
+- [ ] watch directory 依 normalized path 分 key並 lazy fetch。建立 `watchDirectoryQueryOptions(path)`；render 中的已展開 node 由子 function 呼叫 `useQuery(watchDirectoryQueryOptions(path))`，event handler 只更新 controlled expanded/selected state。需要 click 後立即預取時可呼叫 `queryClient.prefetchQuery` 同一 options，但不能建立第二組 key/queryFn。pending/error/retry 與目錄切換 race 都測。
+- [ ] 直接以 Tonic Tree controlled `expanded`、`selected`、`onNodeFocus`、`onNodeSelect`、`onNodeToggle` 取代 `react-infinite-tree`。Tonic Tree 不宣稱內建 virtualization；先以 R0 固定 5,000-node fixture 比較相同 browser 的選取、展開與 scroll p95。只有 p95 退步超過 20% 才保留／新增薄型 visible-row adapter，且 adapter 不擁有 selection、loading、query 或 component instance。
 - [ ] Dashboard/WatchDirectory 的 findDOMNode 改自己擁有的 DOM wrapper ref；virtual list scroll API 若是第三方 imperative resource，可以封在該元件內，不讓父層依賴 React instance。
 - [ ] 測 huge list scroll、selection/load、空目錄/錯誤、cancel modal、檔案下載 metadata/token、control disabled 與 exact commands。
 

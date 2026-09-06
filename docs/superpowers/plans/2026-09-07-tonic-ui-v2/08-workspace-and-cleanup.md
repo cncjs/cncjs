@@ -39,16 +39,7 @@
 
 ## Task W2：剩餘元件與非 widget consumers
 
-**Files:** inventory「components 家族」全部列與「非 widget React classes」列表，包含 `src/app/hocs/withMemo.js`、`src/app/__deprecated/TopNav.old/`。
-**Create Test:** 依仍有 domain 行為的家族 colocated `__tests__/<name>.test.jsx`；無行為的純 re-export 移除以 consumer tests/build 驗證，不寫鏡像測試。
-
-- [ ] 對每一個「直接替換」家族，用 inventory 的 consumers 列表及 repo-wide rg 處理 alias/relative imports、barrel exports；涵蓋 containers/pages 已是 function 的元件。不能只改 widgets。
-- [ ] GridSystem 最後一個 consumer 移除後，刪 context.jsx 的 GridSystemProvider；它的 responsive 規則已在 U2 明確移到 Tonic layout。
-- [ ] 刪舊 ModalProvider/ModalRoot/useModal consumers，domain modal 改 local state 或既有 portal；刪舊 Dropdown，包括 Widget.DropdownButton/DropdownMenuItem 轉接（若仍存在）。
-- [ ] Table/BaseTable/TablePagination 若只重複 UI，直接 Tonic；若包含 TanStack Table sorting/selection/paging glue，只保留該邏輯，表頭/body/pagination 使用 Tonic。不要把資料演算法当 primitive 刪除。
-- [ ] RefHolder、RowsHelper、withMemo、HorizontalForm context HOC、Validation HOC 的實際 consumers 改 props/hooks/controlled form；沒有 consumers 的這些遷移目標直接刪除。
-- [ ] `__deprecated/TopNav.old` 先找引用；沒有 runtime/import 使用則刪除這個本次 class/UI 遺留，不把它轉成新架構後繼續保存。
-- [ ] 重新核對 inventory 的保留項：如果僅餘 Box/Text/Icon 的 wrapper，也直接 inline Tonic 並刪除。每一個保留項寫出「額外 domain contract + consumer + test」。
+原本把 61 個家族塞進一個 task，無法安全執行。改依 [08a — component families](details/08a-component-families.md) 的 P0–P6 分批；每批各自有 files、consumer gate、tests 與刪除條件。W2 只有在 P0–P6 全部完成後才可勾選。
 
 ## Task W3：依賴／樣式／全域驗收
 
@@ -63,10 +54,11 @@
 rg -n '@trendmicro/react-|react-bootstrap-buttons|createFetchMachine|fetchMacrosService' src package.json
 rg -n 'extends .*Component|createReactClass|React.createClass|findDOMNode|getWrappedInstance|useImperativeHandle' src/app
 rg -n 'widgetMap|this.primaryWidgets|this.secondaryWidgets|this.visualizer|node.mdi.state|node.general.value' src/app
-rg -n '(app/components/|components/)(Buttons|Dropdown|Modal|GridSystem|Navs|Checkbox|Radio|Tooltip)(/|['"])' src/app
+rg -n "(app/components/|components/)(Buttons|Dropdown|Modal|GridSystem|Navs|Checkbox|Radio|Tooltip)(/|['\"])" src/app
+rg -n 'styled-components|react-select|react-infinite-tree|rc-slider|react-repeatable|rc-trigger|react-foreach' src/app package.json
 ```
 
-- [ ] 目標模式無輸出；合法 DOM ref/第三方 resource refs 不算違規。useImperativeHandle 若仍有必要的非 widget DOM adapter，逐一說明；不能保留 collapse/expand/settings instance API。
+- [ ] 目標模式無輸出，但依 00-design 明確保留的 `react-datepicker` 與 `@fortawesome/*` 不在負向掃描。合法 DOM ref/第三方 resource refs 不算違規。useImperativeHandle 若仍有必要的非 widget DOM adapter，逐一說明；不能保留 collapse/expand/settings instance API。
 - [ ] 建立防回歸檢查 `scripts/check-ui-migration.js`：用 AST/import graph 掃 React class inheritance、legacy UI imports、禁止的 component instance patterns，`yarn check:ui-migration` 納入現有 CI 合適 gate。測試 fixture 包含 aliased Component 與 relative barrel 以免只比字串。
 - [ ] 執行完整驗證：
 
@@ -79,6 +71,6 @@ yarn test --runInBand
 yarn build
 ```
 
-- [ ] Browser：所有 17 widgets、Workspace 排序/管理、Administration CRUD、登入/登出切換、light/dark/auto、窄/寬視窗、modal focus/keyboard、browser fullscreen、WebGL、console 長時輸出。
+- [ ] Browser：依 [09a — browser procedure](details/09a-browser-procedure.md) 跑所有 17 widgets、Workspace 排序/管理、Administration CRUD、登入/登出切換、light/dark/auto、窄/寬視窗、modal focus/keyboard、browser fullscreen、WebGL、console 長時輸出。
 - [ ] 以 mock transport/simulator 驗證 CNC 指令未重送；frontend tests、backend tests、browser、simulator 分別列實際結果和未覆蓋項。
 - [ ] inventory 每個 family/task 勾清，execution log 記錄最終保留 domain components 與 API 證據；不以 compile 成功代替完成。

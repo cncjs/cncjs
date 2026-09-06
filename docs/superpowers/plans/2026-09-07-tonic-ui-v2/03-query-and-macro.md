@@ -25,7 +25,7 @@
 
 **Prerequisite:** F2、U1a/U1b。Tonic modal 契約依 U3。
 
-具體 hook 測試與 mutation 順序見 [03a](details/03a-query-contract.md)。
+具體 hook 測試與 mutation 順序見 [03a](details/03a-query-contract.md)；所有 React/non-React caller 的允許邊界及稽核規則見 [03b](details/03b-query-boundaries.md)。Q1 開始前先完成 03b 的 B0 import baseline，W3 才能判斷何者是違規 direct transport。
 
 ## Task Q1：共用 Macro query module
 
@@ -99,3 +99,5 @@ yarn build
 | Socket controller commands | 各 widget | 仍用 controller；不做 query、不自動 retry、不 mount 即執行 |
 
 以上 queryFn 可先 wrap 既有 Promise transport；只有 Axios 改造能真正消耗 signal 時才宣稱 transport cancellation，不能把無法 abort 的 superagent wrapper 寫成已可取消。React Query 仍負責 cache 與 UI 狀態。
+
+**Boundary gate:** React component 不直接 import `api`/`axios` 讀寫 server state；它 import query module 的 hook。query module 同時輸出純 transport/query-options 給 saga/bootstrap 等非 React caller，這些 caller 不能呼叫 hooks。Socket controller、browser download/export 與 authentication storage 的具體例外只限 03b 表列路徑，不能以「不是 GET」為由任意繞過 mutation。

@@ -39,7 +39,7 @@ yarn test --runInBand
 yarn build
 ```
 
-- [ ] 將 React/react-dom 範圍固定在 `18.3.1`，Tonic React/hooks/icons 分別 `2.15.0` / `2.2.1` / `2.1.3`；把 React Query 從 devDependencies 移至 dependencies 並固定 `4.44.0`。保留其餘依賴，`yarn install` 更新 lock，再 `yarn install --immutable`。
+- [ ] 記錄 lockfile 實際解析為 React/react-dom `18.3.1`、Tonic React/hooks/icons `2.15.0` / `2.2.1` / `2.1.3`、React Query `4.44.0`。保留 package.json 既有 semver ranges；只把 React Query 從 devDependencies 移至 dependencies，不順便改套件 pinning policy。`yarn install` 更新 lock，再以 `yarn install --immutable` 驗證。
 - [ ] `src/app/index.jsx` 與 `src/app/lib/portal.jsx` 都用 `import { createRoot } from 'react-dom/client'`，取代從 react-dom namespace 取 createRoot；不改 render/provider 結構。
 - [ ] 更新 AGENTS.md 失真的 React/Router 資訊；不更動其他工作規範。
 - [ ] `yarn dev` 後量測 login、Workspace、Administration/Macros、Appearance light/dark、自訂 modal 的現有行為；截圖與錯誤清單存執行紀錄指定位置。
