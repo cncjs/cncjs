@@ -55,10 +55,10 @@ rg -n '@trendmicro/react-|react-bootstrap-buttons|createFetchMachine|fetchMacros
 rg -n 'extends .*Component|createReactClass|React.createClass|findDOMNode|getWrappedInstance|useImperativeHandle' src/app
 rg -n 'widgetMap|this.primaryWidgets|this.secondaryWidgets|this.visualizer|node.mdi.state|node.general.value' src/app
 rg -n "(app/components/|components/)(Buttons|Dropdown|Modal|GridSystem|Navs|Checkbox|Radio|Tooltip)(/|['\"])" src/app
-rg -n 'styled-components|react-select|react-infinite-tree|rc-slider|react-repeatable|rc-trigger|react-foreach' src/app package.json
+rg -n 'styled-components|react-infinite-tree|react-repeatable|rc-trigger|react-foreach' src/app package.json
 ```
 
-- [ ] 目標模式無輸出，但依 00-design 明確保留的 `react-datepicker` 與 `@fortawesome/*` 不在負向掃描。合法 DOM ref/第三方 resource refs 不算違規。useImperativeHandle 若仍有必要的非 widget DOM adapter，逐一說明；不能保留 collapse/expand/settings instance API。
+- [ ] 目標模式無輸出；`rc-slider`、`@fortawesome/*` 及經逐檔說明的 react-select 例外依 00-design 核對。react-datepicker 無 consumers 才刪。合法 DOM ref/第三方 resource refs 不算違規；不能保留 collapse/expand/settings instance API。
 - [ ] 建立防回歸檢查 `scripts/check-ui-migration.js`：用 AST/import graph 掃 React class inheritance、legacy UI imports、禁止的 component instance patterns，`yarn check:ui-migration` 納入現有 CI 合適 gate。測試 fixture 包含 aliased Component 與 relative barrel 以免只比字串。
 - [ ] 執行完整驗證：
 

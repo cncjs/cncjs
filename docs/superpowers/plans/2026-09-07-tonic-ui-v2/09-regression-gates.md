@@ -22,6 +22,8 @@
 
 本文件不是收尾才跑：**F2 後立即做 R0；D3/D4 前建立 R1/R2；E1 前建立 R3。** R4/R5 與重構同批完成；R6 是合併/交付 gate。所有「通過」必須附實際執行紀錄，本輪規劃尚未執行 app regression tests。
 
+先以 [09a BR0](details/09a-browser-procedure.md) 固定啟動環境/fixtures，再完成 R0。R1/R2 在 D3/D4 前建立案例，D4 後才驗收 completed；R4/R5 同理。此為 test-first 時序，不要求新架構測試在原版全綠，不形成依賴循環。進度以 [STATUS](STATUS.md) 為準。
+
 ## Task R0：原版基準與已知差異清單
 
 **Create:** 本文件夾 `regression-baseline.md`（執行時建立）；測試 fixtures 放各 widget `__tests__`，不要把使用者機器設定、token、私人 G-code 放 fixtures。

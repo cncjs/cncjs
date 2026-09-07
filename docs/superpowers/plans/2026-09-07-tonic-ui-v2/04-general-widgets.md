@@ -25,6 +25,8 @@
 
 **Prerequisite:** 01、02；HTTP 使用 03 契約。
 
+G1–G7 執行細節補充於 [04b](details/04b-widget-contracts.md)，包括 state owner、精確 command oracle 與 lifecycle cases；G8 使用 04a。領取及恢復依 [STATUS](STATUS.md)，不能只看父文件 checkbox。
+
 ## 每個 widget task 的固定步驟
 
 以下是每個 task 必須執行的動作；task 表格補上各自的檔案、測試與行為，不跨 widget 一次改完。

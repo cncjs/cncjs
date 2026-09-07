@@ -62,9 +62,9 @@
 - [ ] FormControl/FormGroup/InputGroup/InlineError 改 Tonic form primitives。每欄保留 label/help/error 關聯、required、disabled、numeric zero、empty string 和 Enter submit。
 - [ ] HorizontalForm 的 responsive columns 改 Tonic Grid/Flex；刪 context HOC。
 - [ ] Validation 的 `createForm/createFormControl` class HOC 改既有 react-final-form props/hooks；不能同時保留兩份 draft state。MDI 的完整介面依 06a。
-- [ ] `react-select` consumers 改 Tonic Select；`rc-slider` consumers改 Tonic Slider；先以 tests固定 option identity、clear、min/max/step、keyboard 與 onChange/onCommit 時機。
+- [ ] 依 00-design 的 API 相容性規則處理 react-select：先保存搜尋、自訂 options 與 keyboard 行為，再決定 native Select 或 domain selector；未等價的 caller 明列例外。rc-slider 保留，Tonic 沒有公開 Slider，先測 min/max/step、keyboard 與 change/commit 時機。
 
-**Gate:** P2 family imports、`react-select`、`rc-slider` 為零；所有 form 可由 keyboard 完成；invalid submit 不送 HTTP/controller mutation。
+**Gate:** P2 family imports 為零；react-select 未等價 caller 逐檔記錄，rc-slider 按設計保留；所有 form 可由 keyboard 完成；invalid submit 不送 HTTP/controller mutation。
 
 ## Task P3：layout 與 display
 
@@ -116,7 +116,6 @@
 rg -n 'extends .*Component|createReactClass|React.createClass|findDOMNode|getWrappedInstance' src/app
 rg -n 'styled-components' src/app package.json
 find src/app/components -mindepth 1 -maxdepth 1 -type d | sort
-yarn check:ui-migration
 yarn test:frontend --runInBand
 yarn lint
 yarn test --runInBand
@@ -124,3 +123,5 @@ yarn build
 ```
 
 **Gate:** `src/app` React class 為零，`styled-components` 為零，所有「直接替換」family 為零。合法非 React classes 和保留 domain compositions 都出現在具名 allowlist；不能靠 regex exception 隱藏 React class。
+
+P6 先以 AST/import inspection 人工對帳；可執行的 check:ui-migration script 在後續 B3 建立並測試，W3 再執行。不要要求 P6 依賴尚未建立的 script。

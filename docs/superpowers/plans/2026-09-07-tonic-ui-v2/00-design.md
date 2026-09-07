@@ -51,12 +51,12 @@ Tonic Modal 2.15 的 `autoFocus/ensureFocus/closeOnEsc/closeOnInteractOutside` �
 
 | 現有套件 | 本輪決策 | 實作位置／完成條件 |
 | --- | --- | --- |
-| `react-select` | 以 Tonic `Select` 取代 | Connection、Tool、Webcam settings；保留 option value、placeholder、clear/disabled 與 validation 行為 |
-| `rc-slider` | 以 Tonic `Slider` 取代 | Axes MDI create/update、ShuttleXpress、Laser、Webcam；先保存 min/max/step/value label 與 change/commit 觸發時機 |
+| `react-select` | 簡單選項以 Tonic `Select/Option` 取代 | Tonic Select 是原生 select。Webcam 的無搜尋選單可直接換；Connection 的自訂 Option/SingleValue、Tool 的搜尋能力需先保存行為。若無法等價，以 Tonic primitives 寫具 keyboard/ARIA 測試的 domain selector；通過前保留該處 react-select，不可靜默刪搜尋或 rich labels |
+| `rc-slider` | 暫時保留，function consumer 照常遷移 | 本機公開 exports **沒有 Slider**。保留原 min/max/step/value label、change/commit 語義與 Stylus；不可 import 不存在的 Tonic Slider。完整替換另立經驗證的 task |
 | `rc-trigger` | 以 Tonic Tooltip/Popover 取代 | 本地 Tooltip/Infotip 最後 consumer 清空後刪除 |
 | `react-repeatable` | 移除套件，保留 CNC 長按 domain hook | `RepeatableButton` 底層用 Tonic Button；delay、interval、pointer/key release、blur、disabled、unmount 全部有 fake-timer tests |
 | `react-infinite-tree` | 預設改 Tonic `Tree` | WatchDirectory 使用 controlled `expanded`/`selected` 和 Query lazy loading；只有 R0 固定大目錄 fixture 在相同 browser 的 p95 退步超過 20% 時，才新增只負責可視列計算的薄 virtualization adapter，Tree selection/loading state 仍由 React owner 管理 |
-| `react-datepicker` | 本輪保留 | Tonic v2 無一對一 date picker；既有日期輸入不因 UI 清理被降級，另開替換工作 |
+| `react-datepicker` | W3 複核後移除無 consumer dependency | 本次 `src/app` 掃描無 import；全 repo/import graph 確認無 consumer 再刪，不新增日期元件工作 |
 | `react-foreach` | 改原生 `map` | Axes Settings General；不保留 wrapper dependency |
 | `styled-components` | 移除 | 觸及檔案改 Tonic props 或 Stylus；W3 負向掃描為零後移除 dependency |
 | `@fortawesome/*` | 保留 | 不屬於本輪 legacy component package 清理 |
@@ -67,7 +67,7 @@ Query 的允許邊界、非 hook caller 及靜態掃描規則見 [03b](details/0
 
 每期：指定區域無新 legacy imports、指定 React classes 清空、功能測試成功、build/lint 結果可追溯、同一個流程無重複指令或 listener。
 
-最終：所有 17 widgets 和 Workspace 完成（16 個有 chrome，Visualizer 保留無 chrome）；src/app 的 React classes 為零；createFetchMachine/ServiceContext fetch actor 為零；沒有 legacy UI package imports；inventory 的「直接替換」家族全部移除；只保留經逐項證明具 domain 功能的 composition；`styled-components` imports 為零。Font Awesome 與 `react-datepicker` 按上表保留。重新 `yarn install --immutable` 可重現，Node/backend 測試仍過。
+最終：所有 17 widgets 和 Workspace 完成（16 個有 chrome，Visualizer 保留無 chrome）；src/app 的 React classes 為零；createFetchMachine/ServiceContext fetch actor 為零；沒有目標 legacy UI package imports；inventory 的「直接替換」家族全部移除；只保留經逐項證明具 domain 功能的 composition；`styled-components` imports 為零。Font Awesome、rc-slider 及有具名相容性理由的 react-select 依上表記錄；react-datepicker 無 consumers 才刪。重新 `yarn install --immutable` 可重現，Node/backend 測試仍過。
 
 ## Widget 架構的最終資料流
 

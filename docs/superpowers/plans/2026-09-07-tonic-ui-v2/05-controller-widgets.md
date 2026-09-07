@@ -25,6 +25,8 @@
 
 **Prerequisite:** 01、02、G4 的 repeatable 行為驗證。
 
+C1–C4 的 event/state 與精確 write/writeln/command oracle 見 [04b](details/04b-widget-contracts.md)。不同 controller 的允許狀態要各自建立 fixture，不能用 Grbl simulator 宣稱覆蓋另外三種 controller。
+
 ## 每個 widget task 的固定步驟
 
 以下是每個 task 必須執行的動作；task 表格補上各自的檔案、測試與行為，不跨 widget 一次改完。

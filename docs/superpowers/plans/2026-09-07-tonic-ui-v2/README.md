@@ -2,6 +2,34 @@
 
 本套文件是可交給 terra / luna 逐 task 執行的計畫，尚未實作。範圍為 **`src/app` 全部 UI 與 React class components**，其中 widgets 位於 `src/app/widgets`，共 17 種。使用者提到的 `src/widgets`、`src/components` 在這個 checkout 對應到上述路徑。
 
+**跨 session 入口：[HANDOFF.md](HANDOFF.md) → [STATUS.md](STATUS.md) → [EXECUTION.md](EXECUTION.md)。** 狀態使用 `todo / in_progress / completed / blocking`；STATUS 是唯一來源，父 task 與細化 task 的對應也在其中。目前為 plan_only / paused，所有實作 todo。下一次請直接使用 HANDOFF 中的恢復 prompt。
+
+## 文件目錄與維護責任
+
+```text
+docs/superpowers/
+├── handoffs/
+│   └── cncjs-next-tonic-ui-v2-handoff.md  # 舊路徑入口，只連到本計畫
+└── plans/2026-09-07-tonic-ui-v2/
+    ├── README.md                       # 索引、範圍、目錄規則
+    ├── 00-design.md                    # 架構決策與限制
+    ├── inventory.md                    # 元件、consumer、source 基線
+    ├── 01-*.md … 09-*.md               # 分期步驟與 regression gates
+    ├── details/                        # 子任務合約、步驟與測試案例
+    ├── STATUS.md                       # 唯一 task ledger
+    ├── EXECUTION.md                    # 狀態轉移與交接規則
+    ├── HANDOFF.md                      # 最新 checkpoint、恢復 prompt
+    ├── execution-log.md                # 追加式執行歷史與驗證證據索引
+    ├── geometry-baseline.json          # 已保存的幾何量測
+    └── artifacts/                      # 執行時才建立：task/session 驗證產物
+```
+
+檔案依責任分工，不依 todo/in_progress/completed 移動目錄；任務 ID 與連結維持穩定。plan/details 只在步驟或合約改變時更新；每次 session 更新 STATUS、execution-log 與 HANDOFF，step checkbox 同步到對應 plan。
+
+artifacts 建議路徑為 `artifacts/<task-id>/<session-id>/`；09a 的共用 browser 命令與 fixture 說明放 `artifacts/browser/`。實際測試程式及合成 fixtures 依各 task 放在 src/app/test 或 colocated __tests__，不把測試程式藏在文件目錄。大型產物可用 durable CI artifact，log 留連結與期限；不提交密碼、token 或 browser storage state。
+
+HANDOFF 只保留最新恢復資訊，歷史寫 execution-log，不每次 session 新增另一份完整 handoff。舊 `handoffs/` 檔案僅作轉址；/tmp 便攜 handoff 可隨時重建。多週後不需重命名計畫日期；專案完成後保留原路徑與最終 STATUS。
+
 ## 已核對的基線
 
 2026-09-07，CNCjs commit `f301cde7`；本機 Tonic UI checkout `/home/cheton/Code/trendmicro-frontend/tonic-ui-v2` commit `ee589a52b0`。規劃時工作樹原本乾淨。AGENTS.md 的 React 15.6 / Router 4 描述已落後：lockfile 實際是 React / ReactDOM 18.3.1、Router 6.3.0、Tonic React 2.15.0、Query 4.44.0。不要重做已完成的 React major migration。
@@ -13,7 +41,7 @@
 | 順序 | 計畫 | 完成後交付 |
 | --- | --- | --- |
 | 0 | [設計](00-design.md) ＋ [盤點](inventory.md) | 所有執行者先讀；不直接改 code |
-| 1 | [基線與前端測試](01-foundation.md) | 固定相依性與可執行的 frontend test gate |
+| 1 | [基線與前端測試](01-foundation.md) | 記錄 lockfile 相容性基線與可執行的 frontend test gate |
 | 2 | [共用元件與 Widget 合約](02-shared-ui.md) | 直接使用 Tonic 的遷移規則、function Widget 外框、16 個 chrome + Visualizer 例外 |
 | 3 | [Macro 與 Query](03-query-and-macro.md) | 刪除 createFetchMachine，Macro CRUD 與 Administration 共用 cache |
 | 4 | [一般 widgets](04-general-widgets.md) | Connection、GCode、Spindle、Laser、Probe、Custom、Webcam、Console |
@@ -29,6 +57,8 @@
 
 ## 給 terra / luna 的起始 prompt
 
+下方只適用第一次 F1；之後一律使用 [HANDOFF](HANDOFF.md) 的恢復 prompt，先核对 STATUS 的 active task，避免每個新 session 都從 F1 開始。
+
 ```text
 請執行 docs/superpowers/plans/2026-09-07-tonic-ui-v2/01-foundation.md 的第一個未完成 task。
 先讀同目錄 README.md、00-design.md、inventory.md 及 repo AGENTS.md。
@@ -38,9 +68,11 @@
 更新 task checkbox 與執行紀錄。沒有測過的 UI flow 不能宣稱通過。
 ```
 
-下一輪換成目標文件與 task ID。小型直接元件替換可交 luna；共用介面、Query、Axes、Autolevel、Visualizer 優先交 terra，且每一個高風險 task 都要 review。這是任務分配建議，不依賴模型特有功能。
+角色固定為 Terra main loop、Luna implementation worker；共用介面、Query、Axes、Autolevel、Visualizer 由 Terra 先細化 contract 再派 Luna，所有 diff 由 Terra review。最多一個活躍 worker，Terra 唯一維護狀態；詳細規則見 EXECUTION。開始時選 Terra 為主模型並使用 HANDOFF prompt，不需導入 loop-engineering。
 
 ## 每個 task 的執行與交接
+
+模型分工及所有 task 的 effort 預設見 [EXECUTION](EXECUTION.md)：Terra high 主控，Luna high 處理固定合約的局部工作、max 處理 state/query/commands/resources 整合；Sol medium 僅在需要第二意見時唯讀判斷。派工前記實際 effort，複雜問題先交 Terra，不直接當 blocker。
 
 1. `git status --short`、`git rev-parse --short HEAD`；確認前置 task 的測試結果，而非只看 checkbox。
 2. 讀 inventory 指定的全部 `.js/.jsx` 和 `.styl`；另跑 import/ref 查詢，納入後來新增檔案。
@@ -62,6 +94,10 @@
 | G8 | [Terminal owner](details/04a-terminal-owner.md) | T1–T3 |
 | A1a | [受控 Settings](details/06a-controlled-settings.md) | S1–S4 |
 | V2/V3 | [Visualizer engine](details/07a-visualizer-engine.md) | E1–E4 |
+| Query 全域 | [HTTP 邊界](details/03b-query-boundaries.md) | B0/B1/B3；B2 為資源 task 彙總 |
+| G1–G7/C1–C4 | [Widget/controller contracts](details/04b-widget-contracts.md) | 各 widget 的事件、state 與精確命令 oracle |
+| W2 | [Component families](details/08a-component-families.md) | P0–P6 |
+| R0/R6 | [Browser procedure](details/09a-browser-procedure.md) | BR0 與 R6 重播 |
 
 同一 task 不重複跑父文件與細化文件兩套實作；父文件是階段索引，細化版是介面與執行依據。其他 widgets 依既有逐 widget task 執行，在動手前補上該 task 的明確行為測試；不需要再次盤點整個 repo。
 
@@ -71,10 +107,10 @@
 2. R0 保存原版行為，R1/R2 的 test cases 先寫好，再 D1–D4 改 Widget 架構。
 3. U2/U3 pilot → M1–M3 / Q2 移除 fetch machine → 04/05 widgets；Console 用 T1–T3。
 4. Axes Settings 用 S1–S4，接 A1b/A2/A3；Visualizer 先 R3 再 E1–E4 與 R4/R5/R6。
-5. W1–W3 收尾，全部 regression gates 必須有實際結果。
+5. W1、P0–P6、B3、R6、W3 收尾，全部 regression gates 必須有實際結果。細部依賴與可領取 task 以 STATUS ledger 為準。
 
-本輪只交付計畫與少量只讀 source 幾何量測，沒有修改 app、安裝套件、啟動 dev server或執行完整測試。交接後 terra 可依使用者授權執行，不需重新設計已固定介面；遇到失敗先修該 task，不自動跳階段。handoff 文件放 OS temporary directory，路徑由交接訊息提供。
+本輪只交付計畫與少量只讀 source 幾何量測，沒有修改 app、安裝套件、啟動 dev server 或執行完整測試。交接後 terra 可依使用者授權執行；長期狀態與恢復入口保存在 repo。OS temporary directory 的 handoff 僅作便攜連結，不是唯一進度來源。
 
 ## 本輪文件狀態
 
-初版計畫已由工作區外部操作提交為 `c87a4520`；本輪細化仍在工作樹，未由本 agent 提交。source 仍以 `f301cde7` 盤點。最後使用者要求保留 plan 並停止實作，已遵守：沒有 app source 修改、安裝套件或啟動 dev server。唯一執行的來源驗證是獨立 Node process 的 parser/geometry 量測；完整 regression 尚未執行。
+初版計畫提交為 `c87a4520`；本次 review 開始前已見後續文件提交 `e09a642c`，當時工作樹乾淨。本次狀態管理與 review 補充未由本 agent 提交。source 仍以 `f301cde7` 盤點；後續每次執行重新檢查 HEAD。使用者要求保留 plan 並停止實作，已遵守：沒有 app source 修改、安裝套件或啟動 dev server。完整 regression 尚未執行。
