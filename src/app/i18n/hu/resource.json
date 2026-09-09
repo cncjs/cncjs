@@ -519,8 +519,6 @@
   "New Account": "Új fiók",
   "Hide Limits": "Határok elrejtése",
   "Show Limits": "Határok megjelenítése",
-  "WebGL: <1>Enabled</1>": "WebGL: <1>Engedélyezve</1>",
-  "WebGL: <1>Disabled</1>": "WebGL: <1>Tiltva</1>",
   "Hide Cutting Tool": "Vágószerszám elrejtése",
   "Show Cutting Tool": "Vágószerszám megjelenítése",
   "Ready to start": "Készen áll az indításra",
@@ -643,5 +641,8 @@
   "Clearance Z: {{value}} {{- units}}": "Z biztonsági magasság: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "Kezdeti Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "Végső Z: {{value}} {{- units}}",
-  "None": "Nincs"
+  "None": "Nincs",
+  "WebGL:": "WebGL:",
+  "Drop files to upload": "Húzd ide a feltöltendő fájlokat",
+  "Uploading...": "Feltöltés..."
 }

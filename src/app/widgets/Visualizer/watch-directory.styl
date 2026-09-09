@@ -1,0 +1,50 @@
+@import "nib";
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.dropzone {
+    position: relative;
+    overflow-x: hidden;
+
+    th:last-child,
+    td:last-child {
+        padding-right: 12px;
+    }
+}
+
+.tree-name-cell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropzone-over {
+    outline: 2px dashed #337ab7;
+    outline-offset: -2px;
+}
+
+.dropzone-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 280px;
+    padding: 12px 24px;
+    border: 2px dashed #337ab7;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, .9);
+    color: #337ab7;
+    font-size: 14px;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.progress-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}

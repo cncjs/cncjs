@@ -50,6 +50,7 @@ class Controller {
         'controller:settings': [],
         'controller:state': [],
         'message': [],
+        'watchdir:change': [],
 
         /**
          * [Autolevel] Fired when the auto-leveling process starts.

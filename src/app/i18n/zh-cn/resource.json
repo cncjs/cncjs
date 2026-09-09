@@ -519,8 +519,6 @@
   "New Account": "新账号",
   "Hide Limits": "隐藏限制",
   "Show Limits": "显示限制",
-  "WebGL: <1>Enabled</1>": "WebGL: <1>已启用</1>",
-  "WebGL: <1>Disabled</1>": "WebGL: <1>已关闭</1>",
   "Hide Cutting Tool": "隐藏切削刀具",
   "Show Cutting Tool": "显示切削刀具",
   "Ready to start": "准备开始",
@@ -642,5 +640,8 @@
   "Clearance Z: {{value}} {{- units}}": "安全高度Z: {{value}} {{- units}}",
   "Start Z: {{value}} {{- units}}": "起始Z: {{value}} {{- units}}",
   "End Z: {{value}} {{- units}}": "终止Z: {{value}} {{- units}}",
-  "None": "无"
+  "None": "无",
+  "WebGL:": "WebGL:",
+  "Drop files to upload": "将文件拖拽至此处上传",
+  "Uploading...": "正在上传..."
 }

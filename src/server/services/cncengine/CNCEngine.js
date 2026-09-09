@@ -9,6 +9,7 @@ import settings from '../../config/settings';
 import store from '../../store';
 import config from '../configstore';
 import taskRunner from '../taskrunner';
+import monitor from '../monitor';
 import {
   GrblController,
   MarlinController,
@@ -72,6 +73,11 @@ class CNCEngine {
         if (this.io) {
           this.io.emit('config:change', ...args);
         }
+      },
+      watchDirectoryChange: (...args) => {
+        if (this.io) {
+          this.io.emit('watchdir:change', ...args);
+        }
       }
     };
 
@@ -127,6 +133,7 @@ class CNCEngine {
       taskRunner.on('finish', this.listener.taskFinish);
       taskRunner.on('error', this.listener.taskError);
       config.on('change', this.listener.configChange);
+      monitor.on('change', this.listener.watchDirectoryChange);
 
       // System Trigger: Startup
       this.event.trigger('startup');
@@ -370,6 +377,7 @@ class CNCEngine {
       taskRunner.removeListener('finish', this.listener.taskFinish);
       taskRunner.removeListener('error', this.listener.taskError);
       config.removeListener('change', this.listener.configChange);
+      monitor.removeListener('change', this.listener.watchDirectoryChange);
     }
 }
 

@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
-import I18n from 'app/components/I18n';
 import Space from 'app/components/Space';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
@@ -328,20 +327,20 @@ class PrimaryToolbar extends PureComponent {
                   header
                 >
                   {WebGL.isWebGLAvailable() && (
-                    <I18n>
-                      {'WebGL: '}
-                      <span style={{ color: colornames('royalblue') }}>
-                        Enabled
+                    <div>
+                      {i18n._('WebGL:')}
+                      <span style={{ marginLeft: 4, color: colornames('royalblue') }}>
+                        {i18n._('Enabled')}
                       </span>
-                    </I18n>
+                    </div>
                   )}
                   {!WebGL.isWebGLAvailable() && (
-                    <I18n>
-                      {'WebGL: '}
-                      <span style={{ color: colornames('crimson') }}>
-                        Disabled
+                    <div>
+                      {i18n._('WebGL:')}
+                      <span style={{ marginLeft: 4, color: colornames('crimson') }}>
+                        {i18n._('Disabled')}
                       </span>
-                    </I18n>
+                    </div>
                   )}
                 </MenuItem>
                 <MenuItem divider />

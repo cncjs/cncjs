@@ -166,7 +166,7 @@ const renderer = (node, treeOptions) => {
       disabled={disabled}
     >
       <TreeNodeColumn>
-        <div style={{ paddingLeft: paddingLeft }}>
+        <div className={styles.treeNameCell} title={node.name} style={{ paddingLeft: paddingLeft }}>
           <TreeNodeToggler
             show={more || loadOnDemand}
             expanded={more && open}
@@ -190,7 +190,7 @@ const renderer = (node, treeOptions) => {
       <TreeNodeColumn className="text-nowrap">
         {type}
       </TreeNodeColumn>
-      <TreeNodeColumn className="text-nowrap text-right">
+      <TreeNodeColumn className="text-nowrap">
         {size}
       </TreeNodeColumn>
     </TreeNode>
