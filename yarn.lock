@@ -8682,7 +8682,7 @@ __metadata:
     i18next-express-middleware: ~1.8.0
     i18next-fs-backend: ~2.6.6
     i18next-http-backend: ~3.0.2
-    i18next-http-middleware: ~3.9.2
+    i18next-http-middleware: 3.9.7
     i18next-node-fs-backend: ~2.1.3
     i18next-scanner: ~4.6.0
     imports-loader: ~0.8.0
@@ -13727,10 +13727,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-http-middleware@npm:~3.9.2":
-  version: 3.9.2
-  resolution: "i18next-http-middleware@npm:3.9.2"
-  checksum: c12077d628ce200705ca0e50a276a9bf5c10a67ba91cb6f42fbb39536bec008d57306929b29c4a34f2b3cd8b701de50dbe22fceea9e12984b6ff750c27703048
+"i18next-http-middleware@npm:3.9.7":
+  version: 3.9.7
+  resolution: "i18next-http-middleware@npm:3.9.7"
+  checksum: e613c129e9f54a25e963187e1ad01d3b39de1a96d9426c8f1c3e614c65e8e397b07b18cff1016bea75b05b8c4bbabb53ae2f14528df1b4cd266a7bddf09504c6
   languageName: node
   linkType: hard
 
