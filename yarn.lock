@@ -8680,7 +8680,7 @@ __metadata:
     i18next: ~25.8.17
     i18next-browser-languagedetector: ~8.2.1
     i18next-express-middleware: ~1.8.0
-    i18next-fs-backend: 2.6.6
+    i18next-fs-backend: ~2.6.6
     i18next-http-backend: ~3.0.2
     i18next-http-middleware: ~3.9.2
     i18next-node-fs-backend: ~2.1.3
@@ -13711,10 +13711,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-fs-backend@npm:2.6.6":
-  version: 2.6.6
-  resolution: "i18next-fs-backend@npm:2.6.6"
-  checksum: 0055e737379d29bac8230b057325e5d2e9311dd12cfd65ad1053fd78bade0d020d1a16b549de311b20c41106c50013019a22fe70d6e0585e07196f6a11c958ab
+"i18next-fs-backend@npm:~2.6.6":
+  version: 2.6.8
+  resolution: "i18next-fs-backend@npm:2.6.8"
+  checksum: da42667f6b46ee02070281eadf781cea2495863783a0b4f76e5866fec29df2a4f4f79397b2392d0a6ac7610ee2a478c0c3789c327ea13a0f88954d3f6ac99bc0
   languageName: node
   linkType: hard
 
