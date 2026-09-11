@@ -92,6 +92,14 @@ class GrblRunner extends events.EventEmitter {
           });
         }
 
+        // Grbl omits Pn: entirely when no pin is active, so a plain merge
+        // keeps the previous value and a pin latches on for ever after one
+        // trigger. Absence of the field is itself the "all clear", so it has
+        // to be cleared explicitly rather than inherited.
+        if (!_.has(payload, 'pinState')) {
+          payload.pinState = '';
+        }
+
         const nextState = {
           ...this.state,
           status: {

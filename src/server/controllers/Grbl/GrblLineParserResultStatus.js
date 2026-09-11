@@ -22,7 +22,11 @@ class GrblLineParserResultStatus {
     }
 
     const payload = {};
-    const pattern = /[a-zA-Z]+(:[0-9\.\-]+(,[0-9\.\-]+){0,5})?/g;
+    // The first value after ':' allows letters so letter-valued fields like
+    // Pn:X / Pn:PZ (input pin state) and A:SFM (accessory state) are captured;
+    // comma-continued values stay numeric so v0.9 comma-separated field
+    // boundaries (e.g. MPos:..,WPos:..) still split correctly.
+    const pattern = /[a-zA-Z]+(:[0-9a-zA-Z\.\-]+(,[0-9\.\-]+){0,5})?/g;
     const params = r[1].match(pattern);
     const result = {};
 
