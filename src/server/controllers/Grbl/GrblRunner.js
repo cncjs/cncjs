@@ -92,6 +92,21 @@ class GrblRunner extends events.EventEmitter {
           });
         }
 
+        // Grbl omits Pn: entirely when no pin is active, so a plain merge
+        // keeps the previous value and a pin latches on for ever after one
+        // trigger. Absence of the field is itself the "all clear", so it has
+        // to be cleared explicitly rather than inherited.
+        if (!_.has(payload, 'pinState')) {
+          payload.pinState = '';
+        }
+
+        // Grbl reports A: only when it emits Ov: and an accessory is active.
+        // Reports without Ov: do not contain a new accessory snapshot, so keep
+        // the previous state. An Ov: report without A: is the all-off snapshot.
+        if (_.has(payload, 'ov') && !_.has(payload, 'accessoryState')) {
+          payload.accessoryState = '';
+        }
+
         const nextState = {
           ...this.state,
           status: {

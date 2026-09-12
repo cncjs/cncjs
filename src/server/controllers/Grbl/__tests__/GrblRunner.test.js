@@ -17,7 +17,8 @@ describe('GrblRunner', () => {
         expect(raw).toEqual('<Idle>');
         expect(status).toEqual({
           activeState: 'Idle',
-          subState: 0
+          subState: 0,
+          pinState: ''
         });
         resolve();
       });
@@ -44,7 +45,8 @@ describe('GrblRunner', () => {
             x: '1.529',
             y: '-5.440',
             z: '-0.000'
-          }
+          },
+          pinState: ''
         });
         resolve();
       });
@@ -77,7 +79,8 @@ describe('GrblRunner', () => {
             a: '0.100',
             b: '0.250',
             c: '0.500'
-          }
+          },
+          pinState: ''
         });
         resolve();
       });
@@ -117,6 +120,36 @@ describe('GrblRunner', () => {
       const line = '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000,Buf:0,RX:0,Lim:000>';
       runner.parse(line);
     });
+  });
+
+  test('GrblLineParserResultStatus: v1.1 Pn input pin state', () => {
+    const runner = new GrblRunner();
+    const seen = [];
+    runner.on('status', ({ pinState }) => {
+      seen.push(pinState);
+    });
+    // A single active pin, then multiple (probe + z-limit), then none:
+    // the parser must capture the letter-valued Pn field, and GrblRunner must
+    // clear it back to '' when the field drops (Grbl omits Pn: when inactive).
+    runner.parse('<Idle|MPos:148.694,108.851,0.000|FS:0,0|Pn:X>');
+    runner.parse('<Idle|MPos:5.000,2.000,0.000|FS:0,0|Pn:PZ>');
+    runner.parse('<Idle|MPos:5.000,2.000,0.000|FS:0,0>');
+    expect(seen).toEqual(['X', 'PZ', '']);
+  });
+
+  test('GrblLineParserResultStatus: v1.1 A accessory state clears on its next override refresh', () => {
+    const runner = new GrblRunner();
+
+    runner.parse('<Idle|MPos:5.000,2.000,0.000|FS:0,0|Ov:100,100,100|A:SFM>');
+    expect(runner.state.status.accessoryState).toEqual('SFM');
+
+    // A status report without Ov does not contain a new accessory snapshot.
+    runner.parse('<Idle|MPos:5.000,2.000,0.000|FS:0,0>');
+    expect(runner.state.status.accessoryState).toEqual('SFM');
+
+    // Ov without A is Grbl's next accessory snapshot: all accessories are off.
+    runner.parse('<Idle|MPos:5.000,2.000,0.000|FS:0,0|Ov:100,100,100>');
+    expect(runner.state.status.accessoryState).toEqual('');
   });
 
   test('GrblLineParserResultOk', () => {

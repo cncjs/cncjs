@@ -22,7 +22,10 @@ class GrblLineParserResultStatus {
     }
 
     const payload = {};
-    const pattern = /[a-zA-Z]+(:[0-9\.\-]+(,[0-9\.\-]+){0,5})?/g;
+    // Pn: and A: are v1.1 pipe-delimited fields with letter values. Keep the
+    // legacy numeric branch unchanged so v0.9 comma-separated fields, such as
+    // MPos:..,WPos:.., continue to split at their field boundary.
+    const pattern = /(?<=\|)(?:Pn|A):[a-zA-Z]+(?=\||$)|[a-zA-Z]+(:[0-9\.\-]+(,[0-9\.\-]+){0,5})?/g;
     const params = r[1].match(pattern);
     const result = {};
 
