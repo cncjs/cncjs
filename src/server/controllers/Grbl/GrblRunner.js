@@ -100,6 +100,13 @@ class GrblRunner extends events.EventEmitter {
           payload.pinState = '';
         }
 
+        // Grbl reports A: only when it emits Ov: and an accessory is active.
+        // Reports without Ov: do not contain a new accessory snapshot, so keep
+        // the previous state. An Ov: report without A: is the all-off snapshot.
+        if (_.has(payload, 'ov') && !_.has(payload, 'accessoryState')) {
+          payload.accessoryState = '';
+        }
+
         const nextState = {
           ...this.state,
           status: {

@@ -137,6 +137,21 @@ describe('GrblRunner', () => {
     expect(seen).toEqual(['X', 'PZ', '']);
   });
 
+  test('GrblLineParserResultStatus: v1.1 A accessory state clears on its next override refresh', () => {
+    const runner = new GrblRunner();
+
+    runner.parse('<Idle|MPos:5.000,2.000,0.000|FS:0,0|Ov:100,100,100|A:SFM>');
+    expect(runner.state.status.accessoryState).toEqual('SFM');
+
+    // A status report without Ov does not contain a new accessory snapshot.
+    runner.parse('<Idle|MPos:5.000,2.000,0.000|FS:0,0>');
+    expect(runner.state.status.accessoryState).toEqual('SFM');
+
+    // Ov without A is Grbl's next accessory snapshot: all accessories are off.
+    runner.parse('<Idle|MPos:5.000,2.000,0.000|FS:0,0|Ov:100,100,100>');
+    expect(runner.state.status.accessoryState).toEqual('');
+  });
+
   test('GrblLineParserResultOk', () => {
     return new Promise((resolve) => {
       const runner = new GrblRunner();
