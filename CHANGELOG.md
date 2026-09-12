@@ -1,5 +1,26 @@
 # cncjs
 
+## 1.11.5
+
+### Patch Changes
+
+- c8e273d: feat: add support for uploading files to the watch directory
+
+  Rework the Watch Directory modal: add an "Add" button and a dropzone to upload files to the configured watch directory, with an upload progress indicator. The file tree updates in real time via server push events and also provides a Refresh button.
+
+- 78b6823: fix(autolevel): store probe measurements at the intended grid node's XY
+
+  Record every autolevel probe measurement at the intended grid node's XY instead of the machine-reported XY, which is quantised by the motor steps and splits grid lines into near-duplicates.
+
+- 4132c2a: feat: show a progress bar for the running G-code job
+- 190330b: fix(grbl): parse and maintain `Pn:` and `A:` status fields
+
+  The Grbl status parser now supports the letter-valued status fields introduced in Grbl v1.1 while preserving legacy Grbl 0.9 parsing:
+
+  - `Pn:<letters>` input pin states and `A:<letters>` accessory states are parsed without broadening comma-separated numeric fields, so v0.9 field boundaries remain unchanged.
+  - When Grbl omits `Pn:`, `pinState` is cleared because no input pin is active.
+  - `A:` is treated as a snapshot only when Grbl reports `Ov:`. It is preserved between override refreshes, and cleared when the next `Ov:` report omits `A:` because all accessories are off.
+
 ## 1.11.4
 
 ### Patch Changes
