@@ -692,18 +692,28 @@ describe('MarlinController', () => {
       expect(controller.history.writeLine).toBe('');
     });
 
-    test('the position report after a probe is captured into the probe state', () => {
+    test('the probe measurement is stored at the intended grid node with the measured Z', () => {
       setup();
       controller.probeState.probePoints = [{ x: 0, y: 0 }, { x: 10, y: 0 }];
+
+      // Quantised reports: the commanded nodes (0,0) and (10,0) read back off-node.
+      controller.runner.state.pos = { x: '0.001', y: '0.001', z: '-1.500' };
       controller.history.writeLine = 'G38.2 Z-1';
       controller.runner.emit('ok', { raw: 'ok' });
+      controller.runner.emit('pos', { raw: 'X:0.001 Y:0.001 Z:-1.500 E:0.000' });
 
-      controller.runner.state.pos = { x: '1.000', y: '2.000', z: '3.000' };
-      controller.runner.emit('pos', { raw: 'X:1.000 Y:2.000 Z:3.000 E:0.000' });
+      controller.runner.state.pos = { x: '10.001', y: '-0.001', z: '-1.000' };
+      controller.history.writeLine = 'G38.2 Z-1';
+      controller.runner.emit('ok', { raw: 'ok' });
+      controller.runner.emit('pos', { raw: 'X:10.001 Y:-0.001 Z:-1.000 E:0.000' });
+
       expect(controller.probeState.pendingProbeCapture).toBe(false);
-      expect(controller.probeState.probedPositions).toEqual([{ x: 1, y: 2, z: 3 }]);
-      expect(controller.probeState.minZ).toBe(3);
-      expect(controller.probeState.maxZ).toBe(3);
+      expect(controller.probeState.probedPositions).toEqual([
+        { x: 0, y: 0, z: -1.5 },
+        { x: 10, y: 0, z: -1 },
+      ]);
+      expect(controller.probeState.minZ).toBe(-1.5);
+      expect(controller.probeState.maxZ).toBe(-1);
     });
   });
 });
