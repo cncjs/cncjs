@@ -2,9 +2,10 @@
 "cncjs": patch
 ---
 
-fix(grbl): populate and clear the `Pn:` input pin state
+fix(grbl): parse and maintain `Pn:` and `A:` status fields
 
-The Grbl status parser never populated `pinState`, so probe and limit pin state was unavailable to clients. Two defects, both fixed here:
+The Grbl status parser now supports the letter-valued status fields introduced in Grbl v1.1 while preserving legacy Grbl 0.9 parsing:
 
-- The status tokenizer only accepted numeric values after `:`, so letter-valued fields such as `Pn:X` / `Pn:PZ` (and `A:SFM`) never matched and `result.Pn` was never set — leaving the existing `if (_.has(result, 'Pn'))` branch unreachable.
-- Grbl omits `Pn:` entirely when no pin is active, so merging the payload over the previous state inherited the old value and a pin latched on forever after a single trigger.
+- `Pn:<letters>` input pin states and `A:<letters>` accessory states are parsed without broadening comma-separated numeric fields, so v0.9 field boundaries remain unchanged.
+- When Grbl omits `Pn:`, `pinState` is cleared because no input pin is active.
+- `A:` is treated as a snapshot only when Grbl reports `Ov:`. It is preserved between override refreshes, and cleared when the next `Ov:` report omits `A:` because all accessories are off.
