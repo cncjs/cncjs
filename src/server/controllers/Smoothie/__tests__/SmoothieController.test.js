@@ -85,21 +85,8 @@ const seedModal = (controller, patch) => {
   };
 };
 
-const waitForCallback = (callback) => new Promise((resolve, reject) => {
-  let attempts = 0;
-  const check = () => {
-    if (callback.mock.calls.length > 0) {
-      resolve();
-      return;
-    }
-    if (attempts > 1000) {
-      reject(new Error('callback was never invoked'));
-      return;
-    }
-    attempts += 1;
-    setImmediate(check);
-  };
-  check();
+const waitForCallback = (invoke) => new Promise((resolve) => {
+  invoke((...args) => resolve(args));
 });
 
 beforeEach(() => {
@@ -512,7 +499,7 @@ describe('SmoothieController', () => {
 
       controller.command('watchdir:load', 'watch/x.nc', callback);
 
-      expect(readFileSpy).toHaveBeenCalledWith('watch/x.nc', 'utf8', expect.any(Function));
+      expect(readFileSpy).toHaveBeenCalledWith(path.normalize('watch/x.nc'), 'utf8', expect.any(Function));
       expect(writes).toEqual([]);
       expect(callback).toHaveBeenCalledWith(null, expect.objectContaining({
         name: 'watch/x.nc',
@@ -701,6 +688,34 @@ describe('SmoothieController', () => {
       expect(controller.probeState.maxZ).toBeNull();
     });
 
+    test('the probe measurement is stored at the intended grid node with the measured Z', () => {
+      const { controller } = create();
+      controller.probeState.probePoints = [{ x: 0, y: 0 }, { x: 10, y: 0 }];
+      controller.runner.state.status = {
+        mpos: { x: '0.000', y: '0.000', z: '0.000' },
+        wpos: { x: '0.000', y: '0.000', z: '0.000' },
+      };
+
+      // Quantised reports: the commanded nodes (0,0) and (10,0) read back off-node.
+      controller.runner.emit('parameters', {
+        raw: '[PRB:0.001,0.001,-1.500:1]',
+        name: 'PRB',
+        value: { result: 1, x: '0.001', y: '0.001', z: '-1.500' },
+      });
+      controller.runner.emit('parameters', {
+        raw: '[PRB:10.001,-0.001,-1.000:1]',
+        name: 'PRB',
+        value: { result: 1, x: '10.001', y: '-0.001', z: '-1.000' },
+      });
+
+      expect(controller.probeState.probedPositions).toEqual([
+        { x: 0, y: 0, z: -1.5 },
+        { x: 10, y: 0, z: -1 },
+      ]);
+      expect(controller.probeState.minZ).toBe(-1.5);
+      expect(controller.probeState.maxZ).toBe(-1);
+    });
+
     test('autolevel:stop resets the connection and clears probe state', () => {
       const { controller, writes } = create();
       controller.probeState = {
@@ -739,12 +754,13 @@ describe('SmoothieController', () => {
       const filepath = path.join(os.tmpdir(), `cncjs-smoothie-probes-${process.pid}-${Date.now()}.txt`);
       tempFiles.push(filepath);
       await fsp.writeFile(filepath, '0 0 -1.5 0 0 0 0 0 0\n10 0 -1.2 0 0 0 0 0 0\n', 'utf8');
-      const callback = jest.fn();
 
-      controller.command('autolevel:loadFromFile', filepath, callback);
-      await waitForCallback(callback);
+      const [err, payload] = await waitForCallback((callback) => {
+        controller.command('autolevel:loadFromFile', filepath, callback);
+      });
 
-      expect(callback).toHaveBeenCalledWith(null, expect.objectContaining({ success: true }));
+      expect(err).toBeNull();
+      expect(payload).toEqual(expect.objectContaining({ success: true }));
       expect(controller.probeState.probedPositions).toEqual([
         { x: 0, y: 0, z: -1.5 },
         { x: 10, y: 0, z: -1.2 },
@@ -755,12 +771,11 @@ describe('SmoothieController', () => {
 
     test('autolevel:loadFromFile reports the read error message for a missing file', async () => {
       const { controller } = create();
-      const callback = jest.fn();
 
-      controller.command('autolevel:loadFromFile', path.join(os.tmpdir(), 'cncjs-smoothie-missing-probe-file.txt'), callback);
-      await waitForCallback(callback);
+      const [err, payload] = await waitForCallback((callback) => {
+        controller.command('autolevel:loadFromFile', path.join(os.tmpdir(), 'cncjs-smoothie-missing-probe-file.txt'), callback);
+      });
 
-      const [err, payload] = callback.mock.calls[0];
       expect(typeof err).toBe('string');
       expect(payload).toEqual({ success: false, state: null });
     });
@@ -773,12 +788,13 @@ describe('SmoothieController', () => {
       ];
       const filepath = path.join(os.tmpdir(), `cncjs-smoothie-save-${process.pid}-${Date.now()}.txt`);
       tempFiles.push(filepath);
-      const callback = jest.fn();
 
-      controller.command('autolevel:saveToFile', filepath, callback);
-      await waitForCallback(callback);
+      const [err, payload] = await waitForCallback((callback) => {
+        controller.command('autolevel:saveToFile', filepath, callback);
+      });
 
-      expect(callback).toHaveBeenCalledWith(null, { success: true, filepath });
+      expect(err).toBeNull();
+      expect(payload).toEqual({ success: true, filepath });
       await expect(fsp.readFile(filepath, 'utf8')).resolves.toBe(
         '0 0 -1.5 0 0 0 0 0 0\n10 0 -1.2 0 0 0 0 0 0'
       );

@@ -1,8 +1,8 @@
-import fs from 'fs';
 import path from 'path';
 import minimatch from 'minimatch';
 import serviceContainer from '../service-container';
 import {
+  ERR_BAD_REQUEST,
   ERR_NOT_FOUND,
   ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
@@ -59,17 +59,19 @@ const searchFiles = (searchPath) => {
 };
 
 const api = {
+  getStatus: (req, res) => {
+    res.send({ configured: directoryWatcher.isConfigured() });
+  },
   getFiles: (req, res) => {
     const searchPath = (req.body.path ?? req.query.path) ?? '';
     const files = searchFiles(searchPath);
 
-    res.send({ path: path, files: files });
+    res.send({ path: searchPath, files: files });
   },
   readFile: (req, res) => {
     const file = (req.body.file ?? req.query.file) ?? '';
-    const filepath = path.join(directoryWatcher.root, file);
 
-    fs.readFile(filepath, 'utf8', (err, data) => {
+    directoryWatcher.readFile(file, (err, data) => {
       if (err) {
         if (err.code === 'ENOENT') {
           res.status(ERR_NOT_FOUND).send({
@@ -84,6 +86,28 @@ const api = {
       }
 
       res.send({ file: file, data: data });
+    });
+  },
+  writeFile: (req, res) => {
+    const file = req.body.file || '';
+    const data = req.body.data || '';
+
+    if (!file) {
+      res.status(ERR_BAD_REQUEST).send({
+        msg: 'No file specified'
+      });
+      return;
+    }
+
+    directoryWatcher.writeFile(file, data, (err) => {
+      if (err) {
+        res.status(err.message === 'Watch directory is not configured' ? ERR_BAD_REQUEST : ERR_INTERNAL_SERVER_ERROR).send({
+          msg: err.message || 'Failed writing file'
+        });
+        return;
+      }
+
+      res.send({ file: file });
     });
   },
 };

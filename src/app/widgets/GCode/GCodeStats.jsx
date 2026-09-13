@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import FormGroup from '@app/components/FormGroup';
 import { Container, Row, Col } from '@app/components/GridSystem';
 import HorizontalForm from '@app/components/HorizontalForm';
+import ProgressBar from '@app/components/ProgressBar';
 import i18n from '@app/lib/i18n';
 import { mapPositionToUnits } from '@app/lib/units';
 import {
@@ -68,6 +69,12 @@ function GCodeStats({
   const dX = maxX - minX;
   const dY = maxY - minY;
   const dZ = maxZ - minZ;
+
+  // Received, not sent. Sent counts lines handed to the controller, which
+  // runs several seconds behind while its planner buffer drains, so a bar
+  // driven by it reads ahead of the tool and reaches 100% with the job
+  // still cutting. Received counts lines the controller acknowledged.
+  const progress = total > 0 ? Math.min(100, Math.round((received / total) * 100)) : 0;
 
   return (
     <Container fluid>
@@ -137,6 +144,19 @@ function GCodeStats({
           )}
         </HorizontalForm>
       </FormGroup>
+      {total > 0 && (
+        <Row>
+          <Col>
+            <ProgressBar
+              variant="info"
+              min={0}
+              max={total}
+              now={received}
+              label={`${progress}%`}
+            />
+          </Col>
+        </Row>
+      )}
       <Row>
         <Col>
           <div>{i18n._('Sent')}</div>

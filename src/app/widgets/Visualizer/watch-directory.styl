@@ -1,0 +1,37 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.dropzone {
+  position: relative;
+  min-width: 280px;
+  padding: 12px 24px;
+  border: 2px dashed #337ab7;
+}
+
+.dropzone-over {
+  outline: 2px dashed #337ab7;
+  outline-offset: -2px;
+  background: rgba(245, 245, 245, .6);
+}
+
+.dropzone-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 280px;
+  padding: 12px 24px;
+  border: 2px dashed #337ab7;
+  color: #337ab7;
+  font-size: 14px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.progress-label {
+  margin-bottom: 8px;
+  white-space: nowrap;
+}

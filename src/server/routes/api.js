@@ -111,11 +111,12 @@ const createProtectedApiRouter = () => {
   // Version
   router.get('/version/latest', version.getLatestVersion);
 
-  // Watch
+  router.get('/watch/status', watch.getStatus);
   router.get('/watch/files', watch.getFiles);
   router.post('/watch/files', watch.getFiles);
   router.get('/watch/file', watch.readFile);
   router.post('/watch/file', watch.readFile);
+  router.put('/watch/file', watch.writeFile);
 
   return router;
 };
