@@ -19,11 +19,10 @@ describe('DirectoryWatcherService', () => {
     fs.rmSync(root, { recursive: true, force: true });
   });
 
-  test('reports configuration and reads files from the watch root', async () => {
+  test('reads files from the watch root', async () => {
     fs.mkdirSync(path.join(root, 'nested'));
     fs.writeFileSync(path.join(root, 'nested', 'existing.nc'), 'G0 X1', 'utf8');
 
-    expect(service.getStatus()).toEqual({ configured: true, root });
     await expect(new Promise((resolve, reject) => {
       service.readFile('nested/existing.nc', (err, data) => {
         if (err) {
@@ -33,6 +32,13 @@ describe('DirectoryWatcherService', () => {
         resolve(data);
       });
     })).resolves.toEqual('G0 X1');
+  });
+  test('rejects reads outside the watch root', async () => {
+    await expect(new Promise((resolve) => {
+      service.readFile('../outside.nc', (err) => {
+        resolve(err.message);
+      });
+    })).resolves.toEqual('Invalid file path');
   });
 
   test('writes only the file basename inside the watch root', async () => {

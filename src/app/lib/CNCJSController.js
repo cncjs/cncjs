@@ -63,6 +63,7 @@ class CNCJSController {
     'sender:load': [],
     'sender:unload': [],
     'workflow:state': [],
+    'message': [],
     'watchdir:change': [],
 
     /**

@@ -89,10 +89,10 @@ const api = {
     });
   },
   writeFile: (req, res) => {
-    const file = req.body.file ?? req.body.name;
-    const data = req.body.data ?? req.body.content;
+    const file = req.body.file || '';
+    const data = req.body.data || '';
 
-    if (!file || typeof data !== 'string') {
+    if (!file) {
       res.status(ERR_BAD_REQUEST).send({
         msg: 'No file specified'
       });
@@ -101,15 +101,9 @@ const api = {
 
     directoryWatcher.writeFile(file, data, (err) => {
       if (err) {
-        if (err.message === 'Watch directory is not configured') {
-          res.status(ERR_BAD_REQUEST).send({
-            msg: err.message
-          });
-        } else {
-          res.status(ERR_INTERNAL_SERVER_ERROR).send({
-            msg: 'Failed writing file'
-          });
-        }
+        res.status(err.message === 'Watch directory is not configured' ? ERR_BAD_REQUEST : ERR_INTERNAL_SERVER_ERROR).send({
+          msg: err.message || 'Failed writing file'
+        });
         return;
       }
 

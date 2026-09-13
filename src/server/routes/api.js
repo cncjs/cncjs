@@ -116,7 +116,7 @@ const createProtectedApiRouter = () => {
   router.post('/watch/files', watch.getFiles);
   router.get('/watch/file', watch.readFile);
   router.post('/watch/file', watch.readFile);
-  router.post('/watch/upload', watch.writeFile);
+  router.put('/watch/file', watch.writeFile);
 
   return router;
 };

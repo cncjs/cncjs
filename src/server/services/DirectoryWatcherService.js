@@ -54,13 +54,6 @@ class DirectoryWatcherService extends events.EventEmitter {
     return !!this.root;
   }
 
-  getStatus() {
-    return {
-      configured: this.isConfigured(),
-      root: this.root
-    };
-  }
-
   readFile(file, callback) {
     if (!this.root) {
       callback(new Error('Watch directory is not configured'));

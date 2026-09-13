@@ -1,7 +1,7 @@
 import path from 'path';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import InfiniteTree from 'react-infinite-tree';
 import {
@@ -16,7 +16,7 @@ import renderer from './renderer';
 import styles from './renderer.styl';
 import watchDirectoryStyles from './watch-directory.styl';
 
-class WatchDirectory extends PureComponent {
+class WatchDirectory extends Component {
   static propTypes = {
     state: PropTypes.object,
     actions: PropTypes.object
@@ -105,7 +105,7 @@ class WatchDirectory extends PureComponent {
         this.fitHeaderColumns();
       })
       .catch((res) => {
-        log.error('Failed to load watch directory files:', res);
+        // Ignore error
       })
       .then(() => {
         this.setState({ refreshing: false });
@@ -310,7 +310,7 @@ class WatchDirectory extends PureComponent {
               style={{ marginLeft: 'auto' }}
               title={i18n._('Refresh')}
               aria-label={i18n._('Refresh')}
-              onClick={this.loadFiles}
+              onClick={() => this.loadFiles()}
             >
               <i aria-hidden="true" className={classNames('fa fa-refresh', { 'fa-spin': refreshing })} />
             </button>
@@ -369,27 +369,34 @@ class WatchDirectory extends PureComponent {
                     done(null, nodes);
                   })
                   .catch((res) => {
-                    log.error('Failed to load watch directory node:', res);
-                    done(res);
+                    // Ignore error
                   });
               }}
               rowRenderer={renderer}
               shouldSelectNode={(node) => {
                 const tree = this.treeNode.tree;
-                return !(node && node === tree.getSelectedNode());
+                if (!node || (node === tree.getSelectedNode())) {
+                  return false; // Prevent from deselecting the current node
+                }
+                return true;
               }}
-              onContentDidUpdate={this.fitHeaderColumns}
+              onContentDidUpdate={() => {
+                this.fitHeaderColumns();
+              }}
               onKeyDown={(event) => {
+                // Prevent the default scroll
                 event.preventDefault();
+
                 const tree = this.treeNode.tree;
                 const node = tree.getSelectedNode();
                 const nodeIndex = tree.getSelectedIndex();
 
-                if (event.keyCode === 13) {
+                if (event.keyCode === 13) { // Enter
                   if (!node) {
                     return;
                   }
                   if (node.props.type === 'd') {
+                    // Toggle expansion for directories
                     if (node.state.open) {
                       tree.closeNode(node);
                     } else {
@@ -397,16 +404,19 @@ class WatchDirectory extends PureComponent {
                     }
                     return;
                   }
-                  actions.loadFile(path.join(node.props.path, node.name));
+                  const file = path.join(node.props.path, node.name);
+                  actions.loadFile(file);
                   actions.closeModal();
-                } else if (event.keyCode === 37) {
+                } else if (event.keyCode === 37) { // Left
                   tree.closeNode(node);
-                } else if (event.keyCode === 38) {
-                  tree.selectNode(tree.nodes[nodeIndex - 1] || node);
-                } else if (event.keyCode === 39) {
+                } else if (event.keyCode === 38) { // Up
+                  const prevNode = tree.nodes[nodeIndex - 1] || node;
+                  tree.selectNode(prevNode);
+                } else if (event.keyCode === 39) { // Right
                   tree.openNode(node);
-                } else if (event.keyCode === 40) {
-                  tree.selectNode(tree.nodes[nodeIndex + 1] || node);
+                } else if (event.keyCode === 40) { // Down
+                  const nextNode = tree.nodes[nodeIndex + 1] || node;
+                  tree.selectNode(nextNode);
                 }
               }}
               onSelectNode={(node) => {
@@ -414,22 +424,26 @@ class WatchDirectory extends PureComponent {
               }}
               onDoubleClick={(event) => {
                 event.stopPropagation();
+
+                // Call setTimeout(fn, 0) to make sure it returns the last selected node
                 setTimeout(() => {
                   const tree = this.treeNode.tree;
                   const node = tree.getSelectedNode();
-                  if (!node) {
-                    return;
-                  }
-                  if (node.props.type === 'd') {
-                    if (node.state.open) {
-                      tree.closeNode(node);
-                    } else {
-                      tree.openNode(node);
+
+                  if (node) {
+                    if (node.props.type === 'd') {
+                      // Toggle expansion for directories
+                      if (node.state.open) {
+                        tree.closeNode(node);
+                      } else {
+                        tree.openNode(node);
+                      }
+                      return;
                     }
-                    return;
+                    const file = path.join(node.props.path, node.name);
+                    actions.loadFile(file);
+                    actions.closeModal();
                   }
-                  actions.loadFile(path.join(node.props.path, node.name));
-                  actions.closeModal();
                 }, 0);
               }}
             />
@@ -463,7 +477,11 @@ class WatchDirectory extends PureComponent {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button type="button" className="btn btn-default" onClick={actions.closeModal}>
+          <button
+            type="button"
+            className="btn btn-default"
+            onClick={actions.closeModal}
+          >
             {i18n._('Cancel')}
           </button>
           <button
@@ -472,8 +490,10 @@ class WatchDirectory extends PureComponent {
             onClick={() => {
               const tree = this.treeNode.tree;
               const node = tree.getSelectedNode();
+
               if (node) {
-                actions.loadFile(path.join(node.props.path, node.name));
+                const file = path.join(node.props.path, node.name);
+                actions.loadFile(file);
                 actions.closeModal();
               }
             }}

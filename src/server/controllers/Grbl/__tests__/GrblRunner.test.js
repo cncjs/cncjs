@@ -17,7 +17,8 @@ describe('GrblRunner', () => {
         expect(raw).toEqual('<Idle>');
         expect(status).toEqual({
           machineState: 'Idle',
-          subState: 0
+          subState: 0,
+          pinState: ''
         });
         resolve();
       });
@@ -44,7 +45,8 @@ describe('GrblRunner', () => {
             x: '1.529',
             y: '-5.440',
             z: '-0.000'
-          }
+          },
+          pinState: ''
         });
         resolve();
       });
@@ -77,7 +79,8 @@ describe('GrblRunner', () => {
             a: '0.100',
             b: '0.250',
             c: '0.500'
-          }
+          },
+          pinState: ''
         });
         resolve();
       });

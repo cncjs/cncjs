@@ -96,7 +96,7 @@ class GrblRunner extends events.EventEmitter {
       // keeps the previous value and a pin latches on for ever after one
       // trigger. Absence of the field is itself the "all clear", so it has
       // to be cleared explicitly rather than inherited.
-      if (!_.has(payload, 'pinState') && _.has(this.state.status, 'pinState')) {
+      if (!_.has(payload, 'pinState')) {
         payload.pinState = '';
       }
 
