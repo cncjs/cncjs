@@ -4,16 +4,16 @@
 
 ### Patch Changes
 
-- c8e273d: feat: add support for uploading files to the watch directory by [#ethantraas1](https://github.com/ethantraas1) in [#1008](https://github.com/cncjs/cncjs/pull/1008)
+- feat: add support for uploading files to the watch directory by [#ethantraas1](https://github.com/ethantraas1) in [#1008](https://github.com/cncjs/cncjs/pull/1008)
 
   Rework the Watch Directory modal: add an "Add" button and a dropzone to upload files to the configured watch directory, with an upload progress indicator. The file tree updates in real time via server push events and also provides a Refresh button.
 
-- 78b6823: fix(autolevel): store probe measurements at the intended grid node's XY by [@thcasssio](https://github.com/thcasssio) in [#1001](https://github.com/cncjs/cncjs/pull/1001)
+- fix(autolevel): store probe measurements at the intended grid node's XY by [@thcasssio](https://github.com/thcasssio) in [#1001](https://github.com/cncjs/cncjs/pull/1001)
 
   Record every autolevel probe measurement at the intended grid node's XY instead of the machine-reported XY, which is quantised by the motor steps and splits grid lines into near-duplicates.
 
-- 4132c2a: feat: show a progress bar for the running G-code job by [@thcasssio](https://github.com/thcasssio) in [#1005](https://github.com/cncjs/cncjs/pull/1005)
-- 190330b: fix(grbl): parse and maintain `Pn:` and `A:` status fields by [@gargamel778](https://github.com/gargamel778) in [#1013](https://github.com/cncjs/cncjs/pull/1013)
+- feat: show a progress bar for the running G-code job by [@thcasssio](https://github.com/thcasssio) in [#1005](https://github.com/cncjs/cncjs/pull/1005)
+- fix(grbl): parse and maintain `Pn:` and `A:` status fields by [@gargamel778](https://github.com/gargamel778) in [#1013](https://github.com/cncjs/cncjs/pull/1013)
 
   The Grbl status parser now supports the letter-valued status fields introduced in Grbl v1.1 while preserving legacy Grbl 0.9 parsing:
 
@@ -25,13 +25,13 @@
 
 ### Patch Changes
 
-- cb58469: fix: Marlin G28 homing fix by [@cheton](https://github.com/cheton) in [#1006](https://github.com/cncjs/cncjs/pull/1006)
+- fix: Marlin G28 homing fix by [@cheton](https://github.com/cheton) in [#1006](https://github.com/cncjs/cncjs/pull/1006)
 
 ## 1.11.3
 
 ### Patch Changes
 
-- e140286: feat: preserves partially typed Console commands while serial, jog, and macro output is rendered by [@cheton](https://github.com/cheton) in [#994](https://github.com/cncjs/cncjs/pull/994)
+- feat: preserves partially typed Console commands while serial, jog, and macro output is rendered by [@cheton](https://github.com/cheton) in [#994](https://github.com/cncjs/cncjs/pull/994)
 
 ## 1.11.2
 
@@ -45,7 +45,7 @@
 
 ### Patch Changes
 
-- 0f1b71b: - fix(visualizer): align machine limits, pivot, and orbit center with machine profiles by [@cheton](https://github.com/cheton) in [#979](https://github.com/cncjs/cncjs/pull/979)
+- fix(visualizer): align machine limits, pivot, and orbit center with machine profiles by [@cheton](https://github.com/cheton) in [#979](https://github.com/cncjs/cncjs/pull/979)
 
 ## 1.11.0
 
