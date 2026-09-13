@@ -1,15 +1,22 @@
 import path from 'path';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import InfiniteTree from 'react-infinite-tree';
+import {
+  Space,
+} from '@tonic-ui/react';
 import api from '@app/api';
 import Modal from '@app/components/Modal';
+import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
+import log from '@app/lib/log';
 import renderer from './renderer';
 import styles from './renderer.styl';
+import watchDirectoryStyles from './watch-directory.styl';
 
-class WatchDirectory extends Component {
+class WatchDirectory extends PureComponent {
   static propTypes = {
     state: PropTypes.object,
     actions: PropTypes.object
@@ -19,8 +26,61 @@ class WatchDirectory extends Component {
 
   treeNode = null;
 
+  uploadInputEl = null;
+
+  dropzoneNode = null;
+
+  watchDirChangeTimer = null;
+
+  state = {
+    dragging: false,
+    uploading: false,
+    uploadProgress: 0,
+    refreshing: false
+  };
+
   componentDidMount() {
     this.addResizeEventListener();
+    this.addDropZoneEventListeners();
+    this.loadFiles();
+    controller.addListener('watchdir:change', this.handleWatchDirChange);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.watchDirChangeTimer);
+    this.removeResizeEventListener();
+    this.removeDropZoneEventListeners();
+    controller.removeListener('watchdir:change', this.handleWatchDirChange);
+  }
+
+  addDropZoneEventListeners() {
+    if (!this.dropzoneNode) {
+      return;
+    }
+    this.dropzoneNode.addEventListener('dragover', this.handleDragOver);
+    this.dropzoneNode.addEventListener('dragleave', this.handleDragLeave);
+    this.dropzoneNode.addEventListener('drop', this.handleDrop);
+  }
+
+  removeDropZoneEventListeners() {
+    if (!this.dropzoneNode) {
+      return;
+    }
+    this.dropzoneNode.removeEventListener('dragover', this.handleDragOver);
+    this.dropzoneNode.removeEventListener('dragleave', this.handleDragLeave);
+    this.dropzoneNode.removeEventListener('drop', this.handleDrop);
+  }
+
+  addResizeEventListener() {
+    window.addEventListener('resize', this.fitHeaderColumns);
+  }
+
+  removeResizeEventListener() {
+    window.removeEventListener('resize', this.fitHeaderColumns);
+  }
+
+  loadFiles() {
+    this.setState({ refreshing: true });
 
     api.watch.getFiles({ path: '' })
       .then((res) => {
@@ -41,25 +101,101 @@ class WatchDirectory extends Component {
 
         const tree = this.treeNode.tree;
         tree.loadData(data);
-
+        this.props.actions.updateModalParams({ selectedNode: null });
         this.fitHeaderColumns();
       })
       .catch((res) => {
-        // Ignore error
+        log.error('Failed to load watch directory files:', res);
+      })
+      .then(() => {
+        this.setState({ refreshing: false });
       });
   }
 
-  componentWillUnmount() {
-    this.removeResizeEventListener();
-  }
+  handleClickUpload = () => {
+    this.uploadInputEl.value = null;
+    this.uploadInputEl.click();
+  };
 
-  addResizeEventListener() {
-    window.addEventListener('resize', this.fitHeaderColumns);
-  }
+  handleChangeUploadFiles = (event) => {
+    this.uploadFiles(Array.from(event.target.files || []));
+  };
 
-  removeResizeEventListener() {
-    window.removeEventListener('resize', this.fitHeaderColumns);
-  }
+  handleDragOver = (event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    if (!this.state.dragging) {
+      this.setState({ dragging: true });
+    }
+  };
+
+  handleDragLeave = (event) => {
+    event.preventDefault();
+    if (!this.dropzoneNode || !this.dropzoneNode.contains(event.relatedTarget)) {
+      this.setState({ dragging: false });
+    }
+  };
+
+  handleDrop = (event) => {
+    event.preventDefault();
+    this.setState({ dragging: false });
+    this.uploadFiles(Array.from(event.dataTransfer.files || []));
+  };
+
+  handleWatchDirChange = () => {
+    clearTimeout(this.watchDirChangeTimer);
+    this.watchDirChangeTimer = setTimeout(() => {
+      this.loadFiles();
+    }, 200);
+  };
+
+  uploadFiles = (files) => {
+    if (files.length === 0 || this.state.uploading) {
+      return;
+    }
+
+    this.setState({ uploading: true, uploadProgress: 0 });
+
+    const readers = files.map((file) => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve({ file, data: reader.result });
+      reader.onerror = reject;
+      reader.readAsText(file);
+    }));
+
+    Promise.all(readers)
+      .then((results) => {
+        const progressOf = new Map(results.map(({ file }) => [file, 0]));
+        const totalBytes = results.reduce((sum, { file }) => sum + file.size, 0);
+        const updateProgress = () => {
+          const uploaded = [...progressOf.values()].reduce((sum, value) => sum + value, 0);
+          const percent = totalBytes > 0 ? (uploaded / totalBytes) * 100 : 100;
+          this.setState({ uploadProgress: Math.min(100, Math.round(percent)) });
+        };
+        const onProgress = (file) => (event) => {
+          const { direction, loaded = 0 } = { ...event };
+          if (direction !== 'upload') {
+            return;
+          }
+          progressOf.set(file, Math.min(loaded, file.size));
+          updateProgress();
+        };
+
+        return Promise.all(results.map(({ file, data }) => (
+          api.watch.uploadFile({
+            file: file.name,
+            data: data,
+            onProgress: onProgress(file)
+          })
+        )));
+      })
+      .catch((err) => {
+        log.error('Failed to upload files to the watch directory:', err);
+      })
+      .then(() => {
+        this.setState({ uploading: false, uploadProgress: 0 });
+      });
+  };
 
   addColumnGroup() {
     if (!this.treeNode) {
@@ -67,6 +203,8 @@ class WatchDirectory extends Component {
     }
 
     this.treeNode.tree.scrollElement.style.height = '240px';
+    this.treeNode.tree.scrollElement.style.overflowY = 'scroll';
+    this.treeNode.tree.scrollElement.style.overflowX = 'hidden';
     const table = this.treeNode.tree.contentElement.parentNode;
     const colgroup = document.createElement('colgroup');
     table.appendChild(colgroup);
@@ -77,7 +215,7 @@ class WatchDirectory extends Component {
     }
   }
 
-  fitHeaderColumns() {
+  fitHeaderColumns = () => {
     const ready = this.tableNode && this.treeNode;
     if (!ready) {
       return;
@@ -89,149 +227,243 @@ class WatchDirectory extends Component {
     const colgroup = elTree.querySelector('colgroup');
     const row = elTree.querySelector('tbody > tr');
 
+    if (!row) {
+      return;
+    }
+
+    const widths = [];
     let i = 0;
     let child = row.firstChild;
     let col = colgroup.firstChild;
     while (child && col) {
-      const width = Math.max(child.clientWidth, tableHeaders[i].clientWidth);
-      col.style.minWidth = width + 'px';
-      col.style.width = width + 'px';
-      tableHeaders[i].style.width = width + 'px';
+      widths.push(Math.max(child.clientWidth, tableHeaders[i].clientWidth));
       ++i;
-
       child = child.nextSibling;
       col = col.nextSibling;
     }
-  }
+
+    const available = elTree.clientWidth - 8;
+    const maxColumnRatios = [0, 0.24, 0.14, 0.1];
+    for (let column = 1; column < widths.length; ++column) {
+      widths[column] = Math.min(widths[column], Math.round(available * maxColumnRatios[column]));
+    }
+
+    const othersTotal = widths.slice(1).reduce((sum, width) => sum + width, 0);
+    widths[0] = Math.max(Math.round(available * 0.4), available - othersTotal);
+
+    i = 0;
+    child = row.firstChild;
+    col = colgroup.firstChild;
+    while (child && col) {
+      col.style.minWidth = widths[i] + 'px';
+      col.style.width = widths[i] + 'px';
+      tableHeaders[i].style.width = widths[i] + 'px';
+      ++i;
+      child = child.nextSibling;
+      col = col.nextSibling;
+    }
+  };
 
   render() {
     const { state, actions } = this.props;
     const { selectedNode = null } = state.modal.params;
+    const { dragging, uploading, uploadProgress, refreshing } = this.state;
     const canUpload = selectedNode && selectedNode.props.type === 'f';
 
     return (
-      <Modal size="md" onClose={actions.closeModal}>
+      <Modal
+        disableOverlay
+        size="md"
+        style={{ width: '80vw' }}
+        onClose={actions.closeModal}
+      >
         <Modal.Header>
           <Modal.Title>{i18n._('Watch Directory')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <table
-            ref={node => {
-              this.tableNode = node;
+          <div className={watchDirectoryStyles.toolbar}>
+            <input
+              ref={(node) => {
+                this.uploadInputEl = node;
+              }}
+              type="file"
+              multiple={true}
+              style={{ display: 'none' }}
+              onChange={this.handleChangeUploadFiles}
+            />
+            <button
+              type="button"
+              className="btn btn-default"
+              onClick={this.handleClickUpload}
+              disabled={uploading}
+            >
+              <i aria-hidden="true" className="fa fa-plus" />
+              <Space width="4" />
+              {i18n._('Add')}
+            </button>
+            {uploading && (
+              <i aria-hidden="true" className="fa fa-circle-o-notch fa-spin" style={{ marginLeft: 8 }} />
+            )}
+            <button
+              type="button"
+              className="btn btn-default"
+              style={{ marginLeft: 'auto' }}
+              title={i18n._('Refresh')}
+              aria-label={i18n._('Refresh')}
+              onClick={this.loadFiles}
+            >
+              <i aria-hidden="true" className={classNames('fa fa-refresh', { 'fa-spin': refreshing })} />
+            </button>
+          </div>
+          <div
+            ref={(node) => {
+              this.dropzoneNode = node;
             }}
-            style={{
-              width: '100%'
-            }}
+            className={classNames(watchDirectoryStyles.dropzone, {
+              [watchDirectoryStyles.dropzoneOver]: dragging
+            })}
           >
-            <thead>
-              <tr>
-                <th>{i18n._('Name')}</th>
-                <th>{i18n._('Date modified')}</th>
-                <th>{i18n._('Type')}</th>
-                <th>{i18n._('Size')}</th>
-              </tr>
-            </thead>
-          </table>
-          <InfiniteTree
-            style={{ height: 240 }}
-            ref={node => {
-              if (!this.treeNode) {
-                this.treeNode = node;
-                this.addColumnGroup();
-              }
-            }}
-            noDataClass={styles.noData}
-            togglerClass={styles.treeToggler}
-            autoOpen={true}
-            layout="table"
-            loadNodes={(parentNode, done) => {
-              api.watch.getFiles({ path: path.join(parentNode.props.path, parentNode.name) })
-                .then((res) => {
-                  const body = res.body;
-                  const nodes = body.files.map((file) => {
-                    const { name, ...props } = file;
-
-                    return {
-                      id: path.join(body.path, name),
-                      name: name,
-                      props: {
-                        ...props,
-                        path: body.path || ''
-                      },
-                      loadOnDemand: (props.type === 'd')
-                    };
-                  });
-
-                  done(null, nodes);
-                })
-                .catch((res) => {
-                  // Ignore error
-                });
-            }}
-            rowRenderer={renderer}
-            shouldSelectNode={(node) => {
-              const tree = this.treeNode.tree;
-              if (!node || (node === tree.getSelectedNode())) {
-                return false; // Prevent from desdelecting the current node
-              }
-              return true;
-            }}
-            onContentDidUpdate={() => {
-              this.fitHeaderColumns();
-            }}
-            onKeyDown={(event) => {
-              // Prevent the default scroll
-              event.preventDefault();
-
-              const tree = this.treeNode.tree;
-              const node = tree.getSelectedNode();
-              const nodeIndex = tree.getSelectedIndex();
-
-              if (event.keyCode === 13) { // Enter
-                if (!node) {
-                  return;
+            <table
+              ref={node => {
+                this.tableNode = node;
+              }}
+              style={{ width: '100%' }}
+            >
+              <thead>
+                <tr>
+                  <th style={{ paddingLeft: 20 }}>{i18n._('Name')}</th>
+                  <th>{i18n._('Date modified')}</th>
+                  <th>{i18n._('Type')}</th>
+                  <th>{i18n._('Size')}</th>
+                </tr>
+              </thead>
+            </table>
+            <InfiniteTree
+              style={{ height: 240 }}
+              ref={node => {
+                if (!this.treeNode) {
+                  this.treeNode = node;
+                  this.addColumnGroup();
                 }
-                const file = path.join(node.props.path, node.name);
-                actions.loadFile(file);
-                actions.closeModal();
-              } else if (event.keyCode === 37) { // Left
-                tree.closeNode(node);
-              } else if (event.keyCode === 38) { // Up
-                const prevNode = tree.nodes[nodeIndex - 1] || node;
-                tree.selectNode(prevNode);
-              } else if (event.keyCode === 39) { // Right
-                tree.openNode(node);
-              } else if (event.keyCode === 40) { // Down
-                const nextNode = tree.nodes[nodeIndex + 1] || node;
-                tree.selectNode(nextNode);
-              }
-            }}
-            onSelectNode={(node) => {
-              actions.updateModalParams({ selectedNode: node });
-            }}
-            onDoubleClick={(event) => {
-              event.stopPropagation();
-
-              // Call setTimeout(fn, 0) to make sure it returns the last selected node
-              setTimeout(() => {
+              }}
+              noDataClass={styles.noData}
+              togglerClass={styles.treeToggler}
+              autoOpen={true}
+              layout="table"
+              loadNodes={(parentNode, done) => {
+                api.watch.getFiles({ path: path.join(parentNode.props.path, parentNode.name) })
+                  .then((res) => {
+                    const body = res.body;
+                    const nodes = body.files.map((file) => {
+                      const { name, ...props } = file;
+                      return {
+                        id: path.join(body.path, name),
+                        name: name,
+                        props: {
+                          ...props,
+                          path: body.path || ''
+                        },
+                        loadOnDemand: props.type === 'd'
+                      };
+                    });
+                    done(null, nodes);
+                  })
+                  .catch((res) => {
+                    log.error('Failed to load watch directory node:', res);
+                    done(res);
+                  });
+              }}
+              rowRenderer={renderer}
+              shouldSelectNode={(node) => {
+                const tree = this.treeNode.tree;
+                return !(node && node === tree.getSelectedNode());
+              }}
+              onContentDidUpdate={this.fitHeaderColumns}
+              onKeyDown={(event) => {
+                event.preventDefault();
                 const tree = this.treeNode.tree;
                 const node = tree.getSelectedNode();
+                const nodeIndex = tree.getSelectedIndex();
 
-                if (node) {
-                  const file = path.join(node.props.path, node.name);
-                  actions.loadFile(file);
+                if (event.keyCode === 13) {
+                  if (!node) {
+                    return;
+                  }
+                  if (node.props.type === 'd') {
+                    if (node.state.open) {
+                      tree.closeNode(node);
+                    } else {
+                      tree.openNode(node);
+                    }
+                    return;
+                  }
+                  actions.loadFile(path.join(node.props.path, node.name));
                   actions.closeModal();
+                } else if (event.keyCode === 37) {
+                  tree.closeNode(node);
+                } else if (event.keyCode === 38) {
+                  tree.selectNode(tree.nodes[nodeIndex - 1] || node);
+                } else if (event.keyCode === 39) {
+                  tree.openNode(node);
+                } else if (event.keyCode === 40) {
+                  tree.selectNode(tree.nodes[nodeIndex + 1] || node);
                 }
-              }, 0);
-            }}
-          />
+              }}
+              onSelectNode={(node) => {
+                actions.updateModalParams({ selectedNode: node });
+              }}
+              onDoubleClick={(event) => {
+                event.stopPropagation();
+                setTimeout(() => {
+                  const tree = this.treeNode.tree;
+                  const node = tree.getSelectedNode();
+                  if (!node) {
+                    return;
+                  }
+                  if (node.props.type === 'd') {
+                    if (node.state.open) {
+                      tree.closeNode(node);
+                    } else {
+                      tree.openNode(node);
+                    }
+                    return;
+                  }
+                  actions.loadFile(path.join(node.props.path, node.name));
+                  actions.closeModal();
+                }, 0);
+              }}
+            />
+            {dragging && (
+              <div className={watchDirectoryStyles.dropzoneHint}>
+                <i aria-hidden="true" className="fa fa-upload" />
+                <Space width="8" />
+                {i18n._('Upload G-code')}
+              </div>
+            )}
+            {uploading && (
+              <div className={watchDirectoryStyles.dropzoneHint}>
+                <div className={watchDirectoryStyles.progressLabel}>
+                  <i aria-hidden="true" className="fa fa-circle-o-notch fa-spin" />
+                  <Space width="8" />
+                  {i18n._('Upload G-code')} {uploadProgress}%
+                </div>
+                <div className="progress" style={{ marginBottom: 0 }}>
+                  <div
+                    className="progress-bar"
+                    role="progressbar"
+                    aria-label={i18n._('Upload G-code')}
+                    aria-valuenow={uploadProgress}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    style={{ width: uploadProgress + '%' }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         </Modal.Body>
         <Modal.Footer>
-          <button
-            type="button"
-            className="btn btn-default"
-            onClick={actions.closeModal}
-          >
+          <button type="button" className="btn btn-default" onClick={actions.closeModal}>
             {i18n._('Cancel')}
           </button>
           <button
@@ -240,10 +472,8 @@ class WatchDirectory extends Component {
             onClick={() => {
               const tree = this.treeNode.tree;
               const node = tree.getSelectedNode();
-
               if (node) {
-                const file = path.join(node.props.path, node.name);
-                actions.loadFile(file);
+                actions.loadFile(path.join(node.props.path, node.name));
                 actions.closeModal();
               }
             }}

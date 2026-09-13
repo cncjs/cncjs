@@ -63,7 +63,7 @@ class CNCJSController {
     'sender:load': [],
     'sender:unload': [],
     'workflow:state': [],
-    'message': [],
+    'watchdir:change': [],
 
     /**
      * [Autolevel] Fired when the auto-leveling process starts.

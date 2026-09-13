@@ -38,7 +38,7 @@ import serviceContainer from './service-container';
 
 const shellCommand = serviceContainer.resolve('shellCommand');
 const userStore = serviceContainer.resolve('userStore');
-
+const directoryWatcher = serviceContainer.resolve('directoryWatcher');
 const log = logger('service-engine');
 
 // Case-insensitive equality checker.
@@ -92,6 +92,11 @@ class ServiceEngine {
       if (this.io) {
         this.io.emit('config:change');
       }
+    },
+    watchdirChange: (...args) => {
+      if (this.io) {
+        this.io.emit('watchdir:change', ...args);
+      }
     }
   };
 
@@ -144,6 +149,7 @@ class ServiceEngine {
     this.stop();
 
     userStore.on('change', this.listener.configChange);
+    directoryWatcher.on('change', this.listener.watchdirChange);
 
     shellCommand.on('start', this.listener.taskStart);
     shellCommand.on('data', this.listener.taskData);
@@ -455,6 +461,7 @@ class ServiceEngine {
     this.server = null;
 
     userStore.off('change', this.listener.configChange);
+    directoryWatcher.off('change', this.listener.watchdirChange);
 
     shellCommand.off('start', this.listener.taskStart);
     shellCommand.off('data', this.listener.taskData);

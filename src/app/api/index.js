@@ -186,6 +186,17 @@ controllers.get = () => new Promise((resolve, reject) => {
 // Watch Directory
 //
 const watch = {};
+watch.getStatus = () => new Promise((resolve, reject) => {
+  authrequest
+    .get('/api/watch/status')
+    .end((err, res) => {
+      if (err) {
+        reject(res);
+      } else {
+        resolve(res);
+      }
+    });
+});
 
 watch.getFiles = (options) => new Promise((resolve, reject) => {
   const { path } = { ...options };
@@ -208,6 +219,25 @@ watch.readFile = (options) => new Promise((resolve, reject) => {
   authrequest
     .post('/api/watch/file')
     .send({ file })
+    .end((err, res) => {
+      if (err) {
+        reject(res);
+      } else {
+        resolve(res);
+      }
+    });
+});
+watch.uploadFile = (options) => new Promise((resolve, reject) => {
+  const { file, data, onProgress } = { ...options };
+
+  authrequest
+    .post('/api/watch/upload')
+    .send({ file, data })
+    .on('progress', (event) => {
+      if (onProgress) {
+        onProgress(event.percent);
+      }
+    })
     .end((err, res) => {
       if (err) {
         reject(res);
