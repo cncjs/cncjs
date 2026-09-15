@@ -39,8 +39,12 @@ export const readFile = (req, res) => {
 };
 
 export const writeFile = (req, res) => {
-  const file = req.body.file || '';
-  const data = req.body.data || '';
+  // A JSON body (already parsed by body-parser) keeps the original behaviour.
+  // Anything else is treated as a raw upload and streamed to disk, so large
+  // G-code programs do not have to be held in memory as a string; the file
+  // name then comes from the query string.
+  const hasParsedBody = !!req.body && Object.keys(req.body).length > 0;
+  const file = hasParsedBody ? (req.body.file || '') : (req.query.file || '');
 
   if (!file) {
     res.status(ERR_BAD_REQUEST).send({
@@ -49,7 +53,7 @@ export const writeFile = (req, res) => {
     return;
   }
 
-  monitor.writeFile(file, data, (err) => {
+  const done = (err) => {
     if (err) {
       res.status(err.message === 'Watch directory is not configured' ? ERR_BAD_REQUEST : ERR_INTERNAL_SERVER_ERROR).send({
         msg: err.message || 'Failed writing file'
@@ -58,7 +62,14 @@ export const writeFile = (req, res) => {
     }
 
     res.send({ file: file });
-  });
+  };
+
+  if (hasParsedBody) {
+    monitor.writeFile(file, req.body.data || '', done);
+    return;
+  }
+
+  monitor.writeStream(file, req, done);
 };
 
 // The monitor tags its errors with a `code`; anything else is unexpected and
