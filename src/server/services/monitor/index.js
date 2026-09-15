@@ -98,6 +98,66 @@ const writeFile = (file, data, callback) => {
   fs.writeFile(target, data, 'utf8', callback);
 };
 
+// Stream a readable (e.g. a request body) into the watch directory without
+// holding the whole file in memory. Writes to a temporary name first and
+// renames into place on completion, so a partially written file never appears
+// under its final name inside the watched directory.
+const writeStream = (file, readable, callback) => {
+  const root = monitor.root;
+
+  if (!root) {
+    callback(new Error('Watch directory is not configured'));
+    return;
+  }
+
+  // Strip any directory components to prevent writing outside of the watched directory
+  const filename = path.basename(file);
+  const target = path.join(root, filename);
+  const temp = path.join(root, `.${filename}.${process.pid}.${Date.now()}.tmp`);
+  const ws = fs.createWriteStream(temp);
+
+  let settled = false;
+  const fail = (err) => {
+    if (settled) {
+      return;
+    }
+    settled = true;
+    readable.unpipe(ws);
+    ws.destroy();
+    fs.unlink(temp, () => {
+      callback(err);
+    });
+  };
+
+  ws.on('error', fail);
+  readable.on('error', fail);
+  readable.on('aborted', () => {
+    fail(new Error('Upload aborted'));
+  });
+  readable.on('close', () => {
+    if (!settled && !readable.readableEnded) {
+      fail(new Error('Upload aborted'));
+    }
+  });
+
+  ws.on('finish', () => {
+    if (settled) {
+      fs.unlink(temp, () => {});
+      return;
+    }
+    fs.rename(temp, target, (err) => {
+      if (err) {
+        fail(err);
+        return;
+      }
+      settled = true;
+      callback(null);
+    });
+  });
+
+  readable.pipe(ws);
+};
+
 const on = (...args) => {
   emitter.on(...args);
 };
@@ -113,6 +173,7 @@ export default {
   getFiles,
   readFile,
   writeFile,
+  writeStream,
   on,
   removeListener
 };
