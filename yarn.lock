@@ -5604,6 +5604,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/jsonwebtoken@npm:^9":
+  version: 9.0.10
+  resolution: "@types/jsonwebtoken@npm:9.0.10"
+  dependencies:
+    "@types/ms": "*"
+    "@types/node": "*"
+  checksum: 370e60879902d769c3dd86dc94cda0bf6149c3514762fa8ed6de873d10de7f0952edf960796a4b89ebc5d81f45abcff21430c1e956b165962ad42c836f3e88c8
+  languageName: node
+  linkType: hard
+
 "@types/keyv@npm:^3.1.4":
   version: 3.1.4
   resolution: "@types/keyv@npm:3.1.4"
@@ -7110,7 +7120,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"async@npm:1.5.2, async@npm:^1.5.0":
+"async@npm:1.5.2":
   version: 1.5.2
   resolution: "async@npm:1.5.2"
   checksum: fe5d6214d8f15bd51eee5ae8ec5079b228b86d2d595f47b16369dec2e11b3ff75a567bb5f70d12d79006665fbbb7ee0a7ec0e388524eefd454ecbe651c124ebd
@@ -8002,7 +8012,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"buffer-equal-constant-time@npm:1.0.1":
+"buffer-equal-constant-time@npm:^1.0.1":
   version: 1.0.1
   resolution: "buffer-equal-constant-time@npm:1.0.1"
   checksum: 80bb945f5d782a56f374b292770901065bad21420e34936ecbe949e57724b4a13874f735850dd1cc61f078773c4fb5493a41391e7bda40d1fa388d6bd80daaab
@@ -8748,7 +8758,7 @@ __metadata:
     expand-tilde: ~2.0.2
     expr-eval: ~1.2.2
     express: ~4.16.4
-    express-jwt: ~5.3.1
+    express-jwt: ~8.5.1
     express-session: ~1.16.1
     file-loader: ~6.2.0
     final-form: ~4.12.0
@@ -8780,7 +8790,7 @@ __metadata:
     js-polyfills: ~0.1.42
     json-loader: ~0.5.7
     jsonlint: ^1.6.3
-    jsonwebtoken: ~9.0.0
+    jsonwebtoken: ~9.0.3
     jsuri: ~1.3.1
     keycode: ~2.2.0
     lodash: ~4.17.21
@@ -11606,15 +11616,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express-jwt@npm:~5.3.1":
-  version: 5.3.3
-  resolution: "express-jwt@npm:5.3.3"
+"express-jwt@npm:~8.5.1":
+  version: 8.5.1
+  resolution: "express-jwt@npm:8.5.1"
   dependencies:
-    async: ^1.5.0
-    express-unless: ^0.3.0
-    jsonwebtoken: ^8.1.0
-    lodash.set: ^4.0.0
-  checksum: 947031e509c334381f88e13e5de79ce0e350e36d97d927cd406cfae0b2db5ea03f533c0b5acdc080355f8dc3d93bbc4c2a42f5d2030edf0801d17bb717f30948
+    "@types/jsonwebtoken": ^9
+    express-unless: ^2.1.3
+    jsonwebtoken: ^9.0.0
+  checksum: 6fa26115783f7ca32290a2ea5fb7d326a772b197e389cc91e1c6a23d73f4f2695b84af0f0c75fde43ef8eb952314dbc1bcfaa3bc9b954290d1872d8f91ccf35b
   languageName: node
   linkType: hard
 
@@ -11651,10 +11660,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express-unless@npm:^0.3.0":
-  version: 0.3.1
-  resolution: "express-unless@npm:0.3.1"
-  checksum: cf46e3ca59b6fa74528e33c2f94dbf0f43df3fbefeada30cb7b4c39e5656a9acfc318a6b48aa1b0bf2bf6b7f39e41b976858ae80531d691a028554093fe946bf
+"express-unless@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "express-unless@npm:2.1.3"
+  checksum: 14bec87e84266180bd8ad71f43a8d1d70d1c3905be7ca89944a86ae0d31f07a3f98418b619673aa8dd417333bbc7bb0a24172ff806a2e0ef1ee9b6221a4bf056
   languageName: node
   linkType: hard
 
@@ -15906,11 +15915,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:^8.1.0":
-  version: 8.5.1
-  resolution: "jsonwebtoken@npm:8.5.1"
+"jsonwebtoken@npm:^9.0.0, jsonwebtoken@npm:~9.0.3":
+  version: 9.0.3
+  resolution: "jsonwebtoken@npm:9.0.3"
   dependencies:
-    jws: ^3.2.2
+    jws: ^4.0.1
     lodash.includes: ^4.3.0
     lodash.isboolean: ^3.0.3
     lodash.isinteger: ^4.0.4
@@ -15919,20 +15928,8 @@ __metadata:
     lodash.isstring: ^4.0.1
     lodash.once: ^4.0.0
     ms: ^2.1.1
-    semver: ^5.6.0
-  checksum: 93c9e3f23c59b758ac88ba15f4e4753b3749dfce7a6f7c40fb86663128a1e282db085eec852d4e0cbca4cefdcd3a8275ee255dbd08fcad0df26ad9f6e4cc853a
-  languageName: node
-  linkType: hard
-
-"jsonwebtoken@npm:~9.0.0":
-  version: 9.0.0
-  resolution: "jsonwebtoken@npm:9.0.0"
-  dependencies:
-    jws: ^3.2.2
-    lodash: ^4.17.21
-    ms: ^2.1.1
-    semver: ^7.3.8
-  checksum: b9181cecf9df99f1dc0253f91ba000a1aa4d91f5816d1608c0dba61a5623726a0bfe200b51df25de18c1a6000825d231ad7ce2788aa54fd48dcb760ad9eb9514
+    semver: ^7.5.4
+  checksum: 22d306335aeba0a0a1a4f7abbc4ee36b4bed3b98c67cdf078f0854845bf5646732e08f1cf1fae802a71c4efb1daef72aa1055d36bce6806caad7b1308b14bcd8
   languageName: node
   linkType: hard
 
@@ -15967,24 +15964,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwa@npm:^1.4.1":
-  version: 1.4.1
-  resolution: "jwa@npm:1.4.1"
+"jwa@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "jwa@npm:2.0.1"
   dependencies:
-    buffer-equal-constant-time: 1.0.1
+    buffer-equal-constant-time: ^1.0.1
     ecdsa-sig-formatter: 1.0.11
     safe-buffer: ^5.0.1
-  checksum: ff30ea7c2dcc61f3ed2098d868bf89d43701605090c5b21b5544b512843ec6fd9e028381a4dda466cbcdb885c2d1150f7c62e7168394ee07941b4098e1035e2f
+  checksum: 6a9828c054c407f6718057089bd3d46dfcb1394e1553e3867abd4579dbec7728b4b0759e7253422ab7d824d95615a86427b35c43f94b83fc3a76470ca4bd2037
   languageName: node
   linkType: hard
 
-"jws@npm:^3.2.2":
-  version: 3.2.2
-  resolution: "jws@npm:3.2.2"
+"jws@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "jws@npm:4.0.1"
   dependencies:
-    jwa: ^1.4.1
+    jwa: ^2.0.1
     safe-buffer: ^5.0.1
-  checksum: f0213fe5b79344c56cd443428d8f65c16bf842dc8cb8f5aed693e1e91d79c20741663ad6eff07a6d2c433d1831acc9814e8d7bada6a0471fbb91d09ceb2bf5c2
+  checksum: c33a060b2cce1e0e49f85054a49a951f9d52a9e2ae732d720f0fc51843c9ac07a68aacd8e9d086ef4c7c4437d42978b698b57a3e7c9bc4a91c0b74276ea85a9a
   languageName: node
   linkType: hard
 
@@ -16389,13 +16386,6 @@ __metadata:
   version: 4.0.5
   resolution: "lodash.rest@npm:4.0.5"
   checksum: e236e510928d5ba64f6c1421a85a3d63fe31683be09fe3bc473ed5e3603f82f26bb75971780bfc3f6a79329b3b07e339c74f8a98e4689d50dc32c6e345215cd9
-  languageName: node
-  linkType: hard
-
-"lodash.set@npm:^4.0.0":
-  version: 4.3.2
-  resolution: "lodash.set@npm:4.3.2"
-  checksum: a9122f49eef9f2d0fc9061a33d87f8e5b8c6b23d46e8b9e9ce1529d3588d79741bd1145a3abdfa3b13082703e65af27ff18d8a07bfc22b9be32f3fc36f763f70
   languageName: node
   linkType: hard
 
@@ -20951,7 +20941,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:^7.3.8":
+"semver@npm:^7.3.2, semver@npm:^7.3.5":
   version: 7.3.8
   resolution: "semver@npm:7.3.8"
   dependencies:

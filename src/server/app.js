@@ -9,7 +9,7 @@ import connectRestreamer from 'connect-restreamer';
 import engines from 'consolidate';
 import errorhandler from 'errorhandler';
 import express from 'express';
-import expressJwt from 'express-jwt';
+import { expressjwt } from 'express-jwt';
 import session from 'express-session';
 import 'hogan.js'; // required by consolidate
 import i18next from 'i18next';
@@ -202,8 +202,9 @@ const appMain = () => {
   app.use(i18nextHandle(i18next, {}));
 
   { // Secure API Access
-    app.use(urljoin(settings.route, 'api'), expressJwt({
+    app.use(urljoin(settings.route, 'api'), expressjwt({
       secret: config.get('secret'),
+      algorithms: ['HS256'], // Matches the default algorithm used to sign access tokens
       credentialsRequired: true
     }));
 
