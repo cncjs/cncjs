@@ -992,4 +992,90 @@ describe('GrblController', () => {
       expect(writes).toEqual([]);
     });
   });
+  describe('connection liveness', () => {
+    const reads = (socketEvents) => socketEvents
+      .filter(({ event }) => event === 'serialport:read')
+      .map(({ args }) => args[0]);
+
+    // A status report answers every `?`, so a healthy link is never quiet for
+    // long. The controller is declared unreachable after 10 seconds of silence.
+    const T0 = 1000;
+
+    test('stays ready while the controller keeps answering', () => {
+      const { controller, socketEvents } = setup();
+      controller.ready = true;
+      controller.lastDataReceivedTime = T0;
+
+      controller.checkConnectionLiveness(T0 + 9000);
+
+      expect(controller.ready).toBe(true);
+      expect(reads(socketEvents)).toEqual([]);
+    });
+
+    test('drops the ready flag once the controller has gone silent', () => {
+      const { controller, socketEvents } = setup();
+      controller.ready = true;
+      controller.lastDataReceivedTime = T0;
+
+      controller.checkConnectionLiveness(T0 + 10000);
+
+      expect(controller.ready).toBe(false);
+      expect(reads(socketEvents)).toEqual([expect.stringContaining('stopped responding')]);
+    });
+
+    test('reports the loss once, not on every pass of the query timer', () => {
+      const { controller, socketEvents } = setup();
+      controller.ready = true;
+      controller.lastDataReceivedTime = T0;
+
+      controller.checkConnectionLiveness(T0 + 10000);
+      controller.checkConnectionLiveness(T0 + 10250);
+      controller.checkConnectionLiveness(T0 + 10500);
+
+      expect(reads(socketEvents)).toHaveLength(1);
+    });
+
+    test('says nothing while the port is closed', () => {
+      const { controller, socketEvents } = setup();
+      controller.ready = true;
+      controller.lastDataReceivedTime = T0;
+      controller.connection.isOpen = false;
+
+      controller.checkConnectionLiveness(T0 + 60000);
+
+      expect(controller.ready).toBe(true);
+      expect(reads(socketEvents)).toEqual([]);
+    });
+
+    test('says nothing before the first byte has arrived', () => {
+      const { controller, socketEvents } = setup();
+      controller.ready = true;
+      controller.lastDataReceivedTime = 0;
+
+      controller.checkConnectionLiveness(T0 + 60000);
+
+      expect(controller.ready).toBe(true);
+      expect(reads(socketEvents)).toEqual([]);
+    });
+
+    test('reports recovery when a controller it had already initialized answers again', () => {
+      const { controller, socketEvents } = setup();
+      controller.initialized = true;
+      controller.ready = false;
+
+      controller.runner.emit('status', { raw: '<Idle|MPos:0.000,0.000,0.000>' });
+
+      expect(controller.ready).toBe(true);
+      expect(reads(socketEvents)).toEqual([expect.stringContaining('responding again')]);
+    });
+
+    test('stays quiet when a controller answers for the first time', () => {
+      const { controller, socketEvents } = setup();
+
+      controller.runner.emit('status', { raw: '<Idle|MPos:0.000,0.000,0.000>' });
+
+      expect(controller.ready).toBe(true);
+      expect(reads(socketEvents)).toEqual([]);
+    });
+  });
 });
