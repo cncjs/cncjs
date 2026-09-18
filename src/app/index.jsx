@@ -119,7 +119,7 @@ series([
 
           const host = '';
           const options = {
-            query: 'token=' + token
+            auth: { token }
           };
           controller.connect(host, options, () => {
             // @see "src/web/containers/Login/Login.jsx"

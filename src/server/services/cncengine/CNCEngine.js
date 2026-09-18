@@ -1,8 +1,8 @@
 import { ensureArray } from 'ensure-type';
 import noop from 'lodash/noop';
 import { SerialPort } from 'serialport';
-import socketIO from 'socket.io';
-import socketioJwt from 'socketio-jwt';
+import { Server as SocketIOServer } from 'socket.io';
+import jwt from 'jsonwebtoken';
 import EventTrigger from '../../lib/EventTrigger';
 import logger from '../../lib/logger';
 import settings from '../../config/settings';
@@ -139,15 +139,10 @@ class CNCEngine {
       this.event.trigger('startup');
 
       this.server = server;
-      this.io = socketIO(this.server, {
+      this.io = new SocketIOServer(this.server, {
         serveClient: true,
         path: '/socket.io'
       });
-
-      this.io.use(socketioJwt.authorize({
-        secret: settings.secret,
-        handshake: true
-      }));
 
       this.io.use(async (socket, next) => {
         try {
@@ -155,9 +150,22 @@ class CNCEngine {
           const ipaddr = socket.handshake.address;
           await authorizeIPAddress(ipaddr);
 
+          // Socket.IO v4 carries credentials in `handshake.auth`, but the
+          // query string is still read as well: pendants and other third-party
+          // clients pass the token that way, and it is also what a URL opened
+          // by hand will carry.
+          const token = socket.handshake.auth?.token || socket.handshake.query?.token;
+          let user = {};
+          if (token) {
+            user = jwt.verify(token, settings.secret) || {};
+          }
+
           // User Validation
-          const user = socket.decoded_token || {};
           await validateUser(user);
+
+          // Replaces `socket.decoded_token` from socketio-jwt, which pinned an
+          // old jsonwebtoken and spoke the v2 middleware idiom.
+          socket.user = user;
         } catch (err) {
           log.warn(err);
           next(err);
@@ -169,7 +177,7 @@ class CNCEngine {
 
       this.io.on('connection', (socket) => {
         const address = socket.handshake.address;
-        const user = socket.decoded_token || {};
+        const user = socket.user || {};
         log.debug(`New connection from ${address}: id=${socket.id}, user.id=${user.id}, user.name=${user.name}`);
 
         // Add to the socket pool

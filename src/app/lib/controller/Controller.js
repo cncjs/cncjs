@@ -113,8 +113,11 @@ class Controller {
             next = noop;
         }
 
-        this.socket && this.socket.destroy();
-        this.socket = this.io.connect(host, options);
+        // `destroy()` and `io.connect()` were both dropped in socket.io-client
+        // v3. `disconnect()` is the replacement for tearing a socket down; the
+        // module itself is callable to open one.
+        this.socket && this.socket.disconnect();
+        this.socket = this.io(host, options);
 
         Object.keys(this.listeners).forEach((eventName) => {
             if (!this.socket) {
@@ -172,7 +175,7 @@ class Controller {
     }
     // Disconnect from the server.
     disconnect() {
-        this.socket && this.socket.destroy();
+        this.socket && this.socket.disconnect();
         this.socket = null;
     }
     // Adds the `listener` function to the end of the listeners array for the event named `eventName`.
