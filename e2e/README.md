@@ -147,3 +147,29 @@ What it locks in:
 Specs that change the configured server write into `electron-store`, which
 outlives the process. `afterEach` puts it back — if you add a spec that touches
 it, keep that guarantee or the next run starts somewhere unexpected.
+
+## Running the dev server for long sessions
+
+Two things worth knowing if you leave `yarn win-dev` up for hours while
+iterating on these specs.
+
+The webpack watcher grows. On a long session it has been observed past 10 GB
+of resident memory — `eval-cheap-module-source-map` over a project this size
+keeps a lot alive. Restart it occasionally rather than wondering where the RAM
+went.
+
+`win-dev` is a tree — `yarn` → `concurrently` → `npm` → `cross-env` → the
+server and the webpack watcher. Killing whatever is listening on :8000 and
+:8080 kills the leaves and orphans everything above them, and the orphaned
+watcher keeps running and keeps growing. Kill the tree:
+
+```powershell
+Get-CimInstance Win32_Process -Filter "Name='node.exe'" |
+  Where-Object { $_.CommandLine -match 'cncjs|win-dev|start-app-dev|start-server-dev' } |
+  ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+```
+
+Playwright itself cleans up after runs — leaked browsers have not been a
+problem here. Check before blaming it: Playwright's Chromium lives under
+`ms-playwright`, so anything running from `Program Files` is your own browser
+and killing it will cost you your tabs.

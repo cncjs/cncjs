@@ -6,6 +6,9 @@ const baseURL = process.env.CNCJS_URL || 'http://localhost:8000';
 
 module.exports = defineConfig({
   testDir: './e2e',
+  // Blocks until the server is serving, so a cold webpack compile cannot
+  // masquerade as a flaky first navigation.
+  globalSetup: require.resolve('./e2e/global-setup'),
   // The workspace mounts 15 widgets including a Three.js visualizer, so the
   // first paint is slow on a cold bundle.
   timeout: 90 * 1000,
