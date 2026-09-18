@@ -82,10 +82,37 @@ const test = baseTest.extend({
       return value;
     };
 
+    /**
+     * Click a keypad jog button and wait for the move to actually land.
+     *
+     * Waiting on the controller state alone does not work: for a moment after
+     * the click the command has not left the browser yet, so the controller is
+     * still reporting Idle and the wait returns immediately. A spec that ends
+     * there tears the page down mid-move and the axis never comes back — which
+     * is how an early version of this helper left X a millimetre off origin.
+     *
+     * So wait for the reported position to reach the target first, then for
+     * the controller to come to rest.
+     */
     const jog = async (direction) => {
+      const axis = direction.slice(0, 1);
+      const sign = direction.endsWith('+') ? 1 : -1;
+      const step = await jogStep();
+      const start = parseFloat(await workPosition(axis).textContent());
+      const target = start + (sign * step);
+
       await axes.locator(`[title="Move ${direction}"]`).click();
-      // Jogging leaves the controller in Jog until the move completes.
-      await expect(controllerState).toHaveText(/idle/i, { timeout: 20000 });
+
+      await expect
+        .poll(async () => parseFloat(await workPosition(axis).textContent()), { timeout: 20000 })
+        .toBeCloseTo(target, 2);
+
+      await expect
+        .poll(async () => {
+          const state = await readControllerState();
+          return String(state?.controller?.state?.status?.activeState || '').toLowerCase();
+        }, { timeout: 20000 })
+        .toBe('idle');
     };
 
     /**

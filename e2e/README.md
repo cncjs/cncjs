@@ -93,6 +93,15 @@ your clearances before running it, and remember that a Grbl with `$20=0`,
 `$21=0` and `$22=0` has no soft limits, no hard limits and no homing, so
 nothing in firmware will stop an over-travel.
 
+That symmetry depends entirely on `jog()` waiting for the move to land rather
+than for the controller to report Idle. Right after the click the command has
+not left the browser, so the controller is still Idle and a state-based wait
+returns immediately — the spec then ends, the page is torn down mid-move, and
+the return leg never reaches the machine. An early version of this helper did
+exactly that and left X a millimetre off origin. If you change `jog()`, verify
+afterwards that the machine is back where it started **and** reports Idle, not
+Run.
+
 This tier exists because the smoke tier structurally cannot see a whole class
 of regression: it never opens a serial port, so every code path behind
 `serialport:open` is invisible to it. The xterm upgrade that broke
