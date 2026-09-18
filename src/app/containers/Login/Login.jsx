@@ -74,7 +74,7 @@ class Login extends PureComponent {
             const token = store.get('session.token');
             const host = '';
             const options = {
-              query: 'token=' + token
+              auth: { token }
             };
             controller.connect(host, options, () => {
               // @see "src/web/index.jsx"
