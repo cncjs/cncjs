@@ -37,7 +37,7 @@ module.exports = defineConfig({
       testDir: './e2e',
       // Every tier that needs something beyond a running server lives in its
       // own directory and is excluded here.
-      testIgnore: ['**/hardware/**', '**/electron/**'],
+      testIgnore: ['**/hardware/**', '**/electron/**', '**/auth/**'],
       // 'chromium' selects the full browser rather than the headless shell,
       // which has no WebGL — the Visualizer widget needs it to render.
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
@@ -48,6 +48,15 @@ module.exports = defineConfig({
       name: 'hardware',
       testDir: './e2e/hardware',
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
+    },
+    {
+      // The API gate is bypassed when NODE_ENV=development, so these start
+      // their own production server rather than using the dev one. Skipped
+      // until `yarn build-prod` has produced it.
+      name: 'auth',
+      testDir: './e2e/auth',
+      // Each block boots a server and waits for it to answer.
+      timeout: 120 * 1000,
     },
     {
       // Drives the packaged desktop app through Playwright's Electron support,

@@ -51,12 +51,46 @@ const reachable = async () => {
   }
 };
 
+// Which tiers talk to an already-running server. The others bring their own
+// (auth) or need none at all (electron), and making them sit out the timeout
+// for a server they never touch turns a three-second run into a three-minute
+// one.
+const NEEDS_RUNNING_SERVER = ['smoke', 'hardware'];
+
+/**
+ * Which projects this run selected, or null when that cannot be told.
+ *
+ * Playwright hands globalSetup every configured project rather than the
+ * selection, so the only source is the command line. Anything unrecognised
+ * returns null and the wait happens as before — the cost of guessing wrong in
+ * that direction is a slow run, not a broken one.
+ */
+const selectedProjects = () => {
+  const argv = process.argv.slice(2);
+  const names = [];
+
+  for (let i = 0; i < argv.length; ++i) {
+    const arg = argv[i];
+    if (arg.startsWith('--project=')) {
+      names.push(arg.slice('--project='.length));
+    } else if (arg === '--project' && argv[i + 1]) {
+      names.push(argv[++i]);
+    }
+  }
+
+  return names.length > 0 ? names : null;
+};
+
 module.exports = async () => {
+  const selected = selectedProjects();
+  if (selected && !selected.some(name => NEEDS_RUNNING_SERVER.includes(name))) {
+    return;
+  }
+
   const startedAt = Date.now();
   let waited = false;
 
   for (;;) {
-    // eslint-disable-next-line no-await-in-loop
     if (await reachable()) {
       if (waited) {
         const seconds = Math.round((Date.now() - startedAt) / 1000);
@@ -74,7 +108,6 @@ module.exports = async () => {
     }
 
     waited = true;
-    // eslint-disable-next-line no-await-in-loop
     await sleep(INTERVAL_MS);
   }
 };

@@ -10,7 +10,9 @@ console — not to assert on business logic.
 
 ## Running
 
-The suite tests a server that is already running; it does not start one.
+The smoke and hardware tiers test a server that is already running; they do not
+start one. The auth tier starts its own, and the Electron tier launches the
+packaged app.
 
 ```bash
 yarn dev          # or: yarn win-dev on Windows
@@ -147,6 +149,39 @@ What it locks in:
 Specs that change the configured server write into `electron-store`, which
 outlives the process. `afterEach` puts it back — if you add a spec that touches
 it, keep that guarantee or the next run starts somewhere unexpected.
+
+## Auth tier
+
+`e2e/auth/` covers the API gate the way a deployment meets it. It starts its
+own server rather than using the dev one, because `NODE_ENV=development`
+bypasses JWT verification outright in `src/server/app.js` — every assertion
+here would pass vacuously against `yarn win-dev`.
+
+```bash
+yarn build-prod
+yarn test:e2e --project=auth
+```
+
+It needs no running server and no hardware. Each block spawns
+`bin/cncjs` in production mode on a free port with its own temporary `.cncrc`,
+so the accounts under test never touch your own config, and kills it afterwards.
+
+What it locks in:
+
+- with accounts configured, a request carrying no token is refused, a wrong
+  password is refused, and the right password yields a token that works;
+- **a token stops working when its account is deleted.** The token still
+  verifies — it carries the server's signature and has not expired — so
+  `expressjwt` passing is not the same question as "does this account still
+  exist". Until this was fixed the two were conflated and deleting a user left
+  their access intact for the lifetime of their token, 30 days by default;
+- deleting one account does not disturb another;
+- before any account exists, `/api/signin` hands a token to anyone and the
+  server honours it. That is cncjs's first-run behaviour and the tier pins it
+  so that tightening the gate cannot quietly break setting the machine up.
+
+The specs assert on `/api/controllers`, which needs no machine attached and
+answers `[]`.
 
 ## Running the dev server for long sessions
 
