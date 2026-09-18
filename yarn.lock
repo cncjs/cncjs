@@ -6971,6 +6971,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"append-field@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "append-field@npm:1.0.0"
+  checksum: 482ba08acc0ecef00fe7da6bf2f8e48359a9905ee1af525f3120c9260c02e91eedf0579b59d898e8d8455b6c199e340bc0a2fd4b9e02adaa29a8a86c722b37f9
+  languageName: node
+  linkType: hard
+
 "aproba@npm:^1.0.3 || ^2.0.0":
   version: 2.0.0
   resolution: "aproba@npm:2.0.0"
@@ -8380,6 +8387,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"busboy@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "busboy@npm:1.6.0"
+  dependencies:
+    streamsearch: ^1.1.0
+  checksum: 32801e2c0164e12106bf236291a00795c3c4e4b709ae02132883fe8478ba2ae23743b11c5735a0aae8afe65ac4b6ca4568b91f0d9fed1fdbc32ede824a73746e
+  languageName: node
+  linkType: hard
+
 "bytes@npm:2.3.0":
   version: 2.3.0
   resolution: "bytes@npm:2.3.0"
@@ -9021,7 +9037,6 @@ __metadata:
     commander: ~13.1.0
     compression: ~1.7.4
     concurrently: ~4.1.0
-    connect-multiparty: ~2.2.0
     connect-restreamer: ~1.0.3
     consolidate: ~0.15.1
     cookie-parser: ~1.4.4
@@ -9100,6 +9115,7 @@ __metadata:
     moment: ~2.30.1
     morgan: ~1.10.0
     mousetrap: ~1.6.3
+    multer: ~2.4.0
     namespace-constants: ~0.5.0
     nib: ~1.2.0
     normalize.css: ~8.0.1
@@ -9539,19 +9555,6 @@ __metadata:
     qs: ~4.0.0
     type-is: ~1.6.4
   checksum: 6e8d6a28f842ad06c8c7de88cc418e08436983bdfa3387aff11db22b77a179910de8da8cc28c98e7edab75825bc0a1bda106727b35fc87100b3b1970ce602da5
-  languageName: node
-  linkType: hard
-
-"connect-multiparty@npm:~2.2.0":
-  version: 2.2.0
-  resolution: "connect-multiparty@npm:2.2.0"
-  dependencies:
-    http-errors: ~1.7.0
-    multiparty: ~4.2.1
-    on-finished: ~2.3.0
-    qs: ~6.5.2
-    type-is: ~1.6.16
-  checksum: 8c0505da09408601e85cfacbd6bf37de4ebe6b4dfc83fb8a3b5e391ae1e7d65604f50bf19c64fd861f4f848e33b462cec033d0c57f043b28ff2c209ddb857ee0
   languageName: node
   linkType: hard
 
@@ -14149,32 +14152,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-errors@npm:~1.7.0":
-  version: 1.7.3
-  resolution: "http-errors@npm:1.7.3"
-  dependencies:
-    depd: ~1.1.2
-    inherits: 2.0.4
-    setprototypeof: 1.1.1
-    statuses: ">= 1.5.0 < 2"
-    toidentifier: 1.0.0
-  checksum: a59f359473f4b3ea78305beee90d186268d6075432622a46fb7483059068a2dd4c854a20ac8cd438883127e06afb78c1309168bde6cdfeed1e3700eb42487d99
-  languageName: node
-  linkType: hard
-
-"http-errors@npm:~1.8.1":
-  version: 1.8.1
-  resolution: "http-errors@npm:1.8.1"
-  dependencies:
-    depd: ~1.1.2
-    inherits: 2.0.4
-    setprototypeof: 1.2.0
-    statuses: ">= 1.5.0 < 2"
-    toidentifier: 1.0.1
-  checksum: d3c7e7e776fd51c0a812baff570bdf06fe49a5dc448b700ab6171b1250e4cf7db8b8f4c0b133e4bfe2451022a5790c1ca6c2cae4094dedd6ac8304a1267f91d2
-  languageName: node
-  linkType: hard
-
 "http-link-header@npm:^1.0.2":
   version: 1.1.0
   resolution: "http-link-header@npm:1.1.0"
@@ -17846,6 +17823,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"multer@npm:~2.4.0":
+  version: 2.4.0
+  resolution: "multer@npm:2.4.0"
+  dependencies:
+    append-field: ^1.0.0
+    busboy: ^1.6.0
+    type-is: ^1.6.18
+  checksum: 1a47d3c5275c63e7e38b5c20c99a5426899c016a857b142de9cf23995f7eb5bd5e1e75ffb77990a82f2d2e447e314d9a60274740845e846fe0e1f74896d249b3
+  languageName: node
+  linkType: hard
+
 "multicast-dns@npm:^7.2.5":
   version: 7.2.5
   resolution: "multicast-dns@npm:7.2.5"
@@ -17872,17 +17860,6 @@ __metadata:
     fd-slicer: ~1.0.1
     safe-buffer: 5.1.2
   checksum: d815957cbf5c25448dd1bcf81cc1cf25e5a7722a10c4e01a5c103872183dd9f177038e84b752db0dc57853d6d193d4fb3d653e040b7bf1f26a5acf0e5d07f07b
-  languageName: node
-  linkType: hard
-
-"multiparty@npm:~4.2.1":
-  version: 4.2.3
-  resolution: "multiparty@npm:4.2.3"
-  dependencies:
-    http-errors: ~1.8.1
-    safe-buffer: 5.2.1
-    uid-safe: 2.1.5
-  checksum: 16be1f14280a78a220864e9209196ce3d9bc5e3342a5e14465e8664c8a3f0e217b370d70f0dfba953ae7f17c720f87573b7b3b01a6e9eb04330c19f547ec157a
   languageName: node
   linkType: hard
 
@@ -21960,13 +21937,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"setprototypeof@npm:1.1.1":
-  version: 1.1.1
-  resolution: "setprototypeof@npm:1.1.1"
-  checksum: a8bee29c1c64c245d460ce53f7460af8cbd0aceac68d66e5215153992cc8b3a7a123416353e0c642060e85cc5fd4241c92d1190eec97eda0dcb97436e8fcca3b
-  languageName: node
-  linkType: hard
-
 "setprototypeof@npm:1.2.0":
   version: 1.2.0
   resolution: "setprototypeof@npm:1.2.0"
@@ -22594,7 +22564,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"statuses@npm:>= 1.4.0 < 2, statuses@npm:>= 1.5.0 < 2":
+"statuses@npm:>= 1.4.0 < 2":
   version: 1.5.0
   resolution: "statuses@npm:1.5.0"
   checksum: c469b9519de16a4bb19600205cffb39ee471a5f17b82589757ca7bd40a8d92ebb6ed9f98b5a540c5d302ccbc78f15dc03cc0280dd6e00df1335568a5d5758a5c
@@ -22641,6 +22611,13 @@ __metadata:
   dependencies:
     streamx: ^2.13.2
   checksum: 338b8e088f2eb2c91b0e06907db436525da3620991b13499e57441548e62d3585be185505901b0380cad425889572794e5fe178dd326f5efde654b3ab26df3d3
+  languageName: node
+  linkType: hard
+
+"streamsearch@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "streamsearch@npm:1.1.0"
+  checksum: 1cce16cea8405d7a233d32ca5e00a00169cc0e19fbc02aa839959985f267335d435c07f96e5e0edd0eadc6d39c98d5435fb5bbbdefc62c41834eadc5622ad942
   languageName: node
   linkType: hard
 
@@ -23508,13 +23485,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"toidentifier@npm:1.0.0":
-  version: 1.0.0
-  resolution: "toidentifier@npm:1.0.0"
-  checksum: 199e6bfca1531d49b3506cff02353d53ec987c9ee10ee272ca6484ed97f1fc10fb77c6c009079ca16d5c5be4a10378178c3cacdb41ce9ec954c3297c74c6053e
-  languageName: node
-  linkType: hard
-
 "toidentifier@npm:1.0.1":
   version: 1.0.1
   resolution: "toidentifier@npm:1.0.1"
@@ -23712,7 +23682,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-is@npm:~1.6.15, type-is@npm:~1.6.16, type-is@npm:~1.6.18, type-is@npm:~1.6.4":
+"type-is@npm:^1.6.18, type-is@npm:~1.6.15, type-is@npm:~1.6.16, type-is@npm:~1.6.18, type-is@npm:~1.6.4":
   version: 1.6.18
   resolution: "type-is@npm:1.6.18"
   dependencies:
@@ -23840,7 +23810,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uid-safe@npm:2.1.5, uid-safe@npm:~2.1.5":
+"uid-safe@npm:~2.1.5":
   version: 2.1.5
   resolution: "uid-safe@npm:2.1.5"
   dependencies:

@@ -69,13 +69,15 @@ export default {
       //   true: immediately start reading from the request stream and parsing
       immediate: false
     },
-    // https://github.com/andrewrk/node-multiparty/
-    'multiparty': {
-      // Limits the amount of memory a field (not a file) can allocate in bytes. If this value is exceeded, an error event is emitted. The default size is 2MB.
-      maxFieldsSize: 20 * 1024 * 1024, // 20MB
+    // https://github.com/expressjs/multer
+    'multer': {
+      limits: {
+        // Maximum size of a text field value in bytes. Defaults to 1MB.
+        fieldSize: 20 * 1024 * 1024, // 20MB
 
-      // Limits the number of fields that will be parsed before emitting an error event. A file counts as a field in this case. Defaults to 1000.
-      maxFields: 1000
+        // Maximum number of non-file fields. Defaults to Infinity.
+        fields: 1000
+      }
     },
     // https://github.com/expressjs/morgan
     'morgan': {
