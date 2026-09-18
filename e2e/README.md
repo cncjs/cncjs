@@ -81,7 +81,10 @@ Two caveats are deliberate rather than sloppy:
   the allowance is an absolute `maxDiffPixels: 50` — an order of magnitude
   below the smallest change worth calling a regression, with room for the
   antialiasing jitter a driver or Chromium update may bring. If an update ever
-  moves more than that, re-record rather than raising the allowance.
+  moves more than that, re-record rather than raising the allowance. Those
+  figures were taken while the toolpath was still drawn as one-pixel lines;
+  the fat lines that replaced them cover far more of the canvas, so the same
+  allowance is if anything stricter now.
 - **The baselines belong to this machine.** That is acceptable because there is
   only one, but it does mean a baseline is re-recorded on purpose (delete the
   PNG and re-run) rather than whenever it goes red.
