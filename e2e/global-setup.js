@@ -20,10 +20,32 @@ const sleep = (ms) => new Promise((resolve) => {
   setTimeout(resolve, ms);
 });
 
+/**
+ * Ready means "the app can actually load", not "the port answers".
+ *
+ * Express starts serving index.html well before webpack has finished its first
+ * compile, so waiting on the server alone still let a cold start land on the
+ * first spec — which then failed waiting for a widget that could not mount
+ * without its bundle. So follow the page to the bundle it names and wait for
+ * that to be served too.
+ */
 const reachable = async () => {
   try {
     const res = await fetch(BASE_URL, { redirect: 'manual' });
-    return res.status > 0 && res.status < 500;
+    if (!(res.status > 0 && res.status < 500)) {
+      return false;
+    }
+
+    const html = await res.text();
+    const match = html.match(/src="([^"]*main[^"]*\.js)"/);
+    if (!match) {
+      // No bundle referenced yet: the shell is up but the build is not.
+      return false;
+    }
+
+    const bundleUrl = new URL(match[1], BASE_URL).href;
+    const bundle = await fetch(bundleUrl, { method: 'HEAD' });
+    return bundle.ok;
   } catch (e) {
     return false;
   }
