@@ -2,7 +2,7 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import settings from 'app/config/settings';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
@@ -25,7 +25,7 @@ class ConsoleWidget extends PureComponent {
       sortable: PropTypes.object
     };
 
-    senderId = uuid.v4();
+    senderId = uuidv4();
 
     // Public methods
     collapse = () => {

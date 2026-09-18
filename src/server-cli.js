@@ -5,7 +5,7 @@ require('regenerator-runtime/runtime'); // needed to use transpiled generator fu
 
 const path = require('path');
 const isElectron = require('is-electron');
-const program = require('commander');
+const { program } = require('commander');
 const pkg = require('./package.json');
 
 // Defaults to 'production'

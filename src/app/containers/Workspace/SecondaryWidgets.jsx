@@ -8,7 +8,7 @@ import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Sortable from 'react-sortablejs';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { GRBL, MARLIN, SMOOTHIE, TINYG } from 'app/constants';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
@@ -60,7 +60,7 @@ class SecondaryWidgets extends Component {
                   }
 
                   // Use the same widget settings in a new widget
-                  const forkedWidgetId = `${name}:${uuid.v4()}`;
+                  const forkedWidgetId = `${name}:${uuidv4()}`;
                   const defaultSettings = store.get(`widgets["${name}"]`);
                   const clonedSettings = store.get(`widgets["${widgetId}"]`, defaultSettings);
                   store.set(`widgets["${forkedWidgetId}"]`, clonedSettings);
