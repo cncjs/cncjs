@@ -109,3 +109,41 @@ of regression: it never opens a serial port, so every code path behind
 handler, and because `lib/controller/Controller.js` dispatches to listeners
 with a plain `forEach`, the exception silenced every widget registered after
 it. The workspace connected successfully and came up entirely unjoggable.
+
+## Electron tier
+
+`e2e/electron/` drives the packaged desktop app through Playwright's Electron
+support, so it launches a real Electron process rather than a browser. It is
+skipped until a build exists.
+
+```bash
+yarn build-prod
+yarn test:e2e --project=electron
+```
+
+The client-mode specs also need a cncjs server to point at — `CNCJS_URL`,
+defaulting to `http://localhost:8000`, the same as the smoke tier.
+
+What it locks in:
+
+- the app starts its own server on a random loopback port and mounts the
+  workspace;
+- the renderer has no route into Node — `require`, `process`, `ipcRenderer` and
+  `module` are all undefined. This is the assertion that matters most: the
+  window loads its content over HTTP, from another machine once a server is
+  configured, so anything reachable there is reachable by whoever serves that
+  page;
+- the preload bridge exposes exactly `readUserConfig` and `writeUserConfig`.
+  Widening that list is a security decision, not a refactor, and this test is
+  meant to make you argue for it;
+- the user config round-trips over IPC, and the spec restores whatever it
+  found;
+- client mode loads the configured server, reaches its API, survives a restart,
+  and releases back to the local server on an empty `--server-url`;
+- the server picker rejects a malformed address instead of storing it. Storing
+  it would relaunch the app pointed at a server that cannot exist, and the only
+  way back would be the command line.
+
+Specs that change the configured server write into `electron-store`, which
+outlives the process. `afterEach` puts it back — if you add a spec that touches
+it, keep that guarantee or the next run starts somewhere unexpected.

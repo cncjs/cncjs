@@ -25,8 +25,7 @@ const test = baseTest.extend({
      * followed by `<AxisSubscript>mm</AxisSubscript>`, so the cell's own text
      * is "Xmm" and matching `:text-is("X")` on it finds nothing.
      */
-    const position = (axis, kind) =>
-      axes
+    const position = (axis, kind) => axes
         .locator('tr')
         .filter({ has: page.locator(`[class*="Axes/index__coordinate"] > *:text-is("${axis}")`) })
         .locator(`[class*="Axes/index__${kind}-position"] > div`)

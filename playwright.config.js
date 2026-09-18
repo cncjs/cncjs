@@ -32,7 +32,9 @@ module.exports = defineConfig({
       // against absolute paths, so scoping by directory is the reliable way to
       // keep the hardware tier out of this project.
       testDir: './e2e',
-      testIgnore: '**/hardware/**',
+      // Every tier that needs something beyond a running server lives in its
+      // own directory and is excluded here.
+      testIgnore: ['**/hardware/**', '**/electron/**'],
       // 'chromium' selects the full browser rather than the headless shell,
       // which has no WebGL — the Visualizer widget needs it to render.
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
@@ -43,6 +45,15 @@ module.exports = defineConfig({
       name: 'hardware',
       testDir: './e2e/hardware',
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
+    },
+    {
+      // Drives the packaged desktop app through Playwright's Electron support,
+      // so it brings its own runtime rather than a browser. Skipped until
+      // `yarn build-prod` has produced dist/cncjs.
+      name: 'electron',
+      testDir: './e2e/electron',
+      // Each case launches and tears down a whole Electron process.
+      timeout: 180 * 1000,
     },
   ],
 });
