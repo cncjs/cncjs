@@ -30,7 +30,10 @@ export const getLatestVersion = (req, res) => {
         return;
       }
 
-      const { body: data = {} } = { ..._res };
+      // Spread the body, not the response: as of superagent 10 `body` is
+      // reached through the prototype, so `{ ..._res }` drops it and every
+      // field below silently resolves to undefined.
+      const data = { ...(_res && _res.body) };
       data.time = data.time || {};
       data['dist-tags'] = data['dist-tags'] || {};
       data.versions = data.versions || {};
