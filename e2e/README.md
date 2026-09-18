@@ -74,3 +74,38 @@ that assertion honest rather than permanently red:
 
 Add to these lists only for noise that genuinely carries no application signal.
 Everything else should be fixed in the app instead.
+
+## Hardware tier
+
+`e2e/hardware/` drives a real controller over a serial port. It is skipped
+unless `CNCJS_TEST_PORT` names one, so `yarn test:e2e` stays runnable on a
+machine with nothing plugged in.
+
+```bash
+CNCJS_TEST_PORT=COM3 yarn test:e2e --project=hardware
+```
+
+**These specs move the machine.** Each jog is symmetric — every test returns
+the axis to where it started, and nothing touches the work coordinate system
+(no `G10`, no `G92`) — but with a controller wired to a powered machine, the
+axes physically move by the jog step currently selected in the keypad. Check
+your clearances before running it, and remember that a Grbl with `$20=0`,
+`$21=0` and `$22=0` has no soft limits, no hard limits and no homing, so
+nothing in firmware will stop an over-travel.
+
+That symmetry depends entirely on `jog()` waiting for the move to land rather
+than for the controller to report Idle. Right after the click the command has
+not left the browser, so the controller is still Idle and a state-based wait
+returns immediately — the spec then ends, the page is torn down mid-move, and
+the return leg never reaches the machine. An early version of this helper did
+exactly that and left X a millimetre off origin. If you change `jog()`, verify
+afterwards that the machine is back where it started **and** reports Idle, not
+Run.
+
+This tier exists because the smoke tier structurally cannot see a whole class
+of regression: it never opens a serial port, so every code path behind
+`serialport:open` is invisible to it. The xterm upgrade that broke
+`Console/Terminal.jsx` is the worked example — the widget threw inside the open
+handler, and because `lib/controller/Controller.js` dispatches to listeners
+with a plain `forEach`, the exception silenced every widget registered after
+it. The workspace connected successfully and came up entirely unjoggable.

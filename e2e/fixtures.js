@@ -66,16 +66,24 @@ const test = base.test.extend({
       httpErrors.push(`${res.status()} ${res.url()}`);
     });
 
+    // Each navigation is a full SPA bootstrap: 15 widgets plus a Three.js
+    // renderer. That comfortably exceeds the default expect timeout on a busy
+    // machine, so the initial wait gets its own budget rather than being
+    // papered over with retries.
+    const BOOT_TIMEOUT = 45 * 1000;
+
     const gotoWorkspace = async () => {
       await page.goto('/', { waitUntil: 'domcontentloaded' });
       // The workspace is what mounts the widgets; wait for one to prove the
       // React tree actually rendered rather than just the HTML shell.
-      await page.locator('[data-widget-id="connection"]').waitFor({ state: 'visible' });
+      await page
+        .locator('[data-widget-id="connection"]')
+        .waitFor({ state: 'visible', timeout: BOOT_TIMEOUT });
     };
 
     const gotoSettings = async (section) => {
       await page.goto(`/#/settings/${section}`, { waitUntil: 'domcontentloaded' });
-      await settingsSection(page).waitFor({ state: 'visible' });
+      await settingsSection(page).waitFor({ state: 'visible', timeout: BOOT_TIMEOUT });
     };
 
     const expectNoPageErrors = () => {
