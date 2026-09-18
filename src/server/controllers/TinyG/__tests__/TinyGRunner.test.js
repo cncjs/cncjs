@@ -1,4 +1,3 @@
-/* eslint-env jest */
 import TinyGRunner from '../TinyGRunner';
 
 describe('TinyGRunner', () => {

@@ -1,4 +1,3 @@
-/* eslint-env jest */
 import SmoothieRunner from '../SmoothieRunner';
 
 describe('SmoothieRunner', () => {

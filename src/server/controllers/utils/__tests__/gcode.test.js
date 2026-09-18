@@ -1,4 +1,3 @@
-/* eslint-env jest */
 import { replaceM6 } from '../gcode';
 
 describe('replaceM6Commands', () => {

@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import fs from 'fs';
 import path from 'path';
-import minimatch from 'minimatch';
+import { match as minimatch } from 'minimatch';
 import FSMonitor from './FSMonitor';
 
 const monitor = new FSMonitor();
@@ -37,14 +37,19 @@ const getFiles = (searchPath) => {
     return [];
   }
 
-  return minimatch
-    .match(files, pattern, { matchBase: true })
+  return minimatch(files, pattern, {
+    matchBase: true,
+    // `pattern` is built with path.join, so on Windows it is backslash-separated.
+    // Without this, minimatch reads those separators as escape characters and
+    // matches nothing at all.
+    windowsPathsNoEscape: true
+  })
     .map(file => {
       const stat = monitor.files[file] || {};
 
       return {
         name: path.basename(file),
-        type: (function() {
+        type: (function () {
           if (stat.isFile()) {
             return 'f';
           }

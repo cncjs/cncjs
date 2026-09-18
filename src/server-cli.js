@@ -1,11 +1,9 @@
-/* eslint-disable no-console */
-/* eslint no-console: 0 */
 require('core-js/stable'); // to polyfill ECMAScript features
 require('regenerator-runtime/runtime'); // needed to use transpiled generator functions
 
 const path = require('path');
 const isElectron = require('is-electron');
-const program = require('commander');
+const { program } = require('commander');
 const pkg = require('./package.json');
 
 // Defaults to 'production'

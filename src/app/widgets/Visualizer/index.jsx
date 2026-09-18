@@ -63,7 +63,7 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-const translateExpression = (function() {
+const translateExpression = (function () {
   const { Parser } = ExpressionEvaluator;
   const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
 

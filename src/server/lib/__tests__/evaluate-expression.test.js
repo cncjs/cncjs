@@ -1,4 +1,3 @@
-/* eslint-env jest */
 import evaluateExpression from '../evaluate-expression';
 
 describe('evaluateExpression', () => {
@@ -93,7 +92,7 @@ describe('evaluateExpression', () => {
   });
 
   test('untagged template strings', () => {
-    const src = '`${1},${2 + n},${"4,5"}`'; // eslint-disable-line no-template-curly-in-string
+    const src = '`${1},${2 + n},${"4,5"}`';
     const res = evaluateExpression(src, {
       n: 6
     });
@@ -101,7 +100,7 @@ describe('evaluateExpression', () => {
   });
 
   test('tagged template strings', () => {
-    const src = 'taggedTemplate`${1},${2 + n},${"4,5"}`'; // eslint-disable-line no-template-curly-in-string
+    const src = 'taggedTemplate`${1},${2 + n},${"4,5"}`';
     const res = evaluateExpression(src, {
       taggedTemplate: function (strings, ...values) {
         expect(strings).toEqual(['', ',', ',', '']);

@@ -232,7 +232,7 @@ const evaluateExpression = (src, vars) => {
         return vars[key];
       });
 
-      return Function(keys.join(', '), 'return ' + generate(node)).apply(null, vals); // eslint-disable-line no-new-func
+      return Function(keys.join(', '), 'return ' + generate(node)).apply(null, vals);
     }
 
     if (node.type === 'TemplateLiteral') {

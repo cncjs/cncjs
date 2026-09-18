@@ -1,4 +1,3 @@
-/* eslint-env jest */
 import fsp from 'fs/promises';
 import os from 'os';
 import path from 'path';

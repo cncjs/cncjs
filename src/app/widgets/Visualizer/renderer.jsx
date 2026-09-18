@@ -124,7 +124,7 @@ const renderer = (node, treeOptions) => {
 
   node.props = { ...node.props };
 
-  const disabled = (function(node) {
+  const disabled = (function (node) {
     let { disabled = false } = node.props;
 
     while (node && node.parent) {
@@ -138,7 +138,7 @@ const renderer = (node, treeOptions) => {
   }(node));
   const dateModified = moment(node.props.mtime).format('lll');
   const size = includes(['f', 'l'], node.props.type) ? formatBytes(node.props.size, 0) : '';
-  const type = (function(node) {
+  const type = (function (node) {
     if (node.props.type === 'd') {
       return i18n._('File folder');
     }
