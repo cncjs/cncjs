@@ -27,9 +27,18 @@ module.exports = defineConfig({
   },
   projects: [
     {
-      name: 'chromium',
+      name: 'smoke',
+      // Top-level specs only: they need nothing but a running server.
+      testMatch: /^[^/\\]+\.spec\.js$/,
       // 'chromium' selects the full browser rather than the headless shell,
       // which has no WebGL — the Visualizer widget needs it to render.
+      use: { ...devices['Desktop Chrome'], channel: 'chromium' },
+    },
+    {
+      // Opt-in: these drive a real controller over a serial port and are
+      // skipped unless CNCJS_TEST_PORT names one. See e2e/README.md.
+      name: 'hardware',
+      testMatch: /hardware[/\\].*\.spec\.js$/,
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
     },
   ],
