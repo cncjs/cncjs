@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'" />
+    <title>Connect to server</title>
+    <style>
+      :root { color-scheme: light dark; }
+      body {
+        font: 13px/1.5 "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: Canvas;
+        color: CanvasText;
+      }
+      h1 { font-size: 15px; margin: 0 0 4px; }
+      p { margin: 0 0 16px; opacity: .75; }
+      label { display: block; font-weight: 600; margin-bottom: 6px; }
+      input {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 7px 9px;
+        font: inherit;
+        border: 1px solid rgba(128,128,128,.5);
+        border-radius: 4px;
+        background: Field;
+        color: FieldText;
+      }
+      input:focus { outline: 2px solid Highlight; outline-offset: -1px; }
+      .hint { margin: 8px 0 0; font-size: 12px; opacity: .7; }
+      .error { margin: 8px 0 0; font-size: 12px; color: #c0392b; min-height: 16px; }
+      .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
+      button { font: inherit; padding: 6px 14px; border-radius: 4px; border: 1px solid rgba(128,128,128,.5); background: ButtonFace; color: ButtonText; }
+      button.primary { background: #0096cc; border-color: #0096cc; color: #fff; font-weight: 600; }
+      button:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
+    </style>
+  </head>
+  <body>
+    <h1>Connect to a cncjs server</h1>
+    <p>Use the machine that has the controller plugged in. Leave this empty to run a server on this computer instead.</p>
+
+    <label for="url">Server address</label>
+    <input id="url" type="text" placeholder="192.168.0.50:8000" autofocus />
+    <p class="hint">The app restarts to apply this.</p>
+    <p class="error" id="error"></p>
+
+    <div class="actions">
+      <button type="button" id="cancel">Cancel</button>
+      <button type="button" id="save" class="primary">Connect</button>
+    </div>
+
+    <script>
+      const input = document.getElementById('url');
+      const error = document.getElementById('error');
+
+      window.serverPicker.current().then((value) => {
+        input.value = value || '';
+        input.select();
+      });
+
+      const save = async () => {
+        error.textContent = '';
+        const result = await window.serverPicker.submit(input.value);
+        if (!result.ok) {
+          error.textContent = result.message;
+          input.focus();
+        }
+      };
+
+      document.getElementById('save').addEventListener('click', save);
+      document.getElementById('cancel').addEventListener('click', () => window.serverPicker.cancel());
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { save(); }
+        if (e.key === 'Escape') { window.serverPicker.cancel(); }
+      });
+    </script>
+  </body>
+</html>
