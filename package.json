@@ -375,12 +375,18 @@
       "<rootDir>/src/server/**/*.js",
       "!<rootDir>/src/server/**/*.test.js",
       "!<rootDir>/src/server/**/__tests__/**",
-      "<rootDir>/src/app/widgets/Visualizer/toolpath-geometry.js"
+      "<rootDir>/src/app/widgets/Visualizer/toolpath-geometry.js",
+      "<rootDir>/src/app/widgets/Visualizer/toolpath-segments.js",
+      "<rootDir>/src/app/widgets/Visualizer/GCodeVisualizer.js"
     ],
     "coverageReporters": [
       "lcov",
       "text",
       "html"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
     ],
     "modulePathIgnorePatterns": [
       "<rootDir>/build"
@@ -395,6 +401,9 @@
       "<rootDir>/src/server/**/__tests__/**/*.test.js",
       "<rootDir>/grbl-simulator/__tests__/**/*.test.js",
       "<rootDir>/src/app/widgets/Visualizer/__tests__/**/*.test.js"
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/(?!three/)"
     ],
     "testPathIgnorePatterns": [
       "/node_modules/"

@@ -620,6 +620,12 @@ class Visualizer extends Component {
       this.renderer.setPixelRatio(getRenderPixelRatio());
       this.renderer.setSize(width, height);
 
+      // The toolpath's fat lines are built in screen space, so their material
+      // has to be told the canvas size or the width it draws is meaningless.
+      if (this.gcodeVisualizer) {
+        this.gcodeVisualizer.setResolution(width, height);
+      }
+
       // Update the scene
       this.updateScene();
     }
@@ -1264,6 +1270,7 @@ class Visualizer extends Component {
       this.unload();
 
       this.gcodeVisualizer = new GCodeVisualizer();
+      this.gcodeVisualizer.setResolution(this.getVisibleWidth(), this.getVisibleHeight());
 
       const obj = this.gcodeVisualizer.render(gcode);
       obj.name = 'Visualizer';

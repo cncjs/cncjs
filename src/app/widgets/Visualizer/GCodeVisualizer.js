@@ -1,96 +1,144 @@
 import colornames from 'colornames';
 import * as THREE from 'three';
+import { Line2 } from 'three/examples/jsm/lines/Line2.js';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
+import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
 import log from 'app/lib/log';
-import buildToolpath, {
-  ARC_CW,
-  ARC_CCW,
-  LINEAR,
-  RAPID,
-} from './toolpath-geometry';
+import buildToolpath from './toolpath-geometry';
+import buildSegments, { completedCount } from './toolpath-segments';
 
-const defaultColor = new THREE.Color(colornames('lightgrey'));
+// What the machine has already cut. Grey rather than absent, so the shape of
+// the finished work stays legible while it stops competing with what is still
+// to come.
+const doneColor = new THREE.Color(colornames('lightgrey'));
 
-// Indexed by the motion labels `toolpath-geometry` emits, so the lookup is an
-// array index rather than a string hash per vertex.
-const motionColor = [];
-motionColor[RAPID] = new THREE.Color(colornames('green'));
-motionColor[LINEAR] = new THREE.Color(colornames('blue'));
-motionColor[ARC_CW] = new THREE.Color(colornames('deepskyblue'));
-motionColor[ARC_CCW] = new THREE.Color(colornames('deepskyblue'));
+// Thickness in CSS pixels. `LineBasicMaterial.linewidth` is ignored by WebGL
+// on nearly every platform, which is why the old toolpath read as an
+// oscilloscope trace whatever it was set to; LineMaterial builds its own
+// screen-space geometry and actually honours a width.
+const CUT_LINEWIDTH = 3;
+const RAPID_LINEWIDTH = 1.5;
+
+// Dash lengths in millimetres, since the material measures them in world
+// units. Rapids are dashed as well as thinner because that is the distinction
+// that survives being glanced at.
+const RAPID_DASH_SIZE = 2;
+const RAPID_GAP_SIZE = 2;
 
 /**
  * Draws a G-code program as a toolpath, and greys out the part of it the
  * machine has already cut.
  *
- * Where the vertices come from is `toolpath-geometry`, which is plain
- * arithmetic and unit-tested as such. What is left here is the three.js side:
- * one buffer geometry, a colour per vertex, and the bookkeeping that lets a
- * frame index move forwards and backwards through those colours.
+ * The vertices come from `toolpath-geometry`, and the split into draw sets
+ * with their colours from `toolpath-segments`; both are plain arithmetic and
+ * unit-tested as such. What is left here is the three.js side: two fat-line
+ * objects, and the bookkeeping that lets a frame index move forwards and
+ * backwards through their colours.
  */
 class GCodeVisualizer {
   constructor() {
     this.group = new THREE.Object3D();
 
-    // The colour every vertex started as, so rewinding the frame index can
-    // put it back. The geometry's own colour attribute is the live copy and
-    // diverges from this one as the job runs.
-    this.baseColors = new Float32Array(0);
+    // One entry per draw set, each holding the live colour buffer the GPU
+    // reads, a pristine copy to restore from, the vertex each segment arrives
+    // at, and how many of them are currently greyed.
+    this.sets = [];
 
     this.frames = []; // [{ data, vertexIndex }]
     this.frameIndex = 0;
+
+    this.resolution = new THREE.Vector2(1, 1);
 
     return this;
   }
 
   render(gcode) {
     const toolpath = buildToolpath(gcode);
+    const segments = buildSegments(toolpath);
 
     this.frames = toolpath.frames;
     this.frameIndex = 0;
 
-    const colors = new Float32Array(toolpath.vertexCount * 3);
-    for (let i = 0; i < toolpath.vertexCount; ++i) {
-      const color = motionColor[toolpath.motions[i]] || defaultColor;
-      colors[i * 3] = color.r;
-      colors[(i * 3) + 1] = color.g;
-      colors[(i * 3) + 2] = color.b;
-    }
-    this.baseColors = colors.slice();
+    this.dispose();
 
+    this.addSet(segments.cut, {
+      linewidth: CUT_LINEWIDTH,
+    });
+    this.addSet(segments.rapid, {
+      linewidth: RAPID_LINEWIDTH,
+      dashed: true,
+      dashSize: RAPID_DASH_SIZE,
+      gapSize: RAPID_GAP_SIZE,
+      opacity: 0.85,
+      transparent: true,
+    });
+
+    log.debug({
+      sets: this.sets.length,
+      frames: this.frames.length,
+      frameIndex: this.frameIndex
+    });
+
+    return this.group;
+  }
+
+  addSet(segments, materialOptions) {
+    if (segments.vertexIndex.length === 0) {
+      return;
+    }
+
+    // setColors keeps the array it is handed rather than copying it, so this
+    // copy is the buffer the GPU reads and `segments.colors` stays the only
+    // record of what the colours were before the job started greying them.
+    const live = segments.colors.slice();
+
+    const geometry = new LineSegmentsGeometry();
+    geometry.setPositions(segments.positions);
+    geometry.setColors(live);
+
+    const material = new LineMaterial({
+      vertexColors: true,
+      ...materialOptions,
+    });
+    material.resolution.copy(this.resolution);
+
+    const line = new Line2(geometry, material);
+    if (materialOptions.dashed) {
+      // Dash phase is measured along the line, so the distances have to exist
+      // before any of it can be drawn.
+      line.computeLineDistances();
+    }
+
+    this.group.add(line);
+    this.sets.push({
+      line,
+      live,
+      base: segments.colors,
+      vertexIndex: segments.vertexIndex,
+      done: 0,
+    });
+  }
+
+  /**
+   * Fat lines are built in screen space, so the material has to be told how
+   * big the canvas is or the width it draws is meaningless. Called on every
+   * resize.
+   */
+  setResolution(width, height) {
+    this.resolution.set(width, height);
+    this.sets.forEach(({ line }) => {
+      line.material.resolution.copy(this.resolution);
+    });
+  }
+
+  dispose() {
     while (this.group.children.length > 0) {
       const child = this.group.children[0];
       this.group.remove(child);
       child.geometry.dispose();
       child.material.dispose();
     }
-
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(toolpath.positions, 3));
-    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-
-    // One continuous line through the vertices in order: consecutive vertices
-    // are consecutive positions of the tool, so the strip *is* the path the
-    // machine takes, rapids included.
-    const workpiece = new THREE.Line(
-      geometry,
-      new THREE.LineBasicMaterial({
-        color: defaultColor,
-        linewidth: 1,
-        vertexColors: true,
-        opacity: 0.5,
-        transparent: true
-      })
-    );
-
-    this.group.add(workpiece);
-
-    log.debug({
-      workpiece: workpiece,
-      frames: this.frames,
-      frameIndex: this.frameIndex
-    });
-
-    return this.group;
+    this.sets = [];
   }
 
   setFrameIndex(frameIndex) {
@@ -101,46 +149,34 @@ class GCodeVisualizer {
     frameIndex = Math.min(frameIndex, this.frames.length - 1);
     frameIndex = Math.max(frameIndex, 0);
 
-    const v1 = this.frames[this.frameIndex].vertexIndex;
-    const v2 = this.frames[frameIndex].vertexIndex;
+    const threshold = this.frames[frameIndex].vertexIndex;
 
-    if (v1 === v2) {
-      this.frameIndex = frameIndex;
-      return;
-    }
-
-    const workpiece = this.group.children[0];
-    if (!workpiece) {
-      return;
-    }
-
-    const color = workpiece.geometry.getAttribute('color');
-    const from = Math.min(v1, v2);
-    const to = Math.max(v1, v2);
-
-    if (v1 < v2) {
-      // Newly completed path is greyed out.
-      for (let i = from; i < to; ++i) {
-        color.setXYZ(i, defaultColor.r, defaultColor.g, defaultColor.b);
+    this.sets.forEach((set) => {
+      const done = completedCount(set.vertexIndex, threshold);
+      if (done === set.done) {
+        return;
       }
-    } else {
-      // Rewound: restore the path to the colours it was built with.
-      for (let i = from; i < to; ++i) {
-        color.setXYZ(
-          i,
-          this.baseColors[i * 3],
-          this.baseColors[(i * 3) + 1],
-          this.baseColors[(i * 3) + 2]
-        );
-      }
-    }
 
-    // Upload only the vertices that moved rather than the whole attribute:
-    // this runs on every line the sender reports, and a large program's colour
-    // buffer is megabytes.
-    color.clearUpdateRanges();
-    color.addUpdateRange(from * 3, (to - from) * 3);
-    color.needsUpdate = true;
+      const from = Math.min(set.done, done);
+      const to = Math.max(set.done, done);
+
+      if (done > set.done) {
+        // Newly completed segments are greyed out.
+        for (let i = from * 6; i < to * 6; i += 3) {
+          set.live[i] = doneColor.r;
+          set.live[i + 1] = doneColor.g;
+          set.live[i + 2] = doneColor.b;
+        }
+      } else {
+        // Rewound: restore the colours those segments were built with.
+        set.live.set(set.base.subarray(from * 6, to * 6), from * 6);
+      }
+
+      // Both colour attributes read the same interleaved buffer, so raising
+      // needsUpdate on it re-uploads the start and end of every segment.
+      set.line.geometry.getAttribute('instanceColorStart').data.needsUpdate = true;
+      set.done = done;
+    });
 
     this.frameIndex = frameIndex;
   }
