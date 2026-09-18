@@ -19,11 +19,16 @@ const test = baseTest.extend({
      * The big readout for one axis. Both position cells carry a CSS module
      * class built from the source path, which is stable across builds even
      * though the trailing hash is not.
+     *
+     * The row is identified by the axis label rather than by index. Note the
+     * child combinator: the coordinate cell renders `<AxisLabel>X</AxisLabel>`
+     * followed by `<AxisSubscript>mm</AxisSubscript>`, so the cell's own text
+     * is "Xmm" and matching `:text-is("X")` on it finds nothing.
      */
     const position = (axis, kind) =>
       axes
         .locator('tr')
-        .filter({ has: page.locator(`[class*="Axes/index__coordinate"]:text-is("${axis}")`) })
+        .filter({ has: page.locator(`[class*="Axes/index__coordinate"] > *:text-is("${axis}")`) })
         .locator(`[class*="Axes/index__${kind}-position"] > div`)
         .first();
 
