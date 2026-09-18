@@ -89,7 +89,7 @@ const settings = {
 
       // parse data after it has been fetched
       // i18next-http-backend passes (data, languages, namespaces)
-      parse: function(data, languages, namespaces) {
+      parse: function (data, languages, namespaces) {
         log.debug(`Loading resource: lng="${languages}", ns="${namespaces}"`);
 
         // SHA1-hash keys for 'gcode' and 'resource' namespaces

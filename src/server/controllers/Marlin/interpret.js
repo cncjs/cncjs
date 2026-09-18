@@ -36,7 +36,7 @@ const partitionWordsByGroup = (words = []) => {
   return groups;
 };
 
-const interpret = (function() {
+const interpret = (function () {
   let cmd = '';
 
   return function (line, callback) {

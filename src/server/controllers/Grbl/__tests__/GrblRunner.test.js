@@ -1,4 +1,3 @@
-/* eslint-env jest */
 import trim from 'lodash/trim';
 import GrblRunner from '../GrblRunner';
 

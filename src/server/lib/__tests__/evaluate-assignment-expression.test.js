@@ -1,4 +1,3 @@
-/* eslint-env jest */
 import evaluateAssignmentExpression from '../evaluate-assignment-expression';
 
 describe('evaluateAssignmentExpression', () => {
@@ -48,7 +47,7 @@ describe('evaluateAssignmentExpression', () => {
     const baz = 1;
 
     test('template literals with property access', () => {
-      const vars = evaluateAssignmentExpression('bar = "0", baz = 1, foo[bar][baz] = `${bar}${baz}`', { bar, baz }); // eslint-disable-line no-template-curly-in-string
+      const vars = evaluateAssignmentExpression('bar = "0", baz = 1, foo[bar][baz] = `${bar}${baz}`', { bar, baz });
       expect(vars.bar).toEqual(bar);
       expect(vars.baz).toEqual(baz);
       expect(vars.foo[bar][baz]).toEqual('01');
@@ -60,12 +59,12 @@ describe('evaluateAssignmentExpression', () => {
     });
 
     test('template literals in nested objects', () => {
-      const vars = evaluateAssignmentExpression('bar = "0", baz = 1, foo[bar][baz] = `${bar}${baz}`', { bar, baz }); // eslint-disable-line no-template-curly-in-string
+      const vars = evaluateAssignmentExpression('bar = "0", baz = 1, foo[bar][baz] = `${bar}${baz}`', { bar, baz });
       expect(vars.foo[bar][baz]).toEqual(`${bar}${baz}`);
     });
 
     test('template literals with dot notation', () => {
-      const vars = evaluateAssignmentExpression('bar = "0", baz = 1, foo.bar.baz = `${bar}${baz}`', { bar, baz }); // eslint-disable-line no-template-curly-in-string
+      const vars = evaluateAssignmentExpression('bar = "0", baz = 1, foo.bar.baz = `${bar}${baz}`', { bar, baz });
       expect(vars.foo.bar.baz).toEqual(`${bar}${baz}`);
     });
   });

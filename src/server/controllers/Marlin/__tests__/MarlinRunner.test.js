@@ -1,4 +1,3 @@
-/* eslint-env jest */
 import MarlinRunner from '../MarlinRunner';
 
 describe('MarlinRunner', () => {

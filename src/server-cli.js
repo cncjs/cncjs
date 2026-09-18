@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint no-console: 0 */
 require('core-js/stable'); // to polyfill ECMAScript features
 require('regenerator-runtime/runtime'); // needed to use transpiled generator functions
 

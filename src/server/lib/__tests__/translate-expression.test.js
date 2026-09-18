@@ -1,4 +1,3 @@
-/* eslint-env jest */
 import translateExpression from '../translate-expression';
 
 describe('translateExpression', () => {

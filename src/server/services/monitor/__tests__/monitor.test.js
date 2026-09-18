@@ -1,4 +1,3 @@
-/* eslint-env jest */
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -22,7 +21,7 @@ describe('monitor', () => {
 
     // `watch` picks up the root asynchronously and reports it through no event
     while (!monitor.isConfigured()) {
-      await sleep(50); // eslint-disable-line no-await-in-loop
+      await sleep(50);
     }
   });
 

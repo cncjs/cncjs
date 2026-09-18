@@ -49,7 +49,7 @@ const getFiles = (searchPath) => {
 
       return {
         name: path.basename(file),
-        type: (function() {
+        type: (function () {
           if (stat.isFile()) {
             return 'f';
           }
