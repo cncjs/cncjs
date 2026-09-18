@@ -227,6 +227,25 @@ const appMain = () => {
       credentialsRequired: true
     }));
 
+    // expressjwt proves only that the token carries this server's signature.
+    // Whether the account it names still exists and is still enabled is a
+    // separate question, and nothing asked it on the success path: the handler
+    // below is an *error* handler, so a token that verified cleanly never
+    // reached `validateUser`. A deleted or disabled account therefore kept full
+    // access until its token expired, which is 30 days by default.
+    app.use(urljoin(settings.route, 'api'), async (req, res, next) => {
+      try {
+        await validateUser(req.auth);
+      } catch (err) {
+        const ipaddr = req.ip || req.connection.remoteAddress;
+        log.warn(`Forbidden: ipaddr=${ipaddr}, message="${err.message}"`);
+        res.status(ERR_FORBIDDEN).end('Forbidden Access');
+        return;
+      }
+
+      next();
+    });
+
     app.use(async (err, req, res, next) => {
       let bypass = !(err && (err.name === 'UnauthorizedError'));
 
