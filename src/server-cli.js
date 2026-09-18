@@ -82,11 +82,49 @@ program.on('--help', () => {
   console.log('');
 });
 
+// Options consumed by the Electron shell rather than by the server. Commander
+// parses argv at import time and exits on anything it does not recognise, so
+// these have to be removed before it sees them — otherwise passing one kills
+// the app before a window is ever created.
+// @see 'src/electron-app/server-config.js'
+const ELECTRON_ONLY_OPTIONS = ['--server-url'];
+
+const stripElectronOptions = (argv) => {
+  const out = [];
+
+  for (let i = 0; i < argv.length; ++i) {
+    const arg = '' + argv[i];
+    const name = arg.split('=')[0];
+
+    if (ELECTRON_ONLY_OPTIONS.indexOf(name) >= 0) {
+      // Skip the separate value too, for the '--opt value' spelling.
+      if (arg.indexOf('=') < 0) {
+        ++i;
+      }
+      continue;
+    }
+
+    out.push(argv[i]);
+  }
+
+  return out;
+};
+
+// Under Electron, argv is not ours alone: Chromium injects its own switches
+// (--remote-debugging-port, --inspect, --disable-gpu and a long tail of
+// others), and so does any tool that launches the app. Commander exits the
+// process on an option it does not recognise, which in a desktop app means
+// dying before a window ever appears — with the reason on a stderr nobody is
+// reading. Strict parsing is right for the `cncjs` CLI and wrong here.
+if (isElectron()) {
+  program.allowUnknownOption();
+}
+
 // Commander assumes that the first two values in argv are 'node' and appname, and then followed by the args.
 // This is not the case when running from a packaged Electron app. Here you have the first value appname and then args.
 const normalizedArgv = ('' + process.argv[0]).indexOf(pkg.name) >= 0
-  ? ['node', pkg.name, ...process.argv.slice(1)]
-  : process.argv;
+  ? ['node', pkg.name, ...stripElectronOptions(process.argv.slice(1))]
+  : stripElectronOptions(process.argv);
 if (normalizedArgv.length > 1) {
   program.parse(normalizedArgv);
 }

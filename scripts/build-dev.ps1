@@ -20,6 +20,9 @@ cross-env NODE_ENV=development babel "*.js" `
 cross-env NODE_ENV=development babel "electron-app/**/*.js" `
     --config-file "../babel.config.js" `
     --out-dir "../output/cncjs/electron-app"
+
+# Babel only emits .js, so the picker markup has to be carried over by hand.
+Copy-Item -Path "electron-app/*.html" -Destination "../output/cncjs/electron-app/" -Force
 Pop-Location
 
 # Compile server code with Babel

@@ -17,6 +17,13 @@ import {
   inputMenuTemplate,
   selectionMenuTemplate,
 } from './electron-app/menu-template';
+import {
+  clearServerUrl,
+  getServerUrl,
+  normalizeServerUrl,
+  resolveServerUrl,
+  setServerUrl,
+} from './electron-app/server-config';
 import launchServer from './server-cli';
 import pkg from './package.json';
 
@@ -50,10 +57,16 @@ function getBrowserWindowOptions() {
 
     // webPreferences Object (optional) - Settings of web page's features.
     webPreferences: {
-      // https://www.electronjs.org/docs/latest/breaking-changes#default-changed-contextisolation-defaults-to-true
-      // require() cannot be used in the renderer process unless nodeIntegration is true and contextIsolation is false.
-      contextIsolation: false,
-      nodeIntegration: true,
+      // The renderer gets no direct access to Node. Everything it is allowed
+      // to do lives in the preload bridge, which exposes exactly two IPC
+      // calls. This matters more than it looks: the window loads its content
+      // over HTTP, and with nodeIntegration a server on another machine — or
+      // anyone able to sit between it and us — would be handing code straight
+      // to Node.
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+      preload: path.join(__dirname, 'electron-app', 'preload.js'),
     }
   };
 
@@ -110,14 +123,57 @@ const showMainWindow = async () => {
   mainWindow = browserWindow;
   powerId = powerSaveBlocker.start('prevent-display-sleep');
 
-  const res = await launchServer();
-  const { address, port, mountPoints } = { ...res };
-  if (!(address && port)) {
-    console.error('Unable to start the server at ' + chalk.cyan(`http://${address}:${port}`));
-    return;
+  // A configured server means this instance is a client for a machine that is
+  // running cncjs somewhere else, so it must not start a server of its own —
+  // see 'src/electron-app/server-config.js'.
+  const remoteUrl = resolveServerUrl(process.argv);
+  let address = null;
+  let port = null;
+  let mountPoints = [];
+
+  if (remoteUrl) {
+    const url = new URL(remoteUrl);
+    address = url.hostname;
+    port = url.port || (url.protocol === 'https:' ? '443' : '80');
+    console.log('Connecting to ' + chalk.cyan(remoteUrl));
+  } else {
+    const res = await launchServer();
+    ({ address, port, mountPoints = [] } = { ...res });
+    if (!(address && port)) {
+      console.error('Unable to start the server at ' + chalk.cyan(`http://${address}:${port}`));
+      return;
+    }
   }
 
-  const applicationMenu = Menu.buildFromTemplate(createApplicationMenuTemplate({ address, port, mountPoints }));
+  const applicationMenu = Menu.buildFromTemplate([
+    ...createApplicationMenuTemplate({ address, port, mountPoints }),
+    {
+      label: 'Server',
+      submenu: [
+        {
+          // Not clickable — it is here so that "why am I not seeing my
+          // machine" is answerable without digging through a config file.
+          label: remoteUrl ? `Connected to ${remoteUrl}` : 'Running a local server',
+          enabled: false,
+        },
+        { type: 'separator' },
+        {
+          label: 'Connect to Remote Server…',
+          click: () => {
+            showServerPicker();
+          },
+        },
+        {
+          label: 'Use Local Server',
+          enabled: !!remoteUrl,
+          click: () => {
+            clearServerUrl();
+            relaunchWithStoredServer();
+          },
+        },
+      ],
+    },
+  ]);
   const inputMenu = Menu.buildFromTemplate(inputMenuTemplate);
   const selectionMenu = Menu.buildFromTemplate(selectionMenuTemplate);
   Menu.setApplicationMenu(applicationMenu);
@@ -147,7 +203,7 @@ const showMainWindow = async () => {
   const webContentsSession = mainWindow.webContents.session;
   webContentsSession.setProxy({ proxyRules: 'direct://' })
     .then(() => {
-      const url = `http://${address}:${port}`;
+      const url = remoteUrl || `http://${address}:${port}`;
       mainWindow.loadURL(url);
     })
     .catch(err => {
@@ -185,6 +241,84 @@ const showMainWindow = async () => {
     fs.writeFileSync(configPath, content ?? '{}');
   });
 };
+
+/**
+ * Restart into whatever server is now configured.
+ *
+ * `--server-url` is stripped on the way out: it was already written to the
+ * store when it was parsed, and leaving it on argv would pin every subsequent
+ * restart to it, quietly overriding anything chosen from the menu.
+ */
+const relaunchWithStoredServer = () => {
+  const args = [];
+  const argv = process.argv.slice(1);
+
+  for (let i = 0; i < argv.length; ++i) {
+    const arg = String(argv[i]);
+    if (arg.startsWith('--server-url=')) {
+      continue;
+    }
+    if (arg === '--server-url') {
+      ++i; // also drop its value
+      continue;
+    }
+    args.push(arg);
+  }
+
+  app.relaunch({ args });
+  app.exit(0);
+};
+
+const showServerPicker = () => {
+  const picker = new BrowserWindow({
+    parent: mainWindow || undefined,
+    modal: !!mainWindow,
+    width: 480,
+    height: 330,
+    resizable: false,
+    minimizable: false,
+    maximizable: false,
+    show: false,
+    title: 'Connect to server',
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+      preload: path.join(__dirname, 'electron-app', 'server-picker-preload.js'),
+    },
+  });
+
+  picker.setMenuBarVisibility(false);
+  picker.loadFile(path.join(__dirname, 'electron-app', 'server-picker.html'));
+  picker.once('ready-to-show', () => {
+    picker.show();
+  });
+
+  return picker;
+};
+
+// Registered once at module scope: `showMainWindow` runs again on macOS
+// 'activate', and ipcMain.handle throws when a channel is handled twice.
+ipcMain.handle('server-picker:current', () => getServerUrl() || '');
+
+ipcMain.handle('server-picker:submit', (event, value) => {
+  const raw = String(value ?? '').trim();
+
+  if (raw && !normalizeServerUrl(raw)) {
+    return { ok: false, message: 'That does not look like a server address.' };
+  }
+
+  setServerUrl(raw);
+  relaunchWithStoredServer();
+  return { ok: true };
+});
+
+ipcMain.handle('server-picker:cancel', (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (win) {
+    win.close();
+  }
+});
 
 // Increase V8 heap size of the main process in production
 if (process.arch === 'x64') {

@@ -25,8 +25,7 @@ const test = baseTest.extend({
      * followed by `<AxisSubscript>mm</AxisSubscript>`, so the cell's own text
      * is "Xmm" and matching `:text-is("X")` on it finds nothing.
      */
-    const position = (axis, kind) =>
-      axes
+    const position = (axis, kind) => axes
         .locator('tr')
         .filter({ has: page.locator(`[class*="Axes/index__coordinate"] > *:text-is("${axis}")`) })
         .locator(`[class*="Axes/index__${kind}-position"] > div`)
@@ -118,9 +117,28 @@ const test = baseTest.extend({
     /**
      * Live controller state straight from the server, for assertions that
      * should not depend on the UI having re-rendered yet.
+     *
+     * The bearer token is not optional. `src/server/app.js` bypasses JWT
+     * verification entirely when NODE_ENV is development, so an unauthenticated
+     * request happens to work against `yarn dev` — and returns 403 against any
+     * production server, which is what a deployed instance runs. Reading the
+     * token the app itself stores keeps this tier usable against both.
      */
     const readControllerState = async () => {
-      const res = await page.request.get('/api/controllers');
+      const token = await page.evaluate(() => {
+        try {
+          const raw = window.localStorage.getItem('cnc');
+          return raw ? JSON.parse(raw)?.state?.session?.token || '' : '';
+        } catch (e) {
+          return '';
+        }
+      });
+
+      const res = await page.request.get('/api/controllers', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      expect(res.status(), `GET /api/controllers returned ${res.status()}`).toBe(200);
+
       const list = await res.json();
       return list.find((entry) => entry.port === TEST_PORT) || null;
     };

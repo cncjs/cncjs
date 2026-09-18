@@ -14,6 +14,9 @@ cross-env NODE_ENV=production babel "*.js" \
 cross-env NODE_ENV=production babel "electron-app/**/*.js" \
     --config-file ../babel.config.js \
     --out-dir ../dist/cncjs/electron-app
+
+# Babel only emits .js, so the picker markup has to be carried over by hand.
+cp -af electron-app/*.html ../dist/cncjs/electron-app/
 popd
 
 babel -d dist/cncjs/server src/server

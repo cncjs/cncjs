@@ -62,5 +62,21 @@ module.exports = {
     'react/prop-types': 0,
     //'react-hooks/rules-of-hooks': 'error',
     //'react-hooks/exhaustive-deps': 'error',
-  }
+  },
+  overrides: [
+    {
+      files: ['e2e/**/*.js'],
+      env: {
+        node: true,
+      },
+      rules: {
+        // End-to-end steps are deliberately sequential: the point of walking
+        // three axes or eight settings sections one at a time is that each
+        // step observes the state the previous one left behind. Running them
+        // concurrently would not be faster in any useful sense — it would test
+        // something else.
+        'no-await-in-loop': 'off',
+      },
+    },
+  ],
 };
