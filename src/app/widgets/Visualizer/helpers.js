@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import STLLoader from 'app/lib/three/STLLoader';
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 
 const getBoundingBox = (object) => {
   const box = new THREE.Box3().setFromObject(object);
@@ -24,7 +24,12 @@ const loadSTL = (url) => new Promise(resolve => {
 });
 
 const loadTexture = (url) => new Promise(resolve => {
-  new THREE.TextureLoader().load(url, resolve);
+  new THREE.TextureLoader().load(url, (texture) => {
+    // An image file holds sRGB pixels; since colour management became the
+    // default a colour map has to say so or it is taken to be linear already.
+    texture.colorSpace = THREE.SRGBColorSpace;
+    resolve(texture);
+  });
 });
 
 export {

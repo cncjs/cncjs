@@ -70,12 +70,18 @@ rather than after the page has loaded.
 
 Two caveats are deliberate rather than sloppy:
 
-- **The comparison is tolerant, not exact.** WebGL output is not bit-identical
-  across drivers, GPU resets or Chromium builds, so `maxDiffPixelRatio` allows
-  a little antialiasing noise along the grid and toolpath. What the assertion
-  still catches is a line that changed colour, a grid that changed extent, or
-  geometry that stopped being drawn — each of which moves regions of the image
-  rather than a fringe of pixels.
+- **The allowance is measured, not guessed.** The first version of this used a
+  2% `maxDiffPixelRatio`, which sounded conservative and was in fact loose
+  enough that recolouring every rapid motion from green to red still passed —
+  thin, half-transparent lines cover very little of a mostly-white canvas, so a
+  ratio of the whole image is the wrong unit. The numbers on this machine, in
+  pixels of a ~500x565 canvas: re-running the same build differs by **0**,
+  recolouring every rapid by **~1250**, and the whole `three` 0.103 → 0.186
+  port by **799** on the toolpath image and **140** on the grid-only one. So
+  the allowance is an absolute `maxDiffPixels: 50` — an order of magnitude
+  below the smallest change worth calling a regression, with room for the
+  antialiasing jitter a driver or Chromium update may bring. If an update ever
+  moves more than that, re-record rather than raising the allowance.
 - **The baselines belong to this machine.** That is acceptable because there is
   only one, but it does mean a baseline is re-recorded on purpose (delete the
   PNG and re-run) rather than whenever it goes red.

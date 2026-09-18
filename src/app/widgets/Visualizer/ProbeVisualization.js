@@ -130,8 +130,7 @@ class ProbeVisualization {
       new THREE.Vector3(startX, startY, 0),
     ];
 
-    const geometry = new THREE.Geometry();
-    geometry.vertices = points;
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
 
     const material = new THREE.LineDashedMaterial({
       color: colornames('brown'),
@@ -207,8 +206,22 @@ class ProbeVisualization {
       pointMap.set(key, point);
     });
 
-    const geometry = new THREE.Geometry();
     const vertexMap = new Map(); // Maps "x,y" to vertex index
+    const positions = [];
+    const colors = [];
+    const indices = [];
+
+    // Height maps to hue: green at the low point, running towards red at the
+    // high one. A vertex has one colour whichever triangle is asking, because
+    // it is a function of the probe point alone — which is what makes the old
+    // per-face-corner colours collapse into a plain per-vertex attribute
+    // without changing the shading.
+    const colorOf = (point) => {
+      const normalizedZ = zRange > 0 ? (point.z - minZ) / zRange : 0;
+      const color = new THREE.Color();
+      color.setHSL(0.33 - normalizedZ * 0.33, 0.6, 0.5);
+      return color;
+    };
 
     // Create vertices in grid order
     let vertexIndex = 0;
@@ -220,7 +233,9 @@ class ProbeVisualization {
         const point = pointMap.get(key);
 
         if (point) {
-          geometry.vertices.push(new THREE.Vector3(point.x, point.y, point.z));
+          const color = colorOf(point);
+          positions.push(point.x, point.y, point.z);
+          colors.push(color.r, color.g, color.b);
           vertexMap.set(key, vertexIndex);
           vertexIndex++;
         }
@@ -247,40 +262,28 @@ class ProbeVisualization {
 
         // Only create faces if all 4 vertices exist
         if (i1 !== undefined && i2 !== undefined && i3 !== undefined && i4 !== undefined) {
-          const p1 = pointMap.get(k1);
-          const p2 = pointMap.get(k2);
-          const p3 = pointMap.get(k3);
-          const p4 = pointMap.get(k4);
-
-          const getColor = (point) => {
-            const normalizedZ = zRange > 0 ? (point.z - minZ) / zRange : 0;
-            const color = new THREE.Color();
-            color.setHSL(0.33 - normalizedZ * 0.33, 0.6, 0.5);
-            return color;
-          };
-
-          // First triangle
-          const face1 = new THREE.Face3(i1, i2, i3);
-          face1.vertexColors = [getColor(p1), getColor(p2), getColor(p3)];
-          geometry.faces.push(face1);
-
-          // Second triangle
-          const face2 = new THREE.Face3(i2, i4, i3);
-          face2.vertexColors = [getColor(p2), getColor(p4), getColor(p3)];
-          geometry.faces.push(face2);
+          indices.push(i1, i2, i3); // First triangle
+          indices.push(i2, i4, i3); // Second triangle
         }
       }
     }
 
-    if (geometry.faces.length === 0) {
+    if (indices.length === 0) {
       return; // No faces created
     }
 
-    geometry.computeFaceNormals();
-    geometry.computeVertexNormals();
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    geometry.setIndex(indices);
+    // No normals: the surface is drawn with an unlit MeshBasicMaterial and
+    // nothing here reads a normal off an intersection, so the old
+    // computeFaceNormals/computeVertexNormals pair was work whose result was
+    // never sampled. computeFaceNormals did not survive BufferGeometry in any
+    // case.
 
     const material = new THREE.MeshBasicMaterial({
-      vertexColors: THREE.VertexColors,
+      vertexColors: true,
       side: THREE.DoubleSide,
       opacity: 0.7,
       transparent: true,
@@ -426,16 +429,19 @@ class ProbeVisualization {
     this.config.endX = endX;
     this.config.endY = endY;
 
-    // Update boundary line vertices instead of recreating
+    // Move the existing outline rather than rebuilding it. The five corners
+    // now live in a position attribute instead of an array of Vector3, so the
+    // update writes coordinates and raises `needsUpdate` on the attribute.
     if (this.boundaryLine && this.boundaryLine.geometry) {
-      const vertices = this.boundaryLine.geometry.vertices;
-      if (vertices && vertices.length === 5) {
-        vertices[0].set(startX, startY, 0);
-        vertices[1].set(endX, startY, 0);
-        vertices[2].set(endX, endY, 0);
-        vertices[3].set(startX, endY, 0);
-        vertices[4].set(startX, startY, 0);
-        this.boundaryLine.geometry.verticesNeedUpdate = true;
+      const position = this.boundaryLine.geometry.getAttribute('position');
+      if (position && position.count === 5) {
+        position.setXYZ(0, startX, startY, 0);
+        position.setXYZ(1, endX, startY, 0);
+        position.setXYZ(2, endX, endY, 0);
+        position.setXYZ(3, startX, endY, 0);
+        position.setXYZ(4, startX, startY, 0);
+        position.needsUpdate = true;
+        this.boundaryLine.geometry.computeBoundingSphere();
         this.boundaryLine.computeLineDistances();
       }
     }

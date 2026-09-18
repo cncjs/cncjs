@@ -269,7 +269,7 @@
     "styled-components": "~3.4.9",
     "superagent": "~10.3.0",
     "superagent-use": "~0.1.0",
-    "three": "~0.103.0",
+    "three": "~0.186.0",
     "universal-logger": "~1.0.1",
     "universal-logger-browser": "~1.0.2",
     "uuid": "~11.1.1",
@@ -374,7 +374,8 @@
     "collectCoverageFrom": [
       "<rootDir>/src/server/**/*.js",
       "!<rootDir>/src/server/**/*.test.js",
-      "!<rootDir>/src/server/**/__tests__/**"
+      "!<rootDir>/src/server/**/__tests__/**",
+      "<rootDir>/src/app/widgets/Visualizer/toolpath-geometry.js"
     ],
     "coverageReporters": [
       "lcov",
@@ -392,7 +393,8 @@
     "testEnvironment": "node",
     "testMatch": [
       "<rootDir>/src/server/**/__tests__/**/*.test.js",
-      "<rootDir>/grbl-simulator/__tests__/**/*.test.js"
+      "<rootDir>/grbl-simulator/__tests__/**/*.test.js",
+      "<rootDir>/src/app/widgets/Visualizer/__tests__/**/*.test.js"
     ],
     "testPathIgnorePatterns": [
       "/node_modules/"
