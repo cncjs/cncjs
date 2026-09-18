@@ -993,7 +993,11 @@ class VisualizerWidget extends PureComponent {
           }
         },
         cameraMode: this.config.get('cameraMode', CAMERA_MODE_PAN),
-        cameraPosition: 'top', // 'top', '3d', 'front', 'left', 'right'
+        // Opens isometric rather than looking straight down. A plan view
+        // flattens Z away entirely, which is the wrong first impression of a
+        // machine that cuts in three axes — depth of cut, plunge moves and
+        // clearance height are all invisible from directly above.
+        cameraPosition: '3d', // 'top', '3d', 'front', 'left', 'right'
         isAgitated: false // Defaults to false
       };
     }

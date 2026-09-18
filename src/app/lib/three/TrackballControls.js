@@ -452,6 +452,22 @@ const TrackballControls = function ( object, domElement ) {
 
     };
 
+    // Adopt the current view as the one reset() returns to.
+    //
+    // Upstream three gained this on both TrackballControls and OrbitControls
+    // for the same reason it is needed here: without it "reset" means "however
+    // the camera happened to be pointing when the controls were constructed",
+    // which is a detail of widget startup rather than anything the operator
+    // chose. Keeping the name matching upstream's means the call site does not
+    // change when these controls are replaced.
+    this.saveState = function () {
+
+        _this.target0.copy( _this.target );
+        _this.position0.copy( _this.object.position );
+        _this.up0.copy( _this.object.up );
+
+    };
+
     this.reset = function () {
 
         _state = STATE.NONE;

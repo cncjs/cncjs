@@ -232,6 +232,9 @@ class Visualizer extends Component {
         const el = ReactDOM.findDOMNode(this.node);
         this.createScene(el);
         this.resizeRenderer();
+        // After resizeRenderer, which is what builds the viewport the preset
+        // views ask to update.
+        this.setCameraPosition(this.props.cameraPosition);
       }
 
       // Apply any machine profile already in the store (e.g., hydrated from
@@ -381,21 +384,7 @@ class Visualizer extends Component {
       }
 
       if (prevProps.cameraPosition !== this.props.cameraPosition) {
-        if (this.props.cameraPosition === 'top') {
-          this.toTopView();
-        }
-        if (this.props.cameraPosition === '3d') {
-          this.to3DView();
-        }
-        if (this.props.cameraPosition === 'front') {
-          this.toFrontView();
-        }
-        if (this.props.cameraPosition === 'left') {
-          this.toLeftSideView();
-        }
-        if (this.props.cameraPosition === 'right') {
-          this.toRightSideView();
-        }
+        this.setCameraPosition(this.props.cameraPosition);
       }
     }
 
@@ -1212,6 +1201,43 @@ class Visualizer extends Component {
 
       const pivotPoint = this.pivotPoint.get();
       this.probeVisualization.group.position.set(-pivotPoint.x, -pivotPoint.y, -pivotPoint.z);
+    }
+
+    // Point the camera at one of the named viewpoints.
+    //
+    // Shared by mount and by later prop changes, which is the whole reason it
+    // exists: componentDidUpdate only sees a *change*, so the viewpoint the
+    // widget starts in was never applied to the camera at all. That went
+    // unnoticed while the default happened to match where createCombinedCamera
+    // leaves the camera — looking straight down — and would have quietly
+    // ignored any other default.
+    setCameraPosition(cameraPosition) {
+      if (cameraPosition === 'top') {
+        this.toTopView();
+      }
+      if (cameraPosition === '3d') {
+        this.to3DView();
+      }
+      if (cameraPosition === 'front') {
+        this.toFrontView();
+      }
+      if (cameraPosition === 'left') {
+        this.toLeftSideView();
+      }
+      if (cameraPosition === 'right') {
+        this.toRightSideView();
+      }
+
+      // Make this the view the controls return to. Otherwise reset() — which
+      // unload() calls on its way through every load() — restores the camera
+      // captured when the controls were constructed, so closing or opening a
+      // file silently threw away the chosen viewpoint and dropped back to
+      // looking straight down.
+      if (this.controls) {
+        this.controls.saveState();
+      }
+
+      this.updateScene();
     }
 
     // Make the controls look at the specified position
