@@ -2,7 +2,10 @@ import colornames from 'colornames';
 import * as THREE from 'three';
 
 const buildAxis = (src, dst, color, dashed) => {
-  let geometry = new THREE.Geometry();
+  // Two points is the whole axis. `setFromPoints` is the BufferGeometry
+  // equivalent of pushing onto `geometry.vertices`, which went away with
+  // THREE.Geometry in r125.
+  const geometry = new THREE.BufferGeometry().setFromPoints([src.clone(), dst.clone()]);
   let material;
 
   if (dashed) {
@@ -22,9 +25,6 @@ const buildAxis = (src, dst, color, dashed) => {
       transparent: true
     });
   }
-
-  geometry.vertices.push(src.clone());
-  geometry.vertices.push(dst.clone());
 
   const axisLine = new THREE.Line(geometry, material);
 

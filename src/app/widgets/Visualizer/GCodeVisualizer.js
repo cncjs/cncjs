@@ -1,116 +1,86 @@
 import colornames from 'colornames';
-import Toolpath from 'gcode-toolpath';
 import * as THREE from 'three';
 import log from 'app/lib/log';
+import buildToolpath, {
+  ARC_CW,
+  ARC_CCW,
+  LINEAR,
+  RAPID,
+} from './toolpath-geometry';
 
 const defaultColor = new THREE.Color(colornames('lightgrey'));
-const motionColor = {
-  'G0': new THREE.Color(colornames('green')),
-  'G1': new THREE.Color(colornames('blue')),
-  'G2': new THREE.Color(colornames('deepskyblue')),
-  'G3': new THREE.Color(colornames('deepskyblue'))
-};
 
+// Indexed by the motion labels `toolpath-geometry` emits, so the lookup is an
+// array index rather than a string hash per vertex.
+const motionColor = [];
+motionColor[RAPID] = new THREE.Color(colornames('green'));
+motionColor[LINEAR] = new THREE.Color(colornames('blue'));
+motionColor[ARC_CW] = new THREE.Color(colornames('deepskyblue'));
+motionColor[ARC_CCW] = new THREE.Color(colornames('deepskyblue'));
+
+/**
+ * Draws a G-code program as a toolpath, and greys out the part of it the
+ * machine has already cut.
+ *
+ * Where the vertices come from is `toolpath-geometry`, which is plain
+ * arithmetic and unit-tested as such. What is left here is the three.js side:
+ * one buffer geometry, a colour per vertex, and the bookkeeping that lets a
+ * frame index move forwards and backwards through those colours.
+ */
 class GCodeVisualizer {
   constructor() {
     this.group = new THREE.Object3D();
-    this.geometry = new THREE.Geometry();
 
-    // Example
-    // [
-    //   {
-    //     code: 'G1 X1',
-    //     vertexIndex: 2
-    //   }
-    // ]
-    this.frames = []; // Example
+    // The colour every vertex started as, so rewinding the frame index can
+    // put it back. The geometry's own colour attribute is the live copy and
+    // diverges from this one as the job runs.
+    this.baseColors = new Float32Array(0);
+
+    this.frames = []; // [{ data, vertexIndex }]
     this.frameIndex = 0;
 
     return this;
   }
 
   render(gcode) {
-    const toolpath = new Toolpath({
-      // @param {object} modal The modal object.
-      // @param {object} v1 A 3D vector of the start point.
-      // @param {object} v2 A 3D vector of the end point.
-      addLine: (modal, v1, v2) => {
-        const { motion } = modal;
-        const color = motionColor[motion] || defaultColor;
-        this.geometry.vertices.push(new THREE.Vector3(v2.x, v2.y, v2.z));
-        this.geometry.colors.push(color);
-      },
-      // @param {object} modal The modal object.
-      // @param {object} v1 A 3D vector of the start point.
-      // @param {object} v2 A 3D vector of the end point.
-      // @param {object} v0 A 3D vector of the fixed point.
-      addArcCurve: (modal, v1, v2, v0) => {
-        const { motion, plane } = modal;
-        const isClockwise = (motion === 'G2');
-        const radius = Math.sqrt(
-          ((v1.x - v0.x) ** 2) + ((v1.y - v0.y) ** 2)
-        );
-        let startAngle = Math.atan2(v1.y - v0.y, v1.x - v0.x);
-        let endAngle = Math.atan2(v2.y - v0.y, v2.x - v0.x);
+    const toolpath = buildToolpath(gcode);
 
-        // Draw full circle if startAngle and endAngle are both zero
-        if (startAngle === endAngle) {
-          endAngle += (2 * Math.PI);
-        }
+    this.frames = toolpath.frames;
+    this.frameIndex = 0;
 
-        const arcCurve = new THREE.ArcCurve(
-          v0.x, // aX
-          v0.y, // aY
-          radius, // aRadius
-          startAngle, // aStartAngle
-          endAngle, // aEndAngle
-          isClockwise // isClockwise
-        );
-        const divisions = 30;
-        const points = arcCurve.getPoints(divisions);
-        const color = motionColor[motion] || defaultColor;
-
-        for (let i = 0; i < points.length; ++i) {
-          const point = points[i];
-          const z = ((v2.z - v1.z) / points.length) * i + v1.z;
-
-          if (plane === 'G17') { // XY-plane
-            this.geometry.vertices.push(new THREE.Vector3(point.x, point.y, z));
-          } else if (plane === 'G18') { // ZX-plane
-            this.geometry.vertices.push(new THREE.Vector3(point.y, z, point.x));
-          } else if (plane === 'G19') { // YZ-plane
-            this.geometry.vertices.push(new THREE.Vector3(z, point.x, point.y));
-          }
-          this.geometry.colors.push(color);
-        }
-      }
-    });
+    const colors = new Float32Array(toolpath.vertexCount * 3);
+    for (let i = 0; i < toolpath.vertexCount; ++i) {
+      const color = motionColor[toolpath.motions[i]] || defaultColor;
+      colors[i * 3] = color.r;
+      colors[(i * 3) + 1] = color.g;
+      colors[(i * 3) + 2] = color.b;
+    }
+    this.baseColors = colors.slice();
 
     while (this.group.children.length > 0) {
       const child = this.group.children[0];
       this.group.remove(child);
       child.geometry.dispose();
+      child.material.dispose();
     }
 
-    toolpath.loadFromStringSync(gcode, (line, index) => {
-      this.frames.push({
-        data: line,
-        vertexIndex: this.geometry.vertices.length // remember current vertex index
-      });
-    });
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(toolpath.positions, 3));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
+    // One continuous line through the vertices in order: consecutive vertices
+    // are consecutive positions of the tool, so the strip *is* the path the
+    // machine takes, rapids included.
     const workpiece = new THREE.Line(
-      new THREE.Geometry(),
+      geometry,
       new THREE.LineBasicMaterial({
         color: defaultColor,
         linewidth: 1,
-        vertexColors: THREE.VertexColors,
+        vertexColors: true,
         opacity: 0.5,
         transparent: true
       })
     );
-    workpiece.geometry.vertices = this.geometry.vertices.slice();
-    workpiece.geometry.colors = this.geometry.colors.slice();
 
     this.group.add(workpiece);
 
@@ -134,23 +104,43 @@ class GCodeVisualizer {
     const v1 = this.frames[this.frameIndex].vertexIndex;
     const v2 = this.frames[frameIndex].vertexIndex;
 
-    // Completed path is grayed out
-    if (v1 < v2) {
-      const workpiece = this.group.children[0];
-      for (let i = v1; i < v2; ++i) {
-        workpiece.geometry.colors[i] = defaultColor;
-      }
-      workpiece.geometry.colorsNeedUpdate = true;
+    if (v1 === v2) {
+      this.frameIndex = frameIndex;
+      return;
     }
 
-    // Restore the path to its original colors
-    if (v2 < v1) {
-      const workpiece = this.group.children[0];
-      for (let i = v2; i < v1; ++i) {
-        workpiece.geometry.colors[i] = this.geometry.colors[i];
-      }
-      workpiece.geometry.colorsNeedUpdate = true;
+    const workpiece = this.group.children[0];
+    if (!workpiece) {
+      return;
     }
+
+    const color = workpiece.geometry.getAttribute('color');
+    const from = Math.min(v1, v2);
+    const to = Math.max(v1, v2);
+
+    if (v1 < v2) {
+      // Newly completed path is greyed out.
+      for (let i = from; i < to; ++i) {
+        color.setXYZ(i, defaultColor.r, defaultColor.g, defaultColor.b);
+      }
+    } else {
+      // Rewound: restore the path to the colours it was built with.
+      for (let i = from; i < to; ++i) {
+        color.setXYZ(
+          i,
+          this.baseColors[i * 3],
+          this.baseColors[(i * 3) + 1],
+          this.baseColors[(i * 3) + 2]
+        );
+      }
+    }
+
+    // Upload only the vertices that moved rather than the whole attribute:
+    // this runs on every line the sender reports, and a large program's colour
+    // buffer is megabytes.
+    color.clearUpdateRanges();
+    color.addUpdateRange(from * 3, (to - from) * 3);
+    color.needsUpdate = true;
 
     this.frameIndex = frameIndex;
   }

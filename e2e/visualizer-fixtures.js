@@ -137,16 +137,34 @@ const sceneMasks = (page, extra = []) => [
 ];
 
 /**
- * WebGL output is not bit-identical across drivers, GPU resets or even
- * successive Chromium builds, so an exact match is the wrong assertion: it
- * would fail for reasons that say nothing about this code. A small ratio
- * tolerates antialiasing noise along the toolpath and grid lines while still
- * catching a line that changed colour, a grid that changed extent, or geometry
- * that stopped being drawn at all — each of which moves whole regions of the
- * image, not a fringe of pixels.
+ * How much difference is a difference.
+ *
+ * These numbers were measured on this machine rather than guessed, because
+ * the first guess was wrong in a way that mattered: a 2% ratio sounded
+ * conservative and was, in fact, loose enough that recolouring every rapid
+ * from green to red still passed. Thin, half-transparent lines cover very
+ * little of a mostly-white canvas, so a ratio of the whole image is the wrong
+ * unit for this scene.
+ *
+ * Measured against these baselines, in pixels of a ~500x565 canvas:
+ *
+ *   re-running the same build          0
+ *   recolouring every rapid motion  ~1250
+ *   the whole three 0.103 -> 0.186 port, toolpath image   799
+ *   the same port, grid-only image                        140
+ *
+ * So the noise floor is nil — WebGL output is reproducible here — and the
+ * smallest change worth calling a regression is in the hundreds. An absolute
+ * allowance of 50 pixels sits an order of magnitude below that while leaving
+ * room for the antialiasing jitter a driver or Chromium update may introduce.
+ * If a future update moves more than that, the baselines are re-recorded on
+ * purpose (delete the PNG, re-run) rather than the allowance being raised.
+ *
+ * `threshold` stays at its default: it governs how different one pixel has to
+ * be to count, and the changes worth catching are not subtle per pixel.
  */
 const SCREENSHOT_OPTIONS = {
-  maxDiffPixelRatio: 0.02,
+  maxDiffPixels: 50,
   threshold: 0.2,
   animations: 'disabled',
 };

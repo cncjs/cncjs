@@ -43,6 +43,11 @@ class TextSprite {
     const texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;
     texture.minFilter = THREE.LinearFilter;
+    // A 2D canvas holds sRGB pixels. Since colour management became the
+    // default the renderer assumes a texture is already in the working
+    // (linear) space unless told otherwise, so without this the labels render
+    // noticeably washed out.
+    texture.colorSpace = THREE.SRGBColorSpace;
 
     const material = new THREE.SpriteMaterial({
       map: texture,

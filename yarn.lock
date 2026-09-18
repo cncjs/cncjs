@@ -8661,7 +8661,7 @@ __metadata:
     superagent: ~10.3.0
     superagent-use: ~0.1.0
     text-table: ~0.2.0
-    three: ~0.103.0
+    three: ~0.186.0
     timers-browserify: ^2.0.12
     transform-loader: ~0.2.4
     universal-logger: ~1.0.1
@@ -22434,10 +22434,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three@npm:~0.103.0":
-  version: 0.103.0
-  resolution: "three@npm:0.103.0"
-  checksum: 84ecaadbbd12f391818ab40eb8aa3533a44e68afeb2edce80915fe90a7d529762629c216c9aa9c343126ac1ee3ab3d8d79289fa3bcd9646d5995cc15839283fc
+"three@npm:~0.186.0":
+  version: 0.186.0
+  resolution: "three@npm:0.186.0"
+  checksum: 14406577373d4f6dcb8dd3250069d65b12ffd4f0939120eccd1abe2980271195ef5fb2199adfb27c36720e0ded849707529f06cca81595bda053bdb544211b7a
   languageName: node
   linkType: hard
 
