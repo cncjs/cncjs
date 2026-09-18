@@ -110,6 +110,16 @@ const stripElectronOptions = (argv) => {
   return out;
 };
 
+// Under Electron, argv is not ours alone: Chromium injects its own switches
+// (--remote-debugging-port, --inspect, --disable-gpu and a long tail of
+// others), and so does any tool that launches the app. Commander exits the
+// process on an option it does not recognise, which in a desktop app means
+// dying before a window ever appears — with the reason on a stderr nobody is
+// reading. Strict parsing is right for the `cncjs` CLI and wrong here.
+if (isElectron()) {
+  program.allowUnknownOption();
+}
+
 // Commander assumes that the first two values in argv are 'node' and appname, and then followed by the args.
 // This is not the case when running from a packaged Electron app. Here you have the first value appname and then args.
 const normalizedArgv = ('' + process.argv[0]).indexOf(pkg.name) >= 0
