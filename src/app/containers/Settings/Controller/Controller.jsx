@@ -72,13 +72,13 @@ class Controller extends PureComponent {
                     />
                     {i18n._('Continue execution when an error is detected in the G-code program')}
                   </label>
-                  <p style={{ marginLeft: 20 }}>
+                  <div style={{ marginLeft: 20, marginBottom: 10 }}>
                     <span className="text-warning">
                       <i className="fa fa-exclamation-circle" />
                     </span>
                     <Space width="4" />
                     <span>{i18n._('Enabling this option may cause machine damage if you don\'t have an Emergency Stop button to prevent a dangerous situation.')}</span>
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>
