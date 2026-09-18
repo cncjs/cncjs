@@ -1,7 +1,7 @@
 import events from 'events';
 import defaultShell from 'spawn-default-shell';
 import without from 'lodash/without';
-import shortid from 'shortid';
+import { v4 as uuidv4 } from 'uuid';
 import logger from '../../lib/logger';
 
 const log = logger('service:taskrunner');
@@ -15,7 +15,7 @@ class TaskRunner extends events.EventEmitter {
         title = '';
       }
 
-      const taskId = shortid.generate(); // task id
+      const taskId = uuidv4(); // task id
       const child = defaultShell.spawn(command, {
         detached: true,
         ...options
