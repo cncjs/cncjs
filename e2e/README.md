@@ -43,12 +43,53 @@ to produce a canvas.
   controller.
 - **settings.spec.js** — each of the 8 settings sections resolves and paints,
   and navigation between them stays client-side.
+- **visualizer.spec.js** — what the Three.js scene actually draws, compared
+  against committed screenshots. See "Screenshot baselines" below.
 
 ## What is not covered
 
 Anything requiring a machine: jogging, G-code streaming, probing, homing. Those
 need a controller on a serial port and, more importantly, they move real
 hardware — they belong in a separate, explicitly opt-in tier.
+
+## Screenshot baselines
+
+`workspace.spec.js` asserts that a canvas appears and has a non-zero box. That
+is worth having, but a renderer drawing nothing at all satisfies it just as
+well — the element is there either way. `visualizer.spec.js` closes that gap
+with `toHaveScreenshot()` against baselines committed under
+`*.spec.js-snapshots/`.
+
+Three things reach the canvas and none of them is pinned by default, so
+`visualizer-fixtures.js` seeds all three before the first navigation: the
+machine profile (the grid bounds, axis extents and limits cuboid are all
+derived from it), the widget's own persisted projection/camera/visibility
+state, and the device pixel ratio. `app/store` reads localStorage once at
+module evaluation, which is why the seed goes in through `addInitScript`
+rather than after the page has loaded.
+
+Two caveats are deliberate rather than sloppy:
+
+- **The comparison is tolerant, not exact.** WebGL output is not bit-identical
+  across drivers, GPU resets or Chromium builds, so `maxDiffPixelRatio` allows
+  a little antialiasing noise along the grid and toolpath. What the assertion
+  still catches is a line that changed colour, a grid that changed extent, or
+  geometry that stopped being drawn — each of which moves regions of the image
+  rather than a fringe of pixels.
+- **The baselines belong to this machine.** That is acceptable because there is
+  only one, but it does mean a baseline is re-recorded on purpose (delete the
+  PNG and re-run) rather than whenever it goes red.
+
+A screenshot spec that only ever photographs one scene proves very little, so
+each tier also owns a control: the smoke tier photographs the same scene with
+the grid, numbers and limits switched off, and the hardware tier photographs
+the scene after the loaded file is closed again. If those came out looking like
+the positive cases, none of the assertions would be measuring anything.
+
+An element screenshot clips the composited page, not the WebGL buffer, so DOM
+chrome overlapping the canvas lands in the image too. The workflow toolbar and
+the loaded file's name are masked out — the toolbar because its buttons change
+with the connection state, the name because its antialiasing is a font concern.
 
 ## Selector conventions
 
@@ -103,6 +144,17 @@ the return leg never reaches the machine. An early version of this helper did
 exactly that and left X a millimetre off origin. If you change `jog()`, verify
 afterwards that the machine is back where it started **and** reports Idle, not
 Run.
+
+`hardware/visualizer.spec.js` is here for a structural reason rather than a
+convenient one. G-code reaches the visualizer only as a `gcode:load` event on a
+connected controller, and `controller.command('gcode:load', ...)` is addressed
+to a port — with nothing open the upload is dropped and the scene stays empty.
+So the smoke tier cannot draw a toolpath at all, and the toolpath baseline has
+to live where a controller exists. **It does not move the machine**: loading
+G-code fills the sender's queue, only Run starts streaming it, and Run is never
+clicked. It does assert the work position is at origin first, because the
+cutting tool is drawn there — that turns "the baseline is only comparable from a
+known position" into a message instead of a mystery pixel diff.
 
 This tier exists because the smoke tier structurally cannot see a whole class
 of regression: it never opens a serial port, so every code path behind
