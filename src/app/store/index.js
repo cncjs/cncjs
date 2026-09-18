@@ -19,13 +19,18 @@ const cnc = {
 
 const store = new ImmutableStore(defaultState);
 
+// The privileged bridge installed by `src/electron-app/preload.js`. It is
+// absent in a browser, and also in an Electron window served by a build that
+// predates the preload script, so every use is guarded.
+const electronBridge = () => (typeof window !== 'undefined' ? window.cncjs : undefined);
+
 const getConfig = async () => {
   let content = '';
 
   // Check whether the code is running in Electron renderer process
-  if (isElectron()) {
-    const electron = window.require('electron');
-    content = await electron.ipcRenderer.invoke('read-user-config');
+  const bridge = electronBridge();
+  if (isElectron() && bridge) {
+    content = await bridge.readUserConfig();
   } else {
     content = localStorage.getItem('cnc') || '{}';
   }
@@ -48,9 +53,9 @@ const persist = async (data) => {
     const value = JSON.stringify(data, null, 2);
 
     // Check whether the code is running in Electron renderer process
-    if (isElectron()) {
-      const electron = window.require('electron');
-      await electron.ipcRenderer.invoke('write-user-config', value);
+    const bridge = electronBridge();
+    if (isElectron() && bridge) {
+      await bridge.writeUserConfig(value);
     } else {
       localStorage.setItem('cnc', value);
     }

@@ -50,10 +50,16 @@ function getBrowserWindowOptions() {
 
     // webPreferences Object (optional) - Settings of web page's features.
     webPreferences: {
-      // https://www.electronjs.org/docs/latest/breaking-changes#default-changed-contextisolation-defaults-to-true
-      // require() cannot be used in the renderer process unless nodeIntegration is true and contextIsolation is false.
-      contextIsolation: false,
-      nodeIntegration: true,
+      // The renderer gets no direct access to Node. Everything it is allowed
+      // to do lives in the preload bridge, which exposes exactly two IPC
+      // calls. This matters more than it looks: the window loads its content
+      // over HTTP, and with nodeIntegration a server on another machine — or
+      // anyone able to sit between it and us — would be handing code straight
+      // to Node.
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+      preload: path.join(__dirname, 'electron-app', 'preload.js'),
     }
   };
 
