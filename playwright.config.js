@@ -28,8 +28,11 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'smoke',
-      // Top-level specs only: they need nothing but a running server.
-      testMatch: /^[^/\\]+\.spec\.js$/,
+      // Needs nothing but a running server. testMatch/testIgnore are matched
+      // against absolute paths, so scoping by directory is the reliable way to
+      // keep the hardware tier out of this project.
+      testDir: './e2e',
+      testIgnore: '**/hardware/**',
       // 'chromium' selects the full browser rather than the headless shell,
       // which has no WebGL — the Visualizer widget needs it to render.
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
@@ -38,7 +41,7 @@ module.exports = defineConfig({
       // Opt-in: these drive a real controller over a serial port and are
       // skipped unless CNCJS_TEST_PORT names one. See e2e/README.md.
       name: 'hardware',
-      testMatch: /hardware[/\\].*\.spec\.js$/,
+      testDir: './e2e/hardware',
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
     },
   ],
