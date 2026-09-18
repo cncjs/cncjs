@@ -62,6 +62,11 @@ import {
 const log = logger('controller:Grbl');
 const noop = _.noop;
 
+// A status report answers every `?`, and one is queried at least every few
+// seconds, so a working link is never quiet for long. Silence past this is
+// taken to mean the controller is no longer reachable.
+const CONNECTION_TIMEOUT = 10000;
+
 class GrblController {
     type = GRBL;
 
@@ -77,6 +82,7 @@ class GrblController {
     connectionEventListener = {
       data: (data) => {
         log.silly(`< ${data}`);
+        this.lastDataReceivedTime = new Date().getTime();
         this.runner.parse('' + data);
       },
       close: (err) => {
@@ -106,6 +112,9 @@ class GrblController {
     controller = null;
 
     ready = false;
+
+    // When the last byte arrived from the controller, or 0 before the first one.
+    lastDataReceivedTime = 0;
 
     initialized = false;
 
@@ -545,6 +554,14 @@ class GrblController {
          * A status query (?) will be issued in the `queryActivity` function.
          */
         if (!this.ready) {
+          // `initialized` is still false on first contact and only true once a
+          // session has been up, so it tells a recovery apart from a new
+          // connection — and only a recovery is worth reporting.
+          if (this.initialized) {
+            log.info(`Serial port "${this.options.port}" is responding again`);
+            this.emit('serialport:read', 'The controller is responding again.');
+          }
+
           this.ready = true;
 
           // Reset the state
@@ -976,6 +993,8 @@ class GrblController {
           this.emit('Grbl:state', this.state); // Backward compatibility
         }
 
+        this.checkConnectionLiveness(new Date().getTime());
+
         // Check the ready flag
         if (!(this.ready)) {
           queryActivity();
@@ -1261,6 +1280,7 @@ class GrblController {
 
       // Stop status query
       this.ready = false;
+      this.lastDataReceivedTime = 0;
 
       // Clear initialized flag
       this.initialized = false;
@@ -1285,6 +1305,36 @@ class GrblController {
 
       this.connection.removeAllListeners();
       this.connection.close(callback);
+    }
+
+    /**
+     * Notice a serial link that has stopped answering.
+     *
+     * A dead link is indistinguishable from a quiet one unless something
+     * watches the clock: `?` keeps being written, no reply ever comes, and
+     * nothing else in the controller is looking. The result is a controller
+     * that reports `ready: true` and `Idle` while the firmware hears nothing.
+     *
+     * Dropping the ready flag is both the report and the recovery — the query
+     * timer falls back to `queryActivity`, which probes with `?` until the
+     * controller answers and the status handler above marks it ready again.
+     */
+    checkConnectionLiveness(now) {
+      // While not ready, the probe loop already owns this and has said its
+      // piece; before the first byte there is nothing to measure against.
+      if (!this.ready || !this.lastDataReceivedTime || !this.isOpen()) {
+        return;
+      }
+
+      const timespan = Math.abs(now - this.lastDataReceivedTime);
+      if (timespan < CONNECTION_TIMEOUT) {
+        return;
+      }
+
+      log.warn(`Serial port "${this.options.port}" stopped responding: timespan=${timespan}ms`);
+      this.emit('serialport:read', `The controller stopped responding ${Math.round(timespan / 1000)}s ago. Commands are not reaching the machine.`);
+
+      this.ready = false;
     }
 
     isOpen() {
