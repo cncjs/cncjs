@@ -4,7 +4,7 @@ import path from 'path';
 import bodyParser from 'body-parser';
 import compress from 'compression';
 import cookieParser from 'cookie-parser';
-import multiparty from 'connect-multiparty';
+import multer from 'multer';
 import connectRestreamer from 'connect-restreamer';
 import engines from 'consolidate';
 import errorhandler from 'errorhandler';
@@ -41,6 +41,7 @@ import {
   validateUser
 } from './access-control';
 import {
+  ERR_BAD_REQUEST,
   ERR_FORBIDDEN
 } from './constants';
 
@@ -159,10 +160,28 @@ const appMain = () => {
   app.use(bodyParser.json(settings.middleware['body-parser'].json));
   app.use(bodyParser.urlencoded(settings.middleware['body-parser'].urlencoded));
 
-  // For multipart bodies, please use the following modules:
-  // - [busboy](https://github.com/mscdex/busboy) and [connect-busboy](https://github.com/mscdex/connect-busboy)
-  // - [multiparty](https://github.com/andrewrk/node-multiparty) and [connect-multiparty](https://github.com/andrewrk/connect-multiparty)
-  app.use(multiparty(settings.middleware.multiparty));
+  // Multipart bodies here never carry a file. The only multipart request this
+  // app makes is the G-code download form, which posts `port` and `token` as
+  // text fields and needs them parsed into req.body. `none()` parses exactly
+  // that and rejects any file part outright, so nothing reaches the disk.
+  // https://github.com/expressjs/multer
+  app.use(multer(settings.middleware.multer).none());
+
+  // multer signals a rejected part by passing a MulterError down the chain, and
+  // the authorization handler further down treats anything that is not an
+  // UnauthorizedError as "carry on" — so without this the request would reach
+  // its route as though nothing had happened. Nothing was written either way;
+  // this is about saying no out loud.
+  app.use((err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+      const ipaddr = req.ip || req.connection.remoteAddress;
+      log.warn(`Rejected a file upload: ipaddr=${ipaddr}, code="${err.code}", field="${err.field}"`);
+      res.status(ERR_BAD_REQUEST).end('File uploads are not accepted');
+      return;
+    }
+
+    next(err);
+  });
 
   // https://github.com/dominictarr/connect-restreamer
   // connect's bodyParser has a problem when using it with a proxy.
