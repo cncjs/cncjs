@@ -21,29 +21,6 @@ class Input extends Component {
       type: 'text'
     };
 
-    get value() {
-      if (!this.ref) {
-        return null;
-      }
-
-      const node = this.ref;
-
-      return node ? node.value : null;
-    }
-
-    getRef = (ref) => {
-      if (typeof this.props.innerRef === 'function') {
-        this.props.innerRef(ref);
-      }
-      this.ref = ref;
-    };
-
-    focus = () => {
-      if (this.ref) {
-        this.ref.focus();
-      }
-    };
-
     render() {
       const {
         componentClass: Component,
