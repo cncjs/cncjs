@@ -48,6 +48,18 @@ module.exports = {
   module: {
     rules: [
       {
+        // MUI ships ESM whose imports have no file extension — `import ...
+        // from 'react/jsx-runtime'`. Webpack 5 treats a `.mjs` import as fully
+        // specified, and React 17 has no `exports` map to resolve the bare
+        // path, so every MUI module that renders JSX fails to build. Relaxing
+        // the requirement for these files is the documented fix; it can go
+        // when React is on 18, which does declare the export.
+        test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false,
+        },
+      },
+      {
         test: /\.jsx?$/,
         loader: 'babel-loader',
         options: {

@@ -103,6 +103,56 @@ test.describe('the sign-in screen', () => {
     await expect(page.getByRole('alert')).toHaveCount(0);
   });
 
+test('names the missing field instead of asking the server', async ({ page }) => {
+    await gotoLogin(page);
+
+    // The page posts to /api/signin once while bootstrapping, so the listener
+    // goes on after the screen has settled or it would count that one.
+    const posted = [];
+    page.on('request', (req) => {
+      if (req.url().endsWith('/api/signin') && req.method() === 'POST') {
+        posted.push(req.url());
+      }
+    });
+
+    await signInButton(page).click();
+
+    // The server's answer to a blank field is "Authentication failed", which
+    // is true and useless — it cannot say which field is missing, and that is
+    // the only thing wrong. So the screen answers instead, and says which.
+    await expect(page.getByText(/username is required/i)).toBeVisible();
+    await expect(page.getByText(/password is required/i)).toBeVisible();
+    await expect(field(page, /username/i)).toHaveAttribute('aria-invalid', 'true');
+    await expect(field(page, /password/i)).toHaveAttribute('aria-invalid', 'true');
+
+    await page.waitForTimeout(500);
+    expect(posted, 'an empty form should never reach the server').toEqual([]);
+  });
+
+  test('ties each message to the field it is about', async ({ page }) => {
+    await gotoLogin(page);
+    await signInButton(page).click();
+    await expect(page.getByText(/password is required/i)).toBeVisible();
+
+    // The message is only useful to a screen reader if the field points at it.
+    const describedBy = await field(page, /password/i).getAttribute('aria-describedby');
+    expect(describedBy).toBeTruthy();
+    await expect(page.locator(`#${describedBy}`)).toHaveText(/password is required/i);
+  });
+
+  test('drops a field message as soon as that field is typed into', async ({ page }) => {
+    await gotoLogin(page);
+    await signInButton(page).click();
+    await expect(page.getByText(/username is required/i)).toBeVisible();
+
+    await field(page, /username/i).fill('operator');
+
+    // Only the field being corrected clears. Telling someone their password is
+    // still missing while they fix the username is the accurate thing to say.
+    await expect(page.getByText(/username is required/i)).toHaveCount(0);
+    await expect(page.getByText(/password is required/i)).toBeVisible();
+  });
+
   test('refuses the wrong password and says so on screen', async ({ page }) => {
     await gotoLogin(page);
 
@@ -114,6 +164,25 @@ test.describe('the sign-in screen', () => {
     // sign-in that leaves the screen looking untouched reads as a dead button.
     await expect(page.getByRole('alert')).toContainText(/authentication failed/i);
     await expect(page).toHaveURL(/#\/login$/);
+  });
+
+test('marks both fields as rejected, and not only in colour', async ({ page }) => {
+    await gotoLogin(page);
+
+    await expect(field(page, /username/i)).not.toHaveAttribute('aria-invalid', 'true');
+    await expect(field(page, /password/i)).not.toHaveAttribute('aria-invalid', 'true');
+
+    await field(page, /username/i).fill(OPERATOR.name);
+    await field(page, /password/i).fill('not-it');
+    await signInButton(page).click();
+    await expect(page.getByRole('alert')).toBeVisible();
+
+    // A red border says nothing to a screen reader, and nothing at all to
+    // someone who cannot separate red from grey. `aria-invalid` is the part of
+    // the error state that has to be true for the colour to be decoration
+    // rather than the whole message.
+    await expect(field(page, /username/i)).toHaveAttribute('aria-invalid', 'true');
+    await expect(field(page, /password/i)).toHaveAttribute('aria-invalid', 'true');
   });
 
   test('carries what was typed through to the server', async ({ page }) => {

@@ -1,19 +1,21 @@
-import cx from 'classnames';
 import qs from 'qs';
 import React, { PureComponent } from 'react';
 import GoogleAnalytics4 from 'react-ga4';
 import { withRouter, Redirect } from 'react-router-dom';
 import api from 'app/api';
-import Anchor from 'app/components/Anchor';
-import { Notification } from 'app/components/Notifications';
-import Space from 'app/components/Space';
+import Alert from 'app/components/Alert';
+import Button from 'app/components/Button';
+import Form from 'app/components/Form';
+import Link from 'app/components/Link';
+import Screen from 'app/components/Screen';
+import TextField from 'app/components/TextField';
+import Tile from 'app/components/Tile';
 import settings from 'app/config/settings';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
 import store from 'app/store';
-import styles from './index.styl';
 
 class Login extends PureComponent {
     static propTypes = {
@@ -29,17 +31,38 @@ class Login extends PureComponent {
       clearAlertMessage: () => {
         this.setState({ alertMessage: '' });
       },
+      clearFieldError: (field) => {
+        // Only ever clears, and only the field being typed into. Re-validating
+        // on every keystroke would tell someone their username is missing
+        // while they are still typing its first letter.
+        this.setState(state => (state.fieldErrors[field]
+          ? { fieldErrors: { ...state.fieldErrors, [field]: '' } }
+          : null));
+      },
       handleSignIn: (event) => {
         event.preventDefault();
 
+        const name = this.fields.name.value;
+        const password = this.fields.password.value;
+
+        const fieldErrors = {
+          name: name ? '' : i18n._('Username is required'),
+          password: password ? '' : i18n._('Password is required')
+        };
+
+        if (fieldErrors.name || fieldErrors.password) {
+          // Nothing worth asking the server. It would answer "Authentication
+          // failed", which is true and useless: it cannot say which field was
+          // left blank, and that is the only thing wrong here.
+          this.setState({ alertMessage: '', fieldErrors });
+          return;
+        }
+
         this.setState({
-          alertMessage: '',
+          fieldErrors,
           authenticating: true,
           redirectToReferrer: false
         });
-
-        const name = this.fields.name.value;
-        const password = this.fields.password.value;
 
         user.signin({ name, password })
           .then(async ({ authenticated }) => {
@@ -96,6 +119,10 @@ class Login extends PureComponent {
     getDefaultState() {
       return {
         alertMessage: '',
+        fieldErrors: {
+          name: '',
+          password: ''
+        },
         authenticating: false,
         redirectToReferrer: false
       };
@@ -105,7 +132,7 @@ class Login extends PureComponent {
       const { from } = this.props.location.state || { from: { pathname: '/' } };
       const state = { ...this.state };
       const actions = { ...this.actions };
-      const { alertMessage, authenticating } = state;
+      const { alertMessage, authenticating, fieldErrors } = state;
       const forgotPasswordLink = 'https://cnc.js.org/docs/faq/#forgot-your-password';
 
       if (state.redirectToReferrer) {
@@ -126,75 +153,51 @@ class Login extends PureComponent {
       }
 
       return (
-        <div className={styles.container}>
-          {alertMessage && (
-            <Notification
-              role="alert"
-              aria-live="assertive"
-              style={{ marginBottom: 10 }}
-              type="error"
-              onDismiss={actions.clearAlertMessage}
-            >
-              <div><strong>{i18n._('Error')}</strong></div>
-              <div>{alertMessage}</div>
-            </Notification>
-          )}
-          <div className={styles.login}>
-            <div className={styles.logo}>
-              <img src="images/logo-square-256x256.png" alt="" />
-            </div>
-            <div className={styles.title}>
-              {i18n._('Sign in to {{name}}', { name: settings.productName })}
-            </div>
-            <form className={styles.form}>
-              <div className="form-group">
-                <input
-                  ref={node => {
-                    this.fields.name = node;
-                  }}
-                  type="text"
-                  className="form-control"
-                  placeholder={i18n._('Username')}
-                />
-              </div>
-              <div className="form-group">
-                <input
-                  ref={node => {
-                    this.fields.password = node;
-                  }}
-                  type="password"
-                  className="form-control"
-                  placeholder={i18n._('Password')}
-                />
-              </div>
-              <div className="form-group">
-                <button
-                  type="button"
-                  className="btn btn-block btn-primary"
-                  onClick={this.actions.handleSignIn}
+        <Screen>
+          <Tile title={i18n._('Sign in to {{name}}', { name: settings.productName })}>
+            <Form onSubmit={actions.handleSignIn}>
+              {alertMessage && (
+                <Alert
+                  title={i18n._('Error')}
+                  onDismiss={actions.clearAlertMessage}
+                  dismissLabel={i18n._('Dismiss')}
                 >
-                  <i
-                    aria-hidden="true"
-                    className={cx(
-                      'fa',
-                      'fa-fw',
-                      { 'fa-spin': authenticating },
-                      { 'fa-circle-o-notch': authenticating },
-                      { 'fa-sign-in': !authenticating }
-                    )}
-                  />
-                  <Space width="8" />
-                  {i18n._('Sign In')}
-                </button>
-              </div>
-              <p>
-                <Anchor href={forgotPasswordLink}>
-                  {i18n._('Forgot your password?')}
-                </Anchor>
-              </p>
-            </form>
-          </div>
-        </div>
+                  {alertMessage}
+                </Alert>
+              )}
+              <TextField
+                id="login-name"
+                label={i18n._('Username')}
+                type="text"
+                autoComplete="username"
+                error={!!fieldErrors.name || !!alertMessage}
+                helperText={fieldErrors.name}
+                onChange={() => actions.clearFieldError('name')}
+                inputRef={node => {
+                  this.fields.name = node;
+                }}
+              />
+              <TextField
+                id="login-password"
+                label={i18n._('Password')}
+                type="password"
+                autoComplete="current-password"
+                error={!!fieldErrors.password || !!alertMessage}
+                helperText={fieldErrors.password}
+                onChange={() => actions.clearFieldError('password')}
+                inputRef={node => {
+                  this.fields.password = node;
+                }}
+              />
+              <Button type="submit" fullWidth loading={authenticating}>
+                {i18n._('Sign In')}
+              </Button>
+              <Link href={forgotPasswordLink}>
+                {i18n._('Forgot your password?')}
+              </Link>
+            </Form>
+          </Tile>
+        </Screen>
       );
     }
 }

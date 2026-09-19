@@ -646,5 +646,8 @@
   "None": "Žádný",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Přetáhněte sem soubory k nahrání",
-  "Uploading...": "Nahrávání..."
+  "Uploading...": "Nahrávání...",
+  "Dismiss": "",
+  "Username is required": "",
+  "Password is required": ""
 }

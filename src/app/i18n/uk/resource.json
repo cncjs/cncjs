@@ -646,5 +646,8 @@
   "None": "Немає",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Перетягніть файли для завантаження",
-  "Uploading...": "Завантаження..."
+  "Uploading...": "Завантаження...",
+  "Dismiss": "",
+  "Username is required": "",
+  "Password is required": ""
 }

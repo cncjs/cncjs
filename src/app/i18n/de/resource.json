@@ -644,5 +644,8 @@
   "None": "Keine",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Dateien zum Hochladen hier ablegen",
-  "Uploading...": "Wird hochgeladen..."
+  "Uploading...": "Wird hochgeladen...",
+  "Dismiss": "",
+  "Username is required": "",
+  "Password is required": ""
 }

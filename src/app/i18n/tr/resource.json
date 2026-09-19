@@ -644,5 +644,8 @@
   "None": "Yok",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Yüklenecek dosyaları buraya sürükleyin",
-  "Uploading...": "Yükleniyor..."
+  "Uploading...": "Yükleniyor...",
+  "Dismiss": "",
+  "Username is required": "",
+  "Password is required": ""
 }

@@ -646,5 +646,8 @@
   "None": "Нет",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Перетащите файлы для загрузки",
-  "Uploading...": "Загрузка..."
+  "Uploading...": "Загрузка...",
+  "Dismiss": "",
+  "Username is required": "",
+  "Password is required": ""
 }

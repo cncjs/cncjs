@@ -644,5 +644,8 @@
   "None": "Nincs",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Húzd ide a feltöltendő fájlokat",
-  "Uploading...": "Feltöltés..."
+  "Uploading...": "Feltöltés...",
+  "Dismiss": "",
+  "Username is required": "",
+  "Password is required": ""
 }

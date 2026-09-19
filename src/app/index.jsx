@@ -33,6 +33,7 @@ import { Button } from './components/Buttons';
 import ModalTemplate from './components/ModalTemplate';
 import Modal from './components/Modal';
 import ProtectedRoute from './components/ProtectedRoute';
+import { AppThemeProvider } from './theme';
 import Space from './components/Space';
 import './styles/vendor.styl';
 import './styles/app.styl';
@@ -49,12 +50,14 @@ const renderPage = () => {
       gutterWidth={0}
       layout="floats"
     >
-      <Router>
-        <div>
-          <Route path="/login" component={Login} />
-          <ProtectedRoute path="/" component={App} />
-        </div>
-      </Router>
+      <AppThemeProvider>
+        <Router>
+          <div>
+            <Route path="/login" component={Login} />
+            <ProtectedRoute path="/" component={App} />
+          </div>
+        </Router>
+      </AppThemeProvider>
     </GridSystemProvider>,
     container
   );

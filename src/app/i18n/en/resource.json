@@ -644,5 +644,8 @@
   "None": "None",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Drop files to upload",
-  "Uploading...": "Uploading..."
+  "Uploading...": "Uploading...",
+  "Dismiss": "Dismiss",
+  "Username is required": "Username is required",
+  "Password is required": "Password is required"
 }

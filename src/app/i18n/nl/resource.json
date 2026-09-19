@@ -644,5 +644,8 @@
   "None": "Geen",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Sleep bestanden hierheen om ze te uploaden",
-  "Uploading...": "Bezig met uploaden..."
+  "Uploading...": "Bezig met uploaden...",
+  "Dismiss": "",
+  "Username is required": "",
+  "Password is required": ""
 }
