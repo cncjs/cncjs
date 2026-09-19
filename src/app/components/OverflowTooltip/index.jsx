@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 class OverflowTooltip extends React.Component {
     static propTypes = {
@@ -11,6 +10,8 @@ class OverflowTooltip extends React.Component {
       overflow: false
     };
 
+    node = null;
+
     static getDerivedStateFromProps(nextProps, prevState) {
       return {
         overflow: false
@@ -18,7 +19,7 @@ class OverflowTooltip extends React.Component {
     }
 
     detectOverflow = () => {
-      const el = ReactDOM.findDOMNode(this);
+      const el = this.node;
       const overflow = (el.clientWidth < el.scrollWidth);
       if (overflow !== this.state.overflow) {
         this.setState({ overflow: overflow });
@@ -41,7 +42,12 @@ class OverflowTooltip extends React.Component {
       }
 
       return (
-        <div {...props} />
+        <div
+          {...props}
+          ref={node => {
+            this.node = node;
+          }}
+        />
       );
     }
 }

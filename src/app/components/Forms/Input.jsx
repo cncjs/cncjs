@@ -1,7 +1,6 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 
 class Input extends Component {
     static propTypes = {
@@ -27,7 +26,7 @@ class Input extends Component {
         return null;
       }
 
-      const node = ReactDOM.findDOMNode(this.ref);
+      const node = this.ref;
 
       return node ? node.value : null;
     }

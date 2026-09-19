@@ -3,7 +3,6 @@ import trimEnd from 'lodash/trimEnd';
 import PerfectScrollbar from 'perfect-scrollbar';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
 import chalk from 'app/lib/chalk';
@@ -260,7 +259,7 @@ class TerminalWrapper extends PureComponent {
       this.term.on('key', this.eventHandler.onKey);
       this.term.on('paste', this.eventHandler.onPaste);
 
-      const el = ReactDOM.findDOMNode(this.terminalContainer);
+      const el = this.terminalContainer;
       this.term.open(el);
       this.term.fit();
       this.term.focus(false);

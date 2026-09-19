@@ -4,7 +4,6 @@ import get from 'lodash/get';
 import throttle from 'lodash/throttle';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
 import { ProgressBar } from 'react-bootstrap';
 import VirtualList from 'react-tiny-virtual-list';
 import api from 'app/api';
@@ -48,7 +47,7 @@ class Dashboard extends PureComponent {
         return;
       }
 
-      const el = ReactDOM.findDOMNode(this.node.virtualList);
+      const el = this.node.virtualList;
       const clientHeight = Number(el.clientHeight) || 0;
 
       if (clientHeight > 0) {

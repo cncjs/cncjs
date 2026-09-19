@@ -1,7 +1,6 @@
 import uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
 import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import Modal from 'app/components/Modal';
@@ -74,7 +73,7 @@ class AddMacro extends PureComponent {
                   <Dropdown
                     className="pull-right"
                     onSelect={(eventKey) => {
-                      const textarea = ReactDOM.findDOMNode(this.fields.content).querySelector('textarea');
+                      const textarea = this.contentNode && this.contentNode.querySelector('textarea');
                       if (textarea) {
                         insertAtCaret(textarea, eventKey);
                       }
@@ -122,16 +121,19 @@ class AddMacro extends PureComponent {
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-                <Textarea
-                  ref={c => {
-                    this.fields.content = c;
+                <div
+                  ref={node => {
+                    this.contentNode = node;
                   }}
-                  rows="10"
-                  className="form-control"
-                  name="content"
-                  value={content}
-                  validations={[validations.required]}
-                />
+                >
+                  <Textarea
+                    rows="10"
+                    className="form-control"
+                    name="content"
+                    value={content}
+                    validations={[validations.required]}
+                  />
+                </div>
               </div>
             </Form>
           </Modal.Body>
