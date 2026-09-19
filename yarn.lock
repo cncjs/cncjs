@@ -4862,25 +4862,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trendmicro/react-dropdown@npm:^1.1.0":
-  version: 1.4.0
-  resolution: "@trendmicro/react-dropdown@npm:1.4.0"
-  dependencies:
-    "@trendmicro/react-buttons": ^1.3.0
-    chained-function: ^0.5.0
-    classnames: ^2.2.5
-    dom-helpers: ^3.3.1
-    prop-types: ^15.6.0
-    uncontrollable: ^7.0.0
-    warning: ^3.0.0
-  peerDependencies:
-    react: ">=16.3.0"
-    react-dom: ">=16.3.0"
-  checksum: e88a483b7a7a3d161ccd345f5f4378ccd165d5bda612844121ddb3af0bc466ff6e4c139332ef86d52832061729a04e095a90a3ef89d5f06cd07a2007a30cbbb2
-  languageName: node
-  linkType: hard
-
-"@trendmicro/react-dropdown@npm:~1.3.0":
+"@trendmicro/react-dropdown@npm:1.3.0":
   version: 1.3.0
   resolution: "@trendmicro/react-dropdown@npm:1.3.0"
   dependencies:
@@ -4895,6 +4877,24 @@ __metadata:
     react: ^0.14.0 || >=15.0.0
     react-dom: ^0.14.0 || >=15.0.0
   checksum: 5ac32a45586a3a5ab0cf106c369cd5d8deb6a3e29a9456f9de82df506cc6452cfc6daf6e9a394b086de3ccfbe7bb29351439c99ece9b9bfdde920c3a322b49c6
+  languageName: node
+  linkType: hard
+
+"@trendmicro/react-dropdown@patch:@trendmicro/react-dropdown@npm%3A1.3.0#./.yarn/patches/@trendmicro-react-dropdown-npm-1.3.0-df4b1aed5a.patch::locator=cncjs%40workspace%3A.":
+  version: 1.3.0
+  resolution: "@trendmicro/react-dropdown@patch:@trendmicro/react-dropdown@npm%3A1.3.0#./.yarn/patches/@trendmicro-react-dropdown-npm-1.3.0-df4b1aed5a.patch::version=1.3.0&hash=c4174f&locator=cncjs%40workspace%3A."
+  dependencies:
+    "@trendmicro/react-buttons": ^1.3.0
+    chained-function: ^0.5.0
+    classnames: ^2.2.5
+    dom-helpers: ^3.3.1
+    prop-types: ^15.6.0
+    uncontrollable: ^5.0.0
+    warning: ^3.0.0
+  peerDependencies:
+    react: ^0.14.0 || >=15.0.0
+    react-dom: ^0.14.0 || >=15.0.0
+  checksum: 7165878e5a6598ebca0d0ec18ecb5b9874b22f558e6e562f33a35a6f16a5ad331d926e84ea056f3f097a9c58c11987eb1f3d0fa83f19acc338091146ad02dbc4
   languageName: node
   linkType: hard
 
