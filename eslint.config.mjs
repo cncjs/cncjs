@@ -80,7 +80,9 @@ export default [
       'react/react-in-jsx-scope': 'error',
       'react/forbid-foreign-prop-types': 0,
       '@stylistic/jsx-curly-newline': 'warn',
-      '@stylistic/jsx-indent': ['warn', 2],
+      // @stylistic/jsx-indent is deprecated in favour of `indent`, which is
+      // switched off above on purpose — so enforcing it for JSX alone was
+      // both inconsistent and a deprecation banner on every lint run.
       '@stylistic/jsx-indent-props': ['error', 2],
       'react/jsx-no-bind': ['warn', {
         allowArrowFunctions: true,
