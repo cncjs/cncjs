@@ -55,6 +55,10 @@ module.exports = defineConfig({
       // until `yarn build-prod` has produced it.
       name: 'auth',
       testDir: './e2e/auth',
+      // One spec here drives the sign-in screen in a browser; the rest talk to
+      // the API with `fetch` and never launch one. 'chromium' selects the full
+      // browser because reaching the workspace means mounting the visualizer.
+      use: { ...devices['Desktop Chrome'], channel: 'chromium' },
       // Each block boots a server and waits for it to answer.
       timeout: 120 * 1000,
     },
