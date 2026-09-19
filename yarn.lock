@@ -8463,7 +8463,7 @@ __metadata:
     classnames: ~2.2.6
     cncjs-controller: ~1.3.0
     colornames: ~1.1.1
-    commander: ~13.1.0
+    commander: ~14.0.3
     compression: ~1.7.4
     concurrently: ~4.1.0
     connect-restreamer: ~1.0.3
@@ -8799,10 +8799,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:~13.1.0":
-  version: 13.1.0
-  resolution: "commander@npm:13.1.0"
-  checksum: 8ca2fcb33caf2aa06fba3722d7a9440921331d54019dabf906f3603313e7bf334b009b862257b44083ff65d5a3ab19e83ad73af282bd5319f01dc228bdf87ef0
+"commander@npm:~14.0.3":
+  version: 14.0.3
+  resolution: "commander@npm:14.0.3"
+  checksum: b8440159124aefbb02784a8996cd0481d8ce503d8d3cd413f4289d06db7e912c36b511277c2faba62f59152dd9ff79239d75e3b9400d9402851878994201d429
   languageName: node
   linkType: hard
 

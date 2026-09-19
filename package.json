@@ -20,7 +20,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "preferGlobal": true,
   "scripts": {
@@ -173,7 +173,7 @@
     "classnames": "~2.2.6",
     "cncjs-controller": "~1.3.0",
     "colornames": "~1.1.1",
-    "commander": "~13.1.0",
+    "commander": "~14.0.3",
     "compression": "~1.7.4",
     "connect-restreamer": "~1.0.3",
     "consolidate": "~0.15.1",
