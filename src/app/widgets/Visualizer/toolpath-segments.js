@@ -1,3 +1,8 @@
+import {
+  TOOLPATH_CUT_DEEP,
+  TOOLPATH_CUT_SHALLOW,
+  TOOLPATH_RAPID,
+} from './palette';
 import { RAPID } from './toolpath-geometry';
 
 /**
@@ -34,15 +39,15 @@ const fromHex = (hex) => ({
  * move can never be mistaken for a cut at some particular depth — which a
  * second shade of blue absolutely would be.
  */
-export const RAPID_COLOR = fromHex(0xe8a33d);
+export const RAPID_COLOR = fromHex(TOOLPATH_RAPID);
 
 /**
- * The depth ramp runs light to dark as well as cyan to indigo. The lightness
- * is the part that survives being looked at quickly, and it is also what
- * carries the ordering for anyone who does not separate the two hues.
+ * The depth ramp runs light to dark as well as blue to darker blue. The
+ * lightness is the part that survives being looked at quickly, and it is also
+ * what carries the ordering for anyone who does not separate the two hues.
  */
-export const CUT_SHALLOW = fromHex(0x4fc3f7);
-export const CUT_DEEP = fromHex(0x1a237e);
+export const CUT_SHALLOW = fromHex(TOOLPATH_CUT_SHALLOW);
+export const CUT_DEEP = fromHex(TOOLPATH_CUT_DEEP);
 
 /**
  * Where `z` sits on the ramp, given the range of the cutting moves.
