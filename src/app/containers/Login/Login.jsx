@@ -35,7 +35,6 @@ class Login extends PureComponent {
         event.preventDefault();
 
         this.setState({
-          alertMessage: '',
           authenticating: true,
           redirectToReferrer: false
         });
@@ -129,17 +128,17 @@ class Login extends PureComponent {
 
       return (
         <Screen>
-          {alertMessage && (
-            <Alert
-              title={i18n._('Error')}
-              onDismiss={actions.clearAlertMessage}
-              dismissLabel={i18n._('Dismiss')}
-            >
-              {alertMessage}
-            </Alert>
-          )}
           <Tile title={i18n._('Sign in to {{name}}', { name: settings.productName })}>
             <Form onSubmit={actions.handleSignIn}>
+              {alertMessage && (
+                <Alert
+                  title={i18n._('Error')}
+                  onDismiss={actions.clearAlertMessage}
+                  dismissLabel={i18n._('Dismiss')}
+                >
+                  {alertMessage}
+                </Alert>
+              )}
               <TextField
                 id="login-name"
                 label={i18n._('Username')}
