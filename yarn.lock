@@ -8623,19 +8623,15 @@ __metadata:
     react-i18next: ^8.0.0
     react-icon-base: ~2.1.2
     react-infinite-tree: ~0.7.1
-    react-redux: ~5.0.7
     react-refresh: ^0.14.2
     react-repeatable: ~1.1.1
     react-router: ~4.3.1
     react-router-dom: ~4.3.1
-    react-router-redux: ~5.0.0-alpha.6
     react-select: ~1.2.1
     react-sortablejs: ~1.5.1
     react-tiny-virtual-list: ~2.2.0
     react-toggle: ~4.0.2
     recompose: ~0.30.0
-    redux: ~4.0.1
-    redux-devtools: ~3.5.0
     regenerator-runtime: ~0.13.10
     registry-auth-token: ~3.4.0
     registry-url: ~5.1.0
@@ -14028,7 +14024,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"invariant@npm:^2.0.0, invariant@npm:^2.2.4":
+"invariant@npm:^2.2.4":
   version: 2.2.4
   resolution: "invariant@npm:2.2.4"
   dependencies:
@@ -16185,13 +16181,6 @@ __metadata:
   dependencies:
     p-locate: ^5.0.0
   checksum: 72eb661788a0368c099a184c59d2fee760b3831c9c1c33955e8a19ae4a21b4116e53fa736dc086cdeb9fce9f7cc508f2f92d2d3aae516f133e16a2bb59a39f5a
-  languageName: node
-  linkType: hard
-
-"lodash-es@npm:^4.17.5":
-  version: 4.17.21
-  resolution: "lodash-es@npm:4.17.21"
-  checksum: 05cbffad6e2adbb331a4e16fbd826e7faee403a1a04873b82b42c0f22090f280839f85b95393f487c1303c8a3d2a010048bf06151a6cbe03eee4d388fb0a12d2
   languageName: node
   linkType: hard
 
@@ -19506,23 +19495,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-redux@npm:~5.0.7":
-  version: 5.0.7
-  resolution: "react-redux@npm:5.0.7"
-  dependencies:
-    hoist-non-react-statics: ^2.5.0
-    invariant: ^2.0.0
-    lodash: ^4.17.5
-    lodash-es: ^4.17.5
-    loose-envify: ^1.1.0
-    prop-types: ^15.6.0
-  peerDependencies:
-    react: ^0.14.0 || ^15.0.0-0 || ^16.0.0-0
-    redux: ^2.0.0 || ^3.0.0 || ^4.0.0-0
-  checksum: 7dbbf7e0d89aa5fc921f78ea873c458c4bb2c747b544959e21e3e1aea9e6b84944b8f26af64fdd109f4f6c7672495605b2e76d82c1374c808abd62c341f0da99
-  languageName: node
-  linkType: hard
-
 "react-refresh@npm:^0.14.2":
   version: 0.14.2
   resolution: "react-refresh@npm:0.14.2"
@@ -19558,20 +19530,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-redux@npm:~5.0.0-alpha.6":
-  version: 5.0.0-alpha.8
-  resolution: "react-router-redux@npm:5.0.0-alpha.8"
-  dependencies:
-    history: ^4.7.2
-    prop-types: ^15.6.0
-    react-router: ^4.2.0
-  peerDependencies:
-    react: ">=15"
-  checksum: 4a1bd6759cef62d84b9aa31ad17f13637f04299aa1796884394cb682b310a1314e69b536449973440d05b1a079403d38100920e4a3b1e77b96c080c17cc3ddf1
-  languageName: node
-  linkType: hard
-
-"react-router@npm:^4.2.0, react-router@npm:^4.3.1, react-router@npm:~4.3.1":
+"react-router@npm:^4.3.1, react-router@npm:~4.3.1":
   version: 4.3.1
   resolution: "react-router@npm:4.3.1"
   dependencies:
@@ -19847,43 +19806,6 @@ __metadata:
     indent-string: ^4.0.0
     strip-indent: ^3.0.0
   checksum: fa1ef20404a2d399235e83cc80bd55a956642e37dd197b4b612ba7327bf87fa32745aeb4a1634b2bab25467164ab4ed9c15be2c307923dd08b0fe7c52431ae6b
-  languageName: node
-  linkType: hard
-
-"redux-devtools-instrument@npm:^1.9.0":
-  version: 1.10.0
-  resolution: "redux-devtools-instrument@npm:1.10.0"
-  dependencies:
-    lodash: ^4.17.19
-    symbol-observable: ^1.2.0
-  peerDependencies:
-    redux: ^3.4.0 || ^4.0.0
-  checksum: 16836ff893070e39ee7c7d429fa2478775216765cadfdda7ac1ca8931936da99a7b9c2047632853e0ee40e5001511183e707a46d9f5c4fedb605618f343aa5d7
-  languageName: node
-  linkType: hard
-
-"redux-devtools@npm:~3.5.0":
-  version: 3.5.0
-  resolution: "redux-devtools@npm:3.5.0"
-  dependencies:
-    lodash: ^4.2.0
-    prop-types: ^15.5.7
-    redux-devtools-instrument: ^1.9.0
-  peerDependencies:
-    react: ^0.14.9 || ^15.3.0 || ^16.0.0
-    react-redux: ^4.0.0 || ^5.0.0 || ^6.0.0
-    redux: ^3.5.2 || ^4.0.0
-  checksum: d287067fe1fb1803f20f66665e0d4bbf2bb13c7921c284bb65995a7a585e25ee7deef61609c506f82b901f2016895f1aec86ea1f9c26f8e1e1f9e9e5828a3fd2
-  languageName: node
-  linkType: hard
-
-"redux@npm:~4.0.1":
-  version: 4.0.5
-  resolution: "redux@npm:4.0.5"
-  dependencies:
-    loose-envify: ^1.4.0
-    symbol-observable: ^1.2.0
-  checksum: 23689ba4318bfffd4517c8c8d49c5e9a7df1b864b3cf4a4784e10060652e28054586a4a64053d1252ae5f105da61cda03fe01a422b05a053c8604b1be1689d16
   languageName: node
   linkType: hard
 
@@ -22263,7 +22185,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"symbol-observable@npm:^1.0.4, symbol-observable@npm:^1.2.0":
+"symbol-observable@npm:^1.0.4":
   version: 1.2.0
   resolution: "symbol-observable@npm:1.2.0"
   checksum: 48ffbc22e3d75f9853b3ff2ae94a44d84f386415110aea5effc24d84c502e03a4a6b7a8f75ebaf7b585780bda34eb5d6da3121f826a6f93398429d30032971b6

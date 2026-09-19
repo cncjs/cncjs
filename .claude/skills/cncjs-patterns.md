@@ -15,7 +15,7 @@ last_analyzed: 2026-02-10
 
 **CNCjs** is a full-featured web-based interface for CNC controllers running Grbl, Marlin, Smoothieware, or TinyG.
 
-- **Tech Stack**: React 15.6, Node.js 18+, Express, Socket.io, Electron
+- **Tech Stack**: React 16.14, Node.js 18+, Express, Socket.io, Electron
 - **Build Tools**: Webpack 5, Babel 7, Jest 29
 - **Package Manager**: Yarn (required)
 - **Testing Framework**: Jest (migrated from tap in January 2026)
@@ -239,7 +239,8 @@ From `package.json`:
   "jest": {
     "testMatch": [
       "<rootDir>/src/server/**/__tests__/**/*.test.js",
-      "<rootDir>/grbl-simulator/__tests__/**/*.test.js"
+      "<rootDir>/grbl-simulator/__tests__/**/*.test.js",
+      "<rootDir>/src/app/widgets/Visualizer/__tests__/**/*.test.js"
     ],
     "collectCoverageFrom": [
       "<rootDir>/src/server/**/*.js",
@@ -343,11 +344,16 @@ Files that frequently change together:
 
 ### React Patterns
 
-- **React version**: 15.6.2 (older version)
+- **React version**: 16.14.2 — staged up from 15.6; 17/18/19 are still ahead
 - **Component style**: Class components (pre-hooks era)
-- **State management**: Redux with react-redux
+- **State management**: none. No Redux, no context store — widgets keep their
+  own state and persist it through `app/store`, a localStorage-backed
+  ImmutableStore. `react-redux` and `react-router-redux` were declared
+  dependencies for years and never imported once; they have been removed.
 - **Routing**: React Router v4
 - **Styling**: Styled Components v3.4 + Stylus
+- **3D**: three.js 0.186, driven imperatively rather than through
+  react-three-fiber, so the Visualizer does not depend on the React version
 
 ### Backend Patterns
 
@@ -369,11 +375,11 @@ Files that frequently change together:
 ### Frontend
 
 ```
-react ~15.6.2
-react-redux ~5.0.7
+react ~16.14.0
 react-router-dom ~4.3.1
 styled-components ~3.4.9
 socket.io-client ~2.2.0
+three ~0.186.0
 ```
 
 ### Backend
