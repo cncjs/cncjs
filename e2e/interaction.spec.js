@@ -128,6 +128,41 @@ test.describe('interaction', () => {
     cncjs.expectNoPageErrors();
   });
 
+  /**
+   * A tooltip has to leave when the pointer does — including after a click.
+   *
+   * Nearly every toolbar button in this app is wrapped in a Tooltip, so one
+   * that outlives its own click is not merely untidy: they pile up, one per
+   * click, until they cover the thing being worked on. The class hook is the
+   * library's own and unhashed, so it is stable across builds.
+   *
+   * This is here because React 18 breaks exactly this —
+   * @trendmicro/react-tooltip 0.6 rides on rc-trigger 2.3 — and it was found
+   * as an unexplained screenshot diff rather than as a failure that said what
+   * it was. Now it says what it is.
+   */
+  test('a clicked button does not leave its tooltip behind', async ({ cncjs }) => {
+    await cncjs.gotoWorkspace();
+
+    const visibleTooltips = () => cncjs.page.locator('.tm-tooltip-inner:visible').count();
+
+    // Hovering has to raise one first, or the absence asserted below would be
+    // satisfied by a tooltip that never appears at all.
+    await cncjs.page.getByRole('button', { name: 'Top view', exact: true }).hover();
+    await expect.poll(visibleTooltips).toBeGreaterThan(0);
+
+    // Three of them, because the failure mode is accumulation: on React 18
+    // each click leaves its own behind and they stack.
+    for (const label of ['Top view', 'Front view', 'Left side view']) {
+      await cncjs.page.getByRole('button', { name: label, exact: true }).click();
+    }
+    await cncjs.page.mouse.move(900, 950);
+
+    await expect.poll(visibleTooltips).toBe(0);
+
+    cncjs.expectNoPageErrors();
+  });
+
   test('keeps the workspace usable after settings have been opened and left', async ({ cncjs }) => {
     // Navigation is client-side, so the workspace stays mounted under
     // `display: none` the whole time. If React's listeners were rebound to the
