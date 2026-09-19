@@ -38,8 +38,36 @@ const test = baseTest.extend({
     // the cheapest place to watch for Idle/Jog/Run/Alarm.
     const controllerState = page.locator('[class*="Visualizer/index__controller-state"]');
 
+    /**
+     * Dismiss the visualizer's WebGL warning if it is up.
+     *
+     * A workspace without WebGL raises it on mount, and its overlay covers the
+     * whole page — every later click is intercepted by it rather than landing
+     * on the widget. A no-op when WebGL is available, which is every spec but
+     * the dashboard one.
+     */
+    const dismissWebGLWarning = async () => {
+      // Decided by asking the page whether WebGL exists, not by looking for
+      // the dialog. The visualizer mounts after `gotoWorkspace` has returned,
+      // so a dialog that is not up *yet* is indistinguishable from one that is
+      // never coming — and polling for it would cost every other spec here a
+      // timeout it does not need.
+      const hasWebGL = await page.evaluate(() => Boolean(window.WebGLRenderingContext));
+
+      if (hasWebGL) {
+        return;
+      }
+
+      const dialog = page.locator('[data-reactportal]')
+        .filter({ hasText: 'WebGL Error Message' });
+
+      await dialog.getByRole('button', { name: 'OK' }).click();
+      await expect(dialog).toHaveCount(0, { timeout: 10000 });
+    };
+
     const connect = async () => {
       await cncjs.gotoWorkspace();
+      await dismissWebGLWarning();
 
       // Already connected from a previous spec in the same worker.
       if (await connection.getByRole('button', { name: /^Close$/ }).isVisible().catch(() => false)) {
@@ -151,6 +179,7 @@ const test = baseTest.extend({
       workPosition,
       machinePosition,
       connect,
+      dismissWebGLWarning,
       disconnect,
       jogStep,
       jog,

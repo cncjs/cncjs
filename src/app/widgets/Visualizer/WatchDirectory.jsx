@@ -36,7 +36,6 @@ class WatchDirectory extends PureComponent {
 
     componentDidMount() {
       this.addResizeEventListener();
-      this.addDropZoneEventListeners();
       this.loadFiles();
       controller.addListener('watchdir:change', this.handleWatchDirChange);
     }
@@ -47,13 +46,42 @@ class WatchDirectory extends PureComponent {
       controller.removeListener('watchdir:change', this.handleWatchDirChange);
     }
 
+    /**
+     * The drop zone's element, with its listeners following it.
+     *
+     * The listeners cannot be attached from componentDidMount: everything this
+     * component renders sits inside a `Modal`, and `@trendmicro/react-portal`
+     * mounts that subtree through a legacy `ReactDOM.render` of its own — so
+     * when this component's componentDidMount runs, nothing inside the modal
+     * body exists yet and `dropzoneNode` is still null. Attaching from the ref
+     * callback happens exactly when the element is there, and again if it is
+     * ever replaced.
+     */
+    setDropzoneNode = (node) => {
+      if (this.dropzoneNode === node) {
+        return;
+      }
+
+      this.removeDropZoneEventListeners();
+      this.dropzoneNode = node;
+      this.addDropZoneEventListeners();
+    };
+
     addDropZoneEventListeners() {
+      if (!this.dropzoneNode) {
+        return;
+      }
+
       this.dropzoneNode.addEventListener('dragover', this.handleDragOver);
       this.dropzoneNode.addEventListener('dragleave', this.handleDragLeave);
       this.dropzoneNode.addEventListener('drop', this.handleDrop);
     }
 
     removeDropZoneEventListeners() {
+      if (!this.dropzoneNode) {
+        return;
+      }
+
       this.dropzoneNode.removeEventListener('dragover', this.handleDragOver);
       this.dropzoneNode.removeEventListener('dragleave', this.handleDragLeave);
       this.dropzoneNode.removeEventListener('drop', this.handleDrop);
@@ -341,9 +369,7 @@ class WatchDirectory extends PureComponent {
               </button>
             </div>
             <div
-              ref={(node) => {
-                this.dropzoneNode = node;
-              }}
+              ref={this.setDropzoneNode}
               className={classNames(watchDirectoryStyles.dropzone, {
                 [watchDirectoryStyles.dropzoneOver]: dragging
               })}
