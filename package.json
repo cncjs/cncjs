@@ -399,6 +399,7 @@
       "<rootDir>/src/server/**/__tests__/**/*.test.js",
       "<rootDir>/grbl-simulator/__tests__/**/*.test.js",
       "<rootDir>/src/app/lib/controller/__tests__/**/*.test.js",
+      "<rootDir>/src/app/features/**/__tests__/**/*.test.js",
       "<rootDir>/src/app/widgets/Visualizer/__tests__/**/*.test.js"
     ],
     "transformIgnorePatterns": [

@@ -214,7 +214,7 @@ export default [
     // Screens that have been migrated. This list grows by one entry per screen
     // and is what stops a rebuilt screen from quietly reintroducing Stylus or
     // an inline style.
-    files: ['src/app/containers/Login/**/*.js', 'src/app/containers/Login/**/*.jsx'],
+    files: ['src/app/containers/Login/**/*.js', 'src/app/containers/Login/**/*.jsx', 'src/app/features/**/*.js', 'src/app/features/**/*.jsx'],
     rules: {
       ...newUiRules,
       'no-restricted-imports': ['error', {

@@ -1,26 +1,15 @@
+// What is left of this file is the widget chrome, not the widget.
+//
+// The G-code readings moved to `app/features/gcode`, which styles itself from
+// the theme. These two rules belong to the bootstrap-era panel that still
+// wraps it — the collapse toggle needs somewhere to hide the content without
+// unmounting it, because unmounting would drop the module's subscriptions and
+// lose the loaded job. Both rules go when the chrome does.
+
 .widget-content {
     position: relative;
-    padding: 10px;
 
     &.hidden {
         display: none;
-    }
-}
-
-.gcode-stats {
-    table[data-table="dimension"] {
-        width: 100%;
-
-        thead > tr > th.axis,
-        tbody > tr > td.axis {
-            width: 1%;
-            white-space: nowrap;
-        }
-        tbody > tr > td {
-            text-align: right;
-            &.axis {
-                text-align: center;
-            }
-        }
     }
 }

@@ -92,7 +92,7 @@ test.describe('gcode widget, job loaded', () => {
 
     // Absent while idle, present once loaded: the bar's existence is itself
     // the statement that a job is waiting.
-    await expect(widget(grbl.page).locator('.progress')).toHaveCount(1, { timeout: 15000 });
+    await expect(widget(grbl.page).getByRole('progressbar')).toHaveCount(1, { timeout: 15000 });
     await expect(widget(grbl.page).getByText('0%', { exact: true })).toBeVisible();
   });
 
@@ -100,7 +100,7 @@ test.describe('gcode widget, job loaded', () => {
     await grbl.connect();
     await loadFixture(grbl.page);
 
-    await expect(widget(grbl.page).locator('.progress')).toHaveCount(1, { timeout: 15000 });
+    await expect(widget(grbl.page).getByRole('progressbar')).toHaveCount(1, { timeout: 15000 });
 
     // Loading is not starting. Start, Elapsed, Finish and Remaining stay
     // blank; showing 00:00:00 would read as a job that began and is frozen.

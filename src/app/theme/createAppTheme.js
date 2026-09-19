@@ -39,6 +39,10 @@ const createAppTheme = () => createTheme({
       dark: color.dangerHover,
       contrastText: color.onAccent,
     },
+    success: {
+      main: color.running,
+      contrastText: color.onAccent,
+    },
     background: {
       default: color.surface,
       paper: color.panel,
@@ -86,6 +90,12 @@ const createAppTheme = () => createTheme({
       letterSpacing: letterSpacing.control,
       textTransform: 'uppercase',
     },
+    // The figure a panel exists to show. Everything else on the tile is
+    // context for it.
+    readoutLarge: {
+      fontSize: fontSize.readout,
+      lineHeight: lineHeight.tight,
+    },
   },
 
   // Machine readings are not typography in the usual sense: they are an
@@ -110,8 +120,10 @@ const createAppTheme = () => createTheme({
         // `ScopedCssBaseline` paints the surface for whatever subtree it wraps,
         // which is how a migrated screen gets the new background without a
         // global baseline that would repaint the rest of the application.
+        // Colour only. The background belongs to whatever is being painted —
+        // a screen is the page, a panel is the panel — so it is set where that
+        // is known rather than forced on every migrated subtree.
         body: {
-          backgroundColor: color.surface,
           color: color.text,
         },
       },
