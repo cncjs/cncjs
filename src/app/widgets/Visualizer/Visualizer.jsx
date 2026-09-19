@@ -13,15 +13,14 @@ import {
   IMPERIAL_UNITS,
   METRIC_UNITS
 } from 'app/constants';
-import CombinedCamera from 'app/lib/three/CombinedCamera';
-import TrackballControls from 'app/lib/three/TrackballControls';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import * as WebGL from 'app/lib/three/WebGL';
 import log from 'app/lib/log';
 import { getRenderPixelRatio } from 'app/lib/pixel-ratio';
 import { mapValueToUnits } from 'app/lib/units';
 import store from 'app/store';
 import { getBoundingBox, loadSTL, loadTexture } from './helpers';
-import Viewport from './Viewport';
+import fitCameraToBounds from './camera-fit';
 import CoordinateAxes from './CoordinateAxes';
 import Cuboid from './Cuboid';
 import CuttingPointer from './CuttingPointer';
@@ -41,17 +40,57 @@ const IMPERIAL_AXIS_LENGTH = IMPERIAL_GRID_SPACING * 12; // 12 in
 const METRIC_GRID_COUNT = 60; // 60 cm
 const METRIC_GRID_SPACING = 10; // 10 mm
 const METRIC_AXIS_LENGTH = METRIC_GRID_SPACING * 30; // 300 mm
-const CAMERA_VIEWPORT_WIDTH = 300; // 300 mm
-const CAMERA_VIEWPORT_HEIGHT = 300; // 300 mm
 const PERSPECTIVE_FOV = 70;
-const PERSPECTIVE_NEAR = 0.001;
-const PERSPECTIVE_FAR = 2000;
-const ORTHOGRAPHIC_FOV = 35;
-const ORTHOGRAPHIC_NEAR = 0.001;
-const ORTHOGRAPHIC_FAR = 2000;
-const CAMERA_DISTANCE = 200; // Move the camera out a bit from the origin (0, 0, 0)
-const TRACKBALL_CONTROLS_MIN_DISTANCE = 1;
-const TRACKBALL_CONTROLS_MAX_DISTANCE = 2000;
+const CAMERA_NEAR = 0.001;
+const CAMERA_FAR = 5000;
+
+// How much of the scene an orthographic camera sees vertically at zoom 1, in
+// millimetres. An orthographic view has no notion of distance, so framing it
+// means changing zoom against a fixed frustum rather than moving closer.
+const ORTHOGRAPHIC_FRUSTUM_HEIGHT = 300;
+
+// Dolly and zoom limits. The lower bounds stop a scroll wheel from turning
+// the view inside out; the upper ones keep the whole machine envelope
+// reachable.
+const MIN_CAMERA_DISTANCE = 1;
+const MAX_CAMERA_DISTANCE = 4000;
+const MIN_CAMERA_ZOOM = 0.02;
+const MAX_CAMERA_ZOOM = 500;
+
+// The scene when there is neither a loaded file nor a machine profile to
+// frame: a 300 mm cube of workspace around the origin.
+const DEFAULT_SCENE_EXTENT = 150;
+
+/**
+ * Where each named view looks from, as a direction from the point being
+ * looked at towards the camera. Z is up throughout, which is the machine's
+ * own convention and, just as importantly, fixed: OrbitControls reads
+ * `camera.up` once when it is constructed, so a preset that changed it would
+ * leave the controls orbiting about an axis the camera no longer uses.
+ *
+ * The plan view is not exactly (0, 0, 1). Looking straight along the up axis
+ * leaves the screen orientation undefined, and fitCameraToBounds resolves
+ * that by nudging — the nudge is written out here so the direction the
+ * controls are given and the direction the view was framed for are the same
+ * one.
+ */
+/**
+ * Which drag action the left mouse button performs, per the widget's camera
+ * mode. OrbitControls names the actions rather than numbering the buttons,
+ * which is how the two bare numeric constants this used to carry went away.
+ */
+const MOUSE_BUTTON_ACTION = {
+  [CAMERA_MODE_PAN]: THREE.MOUSE.PAN,
+  [CAMERA_MODE_ROTATE]: THREE.MOUSE.ROTATE,
+};
+
+const VIEW_DIRECTIONS = {
+  'top': new THREE.Vector3(0, -0.001, 1).normalize(),
+  '3d': new THREE.Vector3(1, -1, 1).normalize(),
+  'front': new THREE.Vector3(0, -1, 0),
+  'left': new THREE.Vector3(1, 0, 0),
+  'right': new THREE.Vector3(-1, 0, 0),
+};
 
 class Visualizer extends Component {
     static propTypes = {
@@ -96,6 +135,21 @@ class Visualizer extends Component {
 
     node = null;
 
+    resizeObserver = null;
+
+    /**
+     * Whether the view is still the one the widget chose rather than one the
+     * operator has dragged or zoomed to.
+     *
+     * While it is, a change of canvas size re-frames instead of merely
+     * re-projecting — so the opening view is framed for the canvas it ends up
+     * with, and a widget that grows because its neighbour was minimised shows
+     * more of the work rather than the same picture stretched. The moment
+     * anyone touches the controls it stops, because re-framing someone's view
+     * out from under them is worse than a slightly loose fit.
+     */
+    autoFrame = true;
+
     setRef = (node) => {
       this.node = node;
     };
@@ -108,7 +162,7 @@ class Visualizer extends Component {
     // whole scene is rendered in: limits, cutting tool, probe viz, gcode
     // toolpath, and (via rebuildCoordinateSystems) grid + axes all sit at
     // "machine_coords - pivot" so the visible workspace center is at world
-    // origin and TrackballControls' default target = (0, 0, 0) orbits that
+    // origin and the orbit controls' default target = (0, 0, 0) orbits that
     // visible center.
     //
     // Pivot is set by this method, load(), and unload(). Combined behavior:
@@ -215,9 +269,15 @@ class Visualizer extends Component {
       // Three.js
       this.renderer = null;
       this.scene = null;
+      // Both cameras exist for the lifetime of the widget and `camera` points
+      // at whichever projection is active. Keeping both means switching
+      // projection does not have to rebuild one, and — more to the point —
+      // each is a real PerspectiveCamera or OrthographicCamera, which is what
+      // the raycaster and the orbit controls both need to recognise.
+      this.perspectiveCamera = null;
+      this.orthographicCamera = null;
       this.camera = null;
       this.controls = null;
-      this.viewport = null;
       this.cuttingTool = null;
       this.cuttingPointer = null;
       this.limits = null;
@@ -232,9 +292,6 @@ class Visualizer extends Component {
         const el = ReactDOM.findDOMNode(this.node);
         this.createScene(el);
         this.resizeRenderer();
-        // After resizeRenderer, which is what builds the viewport the preset
-        // views ask to update.
-        this.setCameraPosition(this.props.cameraPosition);
       }
 
       // Apply any machine profile already in the store (e.g., hydrated from
@@ -242,6 +299,12 @@ class Visualizer extends Component {
       // fires on subsequent updates, so without this call the saved profile
       // never reaches the scene until the user re-selects it.
       this.changeMachineProfile();
+
+      // Last, because framing the opening view means measuring what is in the
+      // scene: before the profile is applied the machine envelope is still the
+      // zero-sized placeholder createScene builds, and there is nothing worth
+      // pointing a camera at.
+      this.setCameraPosition(this.props.cameraPosition);
     }
 
     componentDidUpdate(prevProps) {
@@ -252,8 +315,6 @@ class Visualizer extends Component {
 
       // Enable or disable 3D view
       if ((prevProps.show !== this.props.show) && (this.props.show === true)) {
-        this.viewport.update();
-
         // Set forceUpdate to true when enabling or disabling 3D view
         forceUpdate = true;
         needUpdateScene = true;
@@ -267,18 +328,7 @@ class Visualizer extends Component {
 
       // Projection
       if (prevState.projection !== state.projection) {
-        if (state.projection === 'orthographic') {
-          this.camera.toOrthographic();
-          this.camera.setZoom(1);
-          this.camera.setFov(ORTHOGRAPHIC_FOV);
-        } else {
-          this.camera.toPerspective();
-          this.camera.setZoom(1);
-          this.camera.setFov(PERSPECTIVE_FOV);
-        }
-        if (this.viewport) {
-          this.viewport.update();
-        }
+        this.setProjection(state.projection);
         needUpdateScene = true;
       }
 
@@ -383,9 +433,6 @@ class Visualizer extends Component {
         }
       }
 
-      if (prevProps.cameraPosition !== this.props.cameraPosition) {
-        this.setCameraPosition(this.props.cameraPosition);
-      }
     }
 
     componentWillUnmount() {
@@ -579,10 +626,29 @@ class Visualizer extends Component {
 
     addResizeEventListener() {
       window.addEventListener('resize', this.throttledResize);
+
+      // The canvas takes its width from its container, not from the window,
+      // so watching the window alone misses two things: a layout change that
+      // resizes the widget without resizing the browser, and the container
+      // still settling for a frame or two after mount. The second is why the
+      // opening view used to be framed for a canvas width it never actually
+      // had — 880 px when measured at mount, against the 820 px it renders at
+      // from the second frame onwards.
+      const el = ReactDOM.findDOMNode(this.node);
+      const container = el && el.parentNode;
+      if (container && typeof ResizeObserver !== 'undefined') {
+        this.resizeObserver = new ResizeObserver(this.throttledResize);
+        this.resizeObserver.observe(container);
+      }
     }
 
     removeResizeEventListener() {
       window.removeEventListener('resize', this.throttledResize);
+
+      if (this.resizeObserver) {
+        this.resizeObserver.disconnect();
+        this.resizeObserver = null;
+      }
     }
 
     resizeRenderer() {
@@ -597,25 +663,11 @@ class Visualizer extends Component {
         log.warn(`The width (${width}) and height (${height}) cannot be a zero value`);
       }
 
-      // https://github.com/mrdoob/three.js/blob/dev/examples/js/cameras/CombinedCamera.js#L156
-      // THREE.CombinedCamera.prototype.setSize = function(width, height) {
-      //     this.cameraP.aspect = width / height;
-      //     this.left = - width / 2;
-      //     this.right = width / 2;
-      //     this.top = height / 2;
-      //     this.bottom = - height / 2;
-      // }
-      this.camera.setSize(width, height);
-      this.camera.aspect = width / height; // Update camera aspect as well
-      this.camera.updateProjectionMatrix();
+      this.resizeCameras(width, height);
 
-      // Initialize viewport at the first time of resizing renderer
-      if (!this.viewport) {
-        // Defaults to 300x300mm
-        this.viewport = new Viewport(this.camera, CAMERA_VIEWPORT_WIDTH, CAMERA_VIEWPORT_HEIGHT);
+      if (this.autoFrame) {
+        this.fitTo(this.sceneBounds());
       }
-
-      this.controls.handleResize();
 
       this.renderer.setPixelRatio(getRenderPixelRatio());
       this.renderer.setSize(width, height);
@@ -874,21 +926,13 @@ class Visualizer extends Component {
       // A scene, a camera, and a renderer so we can render the scene with the camera.
       this.scene = new THREE.Scene();
 
-      this.camera = this.createCombinedCamera(width, height);
-      this.controls = this.createTrackballControls(this.camera, this.renderer.domElement);
+      this.createCameras(width, height);
+      this.camera = (state.projection === 'orthographic')
+        ? this.orthographicCamera
+        : this.perspectiveCamera;
+      this.controls = this.createOrbitControls(this.camera, this.renderer.domElement);
 
       this.setCameraMode(state.cameraMode);
-
-      // Projection
-      if (state.projection === 'orthographic') {
-        this.camera.toOrthographic();
-        this.camera.setZoom(1);
-        this.camera.setFov(ORTHOGRAPHIC_FOV);
-      } else {
-        this.camera.toPerspective();
-        this.camera.setZoom(1);
-        this.camera.setFov(PERSPECTIVE_FOV);
-      }
 
       { // Directional Light
         const color = 0xffffff;
@@ -1041,80 +1085,83 @@ class Visualizer extends Component {
       this.updateScene();
     }
 
-    createCombinedCamera(width, height) {
-      const frustumWidth = width / 2;
-      const frustumHeight = (height || width) / 2; // same to width if height is 0
-      const fov = PERSPECTIVE_FOV;
-      const near = PERSPECTIVE_NEAR;
-      const far = PERSPECTIVE_FAR;
-      const orthoNear = ORTHOGRAPHIC_NEAR;
-      const orthoFar = ORTHOGRAPHIC_FAR;
+    /**
+     * Both cameras, sized to the canvas, sharing one `up`.
+     *
+     * The orthographic frustum is expressed in millimetres rather than in
+     * canvas pixels. The camera this replaces mixed the two — it took its
+     * frustum from the pixel dimensions and then divided by a zoom derived
+     * from a field of view — which worked by coincidence at one canvas size
+     * and is impossible to reason about at any other.
+     */
+    createCameras(width, height) {
+      const aspect = (width > 0 && height > 0) ? (width / height) : 1;
+      const halfHeight = ORTHOGRAPHIC_FRUSTUM_HEIGHT / 2;
+      const halfWidth = halfHeight * aspect;
 
-      const camera = new CombinedCamera(
-        frustumWidth,
-        frustumHeight,
-        fov,
-        near,
-        far,
-        orthoNear,
-        orthoFar
+      this.perspectiveCamera = new THREE.PerspectiveCamera(
+        PERSPECTIVE_FOV,
+        aspect,
+        CAMERA_NEAR,
+        CAMERA_FAR
       );
 
-      camera.position.x = 0;
-      camera.position.y = 0;
-      camera.position.z = CAMERA_DISTANCE;
+      this.orthographicCamera = new THREE.OrthographicCamera(
+        -halfWidth,
+        halfWidth,
+        halfHeight,
+        -halfHeight,
+        CAMERA_NEAR,
+        CAMERA_FAR
+      );
 
-      return camera;
+      // Z up, on both, before the controls are built. OrbitControls captures
+      // this once in its constructor.
+      [this.perspectiveCamera, this.orthographicCamera].forEach((camera) => {
+        camera.up.set(0, 0, 1);
+        camera.position.set(0, 0, DEFAULT_SCENE_EXTENT);
+      });
     }
 
-    createPerspectiveCamera(width, height) {
-      const fov = PERSPECTIVE_FOV;
-      const aspect = (width > 0 && height > 0) ? Number(width) / Number(height) : 1;
-      const near = PERSPECTIVE_NEAR;
-      const far = PERSPECTIVE_FAR;
-      const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    /**
+     * Match both cameras to the canvas.
+     *
+     * The inactive one is kept in step too, so switching projection does not
+     * produce a frame at the wrong aspect ratio before the next resize.
+     */
+    resizeCameras(width, height) {
+      const aspect = (width > 0 && height > 0) ? (width / height) : 1;
+      const halfHeight = ORTHOGRAPHIC_FRUSTUM_HEIGHT / 2;
+      const halfWidth = halfHeight * aspect;
 
-      camera.position.x = 0;
-      camera.position.y = 0;
-      camera.position.z = CAMERA_DISTANCE;
+      this.perspectiveCamera.aspect = aspect;
+      this.perspectiveCamera.updateProjectionMatrix();
 
-      return camera;
+      this.orthographicCamera.left = -halfWidth;
+      this.orthographicCamera.right = halfWidth;
+      this.orthographicCamera.top = halfHeight;
+      this.orthographicCamera.bottom = -halfHeight;
+      this.orthographicCamera.updateProjectionMatrix();
     }
 
-    createOrthographicCamera(width, height) {
-      const left = -width / 2;
-      const right = width / 2;
-      const top = height / 2;
-      const bottom = -height / 2;
-      const near = ORTHOGRAPHIC_NEAR;
-      const far = ORTHOGRAPHIC_FAR;
-      const camera = new THREE.OrthographicCamera(left, right, top, bottom, near, far);
+    createOrbitControls(object, domElement) {
+      const controls = new OrbitControls(object, domElement);
 
-      return camera;
-    }
+      // The whole reason for the change. TrackballControls has no up axis, so
+      // dragging tumbled the model until it was hard to tell which way the
+      // table faced; OrbitControls keeps Z up no matter how far the view is
+      // dragged round, which is what anything CAD-shaped needs.
+      controls.enableDamping = false;
+      controls.screenSpacePanning = true;
 
-    createTrackballControls(object, domElement) {
-      const controls = new TrackballControls(object, domElement);
-
-      controls.rotateSpeed = Math.PI;
-      controls.zoomSpeed = 1.2;
-      controls.panSpeed = 1.0;
-      controls.noZoom = false;
-      controls.noPan = false;
-
-      controls.staticMoving = true;
-      controls.dynamicDampingFactor = 0.3;
-
-      controls.keys = [65, 83, 68];
-
-      controls.minDistance = TRACKBALL_CONTROLS_MIN_DISTANCE;
-      controls.maxDistance = TRACKBALL_CONTROLS_MAX_DISTANCE;
+      controls.minDistance = MIN_CAMERA_DISTANCE;
+      controls.maxDistance = MAX_CAMERA_DISTANCE;
+      controls.minZoom = MIN_CAMERA_ZOOM;
+      controls.maxZoom = MAX_CAMERA_ZOOM;
 
       let shouldAnimate = false;
       const animate = () => {
         controls.update();
-
-        // Update the scene
         this.updateScene();
 
         if (shouldAnimate) {
@@ -1123,6 +1170,8 @@ class Visualizer extends Component {
       };
 
       controls.addEventListener('start', () => {
+        // From here the view belongs to whoever is dragging it.
+        this.autoFrame = false;
         shouldAnimate = true;
         animate();
       });
@@ -1131,11 +1180,116 @@ class Visualizer extends Component {
         this.updateScene();
       });
       controls.addEventListener('change', () => {
-        // Update the scene
         this.updateScene();
       });
 
       return controls;
+    }
+
+    /**
+     * Point the active camera at the other projection, keeping the view.
+     *
+     * OrbitControls reads its camera once, so the controls are rebuilt rather
+     * than repointed; the target and the viewing direction are carried across
+     * so the switch looks like a change of projection rather than a jump to
+     * somewhere else.
+     */
+    setProjection(projection) {
+      const next = (projection === 'orthographic')
+        ? this.orthographicCamera
+        : this.perspectiveCamera;
+
+      if (!next || next === this.camera) {
+        return;
+      }
+
+      const target = this.controls ? this.controls.target.clone() : new THREE.Vector3();
+      const direction = this.camera
+        ? this.camera.position.clone().sub(target)
+        : VIEW_DIRECTIONS['3d'].clone();
+
+      if (this.controls) {
+        this.controls.dispose();
+      }
+
+      this.camera = next;
+      this.controls = this.createOrbitControls(this.camera, this.renderer.domElement);
+      this.controls.target.copy(target);
+      this.setCameraMode(this.props.state.cameraMode);
+
+      if (this.probeVisualization) {
+        this.probeVisualization.camera = this.camera;
+        this.probeVisualization.controls = this.controls;
+      }
+
+      this.fitTo(this.sceneBounds(), direction);
+    }
+
+    /**
+     * What the view should be framed on: the loaded toolpath if there is one,
+     * otherwise the machine envelope, otherwise a default patch of workspace.
+     *
+     * Not the whole scene graph — the coordinate grid runs to 600 mm in every
+     * direction whatever else is loaded, so framing that would leave the work
+     * a speck in the middle of it.
+     */
+    sceneBounds() {
+      const toolpath = this.group.getObjectByName('Visualizer');
+      if (toolpath) {
+        const box = new THREE.Box3().setFromObject(toolpath);
+        if (!box.isEmpty()) {
+          return box;
+        }
+      }
+
+      const limits = this.limits ? new THREE.Box3().setFromObject(this.limits) : new THREE.Box3();
+      const size = limits.getSize(new THREE.Vector3());
+
+      // A profile with no dimensions set still produces a cuboid, just a
+      // degenerate one. Framing that would fill the canvas with a tenth of a
+      // millimetre of nothing, so fall through to a default patch of
+      // workspace — which is also what the grid falls back to.
+      if (Math.max(size.x, size.y, size.z) <= 1) {
+        return new THREE.Box3(
+          new THREE.Vector3(-DEFAULT_SCENE_EXTENT, -DEFAULT_SCENE_EXTENT, -DEFAULT_SCENE_EXTENT),
+          new THREE.Vector3(DEFAULT_SCENE_EXTENT, DEFAULT_SCENE_EXTENT, DEFAULT_SCENE_EXTENT)
+        );
+      }
+
+      // With a profile but no file, the thing being looked at is the machine
+      // and the grid that labels it — so take in the coordinate system too.
+      // Its axis letters sit two grid squares beyond the envelope, and
+      // framing the envelope alone leaves them clipped against the edge.
+      const bounds = limits.clone();
+      ['ImperialCoordinateSystem', 'MetricCoordinateSystem'].forEach((name) => {
+        const object = this.group.getObjectByName(name);
+        if (object && object.visible) {
+          bounds.union(new THREE.Box3().setFromObject(object));
+        }
+      });
+
+      return bounds;
+    }
+
+    // Frame `bounds`, looking from `direction`. Defaults to the direction the
+    // camera is already looking from, which is what a "zoom to fit" button
+    // means.
+    fitTo(bounds, direction) {
+      if (!this.camera || !this.controls) {
+        return;
+      }
+
+      const from = direction || this.camera.position.clone().sub(this.controls.target);
+      if (from.lengthSq() === 0) {
+        from.copy(VIEW_DIRECTIONS['3d']);
+      }
+
+      const target = fitCameraToBounds(this.camera, bounds, from);
+      this.controls.target.copy(target);
+      this.controls.update();
+      this.controls.saveState();
+      this.autoFrame = true;
+      this.updateScene();
     }
 
     // Rotates the cutting tool around the z axis with a given rpm and an optional fps
@@ -1211,12 +1365,13 @@ class Visualizer extends Component {
 
     // Point the camera at one of the named viewpoints.
     //
-    // Shared by mount and by later prop changes, which is the whole reason it
-    // exists: componentDidUpdate only sees a *change*, so the viewpoint the
-    // widget starts in was never applied to the camera at all. That went
-    // unnoticed while the default happened to match where createCombinedCamera
-    // leaves the camera — looking straight down — and would have quietly
-    // ignored any other default.
+    // Used at mount to apply the viewpoint the widget starts in, which
+    // nothing did before: componentDidUpdate only ever saw a *change*, and
+    // the starting value is not one. That went unnoticed while the default
+    // happened to match where the camera was left on creation — looking
+    // straight down — and would have quietly ignored any other default.
+    // Later changes come from the toolbar, which calls the view methods
+    // below directly.
     setCameraPosition(cameraPosition) {
       if (cameraPosition === 'top') {
         this.toTopView();
@@ -1254,11 +1409,8 @@ class Visualizer extends Component {
       this.controls.update();
     }
 
-    // Make the controls look at the center position
+    // Back to the framing the current view was set up with.
     lookAtCenter() {
-      if (this.viewport) {
-        this.viewport.update();
-      }
       if (this.controls) {
         this.controls.reset();
       }
@@ -1303,13 +1455,10 @@ class Visualizer extends Component {
       this.updateLimitsPosition();
       this.updateProbeVisualizationPosition();
 
-      if (this.viewport && dX > 0 && dY > 0) {
-        // The minimum viewport is 50x50mm
-        const width = Math.max(dX, 50);
-        const height = Math.max(dY, 50);
-        const target = new THREE.Vector3(0, 0, bbox.max.z);
-        this.viewport.set(width, height, target);
-      }
+      // Frame the file that was just loaded, from wherever the view is
+      // pointing. Keeping the direction matters: a file opened while looking
+      // isometrically should still be isometric afterwards.
+      this.fitTo(this.sceneBounds());
 
       // Update the scene
       this.updateScene();
@@ -1354,187 +1503,132 @@ class Visualizer extends Component {
         }
       }
 
-      if (this.controls) {
-        this.controls.reset();
-      }
-
-      if (this.viewport) {
-        this.viewport.reset();
-      }
+      // Re-frame on whatever is left — the machine envelope, or the default
+      // patch of workspace — without changing which way the view faces.
+      this.fitTo(this.sceneBounds());
 
       // Update the scene
       this.updateScene();
     }
 
     setCameraMode(mode) {
-      // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
-      // A number representing a given button:
-      // 0: main button pressed, usually the left button or the un-initialized state
-      const MAIN_BUTTON = 0;
-      const ROTATE = 0;
-      const PAN = 2;
+      if (!this.controls) {
+        return;
+      }
 
-      if (mode === CAMERA_MODE_ROTATE) {
-        this.controls && this.controls.setMouseButtonState(MAIN_BUTTON, ROTATE);
-      }
-      if (mode === CAMERA_MODE_PAN) {
-        this.controls && this.controls.setMouseButtonState(MAIN_BUTTON, PAN);
-      }
+      this.controls.mouseButtons.LEFT = MOUSE_BUTTON_ACTION[mode] ?? THREE.MOUSE.ROTATE;
     }
 
     toTopView() {
-      if (this.controls) {
-        this.controls.reset();
-      }
-
-      this.camera.up.set(0, 1, 0);
-      this.camera.position.set(0, 0, CAMERA_DISTANCE);
-
-      if (this.viewport) {
-        this.viewport.update();
-      }
-      if (this.controls) {
-        this.controls.update();
-      }
-      this.updateScene();
+      this.fitTo(this.sceneBounds(), VIEW_DIRECTIONS.top);
     }
 
     to3DView() {
-      if (this.controls) {
-        this.controls.reset();
-      }
-
-      this.camera.up.set(0, 0, 1);
-      this.camera.position.set(CAMERA_DISTANCE, -CAMERA_DISTANCE, CAMERA_DISTANCE);
-
-      if (this.viewport) {
-        this.viewport.update();
-      }
-      if (this.controls) {
-        this.controls.update();
-      }
-      this.updateScene();
+      this.fitTo(this.sceneBounds(), VIEW_DIRECTIONS['3d']);
     }
 
     toFrontView() {
-      if (this.controls) {
-        this.controls.reset();
-      }
-
-      this.camera.up.set(0, 0, 1);
-      this.camera.position.set(0, -CAMERA_DISTANCE, 0);
-
-      if (this.viewport) {
-        this.viewport.update();
-      }
-      if (this.controls) {
-        this.controls.update();
-      }
-      this.updateScene();
+      this.fitTo(this.sceneBounds(), VIEW_DIRECTIONS.front);
     }
 
     toLeftSideView() {
-      if (this.controls) {
-        this.controls.reset();
-      }
-
-      this.camera.up.set(0, 0, 1);
-      this.camera.position.set(CAMERA_DISTANCE, 0, 0);
-
-      if (this.viewport) {
-        this.viewport.update();
-      }
-      if (this.controls) {
-        this.controls.update();
-      }
+      this.fitTo(this.sceneBounds(), VIEW_DIRECTIONS.left);
     }
 
     toRightSideView() {
-      if (this.controls) {
-        this.controls.reset();
-      }
-
-      this.camera.up.set(0, 0, 1);
-      this.camera.position.set(-CAMERA_DISTANCE, 0, 0);
-
-      if (this.viewport) {
-        this.viewport.update();
-      }
-      if (this.controls) {
-        this.controls.update();
-      }
-      this.updateScene();
+      this.fitTo(this.sceneBounds(), VIEW_DIRECTIONS.right);
     }
 
+    // Frame whatever is worth looking at, from where the camera already is.
     zoomFit() {
-      if (this.viewport) {
-        this.viewport.update();
+      this.fitTo(this.sceneBounds());
+    }
+
+    /**
+     * Step the zoom in or out.
+     *
+     * OrbitControls keeps its dolly and zoom handling to itself, so the
+     * toolbar buttons do the arithmetic here: an orthographic camera scales
+     * its zoom, and a perspective one moves along its line of sight. Both are
+     * clamped to the same limits the controls use, so a button and the scroll
+     * wheel cannot disagree about how far is too far.
+     */
+    dolly(scale) {
+      if (!this.controls || !this.controls.enableZoom) {
+        return;
       }
+
+      this.autoFrame = false;
+
+      if (this.camera.isOrthographicCamera) {
+        this.camera.zoom = THREE.MathUtils.clamp(
+          this.camera.zoom * scale,
+          this.controls.minZoom,
+          this.controls.maxZoom
+        );
+        this.camera.updateProjectionMatrix();
+      } else {
+        const offset = this.camera.position.clone().sub(this.controls.target);
+        const distance = THREE.MathUtils.clamp(
+          offset.length() / scale,
+          this.controls.minDistance,
+          this.controls.maxDistance
+        );
+        this.camera.position.copy(this.controls.target)
+          .add(offset.setLength(distance));
+      }
+
+      this.controls.update();
       this.updateScene();
     }
 
     zoomIn(delta = 0.1) {
-      const { noZoom } = this.controls;
-      if (noZoom) {
-        return;
-      }
-
-      this.controls.zoomIn(delta);
-      this.controls.update();
-
-      // Update the scene
-      this.updateScene();
+      this.dolly(1 + delta);
     }
 
     zoomOut(delta = 0.1) {
-      const { noZoom } = this.controls;
-      if (noZoom) {
-        return;
-      }
-
-      this.controls.zoomOut(delta);
-      this.controls.update();
-
-      // Update the scene
-      this.updateScene();
+      this.dolly(1 / (1 + delta));
     }
 
     // deltaX and deltaY are in pixels; right and down are positive
     pan(deltaX, deltaY) {
+      if (!this.controls || !this.controls.enablePan) {
+        return;
+      }
+
+      this.autoFrame = false;
+
       const eye = new THREE.Vector3();
       const pan = new THREE.Vector3();
       const objectUp = new THREE.Vector3();
 
-      eye.subVectors(this.controls.object.position, this.controls.target);
-      objectUp.copy(this.controls.object.up);
+      eye.subVectors(this.camera.position, this.controls.target);
+      objectUp.copy(this.camera.up);
 
       pan.copy(eye).cross(objectUp.clone()).setLength(deltaX);
       pan.add(objectUp.clone().setLength(deltaY));
 
-      this.controls.object.position.add(pan);
+      this.camera.position.add(pan);
       this.controls.target.add(pan);
       this.controls.update();
+      this.updateScene();
     }
 
     // http://stackoverflow.com/questions/18581225/orbitcontrol-or-trackballcontrol
     panUp() {
-      const { noPan, panSpeed } = this.controls;
-      !noPan && this.pan(0, 1 * panSpeed);
+      this.pan(0, 1);
     }
 
     panDown() {
-      const { noPan, panSpeed } = this.controls;
-      !noPan && this.pan(0, -1 * panSpeed);
+      this.pan(0, -1);
     }
 
     panLeft() {
-      const { noPan, panSpeed } = this.controls;
-      !noPan && this.pan(1 * panSpeed, 0);
+      this.pan(1, 0);
     }
 
     panRight() {
-      const { noPan, panSpeed } = this.controls;
-      !noPan && this.pan(-1 * panSpeed, 0);
+      this.pan(-1, 0);
     }
 
     render() {

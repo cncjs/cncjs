@@ -597,20 +597,43 @@ class VisualizerWidget extends PureComponent {
             this.visualizer.lookAtCenter();
           }
         },
+        // The view presets ask the visualizer directly, like every other
+        // camera action above, and keep `cameraPosition` only so the toolbar
+        // can highlight the active one. Going through state alone did not
+        // work: asking for the view you are nominally already in is a
+        // setState that changes nothing, so componentDidUpdate never fired
+        // and the button did nothing — which is exactly when it is most
+        // wanted, after the view has been dragged away from the preset it is
+        // still labelled with.
         toTopView: () => {
           this.setState({ cameraPosition: 'top' });
+          if (this.visualizer) {
+            this.visualizer.toTopView();
+          }
         },
         to3DView: () => {
           this.setState({ cameraPosition: '3d' });
+          if (this.visualizer) {
+            this.visualizer.to3DView();
+          }
         },
         toFrontView: () => {
           this.setState({ cameraPosition: 'front' });
+          if (this.visualizer) {
+            this.visualizer.toFrontView();
+          }
         },
         toLeftSideView: () => {
           this.setState({ cameraPosition: 'left' });
+          if (this.visualizer) {
+            this.visualizer.toLeftSideView();
+          }
         },
         toRightSideView: () => {
           this.setState({ cameraPosition: 'right' });
+          if (this.visualizer) {
+            this.visualizer.toRightSideView();
+          }
         }
       }
     };
