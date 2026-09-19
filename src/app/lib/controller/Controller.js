@@ -1,4 +1,6 @@
 import { ensureArray } from 'ensure-type';
+import log from '../log';
+import dispatchEvent from './dispatch-event';
 
 const noop = () => {};
 
@@ -149,9 +151,8 @@ class Controller {
                     this.state = { ...args[1] };
                 }
 
-                const listeners = ensureArray(this.listeners[eventName]);
-                listeners.forEach(listener => {
-                    listener(...args);
+                dispatchEvent(this.listeners[eventName], args, (err) => {
+                    log.error(`Error in a "${eventName}" listener:`, err);
                 });
             });
         });
