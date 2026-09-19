@@ -144,6 +144,7 @@ class Login extends PureComponent {
                 id="login-name"
                 label={i18n._('Username')}
                 type="text"
+                error={!!alertMessage}
                 autoComplete="username"
                 inputRef={node => {
                   this.fields.name = node;
@@ -153,6 +154,7 @@ class Login extends PureComponent {
                 id="login-password"
                 label={i18n._('Password')}
                 type="password"
+                error={!!alertMessage}
                 autoComplete="current-password"
                 inputRef={node => {
                   this.fields.password = node;

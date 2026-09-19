@@ -116,6 +116,25 @@ test.describe('the sign-in screen', () => {
     await expect(page).toHaveURL(/#\/login$/);
   });
 
+test('marks both fields as rejected, and not only in colour', async ({ page }) => {
+    await gotoLogin(page);
+
+    await expect(field(page, /username/i)).not.toHaveAttribute('aria-invalid', 'true');
+    await expect(field(page, /password/i)).not.toHaveAttribute('aria-invalid', 'true');
+
+    await field(page, /username/i).fill(OPERATOR.name);
+    await field(page, /password/i).fill('not-it');
+    await signInButton(page).click();
+    await expect(page.getByRole('alert')).toBeVisible();
+
+    // A red border says nothing to a screen reader, and nothing at all to
+    // someone who cannot separate red from grey. `aria-invalid` is the part of
+    // the error state that has to be true for the colour to be decoration
+    // rather than the whole message.
+    await expect(field(page, /username/i)).toHaveAttribute('aria-invalid', 'true');
+    await expect(field(page, /password/i)).toHaveAttribute('aria-invalid', 'true');
+  });
+
   test('carries what was typed through to the server', async ({ page }) => {
     await gotoLogin(page);
 

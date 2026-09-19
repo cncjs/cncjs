@@ -12,6 +12,10 @@ export const Field = styled(FormControl)(({ theme }) => ({
  * Material's floating label animates into the border and doubles as the
  * placeholder; on a panel read at arm's length that costs legibility for
  * decoration, and it leaves the field unlabelled the moment it has content.
+ *
+ * It keeps its colour when the field is in error. The red border and the red
+ * message below carry that; recolouring the field's own name as well turns an
+ * error into noise.
  */
 export const Label = styled('label')(({ theme }) => ({
   ...theme.typography.overline,
@@ -28,10 +32,25 @@ export const Input = styled(InputBase)(({ theme }) => ({
     outlineOffset: theme.tokens.focus.ringOffset,
   },
 
+  // After the focused rule on purpose: a field that is both focused and
+  // rejected stays red, because the rejection is the thing to read.
+  [`&.${inputBaseClasses.error}`]: {
+    borderColor: theme.palette.error.main,
+  },
+
   [`& .${inputBaseClasses.input}`]: {
     minHeight: theme.tokens.size.control,
     boxSizing: 'border-box',
     padding: theme.spacing(0, 1.5),
     fontSize: theme.typography.body1.fontSize,
   },
+}));
+
+export const HelperText = styled('p', {
+  // Emotion would otherwise pass `error` through to the DOM node.
+  shouldForwardProp: (prop) => prop !== 'error',
+})(({ theme, error }) => ({
+  ...theme.typography.caption,
+  margin: 0,
+  color: error ? theme.palette.error.main : theme.palette.text.secondary,
 }));

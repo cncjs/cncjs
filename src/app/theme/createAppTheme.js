@@ -74,6 +74,12 @@ const createAppTheme = () => createTheme({
       lineHeight: lineHeight.tight,
       textTransform: 'uppercase',
     },
+    // The message under a field: small, and never uppercase — it is a
+    // sentence, not a label.
+    caption: {
+      fontSize: fontSize.small,
+      lineHeight: lineHeight.body,
+    },
     button: {
       fontSize: fontSize.control,
       fontWeight: fontWeight.semibold,
