@@ -129,36 +129,50 @@ test.describe('interaction', () => {
   });
 
   /**
-   * A tooltip has to leave when the pointer does — including after a click.
+   * A click has to take the button's tooltip with it.
    *
-   * Nearly every toolbar button in this app is wrapped in a Tooltip, so one
-   * that outlives its own click is not merely untidy: they pile up, one per
-   * click, until they cover the thing being worked on. The class hook is the
-   * library's own and unhashed, so it is stable across builds.
+   * Nearly every toolbar button here is wrapped in a Tooltip, and rc-trigger
+   * hides one when the thing it belongs to is clicked. Two frames after the
+   * click it is gone on React 17 — which is the timing the visualizer's
+   * screenshot baselines were recorded at, and why none of them has a label
+   * stamped across the canvas.
    *
-   * This is here because React 18 breaks exactly this —
-   * @trendmicro/react-tooltip 0.6 rides on rc-trigger 2.3 — and it was found
-   * as an unexplained screenshot diff rather than as a failure that said what
-   * it was. Now it says what it is.
+   * On React 18 it is still there at that moment, in every run, and that is
+   * how this was found: five preset baselines went red by ~1750 pixels
+   * against an allowance of 50, and the diff turned out to be each preset's
+   * own label sitting over the scene. An element screenshot clips the
+   * composited page rather than reading the WebGL buffer, so a real
+   * interaction difference was arriving disguised as a rendering one.
+   *
+   * The assertion is taken at a fixed moment rather than polled on purpose.
+   * Whether the tooltip eventually disappears on 18 came out both ways across
+   * repeated runs — sometimes gone at once, sometimes still there seconds
+   * later — so a polled version would inherit that coin toss. The moment two
+   * frames after the click is the one that is decided: five runs out of five
+   * on 17 say gone, five out of five on 18 say still there.
+   *
+   * The class hook is the library's own rather than a hashed CSS-module one,
+   * so it is stable across builds.
    */
-  test('a clicked button does not leave its tooltip behind', async ({ cncjs }) => {
+  test('a clicked button takes its tooltip with it', async ({ cncjs }) => {
     await cncjs.gotoWorkspace();
 
     const visibleTooltips = () => cncjs.page.locator('.tm-tooltip-inner:visible').count();
+    const twoFrames = () => cncjs.page.evaluate(() => new Promise((resolve) => {
+      window.requestAnimationFrame(() => window.requestAnimationFrame(resolve));
+    }));
+
+    const button = cncjs.page.getByRole('button', { name: 'Top view', exact: true });
 
     // Hovering has to raise one first, or the absence asserted below would be
-    // satisfied by a tooltip that never appears at all.
-    await cncjs.page.getByRole('button', { name: 'Top view', exact: true }).hover();
+    // satisfied just as well by a tooltip that never appears at all.
+    await button.hover();
     await expect.poll(visibleTooltips).toBeGreaterThan(0);
 
-    // Three of them, because the failure mode is accumulation: on React 18
-    // each click leaves its own behind and they stack.
-    for (const label of ['Top view', 'Front view', 'Left side view']) {
-      await cncjs.page.getByRole('button', { name: label, exact: true }).click();
-    }
-    await cncjs.page.mouse.move(900, 950);
+    await button.click();
+    await twoFrames();
 
-    await expect.poll(visibleTooltips).toBe(0);
+    expect(await visibleTooltips()).toBe(0);
 
     cncjs.expectNoPageErrors();
   });
