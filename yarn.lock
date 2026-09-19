@@ -8522,7 +8522,6 @@ __metadata:
     i18next-fs-backend: ~2.6.6
     i18next-http-backend: ~3.0.2
     i18next-http-middleware: ~3.9.9
-    i18next-node-fs-backend: ~2.1.3
     i18next-scanner: ~4.6.0
     imports-loader: ~0.8.0
     infinite-tree: ~1.16.2
@@ -13454,16 +13453,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-node-fs-backend@npm:~2.1.3":
-  version: 2.1.3
-  resolution: "i18next-node-fs-backend@npm:2.1.3"
-  dependencies:
-    js-yaml: 3.13.1
-    json5: 2.0.0
-  checksum: f1201060d5fd2190f8634e5dd330a26a1cd67e8f7a4cd98b9c977c00fbab91390694c8fd48c426e450c4947df2ec39345bac21c9b1beaf5a7d95ec24fbac867b
-  languageName: node
-  linkType: hard
-
 "i18next-scanner@npm:~4.6.0":
   version: 4.6.0
   resolution: "i18next-scanner@npm:4.6.0"
@@ -15210,18 +15199,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:3.13.1":
-  version: 3.13.1
-  resolution: "js-yaml@npm:3.13.1"
-  dependencies:
-    argparse: ^1.0.7
-    esprima: ^4.0.0
-  bin:
-    js-yaml: bin/js-yaml.js
-  checksum: 7511b764abb66d8aa963379f7d2a404f078457d106552d05a7b556d204f7932384e8477513c124749fa2de52eb328961834562bd09924902c6432e40daa408bc
-  languageName: node
-  linkType: hard
-
 "js-yaml@npm:^3.13.1":
   version: 3.14.1
   resolution: "js-yaml@npm:3.14.1"
@@ -15378,17 +15355,6 @@ __metadata:
   version: 5.0.1
   resolution: "json-stringify-safe@npm:5.0.1"
   checksum: 48ec0adad5280b8a96bb93f4563aa1667fd7a36334f79149abd42446d0989f2ddc58274b479f4819f1f00617957e6344c886c55d05a4e15ebb4ab931e4a6a8ee
-  languageName: node
-  linkType: hard
-
-"json5@npm:2.0.0":
-  version: 2.0.0
-  resolution: "json5@npm:2.0.0"
-  dependencies:
-    minimist: ^1.2.0
-  bin:
-    json5: lib/cli.js
-  checksum: 10548d23c90e9931ba2c7eadcf7e87a96ca1b90c1014383318f0cb76ead006fa27ed573d721e00ea56d0b2484cfd8860e7eee318026ed75eb1ff0017ec8d641f
   languageName: node
   linkType: hard
 
