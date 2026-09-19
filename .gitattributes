@@ -6,3 +6,7 @@
 *.js  text eol=lf
 *.jsx text eol=lf
 *.sh  text eol=lf
+
+# A yarn patch is applied verbatim against the package's own files, which are
+# LF. Checked out with CRLF it stops matching and the install fails.
+*.patch text eol=lf

@@ -55,6 +55,79 @@ test.describe('interaction', () => {
     cncjs.expectNoPageErrors();
   });
 
+  /**
+   * Every menu in this app is a @trendmicro/react-dropdown, and the
+   * RootCloseWrapper it puts around the menu registers a document-level click
+   * listener the moment that menu opens. React 17 delivers a click to the root
+   * container before it reaches document and flushes it synchronously, so the
+   * menu mounts, its listener goes on, and the very same click carries on up
+   * to document and closes what it had just opened.
+   *
+   * Nothing in this suite had ever clicked a dropdown, so every one of them
+   * could be dead without a single tier saying a word.
+   */
+  test('opens a dropdown menu and keeps it open', async ({ cncjs }) => {
+    await cncjs.gotoWorkspace();
+
+    const macro = cncjs.page.locator('[data-widget-id="macro"]');
+    const gcode = cncjs.page.locator('[data-widget-id="gcode"]');
+    // The items stay in the DOM and are hidden with CSS, so visibility is the
+    // only assertion here that means anything. Presence is not.
+    const item = macro.getByRole('menuitem', { name: 'Fork Widget' });
+
+    await macro.getByRole('button', { name: 'More options' }).click();
+    await expect(item).toBeVisible();
+
+    // The same toggle has to shut it again.
+    await macro.getByRole('button', { name: 'More options' }).click();
+    await expect(item).toBeHidden();
+
+    // And so does a press outside the menu, which is the entire reason that
+    // document listener is there. Another widget's toggle is an unambiguous
+    // "outside" that does not disturb the workspace.
+    await macro.getByRole('button', { name: 'More options' }).click();
+    await expect(item).toBeVisible();
+    await gcode.getByRole('button', { name: 'More options' }).click();
+    await expect(item).toBeHidden();
+    await expect(gcode.getByRole('menuitem', { name: 'Fork Widget' })).toBeVisible();
+
+    await cncjs.page.keyboard.press('Escape');
+    await expect(gcode.getByRole('menuitem', { name: 'Fork Widget' })).toBeHidden();
+
+    cncjs.expectNoPageErrors();
+  });
+
+  /**
+   * A menu is only useful if choosing something from it arrives somewhere.
+   * The macro editor's variable list is the cleanest case in the app: every
+   * item does nothing but insert text at the caret of the editor below it, so
+   * the whole round trip is observable and nothing is left behind once the
+   * dialog is cancelled.
+   */
+  test('delivers a dropdown selection to the macro editor', async ({ cncjs }) => {
+    await cncjs.gotoWorkspace();
+
+    await cncjs.page
+      .locator('[data-widget-id="macro"]')
+      .getByRole('button', { name: 'New macro' })
+      .click();
+
+    await expect(dialog(cncjs.page)).toBeVisible();
+
+    const content = dialog(cncjs.page).locator('textarea[name="content"]');
+    await expect(content).toHaveValue('');
+
+    await dialog(cncjs.page).getByRole('button', { name: /Macro Variables/ }).click();
+    await dialog(cncjs.page).getByRole('menuitem', { name: '%wait' }).first().click();
+
+    await expect(content).toHaveValue(/%wait/);
+
+    await cncjs.page.getByRole('button', { name: 'Cancel', exact: true }).click();
+    await expect(dialog(cncjs.page)).toBeHidden();
+
+    cncjs.expectNoPageErrors();
+  });
+
   test('keeps the workspace usable after settings have been opened and left', async ({ cncjs }) => {
     // Navigation is client-side, so the workspace stays mounted under
     // `display: none` the whole time. If React's listeners were rebound to the

@@ -47,6 +47,15 @@ to produce a canvas.
   against committed screenshots: the default view, each of the five preset
   viewpoints, and that a preset restores the same framing after the view has
   been dragged away from it. See "Screenshot baselines" below.
+- **interaction.spec.js** — whether the app still answers a click, as opposed
+  to merely painting. A dialog opens, takes input and closes; a dropdown menu
+  opens, stays open, closes from its own toggle, from a press outside it and
+  from Escape; and a choice made in one arrives in the editor underneath. The
+  dropdowns are here because every one of them was dead for a while and no
+  tier could tell: React 17 delivers a click to the root container before
+  document, so the root-close listener react-dropdown attaches when a menu
+  opens was still standing in the path of the click that opened it. Nothing
+  in this suite had ever clicked a menu.
 
 ## What is not covered
 

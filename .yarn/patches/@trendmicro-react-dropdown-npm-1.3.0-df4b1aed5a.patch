@@ -1,0 +1,50 @@
+diff --git a/lib/index.js b/lib/index.js
+index 7ea09505348790d193840d433ae5eb032e616a8a..e8f647c751b28fa8105fae05c352f59cbe64ba72 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -1392,19 +1392,39 @@ var RootCloseWrapper = (_temp = _class = function (_React$Component) {
+     };
+ 
+     RootCloseWrapper.prototype.addEventListeners = function addEventListeners() {
++        var _self = this;
+         var event = this.props.event;
+ 
+         var doc = ownerDocument(_reactDom2.default.findDOMNode(this));
+ 
+-        // Use capture for this listener so it fires before React's listener, to
+-        // avoid false positives in the contains() check below if the target DOM
+-        // element is removed in the React mouse callback.
+-        (0, _on2.default)(doc, event, this.handleMouseCapture, true);
+-        (0, _on2.default)(doc, event, this.handleMouse);
+-        (0, _on2.default)(doc, 'keyup', this.handleKeyUp);
++        // Attach on the next task rather than inside the event that opened the
++        // overlay. React 17 delivers that event to the root container before it
++        // reaches document, and flushes it synchronously, so a listener added
++        // here and now is still standing in the path of the very click that
++        // opened the menu -- and closes it again the instant it opened.
++        clearTimeout(this.rootCloseAttachTimer);
++        this.rootCloseAttachTimer = setTimeout(function () {
++            _self.rootCloseAttachTimer = null;
++            _self.rootCloseAttached = true;
++
++            // Use capture for this listener so it fires before React's listener, to
++            // avoid false positives in the contains() check below if the target DOM
++            // element is removed in the React mouse callback.
++            (0, _on2.default)(doc, event, _self.handleMouseCapture, true);
++            (0, _on2.default)(doc, event, _self.handleMouse);
++            (0, _on2.default)(doc, 'keyup', _self.handleKeyUp);
++        }, 0);
+     };
+ 
+     RootCloseWrapper.prototype.removeEventListeners = function removeEventListeners() {
++        clearTimeout(this.rootCloseAttachTimer);
++        this.rootCloseAttachTimer = null;
++
++        if (!this.rootCloseAttached) {
++            return;
++        }
++        this.rootCloseAttached = false;
++
+         var event = this.props.event;
+ 
+         var doc = ownerDocument(_reactDom2.default.findDOMNode(this));
