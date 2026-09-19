@@ -509,7 +509,7 @@ class ProbeVisualization {
     this.onMouseDownBound = this.onMouseDown.bind(this);
     this.onMouseUpBound = this.onMouseUp.bind(this);
 
-    // Use capture phase to intercept events BEFORE TrackballControls
+    // Use capture phase to intercept events BEFORE the orbit controls
     this.domElement.addEventListener('mousemove', this.onMouseMoveBound, true);
     this.domElement.addEventListener('mousedown', this.onMouseDownBound, true);
     this.domElement.addEventListener('mouseup', this.onMouseUpBound, true);
@@ -571,20 +571,6 @@ class ProbeVisualization {
     return Math.round(value / gridSize) * gridSize;
   }
 
-  getActualCamera() {
-    // CombinedCamera has internal cameraP (perspective) or cameraO (orthographic).
-    // These sub-cameras have the correct projection matrix but their matrixWorld
-    // is NOT updated by TrackballControls — only the parent CombinedCamera's
-    // position/rotation is. We must sync the sub-camera's matrixWorld from the
-    // parent so the raycaster computes rays from the correct camera position.
-    if (this.camera && this.camera.inOrthographicMode !== undefined) {
-      const subCamera = this.camera.inOrthographicMode ? this.camera.cameraO : this.camera.cameraP;
-      subCamera.matrixWorld.copy(this.camera.matrixWorld);
-      return subCamera;
-    }
-    return this.camera;
-  }
-
   screenToWorld(clientX, clientY) {
     if (!this.camera || !this.domElement) {
       return null;
@@ -594,8 +580,12 @@ class ProbeVisualization {
     this.mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
     this.mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
 
-    const actualCamera = this.getActualCamera();
-    this.raycaster.setFromCamera(this.mouse, actualCamera);
+    // The camera handed in is a real PerspectiveCamera or OrthographicCamera,
+    // which is what setFromCamera needs to recognise in order to build a ray
+    // at all. It used to be a CombinedCamera — neither of those as far as the
+    // raycaster was concerned — so this had to dig out an inner camera and
+    // copy the outer one's matrixWorld onto it first.
+    this.raycaster.setFromCamera(this.mouse, this.camera);
 
     // Intersect at the group's Z level so the projection is correct when the
     // camera is rotated (parallax between world Z=0 and the probe area's Z).

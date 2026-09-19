@@ -44,7 +44,9 @@ to produce a canvas.
 - **settings.spec.js** — each of the 8 settings sections resolves and paints,
   and navigation between them stays client-side.
 - **visualizer.spec.js** — what the Three.js scene actually draws, compared
-  against committed screenshots. See "Screenshot baselines" below.
+  against committed screenshots: the default view, each of the five preset
+  viewpoints, and that a preset restores the same framing after the view has
+  been dragged away from it. See "Screenshot baselines" below.
 
 ## What is not covered
 
@@ -88,6 +90,12 @@ Two caveats are deliberate rather than sloppy:
 - **The baselines belong to this machine.** That is acceptable because there is
   only one, but it does mean a baseline is re-recorded on purpose (delete the
   PNG and re-run) rather than whenever it goes red.
+
+The preset views are the case where a photograph beats an assertion. The unit
+tests in `camera-fit` prove a bounding box ends up on screen, but not that
+"front" faces the front; five images of an envelope that is 80 wide, 60 deep
+and 20 tall do, because it looks different from every side and a view wired to
+the wrong direction cannot match any baseline but its own.
 
 A screenshot spec that only ever photographs one scene proves very little, so
 each tier also owns a control: the smoke tier photographs the same scene with
