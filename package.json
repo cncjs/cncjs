@@ -189,7 +189,7 @@
     "esprima": "~4.0.1",
     "expand-tilde": "~2.0.2",
     "expr-eval": "~1.2.2",
-    "express": "~4.16.4",
+    "express": "~4.22.3",
     "express-jwt": "~8.5.1",
     "express-session": "~1.16.1",
     "final-form": "~4.12.0",
