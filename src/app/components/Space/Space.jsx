@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Space = ({ tag: Component, width, height, ...props }) => {
+const Space = ({ tag: Component = 'div', width = 0, height = 0, ...props }) => {
   if ((typeof width === 'string') && width.match(/^\d+$/)) {
     width += 'px';
   }
@@ -40,12 +40,6 @@ Space.propTypes = {
     PropTypes.number,
     PropTypes.string
   ]),
-};
-
-Space.defaultProps = {
-  tag: 'div',
-  width: 0,
-  height: 0,
 };
 
 export default Space;

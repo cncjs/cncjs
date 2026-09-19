@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './index.styl';
 
-const Header = ({ fixed, className, ...props }) => (
+const Header = ({ fixed = false, className, ...props }) => (
   <div
     {...props}
     className={classNames(
@@ -16,9 +16,6 @@ const Header = ({ fixed, className, ...props }) => (
 
 Header.propTypes = {
   fixed: PropTypes.bool
-};
-Header.defaultProps = {
-  fixed: false
 };
 
 export default Header;
