@@ -30,7 +30,7 @@
     "escodegen": "~1.11.1",
     "esprima": "~4.0.1",
     "expand-tilde": "~2.0.2",
-    "express": "~4.16.4",
+    "express": "~4.22.3",
     "express-jwt": "~8.5.1",
     "express-session": "~1.16.1",
     "gcode-parser": "^2.2.0",
@@ -58,7 +58,6 @@
     "session-file-store": "~1.2.0",
     "socket.io": "~4.8.3",
     "spawn-default-shell": "~2.0.0",
-    "superagent": "~10.3.0",
     "uuid": "~11.1.1",
     "watch": "~1.0.2",
     "winston": "~3.14.1"
