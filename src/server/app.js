@@ -6,12 +6,10 @@ import compress from 'compression';
 import cookieParser from 'cookie-parser';
 import multer from 'multer';
 import connectRestreamer from 'connect-restreamer';
-import engines from 'consolidate';
 import errorhandler from 'errorhandler';
 import express from 'express';
 import { expressjwt } from 'express-jwt';
 import session from 'express-session';
-import 'hogan.js'; // required by consolidate
 import i18next from 'i18next';
 import i18nextBackend from 'i18next-fs-backend';
 import jwt from 'jsonwebtoken';
@@ -27,6 +25,7 @@ import {
   LanguageDetector as i18nextLanguageDetector,
   handle as i18nextHandle
 } from 'i18next-http-middleware';
+import hoganEngine from './lib/hogan-engine';
 import urljoin from './lib/urljoin';
 import logger from './lib/logger';
 import settings from './config/settings';
@@ -79,6 +78,12 @@ const appMain = () => {
     app.enable('case sensitive routing'); // Enable case sensitivity, disabled by default, treating "/Foo" and "/foo" as the same
     app.disable('strict routing'); // Enable strict routing, by default "/foo" and "/foo/" are treated the same by the router
     app.disable('x-powered-by'); // Enables the X-Powered-By: Express HTTP header, enabled by default
+
+    // Every entry in settings.view.engines names 'hogan'; the lookup is kept
+    // so an added engine still goes through configuration rather than code.
+    const engines = {
+      hogan: hoganEngine
+    };
 
     for (let i = 0; i < settings.view.engines.length; ++i) {
       const extension = settings.view.engines[i].extension;

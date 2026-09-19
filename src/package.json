@@ -19,7 +19,6 @@
     "commander": "~14.0.3",
     "compression": "~1.7.4",
     "connect-restreamer": "~1.0.3",
-    "consolidate": "~0.15.1",
     "cookie-parser": "~1.4.4",
     "core-js": "~3.26.1",
     "debug": "~4.1.1",
