@@ -207,7 +207,6 @@
     "i18next-fs-backend": "~2.6.6",
     "i18next-http-backend": "~3.0.2",
     "i18next-http-middleware": "~3.9.9",
-    "i18next-node-fs-backend": "~2.1.3",
     "infinite-tree": "~1.16.2",
     "is-electron": "~2.2.1",
     "js-polyfills": "~0.1.42",
