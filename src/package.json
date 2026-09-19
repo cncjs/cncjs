@@ -61,7 +61,6 @@
     "superagent": "~10.3.0",
     "uuid": "~11.1.1",
     "watch": "~1.0.2",
-    "webappengine": "~1.2.0",
     "winston": "~3.14.1"
   }
 }

@@ -271,7 +271,6 @@
     "universal-logger-browser": "~1.0.2",
     "uuid": "~11.1.1",
     "watch": "~1.0.2",
-    "webappengine": "~1.2.0",
     "winston": "~3.14.1",
     "xterm": "~3.0.2"
   },
