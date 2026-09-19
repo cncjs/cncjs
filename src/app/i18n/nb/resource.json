@@ -645,5 +645,7 @@
   "WebGL:": "WebGL:",
   "Drop files to upload": "Slipp filer her for å laste opp",
   "Uploading...": "Laster opp...",
-  "Dismiss": ""
+  "Dismiss": "",
+  "Username is required": "",
+  "Password is required": ""
 }

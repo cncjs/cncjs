@@ -647,5 +647,7 @@
   "WebGL:": "WebGL:",
   "Drop files to upload": "Přetáhněte sem soubory k nahrání",
   "Uploading...": "Nahrávání...",
-  "Dismiss": ""
+  "Dismiss": "",
+  "Username is required": "",
+  "Password is required": ""
 }

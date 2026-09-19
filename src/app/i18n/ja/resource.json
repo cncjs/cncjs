@@ -644,5 +644,7 @@
   "WebGL:": "WebGL:",
   "Drop files to upload": "アップロードするファイルをここにドラッグ＆ドロップ",
   "Uploading...": "アップロード中...",
-  "Dismiss": ""
+  "Dismiss": "",
+  "Username is required": "",
+  "Password is required": ""
 }

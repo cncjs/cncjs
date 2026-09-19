@@ -646,5 +646,7 @@
   "WebGL:": "WebGL:",
   "Drop files to upload": "Suelte los archivos para subirlos",
   "Uploading...": "Subiendo...",
-  "Dismiss": ""
+  "Dismiss": "",
+  "Username is required": "",
+  "Password is required": ""
 }

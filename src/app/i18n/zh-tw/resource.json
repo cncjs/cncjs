@@ -644,5 +644,7 @@
   "WebGL:": "WebGL:",
   "Drop files to upload": "將檔案拖曳至此處上傳",
   "Uploading...": "正在上傳...",
-  "Dismiss": ""
+  "Dismiss": "",
+  "Username is required": "",
+  "Password is required": ""
 }

@@ -31,16 +31,38 @@ class Login extends PureComponent {
       clearAlertMessage: () => {
         this.setState({ alertMessage: '' });
       },
+      clearFieldError: (field) => {
+        // Only ever clears, and only the field being typed into. Re-validating
+        // on every keystroke would tell someone their username is missing
+        // while they are still typing its first letter.
+        this.setState(state => (state.fieldErrors[field]
+          ? { fieldErrors: { ...state.fieldErrors, [field]: '' } }
+          : null));
+      },
       handleSignIn: (event) => {
         event.preventDefault();
 
+        const name = this.fields.name.value;
+        const password = this.fields.password.value;
+
+        const fieldErrors = {
+          name: name ? '' : i18n._('Username is required'),
+          password: password ? '' : i18n._('Password is required')
+        };
+
+        if (fieldErrors.name || fieldErrors.password) {
+          // Nothing worth asking the server. It would answer "Authentication
+          // failed", which is true and useless: it cannot say which field was
+          // left blank, and that is the only thing wrong here.
+          this.setState({ alertMessage: '', fieldErrors });
+          return;
+        }
+
         this.setState({
+          fieldErrors,
           authenticating: true,
           redirectToReferrer: false
         });
-
-        const name = this.fields.name.value;
-        const password = this.fields.password.value;
 
         user.signin({ name, password })
           .then(async ({ authenticated }) => {
@@ -97,6 +119,10 @@ class Login extends PureComponent {
     getDefaultState() {
       return {
         alertMessage: '',
+        fieldErrors: {
+          name: '',
+          password: ''
+        },
         authenticating: false,
         redirectToReferrer: false
       };
@@ -106,7 +132,7 @@ class Login extends PureComponent {
       const { from } = this.props.location.state || { from: { pathname: '/' } };
       const state = { ...this.state };
       const actions = { ...this.actions };
-      const { alertMessage, authenticating } = state;
+      const { alertMessage, authenticating, fieldErrors } = state;
       const forgotPasswordLink = 'https://cnc.js.org/docs/faq/#forgot-your-password';
 
       if (state.redirectToReferrer) {
@@ -143,8 +169,10 @@ class Login extends PureComponent {
                 id="login-name"
                 label={i18n._('Username')}
                 type="text"
-                error={!!alertMessage}
                 autoComplete="username"
+                error={!!fieldErrors.name || !!alertMessage}
+                helperText={fieldErrors.name}
+                onChange={() => actions.clearFieldError('name')}
                 inputRef={node => {
                   this.fields.name = node;
                 }}
@@ -153,8 +181,10 @@ class Login extends PureComponent {
                 id="login-password"
                 label={i18n._('Password')}
                 type="password"
-                error={!!alertMessage}
                 autoComplete="current-password"
+                error={!!fieldErrors.password || !!alertMessage}
+                helperText={fieldErrors.password}
+                onChange={() => actions.clearFieldError('password')}
                 inputRef={node => {
                   this.fields.password = node;
                 }}
