@@ -372,7 +372,8 @@
       "!<rootDir>/src/server/**/__tests__/**",
       "<rootDir>/src/app/widgets/Visualizer/toolpath-geometry.js",
       "<rootDir>/src/app/widgets/Visualizer/toolpath-segments.js",
-      "<rootDir>/src/app/widgets/Visualizer/GCodeVisualizer.js"
+      "<rootDir>/src/app/widgets/Visualizer/GCodeVisualizer.js",
+      "<rootDir>/src/app/lib/controller/dispatch-event.js"
     ],
     "coverageReporters": [
       "lcov",
@@ -395,6 +396,7 @@
     "testMatch": [
       "<rootDir>/src/server/**/__tests__/**/*.test.js",
       "<rootDir>/grbl-simulator/__tests__/**/*.test.js",
+      "<rootDir>/src/app/lib/controller/__tests__/**/*.test.js",
       "<rootDir>/src/app/widgets/Visualizer/__tests__/**/*.test.js"
     ],
     "transformIgnorePatterns": [
