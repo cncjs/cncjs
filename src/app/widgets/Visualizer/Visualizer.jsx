@@ -3,7 +3,6 @@ import _each from 'lodash/each';
 import _isEqual from 'lodash/isEqual';
 import _tail from 'lodash/tail';
 import _throttle from 'lodash/throttle';
-import colornames from 'colornames';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -19,7 +18,8 @@ import log from 'app/lib/log';
 import { getRenderPixelRatio } from 'app/lib/pixel-ratio';
 import { mapValueToUnits } from 'app/lib/units';
 import store from 'app/store';
-import { getBoundingBox, loadSTL, loadTexture } from './helpers';
+import { getBoundingBox, loadSTL } from './helpers';
+import * as palette from './palette';
 import fitCameraToBounds from './camera-fit';
 import CoordinateAxes from './CoordinateAxes';
 import Cuboid from './Cuboid';
@@ -686,8 +686,8 @@ class Visualizer extends Component {
       const dx = Math.abs(xmax - xmin) || Number.MIN_VALUE;
       const dy = Math.abs(ymax - ymin) || Number.MIN_VALUE;
       const dz = Math.abs(zmax - zmin) || Number.MIN_VALUE;
-      const color = colornames('indianred');
-      const opacity = 0.5;
+      const color = palette.MACHINE_LIMITS;
+      const opacity = palette.MACHINE_LIMITS_OPACITY;
       const transparent = true;
       const dashed = true;
       const dashSize = 3; // The size of the dash.
@@ -748,13 +748,26 @@ class Visualizer extends Component {
 
     createCoordinateSystem(units) {
       const { minX, maxX, minY, maxY, minZ, maxZ, gridSpacing } = this.getCoordinateBounds(units);
-      const labelOffset = gridSpacing * 2;
+      // Both scale with the grid, so the labelling stays in proportion on a
+      // 300 mm machine and a 3 m one alike. The letters used to be a fixed
+      // 20 mm, which on a small envelope was a quarter of its width — they
+      // are now half a grid square, which is about the size of the numbers
+      // along the axes rather than several times it.
+      const labelSize = gridSpacing * 0.5;
+      const labelOffset = gridSpacing * 1.2;
       const group = new THREE.Group();
 
       { // Coordinate Grid
-        const gridLine = new GridLine(minX, maxX, gridSpacing, minY, maxY, gridSpacing, colornames('blue'), colornames('gray 44'));
+        const gridLine = new GridLine(
+          minX, maxX, gridSpacing,
+          minY, maxY, gridSpacing,
+          palette.GRID_CENTER, palette.GRID
+        );
         _each(gridLine.children, (o) => {
-          o.material.opacity = 0.15;
+          // A grid is reference, not content. UGS runs its at about a tenth
+          // of full opacity and that is most of why a workspace covered in
+          // grid lines still reads as background.
+          o.material.opacity = palette.GRID_OPACITY;
           o.material.transparent = true;
           o.material.depthWrite = false;
         });
@@ -773,25 +786,25 @@ class Visualizer extends Component {
           x: maxX + labelOffset,
           y: 0,
           z: 0,
-          size: 20,
+          size: labelSize,
           text: 'X',
-          color: colornames('red')
+          color: palette.AXIS_X
         });
         const axisYLabel = new TextSprite({
           x: 0,
           y: maxY + labelOffset,
           z: 0,
-          size: 20,
+          size: labelSize,
           text: 'Y',
-          color: colornames('green')
+          color: palette.AXIS_Y
         });
         const axisZLabel = new TextSprite({
           x: 0,
           y: 0,
           z: maxZ + labelOffset,
-          size: 20,
+          size: labelSize,
           text: 'Z',
-          color: colornames('blue')
+          color: palette.AXIS_Z
         });
 
         group.add(axisXLabel);
@@ -821,8 +834,8 @@ class Visualizer extends Component {
             text: mapValueToUnits(x, units),
             textAlign: 'center',
             textBaseline: 'bottom',
-            color: colornames('red'),
-            opacity: 0.5
+            color: palette.LABEL,
+            opacity: palette.LABEL_OPACITY
           }));
         }
       }
@@ -838,8 +851,8 @@ class Visualizer extends Component {
             text: mapValueToUnits(y, units),
             textAlign: 'right',
             textBaseline: 'middle',
-            color: colornames('green'),
-            opacity: 0.5
+            color: palette.LABEL,
+            opacity: palette.LABEL_OPACITY
           }));
         }
       }
@@ -915,7 +928,7 @@ class Visualizer extends Component {
       });
       this.renderer.shadowMap.enabled = true;
       this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      this.renderer.setClearColor(new THREE.Color(colornames('white')), 1);
+      this.renderer.setClearColor(new THREE.Color(palette.BACKGROUND), 1);
       this.renderer.setPixelRatio(getRenderPixelRatio());
       this.renderer.setSize(width, height);
       this.renderer.clear();
@@ -949,7 +962,11 @@ class Visualizer extends Component {
       }
 
       { // Ambient Light
-        const light = new THREE.AmbientLight(colornames('gray 25')); // soft white light
+        // The cutting tool is the only lit object in the scene — the grid,
+        // axes, envelope and toolpath are all unlit line materials — so this
+        // is really the tool's exposure. At 25% grey the bit came out a muddy
+        // olive instead of the yellow it is actually painted.
+        const light = new THREE.AmbientLight(0x999999);
         this.scene.add(light);
       }
 
@@ -959,12 +976,7 @@ class Visualizer extends Component {
       this.rebuildCoordinateSystems();
 
       { // Cutting Tool
-        Promise.all([
-          loadSTL('assets/models/stl/bit.stl').then(geometry => geometry),
-          loadTexture('assets/textures/brushed-steel-texture.jpg').then(texture => texture),
-        ]).then(result => {
-          const [geometry, texture] = result;
-
+        loadSTL('assets/models/stl/bit.stl').then((geometry) => {
           // Rotate the geometry 90 degrees about the X axis.
           geometry.rotateX(-Math.PI / 2);
 
@@ -978,14 +990,15 @@ class Visualizer extends Component {
           const height = geometry.boundingBox.max.z - geometry.boundingBox.min.z;
           geometry.translate(0, 0, (height / 2));
 
-          let material;
-          if (geometry.hasColors) {
-            material = new THREE.MeshLambertMaterial({
-              map: texture,
-              opacity: 0.9,
-              transparent: false
-            });
-          }
+          // Solid colour, not the brushed-steel texture this used to fetch.
+          // An STL carries no texture coordinates — three's loader produces
+          // position, normal and sometimes colour, never uv — so the map
+          // sampled one texel for the whole mesh and drew the bit as a flat
+          // dark shape. The old `if (geometry.hasColors)` guard hid that by
+          // leaving the material undefined instead.
+          const material = new THREE.MeshLambertMaterial({
+            color: palette.TOOL
+          });
 
           const object = new THREE.Object3D();
           object.add(new THREE.Mesh(geometry, material));
@@ -1010,7 +1023,7 @@ class Visualizer extends Component {
 
       { // Cutting Pointer
         this.cuttingPointer = new CuttingPointer({
-          color: colornames('indianred'),
+          color: palette.AXIS_X,
           diameter: 2
         });
         this.cuttingPointer.name = 'CuttingPointer';

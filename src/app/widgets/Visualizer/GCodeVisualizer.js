@@ -1,23 +1,23 @@
-import colornames from 'colornames';
 import * as THREE from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
 import log from 'app/lib/log';
+import { TOOLPATH_DONE } from './palette';
 import buildToolpath from './toolpath-geometry';
 import buildSegments, { completedCount } from './toolpath-segments';
 
 // What the machine has already cut. Grey rather than absent, so the shape of
 // the finished work stays legible while it stops competing with what is still
 // to come.
-const doneColor = new THREE.Color(colornames('lightgrey'));
+const doneColor = new THREE.Color(TOOLPATH_DONE);
 
 // Thickness in CSS pixels. `LineBasicMaterial.linewidth` is ignored by WebGL
 // on nearly every platform, which is why the old toolpath read as an
 // oscilloscope trace whatever it was set to; LineMaterial builds its own
 // screen-space geometry and actually honours a width.
-const CUT_LINEWIDTH = 3;
-const RAPID_LINEWIDTH = 1.5;
+const CUT_LINEWIDTH = 2;
+const RAPID_LINEWIDTH = 1;
 
 // Dash lengths in millimetres, since the material measures them in world
 // units. Rapids are dashed as well as thinner because that is the distinction

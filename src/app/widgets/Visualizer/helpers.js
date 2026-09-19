@@ -23,17 +23,7 @@ const loadSTL = (url) => new Promise(resolve => {
   new STLLoader().load(url, resolve);
 });
 
-const loadTexture = (url) => new Promise(resolve => {
-  new THREE.TextureLoader().load(url, (texture) => {
-    // An image file holds sRGB pixels; since colour management became the
-    // default a colour map has to say so or it is taken to be linear already.
-    texture.colorSpace = THREE.SRGBColorSpace;
-    resolve(texture);
-  });
-});
-
 export {
   getBoundingBox,
   loadSTL,
-  loadTexture,
 };

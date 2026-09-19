@@ -89,7 +89,7 @@ const visualizerCanvas = (page) => page
 /**
  * Wait until the scene contains everything it is ever going to contain.
  *
- * The cutting tool is an STL and a texture fetched after mount, and the widget
+ * The cutting tool is an STL fetched after mount, and the widget
  * only draws a frame when something asks it to — so a screenshot taken too
  * early catches a real, reproducible, and completely uninteresting
  * intermediate state. Waiting on the resource timings is exact where a fixed
@@ -97,7 +97,6 @@ const visualizerCanvas = (page) => page
  */
 const SCENE_ASSETS = [
   'assets/models/stl/bit.stl',
-  'assets/textures/brushed-steel-texture.jpg',
 ];
 
 const settleScene = async (page) => {
