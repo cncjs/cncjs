@@ -4758,17 +4758,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@serialport/bindings-cpp@npm:10.8.0":
-  version: 10.8.0
-  resolution: "@serialport/bindings-cpp@npm:10.8.0"
+"@serialport/bindings-cpp@npm:13.0.0":
+  version: 13.0.0
+  resolution: "@serialport/bindings-cpp@npm:13.0.0"
   dependencies:
     "@serialport/bindings-interface": 1.2.2
-    "@serialport/parser-readline": ^10.2.1
-    debug: ^4.3.2
-    node-addon-api: ^5.0.0
+    "@serialport/parser-readline": 12.0.0
+    debug: 4.4.0
+    node-addon-api: 8.3.0
     node-gyp: latest
-    node-gyp-build: ^4.3.0
-  checksum: 8b12bfc70775b11b641f29e0d31dcbec0ff05fab23eedf10e636fe11f58d53a5dfb655b78b190770b1f20c305ca662d14e1b958977a443a43602fdcbefebdbd7
+    node-gyp-build: 4.8.4
+  checksum: 325eb20fa87f0bf3582ee0a9e92b04fdc12338b362c7068de3e0fd0cb968effbdd5bb235344316a9a6e071d5614e6fa0fa779cc03ad7dad035a32c3772f64804
   languageName: node
   linkType: hard
 
@@ -4779,85 +4779,101 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@serialport/parser-byte-length@npm:10.5.0":
-  version: 10.5.0
-  resolution: "@serialport/parser-byte-length@npm:10.5.0"
-  checksum: 41ce4cf9f25cca3dde4b4d7b5cf13f3f663a2a5eb26b903efd72f96ab6ab64e05b381dff3d8c071012117298bd8f09ff6bf0621abe3e560acdb71f11447e21e7
+"@serialport/parser-byte-length@npm:13.0.0":
+  version: 13.0.0
+  resolution: "@serialport/parser-byte-length@npm:13.0.0"
+  checksum: 8005c6f93e8c588bdc4b6eac7f9c0e92e48b7aea1c45438041fb65749c263fa8a903f5ec879c7df594ccd83a1d838946c8276235016d9f5ffcd3a88432db4bb6
   languageName: node
   linkType: hard
 
-"@serialport/parser-cctalk@npm:10.5.0":
-  version: 10.5.0
-  resolution: "@serialport/parser-cctalk@npm:10.5.0"
-  checksum: a0c4eac183f1d88f6edcda5e14d9e4105d63ebfa2a2f765d2e298433ca7c1be34cc334b14b08e941a5394e2b628361bf2abb2fb1735331d4988f01d4784409e9
+"@serialport/parser-cctalk@npm:13.0.0":
+  version: 13.0.0
+  resolution: "@serialport/parser-cctalk@npm:13.0.0"
+  checksum: 97ff69f4e2b56309217b5fa1d5a0ab623bca2e8a8f59502123454ed595d4cc96de700c2c5d453f357f017b49b46da6b050865bb4fd23f783af5a4635ba8cd238
   languageName: node
   linkType: hard
 
-"@serialport/parser-delimiter@npm:10.5.0":
-  version: 10.5.0
-  resolution: "@serialport/parser-delimiter@npm:10.5.0"
-  checksum: 7a5d24fa577bddde428979a641081604116f98ff9b0a59ec4fe1021d4d2f1ec4177546e40580e4bb04714b85365a19de3f16f183d6f8cf46ca37bca13b4fb567
+"@serialport/parser-delimiter@npm:12.0.0":
+  version: 12.0.0
+  resolution: "@serialport/parser-delimiter@npm:12.0.0"
+  checksum: dcfdc3e5f4419d0aa5444bc0042674c46c63c82daee0c5e673c36c54539e846c4b6de233b7ba1f7df0ad72cd369fc117673c5cbec4833d2018e9fb584d916316
   languageName: node
   linkType: hard
 
-"@serialport/parser-inter-byte-timeout@npm:10.5.0":
-  version: 10.5.0
-  resolution: "@serialport/parser-inter-byte-timeout@npm:10.5.0"
-  checksum: dc3bbbed2bc6acab29ea763106b60fefcc6ba0913570ee6a32e975053c97daaf0547b821d4c20715ce3c6bbfa0afb23bbcc8f8b7dd585ae0b1998779656a7451
+"@serialport/parser-delimiter@npm:13.0.0":
+  version: 13.0.0
+  resolution: "@serialport/parser-delimiter@npm:13.0.0"
+  checksum: c6c77dc7d9fc4430908a9229dcccb3d1da4fa21a7cf9d01a702c4d265179724db2ea7c5a8d911091086b6108d6b6b79f9c532dbeaf96790cf9c7d811b89559ab
   languageName: node
   linkType: hard
 
-"@serialport/parser-packet-length@npm:10.5.0":
-  version: 10.5.0
-  resolution: "@serialport/parser-packet-length@npm:10.5.0"
-  checksum: d502a13c2ef45074548837e9f4c0bfbae93a4bd56da40b6dcd7c40888ecca72e2da46a0ddba677dc9580b4c1c07a9f9c1380706b5256535da24a835da184c9ba
+"@serialport/parser-inter-byte-timeout@npm:13.0.0":
+  version: 13.0.0
+  resolution: "@serialport/parser-inter-byte-timeout@npm:13.0.0"
+  checksum: cd2c700d0312ff9c364c7e4dfd48782020a80ee656a67997b6f39963b3a1dbd406229d5c2417f7ed9e1551ca11ab3183a1365f926002e92a90b28f978b816417
   languageName: node
   linkType: hard
 
-"@serialport/parser-readline@npm:10.5.0, @serialport/parser-readline@npm:^10.0.0, @serialport/parser-readline@npm:^10.2.1":
-  version: 10.5.0
-  resolution: "@serialport/parser-readline@npm:10.5.0"
+"@serialport/parser-packet-length@npm:13.0.0":
+  version: 13.0.0
+  resolution: "@serialport/parser-packet-length@npm:13.0.0"
+  checksum: e2f4e5e788af711fb2d069898aaec516ea15fbcee147a7e3184e3faa9025e968f79d6aecdfcac17b23e1b4732f621efe5909b259fe810caddee51ee7ad5d80e5
+  languageName: node
+  linkType: hard
+
+"@serialport/parser-readline@npm:12.0.0":
+  version: 12.0.0
+  resolution: "@serialport/parser-readline@npm:12.0.0"
   dependencies:
-    "@serialport/parser-delimiter": 10.5.0
-  checksum: 2c62c450f4b704cecdeefa69f8857e2c6ed0bc6268fd1c6128c2a06adbaee39134a5e55f58e4bfdd0142d6ec91ba068a97d5caef6ca074324cab8025d376b562
+    "@serialport/parser-delimiter": 12.0.0
+  checksum: 816830c724ce209cf89bca5b95cc2ee537232eff8d26dc15b3ba5eacbb05947e96689d254fb9d7250d97297e80a73240795fcbd11a64873d4b1dfa6ee80825f6
   languageName: node
   linkType: hard
 
-"@serialport/parser-ready@npm:10.5.0":
-  version: 10.5.0
-  resolution: "@serialport/parser-ready@npm:10.5.0"
-  checksum: aa6043bf517ba786be18b777bc8f780dcfb923070bfa93b0df268b6106a57574f02b62fcb552234693d59f3bfb35e7493c44ca98b18b086fdc092641637f9673
+"@serialport/parser-readline@npm:13.0.0, @serialport/parser-readline@npm:~13.0.0":
+  version: 13.0.0
+  resolution: "@serialport/parser-readline@npm:13.0.0"
+  dependencies:
+    "@serialport/parser-delimiter": 13.0.0
+  checksum: 237dd26cf625861bfbe85535b57e6c7ae46529e71f1ef47132d505ca9bb51dbe0fcf31deb294ee4a0667aed7c36b4fef24e154198c04421b8087e30bb74ac541
   languageName: node
   linkType: hard
 
-"@serialport/parser-regex@npm:10.5.0":
-  version: 10.5.0
-  resolution: "@serialport/parser-regex@npm:10.5.0"
-  checksum: 8abdc1ac75acd11a31b77e26f7826590bdb801b1e65f7d2fe5939c3da4a08ee41d07132498955377bf4d3fe006626e2d1944c9fd188eef2084984e3b001e355a
+"@serialport/parser-ready@npm:13.0.0":
+  version: 13.0.0
+  resolution: "@serialport/parser-ready@npm:13.0.0"
+  checksum: 77e99b2eaaab8e345ccd7e8d66cef47093ac0a11fd9aac07d6d7af15ffaa46e06399c98ae6bfbf2c0d9b1352df6c3aa1110878c880bd4f26c911cb7119e4f219
   languageName: node
   linkType: hard
 
-"@serialport/parser-slip-encoder@npm:10.5.0":
-  version: 10.5.0
-  resolution: "@serialport/parser-slip-encoder@npm:10.5.0"
-  checksum: 7d9a7356d82350b0675a65803939b3eaf8ae4a7afaa133cb31747bc45ca04d4cbd2fa3be117e62d9b9fb2aaa4e29200f02b43c18308bc76a6479cb80c0cc8d04
+"@serialport/parser-regex@npm:13.0.0":
+  version: 13.0.0
+  resolution: "@serialport/parser-regex@npm:13.0.0"
+  checksum: 5396f6b601afc105b7f9595b8c609e09113f3d1cfacbab065738af21bf771e09dc19f601d4d25899f2f10ec97340a977623eaaf7fb72ea68d3416ea1e21f616f
   languageName: node
   linkType: hard
 
-"@serialport/parser-spacepacket@npm:10.5.0":
-  version: 10.5.0
-  resolution: "@serialport/parser-spacepacket@npm:10.5.0"
-  checksum: c9676c28a5ea213d9b8e26f060f6081bb514b9f39d12adf1473af511ca788c46a09b353545305fcef9e9939f42f0e00c7ef6a65dfc45b01a36ede06314eacece
+"@serialport/parser-slip-encoder@npm:13.0.0":
+  version: 13.0.0
+  resolution: "@serialport/parser-slip-encoder@npm:13.0.0"
+  checksum: 2c4b6ee2b954c1a216c98789eb462c354cba545d5a01e06be83a983ba675457e2082898efc2d517a11c628819721529645b21bb2059eaf69d9a4e30684e353f6
   languageName: node
   linkType: hard
 
-"@serialport/stream@npm:10.5.0":
-  version: 10.5.0
-  resolution: "@serialport/stream@npm:10.5.0"
+"@serialport/parser-spacepacket@npm:13.0.0":
+  version: 13.0.0
+  resolution: "@serialport/parser-spacepacket@npm:13.0.0"
+  checksum: 61b4cb042f3ce806e044b7ab03b0a274d91f50e5b92dd02d7d5fd432ccb2d7a4cc84936d2bca561d68ce9ad9cb690248ca679d83f4c6649d17bf9988f6643cbb
+  languageName: node
+  linkType: hard
+
+"@serialport/stream@npm:13.0.0":
+  version: 13.0.0
+  resolution: "@serialport/stream@npm:13.0.0"
   dependencies:
     "@serialport/bindings-interface": 1.2.2
-    debug: ^4.3.2
-  checksum: d286977d62b5e993c63dc8652fc0114bc5a56d41f2a7b109f9d822f517e695d757408f19021a90f27d9b06b1a74843073fd48f7cce487aaf72a7e231409610ef
+    debug: 4.4.0
+  checksum: 20c8157d58084f3b0ea8c45044a21eb2a8e0d10b61ad7a9c45d22987203cd12ba63af45c48aae344d31a0ce54f1eade753d16bd40c9cb69f4d075eebafd9ad9b
   languageName: node
   linkType: hard
 
@@ -8526,7 +8542,7 @@ __metadata:
     "@electron/rebuild": ^4.2.0
     "@playwright/test": ^1.63.0
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.15
-    "@serialport/parser-readline": ^10.0.0
+    "@serialport/parser-readline": ~13.0.0
     "@stylistic/eslint-plugin": ^5.10.0
     "@trendmicro/react-anchor": ~0.5.6
     "@trendmicro/react-breadcrumbs": ~0.5.5
@@ -8680,7 +8696,7 @@ __metadata:
     rimraf: ~2.6.3
     run-sequence: ~2.2.1
     semver: ~6.0.0
-    serialport: ^10.0.0
+    serialport: ~13.0.0
     serve-favicon: ~2.5.0
     serve-static: ~1.13.2
     session-file-store: ~1.2.0
@@ -9594,6 +9610,18 @@ __metadata:
     supports-color:
       optional: true
   checksum: 3dbad3f94ea64f34431a9cbf0bafb61853eda57bff2880036153438f50fb5a84f27683ba0d8e5426bf41a8c6ff03879488120cf5b3a761e77953169c0600a708
+  languageName: node
+  linkType: hard
+
+"debug@npm:4.4.0":
+  version: 4.4.0
+  resolution: "debug@npm:4.4.0"
+  dependencies:
+    ms: ^2.1.3
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: fb42df878dd0e22816fc56e1fdca9da73caa85212fbe40c868b1295a6878f9101ae684f4eeef516c13acfc700f5ea07f1136954f43d4cd2d477a811144136479
   languageName: node
   linkType: hard
 
@@ -16682,12 +16710,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-addon-api@npm:^5.0.0":
-  version: 5.1.0
-  resolution: "node-addon-api@npm:5.1.0"
+"node-addon-api@npm:8.3.0":
+  version: 8.3.0
+  resolution: "node-addon-api@npm:8.3.0"
   dependencies:
     node-gyp: latest
-  checksum: 2508bd2d2981945406243a7bd31362fc7af8b70b8b4d65f869c61731800058fb818cc2fd36c8eac714ddd0e568cc85becf5e165cebbdf7b5024d5151bbc75ea1
+  checksum: 87fd087f0887e91c5608ac3c99e3f374403074c9cff2c335b061b0c68a183e4cd561fb9a8b0a583f0145c9b7753180b2be0c232ef01bb97796ccf4486c87958a
   languageName: node
   linkType: hard
 
@@ -16748,14 +16776,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp-build@npm:^4.3.0":
-  version: 4.6.0
-  resolution: "node-gyp-build@npm:4.6.0"
+"node-gyp-build@npm:4.8.4":
+  version: 4.8.4
+  resolution: "node-gyp-build@npm:4.8.4"
   bin:
     node-gyp-build: bin.js
     node-gyp-build-optional: optional.js
     node-gyp-build-test: build-test.js
-  checksum: 25d78c5ef1f8c24291f4a370c47ba52fcea14f39272041a90a7894cd50d766f7c8cb8fb06c0f42bf6f69b204b49d9be3c8fc344aac09714d5bdb95965499eb15
+  checksum: 8b81ca8ffd5fa257ad8d067896d07908a36918bc84fb04647af09d92f58310def2d2b8614d8606d129d9cd9b48890a5d2bec18abe7fcff54818f72bedd3a7d74
   languageName: node
   linkType: hard
 
@@ -20052,25 +20080,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"serialport@npm:^10.0.0":
-  version: 10.5.0
-  resolution: "serialport@npm:10.5.0"
+"serialport@npm:~13.0.0":
+  version: 13.0.0
+  resolution: "serialport@npm:13.0.0"
   dependencies:
     "@serialport/binding-mock": 10.2.2
-    "@serialport/bindings-cpp": 10.8.0
-    "@serialport/parser-byte-length": 10.5.0
-    "@serialport/parser-cctalk": 10.5.0
-    "@serialport/parser-delimiter": 10.5.0
-    "@serialport/parser-inter-byte-timeout": 10.5.0
-    "@serialport/parser-packet-length": 10.5.0
-    "@serialport/parser-readline": 10.5.0
-    "@serialport/parser-ready": 10.5.0
-    "@serialport/parser-regex": 10.5.0
-    "@serialport/parser-slip-encoder": 10.5.0
-    "@serialport/parser-spacepacket": 10.5.0
-    "@serialport/stream": 10.5.0
-    debug: ^4.3.3
-  checksum: ec9198de990e4383e2606767068e6e487c0c642d7d8223aa5e8e63bdd1ce9b88ede8ebff03c1c198046b5258a23d2bbdef7b021176c07a9f78830baf4ec8cae5
+    "@serialport/bindings-cpp": 13.0.0
+    "@serialport/parser-byte-length": 13.0.0
+    "@serialport/parser-cctalk": 13.0.0
+    "@serialport/parser-delimiter": 13.0.0
+    "@serialport/parser-inter-byte-timeout": 13.0.0
+    "@serialport/parser-packet-length": 13.0.0
+    "@serialport/parser-readline": 13.0.0
+    "@serialport/parser-ready": 13.0.0
+    "@serialport/parser-regex": 13.0.0
+    "@serialport/parser-slip-encoder": 13.0.0
+    "@serialport/parser-spacepacket": 13.0.0
+    "@serialport/stream": 13.0.0
+    debug: 4.4.0
+  checksum: 2fe9828cd8b5cf76201af0cc67a42d41be359a82f4c26aceecbd922a002c1422ca3c08f12b24917dc6db6e1a745f4de95029940db1f68c84f6c25afc9c72db8c
   languageName: node
   linkType: hard
 
