@@ -1,19 +1,21 @@
-import cx from 'classnames';
 import qs from 'qs';
 import React, { PureComponent } from 'react';
 import GoogleAnalytics4 from 'react-ga4';
 import { withRouter, Redirect } from 'react-router-dom';
 import api from 'app/api';
-import Anchor from 'app/components/Anchor';
-import { Notification } from 'app/components/Notifications';
-import Space from 'app/components/Space';
+import Alert from 'app/components/Alert';
+import Button from 'app/components/Button';
+import Form from 'app/components/Form';
+import Link from 'app/components/Link';
+import Screen from 'app/components/Screen';
+import TextField from 'app/components/TextField';
+import Tile from 'app/components/Tile';
 import settings from 'app/config/settings';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
 import store from 'app/store';
-import styles from './index.styl';
 
 class Login extends PureComponent {
     static propTypes = {
@@ -126,75 +128,45 @@ class Login extends PureComponent {
       }
 
       return (
-        <div className={styles.container}>
+        <Screen>
           {alertMessage && (
-            <Notification
-              role="alert"
-              aria-live="assertive"
-              style={{ marginBottom: 10 }}
-              type="error"
+            <Alert
+              title={i18n._('Error')}
               onDismiss={actions.clearAlertMessage}
+              dismissLabel={i18n._('Dismiss')}
             >
-              <div><strong>{i18n._('Error')}</strong></div>
-              <div>{alertMessage}</div>
-            </Notification>
+              {alertMessage}
+            </Alert>
           )}
-          <div className={styles.login}>
-            <div className={styles.logo}>
-              <img src="images/logo-square-256x256.png" alt="" />
-            </div>
-            <div className={styles.title}>
-              {i18n._('Sign in to {{name}}', { name: settings.productName })}
-            </div>
-            <form className={styles.form}>
-              <div className="form-group">
-                <input
-                  ref={node => {
-                    this.fields.name = node;
-                  }}
-                  type="text"
-                  className="form-control"
-                  placeholder={i18n._('Username')}
-                />
-              </div>
-              <div className="form-group">
-                <input
-                  ref={node => {
-                    this.fields.password = node;
-                  }}
-                  type="password"
-                  className="form-control"
-                  placeholder={i18n._('Password')}
-                />
-              </div>
-              <div className="form-group">
-                <button
-                  type="button"
-                  className="btn btn-block btn-primary"
-                  onClick={this.actions.handleSignIn}
-                >
-                  <i
-                    aria-hidden="true"
-                    className={cx(
-                      'fa',
-                      'fa-fw',
-                      { 'fa-spin': authenticating },
-                      { 'fa-circle-o-notch': authenticating },
-                      { 'fa-sign-in': !authenticating }
-                    )}
-                  />
-                  <Space width="8" />
-                  {i18n._('Sign In')}
-                </button>
-              </div>
-              <p>
-                <Anchor href={forgotPasswordLink}>
-                  {i18n._('Forgot your password?')}
-                </Anchor>
-              </p>
-            </form>
-          </div>
-        </div>
+          <Tile title={i18n._('Sign in to {{name}}', { name: settings.productName })}>
+            <Form onSubmit={actions.handleSignIn}>
+              <TextField
+                id="login-name"
+                label={i18n._('Username')}
+                type="text"
+                autoComplete="username"
+                inputRef={node => {
+                  this.fields.name = node;
+                }}
+              />
+              <TextField
+                id="login-password"
+                label={i18n._('Password')}
+                type="password"
+                autoComplete="current-password"
+                inputRef={node => {
+                  this.fields.password = node;
+                }}
+              />
+              <Button type="submit" fullWidth loading={authenticating}>
+                {i18n._('Sign In')}
+              </Button>
+              <Link href={forgotPasswordLink}>
+                {i18n._('Forgot your password?')}
+              </Link>
+            </Form>
+          </Tile>
+        </Screen>
       );
     }
 }

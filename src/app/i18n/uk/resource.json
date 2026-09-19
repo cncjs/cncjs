@@ -646,5 +646,6 @@
   "None": "Немає",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Перетягніть файли для завантаження",
-  "Uploading...": "Завантаження..."
+  "Uploading...": "Завантаження...",
+  "Dismiss": ""
 }

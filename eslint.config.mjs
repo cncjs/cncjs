@@ -8,6 +8,63 @@ import trendmicro from 'eslint-config-trendmicro';
 
 const dirname = import.meta.dirname;
 
+/**
+ * The component directories that predate the MUI migration: the @trendmicro
+ * facade and the bootstrap-era helpers. They break every rule below — Stylus
+ * imports, inline styles, files past 250 lines — and they are not being fixed,
+ * they are being deleted. Until then they are excluded by name, so the rules
+ * can apply to `src/app/components/**` by default and cover anything new
+ * without a second edit here. This list only ever shrinks.
+ */
+const legacyComponents = [
+  'Anchor', 'Blink', 'Breadcrumbs', 'Buttons', 'Center', 'Checkbox',
+  'DatePicker', 'Dropdown', 'Ellipsis', 'FormControl', 'FormGroup', 'Forms',
+  'GridSystem', 'Hoverable', 'I18n', 'Image', 'InlineError', 'Interpolate',
+  'Loader', 'Margin', 'Modal', 'ModalTemplate', 'Navs', 'Notifications',
+  'Paginations', 'Panel', 'Portal', 'Progress', 'ProtectedRoute', 'Radio',
+  'RepeatButton', 'SectionGroup', 'SectionTitle', 'Space', 'Table',
+  'TabularForm', 'ToggleSwitch', 'Toggler', 'Tooltip', 'Validation', 'Webcam',
+  'Widget',
+].map(name => `src/app/components/${name}/**`);
+
+/**
+ * Mateusz's rules for the rebuilt UI, as rules rather than as intentions.
+ *
+ * A convention only a reviewer checks is a convention that drifts, and the
+ * codebase this replaces is the proof: 75 Stylus files and bootstrap classes
+ * hand-written into 60 JSX files, which is what made the frontend
+ * un-upgradable for years.
+ */
+const newUiRules = {
+  // One component, one file, one directory. The repo being replaced has eight
+  // files over 800 lines.
+  'max-lines': ['error', {
+    max: 250,
+    skipBlankLines: true,
+    skipComments: true,
+  }],
+  // No inline styles and no `sx`. A visual decision lives in `styles.js` next
+  // to its component, where it has a name and can be found twice.
+  'react/forbid-dom-props': ['error', {
+    forbid: ['style'],
+  }],
+  'react/forbid-component-props': ['error', {
+    forbid: ['style', 'sx'],
+  }],
+  'no-restricted-imports': ['error', {
+    patterns: [{
+      group: ['*.styl', '**/*.styl'],
+      message: 'Migrated code takes its styling from the theme, not from Stylus.',
+    }],
+  }],
+  // Colours come from the token file or they are not a decision anyone made.
+  'no-restricted-syntax': ['error', {
+    selector: 'Literal[value=/^#(?:[0-9a-fA-F]{3,4}){1,2}$/]',
+    message: 'Colour literals belong in src/app/theme/tokens.js.',
+  }],
+};
+
+
 export default [
   {
     ignores: [
@@ -113,6 +170,65 @@ export default [
       // concurrently would not be faster in any useful sense — it would test
       // something else.
       'no-await-in-loop': 'off',
+    },
+  },
+  // ---------------------------------------------------------------------
+  // The new UI.
+  //
+  // These rules are the ones that keep "shared components, one consistent
+  // system" true after the third screen rather than only after the first, so
+  // they are on from the first file. They are scoped by exclusion: everything
+  // under `src/app/components/` is covered except the directories listed in
+  // `legacyComponents`, which are the @trendmicro and bootstrap facade and are
+  // deleted at the end of the migration. A component added tomorrow is
+  // therefore covered without anyone remembering to add it here.
+  // ---------------------------------------------------------------------
+  {
+    files: ['src/app/components/**/*.js', 'src/app/components/**/*.jsx', 'src/app/theme/**/*.js', 'src/app/theme/**/*.jsx'],
+    ignores: legacyComponents,
+    rules: newUiRules,
+  },
+  {
+    // The token file is the one place a colour may be written down.
+    files: ['src/app/theme/tokens.js'],
+    rules: {
+      'no-restricted-syntax': 0,
+    },
+  },
+  {
+    // Everything that is not the component library or the theme. Widgets and
+    // screens consume `app/components`; if they reach for MUI directly, two of
+    // them have their own button by the end of the month.
+    files: ['src/app/**/*.js', 'src/app/**/*.jsx'],
+    ignores: ['src/app/components/**', 'src/app/theme/**'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: [{
+          group: ['@mui/*', '@emotion/*'],
+          message: 'Import from app/components instead: MUI belongs behind the shared component library.',
+        }],
+      }],
+    },
+  },
+  {
+    // Screens that have been migrated. This list grows by one entry per screen
+    // and is what stops a rebuilt screen from quietly reintroducing Stylus or
+    // an inline style.
+    files: ['src/app/containers/Login/**/*.js', 'src/app/containers/Login/**/*.jsx'],
+    rules: {
+      ...newUiRules,
+      'no-restricted-imports': ['error', {
+        patterns: [
+          {
+            group: ['@mui/*', '@emotion/*'],
+            message: 'Import from app/components instead: MUI belongs behind the shared component library.',
+          },
+          {
+            group: ['*.styl', '**/*.styl'],
+            message: 'Migrated code takes its styling from the theme, not from Stylus.',
+          },
+        ],
+      }],
     },
   },
 ];

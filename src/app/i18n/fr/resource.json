@@ -645,5 +645,6 @@
   "None": "Aucun",
   "WebGL:": "WebGL :",
   "Drop files to upload": "Déposez les fichiers à charger",
-  "Uploading...": "Chargement..."
+  "Uploading...": "Chargement...",
+  "Dismiss": ""
 }

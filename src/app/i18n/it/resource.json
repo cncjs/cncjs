@@ -645,5 +645,6 @@
   "None": "Nessuno",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Trascina qui i file da caricare",
-  "Uploading...": "Caricamento..."
+  "Uploading...": "Caricamento...",
+  "Dismiss": ""
 }

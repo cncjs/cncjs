@@ -643,5 +643,6 @@
   "None": "无",
   "WebGL:": "WebGL:",
   "Drop files to upload": "将文件拖拽至此处上传",
-  "Uploading...": "正在上传..."
+  "Uploading...": "正在上传...",
+  "Dismiss": ""
 }

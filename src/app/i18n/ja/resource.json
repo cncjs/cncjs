@@ -643,5 +643,6 @@
   "None": "なし",
   "WebGL:": "WebGL:",
   "Drop files to upload": "アップロードするファイルをここにドラッグ＆ドロップ",
-  "Uploading...": "アップロード中..."
+  "Uploading...": "アップロード中...",
+  "Dismiss": ""
 }
