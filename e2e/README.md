@@ -55,7 +55,9 @@ to produce a canvas.
   tier could tell: React 17 delivers a click to the root container before
   document, so the root-close listener react-dropdown attaches when a menu
   opens was still standing in the path of the click that opened it. Nothing
-  in this suite had ever clicked a menu.
+  in this suite had ever clicked a menu. It also checks that a clicked
+  button does not leave its tooltip behind, because nearly every toolbar
+  button here is wrapped in one and they accumulate when they stop hiding.
 - **configured-widgets.spec.js** — the two widgets that render nothing in a
   default install and had therefore never been covered at all. It seeds the
   custom widget with a URL and asserts the frame it builds still carries the
