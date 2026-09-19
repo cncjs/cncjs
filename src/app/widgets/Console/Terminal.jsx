@@ -12,6 +12,14 @@ import styles from './index.styl';
 
 Terminal.applyAddon(fit);
 
+// Erase the whole line and return the cursor to column 0.
+//
+// xterm dropped `Terminal.eraseLine()` after 3.0; this sequence is what the
+// widget already used for the same job when writing incoming data, so the
+// three call sites that lost the method now go through the same path rather
+// than a second mechanism.
+const ERASE_LINE = '\x1b[2K\r';
+
 class TerminalWrapper extends PureComponent {
     static propTypes = {
       cols: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -41,6 +49,23 @@ class TerminalWrapper extends PureComponent {
 
     term = null;
 
+    /**
+     * xterm's own Terminal, behind the public wrapper.
+     *
+     * From 3.1 the package entry point is a thin facade that forwards a
+     * documented surface to the real terminal and exposes nothing else. The
+     * line editor below needs `buffer`, `eraseAttr()` and `updateRange()`,
+     * none of which are on that facade — so reaching them means going through
+     * `_core`, as the addons shipped with xterm itself do.
+     *
+     * This is private API and the widget has always depended on private API;
+     * what changed at 3.1 is only where it lives. The hardware tier is what
+     * says whether it still works.
+     */
+    get core() {
+      return this.term && this.term._core;
+    }
+
     eventHandler = {
       onResize: () => {
         const { rows, cols } = this.term;
@@ -56,7 +81,8 @@ class TerminalWrapper extends PureComponent {
         return (key, event) => {
           const { onData } = this.props;
           const term = this.term;
-          const line = term.buffer.lines.get(term.buffer.ybase + term.buffer.y);
+          const core = this.core;
+          const line = core.buffer.lines.get(core.buffer.ybase + core.buffer.y);
           const nonPrintableKey = (event.altKey || event.altGraphKey || event.ctrlKey || event.metaKey);
 
           if (!line) {
@@ -65,7 +91,7 @@ class TerminalWrapper extends PureComponent {
 
           // Home
           if (event.key === 'Home' || (event.metaKey && event.key === 'ArrowLeft')) {
-            term.buffer.x = this.prompt.length;
+            core.buffer.x = this.prompt.length;
             return;
           }
 
@@ -73,14 +99,14 @@ class TerminalWrapper extends PureComponent {
           if (event.key === 'End' || (event.metaKey && event.key === 'ArrowRight')) {
             let x = line.length - 1;
             for (; x > this.prompt.length; --x) {
-              const c = line[x][1].trim();
+              const c = line.get(x)[1].trim();
               if (c) {
                 break;
               }
             }
 
             if ((x + 1) < (line.length - 1)) {
-              term.buffer.x = (x + 1);
+              core.buffer.x = (x + 1);
             }
 
             return;
@@ -90,7 +116,7 @@ class TerminalWrapper extends PureComponent {
           if (event.key === 'Enter') {
             let buffer = '';
             for (let x = this.prompt.length; x < line.length; ++x) {
-              const c = line[x][1] || '';
+              const c = line.get(x)[1] || '';
               buffer += c;
             }
             buffer = trimEnd(buffer);
@@ -118,16 +144,16 @@ class TerminalWrapper extends PureComponent {
           // Backspace
           if (event.key === 'Backspace') {
             // Do not delete the prompt
-            if (term.buffer.x <= this.prompt.length) {
+            if (core.buffer.x <= this.prompt.length) {
               return;
             }
 
-            for (let x = term.buffer.x; x < line.length; ++x) {
-              line[x - 1] = line[x];
+            for (let x = core.buffer.x; x < line.length; ++x) {
+              line.set(x - 1, line.get(x));
             }
-            line[line.length - 1] = [term.eraseAttr(), ' ', 1];
-            term.updateRange(term.buffer.y);
-            term.refresh(term.buffer.y, term.buffer.y);
+            line.set(line.length - 1, [core.eraseAttr(), ' ', 1, 32]);
+            core.updateRange(core.buffer.y);
+            term.refresh(core.buffer.y, core.buffer.y);
             term.write('\b');
 
             return;
@@ -135,30 +161,28 @@ class TerminalWrapper extends PureComponent {
 
           // Delete
           if (event.key === 'Delete') {
-            for (let x = term.buffer.x + 1; x < line.length; ++x) {
-              line[x - 1] = line[x];
+            for (let x = core.buffer.x + 1; x < line.length; ++x) {
+              line.set(x - 1, line.get(x));
             }
-            line[line.length - 1] = [term.eraseAttr(), ' ', 1, 32];
-            term.updateRange(term.buffer.y);
-            term.refresh(term.buffer.y, term.buffer.y);
+            line.set(line.length - 1, [core.eraseAttr(), ' ', 1, 32]);
+            core.updateRange(core.buffer.y);
+            term.refresh(core.buffer.y, core.buffer.y);
 
             return;
           }
 
           // Escape
           if (event.key === 'Escape') {
-            term.eraseLine(term.buffer.y);
-            term.buffer.x = 0;
-            term.write(chalk.white(this.prompt));
+            term.write(`${ERASE_LINE}${chalk.white(this.prompt)}`);
             return;
           }
 
           // ArrowLeft
           if (event.key === 'ArrowLeft') {
-            if (term.buffer.x <= this.prompt.length) {
+            if (core.buffer.x <= this.prompt.length) {
               return;
             }
-            term.buffer.x--;
+            core.buffer.x--;
             return;
           }
 
@@ -166,13 +190,13 @@ class TerminalWrapper extends PureComponent {
           if (event.key === 'ArrowRight') {
             let x = line.length - 1;
             for (; x > 0; --x) {
-              const c = line[x][1].trim();
+              const c = line.get(x)[1].trim();
               if (c) {
                 break;
               }
             }
-            if (term.buffer.x <= x) {
-              term.buffer.x++;
+            if (core.buffer.x <= x) {
+              core.buffer.x++;
             }
 
             return;
@@ -185,20 +209,14 @@ class TerminalWrapper extends PureComponent {
             } else if (this.history.index > 0) {
               historyCommand = this.history.back() || '';
             }
-            term.eraseLine(term.buffer.y);
-            term.buffer.x = 0;
-            term.write(chalk.white(this.prompt));
-            term.write(chalk.white(historyCommand));
+            term.write(`${ERASE_LINE}${chalk.white(this.prompt)}${chalk.white(historyCommand)}`);
             return;
           }
 
           // ArrowDown
           if (event.key === 'ArrowDown') {
             historyCommand = this.history.forward() || '';
-            term.eraseLine(term.buffer.y);
-            term.buffer.x = 0;
-            term.write(chalk.white(this.prompt));
-            term.write(chalk.white(historyCommand));
+            term.write(`${ERASE_LINE}${chalk.white(this.prompt)}${chalk.white(historyCommand)}`);
             return;
           }
 
@@ -221,10 +239,10 @@ class TerminalWrapper extends PureComponent {
           }
 
           // Make sure the cursor position will not exceed the number of columns
-          if (term.buffer.x < term.cols) {
+          if (core.buffer.x < term.cols) {
             let x = line.length - 1;
-            for (; x > term.buffer.x; --x) {
-              line[x] = line[x - 1];
+            for (; x > core.buffer.x; --x) {
+              line.set(x, line.get(x - 1));
             }
             term.write(chalk.white(key));
           }
@@ -363,13 +381,13 @@ class TerminalWrapper extends PureComponent {
     }
 
     writeln(data) {
-      const line = this.term.buffer.lines.get(this.term.buffer.ybase + this.term.buffer.y);
-      const cursorX = this.term.buffer.x;
+      const line = this.core.buffer.lines.get(this.core.buffer.ybase + this.core.buffer.y);
+      const cursorX = this.core.buffer.x;
       let input = '';
 
       if (line) {
         for (let x = this.prompt.length; x < line.length; ++x) {
-          input += line[x][1] || '';
+          input += line.get(x)[1] || '';
         }
         input = trimEnd(input);
       }
@@ -378,7 +396,7 @@ class TerminalWrapper extends PureComponent {
       const cursorLeft = input.length - cursorOffset;
       const restoreCursor = cursorLeft > 0 ? `\x1b[${cursorLeft}D` : '';
 
-      this.term.write(`\x1b[2K\r${data}\r\n${chalk.white(this.prompt + input)}${restoreCursor}`);
+      this.term.write(`${ERASE_LINE}${data}\r\n${chalk.white(this.prompt + input)}${restoreCursor}`);
     }
 
     render() {

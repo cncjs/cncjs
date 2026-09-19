@@ -8712,7 +8712,7 @@ __metadata:
     webpack-dev-server: ^5.2.6
     webpack-node-externals: ~1.7.2
     winston: ~3.14.1
-    xterm: ~3.0.2
+    xterm: ~3.8.1
   bin:
     cnc: ./bin/cnc
     cncjs: ./bin/cncjs
@@ -23169,10 +23169,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xterm@npm:~3.0.2":
-  version: 3.0.2
-  resolution: "xterm@npm:3.0.2"
-  checksum: 560b3de48eddc5c7ea8f790c26f57999c76690e7a27faf802fbe7f07126381aac99c5572c22338dec8080942d75088427e75ace89fcb3e00049aeb70f9be32fb
+"xterm@npm:~3.8.1":
+  version: 3.8.1
+  resolution: "xterm@npm:3.8.1"
+  checksum: e7d84dc7dd1049ed231ec90c39603a114e1403f65e92111622b1d90eacb60e42f12c7b9f99a360d957639907dc3d972277df8a2db65799151a19a7d509ebb650
   languageName: node
   linkType: hard
 
