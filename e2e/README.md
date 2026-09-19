@@ -164,6 +164,28 @@ machine with nothing plugged in.
 CNCJS_TEST_PORT=COM3 yarn test:e2e --project=hardware
 ```
 
+### What each spec in this tier needs
+
+An open port is the price of admission for all of them, but three specs need
+something the smoke tier cannot give them at all, which is why they live here
+rather than there:
+
+- `console.spec.js` — the line editor only holds real content once a
+  controller has written to the terminal. xterm 3.8 renders to a canvas, so
+  the assertions read the buffer through the React instance rather than the
+  DOM.
+- `dashboard.spec.js` — the G-code list replaces the 3D scene only when there
+  is no WebGL, and only renders rows once a file is loaded. The spec deletes
+  `window.WebGLRenderingContext` before the bundle runs; loading a file needs
+  a port, because `POST /api/gcode` answers `Controller not found` without
+  one.
+- `watch-directory.spec.js` — needs **both** a port (the menu item that opens
+  the dialog is disabled without one) **and** a watch directory on the server.
+  `watchDirectory` is read once at server start, so it cannot be attached to a
+  running instance. The spec skips with an explanatory message when the server
+  under test reports `{"configured": false}`; start the dev server with
+  `--watch-directory <path>` to run it.
+
 **These specs move the machine.** Each jog is symmetric — every test returns
 the axis to where it started, and nothing touches the work coordinate system
 (no `G10`, no `G92`) — but with a controller wired to a powered machine, the
