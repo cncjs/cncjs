@@ -5,9 +5,9 @@ import styles from './index.styl';
 
 const Center = ({
   className,
-  horizontal,
-  vertical,
-  stretched,
+  horizontal = false,
+  vertical = false,
+  stretched = false,
   ...props
 }) => (
   <div
@@ -24,12 +24,6 @@ Center.propTypes = {
   horizontal: PropTypes.bool,
   vertical: PropTypes.bool,
   stretched: PropTypes.bool
-};
-
-Center.defaultProps = {
-  horizontal: false,
-  vertical: false,
-  stretched: false
 };
 
 export default Center;
