@@ -293,6 +293,35 @@ What it locks in:
 The specs assert on `/api/controllers`, which needs no machine attached and
 answers `[]`.
 
+### The sign-in screen lives here too
+
+`login-screen.spec.js` drives the screen in a browser, which is why this tier
+configures one. It is the only tier that can. With no account configured the
+bootstrap sign-in succeeds for everyone, so `ProtectedRoute` mounts the
+workspace, `App` finds `/login` outside its accepted paths and redirects to
+`/workspace` — against the dev server the screen does not render at all, and a
+smoke spec for it would sit waiting for a form that is never there.
+
+It locks in what the screen is for rather than how it is built: an
+unauthenticated visitor lands on it, both fields and the button are reachable
+by accessible name, the password stays masked, the recovery link points at the
+FAQ, no alert is announced before anything has been submitted, a wrong password
+produces one on screen, what was typed is what gets posted, and the right
+password reaches the workspace.
+
+Two of those are worth spelling out. "What was typed is what gets posted" reads
+the request body rather than the outcome, because both fields are uncontrolled
+and read through a ref at submit time: a rewrite that makes one controlled but
+forgets its `onChange` submits an empty string, which the server rejects — so
+the wrong-password case stays green while sign-in is broken for everyone. And
+the "no alert before submission" case exists because rendering the alert
+unconditionally and hiding it with CSS looks identical on screen and announces
+a failure to a screen reader on every page load.
+
+The locators use roles and accessible names rather than classes or DOM shape,
+so rebuilding the screen on another component library is not automatically a
+failure.
+
 ## Running the dev server for long sessions
 
 Two things worth knowing if you leave `yarn win-dev` up for hours while
