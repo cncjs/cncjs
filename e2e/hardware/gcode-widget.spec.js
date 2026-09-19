@@ -93,6 +93,13 @@ test.describe('gcode widget, job loaded', () => {
     // Absent while idle, present once loaded: the bar's existence is itself
     // the statement that a job is waiting.
     await expect(widget(grbl.page).getByRole('progressbar')).toHaveCount(1, { timeout: 15000 });
+
+    // The figure has to be readable at zero, and it was not before this widget
+    // was rebuilt. react-bootstrap rendered the label inside the fill —
+    // `<div role="progressbar" ...>0%</div>` with the width driven by the
+    // value — so at 0% the text sat in a box of zero width and Playwright
+    // reported it hidden. That is the exact moment an operator most needs to
+    // read it: the job is loaded and has not started.
     await expect(widget(grbl.page).getByText('0%', { exact: true })).toBeVisible();
   });
 
