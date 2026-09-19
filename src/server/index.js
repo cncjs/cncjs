@@ -1,5 +1,6 @@
 import dns from 'dns';
 import fs from 'fs';
+import http from 'http';
 import os from 'os';
 import path from 'path';
 import url from 'url';
@@ -15,12 +16,12 @@ import set from 'lodash/set';
 import size from 'lodash/size';
 import trimEnd from 'lodash/trimEnd';
 import uniqWith from 'lodash/uniqWith';
-import webappengine from 'webappengine';
 import settings from './config/settings';
 import app from './app';
 import cncengine from './services/cncengine';
 import monitor from './services/monitor';
 import config from './services/configstore';
+import createWebApp from './lib/create-web-app';
 import logger, { setLevel } from './lib/logger';
 import urljoin from './lib/urljoin';
 
@@ -101,7 +102,7 @@ const createServer = (options, callback) => {
     }
   }
 
-  const { port = 0, host, backlog } = options;
+  const { port = 0, host = '0.0.0.0', backlog = 511 } = options;
   const mountPoints = uniqWith([
     ...ensureArray(options.mountPoints),
     ...ensureArray(config.get('mountPoints'))
@@ -231,40 +232,45 @@ const createServer = (options, callback) => {
     server: () => app()
   });
 
-  webappengine({ port, host, backlog, routes })
-    .on('ready', (server) => {
-      // cncengine service
-      cncengine.start(server, options.controller || config.get('controller', ''));
+  const server = http.createServer(createWebApp(routes));
 
-      const address = server.address().address;
-      const port = server.address().port;
+  // The socket.io server and every controller add listeners of their own.
+  server.setMaxListeners(0);
 
-      callback && callback(null, {
-        address,
-        port,
-        mountPoints,
-      });
+  server.on('error', (err) => {
+    callback && callback(err);
+    log.error(err);
+  });
 
-      if (address !== '0.0.0.0') {
-        log.info('Starting the server at ' + chalk.yellow(`http://${address}:${port}`));
+  server.listen(port, host, backlog, () => {
+    // cncengine service
+    cncengine.start(server, options.controller || config.get('controller', ''));
+
+    const address = server.address().address;
+    const port = server.address().port;
+
+    callback && callback(null, {
+      address,
+      port,
+      mountPoints,
+    });
+
+    if (address !== '0.0.0.0') {
+      log.info('Starting the server at ' + chalk.yellow(`http://${address}:${port}`));
+      return;
+    }
+
+    dns.lookup(os.hostname(), { family: 4, all: true }, (err, addresses) => {
+      if (err) {
+        log.error('Can\'t resolve host name:', err);
         return;
       }
 
-      dns.lookup(os.hostname(), { family: 4, all: true }, (err, addresses) => {
-        if (err) {
-          log.error('Can\'t resolve host name:', err);
-          return;
-        }
-
-        addresses.forEach(({ address, family }) => {
-          log.info('Starting the server at ' + chalk.yellow(`http://${address}:${port}`));
-        });
+      addresses.forEach(({ address, family }) => {
+        log.info('Starting the server at ' + chalk.yellow(`http://${address}:${port}`));
       });
-    })
-    .on('error', (err) => {
-      callback && callback(err);
-      log.error(err);
     });
+  });
 };
 
 export {
