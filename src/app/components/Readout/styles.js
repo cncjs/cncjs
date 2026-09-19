@@ -11,8 +11,8 @@ export const Label = styled('div')(({ theme }) => ({
 
 export const Line = styled('div')(({ theme }) => ({
   display: 'flex',
-  alignItems: 'baseline',
-  gap: theme.spacing(0.75),
+  alignItems: 'flex-end',
+  gap: theme.spacing(0.5),
 }));
 
 /**
@@ -32,8 +32,19 @@ export const Value = styled('div', {
   color: theme.palette.text.primary,
 }));
 
-export const Unit = styled('div')(({ theme }) => ({
+/**
+ * The unit stays small and steps back from the figure.
+ *
+ * On an emphasised reading it takes the accent, which is the one place the
+ * accent is used for something that is not a control: it separates the figure
+ * from what the figure is in, at the size where they would otherwise run
+ * together.
+ */
+export const Unit = styled('div', {
+  shouldForwardProp: (prop) => prop !== 'emphasis',
+})(({ theme, emphasis }) => ({
   ...theme.typography.readout,
-  fontSize: theme.typography.caption.fontSize,
-  color: theme.palette.text.secondary,
+  fontSize: emphasis ? theme.typography.body1.fontSize : theme.typography.caption.fontSize,
+  color: emphasis ? theme.palette.primary.main : theme.palette.text.secondary,
+  paddingBottom: emphasis ? theme.spacing(0.5) : 0,
 }));

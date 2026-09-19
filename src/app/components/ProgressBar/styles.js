@@ -2,8 +2,9 @@ import { styled } from '@mui/material/styles';
 
 export const Track = styled('div')(({ theme }) => ({
   height: theme.spacing(1),
+  // No border. The track is a tone, not a container: an outlined bar reads as
+  // a control that can be pressed.
   backgroundColor: theme.tokens.color.borderSubtle,
-  border: `${theme.tokens.border.hairline} solid ${theme.tokens.color.border}`,
 }));
 
 /**

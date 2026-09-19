@@ -111,6 +111,7 @@ const createAppTheme = () => createTheme({
     border,
     color,
     focus,
+    lineHeight,
     size,
   },
 

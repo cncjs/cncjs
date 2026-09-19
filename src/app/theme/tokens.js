@@ -92,6 +92,9 @@ export const letterSpacing = {
 export const lineHeight = {
   body: 1.5,
   tight: 1.2,
+  // A block of small monospace readings needs air between the lines or it
+  // reads as a wall.
+  detail: 1.7,
 };
 
 export const border = {

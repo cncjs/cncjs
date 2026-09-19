@@ -1,6 +1,6 @@
 import React from 'react';
-import Columns from 'app/components/Columns';
 import DataTable from 'app/components/DataTable';
+import Details from 'app/components/Details';
 import ProgressBar from 'app/components/ProgressBar';
 import Readout from 'app/components/Readout';
 import Stack from 'app/components/Stack';
@@ -16,7 +16,7 @@ import {
 } from '../selectors';
 
 /**
- * The loaded job, as a panel of readings.
+ * The loaded job.
  *
  * It arranges shared components and holds no styling of its own: the look
  * lives in the component library, the figures come from the selectors, and the
@@ -24,12 +24,11 @@ import {
  * widget in the workspace, a tile in a grid or a screen — nothing here reads a
  * width, a container or a placement.
  *
- * The six readings are paired into two columns rather than stacked, because a
- * panel beside a machine is read at a glance and a single column of them
- * scrolls the last ones out of sight. Progress is the one figure the panel is
- * about, so it is the one that gets the large face — and it appears only when
- * there is a job, because a large 0% with nothing loaded is a lie told
- * prominently.
+ * The shape follows the panel the design mockup draws: one figure the panel is
+ * about, the bar under it, then everything else quiet and small. Progress
+ * carries no label of its own because the panel header already names it, and
+ * it appears only when there is a job — a large 0% with nothing loaded is a
+ * lie told prominently.
  */
 const JobProgress = ({ state }) => {
   const { units, total, sent, received, startTime, finishTime, elapsedTime, remainingTime, bbox } = state;
@@ -41,11 +40,21 @@ const JobProgress = ({ state }) => {
     <Surface>
       <Stack>
         {hasJob && (
-          <Readout label={i18n._('Progress')} value={`${percent}%`} emphasis />
+          <Readout value={percent} unit="%" emphasis />
         )}
         {hasJob && (
           <ProgressBar percent={percent} label={i18n._('Job progress')} />
         )}
+        <Details
+          items={[
+            { label: i18n._('Sent'), value: formatCount(sent, total) },
+            { label: i18n._('Received'), value: formatCount(received, total) },
+            { label: i18n._('Start Time'), value: formatTimestamp(startTime) },
+            { label: i18n._('Elapsed Time'), value: formatDuration(elapsedTime) },
+            { label: i18n._('Finish Time'), value: formatTimestamp(finishTime) },
+            { label: i18n._('Remaining Time'), value: formatDuration(remainingTime) },
+          ]}
+        />
         <DataTable
           data-table="dimension"
           headings={[i18n._('Axis'), i18n._('Min'), i18n._('Max'), i18n._('Dimension')]}
@@ -57,14 +66,6 @@ const JobProgress = ({ state }) => {
             `${span} ${displayUnits}`,
           ])}
         />
-        <Columns>
-          <Readout label={i18n._('Sent')} value={formatCount(sent, total)} />
-          <Readout label={i18n._('Received')} value={formatCount(received, total)} />
-          <Readout label={i18n._('Start Time')} value={formatTimestamp(startTime)} />
-          <Readout label={i18n._('Elapsed Time')} value={formatDuration(elapsedTime)} />
-          <Readout label={i18n._('Finish Time')} value={formatTimestamp(finishTime)} />
-          <Readout label={i18n._('Remaining Time')} value={formatDuration(remainingTime)} />
-        </Columns>
       </Stack>
     </Surface>
   );
