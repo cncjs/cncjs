@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 import { Button, ButtonGroup, ButtonToolbar } from 'app/components/Buttons';
 import api from 'app/api';
@@ -226,11 +225,11 @@ class Workspace extends PureComponent {
 
     resizeDefaultContainer = () => {
       const sidebar = document.querySelector('#sidebar');
-      const primaryContainer = ReactDOM.findDOMNode(this.primaryContainer);
-      const secondaryContainer = ReactDOM.findDOMNode(this.secondaryContainer);
-      const primaryToggler = ReactDOM.findDOMNode(this.primaryToggler);
-      const secondaryToggler = ReactDOM.findDOMNode(this.secondaryToggler);
-      const defaultContainer = ReactDOM.findDOMNode(this.defaultContainer);
+      const primaryContainer = this.primaryContainer;
+      const secondaryContainer = this.secondaryContainer;
+      const primaryToggler = this.primaryToggler;
+      const secondaryToggler = this.secondaryToggler;
+      const defaultContainer = this.defaultContainer;
       const { showPrimaryContainer, showSecondaryContainer } = this.state;
 
       { // Mobile-Friendly View

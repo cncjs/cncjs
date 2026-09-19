@@ -4,7 +4,6 @@ import { ensureNumber, ensureString } from 'ensure-type';
 import uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
 import Select from 'react-select';
 import styled from 'styled-components';
 import { Button } from 'app/components/Buttons';
@@ -483,7 +482,7 @@ class Tool extends PureComponent {
                   >
                     <Dropdown
                       onSelect={(eventKey) => {
-                        const el = ReactDOM.findDOMNode(this.fields.toolProbeCustomCommands);
+                        const el = this.fields.toolProbeCustomCommands;
                         if (el) {
                           insertAtCaret(el, eventKey);
                         }
@@ -577,7 +576,7 @@ class Tool extends PureComponent {
                   <div>
                     <div style={{ marginBottom: 8 }}>
                       <TextEditable
-                        ref={c => {
+                        innerRef={c => {
                           this.fields.toolProbeCustomCommands = c;
                         }}
                         style={{

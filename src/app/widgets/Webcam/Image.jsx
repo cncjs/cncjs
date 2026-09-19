@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 
 class Image extends PureComponent {
     static propTypes = {
+      innerRef: PropTypes.func,
       src: PropTypes.string
     };
 
@@ -11,11 +12,12 @@ class Image extends PureComponent {
     };
 
     render() {
-      const { src, ...props } = this.props;
+      const { innerRef, src, ...props } = this.props;
 
       return (
         <img
           {...props}
+          ref={innerRef}
           src={src}
           alt=""
         />

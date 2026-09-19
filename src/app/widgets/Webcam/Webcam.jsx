@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import Slider from 'rc-slider';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
 import Anchor from 'app/components/Anchor';
 import { Tooltip } from 'app/components/Tooltip';
 import WebcamComponent from 'app/components/Webcam';
@@ -45,7 +44,7 @@ class Webcam extends PureComponent {
     const { state } = this.props;
 
     if (this.imageSource) {
-      const el = ReactDOM.findDOMNode(this.imageSource);
+      const el = this.imageSource;
       el.src = '';
 
       setTimeout(() => {
@@ -117,7 +116,7 @@ class Webcam extends PureComponent {
               />
             ) : (
               <Image
-                ref={node => {
+                innerRef={node => {
                   this.imageSource = node;
                 }}
                 src={mapMetaAddressToHostname(url)}

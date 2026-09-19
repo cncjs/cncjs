@@ -6,7 +6,6 @@ import _throttle from 'lodash/throttle';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import {
   IMPERIAL_UNITS,
@@ -289,7 +288,7 @@ class Visualizer extends Component {
       this.addResizeEventListener();
       store.on('change', this.changeMachineProfile);
       if (this.node) {
-        const el = ReactDOM.findDOMNode(this.node);
+        const el = this.node;
         this.createScene(el);
         this.resizeRenderer();
       }
@@ -603,7 +602,7 @@ class Visualizer extends Component {
     }
 
     getVisibleWidth() {
-      const el = ReactDOM.findDOMNode(this.node);
+      const el = this.node;
       const visibleWidth = Math.max(
         Number(el && el.parentNode && el.parentNode.clientWidth) || 0,
         360
@@ -634,7 +633,7 @@ class Visualizer extends Component {
       // opening view used to be framed for a canvas width it never actually
       // had — 880 px when measured at mount, against the 820 px it renders at
       // from the second frame onwards.
-      const el = ReactDOM.findDOMNode(this.node);
+      const el = this.node;
       const container = el && el.parentNode;
       if (container && typeof ResizeObserver !== 'undefined') {
         this.resizeObserver = new ResizeObserver(this.throttledResize);

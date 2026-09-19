@@ -2,7 +2,6 @@ import path from 'path';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
 import InfiniteTree from 'react-infinite-tree';
 import api from 'app/api';
 import Modal from 'app/components/Modal';
@@ -247,7 +246,7 @@ class WatchDirectory extends PureComponent {
         return;
       }
 
-      const elTable = ReactDOM.findDOMNode(this.tableNode);
+      const elTable = this.tableNode;
       const elTree = this.treeNode.tree.options.el;
       const tableHeaders = elTable.querySelectorAll('tr > th');
       const colgroup = elTree.querySelector('colgroup');

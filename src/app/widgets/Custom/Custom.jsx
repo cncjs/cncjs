@@ -3,10 +3,8 @@ import Uri from 'jsuri';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
 import settings from 'app/config/settings';
 import store from 'app/store';
-import Iframe from 'app/components/Iframe';
 import ResizeObserver from 'app/lib/ResizeObserver';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
@@ -166,7 +164,14 @@ class Custom extends PureComponent {
         .toString();
 
       return (
-        <Iframe
+        // A plain <iframe> rather than @trendmicro/react-iframe. That
+        // component is a class with no ref forwarding, so the element it
+        // rendered could only ever be reached through findDOMNode. The
+        // attributes below are the ones it emitted, its defaults included --
+        // the sandbox in particular, which is what keeps a URL the operator
+        // typed from reaching the rest of the app.
+        <iframe
+          title={i18n._('Custom Widget')}
           ref={node => {
             if (this.observer) {
               this.observer.disconnect();
@@ -178,7 +183,7 @@ class Custom extends PureComponent {
               return;
             }
 
-            this.iframe = ReactDOM.findDOMNode(node);
+            this.iframe = node;
 
             // Use ResizeObserver to detect DOM changes within the iframe window
             this.iframe.addEventListener('load', () => {
@@ -194,7 +199,11 @@ class Custom extends PureComponent {
             });
           }}
           src={iframeSrc}
+          width="100%"
+          height="100%"
+          sandbox="allow-forms allow-modals allow-popups allow-same-origin allow-scripts"
           style={{
+            borderWidth: 0,
             verticalAlign: 'top'
           }}
         />
