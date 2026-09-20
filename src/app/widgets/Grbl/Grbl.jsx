@@ -149,7 +149,7 @@ class Grbl extends PureComponent {
                     </div>
                   </div>
                   <div className="col col-xs-8">
-                    <div className={styles.well}>
+                    <div className={styles.well} data-reading="state">
                       {activeState}
                     </div>
                   </div>
@@ -161,7 +161,7 @@ class Grbl extends PureComponent {
                     </div>
                   </div>
                   <div className="col col-xs-8">
-                    <div className={styles.well}>
+                    <div className={styles.well} data-reading="feedrate">
                       {feedrate}
                     </div>
                   </div>
@@ -173,7 +173,7 @@ class Grbl extends PureComponent {
                     </div>
                   </div>
                   <div className="col col-xs-8">
-                    <div className={styles.well}>
+                    <div className={styles.well} data-reading="spindle">
                       {spindle}
                     </div>
                   </div>
@@ -185,7 +185,7 @@ class Grbl extends PureComponent {
                     </div>
                   </div>
                   <div className="col col-xs-8">
-                    <div className={styles.well}>
+                    <div className={styles.well} data-reading="tool">
                       {tool}
                     </div>
                   </div>

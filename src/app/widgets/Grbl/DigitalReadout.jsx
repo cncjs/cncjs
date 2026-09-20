@@ -13,6 +13,7 @@ const DigitalReadout = (props) => {
       </div>
       <div className="col col-xs-2">
         <div
+          data-override={label}
           className={classNames(
             styles.well,
             styles.droDisplay
