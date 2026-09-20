@@ -1,15 +1,11 @@
-import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
 import { styled } from '@mui/material/styles';
+import { Root as BaseSurface } from '../Surface/styles';
 
-/**
- * The migrated subtree's own baseline.
- *
- * `ScopedCssBaseline` is what makes a screen-by-screen migration possible: it
- * applies the reset and the surface colour to this element and its children
- * only, so every screen still on bootstrap keeps rendering exactly as it did.
- */
-export const Surface = styled(ScopedCssBaseline)(({ theme }) => ({
+// The baseline itself lives in `Surface`, which every migrated subtree starts
+// at. A screen is that plus the page it sits on.
+export const Surface = styled(BaseSurface)(({ theme }) => ({
   minHeight: '100vh',
+  backgroundColor: theme.palette.background.default,
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'flex-start',

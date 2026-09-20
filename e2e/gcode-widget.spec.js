@@ -71,7 +71,11 @@ test.describe('gcode widget, idle', () => {
 
     // The bar is rendered only when `total > 0`. A bar sitting at 0% with no
     // job loaded invites the reading that a job is loaded and stalled.
-    await expect(widget(cncjs.page).locator('.progress')).toHaveCount(0);
+    //
+    // Located by role rather than by class: `.progress` is bootstrap's wrapper
+    // and would stop existing the moment this widget is rebuilt, which would
+    // turn this assertion green for the wrong reason.
+    await expect(widget(cncjs.page).getByRole('progressbar')).toHaveCount(0);
   });
 
   test('keeps its readings when the widget is minimised and restored', async ({ cncjs }) => {

@@ -1,26 +1,24 @@
 import classNames from 'classnames';
-import mapValues from 'lodash/mapValues';
-import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
-import controller from 'app/lib/controller';
+import GCodeModule from 'app/features/gcode/GCodeModule';
+import JobProgress from 'app/features/gcode/JobProgress';
 import i18n from 'app/lib/i18n';
-import { mapPositionToUnits } from 'app/lib/units';
 import WidgetConfig from '../WidgetConfig';
-import GCode from './GCode';
-import {
-  GRBL,
-  MARLIN,
-  SMOOTHIE,
-  TINYG,
-  // Units
-  IMPERIAL_UNITS,
-  METRIC_UNITS
-} from '../../constants';
 import styles from './index.styl';
 
+/**
+ * The G-code feature, placed in the workspace as a widget.
+ *
+ * This file is now only the placement: the panel chrome, the collapse toggle
+ * and the fork/remove menu, all of which belong to the workspace rather than
+ * to G-code. What the job actually is lives in `app/features/gcode` — the
+ * module that knows the readings, and a view that arranges them. Put the same
+ * two somewhere else and the feature moves with them; this file would not
+ * follow.
+ */
 class GCodeWidget extends PureComponent {
     static propTypes = {
       widgetId: PropTypes.string.isRequired,
@@ -56,233 +54,22 @@ class GCodeWidget extends PureComponent {
       }
     };
 
-    controllerEvents = {
-      'serialport:open': (options) => {
-        const { port } = options;
-        this.setState({ port: port });
-      },
-      'serialport:close': (options) => {
-        const initialState = this.getInitialState();
-        this.setState({ ...initialState });
-      },
-      'gcode:unload': () => {
-        this.setState({
-          bbox: {
-            min: {
-              x: 0,
-              y: 0,
-              z: 0
-            },
-            max: {
-              x: 0,
-              y: 0,
-              z: 0
-            },
-            delta: {
-              x: 0,
-              y: 0,
-              z: 0
-            }
-          }
-        });
-      },
-      'sender:status': (data) => {
-        const { total, sent, received, startTime, finishTime, elapsedTime, remainingTime } = data;
-
-        this.setState({
-          total,
-          sent,
-          received,
-          startTime,
-          finishTime,
-          elapsedTime,
-          remainingTime
-        });
-      },
-      'controller:state': (type, state) => {
-        // Grbl
-        if (type === GRBL) {
-          const { parserstate } = { ...state };
-          const { modal = {} } = { ...parserstate };
-          const units = {
-            'G20': IMPERIAL_UNITS,
-            'G21': METRIC_UNITS
-          }[modal.units] || this.state.units;
-
-          if (this.state.units !== units) {
-            this.setState({ units: units });
-          }
-        }
-
-        // Marlin
-        if (type === MARLIN) {
-          const { modal = {} } = { ...state };
-          const units = {
-            'G20': IMPERIAL_UNITS,
-            'G21': METRIC_UNITS
-          }[modal.units] || this.state.units;
-
-          if (this.state.units !== units) {
-            this.setState({ units: units });
-          }
-        }
-
-        // Smoothie
-        if (type === SMOOTHIE) {
-          const { parserstate } = { ...state };
-          const { modal = {} } = { ...parserstate };
-          const units = {
-            'G20': IMPERIAL_UNITS,
-            'G21': METRIC_UNITS
-          }[modal.units] || this.state.units;
-
-          if (this.state.units !== units) {
-            this.setState({ units: units });
-          }
-        }
-
-        // TinyG
-        if (type === TINYG) {
-          const { sr } = { ...state };
-          const { modal = {} } = { ...sr };
-          const units = {
-            'G20': IMPERIAL_UNITS,
-            'G21': METRIC_UNITS
-          }[modal.units] || this.state.units;
-
-          if (this.state.units !== units) {
-            this.setState({ units: units });
-          }
-        }
-      }
-    };
-
-    pubsubTokens = [];
-
-    componentDidMount() {
-      this.subscribe();
-      this.addControllerEvents();
-    }
-
-    componentWillUnmount() {
-      this.removeControllerEvents();
-      this.unsubscribe();
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-      const {
-        minimized
-      } = this.state;
-
-      this.config.set('minimized', minimized);
+    componentDidUpdate() {
+      this.config.set('minimized', this.state.minimized);
     }
 
     getInitialState() {
       return {
         minimized: this.config.get('minimized', false),
-        isFullscreen: false,
-
-        port: controller.port,
-        units: METRIC_UNITS,
-
-        // G-code Status (from server)
-        total: 0,
-        sent: 0,
-        received: 0,
-        startTime: 0,
-        finishTime: 0,
-        elapsedTime: 0,
-        remainingTime: 0,
-
-        // Bounding box
-        bbox: {
-          min: {
-            x: 0,
-            y: 0,
-            z: 0
-          },
-          max: {
-            x: 0,
-            y: 0,
-            z: 0
-          },
-          delta: {
-            x: 0,
-            y: 0,
-            z: 0
-          }
-        }
+        isFullscreen: false
       };
-    }
-
-    subscribe() {
-      const tokens = [
-        pubsub.subscribe('gcode:bbox', (msg, bbox) => {
-          const dX = bbox.max.x - bbox.min.x;
-          const dY = bbox.max.y - bbox.min.y;
-          const dZ = bbox.max.z - bbox.min.z;
-
-          this.setState({
-            bbox: {
-              min: {
-                x: bbox.min.x,
-                y: bbox.min.y,
-                z: bbox.min.z
-              },
-              max: {
-                x: bbox.max.x,
-                y: bbox.max.y,
-                z: bbox.max.z
-              },
-              delta: {
-                x: dX,
-                y: dY,
-                z: dZ
-              }
-            }
-          });
-        })
-      ];
-      this.pubsubTokens = this.pubsubTokens.concat(tokens);
-    }
-
-    unsubscribe() {
-      this.pubsubTokens.forEach((token) => {
-        pubsub.unsubscribe(token);
-      });
-      this.pubsubTokens = [];
-    }
-
-    addControllerEvents() {
-      Object.keys(this.controllerEvents).forEach(eventName => {
-        const callback = this.controllerEvents[eventName];
-        controller.addListener(eventName, callback);
-      });
-    }
-
-    removeControllerEvents() {
-      Object.keys(this.controllerEvents).forEach(eventName => {
-        const callback = this.controllerEvents[eventName];
-        controller.removeListener(eventName, callback);
-      });
     }
 
     render() {
       const { widgetId } = this.props;
       const { minimized, isFullscreen } = this.state;
-      const { units, bbox } = this.state;
+      const actions = { ...this.actions };
       const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
-      const state = {
-        ...this.state,
-        bbox: mapValues(bbox, (position) => {
-          return mapValues(position, (pos, axis) => {
-            return mapPositionToUnits(pos, units);
-          });
-        })
-      };
-      const actions = {
-        ...this.actions
-      };
 
       return (
         <Widget aria-label="G-code widget" fullscreen={isFullscreen}>
@@ -360,10 +147,14 @@ class GCodeWidget extends PureComponent {
               { [styles.hidden]: minimized }
             )}
           >
-            <GCode
-              state={state}
-              actions={actions}
-            />
+            {/*
+              * The module stays mounted while the panel is collapsed. Hiding is
+              * the chrome's business; unmounting would drop the controller
+              * subscriptions and lose the loaded job.
+              */}
+            <GCodeModule>
+              {(state) => <JobProgress state={state} />}
+            </GCodeModule>
           </Widget.Content>
         </Widget>
       );

@@ -54,6 +54,10 @@ export const color = {
   danger: '#c02a20',
   dangerHover: '#9e2018',
 
+  // The colour of a machine that is moving. It arrives with the first screen
+  // that has something running to report, and not before.
+  running: '#1c8a4b',
+
   // Distinct from the accent on purpose: a focus ring that matches the
   // primary colour disappears the moment it lands on a primary button.
   focusRing: '#4ea3ff',
@@ -66,6 +70,8 @@ export const fontSize = {
   control: '14px',
   panelTitle: '13px',
   screenTitle: '20px',
+  // The one figure a panel is actually about, read from across a workshop.
+  readout: '32px',
 };
 
 export const fontWeight = {
@@ -86,6 +92,9 @@ export const letterSpacing = {
 export const lineHeight = {
   body: 1.5,
   tight: 1.2,
+  // A block of small monospace readings needs air between the lines or it
+  // reads as a wall.
+  detail: 1.7,
 };
 
 export const border = {
