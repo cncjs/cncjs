@@ -58,6 +58,16 @@ export const color = {
   // that has something running to report, and not before.
   running: '#1c8a4b',
 
+  // The colour of a machine that is ready but not moving. It arrives with the
+  // first machine state chip, because that is the first place the three state
+  // colours can be seen next to each other and judged as a set.
+  ready: '#a86b00',
+
+  // A machine that is neither: check mode, sleeping, or not reporting at all.
+  // Deliberately colourless — a grey dot is a statement that there is nothing
+  // to say, and inventing a fourth hue would say there is.
+  inactive: '#aab2b9',
+
   // Distinct from the accent on purpose: a focus ring that matches the
   // primary colour disappears the moment it lands on a primary button.
   focusRing: '#4ea3ff',
@@ -124,3 +134,44 @@ export const size = {
 
 // MUI's spacing unit. The mockup's rhythm is built on 8 with half steps.
 export const spacingUnit = 8;
+
+/**
+ * The four tones a machine state can be shown in.
+ *
+ * Each is a tint to sit on, a hairline to sit in, the state colour itself as a
+ * dot, and a dark shade of the same hue for the word. That recipe is taken
+ * from the one chip the mockup actually draws — the amber "ready" — and the
+ * dots are `color.running`, `color.ready`, `color.danger` and
+ * `color.inactive`, so the chip cannot drift away from the colour the rest of
+ * the application uses for the same idea.
+ *
+ * ONLY `ready` IS FROM THE MOCKUP. The green and red rows are built to the
+ * same recipe and are the first thing to look at when judging this screen: a
+ * set of state colours is judged as a set, not one at a time.
+ */
+export const machineState = {
+  running: {
+    tint: '#e9f5ee',
+    border: '#a9d3bb',
+    dot: color.running,
+    text: '#146035',
+  },
+  ready: {
+    tint: '#fdf6e6',
+    border: '#e0c58a',
+    dot: color.ready,
+    text: '#7a4f00',
+  },
+  stopped: {
+    tint: '#fbeceb',
+    border: '#e8b0ab',
+    dot: color.danger,
+    text: '#8a1e17',
+  },
+  inactive: {
+    tint: color.surface,
+    border: color.border,
+    dot: color.inactive,
+    text: color.textMuted,
+  },
+};

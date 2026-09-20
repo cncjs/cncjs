@@ -647,5 +647,11 @@
   "Uploading...": "Uploading...",
   "Dismiss": "Dismiss",
   "Username is required": "Username is required",
-  "Password is required": "Password is required"
+  "Password is required": "Password is required",
+  "Job progress": "Job progress",
+  "Feed Rate Override": "Feed Rate Override",
+  "Reset feed rate override": "Reset feed rate override",
+  "Spindle Override": "Spindle Override",
+  "Reset spindle override": "Reset spindle override",
+  "Rapid Override": "Rapid Override"
 }

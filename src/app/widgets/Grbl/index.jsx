@@ -3,20 +3,32 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
+import GrblModule from 'app/features/grbl/GrblModule';
+import MachinePanel from 'app/features/grbl/MachinePanel';
+import { grblCommands } from 'app/features/grbl/commands';
 import i18n from 'app/lib/i18n';
-import controller from 'app/lib/controller';
 import WidgetConfig from '../WidgetConfig';
-import Grbl from './Grbl';
 import Controller from './Controller';
-import {
-  GRBL
-} from '../../constants';
 import {
   MODAL_NONE,
   MODAL_CONTROLLER
 } from './constants';
 import styles from './index.styl';
 
+/**
+ * The Grbl controller, placed in the workspace as a widget.
+ *
+ * This file is now only the placement: the panel chrome, the collapse toggle,
+ * the command menu and the fork/remove menu, all of which belong to the
+ * workspace rather than to Grbl. What the machine is actually doing lives in
+ * `app/features/grbl` — the module that listens to the controller, and a view
+ * that arranges its readings. Put the same two somewhere else and the feature
+ * moves with them; this file would not follow.
+ *
+ * Which sections are open is remembered here rather than in the feature. It is
+ * a fact about this widget in this workspace, not about the machine, and the
+ * same panel on a screen of its own would have its own answer.
+ */
 class GrblWidget extends PureComponent {
     static propTypes = {
       widgetId: PropTypes.string.isRequired,
@@ -47,126 +59,35 @@ class GrblWidget extends PureComponent {
         });
       },
       toggleMinimized: () => {
-        const { minimized } = this.state;
-        this.setState({ minimized: !minimized });
+        this.setState({ minimized: !this.state.minimized });
       },
       openModal: (name = MODAL_NONE, params = {}) => {
-        this.setState({
-          modal: {
-            name: name,
-            params: params
-          }
-        });
+        this.setState({ modal: { name, params } });
       },
       closeModal: () => {
-        this.setState({
-          modal: {
-            name: MODAL_NONE,
-            params: {}
-          }
-        });
+        this.setState({ modal: { name: MODAL_NONE, params: {} } });
       },
-      updateModalParams: (params = {}) => {
+      selectTab: (activeTab) => {
         this.setState({
           modal: {
             ...this.state.modal,
-            params: {
-              ...this.state.modal.params,
-              ...params
-            }
+            params: { ...this.state.modal.params, activeTab }
           }
         });
       },
-      toggleQueueReports: () => {
-        const expanded = this.state.panel.queueReports.expanded;
-
+      togglePanel: (name) => {
+        const panel = this.state.panel;
         this.setState({
           panel: {
-            ...this.state.panel,
-            queueReports: {
-              ...this.state.panel.queueReports,
-              expanded: !expanded
-            }
-          }
-        });
-      },
-      toggleStatusReports: () => {
-        const expanded = this.state.panel.statusReports.expanded;
-
-        this.setState({
-          panel: {
-            ...this.state.panel,
-            statusReports: {
-              ...this.state.panel.statusReports,
-              expanded: !expanded
-            }
-          }
-        });
-      },
-      toggleModalGroups: () => {
-        const expanded = this.state.panel.modalGroups.expanded;
-
-        this.setState({
-          panel: {
-            ...this.state.panel,
-            modalGroups: {
-              ...this.state.panel.modalGroups,
-              expanded: !expanded
-            }
+            ...panel,
+            [name]: { ...panel[name], expanded: !panel[name].expanded }
           }
         });
       }
     };
 
-    controllerEvents = {
-      'serialport:open': (options) => {
-        const { port, controllerType } = options;
-        this.setState({
-          isReady: controllerType === GRBL,
-          port: port
-        });
-      },
-      'serialport:close': (options) => {
-        const initialState = this.getInitialState();
-        this.setState({ ...initialState });
-      },
-      'controller:settings': (type, controllerSettings) => {
-        if (type === GRBL) {
-          this.setState(state => ({
-            controller: {
-              ...state.controller,
-              type: type,
-              settings: controllerSettings
-            }
-          }));
-        }
-      },
-      'controller:state': (type, controllerState) => {
-        if (type === GRBL) {
-          this.setState(state => ({
-            controller: {
-              ...state.controller,
-              type: type,
-              state: controllerState
-            }
-          }));
-        }
-      }
-    };
-
-    componentDidMount() {
-      this.addControllerEvents();
-    }
-
-    componentWillUnmount() {
-      this.removeControllerEvents();
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-      const {
-        minimized,
-        panel
-      } = this.state;
+    componentDidUpdate() {
+      const { minimized, panel } = this.state;
 
       this.config.set('minimized', minimized);
       this.config.set('panel.queueReports.expanded', panel.queueReports.expanded);
@@ -178,14 +99,6 @@ class GrblWidget extends PureComponent {
       return {
         minimized: this.config.get('minimized', false),
         isFullscreen: false,
-        isReady: (controller.loadedControllers.length === 1) || (controller.type === GRBL),
-        canClick: true, // Defaults to true
-        port: controller.port,
-        controller: {
-          type: controller.type,
-          settings: controller.settings,
-          state: controller.state
-        },
         modal: {
           name: MODAL_NONE,
           params: {}
@@ -204,218 +117,146 @@ class GrblWidget extends PureComponent {
       };
     }
 
-    addControllerEvents() {
-      Object.keys(this.controllerEvents).forEach(eventName => {
-        const callback = this.controllerEvents[eventName];
-        controller.addListener(eventName, callback);
+    renderCommands(canSend) {
+      return grblCommands().map(({ id, label, divider, run }) => {
+        if (divider) {
+          return <Widget.DropdownMenuItem key={id} divider />;
+        }
+        return (
+          <Widget.DropdownMenuItem key={id} onSelect={run} disabled={!canSend}>
+            {label}
+          </Widget.DropdownMenuItem>
+        );
       });
-    }
-
-    removeControllerEvents() {
-      Object.keys(this.controllerEvents).forEach(eventName => {
-        const callback = this.controllerEvents[eventName];
-        controller.removeListener(eventName, callback);
-      });
-    }
-
-    canClick() {
-      const { port } = this.state;
-      const { type } = this.state.controller;
-
-      if (!port) {
-        return false;
-      }
-      if (type !== GRBL) {
-        return false;
-      }
-
-      return true;
     }
 
     render() {
       const { widgetId } = this.props;
-      const { minimized, isFullscreen, isReady } = this.state;
+      const { minimized, isFullscreen, modal, panel } = this.state;
+      const actions = this.actions;
       const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
-      const state = {
-        ...this.state,
-        canClick: this.canClick()
-      };
-      const actions = {
-        ...this.actions
-      };
 
       return (
-        <Widget aria-label="Grbl widget" fullscreen={isFullscreen}>
-          <Widget.Header>
-            <Widget.Title>
-              <Widget.Sortable className={this.props.sortable.handleClassName}>
-                <i aria-hidden="true" className="fa fa-bars" />
-                <Space width="8" />
-              </Widget.Sortable>
-              {isForkedWidget &&
-                <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />}
-              Grbl
-            </Widget.Title>
-            <Widget.Controls className={this.props.sortable.filterClassName}>
-              {isReady && (
-                <Widget.Button
-                  aria-label="Grbl controller info"
-                  onClick={(event) => {
-                    actions.openModal(MODAL_CONTROLLER);
-                  }}
+        <GrblModule>
+          {(machine) => (
+            <Widget aria-label="Grbl widget" fullscreen={isFullscreen}>
+              <Widget.Header>
+                <Widget.Title>
+                  <Widget.Sortable className={this.props.sortable.handleClassName}>
+                    <i aria-hidden="true" className="fa fa-bars" />
+                    <Space width="8" />
+                  </Widget.Sortable>
+                  {isForkedWidget &&
+                    <i aria-hidden="true" className="fa fa-code-fork" style={{ marginRight: 5 }} />}
+                  Grbl
+                </Widget.Title>
+                <Widget.Controls className={this.props.sortable.filterClassName}>
+                  {machine.ready && (
+                    <Widget.Button
+                      aria-label="Grbl controller info"
+                      onClick={() => actions.openModal(MODAL_CONTROLLER)}
+                    >
+                      <i aria-hidden="true" className="fa fa-info" />
+                    </Widget.Button>
+                  )}
+                  {machine.ready && (
+                    <Widget.DropdownButton
+                      aria-label="Grbl commands"
+                      toggle={<i aria-hidden="true" className="fa fa-th-large" />}
+                    >
+                      {this.renderCommands(machine.canSend)}
+                    </Widget.DropdownButton>
+                  )}
+                  {machine.ready && (
+                    <Widget.Button
+                      aria-label={minimized ? 'Expand' : 'Collapse'}
+                      aria-expanded={!minimized}
+                      disabled={isFullscreen}
+                      title={minimized ? i18n._('Expand') : i18n._('Collapse')}
+                      onClick={actions.toggleMinimized}
+                    >
+                      <i
+                        aria-hidden="true"
+                        className={classNames(
+                          'fa',
+                          { 'fa-chevron-up': !minimized },
+                          { 'fa-chevron-down': minimized }
+                        )}
+                      />
+                    </Widget.Button>
+                  )}
+                  <Widget.DropdownButton
+                    aria-label="More options"
+                    title={i18n._('More')}
+                    toggle={<i aria-hidden="true" className="fa fa-ellipsis-v" />}
+                    onSelect={(eventKey) => {
+                      if (eventKey === 'fullscreen') {
+                        actions.toggleFullscreen();
+                      } else if (eventKey === 'fork') {
+                        this.props.onFork();
+                      } else if (eventKey === 'remove') {
+                        this.props.onRemove();
+                      }
+                    }}
+                  >
+                    <Widget.DropdownMenuItem eventKey="fullscreen" disabled={!machine.ready}>
+                      <i
+                        aria-hidden="true"
+                        className={classNames(
+                          'fa',
+                          'fa-fw',
+                          { 'fa-expand': !isFullscreen },
+                          { 'fa-compress': isFullscreen }
+                        )}
+                      />
+                      <Space width="4" />
+                      {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
+                    </Widget.DropdownMenuItem>
+                    <Widget.DropdownMenuItem eventKey="fork">
+                      <i aria-hidden="true" className="fa fa-fw fa-code-fork" />
+                      <Space width="4" />
+                      {i18n._('Fork Widget')}
+                    </Widget.DropdownMenuItem>
+                    <Widget.DropdownMenuItem eventKey="remove">
+                      <i aria-hidden="true" className="fa fa-fw fa-times" />
+                      <Space width="4" />
+                      {i18n._('Remove Widget')}
+                    </Widget.DropdownMenuItem>
+                  </Widget.DropdownButton>
+                </Widget.Controls>
+              </Widget.Header>
+              {machine.ready && (
+                <Widget.Content
+                  aria-hidden={minimized}
+                  className={classNames(
+                    styles['widget-content'],
+                    { [styles.hidden]: minimized }
+                  )}
                 >
-                  <i aria-hidden="true" className="fa fa-info" />
-                </Widget.Button>
-              )}
-              {isReady && (
-                <Widget.DropdownButton
-                  aria-label="Grbl commands"
-                  toggle={<i aria-hidden="true" className="fa fa-th-large" />}
-                >
-                  <Widget.DropdownMenuItem
-                    onSelect={() => controller.write('?')}
-                    disabled={!state.canClick}
-                  >
-                    {i18n._('Status Report (?)')}
-                  </Widget.DropdownMenuItem>
-                  <Widget.DropdownMenuItem
-                    onSelect={() => controller.writeln('$C')}
-                    disabled={!state.canClick}
-                  >
-                    {i18n._('Check G-code Mode ($C)')}
-                  </Widget.DropdownMenuItem>
-                  <Widget.DropdownMenuItem
-                    onSelect={() => controller.command('homing')}
-                    disabled={!state.canClick}
-                  >
-                    {i18n._('Homing ($H)')}
-                  </Widget.DropdownMenuItem>
-                  <Widget.DropdownMenuItem
-                    onSelect={() => controller.command('unlock')}
-                    disabled={!state.canClick}
-                  >
-                    {i18n._('Kill Alarm Lock ($X)')}
-                  </Widget.DropdownMenuItem>
-                  <Widget.DropdownMenuItem
-                    onSelect={() => controller.command('sleep')}
-                    disabled={!state.canClick}
-                  >
-                    {i18n._('Sleep ($SLP)')}
-                  </Widget.DropdownMenuItem>
-                  <Widget.DropdownMenuItem divider />
-                  <Widget.DropdownMenuItem
-                    onSelect={() => controller.writeln('$')}
-                    disabled={!state.canClick}
-                  >
-                    {i18n._('Help ($)')}
-                  </Widget.DropdownMenuItem>
-                  <Widget.DropdownMenuItem
-                    onSelect={() => controller.writeln('$$')}
-                    disabled={!state.canClick}
-                  >
-                    {i18n._('Settings ($$)')}
-                  </Widget.DropdownMenuItem>
-                  <Widget.DropdownMenuItem
-                    onSelect={() => controller.writeln('$#')}
-                    disabled={!state.canClick}
-                  >
-                    {i18n._('View G-code Parameters ($#)')}
-                  </Widget.DropdownMenuItem>
-                  <Widget.DropdownMenuItem
-                    onSelect={() => controller.writeln('$G')}
-                    disabled={!state.canClick}
-                  >
-                    {i18n._('View G-code Parser State ($G)')}
-                  </Widget.DropdownMenuItem>
-                  <Widget.DropdownMenuItem
-                    onSelect={() => controller.writeln('$I')}
-                    disabled={!state.canClick}
-                  >
-                    {i18n._('View Build Info ($I)')}
-                  </Widget.DropdownMenuItem>
-                  <Widget.DropdownMenuItem
-                    onSelect={() => controller.writeln('$N')}
-                    disabled={!state.canClick}
-                  >
-                    {i18n._('View Startup Blocks ($N)')}
-                  </Widget.DropdownMenuItem>
-                </Widget.DropdownButton>
-              )}
-              {isReady && (
-                <Widget.Button
-                  aria-label={minimized ? 'Expand' : 'Collapse'}
-                  aria-expanded={!minimized}
-                  disabled={isFullscreen}
-                  title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                  onClick={actions.toggleMinimized}
-                >
-                  <i
-                    aria-hidden="true"
-                    className={classNames(
-                      'fa',
-                      { 'fa-chevron-up': !minimized },
-                      { 'fa-chevron-down': minimized }
-                    )}
+                  {modal.name === MODAL_CONTROLLER && (
+                    <Controller
+                      controllerState={machine.controllerState}
+                      controllerSettings={machine.settings}
+                      activeTab={modal.params.activeTab}
+                      onSelectTab={actions.selectTab}
+                      onClose={actions.closeModal}
+                    />
+                  )}
+                  {/*
+                    * The view stays mounted while the panel is collapsed.
+                    * Hiding is the chrome's business; unmounting would drop
+                    * the controller subscriptions and lose the readings.
+                    */}
+                  <MachinePanel
+                    state={machine}
+                    panel={panel}
+                    onTogglePanel={actions.togglePanel}
                   />
-                </Widget.Button>
+                </Widget.Content>
               )}
-              <Widget.DropdownButton
-                aria-label="More options"
-                title={i18n._('More')}
-                toggle={<i aria-hidden="true" className="fa fa-ellipsis-v" />}
-                onSelect={(eventKey) => {
-                  if (eventKey === 'fullscreen') {
-                    actions.toggleFullscreen();
-                  } else if (eventKey === 'fork') {
-                    this.props.onFork();
-                  } else if (eventKey === 'remove') {
-                    this.props.onRemove();
-                  }
-                }}
-              >
-                <Widget.DropdownMenuItem eventKey="fullscreen" disabled={!isReady}>
-                  <i
-                    aria-hidden="true"
-                    className={classNames(
-                      'fa',
-                      'fa-fw',
-                      { 'fa-expand': !isFullscreen },
-                      { 'fa-compress': isFullscreen }
-                    )}
-                  />
-                  <Space width="4" />
-                  {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
-                </Widget.DropdownMenuItem>
-                <Widget.DropdownMenuItem eventKey="fork">
-                  <i aria-hidden="true" className="fa fa-fw fa-code-fork" />
-                  <Space width="4" />
-                  {i18n._('Fork Widget')}
-                </Widget.DropdownMenuItem>
-                <Widget.DropdownMenuItem eventKey="remove">
-                  <i aria-hidden="true" className="fa fa-fw fa-times" />
-                  <Space width="4" />
-                  {i18n._('Remove Widget')}
-                </Widget.DropdownMenuItem>
-              </Widget.DropdownButton>
-            </Widget.Controls>
-          </Widget.Header>
-          {isReady && (
-            <Widget.Content
-              aria-hidden={minimized}
-              className={classNames(
-                styles['widget-content'],
-                { [styles.hidden]: minimized }
-              )}
-            >
-              {state.modal.name === MODAL_CONTROLLER &&
-                <Controller state={state} actions={actions} />}
-              <Grbl
-                state={state}
-                actions={actions}
-              />
-            </Widget.Content>
+            </Widget>
           )}
-        </Widget>
+        </GrblModule>
       );
     }
 }
