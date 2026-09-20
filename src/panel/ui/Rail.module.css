@@ -1,0 +1,45 @@
+/*
+ * The fixed rail down the left-hand side. White with a hairline edge, like the
+ * bar: the furniture of this application is drawn in rules, not in blocks of
+ * colour.
+ */
+.rail {
+  display: flex;
+  flex-direction: column;
+  width: var(--rail-width);
+  flex: none;
+  background: var(--panel);
+  border-right: var(--hairline) solid var(--border);
+}
+
+/*
+ * A tall cell with an uppercase tracked label rather than an icon alone: the
+ * mockup names its destinations, and a rail of unlabelled glyphs is a rail
+ * nobody reads twice.
+ */
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--rail-item-height);
+  border: 0;
+  border-bottom: var(--hairline) solid var(--border-subtle);
+  background: transparent;
+  color: var(--text);
+  font-size: var(--size-label);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--track-control);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+
+.current,
+.current:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+}

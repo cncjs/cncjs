@@ -1,0 +1,95 @@
+/*
+ * Every visual constant the panel uses, taken from the design mockup.
+ *
+ * Nothing outside this file writes a colour, a size, a weight or a spacing.
+ * A hex code anywhere else is a bug, not a shortcut.
+ *
+ * Custom properties rather than a JavaScript token module: this application
+ * has no CSS-in-JS, so the stylesheet is where the values belong and the
+ * browser is what resolves them. One place, one mechanism.
+ */
+:root {
+  /* Surfaces, lightest content on darkest ground. */
+  --ground: #eaedf0;
+  --panel: #ffffff;
+  --panel-header: #eef2f6;
+
+  --text: #14181c;
+  --text-muted: #5b666f;
+
+  /* Three weights of rule: the panel edge, the edge a control needs to read
+     as pressable, and the divider inside a panel. */
+  --border: #c7ccd1;
+  --border-control: #9aa4ad;
+  --border-subtle: #e3e6e9;
+
+  --accent: #1e6fd0;
+  --accent-hover: #14538f;
+  --accent-tint: #eef2f6;
+  --on-accent: #ffffff;
+
+  /* The machine states, approved as a set on 2026-09-20. Only the amber one
+     is drawn in the mockup; the other three are built to the same recipe. */
+  --running: #1c8a4b;
+  --running-tint: #e9f5ee;
+  --running-edge: #a9d3bb;
+  --running-text: #146035;
+
+  --ready: #a86b00;
+  --ready-tint: #fdf6e6;
+  --ready-edge: #e0c58a;
+  --ready-text: #7a4f00;
+
+  --stopped: #c02a20;
+  --stopped-hover: #9e2018;
+  --stopped-tint: #fbeceb;
+  --stopped-edge: #e8b0ab;
+  --stopped-text: #8a1e17;
+
+  --inactive: #aab2b9;
+  --inactive-tint: #f4f5f6;
+  --inactive-edge: #c7ccd1;
+  --inactive-text: #5b666f;
+
+  --focus-ring: #4ea3ff;
+
+  /* The system stack, deliberately, and not the mockup's IBM Plex: this runs
+     on a machine in a garage that may have no internet, and a web font would
+     fall back silently there and nowhere else. */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Every machine reading is monospace with tabular figures, so a column of
+     them lines up and a changing one does not shuffle its own digits. */
+  --font-mono: ui-monospace, SFMono-Regular, "Cascadia Mono", Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --size-label: 11px;
+  --size-small: 12px;
+  --size-body: 15px;
+  --size-control: 14px;
+  --size-title: 22px;
+  /* The one figure a tile is about, read from across a workshop. */
+  --size-readout: 32px;
+  --size-readout-large: 76px;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --track-label: 0.14em;
+  --track-title: 0.12em;
+  --track-control: 0.1em;
+  --track-stop: 0.2em;
+
+  /* Square corners are the grammar of this panel: it is an instrument, not a
+     phone. There is no radius variable because there is no radius. */
+  --hairline: 1px;
+
+  /* Fixed furniture. Everything else is laid out in the room these leave. */
+  --bar-height: 64px;
+  --rail-width: 104px;
+  --rail-item-height: 74px;
+  --tile-header-height: 30px;
+  --gap: 10px;
+
+  --control-height: 46px;
+  --stop-width: 172px;
+}

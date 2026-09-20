@@ -1,0 +1,36 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/*
+ * The tiles lie on the ground with an even gap. The field is what scrolls,
+ * not the page: the bar and the rail are fixed furniture and scrolling them
+ * away would take the stop with them.
+ */
+.field {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--gap);
+  padding: var(--gap);
+  align-content: start;
+}
+
+.notice {
+  grid-column: 1 / -1;
+  padding: 10px 12px;
+  background: var(--stopped-tint);
+  border: var(--hairline) solid var(--stopped-edge);
+  color: var(--stopped-text);
+  font-size: var(--size-small);
+}

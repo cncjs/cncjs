@@ -1,0 +1,34 @@
+/*
+ * Three axes, three readings, one under another.
+ *
+ * The figure is the point of the tile, so it is large, monospace and
+ * tabular: a position that shuffles its own digits as it updates cannot be
+ * read at a glance while the machine is moving, which is the only time anyone
+ * looks at it.
+ */
+.axis {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.label {
+  width: 18px;
+  font-size: 16px;
+  font-weight: var(--weight-semibold);
+  color: var(--accent);
+}
+
+.value {
+  font-family: var(--font-mono);
+  font-size: var(--size-readout);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.unit {
+  font-family: var(--font-mono);
+  font-size: var(--size-small);
+  color: var(--text-muted);
+}

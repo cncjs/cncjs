@@ -1,0 +1,53 @@
+/*
+ * The strip across the top.
+ *
+ * White, not dark. The panel is an instrument and the bar is part of its face;
+ * a dark band across the top belongs to a website with a navigation menu, and
+ * it spends the strongest contrast on the thing that matters least.
+ */
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: var(--bar-height);
+  padding-left: 16px;
+  background: var(--panel);
+  border-bottom: var(--hairline) solid var(--border);
+}
+
+.note {
+  font-family: var(--font-mono);
+  font-size: var(--size-small);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*
+ * The stop is held against the right-hand edge and is the only thing on this
+ * bar drawn as a block of colour. On a machine panel the most dangerous
+ * control gets the most predictable place.
+ */
+.stop {
+  margin-left: auto;
+  width: var(--stop-width);
+  height: var(--bar-height);
+  border: 0;
+  background: var(--stopped);
+  color: var(--on-accent);
+  font-size: var(--size-title);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--track-stop);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.stop:hover {
+  background: var(--stopped-hover);
+}
+
+.stop:disabled {
+  background: var(--inactive);
+  cursor: not-allowed;
+}

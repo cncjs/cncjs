@@ -47,6 +47,18 @@ module.exports = defineConfig({
       // skipped unless CNCJS_TEST_PORT names one. See e2e/README.md.
       name: 'hardware',
       testDir: './e2e/hardware',
+      testIgnore: ['**/teardown.spec.js'],
+      teardown: 'hardware-teardown',
+      use: { ...devices['Desktop Chrome'], channel: 'chromium' },
+    },
+    {
+      // Closes the serial port when the tier is done. The server keeps a port
+      // open after every client has gone, so without this a hardware run
+      // leaves the machine connected and the next tier's "nothing is plugged
+      // in" specs are asserting something that is no longer true.
+      name: 'hardware-teardown',
+      testDir: './e2e/hardware',
+      testMatch: '**/teardown.spec.js',
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
     },
     {

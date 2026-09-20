@@ -9022,6 +9022,7 @@ __metadata:
     react: ~17.0.2
     react-bootstrap: ~0.32.1
     react-dom: ~17.0.2
+    react-dom19: "npm:react-dom@19.2.0"
     react-dropzone: ~4.2.13
     react-facebook-loading: ~0.6.2
     react-final-form: ~3.7.0
@@ -9038,6 +9039,7 @@ __metadata:
     react-sortablejs: ~1.5.1
     react-tiny-virtual-list: ~2.2.0
     react-toggle: ~4.0.2
+    react19: "npm:react@19.2.0"
     recompose: ~0.30.0
     regenerator-runtime: ~0.13.10
     registry-auth-token: ~3.4.0
@@ -19047,6 +19049,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-dom19@npm:react-dom@19.2.0":
+  version: 19.2.0
+  resolution: "react-dom@npm:19.2.0"
+  dependencies:
+    scheduler: ^0.27.0
+  peerDependencies:
+    react: ^19.2.0
+  checksum: b6ec952f68a29dcc847143ad48974477e1d3b95cb0a6e0039dd93c7fe64d0ef51f2ca09a19c5eb892ba625ba88c4bcc6f8bc3bdd1c33ccc3f6f17acabbb4882f
+  languageName: node
+  linkType: hard
+
 "react-dom@npm:~17.0.2":
   version: 17.0.2
   resolution: "react-dom@npm:17.0.2"
@@ -19373,6 +19386,13 @@ __metadata:
     react: ">=16.6.0"
     react-dom: ">=16.6.0"
   checksum: 75602840106aa9c6545149d6d7ae1502fb7b7abadcce70a6954c4b64a438ff1cd16fc77a0a1e5197cdd72da398f39eb929ea06f9005c45b132ed34e056ebdeb1
+  languageName: node
+  linkType: hard
+
+"react19@npm:react@19.2.0":
+  version: 19.2.0
+  resolution: "react@npm:19.2.0"
+  checksum: 33dd01bf699e1c5040eb249e0f552519adf7ee90b98c49d702a50bf23af6852ea46023a5f7f93966ab10acd7a45428fa0f193c686ecdaa7a75a03886e53ec3fe
   languageName: node
   linkType: hard
 
@@ -20328,6 +20348,13 @@ __metadata:
     loose-envify: ^1.1.0
     object-assign: ^4.1.1
   checksum: c4b35cf967c8f0d3e65753252d0f260271f81a81e427241295c5a7b783abf4ea9e905f22f815ab66676f5313be0a25f47be582254db8f9241b259213e999b8fc
+  languageName: node
+  linkType: hard
+
+"scheduler@npm:^0.27.0":
+  version: 0.27.0
+  resolution: "scheduler@npm:0.27.0"
+  checksum: 92644ead0a9443e20f9d24132fe93675b156209b9eeb35ea245f8a86768d0cc0fcca56f341eeef21d9b6dd8e72d6d5e260eb5a41d34b05cd605dd45a29f572ef
   languageName: node
   linkType: hard
 

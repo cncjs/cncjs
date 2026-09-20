@@ -1,0 +1,47 @@
+/*
+ * The one repeating container in the design: a header bar and its content.
+ * Every tile is the same object seen from a different distance.
+ */
+.tile {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--panel);
+  border: var(--hairline) solid var(--border);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--tile-header-height);
+  padding: 0 8px 0 10px;
+  background: var(--panel-header);
+  border-bottom: var(--hairline) solid var(--border);
+}
+
+.title {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--track-title);
+  text-transform: uppercase;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.aside {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--size-small);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  padding: 10px 12px;
+}
