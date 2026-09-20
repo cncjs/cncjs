@@ -12,8 +12,8 @@ import styles from './Bar.module.css';
  * pressing it, seeing nothing happen, and learning that it sometimes does
  * nothing.
  */
-const Bar = ({ status, note, onStop, canStop }) => (
-  <nav className={styles.bar} aria-label="Machine bar">
+const Bar = ({ status, note, onStop, canStop, className = '' }) => (
+  <nav className={`${styles.bar} ${className}`} aria-label="Machine bar">
     <StateChip tone={status.tone}>{status.word}</StateChip>
     {note ? <span className={styles.note}>{note}</span> : null}
     <button

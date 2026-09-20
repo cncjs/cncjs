@@ -76,6 +76,61 @@ test.describe('panel, connected', () => {
     }
   });
 
+  /**
+   * Jogging moves the machine, and that is the point of the case.
+   *
+   * On this controller nothing is attached, so the axes move in software only.
+   * The jog is symmetric either way — out by one step and back by one step —
+   * so the machine ends where it started whatever is bolted to it.
+   */
+  test('a jog moves the axis by the chosen step, and back', async ({ grbl, context }) => {
+    const panel = await openPanel(grbl, context);
+    const jogTile = panel.locator('section').filter({ hasText: /^JOG/i }).first();
+
+    const positionOf = async () => {
+      const state = await grbl.readControllerState();
+      return parseFloat(state.controller.state.status.wpos.x);
+    };
+
+    // 1mm is the default, and it is asserted rather than assumed: the case
+    // below measures against it.
+    //
+    // Anchored, because "1 mm" is a substring of "0.1 mm" and the unanchored
+    // form quietly matched the smallest step instead of the chosen one. The
+    // XY column comes first in the DOM; the Z column has its own.
+    await expect(jogTile.getByRole('button', { name: /^1 mm$/ }).first())
+      .toHaveAttribute('aria-pressed', 'true');
+
+    const start = await positionOf();
+
+    await jogTile.getByRole('button', { name: 'X+' }).click();
+    await expect.poll(positionOf, { timeout: 20000 }).toBeCloseTo(start + 1, 2);
+
+    await jogTile.getByRole('button', { name: 'X−' }).click();
+    await expect.poll(positionOf, { timeout: 20000 }).toBeCloseTo(start, 2);
+  });
+
+  test('the step control decides how far a jog goes', async ({ grbl, context }) => {
+    const panel = await openPanel(grbl, context);
+    const jogTile = panel.locator('section').filter({ hasText: /^JOG/i }).first();
+
+    const positionOf = async () => {
+      const state = await grbl.readControllerState();
+      return parseFloat(state.controller.state.status.wpos.y);
+    };
+
+    // The smallest step, because this case is about the control mattering and
+    // not about how far the machine can travel.
+    await jogTile.getByRole('button', { name: /^0\.1 mm$/ }).first().click();
+    const start = await positionOf();
+
+    await jogTile.getByRole('button', { name: 'Y+' }).click();
+    await expect.poll(positionOf, { timeout: 20000 }).toBeCloseTo(start + 0.1, 3);
+
+    await jogTile.getByRole('button', { name: 'Y−' }).click();
+    await expect.poll(positionOf, { timeout: 20000 }).toBeCloseTo(start, 3);
+  });
+
   test('the stop can be pressed once there is something to stop', async ({ grbl, context }) => {
     const panel = await openPanel(grbl, context);
 

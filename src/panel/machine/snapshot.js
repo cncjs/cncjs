@@ -38,6 +38,11 @@ export const fetchOpenController = async (token) => {
     port: first.port,
     type: first.controller?.type || '',
     state: first.controller?.state || {},
+    // Carried so the panel can attach to the port rather than only read it.
+    // See `attach()` in useMachine: knowing what is open is not the same as
+    // being connected to it.
+    baudrate: first.baudrate,
+    rtscts: Boolean(first.rtscts),
   };
 };
 

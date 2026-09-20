@@ -34,6 +34,7 @@
   --running-tint: #e9f5ee;
   --running-edge: #a9d3bb;
   --running-text: #146035;
+  --running-hover: #146b3a;
 
   --ready: #a86b00;
   --ready-tint: #fdf6e6;
@@ -77,6 +78,10 @@
   --track-label: 0.14em;
   --track-title: 0.12em;
   --track-control: 0.1em;
+  /* The tile label in frame 2b is tracked wider than anything else on the
+     screen. It is the one piece of type that has to read as a caption rather
+     than as content. */
+  --track-tile: 0.16em;
   --track-stop: 0.2em;
 
   /* Square corners are the grammar of this panel: it is an instrument, not a
@@ -89,6 +94,10 @@
   --rail-item-height: 74px;
   --tile-header-height: 30px;
   --gap: 10px;
+  /* Frame 2b sets its tiles solid and separates them with a single hairline:
+     the grid's own background showing through a 1px gap. */
+  --tile-gap: 1px;
+  --status-height: 56px;
 
   --control-height: 46px;
   --stop-width: 172px;

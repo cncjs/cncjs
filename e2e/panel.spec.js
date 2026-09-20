@@ -63,6 +63,26 @@ test.describe('panel, disconnected', () => {
     await expect(tile.first().getByText('0.000')).toHaveCount(0);
   });
 
+  test('no jog key can be pressed at a machine that is not there', async ({ cncjs }) => {
+    await openPanel(cncjs.page);
+
+    // Every one of them, not a sample. A jog key that looks pressable and
+    // silently does nothing teaches an operator that jog keys sometimes do
+    // nothing, which is the last thing to believe about a machine — and it is
+    // exactly what this panel did before `connected` came to mean *attached*
+    // rather than "a port is open somewhere".
+    const jogTile = cncjs.page.locator('section').filter({ hasText: /^JOG/i }).first();
+    await expect(jogTile).toBeVisible();
+
+    const keys = jogTile.getByRole('button');
+    const count = await keys.count();
+    expect(count, 'the jog tile should have controls to disable').toBeGreaterThan(8);
+
+    for (let i = 0; i < count; i += 1) {
+      await expect(keys.nth(i)).toBeDisabled();
+    }
+  });
+
   test('the rail says where you are', async ({ cncjs }) => {
     await openPanel(cncjs.page);
 

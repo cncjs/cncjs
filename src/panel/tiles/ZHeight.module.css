@@ -1,0 +1,72 @@
+/*
+ * The reading an operator watches while setting up: how far the tool is above
+ * the work, and the two things they do about it.
+ */
+.reading {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+/*
+ * 76px, which is the largest type on the panel by a long way. The mockup is
+ * explicit about it and it is right: this is the figure read from arm's length
+ * while one hand is on the jog keys and the eyes are on the cutter.
+ */
+.value {
+  font-family: var(--font-mono);
+  font-size: var(--size-readout-large);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+  line-height: 0.9;
+}
+
+.unit {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  color: var(--text-muted);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.action {
+  flex: 1;
+  height: 52px;
+  border: var(--hairline) solid transparent;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: var(--size-control);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--track-control);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.action:hover:enabled {
+  background: var(--accent-hover);
+}
+
+/* The second action, which is the same kind of thing done to other axes. */
+.secondary {
+  background: var(--panel);
+  border-color: var(--border-control);
+  color: var(--text);
+}
+
+.secondary:hover:enabled {
+  background: var(--panel);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.action:disabled,
+.secondary:disabled {
+  background: var(--panel);
+  border-color: var(--border-subtle);
+  color: var(--inactive);
+  cursor: not-allowed;
+}

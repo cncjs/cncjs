@@ -1,0 +1,48 @@
+/*
+ * The line along the bottom: what just happened, and the one action that
+ * starts work.
+ *
+ * White like the bar, with a hairline above it. The start button is the only
+ * green on the screen, which is the point — it is the opposite of the stop and
+ * sits at the opposite end of the panel.
+ */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  background: var(--panel);
+  border-top: var(--hairline) solid var(--border);
+}
+
+.message {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.start {
+  margin-left: auto;
+  height: 38px;
+  padding: 0 18px;
+  border: 0;
+  background: var(--running);
+  color: var(--on-accent);
+  font-size: 13px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--track-tile);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.start:hover:enabled {
+  background: var(--running-hover);
+}
+
+.start:disabled {
+  background: var(--inactive);
+  cursor: not-allowed;
+}

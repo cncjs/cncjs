@@ -64,12 +64,29 @@ const activeStateOf = (type, state) => {
   return null;
 };
 
-/** The work position of one axis, or nothing. */
-const positionOf = (type, state, axis) => {
-  const wpos = type === TINYG ? state?.sr?.wpos : state?.status?.wpos;
-  const value = wpos?.[axis];
+/** One axis of a position, or nothing. `which` is `wpos` or `mpos`. */
+const positionOf = (type, state, axis, which = 'wpos') => {
+  const from = type === TINYG ? state?.sr?.[which] : state?.status?.[which];
+  const value = from?.[axis];
   return value === undefined || value === null ? null : Number(value);
 };
+
+const positions = (type, state, which) => ({
+  x: positionOf(type, state, 'x', which),
+  y: positionOf(type, state, 'y', which),
+  z: positionOf(type, state, 'z', which),
+});
+
+/**
+ * The modal state, which is where the active work coordinate system lives.
+ *
+ * Needed by anything that writes an offset: `G10 L20 P<n>` has to name the
+ * coordinate system the machine is currently working in, and guessing it is a
+ * silent way to send a tool somewhere it should not be.
+ */
+const modalOf = (type, state) => (
+  type === TINYG ? state?.sr?.modal : state?.parserstate?.modal
+) || {};
 
 /**
  * Everything on screen, derived in one place.
@@ -78,8 +95,13 @@ const positionOf = (type, state, axis) => {
  * into a controller payload, so the four firmwares' disagreements are settled
  * here and only here.
  */
-export const readMachine = ({ connection, error, port, type, state }) => {
-  const connected = Boolean(port) && connection === 'open';
+export const readMachine = ({ connection, error, port, type, state, attached }) => {
+  // "Connected" means *able to send*, not "a port is open somewhere". The
+  // socket has to attach to the port before `Controller.command()` will do
+  // anything at all — it begins `if (!this.port) return` and fails silently —
+  // so a panel that enabled its controls on the snapshot alone would have a
+  // window in which every jog key looked pressable and did nothing.
+  const connected = Boolean(port) && connection === 'open' && Boolean(attached);
   const active = connected ? activeStateOf(type, state) : null;
 
   let word = 'Disconnected';
@@ -88,6 +110,9 @@ export const readMachine = ({ connection, error, port, type, state }) => {
     word = 'No server';
     tone = 'stopped';
   } else if (connection === 'connecting') {
+    word = 'Connecting';
+    tone = 'inactive';
+  } else if (port && !attached) {
     word = 'Connecting';
     tone = 'inactive';
   } else if (connected) {
@@ -103,11 +128,12 @@ export const readMachine = ({ connection, error, port, type, state }) => {
     port,
     type,
     status: { word, tone, known: Boolean(active) },
-    position: {
-      x: positionOf(type, state, 'x'),
-      y: positionOf(type, state, 'y'),
-      z: positionOf(type, state, 'z'),
-    },
+    position: positions(type, state, 'wpos'),
+    // Machine coordinates matter in two places only — homing and "why is the
+    // work zero where it is" — so they are a quiet second reading rather than
+    // a tile of their own.
+    machinePosition: positions(type, state, 'mpos'),
+    modal: modalOf(type, state),
   };
 };
 

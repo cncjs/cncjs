@@ -1,36 +1,55 @@
+/*
+ * The working panel — frame 2b of the mockup.
+ *
+ * A fixed grid, not a flowing field of tiles. The bar and the status line span
+ * the width; the rail holds the left-hand column; what is left is the machine.
+ * Nothing here scrolls the furniture away: the stop is on the bar and the
+ * state is on the bar, and scrolling either out of reach is not a thing a
+ * machine panel does.
+ */
 .app {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: var(--rail-width) minmax(0, 1fr);
+  grid-template-rows: var(--bar-height) minmax(0, 1fr) var(--status-height);
   height: 100%;
 }
 
-.body {
-  display: flex;
-  flex: 1;
-  min-height: 0;
+.bar,
+.status {
+  grid-column: 1 / 3;
 }
 
 /*
- * The tiles lie on the ground with an even gap. The field is what scrolls,
- * not the page: the bar and the rail are fixed furniture and scrolling them
- * away would take the stop with them.
+ * The tiles are set solid and separated by a single hairline — the grid's own
+ * background showing through a 1px gap. Space between them would say they are
+ * unrelated objects sitting on something; they are regions of one face.
  */
 .field {
-  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 200px minmax(0, 1fr);
+  gap: var(--tile-gap);
+  background: var(--border);
   min-width: 0;
   overflow: auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--gap);
-  padding: var(--gap);
-  align-content: start;
+}
+
+/* A tile that takes the whole width of the field, as the Jog tile does. */
+.wide {
+  grid-column: 1 / 3;
+  display: flex;
+  min-width: 0;
+}
+
+.wide > * {
+  flex: 1;
+  min-width: 0;
 }
 
 .notice {
-  grid-column: 1 / -1;
+  grid-column: 1 / 3;
   padding: 10px 12px;
   background: var(--stopped-tint);
-  border: var(--hairline) solid var(--stopped-edge);
   color: var(--stopped-text);
   font-size: var(--size-small);
 }

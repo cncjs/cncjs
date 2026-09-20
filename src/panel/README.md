@@ -59,13 +59,27 @@ than copied. The old Connection widget is 962 lines and sits on `react-select`.
 - [ ] **[—] DTR/RTS line state, RTS/CTS flow control** — needed by some boards
 - [ ] **[—] Connect automatically** on load
 
+**Done already, because nothing worked without it:** attaching to a port that
+is *already* open. `Controller.command()` begins `if (!this.port) return` and
+fails in silence, so a client that only reads `/api/controllers` has jog keys
+that look pressable and do nothing. The panel attaches, and `connected` means
+*able to send* rather than "a port is open somewhere".
+
 ## Drawn in the mockup
 
 - [x] **[M] Machine state chip** — Idle / Run / Hold / Alarm, with the colours
       approved on 2026-09-20
 - [x] **[M] Work position** — X/Y/Z, monospace, tabular, three decimals
 - [ ] **[M] Machine position** as a quiet note beside the work position
-- [ ] **[M] Jog** — XY keypad, Z column, step sizes, jog speed, per-axis homing
+- [x] **[M] Jog** — XY keypad, Z column, step sizes, jog speed. Grbl gets
+      `$J=`, which carries the chosen feed rate, leaves the modal state alone
+      and can be cancelled; the old application's `G91`/`G0`/`G90` does none
+      of those
+- [ ] **[M] Homing from the jog tile** — the mockup draws a home glyph in the
+      keypad's centre and beside Z. Left out deliberately: `$22=0` on this
+      controller, so homing is disabled and there is nothing to verify a
+      button against. A `$H` sent to a machine without limit switches is not
+      something to ship untested
 - [ ] **[M] Job progress** — percent, bar, file name, line sent/total, time
       remaining
 - [ ] **[M] Z height** with **Zero Z** and **Zero XY**

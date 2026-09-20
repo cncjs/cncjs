@@ -5,6 +5,7 @@ const grbl = (activeState, wpos) => ({
   error: null,
   port: 'COM3',
   type: 'Grbl',
+  attached: true,
   state: { status: { activeState, wpos } },
 });
 
@@ -21,6 +22,20 @@ describe('readMachine, before there is a machine', () => {
   test('a failed server is coloured like a stopped machine', () => {
     // Because that is what it is, from where the operator is standing.
     expect(readMachine({ connection: 'failed' }).status.tone).toBe('stopped');
+  });
+
+  test('a port that is open but not yet attached is still connecting', () => {
+    // The gap that made a jog key look pressable and do nothing:
+    // `Controller.command()` begins `if (!this.port) return` and fails in
+    // silence, so knowing which port is open is not the same as being able to
+    // send to it. Until the socket has attached, the panel says so and its
+    // controls stay disabled.
+    const read = readMachine({
+      connection: 'open', port: 'COM3', type: 'Grbl', attached: false,
+      state: { status: { activeState: 'Idle' } },
+    });
+    expect(read.status.word).toBe('Connecting');
+    expect(read.connected).toBe(false);
   });
 });
 
@@ -48,7 +63,7 @@ describe('readMachine, with a controller answering', () => {
     // Between opening a port and the first status report there is genuinely
     // nothing to say, and "Idle" there would be a claim the controller has
     // not made.
-    const read = readMachine({ connection: 'open', port: 'COM3', type: 'Grbl', state: {} });
+    const read = readMachine({ connection: 'open', port: 'COM3', type: 'Grbl', attached: true, state: {} });
     expect(read.status).toEqual({ word: 'Connected', tone: 'inactive', known: false });
   });
 
@@ -59,7 +74,7 @@ describe('readMachine, with a controller answering', () => {
 
   test('TinyG is translated out of its numbering', () => {
     const tinyg = (machineState) => readMachine({
-      connection: 'open', port: 'COM3', type: 'TinyG', state: { sr: { machineState } },
+      connection: 'open', port: 'COM3', type: 'TinyG', attached: true, state: { sr: { machineState } },
     });
     expect(tinyg(5).status).toEqual({ word: 'Run', tone: 'running', known: true });
     expect(tinyg(2).status).toEqual({ word: 'Alarm', tone: 'stopped', known: true });
@@ -70,7 +85,7 @@ describe('readMachine, with a controller answering', () => {
 
   test('a firmware with no machine state says only what it knows', () => {
     // Marlin has none. Inventing one would be worse than admitting it.
-    const read = readMachine({ connection: 'open', port: 'COM3', type: 'Marlin', state: {} });
+    const read = readMachine({ connection: 'open', port: 'COM3', type: 'Marlin', attached: true, state: {} });
     expect(read.status).toEqual({ word: 'Connected', tone: 'inactive', known: false });
   });
 
