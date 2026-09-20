@@ -3,6 +3,7 @@ import {
   ERR_BAD_REQUEST,
   ERR_NOT_FOUND,
   ERR_CONFLICT,
+  ERR_UNSUPPORTED_MEDIA_TYPE,
   ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
@@ -39,12 +40,23 @@ export const readFile = (req, res) => {
 };
 
 export const writeFile = (req, res) => {
-  // A JSON body (already parsed by body-parser) keeps the original behaviour.
-  // Anything else is treated as a raw upload and streamed to disk, so large
-  // G-code programs do not have to be held in memory as a string; the file
-  // name then comes from the query string.
-  const hasParsedBody = !!req.body && Object.keys(req.body).length > 0;
-  const file = hasParsedBody ? (req.body.file || '') : (req.query.file || '');
+  // The upload kind is taken from the content type rather than inferred from
+  // whether body-parser produced anything: an empty JSON body (`{}`) parses to
+  // an empty object, which is indistinguishable from "not parsed" and would
+  // otherwise be streamed to disk instead of answering "No file specified".
+  const isRawUpload = req.is('application/octet-stream');
+  const isJSON = req.is('application/json');
+
+  if (!isRawUpload && !isJSON) {
+    res.status(ERR_UNSUPPORTED_MEDIA_TYPE).send({
+      msg: 'Unsupported content type'
+    });
+    return;
+  }
+
+  // A raw upload carries only the file's bytes, so its name comes from the
+  // query string.
+  const file = (isRawUpload ? req.query.file : req.body.file) || '';
 
   if (!file) {
     res.status(ERR_BAD_REQUEST).send({
@@ -61,15 +73,15 @@ export const writeFile = (req, res) => {
       return;
     }
 
-    res.send({ file: file });
+    res.send({ file });
   };
 
-  if (hasParsedBody) {
-    monitor.writeFile(file, req.body.data || '', done);
+  if (isRawUpload) {
+    monitor.writeStream(file, req, done);
     return;
   }
 
-  monitor.writeStream(file, req, done);
+  monitor.writeFile(file, req.body.data || '', done);
 };
 
 // The monitor tags its errors with a `code`; anything else is unexpected and
