@@ -324,7 +324,7 @@ const appMain = () => {
     app.get(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
     app.post(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
     app.put(urljoin(settings.route, 'api/watch/file'), api.watch.writeFile);
-    app.delete(urljoin(settings.route, 'api/watch/file'), api.watch.__delete);
+    app.delete(urljoin(settings.route, 'api/watch/file'), api.watch.deleteFile);
     app.post(urljoin(settings.route, 'api/watch/file/rename'), api.watch.renameFile);
   }
 

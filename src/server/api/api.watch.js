@@ -73,6 +73,7 @@ const statusForError = (err) => {
     return ERR_NOT_FOUND;
   case 'EEXIST':
     return ERR_CONFLICT;
+  case 'EPARTIAL':
   default:
     return ERR_INTERNAL_SERVER_ERROR;
   }
@@ -101,9 +102,7 @@ export const renameFile = (req, res) => {
   });
 };
 
-// `delete` is a reserved word, hence the name; the same convention as the
-// other resources in this API.
-export const __delete = (req, res) => {
+export const deleteFile = (req, res) => {
   const file = req.body.file || req.query.file || '';
 
   if (!file) {

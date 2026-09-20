@@ -130,6 +130,11 @@ const resolveInRoot = (root, name) => {
 // Stat a name inside the watch directory, rejecting anything that is not a
 // plain file. Shared by rename and delete so both refuse directories the same
 // way.
+//
+// `lstat()` rather than `stat()`: `stat()` follows symbolic links, so a symlink
+// pointing at a regular file would satisfy `isFile()` and be accepted — which
+// is the wrong answer for an operation meant to act on plain files in this
+// directory, and lets a link stand in for a file somewhere else entirely.
 const statFileInRoot = (name, callback) => {
   const root = monitor.root;
 
@@ -144,7 +149,7 @@ const statFileInRoot = (name, callback) => {
     return;
   }
 
-  fs.stat(target, (err, stats) => {
+  fs.lstat(target, (err, stats) => {
     if (err) {
       callback(err.code === 'ENOENT' ? failure('ENOENT', 'File not found') : err);
       return;
@@ -157,13 +162,51 @@ const statFileInRoot = (name, callback) => {
   });
 };
 
+// Filesystems that support ordinary reads, writes and deletes but no hard
+// links — FAT32 and exFAT removable media, some network mounts — reject
+// `link()` outright. A watch directory on a USB stick is an ordinary setup, so
+// rename falls back rather than failing on those.
+const NO_HARDLINK_SUPPORT = ['EPERM', 'ENOTSUP', 'EOPNOTSUPP', 'ENOSYS', 'EXDEV'];
+
+// Claim `toPath` for `fromPath`'s contents without overwriting anything.
+//
+// `fs.link()` is preferred because it fails with EEXIST *atomically*: a
+// stat-then-rename check cannot, since the target may appear in between.
+// Where hard links are unsupported, `copyFile()` with COPYFILE_EXCL still
+// refuses to overwrite, though the check and the write are no longer one
+// operation.
+const claimName = (fromPath, toPath, callback) => {
+  fs.link(fromPath, toPath, (linkErr) => {
+    if (!linkErr) {
+      callback(null);
+      return;
+    }
+    if (linkErr.code === 'EEXIST') {
+      callback(failure('EEXIST', 'Target file already exists'));
+      return;
+    }
+    if (NO_HARDLINK_SUPPORT.indexOf(linkErr.code) < 0) {
+      callback(linkErr);
+      return;
+    }
+    fs.copyFile(fromPath, toPath, fs.constants.COPYFILE_EXCL, (copyErr) => {
+      if (copyErr) {
+        callback(copyErr.code === 'EEXIST'
+          ? failure('EEXIST', 'Target file already exists')
+          : copyErr);
+        return;
+      }
+      callback(null);
+    });
+  });
+};
+
 // Rename a file within the watch directory.
 //
-// Unlike writing, this must not overwrite. `fs.rename()` would silently
-// replace an existing target, destroying a program the caller never named, so
-// the new name is claimed with `fs.link()` first: it fails with EEXIST if the
-// name is taken, and does so atomically, which a stat-then-rename check cannot.
-// The original is unlinked only once the new name is safely in place.
+// Unlike writing, this must not overwrite: `fs.rename()` would silently
+// replace an existing target, destroying a program the caller never named. The
+// new name is claimed first (see `claimName`), and the original removed only
+// once that has succeeded.
 const renameFile = (file, to, callback) => {
   statFileInRoot(file, (err, fromPath) => {
     if (err) {
@@ -181,23 +224,28 @@ const renameFile = (file, to, callback) => {
       return;
     }
 
-    fs.link(fromPath, toPath, (linkErr) => {
-      if (linkErr) {
-        callback(linkErr.code === 'EEXIST'
-          ? failure('EEXIST', 'Target file already exists')
-          : linkErr);
+    claimName(fromPath, toPath, (claimErr) => {
+      if (claimErr) {
+        callback(claimErr);
         return;
       }
       fs.unlink(fromPath, (unlinkErr) => {
-        if (unlinkErr) {
-          // The new name exists but the old one could not be removed; take the
-          // new name back so the rename is all-or-nothing.
-          fs.unlink(toPath, () => {
-            callback(unlinkErr);
-          });
+        if (!unlinkErr) {
+          callback(null);
           return;
         }
-        callback(null);
+        // The new name exists but the old one could not be removed. Give the
+        // new name back so the directory is left as it was found.
+        fs.unlink(toPath, (rollbackErr) => {
+          if (rollbackErr) {
+            // Both removals failed, so both names now refer to the file and
+            // the caller must be told rather than shown the original error.
+            callback(failure('EPARTIAL',
+              `Renamed to ${path.basename(toPath)} but ${path.basename(fromPath)} could not be removed; both names now exist`));
+            return;
+          }
+          callback(unlinkErr);
+        });
       });
     });
   });
