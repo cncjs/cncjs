@@ -1,9 +1,10 @@
 import moment from 'moment';
+import { NO_READING } from 'app/lib/reading';
 import { mapPositionToUnits } from 'app/lib/units';
 
-// What a reading says when there is nothing to say. Not "0", not "00:00:00":
-// those are readings, and they would describe a job that exists.
-export const NO_READING = '–';
+// Re-exported because this module's callers have always taken it from here.
+// It moved to `app/lib/reading` when the Grbl panel needed the same dash.
+export { NO_READING };
 
 const pad = (value) => String(value).padStart(2, '0');
 

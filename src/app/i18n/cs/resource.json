@@ -649,5 +649,11 @@
   "Uploading...": "Nahrávání...",
   "Dismiss": "",
   "Username is required": "",
-  "Password is required": ""
+  "Password is required": "",
+  "Job progress": "",
+  "Feed Rate Override": "",
+  "Reset feed rate override": "",
+  "Spindle Override": "",
+  "Reset spindle override": "",
+  "Rapid Override": ""
 }

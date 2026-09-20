@@ -8,6 +8,7 @@ import {
   fontWeight,
   letterSpacing,
   lineHeight,
+  machineState,
   size,
   spacingUnit,
 } from './tokens';
@@ -41,6 +42,12 @@ const createAppTheme = () => createTheme({
     },
     success: {
       main: color.running,
+      contrastText: color.onAccent,
+    },
+    // A machine that is ready but standing still. Not a caution in the usual
+    // sense — on a panel the thing worth flagging is that the tool is armed.
+    warning: {
+      main: color.ready,
       contrastText: color.onAccent,
     },
     background: {
@@ -111,7 +118,9 @@ const createAppTheme = () => createTheme({
     border,
     color,
     focus,
+    fontSize,
     lineHeight,
+    machineState,
     size,
   },
 

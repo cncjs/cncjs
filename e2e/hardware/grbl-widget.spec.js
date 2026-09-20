@@ -18,16 +18,20 @@ const { test, expect, TEST_PORT } = require('./fixtures');
  * Written before the widget is rebuilt on the new component library, so it
  * asserts on what the widget says and on the relationships between its
  * readings and the controller's own state, rather than on the markup that
- * happens to carry them today. `data-reading` and `data-override` are the two
- * structural hooks, added alongside this spec because without them a rebuild
- * could swap Spindle and Tool Number and every assertion would stay green.
+ * happens to carry them today. `data-reading` is the one structural hook,
+ * added alongside this spec because without it a rebuild could swap Spindle
+ * and Tool Number and every assertion would stay green.
  */
 test.describe('grbl widget, connected', () => {
   test.skip(!TEST_PORT, 'set CNCJS_TEST_PORT to run the hardware tier');
 
   const widget = (page) => page.locator('[data-widget-id="grbl"]');
   const reading = (page, key) => widget(page).locator(`[data-reading="${key}"]`);
-  const override = (page, axis) => widget(page).locator(`[data-override="${axis}"]`);
+  // The override figure is a reading like any other, so it carries the same
+  // hook the status readings do. It was `data-override` while the widget still
+  // had its own markup; the component library has one way of naming a value
+  // and two would have drifted.
+  const override = (page, axis) => widget(page).locator(`[data-reading="override-${axis}"]`);
   // Not `exact`: the toggler's accessible name is "Status Reports " — the
   // trailing space comes from the chevron sitting inside the same anchor, and
   // it is the kind of markup accident a rebuild would quietly change.

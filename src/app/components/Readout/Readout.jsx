@@ -11,12 +11,16 @@ import { Label, Line, Root, Unit, Value } from './styles';
  * `label` is optional on purpose. A panel whose header already names the
  * reading does not need it said twice, and an uppercase label over every
  * figure turns an instrument into a form.
+ *
+ * `name` is the machine's own name for the figure, landing on the value as
+ * `data-reading` — the same hook `Details` puts on a row, so a reading is
+ * findable the same way wherever it is drawn.
  */
-const Readout = ({ label, value, unit, emphasis }) => (
+const Readout = ({ label, value, unit, emphasis, name }) => (
   <Root>
     {label && <Label>{label}</Label>}
     <Line>
-      <Value emphasis={emphasis}>{value}</Value>
+      <Value emphasis={emphasis} data-reading={name}>{value}</Value>
       {unit && <Unit emphasis={emphasis}>{unit}</Unit>}
     </Line>
   </Root>

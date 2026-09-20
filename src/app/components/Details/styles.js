@@ -26,6 +26,10 @@ export const Row = styled('div')({
 
 export const Label = styled('dt')(({ theme }) => ({
   margin: 0,
+  // The browser gives `dt` a bolder weight of its own, which beats the weight
+  // inherited from the list and leaves every label heavier than the figure it
+  // names — the opposite of what this block is for.
+  fontWeight: 'inherit',
   color: theme.palette.text.secondary,
 }));
 
