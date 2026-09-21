@@ -1,5 +1,6 @@
 import Button from '../ui/Button';
 import Card from '../ui/Card';
+import { useIsPhone } from '../ui/shell';
 import Meter from '../ui/Meter';
 import { NO_READING } from '../machine/readings';
 
@@ -28,6 +29,7 @@ const reading = (value) => (value === null || value === undefined ? NO_READING :
  * need the size of a coordinate.
  */
 const JobWidget = ({ machine, label = 'Przebieg zadania', className = '' }) => {
+  const phone = useIsPhone();
   const { job, tool } = machine;
 
   return (
@@ -58,10 +60,12 @@ const JobWidget = ({ machine, label = 'Przebieg zadania', className = '' }) => {
       {/* Only where there is no status bar to carry them. At the panel the
         * job lives along the bottom, and two Starts on one screen is one
         * too many. */}
-      <div className="flex gap-3 @3xl/shell:hidden">
-        <Button tone="go" disabled className="h-chiph min-w-0 flex-1">Start zadania</Button>
-        <Button disabled className="h-chiph min-w-0">Pauza</Button>
-      </div>
+      {phone ? (
+        <div className="flex gap-3">
+          <Button tone="go" disabled className="h-chiph min-w-0 flex-1">Start zadania</Button>
+          <Button disabled className="h-chiph min-w-0">Pauza</Button>
+        </div>
+      ) : null}
     </Card>
   );
 };

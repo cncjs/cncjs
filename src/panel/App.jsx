@@ -50,10 +50,25 @@ const Panel = ({ machine, screen, onScreen }) => {
 
   return (
     <>
+      {/*
+        * On a phone the identity is only shown when it is a problem.
+        *
+        * Which controller and which port is setup information: read once, then
+        * known. At the panel it costs nothing to keep it in view. On a phone it
+        * costs the width between the state and the stop, and the chip beside it
+        * already says the machine is answering. Disconnected is different —
+        * that is the one thing worth the room, and there is no status bar down
+        * there to say it instead.
+        */}
       <TopBar
         status={machine.status}
         machine={machine.connected
-          ? [{ label: 'sterownik', value: machine.type }, { label: 'port', value: machine.port }]
+          ? (phone
+? []
+: [
+            { label: 'sterownik', value: machine.type },
+            { label: 'port', value: machine.port },
+          ])
           : [{ value: 'Brak połączenia' }, { value: 'ze sterownikiem' }]}
         canStop={machine.connected}
         onStop={emergencyStop}

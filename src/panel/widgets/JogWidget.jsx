@@ -7,6 +7,7 @@ import JogPadTall from '../ui/JogPadTall';
 import SegmentedChoice from '../ui/SegmentedChoice';
 import Sheet from '../ui/Sheet';
 import Stepper from '../ui/Stepper';
+import { useIsPhone } from '../ui/shell';
 import { jog, XY_STEPS, Z_STEPS } from '../machine/jog';
 
 /**
@@ -30,6 +31,7 @@ import { jog, XY_STEPS, Z_STEPS } from '../machine/jog';
  * the state, the machine, and what a key press means.
  */
 const JogWidget = ({ machine, className = '' }) => {
+  const phone = useIsPhone();
   const { connected, type } = machine;
   const [xyStep, setXyStep] = useState(1);
   const [zStep, setZStep] = useState(1);
@@ -89,17 +91,19 @@ const JogWidget = ({ machine, className = '' }) => {
     <Card className={`min-h-0 overflow-hidden ${className}`} bodyClassName="gap-0">
       {/* At the panel: the keys at their drawn size, both groups open below
         * them, nothing folded away. */}
-      <div className="hidden min-h-0 flex-1 flex-col gap-gap overflow-auto @3xl/shell:flex">
+      {phone ? null : (
+        <div className="flex min-h-0 flex-1 flex-col gap-gap overflow-auto">
         <div className="shrink-0">
           <JogPad {...keys} />
         </div>
         {/* XY and Z are the same decision asked twice, so they stay together:
           * split across a fold, the second one is easy to miss. */}
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-gap">
-          <AxisControls {...xy} />
-          <AxisControls {...z} />
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-gap">
+            <AxisControls {...xy} />
+            <AxisControls {...z} />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* On a phone: the keys take the height, the settings take a line each.
         * Tapping a line opens a sheet rather than unfolding in place, because
@@ -107,7 +111,8 @@ const JogWidget = ({ machine, className = '' }) => {
         * they are hit by a thumb while the eyes are on the cutter. A wider gap
         * than the one between the keys, so the settings read as a separate
         * block rather than a fifth row of the pad. */}
-      <div className="flex min-h-0 flex-1 flex-col gap-gap @3xl/shell:hidden">
+      {phone ? (
+        <div className="flex min-h-0 flex-1 flex-col gap-gap">
         <JogPadTall {...keys} />
         <AxisSummary
           title={xy.title}
@@ -123,7 +128,8 @@ const JogWidget = ({ machine, className = '' }) => {
           onOpen={() => setEditing('z')}
           disabled={!connected}
         />
-      </div>
+        </div>
+      ) : null}
 
       {open ? (
         <Sheet title={`Jog ${open.title}`} onClose={() => setEditing(null)}>
