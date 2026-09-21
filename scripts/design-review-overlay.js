@@ -1,0 +1,267 @@
+/*
+ * Comments pinned to places, on the running panel.
+ *
+ * Claude Design lets you click a spot on a drawing and leave a note there.
+ * This is that, on the other side: click anything in the live panel, say what
+ * is wrong with it, and the note lands in `design/review.json` with enough
+ * about the element that it can be found in the source without a description.
+ *
+ * Loaded by a bookmarklet, so it attaches to whatever is open — the panel, or
+ * the side-by-side review page from `design-diff.js` — and nothing about it
+ * ships in the product.
+ *
+ * Served by `scripts/design-review.js`, which also takes the POSTs.
+ */
+(() => {
+  const HOST = window.__reviewHost || 'http://localhost:8765';
+
+  if (window.__reviewLoaded) {
+    window.__reviewToggle();
+    return;
+  }
+  window.__reviewLoaded = true;
+
+  let notes = [];
+  let picking = false;
+  let hovered = null;
+
+  // ---- where the click landed -------------------------------------------
+
+  // A path good enough to find the element again after a reload, and good
+  // enough for a person reading the note to know what was meant.
+  const pathOf = (el) => {
+    const parts = [];
+    let node = el;
+    while (node && node.nodeType === 1 && parts.length < 8 && node.tagName !== 'BODY') {
+      const parent = node.parentElement;
+      if (!parent) { break; }
+      const same = Array.from(parent.children).filter((c) => c.tagName === node.tagName);
+      const index = same.indexOf(node) + 1;
+      parts.unshift(same.length > 1 ? `${node.tagName.toLowerCase()}:nth-of-type(${index})` : node.tagName.toLowerCase());
+      node = parent;
+    }
+    return parts.join(' > ');
+  };
+
+  const screenOf = () => {
+    const here = document.querySelector('[aria-current="page"]');
+    return here ? here.textContent.trim() : document.title;
+  };
+
+  const describe = (el) => {
+    const box = el.getBoundingClientRect();
+    return {
+      screen: screenOf(),
+      path: pathOf(el),
+      tag: el.tagName.toLowerCase(),
+      // The Tailwind class string is how a component is found in the source.
+      className: typeof el.className === 'string' ? el.className.slice(0, 200) : '',
+      label: (el.getAttribute('aria-label') || el.textContent || '').trim().slice(0, 60),
+      box: {
+        x: Math.round(box.x), y: Math.round(box.y),
+        w: Math.round(box.width), h: Math.round(box.height),
+      },
+    };
+  };
+
+  // ---- chrome ------------------------------------------------------------
+
+  const style = document.createElement('style');
+  style.textContent = `
+    #rv-bar { position: fixed; z-index: 2147483000; right: 16px; bottom: 16px;
+      display: flex; gap: 8px; align-items: center; background: #171d25; color: #e6ecf3;
+      border: 1px solid #3a424c; border-radius: 6px; padding: 8px 10px;
+      font: 13px/1.3 system-ui, sans-serif; box-shadow: 0 6px 24px rgba(0,0,0,.4); }
+    #rv-bar button { font: inherit; cursor: pointer; border-radius: 4px; padding: 6px 10px;
+      border: 1px solid #3a424c; background: #2c323a; color: #e6ecf3; }
+    #rv-bar button.on { background: #e04a4a; border-color: #e04a4a; }
+    #rv-bar .count { color: #8b97a6; }
+    .rv-hover { outline: 2px solid #e04a4a !important; outline-offset: -2px !important; }
+    #rv-sheet { position: fixed; inset: 0; z-index: 2147482500; cursor: crosshair;
+      background: transparent; }
+    .rv-pin { position: absolute; z-index: 2147482000; width: 22px; height: 22px;
+      margin: -11px 0 0 -11px; border-radius: 50%; background: #e04a4a; color: #fff;
+      font: 700 12px/22px system-ui, sans-serif; text-align: center; cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,.4); }
+    #rv-form { position: absolute; z-index: 2147483000; background: #171d25; color: #e6ecf3;
+      border: 1px solid #3a424c; border-radius: 6px; padding: 10px; width: 280px;
+      font: 13px/1.4 system-ui, sans-serif; box-shadow: 0 6px 24px rgba(0,0,0,.4); }
+    #rv-form textarea { width: 100%; height: 70px; box-sizing: border-box; background: #0e1319;
+      color: #e6ecf3; border: 1px solid #3a424c; border-radius: 4px; padding: 6px; font: inherit; }
+    #rv-form .what { color: #8b97a6; font-size: 11px; margin-bottom: 6px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #rv-form .row { display: flex; gap: 6px; justify-content: flex-end; margin-top: 8px; }
+    #rv-form button { font: inherit; cursor: pointer; border-radius: 4px; padding: 5px 10px;
+      border: 1px solid #3a424c; background: #2c323a; color: #e6ecf3; }
+    #rv-form button.save { background: #1557c0; border-color: #1557c0; }
+  `;
+  document.head.appendChild(style);
+
+  const bar = document.createElement('div');
+  bar.id = 'rv-bar';
+  bar.innerHTML = `
+    <button id="rv-pick">Komentarz</button>
+    <span class="count" id="rv-count"></span>
+    <button id="rv-clear" title="Usuń wszystkie uwagi">Wyczyść</button>`;
+  document.body.appendChild(bar);
+
+  const count = bar.querySelector('#rv-count');
+  const pickButton = bar.querySelector('#rv-pick');
+
+  // ---- pins --------------------------------------------------------------
+
+  const clearPins = () => document.querySelectorAll('.rv-pin').forEach((p) => p.remove());
+
+  const drawPins = () => {
+    clearPins();
+    notes.forEach((note, index) => {
+      let target = null;
+      try { target = document.querySelector(note.path); } catch (err) { target = null; }
+      const box = target
+        ? target.getBoundingClientRect()
+        : { x: note.box.x, y: note.box.y, width: note.box.w, height: note.box.h };
+      const pin = document.createElement('div');
+      pin.className = 'rv-pin';
+      pin.textContent = String(index + 1);
+      pin.style.left = `${box.x + box.width / 2 + window.scrollX}px`;
+      pin.style.top = `${box.y + window.scrollY + 11}px`;
+      pin.title = note.text;
+      pin.addEventListener('click', async (event) => {
+        event.stopPropagation();
+        if (window.confirm(`${index + 1}. ${note.text}\n\nUsunąć tę uwagę?`)) {
+          await fetch(`${HOST}/notes/${note.id}`, { method: 'DELETE' });
+          await load();
+        }
+      });
+      document.body.appendChild(pin);
+    });
+    count.textContent = notes.length ? `${notes.length} uwag` : 'brak uwag';
+  };
+
+  const load = async () => {
+    const response = await fetch(`${HOST}/notes`);
+    notes = await response.json();
+    drawPins();
+  };
+
+  // ---- picking -----------------------------------------------------------
+
+  const unhover = () => {
+    if (hovered) { hovered.classList.remove('rv-hover'); }
+    hovered = null;
+  };
+
+  const ask = (el) => {
+    const where = describe(el);
+    const form = document.createElement('div');
+    form.id = 'rv-form';
+    const box = el.getBoundingClientRect();
+    form.style.left = `${Math.min(box.x + window.scrollX, window.innerWidth - 300)}px`;
+    form.style.top = `${box.bottom + window.scrollY + 8}px`;
+    form.innerHTML = `
+      <div class="what">${where.screen} · &lt;${where.tag}&gt; ${where.label || ''}</div>
+      <textarea placeholder="Co jest nie tak w tym miejscu?"></textarea>
+      <div class="row"><button class="cancel">Anuluj</button><button class="save">Zapisz</button></div>`;
+    document.body.appendChild(form);
+
+    const area = form.querySelector('textarea');
+    area.focus();
+
+    const close = () => form.remove();
+    const save = async () => {
+      const text = area.value.trim();
+      if (!text) { close(); return; }
+      await fetch(`${HOST}/notes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...where, text }),
+      });
+      close();
+      await load();
+    };
+
+    form.querySelector('.cancel').addEventListener('click', close);
+    form.querySelector('.save').addEventListener('click', save);
+    area.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) { save(); }
+      if (event.key === 'Escape') { close(); }
+    });
+  };
+
+  /*
+   * Picking goes through a sheet over the whole viewport rather than through
+   * listeners on the page, and that is not defensiveness — it is the only
+   * thing that works here.
+   *
+   * A disabled control fires no mouse events at all, and on a panel with no
+   * machine attached most of the screen is disabled: every jog key, every step
+   * chip, Start, Probe. Those are exactly the places worth commenting on, and
+   * listening for clicks would have made them the only places that could not
+   * be commented on.
+   *
+   * The sheet catches the click, steps out of the way for one call to
+   * `elementFromPoint`, and steps back. It also means the page never sees the
+   * click, so nothing is pressed while marking things up.
+   */
+  let sheet = null;
+
+  const under = (x, y) => {
+    sheet.style.pointerEvents = 'none';
+    const el = document.elementFromPoint(x, y);
+    sheet.style.pointerEvents = 'auto';
+    return el;
+  };
+
+  const onSheetMove = (event) => {
+    const el = under(event.clientX, event.clientY);
+    if (!el || el === hovered || el.closest('#rv-bar, #rv-form')) { return; }
+    unhover();
+    hovered = el;
+    el.classList.add('rv-hover');
+  };
+
+  const onSheetClick = (event) => {
+    const el = under(event.clientX, event.clientY);
+    setPicking(false);
+    if (el && !el.closest('#rv-bar, #rv-form')) { ask(el); }
+  };
+
+  const onKey = (event) => {
+    if (event.key === 'Escape') { setPicking(false); }
+  };
+
+  function setPicking(on) {
+    picking = on;
+    pickButton.classList.toggle('on', on);
+    pickButton.textContent = on ? 'Kliknij miejsce…' : 'Komentarz';
+
+    if (on) {
+      sheet = document.createElement('div');
+      sheet.id = 'rv-sheet';
+      document.body.appendChild(sheet);
+      sheet.addEventListener('mousemove', onSheetMove);
+      sheet.addEventListener('click', onSheetClick);
+      document.addEventListener('keydown', onKey);
+      return;
+    }
+
+    if (sheet) { sheet.remove(); sheet = null; }
+    document.removeEventListener('keydown', onKey);
+    unhover();
+  }
+
+  window.__reviewToggle = () => setPicking(!picking);
+
+  pickButton.addEventListener('click', () => setPicking(!picking));
+  bar.querySelector('#rv-clear').addEventListener('click', async () => {
+    if (!notes.length || !window.confirm('Usunąć wszystkie uwagi?')) { return; }
+    await fetch(`${HOST}/notes`, { method: 'DELETE' });
+    await load();
+  });
+
+  window.addEventListener('resize', drawPins);
+  // The panel is a single page; pins follow whatever it redraws.
+  setInterval(drawPins, 1000);
+
+  load();
+})();
