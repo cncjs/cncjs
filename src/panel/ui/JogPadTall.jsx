@@ -15,10 +15,12 @@
  * squares have to match or the bottom row reads as a different kind of
  * control.
  *
- * The square is driven by the row height, not the column width. The other way
- * round, a narrow phone gave the pad more height than the card had and the
- * keys overlapped the settings beneath them: width is what there is plenty of
- * here, height is what runs out.
+ * The keys fill their cells rather than holding a square inside them. A square
+ * is the better shape and this gets there whenever the space allows, but
+ * forcing it left a margin down both sides of the pad — and a key made smaller
+ * so that a gap can sit beside it is the wrong trade on the control a thumb
+ * has to find without looking. Equal rectangles, square when the room happens
+ * to be square.
  */
 const Key = ({ children, onClick, disabled, label, quiet }) => (
   <button
@@ -27,7 +29,7 @@ const Key = ({ children, onClick, disabled, label, quiet }) => (
     disabled={disabled}
     aria-label={label}
     className={[
-      'flex aspect-square h-full max-w-full flex-col items-center justify-center rounded-ctl border leading-tight',
+      'flex size-full flex-col items-center justify-center rounded-ctl border leading-tight',
       quiet
         ? 'border-line bg-field text-cap font-medium text-mut hover:border-acc hover:text-acc'
         : 'border-line bg-surf text-head font-semibold text-acc hover:border-acc',
@@ -42,7 +44,7 @@ const HOUSE = <span aria-hidden="true">&#8962;</span>;
 
 const JogPadTall = ({ onJog, onHome, onPark, disabled, canHome }) => (
   <div
-    className="grid min-h-0 flex-1 grid-cols-3 grid-rows-4 justify-items-center gap-2"
+    className="grid min-h-0 flex-1 grid-cols-3 grid-rows-4 gap-2"
     role="group"
     aria-label="Jog"
   >
