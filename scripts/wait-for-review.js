@@ -24,13 +24,21 @@ const read = () => {
   }
 };
 
-const startedWith = read().map((note) => note.id);
-const deadline = Date.now() + Number(process.env.REVIEW_WAIT_MS || 30 * 60 * 1000);
+/*
+ * Anything in the file is unhandled, by definition: a note is deleted when it
+ * is fixed. So this returns straight away if the board is not empty, rather
+ * than waiting for the *next* one and leaving whatever is already there
+ * sitting unread — which is exactly how a note came to be ignored.
+ */
+// An hour by default. Passing this as an environment-variable prefix on the
+// command line does not survive in this project's shell — it exits 127 — so
+// the default lives here and the variable is only an override.
+const deadline = Date.now() + Number(process.env.REVIEW_WAIT_MS || 60 * 60 * 1000);
 
 const tick = () => {
-  const fresh = read().filter((note) => !startedWith.includes(note.id));
+  const fresh = read();
   if (fresh.length) {
-    console.log(`${fresh.length} nowych uwag:\n`);
+    console.log(`${fresh.length} otwartych uwag:\n`);
     fresh.forEach((note) => {
       console.log(`  #${note.id} [${note.screen}] <${note.tag}> ${note.label}`);
       console.log(`     ${note.text}`);
@@ -39,7 +47,7 @@ const tick = () => {
     process.exit(0);
   }
   if (Date.now() > deadline) {
-    console.log('Brak nowych uwag w oknie oczekiwania.');
+    console.log('Brak otwartych uwag w oknie oczekiwania.');
     process.exit(0);
   }
   setTimeout(tick, 1000);
