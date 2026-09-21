@@ -65,7 +65,12 @@ export const AxisRow = ({ axis, value, machineValue, last, strip }) => (
       <span className={`justify-self-end truncate font-num font-medium tabular-nums text-ink ${strip ? 'text-read @3xl/shell:text-val' : 'text-val'}`}>
         {formatPosition(value)}
       </span>
-      <span className="font-num text-note text-mut">mm</span>
+      {/* Not on the strip. Three axes across a phone leave a hundred pixels
+        * a column, and `mm` takes thirteen of them three times over to say
+        * the same thing — which is what pushed the widest reading to within
+        * three pixels of the divider beside it. The unit is the machine's,
+        * not the axis's, and it is stated where there is room for it. */}
+      <span className={`font-num text-note text-mut ${strip ? 'hidden @3xl/shell:inline' : ''}`}>mm</span>
       {/* No unit of its own: it is the same millimetres measured from somewhere
         * else, and saying so twice a row adds nothing. */}
       <span className="col-start-1 justify-self-end truncate font-num text-note tabular-nums text-mut">
