@@ -16,8 +16,14 @@ import { zero, activeWcsNumber } from '../machine/zero';
  * system is active, because that command has to name one and a guess is
  * discovered only by a tool moving to the wrong place under power.
  *
+ * The figure is `--val`, not `--dro`. It was the largest thing on the panel
+ * until the readout above it started carrying Z as well, and two copies of one
+ * number on one screen is the more expensive kind of duplication: it cost the
+ * readout 36px it needed to keep its rows off their own dividers. The actions
+ * are what this card is actually for, and they are not duplicated anywhere.
+ *
  * Wide, the reading and the buttons share a line; narrow, the buttons drop
- * beneath it. The reading never shrinks — it is the point of the widget.
+ * beneath it.
  */
 const ZHeightWidget = ({ machine, label = 'Wysokość Z', className = '' }) => {
   const { position, machinePosition, modal, connected } = machine;
@@ -32,7 +38,7 @@ const ZHeightWidget = ({ machine, label = 'Wysokość Z', className = '' }) => {
     >
       <div className="flex flex-col gap-4 @xl:flex-row @xl:items-end @xl:gap-6">
         <span className="flex min-w-0 flex-1 items-baseline gap-2">
-          <span className="font-num text-dro font-medium tabular-nums text-ink">
+          <span className="font-num text-val font-medium tabular-nums text-ink">
             {formatPosition(position.z)}
           </span>
           <span className="font-num text-lead text-mut">mm</span>

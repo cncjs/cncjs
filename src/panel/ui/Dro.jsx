@@ -67,8 +67,12 @@ export const AxisRow = ({ axis, value, machineValue, last, strip }) => (
         * measured from somewhere else. Centred under the work reading on the
         * strip, where the two read as one stacked pair; sharing a right edge
         * in the readout, where that is what makes them comparable.
+        *
+        * `leading-none`, because the default line box put six pixels of air
+        * under a twelve-pixel figure — three rows of it, which is exactly the
+        * room the rows needed to stop sitting on their own dividers.
         */}
-      <span className={`col-start-1 truncate font-num text-note tabular-nums text-mut ${strip ? 'justify-self-center' : 'justify-self-end'}`}>
+      <span className={`col-start-1 truncate font-num text-note leading-none tabular-nums text-mut ${strip ? 'justify-self-center' : 'justify-self-end'}`}>
         {formatPosition(machineValue)}
       </span>
     </span>
