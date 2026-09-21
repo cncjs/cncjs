@@ -21,14 +21,19 @@ const reading = (value) => (value === null || value === undefined ? NO_READING :
  * and the sender commands behind these two have not been wired or tested
  * against a controller yet. They are shown because a control that appears
  * later moves everything around it when it does.
+ *
+ * This card yields height to the readout beside it. The dashboard's right
+ * column is full at 768 and something has to; the position is what the
+ * screen is for, and a percentage that reads `0` for most of a job does not
+ * need the size of a coordinate.
  */
 const JobWidget = ({ machine, label = 'Przebieg zadania', className = '' }) => {
   const { job, tool } = machine;
 
   return (
-    <Card label={label} className={`@container min-h-0 ${className}`} bodyClassName="justify-between gap-3">
+    <Card label={label} className={`@container min-h-0 ${className}`} bodyClassName="justify-between gap-2">
       <div className="flex items-baseline gap-2">
-        <span className="font-num text-val font-medium tabular-nums text-ink">
+        <span className="font-num text-head font-medium tabular-nums text-ink">
           {job ? job.percent : 0}
         </span>
         <span className="min-w-0 truncate font-num text-note text-mut">
@@ -51,8 +56,8 @@ const JobWidget = ({ machine, label = 'Przebieg zadania', className = '' }) => {
       </div>
 
       <div className="flex gap-3">
-        <Button tone="go" disabled className="h-ctl min-w-0 flex-1">Start zadania</Button>
-        <Button disabled className="h-ctl min-w-0">Pauza</Button>
+        <Button tone="go" disabled className="h-chiph min-w-0 flex-1">Start zadania</Button>
+        <Button disabled className="h-chiph min-w-0">Pauza</Button>
       </div>
     </Card>
   );
