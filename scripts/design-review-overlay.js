@@ -79,6 +79,7 @@
     #rv-bar .sep { width: 1px; height: 22px; background: #3a424c; }
     #rv-bar .targets { display: flex; gap: 4px; }
     #rv-bar .targets button.on { background: #1557c0; border-color: #1557c0; }
+    #rv-bar .scale { font: 600 12px/1 'IBM Plex Mono', monospace; min-width: 62px; }
     .rv-hover { outline: 2px solid #e04a4a !important; outline-offset: -2px !important; }
     #rv-sheet { position: fixed; inset: 0; z-index: 2147482500; cursor: crosshair;
       background: transparent; }
@@ -104,10 +105,12 @@
   bar.id = 'rv-bar';
   bar.innerHTML = `
     <span class="targets">
-      <button data-target="" class="on" title="1024 x 768">1024</button>
+      <button data-target="base" class="on" title="1024 x 768">1024</button>
       <button data-target="fullhd" title="1920 x 1080">Full HD</button>
       <button data-target="phone" title="390 x 844">Telefon</button>
     </span>
+    <span class="scale" id="rv-scale"></span>
+    <button id="rv-open" title="Otwórz w oknie o rozmiarze celu">Nowe okno</button>
     <span class="sep"></span>
     <button id="rv-pick">Komentarz</button>
     <span class="count" id="rv-count"></span>
@@ -116,40 +119,50 @@
 
   const count = bar.querySelector('#rv-count');
   const pickButton = bar.querySelector('#rv-pick');
+  const scaleNote = bar.querySelector('#rv-scale');
+  const openButton = bar.querySelector('#rv-open');
 
   // ---- target --------------------------------------------------------------
 
   /*
    * The mockup's `data-target` switch, on the running panel.
    *
-   * The token sheet already answers to it — `--rail`, `--pad`, `--jbtn` and the
-   * rest all move — but the panel fills its window, so setting the attribute
-   * alone shows the bigger numbers at the wrong size. So the mount is also
-   * framed at the target's own dimensions and scaled down to whatever window is
-   * open, which is what the drawing does and is the only way to look at 1920 on
-   * a smaller screen.
+   * Every target is framed at its own size, including 1024. The first version
+   * left 1024 unframed — the panel simply filled the window — so on a 1440-wide
+   * window it drew the 1024 token scale across 1440 pixels while Full HD was
+   * correctly framed and scaled down to fit. The result read as the two being
+   * swapped: the small target looked roomy and the large one looked cramped.
+   * A preview that is not framed is not a preview of anything.
    *
-   * Scaled, not resized: at 1920 the layout must be judged by proportion, and
-   * `transform: scale` keeps every proportion exactly while making it fit.
+   * Scale is only ever downwards, and only when the window cannot hold the
+   * target. When it fits, the frame is 1:1 and what is on screen is what the
+   * device would show. When it does not, the bar says the percentage, because a
+   * layout judged at 73% is being judged at the wrong size and whoever is
+   * looking at it should know that rather than infer it.
+   *
+   * For a true 1:1 look at a target too big for the current window, `Nowe okno`
+   * opens one sized to the target itself.
    */
   const TARGETS = {
-    '': { w: null, h: null },
+    base: { w: 1024, h: 768 },
     fullhd: { w: 1920, h: 1080 },
     phone: { w: 390, h: 844 },
   };
 
   const mount = document.getElementById('panel-root');
 
+  let current = 'base';
+
   const setTarget = (name) => {
     if (!mount) { return; }
-    const target = TARGETS[name] || TARGETS[''];
-    document.documentElement.dataset.target = name;
+    current = TARGETS[name] ? name : 'base';
+    const target = TARGETS[current];
 
-    if (!target.w) {
-      mount.style.cssText = '';
-      document.body.style.overflow = '';
-      drawPins();
-      return;
+    // `base` is the drawing's default and declares no attribute of its own.
+    if (current === 'base') {
+      delete document.documentElement.dataset.target;
+    } else {
+      document.documentElement.dataset.target = current;
     }
 
     const scale = Math.min(
@@ -161,7 +174,34 @@
       + `transform:scale(${scale});transform-origin:top left;`
       + 'outline:1px solid var(--line);position:absolute;top:20px;left:20px;';
     document.body.style.overflow = 'hidden';
+
+    const exact = scale > 0.999;
+    scaleNote.textContent = exact ? '1:1' : `skala ${Math.round(scale * 100)}%`;
+    scaleNote.style.color = exact ? '#2ea36a' : '#d08a1b';
+    openButton.hidden = exact;
     drawPins();
+  };
+
+  /*
+   * A window the size of the target, so the panel is looked at rather than at a
+   * picture of the panel. The browser puts its own chrome around the viewport,
+   * so the size asked for is corrected once the window is up.
+   */
+  const openAtTarget = () => {
+    const target = TARGETS[current];
+    const win = window.open(window.location.href, `rv-${current}`,
+      `width=${target.w},height=${target.h}`);
+    if (!win) {
+      window.alert('Przeglądarka zablokowała nowe okno — zezwól na wyskakujące okna dla tej strony.');
+      return;
+    }
+    const fit = () => {
+      win.resizeBy(target.w - win.innerWidth, target.h - win.innerHeight);
+      const script = win.document.createElement('script');
+      script.src = `${HOST}/overlay.js?${Date.now()}`;
+      win.document.body.appendChild(script);
+    };
+    if (win.document.readyState === 'complete') { setTimeout(fit, 300); } else { win.addEventListener('load', () => setTimeout(fit, 300)); }
   };
 
   bar.querySelectorAll('[data-target]').forEach((button) => {
@@ -323,12 +363,11 @@
     await load();
   });
 
-  window.addEventListener('resize', () => {
-    const active = bar.querySelector('.targets button.on');
-    setTarget(active ? active.dataset.target : '');
-  });
+  openButton.addEventListener('click', openAtTarget);
+  window.addEventListener('resize', () => setTarget(current));
   // The panel is a single page; pins follow whatever it redraws.
   setInterval(drawPins, 1000);
 
+  setTarget('base');
   load();
 })();
