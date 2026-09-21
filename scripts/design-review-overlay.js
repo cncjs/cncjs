@@ -76,6 +76,9 @@
       border: 1px solid #3a424c; background: #2c323a; color: #e6ecf3; }
     #rv-bar button.on { background: #e04a4a; border-color: #e04a4a; }
     #rv-bar .count { color: #8b97a6; }
+    #rv-bar .sep { width: 1px; height: 22px; background: #3a424c; }
+    #rv-bar .targets { display: flex; gap: 4px; }
+    #rv-bar .targets button.on { background: #1557c0; border-color: #1557c0; }
     .rv-hover { outline: 2px solid #e04a4a !important; outline-offset: -2px !important; }
     #rv-sheet { position: fixed; inset: 0; z-index: 2147482500; cursor: crosshair;
       background: transparent; }
@@ -100,6 +103,12 @@
   const bar = document.createElement('div');
   bar.id = 'rv-bar';
   bar.innerHTML = `
+    <span class="targets">
+      <button data-target="" class="on" title="1024 x 768">1024</button>
+      <button data-target="fullhd" title="1920 x 1080">Full HD</button>
+      <button data-target="phone" title="390 x 844">Telefon</button>
+    </span>
+    <span class="sep"></span>
     <button id="rv-pick">Komentarz</button>
     <span class="count" id="rv-count"></span>
     <button id="rv-clear" title="Usuń wszystkie uwagi">Wyczyść</button>`;
@@ -107,6 +116,61 @@
 
   const count = bar.querySelector('#rv-count');
   const pickButton = bar.querySelector('#rv-pick');
+
+  // ---- target --------------------------------------------------------------
+
+  /*
+   * The mockup's `data-target` switch, on the running panel.
+   *
+   * The token sheet already answers to it — `--rail`, `--pad`, `--jbtn` and the
+   * rest all move — but the panel fills its window, so setting the attribute
+   * alone shows the bigger numbers at the wrong size. So the mount is also
+   * framed at the target's own dimensions and scaled down to whatever window is
+   * open, which is what the drawing does and is the only way to look at 1920 on
+   * a smaller screen.
+   *
+   * Scaled, not resized: at 1920 the layout must be judged by proportion, and
+   * `transform: scale` keeps every proportion exactly while making it fit.
+   */
+  const TARGETS = {
+    '': { w: null, h: null },
+    fullhd: { w: 1920, h: 1080 },
+    phone: { w: 390, h: 844 },
+  };
+
+  const mount = document.getElementById('panel-root');
+
+  const setTarget = (name) => {
+    if (!mount) { return; }
+    const target = TARGETS[name] || TARGETS[''];
+    document.documentElement.dataset.target = name;
+
+    if (!target.w) {
+      mount.style.cssText = '';
+      document.body.style.overflow = '';
+      drawPins();
+      return;
+    }
+
+    const scale = Math.min(
+      (window.innerWidth - 40) / target.w,
+      (window.innerHeight - 40) / target.h,
+      1
+    );
+    mount.style.cssText = `width:${target.w}px;height:${target.h}px;`
+      + `transform:scale(${scale});transform-origin:top left;`
+      + 'outline:1px solid var(--line);position:absolute;top:20px;left:20px;';
+    document.body.style.overflow = 'hidden';
+    drawPins();
+  };
+
+  bar.querySelectorAll('[data-target]').forEach((button) => {
+    button.addEventListener('click', () => {
+      bar.querySelectorAll('[data-target]')
+        .forEach((b) => b.classList.toggle('on', b === button));
+      setTarget(button.dataset.target);
+    });
+  });
 
   // ---- pins --------------------------------------------------------------
 
@@ -259,7 +323,10 @@
     await load();
   });
 
-  window.addEventListener('resize', drawPins);
+  window.addEventListener('resize', () => {
+    const active = bar.querySelector('.targets button.on');
+    setTarget(active ? active.dataset.target : '');
+  });
   // The panel is a single page; pins follow whatever it redraws.
   setInterval(drawPins, 1000);
 
