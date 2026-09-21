@@ -117,6 +117,8 @@ const createProtectedApiRouter = () => {
   router.get('/watch/file', watch.readFile);
   router.post('/watch/file', watch.readFile);
   router.put('/watch/file', watch.writeFile);
+  router.delete('/watch/file', watch.deleteFile);
+  router.post('/watch/file/rename', watch.renameFile);
 
   return router;
 };

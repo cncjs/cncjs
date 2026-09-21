@@ -4,6 +4,7 @@ import serviceContainer from '../service-container';
 import {
   ERR_BAD_REQUEST,
   ERR_NOT_FOUND,
+  ERR_CONFLICT,
   ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
@@ -58,6 +59,24 @@ const searchFiles = (searchPath) => {
     });
 };
 
+// The directory watcher tags its errors with a `code`; anything else is
+// unexpected and becomes a 500.
+const statusForError = (err) => {
+  switch (err && err.code) {
+  case 'ENOTCONFIGURED':
+  case 'EINVALIDNAME':
+  case 'ENOTFILE':
+    return ERR_BAD_REQUEST;
+  case 'ENOENT':
+    return ERR_NOT_FOUND;
+  case 'EEXIST':
+    return ERR_CONFLICT;
+  case 'EPARTIAL':
+  default:
+    return ERR_INTERNAL_SERVER_ERROR;
+  }
+};
+
 const api = {
   getStatus: (req, res) => {
     res.send({ configured: directoryWatcher.isConfigured() });
@@ -108,6 +127,49 @@ const api = {
       }
 
       res.send({ file: file });
+    });
+  },
+  deleteFile: (req, res) => {
+    const file = (req.body.file ?? req.query.file) ?? '';
+
+    if (!file) {
+      res.status(ERR_BAD_REQUEST).send({
+        msg: 'No file specified'
+      });
+      return;
+    }
+
+    directoryWatcher.deleteFile(file, (err) => {
+      if (err) {
+        res.status(statusForError(err)).send({
+          msg: err.message || 'Failed deleting file'
+        });
+        return;
+      }
+
+      res.send({ file: file });
+    });
+  },
+  renameFile: (req, res) => {
+    const file = (req.body.file ?? req.query.file) ?? '';
+    const to = (req.body.to ?? req.query.to) ?? '';
+
+    if (!file || !to) {
+      res.status(ERR_BAD_REQUEST).send({
+        msg: 'No file specified'
+      });
+      return;
+    }
+
+    directoryWatcher.renameFile(file, to, (err) => {
+      if (err) {
+        res.status(statusForError(err)).send({
+          msg: err.message || 'Failed renaming file'
+        });
+        return;
+      }
+
+      res.send({ file: to });
     });
   },
 };
