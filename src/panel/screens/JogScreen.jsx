@@ -25,17 +25,11 @@ const JogScreen = ({ machine }) => (
       {/* A strip on a phone, where the keys are the subject and the position
         * is the check. Stacked at the panel, where it is the other way
         * round. The drawing shows both and they are the same widget. */}
-      {/* On a phone it takes the band that would otherwise sit above the
-        * tabs. At the panel it takes its own height and the canvas gets the
-        * rest, which is what the drawing does — filling the column left the
-        * three rows further apart than the drawing has them. The floor on
-        * the row is what stops that being cramped instead. */}
-      <DroWidget
-        machine={machine}
-        label="Pozycja"
-        strip
-        className="min-h-0 flex-1 @3xl/shell:flex-none"
-      />
+      {/* A strip at every size here, not only on a phone. On this screen the
+        * position is a check between key presses and the toolpath is what is
+        * being watched, so one line rather than three hands the difference
+        * back to the canvas below. */}
+      <DroWidget machine={machine} label="Pozycja" strip className="shrink-0" />
 
       {/*
         * The handful of facts checked before touching a jog key, on one line

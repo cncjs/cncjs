@@ -3,82 +3,63 @@ import { formatPosition } from '../machine/readings';
 /**
  * One axis of the digital readout.
  *
- * The figure is monospace with tabular figures and it is the largest type on
- * the screen. That is not emphasis for its own sake: a position that shuffles
- * its own digits as it changes cannot be read at a glance while the machine is
- * moving, which is the only time anyone looks at it.
+ * The figure is monospace with tabular figures. That is not emphasis for its
+ * own sake: a position that shuffles its own digits as it changes cannot be
+ * read at a glance while the machine is moving, which is the only time anyone
+ * looks at it.
+ *
+ * Both positions, always. Work position answers "where am I in this job" and
+ * machine position answers "where am I in the machine", and the second is
+ * exactly what is wanted at the moments the first stops making sense — a zero
+ * set against the wrong corner, a job that starts somewhere unexpected, an
+ * axis near its limit.
  *
  * Named, so the row is a labelled reading rather than three spans that only
  * mean something to a reader who can see which line they are on.
- *
- * Both positions, always. The drawing carries this as one of three modes an
- * author picks between; here it is the only one, because the choice is not
- * worth a control. Work position answers "where am I in this job" and
- * machine position answers "where am I in the machine", and the second is
- * exactly what is wanted at the moments the first stops making sense — a
- * zero set against the wrong corner, a job that starts somewhere
- * unexpected, an axis near its limit. Showing it costs one small line.
  */
 export const AxisRow = ({ axis, value, machineValue, last, strip }) => (
   <div
     role="group"
     aria-label={axis}
     className={[
-      // A floor, not a height. Left to the type alone the rows sat closer
-      // together than anything else on the panel; told to fill the card they
-      // went to 67px against the drawing's 56. `--ctl` is the panel's own
-      // touch height and lands between the two.
-      'flex min-h-ctl min-w-0 flex-1 items-center gap-1 overflow-hidden',
-      // A strip only where the drawing draws one — beside the jog keys on a
-      // phone, where the position is a check and the keys are the subject.
-      // Everywhere else the readout is the subject and stays stacked, with
-      // the figures large enough to read from the machine.
+      'flex min-w-0 flex-1 items-center gap-1 overflow-hidden',
       strip
-        ? 'flex-col justify-center @3xl/shell:flex-row @3xl/shell:gap-3'
-        : 'flex-row gap-3',
-
-      last
-        ? ''
-        : (strip
-          ? 'border-r border-line @3xl/shell:border-b @3xl/shell:border-r-0'
-          : 'border-b border-line'),
+        // A column of the strip: label above, figures below, a hairline
+        // between it and the next axis.
+        ? `flex-col justify-center ${last ? '' : 'border-r border-line'}`
+        // A line of the readout: label left, figures right, and a floor under
+        // the row so three of them cannot close up on each other.
+        : `min-h-ctl flex-row gap-3 ${last ? '' : 'border-b border-line'}`,
     ].join(' ')}
   >
-    <span
-      className={strip
-      ? 'text-cap font-semibold text-mut @3xl/shell:w-5 @3xl/shell:text-lead @3xl/shell:text-ink'
-      : 'w-5 text-lead font-semibold text-ink'}
-    >
+    <span className={strip ? 'text-cap font-semibold text-mut' : 'w-5 text-lead font-semibold text-ink'}>
       {axis}
     </span>
+
     {/*
       * A grid, not two stacked lines, so the two readings line up on their
-      * digits rather than on the edge of the card.
-      *
-      * `mm` belongs to the work reading and sits in its own column; the machine
-      * reading is in the first column under the figure it is being compared
-      * with. Right-aligned to the unit instead, the digits of one sit under the
-      * `mm` of the other and the two numbers cannot be read against each other,
-      * which is the only reason to show them together.
+      * digits rather than on the edge of the card. `mm` belongs to the work
+      * reading and sits in its own column; the machine reading is in the first
+      * column, under the figure it is being compared with.
       */}
-    <span className={`grid min-w-0 grid-cols-[auto_auto] items-baseline gap-x-1 ${strip ? 'justify-center @3xl/shell:flex-1 @3xl/shell:justify-end' : 'flex-1 justify-end'}`}>
-      <span className={`justify-self-end truncate font-num font-medium tabular-nums text-ink ${strip ? 'text-read @3xl/shell:text-val' : 'text-val'}`}>
+    <span className={`grid min-w-0 grid-cols-[auto_auto] items-baseline gap-x-1 ${strip ? 'justify-center' : 'flex-1 justify-end'}`}>
+      <span className={`justify-self-end truncate font-num font-medium tabular-nums text-ink ${strip ? 'text-read' : 'text-val'}`}>
         {formatPosition(value)}
       </span>
-      {/* Not on the strip. Three axes across a phone leave a hundred pixels
-        * a column, and `mm` takes thirteen of them three times over to say
-        * the same thing — which is what pushed the widest reading to within
-        * three pixels of the divider beside it. The unit is the machine's,
-        * not the axis's, and it is stated where there is room for it. */}
-      <span className={`font-num text-note text-mut ${strip ? 'hidden @3xl/shell:inline' : ''}`}>mm</span>
-      {/* No unit of its own: it is the same millimetres measured from somewhere
-        * else, and saying so twice a row adds nothing.
-        *
-        * Centred under the work reading on the strip, where the column is a
-        * column and the two numbers read as one stacked pair. At the panel it
-        * keeps its right edge on the digits above it, which is what makes the
-        * two comparable there. */}
-      <span className={`col-start-1 truncate font-num text-note tabular-nums text-mut ${strip ? 'justify-self-center @3xl/shell:justify-self-end' : 'justify-self-end'}`}>
+      {/*
+        * The unit is the machine's, not the axis's, and on a strip it would be
+        * repeated three times across a hundred pixels a column. Thirteen
+        * pixels three times over to say the same thing is what pushed the
+        * widest reading to within three pixels of the divider beside it.
+        */}
+      {strip ? null : <span className="font-num text-note text-mut">mm</span>}
+      {/*
+        * The machine reading carries no unit either way — the same millimetres
+        * measured from somewhere else. Centred under the work reading on the
+        * strip, where the two read as one stacked pair; sharing a right edge
+        * in the readout, where that is what makes them comparable.
+        */}
+      <span className={`col-start-1 truncate font-num text-note tabular-nums text-mut ${strip ? 'justify-self-center' : 'justify-self-end'}`}>
         {formatPosition(machineValue)}
       </span>
     </span>
@@ -88,12 +69,26 @@ export const AxisRow = ({ axis, value, machineValue, last, strip }) => (
 /**
  * The readout, with the coordinate system it is measured in.
  *
+ * Two shapes, and which one is right is a question about the screen rather
+ * than about how wide it is. **Stacked where the position is the subject, a
+ * strip where it is a check.**
+ *
+ * On the dashboard it is what the screen is for, and it gets the height and
+ * the large figures. On the jog screen it answers "did that move do what I
+ * expected" between key presses, and as one line it hands back a hundred and
+ * fourteen pixels to the toolpath — which is the thing actually being watched
+ * while the keys are pressed.
+ *
+ * So the screen says which, and this never infers it from the room it was
+ * given. An earlier version did infer it, from the width of the shell, and got
+ * the jog screen wrong at every size but the phone.
+ *
  * The system is named in the header rather than assumed. A position means
- * nothing without it, and "which zero is this" is the question behind most
- * of the ways a job goes wrong.
+ * nothing without it, and "which zero is this" is the question behind most of
+ * the ways a job goes wrong.
  */
 const Dro = ({ position, machinePosition, wcs, strip = false, className = '' }) => (
-  <div className={`flex min-h-0 flex-1 ${strip ? '@3xl/shell:flex-col' : 'flex-col'} ${className}`}>
+  <div className={`flex min-h-0 flex-1 ${strip ? 'flex-row' : 'flex-col'} ${className}`}>
     {['x', 'y', 'z'].map((axis, index) => (
       <AxisRow
         key={axis}
