@@ -17,7 +17,14 @@
  * for it.
  */
 const ToggleChips = ({ options, value, onChange, label }) => (
-  <div className="flex h-chiph shrink-0 flex-wrap gap-2" role="group" aria-label={label}>
+  /*
+   * The row's height is not fixed, and that is the difference between a
+   * wrapping control and a broken one. `h-chiph` here — copied from
+   * `SegmentedChoice`, which never wraps because it is one choice — pinned
+   * the container to a single row while the chips inside it wrapped to two,
+   * so the second row was drawn on top of whatever came next.
+   */
+  <div className="flex shrink-0 flex-wrap gap-2" role="group" aria-label={label}>
     {options.map((option) => {
       const on = Boolean(value[option.id]) && !option.disabled;
       return (
@@ -29,7 +36,7 @@ const ToggleChips = ({ options, value, onChange, label }) => (
           title={option.note}
           onClick={() => onChange({ ...value, [option.id]: !value[option.id] })}
           className={[
-            'h-full min-w-0 rounded-ctl border px-4 text-base font-semibold uppercase',
+            'h-chiph min-w-0 rounded-ctl border px-4 text-base font-semibold uppercase',
             'tracking-[0.1em] transition-colors',
             on
               ? 'border-acc bg-acc text-white'

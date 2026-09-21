@@ -21,16 +21,27 @@ const Label = ({ children }) => (
   <span className="text-label font-semibold uppercase leading-none text-ink">{children}</span>
 );
 
-const PathStage = ({ scene, view, onView, revision, layers, layerOptions, onLayers, notes }) => (
-  <>
+const PathStage = ({ scene, tool, view, onView, revision, layers, layerOptions, onLayers, notes }) => (
+  /*
+   * The controls stand beside the drawing rather than under it, and that is
+   * about the drawing rather than about them.
+   *
+   * An isometric view of a machine is **taller than it is wide** — 0.87 to 1
+   * for a cube, because world Z projects fully onto screen-up while X and Y
+   * each contribute half. Fitted into a 2:1 viewport that is a correct fit
+   * filling 91% of the height and 40% of the width, and it reads as a
+   * drawing too small for its card. Taking a column back for the controls
+   * brings the viewport closer to square, and the picture with it.
+   */
+  <div className="flex min-h-0 flex-1 gap-gap">
     {/* The canvas is a raw WebGL surface with square corners; the card's own
       * rounding stops at its padding, so the frame and the clipping are here. */}
-    <div className="min-h-0 flex-1 overflow-hidden rounded-ctl border border-line">
-      <Scene scene={scene} layers={layers} view={view} revision={revision} />
+    <div className="min-h-0 min-w-0 flex-1 overflow-hidden rounded-ctl border border-line">
+      <Scene scene={scene} tool={tool} layers={layers} view={view} revision={revision} />
     </div>
 
-    <div className="mt-3 flex shrink-0 flex-wrap items-end gap-gap">
-      <div className="flex shrink-0 flex-col gap-2.5">
+    <div className="flex w-side2 shrink-0 flex-col gap-4 overflow-y-auto">
+      <div className="flex flex-col gap-2.5">
         <Label>Rzut</Label>
         <SegmentedChoice
           options={VIEW_IDS}
@@ -41,7 +52,7 @@ const PathStage = ({ scene, view, onView, revision, layers, layerOptions, onLaye
         />
       </div>
 
-      <div className="flex min-w-0 flex-col gap-2.5">
+      <div className="flex flex-col gap-2.5">
         <Label>Warstwy</Label>
         <ToggleChips
           options={layerOptions}
@@ -50,14 +61,16 @@ const PathStage = ({ scene, view, onView, revision, layers, layerOptions, onLaye
           label="Warstwy"
         />
       </div>
-    </div>
 
-    {notes.length > 0 ? (
-      <ul className="m-0 mt-3 flex shrink-0 list-none flex-col gap-1 p-0 text-note text-mut">
-        {notes.map((note) => <li key={note}>{note}</li>)}
-      </ul>
-    ) : null}
-  </>
+      {/* What the scene cannot be sure of. Beside the drawing rather than
+        * over it: worth reading once, then ignorable. */}
+      {notes.length > 0 ? (
+        <ul className="m-0 flex list-none flex-col gap-2 p-0 text-note leading-snug text-mut">
+          {notes.map((note) => <li key={note}>{note}</li>)}
+        </ul>
+      ) : null}
+    </div>
+  </div>
 );
 
 export default PathStage;

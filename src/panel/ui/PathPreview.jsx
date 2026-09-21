@@ -12,9 +12,9 @@ import Scene from '../scene/Scene';
  * Dragging still works — that comes from the orbit control inside the scene
  * and costs no screen. What is missing here is only the chrome.
  */
-const PathPreview = ({ scene, layers, view, revision }) => (
+const PathPreview = ({ scene, tool, layers, view, revision }) => (
   <div className="min-h-0 flex-1 overflow-hidden rounded-ctl border border-line">
-    <Scene scene={scene} layers={layers} view={view} revision={revision} />
+    <Scene scene={scene} tool={tool} layers={layers} view={view} revision={revision} />
   </div>
 );
 

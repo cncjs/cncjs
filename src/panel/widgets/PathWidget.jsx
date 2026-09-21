@@ -2,9 +2,9 @@ import { useMemo, useState } from 'react';
 import Card from '../ui/Card';
 import PathPreview from '../ui/PathPreview';
 import PathStage from '../ui/PathStage';
-import { machineZeroIsGuess, softLimitsEnabled } from '../machine/envelope';
+import { machineZeroIsGuess, softLimitsEnabled, workOffset } from '../machine/envelope';
 import { readToolpath } from '../machine/toolpath';
-import { composeScene } from '../scene/compose';
+import { composeScene, toolPoint } from '../scene/compose';
 import { DEFAULT_VIEW } from '../scene/views';
 
 /**
@@ -32,6 +32,9 @@ import { DEFAULT_VIEW } from '../scene/views';
  */
 const DEFAULT_LAYERS = { path: true, machine: true, work: false, program: false };
 
+/** Drawn about machine zero when the machine has not reported both positions. */
+const NO_OFFSET = { x: 0, y: 0, z: 0 };
+
 const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className = '' }) => {
   const [layers, setLayers] = useState(DEFAULT_LAYERS);
   const [view, setView] = useState(DEFAULT_VIEW);
@@ -56,24 +59,41 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
   // four times a second.
   const toolpath = useMemo(() => readToolpath(machine.gcode), [machine.gcode]);
 
-  const scene = composeScene({ machine, toolpath, layers });
-
   /*
-   * The camera is framed on the scene's *shape*, and the shape is not what
-   * arrives four times a second.
+   * **The picture is settled; only the tool moves.**
    *
-   * `composeScene` runs on every status report because the tool marker has to
-   * follow the machine, so `scene.frame` is a new object each time with the
-   * same numbers in it. Handing that to the camera compares it by identity,
-   * finds it changed, and refits — which reads as a view that snaps back the
-   * instant it is dragged, and is impossible to attribute to anything by
-   * looking at it.
+   * Everything below exists to keep that true, and it is the difference
+   * between a view that can be dragged and one that fights back. A status
+   * report arrives four times a second and rebuilds `machine` — so a scene
+   * composed straight from it was a new envelope object, a new program box
+   * and a new camera frame four times a second, which meant `Outline`
+   * disposing and rebuilding its geometry on the GPU at the same rate and the
+   * camera being asked whether it should refit. Dragging against that
+   * stutters, and nothing on screen says why.
    *
-   * Switching a layer *does* change the numbers, and refitting then is the
-   * point: turning the machine on is asking to see it.
+   * The work offset is why this cannot be a single `useMemo` over `machine`:
+   * it is machine-minus-work, and during a move *both* positions change while
+   * their difference does not. So it is settled to a value first, and that
+   * value is what the scene is composed from.
    */
-  const shape = JSON.stringify(scene.frame);
-  const frame = useMemo(() => scene.frame, [shape]);
+  const live = workOffset(machine.machinePosition, machine.position);
+  const offsetKey = live ? `${live.x},${live.y},${live.z}` : '';
+  const offset = useMemo(() => live || NO_OFFSET, [offsetKey]);
+
+  const scene = useMemo(
+    () => composeScene({
+      settings: machine.settings,
+      wcs: machine.modal?.wcs,
+      offset,
+      toolpath,
+      layers,
+    }),
+    [machine.settings, machine.modal?.wcs, offset, toolpath, layers]
+  );
+
+  // The one reading taken live. Moving a marker is cheap; rebuilding the
+  // scene around it is not.
+  const tool = toolPoint(machine.machinePosition);
 
   const options = [
     { id: 'path', label: 'Tor', disabled: !toolpath, note: 'Nie wczytano programu' },
@@ -112,7 +132,8 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
       bodyClassName="gap-0"
     >
       <Shape
-        scene={{ ...scene, frame }}
+        scene={scene}
+        tool={tool}
         view={view}
         onView={chooseView}
         revision={revision}

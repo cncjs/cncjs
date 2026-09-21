@@ -1,5 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 import Controls from './Controls';
+import Grid from './Grid';
 import Origin from './Origin';
 import Outline from './Outline';
 import ToolMarker from './ToolMarker';
@@ -20,9 +21,9 @@ import { useSceneColors } from './colors';
  * nothing else. React's own re-renders ask for a frame; so does the orbit
  * control, which is the one thing that moves outside React.
  */
-const Scene = ({ scene, layers, view, revision }) => {
+const Scene = ({ scene, tool, layers, view, revision }) => {
   const colors = useSceneColors();
-  const { envelope, origins, toolpath, program, offset, tool, size, frame } = scene;
+  const { envelope, origins, toolpath, program, offset, size, frame } = scene;
 
   return (
     <Canvas
@@ -39,6 +40,19 @@ const Scene = ({ scene, layers, view, revision }) => {
        * is parallel by definition; the same camera angle under perspective is
        * just an oblique view.
        */
+      /*
+       * Measured in layout pixels, not in painted ones.
+       *
+       * By default the canvas is sized from `getBoundingClientRect`, which
+       * reports the size **after** any CSS transform. The review overlay
+       * frames the panel at its target size and scales it down to fit the
+       * window, so at Full HD in a smaller window the canvas was handed the
+       * scaled figure — 692px for a 1330px container — and filled half of it,
+       * anchored top left, with the card's border still drawn at full size.
+       * `offsetSize` reads `offsetWidth`/`offsetHeight` instead, which a
+       * transform does not touch.
+       */
+      resize={{ offsetSize: true }}
       orthographic
       // Far enough for a gantry measured in metres and near enough for a
       // marker measured in millimetres. Both ends matter: too near a `far`
@@ -49,6 +63,12 @@ const Scene = ({ scene, layers, view, revision }) => {
       <color attach="background" args={[colors.ground]} />
 
       <Controls view={view} bounds={frame} revision={revision} />
+
+      {/* Under everything, and not switchable. The other four layers are
+        * things the machine reported and can therefore be wrong or absent;
+        * this is the floor they are drawn on, and a scene with no reference
+        * in it is one nobody can tell they have turned upside down. */}
+      <Grid bounds={frame} color={colors.edge} />
 
       {layers.machine && envelope ? (
         <Outline bounds={envelope} color={colors.edge} opacity={0.9} />

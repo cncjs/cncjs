@@ -29,6 +29,37 @@ const Controls = ({ view, bounds, revision }) => {
   useEffect(() => {
     const orbit = new OrbitControls(camera, domElement);
 
+    /*
+     * **No damping.** It was tried and taken out again: the whole point of
+     * damping is that the camera eases towards where the pointer is rather
+     * than being there, and what that reads as at the machine is a view that
+     * does not follow the mouse. Predictable beats smooth here — a drag is a
+     * measurement of how far you want to turn, not a gesture.
+     */
+    orbit.enableDamping = false;
+
+    /*
+     * Stopped just short of straight up and straight down.
+     *
+     * This is a turntable: the machine's Z stays up, so there is a pole at
+     * each end and the azimuth is undefined at it. Reaching one exactly makes
+     * a sideways drag spin the view about the line of sight by an arbitrary
+     * amount — the "it stops following the mouse" that comes just before "and
+     * now it is stuck". A hundredth of a radian short of each pole is half a
+     * degree, invisible on the drawing, and the singularity is never reached.
+     */
+    orbit.minPolarAngle = 0.01;
+    orbit.maxPolarAngle = Math.PI - 0.01;
+
+    /*
+     * The wheel zooms towards the pointer rather than towards the middle.
+     *
+     * On a toolpath this is most of what "navigation" means: the thing being
+     * looked at is a corner of a part in a corner of a machine, and centre
+     * zoom makes reaching it a zoom, a pan, a zoom, a pan.
+     */
+    orbit.zoomToCursor = true;
+
     // The scene renders on demand rather than sixty times a second — a panel
     // beside a machine sits untouched for hours. Dragging happens outside
     // React, so it is the one thing that has to ask for frames itself.

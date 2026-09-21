@@ -1,13 +1,10 @@
 import {
   machineEnvelope,
-  workOffset,
   workOrigins,
 } from '../machine/envelope';
 
 /** Everything the scene draws when the panel has been told nothing at all. */
 const UNIT = { min: { x: -1, y: -1, z: -1 }, max: { x: 1, y: 1, z: 1 } };
-
-const NO_OFFSET = { x: 0, y: 0, z: 0 };
 
 const shift = (bounds, offset) => ({
   min: {
@@ -51,11 +48,22 @@ const longestEdge = (bounds) => Math.max(
   1
 );
 
-const finitePoint = (point) => (
-  Number.isFinite(point?.x) && Number.isFinite(point?.y) && Number.isFinite(point?.z)
-    ? { x: point.x, y: point.y, z: point.z }
-    : null
-);
+/**
+ * Where the tool is, or nothing.
+ *
+ * The one reading the scene takes live. Everything else about the picture is
+ * settled and memoised; this is a point that moves four times a second, and
+ * moving a marker is all it costs.
+ */
+export const toolPoint = (machinePosition) => {
+  const { x, y, z } = machinePosition || {};
+
+  if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z)) {
+    return null;
+  }
+
+  return { x, y, z };
+};
 
 /**
  * The readings and the loaded program, arranged as one scene.
@@ -72,21 +80,30 @@ const finitePoint = (point) => (
  * and not being able to see it is the worst of both answers, so the frame is
  * the union of what is drawn — and turning the machine off is how you get
  * back to filling the view with the part.
+ *
+ * **It takes readings rather than the machine**, and that is not tidiness.
+ * The caller memoises this, and it can only do that if nothing here is
+ * recomputed from an object that arrives afresh four times a second. The work
+ * offset is the example that forced it: it is derived from two positions that
+ * both change during a move while their difference does not, so the caller
+ * settles it to a value and hands the value in. Given the whole `machine`,
+ * every outline's geometry was being rebuilt on every status report, and a
+ * dragged view stuttered against it.
+ *
+ * @param {object} settings The controller's settings, whole.
+ * @param {string} wcs The active coordinate system, e.g. `G54`.
+ * @param {object} offset Machine minus work, settled to a value by the caller.
+ * @param {object|null} toolpath The loaded program, from `readToolpath`.
+ * @param {object} layers Which of the four are switched on.
  */
-export const composeScene = ({ machine, toolpath, layers }) => {
-  const envelope = machineEnvelope(machine.settings);
-
-  // Machine minus work: what has to be added to a program's coordinates to
-  // put it where the machine will actually cut it. Zero when the machine has
-  // not reported both positions, which draws the program about machine zero —
-  // wrong, but wrong in the one place the screen also says it does not know.
-  const offset = workOffset(machine.machinePosition, machine.position) || NO_OFFSET;
+export const composeScene = ({ settings, wcs, offset, toolpath, layers }) => {
+  const envelope = machineEnvelope(settings);
 
   const program = toolpath ? shift(toolpath.bounds, offset) : null;
 
-  const origins = workOrigins(machine.settings).map((system) => ({
+  const origins = workOrigins(settings).map((system) => ({
     ...system,
-    active: system.name === machine.modal?.wcs,
+    active: system.name === wcs,
   }));
 
   const frame = union([
@@ -101,7 +118,6 @@ export const composeScene = ({ machine, toolpath, layers }) => {
     offset,
     toolpath,
     origins,
-    tool: finitePoint(machine.machinePosition),
     frame,
     // One number for "how big is this scene", which the markers size
     // themselves against so they stay legible at any machine size.
