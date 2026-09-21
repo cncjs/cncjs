@@ -83,6 +83,10 @@ module.exports = {
         // room without looking for it. The drawing sets the stop at 22px
         // and everything else well below that.
         head: ['22px', { lineHeight: '1' }],
+        // A machine reading when it is not the subject of the screen —
+        // three of them across a phone, beside the keys that are. The
+        // drawing's own size there.
+        read: ['19px', { lineHeight: '1.2' }],
         val: ['var(--val)', { lineHeight: '1' }],
         dro: ['var(--dro)', { lineHeight: '0.9' }],
       },

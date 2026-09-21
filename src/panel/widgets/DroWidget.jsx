@@ -21,7 +21,15 @@ import { NO_READING } from '../machine/readings';
 const DroWidget = ({ machine, label = 'Pozycja robocza', strip = false, className = '' }) => (
   <Card
     label={label}
-    aside={machine.modal.wcs || NO_READING}
+    aside={(
+      /* The coordinate system as a marker rather than a footnote. It is the
+       * answer to "which zero are these measured from", which is the
+       * question behind most of the ways a job goes wrong, and as plain
+       * muted text it read as a label on the card rather than a reading. */
+      <span className="rounded-ctl border border-line bg-field px-2 py-0.5 text-cap font-semibold uppercase tracking-[0.08em] text-ink">
+        {machine.modal.wcs || NO_READING}
+      </span>
+    )}
     className={className}
     bodyClassName="gap-0"
   >

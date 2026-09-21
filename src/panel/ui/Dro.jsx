@@ -62,7 +62,7 @@ export const AxisRow = ({ axis, value, machineValue, last, strip }) => (
       * which is the only reason to show them together.
       */}
     <span className={`grid min-w-0 grid-cols-[auto_auto] items-baseline gap-x-1 ${strip ? 'justify-center @3xl/shell:flex-1 @3xl/shell:justify-end' : 'flex-1 justify-end'}`}>
-      <span className={`justify-self-end truncate font-num font-medium tabular-nums text-ink ${strip ? 'text-lead @3xl/shell:text-val' : 'text-val'}`}>
+      <span className={`justify-self-end truncate font-num font-medium tabular-nums text-ink ${strip ? 'text-read @3xl/shell:text-val' : 'text-val'}`}>
         {formatPosition(value)}
       </span>
       <span className="font-num text-note text-mut">mm</span>

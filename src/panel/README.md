@@ -9,15 +9,26 @@ showed that changing the contents of panels does not bring the layout closer to
 the drawing — every step was a compromise between the mockup and a bootstrap
 shell, and every step looked half-finished.
 
-## Where the drawing lives
+## The drawing is where this started, not where it is decided
 
-**`design/README.md`** — the project id, what the `DesignSync` tool can and
-cannot do with it, how to pull an update, and how to render the mockup locally
-so screens can be compared by photograph rather than by description.
+Until 2026-09-21 the Claude Design mockup was the source: every layout
+question was answered by rendering it and measuring. **It is history now.**
+Mateusz settled it once the panel was good enough to look at: the running
+panel is the design, and review notes left on it are how it changes.
 
-The short version: the drawing is read-only from here, `design/tokens.expected.css`
-is its token block copied verbatim, and `yarn design-check` fails when the panel
-and the drawing have drifted apart.
+That is a real change in how to work here. A difference from the drawing is
+no longer a defect, and "the drawing does it this way" is no longer an
+argument. Both readings on every axis and the coordinate system as a badge
+are already departures, decided deliberately.
+
+`design/README.md` still records where the mockup is and how to render it,
+because it remains the best record of intent for the nine screens nobody has
+built yet. Read it for those; do not re-litigate the two that exist.
+
+`yarn design-check` changes meaning with it. It no longer asks "do we still
+match the drawing" — it guards against a colour or a size being changed by
+accident. When a token moves on purpose, `design/tokens.expected.css` moves
+in the same commit and the commit says why.
 
 ## What it is allowed to reuse
 
