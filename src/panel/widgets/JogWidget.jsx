@@ -10,7 +10,8 @@ import Stepper from '../ui/Stepper';
 import controller from '../machine/controller';
 import { home } from '../machine/homing';
 import { useIsPhone } from '../ui/shell';
-import { jog, XY_STEPS, Z_STEPS } from '../machine/jog';
+import { jog, jogStart, jogStop, XY_STEPS, Z_STEPS } from '../machine/jog';
+import useHoldToJog from '../ui/useHoldToJog';
 
 /**
  * Moving the machine by hand.
@@ -43,15 +44,30 @@ const JogWidget = ({ machine, className = '' }) => {
   // both are open on the screen already.
   const [editing, setEditing] = useState(null);
 
-  const move = (axis, sign) => jog({
-    type,
-    axis,
-    distance: sign * (axis === 'z' ? zStep : xyStep),
-    feedrate: axis === 'z' ? zSpeed : xySpeed,
+  const rateFor = (axis) => (axis === 'z' ? zSpeed : xySpeed);
+
+  /*
+   * A tap is one step, a hold keeps going. Both are the same intent at two
+   * scales — dial onto an edge, or cross the bed — and an operator should
+   * not have to pick a different button before knowing how far they want to
+   * go.
+   */
+  const holdToJog = useHoldToJog({
+    enabled: connected,
+    step: (axis, sign) => jog({
+      type,
+      axis,
+      distance: sign * (axis === 'z' ? zStep : xyStep),
+      feedrate: rateFor(axis),
+    }),
+    start: (axis, sign) => jogStart({
+      type, axis, sign, feedrate: rateFor(axis), settings: machine.settings,
+    }),
+    stop: () => jogStop(type),
   });
 
   const keys = {
-    onJog: move,
+    onJog: holdToJog,
     onHome: () => home(controller),
     onPark: () => {},
     disabled: !connected,

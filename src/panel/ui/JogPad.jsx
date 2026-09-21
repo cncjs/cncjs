@@ -17,10 +17,11 @@
  * 58px rows. Nothing on a touch panel goes below 40px, and these are pressed
  * by someone watching the cutter rather than the screen.
  */
-const Key = ({ children, onClick, disabled, label, quiet }) => (
+const Key = ({ children, onClick, hold, disabled, label, quiet }) => (
   <button
     type="button"
     onClick={onClick}
+    {...(hold || {})}
     disabled={disabled}
     aria-label={label}
     className={[
@@ -44,20 +45,20 @@ const JogPad = ({ onJog, onHome, onPark, disabled, canHome }) => (
   <div className="flex items-start gap-2" role="group" aria-label="Jog">
     <div className="grid min-w-0 flex-[3] grid-cols-3 grid-rows-[repeat(3,var(--jbtnh))] gap-2">
       <span />
-      <Key onClick={() => onJog('y', 1)} disabled={disabled} label="Y+">Y+</Key>
+      <Key hold={onJog('y', 1)} disabled={disabled} label="Y+">Y+</Key>
       <span />
-      <Key onClick={() => onJog('x', -1)} disabled={disabled} label="X−">X&minus;</Key>
+      <Key hold={onJog('x', -1)} disabled={disabled} label="X−">X&minus;</Key>
       <Key onClick={onHome} disabled={disabled || !canHome} label="Bazuj" quiet>{HOUSE}<span>Bazuj</span></Key>
-      <Key onClick={() => onJog('x', 1)} disabled={disabled} label="X+">X+</Key>
+      <Key hold={onJog('x', 1)} disabled={disabled} label="X+">X+</Key>
       <span />
-      <Key onClick={() => onJog('y', -1)} disabled={disabled} label="Y−">Y&minus;</Key>
+      <Key hold={onJog('y', -1)} disabled={disabled} label="Y−">Y&minus;</Key>
       <span />
     </div>
 
     <div className="grid min-w-0 flex-1 grid-cols-1 grid-rows-[repeat(3,var(--jbtnh))] gap-2">
-      <Key onClick={() => onJog('z', 1)} disabled={disabled} label="Z+">Z+</Key>
+      <Key hold={onJog('z', 1)} disabled={disabled} label="Z+">Z+</Key>
       <Key onClick={onPark} disabled label="Park" quiet>Park</Key>
-      <Key onClick={() => onJog('z', -1)} disabled={disabled} label="Z−">Z&minus;</Key>
+      <Key hold={onJog('z', -1)} disabled={disabled} label="Z−">Z&minus;</Key>
     </div>
   </div>
 );

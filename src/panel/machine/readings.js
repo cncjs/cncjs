@@ -173,6 +173,10 @@ export const readMachine = ({ connection, error, port, type, state, settings, at
     // limit switches exist and are turned on, which only the firmware
     // knows. See `homing.js`.
     canHome: connected && canHome(type, settings),
+    // Carried whole because more than one thing needs it: homing reads
+    // `$22`, a held jog reads the axis travel so it cannot ask for more
+    // than the machine has.
+    settings: settings || {},
     job: job && job.total > 0
 ? {
       name: job.name || '',

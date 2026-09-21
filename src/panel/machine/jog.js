@@ -60,3 +60,52 @@ export const jogCancel = (type) => {
     controller.command('jogCancel');
   }
 };
+
+/**
+ * How far a held key is allowed to travel before it must be pressed again.
+ *
+ * A continuous jog is one long `$J=` that is cancelled when the key comes up,
+ * so the distance is a bound on what happens if the release is never seen —
+ * a window losing focus, a browser tab going to sleep, a touch that turns into
+ * a scroll. The machine's own `$130`/`$131`/`$132` say how far the axis can go
+ * at all, so asking for more than that is asking for the limit switch.
+ *
+ * Without that reading, 100mm. It is far enough to cross a small bed and near
+ * enough that a lost release is a mistake rather than an accident.
+ */
+const TRAVEL = { x: '$130', y: '$131', z: '$132' };
+const TRAVEL_UNKNOWN = 100;
+
+export const jogTravel = (axis, settings) => {
+  const reported = settings?.settings?.[TRAVEL[axis]];
+  const distance = Number.parseFloat(reported);
+  return Number.isFinite(distance) && distance > 0 ? distance : TRAVEL_UNKNOWN;
+};
+
+/**
+ * Whether a key can be held down to keep moving.
+ *
+ * Only Grbl. Continuous jogging is one long move plus the ability to abandon
+ * it, and `jogCancel` (0x85) is what abandons it — Smoothie takes `$J=` but has
+ * no cancel, so a held key there would commit to the whole distance before the
+ * finger came off. That is not a control, it is a trap.
+ */
+export const canJogContinuously = (type) => type === GRBL;
+
+/** Start moving and keep moving, until `jogStop`. */
+export const jogStart = ({ type, axis, sign, feedrate, settings }) => {
+  if (!canJogContinuously(type)) {
+    return false;
+  }
+
+  const distance = sign * jogTravel(axis, settings);
+  controller.command('gcode', `$J=G91 G21 ${axis.toUpperCase()}${distance} F${feedrate}`);
+  return true;
+};
+
+/** Stop a jog that is already running. */
+export const jogStop = (type) => {
+  if (type === GRBL) {
+    controller.command('jogCancel');
+  }
+};

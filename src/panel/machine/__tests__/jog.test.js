@@ -1,5 +1,8 @@
 import controller from '../controller';
-import { jogLines, jog, jogCancel, XY_STEPS, Z_STEPS, FEEDRATES } from '../jog';
+import {
+  jogLines, jog, jogCancel, jogStart, jogStop, jogTravel, canJogContinuously,
+  XY_STEPS, Z_STEPS, FEEDRATES,
+} from '../jog';
 
 jest.mock('../controller', () => ({ command: jest.fn() }));
 
@@ -77,5 +80,50 @@ describe('what the panel offers', () => {
     expect(XY_STEPS).toEqual([0.1, 1, 10, 50]);
     expect(Z_STEPS).toEqual([0.1, 1, 5]);
     expect(FEEDRATES).toEqual([500, 1500, 3000]);
+  });
+});
+
+describe('holding a jog key', () => {
+  const settings = { settings: { $130: '200.000', $131: '200.000', $132: '80.000' } };
+
+  beforeEach(() => controller.command.mockClear());
+
+  test('only Grbl may be held, because only Grbl can be told to stop', () => {
+    // Smoothie takes `$J=` but has no cancel, so a held key there would commit
+    // to the whole distance before the finger came off.
+    expect(canJogContinuously('Grbl')).toBe(true);
+    expect(canJogContinuously('Smoothie')).toBe(false);
+    expect(canJogContinuously('Marlin')).toBe(false);
+  });
+
+  test('asks for no more travel than the machine reports having', () => {
+    expect(jogTravel('x', settings)).toBe(200);
+    expect(jogTravel('z', settings)).toBe(80);
+  });
+
+  test('falls back to a bounded distance when the machine has not said', () => {
+    // The distance is what happens if the release is never seen. Unbounded is
+    // not an option; 100mm is far enough to be useful and near enough that a
+    // lost release is a mistake rather than an accident.
+    expect(jogTravel('x', {})).toBe(100);
+    expect(jogTravel('x', { settings: { $130: 'nonsense' } })).toBe(100);
+    expect(jogTravel('x', { settings: { $130: '0' } })).toBe(100);
+  });
+
+  test('moves the whole travel in the direction held', () => {
+    jogStart({ type: 'Grbl', axis: 'x', sign: -1, feedrate: 1500, settings });
+    expect(controller.command).toHaveBeenCalledWith('gcode', '$J=G91 G21 X-200 F1500');
+  });
+
+  test('sends nothing at all on a controller that cannot be stopped', () => {
+    expect(jogStart({ type: 'Smoothie', axis: 'x', sign: 1, feedrate: 1500, settings })).toBe(false);
+    expect(controller.command).not.toHaveBeenCalled();
+  });
+
+  test('stops with the jog cancel, not a reset', () => {
+    // `0x85` abandons the jog and leaves everything else alone. A soft reset
+    // would also stop it, and would drop the work offsets with it.
+    jogStop('Grbl');
+    expect(controller.command).toHaveBeenCalledWith('jogCancel');
   });
 });

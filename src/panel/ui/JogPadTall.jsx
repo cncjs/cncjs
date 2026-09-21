@@ -26,10 +26,11 @@
  * has to find without looking. Equal rectangles, square when the room happens
  * to be square.
  */
-const Key = ({ children, onClick, disabled, label, quiet }) => (
+const Key = ({ children, onClick, hold, disabled, label, quiet }) => (
   <button
     type="button"
     onClick={onClick}
+    {...(hold || {})}
     disabled={disabled}
     aria-label={label}
     className={[
@@ -53,20 +54,20 @@ const JogPadTall = ({ onJog, onHome, onPark, disabled, canHome }) => (
     aria-label="Jog"
   >
     <span />
-    <Key onClick={() => onJog('y', 1)} disabled={disabled} label="Y+">Y+</Key>
+    <Key hold={onJog('y', 1)} disabled={disabled} label="Y+">Y+</Key>
     <span />
 
-    <Key onClick={() => onJog('x', -1)} disabled={disabled} label="X−">X&minus;</Key>
+    <Key hold={onJog('x', -1)} disabled={disabled} label="X−">X&minus;</Key>
     <Key onClick={onHome} disabled={disabled || !canHome} label="Bazuj" quiet>{HOUSE}<span>Bazuj</span></Key>
-    <Key onClick={() => onJog('x', 1)} disabled={disabled} label="X+">X+</Key>
+    <Key hold={onJog('x', 1)} disabled={disabled} label="X+">X+</Key>
 
     <span />
-    <Key onClick={() => onJog('y', -1)} disabled={disabled} label="Y−">Y&minus;</Key>
+    <Key hold={onJog('y', -1)} disabled={disabled} label="Y−">Y&minus;</Key>
     <span />
 
-    <Key onClick={() => onJog('z', 1)} disabled={disabled} label="Z+">Z+</Key>
+    <Key hold={onJog('z', 1)} disabled={disabled} label="Z+">Z+</Key>
     <Key onClick={onPark} disabled label="Park" quiet>Park</Key>
-    <Key onClick={() => onJog('z', -1)} disabled={disabled} label="Z−">Z&minus;</Key>
+    <Key hold={onJog('z', -1)} disabled={disabled} label="Z−">Z&minus;</Key>
   </div>
 );
 
