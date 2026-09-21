@@ -50,13 +50,46 @@ export const CUT_SHALLOW = fromHex(TOOLPATH_CUT_SHALLOW);
 export const CUT_DEEP = fromHex(TOOLPATH_CUT_DEEP);
 
 /**
+ * What the old visualiser draws with, and what anything else gets unless it
+ * says otherwise.
+ *
+ * The three are a parameter rather than an import because **the right
+ * lightness is a property of the background**, and there is more than one
+ * background now. These values were read out of Universal Gcode Sender, whose
+ * canvas is a pale blue; against the panel's near-white field the rapid
+ * measures 1.62:1, and against its near-black one the deep end of the ramp
+ * measures 1.14:1. The hues are right in both places and the lightnesses
+ * cannot be.
+ */
+export const DEFAULT_COLORS = {
+  rapid: RAPID_COLOR,
+  cutTop: CUT_SHALLOW,
+  cutDeep: CUT_DEEP,
+};
+
+/**
+ * The same three, from anything `parseInt`-able or a CSS `#rrggbb`.
+ *
+ * Converted here rather than by the caller so the linear-light conversion
+ * happens in exactly one place — writing sRGB values straight into a vertex
+ * buffer is the classic way to get a gradient that looks washed out at one
+ * end.
+ */
+export const colorsFromHex = ({ rapid, cutTop, cutDeep }) => ({
+  rapid: fromHex(Number.parseInt(String(rapid).replace('#', ''), 16)),
+  cutTop: fromHex(Number.parseInt(String(cutTop).replace('#', ''), 16)),
+  cutDeep: fromHex(Number.parseInt(String(cutDeep).replace('#', ''), 16)),
+});
+
+/**
  * Where `z` sits on the ramp, given the range of the cutting moves.
  *
  * `zmax` is the shallowest cut and `zmin` the deepest. A job with no depth
  * variation at all has nothing to grade, so it comes out at the shallow end
  * rather than dividing by zero.
  */
-export const depthColor = (z, zmin, zmax) => {
+export const depthColor = (z, zmin, zmax, colors = DEFAULT_COLORS) => {
+  const { cutTop, cutDeep } = colors;
   const range = zmax - zmin;
   const t = (range > 0) ? Math.min(1, Math.max(0, (zmax - z) / range)) : 0;
 
@@ -64,16 +97,16 @@ export const depthColor = (z, zmin, zmax) => {
   // exact at t = 0 but not reliably at t = 1, so the deepest cut in a job
   // would otherwise come out a hair off the colour it is documented to be.
   if (t <= 0) {
-    return { ...CUT_SHALLOW };
+    return { ...cutTop };
   }
   if (t >= 1) {
-    return { ...CUT_DEEP };
+    return { ...cutDeep };
   }
 
   return {
-    r: CUT_SHALLOW.r + ((CUT_DEEP.r - CUT_SHALLOW.r) * t),
-    g: CUT_SHALLOW.g + ((CUT_DEEP.g - CUT_SHALLOW.g) * t),
-    b: CUT_SHALLOW.b + ((CUT_DEEP.b - CUT_SHALLOW.b) * t),
+    r: cutTop.r + ((cutDeep.r - cutTop.r) * t),
+    g: cutTop.g + ((cutDeep.g - cutTop.g) * t),
+    b: cutTop.b + ((cutDeep.b - cutTop.b) * t),
   };
 };
 
@@ -135,12 +168,14 @@ export const completedCount = (vertexIndex, threshold) => {
 
 /**
  * @param {object} toolpath The output of `buildToolpath`.
+ * @param {object} [colors] `{ rapid, cutTop, cutDeep }` in linear-light RGB —
+ *   see `colorsFromHex`. Defaults to the palette the old visualiser uses.
  * @returns {object} `{ cut, rapid }`, each holding flat arrays a fat-line
  *   geometry can take directly: `positions` and `colors` with six entries per
  *   segment (both endpoints), and `vertexIndex` with one entry per segment
  *   naming the vertex that segment arrives at.
  */
-const buildSegments = (toolpath) => {
+const buildSegments = (toolpath, colors = DEFAULT_COLORS) => {
   const { positions, motions, vertexCount } = toolpath;
 
   // A single vertex is a position, not a move. Joining it to the origin would
@@ -171,13 +206,13 @@ const buildSegments = (toolpath) => {
     set.vertexIndex.push(i);
 
     if (isRapid) {
-      const { r, g, b } = RAPID_COLOR;
+      const { r, g, b } = colors.rapid;
       set.colors.push(r, g, b, r, g, b);
     } else {
       // Each end takes its own depth, so a plunge is drawn as a gradient down
       // the move rather than flooded with one colour.
-      const a = depthColor(az, zmin, zmax);
-      const b2 = depthColor(bz, zmin, zmax);
+      const a = depthColor(az, zmin, zmax, colors);
+      const b2 = depthColor(bz, zmin, zmax, colors);
       set.colors.push(a.r, a.g, a.b, b2.r, b2.g, b2.b);
     }
   }

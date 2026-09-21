@@ -1,11 +1,15 @@
 import buildToolpath from 'lib/toolpath/toolpath-geometry';
-import buildSegments from 'lib/toolpath/toolpath-segments';
 
 /**
- * The loaded program as something a renderer can draw.
+ * The loaded program, parsed.
  *
- * Both halves come from `src/lib/toolpath`, which the old visualiser draws
- * from as well. There is one answer to "what shape is this program" and two
+ * Parsing only. The split into draw sets is the renderer's business because
+ * it needs colours and the colours follow the theme — and the parse is the
+ * expensive half, so it should not be redone when somebody turns the lights
+ * off.
+ *
+ * It comes from `src/lib/toolpath`, which the old visualiser parses with as
+ * well. There is one answer to "what shape is this program" and two
  * applications asking it.
  *
  * **The vertices are in work coordinates.** A program says `G1 X10` and means
@@ -35,7 +39,8 @@ export const readToolpath = (gcode) => {
     name: gcode.name || '',
     bounds: toolpath.bbox,
     vertexCount: toolpath.vertexCount,
-    ...buildSegments(toolpath),
+    // The vertices themselves, for whatever is going to colour them.
+    source: toolpath,
   };
 };
 

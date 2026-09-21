@@ -12,12 +12,12 @@ const SETTINGS = {
   },
 };
 
-// A 10mm square cut 2mm deep, written against the work zero.
+// A 10mm square cut 2mm deep, written against the work zero. `readToolpath`
+// hands the vertices on untouched; nothing here needs them.
 const TOOLPATH = {
   name: 'part.nc',
   bounds: { min: { x: 0, y: 0, z: -2 }, max: { x: 10, y: 10, z: 0 } },
-  cut: { positions: new Float32Array(0), colors: new Float32Array(0), vertexIndex: new Uint32Array(0) },
-  rapid: { positions: new Float32Array(0), colors: new Float32Array(0), vertexIndex: new Uint32Array(0) },
+  source: { positions: new Float32Array(0), motions: new Uint8Array(0), vertexCount: 0 },
 };
 
 // Work zero at machine (-100, -80, -10): the offset the caller settles from

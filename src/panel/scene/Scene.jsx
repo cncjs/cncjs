@@ -105,7 +105,7 @@ const Scene = ({ scene, tool, layers, view, revision }) => {
 
       {layers.path && toolpath ? (
         <group position={[offset.x, offset.y, offset.z]}>
-          <Toolpath toolpath={toolpath} />
+          <Toolpath toolpath={toolpath} colors={colors} />
         </group>
       ) : null}
 

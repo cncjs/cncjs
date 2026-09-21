@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useThree } from '@react-three/fiber';
+import buildSegments, { colorsFromHex } from 'lib/toolpath/toolpath-segments';
 import { Line2 } from 'three/examples/jsm/lines/Line2.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
@@ -27,8 +28,8 @@ import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeome
  * as the heavier of the two, so both came down together rather than the cut
  * alone.
  */
-const CUT_WIDTH = 1.25;
-const RAPID_WIDTH = 0.75;
+const CUT_WIDTH = 1;
+const RAPID_WIDTH = 0.6;
 
 // Dash lengths in millimetres — the material measures them in world units.
 // A rapid is dashed as well as thinner because that is the distinction that
@@ -57,12 +58,22 @@ const buildLine = (set, options) => {
   return line;
 };
 
-const Toolpath = ({ toolpath }) => {
+const Toolpath = ({ toolpath, colors }) => {
   const size = useThree((state) => state.size);
 
+  /*
+   * Coloured here rather than where it was parsed, because the colours follow
+   * the theme and the parse does not. Flipping to the dark theme rebuilds two
+   * vertex buffers; it used to re-read the whole program to do it.
+   */
+  const sets = useMemo(
+    () => buildSegments(toolpath.source, colorsFromHex(colors)),
+    [toolpath, colors.rapid, colors.cutTop, colors.cutDeep]
+  );
+
   const lines = useMemo(() => [
-    ['cut', buildLine(toolpath.cut, { linewidth: CUT_WIDTH })],
-    ['rapid', buildLine(toolpath.rapid, {
+    ['cut', buildLine(sets.cut, { linewidth: CUT_WIDTH })],
+    ['rapid', buildLine(sets.rapid, {
       linewidth: RAPID_WIDTH,
       dashed: true,
       dashSize: RAPID_DASH,
@@ -70,7 +81,7 @@ const Toolpath = ({ toolpath }) => {
       opacity: 0.85,
       transparent: true,
     })],
-  ].filter(([, line]) => line), [toolpath]);
+  ].filter(([, line]) => line), [sets]);
 
   /*
    * The material works in screen space, so it has to be told how large the

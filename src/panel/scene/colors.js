@@ -13,11 +13,10 @@ import { useEffect, useState } from 'react';
  * outlines, and on the dark theme the envelope would have been a grey box on
  * a nearly black one.
  *
- * The toolpath itself is not here. Its colours come baked into the vertex
- * buffer from `lib/toolpath/palette`, so the path reads the same in both
- * applications and in both themes — a depth ramp that changed with the theme
- * would be a depth ramp that means something different depending on the time
- * of day.
+ * That includes the toolpath. It did not at first: its colours came baked
+ * into the vertex buffer from `lib/toolpath/palette`, which is where the old
+ * visualiser still gets them. Measuring them against this panel's own field
+ * is what changed the answer — see the entries below.
  */
 const TOKENS = {
   // The canvas ground. The field colour rather than the card's, so the
@@ -32,6 +31,21 @@ const TOKENS = {
   work: '--acc',
   // The tool. The one mark on screen that has to be found without looking.
   tool: '--amb',
+  /*
+   * The toolpath.
+   *
+   * These *do* follow the theme, and it took a measurement to decide that
+   * they should. The hues are Universal Gcode Sender's and do not change —
+   * a warm rapid, a blue ramp for depth — but UGS chose its lightnesses
+   * against a pale blue background, and against this panel's they fail at one
+   * end each: the rapid at 1.62:1 on the light theme and the deep end of the
+   * ramp at 1.14:1 on the dark one. A depth ramp legible on a near-white
+   * ground and one legible on a near-black ground cannot be the same three
+   * numbers, so they are tokens and the sheet answers for them.
+   */
+  rapid: '--rapid',
+  cutTop: '--cutTop',
+  cutDeep: '--cutDeep',
 };
 
 const read = () => {
