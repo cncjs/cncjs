@@ -14,8 +14,8 @@
  */
 import Button from './Button';
 
-const StatusBar = ({ message, error, canStart, onStart }) => (
-  <footer className="flex h-[49px] shrink-0 items-center gap-gap border-t border-line bg-panel px-[14px]">
+const StatusBar = ({ message, error, canStart, onStart, className = '' }) => (
+  <footer className={`flex h-[49px] shrink-0 items-center gap-gap border-t border-line bg-panel px-[14px] ${className}`}>
     <span className={`min-w-0 flex-1 truncate font-num text-base ${error ? 'text-red' : 'text-mut'}`}>
       {error || message}
     </span>

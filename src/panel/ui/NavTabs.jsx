@@ -14,9 +14,9 @@
  * rail shows them: a bar whose items appear one release at a time moves under
  * a thumb that had stopped looking.
  */
-const NavTabs = ({ items, current, onSelect }) => (
+const NavTabs = ({ items, current, onSelect, className = '' }) => (
   <nav
-    className="flex shrink-0 border-t border-line bg-panel"
+    className={`flex shrink-0 border-t border-line bg-panel ${className}`}
     aria-label="Nawigacja"
   >
     {items.map(({ id, label, ready }) => {

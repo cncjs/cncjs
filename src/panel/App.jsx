@@ -86,9 +86,12 @@ const App = () => {
       />
 
       <div className="flex min-h-0 flex-1">
-        <div className="hidden @3xl:block">
-          <NavRail items={DESTINATIONS} current={screen} onSelect={setScreen} />
-        </div>
+        <NavRail
+          items={DESTINATIONS}
+          current={screen}
+          onSelect={setScreen}
+          className="hidden @3xl/shell:flex"
+        />
         <main className="flex min-w-0 flex-1 flex-col gap-gap p-gap">
           {screen === 'jog'
             ? <JogScreen machine={machine} />
@@ -98,18 +101,20 @@ const App = () => {
 
       {/* Narrow, the tab bar is the bottom of the screen and there is no room
         * for a status line as well; what it says moves into the bar above. */}
-      <div className="@3xl:hidden">
-        <NavTabs items={PHONE_DESTINATIONS} current={screen} onSelect={setScreen} />
-      </div>
-      <div className="hidden @3xl:block">
-        <StatusBar
-          message={machine.connected
-            ? `${machine.type} · ${machine.port} · układ ${machine.modal.wcs || NO_READING}`
-            : 'Brak połączenia ze sterownikiem'}
-          error={machine.error}
-          canStart={false}
-        />
-      </div>
+      <NavTabs
+        items={PHONE_DESTINATIONS}
+        current={screen}
+        onSelect={setScreen}
+        className="@3xl/shell:hidden"
+      />
+      <StatusBar
+        message={machine.connected
+          ? `${machine.type} · ${machine.port} · układ ${machine.modal.wcs || NO_READING}`
+          : 'Brak połączenia ze sterownikiem'}
+        error={machine.error}
+        canStart={false}
+        className="hidden @3xl/shell:flex"
+      />
     </div>
   );
 

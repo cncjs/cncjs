@@ -9,8 +9,16 @@
  * `aria-current` as well as the fill: colour alone leaves anyone not looking
  * at it unable to tell where they are.
  */
-const NavRail = ({ items, current, onSelect }) => (
-  <nav className="flex w-rail shrink-0 flex-col border-r border-line bg-panel" aria-label="Nawigacja">
+const NavRail = ({ items, current, onSelect, className = '' }) => (
+  // The visibility class belongs here rather than on a wrapper. A `div`
+  // around this one is `display: block`, and a block box between the rail
+  // and the flex row it lives in leaves the rail at the height of its own
+  // items — which on a window taller than the items stops it halfway down
+  // the screen with bare background beneath.
+  <nav
+    className={`flex w-rail shrink-0 flex-col border-r border-line bg-panel ${className}`}
+    aria-label="Nawigacja"
+  >
     {items.map(({ id, label, ready }) => {
       const here = id === current;
       return (
