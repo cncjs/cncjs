@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import events from 'events';
 import fs from 'fs';
 import path from 'path';
+import { pipeline, Transform } from 'stream';
 import watch from 'watch';
 import logger from '../lib/logger';
 
@@ -43,6 +44,28 @@ const resolveInRoot = (root, name) => {
 // `link()` outright. A watch directory on a USB stick is an ordinary setup, so
 // rename falls back rather than failing on those.
 const NO_HARDLINK_SUPPORT = ['EPERM', 'ENOTSUP', 'EOPNOTSUPP', 'ENOSYS', 'EXDEV'];
+
+// Fail the stream once more than `maxFileSize` bytes have passed through.
+// Counting here rather than trusting Content-Length means a body that lies
+// about its length, or sends none at all, is still bounded.
+const createLimitStream = (maxFileSize) => {
+  let size = 0;
+
+  return new Transform({
+    transform(chunk, encoding, callback) {
+      size += chunk.length;
+
+      if (size > maxFileSize) {
+        const err = new Error('Payload too large');
+        err.code = 'ETOOLARGE';
+        callback(err);
+        return;
+      }
+
+      callback(null, chunk);
+    }
+  });
+};
 
 class DirectoryWatcherService extends events.EventEmitter {
   constructor() {
@@ -115,6 +138,55 @@ class DirectoryWatcherService extends events.EventEmitter {
 
     const filepath = path.join(this.root, path.basename(file));
     fs.writeFile(filepath, data, 'utf8', callback);
+  }
+
+  // Stream a readable (e.g. a request body) into the watch directory without
+  // holding the whole file in memory. Writes to a temporary name first and
+  // renames into place on completion, so a partially written file never appears
+  // under its final name inside the watched directory.
+  //
+  // `pipeline()` owns the lifecycle: it propagates errors in either direction,
+  // applies backpressure, destroys every participating stream when one fails,
+  // and reports a client that disconnects mid-upload as a premature close. The
+  // temporary file is removed on any of those, so a failed or abandoned upload
+  // leaves nothing behind.
+  writeStream(file, readable, options, callback) {
+    const { maxFileSize = Infinity } = options ?? {};
+
+    if (!this.root) {
+      callback(new Error('Watch directory is not configured'));
+      return;
+    }
+
+    // Strip any directory components to prevent writing outside of the watched directory
+    const filename = path.basename(file);
+    const target = path.join(this.root, filename);
+    const temp = path.join(this.root, `.${filename}.${process.pid}.${Date.now()}.tmp`);
+
+    pipeline(
+      readable,
+      createLimitStream(maxFileSize),
+      fs.createWriteStream(temp),
+      (err) => {
+        if (err) {
+          fs.unlink(temp, () => {
+            callback(err);
+          });
+          return;
+        }
+
+        fs.rename(temp, target, (renameErr) => {
+          if (renameErr) {
+            fs.unlink(temp, () => {
+              callback(renameErr);
+            });
+            return;
+          }
+
+          callback(null);
+        });
+      }
+    );
   }
 
   // Claim `toPath` for `fromPath`'s contents without overwriting anything.
