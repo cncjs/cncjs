@@ -9,8 +9,10 @@
  * `src/panel/styles/tokens.css` have drifted apart — which is the one part
  * of "is the implementation still the design?" a machine can answer.
  *
- * Do not hand-edit. Ask Claude to pull the drawing again; the pull rewrites
- * this file and the check tells you what moved.
+ * Not a copy of the drawing any more, and not hand-edited casually: since
+ * 2026-09-21 the running panel is the design, so this records what the panel
+ * has decided. `--gap` was the drawing's 14 and is now 10, changed on
+ * request in the same commit as the code.
  */
 :root {
   --bg:#f2f4f7;
@@ -26,7 +28,7 @@
   --amb:#a96400;
   --field:#f7f8fa;
   --pad:18px;
-  --gap:14px;
+  --gap:10px;
   --dro:78px;
   --w:1024px;
   --h:768px;
@@ -51,7 +53,7 @@
   --h:1080px;
   --rail:200px;
   --pad:26px;
-  --gap:20px;
+  --gap:14px;
   --dro:132px;
   --val:46px;
   --side:560px;
@@ -71,7 +73,7 @@
   --w:390px;
   --h:844px;
   --pad:16px;
-  --gap:12px;
+  --gap:10px;
   --val:34px;
 }
 

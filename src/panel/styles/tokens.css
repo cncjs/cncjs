@@ -32,7 +32,13 @@
 
   /* Rhythm */
   --pad: 18px;
-  --gap: 14px;
+  /*
+   * 10, not the drawing's 14. Changed deliberately on 2026-09-21: the frame
+   * round a screen went to 10 and the gaps between the cards inside it stayed
+   * behind, which reads as a mistake. `design/tokens.expected.css` moved in
+   * the same commit.
+   */
+  --gap: 10px;
 
   /* The frame, and the things sized against it */
   --w: 1024px;
@@ -80,7 +86,7 @@
   --h: 1080px;
   --rail: 200px;
   --pad: 26px;
-  --gap: 20px;
+  --gap: 14px;
   --dro: 132px;
   --val: 46px;
   --side: 560px;
@@ -100,7 +106,7 @@
   --w: 390px;
   --h: 844px;
   --pad: 16px;
-  --gap: 12px;
+  --gap: 10px;
   --val: 34px;
 }
 
