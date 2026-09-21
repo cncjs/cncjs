@@ -11,23 +11,13 @@ shell, and every step looked half-finished.
 
 ## Where the drawing lives
 
-**Claude Design project `7629d30f-1ea4-45a6-9f73-ec9b1ed97bf1`, file
-`CNC Panel.dc.html`**, with `HANDOFF-TODO.md` beside it. Read them with the
-`DesignSync` tool — `list_files` then `get_file`; no login step and no config
-in this repository.
+**`design/README.md`** — the project id, what the `DesignSync` tool can and
+cannot do with it, how to pull an update, and how to render the mockup locally
+so screens can be compared by photograph rather than by description.
 
-The id has to be written down because **`list_projects` only enumerates
-design-system projects**, and a mockup project is not one. Without the id there
-is no way to find it.
-
-Superseded: `2d2f27d0-55d9-4460-9997-b4ee99335575` / `CNCjs Panel.dc.html`. It
-is an older, smaller drawing — two frames, 1024x600, square corners. Everything
-built from it before 2026-09-21 is built from the wrong picture.
-
-The mockup renders locally: save the file and `support.js` beside it, put React
-and ReactDOM UMD globals in front of the runtime with a `createRoot` shim, and
-open it. Its navigation works, so every screen can be photographed rather than
-described.
+The short version: the drawing is read-only from here, `design/tokens.expected.css`
+is its token block copied verbatim, and `yarn design-check` fails when the panel
+and the drawing have drifted apart.
 
 ## What it is allowed to reuse
 
