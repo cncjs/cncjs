@@ -138,6 +138,31 @@ module.exports = ({ mode, outputPath }) => ({
       title: 'CNCjs Panel',
       filename: 'index.html',
       template: path.resolve(__dirname, 'src/panel/index.html'),
+      /*
+       * A development-only line that puts the review overlay back after the
+       * page reloads itself.
+       *
+       * The overlay is injected by a bookmarklet, so a reload drops it — and
+       * it is the overlay that triggers the reload when the bundle changes.
+       * Without this the loop quietly breaks: the page comes back, the
+       * toolbar does not, and the next note arrives from a version of the
+       * tool that is no longer running.
+       *
+       * It only fires when a session has already opted in by clicking the
+       * bookmarklet once, and it is not emitted in a production build at
+       * all.
+       */
+      reviewLoader: mode === 'production' ? '' : `<script>
+        try {
+          if (sessionStorage.getItem('rv-on') === '1') {
+            var s = document.createElement('script');
+            s.src = 'http://localhost:8765/overlay.js?' + Date.now();
+            document.addEventListener('DOMContentLoaded', function () {
+              document.body.appendChild(s);
+            });
+          }
+        } catch (e) { /* private mode */ }
+      </script>`,
     }),
   ],
 });

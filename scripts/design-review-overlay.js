@@ -20,6 +20,9 @@
     return;
   }
   window.__reviewLoaded = true;
+  // The development loader in the page reads this and puts the overlay
+  // back after a reload. Clicking the bookmarklet once is the opt-in.
+  try { window.sessionStorage.setItem('rv-on', '1'); } catch (err) { /* private mode */ }
 
   let notes = [];
   let picking = false;

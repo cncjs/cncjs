@@ -25,7 +25,16 @@ const JogScreen = ({ machine }) => (
       {/* A strip on a phone, where the keys are the subject and the position
         * is the check. Stacked at the panel, where it is the other way
         * round. The drawing shows both and they are the same widget. */}
-      <DroWidget machine={machine} label="Pozycja" strip />
+      {/* On a phone this is what takes up the slack. The pad above it is a
+        * fixed target and must not move, so the readout grows into whatever
+        * is left instead of leaving a band of nothing above the tabs. At the
+        * panel it goes back to its own height and the canvas takes the rest. */}
+      <DroWidget
+        machine={machine}
+        label="Pozycja"
+        strip
+        className="min-h-0 flex-1 @3xl/shell:flex-none"
+      />
 
       {/*
         * The handful of facts checked before touching a jog key, on one line
@@ -36,8 +45,8 @@ const JogScreen = ({ machine }) => (
         * screen, and a position you have to scroll to is worse than four facts
         * you can find one tap away.
         */}
-      <Card className="hidden shrink-0 @3xl:flex" bodyClassName="gap-1">
-        <div className="grid grid-cols-2 gap-x-gap gap-y-1 font-num text-note text-mut">
+      <Card className="hidden shrink-0 !p-3 @3xl:flex" bodyClassName="gap-1">
+        <div className="grid grid-cols-2 gap-x-gap gap-y-0.5 font-num text-note leading-tight text-mut">
           <span className="truncate">stan · <span className="text-ink">{machine.status.word}</span></span>
           <span className="truncate">układ · <span className="text-ink">{machine.modal.wcs || NO_READING}</span></span>
           <span className="truncate">posuw · <span className="text-ink">{reading(machine.tool.feedrate)}</span> mm/min</span>

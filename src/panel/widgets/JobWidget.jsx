@@ -38,7 +38,10 @@ const JobWidget = ({ machine, label = 'Przebieg zadania', className = '' }) => {
 
       <Meter percent={job ? job.percent : 0} label={label} tone="bg-grn" />
 
-      <div className="grid min-h-0 grid-cols-1 gap-x-gap gap-y-1 overflow-hidden font-num text-note text-mut @sm:grid-cols-2">
+      {/* Two columns wherever they fit. In one column these four facts are
+        * four lines, and the 34px that costs comes straight out of the
+        * readout above — which is the reading the screen is for. */}
+      <div className="grid shrink-0 grid-cols-1 gap-x-gap gap-y-1 font-num text-note text-mut @xs:grid-cols-2">
         <span className="truncate">posuw {reading(tool.feedrate)} mm/min</span>
         <span className="truncate">obroty {reading(tool.spindle)} rpm</span>
         <span className="truncate">plik {job ? job.name : NO_READING}</span>

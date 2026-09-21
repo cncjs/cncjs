@@ -49,8 +49,16 @@ const Dashboard = ({ machine, onGo }) => (
         {/* The readout is sized by its own type and does not give; the job
           * card takes whatever is left, which is what keeps its controls
           * inside the card when the column is short. */}
-        <DroWidget machine={machine} className="shrink-0" />
-        <JobWidget machine={machine} className="min-h-0 flex-1" />
+        {/* The readout shares the column rather than hugging its three
+          * lines. It is the reading this screen exists for, and at the
+          * natural height of the type the rows sit closer together than
+          * anything else on the panel. */}
+        <DroWidget machine={machine} className="min-h-0 flex-1" />
+        {/* The job card keeps its own height and the readout takes the
+          * slack. Splitting the column evenly left this one 218px for 250px
+          * of content and its four facts collapsed to five pixels a line —
+          * present, unreadable, and reported as missing. */}
+        <JobWidget machine={machine} className="shrink-0" />
 
         {/* Drawn on the phone as its own full-width control rather than
           * inside the height card, which the phone does not carry. Dead for

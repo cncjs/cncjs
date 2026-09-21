@@ -22,7 +22,7 @@ const DroWidget = ({ machine, label = 'Pozycja robocza', strip = false, classNam
   <Card
     label={label}
     aside={machine.modal.wcs || NO_READING}
-    className={`shrink-0 ${className}`}
+    className={className}
     bodyClassName="gap-0"
   >
     <Dro
