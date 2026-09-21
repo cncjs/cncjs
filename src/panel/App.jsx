@@ -81,8 +81,8 @@ const App = () => {
       <TopBar
         status={machine.status}
         machine={machine.connected
-          ? [machine.type, machine.port]
-          : ['Brak połączenia', 'ze sterownikiem']}
+          ? [{ label: 'sterownik', value: machine.type }, { label: 'port', value: machine.port }]
+          : [{ value: 'Brak połączenia' }, { value: 'ze sterownikiem' }]}
         canStop={machine.connected}
         onStop={emergencyStop}
       />

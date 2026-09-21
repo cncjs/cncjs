@@ -46,12 +46,16 @@ const TopBar = ({ status, machine, canStop, onStop }) => (
         * working, which is exactly why it belongs on the strip you do not
         * look at — and why it was the wrong thing to put on the one that
         * reports the job. */}
-      {machine.map((line) => (
+      {machine.map(({ label, value }) => (
         <span
-          key={line}
+          key={value}
           className="max-w-full truncate font-num text-base leading-tight text-mut fullhd:text-head @3xl/shell:text-lead"
         >
-          {line}
+          {/* Named, in the panel's usual `label · value` form. Two bare
+            * words in a corner are a guess — `Grbl` could be anything and
+            * `COM3` is only obvious once you already know what it is. */}
+          {label ? `${label} · ` : ''}
+          <span className="text-ink">{value}</span>
         </span>
       ))}
     </div>
