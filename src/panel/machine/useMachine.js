@@ -26,6 +26,7 @@ export const useMachine = () => {
     port: controller.port,
     type: controller.type,
     state: controller.state,
+    settings: controller.settings || {},
     job: null,
   }));
 
@@ -46,6 +47,17 @@ export const useMachine = () => {
       },
       'controller:state': (type, state) => {
         setSnapshot((previous) => ({ ...previous, type, state }));
+      },
+      /**
+       * The firmware's settings, which arrive once when the port opens and
+       * again whenever they are re-read.
+       *
+       * The panel needs them for one thing so far: whether this machine can
+       * home. That is not a preference — it is whether limit switches exist
+       * and are turned on, and the only honest source is the controller.
+       */
+      'controller:settings': (type, settings) => {
+        setSnapshot((previous) => ({ ...previous, type, settings }));
       },
       /**
        * How far through the job the sender is.

@@ -38,6 +38,10 @@ export const fetchOpenController = async (token) => {
     port: first.port,
     type: first.controller?.type || '',
     state: first.controller?.state || {},
+    // The firmware's own settings. `$22` is what says whether homing exists
+    // on this machine at all, and a homing button that does not know is a
+    // button that moves a machine on a guess.
+    settings: first.controller?.settings || {},
     // Carried so the panel can attach to the port rather than only read it.
     // See `attach()` in useMachine: knowing what is open is not the same as
     // being connected to it.

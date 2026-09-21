@@ -6,6 +6,10 @@
  * quarter of its width, and these are pressed by a thumb while the eyes are on
  * the cutter. Wider keys are the whole point of the rearrangement.
  *
+ * One home key, not two. The server has a single `homing` command with no
+ * axis argument — `$H` on Grbl, `G28` on Marlin — so "home XY" and "home Z"
+ * were two controls it cannot carry. See `design/server-backlog.md`.
+ *
  * Z below rather than beside also matches how the axes are thought about:
  * across, then down. Beside the cross it reads as a fourth direction in the
  * same plane.
@@ -53,15 +57,15 @@ const JogPadTall = ({ onJog, onHome, onPark, disabled, canHome }) => (
     <span />
 
     <Key onClick={() => onJog('x', -1)} disabled={disabled} label="X−">X&minus;</Key>
-    <Key onClick={() => onHome('xy')} disabled={disabled || !canHome} label="Bazuj XY" quiet>{HOUSE}<span>XY</span></Key>
+    <Key onClick={onHome} disabled={disabled || !canHome} label="Bazuj" quiet>{HOUSE}<span>Bazuj</span></Key>
     <Key onClick={() => onJog('x', 1)} disabled={disabled} label="X+">X+</Key>
 
     <span />
     <Key onClick={() => onJog('y', -1)} disabled={disabled} label="Y−">Y&minus;</Key>
-    <Key onClick={onPark} disabled={disabled || !canHome} label="Park" quiet>Park</Key>
+    <span />
 
     <Key onClick={() => onJog('z', 1)} disabled={disabled} label="Z+">Z+</Key>
-    <Key onClick={() => onHome('z')} disabled={disabled || !canHome} label="Bazuj Z" quiet>{HOUSE}<span>Z</span></Key>
+    <Key onClick={onPark} disabled label="Park" quiet>Park</Key>
     <Key onClick={() => onJog('z', -1)} disabled={disabled} label="Z−">Z&minus;</Key>
   </div>
 );

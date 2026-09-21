@@ -7,6 +7,8 @@ import JogPadTall from '../ui/JogPadTall';
 import SegmentedChoice from '../ui/SegmentedChoice';
 import Sheet from '../ui/Sheet';
 import Stepper from '../ui/Stepper';
+import controller from '../machine/controller';
+import { home } from '../machine/homing';
 import { useIsPhone } from '../ui/shell';
 import { jog, XY_STEPS, Z_STEPS } from '../machine/jog';
 
@@ -50,10 +52,10 @@ const JogWidget = ({ machine, className = '' }) => {
 
   const keys = {
     onJog: move,
-    onHome: () => {},
+    onHome: () => home(controller),
     onPark: () => {},
     disabled: !connected,
-    canHome: false,
+    canHome: machine.canHome,
   };
 
   // The two axis groups, one description each. Both arrangements show the same

@@ -1,3 +1,5 @@
+import { canHome } from './homing';
+
 /** What a reading says when there is nothing to say. Not "0", not an empty cell. */
 export const NO_READING = '–';
 
@@ -118,7 +120,7 @@ const toolOf = (type, state) => {
  * into a controller payload, so the four firmwares' disagreements are settled
  * here and only here.
  */
-export const readMachine = ({ connection, error, port, type, state, attached, job }) => {
+export const readMachine = ({ connection, error, port, type, state, settings, attached, job }) => {
   // "Connected" means *able to send*, not "a port is open somewhere". The
   // socket has to attach to the port before `Controller.command()` will do
   // anything at all — it begins `if (!this.port) return` and fails silently —
@@ -167,6 +169,10 @@ export const readMachine = ({ connection, error, port, type, state, attached, jo
      * when nothing is loaded, and a panel that read that as a job would offer
      * Start for a file that does not exist.
      */
+    // Whether this machine can be sent home. Not a preference — whether
+    // limit switches exist and are turned on, which only the firmware
+    // knows. See `homing.js`.
+    canHome: connected && canHome(type, settings),
     job: job && job.total > 0
 ? {
       name: job.name || '',
