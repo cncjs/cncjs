@@ -115,4 +115,45 @@ test.describe('panel, disconnected', () => {
     await expect(rail(cncjs.page).getByRole('button', { name: 'Pulpit' }))
       .toHaveAttribute('aria-current', 'page');
   });
+
+  /**
+   * The toolpath screen, with no machine and no program.
+   *
+   * What it *draws* needs a controller and belongs in the hardware tier. What
+   * a browser can answer on its own is that the destination is reachable, that
+   * the scene mounts at all — a `<canvas>` is the one thing that fails
+   * silently here, because a WebGL context that never comes up leaves the card
+   * looking merely empty — and that the layers which have nothing behind them
+   * say so instead of offering themselves.
+   */
+  test('the toolpath screen opens and puts up a canvas', async ({ cncjs }) => {
+    await openPanel(cncjs.page);
+    await rail(cncjs.page).getByRole('button', { name: 'Ścieżka' }).click();
+
+    await expect(rail(cncjs.page).getByRole('button', { name: 'Ścieżka' }))
+      .toHaveAttribute('aria-current', 'page');
+    await expect(cncjs.page.locator('canvas')).toBeVisible();
+
+    cncjs.expectNoPageErrors();
+  });
+
+  test('a layer with nothing behind it cannot be switched on', async ({ cncjs }) => {
+    await openPanel(cncjs.page);
+    await rail(cncjs.page).getByRole('button', { name: 'Ścieżka' }).click();
+
+    const layers = cncjs.page.getByRole('group', { name: 'Warstwy' });
+    await expect(layers).toBeVisible();
+
+    // Every one of them: no program is loaded and no controller has reported
+    // a travel or a coordinate system, so there is nothing any of the four
+    // could draw. A chip that looked pressable here would draw nothing and
+    // say nothing about why.
+    const chips = layers.getByRole('button');
+    const count = await chips.count();
+    expect(count, 'the toolpath screen should offer four layers').toBe(4);
+
+    for (let i = 0; i < count; i += 1) {
+      await expect(chips.nth(i)).toBeDisabled();
+    }
+  });
 });

@@ -120,7 +120,7 @@ const toolOf = (type, state) => {
  * into a controller payload, so the four firmwares' disagreements are settled
  * here and only here.
  */
-export const readMachine = ({ connection, error, port, type, state, settings, attached, job }) => {
+export const readMachine = ({ connection, error, port, type, state, settings, attached, job, gcode }) => {
   // "Connected" means *able to send*, not "a port is open somewhere". The
   // socket has to attach to the port before `Controller.command()` will do
   // anything at all — it begins `if (!this.port) return` and fails silently —
@@ -177,6 +177,16 @@ export const readMachine = ({ connection, error, port, type, state, settings, at
     // `$22`, a held jog reads the axis travel so it cannot ask for more
     // than the machine has.
     settings: settings || {},
+    /**
+     * The loaded program as text, or nothing.
+     *
+     * Separate from `job` on purpose. `job` is the sender's progress through
+     * a program and is reported continuously; this is the program itself and
+     * arrives once. The toolpath screen wants the second and the status bar
+     * wants the first, and a machine with a program loaded but not started has
+     * one without the other.
+     */
+    gcode: gcode || null,
     job: job && job.total > 0
 ? {
       name: job.name || '',

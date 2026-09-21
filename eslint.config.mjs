@@ -267,4 +267,24 @@ export default [
       }],
     },
   },
+
+  // ---------------------------------------------------------------------
+  // The panel's 3D scene.
+  //
+  // `<mesh>`, `<lineSegments>` and `<coneGeometry>` are not DOM elements and
+  // `position`, `geometry` and `args` are not DOM attributes — they are
+  // three.js objects and constructor arguments, which react-three-fiber
+  // reconciles into a scene graph instead of into the document.
+  // `react/no-unknown-property` knows the HTML attribute list and nothing
+  // else, so every one of them is an error it is not able to be right about.
+  //
+  // Scoped to this directory rather than turned off for the panel: everywhere
+  // else the rule is checking real DOM and catching real typos.
+  // ---------------------------------------------------------------------
+  {
+    files: ['src/panel/scene/**/*.jsx'],
+    rules: {
+      'react/no-unknown-property': 0,
+    },
+  },
 ];

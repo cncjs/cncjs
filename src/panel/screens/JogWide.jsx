@@ -1,6 +1,6 @@
-import Card from '../ui/Card';
 import DroWidget from '../widgets/DroWidget';
 import JogWidget from '../widgets/JogWidget';
+import PathWidget from '../widgets/PathWidget';
 import { useFooterContent } from '../ui/footerSlot';
 import { NO_READING } from '../machine/readings';
 
@@ -54,13 +54,10 @@ const JogWide = ({ machine }) => {
       <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-gap">
         <DroWidget machine={machine} label="Pozycja" strip className="shrink-0" />
 
-        <Card className="min-h-0 flex-1" bodyClassName="items-center justify-center">
-          <span className="text-center font-num text-note text-mut">
-            podgląd 3D toolpath · pozycja narzędzia
-            <br />
-            &lt;canvas&gt; three.js
-          </span>
-        </Card>
+        {/* The preview shape, not the stage: no view picker and no layer
+          * chips beside the jog keys. What it is for here is "is the tool
+          * where I think it is", which the drawing answers on its own. */}
+        <PathWidget machine={machine} label="Podgląd" preview className="min-h-0 flex-1" />
       </div>
     </div>
   );
