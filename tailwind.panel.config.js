@@ -11,7 +11,7 @@
  * utility class compiled to `var(--acc)` follows them without a rebuild. A
  * config that inlined `#1557c0` would freeze the light theme into every class.
  *
- * The acceptance rule from `HANDOFF-TODO.md`: no `#hex` and no `text-[13px]`
+ * The acceptance rule the handoff set out: no `#hex` and no `text-[13px]`
  * in a component. If a value is needed and is not here, it belongs in the
  * token sheet first.
  */
