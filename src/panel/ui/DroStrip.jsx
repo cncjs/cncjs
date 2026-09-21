@@ -16,6 +16,18 @@ import { formatPosition } from '../machine/readings';
  * which shape the screen asked for — the shape is the screen's, and stays
  * its; how large the digits are inside that shape is a fact about the width
  * available, and a strip 478px wide can carry more than one at 350.
+ *
+ * 26px is the ceiling at 1024, not a preference. Measured against
+ * `-1234.567`, the longest coordinate this panel can show: 26 leaves ten
+ * pixels to the divider, 28 leaves four, and 31 crosses it. A readout that
+ * fits the number on the screen and not the one the machine might reach is
+ * not a readout.
+ *
+ * Wider still — a Full HD frame gives the strip a thousand pixels — and it
+ * goes to `--val`, the token for a machine reading, which is 46px at that
+ * target. All three steps are the container's width, not the format: the
+ * strip is asking how much room it has, and a `fullhd:` variant would have
+ * been asking a different question that happens to agree most of the time.
  */
 const Column = ({ axis, value, machineValue, last }) => (
   <div
@@ -27,7 +39,7 @@ const Column = ({ axis, value, machineValue, last }) => (
     ].join(' ')}
   >
     <span className="text-cap font-semibold text-mut">{axis}</span>
-    <span className="truncate font-num text-read font-medium tabular-nums text-ink @sm:text-head">
+    <span className="truncate font-num text-read font-medium tabular-nums text-ink @sm:text-readWide @3xl:text-val">
       {formatPosition(value)}
     </span>
     {/* Centred under the work reading, where the column is a column and the

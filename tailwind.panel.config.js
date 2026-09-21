@@ -113,6 +113,10 @@ module.exports = {
         // three of them across a phone, beside the keys that are. The
         // drawing's own size there.
         read: ['19px', { lineHeight: '1.2' }],
+        // The same reading where the strip is wide. Measured against the
+        // longest coordinate this panel can show: at 28px it comes within
+        // four pixels of the divider beside it and at 31 it crosses.
+        readWide: ['26px', { lineHeight: '1.2' }],
         val: ['var(--val)', { lineHeight: '1' }],
         dro: ['var(--dro)', { lineHeight: '0.9' }],
       },
