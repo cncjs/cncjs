@@ -64,9 +64,13 @@ test.describe('panel, disconnected', () => {
     // Per axis rather than by counting dashes in the card: the card's own
     // header carries one too, for the coordinate system nobody has told us
     // yet, and a count cannot tell the two kinds of unknown apart.
+    //
+    // Two dashes a row, because a row carries both readings now: where the
+    // tool is in this job, and where it is in the machine. Neither is known
+    // and neither may say so with a number.
     for (const axis of ['X', 'Y', 'Z']) {
       await expect(tile.first().getByRole('group', { name: axis }))
-        .toHaveText(new RegExp('^' + axis + ' *– *mm$'));
+        .toHaveText(new RegExp('^' + axis + ' *– *mm *–$'));
     }
     await expect(tile.first().getByText('0.000')).toHaveCount(0);
   });
@@ -88,13 +92,16 @@ test.describe('panel, disconnected', () => {
     await cncjs.page.getByRole('navigation', { name: 'Nawigacja' })
       .getByRole('button', { name: 'Jog' }).click();
 
-    const jogTile = cncjs.page.locator('section')
-      .filter({ has: cncjs.page.getByRole('group', { name: 'Jog' }) }).first();
-    await expect(jogTile).toBeVisible();
+    // The pad itself, not the card around it. The card also carries the help
+    // button, which opens a list of keyboard shortcuts and has no business
+    // being disabled by a machine being absent — reading what the keys do is
+    // exactly what somebody might be doing while waiting to connect one.
+    const pad = cncjs.page.getByRole('group', { name: 'Jog' });
+    await expect(pad).toBeVisible();
 
-    const keys = jogTile.getByRole('button');
+    const keys = pad.getByRole('button');
     const count = await keys.count();
-    expect(count, 'the jog tile should have controls to disable').toBeGreaterThan(8);
+    expect(count, 'the jog pad should have keys to disable').toBeGreaterThan(6);
 
     for (let i = 0; i < count; i += 1) {
       await expect(keys.nth(i)).toBeDisabled();
