@@ -30,7 +30,9 @@ const JogWide = ({ machine }) => {
    * Which contributor wins will be a setting once there is a settings screen.
    * Until then the open screen decides, and defers when it should.
    */
-  useFooterContent(machine.job ? null : () => (
+  useFooterContent(machine.job
+? null
+: () => (
     <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1 font-num text-base leading-tight text-mut">
       <span>stan · <span className="text-ink">{machine.status.word}</span></span>
       <span>układ · <span className="text-ink">{machine.modal.wcs || NO_READING}</span></span>

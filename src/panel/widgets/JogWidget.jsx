@@ -139,22 +139,19 @@ const JogWidget = ({ machine, className = '' }) => {
       {/* At the panel: the keys at their drawn size, both groups open below
         * them, nothing folded away. */}
       {phone ? null : (
-        <div className="flex min-h-0 flex-1 flex-col gap-gap overflow-auto">
+        <div className="relative flex min-h-0 flex-1 flex-col gap-gap overflow-auto">
           {/* A shortcut nobody knows about is a shortcut that does not exist.
-            * This is quiet and out of the way — the card is for the keys — but
-            * it is on the screen the shortcuts belong to, which is the only
-            * place looking for it would occur to anyone. Not on a phone:
-            * there is no keyboard to explain. */}
-          <div className="flex shrink-0 justify-end">
-            <button
-              type="button"
-              onClick={() => setHelping(true)}
-              aria-label="Skróty klawiszowe"
-              className="size-7 rounded-ctl border border-line bg-field text-base font-semibold text-mut hover:border-acc hover:text-acc"
-            >
-              ?
-            </button>
-          </div>
+            * It sits in the corner the cross leaves empty rather than in a row
+            * of its own, where it pushed every key down by its own height to
+            * say one character. Not on a phone: no keyboard to explain. */}
+          <button
+            type="button"
+            onClick={() => setHelping(true)}
+            aria-label="Skróty klawiszowe"
+            className="absolute left-0 top-0 z-10 size-7 rounded-ctl border border-line bg-field text-base font-semibold text-mut hover:border-acc hover:text-acc"
+          >
+            ?
+          </button>
 
         <div className="shrink-0">
           <JogPad {...keys} />
