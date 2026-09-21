@@ -15,13 +15,18 @@ import { buildGrid } from './grid-lines';
  * A grid answers both. It fills the frame without adding anything to read, and
  * it is the horizon that says which way the view has been turned.
  *
- * Drawn at the floor of whatever is being shown, so it sits under the toolpath
+ * **Sized to the machine and then some, and faded rather than cut.** It is the
+ * floor, not the table: stopping it dead at the edge of the travel drew a
+ * rectangle nobody asked for, and made the machine look like it was standing
+ * on a slab exactly its own size. The alpha rides on the vertices, because a
+ * material has one opacity for the whole draw and that is the hard edge being
+ * replaced.
+ *
+ * Laid at the floor of whatever is being shown, so it sits under the toolpath
  * rather than through the middle of it.
  */
-const Grid = ({ bounds, color }) => {
-  const z = bounds.min.z;
-
-  const { lines, axes } = useMemo(() => buildGrid(bounds, z), [bounds, z]);
+const Grid = ({ area, z, color }) => {
+  const { lines, axes } = useMemo(() => buildGrid(area, z, color), [area, z, color]);
 
   useEffect(() => () => {
     lines.dispose();
@@ -32,14 +37,14 @@ const Grid = ({ bounds, color }) => {
     <>
       <lineSegments geometry={lines}>
         {/* Faint on purpose — a workspace full of grid lines has to recede
-          * rather than compete with the toolpath drawn on top of it. Drawn in
-          * the muted ink rather than the hairline colour, which against this
-          * panel's near-white field was the same colour as the field. */}
-        <lineBasicMaterial color={color} transparent opacity={0.16} />
+          * rather than compete with the toolpath drawn on top of it. The
+          * opacity here is the weight of the whole set; the fade towards the
+          * edges is multiplied into it from the vertices. */}
+        <lineBasicMaterial vertexColors transparent opacity={0.16} />
       </lineSegments>
 
       <lineSegments geometry={axes}>
-        <lineBasicMaterial color={color} transparent opacity={0.5} />
+        <lineBasicMaterial vertexColors transparent opacity={0.5} />
       </lineSegments>
     </>
   );

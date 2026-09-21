@@ -67,11 +67,15 @@ const Scene = ({ scene, tool, layers, view, revision }) => {
 
       <Controls view={view} bounds={frame} revision={revision} />
 
-      {/* Under everything, and not switchable. The other four layers are
-        * things the machine reported and can therefore be wrong or absent;
-        * this is the floor they are drawn on, and a scene with no reference
-        * in it is one nobody can tell they have turned upside down. */}
-      <Grid bounds={frame} color={colors.edge} />
+      {/* Under everything, and not switchable. The other layers are things
+        * the machine reported and can therefore be wrong or absent; this is
+        * the floor they are drawn on, and a scene with no reference in it is
+        * one nobody can tell they have turned upside down.
+        *
+        * Sized to the machine's own travel where that is known, so the
+        * squares are the machine's squares. Only when nothing has been
+        * reported does it fall back to whatever is being drawn. */}
+      <Grid area={envelope || frame} z={frame.min.z} color={colors.edge} />
 
       {/* The machine is context, not content: quiet enough that the program
         * inside it is what the eye lands on. */}

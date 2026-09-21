@@ -1,4 +1,4 @@
-import { buildGrid, gridStep } from '../grid-lines';
+import { buildGrid, FADE_CELLS, gridStep } from '../grid-lines';
 
 /**
  * The one piece of arithmetic in the grid, and the one that decides whether it
@@ -44,49 +44,71 @@ describe('buildGrid', () => {
   // COM3: the reachable volume is [-200, 0] on every axis.
   const COM3 = { min: { x: -200, y: -200, z: -200 }, max: { x: 0, y: 0, z: 0 } };
 
-  const count = (geometry) => geometry.getAttribute('position').count / 2;
+  const attr = (geometry, name) => geometry.getAttribute(name);
+  const xs = (geometry) => {
+    const p = attr(geometry, 'position');
+    return Array.from({ length: p.count }, (_, i) => p.getX(i));
+  };
+  const alphas = (geometry) => {
+    const c = attr(geometry, 'color');
+    return Array.from({ length: c.count }, (_, i) => c.getW(i));
+  };
 
-  test('draws the lines through zero apart from the rest', () => {
-    const { lines, axes, step } = buildGrid(COM3, -200);
+  test('reaches past the area by the fade, on every side', () => {
+    const { lines, axes, step, margin } = buildGrid(COM3, 0, '#6d7886');
 
     expect(step).toBe(20);
-    // Eleven lines each way at 20mm over 200mm; one of each passes through
-    // zero and is drawn at its own weight.
-    expect(count(axes)).toBe(2);
-    expect(count(lines)).toBe(20);
+    expect(margin).toBe(20 * FADE_CELLS);
+
+    const all = [...xs(lines), ...xs(axes)];
+    // The machine stops at -200 and 0; the ground carries on six squares.
+    expect(Math.min(...all)).toBe(-320);
+    expect(Math.max(...all)).toBe(120);
+  });
+
+  test('is solid across the machine and gone at the far edge', () => {
+    const { lines } = buildGrid(COM3, 0, '#6d7886');
+    const a = alphas(lines);
+
+    expect(Math.max(...a)).toBeCloseTo(1, 5);
+    expect(Math.min(...a)).toBeCloseTo(0, 5);
+  });
+
+  test('carries the alpha on the vertices, not on the material', () => {
+    // The whole point: one opacity for the draw call is the hard edge this
+    // replaces. Four components per vertex is what makes a fade possible.
+    const { lines } = buildGrid(COM3, 0, '#6d7886');
+    expect(attr(lines, 'color').itemSize).toBe(4);
   });
 
   test('lays every line at the height it is given', () => {
-    const { lines } = buildGrid(COM3, -200);
-    const position = lines.getAttribute('position');
+    const { lines } = buildGrid(COM3, -200, '#6d7886');
+    const position = attr(lines, 'position');
 
     for (let i = 0; i < position.count; i += 1) {
       expect(position.getZ(i)).toBe(-200);
     }
   });
 
-  test('snaps the extent out to the step rather than starting mid-square', () => {
-    const { lines, axes } = buildGrid(
-      { min: { x: -137, y: -137, z: 0 }, max: { x: 3, y: 3, z: 0 } },
-      0
-    );
-    const all = [lines, axes].flatMap((geometry) => {
-      const position = geometry.getAttribute('position');
-      return Array.from({ length: position.count }, (_, i) => position.getX(i));
-    });
+  test('keeps the lines through zero apart from the rest', () => {
+    const { axes } = buildGrid(COM3, 0, '#6d7886');
+    const position = attr(axes, 'position');
 
-    // 10mm squares over 140mm: the grid reaches -140 and +10, not -137 and +3.
-    expect(Math.min(...all)).toBe(-140);
-    expect(Math.max(...all)).toBe(10);
+    // Every vertex of the emphasised set is on x=0 or on y=0.
+    for (let i = 0; i < position.count; i += 1) {
+      expect(position.getX(i) === 0 || position.getY(i) === 0).toBe(true);
+    }
+    expect(position.count).toBeGreaterThan(0);
   });
 
-  test('draws the line at each end, not just up to the last whole step', () => {
-    const { lines, axes } = buildGrid(
-      { min: { x: 0, y: 0, z: 0 }, max: { x: 100, y: 100, z: 0 } },
-      0
-    );
+  test('splits each line into a segment per square so it can fade along it', () => {
+    // One long segment per line cannot fade: a vertex is the only thing that
+    // carries an alpha, and a line with two of them has an alpha at each end
+    // and a straight blend between.
+    const { lines } = buildGrid(COM3, 0, '#6d7886');
+    const a = alphas(lines);
+    const distinct = new Set(a.map((value) => value.toFixed(3)));
 
-    // Eleven each way over 100mm at 10mm, both edges included.
-    expect(count(lines) + count(axes)).toBe(2 * 11);
+    expect(distinct.size).toBeGreaterThan(4);
   });
 });
