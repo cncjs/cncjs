@@ -20,7 +20,19 @@ const Row = ({ axis, value, machineValue, last }) => (
       // it is an overflow — the rows took 52px each in a card with 135 for
       // three of them and finished below its bottom edge. As a basis they are
       // 52 where there is room and give way together where there is not.
-      'flex min-w-0 flex-1 basis-ctl items-center gap-3 overflow-hidden',
+      // A floor and a ceiling. Without the ceiling a phone gave each row 117px
+      // for a 31px figure — the card was the subject of the screen and took
+      // the room, but spent it all on air above the numbers instead of on
+      // the numbers.
+      // A floor, a preference and a ceiling.
+      //
+      // The preference differs by shell, and it is the only lever that
+      // works: at the panel the column is short and 52 is what fits, on a
+      // phone the column is the whole screen and 52 left four pixels of air
+      // over a 31px figure. The ceiling stops the other failure — told to
+      // fill, a row took 117px and spent all of it above the number rather
+      // than on the number.
+      'flex min-w-0 flex-1 basis-btnh max-h-btnh items-center gap-3 overflow-hidden @3xl/shell:basis-ctl',
       last ? '' : 'border-b border-line',
     ].join(' ')}
   >

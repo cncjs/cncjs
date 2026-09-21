@@ -45,20 +45,27 @@ const Dashboard = ({ machine, onGo }) => (
         </div>
       </ToolWidget>
 
-      <div className="flex min-h-0 flex-col gap-gap @3xl:w-side @3xl:shrink-0">
+      {/* `flex-1` so this column fills the screen on a phone, where it is
+        * the whole of it. Without it the dashboard ended 266px short of the
+        * bottom while the readout above was squeezed to 4px of air over its
+        * figures — the room was there, it just was not being claimed. At
+        * the panel it is a fixed column beside the tool card instead. */}
+      <div className="flex min-h-0 flex-1 flex-col gap-gap @3xl:w-side @3xl:flex-none @3xl:shrink-0">
         {/* The readout is sized by its own type and does not give; the job
           * card takes whatever is left, which is what keeps its controls
           * inside the card when the column is short. */}
-        {/* The readout shares the column rather than hugging its three
-          * lines. It is the reading this screen exists for, and at the
-          * natural height of the type the rows sit closer together than
-          * anything else on the panel. */}
-        <DroWidget machine={machine} className="min-h-0 flex-1" />
+        {/* Which card takes the slack changes with the screen. At the panel
+          * the readout does: the column is short and the job card's four
+          * facts collapse if it is the one squeezed. On a phone the column
+          * is the whole screen and the readout's rows hit their ceiling long
+          * before it is used up, so the job card takes the rest rather than
+          * leaving air inside the readout. */}
+        <DroWidget machine={machine} className="shrink-0 @3xl/shell:min-h-0 @3xl/shell:flex-1" />
         {/* The job card keeps its own height and the readout takes the
           * slack. Splitting the column evenly left this one 218px for 250px
           * of content and its four facts collapsed to five pixels a line —
           * present, unreadable, and reported as missing. */}
-        <JobWidget machine={machine} className="shrink-0" />
+        <JobWidget machine={machine} className="min-h-0 flex-1 @3xl/shell:flex-none @3xl/shell:shrink-0" />
 
         {/* Drawn on the phone as its own full-width control rather than
           * inside the height card, which the phone does not carry. Dead for
