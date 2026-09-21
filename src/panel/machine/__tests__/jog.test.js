@@ -74,7 +74,7 @@ describe('what the panel offers', () => {
   test('the steps and speeds the mockup draws, in its order', () => {
     // Written down because they are a design decision, not a default: the
     // drawing shows these six figures and no others.
-    expect(XY_STEPS).toEqual([0.1, 1, 10]);
+    expect(XY_STEPS).toEqual([0.1, 1, 10, 50]);
     expect(Z_STEPS).toEqual([0.1, 1, 5]);
     expect(FEEDRATES).toEqual([500, 1500, 3000]);
   });

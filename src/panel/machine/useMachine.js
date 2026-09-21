@@ -26,6 +26,7 @@ export const useMachine = () => {
     port: controller.port,
     type: controller.type,
     state: controller.state,
+    job: null,
   }));
 
   useEffect(() => {
@@ -45,6 +46,16 @@ export const useMachine = () => {
       },
       'controller:state': (type, state) => {
         setSnapshot((previous) => ({ ...previous, type, state }));
+      },
+      /**
+       * How far through the job the sender is.
+       *
+       * It arrives on its own event rather than inside the controller state,
+       * because it is the *server's* business — the controller knows only the
+       * line it is executing, not how many there are.
+       */
+      'sender:status': (job) => {
+        setSnapshot((previous) => ({ ...previous, job }));
       },
     };
 

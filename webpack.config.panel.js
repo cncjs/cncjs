@@ -100,11 +100,26 @@ module.exports = ({ mode, outputPath }) => ({
         ],
       },
       {
+        // The global sheet: the token `:root` and Tailwind's three layers.
+        // `postcss-loader` runs Tailwind over it, and `importLoaders: 1` is
+        // what makes the `@import './tokens.css'` at the top go through
+        // PostCSS too rather than being left to the browser.
         test: /\.css$/,
         exclude: /\.module\.css$/,
         use: [
           'style-loader',
           { loader: 'css-loader', options: { importLoaders: 1, modules: false } },
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  ['tailwindcss', { config: path.resolve(__dirname, 'tailwind.panel.config.js') }],
+                  'autoprefixer',
+                ],
+              },
+            },
+          },
         ],
       },
     ],

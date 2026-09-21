@@ -1,31 +1,32 @@
 @import './tokens.css';
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-html,
-body,
-#panel-root {
-  height: 100%;
-}
+/*
+ * The three things Tailwind's reset does not know about this application.
+ */
+@layer base {
+  html,
+  body,
+  #panel-root {
+    height: 100%;
+  }
 
-body {
-  margin: 0;
-  background: var(--ground);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: var(--size-body);
-  line-height: 1.5;
-}
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  }
 
-:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
-}
-
-button {
-  font-family: inherit;
+  /*
+   * Keyboard focus is themed, never the browser's. The panel is used by touch
+   * and by mouse, but it is also used over VNC from a laptop, and a focus ring
+   * that vanishes on a dark theme is a control nobody can find.
+   */
+  :focus-visible {
+    outline: 2px solid var(--acc);
+    outline-offset: 2px;
+  }
 }

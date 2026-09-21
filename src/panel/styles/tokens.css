@@ -1,104 +1,130 @@
 /*
- * Every visual constant the panel uses, taken from the design mockup.
+ * Every visual constant the panel uses, copied from the mockup's own `:root`.
  *
- * Nothing outside this file writes a colour, a size, a weight or a spacing.
- * A hex code anywhere else is a bug, not a shortcut.
+ * Claude Design project `7629d30f-1ea4-45a6-9f73-ec9b1ed97bf1`, file
+ * `CNC Panel.dc.html`. These are not values anyone chose here — they are the
+ * drawing's, and they are kept in the drawing's shape on purpose.
  *
- * Custom properties rather than a JavaScript token module: this application
- * has no CSS-in-JS, so the stylesheet is where the values belong and the
- * browser is what resolves them. One place, one mechanism.
+ * Custom properties rather than Tailwind's own theme values, because the
+ * mockup switches four independent axes by attribute — theme, density,
+ * target and number face — and a custom property is what makes that a
+ * one-attribute change rather than a rebuild. Tailwind's config points at
+ * these names, so a component writes `bg-panel` and never a hex.
  */
 :root {
-  /* Surfaces, lightest content on darkest ground. */
-  --ground: #eaedf0;
+  /* Surfaces */
+  --bg: #f2f4f7;
+  --surf: #ffffff;
   --panel: #ffffff;
-  --panel-header: #eef2f6;
+  --line: #dde2e9;
+  --field: #f7f8fa;
 
-  --text: #14181c;
-  --text-muted: #5b666f;
+  /* Ink */
+  --ink: #18222e;
+  --mut: #6d7886;
 
-  /* Three weights of rule: the panel edge, the edge a control needs to read
-     as pressable, and the divider inside a panel. */
-  --border: #c7ccd1;
-  --border-control: #9aa4ad;
-  --border-subtle: #e3e6e9;
+  /* Roles */
+  --acc: #1557c0;
+  --accS: #e9f0fc;
+  --red: #c62525;
+  --grn: #12794a;
+  --amb: #a96400;
 
-  --accent: #1e6fd0;
-  --accent-hover: #14538f;
-  --accent-tint: #eef2f6;
-  --on-accent: #ffffff;
+  /* Rhythm */
+  --pad: 18px;
+  --gap: 14px;
 
-  /* The machine states, approved as a set on 2026-09-20. Only the amber one
-     is drawn in the mockup; the other three are built to the same recipe. */
-  --running: #1c8a4b;
-  --running-tint: #e9f5ee;
-  --running-edge: #a9d3bb;
-  --running-text: #146035;
-  --running-hover: #146b3a;
+  /* The frame, and the things sized against it */
+  --w: 1024px;
+  --h: 768px;
+  --rail: 132px;
+  --dro: 78px;
+  --val: 31px;
+  --side: 400px;
+  --side2: 212px;
 
-  --ready: #a86b00;
-  --ready-tint: #fdf6e6;
-  --ready-edge: #e0c58a;
-  --ready-text: #7a4f00;
+  /* Controls. Nothing on a touch screen goes below 40px. */
+  --btn: 76px;
+  --btnh: 72px;
+  --chip: 88px;
+  --chipw: 128px;
+  --ctl: 52px;
+  --chiph: 42px;
+  --jbtn: 74px;
+  --jbtnh: 58px;
+  --jgap: 10px;
+  /*
+   * The pad at its natural size, and the card that holds it. Derived rather
+   * than typed, so both keep following the key size when a target changes it.
+   * `--jcard` is the mockup's own expression: four keys, the gaps between the
+   * two groups, and the card's padding either side.
+   */
+  --jpad: calc(4 * var(--jbtn) + 3 * var(--jgap));
+  --jcard: calc(4 * var(--jbtn) + 40px + 2 * var(--pad));
 
-  --stopped: #c02a20;
-  --stopped-hover: #9e2018;
-  --stopped-tint: #fbeceb;
-  --stopped-edge: #e8b0ab;
-  --stopped-text: #8a1e17;
+  /* Corners: 4 on a control, 6 on a card. */
+  --r-ctl: 4px;
+  --r-card: 6px;
 
-  --inactive: #aab2b9;
-  --inactive-tint: #f4f5f6;
-  --inactive-edge: #c7ccd1;
-  --inactive-text: #5b666f;
+  /*
+   * Machine numbers get their own face. It is switchable because the mockup
+   * makes it switchable — a panel read at arm's length in a workshop is a
+   * different reading problem from one read at a desk, and which face wins is
+   * not settled.
+   */
+  --num: 'Azeret Mono', 'IBM Plex Mono', monospace;
+}
 
-  --focus-ring: #4ea3ff;
+[data-target='fullhd'] {
+  --w: 1920px;
+  --h: 1080px;
+  --rail: 200px;
+  --pad: 26px;
+  --gap: 20px;
+  --dro: 132px;
+  --val: 46px;
+  --side: 560px;
+  --side2: 300px;
+  --btn: 128px;
+  --btnh: 112px;
+  --chip: 140px;
+  --chipw: 200px;
+  --ctl: 68px;
+  --chiph: 56px;
+  --jbtn: 128px;
+  --jbtnh: 104px;
+  --jgap: 16px;
+}
 
-  /* The system stack, deliberately, and not the mockup's IBM Plex: this runs
-     on a machine in a garage that may have no internet, and a web font would
-     fall back silently there and nowhere else. */
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  /* Every machine reading is monospace with tabular figures, so a column of
-     them lines up and a changing one does not shuffle its own digits. */
-  --font-mono: ui-monospace, SFMono-Regular, "Cascadia Mono", Consolas, "Liberation Mono", "Courier New", monospace;
+[data-target='phone'] {
+  --w: 390px;
+  --h: 844px;
+  --pad: 16px;
+  --gap: 12px;
+  --val: 34px;
+}
 
-  --size-label: 11px;
-  --size-small: 12px;
-  --size-body: 15px;
-  --size-control: 14px;
-  --size-title: 22px;
-  /* The one figure a tile is about, read from across a workshop. */
-  --size-readout: 32px;
-  --size-readout-large: 76px;
+[data-num='jetbrains'] { --num: 'JetBrains Mono', monospace; }
+[data-num='segment'] { --num: 'Share Tech Mono', monospace; }
+[data-num='plex'] { --num: 'IBM Plex Mono', monospace; }
 
-  --weight-regular: 400;
-  --weight-medium: 500;
-  --weight-semibold: 600;
+[data-theme='dark'] {
+  --bg: #0e1319;
+  --surf: #171d25;
+  --panel: #141a21;
+  --line: #2a323d;
+  --ink: #e6ecf3;
+  --mut: #8b97a6;
+  --acc: #4b90ea;
+  --accS: #16273d;
+  --red: #e04a4a;
+  --grn: #2ea36a;
+  --amb: #d08a1b;
+  --field: #1b222b;
+}
 
-  --track-label: 0.14em;
-  --track-title: 0.12em;
-  --track-control: 0.1em;
-  /* The tile label in frame 2b is tracked wider than anything else on the
-     screen. It is the one piece of type that has to read as a caption rather
-     than as content. */
-  --track-tile: 0.16em;
-  --track-stop: 0.2em;
-
-  /* Square corners are the grammar of this panel: it is an instrument, not a
-     phone. There is no radius variable because there is no radius. */
-  --hairline: 1px;
-
-  /* Fixed furniture. Everything else is laid out in the room these leave. */
-  --bar-height: 64px;
-  --rail-width: 104px;
-  --rail-item-height: 74px;
-  --tile-header-height: 30px;
-  --gap: 10px;
-  /* Frame 2b sets its tiles solid and separates them with a single hairline:
-     the grid's own background showing through a 1px gap. */
-  --tile-gap: 1px;
-  --status-height: 56px;
-
-  --control-height: 46px;
-  --stop-width: 172px;
+[data-density='compact'] {
+  --pad: 12px;
+  --gap: 9px;
+  --dro: 60px;
 }

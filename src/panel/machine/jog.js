@@ -4,7 +4,7 @@ const GRBL = 'Grbl';
 const SMOOTHIE = 'Smoothie';
 
 /** What the mockup offers, in the order it offers it. */
-export const XY_STEPS = [0.1, 1, 10];
+export const XY_STEPS = [0.1, 1, 10, 50];
 export const Z_STEPS = [0.1, 1, 5];
 export const FEEDRATES = [500, 1500, 3000];
 

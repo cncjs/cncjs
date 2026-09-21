@@ -9,6 +9,26 @@ showed that changing the contents of panels does not bring the layout closer to
 the drawing — every step was a compromise between the mockup and a bootstrap
 shell, and every step looked half-finished.
 
+## Where the drawing lives
+
+**Claude Design project `7629d30f-1ea4-45a6-9f73-ec9b1ed97bf1`, file
+`CNC Panel.dc.html`**, with `HANDOFF-TODO.md` beside it. Read them with the
+`DesignSync` tool — `list_files` then `get_file`; no login step and no config
+in this repository.
+
+The id has to be written down because **`list_projects` only enumerates
+design-system projects**, and a mockup project is not one. Without the id there
+is no way to find it.
+
+Superseded: `2d2f27d0-55d9-4460-9997-b4ee99335575` / `CNCjs Panel.dc.html`. It
+is an older, smaller drawing — two frames, 1024x600, square corners. Everything
+built from it before 2026-09-21 is built from the wrong picture.
+
+The mockup renders locally: save the file and `support.js` beside it, put React
+and ReactDOM UMD globals in front of the runtime with a `createRoot` shim, and
+open it. Its navigation works, so every screen can be photographed rather than
+described.
+
 ## What it is allowed to reuse
 
 **`app/lib/controller`, and nothing else.** It is framework-free — socket.io
@@ -32,9 +52,40 @@ yarn start-panel-dev     # webpack --watch into output/cncjs/panel
 yarn win-dev             # runs it alongside the app and the server
 ```
 
-No CSS-in-JS. `styles/tokens.css` holds every colour, size, weight and spacing
-as custom properties; a component's styles live in a `*.module.css` beside it.
-A hex code anywhere but the token sheet is a bug.
+No CSS-in-JS and no hand-written stylesheets. **Tailwind**, per the mockup's
+own handoff, configured in `tailwind.panel.config.js` — and every value there
+points at a custom property in `styles/tokens.css`, which is a copy of the
+drawing's `:root`. That indirection is the whole trick: the mockup switches
+theme, density, target and number face by attribute on the root, and a utility
+class compiled to `var(--acc)` follows the switch without a rebuild.
+
+Tailwind's default palette is *replaced*, not extended, so `bg-slate-200` does
+not compile. A `#hex` or a `text-[13px]` in a component is a bug: if a value is
+needed and is not in the token sheet, it belongs in the token sheet first.
+
+## One widget, any container
+
+**A widget is one component that lays itself out from the room it is given.**
+The same `JogWidget` is a tile on a dashboard and the body of the jog screen —
+372px wide in one and 863px in the other, inside an identical 1024px viewport.
+A media query cannot tell those apart, so arrangement is decided with
+**container queries** (`@container` on the widget root, `@4xl:` on what
+rearranges) and never with the viewport.
+
+A screen places widgets and decides nothing else. `screens/Dashboard.jsx` and
+`screens/JogScreen.jsx` are both thin enough to read in one go, and that is the
+test: if a screen starts describing what is inside a widget, the widget is not
+finished.
+
+Height is handled without a breakpoint. In the jog widget the pad keeps its
+size — it is a target an operator hits without looking, so it must never move —
+and the step and speed controls hold the height the drawing gives them while
+the space around them takes up the slack. When even that does not fit, the card
+scrolls rather than clipping; it was measured doing so, not assumed.
+
+Shared primitives live in `ui/`: `Button` (five tones, because the mockup's
+fills mean things), `Card`, `SegmentedChoice`, `Stepper`, `JogPad`, `Dro`. A
+class string copied into a second widget is the signal to make a sixth.
 
 ---
 
@@ -80,14 +131,19 @@ that look pressable and do nothing. The panel attaches, and `connected` means
       controller, so homing is disabled and there is nothing to verify a
       button against. A `$H` sent to a machine without limit switches is not
       something to ship untested
-- [ ] **[M] Job progress** — percent, bar, file name, line sent/total, time
-      remaining
-- [ ] **[M] Z height** with **Zero Z** and **Zero XY**
+- [x] **[M] Job progress** — percent, bar, file name, line sent/total, time
+      remaining. Start and Pause are drawn and dead: the sender commands
+      behind them are not wired or tested against a controller
+- [x] **[M] Z height** with **Zero Z** and **Zero XY**. Probe Z is drawn and
+      dead, for the reason below
 - [ ] **[M] Probe** — plunge distance, feed rate, touch plate thickness,
       retraction, and a probe button; contact state
 - [x] **[M] Stop** — feed hold then soft reset
 - [ ] **[M] Start job** in the status bar
-- [ ] **[M] Status line** — the last thing that happened, with a timestamp
+- [x] **[M] Status line** — what is connected, and failures in red. Errors go
+      here rather than into a banner above the screen: a banner is a band of
+      height that appears when something goes wrong, which is the moment an
+      operator can least afford every control to move
 
 ## In the tile library, so illustrative
 
@@ -138,4 +194,6 @@ does it stay behind in the old application, or does it go?
   dashboard edit mode. Tiles stay illustrative until asked for; views here
   assume nothing about their container.
 - **Where Connection, Settings and alarms live** as screens.
-- **The rail.** The mockup draws six destinations. The panel has one.
+- **The rail.** The mockup draws eleven destinations. Two are built; the rest
+  are shown disabled, so the rail does not move under the hand between
+  releases.

@@ -89,13 +89,36 @@ const modalOf = (type, state) => (
 ) || {};
 
 /**
+ * The three override percentages, in the order the controller sends them.
+ *
+ * Grbl's `Ov:` is feed, rapid, spindle — not the order a panel draws them in
+ * and not the order anyone would guess. Unpacking it in one named place is
+ * what stops a view from pairing the spindle figure with the rapid control.
+ */
+const overridesOf = (type, state) => {
+  const ov = (type === TINYG ? state?.sr?.ov : state?.status?.ov) || [];
+  const [feed = 100, rapid = 100, spindle = 100] = ov;
+  return { feed, rapid, spindle };
+};
+
+/** What is in the spindle and how fast it is turning. */
+const toolOf = (type, state) => {
+  const parser = type === TINYG ? state?.sr : state?.parserstate;
+  return {
+    tool: parser?.tool ?? null,
+    spindle: state?.status?.spindle ?? null,
+    feedrate: state?.status?.feedrate ?? null,
+  };
+};
+
+/**
  * Everything on screen, derived in one place.
  *
  * The views take what this returns and arrange it. Nothing downstream reaches
  * into a controller payload, so the four firmwares' disagreements are settled
  * here and only here.
  */
-export const readMachine = ({ connection, error, port, type, state, attached }) => {
+export const readMachine = ({ connection, error, port, type, state, attached, job }) => {
   // "Connected" means *able to send*, not "a port is open somewhere". The
   // socket has to attach to the port before `Controller.command()` will do
   // anything at all — it begins `if (!this.port) return` and fails silently —
@@ -128,12 +151,30 @@ export const readMachine = ({ connection, error, port, type, state, attached }) 
     port,
     type,
     status: { word, tone, known: Boolean(active) },
+    overrides: overridesOf(type, state),
+    tool: toolOf(type, state),
     position: positions(type, state, 'wpos'),
     // Machine coordinates matter in two places only — homing and "why is the
     // work zero where it is" — so they are a quiet second reading rather than
     // a tile of their own.
     machinePosition: positions(type, state, 'mpos'),
     modal: modalOf(type, state),
+    /**
+     * The loaded job, or nothing.
+     *
+     * `total > 0` is the test for "there is a job", not the presence of the
+     * object: the sender reports its status continuously and reports zeroes
+     * when nothing is loaded, and a panel that read that as a job would offer
+     * Start for a file that does not exist.
+     */
+    job: job && job.total > 0 ? {
+      name: job.name || '',
+      total: job.total,
+      sent: job.sent || 0,
+      received: job.received || 0,
+      remaining: job.remainingTime || 0,
+      percent: Math.min(100, Math.round(((job.received || 0) / job.total) * 100)),
+    } : null,
   };
 };
 

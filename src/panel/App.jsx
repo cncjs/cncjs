@@ -1,52 +1,75 @@
-import Bar from './ui/Bar';
-import Rail from './ui/Rail';
-import Status from './ui/Status';
-import Jog from './tiles/Jog';
-import WorkPosition from './tiles/WorkPosition';
-import ZHeight from './tiles/ZHeight';
+import { useState } from 'react';
+import NavRail from './ui/NavRail';
+import StatusBar from './ui/StatusBar';
+import TopBar from './ui/TopBar';
+import Dashboard from './screens/Dashboard';
+import JogScreen from './screens/JogScreen';
 import { useMachine } from './machine/useMachine';
 import { emergencyStop } from './machine/commands';
-import styles from './App.module.css';
+import { NO_READING } from './machine/readings';
 
-// Only the destination that exists. The mockup draws six and its own caption
-// calls the tabs illustrative.
-const DESTINATIONS = [{ id: 'panel', label: 'Panel' }];
+/**
+ * Every destination the mockup draws, with `ready` saying which ones exist.
+ *
+ * The unbuilt ones are shown and disabled rather than hidden. A rail that
+ * grew an item each time a screen was finished would move under the
+ * operator's hand between releases, and on a panel beside a machine most of
+ * the value is that the thing is always in the same place.
+ */
+const DESTINATIONS = [
+  { id: 'dashboard', label: 'Pulpit', ready: true },
+  { id: 'jog', label: 'Jog', ready: true },
+  { id: 'zero', label: 'Zerowanie', ready: false },
+  { id: 'files', label: 'Pliki', ready: false },
+  { id: 'path', label: 'Ścieżka', ready: false },
+  { id: 'probe', label: 'Sonda', ready: false },
+  { id: 'diag', label: 'Diagnostyka', ready: false },
+  { id: 'alarms', label: 'Alarmy', ready: false },
+  { id: 'settings', label: 'Ustawienia', ready: false },
+  { id: 'homing', label: 'Bazowanie', ready: false },
+  { id: 'mdi', label: 'MDI', ready: false },
+];
 
 const App = () => {
   const machine = useMachine();
+  const [screen, setScreen] = useState('dashboard');
+  const [theme, setTheme] = useState('light');
 
-  return (
-    <div className={styles.app}>
-      <Bar
-        className={styles.bar}
+  // The mockup switches theme, density, target and number face by attribute on
+  // the root. Keeping that shape means the token sheet does the work and no
+  // component knows a theme exists.
+  const shell = (
+    <div className="flex h-full flex-col bg-bg text-ink" data-theme={theme}>
+      <TopBar
         status={machine.status}
-        note={machine.port ? `${machine.type} · ${machine.port}` : null}
+        file={machine.job ? machine.job.name : NO_READING}
+        note={machine.job ? `wczytany, ${machine.job.received > 0 ? 'w toku' : 'nie uruchomiony'}` : null}
+        theme={theme}
+        onToggleTheme={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
         canStop={machine.connected}
         onStop={emergencyStop}
       />
-      <Rail items={DESTINATIONS} current="panel" onSelect={() => {}} />
-      <main className={styles.field}>
-        {machine.error ? (
-          <p className={styles.notice}>{machine.error}</p>
-        ) : null}
-        <ZHeight
-          position={machine.position}
-          machinePosition={machine.machinePosition}
-          modal={machine.modal}
-          connected={machine.connected}
-        />
-        <WorkPosition position={machine.position} />
-        <div className={styles.wide}>
-          <Jog type={machine.type} connected={machine.connected} />
-        </div>
-      </main>
-      <Status
-        className={styles.status}
-        message={machine.connected ? `${machine.type} ready on ${machine.port}` : 'No machine connected'}
+
+      <div className="flex min-h-0 flex-1">
+        <NavRail items={DESTINATIONS} current={screen} onSelect={setScreen} />
+        <main className="flex min-w-0 flex-1 flex-col gap-gap p-gap">
+          {screen === 'jog'
+            ? <JogScreen machine={machine} />
+            : <Dashboard machine={machine} onGo={setScreen} />}
+        </main>
+      </div>
+
+      <StatusBar
+        message={machine.connected
+          ? `${machine.type} · ${machine.port} · układ ${machine.modal.wcs || NO_READING}`
+          : 'Brak połączenia ze sterownikiem'}
+        error={machine.error}
         canStart={false}
       />
     </div>
   );
+
+  return shell;
 };
 
 export default App;

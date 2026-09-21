@@ -11,8 +11,10 @@ const { test, expect } = require('./fixtures');
  * controller is answering lives in `e2e/hardware/panel.spec.js`.
  */
 test.describe('panel, disconnected', () => {
-  const bar = (page) => page.getByRole('navigation', { name: 'Machine bar' });
-  const rail = (page) => page.getByRole('navigation', { name: 'Main navigation' });
+  // The panel speaks Polish, so its landmarks are found by role rather than
+  // by an English name that only ever existed in these cases.
+  const bar = (page) => page.getByRole('banner');
+  const rail = (page) => page.getByRole('navigation', { name: 'Nawigacja' });
 
   const openPanel = async (page) => {
     await page.goto('/panel/', { waitUntil: 'domcontentloaded' });
@@ -56,10 +58,16 @@ test.describe('panel, disconnected', () => {
 
     // On an unhomed machine "0.000" and "we have not been told" are very
     // different statements, and only one of them is safe to act on.
-    const tile = cncjs.page.getByRole('region').filter({ hasText: /work position/i })
-      .or(cncjs.page.locator('section').filter({ hasText: /work position/i }));
+    const tile = cncjs.page.locator('section').filter({ hasText: /pozycja robocza/i });
     await expect(tile.first()).toBeVisible();
-    await expect(tile.first().getByText('–', { exact: true })).toHaveCount(3);
+
+    // Per axis rather than by counting dashes in the card: the card's own
+    // header carries one too, for the coordinate system nobody has told us
+    // yet, and a count cannot tell the two kinds of unknown apart.
+    for (const axis of ['X', 'Y', 'Z']) {
+      await expect(tile.first().getByRole('group', { name: axis }))
+        .toHaveText(new RegExp('^' + axis + ' *– *mm$'));
+    }
     await expect(tile.first().getByText('0.000')).toHaveCount(0);
   });
 
@@ -71,7 +79,17 @@ test.describe('panel, disconnected', () => {
     // nothing, which is the last thing to believe about a machine — and it is
     // exactly what this panel did before `connected` came to mean *attached*
     // rather than "a port is open somewhere".
-    const jogTile = cncjs.page.locator('section').filter({ hasText: /^JOG/i }).first();
+    // The jog card carries no header — the mockup gives it none and the keys
+    // say what it is — so it is found by the thing that makes it the jog
+    // card rather than by a caption that could be styled away.
+    // The jog controls live on the jog screen, so the case goes there. The
+    // dashboard has no jog tile — the mockup does not put one there, and a
+    // case that asserted against one would be testing a layout nobody drew.
+    await cncjs.page.getByRole('navigation', { name: 'Nawigacja' })
+      .getByRole('button', { name: 'Jog' }).click();
+
+    const jogTile = cncjs.page.locator('section')
+      .filter({ has: cncjs.page.getByRole('group', { name: 'Jog' }) }).first();
     await expect(jogTile).toBeVisible();
 
     const keys = jogTile.getByRole('button');
@@ -87,7 +105,7 @@ test.describe('panel, disconnected', () => {
     await openPanel(cncjs.page);
 
     // Colour alone leaves anyone not looking at it unable to tell.
-    await expect(rail(cncjs.page).getByRole('button', { name: 'Panel' }))
+    await expect(rail(cncjs.page).getByRole('button', { name: 'Pulpit' }))
       .toHaveAttribute('aria-current', 'page');
   });
 });

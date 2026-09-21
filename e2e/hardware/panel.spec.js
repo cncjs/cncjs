@@ -19,8 +19,13 @@ const { test, expect, TEST_PORT } = require('./fixtures');
 test.describe('panel, connected', () => {
   test.skip(!TEST_PORT, 'set CNCJS_TEST_PORT to run the hardware tier');
 
-  const bar = (page) => page.getByRole('navigation', { name: 'Machine bar' });
-  const workPosition = (page) => page.locator('section').filter({ hasText: /work position/i }).first();
+  // The panel speaks Polish, so its landmarks are found by role rather than
+  // by an English name that only ever existed in these cases.
+  const bar = (page) => page.getByRole('banner');
+  // Which port is open is a fact about the connection, so it is on the
+  // status line along the bottom and not in the machine-state bar.
+  const statusLine = (page) => page.getByRole('contentinfo');
+  const workPosition = (page) => page.locator('section').filter({ hasText: /pozycja robocza/i }).first();
 
   /** The panel, in its own page, with the machine already connected. */
   const openPanel = async (grbl, context) => {
@@ -29,6 +34,23 @@ test.describe('panel, connected', () => {
     await panel.goto('/panel/', { waitUntil: 'domcontentloaded' });
     await expect(bar(panel)).toBeVisible({ timeout: 45000 });
     return panel;
+  };
+
+  /**
+   * The panel, on the screen the jog controls are on.
+   *
+   * They are not on the dashboard. The mockup does not put them there, and
+   * a case that reached for them on the first screen would be asserting
+   * against a layout nobody drew.
+   */
+  const openJog = async (grbl, context) => {
+    const panel = await openPanel(grbl, context);
+    await panel.getByRole('navigation', { name: 'Nawigacja' })
+      .getByRole('button', { name: 'Jog' }).click();
+    const jogTile = panel.locator('section')
+      .filter({ has: panel.getByRole('group', { name: 'Jog' }) }).first();
+    await expect(jogTile).toBeVisible();
+    return { panel, jogTile };
   };
 
   test('sees a machine that was already connected when it loaded', async ({ grbl, context }) => {
@@ -44,7 +66,7 @@ test.describe('panel, connected', () => {
     // against an already-open port and its Connection widget still offers
     // "Open".
     await expect(bar(panel)).not.toContainText(/disconnected/i);
-    await expect(bar(panel)).toContainText(TEST_PORT);
+    await expect(statusLine(panel)).toContainText(TEST_PORT);
   });
 
   test('shows the state the controller reports', async ({ grbl, context }) => {
@@ -84,8 +106,7 @@ test.describe('panel, connected', () => {
    * so the machine ends where it started whatever is bolted to it.
    */
   test('a jog moves the axis by the chosen step, and back', async ({ grbl, context }) => {
-    const panel = await openPanel(grbl, context);
-    const jogTile = panel.locator('section').filter({ hasText: /^JOG/i }).first();
+    const { jogTile } = await openJog(grbl, context);
 
     const positionOf = async () => {
       const state = await grbl.readControllerState();
@@ -111,8 +132,7 @@ test.describe('panel, connected', () => {
   });
 
   test('the step control decides how far a jog goes', async ({ grbl, context }) => {
-    const panel = await openPanel(grbl, context);
-    const jogTile = panel.locator('section').filter({ hasText: /^JOG/i }).first();
+    const { jogTile } = await openJog(grbl, context);
 
     const positionOf = async () => {
       const state = await grbl.readControllerState();
