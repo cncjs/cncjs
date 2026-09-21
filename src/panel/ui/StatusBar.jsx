@@ -23,15 +23,21 @@ import Meter from './Meter';
  * something goes wrong — which is the moment an operator can least afford the
  * controls to move. This line is always there and only its words change.
  */
-const StatusBar = ({ job, error, canStart, onStart, canPause, onPause, className = '' }) => (
+const StatusBar = ({ content, job, error, canStart, onStart, canPause, onPause, className = '' }) => (
   <footer className={`flex h-[49px] shrink-0 items-center gap-gap border-t border-line bg-panel px-[14px] ${className}`}>
-    <span className={`min-w-0 truncate font-num text-base ${error ? 'text-red' : 'text-mut'}`}>
-      {error || (job ? job.name : 'brak wczytanego pliku')}
-    </span>
+    {/* Whatever the screen put here, or the job if it put nothing. The screen
+      * knows what is worth saying while you are on it; the job is what is
+      * worth saying from anywhere, because it runs for minutes while somebody
+      * is somewhere else. */}
+    {content ? <span className="min-w-0 flex-1 truncate">{content()}</span> : (
+      <span className={`min-w-0 truncate font-num text-base ${error ? 'text-red' : 'text-mut'}`}>
+        {error || (job ? job.name : 'brak wczytanego pliku')}
+      </span>
+    )}
 
     {/* Only once there is something to be through. A bar at zero beside a file
       * that has not been started is a claim that it has, and stalled. */}
-    {job && !error ? (
+    {job && !error && !content ? (
       <>
         <span className="shrink-0 font-num text-base text-mut">
           <span className="text-ink">{job.percent}</span>
@@ -43,12 +49,12 @@ const StatusBar = ({ job, error, canStart, onStart, canPause, onPause, className
           <Meter percent={job.percent} label="Przebieg zadania" tone="bg-grn" />
         </span>
       </>
-    ) : <span className="flex-1" />}
+    ) : (content ? null : <span className="flex-1" />)}
 
     {/* Nothing rather than a dash. A lone `–` on an otherwise empty strip is
       * a reading whose subject nobody can name — which is how the top bar's
       * file slot read before it was given words. */}
-    {job && !error ? (
+    {job && !error && !content ? (
       <span className="shrink-0 font-num text-base text-mut">
         pozostało <span className="text-ink">{Math.round(job.remaining / 60)}</span> min
       </span>

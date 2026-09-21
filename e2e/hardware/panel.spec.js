@@ -22,9 +22,8 @@ test.describe('panel, connected', () => {
   // The panel speaks Polish, so its landmarks are found by role rather than
   // by an English name that only ever existed in these cases.
   const bar = (page) => page.getByRole('banner');
-  // Which port is open is a fact about the connection, so it is on the
-  // status line along the bottom and not in the machine-state bar.
-  const statusLine = (page) => page.getByRole('contentinfo');
+  // Which port is open is a fact about the machine, so it moved onto the bar
+  // that carries the machine — the one along the bottom is the job now.
   const workPosition = (page) => page.locator('section').filter({ hasText: /pozycja robocza/i }).first();
 
   /** The panel, in its own page, with the machine already connected. */
@@ -66,7 +65,7 @@ test.describe('panel, connected', () => {
     // against an already-open port and its Connection widget still offers
     // "Open".
     await expect(bar(panel)).not.toContainText(/disconnected/i);
-    await expect(statusLine(panel)).toContainText(TEST_PORT);
+    await expect(bar(panel)).toContainText(TEST_PORT);
   });
 
   test('shows the state the controller reports', async ({ grbl, context }) => {

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { FooterSlotProvider } from './ui/footerSlot';
+import { ShellWidthProvider, useIsPhone, useMeasuredShell } from './ui/shell';
 import NavRail from './ui/NavRail';
 import NavTabs from './ui/NavTabs';
 import StatusBar from './ui/StatusBar';
@@ -42,42 +44,12 @@ const PHONE_DESTINATIONS = PHONE_IDS
   .map((id) => DESTINATIONS.find((d) => d.id === id))
   .map((d) => (d.id === 'zero' ? { ...d, label: 'Zero' } : d));
 
-const App = () => {
-  const machine = useMachine();
-  const [screen, setScreen] = useState('dashboard');
+const Panel = ({ machine, screen, onScreen }) => {
+  const phone = useIsPhone();
+  const [footer, setFooter] = useState(null);
 
-  /*
-   * The shell lays itself out from its own width, exactly as every widget in
-   * here does.
-   *
-   * No theme state. The drawing switches theme by attribute on the root and
-   * the token sheet answers to it there, so nothing in React needs to know a
-   * theme exists — which is what lets it be a setting, and lets the review
-   * overlay flip it without fighting a re-render.
-   *
-   * The drawing keeps two separate switches for this — a `target` that moves
-   * the tokens and a `navMode` of rail or tabs — and setting only the first is
-   * what makes a phone-sized frame look broken: the rail is still 132px of a
-   * 390px screen. The two are not really independent, though. Which navigation
-   * fits is a fact about how much room there is, so here the width decides and
-   * there is no mode to set wrongly.
-   *
-   * That also makes previewing honest. Put the panel in a 390px frame and it
-   * becomes the phone panel, because that is what a phone would do with it —
-   * rather than showing the desk layout at the phone's token sizes, which is a
-   * picture of nothing.
-   *
-   * `@3xl` is 768px: below it the rail and the status line both cost more
-   * width and height than they return.
-   *
-   * The container is named, because a widget deep inside needs to know which
-   * shell it is in and not merely how wide its own card is. The readout is
-   * the case: a 350px card on a phone and a 364px card on the jog screen are
-   * the same width and want opposite arrangements, and only the shell can
-   * tell them apart.
-   */
-  const shell = (
-    <div className="@container/shell flex h-full flex-col bg-bg text-ink">
+  return (
+    <>
       <TopBar
         status={machine.status}
         machine={machine.connected
@@ -88,47 +60,68 @@ const App = () => {
       />
 
       <div className="flex min-h-0 flex-1">
-        <NavRail
-          items={DESTINATIONS}
-          current={screen}
-          onSelect={setScreen}
-          className="hidden @3xl/shell:flex"
-        />
-        {/* `min-h-0` so this constrains its screen rather than growing to
-          * fit it. Without it a screen taller than the frame pushes the
-          * whole panel open and the page scrolls, instead of the one card
-          * that can scroll inside itself doing so. */}
-        {/* The frame round the screen, tighter than the gaps between the
-          * cards inside it. On a 390px phone every pixel spent on the
-          * margin is one the jog keys do not get, and the edge of the
-          * display is already an edge — it does not need repeating. No
-          * `gap` here: this holds one screen. */}
+        {phone ? null : (
+          <NavRail items={DESTINATIONS} current={screen} onSelect={onScreen} />
+        )}
+
+        {/* `min-h-0` so this constrains its screen rather than growing to fit
+          * it: without it a screen taller than the frame pushes the whole
+          * panel open and the page scrolls, instead of the one card that can
+          * scroll inside itself doing so.
+          *
+          * The frame is tighter than the gaps between the cards inside it. On
+          * a 390px phone every pixel spent on the margin is one the jog keys
+          * do not get, and the edge of the display is already an edge. */}
         <main className="flex min-h-0 min-w-0 flex-1 flex-col p-2.5">
-          {screen === 'jog'
-            ? <JogScreen machine={machine} />
-            : <Dashboard machine={machine} onGo={setScreen} />}
+          <FooterSlotProvider value={setFooter}>
+            {screen === 'jog'
+              ? <JogScreen machine={machine} />
+              : <Dashboard machine={machine} onGo={onScreen} />}
+          </FooterSlotProvider>
         </main>
       </div>
 
-      {/* Narrow, the tab bar is the bottom of the screen and there is no room
-        * for a status line as well; what it says moves into the bar above. */}
-      <NavTabs
-        items={PHONE_DESTINATIONS}
-        current={screen}
-        onSelect={setScreen}
-        className="@3xl/shell:hidden"
-      />
-      <StatusBar
-        job={machine.job}
-        error={machine.error}
-        canStart={false}
-        canPause={false}
-        className="hidden @3xl/shell:flex"
-      />
+      {/* One or the other, never both: on a phone the tab bar is the bottom of
+        * the screen and there is no room for a status line as well. */}
+      {phone ? (
+        <NavTabs items={PHONE_DESTINATIONS} current={screen} onSelect={onScreen} />
+      ) : (
+        <StatusBar
+          content={footer}
+          job={machine.job}
+          error={machine.error}
+          canStart={false}
+          canPause={false}
+        />
+      )}
+    </>
+  );
+};
+
+const App = () => {
+  const machine = useMachine();
+  const [screen, setScreen] = useState('dashboard');
+  const shell = useMeasuredShell();
+
+  /*
+   * The shell is measured and the width decides the layout, rather than a mode
+   * anybody sets. Which navigation fits is a fact about how much room there
+   * is, so there is nothing to set wrongly — and putting the panel in a 390px
+   * frame makes it the phone panel, because that is what a phone would do with
+   * it.
+   *
+   * No theme state either. The drawing switches theme by attribute on the root
+   * and the token sheet answers to it there, so nothing in React needs to know
+   * a theme exists — which is what lets it be a setting, and lets the review
+   * overlay flip it without fighting a re-render.
+   */
+  return (
+    <div ref={shell.ref} className="@container/shell flex h-full flex-col bg-bg text-ink">
+      <ShellWidthProvider value={shell.width}>
+        <Panel machine={machine} screen={screen} onScreen={setScreen} />
+      </ShellWidthProvider>
     </div>
   );
-
-  return shell;
 };
 
 export default App;
