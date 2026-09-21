@@ -39,6 +39,9 @@ const union = (boxes) => boxes.reduce(
 
 const pointBox = ({ origin }) => ({ min: origin, max: origin });
 
+/** Where the machine measures from, which is a point the camera has to frame. */
+const MACHINE_ZERO = { x: 0, y: 0, z: 0 };
+
 const longestEdge = (bounds) => Math.max(
   bounds.max.x - bounds.min.x,
   bounds.max.y - bounds.min.y,
@@ -107,9 +110,10 @@ export const composeScene = ({ settings, wcs, offset, toolpath, layers }) => {
   }));
 
   const frame = union([
-    (layers.path || layers.program) && program,
-    layers.machine && envelope,
-    ...(layers.work ? origins.map(pointBox) : []),
+    (layers.path || layers.programArea) && program,
+    layers.machineArea && envelope,
+    layers.machineAxes && { min: MACHINE_ZERO, max: MACHINE_ZERO },
+    ...(layers.wcsAxes ? origins.map(pointBox) : []),
   ].filter(Boolean)) || UNIT;
 
   return {

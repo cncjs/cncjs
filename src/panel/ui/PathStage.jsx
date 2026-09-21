@@ -21,7 +21,7 @@ const Label = ({ children }) => (
   <span className="text-label font-semibold uppercase leading-none text-ink">{children}</span>
 );
 
-const PathStage = ({ scene, tool, view, onView, revision, layers, layerOptions, onLayers, notes }) => (
+const PathStage = ({ scene, tool, view, onView, revision, layers, sections, onLayers, notes }) => (
   /*
    * The controls stand beside the drawing rather than under it, and that is
    * about the drawing rather than about them.
@@ -52,15 +52,25 @@ const PathStage = ({ scene, tool, view, onView, revision, layers, layerOptions, 
         />
       </div>
 
-      <div className="flex flex-col gap-2.5">
-        <Label>Warstwy</Label>
-        <ToggleChips
-          options={layerOptions}
-          value={layers}
-          onChange={onLayers}
-          label="Warstwy"
-        />
-      </div>
+      {/*
+        * Grouped by what the layer is *about* rather than listed flat.
+        *
+        * Four chips in a row were four unrelated questions — a path, a box, a
+        * set of crosses, another box — and the only way to know which box was
+        * which was to press one and watch. Under a heading each, "Obszar"
+        * means the same thing in both places and the heading says whose.
+        */}
+      {sections.map((section) => (
+        <div key={section.label} className="flex flex-col gap-2.5">
+          <Label>{section.label}</Label>
+          <ToggleChips
+            options={section.options}
+            value={layers}
+            onChange={onLayers}
+            label={section.label}
+          />
+        </div>
+      ))}
 
       {/* What the scene cannot be sure of. Beside the drawing rather than
         * over it: worth reading once, then ignorable. */}

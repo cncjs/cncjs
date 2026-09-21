@@ -23,14 +23,22 @@ import { DEFAULT_VIEW } from '../scene/views';
  */
 
 /**
- * What is drawn to begin with: the program and the machine it is in.
+ * What is drawn to begin with: the program, where its zero is, and the
+ * machine around it.
  *
- * The other two are off because they answer questions somebody has to have
- * thought of. "Where is my G55" and "how big is this part" are worth a chip
- * each; neither is worth the drawing being four boxes deep before anyone has
- * asked anything.
+ * The two that are off answer questions somebody has to have thought of —
+ * "how big is this part" and "where does the machine itself measure from".
+ * Neither is worth the drawing being two more boxes deep before anyone has
+ * asked anything, and machine zero in particular is a second set of coloured
+ * axes competing with the one that matters.
  */
-const DEFAULT_LAYERS = { path: true, machine: true, work: false, program: false };
+const DEFAULT_LAYERS = {
+  path: true,
+  programArea: false,
+  wcsAxes: true,
+  machineArea: true,
+  machineAxes: false,
+};
 
 /** Drawn about machine zero when the machine has not reported both positions. */
 const NO_OFFSET = { x: 0, y: 0, z: 0 };
@@ -95,21 +103,50 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
   // scene around it is not.
   const tool = toolPoint(machine.machinePosition);
 
-  const options = [
-    { id: 'path', label: 'Tor', disabled: !toolpath, note: 'Nie wczytano programu' },
+  /*
+   * Three subjects, and the same two words under each where they apply.
+   *
+   * A coordinate system has no area to draw. Grbl stores a point per system
+   * and nothing about how far the work around it reaches, so "where is this
+   * zero" is the whole of what there is — which is why UKŁAD has one chip and
+   * not two.
+   */
+  const sections = [
     {
-      id: 'machine',
+      label: 'Program',
+      options: [
+        { id: 'path', label: 'Tor', disabled: !toolpath, note: 'Nie wczytano programu' },
+        {
+          id: 'programArea',
+          label: 'Obszar',
+          disabled: !scene.program,
+          note: 'Nie wczytano programu',
+        },
+      ],
+    },
+    {
+      label: 'Układ',
+      options: [
+        {
+          id: 'wcsAxes',
+          label: 'Osie',
+          disabled: scene.origins.length === 0,
+          note: 'Sterownik nie odesłał układów G54–G59',
+        },
+      ],
+    },
+    {
       label: 'Maszyna',
-      disabled: !scene.envelope,
-      note: 'Sterownik nie podał zakresu ruchu ($130–$132)',
+      options: [
+        {
+          id: 'machineArea',
+          label: 'Obszar',
+          disabled: !scene.envelope,
+          note: 'Sterownik nie podał zakresu ruchu ($130–$132)',
+        },
+        { id: 'machineAxes', label: 'Osie', disabled: false, note: 'Zero maszynowe' },
+      ],
     },
-    {
-      id: 'work',
-      label: 'Układy',
-      disabled: scene.origins.length === 0,
-      note: 'Sterownik nie odesłał układów G54–G59',
-    },
-    { id: 'program', label: 'Program', disabled: !scene.program, note: 'Nie wczytano programu' },
   ];
 
   const notes = [
@@ -138,7 +175,7 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
         onView={chooseView}
         revision={revision}
         layers={layers}
-        layerOptions={options}
+        sections={sections}
         onLayers={setLayers}
         notes={notes}
       />

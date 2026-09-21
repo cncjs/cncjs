@@ -1,7 +1,7 @@
 import { Canvas } from '@react-three/fiber';
+import Axes from './Axes';
 import Controls from './Controls';
 import Grid from './Grid';
-import Origin from './Origin';
 import Outline from './Outline';
 import ToolMarker from './ToolMarker';
 import Toolpath from './Toolpath';
@@ -21,6 +21,9 @@ import { useSceneColors } from './colors';
  * nothing else. React's own re-renders ask for a frame; so does the orbit
  * control, which is the one thing that moves outside React.
  */
+/** Where the machine measures from. Zero, by definition. */
+const MACHINE_ZERO = { x: 0, y: 0, z: 0 };
+
 const Scene = ({ scene, tool, layers, view, revision }) => {
   const colors = useSceneColors();
   const { envelope, origins, toolpath, program, offset, size, frame } = scene;
@@ -70,24 +73,29 @@ const Scene = ({ scene, tool, layers, view, revision }) => {
         * in it is one nobody can tell they have turned upside down. */}
       <Grid bounds={frame} color={colors.edge} />
 
-      {layers.machine && envelope ? (
-        <Outline bounds={envelope} color={colors.edge} opacity={0.9} />
+      {/* The machine is context, not content: quiet enough that the program
+        * inside it is what the eye lands on. */}
+      {layers.machineArea && envelope ? (
+        <Outline bounds={envelope} color={colors.edge} opacity={0.45} />
       ) : null}
 
-      {layers.program && program ? (
+      {layers.machineAxes ? (
+        <Axes origin={MACHINE_ZERO} size={size} opacity={0.85} />
+      ) : null}
+
+      {layers.programArea && program ? (
         <Outline bounds={program} color={colors.line} opacity={0.9} />
       ) : null}
 
-      {layers.work ? origins.map(({ name, origin, active }) => (
-        <Origin
+      {layers.wcsAxes ? origins.map(({ name, origin, active }) => (
+        <Axes
           key={name}
           origin={origin}
           size={size}
-          color={colors.work}
           // The system the machine is working in now, and five it is not.
           // Same mark, so they are read as one kind of thing; different
           // weight, so the one that matters is the one seen first.
-          opacity={active ? 1 : 0.35}
+          opacity={active ? 1 : 0.3}
         />
       )) : null}
 

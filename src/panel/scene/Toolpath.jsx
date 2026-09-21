@@ -18,9 +18,17 @@ import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeome
  * fat-line material builds its own screen-space geometry and honours it.
  */
 
-// Thickness in CSS pixels.
-const CUT_WIDTH = 2;
-const RAPID_WIDTH = 1;
+/*
+ * Thickness in CSS pixels.
+ *
+ * Thinner than they were. A toolpath doubles back on itself hundreds of
+ * times, and at two pixels a pocket clears into a solid block of colour where
+ * the individual passes should still be countable. The cut still has to read
+ * as the heavier of the two, so both came down together rather than the cut
+ * alone.
+ */
+const CUT_WIDTH = 1.25;
+const RAPID_WIDTH = 0.75;
 
 // Dash lengths in millimetres — the material measures them in world units.
 // A rapid is dashed as well as thinner because that is the distinction that

@@ -1,7 +1,7 @@
 import { composeScene, toolPoint } from '../compose';
 
-const ALL = { path: true, machine: true, work: true, program: true };
-const NONE = { path: false, machine: false, work: false, program: false };
+const ALL = { path: true, programArea: true, wcsAxes: true, machineArea: true, machineAxes: true };
+const NONE = { path: false, programArea: false, wcsAxes: false, machineArea: false, machineAxes: false };
 
 // COM3: 200mm on each axis, homing off, nothing inverted.
 const SETTINGS = {
@@ -79,7 +79,7 @@ describe('what the camera is framed on', () => {
   });
 
   test('is the program alone once the machine is switched off', () => {
-    const drawn = scene({ layers: { ...ALL, machine: false, work: false } });
+    const drawn = scene({ layers: { ...ALL, machineArea: false, machineAxes: false, wcsAxes: false } });
 
     expect(drawn.frame).toEqual({
       min: { x: -100, y: -80, z: -12 },
@@ -88,7 +88,7 @@ describe('what the camera is framed on', () => {
   });
 
   test('includes a work origin outside everything else', () => {
-    const drawn = scene({ toolpath: null, layers: { ...NONE, work: true } });
+    const drawn = scene({ toolpath: null, layers: { ...NONE, wcsAxes: true } });
 
     // G55 sits at (-40, -60, -5) and G54 at the origin; both have to be on
     // screen or the layer is a chip that appears to do nothing.
