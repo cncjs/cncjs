@@ -94,8 +94,10 @@ const JogWidget = ({ machine, className = '' }) => {
       </div>
 
       {/* On a phone: the keys take the height, the settings take a line each. */}
-      <div className="flex min-h-0 flex-1 flex-col gap-2 @3xl/shell:hidden">
+      <div className="flex min-h-0 flex-1 flex-col gap-gap @3xl/shell:hidden">
         <JogPadTall {...keys} />
+        {/* A wider gap than the one between the keys, so the settings read as a
+          * separate block rather than a fifth row of the pad. */}
         <AxisDrawer {...xy} />
         <AxisDrawer {...z} />
       </div>
