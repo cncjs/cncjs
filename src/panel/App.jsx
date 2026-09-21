@@ -98,7 +98,12 @@ const App = () => {
           * fit it. Without it a screen taller than the frame pushes the
           * whole panel open and the page scrolls, instead of the one card
           * that can scroll inside itself doing so. */}
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col gap-gap p-gap">
+        {/* The frame round the screen, tighter than the gaps between the
+          * cards inside it. On a 390px phone every pixel spent on the
+          * margin is one the jog keys do not get, and the edge of the
+          * display is already an edge — it does not need repeating. No
+          * `gap` here: this holds one screen. */}
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col p-2.5">
           {screen === 'jog'
             ? <JogScreen machine={machine} />
             : <Dashboard machine={machine} onGo={setScreen} />}
