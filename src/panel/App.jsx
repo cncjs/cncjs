@@ -94,7 +94,11 @@ const App = () => {
           onSelect={setScreen}
           className="hidden @3xl/shell:flex"
         />
-        <main className="flex min-w-0 flex-1 flex-col gap-gap p-gap">
+        {/* `min-h-0` so this constrains its screen rather than growing to
+          * fit it. Without it a screen taller than the frame pushes the
+          * whole panel open and the page scrolls, instead of the one card
+          * that can scroll inside itself doing so. */}
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col gap-gap p-gap">
           {screen === 'jog'
             ? <JogScreen machine={machine} />
             : <Dashboard machine={machine} onGo={setScreen} />}

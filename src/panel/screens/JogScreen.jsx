@@ -19,17 +19,38 @@ const JogScreen = ({ machine }) => (
       * in those terms. Stacked, it takes the width it is given; a fixed
       * 372px card in a 390px frame would leave the screen with a margin on
       * one side and nothing on the other. */}
-    <JogWidget machine={machine} className="shrink-0 @3xl:w-jcard" />
+    {/* Sized beside the readout at the panel; on a phone it gives way
+      * instead, because it is the one card here that can scroll inside
+      * itself without losing anything. */}
+    <JogWidget machine={machine} className="min-h-0 flex-1 @3xl/shell:w-jcard @3xl/shell:flex-none" />
 
-    <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-gap">
+    {/* At the panel this column holds the canvas and takes the width and
+      * the height it is given. On a phone it holds only the readout, so it
+      * takes what that needs and no more — as a `flex-1` it was claiming
+      * half the screen for one 142px card. */}
+    <div className="flex min-h-0 min-w-0 flex-col gap-gap @3xl/shell:flex-1">
       {/* A strip on a phone, where the keys are the subject and the position
         * is the check. Stacked at the panel, where it is the other way
         * round. The drawing shows both and they are the same widget. */}
       {/* A strip at every size here, not only on a phone. On this screen the
         * position is a check between key presses and the toolpath is what is
         * being watched, so one line rather than three hands the difference
-        * back to the canvas below. */}
-      <DroWidget machine={machine} label="Pozycja" strip className="shrink-0" />
+        * back to the canvas below.
+        *
+        * On a phone there is no canvas, so this is what takes up the slack
+        * instead — otherwise the screen ends in a band of nothing above the
+        * tabs, and it does so at a different height on every handset. */}
+      <DroWidget
+        machine={machine}
+        label="Pozycja"
+        strip
+        /* Its own size, not the slack. On a phone the spare height goes to
+          * the keys above — they are what the screen is for and what a thumb
+          * has to hit — and the strip keeps the floor it sets on itself. No
+          * `min-h-0`: that would undo the floor, which is how this once ended
+          * up 66px tall with nothing legible in it. */
+        className="shrink-0"
+      />
 
       {/*
         * The handful of facts checked before touching a jog key, on one line

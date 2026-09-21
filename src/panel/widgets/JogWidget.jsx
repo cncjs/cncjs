@@ -1,37 +1,30 @@
 import { useState } from 'react';
 import AxisControls from '../ui/AxisControls';
+import AxisDrawer from '../ui/AxisDrawer';
 import Card from '../ui/Card';
 import JogPad from '../ui/JogPad';
+import JogPadTall from '../ui/JogPadTall';
 import { jog, XY_STEPS, Z_STEPS } from '../machine/jog';
 
 /**
- * Moving the machine by hand — the whole of it, as one component.
+ * Moving the machine by hand.
  *
- * **It lays itself out from the room it is given, not from the window.** The
- * same widget is a tile on the dashboard and the body of the jog screen, and
- * in those two places it has 372px and 863px of width inside an identical
- * 1024px viewport. A media query cannot tell them apart; a container query
- * can, which is why the root declares `@container` and every arrangement
- * decision below is an `@4xl:` on it.
+ * Two arrangements of the same controls, and the difference is not spacing —
+ * it is what a phone is for. At the panel there is room for the keys and both
+ * axis groups at once, so nothing is hidden and nothing is folded. On a phone
+ * the keys are the screen: Z moves from beside the XY cross to underneath it,
+ * which buys every key a third more width, and the step and feed rate fold
+ * into a line each because they are set once and then left alone for a long
+ * stretch of work.
  *
- * Narrow: the pad, then the axis controls stacked under it.
- * Wide: the pad on the left, XY and Z controls side by side to its right.
- * The threshold is `@4xl` because that is where an axis column is wide enough
- * for a speed stepper — four keys either side of a reading. Measured: below
- * it the two columns are narrower than the control they hold.
+ * Both are rendered and one is hidden by a container query rather than one
+ * being chosen in JavaScript. Two reasons. A media query would measure the
+ * window, which is the wrong number inside a scaled preview frame; and the
+ * step and speed are held here, above both, so changing size never loses the
+ * setting the way two separately mounted widgets would.
  *
- * Height is handled without a breakpoint at all. The pad is a fixed target an
- * operator hits without looking, so it keeps its size; the step and speed
- * controls are `flex-1` over a floor, so they take up the slack in a tall tile
- * and close to the floor in a short one. The body scrolls only when even the
- * floor does not fit.
- *
- * No header: the mockup gives this card none, and it is right to — the keys
- * say what it is, and a caption would cost a row the pad wants.
- *
- * Nothing above this component passes a layout. A screen places it and gets
- * out of the way — which is what makes it the same widget in both places
- * rather than two that look alike.
+ * Neither arrangement has a branch inside it. What they share is this widget:
+ * the state, the machine, and what a key press means.
  */
 const JogWidget = ({ machine, className = '' }) => {
   const { connected, type } = machine;
@@ -47,52 +40,64 @@ const JogWidget = ({ machine, className = '' }) => {
     feedrate: axis === 'z' ? zSpeed : xySpeed,
   });
 
-  return (
-    <Card className={`@container min-h-0 overflow-hidden ${className}`}>
-      <div className="flex min-h-0 flex-1 flex-col gap-gap overflow-auto @4xl:flex-row @4xl:gap-6">
-        <div className="shrink-0 @4xl:w-jpad">
-          <JogPad
-            onJog={move}
-            onHome={() => {}}
-            onPark={() => {}}
-            disabled={!connected}
-            canHome={false}
-          />
-        </div>
+  const keys = {
+    onJog: move,
+    onHome: () => {},
+    onPark: () => {},
+    disabled: !connected,
+    canHome: false,
+  };
 
-        {/*
-          * The pair is kept together whichever way round it goes: XY and Z are
-          * the same decision asked twice, and separating them across a fold
-          * makes the second one easy to miss.
-          */}
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-gap @4xl:flex-row @4xl:gap-6">
-          <AxisControls
-            title="XY"
-            steps={XY_STEPS}
-            step={xyStep}
-            onStep={setXyStep}
-            speed={xySpeed}
-            onSpeed={setXySpeed}
-            fine={100}
-            coarse={500}
-            min={100}
-            max={5000}
-            disabled={!connected}
-          />
-          <AxisControls
-            title="Z"
-            steps={Z_STEPS}
-            step={zStep}
-            onStep={setZStep}
-            speed={zSpeed}
-            onSpeed={setZSpeed}
-            fine={50}
-            coarse={200}
-            min={50}
-            max={2000}
-            disabled={!connected}
-          />
+  // The two axis groups, one description each. Both arrangements show the same
+  // two; only the shape they are drawn in differs.
+  const xy = {
+    title: 'XY',
+    steps: XY_STEPS,
+    step: xyStep,
+    onStep: setXyStep,
+    speed: xySpeed,
+    onSpeed: setXySpeed,
+    fine: 100,
+    coarse: 500,
+    min: 100,
+    max: 5000,
+    disabled: !connected,
+  };
+  const z = {
+    title: 'Z',
+    steps: Z_STEPS,
+    step: zStep,
+    onStep: setZStep,
+    speed: zSpeed,
+    onSpeed: setZSpeed,
+    fine: 50,
+    coarse: 200,
+    min: 50,
+    max: 2000,
+    disabled: !connected,
+  };
+
+  return (
+    <Card className={`min-h-0 overflow-hidden ${className}`} bodyClassName="gap-0">
+      {/* At the panel: the keys at their drawn size, both groups open below
+        * them, nothing folded away. */}
+      <div className="hidden min-h-0 flex-1 flex-col gap-gap overflow-auto @3xl/shell:flex">
+        <div className="shrink-0">
+          <JogPad {...keys} />
         </div>
+        {/* XY and Z are the same decision asked twice, so they stay together:
+          * split across a fold, the second one is easy to miss. */}
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-gap">
+          <AxisControls {...xy} />
+          <AxisControls {...z} />
+        </div>
+      </div>
+
+      {/* On a phone: the keys take the height, the settings take a line each. */}
+      <div className="flex min-h-0 flex-1 flex-col gap-2 @3xl/shell:hidden">
+        <JogPadTall {...keys} />
+        <AxisDrawer {...xy} />
+        <AxisDrawer {...z} />
       </div>
     </Card>
   );

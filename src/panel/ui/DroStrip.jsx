@@ -38,8 +38,14 @@ const Column = ({ axis, value, machineValue, last }) => (
   </div>
 );
 
+/*
+ * `min-h-btnh` is a floor the card cannot be squeezed through. Without it a
+ * short screen gave this 66px, and the columns clipped to nothing — a
+ * position card with no position in it. If something has to give on an 800px
+ * phone it is not going to be the reading.
+ */
 const DroStrip = ({ position, machinePosition, className = '' }) => (
-  <div className={`@container flex min-h-0 flex-1 flex-row ${className}`}>
+  <div className={`@container flex min-h-btnh flex-1 flex-row ${className}`}>
     {['x', 'y', 'z'].map((axis, index) => (
       <Column
         key={axis}
