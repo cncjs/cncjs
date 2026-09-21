@@ -27,6 +27,7 @@ const DroWidget = ({ machine, label = 'Pozycja robocza', strip = false, classNam
   >
     <Dro
       position={machine.position}
+      machinePosition={machine.machinePosition}
       wcs={machine.modal.wcs}
       strip={strip}
     />

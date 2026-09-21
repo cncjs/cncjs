@@ -10,8 +10,16 @@ import { formatPosition } from '../machine/readings';
  *
  * Named, so the row is a labelled reading rather than three spans that only
  * mean something to a reader who can see which line they are on.
+ *
+ * Both positions, always. The drawing carries this as one of three modes an
+ * author picks between; here it is the only one, because the choice is not
+ * worth a control. Work position answers "where am I in this job" and
+ * machine position answers "where am I in the machine", and the second is
+ * exactly what is wanted at the moments the first stops making sense — a
+ * zero set against the wrong corner, a job that starts somewhere
+ * unexpected, an axis near its limit. Showing it costs one small line.
  */
-export const AxisRow = ({ axis, value, last, strip }) => (
+export const AxisRow = ({ axis, value, machineValue, last, strip }) => (
   <div
     role="group"
     aria-label={axis}
@@ -43,11 +51,26 @@ export const AxisRow = ({ axis, value, last, strip }) => (
     >
       {axis}
     </span>
-    <span className={`flex min-w-0 items-baseline gap-1 ${strip ? '@3xl/shell:flex-1 @3xl/shell:justify-end' : 'flex-1 justify-end'}`}>
-      <span className={`truncate font-num font-medium tabular-nums text-ink ${strip ? 'text-lead @3xl/shell:text-val' : 'text-val'}`}>
+    {/*
+      * A grid, not two stacked lines, so the two readings line up on their
+      * digits rather than on the edge of the card.
+      *
+      * `mm` belongs to the work reading and sits in its own column; the machine
+      * reading is in the first column under the figure it is being compared
+      * with. Right-aligned to the unit instead, the digits of one sit under the
+      * `mm` of the other and the two numbers cannot be read against each other,
+      * which is the only reason to show them together.
+      */}
+    <span className={`grid min-w-0 grid-cols-[auto_auto] items-baseline gap-x-1 ${strip ? 'justify-center @3xl/shell:flex-1 @3xl/shell:justify-end' : 'flex-1 justify-end'}`}>
+      <span className={`justify-self-end truncate font-num font-medium tabular-nums text-ink ${strip ? 'text-lead @3xl/shell:text-val' : 'text-val'}`}>
         {formatPosition(value)}
       </span>
       <span className="font-num text-note text-mut">mm</span>
+      {/* No unit of its own: it is the same millimetres measured from somewhere
+        * else, and saying so twice a row adds nothing. */}
+      <span className="col-start-1 justify-self-end truncate font-num text-note tabular-nums text-mut">
+        {formatPosition(machineValue)}
+      </span>
     </span>
   </div>
 );
@@ -59,13 +82,14 @@ export const AxisRow = ({ axis, value, last, strip }) => (
  * nothing without it, and "which zero is this" is the question behind most
  * of the ways a job goes wrong.
  */
-const Dro = ({ position, wcs, strip = false, className = '' }) => (
+const Dro = ({ position, machinePosition, wcs, strip = false, className = '' }) => (
   <div className={`flex min-h-0 flex-1 ${strip ? '@3xl/shell:flex-col' : 'flex-col'} ${className}`}>
     {['x', 'y', 'z'].map((axis, index) => (
       <AxisRow
         key={axis}
         axis={axis.toUpperCase()}
         value={position[axis]}
+        machineValue={machinePosition[axis]}
         last={index === 2}
         strip={strip}
       />

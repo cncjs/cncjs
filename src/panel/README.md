@@ -111,7 +111,9 @@ that look pressable and do nothing. The panel attaches, and `connected` means
 - [x] **[M] Machine state chip** — Idle / Run / Hold / Alarm, with the colours
       approved on 2026-09-20
 - [x] **[M] Work position** — X/Y/Z, monospace, tabular, three decimals
-- [ ] **[M] Machine position** as a quiet note beside the work position
+- [x] **[M] Machine position** under the work position on every axis, always. The drawing carries `droMode` as three variants an author picks
+      between — work, machine, select — and Mateusz settled it on 2026-09-21: one type, no switch. The choice was not worth a control,
+      and removing it is what dissolved the "where do widget settings live" question rather than answering it
 - [x] **[M] Jog** — XY keypad, Z column, step sizes, jog speed. Grbl gets
       `$J=`, which carries the chosen feed rate, leaves the modal state alone
       and can be cancelled; the old application's `G91`/`G0`/`G90` does none
@@ -187,3 +189,10 @@ does it stay behind in the old application, or does it go?
 - **The rail.** The mockup draws eleven destinations. Two are built; the rest
   are shown disabled, so the rail does not move under the hand between
   releases.
+- **Where the remaining variants live**, decided 2026-09-21 and not yet
+  built: `theme`, `density` and `numFont` belong to a **Ustawienia**
+  screen; the active coordinate system belongs to **Zerowanie**, beside
+  the offsets and the zeroing buttons, because switching it is a modal
+  G-code and not a display option. `navMode` and `target` have no home at
+  all — width decides them, so there is nothing to set wrongly. The
+  `G54`–`G57` chips will show the active system before they switch it.
