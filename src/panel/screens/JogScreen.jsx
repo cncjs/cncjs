@@ -38,26 +38,31 @@ const JogScreen = ({ machine }) => (
 
       {/*
         * The handful of facts checked before touching a jog key, on one line
-        * each so the whole answer is taken in at a glance.
+        * — all four of them, not two rows of two.
+        *
+        * They are four short readings on a wide strip, so a grid of two broad
+        * columns spent the width on air and the height on a second row. Read
+        * across, they are one sentence about the machine and are taken in at a
+        * glance. They wrap only if the strip ever gets too narrow to hold them.
         *
         * Not on a phone. The drawing leaves it out there, and the reason shows
         * in the arithmetic: keeping it costs the readout its place on the
         * screen, and a position you have to scroll to is worse than four facts
         * you can find one tap away.
         */}
-      <Card className="hidden shrink-0 !p-3 @3xl:flex" bodyClassName="gap-1">
-        <div className="grid grid-cols-2 gap-x-gap gap-y-0.5 font-num text-note leading-tight text-mut">
-          <span className="truncate">stan · <span className="text-ink">{machine.status.word}</span></span>
-          <span className="truncate">układ · <span className="text-ink">{machine.modal.wcs || NO_READING}</span></span>
-          <span className="truncate">posuw · <span className="text-ink">{reading(machine.tool.feedrate)}</span> mm/min</span>
-          <span className="truncate">wrzeciono · <span className="text-ink">{reading(machine.tool.spindle)}</span> obr/min</span>
+      <Card className="hidden shrink-0 !p-3 @3xl/shell:flex" bodyClassName="gap-1">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-num text-note leading-tight text-mut">
+          <span>stan · <span className="text-ink">{machine.status.word}</span></span>
+          <span>układ · <span className="text-ink">{machine.modal.wcs || NO_READING}</span></span>
+          <span>posuw · <span className="text-ink">{reading(machine.tool.feedrate)}</span> mm/min</span>
+          <span>wrzeciono · <span className="text-ink">{reading(machine.tool.spindle)}</span> obr/min</span>
         </div>
       </Card>
 
       {/* The canvas is the first thing to go when the screen is a phone:
         * it is the one panel here that says nothing an operator needs while
         * their hand is on a jog key. */}
-      <Card className="hidden min-h-0 flex-1 @3xl:flex" bodyClassName="items-center justify-center">
+      <Card className="hidden min-h-0 flex-1 @3xl/shell:flex" bodyClassName="items-center justify-center">
         <span className="text-center font-num text-note text-mut">
           podgląd 3D toolpath · pozycja narzędzia
           <br />
