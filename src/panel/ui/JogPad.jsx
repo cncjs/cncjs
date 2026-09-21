@@ -12,7 +12,7 @@
  *
  * One home key, not two. The server has a single `homing` command with no
  * axis argument — `$H` on Grbl, `G28` on Marlin — so "home XY" and "home Z"
- * were two controls it cannot carry. See `design/server-backlog.md`.
+ * were two controls it cannot carry. See `server-backlog.md`.
  *
  * 58px rows. Nothing on a touch panel goes below 40px, and these are pressed
  * by someone watching the cutter rather than the screen.

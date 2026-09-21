@@ -8,7 +8,7 @@
  *
  * One home key, not two. The server has a single `homing` command with no
  * axis argument — `$H` on Grbl, `G28` on Marlin — so "home XY" and "home Z"
- * were two controls it cannot carry. See `design/server-backlog.md`.
+ * were two controls it cannot carry. See `server-backlog.md`.
  *
  * Z below rather than beside also matches how the axes are thought about:
  * across, then down. Beside the cross it reads as a fourth direction in the

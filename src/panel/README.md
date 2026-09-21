@@ -21,13 +21,33 @@ no longer a defect, and "the drawing does it this way" is no longer an
 argument. Both readings on every axis and the coordinate system as a badge
 are already departures, decided deliberately.
 
-`design/README.md` still records where the mockup is and how to render it,
-because it remains the best record of intent for the nine screens nobody has
-built yet. Read it for those; do not re-litigate the two that exist.
+It is still worth being able to *look* at, because it remains the only
+picture of the nine screens nobody has built yet. Read it for those; do not
+re-litigate the two that exist.
 
-`yarn design-check` changes meaning with it. It no longer asks "do we still
-match the drawing" — it guards against a colour or a size being changed by
-accident. When a token moves on purpose, `design/tokens.expected.css` moves
+**Where it lives:** Claude Design project
+`7629d30f-1ea4-45a6-9f73-ec9b1ed97bf1`, file `CNC Panel.dc.html`. The
+identifier has to be written down, because `list_projects` in DesignSync
+shows **only** design-system projects and the mockup is not one — without the
+id there is no way to find it. (Superseded: `2d2f27d0-…` / `CNCjs Panel.dc.html`,
+the older 1024×600 drawing.) The file itself is not in this repository: 107 kB
+of generated React runtime that changes completely on every edit would be
+noise in a diff, not history.
+
+**The flow is one-way and cannot be otherwise.** The mockup is a
+`PROJECT_TYPE_PROJECT`, which DesignSync can only read; writing needs
+`PROJECT_TYPE_DESIGN_SYSTEM`, and the type is fixed at creation. Code never
+goes back to the drawing.
+
+**To render it locally:** put the project's `support.js` beside
+`CNC Panel.dc.html`, add global UMD React and ReactDOM plus a `createRoot` →
+`render` shim, and open it. Navigation works, so any of the eleven screens can
+be photographed and placed beside a shot of `/panel` — `scripts/design-diff.js`
+does exactly that.
+
+`yarn design-check` changed meaning with all this. It no longer asks "do we
+still match the drawing" — it guards against a colour or a size being changed
+by accident. When a token moves on purpose, `styles/tokens.expected.css` moves
 in the same commit and the commit says why.
 
 ## What it is allowed to reuse

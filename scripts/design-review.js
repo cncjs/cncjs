@@ -5,7 +5,7 @@
  *
  * `design-review-overlay.js` lets you click a place in the running panel and
  * leave a note on it. This is the other half: a small server that hands the
- * overlay to the page and writes the notes into `design/review.json`, where
+ * overlay to the page and writes the notes into `output/review-notes.json`, where
  * Claude reads them.
  *
  * It is deliberately not part of the application server. A review tool that
@@ -22,7 +22,7 @@ const http = require('http');
 const path = require('path');
 
 const PORT = Number(process.env.REVIEW_PORT || 8765);
-const NOTES = path.join(__dirname, '..', 'design', 'review.json');
+const NOTES = path.join(__dirname, '..', 'output', 'review-notes.json');
 const OVERLAY = path.join(__dirname, 'design-review-overlay.js');
 
 const read = () => {

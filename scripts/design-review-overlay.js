@@ -3,7 +3,7 @@
  *
  * Claude Design lets you click a spot on a drawing and leave a note there.
  * This is that, on the other side: click anything in the live panel, say what
- * is wrong with it, and the note lands in `design/review.json` with enough
+ * is wrong with it, and the note lands in `output/review-notes.json` with enough
  * about the element that it can be found in the source without a description.
  *
  * Loaded by a bookmarklet, so it attaches to whatever is open — the panel, or

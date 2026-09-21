@@ -4,7 +4,7 @@
  * Block until a new note appears, then exit.
  *
  * This is what makes the loop automatic rather than announced: Claude runs it
- * in the background, it sits there, and the moment `design/review.json` grows
+ * in the background, it sits there, and the moment `output/review-notes.json` grows
  * it returns the new notes. Nobody has to say "mam uwagi".
  *
  * Polling a file's size and mtime rather than watching it, because editors and
@@ -14,7 +14,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const NOTES = path.join(__dirname, '..', 'design', 'review.json');
+const NOTES = path.join(__dirname, '..', 'output', 'review-notes.json');
 
 const read = () => {
   try {
