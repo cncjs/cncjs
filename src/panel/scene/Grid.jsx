@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react';
+import GridLabels from './GridLabels';
 import { buildGrid } from './grid-lines';
 
 /**
@@ -26,7 +27,7 @@ import { buildGrid } from './grid-lines';
  * rather than through the middle of it.
  */
 const Grid = ({ area, z, color }) => {
-  const { lines, axes } = useMemo(() => buildGrid(area, z, color), [area, z, color]);
+  const { lines, axes, step } = useMemo(() => buildGrid(area, z, color), [area, z, color]);
 
   useEffect(() => () => {
     lines.dispose();
@@ -46,6 +47,8 @@ const Grid = ({ area, z, color }) => {
       <lineSegments geometry={axes}>
         <lineBasicMaterial vertexColors transparent opacity={0.5} />
       </lineSegments>
+
+      <GridLabels area={area} step={step} z={z} color={color} />
     </>
   );
 };

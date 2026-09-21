@@ -1,4 +1,4 @@
-import { buildGrid, FADE_CELLS, gridStep } from '../grid-lines';
+import { buildGrid, FADE_CELLS, gridLabels, gridStep } from '../grid-lines';
 
 /**
  * The one piece of arithmetic in the grid, and the one that decides whether it
@@ -110,5 +110,57 @@ describe('buildGrid', () => {
     const distinct = new Set(a.map((value) => value.toFixed(3)));
 
     expect(distinct.size).toBeGreaterThan(4);
+  });
+});
+
+describe('gridLabels', () => {
+  const COM3 = { min: { x: -200, y: -200, z: -200 }, max: { x: 0, y: 0, z: 0 } };
+  const numbers = (labels) => labels.filter((l) => l.text !== 'mm');
+
+  test('runs along the two near edges, outside the machine rather than in it', () => {
+    const labels = gridLabels(COM3, 20);
+    const alongX = numbers(labels).filter((l) => l.y === -210);
+    const alongY = numbers(labels).filter((l) => l.x === -210);
+
+    // Half a square clear of the edge, so a figure never lands on the
+    // toolpath it is there to measure.
+    expect(alongX.length).toBeGreaterThan(0);
+    expect(alongY.length).toBeGreaterThan(0);
+    expect(alongX.map((l) => l.text)).toContain('-200');
+    expect(alongX.map((l) => l.text)).toContain('0');
+  });
+
+  test('stops at the machine and does not number the fade', () => {
+    // Out there the grid is a hint that the floor continues. A number would
+    // be a measurement of nothing.
+    const values = numbers(gridLabels(COM3, 20)).map((l) => Number(l.text));
+
+    expect(Math.min(...values)).toBe(-200);
+    expect(Math.max(...values)).toBe(0);
+  });
+
+  test('thins out rather than crowding when there are many lines', () => {
+    // 1mm squares over 200mm is two hundred lines. Labelling each one is
+    // unreadable at any size this panel is looked at.
+    const dense = numbers(gridLabels(COM3, 1));
+
+    expect(dense.length).toBeLessThanOrEqual(2 * 12);
+    // And what survives is still on round numbers.
+    expect(dense.every((l) => Number.isInteger(Number(l.text)))).toBe(true);
+  });
+
+  test('says the unit once per axis, past the end of the numbers', () => {
+    const units = gridLabels(COM3, 20).filter((l) => l.text === 'mm');
+
+    expect(units).toHaveLength(2);
+    // Clear of the last figure, so it reads as the unit for the row rather
+    // than as another value in it.
+    expect(units.map((u) => u.x)).toContain(20);
+    expect(units.map((u) => u.y)).toContain(20);
+  });
+
+  test('gives every label a key of its own', () => {
+    const labels = gridLabels(COM3, 20);
+    expect(new Set(labels.map((l) => l.key)).size).toBe(labels.length);
   });
 });

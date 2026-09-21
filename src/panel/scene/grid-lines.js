@@ -81,6 +81,68 @@ const geometryOf = ({ points, alphas }, color) => {
 };
 
 /**
+ * Roughly how many numbers to put along an axis before they start colliding.
+ *
+ * Every grid line labelled is unreadable at any size the panel is actually
+ * looked at; every other line, or every fourth, keeps the figures apart and
+ * still lets the ones between be counted off the squares.
+ */
+const MAX_LABELS = 12;
+
+/**
+ * The numbers to write on the ground, and where.
+ *
+ * Only inside the area — out in the fade the grid is a hint that the floor
+ * continues, and a number there would be a measurement of nothing. Laid half
+ * a square outside the near edge so they sit beside the machine rather than
+ * inside it, where the toolpath is.
+ *
+ * @returns {object[]} `{ key, text, x, y }` in machine coordinates.
+ */
+export const gridLabels = (area, step) => {
+  const first = (min) => snapUp(min, step);
+  const last = (max) => snapDown(max, step);
+
+  const ticks = (min, max) => {
+    const values = [];
+    for (let v = first(min); v <= last(max); v += step) {
+      values.push(v);
+    }
+    const every = Math.ceil(values.length / MAX_LABELS);
+    return values.filter((_, i) => (i % every) === 0);
+  };
+
+  const gap = step / 2;
+  const labels = [];
+
+  for (const x of ticks(area.min.x, area.max.x)) {
+    labels.push({ key: `x${x}`, text: String(x), x, y: area.min.y - gap });
+  }
+  for (const y of ticks(area.min.y, area.max.y)) {
+    labels.push({ key: `y${y}`, text: String(y), x: area.min.x - gap, y });
+  }
+
+  // The unit, once per axis, past the end of the run of numbers. Every other
+  // reading on this panel says `mm` beside it and this one should not be the
+  // exception — but repeating it twenty times would be twenty times the ink
+  // for one fact.
+  labels.push({
+    key: 'unit-x',
+    text: 'mm',
+    x: last(area.max.x) + step,
+    y: area.min.y - gap,
+  });
+  labels.push({
+    key: 'unit-y',
+    text: 'mm',
+    x: area.min.x - gap,
+    y: last(area.max.y) + step,
+  });
+
+  return labels;
+};
+
+/**
  * @param {object} area What the grid is the ground for — the machine's travel
  *   where it is known. Squares are sized from this, and the fade starts at it.
  * @param {number} z The height to lay the grid at.
