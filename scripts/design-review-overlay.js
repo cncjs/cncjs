@@ -83,11 +83,13 @@
     .rv-hover { outline: 2px solid #e04a4a !important; outline-offset: -2px !important; }
     #rv-sheet { position: fixed; inset: 0; z-index: 2147482500; cursor: crosshair;
       background: transparent; }
+    #rv-size { position: absolute; z-index: 2147482400; font: 600 11px/1 'IBM Plex Mono', monospace;
+      color: #e6ecf3; background: #e04a4a; padding: 4px 8px; border-radius: 0 0 4px 0; }
     .rv-pin { position: absolute; z-index: 2147482000; width: 22px; height: 22px;
       margin: -11px 0 0 -11px; border-radius: 50%; background: #e04a4a; color: #fff;
       font: 700 12px/22px system-ui, sans-serif; text-align: center; cursor: pointer;
       box-shadow: 0 2px 6px rgba(0,0,0,.4); }
-    #rv-form { position: absolute; z-index: 2147483000; background: #171d25; color: #e6ecf3;
+    #rv-form { position: fixed; z-index: 2147483600; background: #171d25; color: #e6ecf3;
       border: 1px solid #3a424c; border-radius: 6px; padding: 10px; width: 280px;
       font: 13px/1.4 system-ui, sans-serif; box-shadow: 0 6px 24px rgba(0,0,0,.4); }
     #rv-form textarea { width: 100%; height: 70px; box-sizing: border-box; background: #0e1319;
@@ -150,6 +152,9 @@
   };
 
   const mount = document.getElementById('panel-root');
+  const sizeTag = document.createElement('div');
+  sizeTag.id = 'rv-size';
+  document.body.appendChild(sizeTag);
 
   let current = 'base';
 
@@ -170,10 +175,21 @@
       (window.innerHeight - 40) / target.h,
       1
     );
+    /*
+     * Everything outside the frame is dimmed by a shadow large enough to reach
+     * any edge, so where the device ends is never a guess. A hairline border
+     * was not enough: against a light panel on a light page there was nothing
+     * to see.
+     */
     mount.style.cssText = `width:${target.w}px;height:${target.h}px;`
       + `transform:scale(${scale});transform-origin:top left;`
-      + 'outline:1px solid var(--line);position:absolute;top:20px;left:20px;';
+      + 'position:absolute;top:28px;left:20px;'
+      + 'outline:2px solid #e04a4a;box-shadow:0 0 0 100vmax rgba(10,14,20,.62);';
     document.body.style.overflow = 'hidden';
+
+    sizeTag.textContent = `${target.w} x ${target.h}`;
+    sizeTag.style.left = '20px';
+    sizeTag.style.top = `${28 - 20}px`;
 
     const exact = scale > 0.999;
     scaleNote.textContent = exact ? '1:1' : `skala ${Math.round(scale * 100)}%`;
@@ -260,8 +276,17 @@
     const form = document.createElement('div');
     form.id = 'rv-form';
     const box = el.getBoundingClientRect();
-    form.style.left = `${Math.min(box.x + window.scrollX, window.innerWidth - 300)}px`;
-    form.style.top = `${box.bottom + window.scrollY + 8}px`;
+    /*
+     * Fixed and clamped to the viewport. Positioned in page coordinates it
+     * went under the framed screen — the frame is absolutely placed and the
+     * body does not scroll while a target is framed, so anything below the
+     * fold was simply not reachable.
+     */
+    const FORM = { w: 280, h: 150 };
+    form.style.left = `${Math.max(8, Math.min(box.x, window.innerWidth - FORM.w - 8))}px`;
+    form.style.top = box.bottom + 8 + FORM.h < window.innerHeight
+      ? `${box.bottom + 8}px`
+      : `${Math.max(8, box.top - FORM.h - 8)}px`;
     form.innerHTML = `
       <div class="what">${where.screen} · &lt;${where.tag}&gt; ${where.label || ''}</div>
       <textarea placeholder="Co jest nie tak w tym miejscu?"></textarea>
@@ -365,9 +390,61 @@
 
   openButton.addEventListener('click', openAtTarget);
   window.addEventListener('resize', () => setTarget(current));
+
+  /*
+   * The notes are polled rather than only read once. A pin is removed at the
+   * other end — by whoever fixed it — and the board should empty itself as
+   * that happens instead of after a reload nobody thought to do.
+   */
+  setInterval(load, 2000);
   // The panel is a single page; pins follow whatever it redraws.
   setInterval(drawPins, 1000);
 
-  setTarget('base');
+  /*
+   * Reload when the bundle changes.
+   *
+   * The panel's compiler has no hot reload, so every fix meant somebody
+   * pressing F5 — and a review loop where the reviewer has to remember to
+   * refresh is a loop that shows stale screens and produces notes about things
+   * already fixed.
+   *
+   * The bundle's own `Last-Modified` is the signal. Not while a note is being
+   * written: reloading would throw the sentence away.
+   */
+  const watchBuild = () => {
+    const url = document.querySelector('script[src*="panel.bundle"]');
+    if (!url) { return; }
+    let seen = null;
+    setInterval(async () => {
+      if (document.getElementById('rv-form')) { return; }
+      try {
+        const head = await fetch(url.src, { method: 'HEAD', cache: 'no-store' });
+        const stamp = head.headers.get('last-modified') || head.headers.get('etag');
+        if (!stamp) { return; }
+        if (seen && stamp !== seen) { window.location.reload(); }
+        seen = stamp;
+      } catch (err) {
+        // The dev server restarting is not news.
+      }
+    }, 2000);
+  };
+
+  /*
+   * A reload drops the overlay with the page, so it puts itself back. Which
+   * target was being looked at survives too — being returned to the desk
+   * layout every time the bundle rebuilds is its own kind of lost work.
+   */
+  const KEEP = 'rv-target';
+  window.addEventListener('beforeunload', () => {
+    try { window.sessionStorage.setItem(KEEP, current); } catch (err) { /* private mode */ }
+  });
+
+  let remembered = 'base';
+  try { remembered = window.sessionStorage.getItem(KEEP) || 'base'; } catch (err) { remembered = 'base'; }
+  bar.querySelectorAll('.targets button')
+    .forEach((b) => b.classList.toggle('on', b.dataset.target === remembered));
+
+  setTarget(remembered);
   load();
+  watchBuild();
 })();
