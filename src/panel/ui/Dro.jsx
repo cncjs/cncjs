@@ -24,7 +24,7 @@ export const AxisRow = ({ axis, value, last, strip }) => (
       strip
         ? 'flex-col justify-center @3xl/shell:flex-row @3xl/shell:gap-3'
         : 'flex-row gap-3',
-      // eslint-disable-next-line no-nested-ternary
+
       last
         ? ''
         : (strip
@@ -32,7 +32,8 @@ export const AxisRow = ({ axis, value, last, strip }) => (
           : 'border-b border-line'),
     ].join(' ')}
   >
-    <span className={strip
+    <span
+      className={strip
       ? 'text-cap font-semibold text-mut @3xl/shell:w-5 @3xl/shell:text-lead @3xl/shell:text-ink'
       : 'w-5 text-lead font-semibold text-ink'}
     >

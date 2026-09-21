@@ -152,6 +152,7 @@
       <button data-target="fullhd" title="1920 x 1080">Full HD</button>
       <button data-target="phone" title="390 x 844">Telefon</button>
     </span>
+    <button id="rv-theme" title="Jasny / ciemny motyw">Motyw</button>
     <span class="scale" id="rv-scale"></span>
     <button id="rv-open" title="Otwórz w oknie o rozmiarze celu">Nowe okno</button>
     <span class="sep"></span>
@@ -164,6 +165,25 @@
   const pickButton = bar.querySelector('#rv-pick');
   const scaleNote = bar.querySelector('#rv-scale');
   const openButton = bar.querySelector('#rv-open');
+  const themeButton = bar.querySelector('#rv-theme');
+
+  /*
+   * The theme lives here now, not on the machine bar.
+   *
+   * It is a setting, and it was taking a control's worth of room on the one
+   * strip that carries the stop. The token sheet answers to `data-theme` on
+   * the root and nothing in React knows about it, so flipping the attribute
+   * is the whole of it — no re-render to fight and nothing to keep in step.
+   */
+  const KEEP_THEME = 'rv-theme';
+  const setTheme = (name) => {
+    document.documentElement.dataset.theme = name;
+    themeButton.classList.toggle('on', name === 'dark');
+    try { window.sessionStorage.setItem(KEEP_THEME, name); } catch (err) { /* private mode */ }
+  };
+  themeButton.addEventListener('click', () => {
+    setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+  });
 
   // ---- target --------------------------------------------------------------
 
@@ -484,6 +504,10 @@
   try { remembered = window.sessionStorage.getItem(KEEP) || 'base'; } catch (err) { remembered = 'base'; }
   bar.querySelectorAll('.targets button')
     .forEach((b) => b.classList.toggle('on', b.dataset.target === remembered));
+
+  let theme = 'light';
+  try { theme = window.sessionStorage.getItem(KEEP_THEME) || 'light'; } catch (err) { theme = 'light'; }
+  setTheme(theme);
 
   setTarget(remembered);
   load();

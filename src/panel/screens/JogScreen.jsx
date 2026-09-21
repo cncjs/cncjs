@@ -25,15 +25,16 @@ const JogScreen = ({ machine }) => (
       {/* A strip on a phone, where the keys are the subject and the position
         * is the check. Stacked at the panel, where it is the other way
         * round. The drawing shows both and they are the same widget. */}
-      {/* On a phone this is what takes up the slack. The pad above it is a
-        * fixed target and must not move, so the readout grows into whatever
-        * is left instead of leaving a band of nothing above the tabs. At the
-        * panel it goes back to its own height and the canvas takes the rest. */}
+      {/* It takes the slack wherever it is. On a phone that is the band that
+        * would otherwise sit above the tabs; at the panel it is height it
+        * shares with the canvas below. Left to its own size the three lines
+        * sit closer together than anything else on the screen, which is
+        * what it was reported as twice. */}
       <DroWidget
         machine={machine}
         label="Pozycja"
         strip
-        className="min-h-0 flex-1 @3xl/shell:flex-none"
+        className="min-h-0 flex-1"
       />
 
       {/*

@@ -167,14 +167,16 @@ export const readMachine = ({ connection, error, port, type, state, attached, jo
      * when nothing is loaded, and a panel that read that as a job would offer
      * Start for a file that does not exist.
      */
-    job: job && job.total > 0 ? {
+    job: job && job.total > 0
+? {
       name: job.name || '',
       total: job.total,
       sent: job.sent || 0,
       received: job.received || 0,
       remaining: job.remainingTime || 0,
       percent: Math.min(100, Math.round(((job.received || 0) / job.total) * 100)),
-    } : null,
+    }
+: null,
   };
 };
 

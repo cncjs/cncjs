@@ -42,7 +42,7 @@ const StateChip = ({ tone = 'inactive', children }) => {
       ].join(' ')}
     >
       <span className={`size-[9px] shrink-0 rounded-full ${t.dot}`} aria-hidden="true" />
-      <span className={`truncate text-cap font-semibold uppercase tracking-[0.1em] ${t.text}`}>
+      <span className={`truncate text-cap font-semibold uppercase tracking-[0.1em] fullhd:text-lead ${t.text}`}>
         {children}
       </span>
     </div>

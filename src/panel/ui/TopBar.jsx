@@ -17,24 +17,24 @@ import StateChip from './StateChip';
  * frame and is the drawing's own size. Measured against it: at `lead` the
  * button was 124px wide where the drawing has 150, and read as the smaller
  * control even though its box was taller.
+ *
+ * No theme switch. It is a setting, and a setting on the bar that carries
+ * the stop is a control competing for the one place nobody should have to
+ * look twice at.
  */
-const TopBar = ({ status, file, note, theme, onToggleTheme, canStop, onStop }) => (
+const TopBar = ({ status, file, note, canStop, onStop }) => (
   <header className="flex shrink-0 items-center gap-[10px] border-b border-line bg-panel px-[10px] py-2">
     <StateChip tone={status.tone}>{status.word}</StateChip>
 
     <div className="flex min-w-0 flex-1 items-center gap-[10px] px-1 @3xl/shell:px-[14px]">
-      <span className="truncate font-num text-note text-mut @3xl/shell:text-base">{file}</span>
-      {note ? <span className="hidden truncate font-num text-base text-acc @3xl/shell:inline">· {note}</span> : null}
+      {/* Named when there is a file and said plainly when there is not. A
+        * lone dash on an otherwise empty strip reads as a bar whose purpose
+        * is unclear, which is exactly how it was reported. */}
+      <span className="truncate font-num text-note text-mut fullhd:text-lead @3xl/shell:text-base">
+        {file || 'brak wczytanego pliku'}
+      </span>
+      {note ? <span className="hidden truncate font-num text-base text-acc fullhd:text-lead @3xl/shell:inline">· {note}</span> : null}
     </div>
-
-    <button
-      type="button"
-      aria-label={theme === 'dark' ? 'Jasny motyw' : 'Ciemny motyw'}
-      onClick={onToggleTheme}
-      className="h-chiph w-ctl shrink-0 rounded-ctl border border-line bg-field text-lead text-mut hover:border-acc hover:text-acc @3xl/shell:h-btnh"
-    >
-      {theme === 'dark' ? '☀' : '☾'}
-    </button>
 
     <Button
       tone="stop"

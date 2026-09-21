@@ -46,11 +46,15 @@ const PHONE_DESTINATIONS = PHONE_IDS
 const App = () => {
   const machine = useMachine();
   const [screen, setScreen] = useState('dashboard');
-  const [theme, setTheme] = useState('light');
 
   /*
    * The shell lays itself out from its own width, exactly as every widget in
    * here does.
+   *
+   * No theme state. The drawing switches theme by attribute on the root and
+   * the token sheet answers to it there, so nothing in React needs to know a
+   * theme exists — which is what lets it be a setting, and lets the review
+   * overlay flip it without fighting a re-render.
    *
    * The drawing keeps two separate switches for this — a `target` that moves
    * the tokens and a `navMode` of rail or tabs — and setting only the first is
@@ -74,13 +78,11 @@ const App = () => {
    * tell them apart.
    */
   const shell = (
-    <div className="@container/shell flex h-full flex-col bg-bg text-ink" data-theme={theme}>
+    <div className="@container/shell flex h-full flex-col bg-bg text-ink">
       <TopBar
         status={machine.status}
-        file={machine.job ? machine.job.name : NO_READING}
+        file={machine.job ? machine.job.name : ''}
         note={machine.job ? `wczytany, ${machine.job.received > 0 ? 'w toku' : 'nie uruchomiony'}` : null}
-        theme={theme}
-        onToggleTheme={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
         canStop={machine.connected}
         onStop={emergencyStop}
       />

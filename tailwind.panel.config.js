@@ -93,6 +93,20 @@ module.exports = {
   },
   plugins: [
     /*
+     * `fullhd:` and `phone:`, matching the drawing's `data-target`.
+     *
+     * Sizes in the token sheet already follow the target — `--rail`, `--pad`,
+     * `--btnh` all move. Type does not: the scale is in fixed pixels, so a
+     * control whose box grows from 72px to 112px keeps an 11px word inside
+     * it and reads as a large box around something small. This is how type
+     * follows the format too, and it is an attribute variant for the same
+     * reason the theme is.
+     */
+    ({ addVariant }) => {
+      addVariant('fullhd', '&:where([data-target="fullhd"], [data-target="fullhd"] *)');
+      addVariant('phone', '&:where([data-target="phone"], [data-target="phone"] *)');
+    },
+    /*
      * Container queries, and they are not a nicety here.
      *
      * A widget is one component that appears both as a tile on the dashboard
