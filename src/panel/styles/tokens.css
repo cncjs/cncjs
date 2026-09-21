@@ -35,7 +35,7 @@
   /*
    * 10, not the drawing's 14. Changed deliberately on 2026-09-21: the frame
    * round a screen went to 10 and the gaps between the cards inside it stayed
-   * behind, which reads as a mistake. `design/tokens.expected.css` moved in
+   * behind, which reads as a mistake. `tokens.expected.css` moved in
    * the same commit.
    */
   --gap: 10px;

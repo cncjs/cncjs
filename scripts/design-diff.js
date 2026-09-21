@@ -18,7 +18,7 @@
  * bottom collects them in a form that can be pasted straight into a
  * conversation. That is the whole review loop — click, paste, fix.
  *
- * The drawing is not in this repository (see `design/README.md`), so its
+ * The drawing is not in this repository (see `src/panel/README.md`), so its
  * directory is passed in:
  *
  *   node scripts/design-diff.js --mockup <dir with "CNC Panel.dc.html">
@@ -58,7 +58,7 @@ const shootMockup = async (browser) => {
     die(
       `No drawing at ${file}.\n\n` +
       'The mockup is not kept in this repository — it lives in the Claude\n' +
-      'Design project named in design/README.md. Ask Claude to pull it, then\n' +
+      'Design project named in src/panel/README.md. Ask Claude to pull it, then\n' +
       'point --mockup at the directory it landed in.'
     );
   }
@@ -231,7 +231,7 @@ SCREENS.forEach((screen) => {
   if (!MOCKUP_DIR) {
     die(
       'Pass --mockup <dir>, the directory holding "CNC Panel.dc.html".\n' +
-      'See design/README.md for where the drawing comes from.'
+      'See src/panel/README.md for where the drawing comes from.'
     );
   }
 

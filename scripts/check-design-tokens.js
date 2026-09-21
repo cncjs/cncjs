@@ -10,7 +10,7 @@
  * a custom property — and that is the part that goes wrong silently, because a
  * changed hex in the drawing looks like nothing at all in a pull request.
  *
- * So: `design/tokens.expected.css` is the drawing's own `:root` and switch
+ * So: `src/panel/styles/tokens.expected.css` is the drawing's own `:root` and switch
  * blocks, copied verbatim when the drawing was last pulled.
  * `src/panel/styles/tokens.css` is what the panel actually uses. This compares
  * them and fails on anything the drawing declares that the panel has lost or
@@ -24,7 +24,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const EXPECTED = path.join(__dirname, '..', 'design', 'tokens.expected.css');
+const EXPECTED = path.join(__dirname, '..', 'src', 'panel', 'styles', 'tokens.expected.css');
 const ACTUAL = path.join(__dirname, '..', 'src', 'panel', 'styles', 'tokens.css');
 
 // Comments first: a `--foo: bar` inside one is not a declaration, and the token

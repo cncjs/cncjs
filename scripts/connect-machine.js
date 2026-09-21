@@ -9,7 +9,7 @@
  * a design in: half the controls cannot be pressed, every reading is a dash,
  * and the selected step is a colour nobody can judge at 45% opacity.
  *
- * The panel has no connection screen yet — `design/README.md` lists it as the
+ * The panel has no connection screen yet — `src/panel/README.md` lists it as the
  * gap the drawing does not cover — so this opens the port the way the hardware
  * tier does, by driving the old application's connection widget. The port then
  * stays open after the browser goes, which is a defect in the old application
