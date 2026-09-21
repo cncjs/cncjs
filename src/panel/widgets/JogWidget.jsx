@@ -191,7 +191,15 @@ const JogWidget = ({ machine, className = '' }) => {
         </div>
       ) : null}
 
-      {helping ? <ShortcutHelp onClose={() => setHelping(false)} /> : null}
+      {helping ? (
+        <ShortcutHelp
+          onClose={() => setHelping(false)}
+          xyStep={xyStep}
+          zStep={zStep}
+          xyCoarse={XY_STEPS[XY_STEPS.length - 1]}
+          zCoarse={Z_STEPS[Z_STEPS.length - 1]}
+        />
+      ) : null}
 
       {open ? (
         <Sheet title={`Jog ${open.title}`} onClose={() => setEditing(null)}>
