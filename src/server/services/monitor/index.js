@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import fs from 'fs';
 import path from 'path';
+import { pipeline, Transform } from 'stream';
 import minimatch from 'minimatch';
 import FSMonitor from './FSMonitor';
 
@@ -265,11 +266,39 @@ const deleteFile = (file, callback) => {
   });
 };
 
+// Fail the stream once more than `maxFileSize` bytes have passed through.
+// Counting here rather than trusting Content-Length means a body that lies
+// about its length, or sends none at all, is still bounded.
+const createLimitStream = (maxFileSize) => {
+  let size = 0;
+
+  return new Transform({
+    transform(chunk, encoding, callback) {
+      size += chunk.length;
+
+      if (size > maxFileSize) {
+        const err = new Error('Payload too large');
+        err.code = 'ETOOLARGE';
+        callback(err);
+        return;
+      }
+
+      callback(null, chunk);
+    }
+  });
+};
+
 // Stream a readable (e.g. a request body) into the watch directory without
 // holding the whole file in memory. Writes to a temporary name first and
 // renames into place on completion, so a partially written file never appears
 // under its final name inside the watched directory.
-const writeStream = (file, readable, callback) => {
+//
+// `pipeline()` owns the lifecycle: it propagates errors in either direction,
+// applies backpressure, destroys every participating stream when one fails,
+// and reports a client that disconnects mid-upload as a premature close. The
+// temporary file is removed on any of those, so a failed or abandoned upload
+// leaves nothing behind.
+const writeStream = (file, readable, { maxFileSize = Infinity } = {}, callback) => {
   const root = monitor.root;
 
   if (!root) {
@@ -281,48 +310,31 @@ const writeStream = (file, readable, callback) => {
   const filename = path.basename(file);
   const target = path.join(root, filename);
   const temp = path.join(root, `.${filename}.${process.pid}.${Date.now()}.tmp`);
-  const ws = fs.createWriteStream(temp);
 
-  let settled = false;
-  const fail = (err) => {
-    if (settled) {
-      return;
-    }
-    settled = true;
-    readable.unpipe(ws);
-    ws.destroy();
-    fs.unlink(temp, () => {
-      callback(err);
-    });
-  };
-
-  ws.on('error', fail);
-  readable.on('error', fail);
-  readable.on('aborted', () => {
-    fail(new Error('Upload aborted'));
-  });
-  readable.on('close', () => {
-    if (!settled && !readable.readableEnded) {
-      fail(new Error('Upload aborted'));
-    }
-  });
-
-  ws.on('finish', () => {
-    if (settled) {
-      fs.unlink(temp, () => {});
-      return;
-    }
-    fs.rename(temp, target, (err) => {
+  pipeline(
+    readable,
+    createLimitStream(maxFileSize),
+    fs.createWriteStream(temp),
+    (err) => {
       if (err) {
-        fail(err);
+        fs.unlink(temp, () => {
+          callback(err);
+        });
         return;
       }
-      settled = true;
-      callback(null);
-    });
-  });
 
-  readable.pipe(ws);
+      fs.rename(temp, target, (renameErr) => {
+        if (renameErr) {
+          fs.unlink(temp, () => {
+            callback(renameErr);
+          });
+          return;
+        }
+
+        callback(null);
+      });
+    }
+  );
 };
 
 const on = (...args) => {
@@ -340,9 +352,9 @@ export default {
   getFiles,
   readFile,
   writeFile,
+  writeStream,
   renameFile,
   deleteFile,
-  writeStream,
   on,
   removeListener
 };

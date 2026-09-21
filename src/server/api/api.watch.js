@@ -1,8 +1,10 @@
+import settings from '../config/settings';
 import monitor from '../services/monitor';
 import {
   ERR_BAD_REQUEST,
   ERR_NOT_FOUND,
   ERR_CONFLICT,
+  ERR_PAYLOAD_TOO_LARGE,
   ERR_UNSUPPORTED_MEDIA_TYPE,
   ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
@@ -67,7 +69,13 @@ export const writeFile = (req, res) => {
 
   const done = (err) => {
     if (err) {
-      res.status(err.message === 'Watch directory is not configured' ? ERR_BAD_REQUEST : ERR_INTERNAL_SERVER_ERROR).send({
+      let status = ERR_INTERNAL_SERVER_ERROR;
+      if (err.code === 'ETOOLARGE') {
+        status = ERR_PAYLOAD_TOO_LARGE;
+      } else if (err.message === 'Watch directory is not configured') {
+        status = ERR_BAD_REQUEST;
+      }
+      res.status(status).send({
         msg: err.message || 'Failed writing file'
       });
       return;
@@ -77,7 +85,8 @@ export const writeFile = (req, res) => {
   };
 
   if (isRawUpload) {
-    monitor.writeStream(file, req, done);
+    const { maxFileSize } = settings.middleware.upload;
+    monitor.writeStream(file, req, { maxFileSize }, done);
     return;
   }
 

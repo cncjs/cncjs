@@ -7,7 +7,7 @@ jest.mock('../../services/monitor', () => ({
   __esModule: true,
   default: {
     writeFile: jest.fn((file, data, callback) => callback(null)),
-    writeStream: jest.fn((file, readable, callback) => callback(null))
+    writeStream: jest.fn((file, readable, options, callback) => callback(null))
   }
 }));
 
@@ -45,7 +45,12 @@ describe('api.watch writeFile', () => {
 
     expect(res.statusCode).toEqual(200);
     expect(res.payload).toEqual({ file: 'program.nc' });
-    expect(monitor.writeStream).toHaveBeenCalledWith('program.nc', req, expect.any(Function));
+    expect(monitor.writeStream).toHaveBeenCalledWith(
+      'program.nc',
+      req,
+      { maxFileSize: expect.any(Number) },
+      expect.any(Function)
+    );
     expect(monitor.writeFile).not.toHaveBeenCalled();
   });
 
