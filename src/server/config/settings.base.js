@@ -59,6 +59,12 @@ export default {
         limit: '256mb'
       }
     },
+    // Raw uploads streamed to the watch directory. The JSON body above is
+    // bounded by body-parser; a streamed body is not, so it needs its own
+    // ceiling rather than being able to write to disk without limit.
+    upload: {
+      maxFileSize: 256 * 1024 * 1024 // 256MB
+    },
     // https://github.com/mscdex/connect-busboy
     'busboy': {
       limits: {

@@ -1,8 +1,11 @@
+import settings from '../config/settings';
 import monitor from '../services/monitor';
 import {
   ERR_BAD_REQUEST,
   ERR_NOT_FOUND,
   ERR_CONFLICT,
+  ERR_PAYLOAD_TOO_LARGE,
+  ERR_UNSUPPORTED_MEDIA_TYPE,
   ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
@@ -39,8 +42,23 @@ export const readFile = (req, res) => {
 };
 
 export const writeFile = (req, res) => {
-  const file = req.body.file || '';
-  const data = req.body.data || '';
+  // The upload kind is taken from the content type rather than inferred from
+  // whether body-parser produced anything: an empty JSON body (`{}`) parses to
+  // an empty object, which is indistinguishable from "not parsed" and would
+  // otherwise be streamed to disk instead of answering "No file specified".
+  const isRawUpload = req.is('application/octet-stream');
+  const isJSON = req.is('application/json');
+
+  if (!isRawUpload && !isJSON) {
+    res.status(ERR_UNSUPPORTED_MEDIA_TYPE).send({
+      msg: 'Unsupported content type'
+    });
+    return;
+  }
+
+  // A raw upload carries only the file's bytes, so its name comes from the
+  // query string.
+  const file = (isRawUpload ? req.query.file : req.body.file) || '';
 
   if (!file) {
     res.status(ERR_BAD_REQUEST).send({
@@ -49,16 +67,30 @@ export const writeFile = (req, res) => {
     return;
   }
 
-  monitor.writeFile(file, data, (err) => {
+  const done = (err) => {
     if (err) {
-      res.status(err.message === 'Watch directory is not configured' ? ERR_BAD_REQUEST : ERR_INTERNAL_SERVER_ERROR).send({
+      let status = ERR_INTERNAL_SERVER_ERROR;
+      if (err.code === 'ETOOLARGE') {
+        status = ERR_PAYLOAD_TOO_LARGE;
+      } else if (err.message === 'Watch directory is not configured') {
+        status = ERR_BAD_REQUEST;
+      }
+      res.status(status).send({
         msg: err.message || 'Failed writing file'
       });
       return;
     }
 
-    res.send({ file: file });
-  });
+    res.send({ file });
+  };
+
+  if (isRawUpload) {
+    const { maxFileSize } = settings.middleware.upload;
+    monitor.writeStream(file, req, { maxFileSize }, done);
+    return;
+  }
+
+  monitor.writeFile(file, req.body.data || '', done);
 };
 
 // The monitor tags its errors with a `code`; anything else is unexpected and
