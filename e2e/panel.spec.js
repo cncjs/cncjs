@@ -41,6 +41,51 @@ test.describe('panel, disconnected', () => {
     await expect(bar(cncjs.page)).toContainText(/disconnected/i);
   });
 
+  test('no connection is said as a warning, not as another setting', async ({ cncjs }) => {
+    await openPanel(cncjs.page);
+
+    // The form, not the words. This used to be written as two more muted
+    // identity lines beside `sterownik · Grbl`, which is the panel's voice
+    // for facts nobody looks at — and it is the reason every control below
+    // is dead. Rejected on sight by Mateusz, 2026-09-21.
+    // Pinned to the settled state first. Without this the case passes during
+    // the window between the page loading and the socket attaching — which is
+    // a pass for the wrong reason, and it would go on passing after somebody
+    // deleted the badge.
+    await expect(bar(cncjs.page)).toContainText(/disconnected/i);
+
+    const message = bar(cncjs.page).getByText(/Brak połączenia/i);
+    await expect(message).toBeVisible();
+
+    const drawn = await message.evaluate((node) => {
+      const style = getComputedStyle(node);
+      return { color: style.color, border: style.borderTopWidth };
+    });
+
+    /*
+     * `--mut` is the muted grey the identity lines are written in. Anything
+     * but that, and a box around it.
+     *
+     * Resolved through an element rather than read off the root: the custom
+     * property is `#6d7886` and `getComputedStyle().color` is
+     * `rgb(109, 120, 134)`, so comparing the two strings is an assertion that
+     * can never fail. It did not fail when the badge was deliberately turned
+     * back into muted text, which is how that was found.
+     */
+    const muted = await cncjs.page.evaluate(() => {
+      const probe = document.createElement('span');
+      probe.style.color = 'var(--mut)';
+      document.body.appendChild(probe);
+      const resolved = getComputedStyle(probe).color;
+      probe.remove();
+      return resolved;
+    });
+
+    expect(muted).toMatch(/^rgb/);
+    expect(drawn.color).not.toBe(muted);
+    expect(drawn.border).not.toBe('0px');
+  });
+
   test('the stop is there and cannot be pressed at nothing', async ({ cncjs }) => {
     await openPanel(cncjs.page);
 

@@ -77,14 +77,16 @@ const Panel = ({ machine, screen, onScreen }) => {
         */}
       <TopBar
         status={machine.status}
-        machine={machine.connected
-          ? (phone
-? []
-: [
+        machine={machine.connected && !phone
+          ? [
             { label: 'sterownik', value: machine.type },
             { label: 'port', value: machine.port },
-          ])
-          : [{ value: 'Brak połączenia' }, { value: 'ze sterownikiem' }]}
+          ]
+          : []}
+        /* Not two more identity lines. The bar's ordinary voice is for facts
+         * that do not change while anyone is working; this is the reason
+         * nothing on the screen below can be pressed. */
+        warning={machine.connected ? null : 'Brak połączenia ze sterownikiem'}
         canStop={machine.connected}
         onStop={emergencyStop}
       />

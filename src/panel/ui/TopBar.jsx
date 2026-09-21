@@ -2,6 +2,22 @@ import Button from './Button';
 import StateChip from './StateChip';
 
 /**
+ * The one thing on this bar that is a problem rather than a fact.
+ *
+ * It used to be written as two more identity lines — same muted type as
+ * `sterownik · Grbl` — which is the form Mateusz rejected on 2026-09-21:
+ * a panel that cannot reach its machine was saying so in the voice it uses
+ * for settings nobody reads. Amber rather than red: there is nothing to stop
+ * and nothing has gone wrong on the machine, but it is the reason every
+ * control below is dead and it has to be found without looking for it.
+ */
+const Warning = ({ children }) => (
+  <span className="ml-1 min-w-0 truncate @3xl/shell:ml-[14px] rounded-ctl border border-amb bg-ambS px-3 py-1 text-base font-semibold uppercase tracking-[0.08em] text-amb fullhd:text-lead">
+    {children}
+  </span>
+);
+
+/**
  * The bar across the top: the machine.
  *
  * What state it is in, what the panel is talking to, and the way to make it
@@ -33,7 +49,7 @@ import StateChip from './StateChip';
  * rail's own width. On a phone there is no rail to line up with and the chip
  * has no box, so it keeps the bar's ordinary margin instead.
  */
-const TopBar = ({ status, machine, canStop, onStop }) => (
+const TopBar = ({ status, machine, warning, canStop, onStop }) => (
   <header className="flex shrink-0 items-center gap-[10px] border-b border-line bg-panel py-2 pl-[10px] pr-[10px] @3xl/shell:pl-1.5">
     <StateChip tone={status.tone}>{status.word}</StateChip>
 
@@ -41,6 +57,13 @@ const TopBar = ({ status, machine, canStop, onStop }) => (
       * separate facts and read faster stacked than joined with a dot; kept
       * against the top edge they sit where a heading would, which is what
       * they are for this strip. */}
+    {/* Outside the identity column rather than inside it. That column is
+      * deliberately held against the top edge, where two stacked lines read
+      * as a heading; one badge up there sits high against a chip and a stop
+      * that are both centred. The two are never on screen together, so this
+      * takes the bar's own centring instead. */}
+    {warning ? <Warning>{warning}</Warning> : null}
+
     <div className="flex min-w-0 flex-1 flex-col items-start justify-start gap-0.5 self-start px-1 pt-0.5 @3xl/shell:px-[14px]">
       {/* What the panel is talking to. It does not change while anyone is
         * working, which is exactly why it belongs on the strip you do not
