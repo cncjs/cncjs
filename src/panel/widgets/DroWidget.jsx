@@ -26,7 +26,7 @@ const DroWidget = ({ machine, label = 'Pozycja robocza', strip = false, classNam
        * answer to "which zero are these measured from", which is the
        * question behind most of the ways a job goes wrong, and as plain
        * muted text it read as a label on the card rather than a reading. */
-      <span className="rounded-ctl border border-line bg-field px-2 py-0.5 text-cap font-semibold uppercase tracking-[0.08em] text-ink">
+      <span className="rounded-ctl border border-line bg-field px-3 py-1 text-base font-semibold uppercase tracking-[0.08em] text-ink">
         {machine.modal.wcs || NO_READING}
       </span>
     )}
