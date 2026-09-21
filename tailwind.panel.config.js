@@ -79,6 +79,10 @@ module.exports = {
         note: ['12px', { lineHeight: '1.5' }],
         base: ['13px', { lineHeight: '1.5' }],
         lead: ['15px', { lineHeight: '1.4' }],
+        // The one word on the panel that has to be read from across the
+        // room without looking for it. The drawing sets the stop at 22px
+        // and everything else well below that.
+        head: ['22px', { lineHeight: '1' }],
         val: ['var(--val)', { lineHeight: '1' }],
         dro: ['var(--dro)', { lineHeight: '0.9' }],
       },

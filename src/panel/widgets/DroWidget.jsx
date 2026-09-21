@@ -18,7 +18,7 @@ import { NO_READING } from '../machine/readings';
  * without it means nothing, and "which zero is this" sits behind most of the
  * ways a job goes wrong.
  */
-const DroWidget = ({ machine, label = 'Pozycja robocza', className = '' }) => (
+const DroWidget = ({ machine, label = 'Pozycja robocza', strip = false, className = '' }) => (
   <Card
     label={label}
     aside={machine.modal.wcs || NO_READING}
@@ -28,6 +28,7 @@ const DroWidget = ({ machine, label = 'Pozycja robocza', className = '' }) => (
     <Dro
       position={machine.position}
       wcs={machine.modal.wcs}
+      strip={strip}
     />
   </Card>
 );

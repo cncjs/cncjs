@@ -11,11 +11,18 @@ import ZHeightWidget from '../widgets/ZHeightWidget';
  * widget is the widget's own business, made from the room this screen gives
  * it — which is what lets the same component be a narrow tile here and a
  * whole screen elsewhere without a second implementation.
+ *
+ * What it does decide is *which* widgets. On a phone the drawing carries
+ * four things — where the tool is, how far through the job, start, and probe
+ * Z — and leaves out the tool and spindle readings, the overrides and the Z
+ * height. That is a judgement about the screen rather than about the space:
+ * a phone is picked up to see where the machine is and to start or stop it,
+ * and the rest is read sitting at the panel.
  */
 const Dashboard = ({ machine, onGo }) => (
   <div className="@container flex min-h-0 flex-1 flex-col gap-gap">
     <div className="flex min-h-0 flex-1 flex-col gap-gap @3xl:flex-row">
-      <ToolWidget machine={machine} className="flex-1">
+      <ToolWidget machine={machine} className="hidden flex-1 @3xl/shell:flex">
         {/*
           * The three places an operator goes next, put where the hand already
           * is rather than making them find the rail.
@@ -44,10 +51,17 @@ const Dashboard = ({ machine, onGo }) => (
           * inside the card when the column is short. */}
         <DroWidget machine={machine} className="shrink-0" />
         <JobWidget machine={machine} className="min-h-0 flex-1" />
+
+        {/* Drawn on the phone as its own full-width control rather than
+          * inside the height card, which the phone does not carry. Dead for
+          * now, like every probe control here. */}
+        <Button tone="soft" disabled className="h-ctl shrink-0 @3xl/shell:hidden">
+          Sonduj Z
+        </Button>
       </div>
     </div>
 
-    <ZHeightWidget machine={machine} />
+    <ZHeightWidget machine={machine} className="hidden @3xl/shell:flex" />
   </div>
 );
 

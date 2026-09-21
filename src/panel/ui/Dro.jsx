@@ -11,25 +11,35 @@ import { formatPosition } from '../machine/readings';
  * Named, so the row is a labelled reading rather than three spans that only
  * mean something to a reader who can see which line they are on.
  */
-export const AxisRow = ({ axis, value, last }) => (
+export const AxisRow = ({ axis, value, last, strip }) => (
   <div
     role="group"
     aria-label={axis}
     className={[
       'flex min-w-0 flex-1 items-center gap-1 overflow-hidden',
-      // Side by side on a phone, stacked at the panel. Three readings across
-      // 350px of phone is the only arrangement that leaves room for anything
-      // below them; three lines down a 400px column is the only one that
-      // leaves the figures large enough to read across a workshop.
-      'flex-col justify-center @3xl/shell:flex-row @3xl/shell:gap-3',
-      last ? '' : 'border-r border-line @3xl/shell:border-b @3xl/shell:border-r-0',
+      // A strip only where the drawing draws one — beside the jog keys on a
+      // phone, where the position is a check and the keys are the subject.
+      // Everywhere else the readout is the subject and stays stacked, with
+      // the figures large enough to read from the machine.
+      strip
+        ? 'flex-col justify-center @3xl/shell:flex-row @3xl/shell:gap-3'
+        : 'flex-row gap-3',
+      // eslint-disable-next-line no-nested-ternary
+      last
+        ? ''
+        : (strip
+          ? 'border-r border-line @3xl/shell:border-b @3xl/shell:border-r-0'
+          : 'border-b border-line'),
     ].join(' ')}
   >
-    <span className="text-cap font-semibold text-mut @3xl/shell:w-5 @3xl/shell:text-lead @3xl/shell:text-ink">
+    <span className={strip
+      ? 'text-cap font-semibold text-mut @3xl/shell:w-5 @3xl/shell:text-lead @3xl/shell:text-ink'
+      : 'w-5 text-lead font-semibold text-ink'}
+    >
       {axis}
     </span>
-    <span className="flex min-w-0 items-baseline gap-1 @3xl/shell:flex-1 @3xl/shell:justify-end">
-      <span className="truncate font-num text-lead font-medium tabular-nums text-ink @3xl/shell:text-val">
+    <span className={`flex min-w-0 items-baseline gap-1 ${strip ? '@3xl/shell:flex-1 @3xl/shell:justify-end' : 'flex-1 justify-end'}`}>
+      <span className={`truncate font-num font-medium tabular-nums text-ink ${strip ? 'text-lead @3xl/shell:text-val' : 'text-val'}`}>
         {formatPosition(value)}
       </span>
       <span className="font-num text-note text-mut">mm</span>
@@ -44,14 +54,15 @@ export const AxisRow = ({ axis, value, last }) => (
  * nothing without it, and "which zero is this" is the question behind most
  * of the ways a job goes wrong.
  */
-const Dro = ({ position, wcs, className = '' }) => (
-  <div className={`flex min-h-0 flex-1 @3xl/shell:flex-col ${className}`}>
+const Dro = ({ position, wcs, strip = false, className = '' }) => (
+  <div className={`flex min-h-0 flex-1 ${strip ? '@3xl/shell:flex-col' : 'flex-col'} ${className}`}>
     {['x', 'y', 'z'].map((axis, index) => (
       <AxisRow
         key={axis}
         axis={axis.toUpperCase()}
         value={position[axis]}
         last={index === 2}
+        strip={strip}
       />
     ))}
     {wcs ? <span className="sr-only">{wcs}</span> : null}

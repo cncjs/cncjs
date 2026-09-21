@@ -22,7 +22,10 @@ const JogScreen = ({ machine }) => (
     <JogWidget machine={machine} className="shrink-0 @3xl:w-jcard" />
 
     <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-gap">
-      <DroWidget machine={machine} label="Pozycja" />
+      {/* A strip on a phone, where the keys are the subject and the position
+        * is the check. Stacked at the panel, where it is the other way
+        * round. The drawing shows both and they are the same widget. */}
+      <DroWidget machine={machine} label="Pozycja" strip />
 
       {/*
         * The handful of facts checked before touching a jog key, on one line

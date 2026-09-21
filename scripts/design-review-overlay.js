@@ -48,10 +48,48 @@
     return here ? here.textContent.trim() : document.title;
   };
 
+  // Which card the element sits in, by the caption the card carries. "The
+  // stepper" is ambiguous on a screen with two of them; "the stepper in
+  // PRĘDKOŚĆ Z" is not.
+  const cardOf = (el) => {
+    const section = el.closest('section');
+    const head = section && section.querySelector('h2');
+    if (head) { return head.textContent.trim().slice(0, 40); }
+    // Some cards carry no caption — the drawing gives the jog card none — so
+    // fall back to the nearest labelled group, which is what an operator would
+    // name it anyway.
+    const group = el.closest('[role="group"][aria-label]');
+    return group ? group.getAttribute('aria-label').slice(0, 40) : '';
+  };
+
+  // What the control is currently saying or doing. A note that reads "this is
+  // wrong" against a button is answerable; against a button whose state nobody
+  // recorded it is a second round of questions.
+  const stateOf = (el) => {
+    const bits = [];
+    const pressed = el.getAttribute('aria-pressed');
+    const current = el.getAttribute('aria-current');
+    if (pressed) { bits.push(pressed === 'true' ? 'wybrany' : 'niewybrany'); }
+    if (current) { bits.push('bieżący'); }
+    if (el.disabled) { bits.push('wyłączony'); }
+    const output = el.tagName === 'OUTPUT' ? el : el.querySelector('output');
+    if (output) { bits.push(`wartość ${output.textContent.trim().slice(0, 24)}`); }
+    return bits.join(', ');
+  };
+
   const describe = (el) => {
     const box = el.getBoundingClientRect();
+    const root = document.documentElement;
     return {
+      // The frame being looked at. A note about spacing means one thing at
+      // 1024 and another at 390, and the same sentence arrives for both.
+      target: root.dataset.target || 'base',
+      theme: root.querySelector('[data-theme]')
+        ? root.querySelector('[data-theme]').dataset.theme
+        : 'light',
       screen: screenOf(),
+      card: cardOf(el),
+      state: stateOf(el),
       path: pathOf(el),
       tag: el.tagName.toLowerCase(),
       // The Tailwind class string is how a component is found in the source.
@@ -288,7 +326,7 @@
       ? `${box.bottom + 8}px`
       : `${Math.max(8, box.top - FORM.h - 8)}px`;
     form.innerHTML = `
-      <div class="what">${where.screen} · &lt;${where.tag}&gt; ${where.label || ''}</div>
+      <div class="what">${where.target} · ${where.screen}${where.card ? ` · ${where.card}` : ''} · &lt;${where.tag}&gt; ${where.label || ''}${where.state ? ` · ${where.state}` : ''}</div>
       <textarea placeholder="Co jest nie tak w tym miejscu?"></textarea>
       <div class="row"><button class="cancel">Anuluj</button><button class="save">Zapisz</button></div>`;
     document.body.appendChild(form);
