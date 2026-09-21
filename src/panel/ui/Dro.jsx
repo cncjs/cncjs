@@ -16,7 +16,11 @@ export const AxisRow = ({ axis, value, last, strip }) => (
     role="group"
     aria-label={axis}
     className={[
-      'flex min-w-0 flex-1 items-center gap-1 overflow-hidden',
+      // A floor, not a height. Left to the type alone the rows sat closer
+      // together than anything else on the panel; told to fill the card they
+      // went to 67px against the drawing's 56. `--ctl` is the panel's own
+      // touch height and lands between the two.
+      'flex min-h-ctl min-w-0 flex-1 items-center gap-1 overflow-hidden',
       // A strip only where the drawing draws one — beside the jog keys on a
       // phone, where the position is a check and the keys are the subject.
       // Everywhere else the readout is the subject and stays stacked, with
