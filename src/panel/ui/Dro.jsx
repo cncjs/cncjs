@@ -72,8 +72,13 @@ export const AxisRow = ({ axis, value, machineValue, last, strip }) => (
         * not the axis's, and it is stated where there is room for it. */}
       <span className={`font-num text-note text-mut ${strip ? 'hidden @3xl/shell:inline' : ''}`}>mm</span>
       {/* No unit of its own: it is the same millimetres measured from somewhere
-        * else, and saying so twice a row adds nothing. */}
-      <span className="col-start-1 justify-self-end truncate font-num text-note tabular-nums text-mut">
+        * else, and saying so twice a row adds nothing.
+        *
+        * Centred under the work reading on the strip, where the column is a
+        * column and the two numbers read as one stacked pair. At the panel it
+        * keeps its right edge on the digits above it, which is what makes the
+        * two comparable there. */}
+      <span className={`col-start-1 truncate font-num text-note tabular-nums text-mut ${strip ? 'justify-self-center @3xl/shell:justify-self-end' : 'justify-self-end'}`}>
         {formatPosition(machineValue)}
       </span>
     </span>
