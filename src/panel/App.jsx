@@ -7,7 +7,6 @@ import Dashboard from './screens/Dashboard';
 import JogScreen from './screens/JogScreen';
 import { useMachine } from './machine/useMachine';
 import { emergencyStop } from './machine/commands';
-import { NO_READING } from './machine/readings';
 
 /**
  * Every destination the mockup draws, with `ready` saying which ones exist.
@@ -81,8 +80,9 @@ const App = () => {
     <div className="@container/shell flex h-full flex-col bg-bg text-ink">
       <TopBar
         status={machine.status}
-        file={machine.job ? machine.job.name : ''}
-        note={machine.job ? `wczytany, ${machine.job.received > 0 ? 'w toku' : 'nie uruchomiony'}` : null}
+        machine={machine.connected
+          ? [machine.type, machine.port]
+          : ['Brak połączenia', 'ze sterownikiem']}
         canStop={machine.connected}
         onStop={emergencyStop}
       />
@@ -119,11 +119,10 @@ const App = () => {
         className="@3xl/shell:hidden"
       />
       <StatusBar
-        message={machine.connected
-          ? `${machine.type} · ${machine.port} · układ ${machine.modal.wcs || NO_READING}`
-          : 'Brak połączenia ze sterownikiem'}
+        job={machine.job}
         error={machine.error}
         canStart={false}
+        canPause={false}
         className="hidden @3xl/shell:flex"
       />
     </div>

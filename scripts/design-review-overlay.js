@@ -109,17 +109,27 @@
 
   const style = document.createElement('style');
   style.textContent = `
-    #rv-bar { position: fixed; z-index: 2147483000; right: 16px; bottom: 16px;
-      display: flex; gap: 8px; align-items: center; background: #171d25; color: #e6ecf3;
-      border: 1px solid #3a424c; border-radius: 6px; padding: 8px 10px;
-      font: 13px/1.3 system-ui, sans-serif; box-shadow: 0 6px 24px rgba(0,0,0,.4); }
+    /* A column against the right edge, centred. Along the bottom it sat over
+       the very thing being reviewed — the tab bar on a phone, the status line
+       at the panel — and the frame had to be pushed aside to clear it. */
+    #rv-bar { position: fixed; z-index: 2147483000; right: 0; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 8px; align-items: stretch;
+      background: #171d25; color: #e6ecf3; width: 132px;
+      border: 1px solid #3a424c; border-right: none; border-radius: 6px 0 0 6px;
+      padding: 10px; font: 13px/1.3 system-ui, sans-serif;
+      box-shadow: -6px 0 24px rgba(0,0,0,.4); }
     #rv-bar button { font: inherit; cursor: pointer; border-radius: 4px; padding: 6px 10px;
       border: 1px solid #3a424c; background: #2c323a; color: #e6ecf3; }
     #rv-bar button.on { background: #e04a4a; border-color: #e04a4a; }
     #rv-bar .count { color: #8b97a6; }
-    #rv-bar .sep { width: 1px; height: 22px; background: #3a424c; }
-    #rv-bar .targets { display: flex; gap: 4px; }
+    #rv-bar .sep { height: 1px; width: 100%; background: #3a424c; }
+    #rv-bar .targets { display: flex; flex-direction: column; gap: 4px; }
+    #rv-bar .count, #rv-bar .scale { text-align: center; }
     #rv-bar .targets button.on { background: #1557c0; border-color: #1557c0; }
+    #rv-bar select { font: inherit; cursor: pointer; border-radius: 4px; padding: 6px 8px;
+      border: 1px solid #3a424c; background: #2c323a; color: #e6ecf3; }
+    #rv-bar select.on { background: #1557c0; border-color: #1557c0; }
     #rv-bar .scale { font: 600 12px/1 'IBM Plex Mono', monospace; min-width: 62px; }
     .rv-hover { outline: 2px solid #e04a4a !important; outline-offset: -2px !important; }
     #rv-sheet { position: fixed; inset: 0; z-index: 2147482500; cursor: crosshair;
@@ -150,7 +160,14 @@
     <span class="targets">
       <button data-target="base" class="on" title="1024 x 768">1024</button>
       <button data-target="fullhd" title="1920 x 1080">Full HD</button>
-      <button data-target="phone" title="390 x 844">Telefon</button>
+      <select id="rv-phone" title="Telefon">
+        <option value="">Telefon…</option>
+        <option value="phone-360">360 x 800</option>
+        <option value="phone-390">390 x 844</option>
+        <option value="phone-393">393 x 873</option>
+        <option value="phone-412">412 x 915</option>
+        <option value="phone-430">430 x 932</option>
+      </select>
     </span>
     <button id="rv-theme" title="Jasny / ciemny motyw">Motyw</button>
     <span class="scale" id="rv-scale"></span>
@@ -207,9 +224,19 @@
    * opens one sized to the target itself.
    */
   const TARGETS = {
-    base: { w: 1024, h: 768 },
-    fullhd: { w: 1920, h: 1080 },
-    phone: { w: 390, h: 844 },
+    base: { w: 1024, h: 768, attr: '' },
+    fullhd: { w: 1920, h: 1080, attr: 'fullhd' },
+    /*
+     * Real handsets, not one stand-in for all of them. The panel has to fill
+     * whatever it is given, and a layout that fits 844 of height can still
+     * leave a band of nothing at 932 — which is how the phone came to be
+     * reported twice, once at each end.
+     */
+    'phone-360': { w: 360, h: 800, attr: 'phone' },
+    'phone-390': { w: 390, h: 844, attr: 'phone' },
+    'phone-393': { w: 393, h: 873, attr: 'phone' },
+    'phone-412': { w: 412, h: 915, attr: 'phone' },
+    'phone-430': { w: 430, h: 932, attr: 'phone' },
   };
 
   const mount = document.getElementById('panel-root');
@@ -225,17 +252,20 @@
     const target = TARGETS[current];
 
     // `base` is the drawing's default and declares no attribute of its own.
-    if (current === 'base') {
-      delete document.documentElement.dataset.target;
+    if (target.attr) {
+      document.documentElement.dataset.target = target.attr;
     } else {
-      document.documentElement.dataset.target = current;
+      delete document.documentElement.dataset.target;
     }
 
-    const scale = Math.min(
-      (window.innerWidth - 40) / target.w,
-      (window.innerHeight - 40) / target.h,
-      1
-    );
+    // The bar owns a strip down the right, so the frame is centred in what is
+    // left rather than in the window — otherwise it sits under the controls at
+    // the sizes where it is widest.
+    const BAR = 150;
+    const room = { w: window.innerWidth - BAR - 40, h: window.innerHeight - 40 };
+    const scale = Math.min(room.w / target.w, room.h / target.h, 1);
+    const left = Math.max(20, Math.round((room.w - target.w * scale) / 2) + 20);
+    const top = Math.max(28, Math.round((room.h - target.h * scale) / 2) + 20);
     /*
      * Everything outside the frame is dimmed by a shadow large enough to reach
      * any edge, so where the device ends is never a guess. A hairline border
@@ -244,13 +274,13 @@
      */
     mount.style.cssText = `width:${target.w}px;height:${target.h}px;`
       + `transform:scale(${scale});transform-origin:top left;`
-      + 'position:absolute;top:28px;left:20px;'
+      + `position:absolute;top:${top}px;left:${left}px;`
       + 'outline:2px solid #e04a4a;box-shadow:0 0 0 100vmax rgba(10,14,20,.62);';
     document.body.style.overflow = 'hidden';
 
     sizeTag.textContent = `${target.w} x ${target.h}`;
-    sizeTag.style.left = '20px';
-    sizeTag.style.top = `${28 - 20}px`;
+    sizeTag.style.left = `${left}px`;
+    sizeTag.style.top = `${top - 20}px`;
 
     const exact = scale > 0.999;
     scaleNote.textContent = exact ? '1:1' : `skala ${Math.round(scale * 100)}%`;
@@ -281,12 +311,27 @@
     if (win.document.readyState === 'complete') { setTimeout(fit, 300); } else { win.addEventListener('load', () => setTimeout(fit, 300)); }
   };
 
+  const phonePicker = bar.querySelector('#rv-phone');
+
+  const markChosen = (name) => {
+    bar.querySelectorAll('[data-target]')
+      .forEach((b) => b.classList.toggle('on', b.dataset.target === name));
+    const onPhone = name.startsWith('phone');
+    phonePicker.classList.toggle('on', onPhone);
+    phonePicker.value = onPhone ? name : '';
+  };
+
   bar.querySelectorAll('[data-target]').forEach((button) => {
     button.addEventListener('click', () => {
-      bar.querySelectorAll('[data-target]')
-        .forEach((b) => b.classList.toggle('on', b === button));
+      markChosen(button.dataset.target);
       setTarget(button.dataset.target);
     });
+  });
+
+  phonePicker.addEventListener('change', () => {
+    if (!phonePicker.value) { return; }
+    markChosen(phonePicker.value);
+    setTarget(phonePicker.value);
   });
 
   // ---- pins --------------------------------------------------------------
@@ -502,8 +547,7 @@
 
   let remembered = 'base';
   try { remembered = window.sessionStorage.getItem(KEEP) || 'base'; } catch (err) { remembered = 'base'; }
-  bar.querySelectorAll('.targets button')
-    .forEach((b) => b.classList.toggle('on', b.dataset.target === remembered));
+  markChosen(TARGETS[remembered] ? remembered : 'base');
 
   let theme = 'light';
   try { theme = window.sessionStorage.getItem(KEEP_THEME) || 'light'; } catch (err) { theme = 'light'; }

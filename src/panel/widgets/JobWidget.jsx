@@ -55,7 +55,10 @@ const JobWidget = ({ machine, label = 'Przebieg zadania', className = '' }) => {
         </span>
       </div>
 
-      <div className="flex gap-3">
+      {/* Only where there is no status bar to carry them. At the panel the
+        * job lives along the bottom, and two Starts on one screen is one
+        * too many. */}
+      <div className="flex gap-3 @3xl/shell:hidden">
         <Button tone="go" disabled className="h-chiph min-w-0 flex-1">Start zadania</Button>
         <Button disabled className="h-chiph min-w-0">Pauza</Button>
       </div>

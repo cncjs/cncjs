@@ -2,8 +2,13 @@ import Button from './Button';
 import StateChip from './StateChip';
 
 /**
- * The bar across the top: what the machine is, what it is loaded with, and
- * the way to make it stop.
+ * The bar across the top: the machine.
+ *
+ * What state it is in, what the panel is talking to, and the way to make it
+ * stop. One subject a strip — the job lives along the bottom, with the file
+ * it is running and the button that starts it. Before, the file was up here
+ * and its Start was down there, which put a cause and its effect at opposite
+ * ends of the screen.
  *
  * The stop is held against the right-hand edge and is the only solid red on
  * the panel. On a machine the most dangerous control gets the most
@@ -28,18 +33,27 @@ import StateChip from './StateChip';
  * rail's own width. On a phone there is no rail to line up with and the chip
  * has no box, so it keeps the bar's ordinary margin instead.
  */
-const TopBar = ({ status, file, note, canStop, onStop }) => (
+const TopBar = ({ status, machine, canStop, onStop }) => (
   <header className="flex shrink-0 items-center gap-[10px] border-b border-line bg-panel py-2 pl-[10px] pr-[10px] @3xl/shell:pl-1.5">
     <StateChip tone={status.tone}>{status.word}</StateChip>
 
-    <div className="flex min-w-0 flex-1 items-center gap-[10px] px-1 @3xl/shell:px-[14px]">
-      {/* Named when there is a file and said plainly when there is not. A
-        * lone dash on an otherwise empty strip reads as a bar whose purpose
-        * is unclear, which is exactly how it was reported. */}
-      <span className="truncate font-num text-note text-mut fullhd:text-lead @3xl/shell:text-base">
-        {file || 'brak wczytanego pliku'}
-      </span>
-      {note ? <span className="hidden truncate font-num text-base text-acc fullhd:text-lead @3xl/shell:inline">· {note}</span> : null}
+    {/* Top left, a line each. Which controller and which port are two
+      * separate facts and read faster stacked than joined with a dot; kept
+      * against the top edge they sit where a heading would, which is what
+      * they are for this strip. */}
+    <div className="flex min-w-0 flex-1 flex-col items-start justify-start gap-0.5 self-start px-1 pt-0.5 @3xl/shell:px-[14px]">
+      {/* What the panel is talking to. It does not change while anyone is
+        * working, which is exactly why it belongs on the strip you do not
+        * look at — and why it was the wrong thing to put on the one that
+        * reports the job. */}
+      {machine.map((line) => (
+        <span
+          key={line}
+          className="max-w-full truncate font-num text-base leading-tight text-mut fullhd:text-head @3xl/shell:text-lead"
+        >
+          {line}
+        </span>
+      ))}
     </div>
 
     <Button
