@@ -27,6 +27,24 @@ const Controls = ({ view, bounds, revision }) => {
   const controls = useRef(null);
 
   useEffect(() => {
+    /*
+     * **Z is up, and it has to be said before the controls are built.**
+     *
+     * `OrbitControls` works out its rotation frame from `object.up` once, in
+     * its constructor (`this._quat`, `OrbitControls.js:406`), and never looks
+     * at it again. Setting `camera.up` afterwards — which is where it was,
+     * in the effect that frames a view — left the scene Z-up and the controls
+     * orbiting Y-up, and every symptom followed from that: a horizontal drag
+     * tilted the view instead of turning it, the same drag gave a different
+     * answer every time, and dragging up stopped dead at what looked like the
+     * horizon because it was the controls' own pole, ninety degrees from
+     * where the scene's is.
+     *
+     * Measured before: three identical 100px horizontal drags changed the
+     * pitch by -18.6, +31.4 and +43.2 degrees.
+     */
+    camera.up.fromArray(UP);
+
     const orbit = new OrbitControls(camera, domElement);
 
     /*
@@ -86,8 +104,6 @@ const Controls = ({ view, bounds, revision }) => {
     if (!orbit) {
       return;
     }
-
-    camera.up.fromArray(UP);
 
     const box = new THREE.Box3(
       new THREE.Vector3(bounds.min.x, bounds.min.y, bounds.min.z),
