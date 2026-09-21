@@ -13,8 +13,8 @@ import ZHeightWidget from '../widgets/ZHeightWidget';
  * whole screen elsewhere without a second implementation.
  */
 const Dashboard = ({ machine, onGo }) => (
-  <div className="flex min-h-0 flex-1 flex-col gap-gap">
-    <div className="flex min-h-0 flex-1 gap-gap">
+  <div className="@container flex min-h-0 flex-1 flex-col gap-gap">
+    <div className="flex min-h-0 flex-1 flex-col gap-gap @3xl:flex-row">
       <ToolWidget machine={machine} className="flex-1">
         {/*
           * The three places an operator goes next, put where the hand already
@@ -38,7 +38,7 @@ const Dashboard = ({ machine, onGo }) => (
         </div>
       </ToolWidget>
 
-      <div className="flex w-side shrink-0 flex-col gap-gap">
+      <div className="flex min-h-0 flex-col gap-gap @3xl:w-side @3xl:shrink-0">
         {/* The readout is sized by its own type and does not give; the job
           * card takes whatever is left, which is what keeps its controls
           * inside the card when the column is short. */}

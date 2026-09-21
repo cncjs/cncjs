@@ -15,11 +15,21 @@ export const AxisRow = ({ axis, value, last }) => (
   <div
     role="group"
     aria-label={axis}
-    className={`flex flex-1 items-center gap-3 ${last ? '' : 'border-b border-line'}`}
+    className={[
+      'flex min-w-0 flex-1 items-center gap-1 overflow-hidden',
+      // Side by side on a phone, stacked at the panel. Three readings across
+      // 350px of phone is the only arrangement that leaves room for anything
+      // below them; three lines down a 400px column is the only one that
+      // leaves the figures large enough to read across a workshop.
+      'flex-col justify-center @3xl/shell:flex-row @3xl/shell:gap-3',
+      last ? '' : 'border-r border-line @3xl/shell:border-b @3xl/shell:border-r-0',
+    ].join(' ')}
   >
-    <span className="w-5 text-lead font-semibold text-ink">{axis}</span>
-    <span className="flex flex-1 items-baseline justify-end gap-1">
-      <span className="font-num text-val font-medium tabular-nums text-ink">
+    <span className="text-cap font-semibold text-mut @3xl/shell:w-5 @3xl/shell:text-lead @3xl/shell:text-ink">
+      {axis}
+    </span>
+    <span className="flex min-w-0 items-baseline gap-1 @3xl/shell:flex-1 @3xl/shell:justify-end">
+      <span className="truncate font-num text-lead font-medium tabular-nums text-ink @3xl/shell:text-val">
         {formatPosition(value)}
       </span>
       <span className="font-num text-note text-mut">mm</span>
@@ -35,7 +45,7 @@ export const AxisRow = ({ axis, value, last }) => (
  * of the ways a job goes wrong.
  */
 const Dro = ({ position, wcs, className = '' }) => (
-  <div className={`flex min-h-0 flex-1 flex-col ${className}`}>
+  <div className={`flex min-h-0 flex-1 @3xl/shell:flex-col ${className}`}>
     {['x', 'y', 'z'].map((axis, index) => (
       <AxisRow
         key={axis}
