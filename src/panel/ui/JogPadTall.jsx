@@ -17,7 +17,10 @@ const Key = ({ children, onClick, disabled, label, quiet }) => (
     disabled={disabled}
     aria-label={label}
     className={[
-      'flex min-h-jbtnh min-w-0 flex-col items-center justify-center rounded-ctl border leading-tight',
+      // Square. A key that is taller than it is wide reads as a slot rather
+      // than a button, and a thumb aims at the middle of a square without
+      // having to look at it.
+      'flex aspect-square min-h-jbtnh w-full min-w-0 flex-col items-center justify-center rounded-ctl border leading-tight',
       quiet
         ? 'border-line bg-field text-cap font-medium text-mut hover:border-acc hover:text-acc'
         : 'border-line bg-surf text-head font-semibold text-acc hover:border-acc',
@@ -31,7 +34,7 @@ const Key = ({ children, onClick, disabled, label, quiet }) => (
 const HOUSE = <span aria-hidden="true">&#8962;</span>;
 
 const JogPadTall = ({ onJog, onHome, onPark, disabled, canHome }) => (
-  <div className="flex min-h-0 flex-1 flex-col gap-2" role="group" aria-label="Jog">
+  <div className="flex min-h-0 flex-col gap-2" role="group" aria-label="Jog">
     {/*
       * `minmax(--jbtnh, 1fr)` rather than `1fr`. Plain fractions let a row be
       * shorter than the key it holds, and the keys then overlapped each other
@@ -39,7 +42,7 @@ const JogPadTall = ({ onJog, onHome, onPark, disabled, canHome }) => (
       * not a cosmetic fault. The floor is the key's own height and the
       * fraction is what spends whatever is left over on making them bigger.
       */}
-    <div className="grid min-h-0 flex-1 grid-cols-3 grid-rows-[repeat(3,minmax(var(--jbtnh),1fr))] gap-2">
+    <div className="mx-auto grid min-h-0 w-full grid-cols-3 justify-items-center gap-2">
       <span />
       <Key onClick={() => onJog('y', 1)} disabled={disabled} label="Y+">Y+</Key>
       <span />
@@ -51,7 +54,7 @@ const JogPadTall = ({ onJog, onHome, onPark, disabled, canHome }) => (
       <Key onClick={onPark} disabled={disabled || !canHome} label="Park" quiet>Park</Key>
     </div>
 
-    <div className="grid min-h-0 grid-cols-3 grid-rows-[minmax(var(--jbtnh),1fr)] gap-2">
+    <div className="mx-auto grid min-h-0 w-full grid-cols-3 justify-items-center gap-2">
       <Key onClick={() => onJog('z', 1)} disabled={disabled} label="Z+">Z+</Key>
       <Key onClick={() => onHome('z')} disabled={disabled || !canHome} label="Bazuj Z" quiet>{HOUSE}<span>Z</span></Key>
       <Key onClick={() => onJog('z', -1)} disabled={disabled} label="Z−">Z&minus;</Key>

@@ -21,9 +21,14 @@ import StateChip from './StateChip';
  * No theme switch. It is a setting, and a setting on the bar that carries
  * the stop is a control competing for the one place nobody should have to
  * look twice at.
+ *
+ * No left padding at the panel: the state chip is the top of the same
+ * column the rail continues below it, and an indent would break the line
+ * they make together. On a phone there is no rail to line up with and the
+ * chip has no box, so it keeps its margin from the edge.
  */
 const TopBar = ({ status, file, note, canStop, onStop }) => (
-  <header className="flex shrink-0 items-center gap-[10px] border-b border-line bg-panel px-[10px] py-2">
+  <header className="flex shrink-0 items-center gap-[10px] border-b border-line bg-panel py-2 pl-[10px] pr-[10px] @3xl/shell:pl-0">
     <StateChip tone={status.tone}>{status.word}</StateChip>
 
     <div className="flex min-w-0 flex-1 items-center gap-[10px] px-1 @3xl/shell:px-[14px]">

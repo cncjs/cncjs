@@ -41,7 +41,10 @@ const StateChip = ({ tone = 'inactive', children }) => {
       className={[
         'flex shrink-0 items-center gap-[9px]',
         'min-w-chip border-transparent bg-transparent px-0',
-        '@3xl/shell:h-btnh @3xl/shell:w-chipw @3xl/shell:justify-center',
+        // `--rail`, not `--chipw`: the rail starts directly beneath this and
+        // two nearly-equal widths stacked read as a mistake rather than a
+        // coincidence. Same width, same left edge, one column down the side.
+        '@3xl/shell:h-btnh @3xl/shell:w-rail @3xl/shell:justify-center',
         '@3xl/shell:rounded-ctl @3xl/shell:border @3xl/shell:px-2',
         t.edge,
       ].join(' ')}

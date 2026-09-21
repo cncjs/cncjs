@@ -17,12 +17,16 @@ import Stepper from './Stepper';
  * The summary carries the current values. Folded away without them this would
  * hide the one thing an operator checks before pressing a key — how far the
  * next press moves the machine.
+ *
+ * Closed it is a control and has an edge. Open it is a part of the card it
+ * lives in, so the edge goes: a bordered box inside a bordered box is two
+ * frames around one thing.
  */
 const AxisDrawer = ({
   title, steps, step, onStep, speed, onSpeed, fine, coarse, min, max, disabled,
 }) => (
-  <details className="group shrink-0 rounded-ctl border border-line bg-surf">
-    <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2">
+  <details className="group shrink-0 rounded-ctl border border-line bg-surf open:border-transparent open:bg-transparent">
+    <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2 group-open:px-0">
       <span className="text-cap font-semibold uppercase tracking-[0.08em] text-ink">{title}</span>
       <span className="flex-1" />
       <span className="font-num text-note text-mut">
@@ -37,7 +41,7 @@ const AxisDrawer = ({
       </span>
     </summary>
 
-    <div className="flex flex-col gap-2.5 border-t border-line px-3 py-3">
+    <div className="flex flex-col gap-2.5 px-0 pb-1 pt-2">
       <SegmentedChoice
         options={steps}
         value={step}
