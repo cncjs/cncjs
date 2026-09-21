@@ -27,9 +27,18 @@ export const AxisRow = ({ axis, value, machineValue, last, strip }) => (
         // A column of the strip: label above, figures below, a hairline
         // between it and the next axis.
         ? `flex-col justify-center ${last ? '' : 'border-r border-line'}`
-        // A line of the readout: label left, figures right, and a floor under
-        // the row so three of them cannot close up on each other.
-        : `min-h-ctl flex-row gap-3 ${last ? '' : 'border-b border-line'}`,
+        /*
+         * A line of the readout: label left, figures right.
+         *
+         * `basis-ctl` rather than `min-h-ctl`. As a hard floor it asked for
+         * 52px a row whatever the card had, and on the dashboard at 768 the
+         * card has 135 for three of them — so the third row finished two
+         * pixels below the bottom of the card it was drawn in, which is how it
+         * was reported. A basis is a preference: the rows are 52 where there is
+         * room and give way together where there is not, and never leave the
+         * card they belong to.
+         */
+        : `flex-row gap-3 basis-ctl ${last ? '' : 'border-b border-line'}`,
     ].join(' ')}
   >
     <span className={strip ? 'text-cap font-semibold text-mut' : 'w-5 text-lead font-semibold text-ink'}>
