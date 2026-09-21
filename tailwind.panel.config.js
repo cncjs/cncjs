@@ -47,6 +47,13 @@ module.exports = {
       redS: 'color-mix(in srgb, var(--red) 12%, var(--surf))',
       ambS: 'color-mix(in srgb, var(--amb) 12%, var(--surf))',
       mutS: 'color-mix(in srgb, var(--mut) 10%, var(--surf))',
+      /*
+       * The dim behind a sheet. Mixed rather than written as `bg-ink/45`,
+       * because an opacity modifier needs colour channels and every colour
+       * here is a whole `var()` — the modifier silently produces nothing,
+       * which is what a transparent scrim looked like.
+       */
+      scrim: 'color-mix(in srgb, var(--ink) 45%, transparent)',
       red: 'var(--red)',
       grn: 'var(--grn)',
       amb: 'var(--amb)',

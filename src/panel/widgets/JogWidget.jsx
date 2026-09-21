@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import AxisControls from '../ui/AxisControls';
-import AxisDrawer from '../ui/AxisDrawer';
+import AxisSummary from '../ui/AxisSummary';
 import Card from '../ui/Card';
 import JogPad from '../ui/JogPad';
 import JogPadTall from '../ui/JogPadTall';
+import SegmentedChoice from '../ui/SegmentedChoice';
+import Sheet from '../ui/Sheet';
+import Stepper from '../ui/Stepper';
 import { jog, XY_STEPS, Z_STEPS } from '../machine/jog';
 
 /**
@@ -32,6 +35,9 @@ const JogWidget = ({ machine, className = '' }) => {
   const [zStep, setZStep] = useState(1);
   const [xySpeed, setXySpeed] = useState(1500);
   const [zSpeed, setZSpeed] = useState(600);
+  // Which axis group is being set, on a phone. Nothing on the panel, where
+  // both are open on the screen already.
+  const [editing, setEditing] = useState(null);
 
   const move = (axis, sign) => jog({
     type,
@@ -77,6 +83,8 @@ const JogWidget = ({ machine, className = '' }) => {
     disabled: !connected,
   };
 
+  const open = editing === 'xy' ? xy : (editing === 'z' ? z : null);
+
   return (
     <Card className={`min-h-0 overflow-hidden ${className}`} bodyClassName="gap-0">
       {/* At the panel: the keys at their drawn size, both groups open below
@@ -93,14 +101,60 @@ const JogWidget = ({ machine, className = '' }) => {
         </div>
       </div>
 
-      {/* On a phone: the keys take the height, the settings take a line each. */}
+      {/* On a phone: the keys take the height, the settings take a line each.
+        * Tapping a line opens a sheet rather than unfolding in place, because
+        * unfolding shrinks the pad and the keys are then somewhere else — and
+        * they are hit by a thumb while the eyes are on the cutter. A wider gap
+        * than the one between the keys, so the settings read as a separate
+        * block rather than a fifth row of the pad. */}
       <div className="flex min-h-0 flex-1 flex-col gap-gap @3xl/shell:hidden">
         <JogPadTall {...keys} />
-        {/* A wider gap than the one between the keys, so the settings read as a
-          * separate block rather than a fifth row of the pad. */}
-        <AxisDrawer {...xy} />
-        <AxisDrawer {...z} />
+        <AxisSummary
+          title={xy.title}
+          step={xyStep}
+          speed={xySpeed}
+          onOpen={() => setEditing('xy')}
+          disabled={!connected}
+        />
+        <AxisSummary
+          title={z.title}
+          step={zStep}
+          speed={zSpeed}
+          onOpen={() => setEditing('z')}
+          disabled={!connected}
+        />
       </div>
+
+      {open ? (
+        <Sheet title={`Jog ${open.title}`} onClose={() => setEditing(null)}>
+          <div className="flex flex-col gap-2.5">
+            <span className="text-label font-semibold uppercase leading-none text-ink">
+              Krok <span className="normal-case text-mut">mm</span>
+            </span>
+            <SegmentedChoice
+              options={open.steps}
+              value={open.step}
+              onChange={open.onStep}
+              label={`Krok ${open.title}`}
+              unit="mm"
+            />
+          </div>
+          <div className="flex flex-col gap-2.5">
+            <span className="text-label font-semibold uppercase leading-none text-ink">
+              Prędkość <span className="normal-case text-mut">mm/min</span>
+            </span>
+            <Stepper
+              value={open.speed}
+              onChange={open.onSpeed}
+              fine={open.fine}
+              coarse={open.coarse}
+              min={open.min}
+              max={open.max}
+              label={`Prędkość ${open.title}`}
+            />
+          </div>
+        </Sheet>
+      ) : null}
     </Card>
   );
 };
