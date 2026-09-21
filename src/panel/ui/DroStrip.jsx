@@ -11,6 +11,11 @@ import { formatPosition } from '../machine/readings';
  * No unit. The millimetres are the machine's, not the axis's, and repeating
  * them three times across a hundred pixels a column is what pushed the widest
  * reading to within three pixels of the divider beside it.
+ *
+ * The figures follow the room the strip has. That is not the same question as
+ * which shape the screen asked for — the shape is the screen's, and stays
+ * its; how large the digits are inside that shape is a fact about the width
+ * available, and a strip 478px wide can carry more than one at 350.
  */
 const Column = ({ axis, value, machineValue, last }) => (
   <div
@@ -22,7 +27,7 @@ const Column = ({ axis, value, machineValue, last }) => (
     ].join(' ')}
   >
     <span className="text-cap font-semibold text-mut">{axis}</span>
-    <span className="truncate font-num text-read font-medium tabular-nums text-ink">
+    <span className="truncate font-num text-read font-medium tabular-nums text-ink @sm:text-head">
       {formatPosition(value)}
     </span>
     {/* Centred under the work reading, where the column is a column and the
@@ -34,7 +39,7 @@ const Column = ({ axis, value, machineValue, last }) => (
 );
 
 const DroStrip = ({ position, machinePosition, className = '' }) => (
-  <div className={`flex min-h-0 flex-1 flex-row ${className}`}>
+  <div className={`@container flex min-h-0 flex-1 flex-row ${className}`}>
     {['x', 'y', 'z'].map((axis, index) => (
       <Column
         key={axis}

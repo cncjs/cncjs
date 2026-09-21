@@ -34,6 +34,19 @@ module.exports = {
       mut: 'var(--mut)',
       acc: 'var(--acc)',
       accS: 'var(--accS)',
+      /*
+       * The state colours, quietened to a wash.
+       *
+       * Derived here rather than added to the token sheet, because they are
+       * not decisions — they are the same four colours the sheet already
+       * names, mixed into the surface behind them. `--accS` is the drawing's
+       * own example of the idea; these are the rest of the set, and they
+       * follow the theme because their inputs do.
+       */
+      grnS: 'color-mix(in srgb, var(--grn) 12%, var(--surf))',
+      redS: 'color-mix(in srgb, var(--red) 12%, var(--surf))',
+      ambS: 'color-mix(in srgb, var(--amb) 12%, var(--surf))',
+      mutS: 'color-mix(in srgb, var(--mut) 10%, var(--surf))',
       red: 'var(--red)',
       grn: 'var(--grn)',
       amb: 'var(--amb)',

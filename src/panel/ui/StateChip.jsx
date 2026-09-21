@@ -5,10 +5,10 @@
 // text: a class assembled at runtime from a prefix and a colour is a class it
 // never sees and never generates.
 const TONES = {
-  running: { text: 'text-grn', dot: 'bg-grn', edge: '@3xl/shell:border-grn' },
-  ready: { text: 'text-amb', dot: 'bg-amb', edge: '@3xl/shell:border-amb' },
-  stopped: { text: 'text-red', dot: 'bg-red', edge: '@3xl/shell:border-red' },
-  inactive: { text: 'text-mut', dot: 'bg-mut', edge: '@3xl/shell:border-line' },
+  running: { text: 'text-grn', dot: 'bg-grn', edge: '@3xl/shell:border-grn @3xl/shell:bg-grnS' },
+  ready: { text: 'text-amb', dot: 'bg-amb', edge: '@3xl/shell:border-amb @3xl/shell:bg-ambS' },
+  stopped: { text: 'text-red', dot: 'bg-red', edge: '@3xl/shell:border-red @3xl/shell:bg-redS' },
+  inactive: { text: 'text-mut', dot: 'bg-mut', edge: '@3xl/shell:border-line @3xl/shell:bg-mutS' },
 };
 
 /**
@@ -16,6 +16,11 @@ const TONES = {
  *
  * The dot carries the colour so the answer arrives before the word does —
  * across a workshop, from an angle, by someone whose hands are busy.
+ *
+ * The background is the state's own colour washed into the surface, so the
+ * answer arrives as a field of colour before either the dot or the word is
+ * looked at. Twelve percent: enough to read across a workshop, not enough to
+ * compete with the stop beside it.
  *
  * One width, whatever the word. `Idle` is four letters and `Disconnected` is
  * twelve, and a chip that sizes to its contents moves the filename beside it
@@ -37,12 +42,12 @@ const StateChip = ({ tone = 'inactive', children }) => {
         'flex shrink-0 items-center gap-[9px]',
         'min-w-chip border-transparent bg-transparent px-0',
         '@3xl/shell:h-btnh @3xl/shell:w-chipw @3xl/shell:justify-center',
-        '@3xl/shell:rounded-ctl @3xl/shell:border @3xl/shell:bg-field @3xl/shell:px-2',
+        '@3xl/shell:rounded-ctl @3xl/shell:border @3xl/shell:px-2',
         t.edge,
       ].join(' ')}
     >
       <span className={`size-[9px] shrink-0 rounded-full ${t.dot}`} aria-hidden="true" />
-      <span className={`truncate text-cap font-semibold uppercase tracking-[0.1em] fullhd:text-lead ${t.text}`}>
+      <span className={`truncate text-base font-semibold uppercase tracking-[0.1em] fullhd:text-lead ${t.text}`}>
         {children}
       </span>
     </div>
