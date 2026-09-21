@@ -22,18 +22,28 @@ const JogWide = ({ machine }) => {
    * costing the toolpath a card's worth of height to say it; the bar is
    * already there and already empty on this screen.
    *
-   * This is the first use of the footer slot. Which contributor wins will be a
-   * setting once there is a settings screen — until then the open screen
-   * decides, and the job line is what shows when nothing does.
+   * The slot is the whole bar, not a corner of it — two subjects on one strip
+   * is a strip nobody reads at a glance. So this screen stands down while a
+   * job is loaded: progress is worth more from here than four facts are, and
+   * it is the only place progress appears away from the dashboard.
+   *
+   * Which contributor wins will be a setting once there is a settings screen.
+   * Until then the open screen decides, and defers when it should.
    */
-  useFooterContent(() => (
-    <span className="flex flex-wrap items-center gap-x-4 gap-y-1 font-num text-base leading-tight text-mut">
+  useFooterContent(machine.job ? null : () => (
+    <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1 font-num text-base leading-tight text-mut">
       <span>stan · <span className="text-ink">{machine.status.word}</span></span>
       <span>układ · <span className="text-ink">{machine.modal.wcs || NO_READING}</span></span>
       <span>posuw · <span className="text-ink">{reading(machine.tool.feedrate)}</span> mm/min</span>
       <span>wrzeciono · <span className="text-ink">{reading(machine.tool.spindle)}</span> obr/min</span>
     </span>
-  ), [machine.status.word, machine.modal.wcs, machine.tool.feedrate, machine.tool.spindle]);
+  ), [
+    Boolean(machine.job),
+    machine.status.word,
+    machine.modal.wcs,
+    machine.tool.feedrate,
+    machine.tool.spindle,
+  ]);
 
   return (
     <div className="flex min-h-0 flex-1 gap-gap">

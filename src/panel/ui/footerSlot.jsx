@@ -25,7 +25,9 @@ export const useFooterContent = (render, deps) => {
   const fill = useContext(FooterSlot);
 
   useEffect(() => {
-    fill(() => render);
+    // `null` is a contributor standing down, not an absent one: a screen can
+    // decide the default says more than it would.
+    fill(render ? () => render : null);
     return () => fill(null);
     // The caller names what the line reads; `render` itself is new every time.
   }, deps);
