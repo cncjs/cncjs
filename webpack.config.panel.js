@@ -51,6 +51,11 @@ module.exports = ({ mode, outputPath }) => ({
       // part of cncjs that actually talks to a machine.
       'app/lib/controller': path.resolve(__dirname, 'src/app/lib/controller'),
       panel: path.resolve(__dirname, 'src/panel'),
+      // Code both applications draw the same thing from. The toolpath
+      // arithmetic was inside the old visualiser, on the side of the import
+      // boundary the panel may not cross, so it moved here rather than being
+      // copied into a second truth.
+      lib: path.resolve(__dirname, 'src/lib'),
     },
     extensions: ['.js', '.jsx'],
   },

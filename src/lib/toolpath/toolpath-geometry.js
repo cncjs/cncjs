@@ -6,9 +6,10 @@ import Toolpath from 'gcode-toolpath';
  * The geometry and the rendering used to be the same file, which meant the
  * only way to find out whether a toolpath had been built correctly was to look
  * at it. Everything here is ordinary arithmetic over ordinary arrays, so it
- * can be checked numerically instead — see `__tests__/toolpath-geometry.js`,
- * which is the only test in this repository that sees anything under
- * `src/app`.
+ * can be checked numerically instead — see `__tests__/toolpath-geometry.js`.
+ *
+ * It lives under `src/lib` because both applications draw the same toolpath
+ * and the panel may not import from `src/app` at all.
  *
  * The output is deliberately dumb: typed arrays a renderer can hand straight
  * to a BufferGeometry, plus a label per vertex saying which motion arrived
