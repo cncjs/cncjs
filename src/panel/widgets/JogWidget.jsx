@@ -11,7 +11,9 @@ import controller from '../machine/controller';
 import { home } from '../machine/homing';
 import { useIsPhone } from '../ui/shell';
 import { jog, jogStart, jogStop, XY_STEPS, Z_STEPS } from '../machine/jog';
+import ShortcutHelp from '../ui/ShortcutHelp';
 import useHoldToJog from '../ui/useHoldToJog';
+import useJogKeys from '../ui/useJogKeys';
 
 /**
  * Moving the machine by hand.
@@ -43,6 +45,7 @@ const JogWidget = ({ machine, className = '' }) => {
   // Which axis group is being set, on a phone. Nothing on the panel, where
   // both are open on the screen already.
   const [editing, setEditing] = useState(null);
+  const [helping, setHelping] = useState(false);
 
   const rateFor = (axis) => (axis === 'z' ? zSpeed : xySpeed);
 
@@ -52,18 +55,44 @@ const JogWidget = ({ machine, className = '' }) => {
    * not have to pick a different button before knowing how far they want to
    * go.
    */
+  const stepFor = (axis, coarse) => {
+    const steps = axis === 'z' ? Z_STEPS : XY_STEPS;
+    // Shift is the coarse step: the largest the axis offers, which is what
+    // "get across the work" means without asking anyone to change a setting
+    // they will have to change back.
+    return coarse ? steps[steps.length - 1] : (axis === 'z' ? zStep : xyStep);
+  };
+
+  const stepJog = (axis, sign, coarse) => jog({
+    type,
+    axis,
+    distance: sign * stepFor(axis, coarse),
+    feedrate: rateFor(axis),
+  });
+
   const holdToJog = useHoldToJog({
     enabled: connected,
-    step: (axis, sign) => jog({
-      type,
-      axis,
-      distance: sign * (axis === 'z' ? zStep : xyStep),
-      feedrate: rateFor(axis),
-    }),
+    step: (axis, sign) => stepJog(axis, sign),
     start: (axis, sign) => jogStart({
       type, axis, sign, feedrate: rateFor(axis), settings: machine.settings,
     }),
     stop: () => jogStop(type),
+  });
+
+  /*
+   * The same two behaviours from the keyboard. Arrows are XY because that is
+   * what they look like on a bed seen from above; Page Up and Page Down are Z
+   * because they are the only keys that already mean up and down without also
+   * meaning a direction on the table.
+   */
+  useJogKeys({
+    enabled: connected,
+    step: stepJog,
+    start: (axis, sign) => jogStart({
+      type, axis, sign, feedrate: rateFor(axis), settings: machine.settings,
+    }),
+    stop: () => jogStop(type),
+    onHelp: () => setHelping(true),
   });
 
   const keys = {
@@ -111,6 +140,22 @@ const JogWidget = ({ machine, className = '' }) => {
         * them, nothing folded away. */}
       {phone ? null : (
         <div className="flex min-h-0 flex-1 flex-col gap-gap overflow-auto">
+          {/* A shortcut nobody knows about is a shortcut that does not exist.
+            * This is quiet and out of the way — the card is for the keys — but
+            * it is on the screen the shortcuts belong to, which is the only
+            * place looking for it would occur to anyone. Not on a phone:
+            * there is no keyboard to explain. */}
+          <div className="flex shrink-0 justify-end">
+            <button
+              type="button"
+              onClick={() => setHelping(true)}
+              aria-label="Skróty klawiszowe"
+              className="size-7 rounded-ctl border border-line bg-field text-base font-semibold text-mut hover:border-acc hover:text-acc"
+            >
+              ?
+            </button>
+          </div>
+
         <div className="shrink-0">
           <JogPad {...keys} />
         </div>
@@ -148,6 +193,8 @@ const JogWidget = ({ machine, className = '' }) => {
         />
         </div>
       ) : null}
+
+      {helping ? <ShortcutHelp onClose={() => setHelping(false)} /> : null}
 
       {open ? (
         <Sheet title={`Jog ${open.title}`} onClose={() => setEditing(null)}>
