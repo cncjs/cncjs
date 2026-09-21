@@ -88,6 +88,12 @@ module.exports = {
         jgap: 'var(--jgap)',
         jpad: 'var(--jpad)',
         jcard: 'var(--jcard)',
+        /*
+         * The state chip's width: the rail's column, inset either side so
+         * the chip sits in the column rather than filling it edge to edge.
+         * Derived, so it keeps following `--rail` when a target changes it.
+         */
+        railInset: 'calc(var(--rail) - 12px)',
         frame: 'var(--w)',
         frameh: 'var(--h)',
       },

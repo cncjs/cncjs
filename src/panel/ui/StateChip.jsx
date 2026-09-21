@@ -39,18 +39,19 @@ const StateChip = ({ tone = 'inactive', children }) => {
   return (
     <div
       className={[
-        'flex shrink-0 items-center gap-[9px]',
+        'flex shrink-0 items-center gap-1.5',
         'min-w-chip border-transparent bg-transparent px-0',
-        // `--rail`, not `--chipw`: the rail starts directly beneath this and
-        // two nearly-equal widths stacked read as a mistake rather than a
-        // coincidence. Same width, same left edge, one column down the side.
-        '@3xl/shell:h-btnh @3xl/shell:w-rail @3xl/shell:justify-center',
-        '@3xl/shell:rounded-ctl @3xl/shell:border @3xl/shell:px-2',
+        // The rail's column, inset either side. `--chipw` was a different
+        // number from `--rail` and two nearly-equal widths stacked read as a
+        // mistake; the full `--rail` glued it to both edges of the column.
+        // One column, and the chip sits inside it.
+        '@3xl/shell:h-btnh @3xl/shell:w-railInset @3xl/shell:justify-center',
+        '@3xl/shell:rounded-ctl @3xl/shell:border @3xl/shell:px-1.5',
         t.edge,
       ].join(' ')}
     >
       <span className={`size-[9px] shrink-0 rounded-full ${t.dot}`} aria-hidden="true" />
-      <span className={`truncate text-base font-semibold uppercase tracking-[0.1em] fullhd:text-lead ${t.text}`}>
+      <span className={`truncate text-cap font-semibold uppercase tracking-[0.06em] fullhd:text-lead ${t.text}`}>
         {children}
       </span>
     </div>
