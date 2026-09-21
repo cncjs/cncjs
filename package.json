@@ -57,6 +57,7 @@
     "stylint": "stylint src/app",
     "test": "jest",
     "postinstall": "opencollective postinstall",
+    "ci-dispatch": "gh workflow run ci.yml --repo cncjs/cncjs --ref",
     "ci-version": "changeset version && node scripts/package-sync.js && yarn install --mode=update-lockfile",
     "ci-publish": "yarn build && changeset publish"
   },
