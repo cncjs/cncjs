@@ -25,6 +25,11 @@ i18next-scanner --config i18next-scanner.server.config.js \"src/server/**/*.{htm
 cross-env NODE_ENV=production webpack-cli --config webpack.config.production.js
 i18next-scanner --config i18next-scanner.app.config.js \"src/app/**/*.{html,js,jsx}\" \"!src/app/i18n/**\" \"!**/node_modules/**\"
 
+# The panel is a second application with its own compiler, which is what lets
+# it run React 19 while src/app stays on 17. It is not scanned for i18n
+# strings: it has none yet, and the language question has not been asked of it.
+cross-env NODE_ENV=production webpack-cli --config webpack.config.panel.production.js
+
 mkdir -p dist/cncjs/app
 mkdir -p dist/cncjs/server
 

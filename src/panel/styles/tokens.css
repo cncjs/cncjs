@@ -1,0 +1,136 @@
+/*
+ * Every visual constant the panel uses, copied from the mockup's own `:root`.
+ *
+ * Claude Design project `7629d30f-1ea4-45a6-9f73-ec9b1ed97bf1`, file
+ * `CNC Panel.dc.html`. These are not values anyone chose here — they are the
+ * drawing's, and they are kept in the drawing's shape on purpose.
+ *
+ * Custom properties rather than Tailwind's own theme values, because the
+ * mockup switches four independent axes by attribute — theme, density,
+ * target and number face — and a custom property is what makes that a
+ * one-attribute change rather than a rebuild. Tailwind's config points at
+ * these names, so a component writes `bg-panel` and never a hex.
+ */
+:root {
+  /* Surfaces */
+  --bg: #f2f4f7;
+  --surf: #ffffff;
+  --panel: #ffffff;
+  --line: #dde2e9;
+  --field: #f7f8fa;
+
+  /* Ink */
+  --ink: #18222e;
+  --mut: #6d7886;
+
+  /* Roles */
+  --acc: #1557c0;
+  --accS: #e9f0fc;
+  --red: #c62525;
+  --grn: #12794a;
+  --amb: #a96400;
+
+  /* Rhythm */
+  --pad: 18px;
+  /*
+   * 10, not the drawing's 14. Changed deliberately on 2026-09-21: the frame
+   * round a screen went to 10 and the gaps between the cards inside it stayed
+   * behind, which reads as a mistake. `design/tokens.expected.css` moved in
+   * the same commit.
+   */
+  --gap: 10px;
+
+  /* The frame, and the things sized against it */
+  --w: 1024px;
+  --h: 768px;
+  --rail: 132px;
+  --dro: 78px;
+  --val: 31px;
+  --side: 400px;
+  --side2: 212px;
+
+  /* Controls. Nothing on a touch screen goes below 40px. */
+  --btn: 76px;
+  --btnh: 72px;
+  --chip: 88px;
+  --chipw: 128px;
+  --ctl: 52px;
+  --chiph: 42px;
+  --jbtn: 74px;
+  --jbtnh: 58px;
+  --jgap: 10px;
+  /*
+   * The pad at its natural size, and the card that holds it. Derived rather
+   * than typed, so both keep following the key size when a target changes it.
+   * `--jcard` is the mockup's own expression: four keys, the gaps between the
+   * two groups, and the card's padding either side.
+   */
+  --jpad: calc(4 * var(--jbtn) + 3 * var(--jgap));
+  --jcard: calc(4 * var(--jbtn) + 40px + 2 * var(--pad));
+
+  /* Corners: 4 on a control, 6 on a card. */
+  --r-ctl: 4px;
+  --r-card: 6px;
+
+  /*
+   * Machine numbers get their own face. It is switchable because the mockup
+   * makes it switchable — a panel read at arm's length in a workshop is a
+   * different reading problem from one read at a desk, and which face wins is
+   * not settled.
+   */
+  --num: 'Azeret Mono', 'IBM Plex Mono', monospace;
+}
+
+[data-target='fullhd'] {
+  --w: 1920px;
+  --h: 1080px;
+  --rail: 200px;
+  --pad: 26px;
+  --gap: 14px;
+  --dro: 132px;
+  --val: 46px;
+  --side: 560px;
+  --side2: 300px;
+  --btn: 128px;
+  --btnh: 112px;
+  --chip: 140px;
+  --chipw: 200px;
+  --ctl: 68px;
+  --chiph: 56px;
+  --jbtn: 128px;
+  --jbtnh: 104px;
+  --jgap: 16px;
+}
+
+[data-target='phone'] {
+  --w: 390px;
+  --h: 844px;
+  --pad: 16px;
+  --gap: 10px;
+  --val: 34px;
+}
+
+[data-num='jetbrains'] { --num: 'JetBrains Mono', monospace; }
+[data-num='segment'] { --num: 'Share Tech Mono', monospace; }
+[data-num='plex'] { --num: 'IBM Plex Mono', monospace; }
+
+[data-theme='dark'] {
+  --bg: #0e1319;
+  --surf: #171d25;
+  --panel: #141a21;
+  --line: #2a323d;
+  --ink: #e6ecf3;
+  --mut: #8b97a6;
+  --acc: #4b90ea;
+  --accS: #16273d;
+  --red: #e04a4a;
+  --grn: #2ea36a;
+  --amb: #d08a1b;
+  --field: #1b222b;
+}
+
+[data-density='compact'] {
+  --pad: 12px;
+  --gap: 9px;
+  --dro: 60px;
+}

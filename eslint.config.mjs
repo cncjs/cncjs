@@ -231,4 +231,40 @@ export default [
       }],
     },
   },
+  // ---------------------------------------------------------------------
+  // The panel.
+  //
+  // A second application in the same repository, built from the design mockup
+  // rather than migrated out of the old one. It runs React 19 through a
+  // per-compiler alias, which is why the two rules below differ from
+  // everything else here: the automatic JSX runtime needs no `React` in scope,
+  // and saying it does would be describing the other application.
+  //
+  // The rest of the discipline is the same as `src/app/components`: nothing
+  // oversized, no inline styles, and no colour written anywhere but the token
+  // sheet — which here is CSS custom properties rather than a JS module,
+  // because this application has no CSS-in-JS.
+  // ---------------------------------------------------------------------
+  {
+    files: ['src/panel/**/*.js', 'src/panel/**/*.jsx'],
+    rules: {
+      'react/react-in-jsx-scope': 0,
+      'react/jsx-uses-react': 0,
+      'max-lines': ['error', { max: 250, skipBlankLines: true, skipComments: true }],
+      'react/forbid-component-props': ['error', { forbid: ['style'] }],
+      'react/forbid-dom-props': ['error', { forbid: ['style'] }],
+      'no-restricted-imports': ['error', {
+        patterns: [
+          {
+            group: ['@mui/*', '@emotion/*', 'styled-components'],
+            message: 'The panel has no CSS-in-JS. Styles live in a *.module.css beside the component.',
+          },
+          {
+            group: ['app/**', '!app/lib/controller', '!app/lib/controller/**'],
+            message: 'The panel takes only the controller client from the old application.',
+          },
+        ],
+      }],
+    },
+  },
 ];

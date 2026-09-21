@@ -16,6 +16,15 @@ const maxAge = (365 * 24 * 60 * 60 * 1000); // one year
 export default {
   route: '/', // with trailing slash
   assets: {
+    // Registered before the application, which serves from the site root.
+    panel: {
+      routes: [
+        urljoin(publicPath, '/panel'),
+        '/panel' // fallback
+      ],
+      path: path.resolve(__dirname, '..', '..', 'panel'),
+      maxAge: maxAge
+    },
     app: {
       routes: [ // with trailing slash
         urljoin(publicPath, '/'),

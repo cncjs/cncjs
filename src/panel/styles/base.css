@@ -1,0 +1,40 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * The three things Tailwind's reset does not know about this application.
+ */
+@layer base {
+  html,
+  body,
+  #panel-root {
+    height: 100%;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  }
+
+  /*
+   * Keyboard focus is themed, never the browser's. The panel is used by touch
+   * and by mouse, but it is also used over VNC from a laptop, and a focus ring
+   * that vanishes on a dark theme is a control nobody can find.
+   *
+   * The offset is negative so the ring is drawn *inside* the control. A ring
+   * outside it is a ring that can be clipped, and on this panel it was: the
+   * jog keys reach the edge of their card, and the card clips its own overflow
+   * to keep its rounded corners. Outside, the focus on an edge key lost the
+   * side facing the card wall. Inside, nothing can ever cut it off — no card,
+   * no scroller, no sheet — and on a bordered key it simply reads as the key
+   * going accent-coloured, which is what focus should look like anyway.
+   */
+  :focus-visible {
+    outline: 2px solid var(--acc);
+    outline-offset: -2px;
+  }
+}
