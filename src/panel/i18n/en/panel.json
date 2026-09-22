@@ -12,7 +12,9 @@
     "alarms": "Alarms",
     "settings": "Settings",
     "homing": "Homing",
-    "mdi": "MDI"
+    "mdi": "MDI",
+    "connect": "Connection",
+    "connectShort": "Port"
   },
 
   "topbar": {
@@ -37,7 +39,8 @@
   "units": {
     "mm": "mm",
     "mmPerMin": "mm/min",
-    "rpm": "rpm"
+    "rpm": "rpm",
+    "baud": "baud"
   },
 
   "axis": {
@@ -198,6 +201,28 @@
     "note": {
       "noHoming": "Homing is switched off ($22=0). Machine zero is wherever the controller was powered up, so the envelope is the right size in an unknown place.",
       "noSoftLimits": "Soft limits are switched off ($20=0). The envelope says how far the axes reach — nothing will stop a move beyond it."
+    }
+  },
+
+  "connect": {
+    "title": "Connection",
+    "controller": "Controller",
+    "baudrate": "Baud rate",
+    "refresh": "Refresh",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "noServer": "No connection to the server, so there is nothing to list.",
+    "asking": "Looking for serial ports…",
+    "noPorts": "This computer has no serial ports.",
+    "openFailed": "The port would not open. Another program may be holding it, or it may have been unplugged since the list was made.",
+    "closeFailed": "The port would not close.",
+    "alarm": "The machine is in alarm. Opening the port resets Grbl, and with homing switched on ($22=1) it will not move until it has been homed or unlocked. The panel will not unlock it for you."
+  },
+
+  "ports": {
+    "state": {
+      "open": "This panel",
+      "inuse": "In use"
     }
   },
 

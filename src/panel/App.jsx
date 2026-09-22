@@ -9,6 +9,7 @@ import TopBar from './ui/TopBar';
 import Dashboard from './screens/Dashboard';
 import JogScreen from './screens/JogScreen';
 import PathScreen from './screens/PathScreen';
+import ConnectScreen from './screens/ConnectScreen';
 import { useMachine } from './machine/useMachine';
 import { emergencyStop } from './machine/commands';
 
@@ -37,6 +38,16 @@ const DESTINATIONS = [
   { id: 'settings', key: 'nav.settings', ready: false },
   { id: 'homing', key: 'nav.homing', ready: false },
   { id: 'mdi', key: 'nav.mdi', ready: false },
+  /*
+   * Last, and not first.
+   *
+   * A connection is the precondition for every other item here, which argues
+   * for the top — and the rail's own rule argues louder: an item inserted
+   * above the others moves ten destinations under a hand that had stopped
+   * looking. Nothing above it moves, and it is the item reached for once a
+   * session.
+   */
+  { id: 'connect', key: 'nav.connect', ready: true },
 ].map((destination) => ({ ...destination, label: t(destination.key) }));
 
 /*
@@ -46,10 +57,14 @@ const DESTINATIONS = [
  * is picked up beside the machine to do one of a few things; settings,
  * diagnostics and MDI are work done sitting at the panel.
  */
-const PHONE_IDS = ['dashboard', 'jog', 'zero', 'files', 'alarms'];
+const PHONE_IDS = ['dashboard', 'jog', 'zero', 'files', 'alarms', 'connect'];
 const PHONE_DESTINATIONS = PHONE_IDS
   .map((id) => DESTINATIONS.find((d) => d.id === id))
-  .map((d) => (d.id === 'zero' ? { ...d, label: t('nav.zeroShort') } : d));
+  .map((d) => (d.id === 'zero' ? { ...d, label: t('nav.zeroShort') } : d))
+  // `Connection` is eleven characters in a tab 65px wide. `Port` is what the
+  // screen is actually for picking, and it is the same word in both
+  // languages — see `nav.zeroShort` for the same trade already made once.
+  .map((d) => (d.id === 'connect' ? { ...d, label: t('nav.connectShort') } : d));
 
 /*
  * Which component a destination is, for the ones that are anything yet.
@@ -62,6 +77,7 @@ const PHONE_DESTINATIONS = PHONE_IDS
 const SCREENS = {
   jog: JogScreen,
   path: PathScreen,
+  connect: ConnectScreen,
 };
 
 const Panel = ({ machine, screen, onScreen }) => {

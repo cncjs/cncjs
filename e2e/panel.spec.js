@@ -213,6 +213,69 @@ test.describe('panel, disconnected', () => {
     ).toBeEnabled();
   });
 
+  test('has a connection screen of its own, and lists the server\'s ports', async ({ cncjs }) => {
+    // The reason this screen exists. Until it did, a port was opened by
+    // driving the *old* application's connection widget in a headless browser
+    // — `scripts/connect-machine.js` — and a panel that cannot reach a machine
+    // without the thing it replaces is not a replacement.
+    await openPanel(cncjs.page);
+    await rail(cncjs.page).getByRole('button', { name: 'Połączenie' }).click();
+
+    const refresh = cncjs.page.getByRole('button', { name: 'Odśwież' });
+    await expect(refresh).toBeVisible();
+
+    /*
+     * Either ports or a sentence saying there are none — never both, and
+     * never neither.
+     *
+     * Which one depends on the computer the suite runs on, and that is the
+     * point: a case asserting COM3 is a case that only passes on one bench.
+     * What must hold everywhere is that the screen answers the question.
+     */
+    const ports = cncjs.page.getByRole('button', { name: /^(COM\d+|\/dev\/)/ });
+    const empty = cncjs.page.getByText(/nie ma portów szeregowych|Szukanie portów/i);
+    await expect
+      .poll(async () => (await ports.count()) > 0 || (await empty.count()) > 0, { timeout: 20000 })
+      .toBe(true);
+
+    cncjs.expectNoPageErrors();
+  });
+
+  test('names a port the way the driver does, and everything round it in the language', async ({ cncjs }) => {
+    // Rule 8 has an edge, and this is it. `COM3` and `Arduino LLC` come from
+    // the operating system; a panel that translated them would be inventing a
+    // name for somebody's hardware. Everything the panel says *about* them is
+    // a key — so the caption moves between languages and the port name does
+    // not.
+    await openPanel(cncjs.page, 'en');
+    await cncjs.page
+      .getByRole('navigation', { name: 'Navigation' })
+      .getByRole('button', { name: 'Connection' })
+      .click();
+    await expect(cncjs.page.getByRole('button', { name: 'Refresh' })).toBeVisible();
+
+    const ports = cncjs.page.getByRole('button', { name: /^(COM\d+|\/dev\/)/ });
+    if (await ports.count() === 0) {
+      // Nothing to compare on a machine with no serial ports at all. Said out
+      // loud rather than passed silently: a green case that asserted nothing
+      // is the shape this suite has been bitten by before.
+      test.skip(true, 'this computer has no serial ports');
+    }
+
+    const english = await ports.first().innerText();
+    await openPanel(cncjs.page, 'pl');
+    await rail(cncjs.page).getByRole('button', { name: 'Połączenie' }).click();
+    await expect(cncjs.page.getByRole('button', { name: 'Odśwież' })).toBeVisible();
+
+    const polish = await cncjs.page
+      .getByRole('button', { name: /^(COM\d+|\/dev\/)/ }).first().innerText();
+
+    // The port's own name is the same word twice.
+    expect(polish.split('\n')[0]).toBe(english.split('\n')[0]);
+    // And the button beside it is not.
+    await expect(cncjs.page.getByRole('button', { name: 'Refresh' })).toHaveCount(0);
+  });
+
   test('is translated, rather than written in one language', async ({ cncjs }) => {
     // The whole of what a second language buys, in one case: the same panel,
     // asked for in English, says the same things in English. Without this the
