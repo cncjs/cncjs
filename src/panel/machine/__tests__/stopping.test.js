@@ -42,6 +42,30 @@ describe('how far it goes after the key comes up', () => {
     expect(fast).toBeGreaterThan(slow * 3);
   });
 
+  test('counts the trip to a server that is somewhere else', () => {
+    /*
+     * A mini PC by the machine with the panel on a laptop: letting go of a
+     * key has to cross the workshop before anything can be cancelled, and
+     * the machine keeps moving for the whole crossing. At 25 mm/s, 20ms of
+     * network is half a millimetre nobody would otherwise account for.
+     */
+    const local = stoppingDistance({ timing: { stopMs: 46 }, feedrate: 1500, acceleration: 500 });
+    const remote = stoppingDistance({
+      timing: { stopMs: 46 }, feedrate: 1500, acceleration: 500, linkMs: 20,
+    });
+
+    expect(remote - local).toBeCloseTo(25 * 0.020, 6);
+  });
+
+  test('a server on this computer costs nothing, stated or not', () => {
+    const stated = stoppingDistance({
+      timing: { stopMs: 46 }, feedrate: 1500, acceleration: 500, linkMs: 0,
+    });
+    const unstated = stoppingDistance({ timing: { stopMs: 46 }, feedrate: 1500, acceleration: 500 });
+
+    expect(stated).toBe(unstated);
+  });
+
   test('says nothing rather than half of it', () => {
     /*
      * Half this number would read as a measured safety margin that nobody

@@ -50,7 +50,7 @@ import { isM0, isM1, isM6, replaceM6 } from '../utils/gcode';
 import { in2mm, mapPositionToUnits, mapValueToUnits } from '../utils/units';
 import GrblRunner from './GrblRunner';
 import { MAX_IN_FLIGHT, SEGMENT_SECONDS, jogSegmentLine, stopSeconds } from './jog';
-import { hostTiming } from '../../lib/host-timing';
+import { hostTiming, observeJogTicks } from '../../lib/host-timing';
 import { summarise } from '../../lib/tick-jitter';
 import {
   GRBL,
@@ -538,6 +538,8 @@ class GrblController {
         inFlight: 0,
         stopping: false,
         leadSeconds: hostTiming().leadSeconds,
+        // How late each tick of the current jog ran. See `observeJogTicks`.
+        ticks: [],
       };
       this.jogTimer = null;
 
@@ -1728,6 +1730,7 @@ class GrblController {
           // Read once per hold rather than per tick: the lead an operator was
           // told about is the lead this jog uses, start to finish.
           this.jogging.leadSeconds = hostTiming().leadSeconds;
+          this.jogging.ticks = [];
           this.runJog();
         },
         /** Stop jogging, and drop whatever is still queued. */
@@ -2266,6 +2269,13 @@ class GrblController {
         this.jogging.sentAt = now;
 
         /*
+         * Every tick is a measurement of this computer under the load it
+         * actually has — a panel open on the same machine, or nothing but
+         * this server. Handed over when the jog ends, never during it.
+         */
+        this.jogging.ticks.push(elapsed);
+
+        /*
          * **A tick later than the lead is a stutter, and it gets said out
          * loud.** The lead was measured at startup on an otherwise quiet
          * process; whatever made this tick late was not present then, and
@@ -2334,6 +2344,7 @@ class GrblController {
         this.jogging.feedrate = feedrate;
         this.jogging.stopping = false;
         this.jogging.leadSeconds = hostTiming().leadSeconds;
+        this.jogging.ticks = [];
         this.runJog();
       };
 
@@ -2368,7 +2379,20 @@ class GrblController {
        * half second for that. Five milliseconds is under a tenth of a
        * millimetre at 1500 mm/min — below anything that changes a decision.
        */
+      this.announceTiming();
+    }
+
+    /**
+     * Tell the panel, when the figure has moved enough to matter.
+     *
+     * The reply time wanders by a millisecond or two between samples, and a
+     * figure an operator is meant to rely on should not be redrawn for that.
+     * Five milliseconds is under a tenth of a millimetre at 1500 mm/min —
+     * below anything that changes a decision.
+     */
+    announceTiming() {
       const timing = this.timing();
+
       if (this.reportedStopMs === null || Math.abs(timing.stopMs - this.reportedStopMs) >= 5) {
         this.reportedStopMs = timing.stopMs;
         this.emit('controller:timing', timing);
@@ -2402,6 +2426,13 @@ class GrblController {
       if (this.jogTimer) {
         clearInterval(this.jogTimer);
         this.jogTimer = null;
+      }
+
+      // The jog is over, so what it measured can now change the figure.
+      if (this.jogging.ticks?.length) {
+        observeJogTicks(this.jogging.ticks);
+        this.jogging.ticks = [];
+        this.announceTiming();
       }
     }
 

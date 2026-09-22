@@ -1,5 +1,5 @@
 import logger from './logger';
-import { measureTicks } from './tick-jitter';
+import { measureTicks, summarise } from './tick-jitter';
 import { SEGMENT_SECONDS, leadSecondsFor } from '../controllers/Grbl/jog';
 
 const log = logger('service:host-timing');
@@ -14,6 +14,24 @@ const log = logger('service:host-timing');
  * Before the measurement finishes — and if it never runs, as in tests — the
  * floor stands. An unmeasured host is not known to be slow, and the floor is
  * the value that was safe on every machine this has run on.
+ *
+ * **The startup figure is a starting point, not the answer.** It measures an
+ * idle process, and nobody jogs an idle process. The two installations this
+ * has to serve are not alike: everything on one laptop, where the panel's 3D
+ * view shares an event loop with the jog clock, or a mini PC running nothing
+ * but this server with the panel on somebody else's computer. Nobody is
+ * going to restart a server to find out which they have.
+ *
+ * So the real measurement comes from the jog clock itself — it ticks in
+ * exactly the conditions that matter, and every tick is a sample.
+ * `observeJogTicks` feeds them back, and once there are enough they replace
+ * the startup guess.
+ *
+ * What never moves is the lead *within* a jog: it is read when a key goes
+ * down and holds until the key comes up, so the distance travelled after a
+ * release is the same every release. The figure changes only between jogs,
+ * and when it changes the panel is told — so what is on screen is what is in
+ * force.
  */
 let measured = null;
 
@@ -48,10 +66,54 @@ const SERIES = 3;
  */
 const SETTLE_MS = 3000;
 
-export const hostTiming = () => ({
-  tick: measured,
-  leadSeconds: leadSecondsFor(measured?.worst),
-});
+/** Ticks seen while actually jogging, newest last. */
+let observed = [];
+
+/** Enough real ticks to be worth more than the startup measurement. */
+const ENOUGH_OBSERVED = 200;
+
+/**
+ * How many to keep.
+ *
+ * Two thousand ticks is about twenty seconds of jogging, so the figure
+ * follows the computer as it is now — a laptop that has since had a browser
+ * opened on it, a mini PC that has since finished doing something else.
+ */
+const KEEP_OBSERVED = 2000;
+
+const current = () => {
+  if (observed.length >= ENOUGH_OBSERVED) {
+    return { ...summarise(observed), from: 'jogging' };
+  }
+
+  return measured ? { ...measured, from: 'startup' } : null;
+};
+
+export const hostTiming = () => {
+  const tick = current();
+
+  return {
+    tick,
+    leadSeconds: leadSecondsFor(tick?.worst),
+  };
+};
+
+/**
+ * Take note of how late the jog clock actually ran.
+ *
+ * Given one jog's worth of intervals, in seconds, once that jog is over —
+ * never during it, because a lead that changed mid-move would change the
+ * stopping distance mid-move.
+ */
+export const observeJogTicks = (intervals) => {
+  const usable = (intervals ?? []).filter((n) => Number.isFinite(n) && n > 0);
+
+  if (!usable.length) {
+    return;
+  }
+
+  observed = [...observed, ...usable].slice(-KEEP_OBSERVED);
+};
 
 /**
  * Measure the host, and say what it means in plain terms.

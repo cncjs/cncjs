@@ -13,9 +13,16 @@
  *   - the machine's own **deceleration**, which is `$120`–`$122` and the feed
  *     rate in use.
  *
- * The first two are the server's, arrive together as milliseconds, and are
- * the same whatever anybody is doing. The third is the panel's, because only
- * the panel knows which feed rate is set on which axis group.
+ * There is a fourth on an installation where the server is not this
+ * computer — a mini PC by the machine, the panel on a laptop — and it is the
+ * **link**: releasing a key has to reach the server before anything can be
+ * cancelled, and the machine keeps moving meanwhile. On one computer it
+ * measures as nothing and changes nothing.
+ *
+ * The server's two arrive together as milliseconds and are the same whatever
+ * anybody is doing. The link and the deceleration are the panel's, because
+ * only the panel knows how far away the server is and which feed rate is set
+ * on which axis group.
  */
 
 // `$120`/`$121`/`$122` — acceleration, mm/sec².
@@ -52,9 +59,13 @@ export const accelerationFor = (axes, settings) => {
  * @param {object} timing `{ stopMs }` as measured by the server.
  * @param {number} feedrate mm/min, as set on the panel.
  * @param {number} acceleration mm/sec², from the firmware.
+ * @param {number} [linkMs] One-way milliseconds to the server, when it is
+ *   somewhere else. Absent and zero mean the same thing here, because a
+ *   server on this computer really does cost nothing.
  */
-export const stoppingDistance = ({ timing, feedrate, acceleration }) => {
+export const stoppingDistance = ({ timing, feedrate, acceleration, linkMs = 0 }) => {
   const stopMs = Number(timing?.stopMs);
+  const link = Number.isFinite(Number(linkMs)) ? Number(linkMs) : 0;
 
   if (!Number.isFinite(stopMs) || !(feedrate > 0) || !(acceleration > 0)) {
     return null;
@@ -62,7 +73,7 @@ export const stoppingDistance = ({ timing, feedrate, acceleration }) => {
 
   const speed = feedrate / 60;
 
-  return (speed * (stopMs / 1000)) + ((speed * speed) / (2 * acceleration));
+  return (speed * ((stopMs + link) / 1000)) + ((speed * speed) / (2 * acceleration));
 };
 
 export default stoppingDistance;

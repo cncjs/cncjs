@@ -3,6 +3,7 @@ import controller from './controller';
 import { signIn } from './session';
 import { fetchOpenController } from './snapshot';
 import { readMachine } from './readings';
+import { measureLinkMs } from './latency';
 import { askForWorkOffsets } from './workOffsets';
 
 /**
@@ -35,6 +36,12 @@ export const useMachine = () => {
      * own reply time. Null until it says. See `machine/stopping`.
      */
     timing: null,
+    /*
+     * One-way milliseconds to the server. Zero when it is this computer,
+     * which is most of the time; not zero when the server is a mini PC by
+     * the machine and this is a laptop. Null until measured.
+     */
+    linkMs: null,
     // The program the sender is holding, as text. See the `gcode:load`
     // handler below for why a panel gets this without asking.
     gcode: null,
@@ -42,6 +49,7 @@ export const useMachine = () => {
 
   useEffect(() => {
     let live = true;
+    let linkTimer = null;
 
     const events = {
       'serialport:open': ({ port, controllerType }) => {
@@ -163,6 +171,25 @@ export const useMachine = () => {
           }
           setSnapshot((previous) => ({ ...previous, attached: true }));
 
+          /*
+           * Time the link, now and every half minute.
+           *
+           * Not once: a panel is carried around a workshop and a link that
+           * was fast at the bench is not the link it has by the machine. Not
+           * often either — five round trips is enough to be worth trusting
+           * and too many to repeat for no reason.
+           */
+          const timeTheLink = () => {
+            measureLinkMs().then((linkMs) => {
+              if (live && linkMs !== null) {
+                setSnapshot((previous) => ({ ...previous, linkMs }));
+              }
+            });
+          };
+
+          timeTheLink();
+          linkTimer = setInterval(timeTheLink, 30000);
+
           // And ask where the work coordinate systems are, which is the one
           // reading no part of the server ever requests. See `workOffsets.js`.
           askForWorkOffsets();
@@ -176,6 +203,9 @@ export const useMachine = () => {
 
     return () => {
       live = false;
+      if (linkTimer) {
+        clearInterval(linkTimer);
+      }
       unsubscribe();
     };
   }, []);

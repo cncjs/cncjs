@@ -245,6 +245,7 @@ const JogWidget = ({ machine, className = '' }) => {
           zSpeed={zSpeed}
           timing={machine.timing}
           settings={machine.settings}
+          linkMs={machine.linkMs}
         />
       ) : null}
 
