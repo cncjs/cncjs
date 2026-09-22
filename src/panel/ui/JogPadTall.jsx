@@ -1,3 +1,6 @@
+import Icon from './Icon';
+import { UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT } from './jogCorners';
+
 /**
  * The jog keys when the screen is narrower than it is tall.
  *
@@ -25,8 +28,13 @@
  * so that a gap can sit beside it is the wrong trade on the control a thumb
  * has to find without looking. Equal rectangles, square when the room happens
  * to be square.
+ *
+ * The corners and the middle carry the same meanings they do on the panel —
+ * two axes at once, and "go to zero" under the thumb — so an operator who
+ * learns the pad at the machine already knows the one in their hand. Homing
+ * moves into the bottom row where the dead Park key was.
  */
-const Key = ({ children, onClick, hold, disabled, label, quiet }) => (
+const Key = ({ children, onClick, hold, disabled, label, quiet, className = '' }) => (
   <button
     type="button"
     onClick={onClick}
@@ -39,6 +47,7 @@ const Key = ({ children, onClick, hold, disabled, label, quiet }) => (
         ? 'border-line bg-field text-cap font-medium text-mut hover:border-acc hover:text-acc'
         : 'border-line bg-surf text-head font-semibold text-acc hover:border-acc',
       'disabled:opacity-45 disabled:hover:border-line',
+      className,
     ].join(' ')}
   >
     {children}
@@ -47,27 +56,41 @@ const Key = ({ children, onClick, hold, disabled, label, quiet }) => (
 
 const HOUSE = <span aria-hidden="true">&#8962;</span>;
 
-const JogPadTall = ({ onJog, onHome, onPark, disabled, canHome }) => (
+const Corner = ({ corner, onJog, disabled }) => (
+  <Key
+    hold={onJog(corner.dir)}
+    disabled={disabled}
+    label={corner.label}
+    className={corner.round}
+  >
+    <Icon name="diagonal" className={`size-6 ${corner.rotate}`} weight={2} />
+  </Key>
+);
+
+const JogPadTall = ({ onJog, onHome, onGoZero, disabled, canHome, canGoZero }) => (
   <div
     className="grid min-h-0 flex-1 grid-cols-3 grid-rows-4 gap-2"
     role="group"
     aria-label="Jog"
   >
-    <span />
-    <Key hold={onJog('y', 1)} disabled={disabled} label="Y+">Y+</Key>
-    <span />
+    <Corner corner={UP_LEFT} onJog={onJog} disabled={disabled} />
+    <Key hold={onJog({ y: 1 })} disabled={disabled} label="Y+">Y+</Key>
+    <Corner corner={UP_RIGHT} onJog={onJog} disabled={disabled} />
 
-    <Key hold={onJog('x', -1)} disabled={disabled} label="X−">X&minus;</Key>
+    <Key hold={onJog({ x: -1 })} disabled={disabled} label="X−">X&minus;</Key>
+    <Key onClick={onGoZero} disabled={disabled || !canGoZero} label="Do zera">
+      <Icon name="goZero" className="size-6" weight={2} />
+      <span className="text-cap font-medium">Do zera</span>
+    </Key>
+    <Key hold={onJog({ x: 1 })} disabled={disabled} label="X+">X+</Key>
+
+    <Corner corner={DOWN_LEFT} onJog={onJog} disabled={disabled} />
+    <Key hold={onJog({ y: -1 })} disabled={disabled} label="Y−">Y&minus;</Key>
+    <Corner corner={DOWN_RIGHT} onJog={onJog} disabled={disabled} />
+
+    <Key hold={onJog({ z: 1 })} disabled={disabled} label="Z+">Z+</Key>
     <Key onClick={onHome} disabled={disabled || !canHome} label="Bazuj" quiet>{HOUSE}<span>Bazuj</span></Key>
-    <Key hold={onJog('x', 1)} disabled={disabled} label="X+">X+</Key>
-
-    <span />
-    <Key hold={onJog('y', -1)} disabled={disabled} label="Y−">Y&minus;</Key>
-    <span />
-
-    <Key hold={onJog('z', 1)} disabled={disabled} label="Z+">Z+</Key>
-    <Key onClick={onPark} disabled label="Park" quiet>Park</Key>
-    <Key hold={onJog('z', -1)} disabled={disabled} label="Z−">Z&minus;</Key>
+    <Key hold={onJog({ z: -1 })} disabled={disabled} label="Z−">Z&minus;</Key>
   </div>
 );
 
