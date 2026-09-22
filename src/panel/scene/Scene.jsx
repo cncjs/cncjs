@@ -24,7 +24,7 @@ import { useSceneColors } from './colors';
 /** Where the machine measures from. Zero, by definition. */
 const MACHINE_ZERO = { x: 0, y: 0, z: 0 };
 
-const Scene = ({ scene, tool, layers, view, revision }) => {
+const Scene = ({ scene, tool, layers, view, revision, memory }) => {
   const colors = useSceneColors();
   const { envelope, origins, toolpath, program, offset, size, frame } = scene;
 
@@ -65,7 +65,7 @@ const Scene = ({ scene, tool, layers, view, revision }) => {
     >
       <color attach="background" args={[colors.ground]} />
 
-      <Controls view={view} bounds={frame} revision={revision} />
+      <Controls view={view} bounds={frame} revision={revision} memory={memory} />
 
       {/* Under everything, and not switchable. The other layers are things
         * the machine reported and can therefore be wrong or absent; this is

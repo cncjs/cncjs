@@ -3,6 +3,7 @@ import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import fitCameraToBounds from 'lib/toolpath/camera-fit';
+import { recallCamera, rememberCamera } from './cameraMemory';
 import { UP, VIEWS } from './views';
 
 /**
@@ -20,11 +21,16 @@ import { UP, VIEWS } from './views';
  * alternative is a second dependency to get the same object with JSX round
  * it.
  */
-const Controls = ({ view, bounds, revision }) => {
+const Controls = ({ view, bounds, revision, memory }) => {
   const camera = useThree((state) => state.camera);
   const domElement = useThree((state) => state.gl.domElement);
   const invalidate = useThree((state) => state.invalidate);
   const controls = useRef(null);
+
+  // What the remembered pose was framed against, and whether this mount has
+  // already had its first go.
+  const signature = useRef('');
+  const mounted = useRef(false);
 
   useEffect(() => {
     /*
@@ -84,12 +90,22 @@ const Controls = ({ view, bounds, revision }) => {
     orbit.addEventListener('change', invalidate);
     controls.current = orbit;
 
+    /*
+     * Every move of the camera is written down, so that leaving the screen
+     * and coming back arrives at the same view. On `change` rather than on
+     * unmount: React does not promise that an unmount effect sees a live
+     * WebGL context, and this is cheap — four numbers and an array.
+     */
+    const remember = () => rememberCamera(memory, signature.current, camera, orbit.target);
+    orbit.addEventListener('change', remember);
+
     return () => {
       orbit.removeEventListener('change', invalidate);
+      orbit.removeEventListener('change', remember);
       orbit.dispose();
       controls.current = null;
     };
-  }, [camera, domElement, invalidate]);
+  }, [camera, domElement, invalidate, memory]);
 
   /*
    * `revision` is what makes the buttons work twice.
@@ -102,6 +118,29 @@ const Controls = ({ view, bounds, revision }) => {
   useEffect(() => {
     const orbit = controls.current;
     if (!orbit) {
+      return;
+    }
+
+    signature.current = `${view}|${JSON.stringify(bounds)}`;
+
+    /*
+     * On the way back in, put the camera where it was rather than where the
+     * view button says.
+     *
+     * Only on the first run of this effect for this mount: after that, the
+     * effect only runs because the view changed, the bounds changed or a
+     * button was pressed, and each of those is a request to be framed afresh.
+     */
+    const pose = mounted.current ? null : recallCamera(memory, signature.current);
+    mounted.current = true;
+
+    if (pose) {
+      camera.position.fromArray(pose.position);
+      camera.zoom = pose.zoom;
+      camera.updateProjectionMatrix();
+      orbit.target.fromArray(pose.target);
+      orbit.update();
+      invalidate();
       return;
     }
 
@@ -121,8 +160,9 @@ const Controls = ({ view, bounds, revision }) => {
     // object on screen and then spins it about a point off the edge of it.
     orbit.target.copy(target);
     orbit.update();
+    rememberCamera(memory, signature.current, camera, orbit.target);
     invalidate();
-  }, [camera, view, bounds, revision, invalidate]);
+  }, [camera, view, bounds, revision, invalidate, memory]);
 
   return null;
 };

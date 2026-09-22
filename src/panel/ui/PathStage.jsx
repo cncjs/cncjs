@@ -37,7 +37,7 @@ const PathStage = ({ scene, tool, view, onView, revision, layers, sections, onLa
     {/* The canvas is a raw WebGL surface with square corners; the card's own
       * rounding stops at its padding, so the frame and the clipping are here. */}
     <div className="min-h-0 min-w-0 flex-1 overflow-hidden rounded-ctl border border-line">
-      <Scene scene={scene} tool={tool} layers={layers} view={view} revision={revision} />
+      <Scene scene={scene} tool={tool} layers={layers} view={view} revision={revision} memory="path" />
     </div>
 
     <div className="flex w-side2 shrink-0 flex-col gap-4 overflow-y-auto">

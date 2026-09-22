@@ -129,6 +129,23 @@ export const workOrigins = (settings) => {
 };
 
 /**
+ * The smallest difference in a work offset that is a difference.
+ *
+ * Controllers report positions to three decimals, so a tenth of a micron is
+ * already two orders below anything a machine can say — and **that is the
+ * point**: the offset is a subtraction of two reported numbers, and in binary
+ * floating point `-100.000 - -84.164` and `-100.400 - -84.564` do not give
+ * the same answer. They differ in the fifteenth digit.
+ *
+ * Nothing about the machine changes, but the number does, and anything that
+ * memoises on it sees a new value four times a second. On the toolpath screen
+ * that was a camera that snapped back to the isometric view the moment the
+ * machine started moving — measured over 501 reports across one 50mm jog, the
+ * offset took three distinct values, all equal to within 1e-14.
+ */
+const OFFSET_PRECISION = 1e4;
+
+/**
  * The offset between machine and work coordinates, derived rather than read.
  *
  * Grbl reports `WCO:` in its status, but not in every report — it is sent on
@@ -146,7 +163,7 @@ export const workOffset = (machinePosition, position) => {
     if (!Number.isFinite(mpos) || !Number.isFinite(wpos)) {
       return null;
     }
-    offset[axis] = mpos - wpos;
+    offset[axis] = Math.round((mpos - wpos) * OFFSET_PRECISION) / OFFSET_PRECISION;
   }
 
   return offset;

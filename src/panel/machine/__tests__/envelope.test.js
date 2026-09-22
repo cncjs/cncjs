@@ -139,6 +139,33 @@ describe('workOffset', () => {
     expect(offset).toEqual({ x: -100, y: -75, z: 0 });
   });
 
+  test('is the same number all the way through a move', () => {
+    /*
+     * The one that matters. Both positions change as the machine travels and
+     * their difference does not — but in binary floating point the
+     * subtraction does not say so, and anything memoised on the result sees a
+     * new value several times a second. On the toolpath screen that was the
+     * camera snapping back to isometric the moment a jog started.
+     */
+    const wco = -15.836;
+    const seen = new Set();
+
+    for (let i = 0; i <= 500; i += 1) {
+      const mpos = Number((-100 - (i * 0.1)).toFixed(3));
+      const wpos = Number((mpos - wco).toFixed(3));
+      seen.add(workOffset({ x: mpos, y: 0, z: 0 }, { x: wpos, y: 0, z: 0 }).x);
+    }
+
+    expect(seen.size).toBe(1);
+    expect([...seen][0]).toBe(wco);
+  });
+
+  test('keeps everything a controller can actually report', () => {
+    // Three decimals is the reporting precision; rounding must not reach it.
+    const offset = workOffset({ x: 0.001, y: -0.002, z: 12.345 }, { x: 0, y: 0, z: 0 });
+    expect(offset).toEqual({ x: 0.001, y: -0.002, z: 12.345 });
+  });
+
   test('is nothing until both positions have arrived', () => {
     expect(workOffset({ x: -100, y: -50, z: -10 }, { x: 0, y: null, z: 0 })).toBeNull();
     expect(workOffset(null, { x: 0, y: 0, z: 0 })).toBeNull();
