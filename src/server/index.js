@@ -22,6 +22,7 @@ import cncengine from './services/cncengine';
 import monitor from './services/monitor';
 import config from './services/configstore';
 import createWebApp from './lib/create-web-app';
+import { calibrateHost } from './lib/host-timing';
 import logger, { setLevel } from './lib/logger';
 import urljoin from './lib/urljoin';
 
@@ -245,6 +246,24 @@ const createServer = (options, callback) => {
   server.listen(port, host, backlog, () => {
     // cncengine service
     cncengine.start(server, options.controller || config.get('controller', ''));
+
+    /*
+     * Find out what this computer is worth as a jog clock.
+     *
+     * Continuous jogging hands the machine a segment of travel every few
+     * milliseconds, and how much has to be queued ahead depends on how
+     * punctual this host's timers are — which is a property of the computer,
+     * not of the machine or the firmware. Measuring it beats assuming it,
+     * and the measurement is what lets the panel tell an operator how far
+     * the machine will travel after they let go of a key.
+     *
+     * Not awaited: it takes a couple of seconds, and until it lands the
+     * conservative floor is in use. Nobody is jogging in the first two
+     * seconds of a server's life, and if they are, they get the safe value.
+     */
+    calibrateHost().catch((err) => {
+      log.error('Could not measure the timer accuracy of this host:', err);
+    });
 
     const address = server.address().address;
     const port = server.address().port;

@@ -49,9 +49,12 @@ import * as builtinCommand from '../utils/builtin-command';
 import { isM0, isM1, isM6, replaceM6 } from '../utils/gcode';
 import { in2mm, mapPositionToUnits, mapValueToUnits } from '../utils/units';
 import GrblRunner from './GrblRunner';
-import { LEAD_SEGMENTS, MAX_IN_FLIGHT, SEGMENT_SECONDS, jogSegmentLine } from './jog';
+import { MAX_IN_FLIGHT, SEGMENT_SECONDS, jogSegmentLine, stopSeconds } from './jog';
+import { hostTiming } from '../../lib/host-timing';
+import { summarise } from '../../lib/tick-jitter';
 import {
   GRBL,
+  GRBL_ACTIVE_STATE_IDLE,
   GRBL_ACTIVE_STATE_RUN,
   GRBL_ACTIVE_STATE_HOLD,
   GRBL_REALTIME_COMMANDS,
@@ -529,8 +532,33 @@ class GrblController {
        * but it is what a stop waits on, because an acknowledgement is the
        * only proof the firmware has taken a line out of its receive buffer.
        */
-      this.jogging = { dir: null, feedrate: 0, inFlight: 0, stopping: false };
+      this.jogging = {
+        dir: null,
+        feedrate: 0,
+        inFlight: 0,
+        stopping: false,
+        leadSeconds: hostTiming().leadSeconds,
+      };
       this.jogTimer = null;
+
+      /*
+       * How long the firmware takes to answer, in seconds.
+       *
+       * Measured off the parser-state query that is being sent anyway, so it
+       * costs the serial port nothing. It matters because a stop waits for
+       * the last segment to be acknowledged, so this is part of what the
+       * operator feels when they let go — and it is the part that belongs to
+       * the cable and the adapter rather than to the computer. A USB serial
+       * adapter with the default 16ms latency timer shows up here.
+       *
+       * A short window of samples, reported as a median: one late reply
+       * during a busy moment should not change the number an operator was
+       * told, and a single sample is noise.
+       */
+      this.ackSamples = [];
+      // Only announced when it actually changes, so a panel is not woken
+      // twice a second to be told the same number.
+      this.reportedStopMs = null;
 
       this.workflow = new Workflow();
       this.workflow.on('start', (...args) => {
@@ -630,6 +658,8 @@ class GrblController {
 
       this.runner.on('ok', (res) => {
         if (this.actionMask.queryParserState.reply) {
+          this.sampleAck();
+
           if (this.actionMask.replyParserState) {
             this.actionMask.replyParserState = false;
             this.emit('serialport:read', res.raw);
@@ -1437,6 +1467,10 @@ class GrblController {
           inuse: true
         });
       }
+      // How long this installation takes to stop, so a panel that connects
+      // later is not left guessing at it.
+      socket.emit('controller:timing', this.timing());
+
       if (!_.isEmpty(this.settings)) {
         // controller settings
         socket.emit('controller:settings', GRBL, this.settings);
@@ -1670,9 +1704,30 @@ class GrblController {
             return;
           }
 
+          /*
+           * **A key takes over; it does not queue behind.**
+           *
+           * Grbl queues jogs, so a key pressed while a travel is running —
+           * a click on the preview, a go-to-zero — used to be *appended* to
+           * it: the machine finished driving to the click, in the opposite
+           * direction to the key being held, and only then turned round.
+           * Measured, a click 200mm away swallowed the key press entirely.
+           *
+           * A jog this controller is already driving is not that case: there
+           * the new direction simply replaces the old one, with no cancel,
+           * because cancelling to turn is a race the firmware loses.
+           */
+          if (!this.jogging.dir && this.isTravelling()) {
+            this.takeOverWith(dir, feedrate);
+            return;
+          }
+
           this.jogging.dir = dir;
           this.jogging.feedrate = feedrate;
           this.jogging.stopping = false;
+          // Read once per hold rather than per tick: the lead an operator was
+          // told about is the lead this jog uses, start to finish.
+          this.jogging.leadSeconds = hostTiming().leadSeconds;
           this.runJog();
         },
         /** Stop jogging, and drop whatever is still queued. */
@@ -2190,7 +2245,7 @@ class GrblController {
       }
 
       this.jogging.sentAt = Date.now();
-      if (!this.sendJogSegment(SEGMENT_SECONDS * LEAD_SEGMENTS)) {
+      if (!this.sendJogSegment(this.jogging.leadSeconds)) {
         return;
       }
 
@@ -2210,6 +2265,22 @@ class GrblController {
         const elapsed = (now - this.jogging.sentAt) / 1000;
         this.jogging.sentAt = now;
 
+        /*
+         * **A tick later than the lead is a stutter, and it gets said out
+         * loud.** The lead was measured at startup on an otherwise quiet
+         * process; whatever made this tick late was not present then, and
+         * silently growing the queue to absorb it would trade a visible
+         * stutter for an invisible change in stopping distance. The operator
+         * was told a number — it stays the number.
+         */
+        if (elapsed > this.jogging.leadSeconds) {
+          log.warn(
+            `Jog tick was ${Math.round(elapsed * 1000)}ms, beyond the ` +
+            `${Math.round(this.jogging.leadSeconds * 1000)}ms lead measured for this host: ` +
+            'the machine may have paused mid-move'
+          );
+        }
+
         // Floored so a stray fast tick still moves; capped so a stalled
         // event loop cannot turn into one long uninterruptible move.
         const seconds = Math.min(
@@ -2223,6 +2294,110 @@ class GrblController {
       }, SEGMENT_SECONDS * 1000);
     }
 
+    /** Whether the machine is in the middle of a move this loop did not start. */
+    isTravelling() {
+      return this.runner.state?.status?.activeState === 'Jog';
+    }
+
+    /**
+     * Cancel what is running and start jogging once it has wound down.
+     *
+     * The wait is not politeness: the firmware refuses a `$J=` while it is
+     * still winding a cancel down, so sending one straight after `0x85`
+     * gets an error and the key does nothing at all. Waiting for the state
+     * to come back costs the length of one status report, which is why that
+     * interval is 100ms rather than 250.
+     */
+    takeOverWith(dir, feedrate) {
+      this.write('\x85');
+
+      const startedAt = Date.now();
+      const begin = () => {
+        // Gone away, superseded by another press, or the key came up while
+        // we were waiting — all three mean this take-over is stale.
+        if (this.isClose() || this.jogging.dir || this.jogging.pendingAt !== startedAt) {
+          return;
+        }
+
+        if (this.runner.state?.status?.activeState !== GRBL_ACTIVE_STATE_IDLE) {
+          // Give up rather than wait forever: something other than a jog is
+          // holding the machine, and that is not this loop's to override.
+          if (Date.now() - startedAt > 1000) {
+            log.warn('Gave up taking over a jog: the machine did not come back to idle');
+            return;
+          }
+          setTimeout(begin, 20);
+          return;
+        }
+
+        this.jogging.dir = dir;
+        this.jogging.feedrate = feedrate;
+        this.jogging.stopping = false;
+        this.jogging.leadSeconds = hostTiming().leadSeconds;
+        this.runJog();
+      };
+
+      this.jogging.pendingAt = startedAt;
+      setTimeout(begin, 20);
+    }
+
+    /** Time the firmware's reply to the query that was just answered. */
+    sampleAck() {
+      const sentAt = this.actionTime.queryParserState;
+      if (!(sentAt > 0)) {
+        return;
+      }
+
+      const seconds = (Date.now() - sentAt) / 1000;
+      // A reply that took longer than a second is not a measurement of the
+      // link, it is something else having gone wrong.
+      if (seconds < 0 || seconds > 1) {
+        return;
+      }
+
+      this.ackSamples.push(seconds);
+      if (this.ackSamples.length > 9) {
+        this.ackSamples.shift();
+      }
+
+      /*
+       * Announced when it moves meaningfully, not when it twitches.
+       *
+       * The reply time wanders by a millisecond or two between samples, and
+       * a figure an operator is meant to rely on should not be redrawn every
+       * half second for that. Five milliseconds is under a tenth of a
+       * millimetre at 1500 mm/min — below anything that changes a decision.
+       */
+      const timing = this.timing();
+      if (this.reportedStopMs === null || Math.abs(timing.stopMs - this.reportedStopMs) >= 5) {
+        this.reportedStopMs = timing.stopMs;
+        this.emit('controller:timing', timing);
+      }
+    }
+
+    /**
+     * What this installation's jog actually costs, in milliseconds.
+     *
+     * **Numbers, not adjectives.** Whoever is standing at the machine has to
+     * be able to predict how far it goes after they let go of a key, and that
+     * is not knowable from "it is responsive" — it is `lead + reply`, times
+     * the feed rate, plus the machine's own deceleration. The first two are
+     * the server's to measure and are measured here; the feed rate and
+     * `$120`–`$122` belong to whoever is driving, so the distance is worked
+     * out at the panel.
+     */
+    timing() {
+      const { tick, leadSeconds } = hostTiming();
+      const ackSeconds = summarise(this.ackSamples)?.median ?? 0;
+
+      return {
+        tickMs: tick ? Math.round(tick.worst * 1000) : null,
+        leadMs: Math.round(leadSeconds * 1000),
+        ackMs: Math.round(ackSeconds * 1000),
+        stopMs: Math.round(stopSeconds({ leadSeconds, ackSeconds }) * 1000),
+      };
+    }
+
     haltJogClock() {
       if (this.jogTimer) {
         clearInterval(this.jogTimer);
@@ -2233,6 +2408,8 @@ class GrblController {
     stopJog() {
       this.jogging.dir = null;
       this.jogging.feedrate = 0;
+      // A take-over still counting down is abandoned: the key is up.
+      this.jogging.pendingAt = null;
       this.haltJogClock();
 
       if (this.jogging.inFlight > 0) {
