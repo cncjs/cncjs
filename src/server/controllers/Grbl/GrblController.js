@@ -49,6 +49,7 @@ import * as builtinCommand from '../utils/builtin-command';
 import { isM0, isM1, isM6, replaceM6 } from '../utils/gcode';
 import { in2mm, mapPositionToUnits, mapValueToUnits } from '../utils/units';
 import GrblRunner from './GrblRunner';
+import { LEAD_SEGMENTS, MAX_IN_FLIGHT, SEGMENT_SECONDS, jogSegmentLine } from './jog';
 import {
   GRBL,
   GRBL_ACTIVE_STATE_RUN,
@@ -513,6 +514,24 @@ class GrblController {
       });
 
       // Workflow
+      /*
+       * Continuous jogging, driven by `ok` rather than by a clock.
+       *
+       * Grbl's own documentation describes the method: send a short
+       * incremental `$J=`, wait for its acknowledgement, send the next. Only
+       * the side holding the serial port sees `ok`, so this has to live here
+       * — a client can only guess at the rhythm, and a guess that sends
+       * faster than the machine consumes builds a backlog that a change of
+       * direction then has to wait behind.
+       *
+       * `inFlight` is how many segments have been sent and not yet
+       * acknowledged. It is not the pacing — the clock in `runJog` is —
+       * but it is what a stop waits on, because an acknowledgement is the
+       * only proof the firmware has taken a line out of its receive buffer.
+       */
+      this.jogging = { dir: null, feedrate: 0, inFlight: 0, stopping: false };
+      this.jogTimer = null;
+
       this.workflow = new Workflow();
       this.workflow.on('start', (...args) => {
         this.emit('workflow:state', this.workflow.state);
@@ -640,6 +659,36 @@ class GrblController {
           }
           this.sender.ack();
           this.sender.next();
+          return;
+        }
+
+        /*
+         * A jog segment's acknowledgement is not the feeder's to consume.
+         * While a jog is running nothing else is being written, so an
+         * outstanding segment is what this `ok` belongs to.
+         */
+        if (this.jogging.inFlight > 0) {
+          this.jogging.inFlight -= 1;
+
+          /*
+           * **A stop waits for the outstanding segment to be acknowledged.**
+           *
+           * Sending `0x85` straight away races the `$J=` that has just gone
+           * out: the cancel reaches Grbl first, flushes a planner that has
+           * nothing in it yet, and then the segment arrives and the machine
+           * sets off with nothing held. Cancelling after the `ok` means the
+           * segment is definitely in the planner, so there is something for
+           * the cancel to flush. UGS does the same — and the bug it avoids is
+           * filed against UGS too, as "jogging gets stuck".
+           */
+          if (this.jogging.stopping) {
+            if (this.jogging.inFlight === 0) {
+              this.jogging.stopping = false;
+              this.write('\x85');
+            }
+            return;
+          }
+
           return;
         }
 
@@ -1026,7 +1075,28 @@ class GrblController {
             this.command('gcode:stop');
           }
         }
-      }, 250);
+      /*
+       * 100ms rather than 250.
+       *
+       * `?` is a realtime command — it does not consume the receive buffer —
+       * and it is masked until the previous report comes back, so a faster
+       * tick cannot flood the connection. What it buys is a position readout
+       * that keeps up with the machine and, more importantly, a machine state
+       * the panel can act on: jogging turns by cancelling and setting out
+       * again, and at 250ms "has it stopped yet" was up to a quarter of a
+       * second stale, which is long enough for the new jog to be refused.
+       *
+       * The queries that *do* consume the buffer keep their own throttles —
+       * `$G` at 500ms and the activity `?` at 2000ms — so they are unchanged
+       * by this.
+       *
+       * TODO: this belongs in configuration rather than in the source. It is
+       * a property of a particular machine and cable, not of cncjs, and a
+       * dense program on a real machine may want it slower again. Written up
+       * in `src/panel/server-backlog.md` under "Częstotliwość odpytywania o
+       * stan".
+       */
+      }, 100);
     }
 
     async initController() {
@@ -1138,6 +1208,8 @@ class GrblController {
         clearInterval(this.queryTimer);
         this.queryTimer = null;
       }
+
+      this.haltJogClock();
 
       if (this.runner) {
         this.runner.removeAllListeners();
@@ -1562,9 +1634,50 @@ class GrblController {
 
           this.write('\x18'); // ^x
         },
+        /**
+         * Stop whatever jog is moving, from anywhere — the pad, a key, a
+         * click on the preview, a go-to-zero. Same path as `jogStop`,
+         * because "stop" has one meaning.
+         */
         'jogCancel': () => {
-          // https://github.com/gnea/grbl/blob/master/doc/markdown/jogging.md
-          this.write('\x85');
+          this.stopJog();
+        },
+        /**
+         * Start jogging, and keep jogging until told to stop.
+         *
+         * `dir` is an axis-to-sign map such as `{ x: 1, y: -1 }`; two axes is
+         * a diagonal and it stays at 45 degrees. `feedrate` is in mm/min.
+         *
+         * **Aiming a running jog somewhere else is the same command again.**
+         * The segments already in flight finish and the next ones go the new
+         * way, so a turn costs at most `SEGMENTS_IN_FLIGHT` segments and
+         * never needs a cancel. Cancelling to turn was the old way and it was
+         * a race: the firmware refuses a jog while it is winding a cancel
+         * down, and a cancel sent just after a jog was accepted overtook it —
+         * which left the machine moving with nothing held.
+         *
+         * Refused while a program is running. The planner belongs to the job
+         * then, and a jog would interleave with it.
+         */
+        'jogStart': () => {
+          const [dir, feedrate] = args;
+
+          if (this.workflow.state !== WORKFLOW_STATE_IDLE) {
+            log.warn('Refusing to jog while a job is running');
+            return;
+          }
+          if (!dir || !(feedrate > 0)) {
+            return;
+          }
+
+          this.jogging.dir = dir;
+          this.jogging.feedrate = feedrate;
+          this.jogging.stopping = false;
+          this.runJog();
+        },
+        /** Stop jogging, and drop whatever is still queued. */
+        'jogStop': () => {
+          this.stopJog();
         },
         // Feed Overrides
         // @param {number} value The amount of percentage increase or decrease.
@@ -2019,6 +2132,116 @@ class GrblController {
       }
 
       handler();
+    }
+
+    /**
+     * Top the planner up to `SEGMENTS_IN_FLIGHT` segments.
+     *
+     * Called when a jog starts and again on every acknowledgement, which is
+     * what makes this a loop driven by the machine rather than by a clock.
+     * It falls quiet on its own when `jogSegmentLine` returns null — the axis
+     * has run out of travel — instead of filling the controller with lines it
+     * will refuse.
+     */
+    /**
+     * Put one segment on the wire, if there is somewhere to go.
+     *
+     * Returns false when the machine has run out of travel in the direction
+     * being held, which is how the clock below knows to give up rather than
+     * tick against a limit forever.
+     */
+    sendJogSegment(seconds) {
+      const { dir, feedrate } = this.jogging;
+      if (!dir) {
+        return false;
+      }
+
+      const line = jogSegmentLine({
+        dir,
+        feedrate,
+        seconds,
+        settings: this.runner.settings?.settings,
+        mpos: this.runner.state?.status?.mpos,
+      });
+
+      if (!line) {
+        return false;
+      }
+
+      this.jogging.inFlight += 1;
+      this.writeln(line);
+      return true;
+    }
+
+    /**
+     * Keep a held direction moving.
+     *
+     * A tick asks for the time that has actually passed since the last one,
+     * so the machine covers the feed rate it was given even though the timer
+     * runs late — see `segmentDistance`. The lead sent up front is the
+     * cushion that keeps the planner from running dry between ticks.
+     *
+     * The clock stops on its own when the direction is dropped or the axis
+     * runs out of travel, so holding a key against a limit costs nothing.
+     */
+    runJog() {
+      if (this.jogTimer) {
+        return;
+      }
+
+      this.jogging.sentAt = Date.now();
+      if (!this.sendJogSegment(SEGMENT_SECONDS * LEAD_SEGMENTS)) {
+        return;
+      }
+
+      this.jogTimer = setInterval(() => {
+        if (!this.jogging.dir) {
+          this.haltJogClock();
+          return;
+        }
+        // Behind on acknowledgements: let the firmware catch up rather than
+        // queue work that a turn would then have to wait behind. The time
+        // is not consumed, so the next segment covers it.
+        if (this.jogging.inFlight >= MAX_IN_FLIGHT) {
+          return;
+        }
+
+        const now = Date.now();
+        const elapsed = (now - this.jogging.sentAt) / 1000;
+        this.jogging.sentAt = now;
+
+        // Floored so a stray fast tick still moves; capped so a stalled
+        // event loop cannot turn into one long uninterruptible move.
+        const seconds = Math.min(
+          Math.max(elapsed, SEGMENT_SECONDS),
+          SEGMENT_SECONDS * MAX_IN_FLIGHT
+        );
+
+        if (!this.sendJogSegment(seconds)) {
+          this.haltJogClock();
+        }
+      }, SEGMENT_SECONDS * 1000);
+    }
+
+    haltJogClock() {
+      if (this.jogTimer) {
+        clearInterval(this.jogTimer);
+        this.jogTimer = null;
+      }
+    }
+
+    stopJog() {
+      this.jogging.dir = null;
+      this.jogging.feedrate = 0;
+      this.haltJogClock();
+
+      if (this.jogging.inFlight > 0) {
+        this.jogging.stopping = true;
+        return;
+      }
+
+      this.jogging.stopping = false;
+      this.write('\x85');
     }
 
     write(data, context) {

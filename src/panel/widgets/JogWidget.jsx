@@ -8,12 +8,14 @@ import SegmentedChoice from '../ui/SegmentedChoice';
 import Sheet from '../ui/Sheet';
 import Stepper from '../ui/Stepper';
 import controller from '../machine/controller';
+import { canGoToWorkZero, goToWorkZero } from '../machine/goto';
 import { home } from '../machine/homing';
 import { useIsPhone } from '../ui/shell';
 import { jog, jogStart, jogStop, XY_STEPS, Z_STEPS } from '../machine/jog';
 import ShortcutHelp from '../ui/ShortcutHelp';
 import useHoldToJog from '../ui/useHoldToJog';
 import useJogKeys from '../ui/useJogKeys';
+import useJogStream from '../ui/useJogStream';
 
 /**
  * Moving the machine by hand.
@@ -47,7 +49,14 @@ const JogWidget = ({ machine, className = '' }) => {
   const [editing, setEditing] = useState(null);
   const [helping, setHelping] = useState(false);
 
-  const rateFor = (axis) => (axis === 'z' ? zSpeed : xySpeed);
+  /*
+   * A direction is Z or it is not. The corners of the cross move X and Y
+   * together, so "which axis is this" has no answer — but "is this the Z
+   * decision or the table decision" does, and that is the only thing the step
+   * and the feed rate are chosen by.
+   */
+  const isZ = (dir) => 'z' in dir;
+  const rateFor = (dir) => (isZ(dir) ? zSpeed : xySpeed);
 
   /*
    * A tap is one step, a hold keeps going. Both are the same intent at two
@@ -55,28 +64,51 @@ const JogWidget = ({ machine, className = '' }) => {
    * not have to pick a different button before knowing how far they want to
    * go.
    */
-  const stepFor = (axis, coarse) => {
-    const steps = axis === 'z' ? Z_STEPS : XY_STEPS;
+  const stepFor = (dir, coarse) => {
+    const steps = isZ(dir) ? Z_STEPS : XY_STEPS;
     // Shift is the coarse step: the largest the axis offers, which is what
     // "get across the work" means without asking anyone to change a setting
     // they will have to change back.
-    return coarse ? steps[steps.length - 1] : (axis === 'z' ? zStep : xyStep);
+    return coarse ? steps[steps.length - 1] : (isZ(dir) ? zStep : xyStep);
   };
 
-  const stepJog = (axis, sign, coarse) => jog({
-    type,
-    axis,
-    distance: sign * stepFor(axis, coarse),
-    feedrate: rateFor(axis),
+  /*
+   * The same step on every axis the direction names, so a corner tap moves at
+   * 45° — the direction its arrow is drawn in. It travels the step's diagonal
+   * rather than the step, which is what "one step that way" means when "that
+   * way" is a corner, and is what the old application's keypad has always
+   * sent.
+   */
+  const stepJog = (dir, coarse) => {
+    const distance = stepFor(dir, coarse);
+    const moves = {};
+    for (const axis of Object.keys(dir)) {
+      moves[axis] = dir[axis] * distance;
+    }
+    return jog({
+      type,
+      moves,
+      feedrate: rateFor(dir),
+      settings: machine.settings,
+      position: machine.machinePosition,
+    });
+  };
+
+  /*
+   * **One stream, shared by the keys and the pad**, so a direction held with
+   * the mouse and one held on the keyboard cannot end up as two jogs fighting
+   * each other. The moving itself is the server's loop, driven by `ok` — see
+   * `machine/jog.js` and `src/server/controllers/Grbl/jog.js`.
+   */
+  const stream = useJogStream({
+    start: (dir) => jogStart(type, dir, rateFor(dir)),
+    stop: () => jogStop(type),
   });
 
   const holdToJog = useHoldToJog({
+    step: (dir) => stepJog(dir),
+    stream,
     enabled: connected,
-    step: (axis, sign) => stepJog(axis, sign),
-    start: (axis, sign) => jogStart({
-      type, axis, sign, feedrate: rateFor(axis), settings: machine.settings,
-    }),
-    stop: () => jogStop(type),
   });
 
   /*
@@ -86,21 +118,19 @@ const JogWidget = ({ machine, className = '' }) => {
    * meaning a direction on the table.
    */
   useJogKeys({
-    enabled: connected,
     step: stepJog,
-    start: (axis, sign) => jogStart({
-      type, axis, sign, feedrate: rateFor(axis), settings: machine.settings,
-    }),
-    stop: () => jogStop(type),
+    stream,
+    enabled: connected,
     onHelp: () => setHelping(true),
   });
 
   const keys = {
     onJog: holdToJog,
     onHome: () => home(controller),
-    onPark: () => {},
+    onGoZero: () => goToWorkZero(machine.settings),
     disabled: !connected,
     canHome: machine.canHome,
+    canGoZero: canGoToWorkZero(machine.settings),
   };
 
   // The two axis groups, one description each. Both arrangements show the same
@@ -135,23 +165,36 @@ const JogWidget = ({ machine, className = '' }) => {
   const open = editing === 'xy' ? xy : (editing === 'z' ? z : null);
 
   return (
-    <Card className={`min-h-0 overflow-hidden ${className}`} bodyClassName="gap-0">
+    <Card className={`group relative min-h-0 overflow-hidden ${className}`} bodyClassName="gap-0">
+      {/* A shortcut nobody knows about is a shortcut that does not exist — but
+        * it does not have to be on screen the whole time to be findable. It
+        * rests hidden and comes up when the pointer is anywhere on this card,
+        * which is the moment somebody is looking at the keys anyway.
+        *
+        * **Positioned against the card, not the column below it.** That column
+        * scrolls, and anything hung outside a scrolling box is clipped by it —
+        * which is how this button disappeared entirely rather than moving.
+        *
+        * Hidden by opacity rather than by unmounting, so it does not shift
+        * anything when it appears, and `pointer-events-none` while it is
+        * invisible so an unseen button never eats a press meant for Z+. The
+        * keyboard gets it back on focus: a control reachable by Tab must be
+        * visible once it is reached. Not on a phone: no pointer to hover with
+        * and no keyboard to explain. */}
+      {phone ? null : (
+        <button
+          type="button"
+          onClick={() => setHelping(true)}
+          aria-label="Skróty klawiszowe"
+          className="pointer-events-none absolute right-0.5 top-0.5 z-10 size-6 rounded-full border border-line bg-field text-cap font-semibold leading-none text-mut opacity-0 transition-opacity hover:border-acc hover:text-acc focus-visible:pointer-events-auto focus-visible:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100"
+        >
+          ?
+        </button>
+      )}
       {/* At the panel: the keys at their drawn size, both groups open below
         * them, nothing folded away. */}
       {phone ? null : (
-        <div className="relative flex min-h-0 flex-1 flex-col gap-gap overflow-auto">
-          {/* A shortcut nobody knows about is a shortcut that does not exist.
-            * It sits in the corner the cross leaves empty rather than in a row
-            * of its own, where it pushed every key down by its own height to
-            * say one character. Not on a phone: no keyboard to explain. */}
-          <button
-            type="button"
-            onClick={() => setHelping(true)}
-            aria-label="Skróty klawiszowe"
-            className="absolute left-0 top-0 z-10 size-7 rounded-ctl border border-line bg-field text-base font-semibold text-mut hover:border-acc hover:text-acc"
-          >
-            ?
-          </button>
+        <div className="flex min-h-0 flex-1 flex-col gap-gap overflow-auto">
 
         <div className="shrink-0">
           <JogPad {...keys} />

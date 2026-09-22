@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * A jog key that does two things depending on how long it is held.
@@ -9,22 +9,37 @@ import { useCallback, useEffect, useRef } from 'react';
  * scales, and an operator should not have to decide which button to reach for
  * before knowing how far they want to go.
  *
- * `HOLD_AFTER` is the line between them. Long enough that an ordinary press is
- * unambiguously a step, short enough that holding does not feel stuck.
+ * `HOLD_AFTER` is the line between them. Long enough that an ordinary press
+ * is unambiguously a step, short enough that holding does not feel stuck.
  *
- * **Every way the press can end cancels the move.** Pointer up is the expected
- * one; pointer cancel is the browser taking the gesture away, usually because
- * it became a scroll; the window losing focus and the page being hidden are
- * the ones that matter most, because on a machine a jog that outlives the
- * page is a jog nobody is watching. The bounded distance in `jogStart` is the
- * backstop underneath all of them.
+ * **Every way the press can end stops the machine.** Pointer up is the
+ * expected one; pointer cancel is the browser taking the gesture away,
+ * usually because it became a scroll; the window losing focus and the page
+ * being hidden are the ones that matter most, because a jog that outlives the
+ * page is a jog nobody is watching. The stream's own segment length is the
+ * backstop underneath all of them: it is a fraction of a second of travel, so
+ * even a release that is never seen stops the machine almost at once.
  */
 const HOLD_AFTER = 250;
 
-export const useHoldToJog = ({ step, start, stop, enabled }) => {
+export const useHoldToJog = ({ step, stream, enabled }) => {
   const held = useRef(null);
 
-  const end = useCallback(() => {
+  /*
+   * Read through refs, so the window listeners below are bound once. They
+   * used to depend on these callbacks, which are new on every render — and
+   * the widget renders on every status report, ten times a second. A release
+   * landing between the remove and the add was lost, which leaves a jog
+   * running with nothing watching for the finger coming up.
+   */
+  const nudge = useRef(step);
+  const jog = useRef(stream);
+  const live = useRef(enabled);
+  nudge.current = step;
+  jog.current = stream;
+  live.current = enabled;
+
+  const end = useRef(() => {
     const press = held.current;
     if (!press) {
       return;
@@ -32,19 +47,17 @@ export const useHoldToJog = ({ step, start, stop, enabled }) => {
     held.current = null;
     clearTimeout(press.timer);
 
-    if (press.moving) {
-      stop();
+    if (jog.current.running()) {
+      jog.current.halt();
     } else {
       // Released before it became a hold, so it was a tap: one step.
-      step(press.axis, press.sign);
+      nudge.current(press.dir);
     }
-  }, [step, stop]);
+  });
 
   useEffect(() => {
-    // A press that outlives the window is the dangerous one. Nothing here is
-    // a substitute for the distance bound, but it is what stops the machine
-    // when somebody alt-tabs mid-jog.
-    const abandon = () => end();
+    // A press that outlives the window is the dangerous one.
+    const abandon = () => end.current();
     window.addEventListener('blur', abandon);
     window.addEventListener('pointerup', abandon);
     document.addEventListener('visibilitychange', abandon);
@@ -53,10 +66,10 @@ export const useHoldToJog = ({ step, start, stop, enabled }) => {
       window.removeEventListener('pointerup', abandon);
       document.removeEventListener('visibilitychange', abandon);
     };
-  }, [end]);
+  }, []);
 
-  const press = (axis, sign) => (event) => {
-    if (!enabled) {
+  const press = (dir) => (event) => {
+    if (!live.current) {
       return;
     }
     // Only the primary button, and not a second finger landing mid-jog.
@@ -64,24 +77,21 @@ export const useHoldToJog = ({ step, start, stop, enabled }) => {
       return;
     }
 
-    const record = { axis, sign, moving: false, timer: null };
+    const record = { dir, timer: null };
     record.timer = setTimeout(() => {
-      record.moving = start(axis, sign);
-      if (!record.moving) {
-        // The controller cannot be cancelled, so holding is not offered: the
-        // press falls back to the step it would have been.
-        held.current = null;
-        step(axis, sign);
-      }
+      record.timer = null;
+      jog.current.aim(dir);
     }, HOLD_AFTER);
     held.current = record;
   };
 
-  return (axis, sign) => ({
-    onPointerDown: press(axis, sign),
-    onPointerUp: end,
-    onPointerLeave: end,
-    onPointerCancel: end,
+  const finish = () => end.current();
+
+  return (dir) => ({
+    onPointerDown: press(dir),
+    onPointerUp: finish,
+    onPointerLeave: finish,
+    onPointerCancel: finish,
   });
 };
 
