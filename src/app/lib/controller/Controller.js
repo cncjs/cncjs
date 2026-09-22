@@ -51,6 +51,19 @@ class Controller {
         'workflow:state': [],
         'controller:settings': [],
         'controller:state': [],
+
+        /**
+         * How long this installation takes to stop a jog, in milliseconds.
+         *
+         * Measured by the server rather than assumed: the queue it keeps
+         * ahead of the machine depends on how punctual the host computer's
+         * timers are, and the reply time depends on the cable. A client
+         * turns it into a stopping distance with the feed rate it has set.
+         *
+         * @event controller:timing
+         * @param {object} timing - `{ tickMs, leadMs, ackMs, stopMs }`
+         */
+        'controller:timing': [],
         'message': [],
         'watchdir:change': [],
 

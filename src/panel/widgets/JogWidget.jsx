@@ -241,6 +241,10 @@ const JogWidget = ({ machine, className = '' }) => {
           zStep={zStep}
           xyCoarse={XY_STEPS[XY_STEPS.length - 1]}
           zCoarse={Z_STEPS[Z_STEPS.length - 1]}
+          xySpeed={xySpeed}
+          zSpeed={zSpeed}
+          timing={machine.timing}
+          settings={machine.settings}
         />
       ) : null}
 

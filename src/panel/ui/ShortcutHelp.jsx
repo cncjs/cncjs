@@ -1,4 +1,5 @@
 import Sheet from './Sheet';
+import { accelerationFor, stoppingDistance } from '../machine/stopping';
 
 /**
  * What the keyboard does on this screen, with the numbers it will actually use.
@@ -30,7 +31,31 @@ const Row = ({ keys, does, value }) => (
   </div>
 );
 
-const ShortcutHelp = ({ onClose, xyStep, zStep, xyCoarse, zCoarse }) => (
+/**
+ * How far the machine will go after the key comes up, in millimetres.
+ *
+ * Measured, not estimated: the server times its own clock at startup and the
+ * firmware's replies while running, and the rest is `$120`–`$122` and the
+ * feed rate showing on the card. Blank when any part of that is missing,
+ * because a figure assembled from guesses would be read as a safety margin.
+ */
+const stopText = ({ timing, settings, feedrate, axes }) => {
+  const distance = stoppingDistance({
+    timing,
+    feedrate,
+    acceleration: accelerationFor(axes, settings),
+  });
+
+  if (distance === null) {
+    return null;
+  }
+
+  return `${distance.toFixed(1).replace('.', ',')} mm`;
+};
+
+const ShortcutHelp = ({
+  onClose, xyStep, zStep, xyCoarse, zCoarse, xySpeed, zSpeed, timing, settings,
+}) => (
   <Sheet title="Skróty klawiszowe" onClose={onClose}>
     <div className="flex flex-col">
       <Row keys={['←', '→']} does="Jog w osi X" value={`${xyStep} mm`} />
@@ -42,12 +67,23 @@ const ShortcutHelp = ({ onClose, xyStep, zStep, xyCoarse, zCoarse }) => (
         value={`XY ${xyCoarse} mm · Z ${zCoarse} mm`}
       />
       <Row keys={['przytrzymaj']} does="Jedzie, dopóki klawisz jest wciśnięty" />
+      <Row
+        keys={['po puszczeniu']}
+        does="Zatrzymanie przy obecnej prędkości — XY, potem Z"
+        value={[
+          stopText({ timing, settings, feedrate: xySpeed, axes: ['x', 'y'] }),
+          stopText({ timing, settings, feedrate: zSpeed, axes: ['z'] }),
+        ].filter(Boolean).join(' · ') || null}
+      />
       <Row keys={['Esc']} does="Zamyka to okno" />
       <Row keys={['?']} does="Otwiera tę pomoc" />
     </div>
     <p className="m-0 text-note text-mut">
       Krok i prędkość zmienisz na karcie jogu. Klawisze nie działają, gdy
       piszesz w polu tekstowym, i gdy nie ma połączenia ze sterownikiem.
+      {timing ? ` Po puszczeniu klawisza maszyna reaguje po ${timing.stopMs} ms — ` +
+        `${timing.leadMs} ms kolejki i ${timing.ackMs} ms odpowiedzi sterownika — a droga ` +
+        'powyżej to ten czas plus hamowanie. Zmierzone na tym komputerze przy starcie serwera.' : ''}
     </p>
   </Sheet>
 );
