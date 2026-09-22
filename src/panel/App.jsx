@@ -10,6 +10,7 @@ import JogScreen from './screens/JogScreen';
 import PathScreen from './screens/PathScreen';
 import { useMachine } from './machine/useMachine';
 import { emergencyStop } from './machine/commands';
+import JogTrace from './ui/JogTrace';
 
 /**
  * Every destination the mockup draws, with `ready` saying which ones exist.
@@ -130,6 +131,21 @@ const Panel = ({ machine, screen, onScreen }) => {
   );
 };
 
+/**
+ * Whether the jog recorder is wanted.
+ *
+ * Off unless asked for by address — `?trace=1` — because it answers a
+ * question that only comes up when something feels wrong, and it listens to
+ * every key press and every byte on the wire to do it.
+ */
+const tracing = () => {
+  try {
+    return new URLSearchParams(window.location.search).get('trace') === '1';
+  } catch {
+    return false;
+  }
+};
+
 const App = () => {
   const machine = useMachine();
   const [screen, setScreen] = useState('dashboard');
@@ -151,6 +167,7 @@ const App = () => {
     <div ref={shell.ref} className="@container/shell flex h-full flex-col bg-bg text-ink">
       <ShellWidthProvider value={shell.width}>
         <Panel machine={machine} screen={screen} onScreen={setScreen} />
+        {tracing() ? <JogTrace /> : null}
       </ShellWidthProvider>
     </div>
   );
