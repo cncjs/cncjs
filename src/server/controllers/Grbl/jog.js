@@ -59,6 +59,24 @@ export const LEAD_FLOOR_SECONDS = 0.03;
 export const LEAD_CEILING_SECONDS = 0.08;
 
 /**
+ * The lead to use until the clock has measured itself.
+ *
+ * **Stated, not measured — because the honest thing to do before you know is
+ * to say so.** An earlier version timed a throwaway interval at startup and
+ * used that, which read 16ms on one boot and 40ms on the next while the real
+ * answer, once the server was actually moving a machine, was 24ms. A number
+ * that wrong is worse than a constant, because it looks like a measurement.
+ *
+ * Fifty milliseconds is the middle of the range this clamps to, and it errs
+ * in the safe direction: a lead larger than needed costs a predictable
+ * fraction of a millimetre of stopping distance, stated on screen, while a
+ * lead smaller than needed empties the planner mid-move and the machine slows
+ * in the cut. It holds for about two seconds of jogging, which is the first
+ * hold of a session.
+ */
+export const LEAD_START_SECONDS = 0.05;
+
+/**
  * How much lead this host has earned, from its measured timer jitter.
  *
  * Twice the worst observed interval: one interval to cover the tick that is
