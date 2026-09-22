@@ -31,6 +31,9 @@ const Controls = ({ view, bounds, revision, memory }) => {
   // already had its first go.
   const signature = useRef('');
   const mounted = useRef(false);
+  // Which press the camera was last pointed by, so a change that is not a
+  // press can be told from one that is.
+  const pointed = useRef(revision);
 
   useEffect(() => {
     /*
@@ -131,16 +134,46 @@ const Controls = ({ view, bounds, revision, memory }) => {
      * effect only runs because the view changed, the bounds changed or a
      * button was pressed, and each of those is a request to be framed afresh.
      */
-    const pose = mounted.current ? null : recallCamera(memory, signature.current);
-    mounted.current = true;
+    const first = !mounted.current;
+    const pose = first ? recallCamera(memory, signature.current) : null;
 
     if (pose) {
+      mounted.current = true;
+      pointed.current = revision;
       camera.position.fromArray(pose.position);
       camera.zoom = pose.zoom;
       camera.updateProjectionMatrix();
       orbit.target.fromArray(pose.target);
       orbit.update();
       invalidate();
+      return;
+    }
+
+    mounted.current = true;
+
+    /*
+     * **Only a press moves the camera. Nothing else does.**
+     *
+     * Everything else that gets here changed *what* is drawn rather than how
+     * it should be looked at: a layer switched on, a different program
+     * loaded. Re-framing for those threw away whatever the camera had been
+     * dragged to — first the direction, then, once that was kept, the zoom —
+     * and both land at the same moment, just after somebody arranged the view
+     * to look at something.
+     *
+     * The cost is real and is the right way round: switch the machine on with
+     * the camera zoomed into a corner and the machine is off screen until you
+     * zoom out or press a view. That is a view doing what it was told. The
+     * other way round, the view stops being something you can set.
+     *
+     * The pose is still written down under the new signature, so leaving the
+     * screen and coming back finds it.
+     */
+    const pressed = first || revision !== pointed.current;
+    pointed.current = revision;
+
+    if (!pressed) {
+      rememberCamera(memory, signature.current, camera, orbit.target);
       return;
     }
 

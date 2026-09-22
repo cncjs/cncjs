@@ -186,20 +186,25 @@ test.describe('panel, disconnected', () => {
     await openPanel(cncjs.page);
     await rail(cncjs.page).getByRole('button', { name: 'Ścieżka' }).click();
 
+    const layers = cncjs.page.getByRole('group', { name: 'Warstwy' });
+    await expect(layers).toBeVisible();
+
     // No program is loaded and no controller has reported a travel or a
-    // coordinate system, so there is nothing these could draw. A chip that
+    // coordinate system, so there is nothing these could draw. A button that
     // looked pressable here would draw nothing and say nothing about why.
-    for (const [group, expected] of [['Program', 2], ['Układ', 1], ['Maszyna', 1]]) {
-      const chips = cncjs.page.getByRole('group', { name: group }).getByRole('button');
-      const disabled = await chips.evaluateAll((nodes) => nodes.filter((n) => n.disabled).length);
-      expect(disabled, `${group} should have ${expected} chip(s) with nothing behind them`)
-        .toBe(expected);
+    for (const name of [
+      'Program · Tor',
+      'Program · Obszar',
+      'Układ · Osie',
+      'Maszyna · Obszar',
+    ]) {
+      await expect(layers.getByRole('button', { name, exact: true })).toBeDisabled();
     }
 
     // Machine zero is the exception: it is zero by definition and needs
     // nothing reported, so it is offered even with no machine attached.
     await expect(
-      cncjs.page.getByRole('group', { name: 'Maszyna' }).getByRole('button', { name: 'Osie' })
+      layers.getByRole('button', { name: 'Maszyna · Osie', exact: true })
     ).toBeEnabled();
   });
 });

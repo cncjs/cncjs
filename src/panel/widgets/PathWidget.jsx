@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import Card from '../ui/Card';
-import PathPreview from '../ui/PathPreview';
 import PathStage from '../ui/PathStage';
 import { machineZeroIsGuess, softLimitsEnabled, workOffset } from '../machine/envelope';
 import { readToolpath } from '../machine/toolpath';
@@ -10,10 +9,11 @@ import { DEFAULT_VIEW } from '../scene/views';
 /**
  * The loaded program, the machine around it, and where the tool is in both.
  *
- * One widget, two shapes, and the screen says which — **the stage where the
- * toolpath is the subject, the preview where it is a glance.** Same scene and
- * the same data either way; what the stage adds is the chrome for changing
- * what is drawn.
+ * One shape, used at two sizes. It had two, back when the preview beside the
+ * jog keys was the one without a column of labelled chips beside it; once the
+ * menu moved onto the drawing as icons the two were the same component, and
+ * `preview` stopped choosing a shape and started saying two smaller things —
+ * whose camera this is, and whether the screen's warnings belong here.
  *
  * Nothing here has to be fetched. The server replays `gcode:load` with the
  * whole program to any socket that attaches, so a panel opened in front of a
@@ -159,8 +159,6 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
       'sięgają osie — nic nie zatrzyma ruchu poza nią.',
   ].filter(Boolean);
 
-  const Shape = preview ? PathPreview : PathStage;
-
   return (
     <Card
       label={label}
@@ -168,7 +166,7 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
       className={className}
       bodyClassName="gap-0"
     >
-      <Shape
+      <PathStage
         scene={scene}
         tool={tool}
         view={view}
@@ -177,7 +175,19 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
         layers={layers}
         sections={sections}
         onLayers={setLayers}
-        notes={notes}
+        /*
+         * The warnings belong to the screen that is about the toolpath. Beside
+         * the jog keys there is no room for two sentences about `$22`, and the
+         * question being asked there is "where is the tool", which they do not
+         * answer.
+         */
+        notes={preview ? [] : notes}
+        /*
+         * Two scenes, two cameras. The toolpath screen is arranged to inspect
+         * a program and the preview to watch the tool; neither should move
+         * because of what was done to the other.
+         */
+        memory={preview ? 'preview' : 'path'}
       />
     </Card>
   );

@@ -1,86 +1,94 @@
+import IconBar from './IconBar';
 import Scene from '../scene/Scene';
-import SegmentedChoice from './SegmentedChoice';
-import ToggleChips from './ToggleChips';
 import { VIEWS, VIEW_IDS } from '../scene/views';
 
 /**
- * The toolpath with everything you can do to it: the shape for the screen
- * that is about it.
+ * The toolpath, with its menu on it.
  *
- * The canvas takes all the height there is and the controls sit under it at
- * their own. That order matters on a panel beside a machine — the controls
- * are within reach at the bottom edge, and nothing above them moves when one
- * is pressed.
+ * There was a second shape for the preview beside the jog keys, from when the
+ * difference was a labelled column of chips against no chips at all. Once the
+ * menu became icons on the drawing the two were the same component with the
+ * same controls at different sizes, and the only thing left between them was
+ * whether the screen's warnings are shown — which is a list that is sometimes
+ * empty, not a shape.
  *
- * The notes are under the controls rather than over the drawing. They say
- * what the scene cannot be sure of, which is worth reading once and then
- * ignoring; as an overlay they would have been in the way of the thing they
- * are about.
+ * **The menu sits on the drawing rather than beside it**, and that is what
+ * lets the drawing have the whole card. A column of labelled chips cost about
+ * a fifth of the width; the same nine choices as glyphs cost thirty pixels
+ * down one edge, and the grid underneath now fills what is left with a floor
+ * rather than with nothing — which is what made the column worth spending in
+ * the first place.
+ *
+ * Every button keeps its name as a label and a tooltip, and the layer names
+ * carry the heading the chips used to print above them — "Maszyna · Obszar"
+ * rather than two buttons both called "Obszar" and no way to tell which is
+ * which.
  */
-const Label = ({ children }) => (
-  <span className="text-label font-semibold uppercase leading-none text-ink">{children}</span>
+
+// Which glyph stands for which layer. The ids come from the widget; this is
+// the one place that knows what they look like.
+const LAYER_ICONS = {
+  path: 'path',
+  programArea: 'area',
+  wcsAxes: 'axes',
+  machineArea: 'machine',
+  machineAxes: 'machineAxes',
+};
+
+const viewItems = (view, onView) => VIEW_IDS.map((id) => ({
+  id,
+  icon: id,
+  label: VIEWS[id].label,
+  pressed: id === view,
+  onSelect: () => onView(id),
+}));
+
+const layerItems = (sections, layers, onLayers) => sections.flatMap(
+  (section) => section.options.map((option) => ({
+    id: option.id,
+    icon: LAYER_ICONS[option.id],
+    label: `${section.label} · ${option.label}`,
+    note: option.disabled ? option.note : '',
+    pressed: Boolean(layers[option.id]) && !option.disabled,
+    disabled: option.disabled,
+    onSelect: () => onLayers({ ...layers, [option.id]: !layers[option.id] }),
+  }))
 );
 
-const PathStage = ({ scene, tool, view, onView, revision, layers, sections, onLayers, notes }) => (
-  /*
-   * The controls stand beside the drawing rather than under it, and that is
-   * about the drawing rather than about them.
-   *
-   * An isometric view of a machine is **taller than it is wide** — 0.87 to 1
-   * for a cube, because world Z projects fully onto screen-up while X and Y
-   * each contribute half. Fitted into a 2:1 viewport that is a correct fit
-   * filling 91% of the height and 40% of the width, and it reads as a
-   * drawing too small for its card. Taking a column back for the controls
-   * brings the viewport closer to square, and the picture with it.
-   */
-  <div className="flex min-h-0 flex-1 gap-gap">
+const PathStage = ({
+  scene, tool, view, onView, revision, layers, sections, onLayers, notes, memory,
+}) => (
+  <>
     {/* The canvas is a raw WebGL surface with square corners; the card's own
-      * rounding stops at its padding, so the frame and the clipping are here. */}
-    <div className="min-h-0 min-w-0 flex-1 overflow-hidden rounded-ctl border border-line">
-      <Scene scene={scene} tool={tool} layers={layers} view={view} revision={revision} memory="path" />
+      * rounding stops at its padding, so the frame and the clipping are here.
+      * `relative`, because the menu is positioned against it. */}
+    <div className="relative min-h-0 flex-1 overflow-hidden rounded-ctl border border-line">
+      <Scene
+        scene={scene}
+        tool={tool}
+        layers={layers}
+        view={view}
+        revision={revision}
+        memory={memory}
+      />
+
+      <IconBar
+        className="absolute right-2 top-2"
+        groups={[
+          { label: 'Rzut', items: viewItems(view, onView) },
+          { label: 'Warstwy', items: layerItems(sections, layers, onLayers) },
+        ]}
+      />
     </div>
 
-    <div className="flex w-side2 shrink-0 flex-col gap-4 overflow-y-auto">
-      <div className="flex flex-col gap-2.5">
-        <Label>Rzut</Label>
-        <SegmentedChoice
-          options={VIEW_IDS}
-          value={view}
-          onChange={onView}
-          format={(id) => VIEWS[id].label}
-          label="Rzut"
-        />
-      </div>
-
-      {/*
-        * Grouped by what the layer is *about* rather than listed flat.
-        *
-        * Four chips in a row were four unrelated questions — a path, a box, a
-        * set of crosses, another box — and the only way to know which box was
-        * which was to press one and watch. Under a heading each, "Obszar"
-        * means the same thing in both places and the heading says whose.
-        */}
-      {sections.map((section) => (
-        <div key={section.label} className="flex flex-col gap-2.5">
-          <Label>{section.label}</Label>
-          <ToggleChips
-            options={section.options}
-            value={layers}
-            onChange={onLayers}
-            label={section.label}
-          />
-        </div>
-      ))}
-
-      {/* What the scene cannot be sure of. Beside the drawing rather than
-        * over it: worth reading once, then ignorable. */}
-      {notes.length > 0 ? (
-        <ul className="m-0 flex list-none flex-col gap-2 p-0 text-note leading-snug text-mut">
-          {notes.map((note) => <li key={note}>{note}</li>)}
-        </ul>
-      ) : null}
-    </div>
-  </div>
+    {/* What the scene cannot be sure of. Under the drawing rather than over
+      * it: worth reading once, then ignorable. */}
+    {notes.length > 0 ? (
+      <ul className="m-0 mt-3 flex shrink-0 list-none flex-col gap-1 p-0 text-note text-mut">
+        {notes.map((note) => <li key={note}>{note}</li>)}
+      </ul>
+    ) : null}
+  </>
 );
 
 export default PathStage;
