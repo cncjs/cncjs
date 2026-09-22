@@ -49,9 +49,10 @@ export const composeDirection = (keys) => {
    * when it was the only axis, leaving nothing held at all, which stopped the
    * machine. That reads well and works badly. Somebody moving a machine by
    * hand rolls from one arrow to the next and the two overlap for a moment,
-   * so a recording of ordinary use is full of it: three cancellations in four
-   * and a half seconds, each one stopping a jog that was meant to carry on,
-   * and each costing the time to brake and start again.
+   * so ordinary use is full of it: measured while somebody jogged by hand,
+   * three cancellations in four and a half seconds, each one stopping a jog
+   * that was meant to carry on and each costing the time to brake and start
+   * again.
    *
    * Pressing the opposite arrow is a change of mind, not an ambiguity, so it
    * is treated as one. Holding both and releasing the newer one hands the
