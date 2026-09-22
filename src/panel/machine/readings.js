@@ -129,21 +129,28 @@ export const readMachine = ({ connection, error, port, type, state, settings, at
   const connected = Boolean(port) && connection === 'open' && Boolean(attached);
   const active = connected ? activeStateOf(type, state) : null;
 
-  let word = 'Disconnected';
+  // Two kinds of word, and only one of them is language. The four states the
+  // panel invents for itself are keys, translated where the chip is drawn;
+  // `Idle`, `Run` and `Alarm` are the firmware's own vocabulary, reported over
+  // the wire and shown exactly as it says them. This file stays free of
+  // i18next either way — it is the tier that runs with no browser.
+  let key = 'status.disconnected';
+  let word = null;
   let tone = 'inactive';
   if (connection === 'failed') {
-    word = 'No server';
+    key = 'status.noServer';
     tone = 'stopped';
   } else if (connection === 'connecting') {
-    word = 'Connecting';
+    key = 'status.connecting';
     tone = 'inactive';
   } else if (port && !attached) {
-    word = 'Connecting';
+    key = 'status.connecting';
     tone = 'inactive';
   } else if (connected) {
     // "Connected" rather than an invented "Idle": between opening a port and
     // the first status report there is genuinely nothing to say.
-    word = active ? active.word : 'Connected';
+    key = active ? null : 'status.connected';
+    word = active ? active.word : null;
     tone = active ? active.tone : 'inactive';
   }
 
@@ -160,7 +167,7 @@ export const readMachine = ({ connection, error, port, type, state, settings, at
     // How far away the server is, in one-way milliseconds. Part of how long
     // a jog takes to stop when the server is not this computer.
     linkMs,
-    status: { word, tone, known: Boolean(active) },
+    status: { word, key, tone, known: Boolean(active) },
     overrides: overridesOf(type, state),
     tool: toolOf(type, state),
     position: positions(type, state, 'wpos'),

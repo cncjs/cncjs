@@ -1,4 +1,5 @@
 import Icon from './Icon';
+import { t } from '../i18n';
 
 /**
  * Where the pointer is, where the picked point is, and the buttons that act
@@ -68,8 +69,8 @@ const inWork = (point, offset) => {
 
 const Row = ({ point, className }) => (
   <span className={`flex items-baseline gap-2 font-num text-note leading-none ${className}`}>
-    <span className="w-coord shrink-0 whitespace-nowrap">X {point ? figure(point.x) : '–'}</span>
-    <span className="w-coord shrink-0 whitespace-nowrap">Y {point ? figure(point.y) : '–'}</span>
+    <span className="w-coord shrink-0 whitespace-nowrap">{t('axis.x')} {point ? figure(point.x) : '–'}</span>
+    <span className="w-coord shrink-0 whitespace-nowrap">{t('axis.y')} {point ? figure(point.y) : '–'}</span>
   </span>
 );
 
@@ -88,10 +89,8 @@ const StageReadout = ({
       type="button"
       onClick={onClickDrives}
       aria-pressed={clickDrives}
-      aria-label="Kliknięcie jedzie do punktu"
-      title={clickDrives
-        ? 'Kliknięcie na rysunku jedzie od razu. Wyłącz, żeby klik tylko wskazywał punkt.'
-        : 'Kliknięcie wskazuje punkt. Włącz, żeby klik od razu jechał.'}
+      aria-label={t('stage.clickDrives')}
+      title={t(clickDrives ? 'stage.clickDrivesOn' : 'stage.clickDrivesOff')}
       className={[
         'flex size-7 shrink-0 items-center justify-center rounded-ctl border transition-colors',
         clickDrives
@@ -105,8 +104,8 @@ const StageReadout = ({
       type="button"
       onClick={onGo}
       disabled={!canGo}
-      aria-label="Jedź do wskazanego punktu"
-      title={note || 'Podnosi Z na górę zakresu, potem jedzie nad wskazany punkt (współrzędne maszynowe)'}
+      aria-label={t('stage.goToPoint')}
+      title={note || t('stage.goToPointNote')}
       className="flex size-7 shrink-0 items-center justify-center rounded-ctl border border-line bg-wash text-ink transition-colors hover:border-acc hover:text-acc disabled:opacity-40 disabled:hover:border-line disabled:hover:text-ink"
     >
       <Icon name="goPoint" className="size-4" />

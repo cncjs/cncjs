@@ -1,0 +1,210 @@
+{
+  "nav": {
+    "label": "Nawigacja",
+    "dashboard": "Pulpit",
+    "jog": "Jog",
+    "zero": "Zerowanie",
+    "zeroShort": "Zero",
+    "files": "Pliki",
+    "path": "Ścieżka",
+    "probe": "Sonda",
+    "diag": "Diagnostyka",
+    "alarms": "Alarmy",
+    "settings": "Ustawienia",
+    "homing": "Bazowanie",
+    "mdi": "MDI"
+  },
+
+  "topbar": {
+    "controller": "sterownik",
+    "port": "port",
+    "disconnected": "Brak połączenia ze sterownikiem",
+    "stop": "Stop"
+  },
+
+  "status": {
+    "disconnected": "Rozłączony",
+    "noServer": "Brak serwera",
+    "connecting": "Łączenie",
+    "connected": "Połączony"
+  },
+
+  "sheet": {
+    "close": "Zamknij",
+    "done": "Gotowe"
+  },
+
+  "units": {
+    "mm": "mm",
+    "mmPerMin": "mm/min",
+    "rpm": "rpm",
+    "rpmLong": "obr/min"
+  },
+
+  "axis": {
+    "x": "X",
+    "y": "Y",
+    "xy": "XY",
+    "z": "Z"
+  },
+
+  "jog": {
+    "pad": "Jog",
+    "xPlus": "X+",
+    "xMinus": "X−",
+    "yPlus": "Y+",
+    "yMinus": "Y−",
+    "zPlus": "Z+",
+    "zMinus": "Z−",
+    "corner": "X{{x}} Y{{y}}",
+    "goZero": "Do zera",
+    "home": "Bazuj",
+    "step": "Krok",
+    "speed": "Prędkość",
+    "stepFor": "Krok {{axes}}",
+    "speedFor": "Prędkość {{axes}}",
+    "sheet": "Jog {{axes}}"
+  },
+
+  "shortcuts": {
+    "title": "Skróty klawiszowe",
+    "key": {
+      "left": "←",
+      "right": "→",
+      "up": "↑",
+      "down": "↓",
+      "pageUp": "PgUp",
+      "pageDown": "PgDn",
+      "shift": "Shift",
+      "andDirection": "+ kierunek",
+      "hold": "przytrzymaj",
+      "onRelease": "po puszczeniu",
+      "escape": "Esc",
+      "help": "?"
+    },
+    "jogX": "Jog w osi X",
+    "jogY": "Jog w osi Y",
+    "jogZ": "Jog w osi Z",
+    "coarse": "Większy krok — największy, jaki oś oferuje",
+    "held": "Jedzie, dopóki klawisz jest wciśnięty",
+    "stop": "Zatrzymanie przy obecnej prędkości — XY, potem Z",
+    "close": "Zamyka to okno",
+    "help": "Otwiera tę pomoc",
+    "step": "{{value, number}} mm",
+    "coarseSteps": "XY {{xy, number}} mm · Z {{z, number}} mm",
+    "stopDistance": "{{distance, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} mm",
+    "note": "Krok i prędkość zmienisz na karcie jogu. Klawisze nie działają, gdy piszesz w polu tekstowym, i gdy nie ma połączenia ze sterownikiem.",
+    "timing": {
+      "queue": "{{ms}} ms kolejki",
+      "ack": "{{ms}} ms odpowiedzi sterownika",
+      "link": "{{ms}} ms drogi do serwera",
+      "note": "Po puszczeniu klawisza maszyna reaguje po {{total}} ms — {{parts}} — a droga powyżej to ten czas plus hamowanie. Serwer mierzy swój własny zegar w trakcie jogu, więc liczba opisuje ten komputer przy tej pracy."
+    }
+  },
+
+  "dro": {
+    "work": "Pozycja robocza",
+    "position": "Pozycja"
+  },
+
+  "job": {
+    "title": "Przebieg zadania",
+    "noFile": "brak wczytanego pliku",
+    "none": "brak zadania",
+    "line": "linia {{received}}/{{total}}",
+    "percentLine": "% · linia ",
+    "remaining": "pozostało {{minutes}} min",
+    "file": "plik",
+    "feed": "posuw",
+    "spindle": "obroty",
+    "start": "Start zadania",
+    "pause": "Pauza"
+  },
+
+  "tool": {
+    "number": "T{{number}}",
+    "title": "Narzędzie i wrzeciono",
+    "tool": "narzędzie",
+    "spindle": "obroty",
+    "override": "Korekta",
+    "feedOverride": "posuw",
+    "spindleOverride": "wrzeciono"
+  },
+
+  "zheight": {
+    "title": "Wysokość Z",
+    "machine": "masz. {{value}} mm",
+    "zeroZ": "Zeruj Z",
+    "zeroXY": "Zeruj XY",
+    "probeZ": "Sonduj Z"
+  },
+
+  "dashboard": {
+    "probeZ": "Sonda Z"
+  },
+
+  "footer": {
+    "state": "stan",
+    "wcs": "układ",
+    "feed": "posuw",
+    "spindle": "wrzeciono",
+    "program": "program",
+    "size": "wymiary"
+  },
+
+  "scene": {
+    "view": {
+      "iso": "IZO",
+      "top": "GÓRA",
+      "front": "PRZÓD",
+      "right": "BOK"
+    }
+  },
+
+  "stage": {
+    "view": "Rzut",
+    "frame": "Kadr",
+    "fit": "Wypełnij kadr obiektem",
+    "layers": "Warstwy",
+    "item": "{{section}} · {{option}}",
+    "clickDrives": "Kliknięcie jedzie do punktu",
+    "clickDrivesOn": "Kliknięcie na rysunku jedzie od razu. Wyłącz, żeby klik tylko wskazywał punkt.",
+    "clickDrivesOff": "Kliknięcie wskazuje punkt. Włącz, żeby klik od razu jechał.",
+    "goToPoint": "Jedź do wskazanego punktu",
+    "goToPointNote": "Podnosi Z na górę zakresu, potem jedzie nad wskazany punkt (współrzędne maszynowe)"
+  },
+
+  "path": {
+    "title": "Ścieżka",
+    "preview": "Podgląd",
+    "noProgram": "Brak programu",
+    "layers": {
+      "program": "Program",
+      "path": "Tor",
+      "area": "Obszar",
+      "wcs": "Układ",
+      "axes": "Osie",
+      "machine": "Maszyna",
+      "noProgram": "Nie wczytano programu",
+      "noWcs": "Sterownik nie odesłał aktywnego układu współrzędnych",
+      "noEnvelope": "Sterownik nie podał zakresu ruchu ($130–$132)",
+      "machineZero": "Zero maszynowe"
+    },
+    "go": {
+      "disconnected": "Brak połączenia z maszyną",
+      "noPoint": "Kliknij na rysunku, żeby wskazać punkt",
+      "outside": "Punkt leży poza zakresem ruchu maszyny",
+      "ready": "Podnosi Z na górę zakresu, potem jedzie nad wskazany punkt"
+    },
+    "note": {
+      "noHoming": "Bazowanie jest wyłączone ($22=0). Zero maszynowe leży tam, gdzie włączono sterownik, więc obwiednia ma właściwy rozmiar i nieznane położenie.",
+      "noSoftLimits": "Miękkie limity są wyłączone ($20=0). Obwiednia mówi, jak daleko sięgają osie — nic nie zatrzyma ruchu poza nią."
+    }
+  },
+
+  "error": {
+    "signInFailed": "logowanie nie powiodło się: {{status}}",
+    "noToken": "logowanie nie zwróciło tokenu",
+    "controllerList": "nie udało się odczytać listy sterowników: {{status}}"
+  }
+}

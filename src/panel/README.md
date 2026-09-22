@@ -61,6 +61,47 @@ permitted to import from `src/app`. The lint rule forbids the whole tree and
 that one file carries the exception: one seam, written down, rather than a rule
 with a hole in it nobody remembers the shape of.
 
+## Words
+
+**English is the source language, Polish is a translation of it.** Both live
+in `i18n/<lng>/panel.json`, keyed by hand — the old application keys its
+resources by the sha1 of the source text and has `i18next-scanner` regenerate
+them on every build, which is why nobody can read a diff of its `resource.json`.
+Here the keys mean something and no build step rewrites the files.
+
+The panel has **its own** i18next rather than the one in `src/app`, so that
+`app/lib/controller` stays the single seam between the two applications.
+
+**The language comes from the browser**, with `?lng=en` or `?lng=pl` overriding
+it and nothing cached — which is how the end-to-end tier checks both without
+touching the machine's own setting.
+
+**Numbers are formatted by the language.** `{{distance, number(...)}}` puts
+`1,7 mm` in Polish and `1.7 mm` in English; the stopping distance used to
+`replace('.', ',')` by hand, which was right in one language and a typo in the
+other.
+
+Two gates, and they catch different things:
+
+- `panel/no-untranslated-text` (in `eslint-rules/`) fails on a displayed
+  string written into the source — between JSX tags, in any attribute that is
+  not on its list of never-displayed ones, in a `label`-shaped property of a
+  plain `.js` data module, and on any two-word sentence anywhere in the panel.
+  It cannot see a key that does not exist.
+- `i18n/__tests__/resources.test.js` fails when the two languages disagree on
+  their keys or their `{{placeholders}}`, when the panel asks for a key that is
+  not defined, and when a resource is defined that nothing asks for.
+
+**What a `.js` module does instead of translating.** `scene/views.js`,
+`machine/readings.js` and `ui/jogCorners.js` are the tier Jest runs, with no
+browser for i18next to detect a language from. They carry the *key* —
+`labelKey`, `status.key` — and the component that draws them looks up the word.
+
+**The machine's own words are not translated.** `Idle`, `Run` and `Alarm` come
+over the wire from the firmware and are shown exactly as it says them; only the
+four states the panel invents for itself (`Disconnected`, `No server`,
+`Connecting`, `Connected`) have keys.
+
 ## How it is built
 
 `webpack.config.panel.js` is its own compiler, which is what lets the panel run

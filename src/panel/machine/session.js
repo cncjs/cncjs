@@ -12,6 +12,8 @@
  * caching it would mean deciding where to put it and when it goes stale,
  * neither of which has been asked for.
  */
+import { t } from '../i18n';
+
 export const signIn = async ({ name = '', password = '' } = {}) => {
   const res = await fetch('/api/signin', {
     method: 'POST',
@@ -23,12 +25,12 @@ export const signIn = async ({ name = '', password = '' } = {}) => {
     // 401 on a server that has accounts and was given no credentials. Said
     // plainly rather than swallowed: a panel that silently fails to connect
     // looks identical to a machine that is switched off.
-    throw new Error(`sign-in failed: ${res.status}`);
+    throw new Error(t('error.signInFailed', { status: res.status }));
   }
 
   const { token, enabled } = await res.json();
   if (!token) {
-    throw new Error('sign-in returned no token');
+    throw new Error(t('error.noToken'));
   }
 
   return { token, accountsEnabled: Boolean(enabled) };

@@ -1,0 +1,210 @@
+{
+  "nav": {
+    "label": "Navigation",
+    "dashboard": "Dashboard",
+    "jog": "Jog",
+    "zero": "Zeroing",
+    "zeroShort": "Zero",
+    "files": "Files",
+    "path": "Path",
+    "probe": "Probe",
+    "diag": "Diagnostics",
+    "alarms": "Alarms",
+    "settings": "Settings",
+    "homing": "Homing",
+    "mdi": "MDI"
+  },
+
+  "topbar": {
+    "controller": "controller",
+    "port": "port",
+    "disconnected": "No connection to the controller",
+    "stop": "Stop"
+  },
+
+  "status": {
+    "disconnected": "Disconnected",
+    "noServer": "No server",
+    "connecting": "Connecting",
+    "connected": "Connected"
+  },
+
+  "sheet": {
+    "close": "Close",
+    "done": "Done"
+  },
+
+  "units": {
+    "mm": "mm",
+    "mmPerMin": "mm/min",
+    "rpm": "rpm",
+    "rpmLong": "rpm"
+  },
+
+  "axis": {
+    "x": "X",
+    "y": "Y",
+    "xy": "XY",
+    "z": "Z"
+  },
+
+  "jog": {
+    "pad": "Jog",
+    "xPlus": "X+",
+    "xMinus": "X−",
+    "yPlus": "Y+",
+    "yMinus": "Y−",
+    "zPlus": "Z+",
+    "zMinus": "Z−",
+    "corner": "X{{x}} Y{{y}}",
+    "goZero": "Go to zero",
+    "home": "Home",
+    "step": "Step",
+    "speed": "Speed",
+    "stepFor": "Step {{axes}}",
+    "speedFor": "Speed {{axes}}",
+    "sheet": "Jog {{axes}}"
+  },
+
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "key": {
+      "left": "←",
+      "right": "→",
+      "up": "↑",
+      "down": "↓",
+      "pageUp": "PgUp",
+      "pageDown": "PgDn",
+      "shift": "Shift",
+      "andDirection": "+ direction",
+      "hold": "hold",
+      "onRelease": "on release",
+      "escape": "Esc",
+      "help": "?"
+    },
+    "jogX": "Jog the X axis",
+    "jogY": "Jog the Y axis",
+    "jogZ": "Jog the Z axis",
+    "coarse": "Larger step — the largest the axis offers",
+    "held": "Moves for as long as the key is held",
+    "stop": "Stops at the current speed — XY, then Z",
+    "close": "Closes this sheet",
+    "help": "Opens this help",
+    "step": "{{value, number}} mm",
+    "coarseSteps": "XY {{xy, number}} mm · Z {{z, number}} mm",
+    "stopDistance": "{{distance, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} mm",
+    "note": "Change the step and the speed on the jog card. The keys do nothing while you are typing in a text field, or while there is no connection to the controller.",
+    "timing": {
+      "queue": "{{ms}} ms of queue",
+      "ack": "{{ms}} ms of controller reply",
+      "link": "{{ms}} ms to the server",
+      "note": "After the key comes up the machine reacts in {{total}} ms — {{parts}} — and the distance above is that time plus braking. The server times its own clock while jogging, so the number describes this computer doing this work."
+    }
+  },
+
+  "dro": {
+    "work": "Work position",
+    "position": "Position"
+  },
+
+  "job": {
+    "title": "Job progress",
+    "noFile": "no file loaded",
+    "none": "no job",
+    "line": "line {{received}}/{{total}}",
+    "percentLine": "% · line ",
+    "remaining": "{{minutes}} min left",
+    "file": "file",
+    "feed": "feed",
+    "spindle": "rpm",
+    "start": "Start job",
+    "pause": "Pause"
+  },
+
+  "tool": {
+    "number": "T{{number}}",
+    "title": "Tool and spindle",
+    "tool": "tool",
+    "spindle": "rpm",
+    "override": "Override",
+    "feedOverride": "feed",
+    "spindleOverride": "spindle"
+  },
+
+  "zheight": {
+    "title": "Z height",
+    "machine": "mach. {{value}} mm",
+    "zeroZ": "Zero Z",
+    "zeroXY": "Zero XY",
+    "probeZ": "Probe Z"
+  },
+
+  "dashboard": {
+    "probeZ": "Probe Z"
+  },
+
+  "footer": {
+    "state": "state",
+    "wcs": "work offset",
+    "feed": "feed",
+    "spindle": "spindle",
+    "program": "program",
+    "size": "size"
+  },
+
+  "scene": {
+    "view": {
+      "iso": "ISO",
+      "top": "TOP",
+      "front": "FRONT",
+      "right": "SIDE"
+    }
+  },
+
+  "stage": {
+    "view": "View",
+    "frame": "Frame",
+    "fit": "Fit the object in the frame",
+    "layers": "Layers",
+    "item": "{{section}} · {{option}}",
+    "clickDrives": "Click drives to the point",
+    "clickDrivesOn": "A click on the drawing travels straight away. Switch off to have a click only mark a point.",
+    "clickDrivesOff": "A click marks a point. Switch on to have a click travel straight away.",
+    "goToPoint": "Travel to the marked point",
+    "goToPointNote": "Lifts Z to the top of the range, then travels over the marked point (machine coordinates)"
+  },
+
+  "path": {
+    "title": "Path",
+    "preview": "Preview",
+    "noProgram": "No program",
+    "layers": {
+      "program": "Program",
+      "path": "Toolpath",
+      "area": "Area",
+      "wcs": "Work offset",
+      "axes": "Axes",
+      "machine": "Machine",
+      "noProgram": "No program loaded",
+      "noWcs": "The controller has not reported an active coordinate system",
+      "noEnvelope": "The controller has not reported its travel range ($130–$132)",
+      "machineZero": "Machine zero"
+    },
+    "go": {
+      "disconnected": "No connection to the machine",
+      "noPoint": "Click on the drawing to mark a point",
+      "outside": "The point lies outside the machine's travel",
+      "ready": "Lifts Z to the top of the range, then travels over the marked point"
+    },
+    "note": {
+      "noHoming": "Homing is switched off ($22=0). Machine zero is wherever the controller was powered up, so the envelope is the right size in an unknown place.",
+      "noSoftLimits": "Soft limits are switched off ($20=0). The envelope says how far the axes reach — nothing will stop a move beyond it."
+    }
+  },
+
+  "error": {
+    "signInFailed": "sign-in failed: {{status}}",
+    "noToken": "sign-in returned no token",
+    "controllerList": "could not read the controller list: {{status}}"
+  }
+}

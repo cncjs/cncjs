@@ -3,6 +3,7 @@ import Card from '../ui/Card';
 import { useIsPhone } from '../ui/shell';
 import Meter from '../ui/Meter';
 import { NO_READING } from '../machine/readings';
+import { t } from '../i18n';
 
 const reading = (value) => (value === null || value === undefined ? NO_READING : value);
 
@@ -28,7 +29,7 @@ const reading = (value) => (value === null || value === undefined ? NO_READING :
  * screen is for, and a percentage that reads `0` for most of a job does not
  * need the size of a coordinate.
  */
-const JobWidget = ({ machine, label = 'Przebieg zadania', className = '' }) => {
+const JobWidget = ({ machine, label = t('job.title'), className = '' }) => {
   const phone = useIsPhone();
   const { job, tool } = machine;
 
@@ -39,7 +40,7 @@ const JobWidget = ({ machine, label = 'Przebieg zadania', className = '' }) => {
           {job ? job.percent : 0}
         </span>
         <span className="min-w-0 truncate font-num text-note text-mut">
-          % · {job ? `linia ${job.received}/${job.total}` : 'brak zadania'}
+          {t('job.percentLine')}{job ? t('job.line', { received: job.received, total: job.total }) : t('job.none')}
         </span>
       </div>
 
@@ -49,11 +50,11 @@ const JobWidget = ({ machine, label = 'Przebieg zadania', className = '' }) => {
         * four lines, and the 34px that costs comes straight out of the
         * readout above — which is the reading the screen is for. */}
       <div className="grid shrink-0 grid-cols-1 gap-x-gap gap-y-1 font-num text-note text-mut @xs:grid-cols-2">
-        <span className="truncate">posuw {reading(tool.feedrate)} mm/min</span>
-        <span className="truncate">obroty {reading(tool.spindle)} rpm</span>
-        <span className="truncate">plik {job ? job.name : NO_READING}</span>
+        <span className="truncate">{t('job.feed')} {reading(tool.feedrate)} {t('units.mmPerMin')}</span>
+        <span className="truncate">{t('job.spindle')} {reading(tool.spindle)} {t('units.rpm')}</span>
+        <span className="truncate">{t('job.file')} {job ? job.name : NO_READING}</span>
         <span className="truncate">
-          pozostało {job ? `${Math.round(job.remaining / 60)} min` : NO_READING}
+          {job ? t('job.remaining', { minutes: Math.round(job.remaining / 60) }) : NO_READING}
         </span>
       </div>
 
@@ -62,8 +63,8 @@ const JobWidget = ({ machine, label = 'Przebieg zadania', className = '' }) => {
         * too many. */}
       {phone ? (
         <div className="flex gap-3">
-          <Button tone="go" disabled className="h-chiph min-w-0 flex-1">Start zadania</Button>
-          <Button disabled className="h-chiph min-w-0">Pauza</Button>
+          <Button tone="go" disabled className="h-chiph min-w-0 flex-1">{t('job.start')}</Button>
+          <Button disabled className="h-chiph min-w-0">{t('job.pause')}</Button>
         </div>
       ) : null}
     </Card>

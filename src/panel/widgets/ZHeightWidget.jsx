@@ -2,6 +2,7 @@ import Button from '../ui/Button';
 import Card from '../ui/Card';
 import { formatPosition, NO_READING } from '../machine/readings';
 import { zero, activeWcsNumber } from '../machine/zero';
+import { t } from '../i18n';
 
 /**
  * How far the tool is above the work, and the two things done about it.
@@ -25,7 +26,7 @@ import { zero, activeWcsNumber } from '../machine/zero';
  * Wide, the reading and the buttons share a line; narrow, the buttons drop
  * beneath it.
  */
-const ZHeightWidget = ({ machine, label = 'Wysokość Z', className = '' }) => {
+const ZHeightWidget = ({ machine, label = t('zheight.title'), className = '' }) => {
   const { position, machinePosition, modal, connected } = machine;
   const canZero = connected && activeWcsNumber(modal) > 0;
   const machineZ = formatPosition(machinePosition.z);
@@ -33,7 +34,7 @@ const ZHeightWidget = ({ machine, label = 'Wysokość Z', className = '' }) => {
   return (
     <Card
       label={label}
-      aside={machineZ === NO_READING ? null : `masz. ${machineZ} mm`}
+      aside={machineZ === NO_READING ? null : t('zheight.machine', { value: machineZ })}
       className={`@container shrink-0 ${className}`}
     >
       <div className="flex flex-col gap-4 @xl:flex-row @xl:items-end @xl:gap-6">
@@ -41,7 +42,7 @@ const ZHeightWidget = ({ machine, label = 'Wysokość Z', className = '' }) => {
           <span className="font-num text-val font-medium tabular-nums text-ink">
             {formatPosition(position.z)}
           </span>
-          <span className="font-num text-lead text-mut">mm</span>
+          <span className="font-num text-lead text-mut">{t('units.mm')}</span>
         </span>
 
         <div className="flex shrink-0 gap-3">
@@ -51,14 +52,14 @@ const ZHeightWidget = ({ machine, label = 'Wysokość Z', className = '' }) => {
             onClick={() => zero({ modal, axes: ['z'] })}
             className="h-ctl flex-1 @xl:w-chipw @xl:flex-none"
           >
-            Zeruj Z
+            {t('zheight.zeroZ')}
           </Button>
           <Button
             disabled={!canZero}
             onClick={() => zero({ modal, axes: ['x', 'y'] })}
             className="h-ctl flex-1 @xl:w-chipw @xl:flex-none"
           >
-            Zeruj XY
+            {t('zheight.zeroXY')}
           </Button>
           {/*
             * Drawn, and deliberately dead. Probing drives the tool downwards
@@ -69,7 +70,7 @@ const ZHeightWidget = ({ machine, label = 'Wysokość Z', className = '' }) => {
             * of someone who has stopped looking at it.
             */}
           <Button tone="soft" disabled className="h-ctl flex-1 @xl:w-chipw @xl:flex-none">
-            Sonduj Z
+            {t('zheight.probeZ')}
           </Button>
         </div>
       </div>

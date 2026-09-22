@@ -2,6 +2,7 @@ import Card from '../ui/Card';
 import DroStack from '../ui/DroStack';
 import DroStrip from '../ui/DroStrip';
 import { NO_READING } from '../machine/readings';
+import { t } from '../i18n';
 
 /**
  * Where the tool is.
@@ -30,7 +31,7 @@ import { NO_READING } from '../machine/readings';
  * without it means nothing, and "which zero is this" sits behind most of the
  * ways a job goes wrong.
  */
-const DroWidget = ({ machine, label = 'Pozycja robocza', strip = false, className = '' }) => {
+const DroWidget = ({ machine, label = t('dro.work'), strip = false, className = '' }) => {
   const Readout = strip ? DroStrip : DroStack;
 
   return (

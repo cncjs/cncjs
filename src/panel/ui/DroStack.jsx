@@ -1,4 +1,5 @@
 import { formatPosition } from '../machine/readings';
+import { t } from '../i18n';
 
 /**
  * The readout when the position is what the screen is for.
@@ -50,7 +51,7 @@ const Row = ({ axis, value, machineValue, last }) => (
       <span className="justify-self-end truncate font-num text-val font-medium tabular-nums text-ink">
         {formatPosition(value)}
       </span>
-      <span className="font-num text-note text-mut">mm</span>
+      <span className="font-num text-note text-mut">{t('units.mm')}</span>
       {/*
         * No unit of its own — the same millimetres measured from somewhere
         * else. `leading-none` because the default line box puts six pixels of

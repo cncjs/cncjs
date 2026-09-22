@@ -27,7 +27,9 @@ describe('the corners of the jog cross', () => {
     expect(DOWN_RIGHT.round).toBe('rounded-br-jcorner');
   });
 
-  test('every corner is labelled with both axes, signed', () => {
-    expect(CORNERS.map((c) => c.label)).toEqual(['X− Y+', 'X+ Y+', 'X− Y−', 'X+ Y−']);
+  test('every corner carries the sign of both axes', () => {
+    // The words around them belong to the translation; what this file owes
+    // the pad is which way each corner goes.
+    expect(CORNERS.map((c) => `${c.signs.x}${c.signs.y}`)).toEqual(['−+', '++', '−−', '+−']);
   });
 });

@@ -1,3 +1,5 @@
+import { t } from '../i18n';
+
 /**
  * Where you can go, and where you are.
  *
@@ -17,7 +19,7 @@ const NavRail = ({ items, current, onSelect, className = '' }) => (
   // the screen with bare background beneath.
   <nav
     className={`flex w-rail shrink-0 flex-col border-r border-line bg-panel ${className}`}
-    aria-label="Nawigacja"
+    aria-label={t('nav.label')}
   >
     {items.map(({ id, label, ready }) => {
       const here = id === current;

@@ -5,6 +5,7 @@
 import path from 'path';
 import globals from 'globals';
 import trendmicro from 'eslint-config-trendmicro';
+import noUntranslatedText from './eslint-rules/no-untranslated-text.mjs';
 
 const dirname = import.meta.dirname;
 
@@ -247,9 +248,17 @@ export default [
   // ---------------------------------------------------------------------
   {
     files: ['src/panel/**/*.js', 'src/panel/**/*.jsx'],
+    plugins: {
+      // Declared inline rather than published as a package: it is one rule,
+      // it is about this repository's own convention, and a `node_modules`
+      // round trip to change a word in its message would be the reason
+      // nobody changes it.
+      panel: { rules: { 'no-untranslated-text': noUntranslatedText } },
+    },
     rules: {
       'react/react-in-jsx-scope': 0,
       'react/jsx-uses-react': 0,
+      'panel/no-untranslated-text': 'error',
       'max-lines': ['error', { max: 250, skipBlankLines: true, skipComments: true }],
       'react/forbid-component-props': ['error', { forbid: ['style'] }],
       'react/forbid-dom-props': ['error', { forbid: ['style'] }],
@@ -285,6 +294,18 @@ export default [
     files: ['src/panel/scene/**/*.jsx'],
     rules: {
       'react/no-unknown-property': 0,
+    },
+  },
+
+  {
+    // A test has no operator. `it('stops the machine when the key comes up')`
+    // is a sentence in the source and reads as one to the rule, which is why
+    // the whole of rule 8 is off in here rather than the prose half of it:
+    // a fixture naming a label in the language the assertion checks for is the
+    // assertion.
+    files: ['src/panel/**/__tests__/**/*.js'],
+    rules: {
+      'panel/no-untranslated-text': 0,
     },
   },
 ];

@@ -6,6 +6,7 @@ import { machineZeroIsGuess, softLimitsEnabled, workOffset } from '../machine/en
 import { readToolpath } from '../machine/toolpath';
 import { composeScene, toolPoint } from '../scene/compose';
 import { DEFAULT_VIEW } from '../scene/views';
+import { t } from '../i18n';
 
 /**
  * The loaded program, the machine around it, and where the tool is in both.
@@ -44,7 +45,7 @@ const DEFAULT_LAYERS = {
 /** Drawn about machine zero when the machine has not reported both positions. */
 const NO_OFFSET = { x: 0, y: 0, z: 0 };
 
-const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className = '' }) => {
+const PathWidget = ({ machine, label = t('path.title'), preview = false, className = '' }) => {
   const [layers, setLayers] = useState(DEFAULT_LAYERS);
   const [view, setView] = useState(DEFAULT_VIEW);
 
@@ -167,38 +168,48 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
    */
   const sections = [
     {
-      label: 'Program',
+      label: t('path.layers.program'),
       options: [
-        { id: 'path', label: 'Tor', disabled: !toolpath, note: 'Nie wczytano programu' },
+        {
+          id: 'path',
+          label: t('path.layers.path'),
+          disabled: !toolpath,
+          note: t('path.layers.noProgram'),
+        },
         {
           id: 'programArea',
-          label: 'Obszar',
+          label: t('path.layers.area'),
           disabled: !scene.program,
-          note: 'Nie wczytano programu',
+          note: t('path.layers.noProgram'),
         },
       ],
     },
     {
-      label: 'Układ',
+      label: t('path.layers.wcs'),
       options: [
         {
           id: 'wcsAxes',
-          label: 'Osie',
+          label: t('path.layers.axes'),
           disabled: !scene.origin,
-          note: 'Sterownik nie odesłał aktywnego układu współrzędnych',
+          note: t('path.layers.noWcs'),
         },
       ],
     },
     {
-      label: 'Maszyna',
+      label: t('path.layers.machine'),
       options: [
         {
           id: 'machineArea',
-          label: 'Obszar',
+          label: t('path.layers.area'),
           disabled: !scene.envelope,
-          note: 'Sterownik nie podał zakresu ruchu ($130–$132)',
+          note: t('path.layers.noEnvelope'),
         },
-        { id: 'machineAxes', label: 'Osie', disabled: false, note: 'Zero maszynowe' },
+        {
+          id: 'machineAxes',
+          label: t('path.layers.axes'),
+          disabled: false,
+          note: t('path.layers.machineZero'),
+        },
       ],
     },
   ];
@@ -214,15 +225,15 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
   const canGo = Boolean(machine.connected && point && canGoToPoint(machine.settings, point));
   const goNote = (() => {
     if (!machine.connected) {
-      return 'Brak połączenia z maszyną';
+      return t('path.go.disconnected');
     }
     if (!point) {
-      return 'Kliknij na rysunku, żeby wskazać punkt';
+      return t('path.go.noPoint');
     }
     if (!canGo) {
-      return 'Punkt leży poza zakresem ruchu maszyny';
+      return t('path.go.outside');
     }
-    return 'Podnosi Z na górę zakresu, potem jedzie nad wskazany punkt';
+    return t('path.go.ready');
   })();
 
   /*
@@ -251,19 +262,14 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
   };
 
   const notes = [
-    machineZeroIsGuess(machine.settings) &&
-      'Bazowanie jest wyłączone ($22=0). Zero maszynowe leży tam, gdzie ' +
-      'włączono sterownik, więc obwiednia ma właściwy rozmiar i nieznane ' +
-      'położenie.',
-    scene.envelope && !softLimitsEnabled(machine.settings) &&
-      'Miękkie limity są wyłączone ($20=0). Obwiednia mówi, jak daleko ' +
-      'sięgają osie — nic nie zatrzyma ruchu poza nią.',
+    machineZeroIsGuess(machine.settings) && t('path.note.noHoming'),
+    scene.envelope && !softLimitsEnabled(machine.settings) && t('path.note.noSoftLimits'),
   ].filter(Boolean);
 
   return (
     <Card
       label={label}
-      aside={toolpath ? toolpath.name : 'Brak programu'}
+      aside={toolpath ? toolpath.name : t('path.noProgram')}
       className={className}
       bodyClassName="gap-0"
     >

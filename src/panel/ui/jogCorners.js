@@ -16,15 +16,19 @@
  * which is the thing an operator is actually looking at. The three inner
  * corners stay sharp so the keys still meet each other squarely.
  *
- * The label is what a screen reader says and what the arrow means: the two
- * axes, signed, in the order the machine names them. `−` is the minus sign
- * rather than a hyphen, matching the sides of the cross.
+ * The signs are the two the pad draws on its sides, and the pad turns them
+ * into what a screen reader says. They stay here rather than in the component
+ * because the corner is the thing that knows which way it points; the words
+ * around them are not this file's business, and a `.js` module cannot reach
+ * for a translation without dragging i18next into the one tier that runs with
+ * no browser. `−` is the minus sign rather than a hyphen, matching the sides
+ * of the cross.
  */
 const corner = (x, y, rotate, round) => ({
   dir: { x, y },
   rotate,
   round,
-  label: `X${x > 0 ? '+' : '−'} Y${y > 0 ? '+' : '−'}`,
+  signs: { x: x > 0 ? '+' : '−', y: y > 0 ? '+' : '−' },
 });
 
 export const UP_LEFT = corner(-1, 1, '-rotate-90', 'rounded-tl-jcorner');

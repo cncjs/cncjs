@@ -53,6 +53,9 @@ const RESOLUTION = 64;
 
 const paint = (text, color) => {
   const canvas = document.createElement('canvas');
+  // Not a sentence: a CSS font shorthand, which happens to have two words in
+  // it because a typeface has a name.
+  // eslint-disable-next-line panel/no-untranslated-text
   const font = `600 ${RESOLUTION}px 'IBM Plex Sans', system-ui, sans-serif`;
 
   // Measured before the canvas is sized, because sizing it clears the context

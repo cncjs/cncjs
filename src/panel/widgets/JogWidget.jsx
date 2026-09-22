@@ -16,6 +16,7 @@ import ShortcutHelp from '../ui/ShortcutHelp';
 import useHoldToJog from '../ui/useHoldToJog';
 import useJogKeys from '../ui/useJogKeys';
 import useJogStream from '../ui/useJogStream';
+import { t } from '../i18n';
 
 /**
  * Moving the machine by hand.
@@ -136,7 +137,7 @@ const JogWidget = ({ machine, className = '' }) => {
   // The two axis groups, one description each. Both arrangements show the same
   // two; only the shape they are drawn in differs.
   const xy = {
-    title: 'XY',
+    title: t('axis.xy'),
     steps: XY_STEPS,
     step: xyStep,
     onStep: setXyStep,
@@ -149,7 +150,7 @@ const JogWidget = ({ machine, className = '' }) => {
     disabled: !connected,
   };
   const z = {
-    title: 'Z',
+    title: t('axis.z'),
     steps: Z_STEPS,
     step: zStep,
     onStep: setZStep,
@@ -198,7 +199,7 @@ const JogWidget = ({ machine, className = '' }) => {
             onClick={() => setHelping(true)}
             className="shrink-0 rounded-ctl border border-line py-1 text-cap uppercase text-mut transition-colors hover:border-acc hover:text-acc"
           >
-            Skróty klawiszowe
+            {t('shortcuts.title')}
           </button>
         </div>
       )}
@@ -245,22 +246,22 @@ const JogWidget = ({ machine, className = '' }) => {
       ) : null}
 
       {open ? (
-        <Sheet title={`Jog ${open.title}`} onClose={() => setEditing(null)}>
+        <Sheet title={t('jog.sheet', { axes: open.title })} onClose={() => setEditing(null)}>
           <div className="flex flex-col gap-2.5">
             <span className="text-label font-semibold uppercase leading-none text-ink">
-              Krok <span className="normal-case text-mut">mm</span>
+              {t('jog.step')} <span className="normal-case text-mut">{t('units.mm')}</span>
             </span>
             <SegmentedChoice
               options={open.steps}
               value={open.step}
               onChange={open.onStep}
-              label={`Krok ${open.title}`}
-              unit="mm"
+              label={t('jog.stepFor', { axes: open.title })}
+              unit={t('units.mm')}
             />
           </div>
           <div className="flex flex-col gap-2.5">
             <span className="text-label font-semibold uppercase leading-none text-ink">
-              Prędkość <span className="normal-case text-mut">mm/min</span>
+              {t('jog.speed')} <span className="normal-case text-mut">{t('units.mmPerMin')}</span>
             </span>
             <Stepper
               value={open.speed}
@@ -269,7 +270,7 @@ const JogWidget = ({ machine, className = '' }) => {
               coarse={open.coarse}
               min={open.min}
               max={open.max}
-              label={`Prędkość ${open.title}`}
+              label={t('jog.speedFor', { axes: open.title })}
             />
           </div>
         </Sheet>

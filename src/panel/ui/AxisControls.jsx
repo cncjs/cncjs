@@ -1,5 +1,6 @@
 import SegmentedChoice from './SegmentedChoice';
 import Stepper from './Stepper';
+import { t } from '../i18n';
 
 /**
  * How far one axis group moves, and how fast.
@@ -32,19 +33,19 @@ const AxisControls = ({
     </div>
 
     <div className="flex min-w-0 shrink-0 flex-col gap-2.5">
-      <Label unit="mm">Krok</Label>
+      <Label unit={t('units.mm')}>{t('jog.step')}</Label>
       <SegmentedChoice
         options={steps}
         value={step}
         onChange={onStep}
-        label={`Krok ${title}`}
-        unit="mm"
+        label={t('jog.stepFor', { axes: title })}
+        unit={t('units.mm')}
         disabled={disabled}
       />
     </div>
 
     <div className="flex min-w-0 shrink-0 flex-col gap-2.5">
-      <Label unit="mm/min">Prędkość</Label>
+      <Label unit={t('units.mmPerMin')}>{t('jog.speed')}</Label>
       <Stepper
         value={speed}
         onChange={onSpeed}
@@ -52,7 +53,7 @@ const AxisControls = ({
         coarse={coarse}
         min={min}
         max={max}
-        label={`Prędkość ${title}`}
+        label={t('jog.speedFor', { axes: title })}
         disabled={disabled}
       />
     </div>

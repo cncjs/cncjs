@@ -1,4 +1,5 @@
 import Sheet from './Sheet';
+import { t } from '../i18n';
 import { accelerationFor, stoppingDistance } from '../machine/stopping';
 
 /**
@@ -38,6 +39,10 @@ const Row = ({ keys, does, value }) => (
  * the firmware's replies while running, and the rest is `$120`–`$122` and
  * the feed rate showing on the card. Blank when any part of that is missing,
  * because a figure assembled from guesses would be read as a safety margin.
+ *
+ * The decimal separator comes from the language rather than from a
+ * `replace('.', ',')` here. It used to be written in, which was correct in
+ * Polish and would have been a typo in English.
  */
 const stopText = ({ timing, settings, feedrate, axes }) => {
   const distance = stoppingDistance({
@@ -50,7 +55,7 @@ const stopText = ({ timing, settings, feedrate, axes }) => {
     return null;
   }
 
-  return `${distance.toFixed(1).replace('.', ',')} mm`;
+  return t('shortcuts.stopDistance', { distance });
 };
 
 /**
@@ -69,54 +74,69 @@ const timingNote = ({ timing, linkMs }) => {
 
   const link = Math.round(linkMs || 0);
   const parts = [
-    `${timing.leadMs} ms kolejki`,
-    `${timing.ackMs} ms odpowiedzi sterownika`,
+    t('shortcuts.timing.queue', { ms: timing.leadMs }),
+    t('shortcuts.timing.ack', { ms: timing.ackMs }),
   ];
 
   // Two milliseconds, not one: a server on this computer measures as a
-  // fraction of a millisecond, and rounding that up to `1 ms drogi do
-  // serwera` is noise dressed up as a finding.
+  // fraction of a millisecond, and rounding that up to `1 ms to the server`
+  // is noise dressed up as a finding.
   if (link >= 2) {
-    parts.push(`${link} ms drogi do serwera`);
+    parts.push(t('shortcuts.timing.link', { ms: link }));
   }
 
-  return ` Po puszczeniu klawisza maszyna reaguje po ${timing.stopMs + link} ms — `
-    + `${parts.join(', ')} — a droga powyżej to ten czas plus hamowanie.`
-    + ' Serwer mierzy swój własny zegar w trakcie jogu, więc liczba opisuje ten'
-    + ' komputer przy tej pracy.';
+  return t('shortcuts.timing.note', {
+    total: timing.stopMs + link,
+    parts: parts.join(', '),
+  });
 };
 
 const ShortcutHelp = ({
   onClose, xyStep, zStep, xyCoarse, zCoarse, xySpeed, zSpeed, timing, settings, linkMs,
-}) => (
-  <Sheet title="Skróty klawiszowe" onClose={onClose}>
-    <div className="flex flex-col">
-      <Row keys={['←', '→']} does="Jog w osi X" value={`${xyStep} mm`} />
-      <Row keys={['↑', '↓']} does="Jog w osi Y" value={`${xyStep} mm`} />
-      <Row keys={['PgUp', 'PgDn']} does="Jog w osi Z" value={`${zStep} mm`} />
-      <Row
-        keys={['Shift', '+ kierunek']}
-        does="Większy krok — największy, jaki oś oferuje"
-        value={`XY ${xyCoarse} mm · Z ${zCoarse} mm`}
-      />
-      <Row keys={['przytrzymaj']} does="Jedzie, dopóki klawisz jest wciśnięty" />
-      <Row
-        keys={['po puszczeniu']}
-        does="Zatrzymanie przy obecnej prędkości — XY, potem Z"
-        value={[
-          stopText({ timing, settings, feedrate: xySpeed, axes: ['x', 'y'] }),
-          stopText({ timing, settings, feedrate: zSpeed, axes: ['z'] }),
-        ].filter(Boolean).join(' · ') || null}
-      />
-      <Row keys={['Esc']} does="Zamyka to okno" />
-      <Row keys={['?']} does="Otwiera tę pomoc" />
-    </div>
-    <p className="m-0 text-note text-mut">
-      Krok i prędkość zmienisz na karcie jogu. Klawisze nie działają, gdy
-      piszesz w polu tekstowym, i gdy nie ma połączenia ze sterownikiem.
-      {timingNote({ timing, linkMs })}
-    </p>
-  </Sheet>
-);
+}) => {
+  const note = timingNote({ timing, linkMs });
+
+  return (
+    <Sheet title={t('shortcuts.title')} onClose={onClose}>
+      <div className="flex flex-col">
+        <Row
+          keys={[t('shortcuts.key.left'), t('shortcuts.key.right')]}
+          does={t('shortcuts.jogX')}
+          value={t('shortcuts.step', { value: xyStep })}
+        />
+        <Row
+          keys={[t('shortcuts.key.up'), t('shortcuts.key.down')]}
+          does={t('shortcuts.jogY')}
+          value={t('shortcuts.step', { value: xyStep })}
+        />
+        <Row
+          keys={[t('shortcuts.key.pageUp'), t('shortcuts.key.pageDown')]}
+          does={t('shortcuts.jogZ')}
+          value={t('shortcuts.step', { value: zStep })}
+        />
+        <Row
+          keys={[t('shortcuts.key.shift'), t('shortcuts.key.andDirection')]}
+          does={t('shortcuts.coarse')}
+          value={t('shortcuts.coarseSteps', { xy: xyCoarse, z: zCoarse })}
+        />
+        <Row keys={[t('shortcuts.key.hold')]} does={t('shortcuts.held')} />
+        <Row
+          keys={[t('shortcuts.key.onRelease')]}
+          does={t('shortcuts.stop')}
+          value={[
+            stopText({ timing, settings, feedrate: xySpeed, axes: ['x', 'y'] }),
+            stopText({ timing, settings, feedrate: zSpeed, axes: ['z'] }),
+          ].filter(Boolean).join(' · ') || null}
+        />
+        <Row keys={[t('shortcuts.key.escape')]} does={t('shortcuts.close')} />
+        <Row keys={[t('shortcuts.key.help')]} does={t('shortcuts.help')} />
+      </div>
+      <p className="m-0 text-note text-mut">
+        {t('shortcuts.note')}
+        {note ? ` ${note}` : null}
+      </p>
+    </Sheet>
+  );
+};
 
 export default ShortcutHelp;

@@ -1,5 +1,6 @@
 import DroWidget from '../widgets/DroWidget';
 import JogWidget from '../widgets/JogWidget';
+import { t } from '../i18n';
 
 /**
  * Jogging on a phone: the keys, and where they got to.
@@ -16,7 +17,7 @@ import JogWidget from '../widgets/JogWidget';
 const JogPhone = ({ machine }) => (
   <div className="flex min-h-0 flex-1 flex-col gap-gap">
     <JogWidget machine={machine} className="min-h-0 flex-1" />
-    <DroWidget machine={machine} label="Pozycja" strip className="shrink-0" />
+    <DroWidget machine={machine} label={t('dro.position')} strip className="shrink-0" />
   </div>
 );
 
