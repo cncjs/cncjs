@@ -54,6 +54,13 @@ module.exports = {
        * which is what a transparent scrim looked like.
        */
       scrim: 'color-mix(in srgb, var(--ink) 45%, transparent)',
+      /*
+       * A readable backing over the drawing, for the same reason `scrim` is
+       * mixed rather than written as an opacity modifier: every colour here
+       * is a whole `var()`, so `bg-panel/70` resolves to nothing at all.
+       * Measured — it computes to `rgba(0, 0, 0, 0)`.
+       */
+      wash: 'color-mix(in srgb, var(--panel) 72%, transparent)',
       red: 'var(--red)',
       grn: 'var(--grn)',
       amb: 'var(--amb)',
@@ -63,6 +70,7 @@ module.exports = {
       none: '0',
       ctl: 'var(--r-ctl)',
       card: 'var(--r-card)',
+      jcorner: 'var(--r-jcorner)',
       full: '9999px',
     },
     fontFamily: {
@@ -70,7 +78,30 @@ module.exports = {
       num: 'var(--num)',
     },
     extend: {
+      width: {
+        coord: 'var(--coord)',
+        hazard: 'var(--hazard-w)',
+      },
+      height: {
+        hazard: 'var(--hazard-w)',
+      },
+      inset: {
+        /*
+         * The tape sits one band's width outside the preview. Written as an
+         * explicit negative rather than as `-inset-hazard`: Tailwind builds
+         * its negative variants by prefixing, and it will not negate a value
+         * that is a bare `var()` — the class is simply not generated, and the
+         * element collapsed to nothing inside a 528x423 box.
+         */
+        tape: 'calc(var(--hazard-w) * -1)',
+      },
+      backgroundImage: {
+        // Diagonal hazard tape. The stripe is twice the band's own width, so
+        // it reads as a stripe rather than as a texture.
+        hazard: 'repeating-linear-gradient(45deg, var(--hazard) 0 var(--hazard-w), var(--hazard-dark) var(--hazard-w) calc(var(--hazard-w) * 2))',
+      },
       spacing: {
+        hazard: 'var(--hazard-w)',
         pad: 'var(--pad)',
         gap: 'var(--gap)',
         rail: 'var(--rail)',

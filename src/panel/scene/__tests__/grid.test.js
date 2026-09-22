@@ -1,4 +1,6 @@
-import { buildGrid, FADE_CELLS, gridLabels, gridStep } from '../grid-lines';
+import {
+  buildGrid, buildSubGrid, FADE_CELLS, fineStep, gridStep,
+} from '../grid-lines';
 
 /**
  * The one piece of arithmetic in the grid, and the one that decides whether it
@@ -113,54 +115,92 @@ describe('buildGrid', () => {
   });
 });
 
-describe('gridLabels', () => {
-  const COM3 = { min: { x: -200, y: -200, z: -200 }, max: { x: 0, y: 0, z: 0 } };
-  const numbers = (labels) => labels.filter((l) => l.text !== 'mm');
-
-  test('runs along the two near edges, outside the machine rather than in it', () => {
-    const labels = gridLabels(COM3, 20);
-    const alongX = numbers(labels).filter((l) => l.y === -210);
-    const alongY = numbers(labels).filter((l) => l.x === -210);
-
-    // Half a square clear of the edge, so a figure never lands on the
-    // toolpath it is there to measure.
-    expect(alongX.length).toBeGreaterThan(0);
-    expect(alongY.length).toBeGreaterThan(0);
-    expect(alongX.map((l) => l.text)).toContain('-200');
-    expect(alongX.map((l) => l.text)).toContain('0');
+describe('fineStep', () => {
+  test('divides a square into four or five, never two', () => {
+    // Two divisions read as a second grid arguing with the first.
+    expect(fineStep(100)).toBe(20);
+    expect(fineStep(50)).toBe(10);
+    expect(fineStep(1000)).toBe(200);
   });
 
-  test('stops at the machine and does not number the fade', () => {
-    // Out there the grid is a hint that the floor continues. A number would
-    // be a measurement of nothing.
-    const values = numbers(gridLabels(COM3, 20)).map((l) => Number(l.text));
-
-    expect(Math.min(...values)).toBe(-200);
-    expect(Math.max(...values)).toBe(0);
+  test('falls to a quarter when a fifth is not a number anyone counts in', () => {
+    // A fifth of 200 is 40, which is not in the table.
+    expect(fineStep(200)).toBe(50);
   });
 
-  test('thins out rather than crowding when there are many lines', () => {
-    // 1mm squares over 200mm is two hundred lines. Labelling each one is
-    // unreadable at any size this panel is looked at.
-    const dense = numbers(gridLabels(COM3, 1));
-
-    expect(dense.length).toBeLessThanOrEqual(2 * 12);
-    // And what survives is still on round numbers.
-    expect(dense.every((l) => Number.isInteger(Number(l.text)))).toBe(true);
+  test('gives up rather than inventing a spacing', () => {
+    // Nothing in the table divides 1mm, and a sub-grid on the wrong spacing
+    // is worse than none.
+    expect(fineStep(1)).toBeNull();
   });
 
-  test('says the unit once per axis, past the end of the numbers', () => {
-    const units = gridLabels(COM3, 20).filter((l) => l.text === 'mm');
+  test('always returns something the grid itself could have used', () => {
+    const table = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000];
+    for (const step of table) {
+      const fine = fineStep(step);
+      if (fine !== null) {
+        expect(table).toContain(fine);
+        expect(fine).toBeLessThan(step);
+      }
+    }
+  });
+});
 
-    expect(units).toHaveLength(2);
-    // Clear of the last figure, so it reads as the unit for the row rather
-    // than as another value in it.
-    expect(units.map((u) => u.x)).toContain(20);
-    expect(units.map((u) => u.y)).toContain(20);
+describe('buildSubGrid', () => {
+  const AREA = { min: { x: -1000, y: -700, z: -150 }, max: { x: 0, y: 0, z: 0 } };
+
+  const read = (geometry) => {
+    const position = geometry.getAttribute('position').array;
+    const color = geometry.getAttribute('color').array;
+    const out = [];
+    for (let i = 0; i < position.length; i += 3) {
+      out.push({ x: position[i], y: position[i + 1], a: color[(i / 3) * 4 + 3] });
+    }
+    return out;
+  };
+
+  test('runs past the machine, like the grid it subdivides', () => {
+    // It used to stop dead at the travel while the coarse lines carried on,
+    // which drew exactly the rectangle the fade exists to avoid.
+    const v = read(buildSubGrid(AREA, -150, '#000000', 20, 100));
+
+    expect(Math.min(...v.map((p) => p.x))).toBeLessThan(AREA.min.x);
+    expect(Math.max(...v.map((p) => p.x))).toBeGreaterThan(AREA.max.x);
+    expect(Math.min(...v.map((p) => p.y))).toBeLessThan(AREA.min.y);
   });
 
-  test('gives every label a key of its own', () => {
-    const labels = gridLabels(COM3, 20);
-    expect(new Set(labels.map((l) => l.key)).size).toBe(labels.length);
+  test('fades out on the same margin as the coarse grid', () => {
+    const v = read(buildSubGrid(AREA, -150, '#000000', 20, 100));
+    const margin = 100 * FADE_CELLS;
+
+    const inside = v.filter((p) => p.x >= AREA.min.x && p.x <= AREA.max.x &&
+      p.y >= AREA.min.y && p.y <= AREA.max.y);
+    expect(inside.every((p) => p.a === 1)).toBe(true);
+
+    const out = v.filter((p) => p.x <= AREA.min.x - margin + 1e-6);
+    expect(out.length).toBeGreaterThan(0);
+    expect(out.every((p) => p.a < 0.02)).toBe(true);
+  });
+
+  test('is segmented by the coarse square, not the fine one', () => {
+    /*
+     * The fade runs over six coarse squares, so that is all the resolution it
+     * needs; splitting at every fine line would be five times the geometry
+     * for the same gradient.
+     *
+     * Counted as segments per line rather than as a total, because `coarse`
+     * also sets the margin — passing a different one changes how far the grid
+     * reaches as well as how it is cut, so the totals are not comparable.
+     */
+    const v = read(buildSubGrid(AREA, -150, '#000000', 20, 100));
+
+    const span = { x: 1000 + (2 * 600), y: 700 + (2 * 600) };
+    const lines = Math.round(span.x / 20) + Math.round(span.y / 20);
+    const perLine = (v.length / 2) / lines;
+
+    // A coarse cut over that span is about twenty pieces; a fine one is a
+    // hundred.
+    expect(perLine).toBeLessThan(30);
+    expect(perLine).toBeGreaterThan(5);
   });
 });

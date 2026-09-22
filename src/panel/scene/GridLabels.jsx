@@ -1,6 +1,7 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { gridLabels } from './grid-lines';
+import { useFrame } from '@react-three/fiber';
+import { gridLabels, labelStep } from './grid-numbers';
 
 /**
  * The numbers on the ground.
@@ -19,10 +20,32 @@ import { gridLabels } from './grid-lines';
  * colour from the token sheet like everything else in the scene.
  */
 
-// How tall a figure is, as a fraction of one square. Small enough to sit in
-// the gap outside the grid without touching it, large enough to read across a
-// workshop.
-const TEXT_HEIGHT = 0.42;
+/**
+ * How tall a figure is drawn, in screen pixels, at every zoom.
+ *
+ * **Held on screen rather than in millimetres.** Sized in the world a number
+ * is legible at the default fit and then dissolves the moment the view closes
+ * in on a corner — which is exactly when somebody is reading it.
+ *
+ * Nothing collides as a result, because the *spacing* is what gives way
+ * instead: `labelStep` counts in coarser round numbers as the view pulls
+ * back. Size and spacing are two different problems and this only solves the
+ * first one.
+ *
+ * 26 is what the default fit already produced, so nothing changed size the
+ * day this stopped being a world measurement.
+ */
+const TEXT_PIXELS = 20;
+
+/**
+ * How far outside the machine a figure sits, in screen pixels.
+ *
+ * On screen for the same reason the size is: as a fraction of the label
+ * spacing it marched away from the axis every time the numbers coarsened,
+ * which is exactly backwards — the coarser the count, the further the figures
+ * drifted from the thing they label.
+ */
+const GAP_PIXELS = 22;
 
 // Pixels per world unit in the texture. Three times the size a label is ever
 // drawn on screen, so it stays sharp when the view is zoomed into a corner.
@@ -58,19 +81,61 @@ const paint = (text, color) => {
 };
 
 const GridLabels = ({ area, step, z, color }) => {
-  const labels = useMemo(() => {
-    const height = step * TEXT_HEIGHT;
+  const groups = useRef([]);
 
-    return gridLabels(area, step).map((label) => {
-      const { texture, aspect } = paint(label.text, color);
-      return { ...label, texture, width: height * aspect, height };
-    });
-  }, [area, step, color]);
+  /*
+   * Which round number is being counted in. It follows the zoom, so it is
+   * state rather than a prop — but it only changes when the view crosses a
+   * threshold, which is a handful of times across a whole zoom range.
+   */
+  const [spacing, setSpacing] = useState(step);
+
+  const labels = useMemo(() => gridLabels(area, spacing).map((label) => {
+    const { texture, aspect } = paint(label.text, color);
+    // Built one unit tall; the group is scaled to whatever that has to be on
+    // screen, so the geometry never has to be rebuilt for a zoom.
+    return { ...label, texture, width: aspect, height: 1 };
+  }), [area, spacing, color]);
 
   useEffect(() => () => labels.forEach(({ texture }) => texture.dispose()), [labels]);
 
-  return labels.map(({ key, x, y, texture, width, height }) => (
-    <mesh key={key} position={[x, y, z]}>
+  /*
+   * One pass over the labels per frame, rather than a hook each — a hook
+   * cannot be called in a loop, and the arithmetic is the same for all of
+   * them. Under an on-demand renderer this only runs on frames that were
+   * asked for, and a zoom asks for one.
+   */
+  useFrame(({ camera }) => {
+    const next = labelStep(step, camera.zoom);
+    if (next !== spacing) {
+      setSpacing(next);
+    }
+
+    const scale = TEXT_PIXELS / camera.zoom;
+    const gap = GAP_PIXELS / camera.zoom;
+    for (let i = 0; i < groups.current.length; ++i) {
+      const group = groups.current[i];
+      const label = labels[i];
+      if (group && label) {
+        group.scale.setScalar(scale);
+        // Offset in pixels rather than in millimetres, so neither the numbers
+        // nor the unit drift when the counting coarsens.
+        group.position.set(
+          label.x + (label.push.x * gap),
+          label.y + (label.push.y * gap),
+          z
+        );
+      }
+    }
+  });
+
+  return labels.map(({ key, x, y, texture, width, height }, index) => (
+    <group
+      key={key}
+      position={[x, y, z]}
+      ref={(node) => { groups.current[index] = node; }}
+    >
+    <mesh>
       <planeGeometry args={[width, height]} />
       {/*
         * `depthWrite` off so a figure never hides the grid line behind it,
@@ -79,6 +144,7 @@ const GridLabels = ({ area, step, z, color }) => {
         */}
       <meshBasicMaterial map={texture} transparent opacity={0.55} depthWrite={false} />
     </mesh>
+    </group>
   ));
 };
 

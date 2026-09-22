@@ -2,7 +2,9 @@ import { Canvas } from '@react-three/fiber';
 import Axes from './Axes';
 import Controls from './Controls';
 import Grid from './Grid';
+import Guides from './Guides';
 import Outline from './Outline';
+import Pointer from './Pointer';
 import ToolMarker from './ToolMarker';
 import Toolpath from './Toolpath';
 import { useSceneColors } from './colors';
@@ -24,9 +26,29 @@ import { useSceneColors } from './colors';
 /** Where the machine measures from. Zero, by definition. */
 const MACHINE_ZERO = { x: 0, y: 0, z: 0 };
 
-const Scene = ({ scene, tool, layers, view, revision, memory }) => {
+// Fainter than the pointer's datum lines: this pair is always on screen, so
+// it has to sit under the drawing rather than across it.
+const TOOL_GUIDE_OPACITY = 0.2;
+
+const Scene = ({
+  scene, tool, layers, view, revision, memory, fit, onFree, target, onPick, onCancel, onHover, picking,
+}) => {
   const colors = useSceneColors();
   const { envelope, origin, toolpath, program, offset, frame } = scene;
+
+  /*
+   * **The floor is the machine's, not the frame's.**
+   *
+   * `frame` is the union of whatever layers are switched on, so taking the
+   * ground from it moved everything standing on it — the grid, the shadow,
+   * the datum lines — whenever a layer was toggled. The machine's own travel
+   * does not change when somebody stops drawing its outline, so that is the
+   * surface to stand things on; the frame is only the fallback for a
+   * controller that has not said how far it goes.
+   */
+  const floor = (envelope || frame).min.z;
+  // What the datum lines span, and what the grid is the ground for.
+  const area = envelope || frame;
 
   return (
     <Canvas
@@ -57,15 +79,37 @@ const Scene = ({ scene, tool, layers, view, revision, memory }) => {
        */
       resize={{ offsetSize: true }}
       orthographic
-      // Far enough for a gantry measured in metres and near enough for a
-      // marker measured in millimetres. Both ends matter: too near a `far`
-      // plane clips the far corner of the envelope, too far a `near` one eats
-      // the tool.
-      camera={{ near: 0.1, far: 100000 }}
+      /*
+       * **`near` is negative, and for an orthographic camera that is not a
+       * mistake.**
+       *
+       * In a parallel projection the distance from the camera changes nothing
+       * about the picture — only `zoom` does — so how far back the camera
+       * stands is free, and the fit puts it only as far as the object it is
+       * framing needs. Fill the frame with a 120mm program and the camera
+       * ends up 34mm from it; the machine is a metre across, so most of the
+       * envelope and most of the floor are then *behind* the camera and a
+       * positive `near` cuts them off. Measured: after one press of the fit
+       * button the camera sat 34.5mm from its target with `near` at 0.1.
+       *
+       * A perspective camera cannot do this — things behind it genuinely have
+       * no projection. This one can: the slab simply runs from -100m to
+       * +100m along the line of sight and nothing in a workshop leaves it.
+       * Depth still sorts correctly inside that slab.
+       */
+      camera={{ near: -100000, far: 100000 }}
     >
       <color attach="background" args={[colors.ground]} />
 
-      <Controls view={view} bounds={frame} revision={revision} memory={memory} />
+      <Controls
+        view={view}
+        bounds={frame}
+        revision={revision}
+        memory={memory}
+        object={program}
+        fit={fit}
+        onFree={onFree}
+      />
 
       {/* Under everything, and not switchable. The other layers are things
         * the machine reported and can therefore be wrong or absent; this is
@@ -75,7 +119,7 @@ const Scene = ({ scene, tool, layers, view, revision, memory }) => {
         * Sized to the machine's own travel where that is known, so the
         * squares are the machine's squares. Only when nothing has been
         * reported does it fall back to whatever is being drawn. */}
-      <Grid area={envelope || frame} z={frame.min.z} color={colors.edge} />
+      <Grid area={area} z={floor} color={colors.edge} />
 
       {/* The machine is context, not content: quiet enough that the program
         * inside it is what the eye lands on. */}
@@ -98,11 +142,54 @@ const Scene = ({ scene, tool, layers, view, revision, memory }) => {
 
       {layers.path && toolpath ? (
         <group position={[offset.x, offset.y, offset.z]}>
-          <Toolpath toolpath={toolpath} colors={colors} />
+          {/* The floor in this group's own coordinates: the group is already
+            * shifted by the work offset, and the shadow has to land on the
+            * grid in the world. */}
+          <Toolpath
+            toolpath={toolpath}
+            colors={colors}
+            shadowZ={floor - offset.z}
+          />
         </group>
       ) : null}
 
-      {tool ? <ToolMarker position={tool} color={colors.tool} /> : null}
+      {/* On the grid, because that is the surface the reading is taken
+        * against — see `pointer.js` for why a plane has to be named at all. */}
+      {/* Only where the screen is for moving the machine. On the toolpath
+        * screen the job is to read a program, and a sight following the mouse
+        * across it is something to look past. */}
+      {picking ? (
+        <Pointer
+          z={floor}
+          target={target}
+          onPick={onPick}
+          onCancel={onCancel}
+          onHover={onHover}
+          color={colors.work}
+          overColor={colors.over}
+          toolZ={tool?.z}
+          bounds={area}
+          limits={envelope}
+          program={program}
+        />
+      ) : null}
+
+      {/* The same rulers the pointer gets, for where the machine actually is.
+        * Fainter than the pointer's: that one is answering a question being
+        * asked right now, this one is a standing reference. */}
+      {tool ? (
+        <Guides
+          at={tool}
+          z={floor}
+          color={colors.tool}
+          opacity={TOOL_GUIDE_OPACITY}
+          area={area}
+        />
+      ) : null}
+
+      {tool ? (
+        <ToolMarker position={tool} color={colors.tool} floor={floor} />
+      ) : null}
     </Canvas>
   );
 };

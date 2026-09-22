@@ -1,6 +1,7 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
 import GridLabels from './GridLabels';
-import { buildGrid } from './grid-lines';
+import { buildGrid, buildSubGrid, fineStep } from './grid-lines';
 
 /**
  * The ground the rest of the scene stands on.
@@ -26,8 +27,51 @@ import { buildGrid } from './grid-lines';
  * Laid at the floor of whatever is being shown, so it sits under the toolpath
  * rather than through the middle of it.
  */
+/**
+ * The finer lines, faded in once a square is large enough to hold them.
+ *
+ * **Opacity rather than mounting and unmounting.** The geometry is built once
+ * and the weight is what changes, so the sub-grid arrives as a wash rather
+ * than appearing all at once at a threshold nobody crossed deliberately.
+ *
+ * The numbers are pixels of a fine square on screen: nothing below about
+ * fourteen reads as a grid rather than as a texture, and by twice that it is
+ * fully there.
+ */
+const FINE_MIN_PIXELS = 14;
+const FINE_FULL_PIXELS = 34;
+const FINE_OPACITY = 0.1;
+
+const SubGrid = ({ area, z, color, step, coarse }) => {
+  const material = useRef(null);
+  const geometry = useMemo(
+    () => buildSubGrid(area, z, color, step, coarse),
+    [area, z, color, step, coarse]
+  );
+
+  useEffect(() => () => geometry.dispose(), [geometry]);
+
+  useFrame(({ camera }) => {
+    if (!material.current) {
+      return;
+    }
+    const pixels = step * camera.zoom;
+    const t = Math.min(1, Math.max(0,
+      (pixels - FINE_MIN_PIXELS) / (FINE_FULL_PIXELS - FINE_MIN_PIXELS)));
+    material.current.opacity = t * FINE_OPACITY;
+    material.current.visible = t > 0;
+  });
+
+  return (
+    <lineSegments geometry={geometry}>
+      <lineBasicMaterial ref={material} vertexColors transparent opacity={0} />
+    </lineSegments>
+  );
+};
+
 const Grid = ({ area, z, color }) => {
   const { lines, axes, step } = useMemo(() => buildGrid(area, z, color), [area, z, color]);
+  const fine = fineStep(step);
 
   useEffect(() => () => {
     lines.dispose();
@@ -43,6 +87,10 @@ const Grid = ({ area, z, color }) => {
           * edges is multiplied into it from the vertices. */}
         <lineBasicMaterial vertexColors transparent opacity={0.16} />
       </lineSegments>
+
+      {fine ? (
+        <SubGrid area={area} z={z} color={color} step={fine} coarse={step} />
+      ) : null}
 
       <lineSegments geometry={axes}>
         <lineBasicMaterial vertexColors transparent opacity={0.5} />

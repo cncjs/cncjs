@@ -18,7 +18,7 @@ const TARGET_DIVISIONS = 16;
 // Millimetres a machinist would actually think in. The step is the first of
 // these that keeps the count at or under the target, so the lines land on
 // round numbers rather than on whatever the extent divided by sixteen was.
-const STEPS = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000];
+export const STEPS = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000];
 
 /**
  * How far past the area the grid keeps going before it has faded to nothing.
@@ -30,12 +30,8 @@ const STEPS = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000];
  */
 export const FADE_CELLS = 6;
 
-export const gridStep = (extent) => (
-  STEPS.find((step) => (extent / step) <= TARGET_DIVISIONS) || STEPS[STEPS.length - 1]
-);
-
-const snapDown = (value, step) => Math.floor(value / step) * step;
-const snapUp = (value, step) => Math.ceil(value / step) * step;
+export const snapDown = (value, step) => Math.floor(value / step) * step;
+export const snapUp = (value, step) => Math.ceil(value / step) * step;
 
 // Hermite, so the grid leaves the edge of the area and arrives at nothing
 // with no seam at either end. A straight ramp shows both.
@@ -80,66 +76,29 @@ const geometryOf = ({ points, alphas }, color) => {
   return buffer;
 };
 
-/**
- * Roughly how many numbers to put along an axis before they start colliding.
- *
- * Every grid line labelled is unreadable at any size the panel is actually
- * looked at; every other line, or every fourth, keeps the figures apart and
- * still lets the ones between be counted off the squares.
- */
-const MAX_LABELS = 12;
+export const gridStep = (extent) => (
+  STEPS.find((step) => (extent / step) <= TARGET_DIVISIONS) || STEPS[STEPS.length - 1]
+);
 
 /**
- * The numbers to write on the ground, and where.
+ * The finer division to lay inside each square, once there is room for it.
  *
- * Only inside the area — out in the fade the grid is a hint that the floor
- * continues, and a number there would be a measurement of nothing. Laid half
- * a square outside the near edge so they sit beside the machine rather than
- * inside it, where the toolpath is.
+ * **Only a step the table already contains.** A fifth of 200 is 40, which no
+ * machinist counts in, so that case falls to a quarter — 50 — rather than
+ * inventing a number. Four or five divisions read as a subdivision; two reads
+ * as a second grid competing with the first.
  *
- * @returns {object[]} `{ key, text, x, y }` in machine coordinates.
+ * Null when nothing in the table divides this square, which is the honest
+ * answer: no sub-grid is better than one on the wrong spacing.
  */
-export const gridLabels = (area, step) => {
-  const first = (min) => snapUp(min, step);
-  const last = (max) => snapDown(max, step);
-
-  const ticks = (min, max) => {
-    const values = [];
-    for (let v = first(min); v <= last(max); v += step) {
-      values.push(v);
+export const fineStep = (step) => {
+  for (const divisions of [5, 4, 2]) {
+    const candidate = step / divisions;
+    if (STEPS.includes(candidate)) {
+      return candidate;
     }
-    const every = Math.ceil(values.length / MAX_LABELS);
-    return values.filter((_, i) => (i % every) === 0);
-  };
-
-  const gap = step / 2;
-  const labels = [];
-
-  for (const x of ticks(area.min.x, area.max.x)) {
-    labels.push({ key: `x${x}`, text: String(x), x, y: area.min.y - gap });
   }
-  for (const y of ticks(area.min.y, area.max.y)) {
-    labels.push({ key: `y${y}`, text: String(y), x: area.min.x - gap, y });
-  }
-
-  // The unit, once per axis, past the end of the run of numbers. Every other
-  // reading on this panel says `mm` beside it and this one should not be the
-  // exception — but repeating it twenty times would be twenty times the ink
-  // for one fact.
-  labels.push({
-    key: 'unit-x',
-    text: 'mm',
-    x: last(area.max.x) + step,
-    y: area.min.y - gap,
-  });
-  labels.push({
-    key: 'unit-y',
-    text: 'mm',
-    x: area.min.x - gap,
-    y: last(area.max.y) + step,
-  });
-
-  return labels;
+  return null;
 };
 
 /**
@@ -213,3 +172,69 @@ export const buildGrid = (area, z, color) => {
 };
 
 export default buildGrid;
+
+/**
+ * The finer lines.
+ *
+ * Out past the machine and fading exactly as the coarse grid does — same
+ * margin, same `gridAlpha`, so the whole floor arrives at nothing together
+ * instead of the fine lines stopping at a hard rectangle the coarse ones
+ * carry on past.
+ *
+ * **Segmented by the coarse square, not the fine one.** A vertex is the only
+ * thing that can carry alpha, so a fade needs vertices along its length — but
+ * the fade runs over six coarse squares, so that is the resolution it needs.
+ * Splitting at every fine line instead would be five times the geometry to
+ * draw the same gradient.
+ *
+ * No axes: the lines through zero belong to the coarse grid, which is drawn
+ * over this one anyway.
+ *
+ * @param {object} area The machine's travel.
+ * @param {number} z The height to lay it at.
+ * @param {string|number} color Anything `THREE.Color` accepts.
+ * @param {number} step The fine spacing, from `fineStep`.
+ * @param {number} coarse The grid's own square, which sets the margin.
+ */
+export const buildSubGrid = (area, z, color, step, coarse) => {
+  const margin = coarse * FADE_CELLS;
+  const minX = snapDown(area.min.x - margin, step);
+  const maxX = snapUp(area.max.x + margin, step);
+  const minY = snapDown(area.min.y - margin, step);
+  const maxY = snapUp(area.max.y + margin, step);
+
+  const cuts = (min, max) => {
+    const values = [];
+    for (let v = snapDown(min, coarse); v <= max + coarse; v += coarse) {
+      values.push(Math.min(Math.max(v, min), max));
+    }
+    return values;
+  };
+
+  const xCuts = cuts(minX, maxX);
+  const yCuts = cuts(minY, maxY);
+
+  const points = [];
+  const alphas = [];
+  const add = (ax, ay, bx, by) => {
+    points.push(ax, ay, z, bx, by, z);
+    alphas.push(gridAlpha(ax, ay, area, margin), gridAlpha(bx, by, area, margin));
+  };
+
+  for (let x = minX; x <= maxX; x += step) {
+    for (let i = 1; i < yCuts.length; ++i) {
+      if (yCuts[i] > yCuts[i - 1]) {
+        add(x, yCuts[i - 1], x, yCuts[i]);
+      }
+    }
+  }
+  for (let y = minY; y <= maxY; y += step) {
+    for (let i = 1; i < xCuts.length; ++i) {
+      if (xCuts[i] > xCuts[i - 1]) {
+        add(xCuts[i - 1], y, xCuts[i], y);
+      }
+    }
+  }
+
+  return geometryOf({ points, alphas }, new THREE.Color(color));
+};
