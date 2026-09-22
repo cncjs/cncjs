@@ -1,3 +1,6 @@
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import { ensureArray } from 'ensure-type';
 import noop from 'lodash/noop';
 import { SerialPort } from 'serialport';
@@ -250,6 +253,36 @@ class CNCEngine {
          * It answers on the socket that carries the jog commands, because
          * an HTTP request would measure a different connection.
          */
+        /**
+         * Save a jog recording where somebody else can read it.
+         *
+         * The recorder draws in the operator's browser, which is exactly
+         * where it is no use for showing anybody what happened — a
+         * description of a timing problem is the thing that was not working
+         * in the first place. Writing it out makes the recording a file that
+         * can be opened, attached or read by whoever is helping.
+         *
+         * One fixed name in the system temporary directory: this is a
+         * diagnostic, not a log, and a directory filling up with timestamped
+         * recordings is a worse problem than losing the last one.
+         */
+        socket.on('trace:save', (events, callback = noop) => {
+          const file = path.join(os.tmpdir(), 'cncjs-jog-trace.json');
+
+          try {
+            fs.writeFileSync(file, JSON.stringify(ensureArray(events), null, 1));
+            log.info(`Jog recording written to ${file}`);
+            if (typeof callback === 'function') {
+              callback(null, file);
+            }
+          } catch (err) {
+            log.error('Could not write the jog recording:', err);
+            if (typeof callback === 'function') {
+              callback(err.message);
+            }
+          }
+        });
+
         socket.on('latency', (callback = noop) => {
           if (typeof callback === 'function') {
             callback();
