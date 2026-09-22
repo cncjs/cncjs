@@ -1720,7 +1720,17 @@ class GrblController {
            * because cancelling to turn is a race the firmware loses.
            */
           if (!this.jogging.dir && this.isTravelling()) {
-            this.takeOverWith(dir, feedrate);
+            /*
+             * Two ways to arrive here, and they differ by one byte on the
+             * wire. Either somebody else is driving — a click on the
+             * preview, a go-to-zero — and it has to be cancelled, or this
+             * is the tail of our own jog still braking after a key came
+             * up, which was cancelled when the key came up.
+             */
+            const ourOwnBraking = this.jogging.stopping
+              || (Date.now() - (this.jogging.cancelledAt ?? 0) < 1000);
+
+            this.takeOverWith(dir, feedrate, ourOwnBraking);
             return;
           }
 
@@ -2310,16 +2320,29 @@ class GrblController {
     }
 
     /**
-     * Cancel what is running and start jogging once it has wound down.
+     * Wait for the machine to come to rest, then jog.
      *
      * The wait is not politeness: the firmware refuses a `$J=` while it is
      * still winding a cancel down, so sending one straight after `0x85`
-     * gets an error and the key does nothing at all. Waiting for the state
-     * to come back costs the length of one status report, which is why that
-     * interval is 100ms rather than 250.
+     * gets an error and the key does nothing at all.
+     *
+     * **The status is asked for rather than waited for.** Reports arrive on
+     * their own every 100ms, and watching those added most of a tenth of a
+     * second to every change of direction — measured, a second key pressed
+     * after releasing the first took 330ms to move against 190ms from a
+     * standstill. `?` is one byte and is answered immediately, so asking
+     * while waiting turns that into the time the machine actually needs to
+     * stop.
+     *
+     * @param {boolean} alreadyCancelled True when the jog being waited out
+     *   is one this loop stopped itself, which has already sent `0x85`.
+     *   Sending a second one is harmless but pointless, and it muddies the
+     *   wire when reading a trace.
      */
-    takeOverWith(dir, feedrate) {
-      this.write('\x85');
+    takeOverWith(dir, feedrate, alreadyCancelled = false) {
+      if (!alreadyCancelled) {
+        this.write('\x85');
+      }
 
       const startedAt = Date.now();
       const begin = () => {
@@ -2329,15 +2352,27 @@ class GrblController {
           return;
         }
 
-        if (this.runner.state?.status?.activeState !== GRBL_ACTIVE_STATE_IDLE) {
-          // Give up rather than wait forever: something other than a jog is
-          // holding the machine, and that is not this loop's to override.
-          if (Date.now() - startedAt > 1000) {
-            log.warn('Gave up taking over a jog: the machine did not come back to idle');
-            return;
-          }
+        const waitedTooLong = Date.now() - startedAt > 1000;
+
+        if (!waitedTooLong && this.runner.state?.status?.activeState !== GRBL_ACTIVE_STATE_IDLE) {
+          // Ask, rather than wait for the next scheduled report.
+          this.connection.write('?');
           setTimeout(begin, 20);
           return;
+        }
+
+        /*
+         * **Try anyway rather than drop it.**
+         *
+         * Waiting a second for a state that never arrives used to end in a
+         * log line and silence: the key was held, nothing moved, and nothing
+         * said why. That is the "sometimes it does not catch" complaint, and
+         * a held key deserves better than a guess about the machine being
+         * busy. If it really is busy the firmware refuses the line, which is
+         * one error in the console — visible, and no worse than the silence.
+         */
+        if (waitedTooLong) {
+          log.warn('Machine did not report idle after a jog cancel; starting the jog anyway');
         }
 
         this.jogging.dir = dir;
@@ -2349,6 +2384,7 @@ class GrblController {
       };
 
       this.jogging.pendingAt = startedAt;
+      this.connection.write('?');
       setTimeout(begin, 20);
     }
 
@@ -2442,6 +2478,11 @@ class GrblController {
       // A take-over still counting down is abandoned: the key is up.
       this.jogging.pendingAt = null;
       this.haltJogClock();
+
+      // When this loop's own cancel went out. A key pressed while the
+      // machine is still braking from it is a change of direction, not an
+      // interruption of somebody else's move.
+      this.jogging.cancelledAt = Date.now();
 
       if (this.jogging.inFlight > 0) {
         this.jogging.stopping = true;
