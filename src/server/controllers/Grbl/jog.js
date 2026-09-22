@@ -15,6 +15,13 @@
  * arrives with a status report and is already stale. Running purely on `ok`
  * is simpler and moves beautifully, but it fills the planner every time, and
  * a full planner is a slow stop — which is the defect UGS carries as #1494.
+ *
+ * What is left of `ok` is the brake rather than the metronome. A segment is
+ * sized as though the machine were travelling at the feed rate it was given,
+ * and during a run of direction changes it is not — so `MAX_IN_FLIGHT` caps
+ * how far ahead the loop may get, and an acknowledgement is what lets it go
+ * on. Without that cap the queue grows for as long as somebody keeps changing
+ * their mind, and everything downstream pays for it.
  */
 
 /**

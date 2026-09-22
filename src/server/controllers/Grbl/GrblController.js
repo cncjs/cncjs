@@ -781,9 +781,10 @@ class GrblController {
          * and a stop waits for `inFlight` to reach zero before it can send
          * `0x85`, so the cancel was never sent at all.
          *
-         * Seen in a recording of ordinary jogging: no cancel anywhere in it,
-         * and the machine still moving 1.9 seconds and 98mm after the last
-         * key came up, changing direction as it replayed what was queued.
+         * Measured while somebody jogged by hand: no cancel went out at all,
+         * and the machine was still moving 1.9 seconds and 98mm after the
+         * last key came up, changing direction as it replayed what had been
+         * queued behind the stuck count.
          *
          * Refusals are normal here — the firmware rejects a jog while it is
          * winding down a cancel — so this is expected traffic, not an
@@ -1721,8 +1722,8 @@ class GrblController {
          *
          * **Aiming a running jog somewhere else is the same command again.**
          * The segments already in flight finish and the next ones go the new
-         * way, so a turn costs at most `SEGMENTS_IN_FLIGHT` segments and
-         * never needs a cancel. Cancelling to turn was the old way and it was
+         * way, so a turn costs only what is already queued — the lead, which is
+         * a few tens of milliseconds — and never needs a cancel. Cancelling to turn was the old way and it was
          * a race: the firmware refuses a jog while it is winding a cancel
          * down, and a cancel sent just after a jog was accepted overtook it —
          * which left the machine moving with nothing held.
@@ -2238,15 +2239,6 @@ class GrblController {
     }
 
     /**
-     * Top the planner up to `SEGMENTS_IN_FLIGHT` segments.
-     *
-     * Called when a jog starts and again on every acknowledgement, which is
-     * what makes this a loop driven by the machine rather than by a clock.
-     * It falls quiet on its own when `jogSegmentLine` returns null — the axis
-     * has run out of travel — instead of filling the controller with lines it
-     * will refuse.
-     */
-    /**
      * Put one segment on the wire, if there is somewhere to go.
      *
      * Returns false when the machine has run out of travel in the direction
@@ -2322,11 +2314,12 @@ class GrblController {
 
         /*
          * **A tick later than the lead is a stutter, and it gets said out
-         * loud.** The lead was measured at startup on an otherwise quiet
-         * process; whatever made this tick late was not present then, and
-         * silently growing the queue to absorb it would trade a visible
-         * stutter for an invisible change in stopping distance. The operator
-         * was told a number — it stays the number.
+         * loud.** The lead in force was measured from this host's own
+         * jogging, so a tick beyond it is something new — and silently
+         * growing the queue to absorb it would trade a visible stutter for
+         * an invisible change in stopping distance. The operator was told a
+         * number, and it stays the number until the next jog measures a
+         * different one.
          */
         if (elapsed > this.jogging.leadSeconds) {
           log.warn(

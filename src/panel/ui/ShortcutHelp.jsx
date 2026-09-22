@@ -34,9 +34,9 @@ const Row = ({ keys, does, value }) => (
 /**
  * How far the machine will go after the key comes up, in millimetres.
  *
- * Measured, not estimated: the server times its own clock at startup and the
- * firmware's replies while running, and the rest is `$120`–`$122` and the
- * feed rate showing on the card. Blank when any part of that is missing,
+ * Measured, not estimated: the server times its own clock while it jogs and
+ * the firmware's replies while running, and the rest is `$120`–`$122` and
+ * the feed rate showing on the card. Blank when any part of that is missing,
  * because a figure assembled from guesses would be read as a safety margin.
  */
 const stopText = ({ timing, settings, feedrate, axes }) => {

@@ -12,6 +12,12 @@ import { useEffect, useRef } from 'react';
  * `HOLD_AFTER` is the line between them. Long enough that an ordinary press
  * is unambiguously a step, short enough that holding does not feel stuck.
  *
+ * **The step leaves on the way down, not on the way up.** Waiting out that
+ * window before sending anything made every press late by a quarter of a
+ * second. So a press moves at once and the hold takes over afterwards if it
+ * lasts — which means holding a key moves one step, pauses for the rest of
+ * the window, then runs continuously.
+ *
  * **Every way the press can end stops the machine.** Pointer up is the
  * expected one; pointer cancel is the browser taking the gesture away,
  * usually because it became a scroll; the window losing focus and the page

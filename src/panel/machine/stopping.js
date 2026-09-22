@@ -6,7 +6,8 @@
  * three parts and they come from three different places:
  *
  *   - the **lead** the server keeps in the planner, which depends on how
- *     punctual the host computer's timers are and is measured at startup;
+ *     punctual the host computer's timers are and is measured from its own
+ *     jogging;
  *   - the **reply** time of the firmware over its cable, measured while
  *     running, because a cancel cannot take effect until the last segment
  *     sent has been acknowledged;
