@@ -115,7 +115,7 @@
     "remaining": "pozostało {{minutes}} min",
     "file": "plik",
     "feed": "posuw",
-    "spindle": "obroty",
+    "spindle": "wrzeciono",
     "start": "Start zadania",
     "pause": "Pauza"
   },
@@ -124,7 +124,7 @@
     "number": "T{{number}}",
     "title": "Narzędzie i wrzeciono",
     "tool": "narzędzie",
-    "spindle": "obroty",
+    "spindle": "wrzeciono",
     "override": "Korekta",
     "feedOverride": "posuw",
     "spindleOverride": "wrzeciono"
