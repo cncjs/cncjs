@@ -1,5 +1,6 @@
 import {
-  LEAD_SEGMENTS, MAX_IN_FLIGHT, SEGMENT_SECONDS, jogSegmentLine, roomFor, segmentDistance,
+  LEAD_CEILING_SECONDS, LEAD_FLOOR_SECONDS, MAX_IN_FLIGHT, SEGMENT_SECONDS, jogSegmentLine,
+  leadSecondsFor, roomFor, segmentDistance, stopSeconds,
 } from '../jog';
 
 // A Grbl that homes to the maximum: travel is [-range, 0].
@@ -50,24 +51,54 @@ describe('how long a segment is', () => {
     expect(SEGMENT_SECONDS).toBe(0.01);
   });
 
-  test('queues a short lead, not a full planner', () => {
+  test('sizes the lead from what this host delivers, not from a guess', () => {
     /*
-     * The N half. Grbl holds fifteen blocks, and a loop paced only by
-     * acknowledgements fills all fifteen — which is a 150ms stop, because
-     * everything queued is paid for before a cancel can take effect.
+     * The N half, and it is not a constant because it is not a property of
+     * the machine — it is a property of the computer the server runs on.
+     * Twice the worst observed tick: one interval covers the tick that is
+     * late, the next keeps the machine moving while it is served.
      */
-    expect(LEAD_SEGMENTS).toBeLessThan(15);
-    expect(SEGMENT_SECONDS * LEAD_SEGMENTS).toBeLessThanOrEqual(0.05);
+    expect(leadSecondsFor(0.02)).toBeCloseTo(0.04, 9);
+    expect(leadSecondsFor(0.03)).toBeCloseTo(0.06, 9);
   });
 
-  test('leaves enough in hand to cover a late tick', () => {
-    // Jitter on this loop measured 8-13ms; the lead has to outlast it.
-    expect(SEGMENT_SECONDS * LEAD_SEGMENTS * 1000).toBeGreaterThan(13);
+  test('never queues a full planner, however bad the host is', () => {
+    /*
+     * Grbl holds fifteen blocks, and a loop paced only by acknowledgements
+     * fills all fifteen — a 150ms stop, because everything queued is paid
+     * for before a cancel can take effect. Even the ceiling stays well under
+     * that.
+     */
+    expect(LEAD_CEILING_SECONDS).toBeLessThan(SEGMENT_SECONDS * 15);
+    expect(leadSecondsFor(10)).toBe(LEAD_CEILING_SECONDS);
+  });
+
+  test('a host that was never measured gets the safe value, not zero', () => {
+    // Unmeasured is not the same as fast.
+    expect(leadSecondsFor(undefined)).toBe(LEAD_FLOOR_SECONDS);
+    expect(leadSecondsFor(0)).toBe(LEAD_FLOOR_SECONDS);
+    expect(leadSecondsFor(-1)).toBe(LEAD_FLOOR_SECONDS);
+  });
+
+  test('the floor covers the serial adapter, not just the computer', () => {
+    // A USB serial adapter's latency timer defaults to 16ms on Windows;
+    // a lead under that is one the cable takes back.
+    expect(LEAD_FLOOR_SECONDS * 1000).toBeGreaterThanOrEqual(16);
+  });
+
+  test('stopping time is the lead plus the reply from the firmware', () => {
+    /*
+     * Both have to be paid before deceleration can even start: the queue has
+     * to run out, and the last segment has to be acknowledged, because
+     * `0x85` cannot empty the firmware's receive buffer.
+     */
+    expect(stopSeconds({ leadSeconds: 0.03, ackSeconds: 0.016 })).toBeCloseTo(0.046, 9);
+    expect(stopSeconds({ leadSeconds: 0.03 })).toBeCloseTo(0.03, 9);
   });
 
   test('stops sending before the backlog gets long enough to sit behind', () => {
-    expect(MAX_IN_FLIGHT).toBeGreaterThan(LEAD_SEGMENTS);
     expect(SEGMENT_SECONDS * MAX_IN_FLIGHT).toBeLessThan(0.1);
+    expect(SEGMENT_SECONDS * MAX_IN_FLIGHT).toBeGreaterThanOrEqual(LEAD_CEILING_SECONDS);
   });
 });
 
@@ -107,8 +138,29 @@ describe('the line for one segment', () => {
   });
 
   test('keeps a diagonal at 45 degrees', () => {
-    const reach = segmentDistance(1500);
+    const reach = segmentDistance(1500) / Math.sqrt(2);
     expect(line({ x: 1, y: -1 })).toBe(`$J=G91 G21 X${reach} Y${-reach} F1500`);
+  });
+
+  test('a diagonal segment lasts as long as a straight one', () => {
+    /*
+     * The machine holds the *resultant* to the feed rate, so equal distance
+     * on both axes is a move that lasts √2 ticks. Sent every tick, that is a
+     * queue that grows for as long as the key is held — measured on the
+     * machine, a held diagonal travelled 1.45x its due distance and took
+     * 819ms to stop, against 288ms for the same hold along one axis.
+     */
+    const straight = Number(line({ x: 1 }).match(/X(-?[\d.]+)/)[1]);
+    const [, dx, dy] = line({ x: 1, y: 1 }).match(/X(-?[\d.]+) Y(-?[\d.]+)/);
+
+    expect(Math.hypot(Number(dx), Number(dy))).toBeCloseTo(straight, 9);
+  });
+
+  test('a three-axis move lasts as long too', () => {
+    const straight = Number(line({ x: 1 }).match(/X(-?[\d.]+)/)[1]);
+    const [, dx, dy, dz] = line({ x: 1, y: 1, z: 1 }).match(/X(-?[\d.]+) Y(-?[\d.]+) Z(-?[\d.]+)/);
+
+    expect(Math.hypot(Number(dx), Number(dy), Number(dz))).toBeCloseTo(straight, 9);
   });
 
   test('is cut to the axis with the least room, on every axis', () => {
@@ -120,7 +172,7 @@ describe('the line for one segment', () => {
 
   test('is a whole segment when the room is wider than one', () => {
     // The room only bites when it is the smaller of the two.
-    const reach = segmentDistance(1500);
+    const reach = segmentDistance(1500) / Math.sqrt(2);
     expect(line({ x: 1, y: 1 }, { ...MIDDLE, y: '-50' }))
       .toBe(`$J=G91 G21 X${reach} Y${reach} F1500`);
   });

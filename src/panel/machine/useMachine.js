@@ -29,6 +29,12 @@ export const useMachine = () => {
     state: controller.state,
     settings: controller.settings || {},
     job: null,
+    /*
+     * How long this installation takes to stop a jog, in milliseconds, as
+     * measured by the server: the queue it keeps ahead plus the firmware's
+     * own reply time. Null until it says. See `machine/stopping`.
+     */
+    timing: null,
     // The program the sender is holding, as text. See the `gcode:load`
     // handler below for why a panel gets this without asking.
     gcode: null,
@@ -60,6 +66,18 @@ export const useMachine = () => {
        * home. That is not a preference — it is whether limit switches exist
        * and are turned on, and the only honest source is the controller.
        */
+      /**
+       * What a jog costs on *this* installation, measured rather than
+       * assumed.
+       *
+       * It is the server's to measure — the queue depth depends on how
+       * punctual the host computer's timers are, and the reply time on the
+       * cable — and the panel's to turn into a distance, because only the
+       * panel knows the feed rate in use.
+       */
+      'controller:timing': (timing) => {
+        setSnapshot((previous) => ({ ...previous, timing }));
+      },
       'controller:settings': (type, settings) => {
         setSnapshot((previous) => ({ ...previous, type, settings }));
       },

@@ -23,7 +23,7 @@
  * **Ten milliseconds, the floor the documentation gives — and the shortness
  * is the whole point.** How long a turn takes is `dt * N`: the length of one
  * segment times how many are queued ahead of it. Short segments keep that
- * product small; `LEAD_SEGMENTS` below keeps N small. Both are needed — a
+ * product small; the measured lead below keeps N small. Both are needed — a
  * short segment queued fifteen deep is still a long wait.
  *
  * Measured the other way round, at 0.1s a segment, a turn was still not
@@ -32,7 +32,7 @@
 export const SEGMENT_SECONDS = 0.01;
 
 /**
- * How many segments to send before the clock takes over.
+ * The least lead worth holding, in seconds.
  *
  * **The queue is kept short on purpose, because a stop can only be as quick
  * as the queue is long.** `0x85` empties the planner, but everything already
@@ -40,15 +40,55 @@ export const SEGMENT_SECONDS = 0.01;
  * fifteen blocks is a fifteen-block stop — about 150ms, which at a normal
  * feed is most of a centimetre of travel after the key came up.
  *
- * Running the loop on `ok` alone fills the planner to the brim every time:
- * Grbl answers as soon as it has *parsed* a line, not when it has *moved*,
- * so the loop always runs ahead until the planner is full. The clock below
- * is what stops that. These three are the cushion against a late tick —
- * three segments is 30ms of travel in hand, comfortably more than the jitter
- * measured on this loop (8–13ms) and still short enough to stop inside a
- * couple of millimetres.
+ * Thirty milliseconds is not measured from any particular computer: it is the
+ * floor below which the lead stops covering the serial adapter itself, whose
+ * latency timer defaults to 16ms on Windows. Going lower buys a stop that the
+ * cable gives back.
  */
-export const LEAD_SEGMENTS = 3;
+export const LEAD_FLOOR_SECONDS = 0.03;
+
+/**
+ * The most lead worth holding, in seconds.
+ *
+ * Past this the cure is worse than the disease. Eighty milliseconds costs
+ * about 2mm of stopping distance at 1500 mm/min and 7mm at 5000, and a host
+ * that cannot keep a 10ms timer inside 40ms of jitter has a problem that a
+ * longer jog queue is not going to fix — it needs saying, not absorbing,
+ * which is what the run-time warning does.
+ */
+export const LEAD_CEILING_SECONDS = 0.08;
+
+/**
+ * How much lead this host has earned, from its measured timer jitter.
+ *
+ * Twice the worst observed interval: one interval to cover the tick that is
+ * late, and one so the machine is still moving while the late tick is being
+ * served. Below the floor and above the ceiling it is clamped, and with no
+ * measurement at all it is the floor — which is the right default, because an
+ * unmeasured host is not known to be slow.
+ */
+export const leadSecondsFor = (worstTickSeconds) => {
+  if (!(worstTickSeconds > 0)) {
+    return LEAD_FLOOR_SECONDS;
+  }
+
+  return Math.min(LEAD_CEILING_SECONDS, Math.max(LEAD_FLOOR_SECONDS, worstTickSeconds * 2));
+};
+
+/**
+ * How long it takes to stop, in seconds, not counting deceleration.
+ *
+ * Two things have to happen before the machine can even begin slowing down.
+ * The lead already handed to the planner has to be paid for, and the segment
+ * last sent has to be acknowledged — because `0x85` cannot empty the
+ * firmware's receive buffer, so cancelling before that acknowledgement leaves
+ * a segment behind that starts the machine up again.
+ *
+ * Deceleration is deliberately not included: it depends on the feed rate in
+ * use and on `$120`–`$122`, both of which belong to whoever is driving, not
+ * to the server. The caller adds `v² / 2a` to this.
+ */
+export const stopSeconds = ({ leadSeconds, ackSeconds = 0 }) => leadSeconds + ackSeconds;
 
 /**
  * The most that may be outstanding before a tick is skipped.
@@ -119,6 +159,15 @@ export const roomFor = (axis, sign, settings, mpos) => {
  * room wins, because bending the move when the nearer axis ran out would send
  * the tool somewhere other than where it was aimed.
  *
+ * **The segment is a length of travel, not a length per axis.** A diagonal
+ * given `v * dt` on both axes travels `v * dt * √2`, and the machine holds
+ * the *resultant* to the feed rate — so it takes √2 times as long to run as
+ * the tick that produced it. Sending those faster than they run is a queue
+ * that grows for as long as the key is held: measured, a held diagonal
+ * travelled 1.45× its due distance and took 819ms to stop, against 288ms for
+ * the same hold along one axis. Dividing by √(number of axes) keeps the angle
+ * and makes the segment last exactly its own `dt`.
+ *
  * `G21` is stated on the line: the distance is in millimetres whatever units
  * the machine happens to be in.
  */
@@ -128,7 +177,8 @@ export const jogSegmentLine = ({ dir, feedrate, settings, mpos, seconds = SEGMEN
     return null;
   }
 
-  let distance = segmentDistance(feedrate, seconds);
+  // Per axis, so that the resultant is one segment's worth of travel.
+  let distance = segmentDistance(feedrate, seconds) / Math.sqrt(axes.length);
   for (const axis of axes) {
     const room = roomFor(axis, Math.sign(dir[axis]), settings, mpos);
     if (room !== null) {
