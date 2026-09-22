@@ -156,6 +156,17 @@ export const readMachine = ({ connection, error, port, type, state, settings, at
 
   return {
     connected,
+    /**
+     * Whether the *server* is reachable, which is a different question from
+     * whether a machine is.
+     *
+     * Everything else on the panel cares only about `connected`, because a
+     * panel that cannot reach its machine is equally dead either way. The
+     * connection screen is the one place the difference is the subject: with
+     * no server there is no list of ports to show and nothing to press, and
+     * saying "no ports found" there would blame the wrong thing.
+     */
+    linked: connection === 'open',
     error,
     port,
     type,

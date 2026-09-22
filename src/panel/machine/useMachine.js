@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import controller from './controller';
 import { signIn } from './session';
 import { fetchOpenController } from './snapshot';
 import { readMachine } from './readings';
 import { measureLinkMs } from './latency';
 import { askForWorkOffsets } from './workOffsets';
+import { closePort, openPort } from './ports';
 import { t } from '../i18n';
 
 /**
@@ -48,9 +49,40 @@ export const useMachine = () => {
     gcode: null,
   }));
 
+  /**
+   * Attach this socket to a port, opening it if nothing has it yet.
+   *
+   * One action for two callers that used to be one: the page asking to be
+   * reconnected to whatever was already running, and an operator picking a
+   * port on the connection screen. The server makes no distinction — `open`
+   * joins the socket to the port's room and only touches the hardware if the
+   * port is closed — so neither should this.
+   *
+   * `attached` is set here and nowhere else. It is the difference between
+   * knowing a port is open and being able to send to it: `Controller.command`
+   * begins `if (!this.port) return`, so a panel that set this on the snapshot
+   * alone would have every control look live and do nothing.
+   */
+  const connect = useCallback(async (port, options) => {
+    await openPort(port, options);
+    setSnapshot((previous) => ({ ...previous, attached: true }));
+    // The one reading no part of the server ever sends unasked. See
+    // `workOffsets.js`.
+    askForWorkOffsets();
+  }, []);
+
+  /**
+   * Close the port.
+   *
+   * Nothing is set here: the server answers with `serialport:close`, which the
+   * handler below already turns into a panel with no machine. Setting it twice
+   * would mean a panel that believes itself disconnected from a port that
+   * refused to close.
+   */
+  const disconnect = useCallback((port) => closePort(port), []);
+
   useEffect(() => {
     let live = true;
-    let linkTimer = null;
 
     const events = {
       'serialport:open': ({ port, controllerType }) => {
@@ -162,38 +194,22 @@ export const useMachine = () => {
         //
         // Safe because the port is already open: the server attaches this
         // socket to the running controller rather than opening anything.
-        controller.openPort(open.port, {
+        //
+        // Caught here rather than by the handler below, and this is not
+        // tidiness. `connect` rejects now where the old callback ignored its
+        // error, and the outer handler's answer is `status.noServer` — which
+        // would be the panel reporting that the server is gone because one
+        // port it named could not be joined. The server answered; the port
+        // did not. Forgetting it leaves the honest reading, `Disconnected`,
+        // and the connection screen to say the rest.
+        await connect(open.port, {
           controllerType: open.type,
           baudrate: open.baudrate,
           rtscts: open.rtscts,
-        }, () => {
-          if (!live) {
-            return;
+        }).catch(() => {
+          if (live) {
+            setSnapshot((previous) => ({ ...previous, port: '', type: '', state: {} }));
           }
-          setSnapshot((previous) => ({ ...previous, attached: true }));
-
-          /*
-           * Time the link, now and every half minute.
-           *
-           * Not once: a panel is carried around a workshop and a link that
-           * was fast at the bench is not the link it has by the machine. Not
-           * often either — five round trips is enough to be worth trusting
-           * and too many to repeat for no reason.
-           */
-          const timeTheLink = () => {
-            measureLinkMs().then((linkMs) => {
-              if (live && linkMs !== null) {
-                setSnapshot((previous) => ({ ...previous, linkMs }));
-              }
-            });
-          };
-
-          timeTheLink();
-          linkTimer = setInterval(timeTheLink, 30000);
-
-          // And ask where the work coordinate systems are, which is the one
-          // reading no part of the server ever requests. See `workOffsets.js`.
-          askForWorkOffsets();
         });
       })
       .catch((error) => {
@@ -204,12 +220,46 @@ export const useMachine = () => {
 
     return () => {
       live = false;
-      if (linkTimer) {
-        clearInterval(linkTimer);
-      }
       unsubscribe();
     };
-  }, []);
+  }, [connect]);
+
+  /*
+   * Time the link, now and every half minute, for as long as there is one.
+   *
+   * Not once: a panel is carried around a workshop and a link that was fast
+   * at the bench is not the link it has by the machine. Not often either —
+   * five round trips is enough to be worth trusting and too many to repeat
+   * for no reason.
+   *
+   * Keyed on being attached rather than started inside the attach, because
+   * attaching is now something an operator can do twice: a timer started by
+   * the second connection would leave the first one's running, and a panel
+   * that has been reconnected three times would be measuring the link three
+   * times a half-minute.
+   */
+  useEffect(() => {
+    if (!snapshot.attached) {
+      return undefined;
+    }
+
+    let live = true;
+    const timeTheLink = () => {
+      measureLinkMs().then((linkMs) => {
+        if (live && linkMs !== null) {
+          setSnapshot((previous) => ({ ...previous, linkMs }));
+        }
+      });
+    };
+
+    timeTheLink();
+    const timer = setInterval(timeTheLink, 30000);
+
+    return () => {
+      live = false;
+      clearInterval(timer);
+    };
+  }, [snapshot.attached]);
 
   const machine = readMachine(snapshot);
 
@@ -222,6 +272,11 @@ export const useMachine = () => {
       ...machine.status,
       word: machine.status.key ? t(machine.status.key) : machine.status.word,
     },
+    // What the connection screen does. Nothing else calls these, and nothing
+    // else may: opening a port from two places is two panels disagreeing
+    // about which machine this is.
+    connect,
+    disconnect,
   };
 };
 

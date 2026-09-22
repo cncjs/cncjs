@@ -12,7 +12,9 @@
     "alarms": "Alarmy",
     "settings": "Ustawienia",
     "homing": "Bazowanie",
-    "mdi": "MDI"
+    "mdi": "MDI",
+    "connect": "Połączenie",
+    "connectShort": "Port"
   },
 
   "topbar": {
@@ -37,7 +39,8 @@
   "units": {
     "mm": "mm",
     "mmPerMin": "mm/min",
-    "rpm": "obr/min"
+    "rpm": "obr/min",
+    "baud": "bodów"
   },
 
   "axis": {
@@ -198,6 +201,28 @@
     "note": {
       "noHoming": "Bazowanie jest wyłączone ($22=0). Zero maszynowe leży tam, gdzie włączono sterownik, więc obwiednia ma właściwy rozmiar i nieznane położenie.",
       "noSoftLimits": "Miękkie limity są wyłączone ($20=0). Obwiednia mówi, jak daleko sięgają osie — nic nie zatrzyma ruchu poza nią."
+    }
+  },
+
+  "connect": {
+    "title": "Połączenie",
+    "controller": "Sterownik",
+    "baudrate": "Prędkość transmisji",
+    "refresh": "Odśwież",
+    "connect": "Połącz",
+    "disconnect": "Rozłącz",
+    "noServer": "Brak połączenia z serwerem, więc nie ma czego wypisać.",
+    "asking": "Szukanie portów szeregowych…",
+    "noPorts": "Ten komputer nie ma portów szeregowych.",
+    "openFailed": "Port się nie otworzył. Może go trzymać inny program albo został odłączony od czasu sporządzenia listy.",
+    "closeFailed": "Port się nie zamknął.",
+    "alarm": "Maszyna jest w alarmie. Otwarcie portu resetuje Grbl, a przy włączonym bazowaniu ($22=1) maszyna nie ruszy, dopóki nie zostanie zbazowana albo odblokowana. Panel jej za Ciebie nie odblokuje."
+  },
+
+  "ports": {
+    "state": {
+      "open": "Ten panel",
+      "inuse": "Zajęty"
     }
   },
 

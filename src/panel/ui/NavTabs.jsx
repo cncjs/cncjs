@@ -33,6 +33,9 @@ const MARKS = {
   zero: 'M12 3v18M3 12h18M12 12m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0',
   files: 'M4 4h6l2 3h8v13H4zM4 9h16',
   alarms: 'M12 4a6 6 0 0 0-6 6v4l-2 3h16l-2-3v-4a6 6 0 0 0-6-6zM10 20a2 2 0 0 0 4 0',
+  // A chain link: two halves that only mean anything joined, which is the
+  // whole of what this screen is about.
+  connect: 'M9.5 14.5l5-5M10.5 6.5l1.6-1.6a4 4 0 0 1 5.5 5.5l-1.6 1.6M13.5 17.5l-1.6 1.6a4 4 0 0 1-5.5-5.5l1.6-1.6',
 };
 
 const NavTabs = ({ items, current, onSelect, className = '' }) => (

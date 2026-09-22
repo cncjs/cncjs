@@ -39,6 +39,20 @@ describe('readMachine, before there is a machine', () => {
     expect(read.status.key).toBe('status.connecting');
     expect(read.connected).toBe(false);
   });
+
+  test('tells a reachable server with no machine from no server at all', () => {
+    // The distinction only the connection screen cares about, and the one it
+    // cannot work without: with a server there is a list of ports to offer
+    // and something to press, and without one there is neither. Reporting the
+    // second as "no ports found" blames the wrong computer.
+    expect(readMachine({ connection: 'open', port: '' }).linked).toBe(true);
+    expect(readMachine({ connection: 'failed' }).linked).toBe(false);
+    expect(readMachine({ connection: 'connecting' }).linked).toBe(false);
+
+    // And it is not merely `connected` under another name: a server answering
+    // with nothing plugged in is the ordinary state of this screen.
+    expect(readMachine({ connection: 'open', port: '' }).connected).toBe(false);
+  });
 });
 
 describe('readMachine, with a controller answering', () => {
