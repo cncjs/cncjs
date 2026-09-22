@@ -42,15 +42,6 @@ const pointBox = ({ origin }) => ({ min: origin, max: origin });
 /** Where the machine measures from, which is a point the camera has to frame. */
 const MACHINE_ZERO = { x: 0, y: 0, z: 0 };
 
-const longestEdge = (bounds) => Math.max(
-  bounds.max.x - bounds.min.x,
-  bounds.max.y - bounds.min.y,
-  bounds.max.z - bounds.min.z,
-  // A program cut at one depth in a 2mm square still needs markers somebody
-  // can see. A zero here would make the tool and the origin crosses vanish.
-  1
-);
-
 /**
  * Where the tool is, or nothing.
  *
@@ -123,9 +114,6 @@ export const composeScene = ({ settings, wcs, offset, toolpath, layers }) => {
     toolpath,
     origins,
     frame,
-    // One number for "how big is this scene", which the markers size
-    // themselves against so they stay legible at any machine size.
-    size: longestEdge(frame),
   };
 };
 

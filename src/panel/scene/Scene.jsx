@@ -26,7 +26,7 @@ const MACHINE_ZERO = { x: 0, y: 0, z: 0 };
 
 const Scene = ({ scene, tool, layers, view, revision, memory }) => {
   const colors = useSceneColors();
-  const { envelope, origins, toolpath, program, offset, size, frame } = scene;
+  const { envelope, origins, toolpath, program, offset, frame } = scene;
 
   return (
     <Canvas
@@ -84,7 +84,7 @@ const Scene = ({ scene, tool, layers, view, revision, memory }) => {
       ) : null}
 
       {layers.machineAxes ? (
-        <Axes origin={MACHINE_ZERO} size={size} opacity={0.85} />
+        <Axes origin={MACHINE_ZERO} opacity={0.85} />
       ) : null}
 
       {layers.programArea && program ? (
@@ -95,7 +95,6 @@ const Scene = ({ scene, tool, layers, view, revision, memory }) => {
         <Axes
           key={name}
           origin={origin}
-          size={size}
           // The system the machine is working in now, and five it is not.
           // Same mark, so they are read as one kind of thing; different
           // weight, so the one that matters is the one seen first.
@@ -109,7 +108,7 @@ const Scene = ({ scene, tool, layers, view, revision, memory }) => {
         </group>
       ) : null}
 
-      {tool ? <ToolMarker position={tool} size={size} color={colors.tool} /> : null}
+      {tool ? <ToolMarker position={tool} color={colors.tool} /> : null}
     </Canvas>
   );
 };

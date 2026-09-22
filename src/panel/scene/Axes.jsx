@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { AXIS_X, AXIS_Y, AXIS_Z } from 'lib/toolpath/palette';
+import { useScreenScale } from './screenScale';
 
 /**
  * A zero, drawn as the three axes leaving it.
@@ -20,11 +21,17 @@ import { AXIS_X, AXIS_Y, AXIS_Z } from 'lib/toolpath/palette';
  *
  * Positive directions only. An arm each way would be symmetrical and would
  * therefore say nothing about which way the machine counts.
+ *
+ * **Measured in pixels rather than in millimetres.** It is a mark about the
+ * drawing rather than a part of it, and at a fixed size in the world it grew
+ * with the zoom — so closing in on the corner of a part, which is when a zero
+ * is worth looking at, buried it under an axis cross the width of the card.
  */
 
-// Arm length as a fraction of the scene, so a zero stays the same size on
-// screen whether it is in a 200mm machine or a two-metre one.
-const ARM_FRACTION = 0.11;
+// How long an arm is on screen, whatever the zoom. Chosen against what it
+// used to come out as at the default fit, so nothing changed size the day
+// this became a pixel measurement.
+const ARM_PIXELS = 36;
 
 const Arm = ({ to, color, opacity }) => {
   const geometry = useMemo(() => new THREE.BufferGeometry().setFromPoints([
@@ -41,14 +48,14 @@ const Arm = ({ to, color, opacity }) => {
   );
 };
 
-const Axes = ({ origin, size, opacity = 1 }) => {
-  const arm = size * ARM_FRACTION;
+const Axes = ({ origin, opacity = 1 }) => {
+  const scale = useScreenScale(ARM_PIXELS);
 
   return (
-    <group position={[origin.x, origin.y, origin.z]}>
-      <Arm to={[arm, 0, 0]} color={AXIS_X} opacity={opacity} />
-      <Arm to={[0, arm, 0]} color={AXIS_Y} opacity={opacity} />
-      <Arm to={[0, 0, arm]} color={AXIS_Z} opacity={opacity} />
+    <group ref={scale} position={[origin.x, origin.y, origin.z]}>
+      <Arm to={[1, 0, 0]} color={AXIS_X} opacity={opacity} />
+      <Arm to={[0, 1, 0]} color={AXIS_Y} opacity={opacity} />
+      <Arm to={[0, 0, 1]} color={AXIS_Z} opacity={opacity} />
     </group>
   );
 };

@@ -106,18 +106,6 @@ describe('what the camera is framed on', () => {
       max: { x: 1, y: 1, z: 1 },
     });
   });
-
-  test('gives markers a size to scale against even for a flat program', () => {
-    const flat = {
-      ...TOOLPATH,
-      bounds: { min: { x: 0, y: 0, z: 0 }, max: { x: 0.2, y: 0.2, z: 0 } },
-    };
-    const drawn = scene({ toolpath: flat, layers: { ...NONE, path: true } });
-
-    // Without a floor the tool marker and the origin crosses would be sized
-    // at a fraction of 0.2mm and simply not be there.
-    expect(drawn.size).toBe(1);
-  });
 });
 
 describe('the work coordinate systems', () => {
