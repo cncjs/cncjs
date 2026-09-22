@@ -49,10 +49,8 @@ export const useHoldToJog = ({ step, stream, enabled }) => {
 
     if (jog.current.running()) {
       jog.current.halt();
-    } else {
-      // Released before it became a hold, so it was a tap: one step.
-      nudge.current(press.dir);
     }
+    // Nothing to send for a tap: the step went out when the finger landed.
   });
 
   useEffect(() => {
@@ -76,6 +74,16 @@ export const useHoldToJog = ({ step, stream, enabled }) => {
     if (event.button !== 0 || held.current) {
       return;
     }
+
+    /*
+     * **Moves on the way down, not on the way up.** Waiting out the hold
+     * window before sending anything made every press feel late, because it
+     * was: a quarter of a second passed before the first command left. A step
+     * is over long before the hold begins — 1mm at 1500 mm/min takes 40ms —
+     * so sending it at once costs nothing and the machine is standing still
+     * again by the time the continuous jog starts.
+     */
+    nudge.current(dir);
 
     const record = { dir, timer: null };
     record.timer = setTimeout(() => {
