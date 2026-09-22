@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import controller from '../machine/controller';
 import useJogTrace from './useJogTrace';
 import {
   placeAt, pressBars, responseTimes, travelled, WINDOW_MS,
@@ -119,7 +120,23 @@ const Move = ({ events, now }) => {
 
 const JogTrace = () => {
   const [open, setOpen] = useState(true);
+  const [saved, setSaved] = useState(null);
   const { events, clear } = useJogTrace(open);
+
+  /*
+   * **Written on the server, not downloaded here.**
+   *
+   * A recording is no use to anybody while it is only a drawing in the
+   * operator's browser — describing a timing problem is the thing that was
+   * not working in the first place. Sent down the socket it already has, it
+   * becomes a file on the machine running the server, which is where
+   * somebody helping can actually open it.
+   */
+  const save = () => {
+    controller.socket?.emit('trace:save', events, (error, file) => {
+      setSaved(error ? `nie zapisano: ${error}` : file);
+    });
+  };
   const now = Date.now();
 
   const bars = pressBars(events, now);
@@ -154,6 +171,13 @@ const JogTrace = () => {
         <span className="ml-auto flex gap-2">
           <button
             type="button"
+            onClick={save}
+            className="rounded-ctl border border-line px-2 py-0.5 text-cap text-mut hover:text-ink"
+          >
+            Zapisz
+          </button>
+          <button
+            type="button"
             onClick={clear}
             className="rounded-ctl border border-line px-2 py-0.5 text-cap text-mut hover:text-ink"
           >
@@ -177,6 +201,10 @@ const JogTrace = () => {
       {used.length ? null : <Row label="klawisz">{null}</Row>}
       <Row label="na port"><Wire events={events} now={now} /></Row>
       <Row label="maszyna"><Move events={events} now={now} /></Row>
+
+      {saved ? (
+        <p className="m-0 font-num text-cap text-ink">Zapisano: {saved}</p>
+      ) : null}
 
       <p className="m-0 text-cap text-mut">
         Czas biegnie w prawo, prawa krawędź to teraz. Góra — trzymany klawisz,
