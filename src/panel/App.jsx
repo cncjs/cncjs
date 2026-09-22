@@ -7,6 +7,7 @@ import StatusBar from './ui/StatusBar';
 import TopBar from './ui/TopBar';
 import Dashboard from './screens/Dashboard';
 import JogScreen from './screens/JogScreen';
+import PathScreen from './screens/PathScreen';
 import { useMachine } from './machine/useMachine';
 import { emergencyStop } from './machine/commands';
 
@@ -23,7 +24,7 @@ const DESTINATIONS = [
   { id: 'jog', label: 'Jog', ready: true },
   { id: 'zero', label: 'Zerowanie', ready: false },
   { id: 'files', label: 'Pliki', ready: false },
-  { id: 'path', label: 'Ścieżka', ready: false },
+  { id: 'path', label: 'Ścieżka', ready: true },
   { id: 'probe', label: 'Sonda', ready: false },
   { id: 'diag', label: 'Diagnostyka', ready: false },
   { id: 'alarms', label: 'Alarmy', ready: false },
@@ -44,9 +45,23 @@ const PHONE_DESTINATIONS = PHONE_IDS
   .map((id) => DESTINATIONS.find((d) => d.id === id))
   .map((d) => (d.id === 'zero' ? { ...d, label: 'Zero' } : d));
 
+/*
+ * Which component a destination is, for the ones that are anything yet.
+ *
+ * A lookup rather than the chain of ternaries this was: the third screen is
+ * where that stops reading as a condition and starts reading as a list that
+ * happens to be written as nested `?:`. The dashboard is not in here because
+ * it is also the fallback, and because it is the only screen that navigates.
+ */
+const SCREENS = {
+  jog: JogScreen,
+  path: PathScreen,
+};
+
 const Panel = ({ machine, screen, onScreen }) => {
   const phone = useIsPhone();
   const [footer, setFooter] = useState(null);
+  const Screen = SCREENS[screen];
 
   return (
     <>
@@ -62,14 +77,16 @@ const Panel = ({ machine, screen, onScreen }) => {
         */}
       <TopBar
         status={machine.status}
-        machine={machine.connected
-          ? (phone
-? []
-: [
+        machine={machine.connected && !phone
+          ? [
             { label: 'sterownik', value: machine.type },
             { label: 'port', value: machine.port },
-          ])
-          : [{ value: 'Brak połączenia' }, { value: 'ze sterownikiem' }]}
+          ]
+          : []}
+        /* Not two more identity lines. The bar's ordinary voice is for facts
+         * that do not change while anyone is working; this is the reason
+         * nothing on the screen below can be pressed. */
+        warning={machine.connected ? null : 'Brak połączenia ze sterownikiem'}
         canStop={machine.connected}
         onStop={emergencyStop}
       />
@@ -89,8 +106,8 @@ const Panel = ({ machine, screen, onScreen }) => {
           * do not get, and the edge of the display is already an edge. */}
         <main className="flex min-h-0 min-w-0 flex-1 flex-col p-2.5">
           <FooterSlotProvider value={setFooter}>
-            {screen === 'jog'
-              ? <JogScreen machine={machine} />
+            {Screen
+              ? <Screen machine={machine} />
               : <Dashboard machine={machine} onGo={onScreen} />}
           </FooterSlotProvider>
         </main>

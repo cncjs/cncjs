@@ -51,8 +51,30 @@ module.exports = ({ mode, outputPath }) => ({
       // part of cncjs that actually talks to a machine.
       'app/lib/controller': path.resolve(__dirname, 'src/app/lib/controller'),
       panel: path.resolve(__dirname, 'src/panel'),
+      // Code both applications draw the same thing from. The toolpath
+      // arithmetic was inside the old visualiser, on the side of the import
+      // boundary the panel may not cross, so it moved here rather than being
+      // copied into a second truth.
+      lib: path.resolve(__dirname, 'src/lib'),
     },
     extensions: ['.js', '.jsx'],
+    /*
+     * `gcode-parser`, reached through `gcode-toolpath`, is written for node.
+     *
+     * The panel only ever calls `loadFromStringSync`, so the file-reading half
+     * of it never runs — but webpack resolves imports whether they are called
+     * or not, and the module builds a `Transform` subclass at load time, so
+     * `stream` has to be a real implementation rather than `false`. `fs` is
+     * only touched inside the functions the panel does not call.
+     *
+     * The same three the old application's config carries, for the same
+     * dependency.
+     */
+    fallback: {
+      fs: false,
+      stream: require.resolve('stream-browserify'),
+      timers: require.resolve('timers-browserify'),
+    },
   },
   module: {
     rules: [

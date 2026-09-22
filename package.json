@@ -150,6 +150,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^9.4.0",
+    "@react-three/fiber": "9.7.0",
     "@serialport/parser-readline": "~13.0.0",
     "@trendmicro/react-anchor": "~0.5.6",
     "@trendmicro/react-breadcrumbs": "~0.5.5",
@@ -383,8 +384,8 @@
       "<rootDir>/src/server/**/*.js",
       "!<rootDir>/src/server/**/*.test.js",
       "!<rootDir>/src/server/**/__tests__/**",
-      "<rootDir>/src/app/widgets/Visualizer/toolpath-geometry.js",
-      "<rootDir>/src/app/widgets/Visualizer/toolpath-segments.js",
+      "<rootDir>/src/lib/toolpath/toolpath-geometry.js",
+      "<rootDir>/src/lib/toolpath/toolpath-segments.js",
       "<rootDir>/src/app/widgets/Visualizer/GCodeVisualizer.js",
       "<rootDir>/src/app/lib/controller/dispatch-event.js"
     ],
@@ -412,7 +413,8 @@
       "<rootDir>/src/app/lib/controller/__tests__/**/*.test.js",
       "<rootDir>/src/app/features/**/__tests__/**/*.test.js",
       "<rootDir>/src/panel/**/__tests__/**/*.test.js",
-      "<rootDir>/src/app/widgets/Visualizer/__tests__/**/*.test.js"
+      "<rootDir>/src/app/widgets/Visualizer/__tests__/**/*.test.js",
+      "<rootDir>/src/lib/toolpath/__tests__/**/*.test.js"
     ],
     "transformIgnorePatterns": [
       "/node_modules/(?!three/)"

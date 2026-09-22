@@ -3,9 +3,9 @@ import { Line2 } from 'three/examples/jsm/lines/Line2.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
 import log from 'app/lib/log';
-import { TOOLPATH_DONE } from './palette';
-import buildToolpath from './toolpath-geometry';
-import buildSegments, { completedCount } from './toolpath-segments';
+import { TOOLPATH_DONE } from '../../../lib/toolpath/palette';
+import buildToolpath from '../../../lib/toolpath/toolpath-geometry';
+import buildSegments, { completedCount } from '../../../lib/toolpath/toolpath-segments';
 
 // What the machine has already cut. Grey rather than absent, so the shape of
 // the finished work stays legible while it stops competing with what is still

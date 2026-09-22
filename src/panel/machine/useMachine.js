@@ -3,6 +3,7 @@ import controller from './controller';
 import { signIn } from './session';
 import { fetchOpenController } from './snapshot';
 import { readMachine } from './readings';
+import { askForWorkOffsets } from './workOffsets';
 
 /**
  * Everything the panel knows about the machine, as one hook.
@@ -28,6 +29,9 @@ export const useMachine = () => {
     state: controller.state,
     settings: controller.settings || {},
     job: null,
+    // The program the sender is holding, as text. See the `gcode:load`
+    // handler below for why a panel gets this without asking.
+    gcode: null,
   }));
 
   useEffect(() => {
@@ -68,6 +72,22 @@ export const useMachine = () => {
        */
       'sender:status': (job) => {
         setSnapshot((previous) => ({ ...previous, job }));
+      },
+      /**
+       * The loaded program, in full.
+       *
+       * This is the one place the server *remembers* rather than merely
+       * relays. `addConnection` replays the sender's own `gcode` to a socket
+       * that has just arrived, so a panel refreshed in front of a loaded job
+       * is handed the whole program back without anybody uploading it again.
+       * Nothing else on this socket behaves that way, and the toolpath screen
+       * would be unusable if it did not.
+       */
+      'gcode:load': (name, gcode) => {
+        setSnapshot((previous) => ({ ...previous, gcode: { name, gcode } }));
+      },
+      'gcode:unload': () => {
+        setSnapshot((previous) => ({ ...previous, gcode: null }));
       },
     };
 
@@ -120,9 +140,14 @@ export const useMachine = () => {
           baudrate: open.baudrate,
           rtscts: open.rtscts,
         }, () => {
-          if (live) {
-            setSnapshot((previous) => ({ ...previous, attached: true }));
+          if (!live) {
+            return;
           }
+          setSnapshot((previous) => ({ ...previous, attached: true }));
+
+          // And ask where the work coordinate systems are, which is the one
+          // reading no part of the server ever requests. See `workOffsets.js`.
+          askForWorkOffsets();
         });
       })
       .catch((error) => {

@@ -26,6 +26,24 @@
   /* Roles */
   --acc: #1557c0;
   --accS: #e9f0fc;
+
+  /*
+   * The toolpath. Not in the drawing, because the drawing has no 3D scene in
+   * it — but here rather than in the renderer, because a canvas cannot wear a
+   * class and these are the only colours on the panel that would otherwise be
+   * written as hex somewhere else.
+   *
+   * The hues are Universal Gcode Sender's: a warm rapid that can never be
+   * mistaken for a cut at some depth, and a blue ramp from shallow to deep.
+   * The lightnesses are ours, and they are why these are tokens at all — UGS
+   * tuned its values against a pale blue background, and measured against
+   * this panel's own field its rapid comes out at 1.62:1 and the deep end of
+   * its ramp at 1.14:1 on the dark theme. Both are invisible. Every value
+   * here clears 3:1 against the field it is drawn on.
+   */
+  --rapid: #a86f00;
+  --cutTop: #3f93cf;
+  --cutDeep: #12266b;
   --red: #c62525;
   --grn: #12794a;
   --amb: #a96400;
@@ -127,6 +145,12 @@
   --grn: #2ea36a;
   --amb: #d08a1b;
   --field: #1b222b;
+
+  /* The same three hues, lifted off a near-black ground. The deep end cannot
+   * go where it goes on the light theme: at #12266b it measures 1.2:1 here. */
+  --rapid: #e0a53c;
+  --cutTop: #7fd0ff;
+  --cutDeep: #4a70e0;
 }
 
 [data-density='compact'] {

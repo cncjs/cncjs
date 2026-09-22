@@ -41,6 +41,51 @@ test.describe('panel, disconnected', () => {
     await expect(bar(cncjs.page)).toContainText(/disconnected/i);
   });
 
+  test('no connection is said as a warning, not as another setting', async ({ cncjs }) => {
+    await openPanel(cncjs.page);
+
+    // The form, not the words. This used to be written as two more muted
+    // identity lines beside `sterownik · Grbl`, which is the panel's voice
+    // for facts nobody looks at — and it is the reason every control below
+    // is dead. Rejected on sight by Mateusz, 2026-09-21.
+    // Pinned to the settled state first. Without this the case passes during
+    // the window between the page loading and the socket attaching — which is
+    // a pass for the wrong reason, and it would go on passing after somebody
+    // deleted the badge.
+    await expect(bar(cncjs.page)).toContainText(/disconnected/i);
+
+    const message = bar(cncjs.page).getByText(/Brak połączenia/i);
+    await expect(message).toBeVisible();
+
+    const drawn = await message.evaluate((node) => {
+      const style = getComputedStyle(node);
+      return { color: style.color, border: style.borderTopWidth };
+    });
+
+    /*
+     * `--mut` is the muted grey the identity lines are written in. Anything
+     * but that, and a box around it.
+     *
+     * Resolved through an element rather than read off the root: the custom
+     * property is `#6d7886` and `getComputedStyle().color` is
+     * `rgb(109, 120, 134)`, so comparing the two strings is an assertion that
+     * can never fail. It did not fail when the badge was deliberately turned
+     * back into muted text, which is how that was found.
+     */
+    const muted = await cncjs.page.evaluate(() => {
+      const probe = document.createElement('span');
+      probe.style.color = 'var(--mut)';
+      document.body.appendChild(probe);
+      const resolved = getComputedStyle(probe).color;
+      probe.remove();
+      return resolved;
+    });
+
+    expect(muted).toMatch(/^rgb/);
+    expect(drawn.color).not.toBe(muted);
+    expect(drawn.border).not.toBe('0px');
+  });
+
   test('the stop is there and cannot be pressed at nothing', async ({ cncjs }) => {
     await openPanel(cncjs.page);
 
@@ -114,5 +159,52 @@ test.describe('panel, disconnected', () => {
     // Colour alone leaves anyone not looking at it unable to tell.
     await expect(rail(cncjs.page).getByRole('button', { name: 'Pulpit' }))
       .toHaveAttribute('aria-current', 'page');
+  });
+
+  /**
+   * The toolpath screen, with no machine and no program.
+   *
+   * What it *draws* needs a controller and belongs in the hardware tier. What
+   * a browser can answer on its own is that the destination is reachable, that
+   * the scene mounts at all — a `<canvas>` is the one thing that fails
+   * silently here, because a WebGL context that never comes up leaves the card
+   * looking merely empty — and that the layers which have nothing behind them
+   * say so instead of offering themselves.
+   */
+  test('the toolpath screen opens and puts up a canvas', async ({ cncjs }) => {
+    await openPanel(cncjs.page);
+    await rail(cncjs.page).getByRole('button', { name: 'Ścieżka' }).click();
+
+    await expect(rail(cncjs.page).getByRole('button', { name: 'Ścieżka' }))
+      .toHaveAttribute('aria-current', 'page');
+    await expect(cncjs.page.locator('canvas')).toBeVisible();
+
+    cncjs.expectNoPageErrors();
+  });
+
+  test('a layer with nothing behind it cannot be switched on', async ({ cncjs }) => {
+    await openPanel(cncjs.page);
+    await rail(cncjs.page).getByRole('button', { name: 'Ścieżka' }).click();
+
+    const layers = cncjs.page.getByRole('group', { name: 'Warstwy' });
+    await expect(layers).toBeVisible();
+
+    // No program is loaded and no controller has reported a travel or a
+    // coordinate system, so there is nothing these could draw. A button that
+    // looked pressable here would draw nothing and say nothing about why.
+    for (const name of [
+      'Program · Tor',
+      'Program · Obszar',
+      'Układ · Osie',
+      'Maszyna · Obszar',
+    ]) {
+      await expect(layers.getByRole('button', { name, exact: true })).toBeDisabled();
+    }
+
+    // Machine zero is the exception: it is zero by definition and needs
+    // nothing reported, so it is offered even with no machine attached.
+    await expect(
+      layers.getByRole('button', { name: 'Maszyna · Osie', exact: true })
+    ).toBeEnabled();
   });
 });
