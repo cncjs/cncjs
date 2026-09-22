@@ -42,19 +42,25 @@ export const composeDirection = (keys) => {
   const group = KEYS[held[held.length - 1]].group;
   const dir = {};
 
+  /*
+   * **On one axis, the last key pressed wins.**
+   *
+   * Opposite keys used to cancel each other, leaving that axis undriven — and
+   * when it was the only axis, leaving nothing held at all, which stopped the
+   * machine. That reads well and works badly. Somebody moving a machine by
+   * hand rolls from one arrow to the next and the two overlap for a moment,
+   * so a recording of ordinary use is full of it: three cancellations in four
+   * and a half seconds, each one stopping a jog that was meant to carry on,
+   * and each costing the time to brake and start again.
+   *
+   * Pressing the opposite arrow is a change of mind, not an ambiguity, so it
+   * is treated as one. Holding both and releasing the newer one hands the
+   * axis back to the older, which is still down.
+   */
   for (const key of held) {
     const { axis, sign, group: keyGroup } = KEYS[key];
     if (keyGroup === group) {
-      dir[axis] = (dir[axis] || 0) + sign;
-    }
-  }
-
-  // Opposite keys held together cancel: that axis is not being driven.
-  for (const axis of Object.keys(dir)) {
-    if (dir[axis] === 0) {
-      delete dir[axis];
-    } else {
-      dir[axis] = Math.sign(dir[axis]);
+      dir[axis] = sign;
     }
   }
 
