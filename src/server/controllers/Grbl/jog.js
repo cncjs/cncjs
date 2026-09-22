@@ -109,15 +109,27 @@ export const leadSecondsFor = (worstTickSeconds) => {
 export const stopSeconds = ({ leadSeconds, ackSeconds = 0 }) => leadSeconds + ackSeconds;
 
 /**
- * The most that may be outstanding before a tick is skipped.
+ * How many segments may be outstanding before a tick is skipped.
  *
- * Only a backstop. If the firmware stops keeping up — a full planner, a busy
- * port — the unacknowledged lines pile up, and sending more would build a
- * backlog that a change of direction then has to wait behind. Skipping a tick
- * lets it catch up and costs nothing, because the planner still has the lead
- * above to run on.
+ * **This is the brake on the whole loop, and it has to be tight.**
+ *
+ * A segment is sized by the time that passed, which assumes the machine is
+ * travelling at the feed rate it was given. During a run of direction changes
+ * it is not: every reversal means braking and accelerating, so the real
+ * average is well below the nominal one and segments arrive faster than they
+ * are consumed. Nothing else stops that backlog growing, and the backlog is
+ * what everything downstream suffers from — a stop cannot send `0x85` until
+ * the segments already sent have been answered, so a deep queue is a machine
+ * that keeps moving after the key came up.
+ *
+ * Measured with this at eight: a stop with seven segments still outstanding,
+ * and the machine travelling on after the release. An acknowledgement is the
+ * firmware saying it took a line, so holding the count near zero paces the
+ * loop by what the machine actually manages rather than by what it was asked
+ * for. Two, not one: one leaves no slack at all for the round trip, and the
+ * planner still has the lead to run on while a tick waits.
  */
-export const MAX_IN_FLIGHT = 8;
+export const MAX_IN_FLIGHT = 2;
 
 /**
  * How far a segment travels, in millimetres. `s = v * dt`.

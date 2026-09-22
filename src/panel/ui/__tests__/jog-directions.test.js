@@ -18,9 +18,29 @@ describe('what the held keys add up to', () => {
     expect(composeDirection(['ArrowRight'])).toEqual({ x: 1 });
   });
 
-  test('opposite keys cancel that axis rather than fighting', () => {
-    expect(composeDirection(['ArrowLeft', 'ArrowRight'])).toBeNull();
-    expect(composeDirection(['ArrowLeft', 'ArrowRight', 'ArrowUp'])).toEqual({ y: 1 });
+  test('on one axis the last key pressed wins', () => {
+    /*
+     * They used to cancel, which reads well and works badly: somebody moving
+     * a machine by hand rolls from one arrow to the next and the two overlap
+     * for a moment. A recording of ordinary use had three of those overlaps
+     * in four and a half seconds, and each one stopped a jog that was meant
+     * to carry on — the machine braked to a halt and had to start again.
+     *
+     * Pressing the opposite arrow is a change of mind, not an ambiguity.
+     */
+    expect(composeDirection(['ArrowLeft', 'ArrowRight'])).toEqual({ x: 1 });
+    expect(composeDirection(['ArrowRight', 'ArrowLeft'])).toEqual({ x: -1 });
+  });
+
+  test('the other axis is untouched by an overlap on this one', () => {
+    // The whole point: rolling from left to right while holding up must not
+    // interrupt the up.
+    expect(composeDirection(['ArrowLeft', 'ArrowUp', 'ArrowRight'])).toEqual({ x: 1, y: 1 });
+  });
+
+  test('releasing the newer key hands the axis back to the one still held', () => {
+    expect(composeDirection(['ArrowLeft', 'ArrowRight'])).toEqual({ x: 1 });
+    expect(composeDirection(['ArrowLeft'])).toEqual({ x: -1 });
   });
 
   test('Z does not mix with X and Y', () => {
