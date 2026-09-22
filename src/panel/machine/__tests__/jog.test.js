@@ -159,6 +159,29 @@ describe('holding a jog key', () => {
     expect(jogTravel('z', settings)).toBe(80);
   });
 
+  test('measures the room left towards the end being driven at', () => {
+    // Travel is [-200, 0] and the tool is halfway, so either way is 100.
+    expect(jogRoom('x', 1, settings, middle)).toBe(100);
+    expect(jogRoom('x', -1, settings, middle)).toBe(100);
+    // Z is [-80, 0] at -40.
+    expect(jogRoom('z', 1, settings, middle)).toBe(40);
+  });
+
+  test('a tap asks for the room left rather than the whole step', () => {
+    /*
+     * Grbl with soft limits on **refuses** a jog that would leave the
+     * envelope — it does not clip it — so a 50mm step taken 10mm from the
+     * end has to be sent as 10mm or nothing moves at all.
+     */
+    // Travel is [-200, 0]; at -10 there is 10mm left towards zero.
+    const nearTheEnd = { x: '-10', y: '-100', z: '-40' };
+    jog({ type: 'Grbl', moves: { x: 50 }, feedrate: 1500, settings, position: nearTheEnd });
+
+    const sent = controller.command.mock.calls.map((c) => c[1]).join(' ');
+    expect(sent).toContain('X10');
+    expect(sent).not.toContain('X50');
+  });
+
   test('falls back to a bounded distance when the machine has not said', () => {
     // The distance is what happens if the release is never seen. Unbounded is
     // not an option; 100mm is far enough to be useful and near enough that a
