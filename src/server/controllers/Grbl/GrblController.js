@@ -770,6 +770,41 @@ class GrblController {
           return;
         }
 
+        /*
+         * **A refused jog segment is still an answer to one that was sent.**
+         *
+         * This used to fall through to the feeder, leaving `inFlight`
+         * counting a segment that would never be acknowledged — and the
+         * count never came back down. Two things broke, both of them the
+         * complaints that started this: after eight refusals the clock
+         * stopped sending, and the machine coasted on whatever was queued;
+         * and a stop waits for `inFlight` to reach zero before it can send
+         * `0x85`, so the cancel was never sent at all.
+         *
+         * Seen in a recording of ordinary jogging: no cancel anywhere in it,
+         * and the machine still moving 1.9 seconds and 98mm after the last
+         * key came up, changing direction as it replayed what was queued.
+         *
+         * Refusals are normal here — the firmware rejects a jog while it is
+         * winding down a cancel — so this is expected traffic, not an
+         * exception. Nothing is emitted to the panel for it, the same as for
+         * an `ok` belonging to a segment.
+         */
+        if (this.jogging.inFlight > 0) {
+          this.jogging.inFlight -= 1;
+          log.debug(`Jog segment refused: ${res.raw}`);
+
+          if (this.jogging.stopping) {
+            if (this.jogging.inFlight === 0) {
+              this.jogging.stopping = false;
+              this.write('\x85');
+            }
+            return;
+          }
+
+          return;
+        }
+
         if (error) {
           // Grbl v1.1
           this.emit('serialport:read', `error:${code} (${error.message})`);

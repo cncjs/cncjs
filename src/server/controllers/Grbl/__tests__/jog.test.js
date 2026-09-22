@@ -96,9 +96,21 @@ describe('how long a segment is', () => {
     expect(stopSeconds({ leadSeconds: 0.03 })).toBeCloseTo(0.03, 9);
   });
 
-  test('stops sending before the backlog gets long enough to sit behind', () => {
-    expect(SEGMENT_SECONDS * MAX_IN_FLIGHT).toBeLessThan(0.1);
-    expect(SEGMENT_SECONDS * MAX_IN_FLIGHT).toBeGreaterThanOrEqual(LEAD_CEILING_SECONDS);
+  test('keeps the backlog near nothing, because the backlog is the problem', () => {
+    /*
+     * Segments are sized as though the machine were travelling at the feed
+     * rate it was given, and during a run of direction changes it is not —
+     * every reversal is braking and accelerating. The unacknowledged count
+     * is the only thing stopping that gap turning into a queue.
+     *
+     * Measured at eight: a stop found seven segments outstanding, and since
+     * `0x85` cannot go out until they are answered, the machine carried on
+     * after the key came up.
+     */
+    expect(MAX_IN_FLIGHT).toBeLessThanOrEqual(2);
+    // Not one: a single outstanding segment leaves no slack for the round
+    // trip, and the planner has the lead to run on meanwhile.
+    expect(MAX_IN_FLIGHT).toBeGreaterThan(1);
   });
 });
 
