@@ -237,6 +237,25 @@ class CNCEngine {
             });
         });
 
+        /**
+         * Answer immediately, so a client can time the round trip.
+         *
+         * How long it takes to stop a jog includes getting the word to this
+         * process at all, and that is not always nothing: the server is
+         * meant to run on a machine of its own with the panel on somebody
+         * else's laptop, where releasing a key crosses a network before it
+         * reaches the serial port. On the same computer this measures as
+         * zero and costs nothing.
+         *
+         * It answers on the socket that carries the jog commands, because
+         * an HTTP request would measure a different connection.
+         */
+        socket.on('latency', (callback = noop) => {
+          if (typeof callback === 'function') {
+            callback();
+          }
+        });
+
         // Open serial port
         socket.on('open', (port, options, callback = noop) => {
           if (typeof callback !== 'function') {

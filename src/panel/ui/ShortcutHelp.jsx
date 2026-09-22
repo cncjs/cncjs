@@ -53,8 +53,41 @@ const stopText = ({ timing, settings, feedrate, axes }) => {
   return `${distance.toFixed(1).replace('.', ',')} mm`;
 };
 
+/**
+ * Where the stopping time goes, in a sentence.
+ *
+ * Named parts rather than one total, because the parts are actionable and
+ * the total is not: a long queue means this computer is busy, a slow reply
+ * means the cable or the adapter, and a slow link means the server is
+ * across a workshop. The link is left out entirely when the server is this
+ * computer, which is the common case and reads as noise at 0 ms.
+ */
+const timingNote = ({ timing, linkMs }) => {
+  if (!timing) {
+    return null;
+  }
+
+  const link = Math.round(linkMs || 0);
+  const parts = [
+    `${timing.leadMs} ms kolejki`,
+    `${timing.ackMs} ms odpowiedzi sterownika`,
+  ];
+
+  // Two milliseconds, not one: a server on this computer measures as a
+  // fraction of a millisecond, and rounding that up to `1 ms drogi do
+  // serwera` is noise dressed up as a finding.
+  if (link >= 2) {
+    parts.push(`${link} ms drogi do serwera`);
+  }
+
+  return ` Po puszczeniu klawisza maszyna reaguje po ${timing.stopMs + link} ms — `
+    + `${parts.join(', ')} — a droga powyżej to ten czas plus hamowanie.`
+    + ' Serwer mierzy swój własny zegar w trakcie jogu, więc liczba opisuje ten'
+    + ' komputer przy tej pracy.';
+};
+
 const ShortcutHelp = ({
-  onClose, xyStep, zStep, xyCoarse, zCoarse, xySpeed, zSpeed, timing, settings,
+  onClose, xyStep, zStep, xyCoarse, zCoarse, xySpeed, zSpeed, timing, settings, linkMs,
 }) => (
   <Sheet title="Skróty klawiszowe" onClose={onClose}>
     <div className="flex flex-col">
@@ -81,9 +114,7 @@ const ShortcutHelp = ({
     <p className="m-0 text-note text-mut">
       Krok i prędkość zmienisz na karcie jogu. Klawisze nie działają, gdy
       piszesz w polu tekstowym, i gdy nie ma połączenia ze sterownikiem.
-      {timing ? ` Po puszczeniu klawisza maszyna reaguje po ${timing.stopMs} ms — ` +
-        `${timing.leadMs} ms kolejki i ${timing.ackMs} ms odpowiedzi sterownika — a droga ` +
-        'powyżej to ten czas plus hamowanie. Zmierzone na tym komputerze przy starcie serwera.' : ''}
+      {timingNote({ timing, linkMs })}
     </p>
   </Sheet>
 );

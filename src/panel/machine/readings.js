@@ -120,7 +120,7 @@ const toolOf = (type, state) => {
  * into a controller payload, so the four firmwares' disagreements are settled
  * here and only here.
  */
-export const readMachine = ({ connection, error, port, type, state, settings, attached, job, gcode, timing }) => {
+export const readMachine = ({ connection, error, port, type, state, settings, attached, job, gcode, timing, linkMs }) => {
   // "Connected" means *able to send*, not "a port is open somewhere". The
   // socket has to attach to the port before `Controller.command()` will do
   // anything at all — it begins `if (!this.port) return` and fails silently —
@@ -157,6 +157,9 @@ export const readMachine = ({ connection, error, port, type, state, settings, at
     // needs the feed rate, which belongs to whoever is driving. See
     // `machine/stopping`.
     timing,
+    // How far away the server is, in one-way milliseconds. Part of how long
+    // a jog takes to stop when the server is not this computer.
+    linkMs,
     status: { word, tone, known: Boolean(active) },
     overrides: overridesOf(type, state),
     tool: toolOf(type, state),
