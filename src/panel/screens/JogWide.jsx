@@ -3,8 +3,14 @@ import JogWidget from '../widgets/JogWidget';
 import PathWidget from '../widgets/PathWidget';
 import { useFooterContent } from '../ui/footerSlot';
 import { NO_READING } from '../machine/readings';
+import { t } from '../i18n';
 
 const reading = (value) => (value === null || value === undefined ? NO_READING : value);
+
+// The panel's own `label · value`. Punctuation, so it has no key and no
+// translation: the dot means the same thing in every language the panel will
+// be read in, and a resource holding one would only ever be copied.
+const SEPARATOR = ' · ';
 
 /**
  * Jogging at the panel: the keys beside the toolpath.
@@ -34,10 +40,10 @@ const JogWide = ({ machine }) => {
 ? null
 : () => (
     <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1 font-num text-base leading-tight text-mut">
-      <span>stan · <span className="text-ink">{machine.status.word}</span></span>
-      <span>układ · <span className="text-ink">{machine.modal.wcs || NO_READING}</span></span>
-      <span>posuw · <span className="text-ink">{reading(machine.tool.feedrate)}</span> mm/min</span>
-      <span>wrzeciono · <span className="text-ink">{reading(machine.tool.spindle)}</span> obr/min</span>
+      <span>{t('footer.state')}{SEPARATOR}<span className="text-ink">{machine.status.word}</span></span>
+      <span>{t('footer.wcs')}{SEPARATOR}<span className="text-ink">{machine.modal.wcs || NO_READING}</span></span>
+      <span>{t('footer.feed')}{SEPARATOR}<span className="text-ink">{reading(machine.tool.feedrate)}</span> {t('units.mmPerMin')}</span>
+      <span>{t('footer.spindle')}{SEPARATOR}<span className="text-ink">{reading(machine.tool.spindle)}</span> {t('units.rpm')}</span>
     </span>
   ), [
     Boolean(machine.job),
@@ -52,12 +58,12 @@ const JogWide = ({ machine }) => {
       <JogWidget machine={machine} className="min-h-0 w-jcard shrink-0" />
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-gap">
-        <DroWidget machine={machine} label="Pozycja" strip className="shrink-0" />
+        <DroWidget machine={machine} label={t('dro.position')} strip className="shrink-0" />
 
         {/* The preview shape, not the stage: no view picker and no layer
           * chips beside the jog keys. What it is for here is "is the tool
           * where I think it is", which the drawing answers on its own. */}
-        <PathWidget machine={machine} label="Podgląd" preview className="min-h-0 flex-1" />
+        <PathWidget machine={machine} label={t('path.preview')} preview className="min-h-0 flex-1" />
       </div>
     </div>
   );

@@ -14,9 +14,11 @@ describe('readMachine, before there is a machine', () => {
     // Three different absences, and an operator acts differently on each:
     // the server is unreachable, the page is still starting, or there is
     // simply no port open. One word for all three would be a shrug.
-    expect(readMachine({ connection: 'connecting' }).status.word).toBe('Connecting');
-    expect(readMachine({ connection: 'failed', error: 'x' }).status.word).toBe('No server');
-    expect(readMachine({ connection: 'open', port: '' }).status.word).toBe('Disconnected');
+    // Named, not worded: these three are the panel's own states and the word
+    // for each belongs to whichever language is being read.
+    expect(readMachine({ connection: 'connecting' }).status.key).toBe('status.connecting');
+    expect(readMachine({ connection: 'failed', error: 'x' }).status.key).toBe('status.noServer');
+    expect(readMachine({ connection: 'open', port: '' }).status.key).toBe('status.disconnected');
   });
 
   test('a failed server is coloured like a stopped machine', () => {
@@ -34,7 +36,7 @@ describe('readMachine, before there is a machine', () => {
       connection: 'open', port: 'COM3', type: 'Grbl', attached: false,
       state: { status: { activeState: 'Idle' } },
     });
-    expect(read.status.word).toBe('Connecting');
+    expect(read.status.key).toBe('status.connecting');
     expect(read.connected).toBe(false);
   });
 });
@@ -52,7 +54,8 @@ describe('readMachine, with a controller answering', () => {
     ['Sleep', 'inactive'],
   ])('shows %s as %s', (word, tone) => {
     const read = readMachine(grbl(word, {}));
-    expect(read.status).toEqual({ word, tone, known: true });
+    // No key: this word is the firmware's own and is shown as it says it.
+    expect(read.status).toEqual({ word, key: null, tone, known: true });
   });
 
   test('a state nobody planned for gets no colour rather than the last one', () => {
@@ -64,7 +67,9 @@ describe('readMachine, with a controller answering', () => {
     // nothing to say, and "Idle" there would be a claim the controller has
     // not made.
     const read = readMachine({ connection: 'open', port: 'COM3', type: 'Grbl', attached: true, state: {} });
-    expect(read.status).toEqual({ word: 'Connected', tone: 'inactive', known: false });
+    expect(read.status).toEqual({
+      word: null, key: 'status.connected', tone: 'inactive', known: false,
+    });
   });
 
   test('Smoothie is read with Grbl\'s vocabulary, because it is the same one', () => {
@@ -76,17 +81,21 @@ describe('readMachine, with a controller answering', () => {
     const tinyg = (machineState) => readMachine({
       connection: 'open', port: 'COM3', type: 'TinyG', attached: true, state: { sr: { machineState } },
     });
-    expect(tinyg(5).status).toEqual({ word: 'Run', tone: 'running', known: true });
-    expect(tinyg(2).status).toEqual({ word: 'Alarm', tone: 'stopped', known: true });
+    expect(tinyg(5).status).toEqual({ word: 'Run', key: null, tone: 'running', known: true });
+    expect(tinyg(2).status).toEqual({ word: 'Alarm', key: null, tone: 'stopped', known: true });
     // The trap: state 0 is a state, and it is falsy. A lookup guarded with
     // `||` would report it as unknown.
-    expect(tinyg(0).status).toEqual({ word: 'Initializing', tone: 'inactive', known: true });
+    expect(tinyg(0).status).toEqual({
+      word: 'Initializing', key: null, tone: 'inactive', known: true,
+    });
   });
 
   test('a firmware with no machine state says only what it knows', () => {
     // Marlin has none. Inventing one would be worse than admitting it.
     const read = readMachine({ connection: 'open', port: 'COM3', type: 'Marlin', attached: true, state: {} });
-    expect(read.status).toEqual({ word: 'Connected', tone: 'inactive', known: false });
+    expect(read.status).toEqual({
+      word: null, key: 'status.connected', tone: 'inactive', known: false,
+    });
   });
 
   test('reads the work position, and nothing where there is none', () => {

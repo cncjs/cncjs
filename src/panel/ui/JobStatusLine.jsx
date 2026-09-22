@@ -1,5 +1,6 @@
 import Button from './Button';
 import Meter from './Meter';
+import { t } from '../i18n';
 
 /**
  * What the status bar says when no screen has anything better to say.
@@ -23,7 +24,7 @@ import Meter from './Meter';
 const JobStatusLine = ({ job, error, canStart, onStart, canPause, onPause }) => (
   <>
     <span className={`min-w-0 truncate font-num text-base ${error ? 'text-red' : 'text-mut'}`}>
-      {error || (job ? job.name : 'brak wczytanego pliku')}
+      {error || (job ? job.name : t('job.noFile'))}
     </span>
 
     {/* Only once there is something to be through. A bar at zero beside a file
@@ -32,26 +33,31 @@ const JobStatusLine = ({ job, error, canStart, onStart, canPause, onPause }) => 
       <>
         <span className="shrink-0 font-num text-base text-mut">
           <span className="text-ink">{job.percent}</span>
-          {' % · linia '}
+          {t('job.percentLine')}
           <span className="text-ink">{job.received}</span>
           /{job.total}
         </span>
         <span className="min-w-0 flex-1">
-          <Meter percent={job.percent} label="Przebieg zadania" tone="bg-grn" />
+          <Meter percent={job.percent} label={t('job.title')} tone="bg-grn" />
         </span>
         {/* Nothing rather than a dash. A lone `–` on an otherwise empty strip
-          * is a reading whose subject nobody can name. */}
+          * is a reading whose subject nobody can name.
+          *
+          * One translated sentence rather than a word, a figure and a unit
+          * assembled in this order: English puts the number first and the word
+          * last, so the order belongs to the language. The cost is the minute
+          * count no longer being picked out in ink. */}
         <span className="shrink-0 font-num text-base text-mut">
-          pozostało <span className="text-ink">{Math.round(job.remaining / 60)}</span> min
+          {t('job.remaining', { minutes: Math.round(job.remaining / 60) })}
         </span>
       </>
     ) : <span className="flex-1" />}
 
     <Button tone="go" disabled={!canStart} onClick={onStart} className="h-9 tracking-[0.12em]">
-      Start zadania
+      {t('job.start')}
     </Button>
     <Button disabled={!canPause} onClick={onPause} className="h-9">
-      Pauza
+      {t('job.pause')}
     </Button>
   </>
 );

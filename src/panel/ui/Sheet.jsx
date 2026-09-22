@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { t } from '../i18n';
 
 /**
  * A panel that slides up over the screen, for a decision taken and finished.
@@ -33,7 +34,7 @@ const Sheet = ({ title, onClose, children }) => {
         * sheet can be got rid of without aiming at anything. */}
       <button
         type="button"
-        aria-label="Zamknij"
+        aria-label={t('sheet.close')}
         onClick={onClose}
         className="fixed inset-0 z-40 cursor-default bg-scrim"
       />
@@ -51,7 +52,7 @@ const Sheet = ({ title, onClose, children }) => {
             onClick={onClose}
             className="h-chiph rounded-ctl border border-line bg-surf px-4 text-base font-semibold uppercase tracking-[0.1em] text-ink"
           >
-            Gotowe
+            {t('sheet.done')}
           </button>
         </div>
         {children}

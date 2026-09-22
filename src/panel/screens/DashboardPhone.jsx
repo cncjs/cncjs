@@ -1,6 +1,7 @@
 import Button from '../ui/Button';
 import DroWidget from '../widgets/DroWidget';
 import JobWidget from '../widgets/JobWidget';
+import { t } from '../i18n';
 
 /**
  * The dashboard on a phone: four things, not eight narrowed.
@@ -24,7 +25,7 @@ const DashboardPhone = ({ machine }) => (
       * which this screen does not carry. Dead for now, like every probe
       * control on this panel. */}
     <Button tone="soft" disabled className="h-ctl shrink-0">
-      Sonduj Z
+      {t('zheight.probeZ')}
     </Button>
   </div>
 );

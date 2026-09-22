@@ -11,13 +11,16 @@ const { test, expect } = require('./fixtures');
  * controller is answering lives in `e2e/hardware/panel.spec.js`.
  */
 test.describe('panel, disconnected', () => {
-  // The panel speaks Polish, so its landmarks are found by role rather than
-  // by an English name that only ever existed in these cases.
+  // English is the panel's source language and Polish is a translation of it,
+  // picked from the browser. Playwright's browser is `en-US`, so the cases
+  // below ask for Polish outright rather than depending on the machine the
+  // suite happens to run on — and the last case in this file is the one that
+  // checks the other language is really there.
   const bar = (page) => page.getByRole('banner');
   const rail = (page) => page.getByRole('navigation', { name: 'Nawigacja' });
 
-  const openPanel = async (page) => {
-    await page.goto('/panel/', { waitUntil: 'domcontentloaded' });
+  const openPanel = async (page, lng = 'pl') => {
+    await page.goto(`/panel/?lng=${lng}`, { waitUntil: 'domcontentloaded' });
     await expect(bar(page)).toBeVisible({ timeout: 45000 });
   };
 
@@ -35,10 +38,12 @@ test.describe('panel, disconnected', () => {
   test('says there is no machine rather than showing an idle one', async ({ cncjs }) => {
     await openPanel(cncjs.page);
 
-    // Not "Idle", not an empty chip. "Disconnected" is the answer to "why did
+    // Not "Idle", not an empty chip. "Rozłączony" is the answer to "why did
     // nothing happen when I pressed that", and it is a state an operator acts
-    // on.
-    await expect(bar(cncjs.page)).toContainText(/disconnected/i);
+    // on. In Polish because the chip is translated now — it used to say
+    // `Disconnected` on an otherwise Polish panel, which is what having no
+    // resources at all looks like from the outside.
+    await expect(bar(cncjs.page)).toContainText(/rozłączony/i);
   });
 
   test('no connection is said as a warning, not as another setting', async ({ cncjs }) => {
@@ -52,7 +57,7 @@ test.describe('panel, disconnected', () => {
     // the window between the page loading and the socket attaching — which is
     // a pass for the wrong reason, and it would go on passing after somebody
     // deleted the badge.
-    await expect(bar(cncjs.page)).toContainText(/disconnected/i);
+    await expect(bar(cncjs.page)).toContainText(/rozłączony/i);
 
     const message = bar(cncjs.page).getByText(/Brak połączenia/i);
     await expect(message).toBeVisible();
@@ -206,5 +211,22 @@ test.describe('panel, disconnected', () => {
     await expect(
       layers.getByRole('button', { name: 'Maszyna · Osie', exact: true })
     ).toBeEnabled();
+  });
+
+  test('is translated, rather than written in one language', async ({ cncjs }) => {
+    // The whole of what a second language buys, in one case: the same panel,
+    // asked for in English, says the same things in English. Without this the
+    // resources would be a file of constants that nobody would notice had
+    // stopped being reachable.
+    await openPanel(cncjs.page, 'en');
+
+    await expect(cncjs.page.getByRole('navigation', { name: 'Navigation' })).toBeVisible();
+    await expect(bar(cncjs.page).getByText(/No connection to the controller/i)).toBeVisible();
+
+    // And the language is a choice, not the only one there is.
+    await openPanel(cncjs.page, 'pl');
+    await expect(rail(cncjs.page)).toBeVisible();
+
+    cncjs.expectNoPageErrors();
   });
 });

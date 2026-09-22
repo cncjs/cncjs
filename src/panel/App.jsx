@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { t } from './i18n';
 import { FooterSlotProvider } from './ui/footerSlot';
 import { ShellWidthProvider, useIsPhone, useMeasuredShell } from './ui/shell';
 import NavRail from './ui/NavRail';
@@ -14,24 +15,29 @@ import { emergencyStop } from './machine/commands';
 /**
  * Every destination the mockup draws, with `ready` saying which ones exist.
  *
+ * The key is written out rather than assembled from the id. Building it is
+ * shorter and costs the one thing a resource file has to have: a key that can
+ * be grepped for. Nothing would otherwise tell you `nav.probe` is still read
+ * by anything.
+ *
  * The unbuilt ones are shown and disabled rather than hidden. A rail that
  * grew an item each time a screen was finished would move under the
  * operator's hand between releases, and on a panel beside a machine most of
  * the value is that the thing is always in the same place.
  */
 const DESTINATIONS = [
-  { id: 'dashboard', label: 'Pulpit', ready: true },
-  { id: 'jog', label: 'Jog', ready: true },
-  { id: 'zero', label: 'Zerowanie', ready: false },
-  { id: 'files', label: 'Pliki', ready: false },
-  { id: 'path', label: 'Ścieżka', ready: true },
-  { id: 'probe', label: 'Sonda', ready: false },
-  { id: 'diag', label: 'Diagnostyka', ready: false },
-  { id: 'alarms', label: 'Alarmy', ready: false },
-  { id: 'settings', label: 'Ustawienia', ready: false },
-  { id: 'homing', label: 'Bazowanie', ready: false },
-  { id: 'mdi', label: 'MDI', ready: false },
-];
+  { id: 'dashboard', key: 'nav.dashboard', ready: true },
+  { id: 'jog', key: 'nav.jog', ready: true },
+  { id: 'zero', key: 'nav.zero', ready: false },
+  { id: 'files', key: 'nav.files', ready: false },
+  { id: 'path', key: 'nav.path', ready: true },
+  { id: 'probe', key: 'nav.probe', ready: false },
+  { id: 'diag', key: 'nav.diag', ready: false },
+  { id: 'alarms', key: 'nav.alarms', ready: false },
+  { id: 'settings', key: 'nav.settings', ready: false },
+  { id: 'homing', key: 'nav.homing', ready: false },
+  { id: 'mdi', key: 'nav.mdi', ready: false },
+].map((destination) => ({ ...destination, label: t(destination.key) }));
 
 /*
  * What a phone gets: five of the eleven, and the drawing's own five.
@@ -43,7 +49,7 @@ const DESTINATIONS = [
 const PHONE_IDS = ['dashboard', 'jog', 'zero', 'files', 'alarms'];
 const PHONE_DESTINATIONS = PHONE_IDS
   .map((id) => DESTINATIONS.find((d) => d.id === id))
-  .map((d) => (d.id === 'zero' ? { ...d, label: 'Zero' } : d));
+  .map((d) => (d.id === 'zero' ? { ...d, label: t('nav.zeroShort') } : d));
 
 /*
  * Which component a destination is, for the ones that are anything yet.
@@ -79,14 +85,14 @@ const Panel = ({ machine, screen, onScreen }) => {
         status={machine.status}
         machine={machine.connected && !phone
           ? [
-            { label: 'sterownik', value: machine.type },
-            { label: 'port', value: machine.port },
+            { label: t('topbar.controller'), value: machine.type },
+            { label: t('topbar.port'), value: machine.port },
           ]
           : []}
         /* Not two more identity lines. The bar's ordinary voice is for facts
          * that do not change while anyone is working; this is the reason
          * nothing on the screen below can be pressed. */
-        warning={machine.connected ? null : 'Brak połączenia ze sterownikiem'}
+        warning={machine.connected ? null : t('topbar.disconnected')}
         canStop={machine.connected}
         onStop={emergencyStop}
       />

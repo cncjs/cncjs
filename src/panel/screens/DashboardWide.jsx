@@ -3,6 +3,7 @@ import DroWidget from '../widgets/DroWidget';
 import JobWidget from '../widgets/JobWidget';
 import ToolWidget from '../widgets/ToolWidget';
 import ZHeightWidget from '../widgets/ZHeightWidget';
+import { t } from '../i18n';
 
 /**
  * The dashboard at the panel: everything at once.
@@ -24,9 +25,9 @@ const DashboardWide = ({ machine, onGo }) => (
           * is rather than making them find the rail. */}
         <div className="flex gap-3">
           {[
-            { id: 'probe', label: 'Sonda Z' },
-            { id: 'jog', label: 'Jog' },
-            { id: 'files', label: 'Pliki' },
+            { id: 'probe', label: t('dashboard.probeZ') },
+            { id: 'jog', label: t('nav.jog') },
+            { id: 'files', label: t('nav.files') },
           ].map(({ id, label }) => (
             <Button
               key={id}

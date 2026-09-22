@@ -30,7 +30,8 @@ test.describe('panel, connected', () => {
   const openPanel = async (grbl, context) => {
     await grbl.connect();
     const panel = await context.newPage();
-    await panel.goto('/panel/', { waitUntil: 'domcontentloaded' });
+    // Polish outright: the browser is `en-US` and these cases read the words.
+    await panel.goto('/panel/?lng=pl', { waitUntil: 'domcontentloaded' });
     await expect(bar(panel)).toBeVisible({ timeout: 45000 });
     return panel;
   };

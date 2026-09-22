@@ -3,6 +3,7 @@ import IconBar from './IconBar';
 import Scene from '../scene/Scene';
 import StageReadout from './StageReadout';
 import { VIEWS, VIEW_IDS } from '../scene/views';
+import { t } from '../i18n';
 
 /**
  * The toolpath, with its menu on it.
@@ -43,7 +44,7 @@ const LAYER_ICONS = {
 const viewItems = (view, onView, free) => VIEW_IDS.map((id) => ({
   id,
   icon: id,
-  label: VIEWS[id].label,
+  label: t(VIEWS[id].labelKey),
   pressed: !free && id === view,
   onSelect: () => onView(id),
 }));
@@ -52,7 +53,7 @@ const layerItems = (sections, layers, onLayers) => sections.flatMap(
   (section) => section.options.map((option) => ({
     id: option.id,
     icon: LAYER_ICONS[option.id],
-    label: `${section.label} · ${option.label}`,
+    label: t('stage.item', { section: section.label, option: option.label }),
     note: option.disabled ? option.note : '',
     pressed: Boolean(layers[option.id]) && !option.disabled,
     disabled: option.disabled,
@@ -120,7 +121,7 @@ const PathStage = ({
       <IconBar
         className="absolute right-2 top-2"
         groups={[
-          { label: 'Rzut', items: viewItems(view, onView, free) },
+          { label: t('stage.view'), items: viewItems(view, onView, free) },
           /*
            * Its own group, below the views and above the layers, because it
            * is neither. The views are four destinations and exactly one of
@@ -130,17 +131,17 @@ const PathStage = ({
            * action it is rather than as a switch that will not stay on.
            */
           {
-            label: 'Kadr',
+            label: t('stage.frame'),
             items: [{
               id: 'fit',
               icon: 'fit',
-              label: 'Wypełnij kadr obiektem',
-              note: scene.program ? '' : 'Nie wczytano programu',
+              label: t('stage.fit'),
+              note: scene.program ? '' : t('path.layers.noProgram'),
               disabled: !scene.program,
               onSelect: onFit,
             }],
           },
-          { label: 'Warstwy', items: layerItems(sections, layers, onLayers) },
+          { label: t('stage.layers'), items: layerItems(sections, layers, onLayers) },
         ]}
       />
       </div>

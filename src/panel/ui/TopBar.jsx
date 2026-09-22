@@ -1,5 +1,6 @@
 import Button from './Button';
 import StateChip from './StateChip';
+import { t } from '../i18n';
 
 /**
  * The one thing on this bar that is a problem rather than a fact.
@@ -89,7 +90,7 @@ const TopBar = ({ status, machine, warning, canStop, onStop }) => (
       onClick={onStop}
       className="h-chiph px-4 text-lead font-bold tracking-[0.12em] @3xl/shell:h-btnh @3xl/shell:px-10 @3xl/shell:text-head"
     >
-      Stop
+      {t('topbar.stop')}
     </Button>
   </header>
 );

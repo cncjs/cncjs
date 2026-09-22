@@ -3,6 +3,7 @@ import PathWidget from '../widgets/PathWidget';
 import { useFooterContent } from '../ui/footerSlot';
 import { NO_READING } from '../machine/readings';
 import { readToolpath } from '../machine/toolpath';
+import { t } from '../i18n';
 
 /**
  * The toolpath, and nothing beside it.
@@ -17,6 +18,10 @@ import { readToolpath } from '../machine/toolpath';
  * a dashboard tile beside it would be taking room from the one thing the
  * screen is for.
  */
+// See `JogWide`: punctuation rather than a word, so it stays out of the
+// resources.
+const SEPARATOR = ' · ';
+
 const extent = (bounds, axis) => (
   bounds ? (bounds.max[axis] - bounds.min[axis]).toFixed(1) : NO_READING
 );
@@ -44,13 +49,13 @@ const PathScreen = ({ machine }) => {
 ? null
 : () => (
     <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1 font-num text-base leading-tight text-mut">
-      <span>program · <span className="text-ink">{toolpath ? toolpath.name : NO_READING}</span></span>
+      <span>{t('footer.program')}{SEPARATOR}<span className="text-ink">{toolpath ? toolpath.name : NO_READING}</span></span>
       <span>
-        wymiary · <span className="text-ink">{extent(bounds, 'x')}</span>
+        {t('footer.size')}{SEPARATOR}<span className="text-ink">{extent(bounds, 'x')}</span>
         {' × '}<span className="text-ink">{extent(bounds, 'y')}</span>
-        {' × '}<span className="text-ink">{extent(bounds, 'z')}</span> mm
+        {' × '}<span className="text-ink">{extent(bounds, 'z')}</span> {t('units.mm')}
       </span>
-      <span>układ · <span className="text-ink">{machine.modal.wcs || NO_READING}</span></span>
+      <span>{t('footer.wcs')}{SEPARATOR}<span className="text-ink">{machine.modal.wcs || NO_READING}</span></span>
     </span>
   ), [
     Boolean(machine.job),

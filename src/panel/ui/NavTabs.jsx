@@ -1,3 +1,5 @@
+import { t } from '../i18n';
+
 /**
  * Where you can go, when there is no room for a rail.
  *
@@ -36,7 +38,7 @@ const MARKS = {
 const NavTabs = ({ items, current, onSelect, className = '' }) => (
   <nav
     className={`flex h-btnh shrink-0 border-t border-line bg-panel ${className}`}
-    aria-label="Nawigacja"
+    aria-label={t('nav.label')}
   >
     {items.map(({ id, label, ready }) => {
       const here = id === current;

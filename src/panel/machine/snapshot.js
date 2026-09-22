@@ -16,13 +16,15 @@
  * happens to work against a dev server and returns 403 against the production
  * one that actually runs in the garage.
  */
+import { t } from '../i18n';
+
 export const fetchOpenController = async (token) => {
   const res = await fetch('/api/controllers', {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
 
   if (!res.ok) {
-    throw new Error(`could not read the controller list: ${res.status}`);
+    throw new Error(t('error.controllerList', { status: res.status }));
   }
 
   const list = await res.json();

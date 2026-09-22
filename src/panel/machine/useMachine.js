@@ -5,6 +5,7 @@ import { fetchOpenController } from './snapshot';
 import { readMachine } from './readings';
 import { measureLinkMs } from './latency';
 import { askForWorkOffsets } from './workOffsets';
+import { t } from '../i18n';
 
 /**
  * Everything the panel knows about the machine, as one hook.
@@ -210,7 +211,18 @@ export const useMachine = () => {
     };
   }, []);
 
-  return readMachine(snapshot);
+  const machine = readMachine(snapshot);
+
+  // The one place a state key becomes a word. `readings` is the tier Jest
+  // runs, so it names the state and stops; everything downstream reads
+  // `status.word` exactly as it did before.
+  return {
+    ...machine,
+    status: {
+      ...machine.status,
+      word: machine.status.key ? t(machine.status.key) : machine.status.word,
+    },
+  };
 };
 
 export default useMachine;

@@ -1,3 +1,5 @@
+import { t } from '../i18n';
+
 /**
  * What one axis group is set to, as a line that can be tapped to change it.
  *
@@ -16,10 +18,10 @@ const AxisSummary = ({ title, step, speed, onOpen, disabled }) => (
     <span className="text-cap font-semibold uppercase tracking-[0.08em] text-ink">{title}</span>
     <span className="flex-1" />
     <span className="font-num text-note text-mut">
-      <span className="text-ink">{step}</span> mm
+      <span className="text-ink">{step}</span> {t('units.mm')}
     </span>
     <span className="font-num text-note text-mut">
-      <span className="text-ink">{speed}</span> mm/min
+      <span className="text-ink">{speed}</span> {t('units.mmPerMin')}
     </span>
     <span aria-hidden="true" className="text-note text-mut">&#9656;</span>
   </button>
