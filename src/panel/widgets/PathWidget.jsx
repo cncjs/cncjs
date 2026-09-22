@@ -130,8 +130,8 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
         {
           id: 'wcsAxes',
           label: 'Osie',
-          disabled: scene.origins.length === 0,
-          note: 'Sterownik nie odesłał układów G54–G59',
+          disabled: !scene.origin,
+          note: 'Sterownik nie odesłał aktywnego układu współrzędnych',
         },
       ],
     },

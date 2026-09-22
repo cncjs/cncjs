@@ -26,7 +26,7 @@ const MACHINE_ZERO = { x: 0, y: 0, z: 0 };
 
 const Scene = ({ scene, tool, layers, view, revision, memory }) => {
   const colors = useSceneColors();
-  const { envelope, origins, toolpath, program, offset, frame } = scene;
+  const { envelope, origin, toolpath, program, offset, frame } = scene;
 
   return (
     <Canvas
@@ -91,16 +91,10 @@ const Scene = ({ scene, tool, layers, view, revision, memory }) => {
         <Outline bounds={program} color={colors.line} opacity={0.9} />
       ) : null}
 
-      {layers.wcsAxes ? origins.map(({ name, origin, active }) => (
-        <Axes
-          key={name}
-          origin={origin}
-          // The system the machine is working in now, and five it is not.
-          // Same mark, so they are read as one kind of thing; different
-          // weight, so the one that matters is the one seen first.
-          opacity={active ? 1 : 0.3}
-        />
-      )) : null}
+      {/* The zero the machine is working from. One, because that is the
+        * question — see `composeScene` for what drawing all six did on a
+        * controller where nobody has set them. */}
+      {layers.wcsAxes && origin ? <Axes origin={origin.origin} /> : null}
 
       {layers.path && toolpath ? (
         <group position={[offset.x, offset.y, offset.z]}>

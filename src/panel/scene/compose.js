@@ -95,16 +95,30 @@ export const composeScene = ({ settings, wcs, offset, toolpath, layers }) => {
 
   const program = toolpath ? shift(toolpath.bounds, offset) : null;
 
-  const origins = workOrigins(settings).map((system) => ({
-    ...system,
-    active: system.name === wcs,
-  }));
+  /*
+   * **The one the machine is working in, and only that one.**
+   *
+   * All six were drawn at first, the active one solid and the rest faint.
+   * On a controller where nobody has set them that is five markers in one
+   * spot: an unset system reads `0,0,0`, which is machine zero, so `G55`
+   * through `G59` stack on top of each other *and* on top of the machine's
+   * own zero. The visible effect was that switching the work axes appeared
+   * to control the machine axes too, and switching the machine axes appeared
+   * to do nothing at all — neither being true, and neither being a wiring
+   * fault.
+   *
+   * Showing only the active system is not a guess about which ones were
+   * "really" set. It is the same scope the menu already has: the section is
+   * called UKŁAD, singular, and the question it answers is "where is the
+   * zero I am working from".
+   */
+  const origin = workOrigins(settings).find((system) => system.name === wcs) || null;
 
   const frame = union([
     (layers.path || layers.programArea) && program,
     layers.machineArea && envelope,
     layers.machineAxes && { min: MACHINE_ZERO, max: MACHINE_ZERO },
-    ...(layers.wcsAxes ? origins.map(pointBox) : []),
+    layers.wcsAxes && origin && pointBox(origin),
   ].filter(Boolean)) || UNIT;
 
   return {
@@ -112,7 +126,7 @@ export const composeScene = ({ settings, wcs, offset, toolpath, layers }) => {
     program,
     offset,
     toolpath,
-    origins,
+    origin,
     frame,
   };
 };
