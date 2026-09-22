@@ -9,15 +9,10 @@
  * laptop and closer to 10 on a quiet Linux box, and a server on an overloaded
  * host can do far worse.
  *
- * So it is measured rather than assumed, once, at startup. A measured lead is
- * both safer than a guess and more honest: the number can be shown to whoever
- * is standing at the machine, along with what it costs them in stopping
- * distance.
- *
- * Measuring once and keeping the answer is deliberate. A lead that drifted
- * while the machine was moving would make the one thing an operator has to be
- * able to predict — how far it goes after they let go — different every time
- * they let go.
+ * So it is measured rather than assumed — and measured from the jog clock's
+ * own ticks, because a throwaway timer run at startup measures an idle
+ * process during the least typical seconds of its life. See
+ * `lib/host-timing` for what is done with these numbers.
  */
 
 /**
@@ -56,47 +51,4 @@ export const summarise = (intervals) => {
   };
 };
 
-/**
- * Measure how late this host's timers run, by running one.
- *
- * Nothing about the machine or the serial port is involved: this is the event
- * loop measuring itself. `every` is the interval asked for, in milliseconds —
- * the same one the jog clock will ask for, because timer behaviour is not
- * linear in the interval and measuring at 10ms says nothing useful about 50.
- */
-export const measureTicks = ({ every, samples, setInterval: schedule = setInterval, clearInterval: cancel = clearInterval, now = Date.now } = {}) =>
-  new Promise((resolve) => {
-    const intervals = [];
-    let last = now();
-    let timer = null;
-    let finished = false;
-
-    // A timer that fires before `schedule` has returned has nothing to
-    // cancel yet, so cancelling is done once the handle exists. Real timers
-    // never do this; injected ones in tests do, and the alternative is a
-    // reference to a variable that is not bound yet.
-    const stop = () => {
-      if (timer !== null) {
-        cancel(timer);
-        timer = null;
-      }
-    };
-
-    timer = schedule(() => {
-      const at = now();
-      intervals.push((at - last) / 1000);
-      last = at;
-
-      if (intervals.length >= samples) {
-        finished = true;
-        stop();
-        resolve(summarise(intervals));
-      }
-    }, every);
-
-    if (finished) {
-      stop();
-    }
-  });
-
-export default measureTicks;
+export default summarise;

@@ -1,76 +1,54 @@
 import logger from './logger';
-import { measureTicks, summarise } from './tick-jitter';
-import { SEGMENT_SECONDS, leadSecondsFor } from '../controllers/Grbl/jog';
+import { summarise } from './tick-jitter';
+import { LEAD_START_SECONDS, leadSecondsFor } from '../controllers/Grbl/jog';
 
 const log = logger('service:host-timing');
 
 /**
- * What this computer is worth as a jog clock, measured once at startup.
+ * What this computer is worth as a jog clock, measured while it jogs.
  *
- * Held for the process rather than per controller: it describes the host, not
- * the machine, and measuring it again for a second serial port would give the
- * same answer while stealing two seconds of a busy event loop.
+ * Continuous jogging is a clock: a segment of travel is handed to the machine
+ * every `dt`, and the planner holds a small lead so a late tick does not
+ * empty it mid-move. How large that lead has to be is not a property of the
+ * machine or of Grbl — it is a property of **the computer the server happens
+ * to be running on**, and the two installations this has to serve are not
+ * alike. Everything on one laptop, where the panel's 3D view shares an event
+ * loop with the jog clock, or a mini PC running nothing but this server with
+ * the panel on somebody else's computer.
  *
- * Before the measurement finishes — and if it never runs, as in tests — the
- * floor stands. An unmeasured host is not known to be slow, and the floor is
- * the value that was safe on every machine this has run on.
+ * **Measured, and measured while jogging.** An earlier version timed a
+ * throwaway interval at startup, which was worse than useless: it watched an
+ * idle process during the least typical seconds of its life. On this laptop
+ * it read 16ms one boot and 40ms the next, against the 24ms the same server
+ * turned out to need once it was actually moving a machine. Nobody is going
+ * to restart a server to find out what their hardware is worth, so the only
+ * honest sample is the jog clock itself — it ticks in exactly the conditions
+ * that matter, and every tick is one measurement.
  *
- * **The startup figure is a starting point, not the answer.** It measures an
- * idle process, and nobody jogs an idle process. The two installations this
- * has to serve are not alike: everything on one laptop, where the panel's 3D
- * view shares an event loop with the jog clock, or a mini PC running nothing
- * but this server with the panel on somebody else's computer. Nobody is
- * going to restart a server to find out which they have.
+ * Until enough of those exist, `LEAD_START_SECONDS` stands: one stated,
+ * conservative value rather than a number dressed up as a measurement.
  *
- * So the real measurement comes from the jog clock itself — it ticks in
- * exactly the conditions that matter, and every tick is a sample.
- * `observeJogTicks` feeds them back, and once there are enough they replace
- * the startup guess.
- *
- * What never moves is the lead *within* a jog: it is read when a key goes
+ * What never moves is the lead *within* a jog. It is read when a key goes
  * down and holds until the key comes up, so the distance travelled after a
  * release is the same every release. The figure changes only between jogs,
  * and when it changes the panel is told — so what is on screen is what is in
  * force.
  */
-let measured = null;
-
-/** Ticks per series — a second of watching, at 10ms a tick. */
-const SAMPLES = 100;
-
-/**
- * How many times to measure.
- *
- * **One measurement is a lottery, not a calibration.** Run on this laptop it
- * came back 18ms, then 20ms, then 25ms — the spread is whatever else the
- * computer was doing during that one second, not the computer. Taking the
- * middle of three series throws away both the run that caught a busy moment
- * and the run that caught an idle one, which is what makes the figure the
- * same from one restart to the next — and an operator who is told a stopping
- * distance should get the same one tomorrow.
- *
- * A host that is *always* busy still gets caught, by the warning the jog
- * clock logs when a tick overruns the lead it was given.
- */
-const SERIES = 3;
-
-/**
- * How long to let the process settle before measuring it.
- *
- * A server's first seconds are its least typical: modules loading, the web
- * app being assembled, controllers starting. Measured there, this host came
- * out at 18ms one run and 20ms the next — the variation is the startup, not
- * the computer. Waiting costs nothing, because the conservative floor is in
- * use until the measurement lands and nobody is jogging three seconds into a
- * server's life.
- */
-const SETTLE_MS = 3000;
 
 /** Ticks seen while actually jogging, newest last. */
 let observed = [];
 
-/** Enough real ticks to be worth more than the startup measurement. */
-const ENOUGH_OBSERVED = 200;
+/** Whether the first real measurement has been announced. */
+let announced = false;
+
+/**
+ * Enough real ticks to stop using the starting value.
+ *
+ * A hundred is one decent hold — a couple of seconds of moving — and it is
+ * also the fewest that makes a 99th percentile mean anything, since below
+ * that it degenerates into the maximum.
+ */
+const ENOUGH_OBSERVED = 100;
 
 /**
  * How many to keep.
@@ -81,20 +59,14 @@ const ENOUGH_OBSERVED = 200;
  */
 const KEEP_OBSERVED = 2000;
 
-const current = () => {
-  if (observed.length >= ENOUGH_OBSERVED) {
-    return { ...summarise(observed), from: 'jogging' };
-  }
-
-  return measured ? { ...measured, from: 'startup' } : null;
-};
+const measured = () => (observed.length >= ENOUGH_OBSERVED ? summarise(observed) : null);
 
 export const hostTiming = () => {
-  const tick = current();
+  const tick = measured();
 
   return {
     tick,
-    leadSeconds: leadSecondsFor(tick?.worst),
+    leadSeconds: tick ? leadSecondsFor(tick.worst) : LEAD_START_SECONDS,
   };
 };
 
@@ -113,47 +85,24 @@ export const observeJogTicks = (intervals) => {
   }
 
   observed = [...observed, ...usable].slice(-KEEP_OBSERVED);
-};
 
-/**
- * Measure the host, and say what it means in plain terms.
- *
- * The log line is the point, not a side effect. Whoever installs this on a
- * mini PC in a workshop gets one line at startup telling them what their
- * hardware bought them, in the units they care about — milliseconds of delay
- * after letting go of a key.
- */
-export const calibrateHost = async () => {
-  await new Promise((resolve) => { setTimeout(resolve, SETTLE_MS); });
+  const tick = measured();
 
-  const runs = [];
-  for (let i = 0; i < SERIES; i += 1) {
-    // Sequential on purpose: three timers at once would measure each other.
-    // eslint-disable-next-line no-await-in-loop
-    runs.push(await measureTicks({ every: SEGMENT_SECONDS * 1000, samples: SAMPLES }));
+  // Said once, when the guess is replaced by a measurement. Whoever installed
+  // this on a mini PC in a workshop gets one line telling them what their
+  // hardware is worth, in the units they care about.
+  if (tick && !announced) {
+    announced = true;
+    const { leadSeconds } = hostTiming();
+    log.info(
+      'Jog clock measured on this host: ticks arrived ' +
+      `${Math.round(tick.median * 1000)}ms apart typically, ` +
+      `${Math.round(tick.worst * 1000)}ms at the 99th percentile. ` +
+      `Jog lead ${Math.round(leadSeconds * 1000)}ms, so a jog stops about ` +
+      `${Math.round(leadSeconds * 1000)}ms after the key is released, plus the ` +
+      "machine's own deceleration."
+    );
   }
-
-  const middle = (pick) => [...runs].map(pick).sort((a, b) => a - b)[Math.floor(SERIES / 2)];
-
-  measured = {
-    median: middle((run) => run.median),
-    worst: middle((run) => run.worst),
-    max: Math.max(...runs.map((run) => run.max)),
-    samples: runs.reduce((total, run) => total + run.samples, 0),
-  };
-
-  const { leadSeconds } = hostTiming();
-  log.info(
-    `Jog clock calibrated for this host: timer asked for ${SEGMENT_SECONDS * 1000}ms, ` +
-    `delivered ${Math.round(measured.median * 1000)}ms typical, ` +
-    `${Math.round(measured.worst * 1000)}ms at the 99th percentile ` +
-    `(worst seen ${Math.round(measured.max * 1000)}ms). ` +
-    `Jog lead ${Math.round(leadSeconds * 1000)}ms, so a jog stops about ` +
-    `${Math.round(leadSeconds * 1000)}ms after the key is released, plus the ` +
-    'machine\'s own deceleration.'
-  );
-
-  return hostTiming();
 };
 
 export default hostTiming;
