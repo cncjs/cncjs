@@ -73,10 +73,9 @@ export const useJogKeys = ({ step, stream, enabled, onHelp }) => {
       if (!want) {
         if (jog.current.running()) {
           jog.current.halt();
-        } else if (now) {
-          // Came up before it became a hold: that was a tap.
-          nudge.current(now.dir, now.coarse);
         }
+        // Nothing to send for a tap: the step went out when the key went
+        // down, which is the whole point.
         if (now?.timer) {
           clearTimeout(now.timer);
         }
@@ -94,10 +93,26 @@ export const useJogKeys = ({ step, stream, enabled, onHelp }) => {
       }
 
       if (now) {
-        // Still inside the tap window: change what it is aiming at.
+        // Still inside the tap window: change what the hold will aim at. The
+        // step itself has already gone, and a second one for a key added a
+        // moment later would be a second move nobody asked for.
         now.dir = want;
         return;
       }
+
+      /*
+       * **Moves on the way down, not on the way up.**
+       *
+       * Telling a tap from a hold takes time — a quarter of a second — and
+       * waiting that long before doing anything made every press feel like it
+       * arrived late, which it did: measured at the panel, the first command
+       * left 261ms after the key went down. Sending the step immediately and
+       * letting the hold take over afterwards costs nothing, because a step
+       * is over long before the hold begins: 1mm at 1500 mm/min takes 40ms
+       * against the 250ms wait, so the machine is standing still again by the
+       * time the continuous jog starts.
+       */
+      nudge.current(want, coarse);
 
       const record = { dir: want, coarse, timer: null };
       record.timer = setTimeout(() => {
