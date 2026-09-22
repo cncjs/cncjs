@@ -37,8 +37,7 @@
   "units": {
     "mm": "mm",
     "mmPerMin": "mm/min",
-    "rpm": "rpm",
-    "rpmLong": "rpm"
+    "rpm": "rpm"
   },
 
   "axis": {
@@ -116,7 +115,7 @@
     "remaining": "{{minutes}} min left",
     "file": "file",
     "feed": "feed",
-    "spindle": "rpm",
+    "spindle": "spindle",
     "start": "Start job",
     "pause": "Pause"
   },
@@ -125,7 +124,7 @@
     "number": "T{{number}}",
     "title": "Tool and spindle",
     "tool": "tool",
-    "spindle": "rpm",
+    "spindle": "spindle",
     "override": "Override",
     "feedOverride": "feed",
     "spindleOverride": "spindle"

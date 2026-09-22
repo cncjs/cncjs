@@ -43,7 +43,7 @@ const JogWide = ({ machine }) => {
       <span>{t('footer.state')}{SEPARATOR}<span className="text-ink">{machine.status.word}</span></span>
       <span>{t('footer.wcs')}{SEPARATOR}<span className="text-ink">{machine.modal.wcs || NO_READING}</span></span>
       <span>{t('footer.feed')}{SEPARATOR}<span className="text-ink">{reading(machine.tool.feedrate)}</span> {t('units.mmPerMin')}</span>
-      <span>{t('footer.spindle')}{SEPARATOR}<span className="text-ink">{reading(machine.tool.spindle)}</span> {t('units.rpmLong')}</span>
+      <span>{t('footer.spindle')}{SEPARATOR}<span className="text-ink">{reading(machine.tool.spindle)}</span> {t('units.rpm')}</span>
     </span>
   ), [
     Boolean(machine.job),

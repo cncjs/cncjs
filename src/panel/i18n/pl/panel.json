@@ -37,8 +37,7 @@
   "units": {
     "mm": "mm",
     "mmPerMin": "mm/min",
-    "rpm": "rpm",
-    "rpmLong": "obr/min"
+    "rpm": "obr/min"
   },
 
   "axis": {
