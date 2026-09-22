@@ -63,7 +63,7 @@ const layerItems = (sections, layers, onLayers) => sections.flatMap(
 const PathStage = ({
   scene, tool, view, onView, revision, layers, sections, onLayers, notes, memory,
   onFit, fit, free, onFree, target, onPick, onCancel, onGoToPoint, canGoToPoint, goNote,
-  clickDrives, onClickDrives, picking, hover, onHover,
+  clickDrives, onClickDrives, picking, hover, onHover, offset,
 }) => (
   <>
     {/* **Hazard tape round the whole drawing while a click will move the
@@ -108,6 +108,7 @@ const PathStage = ({
       <StageReadout
         hover={hover}
         point={target}
+        offset={offset}
         onGo={onGoToPoint}
         canGo={canGoToPoint}
         note={goNote}

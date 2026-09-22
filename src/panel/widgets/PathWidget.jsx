@@ -286,6 +286,10 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
         onCancel={undo}
         hover={hover}
         onHover={setHover}
+        /* The readout speaks the operator's coordinate system, not the
+         * scene's. Null while the machine has not said where its work zero
+         * is, which the readout shows rather than hides. */
+        offset={live}
         clickDrives={clickDrives}
         onClickDrives={() => setClickDrives((on) => !on)}
         onGoToPoint={() => goToPoint(machine.settings, point)}
