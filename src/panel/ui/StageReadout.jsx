@@ -20,6 +20,19 @@ import Icon from './Icon';
  * would be two words sitting permanently on the drawing to say what one
  * glance already says.
  *
+ * **In work coordinates.** The scene is built in machine coordinates — that
+ * is where the envelope and the limits live, and where a travel is sent —
+ * but nobody sets a job up in them. The program is written against the work
+ * zero, the DRO leads with the work position, and a corner of the stock has
+ * a number in that system and not in the other one. Showing the machine's own
+ * figures here would be asking the operator to do the subtraction.
+ *
+ * The system is not named here. It is named on the position card, and a tag
+ * sitting permanently on the drawing to repeat it is the sort of label this
+ * readout otherwise avoids. Until the machine reports a work offset the
+ * figures are the machine's own — which is the first few moments of a
+ * connection, and settles as soon as it answers.
+ *
  * **Two buttons, and the left one is a mode.** Normally a click picks the
  * point and the right button travels to it, which is two steps because a
  * click is the easiest accident to have next to a machine — and it is the
@@ -41,6 +54,18 @@ import Icon from './Icon';
  */
 const figure = (value) => value.toFixed(3);
 
+/** Machine coordinates as the operator's own, when the offset is known. */
+const inWork = (point, offset) => {
+  if (!point) {
+    return null;
+  }
+  if (!offset) {
+    return point;
+  }
+
+  return { x: point.x - offset.x, y: point.y - offset.y };
+};
+
 const Row = ({ point, className }) => (
   <span className={`flex items-baseline gap-2 font-num text-note leading-none ${className}`}>
     <span className="w-coord shrink-0 whitespace-nowrap">X {point ? figure(point.x) : '–'}</span>
@@ -48,14 +73,16 @@ const Row = ({ point, className }) => (
   </span>
 );
 
-const StageReadout = ({ hover, point, onGo, canGo, note, clickDrives, onClickDrives }) => (
+const StageReadout = ({
+  hover, point, onGo, canGo, note, clickDrives, onClickDrives, offset,
+}) => (
   <div className="absolute bottom-2 left-2 flex items-center gap-2 rounded-ctl bg-wash py-1 pl-2 pr-1">
     <span className="flex flex-col gap-1">
-      <Row point={hover} className="text-mut" />
+      <Row point={inWork(hover, offset)} className="text-mut" />
       {/* The weight is constant and only the colour changes: switching to
         * semibold when a point appeared altered the line's metrics and nudged
         * the buttons down by six pixels. */}
-      <Row point={point} className={`font-semibold ${point ? 'text-ink' : 'text-mut'}`} />
+      <Row point={inWork(point, offset)} className={`font-semibold ${point ? 'text-ink' : 'text-mut'}`} />
     </span>
     <button
       type="button"

@@ -166,31 +166,6 @@ const JogWidget = ({ machine, className = '' }) => {
 
   return (
     <Card className={`group relative min-h-0 overflow-hidden ${className}`} bodyClassName="gap-0">
-      {/* A shortcut nobody knows about is a shortcut that does not exist — but
-        * it does not have to be on screen the whole time to be findable. It
-        * rests hidden and comes up when the pointer is anywhere on this card,
-        * which is the moment somebody is looking at the keys anyway.
-        *
-        * **Positioned against the card, not the column below it.** That column
-        * scrolls, and anything hung outside a scrolling box is clipped by it —
-        * which is how this button disappeared entirely rather than moving.
-        *
-        * Hidden by opacity rather than by unmounting, so it does not shift
-        * anything when it appears, and `pointer-events-none` while it is
-        * invisible so an unseen button never eats a press meant for Z+. The
-        * keyboard gets it back on focus: a control reachable by Tab must be
-        * visible once it is reached. Not on a phone: no pointer to hover with
-        * and no keyboard to explain. */}
-      {phone ? null : (
-        <button
-          type="button"
-          onClick={() => setHelping(true)}
-          aria-label="Skróty klawiszowe"
-          className="pointer-events-none absolute right-0.5 top-0.5 z-10 size-6 rounded-full border border-line bg-field text-cap font-semibold leading-none text-mut opacity-0 transition-opacity hover:border-acc hover:text-acc focus-visible:pointer-events-auto focus-visible:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100"
-        >
-          ?
-        </button>
-      )}
       {/* At the panel: the keys at their drawn size, both groups open below
         * them, nothing folded away. */}
       {phone ? null : (
@@ -205,6 +180,26 @@ const JogWidget = ({ machine, className = '' }) => {
             <AxisControls {...xy} />
             <AxisControls {...z} />
           </div>
+
+          {/* **At the foot of the section, and always there.**
+            *
+            * It used to hide in the top corner and appear on hover, on the
+            * reasoning that a shortcut nobody knows about does not exist but
+            * need not sit on screen to be findable. Two things were wrong
+            * with that. Reaching it meant moving the pointer across the keys
+            * to a target that only appeared once you were already over them,
+            * and hover is not a thing a touchscreen has at all.
+            *
+            * Below the settings rather than above the keys: it is the least
+            * urgent control on the card, and the foot is where a reference
+            * belongs — out of the way of the things that move a machine. */}
+          <button
+            type="button"
+            onClick={() => setHelping(true)}
+            className="shrink-0 rounded-ctl border border-line py-1 text-cap uppercase text-mut transition-colors hover:border-acc hover:text-acc"
+          >
+            Skróty klawiszowe
+          </button>
         </div>
       )}
 
