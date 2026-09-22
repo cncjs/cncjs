@@ -29,6 +29,15 @@ const TOKENS = {
   edge: '--mut',
   // Work coordinate systems — the thing the operator is actually setting.
   work: '--acc',
+  /*
+   * The pointer preview when it is over the program rather than beside it.
+   *
+   * Green because the question it answers is a yes: in an isometric view a
+   * mark over the part and a mark behind it project to nearly the same place,
+   * and no amount of depth testing on hairlines settles it. A colour change
+   * is not a hint about depth — it is the answer, read without measuring.
+   */
+  over: '--grn',
   // The tool. The one mark on screen that has to be found without looking.
   tool: '--amb',
   /*

@@ -3,6 +3,7 @@ import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import fitCameraToBounds from 'lib/toolpath/camera-fit';
+import { fitToBounds } from './fit';
 import { recallCamera, rememberCamera } from './cameraMemory';
 import { UP, VIEWS } from './views';
 
@@ -13,19 +14,30 @@ import { UP, VIEWS } from './views';
  * come back to — press GÓRA and the camera is looking straight down from a
  * known place, whatever was done to it since. Dragging from there is how you
  * answer the question the named views do not, and pressing the button again
- * undoes it. That is why the buttons stay lit rather than toggling off when
- * the camera moves: they are destinations, not modes.
+ * undoes it.
+ *
+ * **A button stays lit only while it is still true.** The first version kept
+ * it lit through everything, on the reasoning that these are destinations
+ * rather than modes; the trouble is that a lit GÓRA after the view has been
+ * dragged away claims the camera is looking straight down when it is not.
+ * The destination is still there — the button still works, and pressing it
+ * goes back — but it stops describing where the camera is the moment somebody
+ * moves it.
  *
  * `three`'s own `OrbitControls` rather than a wrapper. It is a class that
  * takes a camera and a DOM element, which is all that is wanted, and the
  * alternative is a second dependency to get the same object with JSX round
  * it.
  */
-const Controls = ({ view, bounds, revision, memory }) => {
+const Controls = ({ view, bounds, revision, memory, object, fit, onFree }) => {
   const camera = useThree((state) => state.camera);
   const domElement = useThree((state) => state.gl.domElement);
   const invalidate = useThree((state) => state.invalidate);
   const controls = useRef(null);
+  // Held in a ref so that a new callback on every render does not tear down
+  // and rebuild the orbit controls — which would drop the camera pose with it.
+  const free = useRef(onFree);
+  free.current = onFree;
 
   // What the remembered pose was framed against, and whether this mount has
   // already had its first go.
@@ -34,6 +46,9 @@ const Controls = ({ view, bounds, revision, memory }) => {
   // Which press the camera was last pointed by, so a change that is not a
   // press can be told from one that is.
   const pointed = useRef(revision);
+  // The same trick for the fit button, which is an action and not a
+  // destination: it has no state to compare against, only a count of asks.
+  const fitted = useRef(fit);
 
   useEffect(() => {
     /*
@@ -102,9 +117,46 @@ const Controls = ({ view, bounds, revision, memory }) => {
     const remember = () => rememberCamera(memory, signature.current, camera, orbit.target);
     orbit.addEventListener('change', remember);
 
+    /*
+     * **Telling the operator's move apart from ours.**
+     *
+     * `change` fires for both — our own `orbit.update()` after a view button
+     * emits one — so it cannot answer "has the camera been taken off the
+     * named view". `start` and `end` bracket a real interaction: a drag, a
+     * wheel. Comparing the pose across that pair is what separates a drag
+     * that moved something from a click that merely landed on the canvas,
+     * which would otherwise unlight the view button for a press that did
+     * nothing.
+     */
+    let poseAtStart = null;
+    const begin = () => {
+      poseAtStart = {
+        position: camera.position.toArray(),
+        zoom: camera.zoom,
+        target: orbit.target.toArray(),
+      };
+    };
+    const finish = () => {
+      const was = poseAtStart;
+      poseAtStart = null;
+      if (!was) {
+        return;
+      }
+      const moved = camera.zoom !== was.zoom ||
+        camera.position.toArray().some((n, i) => n !== was.position[i]) ||
+        orbit.target.toArray().some((n, i) => n !== was.target[i]);
+      if (moved && free.current) {
+        free.current();
+      }
+    };
+    orbit.addEventListener('start', begin);
+    orbit.addEventListener('end', finish);
+
     return () => {
       orbit.removeEventListener('change', invalidate);
       orbit.removeEventListener('change', remember);
+      orbit.removeEventListener('start', begin);
+      orbit.removeEventListener('end', finish);
       orbit.dispose();
       controls.current = null;
     };
@@ -196,6 +248,34 @@ const Controls = ({ view, bounds, revision, memory }) => {
     rememberCamera(memory, signature.current, camera, orbit.target);
     invalidate();
   }, [camera, view, bounds, revision, invalidate, memory]);
+
+  /*
+   * **Fill the frame with the object, and do not turn the camera.**
+   *
+   * A separate effect from the one above because it answers a different
+   * question and must not be entangled with it: the view buttons say where to
+   * stand, this says what to look at. Running them together would mean a fit
+   * that snapped back to the named view's direction, which is the one thing
+   * this is not allowed to do.
+   *
+   * Guarded on the count rather than on the object. `object` changes whenever
+   * a new program is loaded or the work zero moves, and neither is somebody
+   * asking to be re-framed — the same rule the view effect follows, for the
+   * same reason.
+   */
+  useEffect(() => {
+    const orbit = controls.current;
+    if (!orbit || !object || fit === fitted.current) {
+      return;
+    }
+    fitted.current = fit;
+
+    const center = fitToBounds(camera, orbit.target, object);
+    orbit.target.copy(center);
+    orbit.update();
+    rememberCamera(memory, signature.current, camera, orbit.target);
+    invalidate();
+  }, [camera, object, fit, invalidate, memory]);
 
   return null;
 };

@@ -86,9 +86,49 @@
   --jpad: calc(4 * var(--jbtn) + 3 * var(--jgap));
   --jcard: calc(4 * var(--jbtn) + 40px + 2 * var(--pad));
 
+  /*
+   * Hazard tape, for the one state where clicking the drawing moves the
+   * machine.
+   *
+   * Yellow and black because that is what the stripe means on a workshop
+   * floor — it is not decoration and not a theme colour, so it does not
+   * follow the theme the way `--amb` does. The width is the tape, not a
+   * border: thin enough to keep the drawing, wide enough to be unmistakable
+   * from across a room.
+   */
+  --hazard: #e6b800;
+  --hazard-dark: #1b1b1b;
+  --hazard-w: 10px;
+
+  /*
+   * How wide one coordinate reading is held, in characters.
+   *
+   * `X -1000.000` is eleven characters and `ch` is the width of a `0`, which
+   * on a monospace face — and the numeric face is monospace in every variant
+   * — is every character. Twelve, so the widest reading has a character of
+   * air rather than sitting flush against the next column.
+   *
+   * It has to be fixed because the reading sits beside buttons: letting it
+   * size to its content moved them every time a digit came or went, so the
+   * pointer readout — which changes on every mouse move — walked the toggle
+   * out from under the cursor reaching for it.
+   */
+  --coord: 12ch;
+
   /* Corners: 4 on a control, 6 on a card. */
   --r-ctl: 4px;
   --r-card: 6px;
+
+  /*
+   * The outside corner of a corner key, which is what turns the jog cross
+   * into a compass rather than nine identical tiles.
+   *
+   * A third of the key's height rather than a half. At a half the curve ran
+   * the whole edge and the key stopped reading as a key — a rounded corner
+   * says "outside of the cross", a half-round says "pill". Derived either
+   * way, so it keeps following the key when a target changes the size.
+   */
+  --r-jcorner: calc(var(--jbtnh) / 3);
 
   /*
    * Machine numbers get their own face. It is switchable because the mockup

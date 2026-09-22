@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import Card from '../ui/Card';
 import PathStage from '../ui/PathStage';
+import { cancelTravel, canGoToPoint, goToPoint } from '../machine/goto';
 import { machineZeroIsGuess, softLimitsEnabled, workOffset } from '../machine/envelope';
 import { readToolpath } from '../machine/toolpath';
 import { composeScene, toolPoint } from '../scene/compose';
@@ -57,10 +58,63 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
    */
   const [revision, setRevision] = useState(0);
 
+  /*
+   * Whether the camera has been taken off the named view by hand.
+   *
+   * Only the lighting of the view buttons depends on it: the view itself is
+   * still where the next press will go. Pressing any view button clears it,
+   * because that press is what makes the button true again.
+   */
+  const [free, setFree] = useState(false);
+
+  /*
+   * The point picked off the drawing, in machine coordinates.
+   *
+   * **Set by a click, not by hovering.** The button that travels there is
+   * outside the canvas, so a target that followed the mouse could never be
+   * acted on — walking over to press it would drag the target along. The
+   * scene keeps the hovering preview to itself; this is the one everything
+   * else is about, and it only changes when somebody puts it somewhere.
+   */
+  const [point, setPoint] = useState(null);
+
+  /*
+   * Whether a click travels, or only picks.
+   *
+   * Off by default, and that is the safety argument rather than a preference:
+   * a click is the easiest accident to have beside a machine, and it is the
+   * same button the view is turned with — a drag that falls under the slop
+   * threshold would become a move. Two steps make the move deliberate. On,
+   * it is one step, which is what a run of moves actually wants, and the lit
+   * button and the crosshair are what keep it from being a trap.
+   */
+  const [clickDrives, setClickDrives] = useState(false);
+
+  /*
+   * Where the pointer is right now, as opposed to what was picked.
+   *
+   * It changes on every mouse move, which is why it was kept inside the scene
+   * at first — but the readout has to show it, and a readout frozen on the
+   * picked point leaves nowhere to read the cursor. The scene renders on
+   * demand, so a React render here does not repaint WebGL on its own.
+   */
+  const [hover, setHover] = useState(null);
+
   const chooseView = (next) => {
     setView(next);
+    setFree(false);
     setRevision((count) => count + 1);
   };
+
+  /*
+   * The same counting trick as the views, for the same reason: pressing
+   * "fill the frame" twice has to work twice, and there is no state that
+   * differs between the two presses. Separate from `revision` because the
+   * two mean different things to the camera — one says where to stand, the
+   * other says what to fill the frame with — and sharing a counter would
+   * make each press do both.
+   */
+  const [fit, setFit] = useState(0);
 
   // Parsing a program is the one expensive thing on this screen and the
   // program changes about once an hour. The readings underneath it change
@@ -149,6 +203,53 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
     },
   ];
 
+  /*
+   * Why the travel button is off, when it is.
+   *
+   * Three different reasons, and telling them apart matters: one is solved by
+   * pointing somewhere, one by plugging a machine in, and one by pointing
+   * somewhere the machine can actually reach. A single greyed-out button with
+   * no explanation is the same shape for all three.
+   */
+  const canGo = Boolean(machine.connected && point && canGoToPoint(machine.settings, point));
+  const goNote = (() => {
+    if (!machine.connected) {
+      return 'Brak połączenia z maszyną';
+    }
+    if (!point) {
+      return 'Kliknij na rysunku, żeby wskazać punkt';
+    }
+    if (!canGo) {
+      return 'Punkt leży poza zakresem ruchu maszyny';
+    }
+    return 'Podnosi Z na górę zakresu, potem jedzie nad wskazany punkt';
+  })();
+
+  /*
+   * A click, and what it does. The guard is the same one the travel button
+   * is disabled by — the mode changes how a move is asked for, never whether
+   * it is allowed.
+   */
+  const pick = (picked) => {
+    setPoint(picked);
+    if (clickDrives && picked && machine.connected && canGoToPoint(machine.settings, picked)) {
+      goToPoint(machine.settings, picked);
+    }
+  };
+
+  /*
+   * The right button takes back what the left one did — the point that was
+   * chosen, and the travel that may already be on its way to it. Both, always:
+   * the two are one intent, and having to remember which button undoes which
+   * half is not something to work out beside a machine.
+   */
+  const undo = () => {
+    setPoint(null);
+    if (machine.connected) {
+      cancelTravel();
+    }
+  };
+
   const notes = [
     machineZeroIsGuess(machine.settings) &&
       'Bazowanie jest wyłączone ($22=0). Zero maszynowe leży tam, gdzie ' +
@@ -175,6 +276,21 @@ const PathWidget = ({ machine, label = 'Ścieżka', preview = false, className =
         layers={layers}
         sections={sections}
         onLayers={setLayers}
+        onFit={() => setFit((count) => count + 1)}
+        fit={fit}
+        free={free}
+        onFree={() => setFree(true)}
+        picking={preview}
+        target={point}
+        onPick={pick}
+        onCancel={undo}
+        hover={hover}
+        onHover={setHover}
+        clickDrives={clickDrives}
+        onClickDrives={() => setClickDrives((on) => !on)}
+        onGoToPoint={() => goToPoint(machine.settings, point)}
+        canGoToPoint={canGo}
+        goNote={goNote}
         /*
          * The warnings belong to the screen that is about the toolpath. Beside
          * the jog keys there is no room for two sentences about `$22`, and the

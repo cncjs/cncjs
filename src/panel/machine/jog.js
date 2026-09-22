@@ -1,4 +1,5 @@
 import controller from './controller';
+import { machineEnvelope } from './envelope';
 
 const GRBL = 'Grbl';
 const SMOOTHIE = 'Smoothie';
@@ -9,7 +10,28 @@ export const Z_STEPS = [0.1, 1, 5];
 export const FEEDRATES = [500, 1500, 3000];
 
 /**
- * The lines that move one axis by one step.
+ * A jog is a direction, not an axis.
+ *
+ * The four corners of the cross move two axes at once, so everything below
+ * takes a map of axis to number rather than an axis and a distance. A single
+ * key is `{ x: 10 }`; a corner is `{ x: 10, y: 10 }`. One shape means the
+ * corners are not a second kind of control with their own rules — they hold,
+ * they cancel, and they obey the step and the feed rate exactly as the sides
+ * do.
+ *
+ * Written out in X, Y, Z order so the line is the same whichever order the
+ * caller happened to build the map in, and an axis asking for nothing is left
+ * off it entirely.
+ */
+const AXIS_ORDER = ['x', 'y', 'z'];
+
+const words = (moves) => AXIS_ORDER
+  .filter((axis) => Number.isFinite(moves[axis]) && moves[axis] !== 0)
+  .map((axis) => `${axis.toUpperCase()}${moves[axis]}`)
+  .join(' ');
+
+/**
+ * The lines that move the machine one step in some direction.
  *
  * Returned rather than sent, so the decision can be tested without a machine
  * and without mocking time. Sending is `jog()` below and is three lines long.
@@ -32,8 +54,8 @@ export const FEEDRATES = [500, 1500, 3000];
  * and TinyG have their own jogging and neither is implemented here, which is
  * recorded in the panel's README rather than guessed at.
  */
-export const jogLines = ({ type, axis, distance, feedrate }) => {
-  const word = `${axis.toUpperCase()}${distance}`;
+export const jogLines = ({ type, moves, feedrate }) => {
+  const word = words(moves);
 
   if (type === GRBL || type === SMOOTHIE) {
     return [`$J=G91 G21 ${word} F${feedrate}`];
@@ -42,11 +64,64 @@ export const jogLines = ({ type, axis, distance, feedrate }) => {
   return ['G91', `G1 ${word} F${feedrate}`, 'G90'];
 };
 
-/** Move one axis by one step. */
-export const jog = (params) => {
-  jogLines(params).forEach((line) => {
+/**
+ * How far an axis can still go in one direction before it runs out.
+ *
+ * **This is what a held key has to ask, and asking the wrong question broke
+ * it.** `jogTravel` answers "how long is this axis", which as a relative move
+ * from wherever the tool happens to be overshoots the end of the table almost
+ * every time. With `$20=1` the firmware refuses the line outright — it does
+ * not clip it — so holding a key did nothing at all, silently. With soft
+ * limits off the same line runs into a limit switch instead.
+ *
+ * Null when the machine has not reported its travel, in which case there is
+ * no boundary to measure against and the bounded fallback stands.
+ */
+export const jogRoom = (axis, sign, settings, position) => {
+  const envelope = machineEnvelope(settings);
+  const at = Number.parseFloat(position?.[axis]);
+
+  if (!envelope || !Number.isFinite(at)) {
+    return null;
+  }
+
+  return sign > 0 ? envelope.max[axis] - at : at - envelope.min[axis];
+};
+
+/**
+ * Move by one step, never past the end of the travel.
+ *
+ * **A tap has the same problem a held key had, and it was easier to miss.**
+ * A relative step off the end of the axis is refused outright by a firmware
+ * with soft limits on — not clipped — so at the edge of the table the key did
+ * nothing at all and said nothing about why. Held keys were bounded first;
+ * this is the same rule for the other half of the control, and without it the
+ * pad reads as "sometimes it works".
+ *
+ * The step is shortened to what is left rather than refused, so the tool ends
+ * up exactly at the limit instead of a millimetre short of it. Nothing is
+ * sent once there is nothing left to give.
+ */
+export const jog = ({ type, moves, feedrate, settings, position }) => {
+  const bounded = {};
+
+  for (const axis of Object.keys(moves)) {
+    const want = moves[axis];
+    const room = jogRoom(axis, Math.sign(want), settings, position);
+    const allowed = room === null ? Math.abs(want) : Math.min(Math.abs(want), Math.max(0, room));
+    if (allowed > 0) {
+      bounded[axis] = Math.sign(want) * allowed;
+    }
+  }
+
+  if (!Object.keys(bounded).length) {
+    return false;
+  }
+
+  jogLines({ type, moves: bounded, feedrate }).forEach((line) => {
     controller.command('gcode', line);
   });
+  return true;
 };
 
 /**
@@ -92,20 +167,35 @@ export const jogTravel = (axis, settings) => {
  */
 export const canJogContinuously = (type) => type === GRBL;
 
-/** Start moving and keep moving, until `jogStop`. */
-export const jogStart = ({ type, axis, sign, feedrate, settings }) => {
-  if (!canJogContinuously(type)) {
-    return false;
-  }
-
-  const distance = sign * jogTravel(axis, settings);
-  controller.command('gcode', `$J=G91 G21 ${axis.toUpperCase()}${distance} F${feedrate}`);
-  return true;
-};
-
 /** Stop a jog that is already running. */
 export const jogStop = (type) => {
   if (type === GRBL) {
     controller.command('jogCancel');
   }
+};
+
+/**
+ * Start jogging, and keep jogging until `jogStop`.
+ *
+ * **The loop lives in the server**, because it is driven by `ok` — the
+ * acknowledgement of each short `$J=` — and only the side holding the serial
+ * port sees those. Grbl's own documentation describes the method; a client
+ * can only guess at the rhythm, and a guess that sends faster than the
+ * machine consumes builds a backlog that a change of direction has to wait
+ * behind. See `src/server/controllers/Grbl/jog.js`.
+ *
+ * Aiming a running jog somewhere else is this same call again: the server
+ * lets the segments in flight finish and sends the next ones the new way, so
+ * turning never needs a cancel.
+ *
+ * Only Grbl. Smoothie takes `$J=` but has no way to call one off, so a held
+ * key there would commit to the whole distance before the finger came up —
+ * that is not a control, it is a trap.
+ */
+export const jogStart = (type, dir, feedrate) => {
+  if (!canJogContinuously(type)) {
+    return false;
+  }
+  controller.command('jogStart', dir, feedrate);
+  return true;
 };

@@ -74,6 +74,18 @@ const GLYPHS = {
     <path d="M4 8.5 4 5 7.5 5M16.5 5 20 5 20 8.5M20 15.5 20 19 16.5 19M7.5 19 4 19 4 15.5" />
   ),
 
+  /*
+   * Fill the frame with the object: four arrows drawn inwards.
+   *
+   * Deliberately not the corner marks of `area`, which say "this far" and sit
+   * still. These point, and pointing is what separates an action from a
+   * layer at sixteen pixels — everything else in this bar describes something
+   * that is on the drawing, and this one does something to it.
+   */
+  fit: (
+    <path d="M3.5 3.5 8 8M8 4.5 8 8 4.5 8M20.5 3.5 16 8M16 4.5 16 8 19.5 8M20.5 20.5 16 16M16 19.5 16 16 19.5 16M3.5 20.5 8 16M8 19.5 8 16 4.5 16" />
+  ),
+
   // The machine's own reach, which is a wall, so it is drawn closed.
   machine: <path d="M4 5.5 20 5.5 20 18.5 4 18.5Z" />,
 
@@ -84,6 +96,64 @@ const GLYPHS = {
       <circle cx="11" cy="15" r="1.6" fill="currentColor" stroke="none" />
     </>
   ),
+
+  /*
+   * Clicking drives the machine: a pointer, and nothing else.
+   *
+   * The button's own lit state is what says whether the mode is on, so the
+   * glyph only has to name what the mode is *about* — the mouse button. Any
+   * arrow or target drawn into it would compete with the travel button
+   * standing right next to it.
+   */
+  cursor: (
+    <path d="M6 3 6 18 10 14.4 12.6 20 15.2 18.9 12.6 13.5 17.6 13.5Z" />
+  ),
+
+  /*
+   * Travel to the point that was picked: the same sight as the mark on the
+   * drawing, with an arrow arriving at it.
+   *
+   * The sight alone was the obvious choice and says the wrong thing — it is
+   * what the *mark* means, so a button wearing it reads as "place a mark"
+   * rather than "go to the one that is placed". The arrow is the verb.
+   */
+  goPoint: (
+    <>
+      <path d="M3 3 9.5 9.5M9.5 5.5 9.5 9.5 5.5 9.5" />
+      <circle cx="15.5" cy="15.5" r="4" />
+      <path d="M15.5 9.5 15.5 11.3M15.5 19.7 15.5 21.5M9.5 15.5 11.3 15.5M19.7 15.5 21.5 15.5" />
+    </>
+  ),
+
+  /*
+   * Going to the work zero: a sight, with the point in the middle.
+   *
+   * The scene's own zero mark was tried here first and failed at this size —
+   * three arms leaving a point read as an arrow pointing **down**, and this
+   * is the one key that lifts Z before it goes anywhere. A sight says "go to
+   * this point" without claiming a direction at all, and it is the only glyph
+   * in the pad built from a circle, so it is never confused with an arrow.
+   */
+  goZero: (
+    <>
+      <circle cx="12" cy="12" r="5.5" />
+      <path d="M12 2.5 12 6M12 18 12 21.5M2.5 12 6 12M18 12 21.5 12" />
+      <circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none" />
+    </>
+  ),
+
+  /*
+   * A corner of the jog cross: one arrow, drawn once and turned.
+   *
+   * Four separate drawings would be four chances for the corners to disagree
+   * about stroke length or head size, and a compass whose arms do not match
+   * reads as four different controls. One glyph rotated by the button is the
+   * same arrow four times by construction.
+   *
+   * Drawn pointing up and to the right, which is X+ Y+ on a bed seen from
+   * above — the corner it sits in when it is not turned at all.
+   */
+  diagonal: <path d="M7 17 16 8M11 8 16 8 16 13" />,
 
   /*
    * The machine's zero: the same arms, **in the corner**.
@@ -103,13 +173,23 @@ const GLYPHS = {
   ),
 };
 
-const Icon = ({ name, className = '' }) => (
+/**
+ * `weight` is the stroke, in `viewBox` units.
+ *
+ * 1.6 suits the menu on the drawing, where the glyphs are 16px and sit alone
+ * on a button. On the jog pad they sit in a row with `X+` and `Y−` set in
+ * semibold, and a glyph lighter than the lettering next to it reads as
+ * disabled rather than as a different kind of key. Drawn at 24px the viewBox
+ * maps one to one, so a weight of 2 is two real pixels — which is what the
+ * stem of those letters measures.
+ */
+const Icon = ({ name, className = '', weight = 1.6 }) => (
   <svg
     viewBox="0 0 24 24"
     className={className}
     fill="none"
     stroke="currentColor"
-    strokeWidth="1.6"
+    strokeWidth={weight}
     strokeLinecap="round"
     strokeLinejoin="round"
     aria-hidden="true"

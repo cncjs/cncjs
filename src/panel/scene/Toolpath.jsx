@@ -1,5 +1,7 @@
 import { useEffect, useMemo } from 'react';
+import * as THREE from 'three';
 import { useThree } from '@react-three/fiber';
+import { closedLoops } from './shadow-shapes';
 import buildSegments, { colorsFromHex } from 'lib/toolpath/toolpath-segments';
 import { Line2 } from 'three/examples/jsm/lines/Line2.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
@@ -37,6 +39,97 @@ const RAPID_WIDTH = 0.6;
 const RAPID_DASH = 2;
 const RAPID_GAP = 2;
 
+/*
+ * The program's own shadow, laid flat on the floor.
+ *
+ * **It is what tells you where the work is, from any angle.** In a parallel
+ * projection height and depth are the same movement on screen, so a path
+ * hanging in space gives the eye nothing to place it against; its outline on
+ * the ground does, because the ground is the one surface everything else is
+ * measured from too.
+ *
+ * Built from the segments that are already parsed rather than from a second
+ * read of the program — parsing is the one expensive thing on this screen.
+ * Flattened by writing the floor into every Z, which costs one pass over the
+ * vertices and no new geometry when the camera moves.
+ *
+ * Plain `lineSegments`, not the fat line the path itself uses: a shadow wants
+ * to be one pixel and unnoticed, and it is drawn once per program.
+ *
+ * **Filled wherever the path closes.** Hairlines alone come out as a scribble
+ * — the eye reads a filled patch as an object lying on the table and a tangle
+ * of lines as noise. So every closed contour gets a face, at about a third
+ * the weight of the outline that bounds it, and anything that never closes
+ * stays a line. See `shadow-shapes.js` for how a loop is recognised.
+ */
+const SHADOW_OPACITY = 0.1;
+const SHADOW_FILL_OPACITY = 0.05;
+
+/**
+ * The faces under the closed parts of the path.
+ *
+ * Built from the cutting moves only: a rapid that happens to return to its
+ * own start encloses nothing — it is the tool travelling, not a shape.
+ *
+ * Each loop is triangulated as a fan about its own centroid. A fan is exact
+ * for a convex outline and close enough for the gently concave ones a
+ * toolpath produces; a real triangulator would be a dependency to shade
+ * something drawn at five percent.
+ */
+const buildFill = (sets, z) => {
+  const loops = closedLoops(sets.cut.positions);
+  if (!loops.length) {
+    return null;
+  }
+
+  const vertices = [];
+
+  for (const loop of loops) {
+    let cx = 0;
+    let cy = 0;
+    for (const [x, y] of loop) {
+      cx += x;
+      cy += y;
+    }
+    cx /= loop.length;
+    cy /= loop.length;
+
+    for (let i = 1; i < loop.length; ++i) {
+      vertices.push(cx, cy, z, loop[i - 1][0], loop[i - 1][1], z, loop[i][0], loop[i][1], z);
+    }
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    'position',
+    new THREE.Float32BufferAttribute(new Float32Array(vertices), 3)
+  );
+  return geometry;
+};
+
+const buildShadow = (sets, z) => {
+  const parts = [sets.cut.positions, sets.rapid.positions].filter((p) => p && p.length);
+  const total = parts.reduce((n, p) => n + p.length, 0);
+  if (!total) {
+    return null;
+  }
+
+  const flat = new Float32Array(total);
+  let at = 0;
+  for (const part of parts) {
+    for (let i = 0; i < part.length; i += 3) {
+      flat[at] = part[i];
+      flat[at + 1] = part[i + 1];
+      flat[at + 2] = z;
+      at += 3;
+    }
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(flat, 3));
+  return geometry;
+};
+
 const buildLine = (set, options) => {
   if (set.vertexIndex.length === 0) {
     return null;
@@ -58,7 +151,7 @@ const buildLine = (set, options) => {
   return line;
 };
 
-const Toolpath = ({ toolpath, colors }) => {
+const Toolpath = ({ toolpath, colors, shadowZ }) => {
   const size = useThree((state) => state.size);
 
   /*
@@ -70,6 +163,19 @@ const Toolpath = ({ toolpath, colors }) => {
     () => buildSegments(toolpath.source, colorsFromHex(colors)),
     [toolpath, colors.rapid, colors.cutTop, colors.cutDeep]
   );
+
+  const shadow = useMemo(
+    () => (Number.isFinite(shadowZ) ? buildShadow(sets, shadowZ) : null),
+    [sets, shadowZ]
+  );
+
+  const fill = useMemo(
+    () => (Number.isFinite(shadowZ) ? buildFill(sets, shadowZ) : null),
+    [sets, shadowZ]
+  );
+
+  useEffect(() => () => shadow?.dispose(), [shadow]);
+  useEffect(() => () => fill?.dispose(), [fill]);
 
   const lines = useMemo(() => [
     ['cut', buildLine(sets.cut, { linewidth: CUT_WIDTH })],
@@ -101,7 +207,31 @@ const Toolpath = ({ toolpath, colors }) => {
     line.material.dispose();
   }), [lines]);
 
-  return lines.map(([name, line]) => <primitive key={name} object={line} />);
+  return (
+    <>
+      {fill ? (
+        <mesh geometry={fill}>
+          {/* `depthWrite` off so overlapping loops — a pocket inside a
+            * profile — do not fight each other for the same depth, and
+            * `side` double because a loop traced clockwise faces away. */}
+          <meshBasicMaterial
+            color={colors.edge}
+            transparent
+            opacity={SHADOW_FILL_OPACITY}
+            depthWrite={false}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      ) : null}
+
+      {shadow ? (
+        <lineSegments geometry={shadow}>
+          <lineBasicMaterial color={colors.edge} transparent opacity={SHADOW_OPACITY} />
+        </lineSegments>
+      ) : null}
+      {lines.map(([name, line]) => <primitive key={name} object={line} />)}
+    </>
+  );
 };
 
 export default Toolpath;
