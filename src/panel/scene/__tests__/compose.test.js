@@ -87,14 +87,18 @@ describe('what the camera is framed on', () => {
     });
   });
 
-  test('includes a work origin outside everything else', () => {
-    const drawn = scene({ toolpath: null, layers: { ...NONE, wcsAxes: true } });
+  test('includes the work zero when that is all there is', () => {
+    const drawn = scene({
+      wcs: 'G55',
+      toolpath: null,
+      layers: { ...NONE, wcsAxes: true },
+    });
 
-    // G55 sits at (-40, -60, -5) and G54 at the origin; both have to be on
-    // screen or the layer is a chip that appears to do nothing.
+    // A point, framed. Otherwise the layer is a button that appears to do
+    // nothing because what it drew is off screen.
     expect(drawn.frame).toEqual({
       min: { x: -40, y: -60, z: -5 },
-      max: { x: 0, y: 0, z: 0 },
+      max: { x: -40, y: -60, z: -5 },
     });
   });
 
@@ -108,20 +112,37 @@ describe('what the camera is framed on', () => {
   });
 });
 
-describe('the work coordinate systems', () => {
-  test('marks the one the machine is working in', () => {
+describe('the work coordinate system', () => {
+  test('is the one the machine is working in, and only that one', () => {
+    /*
+     * All six were drawn once, the active one solid and the rest faint. An
+     * unset system reads 0,0,0 — which is machine zero — so on a controller
+     * nobody has configured, five of them stack in one spot and on top of
+     * the machine's own zero. Switching the work axes then looked like it
+     * controlled the machine axes, and switching the machine axes looked
+     * like it did nothing.
+     */
     const drawn = scene({ toolpath: null });
 
-    expect(drawn.origins).toEqual([
-      { name: 'G54', origin: { x: 0, y: 0, z: 0 }, active: true },
-      { name: 'G55', origin: { x: -40, y: -60, z: -5 }, active: false },
-    ]);
+    expect(drawn.origin).toEqual({ name: 'G54', origin: { x: 0, y: 0, z: 0 } });
   });
 
-  test('marks none of them when the parser state has not arrived', () => {
-    const drawn = scene({ wcs: undefined, toolpath: null });
+  test('follows the machine into another system', () => {
+    const drawn = scene({ wcs: 'G55', toolpath: null });
 
-    expect(drawn.origins.every((system) => !system.active)).toBe(true);
+    expect(drawn.origin).toEqual({ name: 'G55', origin: { x: -40, y: -60, z: -5 } });
+  });
+
+  test('is nothing when the parser state has not arrived', () => {
+    // Which system is active comes from `$G`. Guessing G54 would draw a zero
+    // the machine may not be measuring from.
+    expect(scene({ wcs: undefined, toolpath: null }).origin).toBeNull();
+  });
+
+  test('is nothing when the controller never answered $#', () => {
+    const drawn = scene({ settings: { settings: SETTINGS.settings }, toolpath: null });
+
+    expect(drawn.origin).toBeNull();
   });
 });
 
