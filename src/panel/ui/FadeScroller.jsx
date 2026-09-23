@@ -117,11 +117,26 @@ const FadeScroller = ({ className = '', children }) => {
         * would be positioned against the scrolled content and would also be
         * faded out by the very mask it is meant to stand beside.
         */}
+      {/*
+        * In the gutter, not against the text.
+        *
+        * It sat at the scroller's own right edge, which on a padded card puts
+        * it a couple of pixels from the last word on every line — *"scroll
+        * mozna przesunac jeszcze na prawo tam jest duzo miejsca na scroll a to
+        * jest parent kontenera scrolowanego"* (2026-09-23, with the state help
+        * sheet as the example).
+        *
+        * Half the container's padding out, so it rides in the space the
+        * parent already leaves rather than in the space the text needs. The
+        * token rather than a number, because `--pad` is 26px at the panel,
+        * 18px in between and 16px on the compact density, and the gutter is
+        * whatever the parent decided.
+        */}
       <span
         ref={thumb}
         aria-hidden="true"
         className={[
-          'pointer-events-none absolute right-0.5 top-0 w-1 rounded-full bg-mut transition-opacity duration-300',
+          'pointer-events-none absolute right-[calc(-1*var(--pad)/2)] top-0 w-1 rounded-full bg-mut transition-opacity duration-300',
           'h-[var(--thumbH,0px)] translate-y-[var(--thumbY,0px)]',
           moving ? 'opacity-40' : 'opacity-0',
         ].join(' ')}
