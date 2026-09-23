@@ -1,4 +1,5 @@
 /* eslint callback-return: 0 */
+import { X509Certificate } from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import bodyParser from 'body-parser';
@@ -41,7 +42,8 @@ import {
 } from './access-control';
 import {
   ERR_BAD_REQUEST,
-  ERR_FORBIDDEN
+  ERR_FORBIDDEN,
+  ERR_NOT_FOUND
 } from './constants';
 
 const log = logger('app');
@@ -204,6 +206,87 @@ const appMain = () => {
     app.use(morgan(settings.middleware.morgan.format));
   }
   app.use(compress(settings.middleware.compression));
+
+  /*
+   * The authority certificate, for a phone that has just been told it does
+   * not trust this server.
+   *
+   * This is the one file that has to travel, and the moment it has to travel
+   * is the moment somebody is standing at the machine with a phone in one
+   * hand. Carrying it over by cable or mail is a step too many, so it is
+   * served next to the panel that is asking for it.
+   *
+   * Safe to serve: it is a public certificate, the half of the pair that is
+   * meant to be handed out. `certs/cnc-ca.key`, which is what could actually
+   * be abused, is never read by this process at all.
+   *
+   * `application/x-x509-ca-cert` rather than letting express guess from the
+   * extension: it is the type Android recognises as something to install
+   * rather than something to open.
+   */
+  if (settings.tlsCa) {
+    _get(settings, 'assets.panel.routes', []).forEach((assetRoute) => {
+      const route = urljoin(settings.route || '/', assetRoute || '', 'cnc-ca.crt');
+      log.debug('> authority certificate at %s', route);
+
+      app.get(route, (req, res) => {
+        // Checked per request rather than at boot. The certificate is
+        // reissued underneath a running server -- that is the point of it
+        // being short-lived -- and a path cached at startup would go on
+        // serving a file that has been replaced.
+        fs.readFile(settings.tlsCa, (err, data) => {
+          if (err) {
+            log.error('Could not read the authority certificate: %s', err.message);
+            res.status(ERR_NOT_FOUND).end('No authority certificate is being served');
+            return;
+          }
+
+          res.set('Content-Type', 'application/x-x509-ca-cert');
+          res.set('Content-Disposition', 'attachment; filename="cnc-ca.crt"');
+          res.send(data);
+        });
+      });
+
+      /*
+       * The same certificate, described rather than downloaded.
+       *
+       * The panel needs to say *which* authority it is offering and until
+       * when, and the answer is inside a DER blob no browser will unpack for
+       * it. Node has a parser already; this is three fields out of it.
+       *
+       * The fingerprint is the field that earns its place. Reissuing happens
+       * often enough -- three times in one afternoon while this was being
+       * built -- that "is the one on my phone still the current one" is a
+       * real question, and comparing it against what `yarn certs` printed is
+       * the only way to answer it. It is not proof against an attacker who
+       * controls the connection, since they would serve their own number
+       * here too; it settles which file is which, not who wrote it.
+       */
+      const describeRoute = urljoin(settings.route || '/', assetRoute || '', 'cnc-ca.json');
+
+      app.get(describeRoute, (req, res) => {
+        fs.readFile(settings.tlsCa, (err, data) => {
+          if (err) {
+            log.error('Could not read the authority certificate: %s', err.message);
+            res.status(ERR_NOT_FOUND).end('No authority certificate is being served');
+            return;
+          }
+
+          try {
+            const cert = new X509Certificate(data);
+            res.json({
+              subject: cert.subject,
+              validTo: cert.validTo,
+              fingerprint: cert.fingerprint256,
+            });
+          } catch (e) {
+            log.error('Could not read the authority certificate: %s', e.message);
+            res.status(ERR_NOT_FOUND).end('The authority certificate could not be read');
+          }
+        });
+      });
+    });
+  }
 
   Object.keys(settings.assets).forEach((name) => {
     const asset = settings.assets[name];

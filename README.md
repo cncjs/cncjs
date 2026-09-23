@@ -187,6 +187,63 @@ To troubleshoot issues, run:
 cncjs -vvv
 ```
 
+### The panel on a phone
+
+The panel (`/panel`) can be installed on a phone as an application — its own
+icon, full screen, no address bar. A phone will only do that for a *secure*
+origin, so the server has to speak HTTPS, which on a home network means a
+certificate the phone has been told to trust.
+
+Two commands, run on the machine that serves:
+
+```
+yarn certs     # a certificate for this machine
+yarn serve     # start the server on it
+```
+
+`yarn certs` needs no arguments. It reads this machine's hostname and
+addresses and writes three files into `certs/`, which git ignores:
+
+| file | what it is |
+| --- | --- |
+| `cnc-ca.crt` | the authority — the one file that goes on the phone |
+| `cnc.crt` | what the server presents |
+| `cnc.key` | the server's private key, `chmod 600`, never leaves the machine |
+
+Then, on the phone, open `https://<this-machine>:8000/panel/`, go to
+**Settings → Application**, and install the certificate it offers. On Android
+choose *CA certificate*, not *VPN and app certificate*.
+
+**What you are trusting.** Installing a certificate authority normally hands
+the device's trust to whoever holds the matching key, for every site it
+visits — which is why doing it because a web page asked is a bad idea. This
+authority is *name-constrained*: it can vouch for `.lan`, `localhost` and
+private addresses and nothing else, so it cannot be used to impersonate a site
+on the internet even by someone who steals `cnc-ca.key`. Install it anyway
+only for a machine you own, on a network you own.
+
+The one moment worth caring about is the download itself, over a connection
+the phone does not yet trust. If that matters to you, copy `certs/cnc-ca.crt`
+across by cable instead.
+
+**Lifetimes.** The server's certificate lasts 30 days and `yarn serve`
+reissues it by itself. The authority lasts a year; when it expires everything
+it signed stops being trusted at once, and a new one has to be installed on
+every phone. An expired authority is harmless — nothing will validate against
+it — but Android does not delete it, so remove the old one by hand under
+*Settings → Security → user certificates*.
+
+Override the lifetimes if you want different ones:
+
+```
+DAYS=90 CA_DAYS=1095 yarn certs
+```
+
+Plain HTTP is still there when TLS is in the way rather than the point
+(`bash scripts/serve-panel.sh --no-tls`), at the cost of the phone refusing to
+install anything.
+
+
 ### Configuration File
 
 The configuration file <b>.cncrc</b> contains settings that are equivalent to the cncjs command-line options. The configuration file is stored in user's home directory. To find out the actual location of the home directory, do the following:

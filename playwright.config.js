@@ -22,6 +22,18 @@ module.exports = defineConfig({
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : [['list']],
   use: {
     baseURL,
+    /*
+     * The panel can be served over TLS with a private authority — it has to
+     * be, for a phone to install it as an application — and the browser this
+     * suite drives has no reason to know that authority.
+     *
+     * Only meaningful when `CNCJS_URL` points at an `https://` server, which
+     * nothing does by default. It is not a hole in what the suite checks:
+     * certificates are the deployment's business, and a suite that refused to
+     * run against the way the thing is actually deployed would check the
+     * wrong server.
+     */
+    ignoreHTTPSErrors: true,
     viewport: { width: 1600, height: 1000 },
     actionTimeout: 15 * 1000,
     navigationTimeout: 60 * 1000,

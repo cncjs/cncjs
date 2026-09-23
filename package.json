@@ -51,6 +51,8 @@
     "start-app-dev": "cross-env NODE_ENV=development webpack serve --progress --config webpack.config.development.js",
     "start-panel-dev": "cross-env NODE_ENV=development webpack --watch --config webpack.config.panel.development.js",
     "start-server-dev": "cross-env NODE_ENV=development ./bin/cncjs --port 8000 -m /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v1/",
+    "certs": "bash scripts/make-certs.sh",
+    "serve": "bash scripts/serve-panel.sh",
     "lint": "concurrently --kill-others-on-fail --names \"i18nlint,eslint,stylint,design\" \"yarn i18nlint\" \"yarn eslint\" \"yarn stylint\" \"yarn design-check\"",
     "design-check": "node scripts/check-design-tokens.js",
     "design-review": "node scripts/design-review.js",

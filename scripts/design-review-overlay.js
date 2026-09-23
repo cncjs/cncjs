@@ -13,7 +13,19 @@
  * Served by `scripts/design-review.js`, which also takes the POSTs.
  */
 (() => {
-  const HOST = window.__reviewHost || 'http://localhost:8765';
+  /*
+   * The same host and scheme as the panel this is running on, not a fixed
+   * `http://localhost`.
+   *
+   * Two bugs in one constant. On a phone `localhost` is the *phone*, so the
+   * overlay could never have worked there -- which is the device the panel is
+   * built for. And on a panel served over TLS an `http://` subresource is
+   * mixed content: Chrome struck the padlock through and reported "this page
+   * contains insecure resources", which reads exactly like the certificate
+   * being wrong and cost an afternoon of looking at certificates.
+   */
+  const HOST = window.__reviewHost
+    || `${window.location.protocol}//${window.location.hostname}:8765`;
 
   if (window.__reviewLoaded) {
     window.__reviewToggle();
@@ -542,7 +554,9 @@
 
   bar.querySelector('#rv-clear').addEventListener('click', async () => {
     if (!notes.length || !window.confirm('Usunąć wszystkie uwagi?')) { return; }
-    await fetch(`${HOST}/notes`, { method: 'DELETE' });
+    // The header is what tells the server a person pressed this. See the
+    // DELETE handler in design-review.js.
+    await fetch(`${HOST}/notes`, { method: 'DELETE', headers: { 'X-From-Overlay': '1' } });
     await load();
   });
 

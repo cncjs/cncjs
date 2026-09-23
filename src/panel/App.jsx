@@ -1,17 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { t } from './i18n';
 import { FooterSlotProvider } from './ui/footerSlot';
-import { ShellWidthProvider, useIsPhone, useMeasuredShell } from './ui/shell';
+import { ShellNodeProvider, ShellWidthProvider, useIsPhone, useMeasuredShell } from './ui/shell';
 import NavRail from './ui/NavRail';
 import NavTabs from './ui/NavTabs';
 import StatusBar from './ui/StatusBar';
 import TopBar from './ui/TopBar';
+import StatusSheet from './ui/StatusSheet';
+import StateHelp from './ui/StateHelp';
+import { applyUpdate, isUpdateReady, watchUpdate } from './machine/update';
 import Dashboard from './screens/Dashboard';
 import JogScreen from './screens/JogScreen';
 import PathScreen from './screens/PathScreen';
-import ConnectScreen from './screens/ConnectScreen';
+import SettingsScreen from './screens/SettingsScreen';
 import ZeroScreen from './screens/ZeroScreen';
 import { useMachine } from './machine/useMachine';
+import { adviceFor } from './machine/advice';
 import { emergencyStop } from './machine/commands';
 
 /**
@@ -36,36 +40,49 @@ const DESTINATIONS = [
   { id: 'probe', key: 'nav.probe', ready: false },
   { id: 'diag', key: 'nav.diag', ready: false },
   { id: 'alarms', key: 'nav.alarms', ready: false },
-  { id: 'settings', key: 'nav.settings', ready: false },
   { id: 'homing', key: 'nav.homing', ready: false },
   { id: 'mdi', key: 'nav.mdi', ready: false },
   /*
-   * Last, and not first.
+   * Settings last, and the connection inside it.
    *
-   * A connection is the precondition for every other item here, which argues
-   * for the top — and the rail's own rule argues louder: an item inserted
-   * above the others moves ten destinations under a hand that had stopped
-   * looking. Nothing above it moves, and it is the item reached for once a
-   * session.
+   * The connection had a destination of its own for a day. Mateusz moved it
+   * on 2026-09-23 — *"connection trafia do zakladki ustawienia, ustawienia na
+   * samym dole"* — and both halves of that are the same judgement: a
+   * connection is chosen once a session and then forgotten, which is what
+   * everything else on a settings screen has in common with it, and things
+   * chosen once belong at the end of a list you read top to bottom.
    */
-  { id: 'connect', key: 'nav.connect', ready: true },
+  { id: 'settings', key: 'nav.settings', ready: true },
 ].map((destination) => ({ ...destination, label: t(destination.key) }));
 
 /*
- * What a phone gets: five of the eleven, and the drawing's own five.
+ * What a phone sees without pulling, and what pulling reveals.
  *
- * The reduction is the point rather than a limitation of the bar. A phone
- * is picked up beside the machine to do one of a few things; settings,
- * diagnostics and MDI are work done sitting at the panel.
+ * The bottom row is the drawing's own five — `pulpit`, `jog`, `zero`,
+ * `pliki`, `alarmy`. It went to six when the connection arrived, then to four
+ * when that turned out to be a tab too many; with the menu drawn as icons the
+ * width argument is gone and the drawing's list is the right one again.
+ *
+ * Everything else is one pull away, in the same grid. Nothing is unreachable
+ * from a phone, which is what adding tabs to the bar was trying and failing
+ * to buy.
  */
-const PHONE_IDS = ['dashboard', 'jog', 'zero', 'files', 'alarms', 'connect'];
+const PHONE_IDS = ['dashboard', 'jog', 'zero', 'files', 'alarms'];
 const PHONE_DESTINATIONS = PHONE_IDS
   .map((id) => DESTINATIONS.find((d) => d.id === id))
-  .map((d) => (d.id === 'zero' ? { ...d, label: t('nav.zeroShort') } : d))
-  // `Connection` is eleven characters in a tab 65px wide. `Port` is what the
-  // screen is actually for picking, and it is the same word in both
-  // languages — see `nav.zeroShort` for the same trade already made once.
-  .map((d) => (d.id === 'connect' ? { ...d, label: t('nav.connectShort') } : d));
+  .map((d) => (d.id === 'zero' ? { ...d, label: t('nav.zeroShort') } : d));
+
+/*
+ * The rest, in the order the rail has them. A grid that reordered itself by
+ * some idea of importance would be a second opinion about the rail, and the
+ * rail is the one anybody learns.
+ */
+const PHONE_REST = DESTINATIONS
+  .filter((d) => !PHONE_IDS.includes(d.id))
+  // `Diagnostyka` is eleven characters in a 78px tile and came out as
+  // `DIAGNOSTY…`. The same trade the zeroing tab already makes: the rail says
+  // the whole word, the grid says as much of it as fits and means.
+  .map((d) => (d.id === 'diag' ? { ...d, label: t('nav.diagShort') } : d));
 
 /*
  * Which component a destination is, for the ones that are anything yet.
@@ -78,13 +95,35 @@ const PHONE_DESTINATIONS = PHONE_IDS
 const SCREENS = {
   jog: JogScreen,
   path: PathScreen,
-  connect: ConnectScreen,
   zero: ZeroScreen,
+  settings: SettingsScreen,
 };
 
 const Panel = ({ machine, screen, onScreen }) => {
   const phone = useIsPhone();
   const [footer, setFooter] = useState(null);
+  /*
+   * What the state chip opens, and what that opens in turn.
+   *
+   * Two layers rather than one sheet with everything in it: the first is
+   * about *this* machine right now and is two lines long, the second is the
+   * reference for every state there is. Putting the reference in front of
+   * somebody who wants to know why their machine will not move is the thing
+   * that made the old inline notes wrong.
+   */
+  /*
+   * Whether a newer panel is waiting, re-read rather than held.
+   *
+   * `machine/update` owns it, because the event it listens for can fire
+   * before any screen is mounted. This only subscribes so the badge appears
+   * when it does.
+   */
+  const [, bumpUpdate] = useState(0);
+  useEffect(() => watchUpdate(() => bumpUpdate((n) => n + 1)), []);
+  const updateReady = isUpdateReady();
+
+  const [alerting, setAlerting] = useState(false);
+  const [helping, setHelping] = useState(false);
   const Screen = SCREENS[screen];
 
   return (
@@ -110,9 +149,11 @@ const Panel = ({ machine, screen, onScreen }) => {
         /* Not two more identity lines. The bar's ordinary voice is for facts
          * that do not change while anyone is working; this is the reason
          * nothing on the screen below can be pressed. */
-        warning={machine.connected ? null : t('topbar.disconnected')}
+        onStatus={() => setAlerting(true)}
         canStop={machine.connected}
         onStop={emergencyStop}
+        updateReady={updateReady}
+        onUpdate={applyUpdate}
       />
 
       <div className="flex min-h-0 flex-1">
@@ -137,10 +178,29 @@ const Panel = ({ machine, screen, onScreen }) => {
         </main>
       </div>
 
+      {alerting ? (
+        <StatusSheet
+          machine={machine}
+          status={machine.status}
+          advice={adviceFor(machine)}
+          error={machine.error}
+          onGo={() => { setAlerting(false); onScreen('settings'); }}
+          onHelp={() => { setAlerting(false); setHelping(true); }}
+          onClose={() => setAlerting(false)}
+        />
+      ) : null}
+
+      {helping ? <StateHelp machine={machine} onClose={() => setHelping(false)} /> : null}
+
       {/* One or the other, never both: on a phone the tab bar is the bottom of
         * the screen and there is no room for a status line as well. */}
       {phone ? (
-        <NavTabs items={PHONE_DESTINATIONS} current={screen} onSelect={onScreen} />
+        <NavTabs
+          items={PHONE_DESTINATIONS}
+          rest={PHONE_REST}
+          current={screen}
+          onSelect={onScreen}
+        />
       ) : (
         <StatusBar
           content={footer}
@@ -172,9 +232,26 @@ const App = () => {
    * overlay flip it without fighting a re-render.
    */
   return (
-    <div ref={shell.ref} className="@container/shell flex h-full flex-col bg-bg text-ink">
+    /*
+     * The shell never scrolls, and that is now load-bearing rather than
+     * tidy.
+     *
+     * The phone's menu is one block parked with two of its three rows below
+     * the screen, and an overflowing block extends the document: the hidden
+     * rows could be scrolled into view with the menu shut — *"na telefonie
+     * wlacza sie skorl i jest to zawsze widoczne, nawet jak menu jest
+     * collapesd"*. Clipping here rather than on the nav, because when the
+     * menu opens those rows travel *up* into the frame and a clip on the nav
+     * would cut them off instead.
+     *
+     * It is also the rule this panel already had: nothing scrolls but the
+     * one region that says it does.
+     */
+    <div ref={shell.ref} className="@container/shell flex h-full flex-col overflow-hidden bg-bg text-ink">
       <ShellWidthProvider value={shell.width}>
-        <Panel machine={machine} screen={screen} onScreen={setScreen} />
+        <ShellNodeProvider value={shell.node}>
+          <Panel machine={machine} screen={screen} onScreen={setScreen} />
+        </ShellNodeProvider>
       </ShellWidthProvider>
     </div>
   );

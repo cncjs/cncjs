@@ -115,6 +115,18 @@
    */
   --coord: 12ch;
 
+  /*
+   * How wide a sheet is when it stops being a sheet.
+   *
+   * On a phone it comes up from the bottom edge and is as wide as the screen;
+   * at the panel that reads as a drawer on a desk rather than a decision to
+   * make, so above `@3xl` it becomes a dialog in the middle. This is the
+   * width it takes there — wide enough for a list of ports with their
+   * manufacturers, narrow enough to read as a thing on top of the panel
+   * rather than a second panel.
+   */
+  --dialogw: 520px;
+
   /* Corners: 4 on a control, 6 on a card. */
   --r-ctl: 4px;
   --r-card: 6px;

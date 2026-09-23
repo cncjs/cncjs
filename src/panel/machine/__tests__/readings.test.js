@@ -1,4 +1,4 @@
-import { readMachine, formatPosition, NO_READING } from '../readings';
+import { readMachine, statesOf, formatPosition, NO_READING } from '../readings';
 
 const grbl = (activeState, wpos) => ({
   connection: 'open',
@@ -18,7 +18,7 @@ describe('readMachine, before there is a machine', () => {
     // for each belongs to whichever language is being read.
     expect(readMachine({ connection: 'connecting' }).status.key).toBe('status.connecting');
     expect(readMachine({ connection: 'failed', error: 'x' }).status.key).toBe('status.noServer');
-    expect(readMachine({ connection: 'open', port: '' }).status.key).toBe('status.disconnected');
+    expect(readMachine({ connection: 'open', port: '' }).status.key).toBe('status.noPort');
   });
 
   test('a failed server is coloured like a stopped machine', () => {
@@ -36,7 +36,7 @@ describe('readMachine, before there is a machine', () => {
       connection: 'open', port: 'COM3', type: 'Grbl', attached: false,
       state: { status: { activeState: 'Idle' } },
     });
-    expect(read.status.key).toBe('status.connecting');
+    expect(read.status.key).toBe('status.attaching');
     expect(read.connected).toBe(false);
   });
 
@@ -109,7 +109,7 @@ describe('readMachine, with a controller answering', () => {
     // not made.
     const read = readMachine({ connection: 'open', port: 'COM3', type: 'Grbl', attached: true, state: {} });
     expect(read.status).toEqual({
-      word: null, key: 'status.connected', tone: 'inactive', known: false,
+      word: null, key: 'status.noReading', tone: 'inactive', known: false,
     });
   });
 
@@ -135,7 +135,7 @@ describe('readMachine, with a controller answering', () => {
     // Marlin has none. Inventing one would be worse than admitting it.
     const read = readMachine({ connection: 'open', port: 'COM3', type: 'Marlin', attached: true, state: {} });
     expect(read.status).toEqual({
-      word: null, key: 'status.connected', tone: 'inactive', known: false,
+      word: null, key: 'status.noReading', tone: 'inactive', known: false,
     });
   });
 
@@ -157,5 +157,94 @@ describe('formatPosition', () => {
     // different statements, and only one of them is safe to act on.
     expect(formatPosition(null)).toBe(NO_READING);
     expect(formatPosition(NaN)).toBe(NO_READING);
+  });
+});
+
+describe('the rate the port is running at', () => {
+  const open = {
+    connection: 'open', attached: true, port: 'COM3', type: 'Grbl', state: {},
+  };
+
+  it('is carried through while a port is open', () => {
+    expect(readMachine({ ...open, baudrate: 115200 }).baudrate).toBe(115200);
+  });
+
+  it('is null when nothing is open, whatever was left over', () => {
+    // The field survives in the snapshot across a close, and a rate shown
+    // beside a dead port is a rate somebody will read as a live one.
+    expect(readMachine({ ...open, port: '', baudrate: 115200 }).baudrate).toBeNull();
+  });
+
+  it('is null rather than undefined when the server did not say', () => {
+    expect(readMachine(open).baudrate).toBeNull();
+  });
+});
+
+describe('the chip names which layer is missing', () => {
+  // Three things stand between an operator and a machine, and the chip used
+  // to answer for all three in words that overlapped. Each of these was
+  // ambiguous before: `connecting` meant two different failures, and
+  // `connected` was not about a connection.
+  it('says no server when the link is down', () => {
+    expect(readMachine({ connection: 'failed' }).status.key).toBe('status.noServer');
+  });
+
+  it('says no port when the server is fine and nothing is open', () => {
+    expect(readMachine({ connection: 'open', port: '' }).status.key).toBe('status.noPort');
+  });
+
+  it('tells attaching apart from connecting', () => {
+    expect(readMachine({ connection: 'connecting' }).status.key).toBe('status.connecting');
+    expect(readMachine({ connection: 'open', port: 'COM3', attached: false }).status.key)
+      .toBe('status.attaching');
+  });
+
+  it('says no reading while the machine has not reported', () => {
+    expect(readMachine({ connection: 'open', port: 'COM3', attached: true, state: {} }).status.key)
+      .toBe('status.noReading');
+  });
+
+  it('shows the firmware word once there is one, and no key of its own', () => {
+    const read = readMachine({
+      connection: 'open', port: 'COM3', attached: true, type: 'Grbl',
+      state: { status: { activeState: 'Alarm' } },
+    });
+    expect(read.status.key).toBeNull();
+    expect(read.status.word).toBe('Alarm');
+  });
+});
+
+describe('statesOf', () => {
+  it('lists what Grbl and Smoothie can say', () => {
+    const words = statesOf('Grbl').map((s) => s.word);
+    expect(words).toContain('Idle');
+    expect(words).toContain('Alarm');
+    expect(words).toContain('Door');
+    expect(statesOf('Smoothie')).toEqual(statesOf('Grbl'));
+  });
+
+  it('lists the words TinyG sends as numbers', () => {
+    const words = statesOf('TinyG').map((s) => s.word);
+    expect(words).toContain('Panic');
+    expect(words).toContain('Interlock');
+  });
+
+  // Not an oversight: Marlin reports no machine state, so a panel on one
+  // never leaves `noReading`. The help sheet says so rather than showing an
+  // empty list.
+  it('is empty for Marlin and for nothing connected', () => {
+    expect(statesOf('Marlin')).toEqual([]);
+    expect(statesOf('')).toEqual([]);
+  });
+
+  it('agrees with the chip about every word it lists', () => {
+    statesOf('Grbl').forEach(({ word, tone }) => {
+      const read = readMachine({
+        connection: 'open', port: 'COM3', attached: true, type: 'Grbl',
+        state: { status: { activeState: word } },
+      });
+      expect(read.status.word).toBe(word);
+      expect(read.status.tone).toBe(tone);
+    });
   });
 });

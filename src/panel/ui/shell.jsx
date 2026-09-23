@@ -19,6 +19,25 @@ const PHONE_BELOW = 768;
 
 const ShellWidth = createContext(Infinity);
 
+/**
+ * The shell element itself, for the things that must not be rendered where
+ * they are written.
+ *
+ * A sheet is `fixed`, and `fixed` is only fixed to the viewport while no
+ * ancestor establishes a containing block. `transform`, `filter` and -- the
+ * one that caught this -- `mask-image` all do, so the settings screen's fade
+ * quietly turned every sheet opened beneath it into a box clipped to the
+ * scrolling area and scrolling away with it: *"sheety sie zepsuly po skrolu
+ * chyba so ucinane i znikaja gdzies"* (2026-09-23).
+ *
+ * The shell rather than `document.body`, because the review frame scales the
+ * panel by transforming this element and a sheet has to be scaled with it.
+ */
+const ShellNode = createContext(null);
+
+export const useShellNode = () => useContext(ShellNode);
+export const ShellNodeProvider = ShellNode.Provider;
+
 export const useIsPhone = () => useContext(ShellWidth) < PHONE_BELOW;
 
 export const useMeasuredShell = () => {
@@ -36,7 +55,7 @@ export const useMeasuredShell = () => {
     return () => observer.disconnect();
   }, [node]);
 
-  return { ref: setNode, width };
+  return { ref: setNode, width, node };
 };
 
 export const ShellWidthProvider = ShellWidth.Provider;

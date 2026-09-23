@@ -58,6 +58,9 @@ program
   .option('-H, --host <host>', `Set listen address or hostname (default: ${defaultHost})`, defaultHost)
   .option('-b, --backlog <backlog>', 'Set listen backlog (default: 511)', 511)
   .option('-c, --config <filename>', 'Set config file (default: ~/.cncrc)')
+  .option('--tls-key <path>', 'Serve HTTPS with this private key (requires --tls-cert)')
+  .option('--tls-cert <path>', 'Serve HTTPS with this certificate (requires --tls-key)')
+  .option('--tls-ca <path>', 'Offer this authority certificate for download, so a phone can be told to trust it')
   .option('-v, --verbose', 'Increase the verbosity level (-v, -vv, -vvv)', increaseVerbosityLevel, 0)
   .option('-m, --mount <route-path>:<target>', 'Add a mount point for serving static files', parseMountPoint, [])
   .option('-w, --watch-directory <path>', 'Watch a directory for changes')
@@ -129,6 +132,19 @@ if (normalizedArgv.length > 1) {
 
 const options = program.opts();
 
+/*
+ * Resolved here, against the directory the command was typed in.
+ *
+ * `process.chdir` below moves into the built server's own folder before it is
+ * loaded, so a relative `--tls-cert certs/cnc.crt` would be looked for inside
+ * `output/cncjs/server` — which is where it went the first time, with an
+ * `ENOENT` and a path nobody typed.
+ */
+const absolute = (value) => (value ? path.resolve(value) : value);
+const tlsKey = absolute(options.tlsKey);
+const tlsCert = absolute(options.tlsCert);
+const tlsCa = absolute(options.tlsCa);
+
 module.exports = () => new Promise((resolve, reject) => {
   // Change working directory to 'server' before require('./server')
   process.chdir(path.resolve(__dirname, 'server'));
@@ -138,6 +154,9 @@ module.exports = () => new Promise((resolve, reject) => {
     host: options.host,
     backlog: options.backlog,
     configFile: options.config,
+    tlsKey,
+    tlsCert,
+    tlsCa,
     verbosity: options.verbose,
     mountPoints: options.mount,
     watchDirectory: options.watchDirectory,

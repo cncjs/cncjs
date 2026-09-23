@@ -24,3 +24,7 @@ yarn-error.log
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Private keys and the local authority that signs them. Made by
+# `scripts/make-certs.sh`, never shared, never committed.
+/certs/

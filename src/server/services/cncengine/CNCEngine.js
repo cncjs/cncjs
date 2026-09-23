@@ -141,7 +141,27 @@ class CNCEngine {
       this.server = server;
       this.io = new SocketIOServer(this.server, {
         serveClient: true,
-        path: '/socket.io'
+        path: '/socket.io',
+
+        /*
+         * How long a client may go on believing in a link that is gone.
+         *
+         * socket.io's defaults are 25s between pings and 20s to answer one,
+         * so a *silent* loss -- a phone carried out of range, a mini PC
+         * unplugged -- took up to 45 seconds to notice. A browser tab can
+         * afford that. A pendant showing "Connected" and live coordinates for
+         * three quarters of a minute after the machine stopped answering
+         * cannot, and it is the one failure that looks exactly like
+         * everything being fine.
+         *
+         * 10 and 8 puts the worst case at 18 seconds. A killed server is
+         * still instant either way, because the socket closes.
+         *
+         * The cost is a packet every ten seconds per client on a LAN, which
+         * is nothing next to the status reports already flowing.
+         */
+        pingInterval: 10000,
+        pingTimeout: 8000,
       });
 
       this.io.use(async (socket, next) => {
@@ -265,6 +285,64 @@ class CNCEngine {
           log.debug(`socket.open("${port}", ${JSON.stringify(options)}): id=${socket.id}`);
 
           let controller = store.get(`controllers["${port}"]`);
+
+          /*
+           * A port that is already open belongs to whoever opened it.
+           *
+           * Attaching to one is ordinary and stays ordinary -- a second
+           * pendant, the old application and a script can all watch the same
+           * machine. Asking for *different* settings while attaching is not:
+           * the options below are read only when the controller is
+           * constructed, so the request used to be dropped on the floor and
+           * answered with success. A client would ask for 9600/Marlin, get
+           * 115200/Grbl, and have no way to find out.
+           *
+           * With one client that is a puzzle. With several it is two panels
+           * disagreeing about what the machine is, which is the state a
+           * pendant must never be in -- reported by Mateusz on 2026-09-23
+           * after opening COM1 while COM3 was still running.
+           *
+           * Said as an error rather than obeyed: re-opening a live port would
+           * drop somebody else's connection, possibly mid-job. Close it
+           * first, deliberately, or attach on its terms.
+           */
+          if (controller && controller.isOpen()) {
+            const running = controller.options || {};
+            const wanted = { ...options };
+            const clash = [
+              ['controllerType', wanted.controllerType, controller.type],
+              ['baudrate', wanted.baudrate, running.baudrate],
+            ].find(([, asked, actual]) => (
+              asked !== undefined && asked !== null && String(asked) !== String(actual)
+            ));
+
+            if (clash) {
+              const [setting, asked, actual] = clash;
+              log.warn(`socket.open(): serial port "${port}" is already open with `
+                + `${setting}=${actual}, refusing ${setting}=${asked}: id=${socket.id}`);
+
+              /*
+               * A plain object, not an `Error`.
+               *
+               * socket.io encodes the callback's arguments as JSON, and an
+               * Error has no enumerable properties -- it arrives as `{}`, so
+               * every refusal in this file reaches its client as a failure
+               * with no reason attached. The panel turns this into a
+               * sentence in the operator's own language; it cannot do that
+               * with prose, and prose is all an Error would have carried
+               * even if it survived.
+               */
+              callback({
+                code: 'port-settings-clash',
+                port,
+                setting,
+                actual: String(actual),
+                asked: String(asked),
+              });
+              return;
+            }
+          }
+
           if (!controller) {
             let { controllerType = GRBL, baudrate, rtscts, pin } = { ...options };
 

@@ -4,8 +4,24 @@ import { canHome } from './homing';
 export const NO_READING = '–';
 
 const GRBL = 'Grbl';
+const MARLIN = 'Marlin';
 const SMOOTHIE = 'Smoothie';
 const TINYG = 'TinyG';
+
+/**
+ * The firmwares this panel knows how to read, in the order the help lists
+ * them.
+ *
+ * Named here rather than in the help sheet because this file is what actually
+ * knows: `statesOf` below answers for each of them, and a list kept beside it
+ * that says something different would be a list nobody notices going stale.
+ *
+ * Not the same question as `controllerChoices` in `ports.js`, which asks the
+ * *server* what it can drive. What can be connected and what can be explained
+ * are different lists, and the help has to explain a Marlin whether or not
+ * this particular server was built with one.
+ */
+export const CONTROLLERS = [GRBL, MARLIN, SMOOTHIE, TINYG];
 
 /**
  * The one state in which a written line does not arrive.
@@ -23,6 +39,19 @@ const TINYG = 'TinyG';
  * bitten by before — see the jog step at the edge of travel.
  */
 const ALARM = 'Alarm';
+
+/**
+ * The two states worth naming outside this file.
+ *
+ * Exported rather than written out again wherever they are needed. They are
+ * the firmware's own words and go on screen exactly as it says them — rule 8
+ * keys only the four states the panel invents for itself — so a second copy
+ * in a component would be a literal that drifts from the one the panel
+ * actually recognises, and a lint rule that cannot tell the difference would
+ * be right to flag it.
+ */
+export const ALARM_STATE = ALARM;
+export const DOOR_STATE = 'Door';
 
 /**
  * Which tone a machine state is shown in.
@@ -68,6 +97,28 @@ const TINYG_STATES = {
   11: { word: 'Interlock', tone: 'stopped' },
   12: { word: 'Shutdown', tone: 'stopped' },
   13: { word: 'Panic', tone: 'stopped' },
+};
+
+/**
+ * Every state this controller type can report, in the order it reads in.
+ *
+ * Built from the same two maps the chip is coloured from, so the help sheet
+ * cannot drift from what the panel actually recognises -- a list of states
+ * maintained by hand beside a map of states is two lists, and the one nobody
+ * is looking at goes stale first.
+ *
+ * Marlin answers with nothing, and that is the honest answer: it reports no
+ * machine state at all, so a panel connected to one sits at `noReading` for
+ * the whole session. Not a fault, and worth saying somewhere.
+ */
+export const statesOf = (type) => {
+  if (type === GRBL || type === SMOOTHIE) {
+    return Object.entries(GRBL_TONES).map(([word, tone]) => ({ word, tone }));
+  }
+  if (type === TINYG) {
+    return Object.values(TINYG_STATES);
+  }
+  return [];
 };
 
 const activeStateOf = (type, state) => {
@@ -137,7 +188,7 @@ const toolOf = (type, state) => {
  * into a controller payload, so the four firmwares' disagreements are settled
  * here and only here.
  */
-export const readMachine = ({ connection, error, port, type, state, settings, attached, job, gcode, timing, linkMs }) => {
+export const readMachine = ({ connection, error, port, type, baudrate, state, settings, attached, job, gcode, timing, linkMs }) => {
   // "Connected" means *able to send*, not "a port is open somewhere". The
   // socket has to attach to the port before `Controller.command()` will do
   // anything at all — it begins `if (!this.port) return` and fails silently —
@@ -151,7 +202,26 @@ export const readMachine = ({ connection, error, port, type, state, settings, at
   // `Idle`, `Run` and `Alarm` are the firmware's own vocabulary, reported over
   // the wire and shown exactly as it says them. This file stays free of
   // i18next either way — it is the tier that runs with no browser.
-  let key = 'status.disconnected';
+  /*
+   * One word, and it names its own layer.
+   *
+   * There are three things between an operator and a machine -- the link to
+   * the server, the port the server holds, and the machine on the end of it
+   * -- and this chip used to answer for all three in vocabulary that
+   * overlapped. `Laczenie` meant both "the socket is coming up" and "the port
+   * is open and we are attaching", which are different failures with
+   * different fixes. `Rozlaczony` read as "the panel is disconnected" and
+   * meant "the server is fine, no port is open". `Polaczony` was not about a
+   * connection at all: it meant the machine had not reported yet. Mateusz
+   * read the chip and asked which of the three it was about (2026-09-23); the
+   * honest answer was "whichever got there first".
+   *
+   * So the three missing-things are named as a ladder -- no server, no port,
+   * no reading -- and the two in-progress ones are told apart by what they
+   * are waiting for. Nothing here says "connected": once there is a reading,
+   * the firmware's own word is the reading, and that is what the chip shows.
+   */
+  let key = 'status.noPort';
   let word = null;
   let tone = 'inactive';
   if (connection === 'failed') {
@@ -161,12 +231,10 @@ export const readMachine = ({ connection, error, port, type, state, settings, at
     key = 'status.connecting';
     tone = 'inactive';
   } else if (port && !attached) {
-    key = 'status.connecting';
+    key = 'status.attaching';
     tone = 'inactive';
   } else if (connected) {
-    // "Connected" rather than an invented "Idle": between opening a port and
-    // the first status report there is genuinely nothing to say.
-    key = active ? null : 'status.connected';
+    key = active ? null : 'status.noReading';
     word = active ? active.word : null;
     tone = active ? active.tone : 'inactive';
   }
@@ -187,6 +255,16 @@ export const readMachine = ({ connection, error, port, type, state, settings, at
     error,
     port,
     type,
+    /*
+     * What the open port is running at.
+     *
+     * Carried through rather than derived, and null when nothing is open. The
+     * connection screen shows it beside the controller now that both stay on
+     * screen after connecting, and the honest answer is the rate the *server*
+     * has the port at -- which is not always the rate this panel asked for.
+     * Another client can have opened it first.
+     */
+    baudrate: connected ? (baudrate ?? null) : null,
     // What a jog costs on this installation, measured by the server. Passed
     // through rather than interpreted: turning it into a stopping distance
     // needs the feed rate, which belongs to whoever is driving. See

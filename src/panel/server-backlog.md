@@ -107,6 +107,46 @@ prawdziwe u wszystkich i panel może skasować swoje pytanie.
 
 ---
 
+## Serwer mówi tylko po HTTP, więc pendanta nie da się zainstalować na telefonie
+
+**Panel chciał:** dać się zainstalować na telefonie jako aplikacja, na pełnym
+ekranie. Manifest, ikony i service worker są gotowe od 2026-09-23.
+
+**Serwer ma:** `http.createServer` i nic więcej — `src/server/index.js:235`.
+Żadnej opcji TLS w `bin/cncjs`, żadnego klucza w `.cncrc`.
+
+**Skutek: na telefonie instalacja jest niemożliwa, a service worker nie
+startuje w ogóle.** Zmierzone 2026-09-23, zapytaniem samego Chrome
+(`Page.getInstallabilityErrors`), a nie oględzinami manifestu:
+
+| adres | bezpieczny kontekst | co mówi przeglądarka |
+| --- | --- | --- |
+| `http://localhost:8000` | tak | `in-incognito` — artefakt testu, **reszta kryteriów spełniona** |
+| `http://192.168.0.196:8000` | **nie** | **`not-from-secure-origin`** |
+
+Czyli sam manifest jest poprawny: `display: fullscreen`, ikony 192/512 plus
+maskable, `scope` i `start_url` na `/panel/`, wszystkie pobierają się 200.
+Blokuje wyłącznie protokół. Service workera też nie ma na LAN-ie — wymaga
+bezpiecznego kontekstu — więc razem z instalacją odpada obsługa braku serwera,
+która działa na localhoście.
+
+**Do rozważenia, od najtańszego:**
+
+1. **Flaga w Chrome na telefonie** — `chrome://flags/#unsafely-treat-insecure-origin-as-secure`,
+   wpisany `http://cnc.lan:8000`. Działa od razu, nic nie trzeba budować,
+   ale to ustawienie na każdym urządzeniu z osobna i znika po reinstalacji.
+2. **Własny CA (`mkcert`) i certyfikat na `cnc.lan`**, root zainstalowany na
+   telefonie. Poprawne i trwałe; wymaga od serwera opcji `--key`/`--cert`
+   i `https.createServer`.
+3. **Prawdziwy certyfikat** przez DNS-01 na domenę wskazującą adres LAN.
+   Najwięcej roboty i jedyne rozwiązanie bez dotykania telefonu.
+
+Punkty 2 i 3 wymagają tej samej zmiany w serwerze: dwóch ścieżek do plików i
+wyboru `https` zamiast `http`. To jest kilkanaście linii w
+`src/server/index.js`, nie przebudowa.
+
+---
+
 ## Magazyn sesji na Windows nie działa i rośnie bez końca
 
 **Panel chciał:** tylko się zalogować. `POST /api/signin` bez ciała, raz na

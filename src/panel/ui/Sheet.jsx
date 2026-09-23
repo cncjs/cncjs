@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { useShellNode } from './shell';
 import { t } from '../i18n';
 
 /**
@@ -16,8 +18,15 @@ import { t } from '../i18n';
  * `fixed` positions against the panel's own root when that root is transformed,
  * which is what the review frame does, and against the viewport when it is
  * not. Both are the right answer for where this should sit.
+ *
+ * Which is why it is rendered into the shell rather than where it is written.
+ * `fixed` is only fixed while nothing above it establishes a containing block,
+ * and `transform`, `filter` and `mask-image` all do -- the settings screen's
+ * fade turned every sheet under it into a box clipped to the scrolling area
+ * and scrolling away with it. A portal puts it back above all of that while
+ * keeping it inside the element the review frame scales.
  */
-const Sheet = ({ title, onClose, children }) => {
+const Sheet = ({ title, onHelp, onClose, children }) => {
   useEffect(() => {
     const onKey = (event) => {
       if (event.key === 'Escape') {
@@ -28,7 +37,9 @@ const Sheet = ({ title, onClose, children }) => {
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  return (
+  const host = useShellNode();
+
+  return createPortal(
     <>
       {/* Dismiss by tapping away from it — the usual gesture, and it means the
         * sheet can be got rid of without aiming at anything. */}
@@ -42,11 +53,60 @@ const Sheet = ({ title, onClose, children }) => {
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="fixed inset-x-0 bottom-0 z-50 flex flex-col gap-gap rounded-t-card border-t border-line bg-panel p-pad"
+        /*
+         * A sheet on a phone, a dialog at the panel.
+         *
+         * Coming up from the bottom edge is right where the bottom edge is
+         * where the thumb is. At 1280px it reads as a drawer opening on a
+         * desk — *"nie wiem czy na deskotpie to jest najlepsze rozwiazanie,
+         * byc moze modal/dialog na srodku ekranu"* — and the middle of the
+         * screen is where something that wants answering belongs.
+         *
+         * One component either way. What changes is where it sits and which
+         * corners are round, and both of those are the same decision said
+         * twice: against an edge it keeps the edge, away from one it is a
+         * shape of its own.
+         */
+        /*
+         * `max-h-[85%]` because a sheet had no ceiling at all.
+         *
+         * Anchored to the bottom edge, content taller than the screen grows
+         * *upwards* -- so the state help, once it described eleven states
+         * instead of two, stood 968px tall on an 844px phone with its own
+         * header and Done button 124px above the top of the display. Nothing
+         * to scroll, nothing to press, measured.
+         *
+         * A percentage rather than a viewport unit: fixed inside a
+         * transformed ancestor resolves against that ancestor, which is what
+         * the review frame is, and against the viewport when there is none.
+         * Both are the right answer.
+         */
+        className="fixed inset-x-0 bottom-0 z-50 flex max-h-[85%] flex-col gap-gap rounded-t-card border-t border-line bg-panel p-pad @3xl/shell:inset-x-auto @3xl/shell:bottom-auto @3xl/shell:left-1/2 @3xl/shell:top-1/2 @3xl/shell:w-dialog @3xl/shell:-translate-x-1/2 @3xl/shell:-translate-y-1/2 @3xl/shell:rounded-card @3xl/shell:border"
       >
         <div className="flex items-center gap-3">
           <span className="text-cap font-semibold uppercase tracking-[0.08em] text-ink">{title}</span>
           <span className="h-px flex-1 bg-line" />
+          {/*
+            * A question mark beside Done rather than a labelled button among
+            * the contents — *"to jako ? kolo przycisku gotowe"*. Help is not
+            * one of the things a sheet is offering to do; it is the same
+            * aside a card carries in its header, and it belongs in the same
+            * place with the same shape.
+            */}
+          {onHelp ? (
+            <button
+              type="button"
+              aria-label={t('stateHelp.open')}
+              onClick={onHelp}
+              // `--chiph` is what `Done` beside it is, and that is the whole
+              // rule: *"rozmiar ma paswac do przycisku, w roznych kontekstach
+              // ten rozmiar moze sie ronic, ale ma byc spojny z otoczeniem"*.
+              // A 28px square next to a 42px button reads as a mistake.
+              className="size-chiph shrink-0 rounded-ctl border border-line text-base font-semibold leading-none text-mut transition-colors hover:border-acc hover:text-acc"
+            >
+              ?
+            </button>
+          ) : null}
           <button
             type="button"
             onClick={onClose}
@@ -55,9 +115,21 @@ const Sheet = ({ title, onClose, children }) => {
             {t('sheet.done')}
           </button>
         </div>
-        {children}
+        {/*
+          * The header stays, the contents move. `min-h-0` is what lets a
+          * flex child be shorter than its content and therefore scroll at
+          * all; without it the ceiling above would simply clip the bottom
+          * off instead.
+          */}
+        <div className="flex min-h-0 flex-1 flex-col gap-gap overflow-y-auto">
+          {children}
+        </div>
       </div>
-    </>
+    </>,
+    // Before the shell has measured itself there is no node yet. Nothing can
+    // open a sheet that early, but a fallback costs one expression and an
+    // exception here would take the whole panel down.
+    host || document.body,
   );
 };
 

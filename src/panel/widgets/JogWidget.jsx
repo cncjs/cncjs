@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import AxisControls from '../ui/AxisControls';
-import AxisSummary from '../ui/AxisSummary';
+import SettingSummary from '../ui/SettingSummary';
 import Card from '../ui/Card';
 import JogPad from '../ui/JogPad';
 import JogPadTall from '../ui/JogPadTall';
@@ -213,17 +213,21 @@ const JogWidget = ({ machine, className = '' }) => {
       {phone ? (
         <div className="flex min-h-0 flex-1 flex-col gap-gap">
         <JogPadTall {...keys} />
-        <AxisSummary
+        <SettingSummary
           title={xy.title}
-          step={xyStep}
-          speed={xySpeed}
+          values={[
+            { value: xyStep, unit: t('units.mm') },
+            { value: xySpeed, unit: t('units.mmPerMin') },
+          ]}
           onOpen={() => setEditing('xy')}
           disabled={!connected}
         />
-        <AxisSummary
+        <SettingSummary
           title={z.title}
-          step={zStep}
-          speed={zSpeed}
+          values={[
+            { value: zStep, unit: t('units.mm') },
+            { value: zSpeed, unit: t('units.mmPerMin') },
+          ]}
           onOpen={() => setEditing('z')}
           disabled={!connected}
         />

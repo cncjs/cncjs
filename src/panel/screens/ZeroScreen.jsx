@@ -81,9 +81,10 @@ const ZeroScreen = ({ machine }) => {
     <Button
       tone={together ? 'outline' : 'primary'}
       aria-label={name}
+      compact
       disabled={!canZero}
       onClick={onPress}
-      className="h-ctl min-w-0 flex-1 px-0"
+      className="h-ctl min-w-0 flex-1"
     >
       {face}
     </Button>
@@ -106,13 +107,22 @@ const ZeroScreen = ({ machine }) => {
         * have to be trusted to be the exception. */}
       <p className="m-0 shrink-0 text-note text-mut">{t('zero.note')}</p>
 
-      {/* The reason everything below is dead, where the dead things are.
-        * Without it the screen is five grey buttons and no account of why —
-        * and the two reasons need different answers from the operator, so
-        * they are two sentences and not one apology. */}
-      {connected && !canZero ? (
+      {/*
+        * Why the buttons can be dead, and it is not said here any more.
+        *
+        * This carried two amber paragraphs — one for an unknown coordinate
+        * system, one for an alarmed machine. Mateusz rejected the alarm one
+        * outright on 2026-09-23: *"to tutaj nie pasuje - nie chce tego"*. It
+        * is in the help sheet behind the `?` instead, with the rest of what
+        * the machine's states mean.
+        *
+        * The coordinate-system one stays, because it is about *this* screen
+        * and nothing else explains it: the controller has not said which
+        * system to write, so there is no safe line to send.
+        */}
+      {connected && canSendGcode && !knowsWcs ? (
         <p className="m-0 shrink-0 rounded-ctl border border-amb bg-ambS px-4 py-3 text-base text-amb">
-          {t(canSendGcode ? 'zero.noWcs' : 'zero.alarm')}
+          {t('zero.noWcs')}
         </p>
       ) : null}
 
@@ -128,6 +138,7 @@ const ZeroScreen = ({ machine }) => {
         <Zero face={t('axis.xy')} name={t('zero.xy')} onPress={zeroing('x', 'y')} together />
         <Zero face={t('axis.xyz')} name={t('zero.xyz')} onPress={zeroing('x', 'y', 'z')} together />
       </div>
+
     </Card>
   );
 };

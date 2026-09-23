@@ -4,11 +4,11 @@
   "id": "/panel/",
   "start_url": "/panel/",
   "scope": "/panel/",
-  "display": "fullscreen",
-  "display_override": ["fullscreen", "standalone"],
+  "display": "standalone",
+  "display_override": ["standalone"],
   "orientation": "any",
   "background_color": "#f2f4f7",
-  "theme_color": "#1557c0",
+  "theme_color": "#ffffff",
   "icons": [
     {
       "src": "icons/icon-192.png",

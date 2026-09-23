@@ -1,6 +1,7 @@
 import dns from 'dns';
 import fs from 'fs';
 import http from 'http';
+import https from 'https';
 import os from 'os';
 import path from 'path';
 import url from 'url';
@@ -232,7 +233,58 @@ const createServer = (options, callback) => {
     server: () => app()
   });
 
-  const server = http.createServer(createWebApp(routes));
+  /*
+   * HTTPS when a key and a certificate are given, and plain HTTP otherwise.
+   *
+   * Not a nicety. A phone will not install a web application, and will not
+   * register a service worker for it, unless the origin is *secure* — and
+   * `http://cnc.lan:8000` is not. Measured 2026-09-23 by asking Chrome
+   * itself: from localhost the only thing it had against installing the
+   * panel was that the test ran in incognito; from the LAN address it
+   * answered `not-from-secure-origin`, flatly.
+   *
+   * So the pendant's whole reason for having a manifest depends on this, and
+   * until now the server could only speak HTTP — `http.createServer`, no
+   * option, no config key.
+   *
+   * Both or neither. A key without a certificate is a server that would start
+   * and then fail every handshake, which is a worse way to find out than
+   * being told at boot.
+   */
+  if (Boolean(options.tlsKey) !== Boolean(options.tlsCert)) {
+    const err = new Error('--tls-key and --tls-cert have to be given together');
+    callback && callback(err);
+    log.error(err.message);
+    return;
+  }
+
+  /*
+   * Where the authority certificate lives, so the panel can offer it for
+   * download.
+   *
+   * It was a file copy before: serve-panel.sh dropped `cnc-ca.crt` into the
+   * panel's build output next to the bundle. That output directory is emptied
+   * by webpack on every rebuild, so in a watched session the download button
+   * would quietly start returning the panel's own index.html the next time
+   * anything was edited.
+   *
+   * Only the certificate. The key beside it is what the whole arrangement
+   * rests on and has no route, here or anywhere.
+   */
+  if (options.tlsCa) {
+    set(settings, 'tlsCa', expandTilde(options.tlsCa));
+  }
+
+  const tls = options.tlsKey
+    ? {
+      key: fs.readFileSync(expandTilde(options.tlsKey)),
+      cert: fs.readFileSync(expandTilde(options.tlsCert)),
+    }
+    : null;
+
+  const server = tls
+    ? https.createServer(tls, createWebApp(routes))
+    : http.createServer(createWebApp(routes));
 
   // The socket.io server and every controller add listeners of their own.
   server.setMaxListeners(0);
