@@ -2,6 +2,7 @@ import { useState } from 'react';
 import AxisControls from '../ui/AxisControls';
 import SettingSummary from '../ui/SettingSummary';
 import Card from '../ui/Card';
+import FadeScroller from '../ui/FadeScroller';
 import JogPad from '../ui/JogPad';
 import JogPadTall from '../ui/JogPadTall';
 import SegmentedChoice from '../ui/SegmentedChoice';
@@ -170,7 +171,7 @@ const JogWidget = ({ machine, className = '' }) => {
       {/* At the panel: the keys at their drawn size, both groups open below
         * them, nothing folded away. */}
       {phone ? null : (
-        <div className="flex min-h-0 flex-1 flex-col gap-gap overflow-auto">
+        <FadeScroller className="flex flex-col gap-gap">
 
         <div className="shrink-0">
           <JogPad {...keys} />
@@ -201,7 +202,7 @@ const JogWidget = ({ machine, className = '' }) => {
           >
             {t('shortcuts.title')}
           </button>
-        </div>
+        </FadeScroller>
       )}
 
       {/* On a phone: the keys take the height, the settings take a line each.

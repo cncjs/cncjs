@@ -20,11 +20,22 @@ import { t } from '../i18n';
  * padlock. This screen is the panel answering the question itself.
  */
 
-/** A fact about the certificate: what it is called, and what it says. */
+/**
+ * A fact about the certificate: what it is called, and what it says.
+ *
+ * The value is the one selectable thing in the panel. `base.css` turns
+ * selection off everywhere, because holding a jog key was raising the copy
+ * bubble over the pad — but a fingerprint exists to be compared against
+ * another fingerprint, and the honest way to do that is to copy it rather
+ * than read forty hex pairs off a phone. The callout comes back with it,
+ * since on iOS that is what puts Copy on the screen.
+ */
 const Fact = ({ label, children }) => (
   <div className="flex min-w-0 flex-col gap-0.5">
     <span className="text-cap font-semibold uppercase tracking-[0.08em] text-mut">{label}</span>
-    <span className="min-w-0 break-all font-num text-note text-ink">{children}</span>
+    <span className="min-w-0 select-text break-all font-num text-note text-ink [-webkit-touch-callout:default]">
+      {children}
+    </span>
   </div>
 );
 

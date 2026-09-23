@@ -67,6 +67,27 @@
     position: fixed;
     inset: 0;
     overflow: hidden;
+
+    /*
+     * Nothing here is text to be selected.
+     *
+     * Holding a jog key is the panel's own gesture — press and hold to keep
+     * moving — and on a phone it was also the gesture for selecting the
+     * label on the key. So a held jog put `X+` in blue and raised the copy
+     * bubble over the pad, on the one control that is pressed while the eyes
+     * are on the cutter.
+     *
+     * Nothing set this before, anywhere. Turning it off everywhere and back
+     * on where somebody actually copies is the right way round: a control
+     * surface has one place worth copying from and a hundred worth holding.
+     *
+     * `-webkit-touch-callout` is the second half. iOS raises its own menu on
+     * a long press from the callout, which `user-select` alone does not
+     * stop.
+     */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
   }
 
   /*

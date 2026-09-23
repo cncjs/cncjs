@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useShellNode } from './shell';
 import { dimPanel } from './themeColor';
+import FadeScroller from './FadeScroller';
 import HelpButton from './HelpButton';
 import { t } from '../i18n';
 
@@ -128,11 +129,12 @@ const Sheet = ({ title, onHelp, onClose, children }) => {
           * The header stays, the contents move. `min-h-0` is what lets a
           * flex child be shorter than its content and therefore scroll at
           * all; without it the ceiling above would simply clip the bottom
-          * off instead.
+          * off instead. `FadeScroller` carries it, with the fade that says
+          * how much of a long sheet is still below.
           */}
-        <div className="flex min-h-0 flex-1 flex-col gap-gap overflow-y-auto">
+        <FadeScroller className="flex flex-col gap-gap">
           {children}
-        </div>
+        </FadeScroller>
       </div>
     </>,
     // Before the shell has measured itself there is no node yet. Nothing can
