@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { dimPanel } from './themeColor';
+import { EDGE } from './navEdge';
 import { t } from '../i18n';
 
 /**
@@ -69,47 +70,6 @@ const MARKS = {
  * that the wobble in a thumb pressing a tile is not.
  */
 const SWIPE_PX = 24;
-
-/**
- * The top edge of the menu, mound and all, in a 500x30 box.
- *
- * **One path for the whole edge — that is the point.** It used to be two
- * rules with the mound's outline between them, and however the shoulders were
- * drawn the result was a line that appeared to run *under* the mound:
- * *"pod garbem widze te linie ktora poprawiales"*. It was never a seam. Two
- * greys a fraction of a pixel apart read as one line peeling off another, and
- * the gentler the shoulder the longer they ran together — so every attempt to
- * make the junction smoother made the artefact worse.
- *
- * Drawn as one stroke there is nothing to double. Which is what lets the
- * junction have the radius it was asked for: *"wiekszy promien na lacznieu z
- * menu, przejscie ma byc gladkie"*.
- *
- * Five columns of 100, so the mound spans two of them — the same two tiles it
- * sits over — and the box stretches to the bar's width, which keeps that true
- * on any phone.
- *
- * **The handles cross, and the foot's is the longer.** Each curve runs 100
- * across; the one at the foot reaches 65 and the one at the crest 50, both
- * level with the end they belong to — so the line leaves the flat even more
- * gradually than the crest comes over: *"dolny promien moze byc nawet
- * wiekszy"*.
- *
- * They were 40 and 40, which made the foot the *tighter* of the two and was
- * the thing being complained about. Crossing them is not a mistake: it is
- * what asks for a flatter start than finish, and the tangents at both ends
- * stay horizontal either way, so there is still no corner anywhere in it.
- */
-/**
- * The mound alone, from the foot on the left to the foot on the right.
- *
- * Split out because two things draw it and they must not drift: the bar's
- * whole edge below, and the bite it takes out of the card above it. One
- * string, so a curve adjusted once is adjusted everywhere.
- */
-const MOUND = 'C215 29.5 200 3 250 3C300 3 285 29.5 350 29.5';
-
-const EDGE = `M0 29.5H150${MOUND}H500`;
 
 const Tile = ({ id, label, ready, here, onSelect }) => (
   <button
