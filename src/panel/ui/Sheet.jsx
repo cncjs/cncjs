@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useShellNode } from './shell';
 import { dimPanel } from './themeColor';
+import HelpButton from './HelpButton';
 import { t } from '../i18n';
 
 /**
@@ -105,18 +106,15 @@ const Sheet = ({ title, onHelp, onClose, children }) => {
             * place with the same shape.
             */}
           {onHelp ? (
-            <button
-              type="button"
-              aria-label={t('stateHelp.open')}
-              onClick={onHelp}
+            <HelpButton
+              label={t('stateHelp.open')}
+              onPress={onHelp}
               // `--chiph` is what `Done` beside it is, and that is the whole
               // rule: *"rozmiar ma paswac do przycisku, w roznych kontekstach
               // ten rozmiar moze sie ronic, ale ma byc spojny z otoczeniem"*.
               // A 28px square next to a 42px button reads as a mistake.
-              className="size-chiph shrink-0 rounded-ctl border border-line text-base font-semibold leading-none text-mut transition-colors hover:border-acc hover:text-acc"
-            >
-              ?
-            </button>
+              className="size-chiph text-base"
+            />
           ) : null}
           <button
             type="button"

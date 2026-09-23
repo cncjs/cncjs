@@ -192,8 +192,17 @@
   },
   "zero": {
     "title": "Zeroing",
-    "note": "Zeroing moves nothing. It rewrites the offset between machine and work coordinates so that where the tool is now reads as zero.",
-    "noWcs": "The controller has not reported an active coordinate system, so there is nothing safe to zero. G10 L20 has to name one, and a guess is discovered by a tool moving to the wrong place under power.",
+    "note": "Sets the work zero for {{wcs}} at the current machine position.",
+    "noteAny": "Sets the work zero at the current machine position.",
+    "noWcs": "The controller has not reported a coordinate system (G54–G59).",
+    "help": {
+      "open": "What zeroing does",
+      "title": "Zeroing",
+      "what": "The work zero is the point a program counts from. Zeroing puts it where the tool is standing — usually after jogging down onto the corner of the stock.",
+      "moves": "The machine does not move. Only the work reading changes; the machine position stays what it was.",
+      "system": "The panel sends G10 L20 P<n>, where <n> is the active coordinate system: G54 is 1, G59 is 6. It will not guess that number — zeroing the wrong system gives no sign at all, and shows up when a tool moves to the wrong place under power.",
+      "dead": "The buttons are dimmed for two reasons: the controller has not reported a coordinate system, or the machine is in alarm — in alarm the server drops every G-code line before it reaches the cable."
+    },
     "x": "Zero X",
     "y": "Zero Y",
     "z": "Zero Z",

@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 import DroStack from '../ui/DroStack';
+import ZeroHelp from '../ui/ZeroHelp';
 import { zero, activeWcsNumber } from '../machine/zero';
 import { t } from '../i18n';
 
@@ -30,7 +32,8 @@ import { t } from '../i18n';
  */
 
 const ZeroScreen = ({ machine }) => {
-  const { position, machinePosition, modal, connected, canSendGcode } = machine;
+  const { position, machinePosition, modal, connected, canSendGcode, status } = machine;
+  const [help, setHelp] = useState(false);
 
   /*
    * Which coordinate system, and the refusal when there is none.
@@ -96,31 +99,48 @@ const ZeroScreen = ({ machine }) => {
     <Card
       label={t('zero.title')}
       aside={wcs || null}
+      onHelp={() => setHelp(true)}
+      helpLabel={t('zero.help.open')}
       className="min-h-0 flex-1"
       bodyClassName="gap-4"
     >
       <DroStack position={position} machinePosition={machinePosition} />
 
-      {/* Said once, on the screen the action lives on rather than in a help
-        * sheet. Every other control on this panel that is enabled while a
-        * machine is connected can move it, and the one that cannot should not
-        * have to be trusted to be the exception. */}
-      <p className="m-0 shrink-0 text-note text-mut">{t('zero.note')}</p>
+      {/*
+        * What the buttons will do, and nothing about what zeroing *is*.
+        *
+        * This explained the concept — what a work offset is, and that the
+        * screen does not move the machine. Mateusz, 2026-09-23: read by
+        * somebody who knows CNC that is *"czul bym sie jak debil"*, and the
+        * thing a hobbyist actually wants is the `?`. So the explanation moved
+        * behind the question mark and this says the one thing that is true of
+        * *this press*: which coordinate system is about to be written.
+        *
+        * Naming the system rather than describing the idea is his wording.
+        * It is also the more careful sentence: an earlier draft said zeroing
+        * "does not affect the position", which the DRO above disproves a
+        * second later — the work reading is exactly what it sets to nought.
+        */}
+      <p className="m-0 shrink-0 text-note text-mut">
+        {knowsWcs ? t('zero.note', { wcs }) : t('zero.noteAny')}
+      </p>
 
       {/*
-        * Why the buttons can be dead, and it is not said here any more.
+        * Why the buttons can be dead.
         *
-        * This carried two amber paragraphs — one for an unknown coordinate
-        * system, one for an alarmed machine. Mateusz rejected the alarm one
-        * outright on 2026-09-23: *"to tutaj nie pasuje - nie chce tego"*. It
-        * is in the help sheet behind the `?` instead, with the rest of what
-        * the machine's states mean.
+        * This carried two amber paragraphs. Mateusz rejected the alarm one
+        * outright on 2026-09-23: *"to tutaj nie pasuje - nie chce tego"*, and
+        * it is in the state help instead.
         *
-        * The coordinate-system one stays, because it is about *this* screen
-        * and nothing else explains it: the controller has not said which
-        * system to write, so there is no safe line to send.
+        * `status.known` is the gate this was missing. Without it the
+        * paragraph appeared whenever the panel knew *nothing* — a controller
+        * that has never spoken reports no state, `canSendGcode` is true
+        * because there is no alarm to see, and the screen offered a narrow
+        * explanation about coordinate systems while the chip above it already
+        * said "No reading". Found by Mateusz reading it on the phone while
+        * COM3 was held by another client.
         */}
-      {connected && canSendGcode && !knowsWcs ? (
+      {connected && canSendGcode && status.known && !knowsWcs ? (
         <p className="m-0 shrink-0 rounded-ctl border border-amb bg-ambS px-4 py-3 text-base text-amb">
           {t('zero.noWcs')}
         </p>
@@ -139,6 +159,7 @@ const ZeroScreen = ({ machine }) => {
         <Zero face={t('axis.xyz')} name={t('zero.xyz')} onPress={zeroing('x', 'y', 'z')} together />
       </div>
 
+      {help ? <ZeroHelp onClose={() => setHelp(false)} /> : null}
     </Card>
   );
 };
