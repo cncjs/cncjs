@@ -27,7 +27,18 @@ const PANEL_SOURCE = path.join(ROOT, 'src', 'panel');
 const PANEL_BUNDLE = path.join(ROOT, 'output', 'cncjs', 'panel', 'panel.bundle.js');
 const APP_OUTPUT = path.join(ROOT, 'output', 'cncjs', 'app');
 
-/** The newest modification time anywhere under a directory, or 0. */
+/**
+ * What the panel bundle is actually built from.
+ *
+ * Not every file under `src/panel`. The directory also holds
+ * `server-backlog.md` and `README.md`, which webpack never reads — so editing
+ * a note declared the bundle stale and refused a run that was perfectly able
+ * to pass. That happened on the first real use of this check, which is the
+ * argument for the list rather than for the directory.
+ */
+const BUILT_FROM = /\.(jsx?|css|json|html)$/i;
+
+/** The newest modification time among a directory's buildable files, or 0. */
 const newestUnder = (dir) => {
   let newest = 0;
   const walk = (at) => {
@@ -41,7 +52,7 @@ const newestUnder = (dir) => {
       const full = path.join(at, entry.name);
       if (entry.isDirectory()) {
         walk(full);
-      } else {
+      } else if (BUILT_FROM.test(entry.name)) {
         const { mtimeMs } = fs.statSync(full);
         newest = Math.max(newest, mtimeMs);
       }
