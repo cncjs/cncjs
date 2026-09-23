@@ -237,6 +237,13 @@ const Panel = ({ machine, screen, onScreen }) => {
                   * the text instead of removing it, and left the card's own
                   * border showing through underneath.
                   *
+                  * Only while there is something to dissolve. The filter used
+                  * to be on unconditionally, and a page-coloured shadow cast
+                  * onto a card is not nothing — it washed the card out along
+                  * the curve with no content anywhere near it. Same switch as
+                  * the outline, the other way round: one or the other draws
+                  * the edge, never both.
+                  *
                   * Three passes rather than one because `drop-shadow`
                   * composites: a single soft one is too thin to cover
                   * anything, and each further pass multiplies what the last
@@ -244,7 +251,7 @@ const Panel = ({ machine, screen, onScreen }) => {
                   * `drop-shadow-*` utilities would simply overwrite each
                   * other.
                   */
-                className="size-full overflow-visible [filter:drop-shadow(0_-2px_2px_var(--bg))_drop-shadow(0_-4px_4px_var(--bg))_drop-shadow(0_-6px_7px_var(--bg))_drop-shadow(0_-9px_11px_var(--bg))]"
+                className="size-full overflow-visible [[data-under-edge]_&]:[filter:drop-shadow(0_-2px_2px_var(--bg))_drop-shadow(0_-4px_4px_var(--bg))_drop-shadow(0_-6px_7px_var(--bg))_drop-shadow(0_-9px_11px_var(--bg))]"
                 fill="none"
               >
                 <path d={BITE_FILL} className="fill-bg" />
