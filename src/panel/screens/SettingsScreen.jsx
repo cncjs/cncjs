@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import Card from '../ui/Card';
+import FadeScroller from '../ui/FadeScroller';
 import SegmentedChoice from '../ui/SegmentedChoice';
 import ThemeChoice from '../ui/ThemeChoice';
 import ConnectScreen from './ConnectScreen';
@@ -40,47 +41,8 @@ const LABELS = {
 
 const TABS = Object.keys(LABELS);
 
-/*
- * Which edges of the scroller have something hidden behind them.
- *
- * Both fades are conditional, and each for its own reason. A permanent top
- * fade would wash out the first row of a section nobody has scrolled yet --
- * *"ten fade od gory tez przy skorlu"*, at the scroll, not before it. And a
- * permanent bottom one would hide the very thing the bottom padding was added
- * to show: the end of the section, reached.
- *
- * A pixel of slack on each comparison. `scrollTop` is fractional on a phone
- * with a scaled viewport, so `> 0` is true at rest and the top would fade by
- * a hair on a screen nobody had touched.
- */
-const edgesOf = (el) => (el ? {
-  top: el.scrollTop > 1,
-  bottom: el.scrollTop + el.clientHeight < el.scrollHeight - 1,
-} : { top: false, bottom: false });
-
 const SettingsScreen = ({ machine }) => {
   const [tab, setTab] = useState('connection');
-  const [scroller, setScroller] = useState(null);
-  const [edges, setEdges] = useState({ top: false, bottom: false });
-
-  const measure = useCallback(() => setEdges(edgesOf(scroller)), [scroller]);
-
-  /*
-   * Measured on arrival and whenever the content changes height, not only on
-   * scroll: switching tabs swaps a short section for a tall one without
-   * anybody scrolling, and a bottom fade that only appears after the first
-   * drag is a fade that says "there is more" one gesture too late.
-   */
-  useEffect(() => {
-    if (!scroller) {
-      return undefined;
-    }
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(scroller);
-    Array.from(scroller.children).forEach((child) => observer.observe(child));
-    return () => observer.disconnect();
-  }, [scroller, measure, tab]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-2.5">
@@ -102,15 +64,8 @@ const SettingsScreen = ({ machine }) => {
         * rozwnieta"* (2026-09-23). Expanded, the card is simply as tall as it
         * needs to be and the whole thing travels past the menu.
         *
-        * The mask is the fade: content thinning out as it runs under the bar
-        * rather than being cut off at a hard edge. A mask and not a coloured
-        * gradient, because the strip passes over the white card *and* the
-        * grey behind it, and one colour cannot be right on both.
-        *
-        * Its two stops are custom properties rather than an inline style, so
-        * the whole thing stays a class and the panel keeps its rule about
-        * hand-written style attributes. At `0px` the gradient has a
-        * zero-length ramp, which is the same as no mask at all.
+        * The fade that says how much is left is `FadeScroller`, which began
+        * here and now belongs to every scroller in the panel.
         *
         * `min-h-full` on the inner column keeps the short case honest: the
         * connection tab pushes its buttons down with a spacer, which needs a
@@ -122,16 +77,7 @@ const SettingsScreen = ({ machine }) => {
         * section already has one, the same on all four sides, and a second
         * one under it only made the bottom different from the rest.
         */}
-      <div
-        ref={setScroller}
-        onScroll={measure}
-        className={[
-          'min-h-0 flex-1 overflow-y-auto',
-          '[mask-image:linear-gradient(to_bottom,transparent_0,black_var(--fadeT),black_calc(100%-var(--fadeB)),transparent_100%)]',
-          edges.top ? '[--fadeT:1.75rem]' : '[--fadeT:0px]',
-          edges.bottom ? '[--fadeB:1.75rem]' : '[--fadeB:0px]',
-        ].join(' ')}
-      >
+      <FadeScroller>
         <div className="flex min-h-full flex-col">
           {tab === 'connection' ? (
             <ConnectScreen machine={machine} />
@@ -146,7 +92,7 @@ const SettingsScreen = ({ machine }) => {
             </Card>
           )}
         </div>
-      </div>
+      </FadeScroller>
     </div>
   );
 };

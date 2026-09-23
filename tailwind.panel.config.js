@@ -209,6 +209,27 @@ module.exports = {
       addVariant('phone', '&:where([data-target="phone"], [data-target="phone"] *)');
     },
     /*
+     * A scroller with no bar down its side.
+     *
+     * The panel says "there is more" with a fade instead — see `FadeScroller`,
+     * which is the only thing that uses this. A browser's own bar is drawn by
+     * the browser rather than from the token sheet, appears on a desktop and
+     * not on a phone, and sits over the content it measures.
+     *
+     * Two declarations because no browser reads both: `scrollbar-width` is
+     * the standard one and the pseudo-element is what Chrome and Safari
+     * actually answer to. Chrome 121 understands both, and the phone this is
+     * for does not.
+     */
+    ({ addUtilities }) => {
+      addUtilities({
+        '.scroll-quiet': {
+          'scrollbar-width': 'none',
+          '&::-webkit-scrollbar': { display: 'none' },
+        },
+      });
+    },
+    /*
      * Container queries, and they are not a nicety here.
      *
      * A widget is one component that appears both as a tile on the dashboard

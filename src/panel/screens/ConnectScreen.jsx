@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
+import FadeScroller from '../ui/FadeScroller';
 import PortRow from '../ui/PortRow';
 import SegmentedChoice from '../ui/SegmentedChoice';
 import Sheet from '../ui/Sheet';
@@ -136,7 +137,7 @@ const ConnectScreen = ({ machine }) => {
     : 'connect.noServer');
 
   const ports = (
-    <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
+    <FadeScroller className="flex flex-col gap-2">
       {rows.map((row) => (
         <PortRow
           key={row.port}
@@ -148,7 +149,7 @@ const ConnectScreen = ({ machine }) => {
         />
       ))}
       {rows.length ? null : <p className="m-0 px-1 py-3 text-base text-mut">{empty}</p>}
-    </div>
+    </FadeScroller>
   );
 
   const controllerChips = (
