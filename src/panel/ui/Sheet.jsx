@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useShellNode } from './shell';
+import { dimPanel } from './themeColor';
 import { t } from '../i18n';
 
 /**
@@ -36,6 +37,16 @@ const Sheet = ({ title, onHelp, onClose, children }) => {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
+
+  /*
+   * The scrim reaches the status bar too.
+   *
+   * Everything below goes grey behind the scrim while the Android bar above
+   * it stayed intensely white — the one strip of the screen the panel told
+   * the system about and then stopped keeping true. `dimPanel` counts,
+   * because the state chip's help opens a second sheet from inside the first.
+   */
+  useEffect(() => dimPanel(), []);
 
   const host = useShellNode();
 

@@ -53,7 +53,7 @@ module.exports = {
        * here is a whole `var()` — the modifier silently produces nothing,
        * which is what a transparent scrim looked like.
        */
-      scrim: 'color-mix(in srgb, var(--ink) 45%, transparent)',
+      scrim: 'color-mix(in srgb, var(--ink) var(--scrimA), transparent)',
       /*
        * A readable backing over the drawing, for the same reason `scrim` is
        * mixed rather than written as an opacity modifier: every colour here

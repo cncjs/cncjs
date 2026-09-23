@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import Card from '../ui/Card';
 import SegmentedChoice from '../ui/SegmentedChoice';
+import ThemeChoice from '../ui/ThemeChoice';
 import ConnectScreen from './ConnectScreen';
 import AppScreen from './AppScreen';
 import { t } from '../i18n';
@@ -18,9 +19,10 @@ import { t } from '../i18n';
  * scrolls to. `SegmentedChoice` is the panel's own control for a choice among
  * a few fixed things, and a pair of sections is exactly that.
  *
- * What lands here next is decided and not built: `theme`, `density` and
- * `numFont`, from the variant decision of 2026-09-21. They belong beside the
- * application rather than beside the port.
+ * From the variant decision of 2026-09-21, `theme` now lives on the
+ * application tab. `density` and `numFont` are the two still to come, and
+ * they belong in the same place — beside the application rather than beside
+ * the port.
  */
 
 /*
@@ -135,6 +137,11 @@ const SettingsScreen = ({ machine }) => {
             <ConnectScreen machine={machine} />
           ) : (
             <Card label={t('settings.app')} className="flex-1" bodyClassName="gap-4">
+              {/* How the panel looks comes before what it is installed as:
+                * it is the one thing on this tab that changes something the
+                * operator is looking at while they change it. */}
+              <ThemeChoice />
+              <span className="h-px bg-line" />
               <AppScreen />
             </Card>
           )}

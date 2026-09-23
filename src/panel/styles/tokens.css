@@ -19,6 +19,20 @@
   --line: #dde2e9;
   --field: #f7f8fa;
 
+  /*
+   * How much of the ink a scrim lays over what it dims.
+   *
+   * Here rather than in the Tailwind config, where it was, because two things
+   * need it and one of them is not CSS: `ui/themeColor` composites it over
+   * `--panel` to colour the Android status bar while a sheet is open,
+   * otherwise the bar stays intensely white above a panel that has just gone
+   * grey. A number written down twice is a number that drifts.
+   *
+   * Not per theme. The dim is the same proportion of whatever the ink is, and
+   * the ink is what already changes.
+   */
+  --scrimA: 45%;
+
   /* Ink */
   --ink: #18222e;
   --mut: #6d7886;
