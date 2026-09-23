@@ -145,17 +145,24 @@ const FadeScroller = ({ className = '', children }) => {
         * jest parent kontenera scrolowanego"* (2026-09-23, with the state help
         * sheet as the example).
         *
-        * Half the container's padding out, so it rides in the space the
-        * parent already leaves rather than in the space the text needs. The
-        * token rather than a number, because `--pad` is 26px at the panel,
-        * 18px in between and 16px on the compact density, and the gutter is
-        * whatever the parent decided.
+        * Against the outer edge of the parent's gutter, not halfway into it.
+        *
+        * It was half of `--pad` out, which assumed every container's padding
+        * *is* `--pad`. A sheet's is, and the content area's is `--shellPad` —
+        * ten rather than eighteen — so the same rule left the thumb five
+        * pixels from the text and nine from the edge in one place and hard
+        * against the screen in the other: *"po prawej jest duzo miejsca a
+        * teraz wyglada na sklejony z kontentem"*.
+        *
+        * So the parent says how much room it leaves and this sits two pixels
+        * inside it, the way a phone's own indicator hugs the edge. `--pad` is
+        * the default because most of the things that scroll here are cards.
         */}
       <span
         ref={thumb}
         aria-hidden="true"
         className={[
-          'pointer-events-none absolute right-[calc(-1*var(--pad)/2)] top-0 w-1 rounded-full bg-mut transition-opacity duration-300',
+          'pointer-events-none absolute right-[calc(2px-var(--thumbGutter,var(--pad)))] top-0 w-1 rounded-full bg-mut transition-opacity duration-300',
           'h-[var(--thumbH,0px)] translate-y-[var(--thumbY,0px)]',
           moving ? 'opacity-40' : 'opacity-0',
         ].join(' ')}

@@ -14,7 +14,16 @@ import HelpButton from './HelpButton';
  * the zeroing screen learned.
  */
 const Card = ({ label, aside, onHelp, helpLabel, row = false, className = '', bodyClassName = '', children }) => (
-  <section className={`flex min-w-0 flex-col rounded-card border border-line bg-panel p-pad ${className}`}>
+  <section
+    /*
+      * `--thumbGutter` so a scroller inside this card puts its indicator in
+      * *this* card's padding. It is inherited, so without it a card sitting
+      * in the content area would hand its scroller the shell's margin
+      * instead — ten pixels where the card leaves eighteen, and the thumb
+      * lands in the middle of the text. See `FadeScroller`.
+      */
+    className={`flex min-w-0 flex-col rounded-card border border-line bg-panel p-pad [--thumbGutter:var(--pad)] ${className}`}
+  >
     {(label || aside || onHelp) && (
       // `items-center` only when there is a button to centre against. A
       // baseline is right for two pieces of text and wrong for a square.

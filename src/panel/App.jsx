@@ -197,7 +197,7 @@ const Panel = ({ machine, screen, onScreen }) => {
           */}
         <main
           className={`flex min-h-0 min-w-0 flex-1 flex-col p-shellPad ${phone
-            ? 'relative pb-0 [&_section:last-child]:pb-[calc(var(--pad)+var(--navBite))]'
+            ? 'relative pb-0 [--thumbGutter:var(--shellPad)] [&_section:last-child]:pb-[calc(var(--pad)+var(--navBite))]'
             : ''}`}
         >
           {/*
