@@ -105,9 +105,13 @@ export const machineZeroIsGuess = (settings) => {
  * The work coordinate systems the firmware has reported, in machine
  * coordinates.
  *
- * These arrive only in answer to `$#`, and nothing in the server asks — see
- * `askForWorkOffsets` in `workOffsets.js`. Until something does, this is an
- * empty list rather than a wrong one.
+ * These arrive only in answer to `$#`, which `GrblController.initController`
+ * now sends beside `$$` when a port opens — on the server's own channel, so
+ * it answers even while the machine is in alarm. Before that nothing asked at
+ * all and this was empty on every client.
+ *
+ * Still empty rather than wrong when a controller has not answered: a
+ * coordinate system drawn at a guessed origin is worse than one not drawn.
  */
 export const workOrigins = (settings) => {
   const parameters = settings?.parameters || {};

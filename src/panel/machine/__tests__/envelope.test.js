@@ -100,9 +100,11 @@ describe('machineZeroIsGuess', () => {
 });
 
 describe('workOrigins', () => {
-  test('is empty when nothing has asked the machine for them', () => {
-    // The state every client is in today: the server parses `[G54:…]` and
-    // never causes one to be sent. See `workOffsets.js`.
+  test('is empty when the machine has not answered', () => {
+    // Empty rather than guessed. The server asks with `$#` at port open now,
+    // but a controller that has not answered yet, or one that does not speak
+    // Grbl, still leaves this blank — and a system drawn at an invented
+    // origin is worse than one not drawn.
     expect(workOrigins({ parameters: {} })).toEqual([]);
     expect(workOrigins(undefined)).toEqual([]);
   });

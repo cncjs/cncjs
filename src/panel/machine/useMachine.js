@@ -4,7 +4,6 @@ import { signIn } from './session';
 import { fetchOpenController } from './snapshot';
 import { readMachine } from './readings';
 import { measureLinkMs } from './latency';
-import { askForWorkOffsets } from './workOffsets';
 import { closePort, openPort } from './ports';
 import { t } from '../i18n';
 
@@ -84,9 +83,6 @@ export const useMachine = () => {
   const connect = useCallback(async (port, options) => {
     await openPort(port, options);
     setSnapshot((previous) => ({ ...previous, attached: true }));
-    // The one reading no part of the server ever sends unasked. See
-    // `workOffsets.js`.
-    askForWorkOffsets();
   }, []);
 
   /**
