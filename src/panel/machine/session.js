@@ -14,8 +14,29 @@
  */
 import { t } from '../i18n';
 
+/**
+ * A fetch whose failure is a sentence the panel wrote.
+ *
+ * `fetch` rejects with `TypeError: Failed to fetch` when there is nothing
+ * listening, and that string went straight into the status bar — the
+ * browser's words, in the browser's language, on a panel where every other
+ * displayed string comes from a key. It is also the single most likely thing
+ * an operator ever reads here: it is what a pendant says when the garage PC
+ * is off.
+ */
+const reach = async (url, options) => {
+  try {
+    return await fetch(url, options);
+  } catch (e) {
+    // The cause is carried even though nothing reads it: what reaches the
+    // operator is the sentence, and what reaches the console is still the
+    // browser's own reason for it.
+    throw new Error(t('error.unreachable'), { cause: e });
+  }
+};
+
 export const signIn = async ({ name = '', password = '' } = {}) => {
-  const res = await fetch('/api/signin', {
+  const res = await reach('/api/signin', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, password }),

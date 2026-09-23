@@ -2,8 +2,53 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--
+      No zoom, and the notch included.
+
+      `user-scalable=no` is normally a thing to be talked out of — pinch-zoom
+      is how people with poor sight read a page. This is not a page: it is a
+      control surface for a machine that moves, gripped in one hand beside a
+      spindle, and an accidental pinch that leaves the jog keys half off the
+      screen is worse than the problem it solves. The panel answers the same
+      need properly instead, by having a density setting and a type scale that
+      follows the format.
+
+      `viewport-fit=cover` so the frame reaches under a notch rather than
+      leaving the system's letterbox colour in the corners of a fullscreen app.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
     <title>CNCjs Panel</title>
+
+    <link rel="manifest" href="/panel/manifest.webmanifest">
+    <link rel="icon" href="/panel/icons/favicon.svg" type="image/svg+xml">
+
+    <!--
+      iOS reads none of the manifest. Both of these are how an iPhone learns
+      it is installing an application rather than bookmarking a page, and the
+      icon has to be a PNG at a literal path.
+    -->
+    <link rel="apple-touch-icon" href="/panel/icons/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Panel">
+    <!--
+      Translucent so the status bar takes the panel's own background instead
+      of a black band above it — which is what `viewport-fit=cover` above is
+      there to fill.
+    -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!--
+      Two, because the manifest has room for one.
+
+      `theme_color` paints the system bars around the app, and the panel has a
+      light theme and a dark one. A single value is right for one of them and
+      wrong for the other, and wrong here means a light strip above a dark
+      panel. The values are the token sheet's `--panel` for each theme; they
+      are written out because `<meta>` cannot read a custom property.
+    -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#141a21">
   </head>
   <body>
     <div id="panel-root"></div>

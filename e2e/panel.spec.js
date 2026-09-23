@@ -254,11 +254,30 @@ test.describe('panel, disconnected', () => {
       .click();
     await expect(cncjs.page.getByRole('button', { name: 'Refresh' })).toBeVisible();
 
+    /*
+     * Wait for the server's answer before deciding there is nothing to
+     * compare.
+     *
+     * `serialport:list` is an event, not the reply to the `list` call, so the
+     * rows arrive some time after the screen does. Counting them the moment
+     * the Refresh button appears asks the question too early: written that
+     * way this case skipped itself in a full run and passed in a run of this
+     * file alone, on the same computer, with the same ports — which is a
+     * green tick and a skipped tick both meaning "we did not look".
+     *
+     * So the wait is for the screen to have *answered*: either rows, or the
+     * sentence that says there are none.
+     */
     const ports = cncjs.page.getByRole('button', { name: /^(COM\d+|\/dev\/)/ });
+    const none = cncjs.page.getByText(/no serial ports/i);
+    await expect
+      .poll(async () => (await ports.count()) > 0 || (await none.count()) > 0, { timeout: 20000 })
+      .toBe(true);
+
     if (await ports.count() === 0) {
-      // Nothing to compare on a machine with no serial ports at all. Said out
-      // loud rather than passed silently: a green case that asserted nothing
-      // is the shape this suite has been bitten by before.
+      // Genuinely nothing to compare. Said out loud rather than passed
+      // silently: a green case that asserted nothing is the shape this suite
+      // has been bitten by before.
       test.skip(true, 'this computer has no serial ports');
     }
 
@@ -293,6 +312,132 @@ test.describe('panel, disconnected', () => {
       // controller to have reported one. Dead, rather than sending a line
       // into nothing.
       await expect(key).toBeDisabled();
+    }
+
+    cncjs.expectNoPageErrors();
+  });
+
+  test('can be installed as an application, and every icon it names exists', async ({ cncjs }) => {
+    /*
+     * The pendant is meant to live on a phone's home screen, which means the
+     * operating system reads files no part of the panel's code ever touches:
+     * a manifest, three PNGs and an `apple-touch-icon`. Webpack emits them
+     * only because `src/panel/assets.js` imports them, and the rule that
+     * matches them is a regular expression over an absolute path — one that
+     * was written with `[/]` instead of `[\/]` first and therefore matched
+     * nothing at all on Windows.
+     *
+     * That particular mistake is loud: with no rule matching, webpack has no
+     * loader for a PNG and the build fails. What this case is for is the
+     * quieter version of the same thing — a generator filename changed, an
+     * icon renamed in the manifest but not on disk, a path that is right in
+     * development and wrong under `publicPath`. The panel works perfectly
+     * without its icons, right up until somebody tries to install it.
+     */
+    await openPanel(cncjs.page);
+
+    const manifestHref = await cncjs.page.locator('link[rel="manifest"]').getAttribute('href');
+    const manifestRes = await cncjs.page.request.get(new URL(manifestHref, cncjs.page.url()).href);
+    expect(manifestRes.status(), 'the manifest is served').toBe(200);
+
+    const manifest = await manifestRes.json();
+    // Both, and both ending in a slash: `scope` decides what counts as being
+    // "in" the application, and a scope of `/panel` would let a link to
+    // `/panelling` open inside it while `/panel/` would not.
+    expect(manifest.scope).toBe('/panel/');
+    expect(manifest.start_url).toBe('/panel/');
+
+    // Fullscreen, with somewhere to fall back to. A browser that does not
+    // support the first takes the next one it knows rather than dropping all
+    // the way to a tab with an address bar.
+    expect(manifest.display).toBe('fullscreen');
+    expect(manifest.display_override[0]).toBe('fullscreen');
+
+    /*
+     * The two sizes Android asks for, and a maskable one beside them.
+     *
+     * `any` and `maskable` are two different pictures rather than two sizes
+     * of one: an `any` icon is drawn as it is and carries its own tile, a
+     * maskable one is cropped to the launcher's shape and is full-bleed.
+     * Shipping one as both gets it clipped on some phones and floating in a
+     * white pill on others.
+     */
+    const purposes = manifest.icons.map((icon) => `${icon.sizes} ${icon.purpose}`);
+    expect(purposes).toEqual(expect.arrayContaining([
+      '192x192 any', '512x512 any', '512x512 maskable',
+    ]));
+
+    // Every one of them actually there, at the URL the manifest gives.
+    for (const icon of manifest.icons) {
+      const href = new URL(icon.src, new URL(manifestHref, cncjs.page.url())).href;
+      const res = await cncjs.page.request.get(href);
+      expect(res.status(), `${icon.sizes} ${icon.purpose} is served`).toBe(200);
+      expect(res.headers()['content-type']).toContain('image/png');
+    }
+
+    // iOS reads none of the manifest and wants this instead.
+    const apple = await cncjs.page.locator('link[rel="apple-touch-icon"]').getAttribute('href');
+    expect((await cncjs.page.request.get(new URL(apple, cncjs.page.url()).href)).status()).toBe(200);
+
+    cncjs.expectNoPageErrors();
+  });
+
+  test('is a control surface rather than a page: no zoom, and a colour for each theme', async ({ cncjs }) => {
+    await openPanel(cncjs.page);
+
+    // Pinch-zoom leaves the jog keys half off a screen being held in one hand
+    // beside a spindle. The panel answers the same need with a density
+    // setting and a type scale that follows the format.
+    const viewport = await cncjs.page.locator('meta[name="viewport"]').getAttribute('content');
+    expect(viewport).toContain('user-scalable=no');
+    // Under the notch rather than letterboxed beside it.
+    expect(viewport).toContain('viewport-fit=cover');
+
+    /*
+     * Two `theme-color`s, one per scheme, because the manifest has room for
+     * one and the panel has two themes. A single value paints a light strip
+     * above a dark panel on half the phones that install it.
+     *
+     * Compared against the token sheet rather than against a literal: these
+     * are `--panel` for each theme, and a case that hard-coded the hex would
+     * go on passing after somebody changed the panel's own colour.
+     */
+    const themes = await cncjs.page.locator('meta[name="theme-color"]').evaluateAll(
+      (nodes) => nodes.map((node) => ({ media: node.media, content: node.content.toLowerCase() }))
+    );
+    expect(themes).toHaveLength(2);
+
+    const panelColour = (scheme) => cncjs.page.evaluate((want) => {
+      const probe = document.createElement('div');
+      probe.style.background = 'var(--panel)';
+      document.body.appendChild(probe);
+      const root = document.documentElement;
+      const had = root.getAttribute('data-theme');
+      root.setAttribute('data-theme', want);
+      const resolved = getComputedStyle(probe).backgroundColor;
+      if (had === null) {
+        root.removeAttribute('data-theme');
+      } else {
+        root.setAttribute('data-theme', had);
+      }
+      probe.remove();
+      return resolved;
+    }, scheme);
+
+    const asRgb = (hex) => {
+      const n = parseInt(hex.slice(1), 16);
+      /* eslint-disable no-bitwise */
+      return `rgb(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255})`;
+      /* eslint-enable no-bitwise */
+    };
+
+    for (const { media, content } of themes) {
+      const scheme = /dark/.test(media) ? 'dark' : 'light';
+      // Resolved through an element, because `--panel` is `#141a21` and
+      // `getComputedStyle` answers `rgb(20, 26, 33)` — comparing the two
+      // strings is an assertion that can never fail.
+      expect(asRgb(content), `theme-color for ${scheme} is the panel's own colour`)
+        .toBe(await panelColour(scheme));
     }
 
     cncjs.expectNoPageErrors();

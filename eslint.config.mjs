@@ -290,6 +290,29 @@ export default [
   // Scoped to this directory rather than turned off for the panel: everywhere
   // else the rule is checking real DOM and catching real typos.
   // ---------------------------------------------------------------------
+  // ---------------------------------------------------------------------
+  // The service worker runs in a worker scope, not in a page.
+  //
+  // `self`, `caches`, `clients` and the `install`/`activate`/`fetch` events
+  // are globals there and nowhere else, so the browser environment this
+  // config gives everything else declares none of them. Flat config has no
+  // `/* eslint-env serviceworker */` comment any more — it was removed in
+  // ESLint 9 — so the scope has to be said here.
+  // ---------------------------------------------------------------------
+  {
+    files: ['src/panel/sw.js'],
+    languageOptions: {
+      globals: {
+        self: 'readonly',
+        caches: 'readonly',
+        clients: 'readonly',
+        Response: 'readonly',
+        fetch: 'readonly',
+        URL: 'readonly',
+      },
+    },
+  },
+
   {
     files: ['src/panel/scene/**/*.jsx'],
     rules: {

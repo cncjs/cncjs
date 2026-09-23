@@ -240,6 +240,7 @@
   },
 
   "error": {
+    "unreachable": "serwer nie odpowiada",
     "signInFailed": "logowanie nie powiodło się: {{status}}",
     "noToken": "logowanie nie zwróciło tokenu",
     "controllerList": "nie udało się odczytać listy sterowników: {{status}}"

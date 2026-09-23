@@ -240,6 +240,7 @@
   },
 
   "error": {
+    "unreachable": "the server is not answering",
     "signInFailed": "sign-in failed: {{status}}",
     "noToken": "sign-in returned no token",
     "controllerList": "could not read the controller list: {{status}}"
