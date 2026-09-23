@@ -1173,8 +1173,55 @@ class GrblController {
       // $13=1 (report in inches)
       this.writeln('$$');
 
+      /*
+       * Where the work coordinate systems are.
+       *
+       * `GrblLineParserResultParameters` has always recognised
+       * `[G54:0.000,0.000,0.000]`, `GrblRunner` has always folded those into
+       * `settings.parameters`, and `addConnection` has always handed the
+       * result to every client that arrives. The one thing missing was
+       * anybody asking: **`$#` appeared nowhere in `src/server`**, so
+       * `parameters` was an empty object on every client, forever, unless
+       * somebody typed it into the console by hand.
+       *
+       * Beside `$$` and on the same channel, which is the whole point.
+       * `write` goes straight to the connection, so this passes while the
+       * machine is in alarm --- and a machine with homing enabled is in alarm
+       * from power-on until it is homed, which is exactly when a panel opens
+       * to look at it. The panel used to ask for itself through the feeder
+       * and the feeder drops every line in alarm, so it never got an answer
+       * when it most needed one.
+       *
+       * Measured on Grbl 1.1h in alarm, 2026-09-23: all six systems, `G28`,
+       * `G30`, `G92`, `TLO` and `PRB` came back in five milliseconds.
+       *
+       * The extra `ok` is the same shape as the one `$$` already produces
+       * here: the feeder is empty at port open, so it falls through to
+       * `feeder.next()` and does nothing.
+       *
+       * What this does *not* do is notice a later change. `G10` and `G92`
+       * rewrite these values, and asking again straight after one would
+       * consume the acknowledgement that belongs to the line that changed
+       * it --- see `src/panel/server-backlog.md`.
+       */
+      this.writeln('$#');
+
       await delay(50);
-      this.event.trigger('controller:ready');
+
+      /*
+       * The controller may be gone by now.
+       *
+       * Nobody awaits this method — both call sites fire it from a runner
+       * handler and move on — so a port closed inside these fifty
+       * milliseconds reaches `destroy()`, which drops `event` along with the
+       * connection, and the timer then throws into nothing. An unhandled
+       * rejection in a machine controller is the kind of thing that is
+       * noticed weeks later in a log, if at all.
+       *
+       * Found by a test that awaited `initController` and was blamed for a
+       * rejection another test had left in flight.
+       */
+      this.event?.trigger('controller:ready');
     }
 
     populateContext(context) {

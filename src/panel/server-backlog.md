@@ -64,6 +64,27 @@ coś ustawianego per maszyna, i czy dojazd ma być przez `G53`.
 
 ---
 
+## ~~Układy współrzędnych G54–G59 nigdy nie są odpytywane~~ — POŁOWA ZROBIONA 2026-09-23
+
+**`$#` idzie teraz obok `$$` w `GrblController.initController`.** Kanałem
+serwera (`write` pisze prosto na `connection`), więc przechodzi w alarmie —
+zmierzone na Grblu 1.1h: sześć układów, `G28`, `G30`, `G92`, `TLO` i `PRB`
+wróciły w pięć milisekund przy maszynie w alarmie. `addConnection` podaje
+zapamiętane `controller:settings` każdemu nowemu klientowi, więc `parameters`
+jest prawdziwe u wszystkich — także w starej aplikacji, która nie pytała
+wcale. `src/panel/machine/workOffsets.js` został skasowany razem z tą zmianą.
+
+**Co zostaje: odświeżenie po `G10`/`G92`.** Te komendy zmieniają te wartości,
+a serwer dalej pyta tylko przy otwarciu portu. Naiwne wysłanie `$#` zaraz po
+linii feedera **psuje kolejkę**: `ok` po `$#` jest nieodróżnialne od `ok` po
+linii, która przesunięcie zmieniła, więc maska skonsumowałaby potwierdzenie
+należące do feedera i feeder by stanął. Poprawnie trzeba zapytać dopiero, gdy
+nic innego nie jest w locie — i nigdy w trakcie programu, bo sender liczy
+znaki i linia, której nie wysłał, przepełni bufor Grbla. Serwer omija `$G` w
+czasie programu dokładnie z tego powodu i to jest wzór do naśladowania.
+
+Poniżej zostaje oryginalny opis, bo tłumaczy, skąd to się wzięło.
+
 ## Układy współrzędnych G54–G59 nigdy nie są odpytywane
 
 **Panel chciał:** narysować na ekranie Ścieżka, gdzie w maszynie leżą kolejne

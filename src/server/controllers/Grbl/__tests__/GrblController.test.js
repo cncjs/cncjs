@@ -1079,3 +1079,29 @@ describe('GrblController', () => {
     });
   });
 });
+
+describe('initController', () => {
+  test('asks for the settings and for the work coordinate systems', async () => {
+    const { controller, writes } = createController(GrblController);
+    await controller.initController();
+
+    // `$#` is the one that was missing. `GrblLineParserResultParameters` has
+    // always understood the `[G54:…]` lines it produces and `addConnection`
+    // has always handed the result to every client, but nothing in the server
+    // ever asked -- so `settings.parameters` was empty everywhere, forever.
+    expect(writes.map((write) => write.data)).toEqual(['$$\n', '$#\n']);
+  });
+
+  test('sends them on the channel that works in alarm', async () => {
+    const { controller, writes } = createController(GrblController);
+    await controller.initController();
+
+    // Straight at the connection rather than through the feeder, which
+    // discards every line while the machine is in alarm -- and a machine with
+    // homing enabled is in alarm from power-on until it is homed, which is
+    // exactly when a panel opens to look at it. That is why the panel's own
+    // `$#`, sent as a `gcode` command, never once got an answer.
+    expect(writes.every((write) => write.context === undefined)).toBe(true);
+    expect(controller.feeder.size()).toBe(0);
+  });
+});
