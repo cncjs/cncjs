@@ -19,6 +19,7 @@
  */
 const fs = require('fs');
 const http = require('http');
+const https = require('https');
 const path = require('path');
 
 const PORT = Number(process.env.REVIEW_PORT || 8765);
@@ -89,13 +90,29 @@ const send = (res, status, body, type = 'application/json') => {
     // repository and only runs when somebody starts it by hand.
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, X-From-Overlay',
     'Cache-Control': 'no-store',
   });
   res.end(body);
 };
 
-const server = http.createServer((req, res) => {
+/*
+ * The same scheme as the panel, when the panel has one.
+ *
+ * The overlay is a subresource of the page being reviewed, so if that page is
+ * HTTPS and this is not, the browser refuses it as mixed content -- and says
+ * so as "this page contains insecure resources", which reads like a broken
+ * certificate rather than a broken review tool. Since the panel is served
+ * over TLS to reach a phone at all, this follows it.
+ *
+ * The same certificate, because it already names every address this machine
+ * answers to; a second one would be a second thing to trust.
+ */
+const CERT = path.join(__dirname, '..', 'certs', 'cnc.crt');
+const KEY = path.join(__dirname, '..', 'certs', 'cnc.key');
+const secure = fs.existsSync(CERT) && fs.existsSync(KEY);
+
+const handler = (req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
 
   if (req.method === 'OPTIONS') {
@@ -160,10 +177,29 @@ const server = http.createServer((req, res) => {
     });
   }
 
+  /*
+   * Clearing the whole board is the overlay's button and nobody else's.
+   *
+   * Claude emptied it after working two notes, and two more had arrived in
+   * the meantime -- read, never seen, deleted. They survived only because
+   * this file prints every note it accepts. *"zakaz czyszczenia tablicy w
+   * calosci, tylko po id i tylko jak zweryfikujesz czy zrobiles"*
+   * (2026-09-23).
+   *
+   * A header rather than a promise to be careful. The overlay sends it
+   * because a person clicked something; anything reaching this port with
+   * curl gets told no.
+   */
   if (url.pathname === '/notes' && req.method === 'DELETE') {
+    if (req.headers['x-from-overlay'] !== '1') {
+      console.log('  (odmowa: czyszczenie calej tablicy tylko z nakladki)');
+      return send(res, 403, JSON.stringify({
+        error: 'Clearing the whole board is the overlay button. Delete notes one at a time, by id, once each is done.',
+      }));
+    }
     write([]);
     setHeld(true);
-    console.log('  (wyczyszczono, wstrzymane z powrotem)');
+    console.log('  (wyczyszczono z nakladki, wstrzymane z powrotem)');
     return send(res, 200, '[]');
   }
 
@@ -189,11 +225,16 @@ const server = http.createServer((req, res) => {
   }
 
   return send(res, 404, JSON.stringify({ error: 'not found' }));
-});
+
+};
+
+const server = secure
+  ? https.createServer({ cert: fs.readFileSync(CERT), key: fs.readFileSync(KEY) }, handler)
+  : http.createServer(handler);
 
 server.listen(PORT, () => {
   const bookmarklet = `javascript:(function(){var s=document.createElement('script');` +
-    `s.src='http://localhost:${PORT}/overlay.js?'+Date.now();` +
+    `s.src=location.protocol+'//'+location.hostname+':${PORT}/overlay.js?'+Date.now();` +
     'document.body.appendChild(s);})()';
 
   console.log(`
@@ -205,7 +246,7 @@ albo wklej go w pasek adresu na stronie panelu.
 
 ${bookmarklet}
 
-Potem: otwórz http://localhost:8000/panel/, kliknij zakładkę, kliknij
+Potem: otwórz panel (ten sam adres, z którego go oglądasz), kliknij zakładkę, kliknij
 "Komentarz" i wskaż miejsce.
 
 Tablica startuje WSTRZYMANA. Uwagi się zbierają i nikt ich nie rusza,

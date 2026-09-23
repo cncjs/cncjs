@@ -38,57 +38,54 @@ test.describe('panel, disconnected', () => {
   test('says there is no machine rather than showing an idle one', async ({ cncjs }) => {
     await openPanel(cncjs.page);
 
-    // Not "Idle", not an empty chip. "Rozłączony" is the answer to "why did
-    // nothing happen when I pressed that", and it is a state an operator acts
-    // on. In Polish because the chip is translated now — it used to say
-    // `Disconnected` on an otherwise Polish panel, which is what having no
-    // resources at all looks like from the outside.
-    await expect(bar(cncjs.page)).toContainText(/rozłączony/i);
+    // Not "Idle", not an empty chip, and not "Rozłączony" either — which it
+    // said until 2026-09-23 and which was ambiguous: it read as "the panel is
+    // disconnected" and meant "the server is fine, no port is open". The chip
+    // now names the rung that is missing, and this is the third of three:
+    // server, port, reading.
+    await expect(bar(cncjs.page)).toContainText(/brak portu/i);
   });
 
-  test('no connection is said as a warning, not as another setting', async ({ cncjs }) => {
+  test('the state chip is the way to what is wrong and what to do about it', async ({ cncjs }) => {
     await openPanel(cncjs.page);
 
-    // The form, not the words. This used to be written as two more muted
-    // identity lines beside `sterownik · Grbl`, which is the panel's voice
-    // for facts nobody looks at — and it is the reason every control below
-    // is dead. Rejected on sight by Mateusz, 2026-09-21.
-    // Pinned to the settled state first. Without this the case passes during
-    // the window between the page loading and the socket attaching — which is
-    // a pass for the wrong reason, and it would go on passing after somebody
-    // deleted the badge.
-    await expect(bar(cncjs.page)).toContainText(/rozłączony/i);
-
-    const message = bar(cncjs.page).getByText(/Brak połączenia/i);
-    await expect(message).toBeVisible();
-
-    const drawn = await message.evaluate((node) => {
-      const style = getComputedStyle(node);
-      return { color: style.color, border: style.borderTopWidth };
-    });
+    /*
+     * Pinned to the settled state first. Without this the case passes during
+     * the window between the page loading and the socket attaching, which is
+     * a pass for the wrong reason.
+     */
+    await expect(bar(cncjs.page)).toContainText(/brak portu/i);
 
     /*
-     * `--mut` is the muted grey the identity lines are written in. Anything
-     * but that, and a box around it.
+     * One control about one fact.
      *
-     * Resolved through an element rather than read off the root: the custom
-     * property is `#6d7886` and `getComputedStyle().color` is
-     * `rgb(109, 120, 134)`, so comparing the two strings is an assertion that
-     * can never fail. It did not fail when the badge was deliberately turned
-     * back into muted text, which is how that was found.
+     * The warning was a muted identity line, then an amber badge beside the
+     * chip, then a triangle beside the stop. All three were a second control
+     * saying that what the chip already said was a problem, and on
+     * 2026-09-23 it went: *"klikalny bagde ze statusem … wtedy pomaranczoyw
+     * badge z headera bny zniknal"*.
+     *
+     * So: nothing amber on the bar, and the chip opens the sheet.
      */
-    const muted = await cncjs.page.evaluate(() => {
-      const probe = document.createElement('span');
-      probe.style.color = 'var(--mut)';
-      document.body.appendChild(probe);
-      const resolved = getComputedStyle(probe).color;
-      probe.remove();
-      return resolved;
-    });
+    await expect(bar(cncjs.page).getByText(/Brak połączenia/i)).toHaveCount(0);
 
-    expect(muted).toMatch(/^rgb/);
-    expect(drawn.color).not.toBe(muted);
-    expect(drawn.border).not.toBe('0px');
+    await bar(cncjs.page).getByRole('button', { name: 'Stan maszyny' }).click();
+
+    // What it is, what to do, and where the rest is written down.
+    await expect(cncjs.page.getByText(/Żaden port nie jest otwarty/i)).toBeVisible();
+    await expect(cncjs.page.getByRole('button', { name: 'Co znaczą stany' })).toBeVisible();
+
+    /*
+     * And the way out. A state with nothing to press is a dead end — the
+     * screen that fixes this one is several taps away through a menu the
+     * operator would have to think about first.
+     */
+    const go = cncjs.page.getByRole('button', { name: 'Przejdź do połączenia' });
+    await expect(go).toBeVisible();
+    await go.click();
+    await expect(cncjs.page.getByRole('button', { name: 'Odśwież' })).toBeVisible();
+
+    cncjs.expectNoPageErrors();
   });
 
   test('the stop is there and cannot be pressed at nothing', async ({ cncjs }) => {
@@ -220,10 +217,17 @@ test.describe('panel, disconnected', () => {
     // and a panel that cannot reach a machine without the thing it replaces
     // is not a replacement.
     await openPanel(cncjs.page);
-    await rail(cncjs.page).getByRole('button', { name: 'Połączenie' }).click();
+    // The connection lives inside Settings since 2026-09-23 — *"connection
+    // trafia do zakladki ustawienia, ustawienia na samym dole"*.
+    await rail(cncjs.page).getByRole('button', { name: 'Ustawienia' }).click();
 
     const refresh = cncjs.page.getByRole('button', { name: 'Odśwież' });
     await expect(refresh).toBeVisible();
+
+    // The list is behind a line that says which port is chosen, at every
+    // width — *"zakladamy ze ten rozmiar to tablet, wiec raczej dotykowy i
+    // mozemy zrobic przyciski i sheet"*.
+    await cncjs.page.getByRole('button', { name: /^Wybierz port/ }).click();
 
     /*
      * Either ports or a sentence saying there are none — never both, and
@@ -251,9 +255,10 @@ test.describe('panel, disconnected', () => {
     await openPanel(cncjs.page, 'en');
     await cncjs.page
       .getByRole('navigation', { name: 'Navigation' })
-      .getByRole('button', { name: 'Connection' })
+      .getByRole('button', { name: 'Settings' })
       .click();
     await expect(cncjs.page.getByRole('button', { name: 'Refresh' })).toBeVisible();
+    await cncjs.page.getByRole('button', { name: /^Choose a port/ }).click();
 
     /*
      * Wait for the server's answer before deciding there is nothing to
@@ -284,9 +289,10 @@ test.describe('panel, disconnected', () => {
 
     const english = await ports.first().innerText();
     await openPanel(cncjs.page, 'pl');
-    await rail(cncjs.page).getByRole('button', { name: 'Połączenie' }).click();
+    await rail(cncjs.page).getByRole('button', { name: 'Ustawienia' }).click();
     await expect(cncjs.page.getByRole('button', { name: 'Odśwież' })).toBeVisible();
 
+    await cncjs.page.getByRole('button', { name: /^Wybierz port/ }).click();
     const polish = await cncjs.page
       .getByRole('button', { name: /^(COM\d+|\/dev\/)/ }).first().innerText();
 
@@ -348,11 +354,19 @@ test.describe('panel, disconnected', () => {
     expect(manifest.scope).toBe('/panel/');
     expect(manifest.start_url).toBe('/panel/');
 
-    // Fullscreen, with somewhere to fall back to. A browser that does not
-    // support the first takes the next one it knows rather than dropping all
-    // the way to a tab with an address bar.
-    expect(manifest.display).toBe('fullscreen');
-    expect(manifest.display_override[0]).toBe('fullscreen');
+    /*
+     * `standalone`, and it is a decision rather than a default.
+     *
+     * It was `fullscreen`, which hides both system bars and lets them be
+     * called back with a swipe from the edge. Android resizes the window when
+     * one appears, so every unit the layout is measured in changes at once
+     * and the whole panel jumps -- reported from an installed app on
+     * 2026-09-23, after three CSS attempts that could not have fixed it.
+     * Standalone keeps both bars permanently, so there is nothing to reveal
+     * and the window never changes size.
+     */
+    expect(manifest.display).toBe('standalone');
+    expect(manifest.display_override[0]).toBe('standalone');
 
     /*
      * The two sizes Android asks for, and a maskable one beside them.
@@ -395,18 +409,24 @@ test.describe('panel, disconnected', () => {
     expect(viewport).toContain('viewport-fit=cover');
 
     /*
-     * Two `theme-color`s, one per scheme, because the manifest has room for
-     * one and the panel has two themes. A single value paints a light strip
-     * above a dark panel on half the phones that install it.
+     * One `theme-color`, and script keeps it in step with the panel.
      *
-     * Compared against the token sheet rather than against a literal: these
-     * are `--panel` for each theme, and a case that hard-coded the hex would
-     * go on passing after somebody changed the panel's own colour.
+     * It was a pair keyed on `prefers-color-scheme`, which was wrong twice.
+     * The panel has no system-following theme at all -- `[data-theme='dark']`
+     * in the token sheet is the only thing that switches it -- so a tag keyed
+     * on the phone's preference promised something the panel does not do. And
+     * a browser uses the *first* matching tag, so on a phone in dark mode the
+     * status bar stayed dark above a white panel, measured after a reinstall.
+     *
+     * Compared against the token sheet rather than a literal: the tag carries
+     * `--panel`, and a case that hard-coded the hex would go on passing after
+     * somebody changed the panel's own colour.
      */
     const themes = await cncjs.page.locator('meta[name="theme-color"]').evaluateAll(
       (nodes) => nodes.map((node) => ({ media: node.media, content: node.content.toLowerCase() }))
     );
-    expect(themes).toHaveLength(2);
+    expect(themes).toHaveLength(1);
+    expect(themes[0].media, 'the one tag answers for every scheme').toBe('');
 
     const panelColour = (scheme) => cncjs.page.evaluate((want) => {
       const probe = document.createElement('div');
@@ -432,14 +452,22 @@ test.describe('panel, disconnected', () => {
       /* eslint-enable no-bitwise */
     };
 
-    for (const { media, content } of themes) {
-      const scheme = /dark/.test(media) ? 'dark' : 'light';
-      // Resolved through an element, because `--panel` is `#141a21` and
-      // `getComputedStyle` answers `rgb(20, 26, 33)` — comparing the two
-      // strings is an assertion that can never fail.
-      expect(asRgb(content), `theme-color for ${scheme} is the panel's own colour`)
-        .toBe(await panelColour(scheme));
-    }
+    // Resolved through an element, because `--panel` is `#ffffff` and
+    // `getComputedStyle` answers `rgb(255, 255, 255)` -- comparing the two
+    // strings is an assertion that can never fail.
+    expect(asRgb(themes[0].content), "the tag carries the panel's own colour")
+      .toBe(await panelColour('light'));
+
+    /*
+     * And it follows the theme rather than being written once. This is the
+     * half that the pair of tags could not do at all.
+     */
+    await cncjs.page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+    await expect
+      .poll(() => cncjs.page.locator('meta[name="theme-color"]').first()
+        .evaluate((node) => node.content.toLowerCase()))
+      .toBe('#141a21');
+    await cncjs.page.evaluate(() => document.documentElement.removeAttribute('data-theme'));
 
     cncjs.expectNoPageErrors();
   });
@@ -452,7 +480,9 @@ test.describe('panel, disconnected', () => {
     await openPanel(cncjs.page, 'en');
 
     await expect(cncjs.page.getByRole('navigation', { name: 'Navigation' })).toBeVisible();
-    await expect(bar(cncjs.page).getByText(/No connection to the controller/i)).toBeVisible();
+    await bar(cncjs.page).getByRole('button', { name: 'Machine state' }).click();
+    await expect(cncjs.page.getByText(/No port is open/i)).toBeVisible();
+    await cncjs.page.getByRole('button', { name: 'Done' }).click();
 
     // And the language is a choice, not the only one there is.
     await openPanel(cncjs.page, 'pl');

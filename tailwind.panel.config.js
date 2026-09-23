@@ -80,6 +80,7 @@ module.exports = {
     extend: {
       width: {
         coord: 'var(--coord)',
+        dialog: 'var(--dialogw)',
         hazard: 'var(--hazard-w)',
       },
       height: {
@@ -125,6 +126,42 @@ module.exports = {
          * Derived, so it keeps following `--rail` when a target changes it.
          */
         railInset: 'calc(var(--rail) - 12px)',
+        /*
+         * How far the phone's menu is parked below the screen.
+         *
+         * Eleven destinations in a grid five wide is three rows; one of them
+         * is showing, so two are hidden and the menu rises by exactly that
+         * when it opens. Derived from `--btnh`, so it keeps following the
+         * row height when a target changes it.
+         *
+         * If a twelfth destination ever appears this becomes three rows.
+         * There is no way to say `ceil(n / 5) - 1` in a stylesheet, and a
+         * class assembled at runtime is one Tailwind never sees — so the
+         * arithmetic lives here, with the count it depends on written down.
+         */
+        navHidden: 'calc(var(--btnh) * 2)',
+        /*
+         * The strip a phone will not let anything be drawn in.
+         *
+         * A rounded screen cuts the corners off the bottom row, and the panel
+         * asks for the whole display with `viewport-fit=cover` — so it is the
+         * panel's job to keep out of it: *"na telefonie przyciski sa bardzo
+         * blisko krawedzi i na zaokroglonym ekranie telefonu prawie wychodza
+         * za ekran"*. Zero on everything that is not a phone.
+         */
+        safeB: 'env(safe-area-inset-bottom, 0px)',
+
+        /*
+         * And the other edge, for the same reason.
+         *
+         * The menu had kept itself off the bottom since the rounded-corner
+         * round; the top bar had nothing, so on a notched phone asking for
+         * the whole display it ran underneath the notch. Padding it on the
+         * `body` instead was the first try and showed the page colour as a
+         * grey strip above the bar — the edge belongs to whatever is drawn
+         * against it.
+         */
+        safeT: 'env(safe-area-inset-top, 0px)',
         frame: 'var(--w)',
         frameh: 'var(--h)',
       },

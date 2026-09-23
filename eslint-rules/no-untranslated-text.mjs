@@ -41,6 +41,12 @@ const NOT_DISPLAYED = new Set([
   'd', 'viewBox', 'fill', 'stroke', 'strokeWidth', 'strokeLinecap',
   'strokeLinejoin', 'opacity', 'focusable', 'cx', 'cy', 'r', 'x', 'y',
   'width', 'height', 'transform', 'points', 'x1', 'x2', 'y1', 'y2',
+  // The same category, added 2026-09-23 for the navigation's drawn edge:
+  // `preserveAspectRatio="none"` lets a path stretch to a fifth of the
+  // screen, and `vectorEffect="non-scaling-stroke"` keeps its hairline one
+  // pixel while it does. Both are words, and neither is language — nobody
+  // reads them and no translation of them would mean anything.
+  'preserveAspectRatio', 'vectorEffect',
 ]);
 
 /** Object properties that hold a displayed string in the `.js` data modules. */

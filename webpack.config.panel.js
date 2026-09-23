@@ -231,7 +231,7 @@ module.exports = ({ mode, outputPath }) => ({
         try {
           if (sessionStorage.getItem('rv-on') === '1') {
             var s = document.createElement('script');
-            s.src = 'http://localhost:8765/overlay.js?' + Date.now();
+            s.src = location.protocol + '//' + location.hostname + ':8765/overlay.js?' + Date.now();
             document.addEventListener('DOMContentLoaded', function () {
               document.body.appendChild(s);
             });

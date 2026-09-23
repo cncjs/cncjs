@@ -8,41 +8,38 @@
     "files": "Pliki",
     "path": "Ścieżka",
     "probe": "Sonda",
+    "diagShort": "Diag",
     "diag": "Diagnostyka",
     "alarms": "Alarmy",
     "settings": "Ustawienia",
     "homing": "Bazowanie",
     "mdi": "MDI",
-    "connect": "Połączenie",
-    "connectShort": "Port"
+    "more": "Więcej"
   },
-
   "topbar": {
     "controller": "sterownik",
     "port": "port",
-    "disconnected": "Brak połączenia ze sterownikiem",
-    "stop": "Stop"
+    "state": "Stan maszyny",
+    "stop": "Stop",
+    "update": "Nowsza wersja panelu — dotknij, żeby odświeżyć"
   },
-
   "status": {
-    "disconnected": "Rozłączony",
     "noServer": "Brak serwera",
     "connecting": "Łączenie",
-    "connected": "Połączony"
+    "noPort": "Brak portu",
+    "attaching": "Przypinanie",
+    "noReading": "Brak odczytu"
   },
-
   "sheet": {
     "close": "Zamknij",
     "done": "Gotowe"
   },
-
   "units": {
     "mm": "mm",
     "mmPerMin": "mm/min",
     "rpm": "obr/min",
     "baud": "bodów"
   },
-
   "axis": {
     "x": "X",
     "y": "Y",
@@ -50,7 +47,6 @@
     "z": "Z",
     "xyz": "XYZ"
   },
-
   "jog": {
     "pad": "Jog",
     "xPlus": "X+",
@@ -68,7 +64,6 @@
     "speedFor": "Prędkość {{axes}}",
     "sheet": "Jog {{axes}}"
   },
-
   "shortcuts": {
     "title": "Skróty klawiszowe",
     "key": {
@@ -104,12 +99,10 @@
       "note": "Po puszczeniu klawisza maszyna reaguje po {{total}} ms — {{parts}} — a droga powyżej to ten czas plus hamowanie. Serwer mierzy swój własny zegar w trakcie jogu, więc liczba opisuje ten komputer przy tej pracy."
     }
   },
-
   "dro": {
     "work": "Pozycja robocza",
     "position": "Pozycja"
   },
-
   "job": {
     "title": "Przebieg zadania",
     "noFile": "brak wczytanego pliku",
@@ -123,7 +116,6 @@
     "start": "Start zadania",
     "pause": "Pauza"
   },
-
   "tool": {
     "number": "T{{number}}",
     "title": "Narzędzie i wrzeciono",
@@ -133,7 +125,6 @@
     "feedOverride": "posuw",
     "spindleOverride": "wrzeciono"
   },
-
   "zheight": {
     "title": "Wysokość Z",
     "machine": "masz. {{value}} mm",
@@ -141,11 +132,9 @@
     "zeroXY": "Zeruj XY",
     "probeZ": "Sonduj Z"
   },
-
   "dashboard": {
     "probeZ": "Sonda Z"
   },
-
   "footer": {
     "state": "stan",
     "wcs": "układ",
@@ -154,7 +143,6 @@
     "program": "program",
     "size": "wymiary"
   },
-
   "scene": {
     "view": {
       "iso": "IZO",
@@ -163,7 +151,6 @@
       "right": "BOK"
     }
   },
-
   "stage": {
     "view": "Rzut",
     "frame": "Kadr",
@@ -176,7 +163,6 @@
     "goToPoint": "Jedź do wskazanego punktu",
     "goToPointNote": "Podnosi Z na górę zakresu, potem jedzie nad wskazany punkt (współrzędne maszynowe)"
   },
-
   "path": {
     "title": "Ścieżka",
     "preview": "Podgląd",
@@ -204,22 +190,50 @@
       "noSoftLimits": "Miękkie limity są wyłączone ($20=0). Obwiednia mówi, jak daleko sięgają osie — nic nie zatrzyma ruchu poza nią."
     }
   },
-
   "zero": {
     "title": "Zerowanie",
     "note": "Zerowanie niczym nie rusza. Przepisuje przesunięcie między współrzędnymi maszynowymi a roboczymi tak, żeby miejsce, w którym narzędzie jest teraz, czytało się jako zero.",
     "noWcs": "Sterownik nie podał czynnego układu współrzędnych, więc nie ma czego bezpiecznie wyzerować. G10 L20 musi go nazwać, a zgadywanie wychodzi na jaw dopiero wtedy, gdy narzędzie pojedzie pod napięciem w złe miejsce.",
-    "alarm": "Maszyna jest w alarmie i nic, co tu napisane, do niej nie dojdzie — serwer wyrzuca wiersz G-code, zamiast go wysłać, niezależnie od tego, co pokazuje panel. Najpierw zbazuj albo odblokuj maszynę.",
     "x": "Zeruj X",
     "y": "Zeruj Y",
     "z": "Zeruj Z",
     "xy": "Zeruj XY",
     "xyz": "Zeruj XYZ"
   },
-
+  "settings": {
+    "connection": "Połączenie",
+    "app": "Aplikacja"
+  },
+  "app": {
+    "install": "Zainstaluj na tym urządzeniu",
+    "installed": "Zainstalowano",
+    "ready": "Ta przeglądarka jest gotowa go zainstalować.",
+    "notYet": "Ta przeglądarka jeszcze nie zaproponowała instalacji. Zwykle pyta, gdy strona zostanie użyta raz czy dwa.",
+    "certWarning": "Ten urząd certyfikacji jest ograniczony do nazw w Twojej własnej sieci — nie może poświadczyć żadnej strony w internecie. Mimo to instaluj go tylko dla maszyny, która jest Twoja, w sieci, która jest Twoja.",
+    "certWhere": "Android: wybierz „Certyfikat CA”, a nie „certyfikat VPN i aplikacji”, i ustaw najpierw blokadę ekranu, jeśli jej nie masz.",
+    "certLife": "Urząd ważny rok, certyfikat serwera 30 dni. Serwer wymienia swój sam; urząd po roku przestaje działać i wtedy trzeba zainstalować nowy, a stary usunąć w ustawieniach telefonu — wygasły nie znika sam.",
+    "certTitle": "Certyfikat urzędu",
+    "certWhat": "Ten plik instaluje się na telefonie raz. Bez niego telefon nie uzna połączenia z panelem za bezpieczne i nie pozwoli zainstalować aplikacji.",
+    "certName": "Nazwa na telefonie",
+    "certValidTo": "Ważny do",
+    "certFingerprint": "Odcisk SHA-256",
+    "certDownload": "Pobierz certyfikat",
+    "refresh": "Odśwież panel",
+    "refreshWhy": "Pobiera z serwera najnowszą wersję panelu.",
+    "updateReady": "Na serwerze czeka nowsza wersja panelu. Odśwież, żeby ją wziąć."
+  },
+  "notice": {
+    "warning": "Ostrzeżenie"
+  },
   "connect": {
     "title": "Połączenie",
-    "controller": "Sterownik",
+    "choosePort": "Wybierz port",
+    "trust": {
+      "insecure": "Ten panel jest serwowany bez szyfrowania, więc telefon nie zainstaluje go jako aplikacji. Uruchom serwer z certyfikatem — patrz scripts/serve-panel.sh.",
+      "untrusted": "To urządzenie nie ufa certyfikatowi panelu, więc nie zainstaluje go jako aplikacji. Kliknięcie „mimo to przejdź” nie wystarczy: strona się wczyta, a połączenie zostaje niezaufane."
+    },
+    "server": "serwer",
+    "controller": "Typ sterownika",
     "baudrate": "Prędkość transmisji",
     "refresh": "Odśwież",
     "connect": "Połącz",
@@ -229,20 +243,68 @@
     "noPorts": "Ten komputer nie ma portów szeregowych.",
     "openFailed": "Port się nie otworzył. Może go trzymać inny program albo został odłączony od czasu sporządzenia listy.",
     "closeFailed": "Port się nie zamknął.",
-    "alarm": "Maszyna jest w alarmie. Otwarcie portu resetuje Grbl, a przy włączonym bazowaniu ($22=1) maszyna nie ruszy, dopóki nie zostanie zbazowana albo odblokowana. Panel jej za Ciebie nie odblokuje."
+    "clashController": "Port {{port}} jest już otwarty jako {{actual}} przez innego klienta. Rozłącz go tam, zanim otworzysz jako {{asked}}.",
+    "clashBaudrate": "Port {{port}} jest już otwarty przy {{actual}} bodów przez innego klienta. Rozłącz go tam, zanim otworzysz przy {{asked}}."
   },
-
   "ports": {
     "state": {
       "open": "Ten panel",
       "inuse": "Zajęty"
     }
   },
-
+  "advice": {
+    "noServer": "Panel nie dosięga swojego serwera. Sprawdź, czy działa, na jakiego hosta jest skierowany, a jeśli idzie po HTTPS — czy certyfikat nie wygasł: przeglądarka nie powie, która z tych rzeczy to jest.",
+    "alarm": "Zbazuj maszynę albo ją odblokuj, zanim cokolwiek ruszy. Do tego czasu serwer nie wysyła niczego.",
+    "attaching": "Port jest otwarty i panel się do niego dopina. Nie ma nic do zrobienia, wystarczy chwilę poczekać.",
+    "noPort": "Żaden port nie jest otwarty. Wybierz jeden i połącz."
+  },
+  "alerts": {
+    "noDetail": "Panel nie ma nic bardziej szczegółowego do powiedzenia.",
+    "goConnect": "Przejdź do połączenia"
+  },
+  "stateHelp": {
+    "title": "Stany",
+    "open": "Co znaczą stany",
+    "sends": "Komendy dochodzą",
+    "drops": "Nic nie dochodzi",
+    "alarm": "Maszyna nie ruszy, dopóki nie zostanie zbazowana albo odblokowana. Panel jej za Ciebie nie odblokuje: to daje niezbazowanej maszynie zgodę na ruch, a co jest po drugiej stronie kabla, wiesz Ty.",
+    "door": "Wstrzymanie, które przyszło z zewnątrz — osłona albo blokada. Wygląda jak alarm i nim nie jest: maszyna wznawia, a komendy idą normalnie.",
+    "note": "Alarm to jedyny stan, w którym serwer odmawia wysłania — dla Grbla, Smoothie i TinyG wyrzuca wiersz, zamiast podać go maszynie, a kontrolki, które by pisały, są na ten czas wyłączone. Marlin nie zna alarmu w ogóle: jego bramka jest w kodzie, ale zawsze przepuszcza, więc tam nic nie jest wstrzymywane.",
+    "ours": "Stany panelu",
+    "firmware": "Sterownik",
+    "noServer": "Panel nie ma łączności ze swoim serwerem — a więc i z maszyną, bo to serwer ją prowadzi. Próbuje sam co pięć sekund.",
+    "connecting": "Panel właśnie nawiązuje łączność z serwerem. Trwa chwilę po starcie i po każdym zerwaniu.",
+    "noPort": "Serwer działa, ale żaden port nie jest otwarty. Maszyna może być włączona — nikt jej nie słucha.",
+    "attaching": "Port jest otwarty i panel dopina się do niego. Ułamek sekundy, nie ma nic do zrobienia.",
+    "noReading": "Panel jest dopięty, ale maszyna jeszcze nic o sobie nie powiedziała. To nie to samo co Idle: Idle deklaruje firmware, a tu panuje cisza. Komendy wychodzą z serwera na port — do kabla, nie do maszyny: skoro nic nie odpowiada, nie ma jak stwierdzić, czy cokolwiek je odbiera. Normalnie mija w ćwierć sekundy; jeśli zostaje, po drugiej stronie kabla nie ma sterownika.",
+    "unknown": "Stan zgłaszany przez firmware. Panel pokazuje go tak, jak przyszedł.",
+    "noStates": "Ten sterownik nie zgłasza stanu maszyny. Panel będzie pokazywał „Brak odczytu” przez całe połączenie — to nie jest usterka.",
+    "idle": "Maszyna stoi i czeka. Komendy idą od razu.",
+    "run": "Maszyna wykonuje ruch z programu.",
+    "jog": "Trwa ruch ręczny wywołany z panelu albo z pulpitu.",
+    "home": "Trwa bazowanie — maszyna szuka krańcówek.",
+    "hold": "Wstrzymanie posuwu. Ruch stoi i da się go wznowić.",
+    "check": "Tryb sprawdzania programu. Firmware czyta G-code i go nie wykonuje — nic się nie rusza.",
+    "sleep": "Uśpienie. Sterowniki osi są wyłączone, pozycja przepada; wymaga resetu.",
+    "initializing": "Sterownik dopiero wstaje.",
+    "stop": "Program zatrzymany przez M0 albo M1. Czeka na wznowienie.",
+    "end": "Program dobiegł końca — M2 albo M30.",
+    "probe": "Trwa cykl sondowania.",
+    "interlock": "Blokada bezpieczeństwa — obwód jest otwarty. Maszyna nie ruszy, dopóki się nie zamknie.",
+    "shutdown": "Sterownik wyłączył się po błędzie krytycznym. Panel nadal wysyła — to TinyG odmawia, aż do resetu.",
+    "panic": "Awaria krytyczna. Panel nadal wysyła; TinyG nie przyjmie niczego przed resetem.",
+    "blind": "Wysyłane w ciemno",
+    "alarmGrbl": "Maszyna nie ruszy, dopóki nie zostanie zbazowana albo odblokowana. Otwarcie portu resetuje Grbl, a przy włączonym bazowaniu ($22=1) właśnie tak wstaje. Panel jej za Ciebie nie odblokuje: to daje niezbazowanej maszynie zgodę na ruch, a co jest po drugiej stronie kabla, wiesz Ty."
+  },
   "error": {
     "unreachable": "serwer nie odpowiada",
     "signInFailed": "logowanie nie powiodło się: {{status}}",
     "noToken": "logowanie nie zwróciło tokenu",
     "controllerList": "nie udało się odczytać listy sterowników: {{status}}"
+  },
+  "layers": {
+    "server": "Serwer",
+    "port": "Port",
+    "machine": "Maszyna"
   }
 }

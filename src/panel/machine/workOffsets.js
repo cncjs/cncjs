@@ -21,6 +21,11 @@ import controller from './controller';
  * `feeder.on('data')` with `if (this.runner.isAlarm()) { this.feeder.reset();
  * return; }`, so the line is dropped by the server before it reaches a cable.
  *
+ * Three of them, strictly: `MarlinRunner.isAlarm()` is `return false // Not
+ * supported`, so on a Marlin that gate is code that never fires. Having the
+ * check and acting on it are not the same thing, and this file said they
+ * were.
+ *
  * This used to say the opposite: that `$#` is one of the few commands Grbl
  * answers in alarm, and that this mattered because a machine with homing
  * enabled sits in alarm from power-on until it is homed. The first half is

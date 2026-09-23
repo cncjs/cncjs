@@ -33,11 +33,23 @@ const TONES = {
  * a panel an arm's length away; at 390px it is a frame around nothing, and
  * the room it costs is the filename's.
  */
-const StateChip = ({ tone = 'inactive', children }) => {
+const StateChip = ({ tone = 'inactive', label, onPress, children }) => {
   const t = TONES[tone] || TONES.inactive;
 
+  /*
+   * A button, because it is the way to everything the panel knows about the
+   * state it is showing — what it means, what to do about it, and the help.
+   *
+   * It is the right thing to hang that on for the reason it was drawn this
+   * way in the first place: it is always there, in the same place, saying
+   * what the machine is doing. The amber warning badge that used to sit
+   * beside it was a second control about the same fact, and it is gone.
+   */
   return (
-    <div
+    <button
+      type="button"
+      aria-label={label}
+      onClick={onPress}
       className={[
         'flex shrink-0 items-center gap-1.5',
         'min-w-chip border-transparent bg-transparent px-0',
@@ -48,13 +60,14 @@ const StateChip = ({ tone = 'inactive', children }) => {
         '@3xl/shell:h-btnh @3xl/shell:w-railInset @3xl/shell:justify-center',
         '@3xl/shell:rounded-ctl @3xl/shell:border @3xl/shell:px-1.5',
         t.edge,
+        'transition-colors hover:brightness-95',
       ].join(' ')}
     >
       <span className={`size-[9px] shrink-0 rounded-full ${t.dot}`} aria-hidden="true" />
       <span className={`truncate text-cap font-semibold uppercase tracking-[0.06em] fullhd:text-lead ${t.text}`}>
         {children}
       </span>
-    </div>
+    </button>
   );
 };
 

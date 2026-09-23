@@ -8,41 +8,38 @@
     "files": "Files",
     "path": "Path",
     "probe": "Probe",
+    "diagShort": "Diag",
     "diag": "Diagnostics",
     "alarms": "Alarms",
     "settings": "Settings",
     "homing": "Homing",
     "mdi": "MDI",
-    "connect": "Connection",
-    "connectShort": "Port"
+    "more": "More"
   },
-
   "topbar": {
     "controller": "controller",
     "port": "port",
-    "disconnected": "No connection to the controller",
-    "stop": "Stop"
+    "state": "Machine state",
+    "stop": "Stop",
+    "update": "A newer panel is available — tap to reload"
   },
-
   "status": {
-    "disconnected": "Disconnected",
     "noServer": "No server",
     "connecting": "Connecting",
-    "connected": "Connected"
+    "noPort": "No port",
+    "attaching": "Attaching",
+    "noReading": "No reading"
   },
-
   "sheet": {
     "close": "Close",
     "done": "Done"
   },
-
   "units": {
     "mm": "mm",
     "mmPerMin": "mm/min",
     "rpm": "rpm",
     "baud": "baud"
   },
-
   "axis": {
     "x": "X",
     "y": "Y",
@@ -50,7 +47,6 @@
     "z": "Z",
     "xyz": "XYZ"
   },
-
   "jog": {
     "pad": "Jog",
     "xPlus": "X+",
@@ -68,7 +64,6 @@
     "speedFor": "Speed {{axes}}",
     "sheet": "Jog {{axes}}"
   },
-
   "shortcuts": {
     "title": "Keyboard shortcuts",
     "key": {
@@ -104,12 +99,10 @@
       "note": "After the key comes up the machine reacts in {{total}} ms — {{parts}} — and the distance above is that time plus braking. The server times its own clock while jogging, so the number describes this computer doing this work."
     }
   },
-
   "dro": {
     "work": "Work position",
     "position": "Position"
   },
-
   "job": {
     "title": "Job progress",
     "noFile": "no file loaded",
@@ -123,7 +116,6 @@
     "start": "Start job",
     "pause": "Pause"
   },
-
   "tool": {
     "number": "T{{number}}",
     "title": "Tool and spindle",
@@ -133,7 +125,6 @@
     "feedOverride": "feed",
     "spindleOverride": "spindle"
   },
-
   "zheight": {
     "title": "Z height",
     "machine": "mach. {{value}} mm",
@@ -141,11 +132,9 @@
     "zeroXY": "Zero XY",
     "probeZ": "Probe Z"
   },
-
   "dashboard": {
     "probeZ": "Probe Z"
   },
-
   "footer": {
     "state": "state",
     "wcs": "work offset",
@@ -154,7 +143,6 @@
     "program": "program",
     "size": "size"
   },
-
   "scene": {
     "view": {
       "iso": "ISO",
@@ -163,7 +151,6 @@
       "right": "SIDE"
     }
   },
-
   "stage": {
     "view": "View",
     "frame": "Frame",
@@ -176,7 +163,6 @@
     "goToPoint": "Travel to the marked point",
     "goToPointNote": "Lifts Z to the top of the range, then travels over the marked point (machine coordinates)"
   },
-
   "path": {
     "title": "Path",
     "preview": "Preview",
@@ -204,22 +190,50 @@
       "noSoftLimits": "Soft limits are switched off ($20=0). The envelope says how far the axes reach — nothing will stop a move beyond it."
     }
   },
-
   "zero": {
     "title": "Zeroing",
     "note": "Zeroing moves nothing. It rewrites the offset between machine and work coordinates so that where the tool is now reads as zero.",
     "noWcs": "The controller has not reported an active coordinate system, so there is nothing safe to zero. G10 L20 has to name one, and a guess is discovered by a tool moving to the wrong place under power.",
-    "alarm": "The machine is in alarm and nothing written here would reach it — the server drops a G-code line rather than sending it, whatever the panel shows. Home or unlock the machine first.",
     "x": "Zero X",
     "y": "Zero Y",
     "z": "Zero Z",
     "xy": "Zero XY",
     "xyz": "Zero XYZ"
   },
-
+  "settings": {
+    "connection": "Connection",
+    "app": "Application"
+  },
+  "app": {
+    "install": "Install on this device",
+    "installed": "Installed",
+    "ready": "This browser is ready to install it.",
+    "notYet": "This browser has not offered to install it yet. It usually asks after the page has been used once or twice.",
+    "certWarning": "This authority is limited to names on your own network — it cannot vouch for any site on the internet. Even so, install it only for a machine you own, on a network you own.",
+    "certWhere": "Android: choose “CA certificate” rather than “VPN and app certificate”, and set a screen lock first if you have none.",
+    "certLife": "The authority lasts a year, the server’s own certificate 30 days. The server replaces its own; after a year the authority stops working and a new one has to be installed, and the old one deleted in the phone’s settings — an expired one does not go away by itself.",
+    "certTitle": "Certificate authority",
+    "certWhat": "This file is installed on the phone once. Without it the phone will not treat the connection to the panel as secure, and will not install the application.",
+    "certName": "Name on the phone",
+    "certValidTo": "Valid until",
+    "certFingerprint": "SHA-256 fingerprint",
+    "certDownload": "Download the certificate",
+    "refresh": "Reload the panel",
+    "refreshWhy": "Fetches the newest panel from the server.",
+    "updateReady": "A newer panel is waiting on the server. Reload to take it."
+  },
+  "notice": {
+    "warning": "Warning"
+  },
   "connect": {
     "title": "Connection",
-    "controller": "Controller",
+    "choosePort": "Choose a port",
+    "trust": {
+      "insecure": "This panel is served without encryption, so a phone will not install it as an application. Start the server with a certificate — see scripts/serve-panel.sh.",
+      "untrusted": "This device does not trust the panel’s certificate, so it will not install it as an application. Clicking past the warning does not count: the page loads and the connection stays untrusted."
+    },
+    "server": "server",
+    "controller": "Controller type",
     "baudrate": "Baud rate",
     "refresh": "Refresh",
     "connect": "Connect",
@@ -229,20 +243,68 @@
     "noPorts": "This computer has no serial ports.",
     "openFailed": "The port would not open. Another program may be holding it, or it may have been unplugged since the list was made.",
     "closeFailed": "The port would not close.",
-    "alarm": "The machine is in alarm. Opening the port resets Grbl, and with homing switched on ($22=1) it will not move until it has been homed or unlocked. The panel will not unlock it for you."
+    "clashController": "Port {{port}} is already open as {{actual}} by another client. Disconnect it there before opening it as {{asked}}.",
+    "clashBaudrate": "Port {{port}} is already open at {{actual}} baud by another client. Disconnect it there before opening it at {{asked}}."
   },
-
   "ports": {
     "state": {
       "open": "This panel",
       "inuse": "In use"
     }
   },
-
+  "advice": {
+    "noServer": "The panel cannot reach its server. Check that it is running, which host this panel is pointed at, and -- if it is served over HTTPS -- whether the certificate has expired: a browser will not say which of those it is.",
+    "alarm": "Home the machine, or unlock it, before anything will move. Until then the server sends nothing at all.",
+    "attaching": "A port is open and the panel is attaching to it. Nothing to do but wait a moment.",
+    "noPort": "No port is open. Choose one and connect."
+  },
+  "alerts": {
+    "noDetail": "The panel has nothing more specific to say about it.",
+    "goConnect": "Go to the connection"
+  },
+  "stateHelp": {
+    "title": "States",
+    "open": "What the states mean",
+    "sends": "Commands arrive",
+    "drops": "Nothing arrives",
+    "alarm": "The machine will not move until it is homed or unlocked. The panel will not unlock it for you: that gives an unreferenced machine permission to move, and what is on the other end of the cable is your business.",
+    "door": "A hold that arrived from outside — a guard, or an interlock. It looks like an alarm and is not: the machine resumes, and commands are sent as usual.",
+    "note": "Alarm is the only state in which the server refuses to send — for Grbl, Smoothie and TinyG it drops the line rather than handing it to the machine, and the controls that would write are switched off while it lasts. Marlin has no notion of alarm at all: the gate is there in the code and always lets the line past, so nothing is ever held back on one.",
+    "ours": "Panel states",
+    "firmware": "Controller",
+    "noServer": "The panel cannot reach its server — and so cannot reach the machine, which the server drives. It retries by itself every five seconds.",
+    "connecting": "The panel is establishing its link to the server. A moment at startup and after any break.",
+    "noPort": "The server is up, but no port is open. The machine may well be powered — nobody is listening to it.",
+    "attaching": "The port is open and the panel is attaching to it. A fraction of a second, with nothing to do.",
+    "noReading": "The panel is attached, but the machine has not said anything about itself yet. Not the same as Idle: Idle is the firmware speaking, this is silence. Commands do leave the server for the port — for the cable, not for the machine: with nothing answering, there is no way to tell whether anything is receiving them. Normally gone within a quarter of a second; if it stays, there is no controller on the other end.",
+    "unknown": "A state reported by the firmware. The panel shows it exactly as it arrived.",
+    "noStates": "This controller reports no machine state at all. The panel will read “No reading” for the whole session — that is not a fault.",
+    "idle": "The machine is standing still and waiting. Commands go straight out.",
+    "run": "The machine is moving under a program.",
+    "jog": "A manual move, started from this panel or another.",
+    "home": "Homing — the machine is looking for its limit switches.",
+    "hold": "Feed hold. Motion has stopped and can be resumed.",
+    "check": "Program check. The firmware reads the G-code and does not run it — nothing moves.",
+    "sleep": "Asleep. The axis drivers are off and the position is lost; it takes a reset.",
+    "initializing": "The controller is still starting up.",
+    "stop": "Stopped by M0 or M1, waiting to be resumed.",
+    "end": "The program reached its end — M2 or M30.",
+    "probe": "A probing cycle is running.",
+    "interlock": "Safety interlock — the circuit is open. Nothing moves until it closes.",
+    "shutdown": "The controller shut down after a critical fault. The panel still sends — it is TinyG refusing, until a reset.",
+    "panic": "A critical failure. The panel still sends; TinyG will take nothing before a reset.",
+    "blind": "Sent blind",
+    "alarmGrbl": "The machine will not move until it is homed or unlocked. Opening the port resets Grbl, and with homing enabled ($22=1) that is exactly how it comes up. The panel will not unlock it for you: that gives an unreferenced machine permission to move, and what is on the other end of the cable is your business."
+  },
   "error": {
     "unreachable": "the server is not answering",
     "signInFailed": "sign-in failed: {{status}}",
     "noToken": "sign-in returned no token",
     "controllerList": "could not read the controller list: {{status}}"
+  },
+  "layers": {
+    "server": "Server",
+    "port": "Port",
+    "machine": "Machine"
   }
 }

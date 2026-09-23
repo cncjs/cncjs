@@ -29,6 +29,15 @@
       icon has to be a PNG at a literal path.
     -->
     <link rel="apple-touch-icon" href="/panel/icons/apple-touch-icon.png">
+    <!--
+      The same declaration Android reads, beside the one iOS reads.
+
+      Without it Chrome falls back to its own defaults for a page opened from
+      the home screen, which is a browser tab with a toolbar — and a toolbar
+      that slides in and out is the thing this panel spends its layout rules
+      trying not to be moved by.
+    -->
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Panel">
     <!--
@@ -39,16 +48,22 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <!--
-      Two, because the manifest has room for one.
+      One tag, and JavaScript keeps it in step.
 
-      `theme_color` paints the system bars around the app, and the panel has a
-      light theme and a dark one. A single value is right for one of them and
-      wrong for the other, and wrong here means a light strip above a dark
-      panel. The values are the token sheet's `--panel` for each theme; they
-      are written out because `<meta>` cannot read a custom property.
+      `theme_color` paints the system bars around an installed app and the
+      panel has a light theme and a dark one, so this began as a pair keyed on
+      `prefers-color-scheme`. That was wrong twice over. The panel has no
+      system-following theme at all -- `[data-theme='dark']` in the token
+      sheet is the only thing that switches it -- so a tag keyed on the
+      phone's preference promised something the panel does not do. And with
+      several tags a browser uses the *first* whose media matches, so a tag
+      added later by script could never win: on a phone in dark mode the
+      status bar stayed dark above a white panel, after a reinstall, measured.
+
+      So: one tag, the light value for the moment before the bundle runs, and
+      `ui/themeColor` rewrites its content from `--panel` from then on.
     -->
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#141a21">
+    <meta id="theme-color-live" name="theme-color" content="#ffffff">
   </head>
   <body>
     <div id="panel-root"></div>

@@ -17,8 +17,31 @@ const NavRail = ({ items, current, onSelect, className = '' }) => (
   // and the flex row it lives in leaves the rail at the height of its own
   // items — which on a window taller than the items stops it halfway down
   // the screen with bare background beneath.
+  /*
+   * It fits, and it does not scroll.
+   *
+   * Eleven items at 58px is 638px, and between the top bar and the status
+   * line there are about 615 — so the last one hung *under* the status bar
+   * and could not be clicked. It went unnoticed while the bottom of the list
+   * was `MDI`, a destination that does not exist yet; it surfaced the day
+   * `Ustawienia` moved down there and Playwright reported the footer
+   * intercepting the click.
+   *
+   * A scroller was the first answer and the wrong one: *"menu nie moze sie
+   * skrolowac"*. A list of places you can go is not something to hunt
+   * through, and a destination you have to scroll to is one that is not
+   * really on the rail.
+   *
+   * So the items share what there is. `58px` is a ceiling rather than a
+   * height — they keep the drawn size wherever it fits and give way together
+   * where it does not, which on a 720p window is three pixels each.
+   *
+   * **If the list grows much past this**, the answer is not smaller rows:
+   * *"jesli bedzie ich duzo to mozna zrobic podbna rozwizanie jak na mobiel,
+   * czyli rozwijanie w bok"* — the phone's menu, turned on its side.
+   */
   <nav
-    className={`flex w-rail shrink-0 flex-col border-r border-line bg-panel ${className}`}
+    className={`flex min-h-0 w-rail shrink-0 flex-col border-r border-line bg-panel ${className}`}
     aria-label={t('nav.label')}
   >
     {items.map(({ id, label, ready }) => {
@@ -31,7 +54,7 @@ const NavRail = ({ items, current, onSelect, className = '' }) => (
           disabled={!ready}
           onClick={() => onSelect(id)}
           className={[
-            'flex h-[58px] shrink-0 items-center px-[14px] text-left text-cap font-semibold uppercase tracking-[0.1em]',
+            'flex min-h-0 max-h-[58px] flex-1 items-center px-[14px] text-left text-cap font-semibold uppercase tracking-[0.1em]',
             here ? 'bg-acc text-white' : 'bg-transparent text-mut',
             ready && !here ? 'hover:bg-accS hover:text-acc' : '',
             !ready ? 'opacity-45' : '',

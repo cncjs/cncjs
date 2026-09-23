@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import { syncThemeColor } from './ui/themeColor';
 import './styles/base.css';
 // The manifest and the icons. Nothing in the panel's code reads them — the
 // operating system does, by URL — so without this import webpack has no
@@ -28,6 +29,15 @@ createRoot(document.getElementById('panel-root')).render(<App />);
  * a panel without an offline shell, which is what it was before, rather than
  * a panel with an error in its console.
  */
+/*
+ * The status bar takes the panel's colour, and keeps taking it.
+ *
+ * The two `theme-color` tags in the page head answer for the *system's*
+ * light and dark; this follows the panel's own theme as well. See
+ * `ui/themeColor`.
+ */
+syncThemeColor();
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
