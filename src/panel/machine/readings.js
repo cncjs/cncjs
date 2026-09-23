@@ -8,6 +8,23 @@ const SMOOTHIE = 'Smoothie';
 const TINYG = 'TinyG';
 
 /**
+ * The one state in which a written line does not arrive.
+ *
+ * Every controller the server drives gates its feeder the same way —
+ * `if (this.runner.isAlarm()) { this.feeder.reset(); return; }` in each of
+ * `Grbl`, `Marlin`, `Smoothie` and `TinyG` — so a line written while the
+ * machine is in alarm is dropped by the *server*, before the cable, with a
+ * warning in its log and nothing at all on the wire.
+ *
+ * Measured 2026-09-23, not reasoned about: pressing Zero Z on an alarmed
+ * machine put `G10 L20 P1 Z0` on the socket, left `Stopped sending G-code
+ * commands in Alarm mode` in the server log, and changed no offset. A control
+ * that looks live and is silently swallowed is the shape this panel has been
+ * bitten by before — see the jog step at the edge of travel.
+ */
+const ALARM = 'Alarm';
+
+/**
  * Which tone a machine state is shown in.
  *
  * Grbl reports nine states and the panel shows three colours plus an absence
@@ -179,6 +196,20 @@ export const readMachine = ({ connection, error, port, type, state, settings, at
     // a jog takes to stop when the server is not this computer.
     linkMs,
     status: { word, key, tone, known: Boolean(active) },
+    /**
+     * Whether a G-code line written now would reach the firmware.
+     *
+     * Not the same question as `connected`, and the gap between them is where
+     * a button lies: in alarm the socket is up, the port is open, every
+     * reading is live, and the server throws the line away. See `ALARM`
+     * above.
+     *
+     * Only the machine's own word is trusted for it. `tone` would be shorter
+     * and would also catch `Door`, which the server does *not* gate — a hold
+     * for an open guard resumes, and disabling zeroing through one would be
+     * the panel inventing a restriction the machine does not have.
+     */
+    canSendGcode: connected && active?.word !== ALARM,
     overrides: overridesOf(type, state),
     tool: toolOf(type, state),
     position: positions(type, state, 'wpos'),

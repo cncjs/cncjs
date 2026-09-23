@@ -22,7 +22,9 @@ test.skip(!TEST_PORT, 'set CNCJS_TEST_PORT to run the hardware tier');
  * whole tier, not once per file.
  */
 test('closes the port the tier opened', async ({ grbl }) => {
-  await grbl.connect();
+  // Not `requireIdle`: this closes the port, and a machine sulking in alarm
+  // behind it is not a reason to leave it open. See the fixture.
+  await grbl.connect({ requireIdle: false });
 
   // "Connect automatically" comes first, and without it none of the rest
   // works. It is on by default, and the server log tells the whole story:

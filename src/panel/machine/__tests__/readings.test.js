@@ -55,6 +55,33 @@ describe('readMachine, before there is a machine', () => {
   });
 });
 
+describe('readMachine, on a machine that will not take a line', () => {
+  const attached = (activeState) => readMachine({
+    connection: 'open', port: 'COM3', type: 'Grbl', attached: true,
+    state: { status: { activeState } },
+  });
+
+  test('says a line would not arrive while the machine is in alarm', () => {
+    // Every controller the server drives resets its feeder and drops the line
+    // rather than sending it. Measured: `G10 L20 P1 Z0` went onto the socket,
+    // the server logged that it had stopped, and no offset changed.
+    expect(attached('Alarm').canSendGcode).toBe(false);
+    expect(attached('Alarm').connected).toBe(true);
+  });
+
+  test('and that it would in every state the server does not gate', () => {
+    // Door is the one that looks like alarm and is not: a hold for an open
+    // guard resumes, and the server sends through it.
+    for (const state of ['Idle', 'Run', 'Hold', 'Door', 'Jog', 'Check', 'Home', 'Sleep']) {
+      expect([state, attached(state).canSendGcode]).toEqual([state, true]);
+    }
+  });
+
+  test('and that nothing arrives with no machine at all', () => {
+    expect(readMachine({ connection: 'open', port: '' }).canSendGcode).toBe(false);
+  });
+});
+
 describe('readMachine, with a controller answering', () => {
   test.each([
     ['Run', 'running'],

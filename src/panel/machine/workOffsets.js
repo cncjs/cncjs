@@ -16,10 +16,24 @@ import controller from './controller';
  * `$#` asked alongside `$$` when the port opens, so every client gets it
  * rather than each one asking for itself.
  *
- * Sent through the feeder like every other line the panel writes. `$#` is one
- * of the few commands Grbl answers while in Alarm, which matters because a
- * machine with homing enabled sits in Alarm from power-on until it is homed —
- * exactly when a panel is being opened to look at it.
+ * Sent through the feeder like every other line the panel writes — **and in
+ * alarm the feeder never sends it.** Each of the four controllers begins its
+ * `feeder.on('data')` with `if (this.runner.isAlarm()) { this.feeder.reset();
+ * return; }`, so the line is dropped by the server before it reaches a cable.
+ *
+ * This used to say the opposite: that `$#` is one of the few commands Grbl
+ * answers in alarm, and that this mattered because a machine with homing
+ * enabled sits in alarm from power-on until it is homed. The first half is
+ * true of Grbl and irrelevant, because cncjs never lets the line get that
+ * far; the second half is exactly when the panel needs the answer and never
+ * gets it. Measured 2026-09-23 against an alarmed machine — `$#` on the
+ * socket, `Stopped sending G-code commands in Alarm mode` in the log,
+ * `parameters` still empty.
+ *
+ * So on a machine that has not been homed the work offsets are unknown, and
+ * the toolpath screen's work-offset layer stays unavailable. The real fix is
+ * the one already in `server-backlog.md`: `$#` asked alongside `$$` when the
+ * port opens, on the server's own channel rather than through the feeder.
  */
 export const askForWorkOffsets = () => {
   controller.command('gcode', '$#');

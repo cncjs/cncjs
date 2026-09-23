@@ -162,15 +162,28 @@ therefore illustrative · **[—]** not in the mockup at all.
 
 ## The gap the mockup does not cover
 
-**[—] Connecting to a machine.** The mockup draws a panel that is already
-connected: there is no port list, no baud rate, no controller type. The panel is
-unusable without one, so this is the first thing that has to be designed rather
-than copied. The old Connection widget is 962 lines and sits on `react-select`.
+**[—] Connecting to a machine — built 2026-09-23.** The mockup draws a panel
+that is already connected: no port list, no baud rate, no controller type. It
+had to be designed rather than copied, and it is `screens/ConnectScreen.jsx`
+plus `machine/ports.js`. The old Connection widget is 962 lines and sits on
+`react-select`; this is about 180 and sits on nothing.
 
-- [ ] **[—] Choose a serial port** — list ports, refresh, open, close
-- [ ] **[—] Baud rate**, controller type (Grbl / Marlin / Smoothie / TinyG)
-- [ ] **[—] DTR/RTS line state, RTS/CTS flow control** — needed by some boards
-- [ ] **[—] Connect automatically** on load
+- [x] **[—] Choose a serial port** — list ports, refresh, open, close
+- [x] **[—] Baud rate**, controller type (Grbl / Marlin / Smoothie / TinyG),
+      both taken from what the server says it loaded rather than assumed
+- [ ] **[—] DTR/RTS line state, RTS/CTS flow control** — needed by some boards.
+      Not built: nothing on this bench needs it and a control nobody can test
+      is a control nobody should trust.
+- [ ] **[—] Connect automatically** on load. Deliberately not built — the panel
+      *attaches* to a port that is already open, which covers the case this was
+      for, and opening a port unasked is the one thing a connection screen
+      should never do.
+
+**Opening the port puts Grbl in alarm, and the screen says so.** A reset comes
+with the port opening, and with `$22=1` the firmware refuses to move until it
+has been homed or unlocked. The screen reports it and does not clear it: `$X`
+gives an unreferenced machine permission to move, and what is on the other end
+of the cable is the operator's business.
 
 **Done already, because nothing worked without it:** attaching to a port that
 is *already* open. `Controller.command()` begins `if (!this.port) return` and
@@ -257,10 +270,14 @@ does it stay behind in the old application, or does it go?
 - **The tile grid.** The mockup draws 1×1 / 2×1 sizes, named layout sets and a
   dashboard edit mode. Tiles stay illustrative until asked for; views here
   assume nothing about their container.
-- **Where Connection, Settings and alarms live** as screens.
-- **The rail.** The mockup draws eleven destinations. Two are built; the rest
-  are shown disabled, so the rail does not move under the hand between
-  releases.
+- **Where Settings and alarms live** as screens. Connection is settled: its
+  own destination, last on the rail so nothing above it moves, and a sixth
+  tab on a phone because a connection is the one thing worth fixing while
+  standing at the machine with nothing but a phone.
+- **The rail.** The mockup draws eleven destinations and Connection was added
+  as a twelfth, at the end. Five are built — Dashboard (temporary), Jog,
+  Zeroing, Path, Connection; the rest are shown disabled, so the rail does
+  not move under the hand between releases.
 - **Where the remaining variants live**, decided 2026-09-21 and not yet
   built: `theme`, `density` and `numFont` belong to a **Ustawienia**
   screen; the active coordinate system belongs to **Zerowanie**, beside
@@ -268,3 +285,12 @@ does it stay behind in the old application, or does it go?
   G-code and not a display option. `navMode` and `target` have no home at
   all — width decides them, so there is nothing to set wrongly. The
   `G54`–`G57` chips will show the active system before they switch it.
+
+  **Half of that is now true.** `Zerowanie` was built on 2026-09-23 and it
+  *shows* the active system, in the card's corner — it does not switch it.
+  The chips are the missing half, and they are missing deliberately rather
+  than forgotten: switching the coordinate system is a modal G-code that
+  changes where every later move goes, and it wanted deciding with Mateusz
+  in front of it rather than on the way past. `machine/zero.js` already
+  refuses to write an offset when the controller has not said which system
+  is active, so nothing here guesses in the meantime.

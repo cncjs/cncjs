@@ -65,7 +65,37 @@ const test = baseTest.extend({
       await expect(dialog).toHaveCount(0, { timeout: 10000 });
     };
 
-    const connect = async () => {
+    /**
+     * The token the application signed in with, out of its own storage.
+     *
+     * Shared by the two things here that talk to the server directly — the
+     * unlock and the controller read — because both need it for the same
+     * reason: `src/server/app.js` bypasses JWT verification entirely when
+     * NODE_ENV is development, so an unauthenticated request happens to work
+     * against `yarn dev` and returns 403 against the production server a
+     * garage actually runs.
+     */
+    const sessionToken = () => page.evaluate(() => {
+      try {
+        const raw = window.localStorage.getItem('cnc');
+        return raw ? JSON.parse(raw)?.state?.session?.token || '' : '';
+      } catch (e) {
+        return '';
+      }
+    });
+
+    /**
+     * Open the port, and by default wait until the machine will take a command.
+     *
+     * `requireIdle` is not a convenience. The teardown's whole job is to close
+     * the port, and insisting first that the machine behind it is happy makes
+     * the one step that *cleans up* the tier depend on the tier having gone
+     * well — which is exactly when it has not. Measured 2026-09-23: a leaked
+     * controller in the server's store (`sockets: []`, `ready: false`) left
+     * the teardown asserting its way to a timeout instead of closing anything,
+     * and the port stayed open for every run after it.
+     */
+    const connect = async ({ requireIdle = true } = {}) => {
       await cncjs.gotoWorkspace();
       await dismissWebGLWarning();
 
@@ -81,7 +111,103 @@ const test = baseTest.extend({
       // The button flipping to Close is the widget's own signal that the
       // controller reported ready.
       await expect(connection.getByRole('button', { name: /^Close$/ })).toBeVisible({ timeout: 30000 });
+
+      if (!requireIdle) {
+        return;
+      }
+
+      const unlocked = await unlock();
+      expect(
+        unlocked,
+        'the controller stayed in alarm after $X — the server may be holding a stale controller ' +
+        'for this port (`ready: false`), in which case nothing reaches the machine. Restart the server.'
+      ).toBe(true);
+
       await expect(controllerState).toHaveText(/idle/i, { timeout: 30000 });
+    };
+
+    /**
+     * Give an alarmed controller permission to move, but only if it is asking.
+     *
+     * Opening the port resets Grbl, and with `$22=1` it comes up in `Alarm`
+     * rather than `Idle` — it has no idea where it is until it has been homed.
+     * This tier waits for Idle, so a port it opened itself used to leave every
+     * case in it failing on `Expected /idle/i, received "Alarm"`. The previous
+     * session's machine was only ever Idle because somebody had unlocked it by
+     * hand and left it that way, which is not a state a suite may depend on.
+     *
+     * **Also: in alarm the server sends no G-code at all.** Each of the four
+     * controllers begins its feeder with `if (this.runner.isAlarm()) {
+     * this.feeder.reset(); return; }`, so nothing this tier asks of the
+     * machine would reach it — the jog cases would be pressing keys at a
+     * controller that never hears them.
+     *
+     * `$X` moves nothing. It clears the alarm lock, and an unhomed machine
+     * then has permission to move on the next command — which is exactly what
+     * the jog cases go on to ask for, deliberately and by a known step.
+     *
+     * Conditional, and it has to be: `$X` on an Idle machine is a needless
+     * command sent at hardware, and the point of reading the state first is
+     * that this only ever acts on a machine that is asking to be unlocked.
+     */
+    const unlock = async () => {
+      const alarmed = await controllerState.textContent().catch(() => '');
+      if (!/alarm/i.test(String(alarmed))) {
+        return true;
+      }
+
+      /*
+       * Sent on a socket of its own, not through a widget.
+       *
+       * The application keeps its socket client inside the React tree and
+       * puts nothing on `window`, so there is no handle to borrow. The two
+       * alternatives were typing `$X` into the console widget — which would
+       * tie this fixture to the markup of a widget that has its own spec in
+       * this tier — and an HTTP route, which does not exist: `src/server/api`
+       * has no way to send a controller command at all.
+       *
+       * So it speaks the protocol, which is the thing this tier is actually
+       * about. The server sets `serveClient: true`, so its own socket.io
+       * client is on the same origin, and the token is the one the
+       * application already signed in with.
+       */
+      const sent = await page.evaluate(async ([port, token]) => {
+        await new Promise((resolve, reject) => {
+          const tag = document.createElement('script');
+          tag.src = '/socket.io/socket.io.js';
+          tag.onload = resolve;
+          tag.onerror = () => reject(new Error('the server did not serve its socket.io client'));
+          document.head.appendChild(tag);
+        });
+
+        const socket = window.io('/', { query: { token } });
+        await new Promise((resolve, reject) => {
+          socket.on('connect', resolve);
+          socket.on('connect_error', reject);
+        });
+
+        // `unlock` is the server's own name for it; `GrblController` turns it
+        // into `$X`. Named rather than written as a raw line so that the
+        // three other firmwares get whatever each of them calls the same
+        // thing, and this fixture stays true if the tier ever meets one.
+        socket.emit('command', port, 'unlock');
+        return true;
+      }, [TEST_PORT, await sessionToken()]);
+
+      expect(sent, 'could not reach the server to unlock the controller').toBe(true);
+
+      /*
+       * Reported, not asserted.
+       *
+       * Whether the alarm clears is the caller's business: `connect` says so
+       * in the caller's own terms, and the teardown does not care at all. An
+       * assertion in here would fail inside a fixture with a message about a
+       * CSS-module locator, which is how the reason for a stuck port gets
+       * lost.
+       */
+      return controllerState.waitFor({ state: 'visible', timeout: 5000 })
+        .then(() => expect(controllerState).not.toHaveText(/alarm/i, { timeout: 15000 }))
+        .then(() => true, () => false);
     };
 
     const disconnect = async () => {
@@ -153,17 +279,8 @@ const test = baseTest.extend({
      * token the app itself stores keeps this tier usable against both.
      */
     const readControllerState = async () => {
-      const token = await page.evaluate(() => {
-        try {
-          const raw = window.localStorage.getItem('cnc');
-          return raw ? JSON.parse(raw)?.state?.session?.token || '' : '';
-        } catch (e) {
-          return '';
-        }
-      });
-
       const res = await page.request.get('/api/controllers', {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        headers: { Authorization: `Bearer ${await sessionToken()}` },
       });
       expect(res.status(), `GET /api/controllers returned ${res.status()}`).toBe(200);
 

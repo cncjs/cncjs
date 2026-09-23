@@ -34,11 +34,28 @@ module.exports = ({ mode, outputPath }) => ({
   devtool: mode === 'production' ? 'source-map' : 'eval-cheap-module-source-map',
   entry: {
     panel: [path.resolve(__dirname, 'src/panel/index.jsx')],
+    /*
+     * Its own entry, because it is its own program. A service worker runs in
+     * a worker scope with no DOM and is fetched by URL rather than imported,
+     * so it cannot be part of the page's bundle — and its URL has to be
+     * stable, which is why the filename below is not hashed.
+     */
+    sw: [path.resolve(__dirname, 'src/panel/sw.js')],
   },
   output: {
     clean: true,
     path: outputPath,
-    filename: mode === 'production' ? '[name].[contenthash].bundle.js' : '[name].bundle.js',
+    /*
+     * The worker keeps its name; everything else gets a content hash in
+     * production. A hashed service worker is one the browser can never find
+     * again: the page registers `/panel/sw.js` by that literal path, and a
+     * registration that 404s is a registration that silently does nothing.
+     */
+    filename: (pathData) => (
+      pathData.chunk.name === 'sw'
+        ? 'sw.js'
+        : (mode === 'production' ? '[name].[contenthash].bundle.js' : '[name].bundle.js')
+    ),
     // Served from a subdirectory, so every asset reference has to be
     // absolute from the site root rather than relative to the page.
     publicPath: '/panel/',
@@ -78,6 +95,42 @@ module.exports = ({ mode, outputPath }) => ({
   },
   module: {
     rules: [
+      /*
+       * The files the phone asks for by name.
+       *
+       * Emitted with the name they were written with rather than a hashed
+       * one: `index.html` names them, the manifest names the icons, and iOS
+       * reads `apple-touch-icon` from a literal path. A content hash here
+       * would mean three places to keep in step for files that change about
+       * once a year.
+       *
+       * They reach the graph through `src/panel/assets.js`, which imports
+       * each one by name so there is something to grep for. `require.context`
+       * would be two lines and would make the set of installed icons a thing
+       * nobody can find by searching.
+       */
+      {
+        test: /\.webmanifest$/,
+        type: 'asset/resource',
+        generator: { filename: '[name][ext]' },
+      },
+      {
+        /*
+         * Both separators. Webpack hands the rule an absolute path, and on
+         * Windows that path has backslashes in it, so a class of `/` alone
+         * matches nothing here at all.
+         *
+         * Which is loud rather than quiet, and worth knowing which: with no
+         * rule matching them, `assets.js` is importing files webpack has no
+         * loader for, and the build fails with `Module parse failed:
+         * Unexpected character` on each. Measured by writing it wrong on
+         * purpose — no icons emitted, and the whole panel stops rendering,
+         * because the failed modules take the bundle down with them.
+         */
+        test: /[\\/]icons[\\/].+\.(png|svg)$/,
+        type: 'asset/resource',
+        generator: { filename: 'icons/[name][ext]' },
+      },
       {
         test: /\.m?js$/,
         resolve: { fullySpecified: false },

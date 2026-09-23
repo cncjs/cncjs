@@ -19,8 +19,9 @@ import { t } from '../i18n';
  *
  * This is what stops the panel needing the old application. Until it existed,
  * a port was opened by driving `/workspace`'s connection widget in a headless
- * browser — `scripts/connect-machine.js`, written for exactly that reason —
- * and a panel that cannot connect to its own machine is not a panel.
+ * browser by a script written for exactly that reason, and a panel that
+ * cannot connect to its own machine is not a panel. That script went out
+ * with this screen.
  *
  * One layout, not two. Every other screen has a phone shape because the two
  * genuinely differ; a list of ports and two choices is the same column at

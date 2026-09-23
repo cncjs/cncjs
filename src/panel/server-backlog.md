@@ -83,9 +83,63 @@ konsolę.
 `src/panel/machine/workOffsets.js`. To działa, ale jest w złym miejscu: każdy
 klient pyta osobno, a stara aplikacja nie pyta wcale i ma tę samą lukę.
 
+**I nie działa wcale, gdy maszyna jest w alarmie — zmierzone 2026-09-23.**
+Pytanie panelu idzie przez feeder, a każdy z czterech sterowników zaczyna
+swoje `feeder.on('data')` od `if (this.runner.isAlarm()) { this.feeder.reset();
+return; }`. Linia ginie na serwerze, przed kablem, ze wpisem `Stopped sending
+G-code commands in Alarm mode` w logu i niczym na łączu. Maszyna z włączonym
+bazowaniem siedzi w alarmie od włączenia zasilania aż do zbazowania — czyli
+dokładnie wtedy, gdy panel się otwiera, żeby na nią popatrzeć. Komentarz w
+`workOffsets.js` twierdził coś odwrotnego i został poprawiony.
+
+**To samo dotyczy każdej komendy `gcode` z panelu, nie tylko `$#`.** Ekran
+Zerowania wyłącza swoje przyciski w alarmie i mówi dlaczego
+(`readings.canSendGcode`) — bo naciśnięcie kładło `G10 L20 P1 Z0` na gnieździe
+i nie zmieniało żadnego przesunięcia, bez słowa na ekranie.
+
+**Do propozycji dochodzi więc:** `$#` musi iść kanałem serwera (obok `$$`),
+a nie feederem, bo tylko wtedy przejdzie w alarmie. I warto zapytać ponownie
+po wyjściu z alarmu.
+
 **Propozycja:** `$#` obok `$$` przy otwarciu portu, i ponownie po `G10`/`G92`,
 bo to są komendy, które te wartości zmieniają. Wtedy `parameters` jest
 prawdziwe u wszystkich i panel może skasować swoje pytanie.
+
+---
+
+## Magazyn sesji na Windows nie działa i rośnie bez końca
+
+**Panel chciał:** tylko się zalogować. `POST /api/signin` bez ciała, raz na
+załadowanie strony — `src/panel/machine/session.js` niczego nie cache'uje.
+
+**Serwer ma:** magazyn sesji w plikach, w `~/.cncjs-sessions`, zapisywany
+przez `rename` z pliku tymczasowego. Na Windows ten `rename` **pada**:
+
+```
+Error: EPERM: operation not permitted, rename
+  'C:\Users\mateu\.cncjs-sessions\7qve….json.986713542'
+  -> 'C:\Users\mateu\.cncjs-sessions\7qve….json'
+```
+
+Zmierzone 2026-09-23: **529 takich błędów** w logu jednego popołudnia i
+**424 pliki sesji** (680 KB), najstarsze sprzed wielu dni. Nic ich nie kasuje.
+
+**Skutek:** nic widocznego — i to jest najgorsza część. Logowanie zwraca token,
+panel działa, a log serwera zapełnia się błędami, w których ginie wszystko
+inne. Przy szukaniu przyczyny czegokolwiek innego to jest pierwsza rzecz,
+która wpada w oko i ostatnia, która ma znaczenie.
+
+**Nie zweryfikowane:** czy to ma związek z pojedynczym `400` na
+`/socket.io/?…&transport=polling&sid=…`, który wypada mniej więcej w co drugim
+pełnym przebiegu smoke (opisany w `e2e/fixtures.js`). Sprawdzone: dziesięć
+kolejnych `POST /api/signin` **nie** dołożyło ani jednego `EPERM`, więc te dwie
+rzeczy najpewniej nie są tą samą rzeczą. Zostawione jako trop, nie jako
+rozpoznanie.
+
+**Do rozważenia:** magazyn w pamięci wystarcza instalacji, która ma jednego
+operatora i jedną maszynę, a pliki sesji nie przeżywają restartu serwera w
+żaden użyteczny sposób. Jeśli mają zostać — kasowanie wygasłych i zapis bez
+`rename`.
 
 ---
 

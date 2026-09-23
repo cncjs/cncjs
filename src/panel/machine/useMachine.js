@@ -20,6 +20,13 @@ import { t } from '../i18n';
  * tiles want the same readings and a socket each would be several sockets.
  */
 export const useMachine = () => {
+  /*
+   * How many times the panel has tried to reach the server.
+   *
+   * Bumped by the retry below, and a dependency of the effect that signs in,
+   * which is the whole mechanism: a new number means try again.
+   */
+  const [attempt, setAttempt] = useState(0);
   const [snapshot, setSnapshot] = useState(() => ({
     connection: 'connecting',
     // Knowing which port is open and being able to send to it are different
@@ -222,7 +229,41 @@ export const useMachine = () => {
       live = false;
       unsubscribe();
     };
-  }, [connect]);
+  }, [connect, attempt]);
+
+  /*
+   * Try again, for as long as there is nothing there.
+   *
+   * A panel that cannot reach its server on the first try used to stay dead
+   * until somebody reloaded the page — which on a phone, in a pocket, with
+   * the garage PC still booting, means the pendant looks broken at exactly
+   * the moment it is being picked up. Installed as an application it is
+   * worse: there is no address bar to reload from.
+   *
+   * Only from `failed`. `connecting` is a request already in flight and
+   * `open` is a live socket that socket.io reconnects on its own; retrying
+   * either would be a second connection racing the first.
+   *
+   * Five seconds, flat. Exponential backoff is for a server under load that
+   * has asked to be left alone — this one is a mini PC that is either off or
+   * on, and the operator is standing in front of the machine waiting. A
+   * predictable "it comes back within five seconds of the server doing" is
+   * worth more here than sparing a request.
+   */
+  useEffect(() => {
+    if (snapshot.connection !== 'failed') {
+      return undefined;
+    }
+
+    const timer = setTimeout(() => {
+      // Said before it is tried, so the chip stops reading "no server" the
+      // moment something is being done about it.
+      setSnapshot((previous) => ({ ...previous, connection: 'connecting', error: null }));
+      setAttempt((count) => count + 1);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [snapshot.connection]);
 
   /*
    * Time the link, now and every half minute, for as long as there is one.
