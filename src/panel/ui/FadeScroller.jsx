@@ -40,9 +40,28 @@ const FadeScroller = ({ className = '', children }) => {
   const idle = useRef(null);
 
   const measure = useCallback(() => {
-    setEdges(edgesOf(scroller));
+    const at = edgesOf(scroller);
+    setEdges(at);
 
-    const at = thumbOf(scroller);
+    /*
+     * Tell the content area when something is running under its bottom edge.
+     *
+     * The edge is drawn twice over: as an outline when the section simply
+     * ends there, and as content dissolving into the page when there is more
+     * of it below. Both at once is a line ruled across half-faded text, which
+     * is what the settings screen looked like — *"A, mozesz sciagnac ale
+     * tylko jesli pojawia sie cien bo sam border ma zostac w normalnym
+     * przypadku"*.
+     *
+     * Marked on `main` rather than passed up through five screens: the
+     * scroller is the only thing that knows, and `main` is the only thing
+     * that draws. A sheet's scroller is portalled to the shell root, so
+     * `closest` finds no `main` and a sheet cannot speak for the page behind
+     * it.
+     */
+    scroller?.closest('main')?.toggleAttribute('data-under-edge', at.bottom);
+
+    const bar = thumbOf(scroller);
     const node = thumb.current;
     if (!node) {
       return;
@@ -50,8 +69,8 @@ const FadeScroller = ({ className = '', children }) => {
 
     // Hidden by height rather than unmounted, so nothing reflows when a
     // scroller becomes scrollable while it is being looked at.
-    node.style.setProperty('--thumbH', `${at ? at.height : 0}px`);
-    node.style.setProperty('--thumbY', `${at ? at.top : 0}px`);
+    node.style.setProperty('--thumbH', `${bar ? bar.height : 0}px`);
+    node.style.setProperty('--thumbY', `${bar ? bar.top : 0}px`);
   }, [scroller]);
 
   const onScroll = useCallback(() => {
@@ -126,17 +145,24 @@ const FadeScroller = ({ className = '', children }) => {
         * jest parent kontenera scrolowanego"* (2026-09-23, with the state help
         * sheet as the example).
         *
-        * Half the container's padding out, so it rides in the space the
-        * parent already leaves rather than in the space the text needs. The
-        * token rather than a number, because `--pad` is 26px at the panel,
-        * 18px in between and 16px on the compact density, and the gutter is
-        * whatever the parent decided.
+        * Against the outer edge of the parent's gutter, not halfway into it.
+        *
+        * It was half of `--pad` out, which assumed every container's padding
+        * *is* `--pad`. A sheet's is, and the content area's is `--shellPad` —
+        * ten rather than eighteen — so the same rule left the thumb five
+        * pixels from the text and nine from the edge in one place and hard
+        * against the screen in the other: *"po prawej jest duzo miejsca a
+        * teraz wyglada na sklejony z kontentem"*.
+        *
+        * So the parent says how much room it leaves and this sits two pixels
+        * inside it, the way a phone's own indicator hugs the edge. `--pad` is
+        * the default because most of the things that scroll here are cards.
         */}
       <span
         ref={thumb}
         aria-hidden="true"
         className={[
-          'pointer-events-none absolute right-[calc(-1*var(--pad)/2)] top-0 w-1 rounded-full bg-mut transition-opacity duration-300',
+          'pointer-events-none absolute right-[calc(2px-var(--thumbGutter,var(--pad)))] top-0 w-1 rounded-full bg-mut transition-opacity duration-300',
           'h-[var(--thumbH,0px)] translate-y-[var(--thumbY,0px)]',
           moving ? 'opacity-40' : 'opacity-0',
         ].join(' ')}

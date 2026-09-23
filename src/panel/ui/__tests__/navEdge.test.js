@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { BITE, BITE_ABOVE, EDGE, MOUND, offsetEdge } from '../navEdge';
+import { BITE, BITE_FILL, BITE_LINE, EDGE, MOUND, offsetEdge } from '../navEdge';
 
 /** Every `x y` pair out of a path made of moves and lines. */
 const points = (d) => d
@@ -122,23 +122,38 @@ describe('navEdge', () => {
       // zero would cut the top off the bite.
       const crest = Math.min(...points(BITE).map(([, y]) => y));
       expect(crest).toBeLessThan(-5);
-      expect(BITE_ABOVE).toContain('V-12H0Z');
+    });
+
+    it('closes downwards, past the foot of the box', () => {
+      // A shape has a silhouette and a mask does not, and a silhouette is
+      // what `drop-shadow` follows round the curve.
+      //
+      // Ten units past, because closing exactly at the bottom left the
+      // section's own border showing underneath it — the same half-pixel the
+      // bar's own fill overlaps to be rid of.
+      expect(BITE_FILL).toBe(`${BITE}V40H0Z`);
+    });
+
+    it('draws its line half a pixel inside its fill', () => {
+      // A border is drawn inside its box and a stroke is centred on its path,
+      // so a line on the fill's own edge sits half a pixel outside the
+      // section's border and the two do not meet at the corner.
+      // Read off the `M` and the last arc's endpoint, because the arcs carry
+      // radii and flags that a numbers-in-order parse would pick up as
+      // coordinates.
+      const ends = (d) => [
+        Number(/^M([\d.-]+)/.exec(d)[1]),
+        Number(/([\d.-]+) [\d.-]+$/.exec(d)[1]),
+      ];
+      const [edgeL, edgeR] = ends(BITE);
+      const [lineL, lineR] = ends(BITE_LINE);
+
+      expect(lineL).toBeGreaterThan(edgeL);
+      expect(lineR).toBeLessThan(edgeR);
+      // Half a pixel of the content's 370, in the box's 500 units.
+      expect(lineL - edgeL).toBeCloseTo(0.5 * 500 / 370, 1);
+      expect(edgeR - lineR).toBeCloseTo(0.5 * 500 / 370, 1);
     });
   });
 
-  /*
-   * The one copy that cannot import.
-   *
-   * `tailwind.panel.config.js` carries the bite inside a data URI, because a
-   * mask is a stylesheet value and the config is CommonJS while this is a
-   * module. Nothing stops the two drifting except this.
-   */
-  it('matches the outline the mask in the Tailwind config uses', () => {
-    const config = readFileSync(
-      join(__dirname, '..', '..', '..', '..', 'tailwind.panel.config.js'),
-      'utf8',
-    );
-
-    expect(config).toContain(BITE_ABOVE);
-  });
 });

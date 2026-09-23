@@ -93,14 +93,30 @@ const slope = (p, t) => {
  * than assumed: 0.37px at 430 wide, 0.33px at 360, and 0.22px at the compact
  * density's 9px gap — against 2.20px for the straight shift it replaces.
  */
-export const offsetEdge = (width = NOMINAL_WIDTH, gap = GAP, steps = 22) => {
+export const offsetEdge = (width = NOMINAL_WIDTH, gap = GAP, steps = 22, inset = 0) => {
   const sx = width / 500;
   const out = [];
+
+  /*
+   * `inset` pulls both ends in, for the line and not for the fill.
+   *
+   * A section's border is drawn *inside* its box — 10.0 to 11.0 of a box that
+   * starts at 10 — and an SVG stroke is centred on its path, so a path at
+   * 10.0 covers 9.5 to 10.5 and the two are half a pixel apart. It shows as a
+   * step where the side border meets the corner: *"border nie pokrywa sie z
+   * krzywa"*.
+   *
+   * Moving the whole shape in fixes the line and breaks the fill, which then
+   * leaves that half pixel of border showing below the curve for the whole
+   * height of the card. So the fill keeps the full width and the line gets
+   * its own geometry — one shape, two paths, which they already were.
+   */
+  const squeeze = (x) => Number((inset + (x * (500 - (2 * inset)) / 500)).toFixed(2));
 
   const push = (x, y, dx, dy) => {
     const len = Math.hypot(dx * sx, dy) || 1;
     out.push([
-      Number((((x * sx) + (gap * dy / len)) / sx).toFixed(1)),
+      squeeze(Number((((x * sx) + (gap * dy / len)) / sx).toFixed(1))),
       Number((y - (gap * dx * sx / len)).toFixed(1)),
     ]);
   };
@@ -134,33 +150,47 @@ export const offsetEdge = (width = NOMINAL_WIDTH, gap = GAP, steps = 22) => {
    * SVG's y-down frame that is the negative direction at both ends.
    */
   return [
-    `M0 ${flat - r}`,
-    `A${rx} ${r} 0 0 0 ${rx} ${flat}`,
+    `M${squeeze(0)} ${flat - r}`,
+    `A${rx} ${r} 0 0 0 ${squeeze(rx)} ${flat}`,
     `L${body}`,
-    `L${500 - rx} ${flat}`,
-    `A${rx} ${r} 0 0 0 500 ${flat - r}`,
+    `L${squeeze(500 - rx)} ${flat}`,
+    `A${rx} ${r} 0 0 0 ${squeeze(500)} ${flat - r}`,
   ].join('');
 };
 
-/** The bite, as a line to stroke. */
+/** The bite's outline, as the fill follows it. */
 export const BITE = offsetEdge();
 
 /**
- * The same line, half a pixel further into the section.
+ * The same, pulled in half a pixel at each end, for the stroke.
  *
- * The outline is drawn *by* the section now rather than beside it — glued to
- * the element instead of parked at the bottom of the screen, which is only
- * ever the same place by coincidence: *"krzywa ma byc przyklejona do elementu
- * a nie stale w jednej pozycji na ekranie"*.
- *
- * Which means the section's own mask cuts it, and a line sitting exactly on
- * the cut would lose its outer half to it. Half a pixel deeper is the whole
- * width of a hairline inside the kept side, so nothing is taken off it.
+ * Half a pixel of the nominal content width — 370 of the phone's 390, the two
+ * `--shellPad` margins taken off — so the line's centre lands on the centre
+ * of the section's own border instead of half a pixel outside it.
  */
-export const BITE_STROKE = offsetEdge(NOMINAL_WIDTH, GAP + 0.5);
+export const BITE_LINE = offsetEdge(NOMINAL_WIDTH, GAP, 22, 0.5 * 500 / (NOMINAL_WIDTH - 20));
 
-/** The same, closed upwards: the region the section keeps. */
-export const BITE_ABOVE = `${BITE}V${CEILING}H0Z`;
+/**
+ * The same, closed *downwards*: the piece of page that covers the content.
+ *
+ * The bite is a shape now rather than a mask. Painted over the content in the
+ * page's own colour it cuts as well as a mask did — and unlike a mask it has
+ * a silhouette, which is what `drop-shadow` follows. That is the whole point
+ * of the change: a shadow that goes round the curve by itself, instead of a
+ * horizontal gradient that ran out before the curve reached it.
+ *
+ * The other half of the same idea was a circle for the mound, and that one
+ * does not work: a circle meeting a straight edge corners at both shoulders
+ * unless it is tangent, and the smoothness of that junction is what the bar's
+ * cubic was shaped for.
+ *
+ * **Closed ten units past the foot of the box**, and the box is allowed to
+ * overflow. Stopping exactly at the bottom left the section's own border — a
+ * single pixel — showing underneath, which is the same artefact the bar's
+ * fill solves the same way: no amount of getting the arithmetic right removes
+ * half a pixel of antialiasing, and overlapping does.
+ */
+export const BITE_FILL = `${BITE}V40H0Z`;
 
 /** The box both of those are drawn in, tall enough for a crest above zero. */
 export const BITE_VIEWBOX = `0 ${CEILING} 500 ${30 - CEILING}`;
