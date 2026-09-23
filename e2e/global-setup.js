@@ -118,13 +118,19 @@ module.exports = async () => {
        * one place that can: every spec has already been collected by then and
        * nothing else sees the selection.
        */
-      const problems = await preflight(BASE_URL, selected || NEEDS_RUNNING_SERVER, {
+      const { problems, warnings } = await preflight(BASE_URL, selected || NEEDS_RUNNING_SERVER, {
         filtered: hasFileFilter(),
       });
 
+      // Said before the throw, so a run that is about to stop still reports
+      // everything it noticed rather than only the thing that stopped it.
+      for (const warning of warnings) {
+        console.warn(`[e2e] ${warning}`);
+      }
+
       if (problems.length) {
         throw new Error(
-          `\n[e2e] this run cannot pass, so it was not started:\n\n` +
+          '\n[e2e] this run cannot pass, so it was not started:\n\n' +
           problems.map((problem) => `  - ${problem}`).join('\n\n') +
           '\n'
         );

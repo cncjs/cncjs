@@ -79,7 +79,139 @@ const bundleOf = async (baseUrl, pagePath) => {
   return { url, text: await script.text() };
 };
 
+/**
+ * Every `node` process on this machine, with what it is running and how much
+ * it is holding.
+ *
+ * There is no portable way to ask: a process cannot enumerate its siblings, so
+ * this shells out. Windows is the platform this project is developed on and
+ * `Get-CimInstance` is the only thing there that reports a command line
+ * reliably — `tasklist` truncates it, and truncated is useless when every one
+ * of these is `node.exe` and the argument is the whole identity.
+ *
+ * Returns an empty list rather than throwing when it cannot look. A preflight
+ * that fails because it could not run PowerShell would be worse than the
+ * problem it is checking for.
+ */
+const nodeProcesses = () => {
+  const { execFileSync } = require('child_process');
+
+  try {
+    if (process.platform === 'win32') {
+      const out = execFileSync('powershell', [
+        '-NoProfile', '-NonInteractive', '-Command',
+        "Get-CimInstance Win32_Process -Filter \"Name='node.exe'\" | " +
+        'Select-Object ProcessId,WorkingSetSize,CommandLine | ConvertTo-Json -Compress',
+      ], { encoding: 'utf8', timeout: 15000, windowsHide: true });
+
+      const parsed = JSON.parse(out || '[]');
+      // A single match comes back as an object, not a one-element array.
+      return (Array.isArray(parsed) ? parsed : [parsed]).map((row) => ({
+        pid: row.ProcessId,
+        mb: Math.round(row.WorkingSetSize / (1024 * 1024)),
+        command: String(row.CommandLine || ''),
+      }));
+    }
+
+    return execFileSync('ps', ['-eo', 'pid=,rss=,args='], { encoding: 'utf8', timeout: 15000 })
+      .split('\n')
+      .map((line) => line.trim().match(/^(\d+)\s+(\d+)\s+(.*)$/))
+      .filter((match) => match && /\bnode\b/.test(match[3]))
+      .map((match) => ({
+        pid: Number(match[1]),
+        mb: Math.round(Number(match[2]) / 1024),
+        command: match[3],
+      }));
+  } catch (e) {
+    return [];
+  }
+};
+
+/**
+ * What a process is, by what it was told to run.
+ *
+ * `npx` and `npm` wrappers carry the whole command line of the thing they are
+ * about to spawn, so a naive count sees two watchers where there is one — and
+ * on this machine the wrapper is not even the watcher's parent, because the
+ * chain runs through `cmd.exe` and the ppid link is broken. Excluding the
+ * wrappers by name is the reliable discriminator; they still count towards
+ * memory, because the memory is real.
+ */
+const WRAPPER = /npx-cli\.js|npm-cli\.js/;
+
+const ROLES = [
+  { id: 'the dev server', pattern: /bin[/\\]cncjs/ },
+  { id: 'the panel watcher', pattern: /webpack\.config\.panel/ },
+  { id: 'the workspace watcher', pattern: /webpack\.config\.development/ },
+];
+
+/**
+ * When a single node process is large enough to be worth saying out loud.
+ *
+ * The panel watcher starts around 400MB and creeps. It reached 8GB in one
+ * night on 2026-09-23 and 16GB of 32 on an earlier one, and the 8GB one was
+ * serving a bundle an hour out of date while doing it — which is the reason
+ * this matters to a *test* run and not only to the machine. Two gigabytes is
+ * well above anything healthy here and well below the point where it starts
+ * hurting.
+ */
+const BLOATED_MB = 2048;
+
 const checks = {
+  /**
+   * Nothing is running twice, and nothing has eaten the machine.
+   *
+   * Two kinds of finding, and they are not the same kind of problem.
+   *
+   * A second dev server or a second watcher makes the run *wrong*: two
+   * watchers write the same bundle file and the loser's output is what gets
+   * served, and a second server means the port you are testing may not be the
+   * process you just rebuilt. Those stop the run.
+   *
+   * Bloat does not make a run wrong, so it does not stop one — it is reported
+   * and the run continues. Killing a watcher is safe (the bundle is already on
+   * disk and nothing rebuilds it until a source file changes), but deciding
+   * that for somebody mid-session is not this file's call.
+   */
+  processes() {
+    const all = nodeProcesses();
+    if (!all.length) {
+      return null;
+    }
+
+    const problems = [];
+    const named = all.filter((one) => !WRAPPER.test(one.command));
+
+    for (const { id, pattern } of ROLES) {
+      const running = named.filter((one) => pattern.test(one.command));
+      if (running.length > 1) {
+        problems.push(
+          `${running.length} copies of ${id} are running: ${running.map((one) => `pid ${one.pid}`).join(', ')}.\n` +
+          '    Two watchers write the same bundle and the loser wins the file; two servers mean the\n' +
+          '    port under test need not be the process you rebuilt. Keep one:\n' +
+          `      Stop-Process -Id ${running.slice(1).map((one) => one.pid).join(',')} -Force`
+        );
+      }
+    }
+
+    const bloated = all.filter((one) => one.mb >= BLOATED_MB);
+    const total = all.reduce((sum, one) => sum + one.mb, 0);
+
+    if (bloated.length) {
+      problems.push({
+        warning:
+          `node is holding ${total.toLocaleString()} MB across ${all.length} processes, and ` +
+          `${bloated.length} of them ${bloated.length === 1 ? 'is' : 'are'} over ${BLOATED_MB} MB:\n` +
+          bloated.map((one) => `      ${String(one.mb).padStart(6)} MB  pid ${one.pid}  ${one.command.slice(0, 70)}`).join('\n') +
+          '\n    The panel watcher creeps — 8GB in one session, 16GB of 32 in another — and a watcher\n' +
+          '    that large has been seen serving an hour-old bundle while still looking alive.\n' +
+          '    Killing it is safe: the bundle is on disk and nothing rebuilds it until a source changes.',
+      });
+    }
+
+    return problems.length ? problems : null;
+  },
+
   /**
    * The old application's bundle runs, rather than merely being served.
    *
@@ -235,8 +367,11 @@ const openPorts = async (baseUrl) => {
  * business being told that a dev watcher is behind.
  */
 const FOR_PROJECT = {
-  smoke: ['appBundleRuns', 'appAssetsPresent', 'panelBundleFresh', 'noPortOpen'],
-  hardware: ['appBundleRuns', 'appAssetsPresent', 'panelBundleFresh', 'testPortExists'],
+  smoke: ['processes', 'appBundleRuns', 'appAssetsPresent', 'panelBundleFresh', 'noPortOpen'],
+  hardware: ['processes', 'appBundleRuns', 'appAssetsPresent', 'panelBundleFresh', 'testPortExists'],
+  // Nothing. This is the step that cleans up after a tier, and a cleanup that
+  // refuses to run because the machine it is cleaning up is untidy is no
+  // cleanup at all.
   'hardware-teardown': [],
 };
 
@@ -246,6 +381,13 @@ const FOR_PROJECT = {
  *
  * Reporting one at a time would mean a fix, a re-run, and the next one, which
  * is the slow loop this whole file exists to avoid.
+ *
+ * A check returns nothing, one finding, or several. A finding is a string when
+ * it should stop the run and `{ warning }` when it should only be said: the
+ * difference is whether it makes the run *wrong* or merely makes the machine
+ * unpleasant. Two watchers writing one bundle is the first kind; a watcher
+ * holding eight gigabytes is the second, and aborting somebody's run over it
+ * would be this file deciding something that is not its to decide.
  */
 const preflight = async (baseUrl, projects, { filtered = false } = {}) => {
   const names = [...new Set(projects.flatMap((project) => FOR_PROJECT[project] || []))]
@@ -254,20 +396,23 @@ const preflight = async (baseUrl, projects, { filtered = false } = {}) => {
     // this check getting in the way instead of out of it.
     .filter((name) => !(filtered && name === 'noPortOpen'));
 
-  const problems = [];
+  const found = [];
   for (const name of names) {
-    let problem;
+    let result;
     try {
-      problem = await checks[name](baseUrl);
+      result = await checks[name](baseUrl);
     } catch (e) {
-      problem = `${name} could not be checked: ${e.message}`;
+      result = `${name} could not be checked: ${e.message}`;
     }
-    if (problem) {
-      problems.push(problem);
+    if (result) {
+      found.push(...(Array.isArray(result) ? result : [result]));
     }
   }
 
-  return problems;
+  return {
+    problems: found.filter((one) => typeof one === 'string'),
+    warnings: found.filter((one) => one && one.warning).map((one) => one.warning),
+  };
 };
 
 module.exports = { preflight, FOR_PROJECT };

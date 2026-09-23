@@ -107,6 +107,42 @@ prawdziwe u wszystkich i panel może skasować swoje pytanie.
 
 ---
 
+## Magazyn sesji na Windows nie działa i rośnie bez końca
+
+**Panel chciał:** tylko się zalogować. `POST /api/signin` bez ciała, raz na
+załadowanie strony — `src/panel/machine/session.js` niczego nie cache'uje.
+
+**Serwer ma:** magazyn sesji w plikach, w `~/.cncjs-sessions`, zapisywany
+przez `rename` z pliku tymczasowego. Na Windows ten `rename` **pada**:
+
+```
+Error: EPERM: operation not permitted, rename
+  'C:\Users\mateu\.cncjs-sessions\7qve….json.986713542'
+  -> 'C:\Users\mateu\.cncjs-sessions\7qve….json'
+```
+
+Zmierzone 2026-09-23: **529 takich błędów** w logu jednego popołudnia i
+**424 pliki sesji** (680 KB), najstarsze sprzed wielu dni. Nic ich nie kasuje.
+
+**Skutek:** nic widocznego — i to jest najgorsza część. Logowanie zwraca token,
+panel działa, a log serwera zapełnia się błędami, w których ginie wszystko
+inne. Przy szukaniu przyczyny czegokolwiek innego to jest pierwsza rzecz,
+która wpada w oko i ostatnia, która ma znaczenie.
+
+**Nie zweryfikowane:** czy to ma związek z pojedynczym `400` na
+`/socket.io/?…&transport=polling&sid=…`, który wypada mniej więcej w co drugim
+pełnym przebiegu smoke (opisany w `e2e/fixtures.js`). Sprawdzone: dziesięć
+kolejnych `POST /api/signin` **nie** dołożyło ani jednego `EPERM`, więc te dwie
+rzeczy najpewniej nie są tą samą rzeczą. Zostawione jako trop, nie jako
+rozpoznanie.
+
+**Do rozważenia:** magazyn w pamięci wystarcza instalacji, która ma jednego
+operatora i jedną maszynę, a pliki sesji nie przeżywają restartu serwera w
+żaden użyteczny sposób. Jeśli mają zostać — kasowanie wygasłych i zapis bez
+`rename`.
+
+---
+
 ## Geometria maszyny — serwer nie ma pojęcia „maszyna"
 
 **Panel chciałby:** poglądowy model maszyny w scenie ekranu Ścieżka — stół,
