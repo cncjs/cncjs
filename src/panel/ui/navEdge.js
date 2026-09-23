@@ -93,14 +93,30 @@ const slope = (p, t) => {
  * than assumed: 0.37px at 430 wide, 0.33px at 360, and 0.22px at the compact
  * density's 9px gap — against 2.20px for the straight shift it replaces.
  */
-export const offsetEdge = (width = NOMINAL_WIDTH, gap = GAP, steps = 22) => {
+export const offsetEdge = (width = NOMINAL_WIDTH, gap = GAP, steps = 22, inset = 0) => {
   const sx = width / 500;
   const out = [];
+
+  /*
+   * `inset` pulls both ends in, for the line and not for the fill.
+   *
+   * A section's border is drawn *inside* its box — 10.0 to 11.0 of a box that
+   * starts at 10 — and an SVG stroke is centred on its path, so a path at
+   * 10.0 covers 9.5 to 10.5 and the two are half a pixel apart. It shows as a
+   * step where the side border meets the corner: *"border nie pokrywa sie z
+   * krzywa"*.
+   *
+   * Moving the whole shape in fixes the line and breaks the fill, which then
+   * leaves that half pixel of border showing below the curve for the whole
+   * height of the card. So the fill keeps the full width and the line gets
+   * its own geometry — one shape, two paths, which they already were.
+   */
+  const squeeze = (x) => Number((inset + (x * (500 - (2 * inset)) / 500)).toFixed(2));
 
   const push = (x, y, dx, dy) => {
     const len = Math.hypot(dx * sx, dy) || 1;
     out.push([
-      Number((((x * sx) + (gap * dy / len)) / sx).toFixed(1)),
+      squeeze(Number((((x * sx) + (gap * dy / len)) / sx).toFixed(1))),
       Number((y - (gap * dx * sx / len)).toFixed(1)),
     ]);
   };
@@ -134,16 +150,25 @@ export const offsetEdge = (width = NOMINAL_WIDTH, gap = GAP, steps = 22) => {
    * SVG's y-down frame that is the negative direction at both ends.
    */
   return [
-    `M0 ${flat - r}`,
-    `A${rx} ${r} 0 0 0 ${rx} ${flat}`,
+    `M${squeeze(0)} ${flat - r}`,
+    `A${rx} ${r} 0 0 0 ${squeeze(rx)} ${flat}`,
     `L${body}`,
-    `L${500 - rx} ${flat}`,
-    `A${rx} ${r} 0 0 0 500 ${flat - r}`,
+    `L${squeeze(500 - rx)} ${flat}`,
+    `A${rx} ${r} 0 0 0 ${squeeze(500)} ${flat - r}`,
   ].join('');
 };
 
-/** The bite, as a line to stroke. */
+/** The bite's outline, as the fill follows it. */
 export const BITE = offsetEdge();
+
+/**
+ * The same, pulled in half a pixel at each end, for the stroke.
+ *
+ * Half a pixel of the nominal content width — 370 of the phone's 390, the two
+ * `--shellPad` margins taken off — so the line's centre lands on the centre
+ * of the section's own border instead of half a pixel outside it.
+ */
+export const BITE_LINE = offsetEdge(NOMINAL_WIDTH, GAP, 22, 0.5 * 500 / (NOMINAL_WIDTH - 20));
 
 /**
  * The same, closed *downwards*: the piece of page that covers the content.

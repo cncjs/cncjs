@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { BITE, BITE_FILL, EDGE, MOUND, offsetEdge } from '../navEdge';
+import { BITE, BITE_FILL, BITE_LINE, EDGE, MOUND, offsetEdge } from '../navEdge';
 
 /** Every `x y` pair out of a path made of moves and lines. */
 const points = (d) => d
@@ -132,6 +132,27 @@ describe('navEdge', () => {
       // section's own border showing underneath it — the same half-pixel the
       // bar's own fill overlaps to be rid of.
       expect(BITE_FILL).toBe(`${BITE}V40H0Z`);
+    });
+
+    it('draws its line half a pixel inside its fill', () => {
+      // A border is drawn inside its box and a stroke is centred on its path,
+      // so a line on the fill's own edge sits half a pixel outside the
+      // section's border and the two do not meet at the corner.
+      // Read off the `M` and the last arc's endpoint, because the arcs carry
+      // radii and flags that a numbers-in-order parse would pick up as
+      // coordinates.
+      const ends = (d) => [
+        Number(/^M([\d.-]+)/.exec(d)[1]),
+        Number(/([\d.-]+) [\d.-]+$/.exec(d)[1]),
+      ];
+      const [edgeL, edgeR] = ends(BITE);
+      const [lineL, lineR] = ends(BITE_LINE);
+
+      expect(lineL).toBeGreaterThan(edgeL);
+      expect(lineR).toBeLessThan(edgeR);
+      // Half a pixel of the content's 370, in the box's 500 units.
+      expect(lineL - edgeL).toBeCloseTo(0.5 * 500 / 370, 1);
+      expect(edgeR - lineR).toBeCloseTo(0.5 * 500 / 370, 1);
     });
   });
 

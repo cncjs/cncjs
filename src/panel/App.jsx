@@ -4,7 +4,7 @@ import { FooterSlotProvider } from './ui/footerSlot';
 import { ShellNodeProvider, ShellWidthProvider, useIsPhone, useMeasuredShell } from './ui/shell';
 import NavRail from './ui/NavRail';
 import NavTabs from './ui/NavTabs';
-import { BITE, BITE_FILL, BITE_VIEWBOX } from './ui/navEdge';
+import { BITE_FILL, BITE_LINE, BITE_VIEWBOX } from './ui/navEdge';
 import StatusBar from './ui/StatusBar';
 import TopBar from './ui/TopBar';
 import StatusSheet from './ui/StatusSheet';
@@ -266,7 +266,7 @@ const Panel = ({ machine, screen, onScreen }) => {
                   * more below; see `FadeScroller`.
                   */}
                 <path
-                  d={BITE}
+                  d={BITE_LINE}
                   className="stroke-line transition-opacity duration-200 [[data-under-edge]_&]:opacity-0"
                   strokeWidth="1"
                   vectorEffect="non-scaling-stroke"
