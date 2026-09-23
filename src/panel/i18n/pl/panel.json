@@ -175,7 +175,7 @@
       "axes": "Osie",
       "machine": "Maszyna",
       "noProgram": "Nie wczytano programu",
-      "noWcs": "Sterownik nie odesłał aktywnego układu współrzędnych",
+      "noWcs": "Sterownik nie podał układu współrzędnych (G54–G59)",
       "noEnvelope": "Sterownik nie podał zakresu ruchu ($130–$132)",
       "machineZero": "Zero maszynowe"
     },
@@ -186,8 +186,8 @@
       "ready": "Podnosi Z na górę zakresu, potem jedzie nad wskazany punkt"
     },
     "note": {
-      "noHoming": "Bazowanie jest wyłączone ($22=0). Zero maszynowe leży tam, gdzie włączono sterownik, więc obwiednia ma właściwy rozmiar i nieznane położenie.",
-      "noSoftLimits": "Miękkie limity są wyłączone ($20=0). Obwiednia mówi, jak daleko sięgają osie — nic nie zatrzyma ruchu poza nią."
+      "noHoming": "Bazowanie wyłączone ($22=0) — obwiednia ma właściwy rozmiar i nieznane położenie.",
+      "noSoftLimits": "Miękkie limity wyłączone ($20=0) — nic nie zatrzyma ruchu poza obwiednią."
     }
   },
   "zero": {
