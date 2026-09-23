@@ -246,10 +246,14 @@ const Panel = ({ machine, screen, onScreen }) => {
                   *
                   * Short reach, soft edge — *"spread cienia troche mniejszy
                   * ale wiekszy troche rozmycie"*. `drop-shadow` has no spread
-                  * of its own: how far it carries is the offset and how soft
-                  * it is is the blur, so the offsets came down twice while the
-                  * radii stayed. The first pass has no offset at all now — the
-                  * blur is what reaches, and the offsets only lean it upward.
+                  * of its own: how far it carries is the blur, and an offset
+                  * only leans it one way. The offsets came down twice and then
+                  * to nothing, and the reach is `--gap` — the same strip of
+                  * page the bite already keeps between itself and the bar.
+                  *
+                  * Tied to the token rather than to four numbers that happened
+                  * to look right at one density: at the compact 9px the glow
+                  * tightens with the gap it belongs to.
                   *
                   * Three passes rather than one because `drop-shadow`
                   * composites: a single soft one is too thin to cover
@@ -258,7 +262,7 @@ const Panel = ({ machine, screen, onScreen }) => {
                   * `drop-shadow-*` utilities would simply overwrite each
                   * other.
                   */
-                className="size-full overflow-visible [[data-under-edge]_&]:[filter:drop-shadow(0_0_3px_var(--bg))_drop-shadow(0_-1px_6px_var(--bg))_drop-shadow(0_-2px_9px_var(--bg))_drop-shadow(0_-4px_14px_var(--bg))]"
+                className="size-full overflow-visible [[data-under-edge]_&]:[filter:drop-shadow(0_0_calc(var(--gap)/3)_var(--bg))_drop-shadow(0_0_calc(var(--gap)*2/3)_var(--bg))_drop-shadow(0_0_var(--gap)_var(--bg))_drop-shadow(0_0_var(--gap)_var(--bg))]"
                 fill="none"
               >
                 <path d={BITE_FILL} className="fill-bg" />
