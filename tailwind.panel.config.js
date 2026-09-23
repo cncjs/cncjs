@@ -106,6 +106,8 @@ module.exports = {
         pad: 'var(--pad)',
         // The strip the phone menu's mound is drawn in. See `--navEdge`.
         navEdge: 'var(--navEdge)',
+        // How deep the section's bite is. See `--navBite`.
+        navBite: 'var(--navBite)',
         gap: 'var(--gap)',
         rail: 'var(--rail)',
         dro: 'var(--dro)',
@@ -241,19 +243,21 @@ module.exports = {
        * Two layers: solid for everything but the last `--navEdge`, and the
        * outline for the strip the mound reaches into.
        */
-      const EDGE = "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 30' preserveAspectRatio='none'><path d='M0 0H500V29.5H350C285 29.5 300 3 250 3C200 3 215 29.5 150 29.5H0Z' fill='%23000'/></svg>\")";
+      const BITE = "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 -12 500 42' preserveAspectRatio='none'><path d='M0 19.5L150 19.5L157.7 19.4L164.5 18.9L170.3 18.3L175.3 17.5L179.6 16.5L183.3 15.4L186.6 14.3L189.5 13L192.3 11.6L194.9 10.1L197.6 8.4L200.4 6.7L203.5 4.8L206.8 2.8L210.5 0.9L214.6 -1L219.2 -2.7L224.3 -4.2L229.9 -5.4L236.1 -6.3L242.7 -6.8L250 -7L257.3 -6.8L263.9 -6.3L270.1 -5.4L275.7 -4.2L280.8 -2.7L285.4 -1L289.5 0.9L293.2 2.8L296.5 4.8L299.6 6.7L302.4 8.4L305.1 10.1L307.7 11.6L310.5 13L313.4 14.3L316.7 15.4L320.4 16.5L324.7 17.5L329.7 18.3L335.5 18.9L342.3 19.4L350 19.5L500 19.5V-12H0Z' fill='%23000'/></svg>\")";
       const bite = {
-        'mask-image': `linear-gradient(#000,#000),${EDGE}`,
+        'mask-image': `linear-gradient(#000,#000),${BITE}`,
         /*
-         * Lifted by `--gap`, which is what makes the two curves parallel.
+         * No lifting: the gap is in the curve itself.
          *
-         * Sitting flush the bite and the mound touch at the crest and are a
-         * gap apart at the shoulders, because only the flat part of the
-         * section's edge was ever a gap away. Raising the whole profile puts
-         * the same distance between them everywhere.
+         * This used to be the bar's own profile shifted straight up, which is
+         * not a parallel curve — it pinches at the shoulders and opens at the
+         * crest, by a fifth of the gap, and that is what was reported from the
+         * phone. `ui/navEdge.js` now offsets every point along its own normal
+         * instead, so the distance is already right and the mask only has to
+         * put the shape where the section ends.
          */
-        'mask-size': '100% calc(100% - var(--navEdge) - var(--gap)),100% var(--navEdge)',
-        'mask-position': 'top left,left 0 bottom var(--gap)',
+        'mask-size': '100% calc(100% - var(--navBite)),100% var(--navBite)',
+        'mask-position': 'top left,bottom left',
         'mask-repeat': 'no-repeat,no-repeat',
       };
 

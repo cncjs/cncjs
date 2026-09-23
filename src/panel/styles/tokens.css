@@ -44,6 +44,16 @@
    */
   --navEdge: 30px;
 
+  /*
+   * And how deep the section's bite is.
+   *
+   * Taller than the strip, because a curve offset along its own normal rises
+   * *above* the one it follows: the crest reaches seven units over the bar's
+   * own, so the box that holds it needs twelve of headroom. See
+   * `ui/navEdge.js`, which computes the curve rather than copying it.
+   */
+  --navBite: 42px;
+
   /* Ink */
   --ink: #18222e;
   --mut: #6d7886;
