@@ -15,12 +15,33 @@ const fs = require('fs');
 const path = require('path');
 
 const NOTES = path.join(__dirname, '..', 'output', 'review-notes.json');
+const HOLD = path.join(__dirname, '..', 'output', 'review-hold.json');
 
 const read = () => {
   try {
     return JSON.parse(fs.readFileSync(NOTES, 'utf8'));
   } catch (err) {
     return [];
+  }
+};
+
+/**
+ * Whether the board is still being filled.
+ *
+ * **A missing file reads as held**, the same way the server reads it. The
+ * resting state of a review is "collecting", and defaulting the other way
+ * would bring back exactly the behaviour the hold exists to stop: a note
+ * picked up and being fixed while the next one is still being typed.
+ *
+ * This waits for the *release*, not for the first note. Notes arriving during
+ * a hold are the normal case, and returning on one of them would make the
+ * button decorative.
+ */
+const isHeld = () => {
+  try {
+    return JSON.parse(fs.readFileSync(HOLD, 'utf8')).held !== false;
+  } catch (err) {
+    return true;
   }
 };
 
@@ -35,10 +56,31 @@ const read = () => {
 // the default lives here and the variable is only an override.
 const deadline = Date.now() + Number(process.env.REVIEW_WAIT_MS || 60 * 60 * 1000);
 
+let said = null;
+
 const tick = () => {
   const fresh = read();
+
+  if (isHeld()) {
+    // Said once per change rather than every second, so a long review does not
+    // bury its own output — but said at all, because "nothing is happening"
+    // and "I am holding four notes for you" look identical otherwise.
+    const now = `${fresh.length}`;
+    if (now !== said) {
+      said = now;
+      console.log(fresh.length
+        ? `⏸ wstrzymane — ${fresh.length} uwag czeka, nie ruszam ich`
+        : '⏸ wstrzymane — brak uwag');
+    }
+    if (Date.now() > deadline) {
+      console.log('Koniec okna oczekiwania, wciąż wstrzymane.');
+      process.exit(0);
+    }
+    return setTimeout(tick, 1000);
+  }
+
   if (fresh.length) {
-    console.log(`${fresh.length} otwartych uwag:\n`);
+    console.log(`▶ wypuszczone — ${fresh.length} otwartych uwag:\n`);
     fresh.forEach((note) => {
       console.log(`  #${note.id} [${note.screen}] <${note.tag}> ${note.label}`);
       console.log(`     ${note.text}`);

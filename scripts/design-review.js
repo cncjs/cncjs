@@ -25,6 +25,27 @@ const PORT = Number(process.env.REVIEW_PORT || 8765);
 const NOTES = path.join(__dirname, '..', 'output', 'review-notes.json');
 const OVERLAY = path.join(__dirname, 'design-review-overlay.js');
 
+/**
+ * Whether the board is held, in a file of its own.
+ *
+ * Held means: notes are being collected and **nothing is to act on them yet**.
+ * It exists because the loop was too eager — a note was picked up and being
+ * fixed while the next one was still being typed, which is a bad way to review
+ * anything. Mateusz asked for the pause on 2026-09-23.
+ *
+ * On the server rather than in the overlay, and in a file rather than in
+ * memory, because both of the other places lose it exactly when it matters:
+ * the overlay is re-injected on every page reload, and this process gets
+ * killed along with the dev tree often enough. A hold that quietly evaporates
+ * mid-review is worse than no hold at all.
+ *
+ * Its own file rather than a field in the notes file, because the notes file
+ * is an array that `wait-for-review.js` and Claude both read directly, and
+ * wrapping it in an object to carry one boolean would be a change to
+ * everything that touches it.
+ */
+const HOLD = path.join(__dirname, '..', 'output', 'review-hold.json');
+
 const read = () => {
   try {
     return JSON.parse(fs.readFileSync(NOTES, 'utf8'));
@@ -36,6 +57,28 @@ const read = () => {
 const write = (notes) => {
   fs.mkdirSync(path.dirname(NOTES), { recursive: true });
   fs.writeFileSync(NOTES, `${JSON.stringify(notes, null, 2)}\n`, 'utf8');
+};
+
+/**
+ * Held by default, and it re-arms itself.
+ *
+ * A missing file reads as held. That is deliberate: the resting state of a
+ * review is "collecting", and releasing is the deliberate act. A default of
+ * "act immediately" is the behaviour being fixed, and it would come back the
+ * first time somebody started the server without thinking about it.
+ */
+const isHeld = () => {
+  try {
+    return JSON.parse(fs.readFileSync(HOLD, 'utf8')).held !== false;
+  } catch (err) {
+    return true;
+  }
+};
+
+const setHeld = (held) => {
+  fs.mkdirSync(path.dirname(HOLD), { recursive: true });
+  fs.writeFileSync(HOLD, `${JSON.stringify({ held }, null, 2)}
+`, 'utf8');
 };
 
 const send = (res, status, body, type = 'application/json') => {
@@ -67,6 +110,35 @@ const server = http.createServer((req, res) => {
     return send(res, 200, JSON.stringify(read()));
   }
 
+  /*
+   * The hold, read and written on its own route.
+   *
+   * `/notes` stays a bare array. Everything that reads it — the overlay,
+   * `wait-for-review.js`, and Claude reading the file directly — would have
+   * to change to carry one boolean, and this is the cheaper seam.
+   */
+  if (url.pathname === '/hold' && req.method === 'GET') {
+    return send(res, 200, JSON.stringify({ held: isHeld(), notes: read().length }));
+  }
+
+  if (url.pathname === '/hold' && req.method === 'POST') {
+    let body = '';
+    req.on('data', (chunk) => { body += chunk; });
+    return req.on('end', () => {
+      let held = true;
+      try {
+        held = JSON.parse(body).held !== false;
+      } catch (err) {
+        held = true;
+      }
+      setHeld(held);
+      console.log(held
+        ? '  ⏸  wstrzymane — uwagi się zbierają, nikt ich nie rusza'
+        : `  ▶  wypuszczone — ${read().length} uwag idzie do roboty`);
+      return send(res, 200, JSON.stringify({ held }));
+    });
+  }
+
   if (url.pathname === '/notes' && req.method === 'POST') {
     let body = '';
     req.on('data', (chunk) => { body += chunk; });
@@ -90,15 +162,29 @@ const server = http.createServer((req, res) => {
 
   if (url.pathname === '/notes' && req.method === 'DELETE') {
     write([]);
-    console.log('  (wyczyszczono)');
+    setHeld(true);
+    console.log('  (wyczyszczono, wstrzymane z powrotem)');
     return send(res, 200, '[]');
   }
 
   const single = url.pathname.match(/^\/notes\/(\d+)$/);
   if (single && req.method === 'DELETE') {
     const id = Number(single[1]);
-    write(read().filter((note) => note.id !== id));
+    const left = read().filter((note) => note.id !== id);
+    write(left);
     console.log(`  (usunięto ${id})`);
+    /*
+     * The last note handled re-arms the hold.
+     *
+     * Without this the pause is a thing to remember, and the point of it is
+     * that it is the resting state. A batch is released, worked through, and
+     * the board goes quiet — and the next batch collects behind a hold again
+     * without anybody deciding to put one there.
+     */
+    if (!left.length && !isHeld()) {
+      setHeld(true);
+      console.log('  ⏸  tablica pusta — wstrzymane z powrotem');
+    }
     return send(res, 200, JSON.stringify({ id }));
   }
 
@@ -120,7 +206,10 @@ albo wklej go w pasek adresu na stronie panelu.
 ${bookmarklet}
 
 Potem: otwórz http://localhost:8000/panel/, kliknij zakładkę, kliknij
-"Komentarz" i wskaż miejsce. Uwagi lecą prosto do pliku — powiedz Claude'owi
-"mam uwagi", a je przeczyta.
+"Komentarz" i wskaż miejsce.
+
+Tablica startuje WSTRZYMANA. Uwagi się zbierają i nikt ich nie rusza,
+dopóki nie klikniesz "Wypuszczone" — wtedy idą do roboty wszystkie naraz.
+Gdy ostatnia zostanie obsłużona, wstrzymanie wraca samo.
 `);
 });
