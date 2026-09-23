@@ -275,10 +275,18 @@ const Panel = ({ machine, screen, onScreen }) => {
                   * a line ruled across half-faded text is neither. `main`
                   * carries `data-under-edge` while a scroller inside it has
                   * more below; see `FadeScroller`.
+                  *
+                  * **And it steps aside at once, not over 200ms.** The glow is
+                  * a filter switched by the same attribute and filters do not
+                  * transition, so a fade on this one put both on screen
+                  * together for a fifth of a second every time a scroll began
+                  * — *"stroke/border znika dopiero po czasie, takie krótkie
+                  * mignięcie"*. Two states that exclude each other have to
+                  * change on the same frame.
                   */}
                 <path
                   d={BITE_LINE}
-                  className="stroke-line transition-opacity duration-200 [[data-under-edge]_&]:opacity-0"
+                  className="stroke-line [[data-under-edge]_&]:opacity-0"
                   strokeWidth="1"
                   vectorEffect="non-scaling-stroke"
                 />
