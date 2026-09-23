@@ -108,6 +108,8 @@ module.exports = {
         navEdge: 'var(--navEdge)',
         // How deep the section's bite is. See `--navBite`.
         navBite: 'var(--navBite)',
+        // The content area's margin from the screen edge. See `--shellPad`.
+        shellPad: 'var(--shellPad)',
         gap: 'var(--gap)',
         rail: 'var(--rail)',
         dro: 'var(--dro)',
@@ -243,22 +245,60 @@ module.exports = {
        * Two layers: solid for everything but the last `--navEdge`, and the
        * outline for the strip the mound reaches into.
        */
-      const BITE = "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 -12 500 42' preserveAspectRatio='none'><path d='M0 13.5A7.7 6 0 0 0 7.7 19.5L150 19.5L157.7 19.4L164.5 18.9L170.3 18.3L175.3 17.5L179.6 16.5L183.3 15.4L186.6 14.3L189.5 13L192.3 11.6L194.9 10.1L197.6 8.4L200.4 6.7L203.5 4.8L206.8 2.8L210.5 0.9L214.6 -1L219.2 -2.7L224.3 -4.2L229.9 -5.4L236.1 -6.3L242.7 -6.8L250 -7L257.3 -6.8L263.9 -6.3L270.1 -5.4L275.7 -4.2L280.8 -2.7L285.4 -1L289.5 0.9L293.2 2.8L296.5 4.8L299.6 6.7L302.4 8.4L305.1 10.1L307.7 11.6L310.5 13L313.4 14.3L316.7 15.4L320.4 16.5L324.7 17.5L329.7 18.3L335.5 18.9L342.3 19.4L350 19.5L492.3 19.5A7.7 6 0 0 0 500 13.5V-12H0Z' fill='%23000'/></svg>\")";
+      const svg = (body) => "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' "
+        + "viewBox='0 -12 500 42' preserveAspectRatio='none'>" + body + "</svg>\")";
+
+      // What the section keeps: everything above the bite.
+      const KEEP = svg("<path d='M0 13.5A7.7 6 0 0 0 7.7 19.5L150 19.5L157.7 19.4L164.5 18.9L170.3 18.3L175.3 17.5L179.6 16.5L183.3 15.4L186.6 14.3L189.5 13L192.3 11.6L194.9 10.1L197.6 8.4L200.4 6.7L203.5 4.8L206.8 2.8L210.5 0.9L214.6 -1L219.2 -2.7L224.3 -4.2L229.9 -5.4L236.1 -6.3L242.7 -6.8L250 -7L257.3 -6.8L263.9 -6.3L270.1 -5.4L275.7 -4.2L280.8 -2.7L285.4 -1L289.5 0.9L293.2 2.8L296.5 4.8L299.6 6.7L302.4 8.4L305.1 10.1L307.7 11.6L310.5 13L313.4 14.3L316.7 15.4L320.4 16.5L324.7 17.5L329.7 18.3L335.5 18.9L342.3 19.4L350 19.5L492.3 19.5A7.7 6 0 0 0 500 13.5V-12H0Z' fill='%23000'/>");
+
+      /*
+       * And the line along it, as a mask rather than a picture.
+       *
+       * A data URI cannot read `var(--line)`, so the colour comes from the
+       * element and this only says where to put it. Half a pixel deeper than
+       * the cut, so the cut does not take half the line with it.
+       */
+      const LINE = svg("<path d='M0 13A7.7 6 0 0 0 7.7 19L150 19L157.7 18.9L164.4 18.4L170.2 17.8L175.1 17L179.4 16L183.1 15L186.3 13.8L189.2 12.6L191.9 11.2L194.5 9.7L197.2 8L200 6.3L203.1 4.4L206.4 2.4L210.2 0.5L214.3 -1.4L219 -3.2L224.1 -4.7L229.8 -5.9L236 -6.8L242.7 -7.3L250 -7.5L257.3 -7.3L264 -6.8L270.2 -5.9L275.9 -4.7L281 -3.2L285.7 -1.4L289.8 0.5L293.6 2.4L296.9 4.4L300 6.3L302.8 8L305.5 9.7L308.1 11.2L310.8 12.6L313.7 13.8L316.9 15L320.6 16L324.9 17L329.8 17.8L335.6 18.4L342.3 18.9L350 19L492.3 19A7.7 6 0 0 0 500 13' fill='none' stroke='%23000' stroke-width='1' vector-effect='non-scaling-stroke'/>");
+      /*
+       * The bite, and the line along it, both belonging to the content area.
+       *
+       * On `main` rather than on the last card, and that is the correction:
+       * the card is not always the thing that ends at the bottom. On the
+       * settings screen it is taller than the screen and scrolls, so its own
+       * bottom — and with it the bite — was somewhere below the phone, while
+       * the outline stayed parked at the foot of the display and was drawn
+       * straight across the certificate fingerprint. Reported with a
+       * photograph of exactly that: *"krzywa ma byc przyklejona do elementu a
+       * nie stale w jednej pozycji na ekranie"*.
+       *
+       * `main` always ends where the content area ends, so both are glued to
+       * it and to each other.
+       *
+       * Inset by `--shellPad` so the curve starts and stops where the cards
+       * do. The strip outside that inset is left uncovered and therefore cut,
+       * which costs nothing: there is only page out there.
+       */
       const bite = {
-        'mask-image': `linear-gradient(#000,#000),${BITE}`,
-        /*
-         * No lifting: the gap is in the curve itself.
-         *
-         * This used to be the bar's own profile shifted straight up, which is
-         * not a parallel curve — it pinches at the shoulders and opens at the
-         * crest, by a fifth of the gap, and that is what was reported from the
-         * phone. `ui/navEdge.js` now offsets every point along its own normal
-         * instead, so the distance is already right and the mask only has to
-         * put the shape where the section ends.
-         */
-        'mask-size': '100% calc(100% - var(--navBite)),100% var(--navBite)',
-        'mask-position': 'top left,bottom left',
+        'mask-image': `linear-gradient(#000,#000),${KEEP}`,
+        'mask-size': '100% calc(100% - var(--navBite)),calc(100% - 2 * var(--shellPad)) var(--navBite)',
+        'mask-position': 'top left,var(--shellPad) bottom',
         'mask-repeat': 'no-repeat,no-repeat',
+        position: 'relative',
+        '&::after': {
+          content: '""',
+          position: 'absolute',
+          left: 'var(--shellPad)',
+          right: 'var(--shellPad)',
+          bottom: '0',
+          height: 'var(--navBite)',
+          'background-color': 'var(--line)',
+          'mask-image': LINE,
+          'mask-size': '100% 100%',
+          'mask-repeat': 'no-repeat',
+          '-webkit-mask-image': LINE,
+          '-webkit-mask-size': '100% 100%',
+          '-webkit-mask-repeat': 'no-repeat',
+        },
       };
 
       addUtilities({

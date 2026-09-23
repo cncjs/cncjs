@@ -145,6 +145,20 @@ export const offsetEdge = (width = NOMINAL_WIDTH, gap = GAP, steps = 22) => {
 /** The bite, as a line to stroke. */
 export const BITE = offsetEdge();
 
+/**
+ * The same line, half a pixel further into the section.
+ *
+ * The outline is drawn *by* the section now rather than beside it — glued to
+ * the element instead of parked at the bottom of the screen, which is only
+ * ever the same place by coincidence: *"krzywa ma byc przyklejona do elementu
+ * a nie stale w jednej pozycji na ekranie"*.
+ *
+ * Which means the section's own mask cuts it, and a line sitting exactly on
+ * the cut would lose its outer half to it. Half a pixel deeper is the whole
+ * width of a hairline inside the kept side, so nothing is taken off it.
+ */
+export const BITE_STROKE = offsetEdge(NOMINAL_WIDTH, GAP + 0.5);
+
 /** The same, closed upwards: the region the section keeps. */
 export const BITE_ABOVE = `${BITE}V${CEILING}H0Z`;
 
