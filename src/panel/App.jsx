@@ -196,7 +196,7 @@ const Panel = ({ machine, screen, onScreen }) => {
           */}
         <main
           className={`flex min-h-0 min-w-0 flex-1 flex-col p-2.5 ${phone
-            ? 'pb-0 [&_section:last-child]:pb-[calc(var(--pad)+var(--navEdge))]'
+            ? 'mask-nav-bite pb-gap [&_section:last-child]:pb-[calc(var(--pad)+var(--navEdge))]'
             : ''}`}
         >
           <FooterSlotProvider value={setFooter}>
