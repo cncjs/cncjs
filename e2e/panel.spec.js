@@ -276,6 +276,28 @@ test.describe('panel, disconnected', () => {
     await expect(cncjs.page.getByRole('button', { name: 'Refresh' })).toHaveCount(0);
   });
 
+  test('the zeroing screen offers every axis, and not one of them with no machine', async ({ cncjs }) => {
+    await openPanel(cncjs.page);
+    await rail(cncjs.page).getByRole('button', { name: 'Zerowanie' }).click();
+
+    /*
+     * The face is the axis and the name is the sentence, so these are found
+     * the way a screen reader would find them rather than by the letter on
+     * the button. That is also the assertion: a button whose face says `X`
+     * and whose name says nothing is one nobody listening can use.
+     */
+    for (const name of ['Zeruj X', 'Zeruj Y', 'Zeruj Z', 'Zeruj XY', 'Zeruj XYZ']) {
+      const key = cncjs.page.getByRole('button', { name, exact: true });
+      await expect(key).toBeVisible();
+      // `G10 L20` needs a coordinate system to name and there is no
+      // controller to have reported one. Dead, rather than sending a line
+      // into nothing.
+      await expect(key).toBeDisabled();
+    }
+
+    cncjs.expectNoPageErrors();
+  });
+
   test('is translated, rather than written in one language', async ({ cncjs }) => {
     // The whole of what a second language buys, in one case: the same panel,
     // asked for in English, says the same things in English. Without this the

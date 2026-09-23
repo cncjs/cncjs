@@ -47,7 +47,8 @@
     "x": "X",
     "y": "Y",
     "xy": "XY",
-    "z": "Z"
+    "z": "Z",
+    "xyz": "XYZ"
   },
 
   "jog": {
@@ -202,6 +203,18 @@
       "noHoming": "Homing is switched off ($22=0). Machine zero is wherever the controller was powered up, so the envelope is the right size in an unknown place.",
       "noSoftLimits": "Soft limits are switched off ($20=0). The envelope says how far the axes reach — nothing will stop a move beyond it."
     }
+  },
+
+  "zero": {
+    "title": "Zeroing",
+    "note": "Zeroing moves nothing. It rewrites the offset between machine and work coordinates so that where the tool is now reads as zero.",
+    "noWcs": "The controller has not reported an active coordinate system, so there is nothing safe to zero. G10 L20 has to name one, and a guess is discovered by a tool moving to the wrong place under power.",
+    "alarm": "The machine is in alarm and nothing written here would reach it — the server drops a G-code line rather than sending it, whatever the panel shows. Home or unlock the machine first.",
+    "x": "Zero X",
+    "y": "Zero Y",
+    "z": "Zero Z",
+    "xy": "Zero XY",
+    "xyz": "Zero XYZ"
   },
 
   "connect": {

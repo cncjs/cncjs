@@ -12,6 +12,8 @@
  * with it. Specs that do need one will fail on their own terms, saying so.
  */
 
+const { preflight } = require('./preflight');
+
 const BASE_URL = process.env.CNCJS_URL || 'http://localhost:8000';
 const TIMEOUT_MS = Number(process.env.CNCJS_WAIT_TIMEOUT || 180 * 1000);
 const INTERVAL_MS = 1000;
@@ -81,6 +83,10 @@ const selectedProjects = () => {
   return names.length > 0 ? names : null;
 };
 
+/** Was the run narrowed to particular spec files? See `preflight`. */
+const hasFileFilter = () => process.argv.slice(2)
+  .some((arg) => !arg.startsWith('-') && /\.spec\.js$/.test(arg));
+
 module.exports = async () => {
   const selected = selectedProjects();
   if (selected && !selected.some(name => NEEDS_RUNNING_SERVER.includes(name))) {
@@ -96,6 +102,34 @@ module.exports = async () => {
         const seconds = Math.round((Date.now() - startedAt) / 1000);
         console.log(`[e2e] ${BASE_URL} became ready after ${seconds}s`);
       }
+
+      /*
+       * And then: is this run capable of passing at all?
+       *
+       * The wait above answers "can a page load", which is the question that
+       * used to be worth asking. It is not the question that costs time. A
+       * killed server, a stale panel bundle, a workspace bundle with a
+       * poisoned resolver cache or a serial port left open by an earlier tier
+       * each fail a whole *class* of cases — one at a time, each spending its
+       * full timeout first. Fourteen minutes to learn one fact, measured on
+       * 2026-09-23 and twice in the same night.
+       *
+       * Throwing here stops the run before a browser is launched. It is the
+       * one place that can: every spec has already been collected by then and
+       * nothing else sees the selection.
+       */
+      const problems = await preflight(BASE_URL, selected || NEEDS_RUNNING_SERVER, {
+        filtered: hasFileFilter(),
+      });
+
+      if (problems.length) {
+        throw new Error(
+          `\n[e2e] this run cannot pass, so it was not started:\n\n` +
+          problems.map((problem) => `  - ${problem}`).join('\n\n') +
+          '\n'
+        );
+      }
+
       return;
     }
 

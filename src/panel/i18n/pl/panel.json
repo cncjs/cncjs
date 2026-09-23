@@ -47,7 +47,8 @@
     "x": "X",
     "y": "Y",
     "xy": "XY",
-    "z": "Z"
+    "z": "Z",
+    "xyz": "XYZ"
   },
 
   "jog": {
@@ -202,6 +203,18 @@
       "noHoming": "Bazowanie jest wyłączone ($22=0). Zero maszynowe leży tam, gdzie włączono sterownik, więc obwiednia ma właściwy rozmiar i nieznane położenie.",
       "noSoftLimits": "Miękkie limity są wyłączone ($20=0). Obwiednia mówi, jak daleko sięgają osie — nic nie zatrzyma ruchu poza nią."
     }
+  },
+
+  "zero": {
+    "title": "Zerowanie",
+    "note": "Zerowanie niczym nie rusza. Przepisuje przesunięcie między współrzędnymi maszynowymi a roboczymi tak, żeby miejsce, w którym narzędzie jest teraz, czytało się jako zero.",
+    "noWcs": "Sterownik nie podał czynnego układu współrzędnych, więc nie ma czego bezpiecznie wyzerować. G10 L20 musi go nazwać, a zgadywanie wychodzi na jaw dopiero wtedy, gdy narzędzie pojedzie pod napięciem w złe miejsce.",
+    "alarm": "Maszyna jest w alarmie i nic, co tu napisane, do niej nie dojdzie — serwer wyrzuca wiersz G-code, zamiast go wysłać, niezależnie od tego, co pokazuje panel. Najpierw zbazuj albo odblokuj maszynę.",
+    "x": "Zeruj X",
+    "y": "Zeruj Y",
+    "z": "Zeruj Z",
+    "xy": "Zeruj XY",
+    "xyz": "Zeruj XYZ"
   },
 
   "connect": {

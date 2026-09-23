@@ -10,6 +10,7 @@ import Dashboard from './screens/Dashboard';
 import JogScreen from './screens/JogScreen';
 import PathScreen from './screens/PathScreen';
 import ConnectScreen from './screens/ConnectScreen';
+import ZeroScreen from './screens/ZeroScreen';
 import { useMachine } from './machine/useMachine';
 import { emergencyStop } from './machine/commands';
 
@@ -29,7 +30,7 @@ import { emergencyStop } from './machine/commands';
 const DESTINATIONS = [
   { id: 'dashboard', key: 'nav.dashboard', ready: true },
   { id: 'jog', key: 'nav.jog', ready: true },
-  { id: 'zero', key: 'nav.zero', ready: false },
+  { id: 'zero', key: 'nav.zero', ready: true },
   { id: 'files', key: 'nav.files', ready: false },
   { id: 'path', key: 'nav.path', ready: true },
   { id: 'probe', key: 'nav.probe', ready: false },
@@ -78,6 +79,7 @@ const SCREENS = {
   jog: JogScreen,
   path: PathScreen,
   connect: ConnectScreen,
+  zero: ZeroScreen,
 };
 
 const Panel = ({ machine, screen, onScreen }) => {

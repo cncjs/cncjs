@@ -13,8 +13,10 @@ const { test, expect, TEST_PORT } = require('./fixtures');
  * resetting the controller mid-tier would leave every case after it looking at
  * a machine that had just rebooted.
  *
- * The port is opened through the old application, because the panel has no
- * connection screen yet — which is the first item on its own TODO.
+ * The port is opened through the old application. The panel has had a
+ * connection screen of its own since 2026-09-23 and could now open it
+ * itself — worth changing, but not in the same breath as adding cases that
+ * depend on the port already being open.
  */
 test.describe('panel, connected', () => {
   test.skip(!TEST_PORT, 'set CNCJS_TEST_PORT to run the hardware tier');
@@ -124,10 +126,29 @@ test.describe('panel, connected', () => {
 
     const start = await positionOf();
 
-    await jogTile.getByRole('button', { name: 'X+' }).click();
-    await expect.poll(positionOf, { timeout: 20000 }).toBeCloseTo(start + 1, 2);
+    /*
+     * Away from machine zero first, and back second. Not the other way round.
+     *
+     * The travel lies in `[-range, 0]`, so machine zero is a *corner* of the
+     * envelope, not the middle of it — and with `$20=1` Grbl refuses a move
+     * that leaves the envelope rather than clipping it to the edge. Opening
+     * the port resets the controller to `mpos 0,0,0`, so `X+` as the first
+     * move asks to go outside and the machine does nothing at all, silently.
+     *
+     * This case used to pass only because whoever ran it last had left the
+     * machine parked somewhere in the middle. Found 2026-09-23, the first
+     * time the tier was run against a freshly opened port.
+     *
+     * `exact`, separately, because the pad has diagonals now: the corner keys
+     * are named `X+ Y+` and `X+ Y−`, so an unanchored `X+` matches three
+     * buttons and Playwright refuses to click any of them. That broke the
+     * moment the diagonals were added and nobody saw it, because this tier
+     * needs a machine and the kickoff had it down as unmeasured.
+     */
+    await jogTile.getByRole('button', { name: 'X−', exact: true }).click();
+    await expect.poll(positionOf, { timeout: 20000 }).toBeCloseTo(start - 1, 2);
 
-    await jogTile.getByRole('button', { name: 'X−' }).click();
+    await jogTile.getByRole('button', { name: 'X+', exact: true }).click();
     await expect.poll(positionOf, { timeout: 20000 }).toBeCloseTo(start, 2);
   });
 
@@ -144,10 +165,12 @@ test.describe('panel, connected', () => {
     await jogTile.getByRole('button', { name: /^0\.1 mm$/ }).first().click();
     const start = await positionOf();
 
-    await jogTile.getByRole('button', { name: 'Y+' }).click();
-    await expect.poll(positionOf, { timeout: 20000 }).toBeCloseTo(start + 0.1, 3);
+    // Negative first, for the reason written out in the case above: machine
+    // zero is a corner of the travel and `$20=1` refuses a move out of it.
+    await jogTile.getByRole('button', { name: 'Y−', exact: true }).click();
+    await expect.poll(positionOf, { timeout: 20000 }).toBeCloseTo(start - 0.1, 3);
 
-    await jogTile.getByRole('button', { name: 'Y−' }).click();
+    await jogTile.getByRole('button', { name: 'Y+', exact: true }).click();
     await expect.poll(positionOf, { timeout: 20000 }).toBeCloseTo(start, 3);
   });
 
@@ -160,4 +183,41 @@ test.describe('panel, connected', () => {
     // case that follows.
     await expect(bar(panel).getByRole('button', { name: /^Stop$/i })).toBeEnabled();
   });
+
+  test('zeroing is offered exactly when the machine would take the line', async ({ grbl, context }) => {
+    const panel = await openPanel(grbl, context);
+    await panel.getByRole('navigation', { name: 'Nawigacja' })
+      .getByRole('button', { name: 'Zerowanie' }).click();
+
+    const zeroX = panel.getByRole('button', { name: 'Zeruj X', exact: true });
+    await expect(zeroX).toBeVisible();
+
+    /*
+     * The finding this case exists for, measured 2026-09-23.
+     *
+     * In alarm every controller the server drives begins its feeder with
+     * `if (this.runner.isAlarm()) { this.feeder.reset(); return; }`. Pressing
+     * Zero Z on an alarmed machine put `G10 L20 P1 Z0` on the socket, left
+     * `Stopped sending G-code commands in Alarm mode` in the server log, and
+     * changed no offset at all — a live-looking button swallowed in silence.
+     *
+     * Opening the port resets Grbl, and with `$22=1` it comes up in alarm, so
+     * that is the state this tier usually finds. The assertion is the
+     * *correspondence* rather than either state, because it is true in both
+     * and because a case pinned to alarm would start lying the day somebody
+     * unlocks the machine before running it.
+     */
+    const state = (await panel.getByRole('banner').innerText()).trim();
+    const alarmed = /alarm/i.test(state);
+
+    await expect(zeroX).toBeEnabled({ enabled: !alarmed });
+
+    const note = panel.getByText(/serwer wyrzuca wiersz G-code/i);
+    await expect(note).toHaveCount(alarmed ? 1 : 0);
+
+    // And nothing was sent either way: this case reads the screen and stops.
+    // `G10 L20` writes Grbl's EEPROM, and what the work zero on this machine
+    // should be is not a test's decision.
+  });
+
 });
