@@ -92,6 +92,30 @@ describe('navEdge', () => {
       }
     });
 
+    it('carries the section\'s own corners', () => {
+      /*
+       * The bite is the section's bottom edge now, so the radius is its
+       * business. A mask that ended in a straight line cut the card's corners
+       * off flat — they live 10px further down, inside the strip it removes.
+       *
+       * The number is written into `navEdge.js` because the curve is built
+       * where there is no document to read a token from, so this is what
+       * keeps it equal to `--r-card`.
+       */
+      const tokens = readFileSync(
+        join(__dirname, '..', '..', 'styles', 'tokens.css'),
+        'utf8',
+      );
+      const radius = Number(/--r-card:\s*(\d+)px/.exec(tokens)[1]);
+
+      // Two arcs, one at each end, an ellipse because the box is stretched.
+      const arcs = BITE.match(/A[\d.]+ [\d.]+ 0 0 0/g);
+      expect(arcs).toHaveLength(2);
+      for (const arc of arcs) {
+        expect(arc).toContain(` ${radius} 0 0 0`);
+      }
+    });
+
     it('rises above the bar, which is why its box has headroom', () => {
       // Offsetting along the normal lifts the crest higher than the shift
       // would: seven units over the bar's own three, so a box that stopped at
