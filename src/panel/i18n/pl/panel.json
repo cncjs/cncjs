@@ -192,8 +192,17 @@
   },
   "zero": {
     "title": "Zerowanie",
-    "note": "Zerowanie niczym nie rusza. Przepisuje przesunięcie między współrzędnymi maszynowymi a roboczymi tak, żeby miejsce, w którym narzędzie jest teraz, czytało się jako zero.",
-    "noWcs": "Sterownik nie podał czynnego układu współrzędnych, więc nie ma czego bezpiecznie wyzerować. G10 L20 musi go nazwać, a zgadywanie wychodzi na jaw dopiero wtedy, gdy narzędzie pojedzie pod napięciem w złe miejsce.",
+    "note": "Ustawia zero robocze układu {{wcs}} w aktualnej pozycji maszynowej.",
+    "noteAny": "Ustawia zero robocze w aktualnej pozycji maszynowej.",
+    "noWcs": "Sterownik nie podał układu współrzędnych (G54–G59).",
+    "help": {
+      "open": "Czym jest zerowanie",
+      "title": "Zerowanie",
+      "what": "Zero robocze to punkt, od którego liczy się program. Zerowanie ustawia je tam, gdzie stoi narzędzie — zwykle po dojechaniu na róg materiału.",
+      "moves": "Maszyna przy tym nie jedzie. Zmienia się tylko odczyt roboczy; pozycja maszynowa zostaje ta sama.",
+      "system": "Panel wysyła G10 L20 P<n>, gdzie <n> to numer czynnego układu: G54 to 1, G59 to 6. Panel nie zgaduje tego numeru — wyzerowanie nie tego układu nie daje żadnego znaku, a wychodzi dopiero wtedy, gdy narzędzie pojedzie w złe miejsce pod napięciem.",
+      "dead": "Przyciski bywają wygaszone z dwóch powodów: sterownik nie podał układu współrzędnych albo maszyna jest w alarmie — w alarmie serwer odrzuca każdą linię G-code, zanim trafi na kabel."
+    },
     "x": "Zeruj X",
     "y": "Zeruj Y",
     "z": "Zeruj Z",

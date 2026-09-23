@@ -1,3 +1,5 @@
+import HelpButton from './HelpButton';
+
 /**
  * The one repeating container: a white panel, a hairline edge, a 6px corner.
  *
@@ -5,15 +7,25 @@
  * right — a second reading, a coordinate system, a contact state. A card with
  * neither is still a card; several on this panel are just a frame round a
  * canvas.
+ *
+ * `onHelp` puts a `?` at the end of that header, the same one a sheet offers.
+ * A screen that has to explain itself should do it behind a question mark
+ * rather than in a paragraph nobody can put away — which is the whole of what
+ * the zeroing screen learned.
  */
-const Card = ({ label, aside, row = false, className = '', bodyClassName = '', children }) => (
+const Card = ({ label, aside, onHelp, helpLabel, row = false, className = '', bodyClassName = '', children }) => (
   <section className={`flex min-w-0 flex-col rounded-card border border-line bg-panel p-pad ${className}`}>
-    {(label || aside) && (
-      <header className="mb-3 flex items-baseline justify-between gap-3">
+    {(label || aside || onHelp) && (
+      // `items-center` only when there is a button to centre against. A
+      // baseline is right for two pieces of text and wrong for a square.
+      <header className={`mb-3 flex justify-between gap-3 ${onHelp ? 'items-center' : 'items-baseline'}`}>
         <h2 className="m-0 truncate text-cap font-semibold uppercase tracking-[0.1em] text-mut">
           {label}
         </h2>
-        {aside ? <span className="shrink-0 font-num text-note text-mut">{aside}</span> : null}
+        <div className="flex shrink-0 items-center gap-3">
+          {aside ? <span className="font-num text-note text-mut">{aside}</span> : null}
+          {onHelp ? <HelpButton label={helpLabel} onPress={onHelp} className="size-chiph text-base" /> : null}
+        </div>
       </header>
     )}
     {/*
