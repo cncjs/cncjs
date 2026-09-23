@@ -104,6 +104,8 @@ module.exports = {
       spacing: {
         hazard: 'var(--hazard-w)',
         pad: 'var(--pad)',
+        // The strip the phone menu's mound is drawn in. See `--navEdge`.
+        navEdge: 'var(--navEdge)',
         gap: 'var(--gap)',
         rail: 'var(--rail)',
         dro: 'var(--dro)',

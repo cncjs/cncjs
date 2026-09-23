@@ -282,7 +282,7 @@ const NavTabs = ({ items, rest, current, onSelect, className = '' }) => {
          * does not move when the menu opens — the block inside it is what
          * travels, and it hangs out of the bottom rather than being clipped.
          */
-        className={`relative z-30 h-[calc(var(--btnh)+30px)] shrink-0 ${className}`}
+        className={`relative z-30 h-[calc(var(--btnh)+var(--navEdge))] shrink-0 ${className}`}
         aria-label={t('nav.label')}
       >
         <div
@@ -324,7 +324,7 @@ const NavTabs = ({ items, rest, current, onSelect, className = '' }) => {
             aria-label={t('nav.more')}
             aria-expanded={open}
             onClick={() => setOpen(!open)}
-            className={`relative block h-[30px] w-full shrink-0 ${open ? 'text-acc' : 'text-mut'}`}
+            className={`relative block h-navEdge w-full shrink-0 ${open ? 'text-acc' : 'text-mut'}`}
           >
           <svg
             viewBox="0 0 500 30"

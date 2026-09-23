@@ -169,7 +169,36 @@ const Panel = ({ machine, screen, onScreen }) => {
           * The frame is tighter than the gaps between the cards inside it. On
           * a 390px phone every pixel spent on the margin is one the jog keys
           * do not get, and the edge of the display is already an edge. */}
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col p-2.5">
+        {/*
+          * On a phone the content runs all the way to the bar and the bar's
+          * mound rises into it.
+          *
+          * It used to stop short, so there was a band of page across the
+          * bottom and a wedge of it each side of the mound — the mound was a
+          * shape belonging to something the content never touched. Asked for
+          * as the mound sitting *in* the card: *"nie chce wycinac garba ale
+          * dodac dwa elementy po bokach jako uzupelnienie garba na kontenerze
+          * a contentu"*, with a drawing.
+          *
+          * Two parts, and they are the container and the content separately —
+          * which is the whole of what took three wrong attempts to see.
+          *
+          *   - no bottom padding, so the card's own edge is the bar's edge and
+          *     the two are one line;
+          *   - `--navEdge` of extra padding *inside* the last card, so what is
+          *     in it clears the mound. Without that the mound rides over the
+          *     bottom row of controls, and an earlier try that moved the card
+          *     without moving its contents sliced a button in half.
+          *
+          * The last card by selector rather than by a prop threaded through
+          * five screens and their widgets: which card is last is a fact about
+          * the layout, and the layout is what this element owns.
+          */}
+        <main
+          className={`flex min-h-0 min-w-0 flex-1 flex-col p-2.5 ${phone
+            ? 'pb-0 [&_section:last-child]:pb-[calc(var(--pad)+var(--navEdge))]'
+            : ''}`}
+        >
           <FooterSlotProvider value={setFooter}>
             {Screen
               ? <Screen machine={machine} />
@@ -200,6 +229,17 @@ const Panel = ({ machine, screen, onScreen }) => {
           rest={PHONE_REST}
           current={screen}
           onSelect={onScreen}
+          /*
+           * Up over the content by the height of its own edge strip.
+           *
+           * A negative margin on the last item in a column does not move it —
+           * the bar stays where it was — it gives the row above the same
+           * amount of extra height. So the content grows down behind the
+           * strip and the mound, which the bar draws at `z-30`, rises into
+           * it. Written as a calc because Tailwind will not negate a bare
+           * `var()`; `-mt-navEdge` is a class it never generates.
+           */
+          className="mt-[calc(-1*var(--navEdge))]"
         />
       ) : (
         <StatusBar

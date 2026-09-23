@@ -33,6 +33,17 @@
    */
   --scrimA: 45%;
 
+  /*
+   * The strip the phone menu's mound is drawn in.
+   *
+   * Four things have to agree about it: the bar's own height, the height of
+   * the strip inside it, how far the bar reaches up over the content, and how
+   * much room the last card leaves so its contents clear the mound. Written
+   * once because a shape assembled from four copies of a number is a shape
+   * that comes apart the first time one of them is adjusted.
+   */
+  --navEdge: 30px;
+
   /* Ink */
   --ink: #18222e;
   --mut: #6d7886;
