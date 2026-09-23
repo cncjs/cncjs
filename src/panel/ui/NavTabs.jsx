@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { dimPanel } from './themeColor';
 import { t } from '../i18n';
 
 /**
@@ -174,6 +175,10 @@ const NavTabs = ({ items, rest, current, onSelect, className = '' }) => {
    */
   const bar = useRef(null);
   const drag = useRef({ y: null, swiped: false });
+
+  // The raised menu puts up the same scrim a sheet does, so the status bar
+  // above it dims with everything else. See `ui/themeColor`.
+  useEffect(() => (open ? dimPanel() : undefined), [open]);
 
   useEffect(() => {
     const node = bar.current;

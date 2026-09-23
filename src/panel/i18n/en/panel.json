@@ -204,6 +204,12 @@
     "connection": "Connection",
     "app": "Application"
   },
+  "theme": {
+    "label": "Appearance",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
   "app": {
     "install": "Install on this device",
     "installed": "Installed",

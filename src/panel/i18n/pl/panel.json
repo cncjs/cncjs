@@ -204,6 +204,12 @@
     "connection": "Połączenie",
     "app": "Aplikacja"
   },
+  "theme": {
+    "label": "Wygląd",
+    "system": "Systemowy",
+    "light": "Jasny",
+    "dark": "Ciemny"
+  },
   "app": {
     "install": "Zainstaluj na tym urządzeniu",
     "installed": "Zainstalowano",

@@ -1,11 +1,23 @@
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import { syncThemeColor } from './ui/themeColor';
+import { startTheme } from './ui/theme';
 import './styles/base.css';
 // The manifest and the icons. Nothing in the panel's code reads them — the
 // operating system does, by URL — so without this import webpack has no
 // reason to emit them and the phone gets a 404. See `assets.js`.
 import './assets';
+
+/*
+ * The theme before the first render, not after it.
+ *
+ * `startTheme` writes `data-theme` on the root from what was remembered, or
+ * from the phone when nothing was. Everything downstream reads that attribute
+ * — every token, the 3D scene, and the status bar below — so doing it after
+ * `render` would paint one frame in the wrong theme and then correct it.
+ * See `ui/theme`.
+ */
+startTheme();
 
 createRoot(document.getElementById('panel-root')).render(<App />);
 
@@ -32,9 +44,10 @@ createRoot(document.getElementById('panel-root')).render(<App />);
 /*
  * The status bar takes the panel's colour, and keeps taking it.
  *
- * The two `theme-color` tags in the page head answer for the *system's*
- * light and dark; this follows the panel's own theme as well. See
- * `ui/themeColor`.
+ * The page head carries one `theme-color` tag with a light value, for the
+ * instant before this runs; from here on its content follows `--panel`
+ * through every theme change and dims with the panel when a sheet covers it.
+ * See `ui/themeColor`.
  */
 syncThemeColor();
 
