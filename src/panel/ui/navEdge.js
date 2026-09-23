@@ -189,8 +189,25 @@ export const BITE_LINE = offsetEdge(NOMINAL_WIDTH, GAP, 22, 0.5 * 500 / (NOMINAL
  * single pixel — showing underneath, which is the same artefact the bar's
  * fill solves the same way: no amount of getting the arithmetic right removes
  * half a pixel of antialiasing, and overlapping does.
+ *
+ * **And past both sides, for the same reason at a different scale.** Closed
+ * flush with the ends, the fill's own right edge lands on a fraction of a
+ * device pixel wherever the ratio is fractional, and what shows through the
+ * part it does not cover is the section's border — a faint line running from
+ * the corner all the way down the gap, on every screen. Reported from a
+ * Samsung S24 and not reproducible until the phone's real numbers were read
+ * off the screenshot: 411 CSS px at 2.625, not the 360 at 3 that 1080x2340
+ * suggests. Measured there, the stray column reads 27 against a 19 page and a
+ * 51 border; with the overhang it reads 19. Four units is a little over three
+ * pixels, which lands inside the `--shellPad` margin and is wider than any
+ * rounding error can be.
  */
-export const BITE_FILL = `${BITE}V40H0Z`;
+const OVERHANG = 4;
+
+/** Where the bite's own ends sit, and so where its skirt begins. */
+const SHOULDER = 29.5 - GAP - CARD_RADIUS;
+
+export const BITE_FILL = `${BITE}H${500 + OVERHANG}V40H${-OVERHANG}V${SHOULDER}Z`;
 
 /** The box both of those are drawn in, tall enough for a crest above zero. */
 export const BITE_VIEWBOX = `0 ${CEILING} 500 ${30 - CEILING}`;

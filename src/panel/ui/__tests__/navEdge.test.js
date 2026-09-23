@@ -124,14 +124,29 @@ describe('navEdge', () => {
       expect(crest).toBeLessThan(-5);
     });
 
-    it('closes downwards, past the foot of the box', () => {
+    it('closes downwards and past both ends', () => {
       // A shape has a silhouette and a mask does not, and a silhouette is
       // what `drop-shadow` follows round the curve.
       //
-      // Ten units past, because closing exactly at the bottom left the
-      // section's own border showing underneath it — the same half-pixel the
-      // bar's own fill overlaps to be rid of.
-      expect(BITE_FILL).toBe(`${BITE}V40H0Z`);
+      // Past the foot, because closing exactly at the bottom left the
+      // section's own border showing underneath it. Past the sides for the
+      // same reason one scale down: at a fractional device pixel ratio the
+      // fill's own edge lands mid-pixel and what shows through the rest of
+      // that pixel is the border, as a line down the whole gap. Measured on a
+      // Samsung S24 — 411 CSS px at 2.625 — at 27 against a 19 page.
+      expect(BITE_FILL.startsWith(BITE)).toBe(true);
+
+      const skirt = BITE_FILL.slice(BITE.length);
+      const [right, foot, left, shoulder] = skirt.match(/-?[\d.]+/g).map(Number);
+
+      expect(right).toBeGreaterThan(500);
+      expect(left).toBeLessThan(0);
+      expect(right - 500).toBe(-left);
+      // Below the foot of the box, which the SVG is allowed to overflow.
+      expect(foot).toBeGreaterThan(30);
+      // Back up to where the bite's own ends sit, so the skirt is a rectangle
+      // rather than a wedge closing on a diagonal.
+      expect(shoulder).toBeCloseTo(Number(/^M[\d.-]+ ([\d.-]+)/.exec(BITE)[1]), 5);
     });
 
     it('draws its line half a pixel inside its fill', () => {
