@@ -175,7 +175,7 @@
       "axes": "Axes",
       "machine": "Machine",
       "noProgram": "No program loaded",
-      "noWcs": "The controller has not reported an active coordinate system",
+      "noWcs": "The controller has not reported a coordinate system (G54–G59)",
       "noEnvelope": "The controller has not reported its travel range ($130–$132)",
       "machineZero": "Machine zero"
     },
@@ -186,8 +186,8 @@
       "ready": "Lifts Z to the top of the range, then travels over the marked point"
     },
     "note": {
-      "noHoming": "Homing is switched off ($22=0). Machine zero is wherever the controller was powered up, so the envelope is the right size in an unknown place.",
-      "noSoftLimits": "Soft limits are switched off ($20=0). The envelope says how far the axes reach — nothing will stop a move beyond it."
+      "noHoming": "Homing is off ($22=0) — the envelope has the right size and an unknown position.",
+      "noSoftLimits": "Soft limits are off ($20=0) — nothing will stop a move beyond the envelope."
     }
   },
   "zero": {
