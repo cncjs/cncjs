@@ -358,31 +358,6 @@ const NavTabs = ({ items, rest, current, onSelect, className = '' }) => {
               * drawn along the foot.
               */}
             <path d={`${EDGE} V40 H0 Z`} className="fill-panel" />
-            {/*
-              * And the mound itself is a *bite* out of the card above it.
-              *
-              * The content now reaches the bar, so without this the mound is
-              * panel-coloured against a panel-coloured card and reads as a
-              * hairline. What it should read as is the shape it is: the card's
-              * bottom edge following the profile, with what is behind showing
-              * through the dip — *"negatyw garba na elementach"*, and the
-              * outline as a path with two legs rising into the card.
-              *
-              * Painted rather than left transparent, because what is behind it
-              * *is* the card. Only the inside of the mound, above the flat: the
-              * fill above closes ten units past the bottom of the box to kill a
-              * hairline, and that overshoot belongs to the bar.
-              */}
-            <path d={`M150 29.5${MOUND} Z`} className="fill-bg" />
-            {/*
-              * And dimmed with everything else when the menu is up.
-              *
-              * The bar sits above the scrim, which is right for the bar — it
-              * is the thing being used. The bite is not the bar: it is a hole
-              * showing what is behind, and what is behind is dimmed. Left
-              * bright it was a lit patch in the middle of a darkened screen.
-              */}
-            {open ? <path d={`M150 29.5${MOUND} Z`} className="fill-scrim" /> : null}
             <path
               d={EDGE}
               className="stroke-line"

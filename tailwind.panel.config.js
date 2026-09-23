@@ -224,10 +224,50 @@ module.exports = {
      * for does not.
      */
     ({ addUtilities }) => {
+      /*
+       * The bite the content section takes out of its own bottom edge.
+       *
+       * **The mound belongs to the menu; the bite belongs to the section**, and
+       * they are two separate things a fixed distance apart — *"wgryzienie nie
+       * jest zamiast garba, garb jest elementem menu, wgryzienie jest elementem
+       * sekcji/kontenera kontentu, z rownym odstepem rowny gap"* (2026-09-23).
+       *
+       * So this is the bar's own outline — the same control points, in the same
+       * 500x30 box that stretches to the width — used as a mask on the section
+       * above it. The section stops `--gap` short of the bar, and its edge then
+       * rides over the mound at the same `--gap`, so the strip of page between
+       * the two curves is the same width everywhere.
+       *
+       * Two layers: solid for everything but the last `--navEdge`, and the
+       * outline for the strip the mound reaches into.
+       */
+      const EDGE = "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 30' preserveAspectRatio='none'><path d='M0 0H500V29.5H350C285 29.5 300 3 250 3C200 3 215 29.5 150 29.5H0Z' fill='%23000'/></svg>\")";
+      const bite = {
+        'mask-image': `linear-gradient(#000,#000),${EDGE}`,
+        /*
+         * Lifted by `--gap`, which is what makes the two curves parallel.
+         *
+         * Sitting flush the bite and the mound touch at the crest and are a
+         * gap apart at the shoulders, because only the flat part of the
+         * section's edge was ever a gap away. Raising the whole profile puts
+         * the same distance between them everywhere.
+         */
+        'mask-size': '100% calc(100% - var(--navEdge) - var(--gap)),100% var(--navEdge)',
+        'mask-position': 'top left,left 0 bottom var(--gap)',
+        'mask-repeat': 'no-repeat,no-repeat',
+      };
+
       addUtilities({
         '.scroll-quiet': {
           'scrollbar-width': 'none',
           '&::-webkit-scrollbar': { display: 'none' },
+        },
+        '.mask-nav-bite': {
+          ...bite,
+          '-webkit-mask-image': bite['mask-image'],
+          '-webkit-mask-size': bite['mask-size'],
+          '-webkit-mask-position': bite['mask-position'],
+          '-webkit-mask-repeat': bite['mask-repeat'],
         },
       });
     },
