@@ -100,7 +100,16 @@ const SWIPE_PX = 24;
  * what asks for a flatter start than finish, and the tangents at both ends
  * stay horizontal either way, so there is still no corner anywhere in it.
  */
-const EDGE = 'M0 29.5H150C215 29.5 200 3 250 3C300 3 285 29.5 350 29.5H500';
+/**
+ * The mound alone, from the foot on the left to the foot on the right.
+ *
+ * Split out because two things draw it and they must not drift: the bar's
+ * whole edge below, and the bite it takes out of the card above it. One
+ * string, so a curve adjusted once is adjusted everywhere.
+ */
+const MOUND = 'C215 29.5 200 3 250 3C300 3 285 29.5 350 29.5';
+
+const EDGE = `M0 29.5H150${MOUND}H500`;
 
 const Tile = ({ id, label, ready, here, onSelect }) => (
   <button
@@ -349,6 +358,31 @@ const NavTabs = ({ items, rest, current, onSelect, className = '' }) => {
               * drawn along the foot.
               */}
             <path d={`${EDGE} V40 H0 Z`} className="fill-panel" />
+            {/*
+              * And the mound itself is a *bite* out of the card above it.
+              *
+              * The content now reaches the bar, so without this the mound is
+              * panel-coloured against a panel-coloured card and reads as a
+              * hairline. What it should read as is the shape it is: the card's
+              * bottom edge following the profile, with what is behind showing
+              * through the dip — *"negatyw garba na elementach"*, and the
+              * outline as a path with two legs rising into the card.
+              *
+              * Painted rather than left transparent, because what is behind it
+              * *is* the card. Only the inside of the mound, above the flat: the
+              * fill above closes ten units past the bottom of the box to kill a
+              * hairline, and that overshoot belongs to the bar.
+              */}
+            <path d={`M150 29.5${MOUND} Z`} className="fill-bg" />
+            {/*
+              * And dimmed with everything else when the menu is up.
+              *
+              * The bar sits above the scrim, which is right for the bar — it
+              * is the thing being used. The bite is not the bar: it is a hole
+              * showing what is behind, and what is behind is dimmed. Left
+              * bright it was a lit patch in the middle of a darkened screen.
+              */}
+            {open ? <path d={`M150 29.5${MOUND} Z`} className="fill-scrim" /> : null}
             <path
               d={EDGE}
               className="stroke-line"
