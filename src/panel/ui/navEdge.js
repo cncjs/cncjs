@@ -37,6 +37,22 @@ const GAP = 10;
 const NOMINAL_WIDTH = 390;
 const CEILING = -12;
 
+/**
+ * The section's own corner, which the bite has to carry.
+ *
+ * Mirrors `--r-card`, and `__tests__/navEdge.test.js` reads the token sheet
+ * and fails if the two part company. It has to be here rather than read: the
+ * curve is built where there is no document, and the number is needed to
+ * build it.
+ *
+ * **The bite is the section's bottom edge now**, so the corners belong to it.
+ * A mask that ended in a straight line cut them off flat — *"border radius na
+ * rogach, teraz zniknely po tych zmianach"*. The radius the card had is 10px
+ * further down, inside the strip the mask removes, so it was being deleted
+ * along with everything else down there.
+ */
+const CARD_RADIUS = 6;
+
 /*
  * The two halves of the mound, as the control points of the curves above.
  * Written out because the arithmetic below needs them as numbers, and parsing
@@ -99,7 +115,31 @@ export const offsetEdge = (width = NOMINAL_WIDTH, gap = GAP, steps = 22) => {
 
   const flat = out[0][1];
   const body = out.map(([x, y]) => `${x} ${y}`).join('L');
-  return `M0 ${flat}L${body}L500 ${flat}`;
+
+  /*
+   * The corners, as elliptical arcs.
+   *
+   * The box is stretched — 500 units across `width` pixels, 30 across 30 — so
+   * a circular corner on screen is an ellipse in here. `rx` is the radius
+   * divided by that squeeze; `ry` is the radius itself.
+   */
+  const r = CARD_RADIUS;
+  const rx = Number((r * 500 / width).toFixed(1));
+
+  /*
+   * Both sweep flags are 0, and that is not a coincidence.
+   *
+   * Each corner turns the same way: the edge comes in along one side and
+   * leaves along the other, with the centre of the turn up and inboard. In
+   * SVG's y-down frame that is the negative direction at both ends.
+   */
+  return [
+    `M0 ${flat - r}`,
+    `A${rx} ${r} 0 0 0 ${rx} ${flat}`,
+    `L${body}`,
+    `L${500 - rx} ${flat}`,
+    `A${rx} ${r} 0 0 0 500 ${flat - r}`,
+  ].join('');
 };
 
 /** The bite, as a line to stroke. */
