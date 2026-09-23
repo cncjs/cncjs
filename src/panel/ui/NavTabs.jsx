@@ -348,22 +348,6 @@ const NavTabs = ({ items, rest, current, onSelect, className = '' }) => {
               * The stroke is the outline alone, left open, so nothing is
               * drawn along the foot.
               */}
-            {/*
-              * The two pockets beside the mound, filled with the panel's own
-              * surface so the content above runs into them.
-              *
-              * The strip used to be transparent above the line, which left a
-              * grey wedge each side of the mound between the card and the bar
-              * — *"zeby od kontenera wychodzily takie dwa wypustki
-              * uzupelniajace luki wokol garba"* (2026-09-23, with a
-              * photograph of the wedge).
-              *
-              * The same outline, closed *upwards* instead of down: out along
-              * the top of the box and back along the edge. Over the mound
-              * that leaves a three-unit sliver, which is the mound standing
-              * proud of the card rather than a gap.
-              */}
-            <path d="M0 0H500V29.5H350C285 29.5 300 3 250 3C200 3 215 29.5 150 29.5H0Z" className="fill-panel" />
             <path d={`${EDGE} V40 H0 Z`} className="fill-panel" />
             <path
               d={EDGE}
