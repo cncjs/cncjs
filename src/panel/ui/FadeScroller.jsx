@@ -32,6 +32,29 @@ import { edgesOf, thumbOf } from './scrollMetrics';
 /** How long the thumb stays after the last movement, in milliseconds. */
 const LINGER = 700;
 
+/**
+ * Which scrollers currently have something running under their bottom edge.
+ *
+ * A set rather than a flag on the element, and it took two bugs to earn that.
+ * A flag is only ever *cleared* by a scroller saying "nothing below" — so a
+ * screen with no scroller at all clears nothing, and the glow followed you
+ * from the settings screen onto the jog pad: *"na tych widokach nie ma scrolla
+ * a cien jest"*. And the settings screen has two, nested, so whichever
+ * measured last won.
+ *
+ * Membership answers both: a scroller that unmounts leaves, and `main` is
+ * marked while any scroller inside it is still in.
+ */
+const under = new Set();
+
+/** Re-mark every content area from the set. */
+const remark = () => {
+  const mains = new Set([...under].map((el) => el.closest('main')).filter(Boolean));
+  for (const el of document.querySelectorAll('main')) {
+    el.toggleAttribute('data-under-edge', mains.has(el));
+  }
+};
+
 const FadeScroller = ({ className = '', children }) => {
   const [scroller, setScroller] = useState(null);
   const [edges, setEdges] = useState({ top: false, bottom: false });
@@ -59,7 +82,14 @@ const FadeScroller = ({ className = '', children }) => {
      * `closest` finds no `main` and a sheet cannot speak for the page behind
      * it.
      */
-    scroller?.closest('main')?.toggleAttribute('data-under-edge', at.bottom);
+    if (scroller) {
+      if (at.bottom) {
+        under.add(scroller);
+      } else {
+        under.delete(scroller);
+      }
+      remark();
+    }
 
     const bar = thumbOf(scroller);
     const node = thumb.current;
@@ -111,6 +141,11 @@ const FadeScroller = ({ className = '', children }) => {
     return () => {
       resize.disconnect();
       mutation.disconnect();
+      // Leaving the page takes the mark with it. Without this a screen that
+      // scrolls hands its glow to the next screen, which may have nothing to
+      // scroll at all.
+      under.delete(scroller);
+      remark();
     };
   }, [scroller, measure]);
 
