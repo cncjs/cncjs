@@ -169,7 +169,7 @@ const Panel = ({ machine, screen, onScreen }) => {
           * The frame is tighter than the gaps between the cards inside it. On
           * a 390px phone every pixel spent on the margin is one the jog keys
           * do not get, and the edge of the display is already an edge. */}
-        <main className={`flex min-h-0 min-w-0 flex-1 flex-col p-2.5 ${phone ? 'pb-0' : ''}`}>
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col p-2.5">
           <FooterSlotProvider value={setFooter}>
             {Screen
               ? <Screen machine={machine} />
