@@ -107,45 +107,17 @@ prawdziwe u wszystkich i panel może skasować swoje pytanie.
 
 ---
 
-## Serwer mówi tylko po HTTP, więc pendanta nie da się zainstalować na telefonie
+## ~~Serwer mówi tylko po HTTP~~ — ZROBIONE 2026-09-23 (PR #70)
 
-**Panel chciał:** dać się zainstalować na telefonie jako aplikacja, na pełnym
-ekranie. Manifest, ikony i service worker są gotowe od 2026-09-23.
+`src/server/index.js` podnosi `https.createServer`, gdy dostanie
+`--tls-key` i `--tls-cert`; `--tls-ca` wystawia urząd do pobrania pod
+`/panel/cnc-ca.crt` i opisuje go pod `/panel/cnc-ca.json`. Certyfikaty robi
+`yarn certs` — bez argumentów, dla maszyny, na której stoi — a urząd jest
+name-constrained, więc poświadcza wyłącznie `.lan`, `localhost` i adresy
+prywatne.
 
-**Serwer ma:** `http.createServer` i nic więcej — `src/server/index.js:235`.
-Żadnej opcji TLS w `bin/cncjs`, żadnego klucza w `.cncrc`.
-
-**Skutek: na telefonie instalacja jest niemożliwa, a service worker nie
-startuje w ogóle.** Zmierzone 2026-09-23, zapytaniem samego Chrome
-(`Page.getInstallabilityErrors`), a nie oględzinami manifestu:
-
-| adres | bezpieczny kontekst | co mówi przeglądarka |
-| --- | --- | --- |
-| `http://localhost:8000` | tak | `in-incognito` — artefakt testu, **reszta kryteriów spełniona** |
-| `http://192.168.0.196:8000` | **nie** | **`not-from-secure-origin`** |
-
-Czyli sam manifest jest poprawny: `display: fullscreen`, ikony 192/512 plus
-maskable, `scope` i `start_url` na `/panel/`, wszystkie pobierają się 200.
-Blokuje wyłącznie protokół. Service workera też nie ma na LAN-ie — wymaga
-bezpiecznego kontekstu — więc razem z instalacją odpada obsługa braku serwera,
-która działa na localhoście.
-
-**Do rozważenia, od najtańszego:**
-
-1. **Flaga w Chrome na telefonie** — `chrome://flags/#unsafely-treat-insecure-origin-as-secure`,
-   wpisany `http://cnc.lan:8000`. Działa od razu, nic nie trzeba budować,
-   ale to ustawienie na każdym urządzeniu z osobna i znika po reinstalacji.
-2. **Własny CA (`mkcert`) i certyfikat na `cnc.lan`**, root zainstalowany na
-   telefonie. Poprawne i trwałe; wymaga od serwera opcji `--key`/`--cert`
-   i `https.createServer`.
-3. **Prawdziwy certyfikat** przez DNS-01 na domenę wskazującą adres LAN.
-   Najwięcej roboty i jedyne rozwiązanie bez dotykania telefonu.
-
-Punkty 2 i 3 wymagają tej samej zmiany w serwerze: dwóch ścieżek do plików i
-wyboru `https` zamiast `http`. To jest kilkanaście linii w
-`src/server/index.js`, nie przebudowa.
-
----
+Zostaje wpisane, bo to jedyna pozycja z tej listy, która była blokadą dla
+całej reszty pendanta, i łatwiej ją tu przeczytać niż odtworzyć z historii.
 
 ## Magazyn sesji na Windows nie działa i rośnie bez końca
 
@@ -285,42 +257,3 @@ z odcinkami dobieranymi do wolnego miejsca w planerze. Wtedy panel mówiłby
 „jedź tam", a nie odmierzał milisekundy.
 
 ---
-
-## Jog ciągły — serwer daje tylko prymitywy
-
-**Panel chciał:** trzymanego klawisza, który jedzie, daje się skręcić w locie
-i zatrzymuje się natychmiast po puszczeniu.
-
-**Serwer ma:** dwie rzeczy i nic poza nimi — `gcode` (dowolna linia, więc i
-`$J=`) oraz `jogCancel` (`0x85`). Nie ma pojęcia „jog ciągły", nie prowadzi
-strumienia, nie pokazuje klientowi `ok` ani stanu planera. Stara aplikacja też
-tego nie ma: `$J=` nie pada w `src/app` ani razu.
-
-**Skutek:** cała logika jest w przeglądarce (`machine/jog-stream.js`,
-`ui/useJogStream.jsx`) — strumień krótkich `$J=` wysyłanych co 200 ms, każdy
-na 220 ms jazdy, skręt przez skierowanie **następnego** odcinka gdzie indziej,
-puszczenie klawisza przez `jogCancel`.
-
-**Czego to nie robi zgodnie z dokumentacją Grbla**
-([jogging.md](https://github.com/gnea/grbl/blob/master/doc/markdown/jogging.md)):
-dokument opisuje pętlę sterowaną **potwierdzeniem `ok`** po każdym odcinku, z
-`dt` w przedziale 0,025–0,06 s (`s = v · dt`), utrzymującą pełne N = 15 bloków
-planera; łączna latencja wychodzi wtedy `T = dt · N`, czyli 0,4–0,9 s.
-
-Panel nie może tak zrobić, bo **`ok` do niego nie dociera** — jedyne, co ma,
-to zegar. Dlatego odcinki są dłuższe od zalecanych i w planerze stoi jeden:
-zmierzone, posuw trzyma się równo (30 próbek po 1500 mm/min, bez spadków), a
-skręt schodzi do ≤220 ms zamiast 0,4–0,9 s. To działa, ale stosunek długości
-odcinka do interwału jest dobrany empirycznie — przy 260 ms jazdy wysyłanych
-co 120 ms kolejka rosła i skos nie dochodził w ogóle.
-
-**Do rozważenia:** `jogStart(dir, feedrate)` / `jogStop()` po stronie serwera.
-Serwer siedzi przy porcie, widzi `ok`, może włączyć `Bf:` w `$10` i zna
-`$120`–`$122`, więc prowadziłby pętlę tak, jak opisuje dokumentacja, zamiast
-odmierzać milisekundy w karcie przeglądarki. Panel mówiłby wtedy „jedź tam".
-
-**Uwaga o innych sterownikach:** to jest wyłącznie grblowe. Smoothie przyjmuje
-`$J=`, ale nie ma czym go anulować, więc trzymanie klawisza byłoby zobowiązaniem
-do całego dystansu; Marlin i TinyG mają własne mechanizmy, których panel nie
-implementuje. Dlatego `canJogContinuously` przepuszcza tylko Grbl, a reszta
-dostaje krok na naciśnięcie.
