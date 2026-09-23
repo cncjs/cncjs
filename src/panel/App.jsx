@@ -247,8 +247,9 @@ const Panel = ({ machine, screen, onScreen }) => {
                   * Short reach, soft edge — *"spread cienia troche mniejszy
                   * ale wiekszy troche rozmycie"*. `drop-shadow` has no spread
                   * of its own: how far it carries is the offset and how soft
-                  * it is is the blur, so the offsets came down and the radii
-                  * went up.
+                  * it is is the blur, so the offsets came down twice while the
+                  * radii stayed. The first pass has no offset at all now — the
+                  * blur is what reaches, and the offsets only lean it upward.
                   *
                   * Three passes rather than one because `drop-shadow`
                   * composites: a single soft one is too thin to cover
@@ -257,7 +258,7 @@ const Panel = ({ machine, screen, onScreen }) => {
                   * `drop-shadow-*` utilities would simply overwrite each
                   * other.
                   */
-                className="size-full overflow-visible [[data-under-edge]_&]:[filter:drop-shadow(0_-1px_3px_var(--bg))_drop-shadow(0_-2px_6px_var(--bg))_drop-shadow(0_-4px_9px_var(--bg))_drop-shadow(0_-6px_14px_var(--bg))]"
+                className="size-full overflow-visible [[data-under-edge]_&]:[filter:drop-shadow(0_0_3px_var(--bg))_drop-shadow(0_-1px_6px_var(--bg))_drop-shadow(0_-2px_9px_var(--bg))_drop-shadow(0_-4px_14px_var(--bg))]"
                 fill="none"
               >
                 <path d={BITE_FILL} className="fill-bg" />
