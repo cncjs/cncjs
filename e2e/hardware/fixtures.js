@@ -119,8 +119,15 @@ const test = baseTest.extend({
       const unlocked = await unlock();
       expect(
         unlocked,
-        'the controller stayed in alarm after $X — the server may be holding a stale controller ' +
-        'for this port (`ready: false`), in which case nothing reaches the machine. Restart the server.'
+        'the controller stayed in alarm after $X. Two different things look like this, and only ' +
+        'one of them is about the server:\n' +
+        '  - a soft-limit alarm, which Grbl answers with `[MSG:Reset to continue]` and which $X ' +
+        'cannot clear at all. A jog that left the envelope is the cause, and since the travel is ' +
+        '`[-range, 0]`, a `+` move from a freshly opened port is already outside it. Every case ' +
+        'after the one that did it fails here too, which is why this message must not guess.\n' +
+        '  - a stale controller in the server (`ready: false`), where nothing reaches the machine ' +
+        'at all. Restart the server.\n' +
+        'The server log tells them apart in one line.'
       ).toBe(true);
 
       await expect(controllerState).toHaveText(/idle/i, { timeout: 30000 });

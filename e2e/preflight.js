@@ -168,6 +168,22 @@ const ROLES = [
  */
 const BLOATED_MB = 2048;
 
+/**
+ * What the hardware tier asks the server for when it opens the port.
+ *
+ * Stated here rather than read from anywhere, because there is nowhere to
+ * read it from: the tier drives the old application's Connection widget, and
+ * a Playwright profile is new on every run, so the widget has nothing
+ * remembered and sends `src/app/store/defaultState.js`'s Grbl at 115200.
+ * `CNCJS_TEST_BAUD` does not reach it either — the widget is never told a
+ * baud rate, only clicked.
+ *
+ * If these ever stop being what the tier asks for, the tier stops working,
+ * because its specs are Grbl to the letter — `$X`, `$23`, the alarm it comes
+ * up in. So a disagreement here is the finding rather than a false alarm.
+ */
+const TIER_OPENS_AS = { controllerType: 'Grbl', baudrate: 115200 };
+
 const checks = {
   /**
    * Nothing is running twice, and nothing has eaten the machine.
@@ -331,12 +347,22 @@ const checks = {
   },
 
   /**
-   * The port the hardware tier was pointed at exists.
+   * The port the hardware tier was pointed at can be opened *by this tier*.
    *
-   * Every case in that tier opens it first, so a typo or an unplugged adapter
-   * is thirty-odd identical timeouts.
+   * Every case in that tier opens it first, so anything wrong here is
+   * thirty-odd identical timeouts rather than one failure — a typo, an
+   * unplugged adapter, or a port somebody else is already holding on terms
+   * this tier cannot use.
+   *
+   * That last one only became a stopping problem on 2026-09-23. Until then a
+   * port already open was silently attached to and the caller's settings were
+   * thrown away, so the tier ran — against whatever controller happened to be
+   * there. `CNCEngine` now refuses the mismatch instead, which is right, and
+   * which turns the same situation into one full timeout per case, waiting
+   * for a widget that will never say "Close". Measured that morning: COM3
+   * left open as Marlin at 9600 by a client on another machine.
    */
-  async testPortExists(baseUrl) {
+  async testPortUsable(baseUrl) {
     const wanted = process.env.CNCJS_TEST_PORT;
     if (!wanted) {
       // No port named is not an error: the tier skips itself.
@@ -350,13 +376,63 @@ const checks = {
 
     // The server has no route that lists ports — `list` is a socket call — so
     // an already-open port is the only positive proof available over HTTP.
-    // Absence proves nothing, which is why this only ever reports a port that
-    // is open under a *different* name.
-    const open = await openPorts(baseUrl);
-    return open.length && !open.includes(wanted)
-      ? `CNCJS_TEST_PORT is ${wanted}, but the server has ${open.join(', ')} open instead.\n` +
-        '    Two machines, or a stale port from an earlier run.'
-      : null;
+    // Absence proves nothing, which is why a missing port is only ever
+    // reported when some *other* port is open in its place.
+    const open = (await res.json()).filter((entry) => entry && entry.port);
+    const here = open.find((entry) => entry.port === wanted);
+
+    if (!here) {
+      const elsewhere = open.map((entry) => entry.port);
+      return elsewhere.length
+        ? `CNCJS_TEST_PORT is ${wanted}, but the server has ${elsewhere.join(', ')} open instead.\n` +
+          '    Two machines, or a stale port from an earlier run.'
+        : null;
+    }
+
+    /*
+     * Open on somebody else's terms.
+     *
+     * Compared field by field rather than as a pair, so the message names the
+     * one setting that is wrong — the same two the server itself compares,
+     * for the same reason. An `undefined` on the server's side is not a
+     * disagreement: it means the controller never reported that setting, and
+     * inventing a clash out of a missing value would stop a run that would
+     * have passed.
+     */
+    const clash = [
+      ['as', TIER_OPENS_AS.controllerType, here.controller?.type],
+      ['at', `${TIER_OPENS_AS.baudrate} baud`, here.baudrate && `${here.baudrate} baud`],
+    ].find(([, asked, actual]) => actual && String(asked) !== String(actual));
+
+    if (clash) {
+      const [preposition, asked, actual] = clash;
+      return `${wanted} is already open ${preposition} ${actual}, and this tier opens it ${preposition} ${asked}.\n` +
+        '    A port open with other settings is refused rather than attached to, so every case here\n' +
+        '    would sit out its whole timeout waiting for the Connection widget to say "Close".\n' +
+        '    Close it where it was opened — the panel has a Connection screen — and start again.\n' +
+        '    The tier\'s own teardown cannot do it for you: it closes the port by clicking the same\n' +
+        '    button, so it is refused in exactly the same way.';
+    }
+
+    /*
+     * Open on the right terms, but the controller behind it never came up.
+     *
+     * `ready: false` is a controller the server built and then heard nothing
+     * from — a wrong baud rate, an adapter pulled out, a previous run that
+     * left it behind. Attaching to it succeeds, so the widget says "Close"
+     * and the tier proceeds; nothing it sends reaches the machine. That is
+     * the fixture's own guess when the alarm will not clear, written into its
+     * failure message, which is a sign it is worth catching before the run
+     * rather than once per case during it.
+     */
+    if (here.ready === false) {
+      return `${wanted} is open, but the controller behind it never became ready.\n` +
+        '    Attaching to it works and nothing reaches the machine, so this tier would open the\n' +
+        '    port, see "Close", and then time out on a machine that is not listening.\n' +
+        '    Close the port and restart the server.';
+    }
+
+    return null;
   },
 };
 
@@ -379,7 +455,7 @@ const openPorts = async (baseUrl) => {
  */
 const FOR_PROJECT = {
   smoke: ['processes', 'appBundleRuns', 'appAssetsPresent', 'panelBundleFresh', 'noPortOpen'],
-  hardware: ['processes', 'appBundleRuns', 'appAssetsPresent', 'panelBundleFresh', 'testPortExists'],
+  hardware: ['processes', 'appBundleRuns', 'appAssetsPresent', 'panelBundleFresh', 'testPortUsable'],
   // Nothing. This is the step that cleans up after a tier, and a cleanup that
   // refuses to run because the machine it is cleaning up is untidy is no
   // cleanup at all.

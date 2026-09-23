@@ -15,6 +15,28 @@
 const { preflight } = require('./preflight');
 
 const BASE_URL = process.env.CNCJS_URL || 'http://localhost:8000';
+
+/*
+ * The server may be the one a phone can actually use.
+ *
+ * `scripts/serve-panel.sh` serves the panel over TLS, because a browser will
+ * not install a web application or register a service worker from an insecure
+ * origin, and it signs with an authority of its own that node does not trust.
+ * Every `fetch` in this file and in the preflight then throws
+ * `UNABLE_TO_VERIFY_LEAF_SIGNATURE` — which is indistinguishable here from
+ * "the server is not up yet". The run waits out its full three minutes, warns
+ * that nothing answered, and then **skips the preflight altogether**, so the
+ * one configuration the panel is really deployed in is the one that gets no
+ * checks at all. Measured 2026-09-23 against `CNCJS_URL=https://localhost:8000`.
+ *
+ * The browser this suite drives is already told to ignore the same
+ * certificate, in `playwright.config.js` and for the reason written there.
+ * This is that decision at the fetch layer; it goes no further than this
+ * process, and only when the address says `https`.
+ */
+if (BASE_URL.startsWith('https:')) {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+}
 const TIMEOUT_MS = Number(process.env.CNCJS_WAIT_TIMEOUT || 180 * 1000);
 const INTERVAL_MS = 1000;
 

@@ -57,7 +57,7 @@
     "design-check": "node scripts/check-design-tokens.js",
     "design-review": "node scripts/design-review.js",
     "design-diff": "node scripts/design-diff.js",
-    "eslint": "eslint --color src scripts",
+    "eslint": "eslint --color src scripts e2e",
     "eslint-debug": "cross-env DEBUG=\"eslint:glob-util,eslint:config-*,eslint:cli*\" eslint --cache --color --quiet src scripts",
     "i18nlint": "bash -c 'find src/{app,panel,server}/i18n -type f -name \"*.json\" | xargs -L1 -I{} -- bash -c \"echo Linting {}; jsonlint -q {}\"'",
     "stylint": "stylint src/app",
