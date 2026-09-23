@@ -146,21 +146,26 @@ export const offsetEdge = (width = NOMINAL_WIDTH, gap = GAP, steps = 22) => {
 export const BITE = offsetEdge();
 
 /**
- * The same line, half a pixel further into the section.
+ * The same, closed *downwards*: the piece of page that covers the content.
  *
- * The outline is drawn *by* the section now rather than beside it — glued to
- * the element instead of parked at the bottom of the screen, which is only
- * ever the same place by coincidence: *"krzywa ma byc przyklejona do elementu
- * a nie stale w jednej pozycji na ekranie"*.
+ * The bite is a shape now rather than a mask. Painted over the content in the
+ * page's own colour it cuts as well as a mask did — and unlike a mask it has
+ * a silhouette, which is what `drop-shadow` follows. That is the whole point
+ * of the change: a shadow that goes round the curve by itself, instead of a
+ * horizontal gradient that ran out before the curve reached it.
  *
- * Which means the section's own mask cuts it, and a line sitting exactly on
- * the cut would lose its outer half to it. Half a pixel deeper is the whole
- * width of a hairline inside the kept side, so nothing is taken off it.
+ * The other half of the same idea was a circle for the mound, and that one
+ * does not work: a circle meeting a straight edge corners at both shoulders
+ * unless it is tangent, and the smoothness of that junction is what the bar's
+ * cubic was shaped for.
+ *
+ * **Closed ten units past the foot of the box**, and the box is allowed to
+ * overflow. Stopping exactly at the bottom left the section's own border — a
+ * single pixel — showing underneath, which is the same artefact the bar's
+ * fill solves the same way: no amount of getting the arithmetic right removes
+ * half a pixel of antialiasing, and overlapping does.
  */
-export const BITE_STROKE = offsetEdge(NOMINAL_WIDTH, GAP + 0.5);
-
-/** The same, closed upwards: the region the section keeps. */
-export const BITE_ABOVE = `${BITE}V${CEILING}H0Z`;
+export const BITE_FILL = `${BITE}V40H0Z`;
 
 /** The box both of those are drawn in, tall enough for a crest above zero. */
 export const BITE_VIEWBOX = `0 ${CEILING} 500 ${30 - CEILING}`;

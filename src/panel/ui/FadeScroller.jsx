@@ -40,9 +40,28 @@ const FadeScroller = ({ className = '', children }) => {
   const idle = useRef(null);
 
   const measure = useCallback(() => {
-    setEdges(edgesOf(scroller));
+    const at = edgesOf(scroller);
+    setEdges(at);
 
-    const at = thumbOf(scroller);
+    /*
+     * Tell the content area when something is running under its bottom edge.
+     *
+     * The edge is drawn twice over: as an outline when the section simply
+     * ends there, and as content dissolving into the page when there is more
+     * of it below. Both at once is a line ruled across half-faded text, which
+     * is what the settings screen looked like — *"A, mozesz sciagnac ale
+     * tylko jesli pojawia sie cien bo sam border ma zostac w normalnym
+     * przypadku"*.
+     *
+     * Marked on `main` rather than passed up through five screens: the
+     * scroller is the only thing that knows, and `main` is the only thing
+     * that draws. A sheet's scroller is portalled to the shell root, so
+     * `closest` finds no `main` and a sheet cannot speak for the page behind
+     * it.
+     */
+    scroller?.closest('main')?.toggleAttribute('data-under-edge', at.bottom);
+
+    const bar = thumbOf(scroller);
     const node = thumb.current;
     if (!node) {
       return;
@@ -50,8 +69,8 @@ const FadeScroller = ({ className = '', children }) => {
 
     // Hidden by height rather than unmounted, so nothing reflows when a
     // scroller becomes scrollable while it is being looked at.
-    node.style.setProperty('--thumbH', `${at ? at.height : 0}px`);
-    node.style.setProperty('--thumbY', `${at ? at.top : 0}px`);
+    node.style.setProperty('--thumbH', `${bar ? bar.height : 0}px`);
+    node.style.setProperty('--thumbY', `${bar ? bar.top : 0}px`);
   }, [scroller]);
 
   const onScroll = useCallback(() => {

@@ -4,6 +4,7 @@ import { FooterSlotProvider } from './ui/footerSlot';
 import { ShellNodeProvider, ShellWidthProvider, useIsPhone, useMeasuredShell } from './ui/shell';
 import NavRail from './ui/NavRail';
 import NavTabs from './ui/NavTabs';
+import { BITE, BITE_FILL, BITE_VIEWBOX } from './ui/navEdge';
 import StatusBar from './ui/StatusBar';
 import TopBar from './ui/TopBar';
 import StatusSheet from './ui/StatusSheet';
@@ -196,9 +197,77 @@ const Panel = ({ machine, screen, onScreen }) => {
           */}
         <main
           className={`flex min-h-0 min-w-0 flex-1 flex-col p-shellPad ${phone
-            ? 'mask-nav-bite pb-0 [&_section:last-child]:pb-[calc(var(--pad)+var(--navBite))]'
+            ? 'relative pb-0 [&_section:last-child]:pb-[calc(var(--pad)+var(--navBite))]'
             : ''}`}
         >
+          {/*
+            * The bite, as a shape rather than a hole.
+            *
+            * It was a mask on this element, which cut the content along the
+            * curve and left nothing for a shadow to follow: the scroller's
+            * fade is a horizontal band, so at the mound the content vanished
+            * before it had begun to thin out and the outline sat on top of
+            * full-strength text.
+            *
+            * A shape has a silhouette, and `drop-shadow` goes round a
+            * silhouette rather than a box — so the shadow follows the curve by
+            * itself. No gradient to aim along an arc, no blurred mask, no
+            * second copy of the profile to keep in step.
+            *
+            * Painted in the page's own colour, so it covers rather than cuts.
+            * Same picture, and it can cast.
+            *
+            * Two paths, because one cannot do both: the fill is closed down to
+            * the foot of the box and a stroke on that would draw a line along
+            * the bottom and up both sides. The outline is the open curve.
+            */}
+          {phone ? (
+            <div className="pointer-events-none absolute bottom-0 left-shellPad right-shellPad z-10 h-navBite">
+              <svg
+                viewBox={BITE_VIEWBOX}
+                preserveAspectRatio="none"
+                aria-hidden="true"
+                /*
+                  * The shadow is the page's own colour, and it is stacked.
+                  *
+                  * Not a dark shadow: what this has to do is dissolve the
+                  * content into the page as it comes down to the curve —
+                  * *"cien ma byc koloru backgroundu … musi byc na tyle
+                  * intensywny zeby zalac sie z tlem"*. A dark one darkened
+                  * the text instead of removing it, and left the card's own
+                  * border showing through underneath.
+                  *
+                  * Three passes rather than one because `drop-shadow`
+                  * composites: a single soft one is too thin to cover
+                  * anything, and each further pass multiplies what the last
+                  * laid down. Written as one `filter` so they stack — three
+                  * `drop-shadow-*` utilities would simply overwrite each
+                  * other.
+                  */
+                className="size-full overflow-visible [filter:drop-shadow(0_-2px_2px_var(--bg))_drop-shadow(0_-4px_4px_var(--bg))_drop-shadow(0_-6px_7px_var(--bg))_drop-shadow(0_-9px_11px_var(--bg))]"
+                fill="none"
+              >
+                <path d={BITE_FILL} className="fill-bg" />
+                {/*
+                  * The outline, and it steps aside for the shadow.
+                  *
+                  * When the section simply ends at the curve, the edge is a
+                  * line like any other card's. When content is running under
+                  * it, the edge is the content dissolving into the page — and
+                  * a line ruled across half-faded text is neither. `main`
+                  * carries `data-under-edge` while a scroller inside it has
+                  * more below; see `FadeScroller`.
+                  */}
+                <path
+                  d={BITE}
+                  className="stroke-line transition-opacity duration-200 [[data-under-edge]_&]:opacity-0"
+                  strokeWidth="1"
+                  vectorEffect="non-scaling-stroke"
+                />
+              </svg>
+            </div>
+          ) : null}
+
           <FooterSlotProvider value={setFooter}>
             {Screen
               ? <Screen machine={machine} />
