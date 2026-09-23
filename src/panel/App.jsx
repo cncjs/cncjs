@@ -4,7 +4,6 @@ import { FooterSlotProvider } from './ui/footerSlot';
 import { ShellNodeProvider, ShellWidthProvider, useIsPhone, useMeasuredShell } from './ui/shell';
 import NavRail from './ui/NavRail';
 import NavTabs from './ui/NavTabs';
-import { BITE, BITE_VIEWBOX } from './ui/navEdge';
 import StatusBar from './ui/StatusBar';
 import TopBar from './ui/TopBar';
 import StatusSheet from './ui/StatusSheet';
@@ -157,50 +156,10 @@ const Panel = ({ machine, screen, onScreen }) => {
         onUpdate={applyUpdate}
       />
 
-      <div className="relative flex min-h-0 flex-1">
+      <div className="flex min-h-0 flex-1">
         {phone ? null : (
           <NavRail items={DESTINATIONS} current={screen} onSelect={onScreen} />
         )}
-
-        {/*
-          * The outline of the bite, which the mask cannot draw.
-          *
-          * A mask removes; it does not leave an edge behind, so the section's
-          * own border simply stopped where the curve began and the bite had
-          * no line on it at all — *"to wciecie musi miec stroke w kolorze
-          * bordera"*.
-          *
-          * A sibling of `main` rather than a child of it, because a child
-          * would be cut by the very mask it is outlining and only half the
-          * stroke would survive. Inset by the same padding `main` carries, so
-          * it stretches across exactly the width the section does and the two
-          * curves are drawn from the same 500 units.
-          *
-          * `bottom-gap` and `h-navEdge` put it where the mask's own profile
-          * sits — see `mask-nav-bite`, which is lifted by the same gap.
-          */}
-        {phone ? (
-          // Wrapped, because an `svg` with a `viewBox` keeps its intrinsic
-          // 500px width even when `inset-x` pins both its sides — measured,
-          // and it put the outline 130px to the right of the bite it was
-          // supposed to trace. The box is positioned; the drawing fills it.
-          <div className="pointer-events-none absolute inset-x-2.5 bottom-0 z-10 h-navBite">
-            <svg
-              viewBox={BITE_VIEWBOX}
-              preserveAspectRatio="none"
-              aria-hidden="true"
-              className="size-full"
-              fill="none"
-            >
-              <path
-                d={BITE}
-                className="stroke-line"
-                strokeWidth="1"
-                vectorEffect="non-scaling-stroke"
-              />
-            </svg>
-          </div>
-        ) : null}
 
         {/* `min-h-0` so this constrains its screen rather than growing to fit
           * it: without it a screen taller than the frame pushes the whole
@@ -236,8 +195,8 @@ const Panel = ({ machine, screen, onScreen }) => {
           * the layout, and the layout is what this element owns.
           */}
         <main
-          className={`flex min-h-0 min-w-0 flex-1 flex-col p-2.5 ${phone
-            ? 'pb-0 [&_section:last-child]:mask-nav-bite [&_section:last-child]:pb-[calc(var(--pad)+var(--navBite))]'
+          className={`flex min-h-0 min-w-0 flex-1 flex-col p-shellPad ${phone
+            ? 'mask-nav-bite pb-0 [&_section:last-child]:pb-[calc(var(--pad)+var(--navBite))]'
             : ''}`}
         >
           <FooterSlotProvider value={setFooter}>

@@ -54,6 +54,16 @@
    */
   --navBite: 42px;
 
+  /*
+   * The margin the content area keeps from the edge of the screen.
+   *
+   * Was `p-2.5` written into the shell, which was fine until the bite needed
+   * to line up with it: the curve is drawn across the content area and has to
+   * start and stop where the cards do, so the number is needed in the
+   * stylesheet as well as in the markup.
+   */
+  --shellPad: 10px;
+
   /* Ink */
   --ink: #18222e;
   --mut: #6d7886;
