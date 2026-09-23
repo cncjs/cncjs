@@ -216,8 +216,9 @@ test.describe('panel, disconnected', () => {
   test('has a connection screen of its own, and lists the server\'s ports', async ({ cncjs }) => {
     // The reason this screen exists. Until it did, a port was opened by
     // driving the *old* application's connection widget in a headless browser
-    // — `scripts/connect-machine.js` — and a panel that cannot reach a machine
-    // without the thing it replaces is not a replacement.
+    // — a script written for exactly that reason, deleted with this change —
+    // and a panel that cannot reach a machine without the thing it replaces
+    // is not a replacement.
     await openPanel(cncjs.page);
     await rail(cncjs.page).getByRole('button', { name: 'Połączenie' }).click();
 
