@@ -122,6 +122,12 @@
     #rv-bar button { font: inherit; cursor: pointer; border-radius: 4px; padding: 6px 10px;
       border: 1px solid #3a424c; background: #2c323a; color: #e6ecf3; }
     #rv-bar button.on { background: #e04a4a; border-color: #e04a4a; }
+    /* The hold reads as a state, not as an action, because that is what it is:
+       one of these two is always true and the bar should say which without
+       being asked. Amber is collecting, green is "go" — the same two meanings
+       the panel itself gives those colours. */
+    #rv-bar button.held { background: #7a5a12; border-color: #c08a1e; color: #ffe9b8; }
+    #rv-bar button.live { background: #1b5e34; border-color: #2f9e56; color: #d6f5e2; }
     #rv-bar .count { color: #8b97a6; }
     #rv-bar .sep { height: 1px; width: 100%; background: #3a424c; }
     #rv-bar .targets { display: flex; flex-direction: column; gap: 4px; }
@@ -175,10 +181,12 @@
     <span class="sep"></span>
     <button id="rv-pick">Komentarz</button>
     <span class="count" id="rv-count"></span>
+    <button id="rv-hold" title="Dopóki wstrzymane, uwagi tylko się zbierają"></button>
     <button id="rv-clear" title="Usuń wszystkie uwagi">Wyczyść</button>`;
   document.body.appendChild(bar);
 
   const count = bar.querySelector('#rv-count');
+  const holdButton = bar.querySelector('#rv-hold');
   const pickButton = bar.querySelector('#rv-pick');
   const scaleNote = bar.querySelector('#rv-scale');
   const openButton = bar.querySelector('#rv-open');
@@ -364,10 +372,44 @@
     count.textContent = notes.length ? `${notes.length} uwag` : 'brak uwag';
   };
 
+  /*
+   * Whether anything is allowed to act on the notes yet.
+   *
+   * Held is the resting state and releasing is the deliberate act — the
+   * reverse of how this worked until 2026-09-23, when a note was being fixed
+   * while the next one was still being typed. The server owns the flag; this
+   * only shows it and flips it, so a page reload or a second tab cannot
+   * disagree about it.
+   */
+  let held = true;
+
+  const drawHold = () => {
+    holdButton.textContent = held ? '⏸ Wstrzymane' : '▶ Wypuszczone';
+    holdButton.classList.toggle('held', held);
+    holdButton.classList.toggle('live', !held);
+    holdButton.title = held
+      ? 'Uwagi się zbierają i nikt ich nie rusza. Kliknij, żeby wypuścić do roboty.'
+      : 'Uwagi idą do roboty. Kliknij, żeby znów wstrzymać.';
+  };
+
+  const loadHold = async () => {
+    try {
+      held = (await (await fetch(`${HOST}/hold`)).json()).held !== false;
+    } catch (err) {
+      // The server is the only thing that knows. If it cannot be reached,
+      // say held — the safe direction is "nobody is working on these".
+      held = true;
+    }
+    drawHold();
+  };
+
   const load = async () => {
     const response = await fetch(`${HOST}/notes`);
     notes = await response.json();
     drawPins();
+    // The server re-arms the hold when the last note is handled, so the state
+    // can change without anyone pressing this button.
+    await loadHold();
   };
 
   // ---- picking -----------------------------------------------------------
@@ -488,6 +530,16 @@
   window.__reviewToggle = () => setPicking(!picking);
 
   pickButton.addEventListener('click', () => setPicking(!picking));
+  holdButton.addEventListener('click', async () => {
+    held = !held;
+    drawHold();
+    await fetch(`${HOST}/hold`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ held }),
+    });
+  });
+
   bar.querySelector('#rv-clear').addEventListener('click', async () => {
     if (!notes.length || !window.confirm('Usunąć wszystkie uwagi?')) { return; }
     await fetch(`${HOST}/notes`, { method: 'DELETE' });
