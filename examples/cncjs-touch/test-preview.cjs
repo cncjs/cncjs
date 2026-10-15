@@ -1,0 +1,25 @@
+const assert = require('node:assert/strict');
+const {scan, render} = require('./touch/library-preview.js');
+(async () => {
+  let result = await scan('G21 G90\nG0 X10 Y10\nG1 X30 Y20 F200\nG91\nX-5 Y5\nM2\nG1 X999');
+  assert.equal(result.count, 3);
+  assert.deepEqual(result.bounds, [0,0,30,25]);
+  result = await scan('G20 G90\r\nG1 X1 Y2\r\n');
+  assert.deepEqual(result.bounds, [0,0,25.4,50.8]);
+  await assert.rejects(scan('G1 X1\nG2 X2 I1'), /centre/);
+  await assert.rejects(scan('G1 X1 X2'), /axe répété/);
+  await assert.rejects(scan('G1 X1 (oops'), /commentaire/);
+  await assert.rejects(scan('G90 G91 G1 X1'), /contradictoires/);
+  await assert.rejects(scan('X2'), /mode G0/);
+  await assert.rejects(scan('G1 X1',null,()=>true), /Annulé/);
+  let count=0;
+  const big = 'G90 G21\nG1 X1\n' + Array.from({length:120001},(_,i)=>'X'+(i%2 ? 1 : 2)).join('\n');
+  result = await scan(big,()=>count++);
+  assert.equal(result.count,120002); assert.equal(count,120002);
+  let strokes=0;
+  const ctx={fillRect(){},beginPath(){},moveTo(){},lineTo(){},stroke(){strokes++;}};
+  const canvas={getContext:()=>ctx,toDataURL:()=> 'data:image/png;base64,AAAA'};
+  result = await render(big,canvas,()=>false,()=>{});
+  assert.equal(strokes,120002); assert.equal(result.segments,120002);
+  console.log('Preview tests: 10 checks passed, including 120002 segments with no omissions.');
+})().catch(e=>{console.error(e);process.exitCode=1;});

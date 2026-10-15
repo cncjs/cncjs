@@ -1,0 +1,25 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+let now=10000;
+const context={window:{},document:{querySelectorAll:()=>[]},Promise,Date:{now:()=>now}};
+vm.createContext(context);vm.runInContext(fs.readFileSync(__dirname+'/touch/job-simulation.js','utf8'),context);
+const api=context.window.cncJobSimulation.request;
+const get=async()=>(await api('GET')).controllers[0];
+const post=(action,extra={})=>api('POST',{action,port:'SIMULATION',...extra});
+(async()=>{
+ assert.equal((await get()).canStart,false);
+ await assert.rejects(api('POST',{action:'load',port:'/dev/ttyACM0',file:'leaf.nc'}));
+ await post('load',{file:'leaf.nc'});assert.equal((await get()).canStart,true);
+ let ticket=await post('prepare',{operation:'start',revision:(await get()).revision});
+ await post('start',{nonce:ticket.nonce});now+=6000;assert.equal((await get()).received,10);
+ await assert.rejects(post('start',{nonce:ticket.nonce}));
+ await assert.rejects(post('load',{file:'other.nc'}));
+ await post('pause');now+=9000;assert.equal((await get()).received,10);
+ ticket=await post('prepare',{operation:'resume',revision:(await get()).revision});
+ await post('resume',{nonce:ticket.nonce});now+=6000;assert.equal((await get()).received,20);
+ await post('stop');assert.equal((await get()).canStart,false);
+ await post('load',{file:'leaf.nc'});ticket=await post('prepare',{operation:'start',revision:(await get()).revision});
+ now+=16000;await assert.rejects(post('start',{nonce:ticket.nonce}));
+ ticket=await post('prepare',{operation:'start',revision:(await get()).revision});await post('start',{nonce:ticket.nonce});
+ now+=60000;assert.equal((await get()).received,100);assert.equal((await get()).workflow,'idle');
+ console.log('PASS: simulation load/start/pause/resume/stop/completion, tickets, real port rejection; no network API supplied.');
+})().catch(e=>{console.error(e);process.exitCode=1});
