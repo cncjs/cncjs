@@ -1,0 +1,18 @@
+.preview-open-host{position:relative}
+.ks-ui .preview-open{position:absolute;right:8px;bottom:8px;z-index:1;border:1px solid #527480;border-radius:6px;background:#20343ded;color:#edf3f5;padding:10px 16px;font:inherit;font-size:15px;min-height:44px;cursor:pointer}
+.preview-open[hidden],#preview-viewer[hidden]{display:none!important}
+#preview-viewer{position:fixed;inset:0;z-index:700;background:#10191e;color:#edf3f5;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;padding:16px;gap:12px;font:18px/1.35 system-ui,sans-serif}
+#preview-viewer header,#preview-viewer footer{display:flex;align-items:center;justify-content:space-between;gap:20px}
+#preview-viewer header>div{min-width:0}#preview-viewer h2{font-size:22px;font-weight:500;margin:0 0 4px}#preview-viewer-file{font-size:15px;color:#a9bdc7;margin:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#preview-viewer button{font:inherit;color:#edf3f5;background:#22343e;border:1px solid #49616d;border-radius:7px;min-height:52px;padding:10px 18px;cursor:pointer;touch-action:manipulation;white-space:nowrap}
+#preview-viewer button:disabled{opacity:.4;cursor:default}
+#preview-viewer button:focus-visible,#preview-viewer-stage:focus-visible{outline:3px solid #f5a147;outline-offset:2px}
+#preview-viewer-stage{position:relative;min-height:0;overflow:hidden;background:#0d161c;border:1px solid #31434c;border-radius:8px;touch-action:none;user-select:none}
+#preview-viewer-stage.can-pan{cursor:grab}#preview-viewer-stage.can-pan:active{cursor:grabbing}
+#preview-viewer-image{position:absolute;left:50%;top:50%;max-width:none;max-height:none;pointer-events:none;transform-origin:center}
+.preview-zoom,.preview-machine{display:flex;align-items:center;gap:10px}.preview-zoom output{min-width:65px;text-align:center;font-variant-numeric:tabular-nums}
+#preview-viewer #preview-job-stop{background:#702c35;border-color:#af565f}
+#preview-machine-state{font-size:15px;color:#b5c7d0;max-width:240px}
+#preview-viewer .preview-hint{margin:0;color:#9eafb9;font-size:13px;text-align:center}
+@media(max-width:850px),(max-height:550px){#preview-viewer{padding:10px;gap:8px;font-size:15px}#preview-viewer button{min-height:44px;padding:8px 12px}#preview-viewer h2{font-size:18px}#preview-viewer header,#preview-viewer footer{gap:10px}.preview-zoom,.preview-machine{gap:6px}#preview-machine-state{max-width:155px;font-size:12px}#preview-viewer .preview-hint{font-size:11px}}
+@media(max-width:620px){#preview-viewer footer{flex-wrap:wrap}.preview-machine{margin-left:auto}#preview-viewer-file{font-size:12px}}

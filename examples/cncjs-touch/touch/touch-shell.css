@@ -1,0 +1,272 @@
+body.ks-ui{--bg:#10191e;--card:#17232a;--txt:#edf3f5;--mute:#a0b0b9;--line:#31434c;--ks-rail:88px;background:var(--bg);font-size:18px}
+.ks-ui #screen-limits.active{grid-template-columns:minmax(0,1fr)}
+.ks-readonly{color:#acd5e5;font-size:14px;white-space:nowrap;border:1px solid #3b5c6b;border-radius:5px;padding:8px 12px}
+.ks-limits-link{border-bottom:3px solid #b2d743}
+.ks-limits-table{width:100%;border-collapse:collapse;table-layout:fixed;font-variant-numeric:tabular-nums}
+.ks-limits-table th,.ks-limits-table td{padding:20px 12px;border-bottom:1px solid #31434c;text-align:center}
+.ks-limits-table th:first-child{width:36%;text-align:left;font-weight:400}
+.ks-limits-table thead th{font-size:24px;color:#b2d743;font-weight:400}
+.ks-limits-table thead th:first-child{font-size:16px;color:#a0b0b9}
+.ks-limits-table tbody th{font-size:22px}.ks-limits-table b{font-size:32px;font-weight:400;color:#edf3f5}
+.ks-limits-table small{display:block;color:#91a5af;font-size:13px;font-weight:400;margin-top:8px}
+.ks-limit-protections{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.ks-limit-protections>div{display:flex;flex-direction:column;gap:14px;padding:10px;border-left:3px solid #698399}
+.ks-limit-protections span{font-size:18px}.ks-limit-protections small{font-size:12px;color:#91a5af}.ks-limit-protections b{font-size:22px;font-weight:400;color:#a0b0b9}
+.ks-limit-protections b.ks-limit-on{color:#b2d743}.ks-limit-protections b.ks-limit-off{color:#ffc16d}
+.ks-ui #limits-note{font-size:14px;color:#a0b0b9;margin:0;padding:0 8px}
+@media(max-height:650px){.ks-limits-table th,.ks-limits-table td{padding:10px}.ks-limits-table b{font-size:25px}.ks-limits-table tbody th{font-size:18px}.ks-limit-protections>div{gap:8px;padding:4px 8px}.ks-limit-protections b{font-size:19px}.ks-limit-protections span{font-size:15px}.ks-ui #limits-note{font-size:12px}}
+.ks-ui #real-banner{height:64px;display:flex;align-items:center;gap:20px;background:#10191e;border-bottom:1px solid #31434c;color:var(--txt);padding:8px 20px;flex-shrink:0}
+.ks-ui #real-banner .ks-exit{color:#a5b6be;font-size:13px;text-decoration:none}
+body.ks-real.display-large{font-size:20px}.ks-real.display-large .screen p,.ks-real.display-large .ks-secondary{font-size:20px}
+.ks-real .ks-simulation{color:#ff9d91;border-color:#985449}
+.ks-real #status-bar{min-height:40px;border-bottom:1px solid #31434c;padding:4px 16px;font-size:13px}
+.ks-real #status-bar button{min-height:30px;padding:4px 12px}
+.ks-real #screen-home .coords b{font-size:24px}
+.ks-real #screen-home>.card:not(.wide)>h2{display:block}
+.ks-real #screen-home .job-dashboard{min-height:0;gap:20px}
+.ks-real #home-job-image{height:calc(var(--view-height)*.43);min-height:100px}
+.ks-real #home-job-percent{font-size:44px}.ks-real #home-job-eta{font-size:20px}
+body.ks-real #screen-files .library-execution>h2{display:block;color:#ffb0a5;font-size:17px}
+body.ks-real #screen-files .library-execution>.mute{display:block;font-size:12px}
+.ks-sheet a{display:block;margin-top:16px;color:#a5d5e7}
+.ks-real .ks-coordinate-table b{font-size:26px;font-weight:400}
+.ks-real .ks-coordinate-table [data-coordinate=machine]{color:#9db2bd}
+.ks-real-state{font-size:26px;border-left:4px solid #e39a45;padding-left:16px}
+.ks-real #screen-settings select,.ks-real #screen-settings button{font:inherit;min-height:52px}
+.ks-real #screen-settings .display-check{align-items:center}
+@media(max-width:650px){.ks-ui #real-banner{gap:8px;padding:6px 10px}}
+@media(max-height:650px){.ks-real .ks-coordinate-table b{font-size:22px}.ks-real #screen-jog .ks-help{margin:6px 0!important;font-size:12px}}
+.ks-ui #simulation-banner{height:64px;display:flex;align-items:center;gap:20px;background:#10191e!important;border-bottom:1px solid #31434c;color:var(--txt);padding:8px 20px!important;flex-shrink:0}
+.ks-brand{font-size:18px;letter-spacing:2px;color:#91a5af}.ks-brand strong{color:#fff}
+#ks-title{font-size:24px;margin:0;font-weight:500;flex:1}.ks-simulation{color:#ffb452;border:1px solid #74542b;border-radius:5px;padding:5px 10px;font-size:12px;letter-spacing:1.5px}
+.ks-ui #simulation-banner .ks-exit{color:#a5b6be;font-size:13px;text-decoration:none}
+.ks-ui main{left:var(--ks-rail)!important;width:calc(100% - var(--ks-rail))!important;bottom:0!important;padding:16px!important}
+.ks-ui #tabbar{top:64px;left:0;bottom:0;right:auto;width:var(--ks-rail);height:auto;flex-direction:column;justify-content:flex-start;gap:8px;background:#0c1419;border-right:1px solid #283840;border-top:0;padding:12px 8px!important}
+.ks-nav{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:80px;width:100%;padding:10px 4px;color:#91a5af;background:transparent;border:0;border-left:3px solid transparent;border-radius:5px;font:inherit;font-size:12px;cursor:pointer}
+.ks-nav.active{background:#1d2c34;border-left-color:#f18b23;color:#fff}.ks-nav svg{width:30px;height:30px}
+.ks-ui svg{fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.ks-ui #screen-menu.active{display:grid;grid-template-columns:minmax(220px,.65fr) minmax(0,2fr);gap:24px!important;align-items:stretch;min-height:calc(var(--view-height) - 32px)}
+.ks-overview{padding:24px 20px;border-right:1px solid #2a3b43;min-width:0;display:flex;flex-direction:column;justify-content:center}
+.ks-state-label{font-size:12px;color:#91a5af;letter-spacing:2px}#ks-state{font-size:38px;margin:10px 0!important;font-weight:400;color:#f5f8fa}#ks-state.ks-alarm{color:#f26667}
+#ks-current-file{min-height:52px;color:#b7c5cd;font-size:16px;overflow-wrap:anywhere;margin:0 0 24px}
+.ks-axis{display:flex;align-items:baseline;gap:16px;padding:12px 0;border-bottom:1px solid #263840}.ks-axis span{color:#f5a147;font-size:22px;width:20px}.ks-axis b{font-size:30px;font-weight:400;flex:1;font-variant-numeric:tabular-nums}.ks-axis small{color:#81949e}
+.ks-help{color:#81949e;font-size:13px;margin-top:24px!important}
+.ks-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:1fr 1fr;gap:16px;padding:12px 0}
+.ks-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;min-height:160px;padding:16px 12px;background:#17232a;color:#fff;border:1px solid #283b44;border-bottom:5px solid var(--accent,#f18b23);border-radius:8px;font:inherit;font-size:22px;cursor:pointer;touch-action:manipulation}
+.ks-tile small{font-size:14px;line-height:1.35;color:#a0b0b9}
+.ks-tile svg{width:64px;height:64px}.ks-tile:hover,.ks-nav:hover{background:#23363f}.ks-tile:active{background:#304650}
+.ks-accent-0{--accent:#f18b23}.ks-accent-1{--accent:#20b7ac}.ks-accent-2{--accent:#cb4f98}.ks-accent-3{--accent:#68aee8}.ks-accent-4{--accent:#b2d743}.ks-accent-5{--accent:#ad91db}
+.ks-nav:disabled{opacity:.35;cursor:default}.ks-nav:disabled:hover{background:transparent}
+.ks-ui .card{background:#17232a;border:1px solid #293b44;border-radius:8px;padding:16px!important}.ks-ui .screen h2{font-size:20px;color:#b7c9d1;font-weight:400}
+.ks-ui .screen p{line-height:1.4}.ks-ui button{touch-action:manipulation}.ks-ui button:focus-visible,.ks-ui a:focus-visible{outline:3px solid #f5a147;outline-offset:3px}
+.ks-ui #screen-home>.card>h2,.ks-ui #file{display:none}
+.ks-ui .job-dashboard{margin:0;gap:26px;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);min-height:calc(var(--view-height) - 64px)}
+.ks-ui #home-job-image{height:calc(var(--view-height)*.64);max-height:550px}.ks-ui .job-art{background:#0e181e;border:0}
+.ks-ui #home-job-percent{font-size:64px;font-weight:400;color:#f7a449}.ks-ui #home-job-progress{accent-color:#f18b23;height:18px}.ks-ui #home-job-eta{font-size:24px}
+.ks-ui .home-job-actions button{min-height:58px;padding:12px 18px;font-size:18px}.ks-ui .job-metrics{min-width:0}
+.ks-ui #screen-jog .pad{gap:12px}.ks-ui #screen-jog .jog{min-height:86px;font-size:30px;font-weight:400;border-bottom:4px solid #20b7ac}.ks-ui .coords b{font-size:32px;font-weight:400}
+.ks-ui #screen-jog .step,.ks-ui #screen-origin button{min-height:60px;font-size:20px}
+.ks-ui #screen-files .library-execution{border:0!important;border-top:1px solid #31434c!important;border-radius:0}
+.ks-ui .library-header p,.ks-ui .library-eyebrow{display:none}
+.ks-ui #screen-files .library-file{border-radius:5px;border-left:4px solid transparent;min-height:66px}.ks-ui #screen-files .library-file[aria-pressed=true]{border-left-color:#f18b23;box-shadow:none;background:#263a43}
+.ks-ui #screen-history li{border-bottom:1px solid #2b3d46;padding:8px 0}.ks-ui #screen-history li strong{font-size:17px;font-weight:500}
+@media(max-width:1000px){.ks-tiles{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,1fr);gap:10px}.ks-tile{min-height:110px;font-size:19px;gap:10px}.ks-tile svg{width:42px;height:42px}.ks-overview{padding:10px}.ks-ui{--ks-rail:72px!important}}
+@media(max-width:650px){.ks-ui #simulation-banner{gap:8px;padding:6px 10px!important}.ks-brand,.ks-exit{display:none}.ks-ui #screen-menu.active{grid-template-columns:1fr;gap:8px!important}.ks-overview{display:none}.ks-ui .job-dashboard{grid-template-columns:1fr 1fr;gap:12px}.ks-ui #home-job-percent{font-size:40px}.ks-nav{min-height:65px}}
+/* File selection: one panel per task, details in an accessible sheet. */
+.ks-ui #screen-files.active{grid-template-columns:minmax(280px,.85fr) minmax(0,1.4fr);align-items:start}
+.ks-ui #screen-files .library-list-title{flex-wrap:wrap;gap:8px}
+.ks-ui #screen-files .library-list-title h2{flex:1;font-size:20px}
+.ks-ui #screen-files #library-refresh{font-size:14px;min-height:44px}
+.ks-ui #screen-files #library-search{min-height:52px;font-size:18px}
+.ks-ui #screen-files .library-file{min-height:76px;padding:12px}
+.ks-ui #screen-files .library-file strong{font-size:17px;line-height:1.3}
+.ks-ui #screen-files .library-file span{font-size:13px;margin-top:6px}
+.ks-ui #screen-files #library-name{font-size:21px;line-height:1.25}
+.ks-ui #screen-files #library-meta{font-size:13px}
+.ks-ui #screen-files .library-image-wrap{min-height:140px;margin:10px 0}
+.ks-ui #screen-files #library-image{height:clamp(140px,calc(var(--view-height)*.27),240px);max-height:none;width:100%}
+.ks-ui #screen-files .library-execution{margin-top:8px;padding:8px 0!important}
+.ks-ui #screen-files .library-execution>h2,.ks-ui #screen-files .library-execution>.mute{display:none}
+.ks-ui #screen-files #job-loaded,.ks-ui #screen-files #job-reason{font-size:15px}
+.ks-ui #screen-files #job-feedback{font-size:13px;color:#9fb5bf}
+.ks-ui #screen-files .job-buttons{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0}
+.ks-ui #screen-files #job-load{grid-column:1/3}.ks-ui #screen-files #job-start{grid-column:3}
+.ks-ui #screen-files .job-buttons button{font-size:17px;min-height:52px;padding:8px}
+.ks-file-tools{display:flex;gap:10px;margin-top:8px}.ks-file-tools button{flex:1}
+.ks-dimensions-table{width:100%;border-collapse:collapse;table-layout:fixed;font-variant-numeric:tabular-nums}
+.ks-dimensions-table th,.ks-dimensions-table td{padding:14px 8px;border-bottom:1px solid #31434c;text-align:right;overflow-wrap:anywhere}
+.ks-dimensions-table th:first-child{width:56px;text-align:left;color:#59d6cc;white-space:nowrap}
+.ks-dimensions-table thead th{font-size:14px;font-weight:400;color:#a0b0b9}.ks-dimensions-table tbody{font-size:22px}
+#ks-dimensions #library-dimensions-file{font-size:17px;color:#e8edf2;line-height:1.25;margin:8px 0}
+@media(max-height:650px){.ks-dimensions-table th,.ks-dimensions-table td{padding:9px 6px}.ks-dimensions-table tbody{font-size:20px}}
+.ks-ui #screen-files .ks-file-tools button,.ks-ui #screen-files .ks-upload-button{min-height:48px;font-size:16px}
+.ks-ui #screen-files .ks-upload-button{width:100%;margin-top:18px;border-bottom:3px solid #f18b23}
+.ks-sheet[hidden]{display:none!important}.ks-sheet{position:fixed;inset:0;z-index:600;background:#000b;display:flex;align-items:center;justify-content:center;padding:20px}
+.ks-sheet-card{width:min(700px,95vw);background:#17232a;border:1px solid #59717e;border-radius:12px;padding:24px;box-shadow:0 20px 80px #0008}
+.ks-sheet header{display:flex;align-items:center;gap:20px;justify-content:space-between;margin-bottom:18px}.ks-sheet h2{font-size:22px;font-weight:400;margin:0}
+.ks-sheet p{font-size:16px;line-height:1.5;margin:16px 0;overflow-wrap:anywhere}.ks-sheet button{font:inherit;color:#fff;background:#263b46;border:1px solid #47616f;border-radius:7px;min-height:48px;padding:10px 16px;cursor:pointer}.ks-sheet button:disabled{opacity:.45}
+.ks-sheet #library-upload{border:0;margin:0;padding:0}.ks-sheet #library-input{font-size:16px!important;max-width:100%;margin:20px 0}.ks-sheet #library-send{background:#1a6655;display:block;width:100%}.ks-sheet #job-port{margin-top:8px}
+.ks-sheet [hidden]{display:none!important}
+.ks-ui .screen>[hidden]{display:none!important}
+.ks-sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.ks-ui .ks-panel-intro{display:flex;align-items:center;justify-content:space-between;gap:20px;background:transparent;border:0;border-bottom:1px solid #31434c;border-radius:0}
+.ks-ui .ks-panel-intro h2{font-size:24px;margin-bottom:6px!important;color:#edf3f5}
+.ks-ui .ks-panel-intro p{margin:0;font-size:16px;color:#a0b0b9}
+.ks-ui #screen-jog .ks-panel-intro>div:first-child{flex:1;min-width:0}
+.ks-preparation-actions{display:flex;gap:12px;align-items:stretch;flex-shrink:0}
+.ks-preparation-actions .probe-entry{border-bottom:3px solid #cb4f98;color:#f4d5e8;background:#302631}
+.ks-preparation-actions .probe-entry:hover:not(:disabled){background:#493147}
+.ks-preparation-actions #ks-origin-info{font-size:15px;color:#b7c9d1}
+.ks-secondary,.ks-coordinate-table button{font:inherit;color:#edf3f5;background:#20313a;border:1px solid #3c535f;border-radius:7px;padding:12px 18px;min-height:52px;cursor:pointer}
+.ks-ui button:disabled{cursor:not-allowed}
+.ks-secondary:disabled,.ks-command:disabled,.ks-coordinate-table button:disabled{opacity:.4}
+.ks-secondary:hover:not(:disabled),.ks-coordinate-table button:hover:not(:disabled){background:#2c414b}
+.ks-ui #screen-origin.active{grid-template-columns:minmax(0,1.5fr) minmax(250px,1fr)}
+.ks-coordinate-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.ks-coordinate-table th,.ks-coordinate-table td{padding:20px 8px;text-align:right;border-bottom:1px solid #31434c}
+.ks-coordinate-table thead th{font-size:14px;color:#9db2bd;font-weight:400;padding-top:10px;padding-bottom:10px}
+.ks-coordinate-table tbody th{color:#d76baa;text-align:left;font-size:26px;font-weight:400}
+.ks-coordinate-table td[data-sim-coordinate]{font-size:28px}
+.ks-coordinate-table td[data-sim-coordinate=machinePosition]{color:#9db2bd}
+.ks-ui #screen-origin .ks-coordinate-table button{min-height:56px;font-size:18px;white-space:nowrap;border-bottom:3px solid #cb4f98}
+.ks-origin-actions{display:flex;flex-direction:column;gap:14px}
+.ks-origin-actions p{margin:0;color:#a0b0b9;font-size:16px}
+.ks-command{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;min-height:150px;border:1px solid #40505a;border-bottom:4px solid #b2d743;border-radius:8px;background:#20313a;color:#fff;font:inherit;font-size:22px;padding:20px;cursor:pointer}
+.ks-command svg{width:48px;height:48px}.ks-command:hover:not(:disabled){background:#2c414b}
+.ks-origin-zero{border-bottom-color:#cb4f98;flex:1}
+.ks-ui #screen-origin .sim-motion-feedback{font-size:15px;color:#a6c3ce;min-height:22px}
+.ks-ui #screen-machine.active{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)}
+.ks-machine-overview{display:flex;flex-direction:column;justify-content:center;gap:16px;min-height:360px}
+.ks-machine-overview p{margin:0;overflow-wrap:anywhere}.ks-machine-overview .badge{display:block;font-size:34px;font-weight:400;padding:18px;border-width:0;border-left-width:4px;border-radius:0;background:#12231f}
+.ks-machine-overview .badge.err{background:#351e23;color:#ff9696}.ks-machine-overview .badge.ok{color:#b2d743}
+#sim-machine-workflow{font-size:24px}#sim-machine-file{color:#a0b0b9;font-size:16px}
+.ks-alarm-buttons{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.ks-alarm-buttons .ks-command{min-height:190px;font-size:20px}
+#sim-trigger-alarm{border-bottom-color:#ef7a65}#sim-trigger-alarm svg{color:#ef7a65}#sim-clear-alarm svg{color:#b2d743}
+.ks-ui #sim-machine-feedback{font-size:16px;color:#c7d5dd;min-height:48px}
+.ks-ui #screen-history.active{grid-template-columns:minmax(0,1fr)}
+.ks-ui .ks-history-card{border-top:3px solid #ad91db}
+.ks-ui #screen-history li{padding:12px 10px;border-bottom:1px solid #31434c}
+.ks-ui #screen-history li strong{font-size:18px;font-weight:500;color:#e8edf2}
+.ks-ui #screen-history li p{font-size:14px;color:#a0b0b9;margin:5px 0 0;overflow-wrap:anywhere}
+.ks-history-pagination{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:16px;font-size:15px}
+.ks-export-buttons{display:flex;gap:12px}.ks-export-buttons button{flex:1;min-height:64px;border-bottom:3px solid #ad91db}
+@media(max-height:650px){
+ .ks-ui .ks-panel-intro{padding:8px!important}.ks-ui .ks-panel-intro h2{font-size:20px}.ks-ui .ks-panel-intro p{font-size:14px}
+ .ks-coordinate-table th,.ks-coordinate-table td{padding:10px 6px}.ks-coordinate-table td[data-sim-coordinate]{font-size:23px}
+ .ks-ui #screen-origin .ks-coordinate-table button{min-height:48px;font-size:16px}
+ .ks-origin-actions{gap:10px}.ks-command{min-height:110px;padding:12px;gap:10px}.ks-command svg{width:36px;height:36px}
+ .ks-machine-overview{min-height:260px;gap:12px}.ks-alarm-buttons .ks-command{min-height:140px;font-size:18px}
+ .ks-ui #screen-history li{padding:9px}.ks-ui #screen-history li strong{font-size:16px}
+}
+@media(max-width:900px){
+ .ks-ui #screen-origin.active{grid-template-columns:minmax(0,1.5fr) minmax(200px,1fr)}
+ .ks-ui #screen-origin .ks-secondary{font-size:16px;padding:10px}
+ .ks-coordinate-table td[data-sim-coordinate]{font-size:22px}
+ .ks-machine-overview .badge{font-size:26px}.ks-alarm-buttons{gap:8px}
+}
+@media(max-height:650px){.ks-sheet-card{padding:16px}.ks-sheet p{margin:8px 0;font-size:14px}.ks-sheet header{margin-bottom:10px}}
+@media(max-width:760px){.ks-ui #screen-files.active{grid-template-columns:minmax(0,1fr)}.ks-ui #screen-files .library-file{min-height:60px}}
+@media(max-height:650px){
+ .ks-ui #screen-files .card{padding:10px!important}
+ .ks-ui #screen-files #library-image{height:100px}
+ .ks-ui #screen-files .library-image-wrap{min-height:100px;margin:6px 0}
+ .ks-ui #screen-files #library-name{font-size:18px}
+ .ks-ui #screen-files p{margin:5px 0}
+ .ks-ui #screen-files .job-buttons button{min-height:44px;font-size:15px;padding:6px}
+ .ks-ui #screen-files .ks-file-tools button,.ks-ui #screen-files .ks-upload-button{min-height:44px;font-size:14px}
+ .ks-ui #screen-files .library-execution{padding:4px 0!important;margin-top:4px}
+ .ks-ui #screen-files #job-loaded,.ks-ui #screen-files #job-reason{font-size:13px}
+}
+/* One manipulation panel: jog and work zero are always available together. */
+.ks-ui #screen-jog.active{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+.ks-ui #screen-jog .ks-coordinate-table th,.ks-ui #screen-jog .ks-coordinate-table td{padding:12px 8px}
+.ks-ui #screen-jog .ks-coordinate-table button{min-height:50px;font-size:18px;border-bottom:3px solid #cb4f98}
+.ks-ui #screen-jog .ks-coordinate-table td[data-sim-coordinate]{font-size:26px}
+.ks-motion-step{margin-top:18px}.ks-motion-step .steps{margin-bottom:12px}
+.ks-motion-zero{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ks-motion-zero .ks-origin-zero{display:flex;align-items:center;justify-content:center;gap:12px;border-bottom:3px solid #cb4f98}
+.ks-motion-zero svg{width:26px;height:26px}
+.ks-ui #screen-jog .sim-motion-feedback{font-size:14px;color:#a6c3ce;margin:12px 0 0}
+.ks-motion-arrows{display:flex;flex-direction:column;justify-content:center}
+.ks-ui #screen-jog .pad{flex:1;min-height:270px;margin-bottom:20px}
+.ks-ui #screen-jog .zrow .jog{min-height:80px}
+@media(max-width:1000px){.ks-tile{padding:10px 8px}.ks-tile small{font-size:12px}.ks-ui #screen-jog .ks-panel-intro{gap:12px}.ks-preparation-actions{gap:8px}.ks-preparation-actions .ks-secondary{font-size:16px;padding:10px}.ks-preparation-actions #ks-origin-info{font-size:14px}}
+@media(max-width:760px){.ks-ui #screen-jog .ks-panel-intro{flex-wrap:wrap}.ks-preparation-actions{width:100%}.ks-preparation-actions button{flex:1}}
+@media(max-height:650px){
+ .ks-ui #screen-jog .ks-coordinate-table th,.ks-ui #screen-jog .ks-coordinate-table td{padding:6px}
+ .ks-ui #screen-jog .ks-coordinate-table td[data-sim-coordinate]{font-size:22px}
+ .ks-ui #screen-jog .ks-coordinate-table button{min-height:44px;font-size:16px;padding:8px 12px}
+ .ks-ui #screen-jog .step,.ks-motion-zero .ks-secondary{min-height:44px;font-size:16px;padding:8px}
+ .ks-motion-step{margin-top:10px}.ks-ui #screen-jog .pad{min-height:190px;gap:8px;margin-bottom:10px}
+ .ks-ui #screen-jog .jog{min-height:58px;font-size:24px}.ks-ui #screen-jog .zrow .jog{min-height:58px}
+}
+@media(max-height:650px){
+ .ks-ui #tabbar .ks-nav{min-height:0;flex:1;max-height:80px;padding:6px 4px}
+ .ks-ui #screen-limits .card{padding:8px!important}
+ .ks-ui #screen-limits .ks-panel-intro h2{font-size:18px}
+ .ks-ui #screen-limits .ks-panel-intro p{font-size:12px}
+ .ks-limits-table th,.ks-limits-table td{padding:6px;line-height:1.15}
+ .ks-limits-table thead th,.ks-limits-table b{font-size:22px}
+ .ks-limits-table tbody th{font-size:17px}
+ .ks-limits-table th small{margin-top:3px;font-size:11px}
+ .ks-limits-table td small{display:none}
+ .ks-limit-protections>div{gap:4px;padding:0 6px}
+ .ks-limit-protections span{font-size:14px}.ks-limit-protections b{font-size:17px}
+ .ks-readonly{font-size:12px;padding:6px 8px}
+}
+/* Touch display preferences, shared by real and simulation pages. */
+.ks-ui #screen-settings.active{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ks-ui .ks-display-card{display:flex;flex-direction:column;gap:12px}
+.ks-ui .ks-display-card p{font-size:16px;color:#a0b0b9;margin:0}
+.ks-display-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1}
+.ks-display-choices button,.ks-display-toggle{font:inherit;color:#edf3f5;border:1px solid #40505a;border-bottom:4px solid #ad91db;border-radius:7px;background:#10191e;min-height:120px;padding:14px;cursor:pointer}
+.ks-display-choices button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:19px}
+.ks-display-choices button[aria-pressed=true],.ks-display-toggle[aria-pressed=true]{background:#263d43;border-color:#59c3c3}
+.ks-text-sample{font-size:30px;line-height:1.15}.ks-text-sample.ks-text-large{font-size:40px}
+.ks-display-toggle{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:76px;text-align:left}
+.ks-display-toggle b{font-weight:400;color:#59d6cc;white-space:nowrap}.ks-display-toggle[aria-pressed=false] b{color:#a0b0b9}
+.ks-ui .ks-display-card .ks-help{font-size:13px;margin-top:0!important}
+.ks-display-fullscreen,.ks-display-footer{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.ks-ui .ks-display-fullscreen p{font-size:16px;color:#a0b0b9;margin:0}
+.ks-display-footer p{font-size:14px;color:#a0b0b9;flex:1}
+.ks-ui #screen-settings button{touch-action:manipulation}
+.ks-ui #screen-settings .ks-secondary{font-size:16px;min-height:48px;flex-shrink:0}
+.ks-ui.display-large .ks-display-card p,.ks-ui.display-large .ks-display-fullscreen p{font-size:19px}
+.ks-ui.display-large .ks-display-choices button,.ks-ui.display-large .ks-display-toggle{font-size:21px}
+@media(max-height:650px){
+ .ks-ui #screen-settings .card{padding:10px!important}.ks-ui .ks-display-card{gap:8px}
+ .ks-display-choices button{min-height:94px;padding:8px}.ks-display-toggle{min-height:64px;padding:10px}
+ .ks-ui .ks-display-card p,.ks-ui .ks-display-fullscreen p{font-size:14px}
+ .ks-ui.display-large .ks-display-card p,.ks-ui.display-large .ks-display-fullscreen p{font-size:17px}
+ .ks-ui .ks-display-card .ks-help{font-size:12px}
+ .ks-ui #screen-settings .ks-secondary{min-height:44px;padding:8px 12px}
+ .ks-display-footer{gap:12px}.ks-display-footer p{font-size:12px;margin:0}
+}
+.ks-display-footer{grid-column:1/-1}
+.ks-ui .ks-display-sleep{display:flex;flex-direction:column;gap:10px}
+.ks-ui .ks-display-sleep label{font-size:15px;color:#a0b0b9}
+.ks-ui .ks-display-sleep p{font-size:13px;margin:0!important;color:#a0b0b9}
+.ks-sleep-controls{display:flex;gap:10px}.ks-sleep-controls select{flex:1;min-width:0;min-height:48px;font:inherit;color:#e8edf2;background:#101b21;border:1px solid #47616f;border-radius:6px;padding:8px}
+.ks-ui .ks-display-fullscreen{flex-wrap:wrap}
+#touch-screen-saver[hidden]{display:none!important}
+#touch-screen-saver{position:fixed;inset:0;z-index:2147483647;width:100%;height:100%;margin:0;padding:24px;border:0;border-radius:0;outline:0;background:#000;color:#777;font:18px sans-serif;cursor:pointer;touch-action:none;box-shadow:none;transition:none;animation:none}
+@media(max-height:650px){.ks-ui #screen-settings .ks-display-sleep{padding:10px!important;gap:6px}.ks-ui .ks-display-sleep h2{font-size:18px}.ks-ui .ks-display-sleep label{font-size:13px}.ks-ui .ks-display-sleep p{font-size:12px}.ks-sleep-controls select{min-height:44px}}
+@media(max-height:520px){
+ .ks-ui #screen-settings .ks-panel-intro{padding:6px!important}
+ .ks-ui #screen-settings .ks-panel-intro h2{font-size:18px}
+ .ks-ui #screen-settings .ks-panel-intro p{font-size:12px}
+ .ks-ui #screen-settings .ks-display-card{gap:6px;padding:8px!important}
+ .ks-ui #screen-settings .ks-display-card h2,.ks-ui #screen-settings .ks-display-fullscreen h2{font-size:18px}
+ .ks-ui #screen-settings .ks-display-card p,.ks-ui #screen-settings .ks-display-fullscreen p{font-size:13px}
+ .ks-ui #screen-settings .ks-display-card .ks-help{display:none}
+ .ks-ui #screen-settings .ks-display-choices button{min-height:76px;font-size:16px;padding:6px}
+ .ks-ui #screen-settings .ks-display-toggle{font-size:16px;min-height:66px;padding:8px}
+ .ks-ui.display-large #screen-settings .ks-display-choices button,.ks-ui.display-large #screen-settings .ks-display-toggle{font-size:19px}
+ .ks-text-sample{font-size:24px}.ks-text-sample.ks-text-large{font-size:30px}
+}
+/* Final shared menu and concise secondary guide. No animations or background work. */
+.ks-guide-tabs{display:flex;gap:12px}.ks-guide-tabs button{flex:1;min-height:52px;background:#1e303a;color:#edf3f5;border:1px solid #3c535f;border-radius:6px;font:inherit;padding:12px;cursor:pointer}.ks-guide-tabs [aria-pressed=true]{background:#28515a;border-color:#64d3d7}
+.ks-ui #screen-guide.active{grid-template-columns:repeat(2,minmax(0,1fr))}.ks-ui #screen-guide .card p{font-size:18px;padding:12px 0;border-bottom:1px solid #30434d;margin:0;line-height:1.45}.ks-ui #screen-guide .ks-panel-intro p{font-size:14px;border:0;padding:0;margin:8px 0}.ks-ui #screen-settings .ks-panel-intro{flex-wrap:wrap;gap:12px}.ks-ui #screen-settings .ks-panel-intro>div{flex:1}
+@media(max-height:650px){.ks-ui #screen-guide .card{padding:12px!important}.ks-ui #screen-guide .card p{font-size:15px;padding:9px 0}.ks-guide-tabs button{min-height:44px;padding:8px}}
+.ks-guide-tabs{grid-column:1/-1}

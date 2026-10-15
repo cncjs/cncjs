@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr" class="cnc-loading">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CNC — SIMULATION</title>
+<style id="cnc-startup-style">
+html.cnc-loading,html.cnc-loading body{background:#10191e!important}
+html.cnc-loading body>:not(#cnc-boot){visibility:hidden!important;pointer-events:none!important}
+#cnc-boot{position:fixed;inset:0;z-index:2147483647;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#10191e;color:#edf3f5;font:18px/1.5 system-ui,sans-serif;padding:24px;text-align:center}
+#cnc-boot[hidden]{display:none}#cnc-boot strong{font-size:26px;letter-spacing:2px}#cnc-boot a{display:inline-block;padding:12px 24px;border:1px solid #49616c;border-radius:6px;color:#edf3f5;text-decoration:none}#cnc-boot-message{max-width:560px}
+</style>
+<script src="startup.js?v=perf1"></script>
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="shared-library.css?v=5">
+<style>
+#simulation-banner{position:sticky;top:0;z-index:50;padding:16px;background:#553c09;color:#fff0b5;border-bottom:3px solid #ffc857;font-size:18px}
+#simulation-banner p{margin:6px 0;font-size:15px}a{color:#80dfed}#simulation-banner a{color:#fff0b5}
+.library-execution{border:2px solid #ffc857;border-radius:12px;padding:18px!important}
+</style>
+<link rel="stylesheet" href="viewport-fit.css?v=1"><link rel="stylesheet" href="touch-shell.css?v=10"><link rel="stylesheet" href="preview-viewer.css?v=1"><link rel="stylesheet" href="probe.css?v=3"></head>
+<body data-simulation="true"><div id="cnc-boot" role="status"><strong>CNCjs TOUCH</strong><p id="cnc-boot-message">Chargement de l’interface…</p><a href="simulation.html">Réessayer</a><noscript>JavaScript doit être activé pour utiliser l’interface.</noscript></div>
+<header id="simulation-banner"><strong>SIMULATION — aucune commande envoyée à la machine</strong>
+<p>Test des boutons avec une progression fictive sur 60 secondes, indépendante du G-code. Ce test ne valide ni le parcours, ni les réglages du laser.</p>
+<a href="index.html">Quitter la simulation et revenir à l’interface réelle</a></header>
+<main>
+<section id="screen-home" class="screen"><div class="card wide"><h2>Fichier — SIMULATION</h2><p id="file">Aucun fichier chargé dans le simulateur.</p></div></section>
+<section id="screen-files" class="screen active"></section>
+<section id="screen-jog" class="screen">
+ <div class="card wide ks-panel-intro"><div><h2>Déplacer et définir l’origine</h2><p class="sim-motion-state" role="status"></p></div><button id="ks-origin-info" class="ks-secondary">Repères et origine</button></div>
+ <div class="card ks-motion-coordinates"><h2>Coordonnées fictives · mm</h2><table class="ks-coordinate-table"><thead><tr><th>Axe</th><th>Machine</th><th>Travail</th><th><span class="ks-sr-only">Définir le zéro</span></th></tr></thead><tbody>
+ <tr><th scope="row">X</th><td data-sim-coordinate="machinePosition" data-axis="x">0.000</td><td data-sim-coordinate="workPosition" data-axis="x">0.000</td><td><button data-sim-motion="zero" data-axis="x" disabled>Zéro X</button></td></tr>
+<tr><th scope="row">Y</th><td data-sim-coordinate="machinePosition" data-axis="y">0.000</td><td data-sim-coordinate="workPosition" data-axis="y">0.000</td><td><button data-sim-motion="zero" data-axis="y" disabled>Zéro Y</button></td></tr>
+<tr><th scope="row">Z</th><td data-sim-coordinate="machinePosition" data-axis="z">0.000</td><td data-sim-coordinate="workPosition" data-axis="z">0.000</td><td><button data-sim-motion="zero" data-axis="z" disabled>Zéro Z</button></td></tr>
+ </tbody></table>
+ <div class="ks-motion-step"><h2>Pas de déplacement · mm</h2><div class="steps"><button class="step" data-sim-step="0.1" aria-pressed="false">0.1</button><button class="step active" data-sim-step="1" aria-pressed="true">1</button><button class="step" data-sim-step="10" aria-pressed="false">10</button></div></div>
+ <div class="ks-motion-zero"><button class="ks-secondary ks-origin-zero" data-sim-motion="zero" data-axis="xyz" disabled>Zéro XYZ</button><button id="ks-origin-reset" class="ks-secondary">Réinitialiser…</button></div>
+ <p class="sim-motion-feedback" role="status"></p></div>
+  <div class="card ks-motion-arrows"><h2>Axes X / Y</h2><div class="pad"><span></span><button class="jog" data-sim-motion="jog" data-axis="y" data-direction="1" disabled>Y+</button><span></span><button class="jog" data-sim-motion="jog" data-axis="x" data-direction="-1" disabled>X−</button><span class="pad-mid">XY</span><button class="jog" data-sim-motion="jog" data-axis="x" data-direction="1" disabled>X+</button><span></span><button class="jog" data-sim-motion="jog" data-axis="y" data-direction="-1" disabled>Y−</button><span></span></div><h2>Axe Z</h2><div class="zrow"><button class="jog" data-sim-motion="jog" data-axis="z" data-direction="1" disabled>Z+</button><button class="jog" data-sim-motion="jog" data-axis="z" data-direction="-1" disabled>Z−</button></div></div>
+
+  <div id="ks-origin-explanation" hidden><p>La position machine fictive représente les déplacements effectués dans le simulateur. Le zéro de travail définit un repère à cette position : il change les coordonnées de travail sans déplacer les axes.</p><p>Les valeurs restent dans cette page et disparaissent au rechargement. Le travail simulé ne déplace pas les axes. Aucune trajectoire, vitesse ou limite physique n’est simulée. Aucun réglage du contrôleur réel n’est modifié.</p></div>
+ <div id="ks-origin-reset-content" hidden><p>Remettre les positions machine et travail fictives à zéro. Cette action reste bloquée pendant un travail ou une alarme.</p><button class="ks-secondary" data-sim-motion="reset-position" disabled>Réinitialiser les coordonnées fictives</button><p class="sim-motion-feedback" role="status"></p></div>
+
+</section>
+<section id="screen-machine" class="screen">
+ <div class="card wide ks-panel-intro"><div><h2>Contrôleur virtuel</h2><p>État et test d’alarme de la simulation.</p></div><button id="ks-machine-info" class="ks-secondary">Détails du test</button></div>
+ <div class="card ks-machine-overview"><h2>État actuel</h2><p><span id="sim-machine-state" class="badge">Lecture…</span></p><p id="sim-machine-workflow"></p><p id="sim-machine-file"></p><button id="ks-machine-follow" class="ks-secondary">Ouvrir le suivi →</button></div>
+ <div class="card ks-machine-actions"><h2>Alarme fictive</h2><div class="ks-alarm-buttons"><button id="sim-trigger-alarm" class="ks-command" disabled>Déclencher l’alarme</button><button id="sim-clear-alarm" class="ks-command" disabled>Effacer l’alarme</button></div><p id="sim-machine-feedback" role="status"></p><p class="ks-help">Après effacement, la reprise du travail demande une confirmation dans Suivi.</p></div>
+ <div id="ks-machine-explanation" hidden><p>Contrôleur fictif local au navigateur. Aucun lien avec l’alarme réelle du laser.</p><p>L’alarme suspend la progression et bloque démarrage, reprise, chargement, déplacements et origines. Elle annule les confirmations en attente. Arrêter le travail reste possible.</p><p>Effacer l’alarme ne redémarre pas le travail. Ce test d’interface ne reproduit pas toutes les alarmes Grbl.</p></div>
+</section>
+<section id="screen-history" class="screen">
+ <div class="card wide ks-panel-intro"><div><h2>Événements de la session</h2><p>Du plus récent au plus ancien · mémoire locale</p></div><button id="ks-history-export" class="ks-secondary">Exporter le journal</button></div>
+ <div class="card wide ks-history-card"><ol id="sim-history-list" style="list-style:none;padding:0;margin:0"></ol><div class="ks-history-pagination"><button id="sim-history-prev" class="ks-secondary" disabled>← Précédent</button><span id="sim-history-page"></span><button id="sim-history-next" class="ks-secondary" disabled>Suivant →</button></div></div>
+ <div id="ks-history-export-content" hidden><p>Les 100 derniers événements et l’état du simulateur. Exportez avant de recharger la page pour conserver une trace. Ce journal ne concerne pas le contrôleur réel.</p><div class="ks-export-buttons"><button id="sim-export-text">Rapport texte</button><button id="sim-export-json">Fichier JSON</button></div><p id="sim-export-status" role="status">Téléchargement local, aucun envoi externe.</p></div>
+</section>
+</main>
+<nav id="tabbar"><button class="tab" data-screen="home">Accueil — simulation</button><button class="tab" data-screen="jog">Déplacer / Origine</button><button class="tab active" data-screen="files">Fichiers — simulation</button><button class="tab" data-screen="machine">Machine</button><button class="tab" data-screen="history">Journal</button></nav>
+<script defer src="cnc-state.js?v=perf1"></script><script defer src="job-stream.js?v=perf1"></script>
+<script defer src="library-preview.js?v=perf1"></script>
+<script defer src="library-payload.js?v=perf1"></script><script defer src="shared-library.js?v=perf1"></script>
+<script defer src="job-simulation.js?v=perf1"></script>
+<script defer src="job-controls.js?v=perf1"></script>
+<script defer src="job-dashboard.js?v=perf1"></script>
+<script defer src="simulation-motion.js?v=perf1"></script>
+<script defer src="simulation-machine.js?v=perf1"></script>
+<script defer src="simulation-report.js?v=perf1"></script>
+<script defer src="simulation-history.js?v=perf1"></script>
+<script defer src="screen-saver.js?v=perf1"></script><script defer src="display-settings.js?v=perf1"></script><script defer src="machine-limits.js?v=perf1"></script><script defer src="probe-model.js?v=perf1"></script><script defer src="probe-transfer.js?v=perf1"></script><script defer src="probe-profiles.js?v=perf1"></script><script defer src="probe-diagram.js?v=perf1"></script><script defer src="probe-preparation.js?v=perf1"></script><script defer src="probe-ui.js?v=perf1"></script><script defer src="interface-guide.js?v=perf1"></script><script defer src="touch-shell.js?v=perf1"></script>
+<script defer src="preview-viewer.js?v=perf1"></script><script defer src="viewport-fit.js?v=perf1"></script><script defer src="startup-ready.js?v=perf1"></script></body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
