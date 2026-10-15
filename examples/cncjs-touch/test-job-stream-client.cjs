@@ -21,6 +21,11 @@ function machine(port='A'){return {port,controllerId:port,generation:'gen-'+port
   push(stream,packet(9,[]));assert.equal(window.cncState.get().transportConnected,true,'a recent empty stream is a connected server');assert.equal(window.cncState.get().machine,null);
   for(const action of ['load','start','resume','pause','stop'])assert.equal(el('job-'+action).disabled,true,'no controller must keep '+action+' disabled');
   push(stream,packet(10,[machine()]));assert.equal(el('job-start').disabled,false);
+  let lateSnapshot;
+  window.addEventListener('cnc-job-status',e=>{lateSnapshot=e.detail;});
+  (listeners.DOMContentLoaded||[]).forEach(fn=>fn());
+  assert.equal(lateSnapshot.machine.port,'A','deferred consumers receive the initial snapshot');
+  assert.equal(lateSnapshot.observedAt,now);
   answer(initial,packet(1,[]));await flush();assert.equal(el('job-start').disabled,false); // older snapshot ignored
   const httpAtStart=requests.length;
   for(let i=0;i<20;i++){now+=1000;push(stream,packet(11+i,[machine()]));Array.from(intervals.values()).forEach(fn=>fn());await flush();}
@@ -72,13 +77,125 @@ function machine(port='A'){return {port,controllerId:port,generation:'gen-'+port
   push(rotating,packet(1,[machine()]));push(rotating,{rotate:true});rotating.onload();
   assert(rotating.aborted);assert.equal(requests.filter(r=>r.url.endsWith('/touch-events')).length,2);assert.equal(el('job-start').disabled,true);
   push(requests.filter(r=>r.url.endsWith('/touch-events')).at(-1),packet(2,[machine()],'stream-two'));assert.equal(el('job-start').disabled,false);
+  const beforePageHide=requests.filter(r=>r.url.endsWith('/touch-events')).at(-1);
   window.dispatchEvent({type:'pagehide',persisted:true});assert(intervals.size>0,'BFcache must keep lifecycle timers');assert.equal(el('job-start').disabled,true);
-  now+=31000;window.dispatchEvent({type:'pageshow',persisted:true});Array.from(intervals.values()).forEach(fn=>fn());
+  window.dispatchEvent({type:'pageshow',persisted:true});
   const restored=requests.filter(r=>r.url.endsWith('/touch-events')).at(-1);
+  assert.notEqual(restored,beforePageHide,'BFcache return must reopen immediately without the 30-second failure backoff');
+  const resumeRequests=requests.length;window.dispatchEvent({type:'visibilitychange'});
+  assert.equal(requests.length,resumeRequests,'paired pageshow/visibility events must not reopen twice');
   push(restored,packet(3,[machine()],'stream-restored'));assert.equal(el('job-start').disabled,false,'BFcache return must restore subscriptions');
   push(restored,packet(4,[],'stream-restored'));assert.equal(window.cncState.get().transportConnected,true);assert.equal(window.cncState.get().machine,null);
   now+=3001;Array.from(intervals.values()).forEach(fn=>fn());assert.equal(window.cncState.get().transportConnected,false);
   assert.equal(events.filter(event=>event.type==='cnc-job-status').at(-1).detail.transportConnected,false,'transport loss without a selected controller must still notify journal consumers');
   window.cncJobControls.dispose();assert.equal(intervals.size,0);
-  console.log('PASS: new NDJSON client/store integration, auth/prefix, ordered snapshots, explicit multi-port selection, cancelled/expired confirms, raw freshness, concurrent STOP, silence backoff and disposal; zero network.');
+  // Bad packets cannot poison sequence tracking or leave a confirmation open,
+  // whether they arrive through streaming, fallback GET or a command response.
+  for(const source of ['stream','GET','POST']){
+    Object.keys(nodes).forEach(key=>delete nodes[key]);requests.length=0;
+    for(const file of ['cnc-state.js','job-stream.js','job-controls.js'])vm.runInContext(fs.readFileSync(__dirname+'/touch/'+file,'utf8'),context);
+    answer(requests.find(r=>r.url.endsWith('/custom/health')),{loaded:true,protocol:1});
+    answer(requests.find(r=>r.url.endsWith('/touch-job')),packet(1,[machine()]));await flush();
+    const tested=requests.find(r=>r.url.endsWith('/touch-events'));
+    push(tested,packet(2,[machine()]));el('job-start').click();
+    const invalid=packet(Infinity,[machine()]); // serialized as null, never a valid sequence
+    if(source==='POST')answer(requests.at(-1),{nonce:'invalid-snapshot',name:'Test',expiresIn:15,snapshot:invalid});
+    else{
+      answer(requests.at(-1),{nonce:'must-close',name:'Test',expiresIn:15});await flush();
+      assert.equal(el('job-dialog').hidden,false);
+      if(source==='stream')push(tested,packet(2,[machine()]));
+      else{window.cncJobControls.refresh();answer(requests.at(-1),invalid);}
+    }
+    await flush();assert(tested.aborted,source);assert.equal(el('job-dialog').hidden,true,source);
+    assert.equal(el('job-start').disabled,true);assert.equal(el('job-confirm').disabled,true);
+    assert.equal(window.cncState.get().machine,null);assert.equal(window.cncState.get().transportConnected,false);
+    assert.match(window.cncState.get().transportReason,/invalide/);
+    now+=31000;Array.from(intervals.values()).forEach(fn=>fn());await flush();
+    const recovery=requests.filter(r=>r.url.endsWith('/touch-events')).at(-1);
+    assert.notEqual(recovery,tested);push(recovery,packet(4,[machine()],'after-invalid'));
+    assert.equal(el('job-start').disabled,false,'Valid state must recover without a poisoned sequence');
+    assert.equal(el('job-dialog').hidden,true,'Recovery must require a new confirmation');
+    assert(requests.filter(r=>r.method==='POST').every(r=>r.body.action==='prepare'),'No activation or replay');
+    window.cncJobControls.dispose();assert.equal(intervals.size,0);
+  }
+  // Returning from a hidden page invalidates even an apparently recent report.
+  // Previously queued GET, POST and stream callbacks cannot revive it.
+  for(const hiddenTime of [0,3600000]){
+    Object.keys(nodes).forEach(key=>delete nodes[key]);requests.length=0;
+    for(const file of ['cnc-state.js','job-stream.js','job-controls.js'])vm.runInContext(fs.readFileSync(__dirname+'/touch/'+file,'utf8'),context);
+    answer(requests.find(r=>r.url.endsWith('/custom/health')),{loaded:true,protocol:1});
+    const pendingRead=requests.find(r=>r.url.endsWith('/touch-job'));
+    const beforeHide=requests.find(r=>r.url.endsWith('/touch-events')),lateProgress=beforeHide.onprogress;
+    push(beforeHide,packet(1,[machine()]));el('job-start').click();const pendingPrepare=requests.at(-1);
+    document.hidden=true;window.dispatchEvent({type:'visibilitychange'});now+=hiddenTime;
+    document.hidden=false;window.dispatchEvent({type:'visibilitychange'});
+    assert(beforeHide.aborted);assert.equal(window.cncState.get().machine,null);
+    assert.equal(window.cncState.get().transportConnected,false);assert(el('job-start').disabled);
+    const afterShow=requests.filter(r=>r.url.endsWith('/touch-events')).at(-1);
+    assert.notEqual(afterShow,beforeHide,'return reopens immediately');
+    beforeHide.responseText+=JSON.stringify(packet(100,[machine()]))+'\n';lateProgress();
+    answer(pendingRead,packet(101,[machine()]));
+    answer(pendingPrepare,{nonce:'obsolete',name:'Test',expiresIn:15,snapshot:packet(102,[machine()])});await flush();
+    assert.equal(window.cncState.get().machine,null);assert(el('job-dialog').hidden);assert(el('job-start').disabled);
+    push(afterShow,packet(2,[machine()],'after-visible'));assert.equal(el('job-start').disabled,false);
+    assert(el('job-dialog').hidden);assert.equal(requests.filter(r=>r.method==='POST').length,1,'no command replay');
+    assert.equal(requests.find(r=>r.method==='POST').body.action,'prepare');
+    window.cncJobControls.dispose();assert.equal(intervals.size,0);
+  }
+  // Browser offline closes confirmations immediately, ignores in-flight replies,
+  // suppresses fallback/stream retries and only recovers after a new health+stream.
+  Object.keys(nodes).forEach(key=>delete nodes[key]);requests.length=0;
+  for(const file of ['cnc-state.js','job-stream.js','job-controls.js'])vm.runInContext(fs.readFileSync(__dirname+'/touch/'+file,'utf8'),context);
+  answer(requests.find(r=>r.url.endsWith('/custom/health')),{loaded:true,protocol:1});
+  const beforeOffline=requests.find(r=>r.url.endsWith('/touch-events'));
+  const staleProgress=beforeOffline.onprogress;
+  push(beforeOffline,packet(1,[machine()]));
+  el('job-start').click();const prepareOffline=requests.at(-1);
+  window.dispatchEvent({type:'offline'});
+  assert(beforeOffline.aborted);assert.equal(el('job-start').disabled,true);assert.equal(window.cncState.get().transportConnected,false);
+  assert.match(window.cncState.get().transportReason,/Réseau indisponible/);
+  answer(prepareOffline,{nonce:'must-not-reopen',name:'Test',expiresIn:15});await flush();assert.equal(el('job-dialog').hidden,true);
+  const offlineRequests=requests.length,posts=requests.filter(r=>r.method==='POST').length;
+  document.hidden=true;window.dispatchEvent({type:'visibilitychange'});
+  document.hidden=false;window.dispatchEvent({type:'visibilitychange'});
+  assert.equal(requests.length,offlineRequests,'returning while offline must not restart requests');
+  for(let n=0;n<65;n++){now+=1000;Array.from(intervals.values()).forEach(fn=>fn());await flush();}
+  assert.equal(requests.length,offlineRequests,'no fallback/health/stream request while offline');
+  staleProgress();assert.equal(window.cncState.get().machine,null,'late stream callback must remain invalid');
+  window.dispatchEvent({type:'online'});
+  const reconnectHealth=requests.filter(r=>r.url.endsWith('/custom/health')).at(-1);
+  assert.notEqual(reconnectHealth,requests[0]);assert(el('job-start').disabled);
+  const obsoleteHealthCallback=reconnectHealth.onload;
+  window.dispatchEvent({type:'offline'});assert(reconnectHealth.aborted);
+  reconnectHealth.status=200;reconnectHealth.responseText='{"loaded":true,"protocol":1}';obsoleteHealthCallback();
+  assert.equal(requests.filter(r=>r.url.endsWith('/touch-events')).length,1,'obsolete health cannot open a stream');
+  window.dispatchEvent({type:'online'});
+  answer(requests.filter(r=>r.url.endsWith('/custom/health')).at(-1),{loaded:true,protocol:1});
+  const recovered=requests.filter(r=>r.url.endsWith('/touch-events')).at(-1);
+  assert.notEqual(recovered,beforeOffline);assert(el('job-start').disabled);
+  push(recovered,packet(2,[machine()],'after-offline'));assert.equal(el('job-start').disabled,false);
+  assert.equal(el('job-dialog').hidden,true);assert.equal(requests.filter(r=>r.method==='POST').length,posts,'reconnect must not replay commands');
+  el('job-start').click();answer(requests.at(-1),{nonce:'visible-confirmation',name:'Test',expiresIn:15});await flush();
+  assert.equal(el('job-dialog').hidden,false);window.dispatchEvent({type:'offline'});
+  assert.equal(el('job-dialog').hidden,true);assert.equal(el('job-confirm').disabled,true);
+  window.cncJobControls.dispose();assert.equal(intervals.size,0);
+  // A page opened while offline does not send even its initial health or fallback GET.
+  Object.keys(nodes).forEach(key=>delete nodes[key]);requests.length=0;window.navigator={onLine:false};
+  for(const file of ['cnc-state.js','job-stream.js','job-controls.js'])vm.runInContext(fs.readFileSync(__dirname+'/touch/'+file,'utf8'),context);
+  assert.equal(requests.length,0);assert(el('job-start').disabled);assert.match(window.cncState.get().transportReason,/Réseau indisponible/);
+  window.dispatchEvent({type:'online'});assert(requests.some(r=>r.url.endsWith('/custom/health')));assert(el('job-start').disabled);
+  window.cncJobControls.dispose();assert.equal(intervals.size,0);
+  const afterDispose=requests.length;window.dispatchEvent({type:'offline'});window.dispatchEvent({type:'online'});assert.equal(requests.length,afterDispose);
+  // Local simulation stays usable; browser network events must not contact hardware.
+  Object.keys(nodes).forEach(key=>delete nodes[key]);requests.length=0;document.querySelectorAll=()=>[];
+  vm.runInContext(fs.readFileSync(__dirname+'/touch/job-simulation.js','utf8'),context);
+  await window.cncJobSimulation.request('POST',{port:'SIMULATION',action:'load',file:'offline-simulation.nc'});
+  for(const file of ['cnc-state.js','job-controls.js'])vm.runInContext(fs.readFileSync(__dirname+'/touch/'+file,'utf8'),context);
+  await flush();assert.equal(el('job-start').disabled,false);
+  window.dispatchEvent({type:'offline'});window.dispatchEvent({type:'online'});await flush();
+  document.hidden=true;window.dispatchEvent({type:'visibilitychange'});
+  document.hidden=false;window.dispatchEvent({type:'visibilitychange'});await flush();
+  assert.equal(el('job-start').disabled,false);assert.equal(requests.length,0);
+  window.cncJobControls.dispose();assert.equal(intervals.size,0);
+  console.log('PASS: NDJSON integration, auth/prefix, ordered snapshots, confirmation lifecycle, freshness, STOP, silence backoff, offline suspension/recovery with no command replay, initially offline and disposal; zero network.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

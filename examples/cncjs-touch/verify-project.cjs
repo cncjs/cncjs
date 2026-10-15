@@ -6,16 +6,16 @@ const crypto = require('crypto');
 const {spawnSync} = require('child_process');
 const root = __dirname;
 const tests = [
- 'arcs','dashboard','dry-motion','home-actions','job-display','job',
- 'library-transitions','machine-limits','motion-integration','motion-preflight',
+ 'arcs','dashboard','dry-motion','home-actions','job-dialog','job-display','job',
+ 'library-transitions','library-file-state','machine-limits','motion-integration','motion-preflight',
  'preview-dimensions','preview-viewer','preview','probe-diagram','probe-input',
  'probe-lock','probe-model','probe-preparation','probe-profiles','probe-transfer',
  'real-history','screen-saver','simulation-alarm','simulation-history',
  'simulation-motion','simulation-report','simulation-ui','simulation',
- 'transition-performance','viewport-fit','startup',
+ 'transition-performance','viewport-fit','startup','display-settings','download-file',
  'viewport-phases','hidden-views','preview-worker','library-payload',
  'library-lifecycle','library-upload-payload','library-regeneration-cancel','history-view',
- 'touch-stream','job-stream-client','controller-state'
+ 'touch-stream','job-stream-client','stream-protocol','controller-state','connection-status','operator-tools','i18n','journal-languages','profile-storage'
 ].map(name=>'test-'+name+'.cjs');
 const results = [];
 const args = process.argv.slice(2);

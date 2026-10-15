@@ -25,6 +25,16 @@ function response(){const res=new EventEmitter();Object.assign(res,{statusCode:2
     const packet=stream.lines.at(-1), machine=packet.controllers[0];
     assert.equal(machine.fresh,true);assert.equal(machine.statusAgeMs,0);assert.equal(machine.controllerId,'A');assert(machine.generation);
     assert.equal(machine.coordinates.wpos.x,1);assert.equal(machine.settings.$110,'5000');
+    assert.deepEqual(machine.operator,{reportUnits:null,wcs:null});
+    first.settings.settings.$13='0';first.runner.state.parserstate={modal:{wcs:'G55'}};
+    assert.equal(service.list()[0].operator.wcs,null,'cached/default WCS is not a received parser report');
+    first.runner.emit('parserstate',{modal:{wcs:'G55'}});
+    assert.deepEqual(service.list()[0].operator,{reportUnits:'mm',wcs:'G55'});
+    now+=2501;assert.equal(service.list()[0].operator.wcs,null);now-=2501;
+    first.settings.settings.$13=1;first.runner.state.parserstate.modal.wcs='G99';
+    first.runner.emit('parserstate',{modal:{wcs:'G99'}});
+    assert.deepEqual(service.list()[0].operator,{reportUnits:'in',wcs:null});
+    delete first.settings.settings.$13;delete first.runner.state.parserstate;
     assert.equal(machine.probeInput.state,'free');assert(!JSON.stringify(packet).includes('DO NOT SEND GCODE'));assert(!JSON.stringify(packet).includes('must-not-copy'));
     now+=2600;installed.publish();assert.equal(stream.lines.at(-1).controllers[0].fresh,false);assert.equal(stream.lines.at(-1).controllers[0].probeInput.fresh,false);
     first.runner.emit('status',{raw:'<Idle|MPos:4,5,6|Pn:P>'});scheduled.flush();
@@ -46,8 +56,13 @@ function response(){const res=new EventEmitter();Object.assign(res,{statusCode:2
     const second=call('GET','/cnc/api/touch-events').res;
     registry.A=fake();installed.publish();const replaced=second.lines.at(-1).controllers[0];assert.notEqual(replaced.generation,machine.generation);assert.equal(replaced.fresh,false);
     assert.equal(first.runner.listenerCount('status'),0);assert.equal(first.sender.listenerCount('load'),0);
+    assert.equal(first.runner.listenerCount('parserstate'),0);
     await assert.rejects(service.action({port:'A',generation:machine.generation,action:'pause'}),/changé/);
     now+=60000;installed.publish();assert(second.ended);assert.equal(second.lines.at(-1).rotate,true);
+    // Test the actual serialized backend contract against the browser validator.
+    const browser={window:{}};require('node:vm').runInNewContext(fs.readFileSync(path.join(__dirname,'touch/job-stream.js'),'utf8'),browser);
+    for(const p of stream.lines.concat(second.lines).filter(p=>!p.rotate))assert(browser.window.CNCJobStream.validSnapshot(p,true),'Backend snapshot must satisfy browser protocol');
+    assert(browser.window.CNCJobStream.validSnapshot(JSON.parse(JSON.stringify(installed.snapshot())),false));
     installed.dispose();assert.equal(scheduled.intervals.size,0);assert.equal(scheduled.timeouts.size,0);assert.equal(registry.A.runner.listenerCount('status'),0);assert.equal(registry.A.sender.listenerCount('load'),0);
     assert.throws(()=>service.list(),/indisponible/);
     // Exercise the historical CNCjs copy when available; the portable release keeps

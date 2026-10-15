@@ -15,6 +15,25 @@ const api=context.cncSessionJournal,j=api.create(()=>Date.UTC(2026,9,14,12));
  assert.equal(compactJournal.report().events.filter(e=>e.kind==='connection').length,2);
 }
 const machine={port:'/dev/test',fresh:true,name:'part.gcode',originalName:'Pièce.gcode',revision:'one',activeState:'Idle',workflow:'idle',token:'SECRET',nonce:'SECRET',settings:{secret:'SECRET'}};
+// Identical reports from a new CNCjs controller instance must start a new
+// baseline, including after a gap. Stale reports cannot change that identity.
+{
+ const journal=api.create(),message='Nouvelle instance du contrôleur observée sur le même port.';
+ const observe=patch=>journal.observe({...machine,generation:'private-instance-a',...patch});
+ const changes=()=>journal.report().events.filter(e=>e.message===message).length;
+ observe({});assert.equal(changes(),0);
+ assert(!observe({}));assert(observe({generation:'private-instance-b'}));assert.equal(changes(),1);
+ assert.deepEqual(journal.report().events.slice(0,4).map(e=>e.kind),['workflow','file','state','availability']);
+ assert(!observe({generation:'private-instance-b'}));
+ observe({fresh:false,generation:'private-instance-c'});assert(!journal.observe(null));
+ observe({generation:'private-instance-b'});assert.equal(changes(),1);
+ journal.observe(null);observe({generation:'private-instance-c'});assert.equal(changes(),2);
+ observe({port:'/dev/other',generation:'private-instance-d'});assert.equal(changes(),2);
+ observe({generation:'private-instance-c'});assert.equal(changes(),2);
+ observe({generation:undefined});observe({generation:'private-instance-e'});assert.equal(changes(),2);
+ const report=journal.report();assert(!JSON.stringify(report).includes('private-instance'));
+ assert(api.text(report).includes(message));
+}
 assert(j.connection(true));assert(!j.connection(true));assert(j.observe(machine));
 let count=j.report().events.length;
 for(let i=0;i<100;i++)assert(!j.observe({...machine,sent:i,received:i}));
@@ -38,7 +57,7 @@ let download;
 const {document,nodes:ids,activeScreens,stats}=require('./dom-fixture.cjs').createDOM([]);
 const handlers={},socketHandlers={};
 const window={cncSessionJournal:api,cncSocket:{connected:true,on(n,f){socketHandlers[n]=f;},emit(){throw Error('No commands permitted');}},addEventListener(n,f){handlers[n]=f;},navigator:{msSaveOrOpenBlob(blob,name){download={blob,name};}}};
-vm.runInNewContext(fs.readFileSync(__dirname+'/touch/real-history.js','utf8'),{document,window,Blob,Date});
+for(const script of ['download-file','real-history'])vm.runInNewContext(fs.readFileSync(__dirname+'/touch/'+script+'.js','utf8'),{document,window,Blob,Date});
 const status=m=>handlers['cnc-job-status']({detail:{machine:m,simulation:false}});
 status(machine);assert.equal(stats.writes,0);
 activeScreens.add('history');handlers['cnc-screen-change']({detail:'history'});assert(stats.writes>0);

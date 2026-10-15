@@ -17,12 +17,15 @@ function createService(store, config, clock = Date.now) {
   function fail(message) { const e = new Error(message); e.status = 409; throw e; }
   function record(c) {
     if (!records.has(c)) {
-      const r = { seen: null, job: null, loading: false, ticket: null, generation: crypto.randomBytes(12).toString('hex') };
+      const r = { seen: null, modalSeen: null, wcs: null, job: null, loading: false, ticket: null, generation: crypto.randomBytes(12).toString('hex') };
       records.set(c, r);
       r.status = () => { r.seen = clock(); changed(); };
-      r.reset = () => { r.seen = null; r.ticket = null; changed(); };
+      r.reset = () => { r.seen = null; r.modalSeen = null; r.wcs = null; r.ticket = null; changed(); };
+      // GrblRunner initializes G54 before receiving $G: accept only an observed report.
+      r.modal = payload => { r.modalSeen = clock(); const value = payload && payload.modal && payload.modal.wcs; r.wcs = /^G5[4-9]$/.test(value || '') ? value : null; changed(); };
       r.file = () => { r.job = null; r.ticket = null; changed(); };
       c.runner.on('status', r.status); c.runner.on('startup', r.reset);
+      c.runner.on('parserstate', r.modal);
       c.sender.on('load', r.file); c.sender.on('unload', r.file);
     }
     return records.get(c);
@@ -30,6 +33,7 @@ function createService(store, config, clock = Date.now) {
   function controllers() { return store.get('controllers') || {}; }
   function remove(c, r) {
     c.runner.removeListener('status', r.status); c.runner.removeListener('startup', r.reset);
+    c.runner.removeListener('parserstate', r.modal);
     c.sender.removeListener('load', r.file); c.sender.removeListener('unload', r.file);
     records.delete(c);
   }
@@ -87,7 +91,11 @@ function createService(store, config, clock = Date.now) {
         if (typeof v === 'number' && Number.isFinite(v) || typeof v === 'string' && v.length < 32 && Number.isFinite(Number(v))) coordinates[kind][axis] = v;
       });
     });
+    const reportSetting = source['$13'];
+    const reportUnits = reportSetting === 0 || reportSetting === '0' ? 'mm' : reportSetting === 1 || reportSetting === '1' ? 'in' : null;
+    const wcs = Number.isFinite(r.modalSeen) && clock() >= r.modalSeen && clock() - r.modalSeen <= 2500 ? r.wcs : null;
     return { port: c.options.port, controllerId: c.options.port, generation: r.generation,
+      operator: {reportUnits, wcs},
       type: c.type, activeState: state.activeState || '', workflow: c.workflow.state,
       statusAgeMs: age, statusObservedAt: r.seen, coordinates, settings,
       fresh: age !== null && age <= 2500, name: sender.name || '', revision: r.job && r.job.revision,
