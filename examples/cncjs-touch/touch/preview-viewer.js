@@ -1,9 +1,10 @@
 (function () {
   'use strict';
+  var uiLocale=(typeof window!=='undefined'&&window.cncI18n)||{t:function(s){return s;},html:function(s){return s;}};
   var $=function(id){return document.getElementById(id);};
   var overlay=document.createElement('div');overlay.id='preview-viewer';overlay.hidden=true;
   overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-labelledby','preview-viewer-title');
-  overlay.innerHTML='<header><div><h2 id="preview-viewer-title">Aperçu XY</h2><p id="preview-viewer-file"></p></div><button id="preview-viewer-close" type="button">Fermer ×</button></header><div id="preview-viewer-stage" tabindex="0" aria-label="Aperçu agrandi, déplacez avec un doigt ou les flèches du clavier"><img id="preview-viewer-image" alt="Parcours XY agrandi" draggable="false"></div><footer><div class="preview-zoom"><button id="preview-zoom-out" type="button" aria-label="Réduire le zoom">−</button><output id="preview-zoom-level" aria-live="polite">100 %</output><button id="preview-zoom-in" type="button" aria-label="Augmenter le zoom">＋</button><button id="preview-zoom-fit" type="button">Recentrer</button></div><div class="preview-machine"><span id="preview-machine-state"></span><button id="preview-job-stop" type="button" disabled>Arrêter le travail</button></div></footer><p class="preview-hint">Image indicative · Glissez avec un doigt · Zoom + / − · Échap pour fermer</p>';
+  overlay.innerHTML=uiLocale.html('<header><div><h2 id="preview-viewer-title">Aperçu XY</h2><p id="preview-viewer-file"></p></div><button id="preview-viewer-close" type="button">Fermer ×</button></header><div id="preview-viewer-stage" tabindex="0" aria-label="Aperçu agrandi, déplacez avec un doigt ou les flèches du clavier"><img id="preview-viewer-image" alt="Parcours XY agrandi" draggable="false"></div><footer><div class="preview-zoom"><button id="preview-zoom-out" type="button" aria-label="Réduire le zoom">−</button><output id="preview-zoom-level" aria-live="polite">100 %</output><button id="preview-zoom-in" type="button" aria-label="Augmenter le zoom">＋</button><button id="preview-zoom-fit" type="button">Recentrer</button></div><div class="preview-machine"><span id="preview-machine-state"></span><button id="preview-job-stop" type="button" disabled>Arrêter le travail</button></div></footer><p class="preview-hint">Image indicative · Glissez avec un doigt · Zoom + / − · Échap pour fermer</p>');
   document.body.appendChild(overlay);
   var stage=$('preview-viewer-stage'),image=$('preview-viewer-image');
   var zoom=1,drawnZoom=null,x=0,y=0,baseWidth=1,baseHeight=1,width=1,height=1,source=null,focusReturn=null,drag=null,pending=false,background=[],jobState=null;
@@ -42,7 +43,7 @@
   [['library-image','library-name'],['home-job-image','home-job-name']].forEach(function(pair){
     var img=$(pair[0]);if(!img)return;
     // The small overlay button avoids changing the fitted page's geometry.
-    var button=document.createElement('button');button.type='button';button.className='preview-open';button.textContent='Agrandir';button.setAttribute('aria-label','Agrandir l’aperçu');
+    var button=document.createElement('button');button.type='button';button.className='preview-open';button.textContent=uiLocale.t('Agrandir');button.setAttribute('aria-label',uiLocale.t('Agrandir l’aperçu'));
     img.parentNode.classList.add('preview-open-host');img.parentNode.appendChild(button);
     function availability(){button.hidden=img.hidden||!img.complete||!img.naturalWidth;}
     button.addEventListener('click',function(){open(img,$(pair[1]).textContent);});
@@ -81,11 +82,11 @@
   function renderStatus(){
     if(overlay.hidden)return;
     var detail=jobState||{},c=detail.machine;
-    var text=(detail.simulation?'Simulation · ':'Machine · ')+(c?({Idle:'Au repos',Run:'Travail en cours',Hold:'En pause',Alarm:'Alarme'}[c.activeState]||c.activeState):'État indisponible');
+    var text=(detail.simulation?'Simulation · ':'Machine · ')+(c?({Idle:uiLocale.t('Au repos'),Run:uiLocale.t('Travail en cours'),Hold:uiLocale.t('En pause'),Alarm:uiLocale.t('Alarme')}[c.activeState]||c.activeState):uiLocale.t('État indisponible'));
     if($('preview-machine-state').textContent!==text)$('preview-machine-state').textContent=text;
     if(stop.disabled!==(!c||!c.canStop))stop.disabled=!c||!c.canStop;
   }
-  $('preview-machine-state').textContent='État en cours de lecture';
+  $('preview-machine-state').textContent=uiLocale.t('État en cours de lecture');
   window.addEventListener('resize',fit);
   window.addEventListener('cnc-screen-change',close);
 })();

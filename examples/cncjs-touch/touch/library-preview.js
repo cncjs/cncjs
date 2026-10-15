@@ -178,6 +178,7 @@
       function encoded(image, synchronous) {
         if (!check()) return;
         finish(null, { image: image, segments: result.count, bounds: result.bounds,
+          projection: {version:1,width:960,height:540,bounds:result.bounds,units:'mm',wcs:'G54'},
           note: 'Projection XY indicative — G1/G2/G3 bleu, G0 gris. Arcs XY interpolés à 0,02 mm. Départ supposé X0 Y0, mm, absolu et centres I/J relatifs. Z et puissance laser non simulés.' +
             (fallback ? ' Calcul local de secours : réactivité à vérifier sur cet appareil.' : '') +
             (synchronous ? ' Encodage PNG synchrone de secours.' : '') });

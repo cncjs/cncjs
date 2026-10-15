@@ -1,5 +1,6 @@
 (function () {
   'use strict';
+  var uiLocale=(typeof window!=='undefined'&&window.cncI18n)||{t:function(s){return s;},html:function(s){return s;}};
   // Server-validated rehearsal only. This endpoint cannot execute a movement.
   if (document.body && document.body.getAttribute('data-simulation') === 'true') return;
   var $ = function (id) { return document.getElementById(id); };
@@ -14,7 +15,7 @@
     if (!machine.fresh || Date.now() - received >= 3000) return 'État du contrôleur périmé : attendez son actualisation.';
     if (machine.type !== 'Grbl' || !machine.port) return 'Contrôleur Grbl requis pour cet essai.';
     if (busy || machine.loading) return 'Une opération est en cours : essais bloqués.';
-    if (machine.workflow !== 'idle' || machine.activeState !== 'Idle') return 'Contrôleur non prêt (' + (machine.activeState || 'état inconnu') + ') : essais bloqués.';
+    if (machine.workflow !== 'idle' || machine.activeState !== 'Idle') return 'Contrôleur non prêt (' + (machine.activeState || uiLocale.t('état inconnu')) + ') : essais bloqués.';
     if (!machine.canLoad) return machine.loadReason || 'Commandes en attente : essais bloqués.';
     if (machine.canPreviewMotion !== true) return machine.motionReason || 'Vérification serveur indisponible : actualisez la page.';
     return '';
@@ -26,8 +27,8 @@
     buttons.forEach(function (b) { if (b.disabled !== disabled) b.disabled = disabled; });
     if(currentScreen!=='jog')return;
     setText($('jog-msg'), why || (request ? 'Vérification par le serveur…' : 'Prêt pour un essai à blanc · pas ' + step + ' mm · ' + feed + ' mm/min.'));
-    setText($('jog-controller'), machine && machine.port ? 'Contrôleur suivi : ' + machine.port : 'Contrôleur suivi : aucun');
-    if (why) setText($('jog-feedback'), 'Aucun déplacement réel. Origines et palpage non activés.');
+    setText($('jog-controller'), machine && machine.port ? uiLocale.t('Contrôleur suivi : ') + machine.port : uiLocale.t('Contrôleur suivi : aucun'));
+    if (why) setText($('jog-feedback'), uiLocale.t('Aucun déplacement réel. Origines et palpage non activés.'));
   }
   function cancel() {
     version++;
@@ -76,7 +77,7 @@
         cancel();
         assign(value);
         options.forEach(function (other) { other.classList.toggle('active', other === b); other.setAttribute('aria-pressed', String(other === b)); });
-        setText($('jog-feedback'), 'Aucun déplacement réel. Origines et palpage non activés.'); render();
+        setText($('jog-feedback'), uiLocale.t('Aucun déplacement réel. Origines et palpage non activés.')); render();
       });
     });
   }
@@ -93,7 +94,7 @@
   window.addEventListener('cnc-job-status', function (e) {
     if (!e.detail || e.detail.simulation) return;
     var next = e.detail.machine;
-    if (!machine || !next || machine.port !== next.port) { cancel(); setText($('jog-feedback'), 'Aucun déplacement réel. Origines et palpage non activés.'); }
+    if (!machine || !next || machine.port !== next.port) { cancel(); setText($('jog-feedback'), uiLocale.t('Aucun déplacement réel. Origines et palpage non activés.')); }
     machine = next; busy = !!e.detail.busy; received = Date.now(); render();
   });
   if (socket&&!compact) {

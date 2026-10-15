@@ -1,5 +1,6 @@
 (function () {
   'use strict';
+  var uiLocale=window.cncI18n||{t:function(s){return s;},html:function(s){return s;}};
   var $ = function (id) { return document.getElementById(id); };
   var store = window.cncState, compact = !!(store&&window.CNCJobStream), disposers = [], droTimer = null, latestState = null, lastPaint = 0, coordinateSignature='';
   function setText(el, text) { if (el && el.textContent !== text) el.textContent = text; }
@@ -36,8 +37,8 @@
               saved.state.session.token;
 
   if (!token) {
-    badge('st-server', 'Serveur : authentification requise', 'warn');
-    notice("Ouvrez CNCjs à la racine du même serveur, connectez-vous, puis rechargez /touch/.");
+    badge('st-server', uiLocale.t('Serveur : authentification requise'), 'warn');
+    notice(uiLocale.t("Ouvrez CNCjs à la racine du même serveur, connectez-vous, puis rechargez /touch/."));
     return;
   }
 
@@ -48,8 +49,8 @@
   function on(name,fn){if(!socket)return;socket.on(name,fn);disposers.push(function(){if(socket.off)socket.off(name,fn);else if(socket.removeListener)socket.removeListener(name,fn);});}
 
   function authError(err) {
-    badge('st-server', 'Serveur : connexion refusée', 'err');
-    notice('Erreur CNCjs : ' + (
+    badge('st-server', uiLocale.t('Serveur : connexion refusée'), 'err');
+    notice(uiLocale.t('Erreur CNCjs : ') + (
       err && (err.message || err.description) || String(err)
     ));
   }
@@ -61,7 +62,7 @@
   if (bar) {
     var reloadButton = document.createElement('button');
     reloadButton.type = 'button';
-    reloadButton.textContent = '↻ Actualiser';
+    reloadButton.textContent = uiLocale.t('↻ Actualiser');
     bind(reloadButton,'click', function () {
       location.reload();
     });
@@ -69,15 +70,15 @@
   }
 
   on('connect', function () {
-    badge('st-server', 'Serveur : connecté', 'ok');
+    badge('st-server', uiLocale.t('Serveur : connecté'), 'ok');
   });
 
   on('disconnect', function () {
-    badge('st-server', 'Serveur : déconnecté', 'err');
-    badge('st-ctrl', 'Contrôleur : inconnu', 'warn');
-    badge('st-state', 'État : données périmées', 'warn');
+    badge('st-server', uiLocale.t('Serveur : déconnecté'), 'err');
+    badge('st-ctrl', uiLocale.t('Contrôleur : inconnu'), 'warn');
+    badge('st-state', uiLocale.t('État : données périmées'), 'warn');
     clearCoords();
-    notice('Connexion au serveur perdue. Les valeurs affichées ne sont plus à jour.');
+    notice(uiLocale.t('Connexion au serveur perdue. Les valeurs affichées ne sont plus à jour.'));
   });
 
   function paintCoordinates() {
@@ -88,12 +89,12 @@
     ['x','y','z'].forEach(function (axis) { setText($('w'+axis), num(w[axis])); setText($('m'+axis), num(m[axis])); });
   }
   function receive(type, state, port) {
-    badge('st-ctrl', 'Contrôleur : ' + (port || type), 'ok');
+    badge('st-ctrl', uiLocale.t('Contrôleur : ') + (port || type), 'ok');
     var s = state && state.status;
     if (!s) return;
     var a = s.activeState || '';
     var cls = /alarm/i.test(a) ? 'err' : /hold|door/i.test(a) ? 'warn' : 'ok';
-    badge('st-state', 'État : ' + a, cls);
+    badge('st-state', uiLocale.t('État : ') + a, cls);
     var signature=JSON.stringify([s.wpos,s.mpos]);
     if(signature===coordinateSignature)return;
     coordinateSignature=signature;
@@ -102,13 +103,13 @@
     else if (droTimer === null) droTimer = setTimeout(paintCoordinates, 150 - (Date.now() - lastPaint));
   }
   if (store) disposers.push(store.subscribe(function (state) {
-    if(compact)badge('st-server',state.transportConnected?'Serveur : suivi connecté':'Serveur : suivi indisponible',state.transportConnected?'ok':'warn');
+    if(compact)badge('st-server',state.transportConnected?uiLocale.t('Serveur : suivi connecté'):uiLocale.t('Serveur : suivi indisponible'),state.transportConnected?'ok':'warn');
     var machine = state.machine;
     if (!machine || !machine.fresh) {
       clearCoords();
-      badge('st-ctrl', machine ? 'Contrôleur : '+machine.port : 'Contrôleur : aucun sélectionné', 'warn');
-      badge('st-state', 'État : données indisponibles', 'warn');
-      notice(state.transportReason || (machine ? 'Rapport machine périmé.' : 'Choisissez le contrôleur dans Fichiers.'));
+      badge('st-ctrl', machine ? uiLocale.t('Contrôleur : ')+machine.port : uiLocale.t('Contrôleur : aucun sélectionné'), 'warn');
+      badge('st-state', uiLocale.t('État : données indisponibles'), 'warn');
+      notice(state.transportReason || (machine ? 'Rapport machine périmé.' : uiLocale.t('Choisissez le contrôleur dans Fichiers.')));
       return;
     }
     receive(machine.type, {status:{activeState:machine.activeState,wpos:machine.coordinates&&machine.coordinates.wpos,mpos:machine.coordinates&&machine.coordinates.mpos}},machine.port);
@@ -121,7 +122,7 @@
   }};
   bind(window,'pagehide',function(event){if(!event||!event.persisted)window.cncConnection.dispose();});
 
-  if(!compact)badge('st-server', 'Serveur : connexion…', 'warn');
+  if(!compact)badge('st-server', uiLocale.t('Serveur : connexion…'), 'warn');
 
   // Navigation entre écrans (affichage uniquement)
   var tabs = document.querySelectorAll('.tab');

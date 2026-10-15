@@ -1,5 +1,6 @@
 (function(){
   'use strict';
+  var uiLocale=window.cncI18n||{t:function(s){return s;},html:function(s){return s;}};
   var step=1,busy=false,state=null,currentScreen='jog',lastFeedback='';
   var buttons=document.querySelectorAll('[data-sim-motion]');
   function text(el,value){if(el.textContent!==value)el.textContent=value;}
@@ -11,11 +12,11 @@
       text(el,coords?coords[axis].toFixed(3):'—');
     });
     document.querySelectorAll('.sim-motion-state').forEach(function(el){
-      text(el,!state?'Simulateur indisponible.':state.activeState==='Alarm'?'Alarme simulée : déplacements et origines bloqués. Voir l’onglet Machine.':state.canJog?'Prêt — un appui déplace de '+step+' mm (instantané et fictif).':'Travail en cours ou en pause : déplacements et origines bloqués. Arrêtez le travail pour les tester.');
+      text(el,!state?uiLocale.t('Simulateur indisponible.'):state.activeState==='Alarm'?uiLocale.t('Alarme simulée : déplacements et origines bloqués. Voir l’onglet Machine.'):state.canJog?uiLocale.t('Prêt — un appui déplace de ')+step+uiLocale.t(' mm (instantané et fictif).'):uiLocale.t('Travail en cours ou en pause : déplacements et origines bloqués. Arrêtez le travail pour les tester.'));
     });
     document.querySelectorAll('.sim-motion-feedback').forEach(function(el){text(el,lastFeedback);});
   }
-  function feedback(message){lastFeedback=message;render();}
+  function feedback(message){lastFeedback=window.cncI18n?window.cncI18n.message(message):message;render();}
   document.querySelectorAll('[data-sim-step]').forEach(function(b){
     b.addEventListener('click',function(){
       step=Number(b.getAttribute('data-sim-step'));
