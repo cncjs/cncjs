@@ -56,11 +56,16 @@
     var target=dialogReturn;dialogReturn=null;
     if(restore!==false&&!document.hidden&&target&&target.isConnected&&!target.disabled&&target.getClientRects().length)target.focus({preventScroll:true});
   }
+  // Whether the machine state still allows what a ticket was issued for.
+  function ticketAllowed(t,state){
+    if(t.operation==='macro')return !!state.canMacro;
+    if(state.revision!==t.revision)return false;
+    return t.operation==='start'?!!state.canStart:!!state.canResume;
+  }
   function confirmable(){
     var state=projected();
     return !!ticket&&!document.hidden&&elapsedClock()>=ticket.started&&elapsedClock()<until&&Date.now()-lastSeen>=0&&Date.now()-lastSeen<3000&&
-      ticket.generation===generation&&state&&state.fresh&&state.port===ticket.port&&state.revision===ticket.revision&&
-      (ticket.operation==='start'?state.canStart:state.canResume);
+      ticket.generation===generation&&state&&state.fresh&&state.port===ticket.port&&ticketAllowed(ticket,state);
   }
   function otherDialog(){
     return document.querySelectorAll&&Array.prototype.some.call(document.querySelectorAll('[role="dialog"]'),function(node){return node!==$('job-dialog')&&!node.hidden&&node.getClientRects().length;});
@@ -116,7 +121,7 @@
     var label=(simulation?uiLocale.t('Progression fictive : '):uiLocale.t('Lignes acquittées : '))+$('job-progress').value+' %';
     if(!$('job-progress').getAttribute||$('job-progress').getAttribute('aria-label')!==label)$('job-progress').setAttribute('aria-label',label);
     $('job-start').title=current.canStart?'':uiLocale.t(reason); $('job-load').title=uiLocale.t(current.loadReason||'');
-    if(ticket && (ticket.port!==current.port || ticket.revision!==current.revision || (ticket.operation==='start'?!current.canStart:!current.canResume))) dismiss();
+    if(ticket && (ticket.port!==current.port || !ticketAllowed(ticket,current))) dismiss();
   }
   function apply(data,transit) {
       if(disposed||networkOffline)return;
@@ -159,7 +164,7 @@
   }
   function run(action,extra) {
     if(!current || Date.now()-lastSeen>=3000)return Promise.reject(new Error('État indisponible.'));
-    if(!simulation&&['prepare','start','resume'].indexOf(action)>=0&&(!current.generation||!transportId||!stream||!stream.alive()))return Promise.reject(new Error(uiLocale.t('Suivi continu interrompu. Nouvelle confirmation requise.')));
+    if(!simulation&&['prepare','start','resume','macro','override'].indexOf(action)>=0&&(!current.generation||!transportId||!stream||!stream.alive()))return Promise.reject(new Error(uiLocale.t('Suivi continu interrompu. Nouvelle confirmation requise.')));
     var body={action:action,port:current.port};
     if(current.generation)body.generation=current.generation;
     if(transportId)body.transportId=transportId;
@@ -178,18 +183,20 @@
     }).catch(function(e){if(ownGeneration===generation&&id>=feedbackSequence){feedbackSequence=id;text('job-feedback',e.message);}throw e;})
       .then(function(data){finish();return data;},function(e){finish();throw e;});
   }
-  function prepare(operation) {
+  // operation: 'start' | 'resume' (the loaded program) | 'macro' (extra.macroId).
+  function prepare(operation,extra) {
     if(busy||!current)return;
     var port=current.port,revision=current.revision, ownGeneration=generation, ownConfirmation=++confirmation, started=elapsedClock(),origin=document.activeElement;
-    command('prepare',{operation:operation,revision:revision}).then(function(data){
-      if(ownGeneration!==generation||ownConfirmation!==confirmation||document.hidden||!current||current.port!==port||current.revision!==revision)return;
+    var request=operation==='macro'?{operation:'macro',macroId:extra&&extra.macroId}:{operation:operation,revision:revision};
+    command('prepare',request).then(function(data){
+      if(ownGeneration!==generation||ownConfirmation!==confirmation||document.hidden||!current||current.port!==port||(operation!=='macro'&&current.revision!==revision))return;
       until=started+Math.min(15,Number(data.expiresIn)||0)*1000;
       if(elapsedClock()<started||elapsedClock()>=until){text('job-feedback',uiLocale.t('Confirmation expirée. Préparez une nouvelle confirmation.'));return;}
       ticket={nonce:data.nonce,operation:operation,port:port,revision:revision,generation:generation,started:started};
       if(!confirmable()||otherDialog()){dismiss(false);return;}
       dialogReturn=origin;
       dialogBackground=Array.prototype.filter.call(document.body.children||[],function(node){return node!==$('job-dialog')&&!/^(SCRIPT|LINK|STYLE)$/.test(node.tagName);}).map(function(node){var entry={node:node,inert:node.inert};node.inert=true;return entry;});
-      $('job-dialog-title').textContent=operation==='start'?uiLocale.t('Confirmer le démarrage'):uiLocale.t('Confirmer la reprise');
+      $('job-dialog-title').textContent=operation==='start'?uiLocale.t('Confirmer le démarrage'):operation==='macro'?uiLocale.t('Exécuter la macro'):uiLocale.t('Confirmer la reprise');
       $('job-dialog-file').textContent=data.name+' · '+port;
       text('job-countdown',uiLocale.t('Confirmation valable ')+Math.max(0,Math.ceil((until-elapsedClock())/1000))+' s.');
       $('job-check').checked=false;$('job-confirm').disabled=true;$('job-dialog').hidden=false;$('job-dismiss').focus();
@@ -251,7 +258,11 @@
   function dispose(){if(disposed)return;dismiss(false);disposed=true;if(typeof clearInterval==='function')clearInterval(interval);if(stream)stream.dispose();bindings.forEach(function(fn){fn();});requests.forEach(function(xhr){xhr.onload=xhr.onerror=xhr.ontimeout=null;xhr.abort();});requests=[];}
   bind(window,'pagehide',function(event){if(event&&event.persisted){observationSuspended=true;dismiss();if(stream)stream.reconnect();else unavailable(uiLocale.t('Retour à la page : attendre un nouvel état.'));}else dispose();});
   bind(window,'pageshow',function(event){if(event&&event.persisted)resumeObservation();});
-  window.cncJobControls={refresh:function(){poll(true);},dispose:dispose};
+  window.cncJobControls={refresh:function(){poll(true);},dispose:dispose,
+    // Realtime override step (kind: feed | spindle | rapid; value as accepted by the server).
+    override:function(kind,value){if(busy||!current)return Promise.reject(new Error(uiLocale.t('Opération en cours…')));return command('override',{kind:kind,value:value});},
+    // Opens the confirmation for a CNCjs macro; the macro runs only after the confirmed nonce.
+    prepareMacro:function(id){prepare('macro',{macroId:id});}};
   // Deferred subscribers can load after the first resolved local snapshot.
   bind(document,'DOMContentLoaded',function(){stateSignature='';render();});
   poll(true);

@@ -7,6 +7,10 @@
   var workFrames={G54:offset},wcs='G54',motionRevision=0;
   var history=[],eventId=0;
   var probeLocked=false;
+  // Overrides and macros exist in the simulation so the controls can be tried without a machine.
+  var overrides={feed:100,rapid:100,spindle:100};
+  var OVERRIDES={feed:[0,10,-10,1,-1],spindle:[0,10,-10,1,-1],rapid:[0,100,50,25]};
+  var macros=[{id:'sim-clear-z',name:uiLocale.t('Dégagement Z fictif')},{id:'sim-park',name:uiLocale.t('Position de repos fictive')}];
   function log(action,message){
     history.unshift({id:++eventId,time:Date.now(),action:action,message:message,file:name,percent:Math.floor(progress)});
     if(history.length>100)history.length=100;
@@ -31,6 +35,10 @@
       machinePosition:{x:position.x,y:position.y,z:position.z},
       workPosition:{x:position.x-offset.x,y:position.y-offset.y,z:position.z-offset.z},
       probeBusy:probeLocked,canJog:!probeLocked&&!alarm&&workflow==='idle',
+      overrides:{feed:overrides.feed,rapid:overrides.rapid,spindle:overrides.spindle},
+      canOverride:!alarm&&workflow!=='idle',overrideReason:alarm?uiLocale.t('Alarme simulée : voir l’onglet Machine.'):workflow==='idle'?uiLocale.t('Les corrections s’appliquent pendant un travail en cours ou en pause.'):'',
+      macros:macros.map(function(m){return {id:m.id,name:m.name};}),
+      canMacro:!probeLocked&&!alarm&&workflow==='idle',macroReason:probeLocked?uiLocale.t('Palpage simulé en cours : autres commandes bloquées.'):alarm?uiLocale.t('Alarme simulée : voir l’onglet Machine.'):workflow!=='idle'?uiLocale.t('Arrêtez la simulation avant d’exécuter une macro.'):'',
       canLoad:!probeLocked&&!alarm&&workflow==='idle',canStart:!probeLocked&&!alarm&&!!file&&!started,canResume:!probeLocked&&!alarm&&workflow==='paused',
       canPause:workflow==='running',canStop:workflow!=='idle',
       loadReason:probeLocked?uiLocale.t('Palpage simulé en cours : autres commandes bloquées.'):alarm?uiLocale.t('Alarme simulée : voir l’onglet Machine.'):workflow!=='idle'?uiLocale.t('Arrêtez la simulation avant de charger un autre fichier.'):'',
@@ -79,14 +87,38 @@
           ticket=null;
           log(a,a==='jog'?uiLocale.t('Déplacement ')+body.axis.toUpperCase()+' : '+(body.step*body.direction)+' mm.':a==='zero'?uiLocale.t('Origine ')+body.axis.toUpperCase()+uiLocale.t(' mise à zéro.'):uiLocale.t('Coordonnées fictives réinitialisées.'));
           resolve({message:uiLocale.t('SIMULATION — ')+(a==='jog'?uiLocale.t('Déplacement fictif effectué.'):a==='zero'?uiLocale.t('Origine de travail fictive mise à zéro, sans déplacement.'):uiLocale.t('Coordonnées fictives réinitialisées.'))});return;
+        } else if(a==='override') {
+          var steps=Object.prototype.hasOwnProperty.call(OVERRIDES,body.kind)&&OVERRIDES[body.kind];
+          if(!steps||steps.indexOf(body.value)<0) throw new Error(uiLocale.t('Correction invalide.'));
+          if(!state.canOverride) throw new Error(state.overrideReason);
+          if(body.kind==='rapid')overrides.rapid=body.value===0?100:body.value;
+          else overrides[body.kind]=body.value===0?100:Math.min(200,Math.max(10,overrides[body.kind]+body.value));
+          var overrideMessage=uiLocale.t('Correction fictive ')+({feed:uiLocale.t('avance'),spindle:uiLocale.t('broche'),rapid:uiLocale.t('rapide')}[body.kind])+' : '+overrides[body.kind]+' %.';
+          log(a,overrideMessage);resolve({message:uiLocale.t('SIMULATION — ')+overrideMessage});return;
         } else if(a==='load') {
           if(!state.canLoad||!body.file) throw new Error(uiLocale.t('Chargement simulé indisponible.'));
           file=body.file;name=file.replace(/--touch-\d{14}-[a-f0-9]{16}(?=\.[^.]+$)/,'');
           revision++;progress=0;started=false;ticket=null;
         } else if(a==='prepare') {
+          if(body.operation==='macro') {
+            var requested=macros.filter(function(m){return m.id===body.macroId;})[0];
+            if(!requested) throw new Error(uiLocale.t('Macro introuvable. Actualisez la liste.'));
+            if(!state.canMacro) throw new Error(state.macroReason);
+            ticket={nonce:String(++ticketId)+'-macro',operation:'macro',macroId:requested.id,expires:elapsedClock()+15000};
+            resolve({nonce:ticket.nonce,name:requested.name,operation:'macro',expiresIn:15});return;
+          }
           if(body.revision!==revision || !(body.operation==='start'?state.canStart:body.operation==='resume'&&state.canResume)) throw new Error(uiLocale.t('Action simulée indisponible.'));
           ticket={nonce:String(++ticketId)+'-'+revision,operation:body.operation,expires:elapsedClock()+15000};
-          resolve({nonce:ticket.nonce,name:name,expiresIn:15});return;
+          resolve({nonce:ticket.nonce,name:name,operation:body.operation,expiresIn:15});return;
+        } else if(a==='macro') {
+          var m=ticket;ticket=null;
+          if(!m||m.nonce!==body.nonce||m.operation!=='macro'||elapsedClock()>=m.expires||!state.canMacro) throw new Error(uiLocale.t('Confirmation simulée expirée ou invalide.'));
+          var ran=macros.filter(function(x){return x.id===m.macroId;})[0];
+          if(ran.id==='sim-clear-z')position.z=Math.round((position.z+50)*1000)/1000;
+          else {position={x:0,y:0,z:50};}
+          motionRevision++;
+          var macroMessage=uiLocale.t('Macro fictive « ')+ran.name+uiLocale.t(' » exécutée.');
+          log(a,macroMessage);resolve({message:uiLocale.t('SIMULATION — ')+macroMessage});return;
         } else if(a==='start'||a==='resume') {
           var t=ticket;ticket=null;
           if(!t||t.nonce!==body.nonce||t.operation!==a||elapsedClock()>=t.expires||!(a==='start'?state.canStart:state.canResume)) throw new Error(uiLocale.t('Confirmation simulée expirée ou invalide.'));

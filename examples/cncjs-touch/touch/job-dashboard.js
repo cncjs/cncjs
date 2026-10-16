@@ -13,6 +13,20 @@
       if(!this.disabled&&source&&!source.disabled)source.click();
     });
   });
+  // Realtime overrides (feed and spindle), active only while a program runs or is held.
+  $('home-job-feedback').insertAdjacentHTML('afterend',uiLocale.html('<div id="home-overrides" class="home-overrides" hidden><p class="home-overrides-title">Corrections en cours de travail</p>')+
+    ['feed','spindle'].map(function(kind){
+      var label=kind==='feed'?uiLocale.t('Avance'):uiLocale.t('Broche');
+      return '<div class="home-override" data-kind="'+kind+'"><span>'+label+'</span><b id="home-override-'+kind+'">—</b><div class="home-override-buttons">'+
+        [[-10,'−10'],[-1,'−1'],[0,'100 %'],[1,'+1'],[10,'+10']].map(function(step){return '<button type="button" data-kind="'+kind+'" data-value="'+step[0]+'" disabled>'+step[1]+'</button>';}).join('')+'</div></div>';
+    }).join('')+uiLocale.html('<p id="home-override-note" class="home-overrides-note"></p></div>'));
+  var overridesBox=$('home-overrides');
+  overridesBox.addEventListener('click',function(e){
+    var button=e.target&&e.target.closest?e.target.closest('button[data-kind]'):null;
+    if(!button||button.disabled||!window.cncJobControls||typeof window.cncJobControls.override!=='function')return;
+    window.cncJobControls.override(button.getAttribute('data-kind'),Number(button.getAttribute('data-value'))).catch(function(){});
+  });
+  function overrideButtons(){return overridesBox.querySelectorAll?overridesBox.querySelectorAll('button'):[];}
   execution.insertAdjacentHTML('beforeend',uiLocale.html('<p id="job-progress-summary" role="status"></p>'));
   var selection=window.cncLibrarySelection||null,machine=null,simulation=false,imageKey='',request=0,track=null,busy=false,feedback='';
   var previewRequest=null,imageLoading=false,previewFailed=false,mounted=false;
@@ -50,7 +64,7 @@
         if(xhr.status!==200)throw new Error();
         var meta=JSON.parse(JSON.parse(xhr.responseText).data),src=meta.preview&&meta.preview.image;
         if(meta.file!==file||typeof src!=='string'||src.length>2500000||!/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(src))throw new Error();
-        img.cncPreview={file:file,projection:meta.preview.projection};
+        img.cncPreview={file:file,projection:meta.preview.projection,trail:Array.isArray(meta.preview.trail)?meta.preview.trail:null,lines:meta.preview.lines};
         imageLoading=true;
         img.onload=function(){if(id===request){imageLoading=false;img.hidden=false;$('home-image-status').hidden=true;}};
         img.onerror=fail;img.src=src;
@@ -65,6 +79,12 @@
     set('home-job-pause','disabled',!c||!c.canPause);
     set('home-job-resume','disabled',busy||!c||!c.canResume);
     set('home-job-stop','disabled',!c||!c.canStop);
+    var overrides=c&&c.overrides&&typeof c.overrides==='object'?c.overrides:null,overrideOn=!!(c&&c.fresh&&c.canOverride&&!busy);
+    set('home-overrides','hidden',!c||!('canOverride' in c));
+    set('home-override-feed','textContent',overrides&&finiteNumber(overrides.feed)?overrides.feed+' %':'—');
+    set('home-override-spindle','textContent',overrides&&finiteNumber(overrides.spindle)?overrides.spindle+' %':'—');
+    Array.prototype.forEach.call(overrideButtons(),function(button){if(button.disabled!==!overrideOn)button.disabled=!overrideOn;});
+    set('home-override-note','textContent',overrideOn?uiLocale.t('Pas de ±1 % / ±10 % envoyés au contrôleur en temps réel ; 100 % rétablit la valeur programmée.'):(c&&c.overrideReason)||'');
     var valid=c&&c.fresh&&c.name&&finiteNumber(c.total)&&c.total>0&&finiteNumber(c.received)&&c.received>=0&&c.received<=c.total,p=valid?c.received/c.total*100:0;
     var percent=valid?Math.floor(p)+' %':'—',remaining=null,eta=uiLocale.t('Temps restant : —');
     var key=c?simulation+':'+c.port+':'+c.name+':'+c.revision+':'+c.total:'';

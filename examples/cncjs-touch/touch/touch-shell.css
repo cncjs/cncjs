@@ -117,6 +117,11 @@ body.ks-real #screen-files .library-execution>.mute{display:block;font-size:12px
 .ks-preparation-actions .probe-entry{border-bottom:3px solid #cb4f98;color:#f4d5e8;background:#302631}
 .ks-preparation-actions .probe-entry:hover:not(:disabled){background:#493147}
 .ks-preparation-actions #ks-origin-info{font-size:15px;color:#b7c9d1}
+.ks-preparation-actions .ks-macros-open{border-bottom:3px solid #b2d743}
+.ks-macro-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.ks-macro{min-height:64px;font:inherit;font-size:18px;color:#edf3f5;background:#20313a;border:1px solid #3c535f;border-bottom:4px solid #b2d743;border-radius:8px;padding:12px;cursor:pointer;overflow-wrap:anywhere;touch-action:manipulation}
+.ks-macro:disabled{opacity:.4;cursor:not-allowed}.ks-macro:hover:not(:disabled){background:#2c414b}
+@media(max-height:650px){.ks-macro{min-height:52px;font-size:16px;padding:8px}.ks-macro-list{gap:8px}}
 .ks-secondary,.ks-coordinate-table button{font:inherit;color:#edf3f5;background:#20313a;border:1px solid #3c535f;border-radius:7px;padding:12px 18px;min-height:52px;cursor:pointer}
 .ks-ui button:disabled{cursor:not-allowed}
 .ks-secondary:disabled,.ks-command:disabled,.ks-coordinate-table button:disabled{opacity:.4}

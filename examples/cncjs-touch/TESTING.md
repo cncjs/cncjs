@@ -8,7 +8,7 @@ From this directory, run:
 node verify-project.cjs
 ```
 
-Node.js 18 or newer is required. No external packages, running CNCjs server or CNC controller are required. The suite consists of 48 browser-side test scripts plus script syntax and HTML resource checks, for 50 checks in this source package. The runner uses an explicit list and does not launch the visual fixture or hardware checks.
+Node.js 18 or newer is required. No external packages, running CNCjs server or CNC controller are required. The suite consists of 51 browser-side test scripts plus script syntax and HTML resource checks, for 53 checks in this source package. The runner uses an explicit list and does not launch the visual fixture or hardware checks.
 
 The backend (job service, event stream, motion preflight, probe input and the `api.touch` handlers) is tested with the root Jest suite instead:
 
@@ -29,6 +29,10 @@ node verify-project.cjs --report /absolute/path/to/offline-report.json
 ## Latest regression coverage (2026-10-16)
 
 The refreshed suite also covers FR/EN/ES messages and exports, storage conflicts and readback, temporary download cleanup, protocol schema/ordering, clock corrections, job-aware screen blanking, controller generation changes, offline recovery and hidden-page/browser-cache return. Old replies cannot reopen a confirmation; reconnects do not replay commands. All checks use offline mocks.
+
+## Progress trail, overrides and macros (2026-10-16)
+
+Added without a controller, so covered by mocks only: `test-preview.cjs` and `test-preview-worker.cjs` check that the preview carries about a thousand trail samples starting at the origin, that the sent-line count matches the file, that `trailCount` picks the samples below the acknowledged line, and that the trail survives the worker transfer; `test-dashboard.cjs` checks the override block (hidden for snapshots without the field, dashes for non-finite values, reason text when refused); `test-job-dialog.cjs` runs a macro through the ticket dialog (one `macro` call, refused when `canMacro` is false) and an override through the command path; `test-macros.cjs` covers the macro sheet (gating, no redundant DOM writes, sheet closed before the dialog, script order); `test-simulation.cjs` exercises the simulated overrides and macros. On the server, `job-service.test.js` checks override validation and refusal outside a job, and the macro ticket flow ending in `macro:run`. Whether Grbl reacts as expected to the override commands, and how the acknowledged-line trail relates to the real tool position, is not established.
 
 ## Prior development observations
 
@@ -153,5 +157,6 @@ First attempt, before the asset ordering change: the ~60 scripts of the page, lo
 - Real probing cycles, calibration, contact bounce and tool/fixture geometry.
 - The integrated server with a controller attached, a non-root `settings.route`, other browsers than Chromium and other controller families. The production build (`dist/cncjs`) has since been run on the Surface RT (Raspbian 11 armhf, Node 18, PM2 `cncjs-next`, kiosk connected to the integrated event stream) — still without a controller.
 - Long-running operation, Wi-Fi interruptions, memory pressure and screen wake behavior on the target touchscreen.
+- Feed/spindle overrides and `macro:run` against a real Grbl controller, and the accuracy of the acknowledged-line progress trail against the actual tool position.
 
 Keep initial evaluation in the mock demo. Any later hardware validation needs an operator who knows the machine and can verify each action independently.

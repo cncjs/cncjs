@@ -15,6 +15,13 @@ now+=10000;status({...c,workflow:'paused'});assert.match(el('home-job-eta').text
 status({...c,received:100,remainingSeconds:0,workflow:'idle'});assert.equal(el('home-job-percent').textContent,'100 %');assert.match(el('home-job-eta').textContent,/Terminé/);
 status({...c,workflow:'idle',canStart:false});assert.match(el('home-job-eta').textContent,/arrêté/);
 status(null);assert.equal(el('home-job-percent').textContent,'—');assert.match(el('home-job-eta').textContent,/indisponible/);
+// Overrides block: hidden for snapshots without the field, values and gating otherwise.
+assert.equal(el('home-overrides').hidden,true);
+status({...c,canOverride:true,overrides:{feed:90,rapid:100,spindle:110}});
+assert.equal(el('home-overrides').hidden,false);assert.equal(el('home-override-feed').textContent,'90 %');assert.equal(el('home-override-spindle').textContent,'110 %');assert.match(el('home-override-note').textContent,/temps réel/);
+status({...c,workflow:'idle',canOverride:false,overrideReason:'Les corrections s’appliquent pendant un travail en cours ou en pause.',overrides:null});
+assert.equal(el('home-override-feed').textContent,'—');assert.match(el('home-override-note').textContent,/en cours ou en pause/);
+status({...c,canOverride:true,overrides:{feed:'x',rapid:100,spindle:Infinity}});assert.equal(el('home-override-feed').textContent,'—');assert.equal(el('home-override-spindle').textContent,'—');
 let real={...c,port:'REAL',remainingSeconds:undefined,received:10};status(real,false);
 for(let i=0;i<11;i++){now+=1000;real={...real,received:real.received+1};status(real,false);}
 assert.match(el('home-job-eta').textContent,/estimé/);assert.match(el('home-job-note').textContent,/indicative/);

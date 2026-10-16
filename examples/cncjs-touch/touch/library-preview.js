@@ -2,13 +2,20 @@
 (function (root) {
   'use strict';
   var source = typeof document !== 'undefined' && document.currentScript && document.currentScript.src;
-  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker2') : 'library-preview-worker.js?v=worker2';
+  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker3') : 'library-preview-worker.js?v=worker3';
   var generation = 0;
   function scan(text, segment, cancelled, progress, yieldAfterLine) {
     return new Promise(function (resolve, reject) {
       var offset = 0, line = 0, x = 0, y = 0, absolute = true;
       var unit = 1, motion = null, comment = false, ended = false, count = 0, arcAbsolute = false;
       var bounds = [Infinity, Infinity, -Infinity, -Infinity];
+      // Progress trail: about a thousand samples of [sent line count, x, y],
+      // taken every text.length/1000 characters. The line count follows the
+      // CNCjs sender (non-empty lines), so a job's acknowledged line count maps
+      // onto the trail at run time.
+      var trail = [], sentLines = 0, nextSample = 0, sampleStep = Math.max(1, Math.floor(text.length / 1000));
+      function sample() { trail.push(sentLines, Math.round(x * 1000) / 1000, Math.round(y * 1000) / 1000); }
+      sample(); // the trail starts at the assumed origin, before any line
       function add(ax, ay, bx, by, mode) {
         if (ax === bx && ay === by) return;
         count++;
@@ -156,7 +163,10 @@
             if (nextCr < start) { nextCr = text.indexOf('\r', start); if (nextCr < 0) nextCr = text.length; }
             offset = nextLf < nextCr ? nextLf : nextCr;
             if (offset - start > 10001) throw new Error('ligne trop longue');
-            line++; read(text.slice(start, offset));
+            var raw = text.slice(start, offset);
+            line++; read(raw);
+            if (raw.trim().length) sentLines++;
+            if (offset >= nextSample) { sample(); nextSample += sampleStep; }
             if (text[offset++] === '\r' && text[offset] === '\n') offset++;
             // A worker waits for the renderer after a full block. At most one
             // line (8192 arc segments) can be produced before this boundary.
@@ -170,7 +180,8 @@
           if (progress) progress(Math.min(1, offset / (text.length || 1)));
           if (offset < text.length && !ended) { setTimeout(batch, 0); return; }
           if (comment) throw new Error('commentaire non fermé');
-          resolve({ count: count, bounds: bounds });
+          sample();
+          resolve({ count: count, bounds: bounds, trail: trail, lines: sentLines });
         } catch (error) { reject(new Error('Ligne ' + line + ' : ' + error.message)); }
       }
       setTimeout(batch, 0);
@@ -220,6 +231,7 @@
         if (!check()) return;
         finish(null, { image: image, segments: result.count, bounds: result.bounds,
           projection: {version:1,width:960,height:540,bounds:result.bounds,units:'mm',wcs:'G54'},
+          trail: result.trail, lines: result.lines,
           note: 'Projection XY indicative — G1/G2/G3 bleu, G0 gris. Arcs XY interpolés à 0,02 mm. Départ supposé X0 Y0, mm, absolu et centres I/J relatifs. Z et puissance laser non simulés.' +
             (fallback ? ' Calcul local de secours : réactivité à vérifier sur cet appareil.' : '') +
             (synchronous ? ' Encodage PNG synchrone de secours.' : '') });

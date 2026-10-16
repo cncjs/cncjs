@@ -13,6 +13,9 @@
 #coordinate-result{min-height:44px;color:#70dfd3}#coordinate-value{font-size:24px}#coordinate-state{font-size:14px;min-height:19px}
 .job-art{position:relative}.tool-position-marker{position:absolute;width:16px;height:16px;border:2px solid white;border-radius:50%;background:#f05aaa;box-shadow:0 0 0 2px #111;pointer-events:none;transform:translate(-50%,-50%);z-index:2}
 .tool-position-note{font-size:12px!important;color:#b8c7ce;min-height:16px}.tool-position-marker[hidden]{display:none}
+/* Acknowledged part of the toolpath, drawn over the stored preview image. */
+.toolpath-progress{position:absolute;pointer-events:none;z-index:1;overflow:visible}.toolpath-progress[hidden]{display:none}
+.toolpath-progress polyline{fill:none;stroke:#f7a449;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:.85;vector-effect:non-scaling-stroke}
 @media(max-height:650px){.coordinate-card{padding:10px;font-size:14px}.coordinate-card h2{font-size:18px}.coordinate-card button,.coordinate-card select,.coordinate-card input{min-height:40px;padding:5px 8px}.coordinate-keypad{gap:3px}.coordinate-card p{margin:4px 0}.coordinate-fields{margin:5px 0}.coordinate-card #coordinate-result{min-height:36px}.coordinate-card #coordinate-value{font-size:20px}}
 @media(max-width:600px){.coordinate-fields{grid-template-columns:1fr 1fr}.coordinate-card h2{font-size:16px}.coordinate-input-grid{gap:8px}}
 .coordinate-frame{color:#70dfd3;white-space:nowrap}

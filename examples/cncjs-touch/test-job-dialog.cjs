@@ -60,5 +60,17 @@ async function fixture(monotonic=false){
  f=await fixture();await f.open();f.doc.hidden=true;f.emit('visibilitychange');assert(f.node('job-dialog').hidden);assert(!f.node('main').inert);
  f=await fixture();await f.open();f.win.cncJobControls.dispose();assert(f.node('job-dialog').hidden);assert(!f.node('main').inert);
  f=await fixture();await f.open();f.check();f.node('job-confirm').click();f.node('job-confirm').click();await f.flush();assert.equal(f.calls.filter(c=>c.action==='start').length,1);
+ // Macro confirmation: prepared with the macro id, titled for a macro, gated by canMacro, runs the macro action once.
+ f=await fixture();f.machine.canMacro=true;f.machine.macros=[{id:'m1',name:'Dégagement Z'}];f.win.cncJobControls.refresh();await f.flush();
+ f.win.cncJobControls.prepareMacro('m1');await f.flush();
+ assert.deepEqual(f.calls.at(-1),{action:'prepare',port:'SIMULATION',generation:'g1',operation:'macro',macroId:'m1'});
+ await f.resolve();assert.equal(f.node('job-dialog').hidden,false);assert.equal(f.node('job-dialog-title').textContent,'Exécuter la macro');
+ f.check();f.node('job-confirm').click();f.node('job-confirm').click();await f.flush();
+ assert.equal(f.calls.filter(c=>c.action==='macro').length,1);assert.equal(f.calls.at(-1).nonce,'ticket');assert(f.node('job-dialog').hidden);
+ f.machine.canMacro=false;f.machine.macroReason='Travail en cours.';f.win.cncJobControls.prepareMacro('m1');await f.flush();await f.resolve();
+ assert(f.node('job-dialog').hidden,'a macro ticket is refused when the machine is not ready for macros');
+ // Overrides go through the same command path and need a current machine.
+ f.machine.canMacro=true;f.machine.canOverride=true;await f.win.cncJobControls.override('feed',10);
+ assert.deepEqual(f.calls.at(-1),{action:'override',port:'SIMULATION',generation:'g1',kind:'feed',value:10});
  console.log('PASS: focus, inert restoration, keyboard trap, delayed prepare, modal exclusion, stale click, alarm/revision invalidation, visibility/disposal and single confirmation; no network.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

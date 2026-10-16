@@ -51,6 +51,14 @@
 #home-job-name{overflow-wrap:anywhere}#job-progress-summary{font-weight:700;color:#80dfed}
 @media(max-width:780px){.job-dashboard{grid-template-columns:1fr}}
 .home-job-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+/* Realtime overrides on the follow-up screen: one row per kind, Grbl step buttons. */
+.home-overrides{margin-top:16px;padding-top:12px;border-top:1px solid #31434c}.home-overrides[hidden]{display:none}
+.home-overrides-title{margin:0 0 8px;font-size:14px;color:#a0b0b9;letter-spacing:1px;text-transform:uppercase}
+.home-override{display:flex;align-items:center;gap:12px;margin:8px 0}.home-override>span{width:72px;color:#a0b0b9;font-size:15px}
+.home-override>b{min-width:64px;font-size:22px;font-weight:400;font-variant-numeric:tabular-nums}
+.home-override-buttons{display:flex;gap:6px;flex:1}.home-override-buttons button{flex:1;min-height:48px;padding:6px 4px;font-size:16px;border:1px solid #415565;border-radius:8px;background:#202f3b;color:#edf5f8;font-variant-numeric:tabular-nums;cursor:pointer;touch-action:manipulation}
+.home-override-buttons button:disabled{opacity:.4;cursor:not-allowed}.home-override-buttons button[data-value="0"]{border-bottom:3px solid #f18b23}
+.home-overrides-note{margin:6px 0 0;font-size:12px;color:#8fa0b0}
 .home-job-actions button,.job-dialog button{min-height:56px;padding:12px 22px;border:1px solid #415565;border-radius:10px;background:#202f3b;color:#edf5f8;font:inherit;cursor:pointer;touch-action:manipulation}
 .home-job-actions button:disabled,.job-dialog button:disabled{opacity:.45;cursor:not-allowed}
 #home-job-stop{background:#702d32;border-color:#c27070}

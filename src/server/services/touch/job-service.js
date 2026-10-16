@@ -25,6 +25,30 @@ const MAX_FILE_SIZE = 20 * 1048576;
 // accelerations and travel limits. Nothing else from the controller is copied.
 const EXPOSED_SETTINGS = [20, 21, 22, 110, 111, 112, 120, 121, 122, 130, 131, 132];
 
+// Realtime override steps accepted by the Grbl controller commands
+// (feedOverride / spindleOverride: reset, ±10 %, ±1 %; rapidOverride: 100/50/25 %).
+const OVERRIDES = {
+  feed: [0, 10, -10, 1, -1],
+  spindle: [0, 10, -10, 1, -1],
+  rapid: [0, 100, 50, 25]
+};
+
+// Grbl reports the active overrides as Ov:feed,rapid,spindle percentages.
+const overridesOf = (state) => {
+  const ov = state.ov;
+  if (!Array.isArray(ov) || ov.length !== 3 || !ov.every((v) => typeof v === 'number' && Number.isFinite(v))) {
+    return null;
+  }
+  return { feed: ov[0], rapid: ov[1], spindle: ov[2] };
+};
+
+// Only names and ids leave the server; macro contents stay in the configuration.
+const macrosOf = (config) => {
+  return (config.get('macros') || [])
+    .filter((m) => m && typeof m.id === 'string' && typeof m.name === 'string')
+    .map((m) => ({ id: m.id, name: m.name }));
+};
+
 // Errors carry an HTTP status so the API layer can answer without matching on
 // message text.
 const conflict = (message) => {
@@ -168,6 +192,33 @@ export const createService = (store, config, clock = Date.now) => {
     return j;
   };
 
+  // Overrides act on the running (or held) program only.
+  const overridable = (c) => {
+    available(c);
+    if (!['running', 'paused'].includes(c.workflow.state)) {
+      throw conflict('Les corrections s’appliquent pendant un travail en cours ou en pause.');
+    }
+  };
+
+  // A macro moves the machine from rest: idle, nothing loading, no automations.
+  const macroReady = (c) => {
+    idle(c);
+    if (record(c).loading) {
+      throw conflict('Chargement en cours.');
+    }
+    if (hasAutomations(config)) {
+      throw conflict('Des automatismes CNCjs sont configurés. Leur compatibilité doit être vérifiée avant utilisation.');
+    }
+  };
+
+  const findMacro = (id) => {
+    const macro = macrosOf(config).find((m) => m.id === id);
+    if (!macro) {
+      throw conflict('Macro introuvable. Actualisez la liste.');
+    }
+    return macro;
+  };
+
   // Runs a guard and returns its failure message, or '' when it passes.
   const reason = (guard) => {
     try {
@@ -193,6 +244,8 @@ export const createService = (store, config, clock = Date.now) => {
     });
     const startReason = reason(() => readyFor(c, 'start', revision));
     const resumeReason = reason(() => readyFor(c, 'resume', revision));
+    const overrideReason = reason(() => overridable(c));
+    const macroReason = reason(() => macroReady(c));
 
     const age = (Number.isFinite(r.seen) && clock() >= r.seen) ? clock() - r.seen : null;
 
@@ -257,7 +310,13 @@ export const createService = (store, config, clock = Date.now) => {
       canResume: !resumeReason,
       resumeReason,
       canPause: c.workflow.state === 'running',
-      canStop: c.workflow.state !== 'idle' || ['Run', 'Hold'].includes(state.activeState)
+      canStop: c.workflow.state !== 'idle' || ['Run', 'Hold'].includes(state.activeState),
+      overrides: overridesOf(state),
+      canOverride: !overrideReason,
+      overrideReason,
+      macros: macrosOf(config),
+      canMacro: !macroReason,
+      macroReason
     };
   };
 
@@ -335,7 +394,7 @@ export const createService = (store, config, clock = Date.now) => {
     const r = record(c);
     const a = body.action;
 
-    if (['prepare', 'start', 'resume'].includes(a)) {
+    if (['prepare', 'start', 'resume', 'macro', 'override'].includes(a)) {
       if (typeof body.generation !== 'string' || body.generation !== r.generation) {
         throw conflict('Le contrôleur a changé ou son identité manque. Choisissez-le à nouveau.');
       }
@@ -355,25 +414,64 @@ export const createService = (store, config, clock = Date.now) => {
     }
 
     if (a === 'prepare') {
-      if (!['start', 'resume'].includes(body.operation)) {
+      if (!['start', 'resume', 'macro'].includes(body.operation)) {
         throw conflict('Action invalide.');
       }
-      const j = readyFor(c, body.operation, body.revision);
       const nonce = crypto.randomBytes(24).toString('hex');
-      r.ticket = {
-        nonce,
-        revision: j.revision,
-        operation: body.operation,
-        expires: clock() + TICKET_LIFETIME_MS,
-        transportId: body.transportId
-      };
+      let name;
+      if (body.operation === 'macro') {
+        macroReady(c);
+        const macro = findMacro(body.macroId);
+        name = macro.name;
+        r.ticket = { nonce, macroId: macro.id, operation: 'macro', expires: clock() + TICKET_LIFETIME_MS, transportId: body.transportId };
+      } else {
+        const j = readyFor(c, body.operation, body.revision);
+        name = j.originalName;
+        r.ticket = { nonce, revision: j.revision, operation: body.operation, expires: clock() + TICKET_LIFETIME_MS, transportId: body.transportId };
+      }
       return {
         nonce,
-        name: j.originalName,
+        name,
         operation: body.operation,
         expiresIn: TICKET_LIFETIME_MS / 1000,
         generation: r.generation
       };
+    }
+
+    if (a === 'macro') {
+      const t = r.ticket;
+      r.ticket = null;
+      if (!t || t.nonce !== body.nonce || t.operation !== 'macro' || clock() > t.expires || t.transportId !== body.transportId) {
+        throw conflict('Confirmation expirée ou déjà utilisée.');
+      }
+      macroReady(c);
+      const macro = findMacro(t.macroId);
+      return new Promise((resolve, reject) => {
+        c.command('macro:run', macro.id, {}, (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve({ message: 'Macro « ' + macro.name + ' » envoyée au contrôleur.' });
+          }
+        });
+      });
+    }
+
+    if (a === 'override') {
+      const steps = Object.prototype.hasOwnProperty.call(OVERRIDES, body.kind) && OVERRIDES[body.kind];
+      if (!steps || !steps.includes(body.value)) {
+        throw conflict('Correction invalide.');
+      }
+      overridable(c);
+      c.command(body.kind + 'Override', body.value);
+      const label = { feed: 'avance', spindle: 'broche', rapid: 'rapide' }[body.kind];
+      let change = 'remise à 100 %';
+      if (body.kind === 'rapid' && body.value !== 0 && body.value !== 100) {
+        change = body.value + ' %';
+      } else if (body.kind !== 'rapid' && body.value !== 0) {
+        change = (body.value > 0 ? '+' : '') + body.value + ' %';
+      }
+      return { message: 'Correction ' + label + ' : ' + change + '.' };
     }
 
     if (a === 'start' || a === 'resume') {

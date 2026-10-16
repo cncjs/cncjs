@@ -33,7 +33,7 @@ function setup(options = {}) {
   const metrics = { inputBytes: 0, geometryBytes: 0, outstanding: 0, peak: 0, transfers: 0, responseBlobs: 0 };
   class BrowserWorker {
     constructor(url) {
-      assert.match(url, /library-preview-worker\.js\?v=worker2$/);
+      assert.match(url, /library-preview-worker\.js\?v=worker3$/);
       if (options.constructorFailure) throw Error('CSP denied');
       this.terminated = false;
       this.thread = new Worker(harness, { eval: true, workerData: { directory: path.join(__dirname, 'touch'), readerMode: options.readerMode } });
@@ -91,7 +91,7 @@ function setup(options = {}) {
   const browser = { FileReader: Reader, Blob };
   if (!options.noWorker) browser.Worker = BrowserWorker;
   const context = {
-    window: browser, document: { currentScript: { src: 'https://offline.invalid/touch/library-preview.js?v=worker2' } },
+    window: browser, document: { currentScript: { src: 'https://offline.invalid/touch/library-preview.js?v=worker3' } },
     Promise, Date, Uint16Array, Float64Array, setTimeout, clearTimeout,
     setInterval(fn, delay) { const timer = setInterval(fn, delay); intervals.add(timer); return timer; },
     clearInterval(timer) { clearInterval(timer); intervals.delete(timer); }
@@ -128,6 +128,7 @@ async function run() {
     ox + (xx - b[0]) * scale, 540 - oy - (yy - b[1]) * scale, m === 0 ? '#657c8f' : '#55d6ed']);
   const actual = setup({ stale: true }), rendered = await actual.render(code);
   assert.equal(rendered.segments, expected.count); assert.deepEqual(Array.from(rendered.bounds), expected.bounds);
+  assert.equal(rendered.lines, expected.lines); assert.deepEqual(Array.from(rendered.trail), expected.trail, 'the progress trail crosses the worker boundary intact');
   assert.deepEqual(actual.lines, target); assert.equal(actual.strokes, expected.count);
   assert(actual.metrics.peak >= 1 && actual.metrics.peak <= 4);
   assert(expected.count > 11000, 'Dense arc plus lines span multiple transferred blocks');

@@ -141,5 +141,7 @@
     var coordinateObserver=new MutationObserver(copyCoordinates);
     ['wx','wy','wz'].forEach(function(id){coordinateObserver.observe(document.getElementById(id),{childList:true,characterData:true,subtree:true});});copyCoordinates();
   }
+  // Shared with later modules (macros): sheets with focus trapping and navigation.
+  window.cncShell={sheet:sheet,closeSheet:closeSheet,go:go,preparationActions:preparationActions};
   go('menu',true);
 })();

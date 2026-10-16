@@ -22,6 +22,16 @@ The backend now lives in the CNCjs source tree instead of being patched into a c
 
 Route names (`api/custom/health`, `api/touch-job`, `api/touch-motion/preview`, `api/touch-events`), the French server-side messages (CNCjs uses i18next elsewhere) and the error payload shape (`{message}` rather than the `{msg}` of the existing API) were kept as the browser code expects them; all three still need maintainer agreement.
 
+## Job progress, overrides and macros (2026-10-16)
+
+Three additions for the running-job screen, written without a controller at hand and therefore only exercised against the simulation and the offline mocks:
+
+- **Toolpath progress on the preview.** The preview worker now samples the tool position about a thousand times along the file (`trail`, with the count of non-empty lines sent so far) and stores it in the preview sidecar. During a job the dashboard draws the part of the path covered by the acknowledged lines (`received / total`) as an orange polyline over the stored image. It is indicative: Grbl acknowledges lines before executing them, and the sampling is coarse.
+- **Feed and spindle overrides.** Buttons for −10 / −1 / 100 % / +1 / +10 appear under the job actions while a job is running or paused on a fresh controller; they map one-to-one onto the Grbl realtime commands (`feedOverride` / `spindleOverride`). The server validates kind and value and refuses them outside a job.
+- **CNCjs macros from the tablet.** A "Macros…" entry in the preparation sheet lists the macros defined in CNCjs (names only; the server never sends their content). Running one takes the same confirmation dialog as a start (ticket, fifteen seconds, machine idle and fresh) and ends in `macro:run`, so a macro cannot be launched by one stray touch.
+
+Nothing above was run with a real controller. Overrides and macros stay disabled whenever the controller state is stale, and the simulation page carries two fictional macros to try the flow.
+
 ## Preview performance pass (2026-10-16)
 
 The G-code preview parser is 2.8–3.7× faster and the preview worker overlaps parsing with drawing; the full 20 MB pipeline runs in 55 % of its previous time on the development PC. Behaviour is unchanged (differentially fuzzed against the previous parser). See [TESTING.md](TESTING.md), "Preview pipeline measurements", for the numbers, the rejected approaches and the caveats. Measurements on the real touchscreen remain to be made: open a page with `?perf=1` and export the report (see TESTING.md, "Measuring on the device").
@@ -39,7 +49,7 @@ This update includes FR/EN/ES settings and exports; coordinate preparation, read
 - A separate simulation mode for job controls, movement, work origins and alarms. Its progress and estimated time are fictional.
 - Probe profiles, geometry/direction/search parameters, import/export and preparation diagrams. Physical probing is not implemented or validated.
 - Configurable screen dimming/blanking overlay and display settings. This is a browser feature, not hardware power management.
-- A prototype Grbl job service with explicit controller selection, freshness checks and expiring start/resume confirmations.
+- A prototype Grbl job service with explicit controller selection, freshness checks and expiring start/resume/macro confirmations, plus feed and spindle overrides during a job.
 - An authenticated, bounded NDJSON state stream, slower polling fallback, hidden-view rendering suppression and worker-based preview processing to reduce work on limited hardware.
 
 The original display target was a Surface RT-class device: 1366 × 768, Tegra 3 and 2 GB RAM. The current implementation still needs browser/device compatibility testing; it is not a promise of support for the original Windows RT browser.

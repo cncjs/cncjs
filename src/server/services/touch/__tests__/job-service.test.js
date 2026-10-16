@@ -229,6 +229,96 @@ describe('job service', () => {
     expect(() => ctx.service.previewMotion(body)).toThrow(expect.objectContaining({ code: 'BUSY' }));
   });
 
+  test('overrides are accepted only during a running or held program, with Grbl step values', async () => {
+    const ctx = setup();
+    ctx.report();
+    let state = ctx.state();
+    expect(state.overrides).toBe(null);
+    expect(state.canOverride).toBe(false);
+    expect(state.overrideReason).toMatch(/en cours ou en pause/);
+    await expect(ctx.req('override', { kind: 'feed', value: 10 })).rejects.toThrow(/en cours ou en pause/);
+
+    ctx.c.state.status.ov = [100, 100, 100];
+    state = await ctx.loaded();
+    const ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+    await ctx.req('start', { nonce: ticket.nonce });
+    ctx.report();
+    state = ctx.state();
+    expect(state.overrides).toEqual({ feed: 100, rapid: 100, spindle: 100 });
+    expect(state.canOverride).toBe(true);
+
+    await expect(ctx.req('override', { kind: 'feed', value: 5 })).rejects.toThrow(/invalide/);
+    await expect(ctx.req('override', { kind: 'laser', value: 10 })).rejects.toThrow(/invalide/);
+    await expect(ctx.req('override', { kind: 'rapid', value: 75 })).rejects.toThrow(/invalide/);
+    await expect(ctx.service.action({ port: 'TEST', action: 'override', transportId: ctx.transportId, kind: 'feed', value: 10 })).rejects.toThrow(/identité/);
+
+    const sent = ctx.c.commands.length;
+    expect((await ctx.req('override', { kind: 'feed', value: -10 })).message).toMatch(/avance : -10 %/);
+    expect((await ctx.req('override', { kind: 'spindle', value: 1 })).message).toMatch(/broche : \+1 %/);
+    expect((await ctx.req('override', { kind: 'rapid', value: 50 })).message).toMatch(/rapide : 50 %/);
+    expect((await ctx.req('override', { kind: 'feed', value: 0 })).message).toMatch(/remise à 100/);
+    expect(ctx.c.commands.slice(sent)).toEqual([['feedOverride', -10], ['spindleOverride', 1], ['rapidOverride', 50], ['feedOverride', 0]]);
+
+    await ctx.req('pause');
+    ctx.report();
+    expect(ctx.state().canOverride).toBe(true);
+    await ctx.req('stop');
+    ctx.report();
+    expect(ctx.state().canOverride).toBe(false);
+
+    ctx.c.state.status.ov = [100, 'x', 100];
+    expect(ctx.state().overrides).toBe(null);
+  });
+
+  test('macros are listed by name only and run through a confirmation ticket from an idle machine', async () => {
+    const ctx = setup();
+    ctx.events = { macros: [{ id: 'm1', name: 'Dégagement Z', content: 'G53 G0 Z-5' }, { id: 'bad' }, null], events: [] };
+    const config = { get: (key) => ({ watchDirectory: root, macros: ctx.events.macros, events: ctx.events.events })[key] };
+    const service = createService({ get: () => ctx.controllers }, config, () => ctx.now);
+    const generation = service.list()[0].generation;
+    service.openTransport('t');
+    const req = (action, extra = {}) => service.action({ port: 'TEST', generation, transportId: 't', action, ...extra });
+
+    let state = service.list()[0];
+    expect(state.macros).toEqual([{ id: 'm1', name: 'Dégagement Z' }]);
+    expect(JSON.stringify(state)).not.toContain('G53');
+    expect(state.canMacro).toBe(false);
+    expect(state.macroReason).toMatch(/trop ancien/);
+
+    ctx.report();
+    state = service.list()[0];
+    expect(state.canMacro).toBe(true);
+    await expect(req('prepare', { operation: 'macro', macroId: 'nope' })).rejects.toThrow(/introuvable/);
+    await expect(req('macro', { nonce: 'x' })).rejects.toThrow(/expirée/);
+
+    let ticket = await req('prepare', { operation: 'macro', macroId: 'm1' });
+    expect(ticket.name).toBe('Dégagement Z');
+    expect(ticket.operation).toBe('macro');
+    ctx.now += 16000;
+    ctx.report();
+    await expect(req('macro', { nonce: ticket.nonce })).rejects.toThrow(/expirée/);
+    expect(ctx.c.commands).toEqual([]);
+
+    ticket = await req('prepare', { operation: 'macro', macroId: 'm1' });
+    ctx.c.state.status.activeState = 'Alarm';
+    await expect(req('macro', { nonce: ticket.nonce })).rejects.toThrow(/repos/);
+    ctx.c.state.status.activeState = 'Idle';
+
+    ticket = await req('prepare', { operation: 'macro', macroId: 'm1' });
+    ctx.c.command = (name, ...args) => {
+      ctx.c.commands.push([name, args[0]]);
+      args[2](null);
+    };
+    expect((await req('macro', { nonce: ticket.nonce })).message).toMatch(/Dégagement Z/);
+    expect(ctx.c.commands).toEqual([['macro:run', 'm1']]);
+    await expect(req('macro', { nonce: ticket.nonce })).rejects.toThrow(/expirée/);
+
+    // A start ticket cannot run a macro and a macro ticket cannot start a program.
+    ctx.events.events = [{ enabled: true }];
+    expect(service.list()[0].canMacro).toBe(false);
+    expect(service.list()[0].macroReason).toMatch(/automatismes/i);
+  });
+
   test('the snapshot reports the probe input from raw status reports', () => {
     const ctx = setup();
     expect(ctx.state().probeInput.state).toBe('unknown');
