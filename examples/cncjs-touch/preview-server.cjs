@@ -4,7 +4,7 @@ const root=path.resolve(__dirname,'touch');
 const idleFixture=process.argv.includes('--idle-fixture');
 // The job service is an ES module in src/server; Node.js 22.12 or newer can require() it directly.
 const {EventEmitter}=require('node:events'),{createService}=require('../../src/server/services/touch/job-service.js');
-const systemStats=require('../../src/server/services/touch/system-stats.js').createSystemStats();
+const systemStats=require('../../src/server/services/touch/system-stats.js').createSystemStats();systemStats.start();
 const mock={type:'Grbl',options:{port:'/dev/fixture'},ready:true,isClose:()=>false,
  runner:new EventEmitter(),sender:new EventEmitter(),workflow:{state:'idle'},
  state:{status:{activeState:idleFixture?'Idle':'Alarm'}},feeder:{toJSON:()=>({queue:0,pending:false})},
@@ -26,7 +26,7 @@ localStorage.setItem('cnc',JSON.stringify({state:{session:{token:'local-visual-f
 var sample='G21 G90 G17\\nG0 X10 Y10\\nG1 X90 Y10 F500\\nG1 X90 Y90\\nG1 X10 Y90\\nG1 X10 Y10\\nG0 X70 Y50\\nG2 X70 Y50 I-20 J0';
 var visualPreview=CNCLibraryPreview.render(sample,document.createElement('canvas'),function(){},function(){return false;});
 var fixtureFiles=Array.from({length:5},function(_,i){return {name:'Parcours_de_test_'+(i+1)+'.gcode',type:'f',size:238000,mtime:'2026-10-14T08:00:00Z'};});
-window.XMLHttpRequest=function(){this.open=function(method,url){this.method=method;this.url=url;};this.setRequestHeader=function(){};this.send=function(body){var xhr=this;visualPreview.then(function(preview){var data;if(xhr.url==='/api/touch-job'&&xhr.method==='GET')data={controllers:[{port:'/dev/fixture',controllerType:'Grbl',activeState:'Alarm',fresh:true,workflow:'idle',name:'',canLoad:false,canStart:false,canPause:false,canResume:false,canStop:false}]};else if(xhr.url==='/api/watch/status')data={configured:true};else if(xhr.url==='/api/watch/files')data={files:fixtureFiles};else if(xhr.url==='/api/watch/file'){var file=JSON.parse(body).file.replace(/\\.cnctouch\\.json$/,'');data={data:JSON.stringify({version:1,file:file,originalName:file,preview:preview})};}else{throw Error('Unexpected request in visual fixture: '+xhr.url);}xhr.status=200;xhr.responseText=JSON.stringify(data);xhr.onload();});};};
+window.XMLHttpRequest=function(){this.open=function(method,url){this.method=method;this.url=url;};this.setRequestHeader=function(){};this.send=function(body){var xhr=this;visualPreview.then(function(preview){var data;if(xhr.url==='/api/touch-job'&&xhr.method==='GET')data={controllers:[{port:'/dev/fixture',controllerType:'Grbl',activeState:'Alarm',fresh:true,workflow:'idle',name:'',canLoad:false,canStart:false,canPause:false,canResume:false,canStop:false}]};else if(xhr.url==='/api/commands'&&xhr.method==='GET')data={records:[{id:'fixture-update',title:'Mettre à jour l’interface (fictif)',enabled:true},{id:'fixture-reboot',title:'Redémarrer la tablette (fictif)',enabled:true}]};else if(xhr.url.indexOf('/api/commands/run/')===0)data={taskId:'fixture'};else if(xhr.url==='/api/watch/status')data={configured:true};else if(xhr.url==='/api/watch/files')data={files:fixtureFiles};else if(xhr.url==='/api/watch/file'){var file=JSON.parse(body).file.replace(/\\.cnctouch\\.json$/,'');data={data:JSON.stringify({version:1,file:file,originalName:file,preview:preview})};}else{throw Error('Unexpected request in visual fixture: '+xhr.url);}xhr.status=200;xhr.responseText=JSON.stringify(data);xhr.onload();});};};
 `;
 http.createServer((req,res)=>{
  const url=new URL(req.url,'http://127.0.0.1');

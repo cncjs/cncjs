@@ -17,6 +17,7 @@ const start = () => {
   service = createService(store, config);
   stream = createStream(service);
   system = createSystemStats();
+  system.start();
 };
 
 const stop = () => {
@@ -24,6 +25,7 @@ const stop = () => {
     return;
   }
   stream.dispose(); // also disposes the service
+  system.stop();
   stream = null;
   service = null;
   system = null;

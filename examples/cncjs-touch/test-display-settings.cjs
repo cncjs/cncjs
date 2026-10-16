@@ -1,6 +1,6 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const key='cncjs-touch-display-v1',defaults={size:'standard',machine:true,sleepMinutes:5};
+const key='cncjs-touch-display-v1',defaults={size:'standard',machine:true,sleepMinutes:5,clock:true};
 function memory(initial=null){
  const values=new Map([[key,initial],['unrelated','preserve']]);
  return {values,writeCount:0,failRead:false,failWrite:false,silent:false,
@@ -22,7 +22,7 @@ function fixture(storage=memory()){
 let s=memory(),a=fixture(s);assert.equal(s.writeCount,0);assert.equal(a.sleep.at(-1),5);
 a.delay(10);assert.deepEqual(JSON.parse(s.getItem(key)),{...defaults,sleepMinutes:10});assert.match(a.feedback(),/enregistrées/);
 a.sizes[1].click();a.node('display-machine-toggle').click();
-assert.deepEqual(JSON.parse(s.getItem(key)),{size:'large',machine:false,sleepMinutes:10});
+assert.deepEqual(JSON.parse(s.getItem(key)),{size:'large',machine:false,sleepMinutes:10,clock:true});
 let restored=fixture(s);assert(restored.classes.has('display-large'));assert(restored.classes.has('display-hide-machine'));assert.equal(restored.sleep.at(-1),10);
 assert.equal(restored.node('display-resolution').textContent,'1366 × 768');
 // A second tab may change persistent state; a stale page must not overwrite it, even via reset.
@@ -46,4 +46,9 @@ s.silent=false;a.delay(2);assert.equal(JSON.parse(s.getItem(key)).sleepMinutes,2
 s.failWrite=true;a.delay(5);assert.equal(JSON.parse(s.getItem(key)).sleepMinutes,2);assert.match(a.feedback(),/indisponible/);
 s=memory(JSON.stringify(defaults));s.failRead=true;a=fixture(s);a.delay(1);a.node('display-reset').click();
 assert.equal(s.writeCount,0);assert.match(a.feedback(),/indisponible/);assert.equal(s.values.get(key),JSON.stringify(defaults));
+// Clock preference: stored as a boolean, applied as a body class, rejected when malformed.
+{const cs=memory(),c=fixture(cs);assert.equal(c.node('display-clock-state').textContent,'Affichée');assert(!c.classes.has('display-hide-clock'));
+ c.node('display-clock-toggle').click();assert.equal(JSON.parse(cs.getItem(key)).clock,false);assert(c.classes.has('display-hide-clock'));assert.equal(c.node('display-clock-state').textContent,'Masquée');
+ assert(fixture(cs).classes.has('display-hide-clock'),'restored hidden');
+ const bad=fixture(memory(JSON.stringify({clock:'yes'})));assert.match(bad.feedback(),/illisibles/);assert(!bad.classes.has('display-hide-clock'));}
 console.log('PASS: display preference persistence/readback, stale tabs, explicit reset, corrupt/future/partial settings, quota/permission/silent failures; no network or controller API.');

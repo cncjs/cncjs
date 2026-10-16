@@ -1,10 +1,16 @@
 /* eslint-env jest */
-import { createSystemStats } from '../system-stats';
+import { createSystemStats, parseIwLink } from '../system-stats';
 
 const cpu = (user, idle) => ({ model: 'NVIDIA Tegra 3', times: { user, nice: 0, sys: 0, irq: 0, idle } });
 
 // A fake /sys and /proc: paths map to file contents, directories to listings.
-const makeFs = (files, dirs) => ({
+const makeFs = (files, dirs, binaries = []) => ({
+  statSync: (file) => {
+    if (!binaries.includes(file)) {
+      throw Object.assign(new Error('ENOENT'), { code: 'ENOENT' });
+    }
+    return { isFile: () => true };
+  },
   readFileSync: (file) => {
     if (!(file in files)) {
       throw Object.assign(new Error('ENOENT'), { code: 'ENOENT' });
@@ -50,7 +56,11 @@ const makeOs = (samples) => {
     uptime: () => 3600.4,
     hostname: () => 'surface',
     platform: () => 'linux',
-    arch: () => 'arm'
+    arch: () => 'arm',
+    networkInterfaces: () => ({
+      lo: [{ address: '127.0.0.1', family: 'IPv4', internal: true }],
+      mlan0: [{ address: '192.0.2.31', family: 'IPv4', internal: false }, { address: 'fe80::1', family: 'IPv6', internal: false }]
+    })
   };
 };
 
@@ -117,5 +127,103 @@ describe('system stats', () => {
     const result = stats.read();
     expect(result.temperatures).toEqual([{ name: 'cpu-thermal', celsius: 36.8 }]);
     expect(result.power.battery).toEqual({ capacity: 100, status: 'Unknown' });
+  });
+
+  test('parses the link of `iw dev <name> link`', () => {
+    expect(parseIwLink('Not connected.\n')).toBe(null);
+    expect(parseIwLink(undefined)).toBe(null);
+    expect(parseIwLink([
+      'Connected to 00:00:5e:00:53:01 (on mlan0)',
+      '\tSSID: Atelier 2.4',
+      '\tfreq: 2437',
+      '\tsignal: -60 dBm',
+      '\trx bitrate: 130.0 MBit/s MCS 14 short GI'
+    ].join('\n'))).toEqual({ ssid: 'Atelier 2.4', signalDbm: -60, frequencyMhz: 2437, bitrateMbps: 130 });
+    // Missing fields stay null rather than 0.
+    expect(parseIwLink('Connected to 00:00:5e:00:53:01 (on mlan0)\n\tSSID: x\n')).toEqual({ ssid: 'x', signalDbm: null, frequencyMhz: null, bitrateMbps: null });
+  });
+
+  test('reports addresses and reads the Wi-Fi link in the background, at most every 10 s', () => {
+    const files = { '/sys/class/net/mlan0/operstate': 'up\n', '/sys/class/net/eth0/operstate': 'down\n' };
+    const dirs = { '/sys/class/net': ['eth0', 'lo', 'mlan0'], '/sys/class/net/mlan0': ['operstate', 'wireless'], '/sys/class/net/eth0': ['operstate'] };
+    const calls = [];
+    let clock = 10000;
+    const stats = createSystemStats({
+      os: makeOs([[cpu(0, 0)]]),
+      fs: makeFs(files, dirs, ['/usr/sbin/iw']),
+      execFile: (file, args, options, done) => calls.push({ file, args, options, done }),
+      now: () => clock
+    });
+    let result = stats.read();
+    expect(result.network.interfaces).toEqual([{ name: 'mlan0', address: '192.0.2.31' }]);
+    expect(result.network.wifi).toBe(null);
+    expect(calls).toHaveLength(1);
+    expect(calls[0].file).toBe('/usr/sbin/iw');
+    expect(calls[0].args).toEqual(['dev', 'mlan0', 'link']);
+    expect(calls[0].options.timeout).toBe(1500);
+    calls[0].done(null, 'Connected to 00:00:5e:00:53:01 (on mlan0)\n\tSSID: Atelier\n\tsignal: -71 dBm\n');
+    clock += 1000;
+    result = stats.read();
+    expect(result.network.wifi).toEqual({ interface: 'mlan0', ssid: 'Atelier', signalDbm: -71, frequencyMhz: null, bitrateMbps: null });
+    expect(calls).toHaveLength(1);
+    clock += 10000;
+    stats.read();
+    expect(calls).toHaveLength(2);
+    // A failed or timed-out read reports the interface without a link.
+    calls[1].done(new Error('timeout'));
+    clock += 1000;
+    expect(stats.read().network.wifi).toEqual({ interface: 'mlan0', ssid: null, signalDbm: null, frequencyMhz: null, bitrateMbps: null });
+  });
+
+  test('never spawns anything without a wireless interface or without iw', () => {
+    const execFile = jest.fn();
+    createSystemStats({ os: makeOs([[cpu(0, 0)]]), fs: makeFs({}, {}), execFile, now: () => 10000 }).read();
+    const dirs = { '/sys/class/net': ['mlan0'], '/sys/class/net/mlan0': ['wireless'] };
+    createSystemStats({ os: makeOs([[cpu(0, 0)]]), fs: makeFs({ '/sys/class/net/mlan0/operstate': 'up' }, dirs), execFile, now: () => 10000 }).read();
+    expect(execFile).not.toHaveBeenCalled();
+  });
+
+  test('keeps ten minutes of CPU and temperature history, one point per sample', () => {
+    const { files, dirs } = tablet();
+    let clock = 0;
+    const samples = Array.from({ length: 130 }, (_, i) => [cpu(i, 100 - (i % 100))]);
+    const stats = createSystemStats({ os: makeOs(samples), fs: makeFs(files, dirs), now: () => clock });
+    for (let i = 0; i < 125; i++) {
+      clock += 5000;
+      stats.record();
+    }
+    // Two records within the shared-sample window add one point only.
+    stats.record();
+    const { history } = stats.read();
+    expect(history.interval).toBe(5);
+    expect(history.cpu).toHaveLength(120);
+    expect(history.temperature).toHaveLength(120);
+    // The cpu-thermal zone is the reference temperature.
+    expect(history.temperature.every((value) => value === 36.8)).toBe(true);
+    const before = history.cpu;
+    clock += 5000;
+    stats.record();
+    expect(before).toHaveLength(120);
+    expect(stats.read().history.cpu).not.toBe(before);
+  });
+
+  test('samples the history on an unref timer that start and stop control', () => {
+    jest.useFakeTimers();
+    try {
+      let clock = 0;
+      const stats = createSystemStats({ os: makeOs([[cpu(0, 0)], [cpu(1, 1)]]), fs: makeFs({}, {}), now: () => clock });
+      stats.start();
+      stats.start();
+      expect(stats.read().history.cpu).toHaveLength(1);
+      clock = 5000;
+      jest.advanceTimersByTime(5000);
+      expect(stats.read().history.cpu).toHaveLength(2);
+      stats.stop();
+      clock = 10000;
+      jest.advanceTimersByTime(10000);
+      expect(stats.read().history.cpu).toHaveLength(2);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });

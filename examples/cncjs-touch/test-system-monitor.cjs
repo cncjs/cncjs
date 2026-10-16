@@ -3,7 +3,7 @@
 // failure back-off and no redundant DOM writes. Network is mocked; nothing reaches a server.
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 const {document,node,element,activeScreens,stats}=require('./dom-fixture.cjs').createDOM(['menu']);
-const createElement=document.createElement;document.createElement=tag=>Object.assign(createElement(tag),{style:{}});
+const createElement=document.createElement;document.createElement=tag=>Object.assign(createElement(tag),{style:{}});document.createElementNS=(ns,tag)=>document.createElement(tag);
 const panel=node('screen-settings'),intro=element('div');intro.className='card wide ks-panel-intro';panel.appendChild(intro);
 panel.querySelector=sel=>sel==='.ks-panel-intro'?intro:null;
 let timers=[],requests=[],resizes=0,token='jwt';
@@ -15,7 +15,7 @@ XHR.prototype.setRequestHeader=function(k,v){this.headers[k]=v;};
 XHR.prototype.send=function(){this.sent=true;};
 XHR.prototype.abort=function(){this.aborted=true;};
 const context={window,document,XMLHttpRequest:XHR,
- Event:function(type){this.type=type;},
+ Event:function(type){this.type=type;},CustomEvent:function(type,init){this.type=type;this.detail=init&&init.detail;},
  localStorage:{getItem:()=>token?JSON.stringify({state:{session:{token}}}):null},
  setTimeout:(f,ms)=>{const id=timers.length+1;timers.push({f,ms,id,live:true});return id;},
  clearTimeout:id=>{const t=timers.find(x=>x.id===id);if(t)t.live=false;}};
@@ -42,7 +42,9 @@ handlers['cnc-screen-change']();assert.equal(requests.length,1,'no overlapping r
 
 const sample={hostname:'surface',platform:'linux',arch:'arm',model:'ARMv7 Processor rev 9 (v7l)',cores:[12.4,95,71,0],cpu:44.6,load:[1.2,0.8,0.5],
  memory:{total:2058469376,available:1741586432,used:316882944},temperatures:[{name:'tsensor0-thermal',celsius:41.9},{name:'cpu-thermal',celsius:36.8}],
- power:{battery:{capacity:18,status:'Charging'},external:true},uptime:93784,server:{rss:73400320,heapUsed:1,uptime:3600}};
+ power:{battery:{capacity:18,status:'Charging'},external:true},uptime:93784,server:{rss:73400320,heapUsed:1,uptime:3600},
+ network:{interfaces:[{name:'mlan0',address:'192.0.2.31'}],wifi:{interface:'mlan0',ssid:'Atelier',signalDbm:-60,frequencyMhz:2437,bitrateMbps:130}},
+ history:{interval:5,cpu:[10,null,30,100],temperature:[36.8,37.2,38,null]}};
 answer(200,sample);
 const cores=byClass('ks-core');assert.equal(cores.length,4);
 assert.deepEqual(cores.map(r=>text(r.children[0])),['Cœur 1','Cœur 2','Cœur 3','Cœur 4']);
@@ -50,10 +52,17 @@ assert.deepEqual(cores.map(r=>text(r.children[2])),['12 %','95 %','71 %','0 %'])
 assert.deepEqual(cores.map(r=>r.children[1].getAttribute('data-level')),['ok','high','warm','ok']);
 assert.equal(cores[1].children[1].children[0].style.transform,'scaleX(0.950)');
 const big=byClass('ks-system-big').map(text);
-assert.equal(big[0],'45 %');assert.match(big[1],/36[,.]8 °C/,'the cpu sensor is the headline temperature');assert.equal(big[2],'15 %');assert.equal(big[4],'18 %');assert.match(big[5],/70 Mo/);
+assert.equal(big[0],'45 %');assert.match(big[1],/36[,.]8 °C/,'the cpu sensor is the headline temperature');assert.equal(big[2],'15 %');assert.equal(big[4],'18 %');assert.equal(big[5],'-60 dBm');assert.match(big[6],/70 Mo/);
 const notes=byClass('ks-system-note').map(text);
 assert.match(notes[0],/ARMv7.* · 4 cœurs/);assert.match(notes[1],/tsensor0 41[,.]9 °C · cpu 36[,.]8 °C/);assert.match(notes[2],/302 Mo \/ 1[,.]9 Go/);
-assert.match(notes[4],/en charge · secteur branché/);assert.match(notes[5],/1 h 0 min.*1 j 2 h/);
+assert.match(notes[4],/en charge · secteur branché/);
+assert.match(notes[5],/^Relevé toutes les 5 s .* · 0 min enregistrées$/,'history note');
+assert.match(notes[6],/Wi‑Fi bon · Atelier · 130 Mbit\/s · 192\.0\.2\.31 \(mlan0\)/);assert.match(notes[7],/1 h 0 min.*1 j 2 h/);
+// History: the last point sits at the right edge, missing values leave gaps, ranges over known values.
+const lines=all(section).filter(n=>n.tagName==='POLYLINE');assert.equal(lines.length,2);
+assert.equal(lines[0].getAttribute('points'),'116,35.2 118,27.6 119,1.0');
+assert.equal(lines[1].getAttribute('points').split(' ').length,3);
+const ranges=byClass('ks-history-range').map(text);assert.match(ranges[0],/^10–100 %$/);assert.match(ranges[1],/^36[,.]8–38[,.]0 °C$/);
 assert.equal(text(byClass('ks-system-host')[0]),'surface · linux · arm');
 // Next poll 2 s later; an identical sample writes nothing.
 assert.equal(live().length,1);assert.equal(live()[0].ms,2000);
@@ -74,7 +83,8 @@ fire();answer(200,sample);assert.equal(status(),'');assert.equal(section.getAttr
 // Without a session token nothing is sent.
 token='';const m=requests.length;fire();assert.equal(requests.length,m);assert.match(status(),/Session CNCjs requise/);token='jwt';
 // Missing or malformed fields render as dashes, never NaN.
-fire();answer(200,{cores:[null,'x'],memory:{},load:[],temperatures:[{name:'a',celsius:NaN}],power:{},server:{}});
+fire();answer(200,{cores:[null,'x'],memory:{},load:[],temperatures:[{name:'a',celsius:NaN}],power:{},server:{},network:{wifi:{interface:'mlan0',signalDbm:null}},history:{cpu:'x'}});
+assert.equal(byClass('ks-system-big')[5].textContent,'Déconnecté');
 assert(!all(section).some(x=>/NaN|undefined|Infinity/.test(x.textContent||'')),'no NaN/undefined in the panel');
 assert.deepEqual(byClass('ks-core').map(r=>text(r.children[2])),['—','—']);
 // Disposal on page unload.

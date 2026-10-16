@@ -1,5 +1,5 @@
 /* Réglages → Système: live figures about the computer running CNCjs (usage per
- * CPU core, temperatures, memory, battery), in the spirit of KlipperScreen's
+ * CPU core, temperatures, memory, battery, network, ten-minute history), in the spirit of KlipperScreen's
  * system panel. Read-only: one GET /api/touch-system every 2 s, and only while
  * this tab is shown on a visible page. Nothing is sent to the controller. */
 (function () {
@@ -38,7 +38,19 @@
     top.appendChild(name);top.appendChild(value);box.appendChild(top);box.appendChild(note);grid.appendChild(box);
     return {box:box,value:value,note:note};
   }
-  var temp=tile(t('Température')),mem=tile(t('Mémoire')),load=tile(t('Charge moyenne')),power=tile(t('Alimentation')),server=tile(t('Serveur CNCjs'));
+  var temp=tile(t('Température')),mem=tile(t('Mémoire')),load=tile(t('Charge moyenne')),power=tile(t('Alimentation'));
+  // History: two sparklines (CPU and temperature) over the server's ten-minute buffer.
+  var SVG='http://www.w3.org/2000/svg',historyBox=el('div','ks-system-block ks-system-history');
+  var historyHead=el('div','ks-system-row');historyHead.appendChild(el('h3','',t('Historique · 10 min')));historyBox.appendChild(historyHead);
+  function chart(label){
+    var row=el('div','ks-history-row'),name=el('span','ks-history-name',label),svg=document.createElementNS(SVG,'svg'),line=document.createElementNS(SVG,'polyline'),range=el('span','ks-history-range','—');
+    svg.setAttribute('viewBox','0 0 119 40');svg.setAttribute('preserveAspectRatio','none');svg.setAttribute('aria-hidden','true');svg.setAttribute('class','ks-history-chart');
+    svg.appendChild(line);row.appendChild(name);row.appendChild(svg);row.appendChild(range);historyBox.appendChild(row);
+    return {line:line,range:range};
+  }
+  var cpuChart=chart(t('Processeur')),tempChart=chart(t('Température'));
+  var historyNote=el('p','ks-system-note','');historyBox.appendChild(historyNote);grid.appendChild(historyBox);
+  var net=tile(t('Réseau')),server=tile(t('Serveur CNCjs'));
   var memBar=bar();mem.box.insertBefore(memBar.box,mem.note);
   var foot=el('p','ks-help',t('Mesures réelles de l’ordinateur qui exécute CNCjs, actualisées toutes les 2 s tant que cet onglet est affiché. Aucune commande n’est envoyée à la machine.'));
   section.appendChild(foot);
@@ -69,6 +81,31 @@
     while(rows.length>cores.length)coresList.removeChild(rows.pop().row);
     attr(coresList,'data-columns',cores.length>8?'2':'1');
     cores.forEach(function(v,i){var r=rows[i];if(finite(v)){paintBar(r.bar,v);set(r.value,percent(v));}else{paintBar(r.bar,0);set(r.value,'—');}});
+  }
+
+  function plot(c,values,min,max,unit,digits){
+    var points=[],seen=[],offset=120-values.length;
+    values.forEach(function(v,i){if(!finite(v))return;seen.push(v);var y=40-(Math.max(min,Math.min(max,v))-min)/(max-min||1)*38-1;points.push((offset+i)+','+y.toFixed(1));});
+    var p=points.join(' ');if(c.line.getAttribute('points')!==p)c.line.setAttribute('points',p);
+    set(c.range,seen.length?number(Math.min.apply(null,seen),digits)+'–'+number(Math.max.apply(null,seen),digits)+' '+unit:'—');
+  }
+  function renderHistory(h){
+    var cpu=h&&Array.isArray(h.cpu)?h.cpu.slice(-120):[],temps=h&&Array.isArray(h.temperature)?h.temperature.slice(-120):[];
+    plot(cpuChart,cpu,0,100,'%',0);
+    var known=temps.filter(finite),lo=known.length?Math.floor(Math.min.apply(null,known)/5)*5-5:20,hi=known.length?Math.ceil(Math.max.apply(null,known)/5)*5+5:80;
+    plot(tempChart,temps,lo,hi,'°C',1);
+    var minutes=h&&finite(h.interval)?Math.round(cpu.length*h.interval/60):0;
+    set(historyNote,cpu.length?t('Relevé toutes les ')+(h.interval||5)+' s '+t('par le serveur, même onglet fermé')+(minutes<10?' · '+minutes+' min '+t('enregistrées'):''):t('Historique pas encore disponible.'));
+  }
+  function signalLabel(dbm){return dbm>=-55?t('excellent'):dbm>=-67?t('bon'):dbm>=-75?t('faible'):t('très faible');}
+  function renderNetwork(n){
+    n=n||{};var w=n.wifi,ips=Array.isArray(n.interfaces)?n.interfaces.filter(function(x){return x&&typeof x.address==='string';}):[];
+    var addr=ips.map(function(x){return x.address+' ('+x.name+')';}).join(' · ');
+    if(w&&finite(w.signalDbm)){
+      set(net.value,w.signalDbm+' dBm');attr(net.box,'data-level',w.signalDbm>=-67?'ok':w.signalDbm>=-75?'warm':'high');
+      set(net.note,[t('Wi‑Fi ')+signalLabel(w.signalDbm),w.ssid,finite(w.bitrateMbps)?Math.round(w.bitrateMbps)+' Mbit/s':'',addr].filter(Boolean).join(' · '));
+    }else if(w){set(net.value,t('Déconnecté'));attr(net.box,'data-level','high');set(net.note,[t('Wi‑Fi ')+w.interface+t(' sans liaison'),addr].filter(Boolean).join(' · '));}
+    else{set(net.value,ips.length?t('Connecté'):'—');attr(net.box,'data-level',ips.length?'ok':'none');set(net.note,addr||t('Aucune adresse réseau.'));}
   }
 
   var lastData=null;
@@ -102,6 +139,9 @@
       set(power.note,[state,plug].filter(Boolean).join(' · ')||t('Batterie'));
       attr(power.box,'data-level',bat.capacity<=15&&pw.external!==true?'high':bat.capacity<=30&&pw.external!==true?'warm':'ok');
     }else{set(power.value,plug?t('Secteur'):'—');set(power.note,plug||t('Aucune batterie exposée par le système.'));attr(power.box,'data-level','none');}
+
+    renderNetwork(data.network);
+    renderHistory(data.history);
 
     var s=data.server||{};
     set(server.value,bytes(s.rss));
@@ -137,6 +177,7 @@
   function select(name){
     tab=name;attr(panel,'data-settings-tab',name);
     attr(tabDisplay,'aria-selected',String(name==='display'));attr(tabSystem,'aria-selected',String(name==='system'));
+    window.dispatchEvent(new CustomEvent('cnc-settings-tab',{detail:name}));
     if(name==='system'){if(!lastData)set(status,t('Lecture des mesures…'));if(!xhr){clearTimeout(timer);timer=null;poll();}}
     else stop();
     window.dispatchEvent(new Event('resize'));

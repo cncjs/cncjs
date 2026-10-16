@@ -8,7 +8,7 @@ From this directory, run:
 node verify-project.cjs
 ```
 
-Node.js 18 or newer is required. No external packages, running CNCjs server or CNC controller are required. The suite consists of 52 browser-side test scripts plus script syntax and HTML resource checks, for 54 checks in this source package. The runner uses an explicit list and does not launch the visual fixture or hardware checks.
+Node.js 18 or newer is required. No external packages, running CNCjs server or CNC controller are required. The suite consists of 54 browser-side test scripts plus script syntax and HTML resource checks, for 56 checks in this source package. The runner uses an explicit list and does not launch the visual fixture or hardware checks.
 
 The backend (job service, event stream, motion preflight, probe input and the `api.touch` handlers) is tested with the root Jest suite instead:
 
@@ -37,6 +37,10 @@ Added without a controller, so covered by mocks only: `test-preview.cjs` and `te
 ## System tab (2026-10-16)
 
 `system-stats.test.js` (Jest) checks per-core usage from `os.cpus()` deltas, the shared sample within 500 ms, `MemAvailable` over `MemFree`, millidegree sensors, skipped or unreadable zones, battery and mains state, and a server without sysfs (Windows/macOS). `api.touch.test.js` covers the session check, `Cache-Control: no-store` and hidden error details for `GET /api/touch-system`. `test-system-monitor.cjs` checks that the page polls only while the tab is shown on a visible page, never with two requests in flight, renders one bar per core, writes nothing for an unchanged sample, backs off on failures (4, 8, 16 then 30 s), recovers, and never shows NaN for malformed data.
+
+## Network, history, tablet actions and clock (2026-10-16)
+
+`system-stats.test.js` adds the `iw` parser (missing fields stay null), background Wi-Fi reads at most every 10 s with a 1.5 s timeout, no child process without a wireless interface or without `iw`, a 120-point history with copies per response, and the history timer's start/stop. `test-system-monitor.cjs` checks the network tile and the sparkline points. `test-tablet-actions.cjs` checks that only titles of enabled commands are shown, the two-tap confirmation and its expiry, refusal during a running or paused job, error messages, and the version and update check, including that the CNCjs token is never sent to GitHub. `test-header-clock.cjs` checks minute-aligned updates, no redundant writes, the off switch and hidden pages. `test-display-settings.cjs` covers the stored clock preference.
 
 ## Prior development observations
 
