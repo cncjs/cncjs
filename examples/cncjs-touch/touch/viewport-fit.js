@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  var main=document.querySelector('main'),pending=false,layouts=new WeakMap(),revision=0,disposed=false,frame=0,observed=null;
+  var main=document.querySelector('main'),pending=false,layouts=new WeakMap(),revision=0,disposed=false,frame=0,observed=null,activation=false;
   if(!main)return;
   function fit(){
     pending=false;if(disposed)return;
@@ -11,7 +11,14 @@
     var screen=main.querySelector('.screen.active');
     var w=Math.max(1,main.clientWidth-(shell?32:16)),h=Math.max(1,vh-Math.ceil(top)-Math.ceil(bottom)-(shell?32:16));
     var key=[vw,vh,w,h,document.body.classList.contains('display-large')].join(':'),cached=screen&&layouts.get(screen);
-    var sw=screen&&screen.scrollWidth,sh=screen&&screen.scrollHeight;
+    var sw=screen&&screen.scrollWidth,sh=screen&&screen.scrollHeight,activated=activation;activation=false;
+    // Content that changes while a screen is shown (a list arriving, an image
+    // loading) is only re-measured when it no longer fits at the current scale:
+    // a full measurement hides the screen for several frames, which would be
+    // seen as blinking. Opening the screen or resizing always re-measures.
+    // The cache keeps the last fully measured size, so re-opening the screen
+    // notices the change and lets a shrunken screen grow back.
+    var fits=cached&&cached.key===key&&!activated&&sh*cached.scale<=h+1&&sw*cached.scale<=w+1;
     var dialog=document.getElementById('job-dialog');
     var card=dialog&&!dialog.hidden&&dialog.querySelector('.job-dialog-card');
     var modalScale=card?Math.min(1,(vh-24)/Math.max(1,card.scrollHeight),(vw-24)/Math.max(1,card.scrollWidth)):1;
@@ -27,7 +34,7 @@
       observed=screen;
       if(screen)screenObserver.observe(screen,{childList:true,subtree:true,characterData:true});
     }
-    if(screen&&(!cached||cached.key!==key||cached.width!==sw||cached.height!==sh)){
+    if(screen&&!fits&&(!cached||cached.key!==key||cached.width!==sw||cached.height!==sh)){
       // An interrupted fit must not reuse the old cache after transform reset.
       layouts.delete(screen);
       var version=revision,scale=1,passes=0;
@@ -45,7 +52,7 @@
         // A final conservative scale also handles content that does not reflow.
         scale=next;style(screen,'transform','scale('+scale+')');
         reveal(screen);
-        layouts.set(screen,{key:key,width:naturalW,height:naturalH});
+        layouts.set(screen,{key:key,width:naturalW,height:naturalH,scale:scale});
         ready();
       }
       frame=requestAnimationFrame(measure);
@@ -61,8 +68,9 @@
   var readyCallbacks=[];
   function ready(){var callbacks=readyCallbacks;readyCallbacks=[];callbacks.forEach(function(fn){fn();});}
   function schedule(){if(disposed)return;revision++;if(!pending){pending=true;frame=requestAnimationFrame(fit);}}
+  function activate(){activation=true;schedule();}
   window.addEventListener('resize',schedule);
-  window.addEventListener('cnc-screen-change',schedule);
+  window.addEventListener('cnc-screen-change',activate);
   if(window.visualViewport)window.visualViewport.addEventListener('resize',schedule);
   document.addEventListener('click',schedule);
   document.addEventListener('change',schedule);
@@ -95,7 +103,7 @@
     if(disposed)return;disposed=true;revision++;readyCallbacks=[];
     if(window.cancelAnimationFrame)window.cancelAnimationFrame(frame);
     [screenObserver,dialogObserver,noticeObserver].forEach(function(o){if(o.disconnect)o.disconnect();});
-    if(window.removeEventListener){window.removeEventListener('resize',schedule);window.removeEventListener('cnc-screen-change',schedule);window.removeEventListener('pagehide',leave);}
+    if(window.removeEventListener){window.removeEventListener('resize',schedule);window.removeEventListener('cnc-screen-change',activate);window.removeEventListener('pagehide',leave);}
     if(window.visualViewport)window.visualViewport.removeEventListener('resize',schedule);
     if(document.removeEventListener){['click','change','focusin'].forEach(function(n){document.removeEventListener(n,schedule);});document.removeEventListener('toggle',schedule,true);document.removeEventListener('load',schedule,true);}
   }
