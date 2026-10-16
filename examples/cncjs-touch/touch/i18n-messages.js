@@ -214,3 +214,7 @@ window.CNCTouchMessages.push(['Serveur injoignable. Nouvel essai automatique.','
 window.CNCTouchMessages.push(['Lecture des mesures…','Reading figures…','Leyendo medidas…']);
 window.CNCTouchMessages.push(['Affichage · veille · système','Display · sleep · system','Pantalla · reposo · sistema']);
 window.CNCTouchMessages.push(['Terminé — programme exécuté jusqu’au bout','Finished — program run to the end','Terminado — programa ejecutado hasta el final']);
+window.CNCTouchMessages.push(['Avance réelle ','Actual feed ','Avance real ']);
+window.CNCTouchMessages.push([' · Broche ',' · Spindle ',' · Husillo ']);
+window.CNCTouchMessages.push([' tr/min',' rpm',' rpm']);
+window.CNCTouchMessages.push(['Pause : les axes sont arrêtés mais la broche tourne toujours (Grbl ne l’arrête pas en pause). Ne mettez pas les mains près de l’outil.','Paused: the axes are stopped but the spindle is still turning (Grbl does not stop it on a pause). Keep your hands away from the tool.','Pausa: los ejes están parados pero el husillo sigue girando (Grbl no lo detiene en pausa). No acerque las manos a la herramienta.']);

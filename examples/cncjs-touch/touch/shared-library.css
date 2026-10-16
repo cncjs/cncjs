@@ -67,3 +67,5 @@
 .job-dialog[hidden]{display:none!important}
 .job-dialog button{margin:8px}
 #home-job-feedback{color:#a8b9c8;overflow-wrap:anywhere}
+.home-live{margin:0 0 6px;font-size:15px;color:#c9d6dc;font-variant-numeric:tabular-nums}.home-live:empty{display:none}
+.home-spindle-warning{margin:6px 0;padding:8px 10px;border-left:4px solid #ef6f6f;background:#3a1f22;color:#ffd7d7;font-size:15px}.home-spindle-warning[hidden]{display:none}
