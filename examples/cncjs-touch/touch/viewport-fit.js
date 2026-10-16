@@ -96,8 +96,33 @@
     persisted[screen.id]={key:entry.key,width:entry.width,height:entry.height,scale:entry.scale};
     try{if(typeof localStorage!=='undefined')localStorage.setItem(storeKey,JSON.stringify(persisted));}catch(_){}
   }
-  var readyCallbacks=[];
-  function ready(){var callbacks=readyCallbacks;readyCallbacks=[];callbacks.forEach(function(fn){fn();});}
+  var readyCallbacks=[],warmQueue=null,warmTimer=null;
+  function ready(){
+    var callbacks=readyCallbacks;readyCallbacks=[];callbacks.forEach(function(fn){fn();});
+    if(warmQueue===null&&typeof requestIdleCallback==='function'){warmQueue=[];warmTimer=setTimeout(startWarmup,1500);}
+  }
+  // Warm-up: each screen not yet shown is laid out once, invisibly and out of
+  // flow, during idle time after the first fit. Chromium keeps its text shaping
+  // and style caches, so the first opening of a screen then costs about what a
+  // later one does (measured on the tablet: 2-3x less). Nothing is painted and
+  // nothing changes for the modules, which only look at the active class.
+  function startWarmup(){
+    warmTimer=null;if(disposed)return;
+    warmQueue=Array.prototype.filter.call(main.querySelectorAll('.screen'),function(s){return !s.classList.contains('active');});
+    scheduleWarm();
+  }
+  function scheduleWarm(){if(!disposed&&warmQueue.length)requestIdleCallback(warm,{timeout:3000});}
+  function warm(){
+    if(disposed)return;
+    var screen=warmQueue.shift();
+    if(screen&&!screen.classList.contains('active')&&!layouts.has(screen)&&!screen.style.width){
+      var width=Math.max(1,main.clientWidth-(document.body.classList.contains('ks-ui')?32:16))+'px',s=screen.style;
+      s.position='absolute';s.left='0';s.top='0';s.visibility='hidden';s.width=width;s.display='grid';
+      void screen.offsetHeight; // forces the layout while hidden; cleared before any paint
+      s.display='';s.width='';s.visibility='';s.position='';s.left='';s.top='';
+    }
+    scheduleWarm();
+  }
   function schedule(){if(disposed)return;revision++;if(!pending){pending=true;frame=requestAnimationFrame(fit);}}
   function activate(){activation=true;schedule();}
   window.addEventListener('resize',schedule);
@@ -131,7 +156,7 @@
   var noticeObserver=new MutationObserver(schedule);
   if(notice)noticeObserver.observe(notice,{attributes:true,attributeFilter:['hidden'],childList:true,subtree:true});
   function dispose(){
-    if(disposed)return;disposed=true;revision++;readyCallbacks=[];
+    if(disposed)return;disposed=true;revision++;readyCallbacks=[];warmQueue=[];if(warmTimer!==null)clearTimeout(warmTimer);
     if(window.cancelAnimationFrame)window.cancelAnimationFrame(frame);
     [screenObserver,dialogObserver,noticeObserver].forEach(function(o){if(o.disconnect)o.disconnect();});
     if(window.removeEventListener){window.removeEventListener('resize',schedule);window.removeEventListener('cnc-screen-change',activate);window.removeEventListener('pagehide',leave);}

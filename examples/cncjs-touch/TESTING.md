@@ -74,7 +74,11 @@ A 48 s `--trace-startup` recording of the same scripted navigation, renderer mai
 
 Tried on the device with two traces per variant and **rejected** (no gain or worse): inactive screens kept with `content-visibility: hidden` instead of `display: none` (Layout +18 %, worst layout 335 ms instead of ~200); `contain: layout paint` on every card (within noise). Intl formatting is not a hot spot here: `toLocaleString` costs 0.14 ms per call on the tablet, 1–2 ms with options.
 
-Further reductions would have to come from lighter screens (fewer boxes and text runs per screen, in particular Fichiers and Préparer), not from browser or CSS switches.
+The DOM is small (45–87 elements per screen, 939 in the page, 668 CSS rules): the cost is per element on this CPU, not DOM bloat.
+
+**Kept: idle-time warm-up of unseen screens** (`viewport-fit.js`). The first opening of a screen costs two to three times a later one (Chromium's text shaping and style caches are cold, and early on it competes with start-up work). 1.5 s after the first fit, each screen not yet shown is laid out once during idle time, hidden and out of flow, then restored; nothing is painted. Device A/B (two traces each, first click 19 s after launch): first opening of Fichiers 110/104 ms layout + 71/86 ms style without, **53/43 ms + 54/51 ms with** — about 80 ms (−45 %) off the first opening of every screen; later openings unchanged; the warm-up itself is ~0.7 s of layout spread over idle callbacks right after the menu appears.
+
+Beyond that, further reductions would have to come from lighter screens (fewer boxes and text runs per screen), not from browser or CSS switches.
 
 ## Measuring on the device
 
