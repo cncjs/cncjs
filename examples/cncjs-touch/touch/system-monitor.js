@@ -183,8 +183,10 @@
     window.dispatchEvent(new Event('resize'));
   }
   function refresh(){if(shown()){if(!timer&&!xhr)poll();}else stop();}
-  tabDisplay.addEventListener('click',function(){select('display');});
-  tabSystem.addEventListener('click',function(){select('system');});
+  // A tab chosen by the operator starts at its top (Réglages scrolls, see viewport-fit.js).
+  function choose(name){select(name);var main=document.querySelector('main');if(main&&main.scrollTop)main.scrollTop=0;}
+  tabDisplay.addEventListener('click',function(){choose('display');});
+  tabSystem.addEventListener('click',function(){choose('system');});
   window.addEventListener('cnc-screen-change',refresh);
   document.addEventListener('visibilitychange',refresh);
   window.addEventListener('pagehide',function(e){if(e&&e.persisted)return;disposed=true;stop();});

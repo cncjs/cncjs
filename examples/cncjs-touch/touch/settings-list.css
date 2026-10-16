@@ -1,0 +1,98 @@
+/* Réglages, KlipperScreen style: the screen scrolls (viewport-fit.js leaves it at
+ * full size), so text and controls keep their real size. One centred column of
+ * rows: title and description on the left, the control on the right. Loaded
+ * after touch-shell.css; only #screen-settings is affected. */
+.ks-ui #screen-settings.active{display:block!important;max-width:1180px;margin:0 auto;padding:0 6px 28px;font-size:19px;line-height:1.35}
+.ks-ui #screen-settings>*{margin:0 0 12px}
+
+/* Header: screen size, guide and language on one line. */
+.ks-ui #screen-settings .card.ks-panel-intro{display:flex;background:transparent;border:0;border-bottom:1px solid #2a3b45;border-radius:0;flex-wrap:wrap;align-items:center;gap:14px 20px;padding:6px 4px 14px!important;margin-bottom:0}
+.ks-ui #screen-settings .ks-panel-intro h2{font-size:26px;margin:0 0 4px!important}
+.ks-ui #screen-settings .ks-panel-intro p{font-size:16px}
+.ks-ui #screen-settings .ks-panel-intro>div:first-child{flex:1 1 260px;min-width:0}
+.ks-ui #screen-settings .language-settings{display:flex;align-items:center;gap:12px;font-size:16px;color:#a3b3bd}
+.ks-ui #screen-settings .language-settings select{min-width:200px;min-height:56px;font-size:19px}
+.ks-ui #screen-settings .ks-readonly{font-size:15px}
+
+/* Tabs stay at the top while the list scrolls. */
+.ks-ui #screen-settings .ks-settings-tabs{position:sticky;top:-8px;z-index:5;display:flex;gap:10px;padding:10px 0;margin:0 0 6px;background:#0f171d;box-shadow:0 8px 12px -10px #000}
+.ks-ui #screen-settings .ks-settings-tab{flex:1 1 0;max-width:none;min-height:62px;font-size:21px;border-radius:10px}
+
+/* Rows. */
+.ks-ui #screen-settings .card{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:28px;row-gap:6px;align-items:center;
+  padding:18px 22px!important;background:#16222a;border:1px solid #2a3b45;border-radius:12px}
+.ks-ui #screen-settings .card>h2{grid-column:1;margin:0!important;font-size:22px;font-weight:500;color:#edf3f5}
+.ks-ui #screen-settings .card>p,.ks-ui #screen-settings .card>label{grid-column:1;margin:0;font-size:16px;color:#a3b3bd}
+.ks-ui #screen-settings .card>.ks-help{font-size:14px!important;color:#8fa0aa}
+.ks-ui #screen-settings button,.ks-ui #screen-settings select{min-height:60px;font-size:19px}
+.ks-ui #screen-settings .ks-secondary{font-size:18px;min-height:60px;padding:10px 22px}
+
+/* On/off rows (machine coordinates, clock): the switch sits on the right. */
+.ks-ui #screen-settings .ks-display-card>.ks-display-toggle{grid-column:2;grid-row:1/span 2;min-width:300px;min-height:64px;padding:10px 18px;font-size:18px;border-bottom-width:3px}
+.ks-ui #screen-settings .ks-display-toggle b{font-size:18px;padding:6px 12px;border-radius:999px;background:#10191e}
+.ks-ui #screen-settings .ks-display-toggle[aria-pressed=true] b{background:#1f4d4a;color:#8ff0e3}
+
+/* Text size: the two samples on the right. */
+.ks-ui #screen-settings .ks-display-card>.ks-display-choices{grid-column:2;grid-row:1/span 2;display:flex;gap:12px;flex:none}
+.ks-ui #screen-settings .ks-display-choices button{width:150px;min-height:96px;font-size:18px}
+
+/* Full screen: one button on the right. */
+.ks-ui #screen-settings .ks-display-fullscreen{grid-template-columns:minmax(0,1fr) auto}
+.ks-ui #screen-settings .ks-display-fullscreen>div{grid-column:1}
+.ks-ui #screen-settings .ks-display-fullscreen h2{font-size:22px;font-weight:500;color:#edf3f5;margin:0 0 4px!important}
+.ks-ui #screen-settings .ks-display-fullscreen p{font-size:16px}
+.ks-ui #screen-settings .ks-display-fullscreen>button{grid-column:2}
+
+/* Screen sleep: delay and test on the right, notes below. */
+.ks-ui #screen-settings .ks-display-sleep>.ks-sleep-controls{grid-column:2;grid-row:1/span 2;display:flex;gap:10px}
+.ks-ui #screen-settings .ks-sleep-controls select{min-width:220px}
+.ks-ui #screen-settings .ks-display-sleep>p{grid-column:1/-1}
+.ks-ui #screen-settings #display-sleep-status{color:#c9d6dc}
+
+/* Brightness: the slider gets the whole width. */
+.ks-ui #screen-settings .ks-backlight>.ks-backlight-row{grid-column:1/-1;grid-template-columns:64px 1fr 64px 80px;gap:16px;margin-top:8px}
+.ks-ui #screen-settings .ks-backlight-step{min-height:64px;font-size:28px!important}
+.ks-ui #screen-settings .ks-backlight-slider{height:56px}
+.ks-ui #screen-settings .ks-backlight-value{font-size:24px}
+.ks-ui #screen-settings .ks-backlight>.ks-backlight-sleep{grid-column:1/-1;margin-top:10px;padding-top:12px;border-top:1px solid #2a3b45;font-size:17px}
+.ks-ui #screen-settings .ks-backlight-mode{min-width:260px;min-height:60px;font-size:19px}
+.ks-ui #screen-settings .ks-backlight>.ks-backlight-status{grid-column:1/-1}
+
+/* Footer and language confirmation. */
+.ks-ui #screen-settings .ks-display-footer,.ks-ui #screen-settings .language-confirm{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:6px 4px}
+.ks-ui #screen-settings .ks-display-footer p{font-size:15px}
+
+/* Large text option: one step more everywhere. */
+.ks-ui.display-large #screen-settings.active{font-size:22px}
+.ks-ui.display-large #screen-settings .card>h2,.ks-ui.display-large #screen-settings .ks-display-fullscreen h2{font-size:26px}
+.ks-ui.display-large #screen-settings .card>p,.ks-ui.display-large #screen-settings .card>label,.ks-ui.display-large #screen-settings .ks-display-fullscreen p{font-size:19px}
+
+/* Système: two columns, larger figures. */
+.ks-ui #screen-settings .ks-system{display:block;padding:18px 22px!important}
+.ks-ui #screen-settings .ks-system-head h2{font-size:22px;font-weight:500;color:#edf3f5}
+.ks-ui #screen-settings .ks-system-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:10px}
+.ks-ui #screen-settings .ks-system-history,.ks-ui #screen-settings .ks-tablet{grid-column:1/-1}
+.ks-ui #screen-settings .ks-system-block{padding:14px 16px;border-radius:10px}
+.ks-ui #screen-settings .ks-system-block h3{font-size:16px}
+.ks-ui #screen-settings .ks-system-big{font-size:32px}
+.ks-ui #screen-settings .ks-system-note{font-size:15px!important;line-height:1.4}
+.ks-ui #screen-settings .ks-core{grid-template-columns:92px 1fr 64px;gap:12px}
+.ks-ui #screen-settings .ks-core-name,.ks-ui #screen-settings .ks-core-value{font-size:18px}
+.ks-ui #screen-settings .ks-sys-bar{height:20px;border-radius:10px}
+.ks-ui #screen-settings .ks-history-row{grid-template-columns:120px 1fr 140px}
+.ks-ui #screen-settings .ks-history-name,.ks-ui #screen-settings .ks-history-range{font-size:16px}
+.ks-ui #screen-settings .ks-history-chart{height:56px}
+.ks-ui #screen-settings .ks-tablet-version{font-size:17px}
+.ks-ui #screen-settings .ks-tablet-update{font-size:16px}
+.ks-ui #screen-settings .ks-tablet-action{min-height:64px;font-size:18px;padding:10px 22px}
+.ks-ui #screen-settings .ks-system>.ks-help{font-size:14px}
+
+/* Narrow screens: controls go under their title. */
+@media(max-width:900px){
+  .ks-ui #screen-settings .card{grid-template-columns:minmax(0,1fr)}
+  .ks-ui #screen-settings .card>*{grid-column:1!important;grid-row:auto!important}
+  .ks-ui #screen-settings .ks-system-grid{grid-template-columns:minmax(0,1fr)}
+}
+/* A thin, visible scrollbar on the scrolling main area. */
+main::-webkit-scrollbar{width:10px}main::-webkit-scrollbar-thumb{background:#3a4c57;border-radius:5px}main::-webkit-scrollbar-track{background:transparent}
+.ks-ui #screen-settings .language-settings label{white-space:nowrap}

@@ -8,7 +8,7 @@ From this directory, run:
 node verify-project.cjs
 ```
 
-Node.js 18 or newer is required. No external packages, running CNCjs server or CNC controller are required. The suite consists of 55 browser-side test scripts plus script syntax and HTML resource checks, for 57 checks in this source package. The runner uses an explicit list and does not launch the visual fixture or hardware checks.
+Node.js 18 or newer is required. No external packages, running CNCjs server or CNC controller are required. The suite consists of 56 browser-side test scripts plus script syntax and HTML resource checks, for 58 checks in this source package. The runner uses an explicit list and does not launch the visual fixture or hardware checks.
 
 The backend (job service, event stream, motion preflight, probe input and the `api.touch` handlers) is tested with the root Jest suite instead:
 
@@ -45,6 +45,10 @@ Added without a controller, so covered by mocks only: `test-preview.cjs` and `te
 ## Screen brightness (2026-10-16)
 
 `backlight.test.js` (Jest) checks the percentage reading, a computer without a backlight, a read-only file (409, nothing written), the 5 % floor and the 100 % ceiling, rejection of non-numbers, saving only the last level of a burst 2 s later on an unref'd timer, and restoring the stored level at start (not without a stored number or without rights). `api.touch.test.js` covers both routes. `test-backlight.cjs` checks reads only while the settings screen is shown, one request at a time with the last slider position winning, the ±10 steps and the floor, and the read-only, missing-panel, 404 and no-session messages. For the screen saver, `backlight.test.js` checks that a temporary level may go to 0, is never saved and does not replace the operator level, that wake restores that level only after a dim, and that a panel found dark at start is not taken as the operator level. `test-backlight.cjs` checks the off/minimum/unchanged choice, that a wake waits for the dim answer, and the wake request sent once at page load. `test-screen-saver.cjs` checks one announcement per change, with the wake on the first touch before release.
+
+## Readable settings (2026-10-16)
+
+`test-viewport-scroll.cjs` checks that a `data-fit="scroll"` screen is never scaled or hidden for a measurement, that nothing is remembered and content changes are not observed, that the scroll position survives a refit but resets when the screen is reopened, and that the next screen is fitted again with `main` no longer scrolling.
 
 ## Prior development observations
 

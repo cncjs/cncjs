@@ -11,7 +11,10 @@
     var screen=main.querySelector('.screen.active');
     var w=Math.max(1,main.clientWidth-(shell?32:16)),h=Math.max(1,vh-Math.ceil(top)-Math.ceil(bottom)-(shell?32:16));
     var key=[vw,vh,w,h,document.body.classList.contains('display-large')].join(':'),cached=screen&&layouts.get(screen);
-    if(screen&&!cached){
+    // A screen marked data-fit="scroll" (Réglages) keeps its full size and
+    // scrolls vertically instead of being shrunk to fit.
+    var scroll=scrolls(screen);
+    if(screen&&!cached&&!scroll){
       var saved=recall(screen,key);
       if(saved){
         // A scale remembered from an earlier page load is applied at once, with
@@ -43,7 +46,18 @@
     if(screen!==observed){
       if(screenObserver.disconnect)screenObserver.disconnect();
       observed=screen;
-      if(screen)screenObserver.observe(screen,{childList:true,subtree:true,characterData:true});
+      // A scrolling screen never needs re-measuring when its content changes.
+      if(screen&&!scroll)screenObserver.observe(screen,{childList:true,subtree:true,characterData:true});
+    }
+    style(main,'overflowY',scroll?'auto':'');
+    if(scroll){
+      layouts.delete(screen);
+      style(screen,'transform','none');style(screen,'width','');
+      reveal(screen);ready();
+      // Opening the screen starts at the top; later refits keep the reading position.
+      if(activated){main.scrollTop=0;}
+      main.scrollLeft=0;
+      return;
     }
     if(screen&&!fits&&(!cached||cached.key!==key||cached.width!==sw||cached.height!==sh)){
       // A shown screen whose content grew is only shrunk, starting from its
@@ -80,6 +94,7 @@
     // Focusing a control can scroll an overflow:hidden container.
     main.scrollTop=0;main.scrollLeft=0;
   }
+  function scrolls(el){return !!el&&typeof el.getAttribute==='function'&&el.getAttribute('data-fit')==='scroll';}
   function reveal(screen){if(screen._fitHidden){screen._fitHidden=false;screen.style.visibility='';}}
   // Counters for the on-device perf report: full measurements, and how many hid the screen.
   var stats={measurements:0,hidden:0};
@@ -108,7 +123,7 @@
   // nothing changes for the modules, which only look at the active class.
   function startWarmup(){
     warmTimer=null;if(disposed)return;
-    warmQueue=Array.prototype.filter.call(main.querySelectorAll('.screen'),function(s){return !s.classList.contains('active');});
+    warmQueue=Array.prototype.filter.call(main.querySelectorAll('.screen'),function(s){return !s.classList.contains('active')&&!scrolls(s);});
     scheduleWarm();
   }
   function scheduleWarm(){if(!disposed&&warmQueue.length)requestIdleCallback(warm,{timeout:3000});}

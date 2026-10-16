@@ -8,6 +8,8 @@
     panel.id = 'screen-settings';panel.className = 'screen';
     document.querySelector('main').appendChild(panel);
   }
+  // Réglages is the one screen that scrolls rather than shrinking (viewport-fit.js).
+  panel.setAttribute('data-fit', 'scroll');
   panel.innerHTML = uiLocale.html('<div class="card wide ks-panel-intro"><div><h2>Votre écran</h2><p>Préférences conservées dans ce navigateur.</p></div><span class="ks-readonly" id="display-resolution"></span></div>') +
     uiLocale.html('<div class="card ks-display-card"><h2>Taille du texte</h2><p>Choisissez le confort de lecture.</p><div class="ks-display-choices" role="group" aria-label="Taille du texte"><button type="button" data-display-size="standard" aria-pressed="true"><span class="ks-text-sample">Aa</span>Standard</button><button type="button" data-display-size="large" aria-pressed="false"><span class="ks-text-sample ks-text-large">Aa</span>Agrandi</button></div></div>') +
     uiLocale.html('<div class="card ks-display-card"><h2>Suivi du travail réel</h2><p>Coordonnées machine en plus des coordonnées de travail.</p><button type="button" id="display-machine-toggle" class="ks-display-toggle" aria-pressed="true"><span>Coordonnées machine</span><b id="display-machine-state">Affichées</b></button><p class="ks-help">Ce choix concerne le suivi réel. Les positions restent disponibles dans Déplacer / Origine.</p></div>') +
