@@ -14,7 +14,7 @@
     });
   });
   // Realtime overrides (feed and spindle), active only while a program runs or is held.
-  $('home-job-feedback').insertAdjacentHTML('afterend',uiLocale.html('<div id="home-overrides" class="home-overrides" hidden><p class="home-overrides-title">Corrections en cours de travail</p>')+
+  $('home-job-feedback').insertAdjacentHTML('afterend',uiLocale.html('<div id="home-overrides" class="home-overrides" hidden><p class="home-overrides-title">Corrections en cours de travail</p><p id="home-live" class="home-live"></p><p id="home-spindle-warning" class="home-spindle-warning" role="alert" hidden></p>')+
     ['feed','spindle'].map(function(kind){
       var label=kind==='feed'?uiLocale.t('Avance'):uiLocale.t('Broche');
       return '<div class="home-override" data-kind="'+kind+'"><span>'+label+'</span><b id="home-override-'+kind+'">—</b><div class="home-override-buttons">'+
@@ -26,6 +26,7 @@
     if(!button||button.disabled||!window.cncJobControls||typeof window.cncJobControls.override!=='function')return;
     window.cncJobControls.override(button.getAttribute('data-kind'),Number(button.getAttribute('data-value'))).catch(function(){});
   });
+  function number(v){try{return Math.round(v).toLocaleString(uiLocale.locale||'fr-FR');}catch(_){return String(Math.round(v));}}
   function overrideButtons(){return overridesBox.querySelectorAll?overridesBox.querySelectorAll('button'):[];}
   execution.insertAdjacentHTML('beforeend',uiLocale.html('<p id="job-progress-summary" role="status"></p>'));
   var selection=window.cncLibrarySelection||null,machine=null,simulation=false,imageKey='',request=0,track=null,busy=false,feedback='';
@@ -84,6 +85,12 @@
     set('home-override-feed','textContent',overrides&&finiteNumber(overrides.feed)?overrides.feed+' %':'—');
     set('home-override-spindle','textContent',overrides&&finiteNumber(overrides.spindle)?overrides.spindle+' %':'—');
     Array.prototype.forEach.call(overrideButtons(),function(button){if(button.disabled!==!overrideOn)button.disabled=!overrideOn;});
+    // Real values from Grbl's FS: field. A feed hold stops the axes, not the spindle.
+    var liveOk=!!(c&&c.fresh),feed=liveOk&&finiteNumber(c.feedrate)?c.feedrate:null,rpm=liveOk&&finiteNumber(c.spindleSpeed)?c.spindleSpeed:null;
+    set('home-live','textContent',feed===null&&rpm===null?'':uiLocale.t('Avance réelle ')+(feed===null?'—':number(feed)+' mm/min')+uiLocale.t(' · Broche ')+(rpm===null?'—':number(rpm)+uiLocale.t(' tr/min')));
+    var spinning=!!(c&&c.workflow==='paused'&&rpm!==null&&rpm>0);
+    set('home-spindle-warning','hidden',!spinning);
+    set('home-spindle-warning','textContent',spinning?uiLocale.t('Pause : les axes sont arrêtés mais la broche tourne toujours (Grbl ne l’arrête pas en pause). Ne mettez pas les mains près de l’outil.'):'');
     set('home-override-note','textContent',overrideOn?uiLocale.t('Pas de ±1 % / ±10 % envoyés au contrôleur en temps réel ; 100 % rétablit la valeur programmée.'):(c&&c.overrideReason)||'');
     var valid=c&&c.fresh&&c.name&&finiteNumber(c.total)&&c.total>0&&finiteNumber(c.received)&&c.received>=0&&c.received<=c.total,p=valid?c.received/c.total*100:0;
     // CNCjs rewinds the line counters when a program ends: the server says whether it finished.

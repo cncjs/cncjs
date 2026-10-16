@@ -254,6 +254,18 @@ describe('job service', () => {
     expect(ctx.state().finished).toBe(false);
   });
 
+  test('reports the real feed rate and spindle speed from the status report', () => {
+    const ctx = setup();
+    ctx.report();
+    expect(ctx.state()).toMatchObject({ feedrate: null, spindleSpeed: null });
+    ctx.c.state.status.feedrate = 400;
+    ctx.c.state.status.spindle = 12000;
+    expect(ctx.state()).toMatchObject({ feedrate: 400, spindleSpeed: 12000 });
+    ctx.c.state.status.spindle = NaN;
+    ctx.c.state.status.feedrate = -1;
+    expect(ctx.state()).toMatchObject({ feedrate: null, spindleSpeed: null });
+  });
+
   test('a sender load or a stale report invalidates a pending confirmation', async () => {
     const ctx = setup();
     let state = await ctx.loaded();

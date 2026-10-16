@@ -25,6 +25,12 @@ assert.equal(el('home-overrides').hidden,false);assert.equal(el('home-override-f
 status({...c,workflow:'idle',canOverride:false,overrideReason:'Les corrections s’appliquent pendant un travail en cours ou en pause.',overrides:null});
 assert.equal(el('home-override-feed').textContent,'—');assert.match(el('home-override-note').textContent,/en cours ou en pause/);
 status({...c,canOverride:true,overrides:{feed:'x',rapid:100,spindle:Infinity}});assert.equal(el('home-override-feed').textContent,'—');assert.equal(el('home-override-spindle').textContent,'—');
+// Real feed and spindle speed from Grbl; a pause with the spindle on is flagged.
+status({...c,canOverride:true,feedrate:400,spindleSpeed:12000});assert.match(el('home-live').textContent,/Avance réelle 400 mm\/min · Broche 12.000 tr\/min/);assert.equal(el('home-spindle-warning').hidden,true);
+status({...c,canOverride:true,workflow:'paused',feedrate:0,spindleSpeed:12000});assert.equal(el('home-spindle-warning').hidden,false);assert.match(el('home-spindle-warning').textContent,/broche tourne toujours/);
+status({...c,canOverride:true,workflow:'paused',feedrate:0,spindleSpeed:0});assert.equal(el('home-spindle-warning').hidden,true);
+status({...c,fresh:false,canOverride:true,workflow:'paused',spindleSpeed:12000});assert.equal(el('home-live').textContent,'');assert.equal(el('home-spindle-warning').hidden,true,'stale data never claims anything');
+status({...c,canOverride:true});assert.equal(el('home-live').textContent,'','simulation snapshots without the fields show nothing');
 let real={...c,port:'REAL',remainingSeconds:undefined,received:10};status(real,false);
 for(let i=0;i<11;i++){now+=1000;real={...real,received:real.received+1};status(real,false);}
 assert.match(el('home-job-eta').textContent,/estimé/);assert.match(el('home-job-note').textContent,/indicative/);

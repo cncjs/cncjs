@@ -48,6 +48,10 @@ export const changesOffset = (gcode) => {
   return /\bG\s*0*5[4-9](?:\.\d)?\b|\bG\s*0*10\b|\bG\s*0*92(?:\.\d)?\b/i.test(code);
 };
 
+// Grbl reports the real feed rate and spindle speed as FS:feed,speed; CNCjs
+// keeps them as status.feedrate and status.spindle.
+const realtimeValue = (value) => (typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : null);
+
 // Only names and ids leave the server; macro contents stay in the configuration.
 const macrosOf = (config) => {
   return (config.get('macros') || [])
@@ -327,6 +331,8 @@ export const createService = (store, config, clock = Date.now) => {
       operator: { reportUnits, wcs },
       type: c.type,
       activeState: state.activeState || '',
+      feedrate: realtimeValue(state.feedrate),
+      spindleSpeed: realtimeValue(state.spindle),
       workflow: c.workflow.state,
       statusAgeMs: age,
       statusObservedAt: r.seen,
