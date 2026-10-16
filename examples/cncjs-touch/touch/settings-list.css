@@ -96,3 +96,4 @@
 /* A thin, visible scrollbar on the scrolling main area. */
 main::-webkit-scrollbar{width:10px}main::-webkit-scrollbar-thumb{background:#3a4c57;border-radius:5px}main::-webkit-scrollbar-track{background:transparent}
 .ks-ui #screen-settings .language-settings label{white-space:nowrap}
+.ks-ui #screen-settings .language-settings{flex:0 1 auto;min-width:0;max-width:100%}.ks-ui #screen-settings .language-settings select{width:auto;max-width:260px}
