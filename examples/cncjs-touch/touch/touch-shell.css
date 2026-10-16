@@ -277,3 +277,31 @@ body.ks-real #screen-files .library-execution>.mute{display:block;font-size:12px
 .ks-guide-tabs{grid-column:1/-1}
 .ks-ui #screen-guide .ks-guide-shortcut{margin:12px 8px 0 0;min-height:48px}
 .ks-ui #screen-settings .language-settings{flex:0 1 220px;min-width:180px}.language-settings label{display:block;font-size:14px;margin-bottom:6px}.language-settings select{width:100%;min-height:48px;background:#1e303a;color:#edf3f5;border:1px solid #3c535f;border-radius:6px;padding:8px;font:inherit}.language-confirm{padding:12px;border:1px solid #b58b30;border-radius:6px}.language-confirm p{margin:0 0 8px}.language-confirm[hidden]{display:none!important}
+/* Réglages: Affichage / Système tabs and the system panel (system-monitor.js). */
+.ks-settings-tabs{grid-column:1/-1;display:flex;gap:8px}
+.ks-settings-tab{flex:0 1 220px;min-height:52px;font:inherit;font-size:18px;color:#c9d6dc;background:#18242c;border:1px solid #31434c;border-bottom:3px solid transparent;border-radius:8px;cursor:pointer;touch-action:manipulation}
+.ks-settings-tab[aria-selected=true]{color:#edf3f5;background:#20313a;border-bottom-color:#a68bd6}
+#screen-settings[data-settings-tab=system]>:not(.ks-panel-intro):not(.ks-settings-tabs):not(#ks-system){display:none!important}
+#screen-settings:not([data-settings-tab=system]) #ks-system{display:none}
+.ks-system-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.ks-system-head h2{margin:0!important}.ks-system-status{min-height:20px;color:#f0b35a;font-size:15px}
+.ks-system[data-stale=true] .ks-system-grid{opacity:.55}
+.ks-system-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ks-system-block{background:#15212b;border:1px solid #2c3d47;border-radius:8px;padding:10px 12px;min-width:0}
+.ks-system-cores{grid-row:span 2}
+.ks-system-block h3{margin:0;font-size:15px;font-weight:600;color:#a0b0b9;letter-spacing:.04em;text-transform:uppercase}
+.ks-system-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ks-system-big{font-size:26px;font-weight:400;color:#edf3f5;font-variant-numeric:tabular-nums}
+.ks-system-block[data-level=warm] .ks-system-big{color:#f0b35a}.ks-system-block[data-level=high] .ks-system-big{color:#ef6f6f}
+#screen-settings .ks-system-note{margin:6px 0 0;font-size:13px;color:#8fa0b0;overflow-wrap:anywhere}
+.ks-core-list{display:grid;gap:10px;margin-top:10px}
+.ks-core{display:grid;grid-template-columns:76px 1fr 56px;align-items:center;gap:10px}
+.ks-core-name{font-size:15px;color:#a0b0b9}.ks-core-value{text-align:right;font-weight:400;font-variant-numeric:tabular-nums}
+.ks-sys-bar{height:16px;background:#0e171e;border:1px solid #2c3d47;border-radius:8px;overflow:hidden;margin-top:6px}
+.ks-core .ks-sys-bar{margin:0}
+.ks-sys-bar i{display:block;height:100%;transform:scaleX(0);transform-origin:0 50%;background:#55d6ed}
+.ks-sys-bar[data-level=warm] i{background:#f0b35a}.ks-sys-bar[data-level=high] i{background:#ef6f6f}
+@media(max-width:900px){.ks-system-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.ks-system-grid{grid-template-columns:1fr}.ks-system-cores{grid-row:auto}}
+.ks-system-grid{align-items:start}.ks-core-list[data-columns="2"]{grid-template-columns:1fr 1fr;column-gap:18px}
+.ks-core-list[data-columns="2"] .ks-core{grid-template-columns:64px 1fr 44px}

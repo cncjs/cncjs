@@ -31,7 +31,7 @@
     document.getElementById('ks-state').textContent=uiLocale.t('Connexion…');
     ['x','y','z'].forEach(function(a){document.getElementById('ks-'+a).textContent='—';});
   }
-  var menuLabels={jog:uiLocale.t('Préparer'),home:uiLocale.t('Suivi')},menuHints={jog:uiLocale.t('Déplacer · Origine · Palpage'),files:uiLocale.t('Choisir et charger un parcours'),home:uiLocale.t('Avancement et commandes'),machine:uiLocale.t('État et limites'),history:uiLocale.t('Événements et exports'),settings:uiLocale.t('Affichage et veille')};
+  var menuLabels={jog:uiLocale.t('Préparer'),home:uiLocale.t('Suivi')},menuHints={jog:uiLocale.t('Déplacer · Origine · Palpage'),files:uiLocale.t('Choisir et charger un parcours'),home:uiLocale.t('Avancement et commandes'),machine:uiLocale.t('État et limites'),history:uiLocale.t('Événements et exports'),settings:uiLocale.t('Affichage · veille · système')};
   ['jog','files','home','machine','history','settings'].forEach(function(name){
     var i={files:0,jog:1,home:3,machine:4,history:2,settings:5}[name];
     var b=document.createElement('button');b.type='button';b.className='ks-tile ks-accent-'+i;b.innerHTML=icon(name)+uiLocale.html('<span>')+(menuLabels[name]||names[name])+uiLocale.html('</span><small>')+menuHints[name]+uiLocale.html('</small>');b.addEventListener('click',function(){go(name);});menu.querySelector('.ks-tiles').appendChild(b);

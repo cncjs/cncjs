@@ -4,6 +4,7 @@ const root=path.resolve(__dirname,'touch');
 const idleFixture=process.argv.includes('--idle-fixture');
 // The job service is an ES module in src/server; Node.js 22.12 or newer can require() it directly.
 const {EventEmitter}=require('node:events'),{createService}=require('../../src/server/services/touch/job-service.js');
+const systemStats=require('../../src/server/services/touch/system-stats.js').createSystemStats();
 const mock={type:'Grbl',options:{port:'/dev/fixture'},ready:true,isClose:()=>false,
  runner:new EventEmitter(),sender:new EventEmitter(),workflow:{state:'idle'},
  state:{status:{activeState:idleFixture?'Idle':'Alarm'}},feeder:{toJSON:()=>({queue:0,pending:false})},
@@ -29,6 +30,7 @@ window.XMLHttpRequest=function(){this.open=function(method,url){this.method=meth
 `;
 http.createServer((req,res)=>{
  const url=new URL(req.url,'http://127.0.0.1');
+ if(url.pathname==='/api/touch-system'&&req.method==='GET'){res.setHeader('Content-Type','application/json');return res.end(JSON.stringify(systemStats.read()));}
  if(url.pathname==='/api/touch-job'&&req.method==='GET'){res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({controllers:service.list()}));}
  if(url.pathname==='/api/touch-motion/preview'&&req.method==='POST'){
   let body='';req.on('data',chunk=>body+=chunk);req.on('end',()=>{
@@ -39,7 +41,7 @@ http.createServer((req,res)=>{
  }
  if(url.pathname==='/visual-fixture.js'){res.setHeader('Content-Type','text/javascript');
   const native=`var NativeXHR=window.XMLHttpRequest;`;
-  const proxy=`this.send=function(body){var xhr=this;if(xhr.url==='/api/touch-motion/preview'||(xhr.url==='/api/touch-job'&&xhr.method==='GET')){var actual=new NativeXHR();actual.open(xhr.method,xhr.url,true);actual.setRequestHeader('Content-Type','application/json');actual.timeout=xhr.timeout;actual.onload=function(){xhr.status=actual.status;xhr.responseText=actual.responseText;xhr.onload();};actual.onerror=function(){if(xhr.onerror)xhr.onerror();};actual.ontimeout=function(){if(xhr.ontimeout)xhr.ontimeout();};xhr.abort=function(){actual.abort();};actual.send(body);return;}visualPreview`;
+  const proxy=`this.send=function(body){var xhr=this;if(xhr.url==='/api/touch-motion/preview'||xhr.url==='/api/touch-system'||(xhr.url==='/api/touch-job'&&xhr.method==='GET')){var actual=new NativeXHR();actual.open(xhr.method,xhr.url,true);actual.setRequestHeader('Content-Type','application/json');actual.timeout=xhr.timeout;actual.onload=function(){xhr.status=actual.status;xhr.responseText=actual.responseText;xhr.onload();};actual.onerror=function(){if(xhr.onerror)xhr.onerror();};actual.ontimeout=function(){if(xhr.ontimeout)xhr.ontimeout();};xhr.abort=function(){actual.abort();};actual.send(body);return;}visualPreview`;
   return res.end(native+fixture.replace('this.send=function(body){var xhr=this;visualPreview',proxy));}
  if(url.pathname==='/connection-fixture.js'){res.setHeader('Content-Type','text/javascript');return res.end(`localStorage.setItem('cnc',JSON.stringify({state:{session:{token:'local-visual-fixture'}}}));window.io={connect:function(){var handlers={};var sock={connected:true,on:function(n,f){(handlers[n]||(handlers[n]=[])).push(f);},emit:function(n){if(n!=='list'&&n!=='open')throw Error('Machine command forbidden in visual fixture');if(n==='open')setTimeout(function(){(handlers['serialport:open']||[]).forEach(function(f){f({port:'/dev/fixture',controllerType:'Grbl'});});(handlers['controller:settings']||[]).forEach(function(f){f('Grbl',{settings:Object.fromEntries([[110,5000],[111,5000],[112,800],[120,100],[121,100],[122,50],[130,600],[131,600],[132,100],[20,1],[21,1],[22,1]].map(function(p){return ['$'+p[0],String(p[1])];}))});});},0);if(n==='list')setTimeout(function(){(handlers['serialport:list']||[]).forEach(function(f){f([{inuse:true,port:'/dev/fixture'}]);});(handlers['controller:state']||[]).forEach(function(f){f('Grbl',{status:{activeState:'${idleFixture ? 'Idle' : 'Alarm'}',wpos:{x:-600,y:-600,z:0},mpos:{x:-600,y:-600,z:0}}});});},0);}};setTimeout(function(){(handlers.connect||[]).forEach(function(f){f();});},0);return sock;}};`);}
  const file=path.resolve(root,'.'+decodeURIComponent(url.pathname));

@@ -63,3 +63,13 @@ export const getEvents = authorized((req, res) => {
     res.status(ERR_SERVICE_UNAVAILABLE).send({ message: 'Suivi indisponible.' });
   }
 });
+
+// Read-only figures about the computer running CNCjs (settings screen).
+export const getSystem = authorized((req, res) => {
+  try {
+    res.set('Cache-Control', 'no-store');
+    res.send(touch.systemStats());
+  } catch (err) {
+    res.status(ERR_INTERNAL_SERVER_ERROR).send({ message: 'Mesures système indisponibles.' });
+  }
+});

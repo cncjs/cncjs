@@ -4,9 +4,11 @@ import store from '../../store';
 import config from '../configstore';
 import { createService } from './job-service';
 import { createStream, VERSION } from './touch-stream';
+import { createSystemStats } from './system-stats';
 
 let service = null;
 let stream = null;
+let system = null;
 
 const start = () => {
   if (stream) {
@@ -14,6 +16,7 @@ const start = () => {
   }
   service = createService(store, config);
   stream = createStream(service);
+  system = createSystemStats();
 };
 
 const stop = () => {
@@ -23,6 +26,7 @@ const stop = () => {
   stream.dispose(); // also disposes the service
   stream = null;
   service = null;
+  system = null;
 };
 
 const isStarted = () => Boolean(stream);
@@ -37,6 +41,8 @@ const previewMotion = (body) => service.previewMotion(body);
 
 const openEvents = (req, res) => stream.open(req, res);
 
+const systemStats = () => system.read();
+
 export default {
   VERSION,
   start,
@@ -46,5 +52,6 @@ export default {
   publish,
   action,
   previewMotion,
-  openEvents
+  openEvents,
+  systemStats
 };

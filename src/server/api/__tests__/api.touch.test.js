@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import touch from '../../services/touch';
-import { getHealth, getJob, postJob, previewMotion, getEvents } from '../api.touch';
+import { getHealth, getJob, postJob, previewMotion, getEvents, getSystem } from '../api.touch';
 
 // babel-jest hoists this above the imports above.
 jest.mock('../../services/touch', () => ({
@@ -12,7 +12,8 @@ jest.mock('../../services/touch', () => ({
     publish: jest.fn(),
     action: jest.fn(() => Promise.resolve({ message: 'ok' })),
     previewMotion: jest.fn(() => ({ dryRun: true })),
-    openEvents: jest.fn(() => true)
+    openEvents: jest.fn(() => true),
+    systemStats: jest.fn(() => ({ cores: [12.5, 3], cpu: 7.8 }))
   }
 }));
 
@@ -22,6 +23,11 @@ const makeRes = () => {
   const res = { statusCode: 200, payload: undefined };
   res.status = (code) => {
     res.statusCode = code;
+    return res;
+  };
+  res.headers = {};
+  res.set = (name, value) => {
+    res.headers[name] = value;
     return res;
   };
   res.send = (payload) => {
@@ -36,7 +42,7 @@ const settled = () => new Promise((resolve) => {
   setImmediate(resolve);
 });
 
-const handlers = { getHealth, getJob, postJob, previewMotion, getEvents };
+const handlers = { getHealth, getJob, postJob, previewMotion, getEvents, getSystem };
 
 describe('api.touch', () => {
   beforeEach(() => {
@@ -143,5 +149,20 @@ describe('api.touch', () => {
     res = makeRes();
     getEvents(req, res);
     expect(res.statusCode).toBe(503);
+  });
+
+  test('getSystem sends uncached figures and hides read failures', () => {
+    let res = makeRes();
+    getSystem(makeReq(), res);
+    expect(res.payload).toEqual({ cores: [12.5, 3], cpu: 7.8 });
+    expect(res.headers['Cache-Control']).toBe('no-store');
+
+    touch.systemStats.mockImplementationOnce(() => {
+      throw new Error('private');
+    });
+    res = makeRes();
+    getSystem(makeReq(), res);
+    expect(res.statusCode).toBe(500);
+    expect(res.payload.message).not.toMatch(/private/);
   });
 });

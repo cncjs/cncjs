@@ -8,7 +8,7 @@ From this directory, run:
 node verify-project.cjs
 ```
 
-Node.js 18 or newer is required. No external packages, running CNCjs server or CNC controller are required. The suite consists of 51 browser-side test scripts plus script syntax and HTML resource checks, for 53 checks in this source package. The runner uses an explicit list and does not launch the visual fixture or hardware checks.
+Node.js 18 or newer is required. No external packages, running CNCjs server or CNC controller are required. The suite consists of 52 browser-side test scripts plus script syntax and HTML resource checks, for 54 checks in this source package. The runner uses an explicit list and does not launch the visual fixture or hardware checks.
 
 The backend (job service, event stream, motion preflight, probe input and the `api.touch` handlers) is tested with the root Jest suite instead:
 
@@ -33,6 +33,10 @@ The refreshed suite also covers FR/EN/ES messages and exports, storage conflicts
 ## Progress trail, overrides and macros (2026-10-16)
 
 Added without a controller, so covered by mocks only: `test-preview.cjs` and `test-preview-worker.cjs` check that the preview carries about a thousand trail samples starting at the origin, that the sent-line count matches the file, that `trailCount` picks the samples below the acknowledged line, and that the trail survives the worker transfer; `test-dashboard.cjs` checks the override block (hidden for snapshots without the field, dashes for non-finite values, reason text when refused); `test-job-dialog.cjs` runs a macro through the ticket dialog (one `macro` call, refused when `canMacro` is false) and an override through the command path; `test-macros.cjs` covers the macro sheet (gating, no redundant DOM writes, sheet closed before the dialog, script order); `test-simulation.cjs` exercises the simulated overrides and macros. On the server, `job-service.test.js` checks override validation and refusal outside a job, and the macro ticket flow ending in `macro:run`. Whether Grbl reacts as expected to the override commands, and how the acknowledged-line trail relates to the real tool position, is not established.
+
+## System tab (2026-10-16)
+
+`system-stats.test.js` (Jest) checks per-core usage from `os.cpus()` deltas, the shared sample within 500 ms, `MemAvailable` over `MemFree`, millidegree sensors, skipped or unreadable zones, battery and mains state, and a server without sysfs (Windows/macOS). `api.touch.test.js` covers the session check, `Cache-Control: no-store` and hidden error details for `GET /api/touch-system`. `test-system-monitor.cjs` checks that the page polls only while the tab is shown on a visible page, never with two requests in flight, renders one bar per core, writes nothing for an unchanged sample, backs off on failures (4, 8, 16 then 30 s), recovers, and never shows NaN for malformed data.
 
 ## Prior development observations
 
