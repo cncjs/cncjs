@@ -2,7 +2,7 @@
 (function (root) {
   'use strict';
   var source = typeof document !== 'undefined' && document.currentScript && document.currentScript.src;
-  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker1') : 'library-preview-worker.js?v=worker1';
+  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker2') : 'library-preview-worker.js?v=worker2';
   var generation = 0;
   function scan(text, segment, cancelled, progress, yieldAfterLine) {
     return new Promise(function (resolve, reject) {
@@ -16,10 +16,10 @@
         bounds[2] = Math.max(bounds[2], ax, bx); bounds[3] = Math.max(bounds[3], ay, by);
         if (segment) segment(ax, ay, bx, by, mode);
       }
-      function arc(xx, yy, ij, radiusWord) {
+      function arc(xx, yy, hasI, iWord, hasJ, jWord, radiusWord) {
         var clockwise = motion === 2, cx, cy, radius;
         if (radiusWord !== null) {
-          if (ij.I !== undefined || ij.J !== undefined) throw new Error('arc avec R et I/J simultanés');
+          if (hasI || hasJ) throw new Error('arc avec R et I/J simultanés');
           radius = Math.abs(radiusWord * unit);
           var dx = xx - x, dy = yy - y, chord = Math.sqrt(dx * dx + dy * dy);
           if (!chord || !radius || chord > 2 * radius + 0.000001) throw new Error('rayon R incompatible avec les extrémités');
@@ -28,10 +28,10 @@
           cx = (x + xx) / 2 - side * dy * height / chord;
           cy = (y + yy) / 2 + side * dx * height / chord;
         } else {
-          if (ij.I === undefined && ij.J === undefined) throw new Error('arc sans centre I/J ni rayon R');
-          if (arcAbsolute && (ij.I === undefined || ij.J === undefined)) throw new Error('centre absolu : I et J requis');
-          cx = (ij.I || 0) * unit + (arcAbsolute ? 0 : x);
-          cy = (ij.J || 0) * unit + (arcAbsolute ? 0 : y);
+          if (!hasI && !hasJ) throw new Error('arc sans centre I/J ni rayon R');
+          if (arcAbsolute && (!hasI || !hasJ)) throw new Error('centre absolu : I et J requis');
+          cx = (hasI ? iWord : 0) * unit + (arcAbsolute ? 0 : x);
+          cy = (hasJ ? jWord : 0) * unit + (arcAbsolute ? 0 : y);
           radius = Math.sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
           var endRadius = Math.sqrt((xx - cx) * (xx - cx) + (yy - cy) * (yy - cy));
           if (!radius || Math.abs(radius - endRadius) > Math.min(0.5, Math.max(0.005, radius * 0.001))) throw new Error('centre I/J incompatible avec les extrémités');
@@ -52,69 +52,110 @@
           add(px, py, qx, qy, motion); px = qx; py = qy;
         }
       }
+      // Per-line word state, reset by resetLine(). Kept outside read() so the
+      // fast tokenizer and the regex fallback share one word() implementation.
+      var nx, ny, axis, seenX, seenY, seenZ, seenI, seenJ, seenR, hasI, hasJ, iWord, jWord, radiusWord, finish;
+      var groupMotion, groupDistance, groupArc, groupUnits;
+      function resetLine() {
+        nx = null; ny = null; axis = false; finish = false; radiusWord = null;
+        seenX = seenY = seenZ = seenI = seenJ = seenR = hasI = hasJ = false; iWord = jWord = 0;
+        groupMotion = groupDistance = groupArc = groupUnits = false;
+      }
+      function word(letter, v) {
+        if (!isFinite(v)) throw new Error('valeur non finie');
+        if (letter === 'G') {
+          if (v === 0 || v === 1 || v === 2 || v === 3) { if (groupMotion) throw new Error('modes G contradictoires'); groupMotion = true; motion = v; }
+          else if (v === 90 || v === 91) { if (groupDistance) throw new Error('modes G contradictoires'); groupDistance = true; absolute = v === 90; }
+          else if (v === 90.1 || v === 91.1) { if (groupArc) throw new Error('modes G contradictoires'); groupArc = true; arcAbsolute = v === 90.1; }
+          else if (v === 20 || v === 21) { if (groupUnits) throw new Error('modes G contradictoires'); groupUnits = true; unit = v === 20 ? 25.4 : 1; }
+          else if (v !== 17 && v !== 40 && v !== 49 && v !== 54 && v !== 94) throw new Error('G' + v + ' non pris en charge par cet aperçu');
+        } else if (letter === 'X') { if (seenX) throw new Error('axe répété'); seenX = true; axis = true; nx = v; }
+        else if (letter === 'Y') { if (seenY) throw new Error('axe répété'); seenY = true; axis = true; ny = v; }
+        else if (letter === 'Z') { if (seenZ) throw new Error('axe répété'); seenZ = true; axis = true; }
+        else if (letter === 'I') { if (seenI) throw new Error('paramètre d’arc répété'); seenI = true; hasI = true; iWord = v; }
+        else if (letter === 'J') { if (seenJ) throw new Error('paramètre d’arc répété'); seenJ = true; hasJ = true; jWord = v; }
+        else if (letter === 'R') { if (seenR) throw new Error('paramètre d’arc répété'); seenR = true; radiusWord = v; }
+        else if (letter === 'M') {
+          if (v !== 0 && v !== 1 && v !== 2 && v !== 3 && v !== 4 && v !== 5 && v !== 7 && v !== 8 && v !== 9 && v !== 30) throw new Error('M' + v + ' non pris en charge par cet aperçu');
+          if (v === 2 || v === 30) finish = true;
+        } else if (letter !== 'N' && letter !== 'F' && letter !== 'S' && letter !== 'T') throw new Error('mot ' + letter + ' non pris en charge');
+      }
+      // Hand-written tokenizer for the common case: ASCII letters, each followed
+      // by an optional space/tab run and a plain decimal number. Anything else
+      // returns false, and the line is re-read by the regex path, which decides
+      // exactly as before (modal words are idempotent, so no state leaks).
+      function tokenize(clean) {
+        var i = 0, n = clean.length, c, letter, start, digits, fraction;
+        while (i < n) {
+          c = clean.charCodeAt(i);
+          if (c === 32 || c === 9) { i++; continue; }
+          if (c >= 97 && c <= 122) c -= 32;
+          if (c < 65 || c > 90) return false;
+          letter = String.fromCharCode(c); i++;
+          while (i < n && ((c = clean.charCodeAt(i)) === 32 || c === 9)) i++;
+          start = i; c = clean.charCodeAt(i);
+          if (c === 43 || c === 45) { i++; c = clean.charCodeAt(i); }
+          digits = 0;
+          while (c >= 48 && c <= 57) { i++; digits++; c = clean.charCodeAt(i); }
+          if (c === 46) {
+            i++; c = clean.charCodeAt(i); fraction = 0;
+            while (c >= 48 && c <= 57) { i++; fraction++; c = clean.charCodeAt(i); }
+            if (!digits && !fraction) return false;
+          } else if (!digits) return false;
+          word(letter, Number(clean.slice(start, i)));
+        }
+        return true;
+      }
       function read(raw) {
-        var clean = '';
-        for (var i = 0; i < raw.length; i++) {
-          var c = raw.charAt(i);
-          if (comment) { if (c === ')') comment = false; }
-          else if (c === ';') break;
-          else if (c === '(') comment = true;
-          else clean += c;
+        var clean;
+        if (!comment && raw.indexOf('(') < 0 && raw.indexOf(';') < 0) clean = raw;
+        else {
+          clean = '';
+          for (var i = 0; i < raw.length; i++) {
+            var c = raw.charAt(i);
+            if (comment) { if (c === ')') comment = false; }
+            else if (c === ';') break;
+            else if (c === '(') comment = true;
+            else clean += c;
+          }
         }
         clean = clean.trim();
         if (!clean || clean === '%') return;
-        var nx = null, ny = null, axis = false, seen = {}, groups = {}, finish = false, ij = {}, radiusWord = null;
-        var residue = clean.replace(/([A-Z])\s*([+-]?(?:\d+(?:\.\d*)?|\.\d+))/gi, function (_, letter, n) {
-          letter = letter.toUpperCase();
-          var v = Number(n), group;
-          if (!isFinite(v)) throw new Error('valeur non finie');
-          if (letter === 'G') {
-            if (v === 0 || v === 1 || v === 2 || v === 3) { group = 'motion'; motion = v; }
-            else if (v === 90 || v === 91) { group = 'distance'; absolute = v === 90; }
-            else if (v === 90.1 || v === 91.1) { group = 'arc-distance'; arcAbsolute = v === 90.1; }
-            else if (v === 20 || v === 21) { group = 'units'; unit = v === 20 ? 25.4 : 1; }
-            else if ([17, 40, 49, 54, 94].indexOf(v) < 0) throw new Error('G' + v + ' non pris en charge par cet aperçu');
-            if (group && groups[group]) throw new Error('modes G contradictoires');
-            if (group) groups[group] = true;
-          } else if (letter === 'X' || letter === 'Y' || letter === 'Z') {
-            if (seen[letter]) throw new Error('axe répété');
-            seen[letter] = true; axis = true;
-            if (letter === 'X') nx = v;
-            if (letter === 'Y') ny = v;
-          } else if (letter === 'I' || letter === 'J' || letter === 'R') {
-            if (seen[letter]) throw new Error('paramètre d’arc répété');
-            seen[letter] = true;
-            if (letter === 'R') radiusWord = v; else ij[letter] = v;
-          } else if (letter === 'M') {
-            if ([0, 1, 2, 3, 4, 5, 7, 8, 9, 30].indexOf(v) < 0) throw new Error('M' + v + ' non pris en charge par cet aperçu');
-            if (v === 2 || v === 30) finish = true;
-          } else if (['N', 'F', 'S', 'T'].indexOf(letter) < 0) throw new Error('mot ' + letter + ' non pris en charge');
-          return '';
-        });
-        if (residue.trim()) throw new Error('syntaxe non prise en charge');
-        var hasArc = ij.I !== undefined || ij.J !== undefined || radiusWord !== null;
+        resetLine();
+        if (!tokenize(clean)) {
+          resetLine();
+          var residue = clean.replace(/([A-Z])\s*([+-]?(?:\d+(?:\.\d*)?|\.\d+))/gi, function (_, letter, n) {
+            word(letter.toUpperCase(), Number(n));
+            return '';
+          });
+          if (residue.trim()) throw new Error('syntaxe non prise en charge');
+        }
+        var hasArc = hasI || hasJ || radiusWord !== null;
         if (hasArc && motion !== 2 && motion !== 3) throw new Error('paramètre d’arc hors mode G2/G3');
         if (axis || hasArc) {
           if (motion === null) throw new Error('mode G0/G1 non défini');
           var xx = nx === null ? x : nx * unit + (absolute ? 0 : x);
           var yy = ny === null ? y : ny * unit + (absolute ? 0 : y);
           if (!isFinite(xx) || !isFinite(yy) || Math.abs(xx) > 1e9 || Math.abs(yy) > 1e9) throw new Error('coordonnées hors plage');
-          if (motion === 2 || motion === 3) arc(xx, yy, ij, radiusWord);
+          if (motion === 2 || motion === 3) arc(xx, yy, hasI, iWord, hasJ, jWord, radiusWord);
           else add(x, y, xx, yy, motion);
           x = xx; y = yy;
         }
         ended = finish;
       }
+      // Line ends are located with indexOf; each separator position is cached
+      // so a file without one of them is not rescanned on every line.
+      var nextLf = -1, nextCr = -1;
       function batch() {
         if (cancelled && cancelled()) { reject(new Error('Annulé')); return; }
         var deadline = Date.now() + 8;
         try {
           while (offset < text.length && !ended && Date.now() < deadline) {
             var start = offset;
-            while (offset < text.length && text[offset] !== '\n' && text[offset] !== '\r') {
-              if (offset - start > 10000) throw new Error('ligne trop longue');
-              offset++;
-            }
+            if (nextLf < start) { nextLf = text.indexOf('\n', start); if (nextLf < 0) nextLf = text.length; }
+            if (nextCr < start) { nextCr = text.indexOf('\r', start); if (nextCr < 0) nextCr = text.length; }
+            offset = nextLf < nextCr ? nextLf : nextCr;
+            if (offset - start > 10001) throw new Error('ligne trop longue');
             line++; read(text.slice(start, offset));
             if (text[offset++] === '\r' && text[offset] === '\n') offset++;
             // A worker waits for the renderer after a full block. At most one

@@ -1,8 +1,11 @@
 /* Response decoding and geometry only. No controller, network or canvas API. */
 (function () {
   'use strict';
-  importScripts('library-preview.js?v=worker1');
+  importScripts('library-preview.js?v=worker2');
   var job = null, maxText = 20 * 1048576, blockSize = 2048;
+  // Geometry blocks in flight before parsing pauses: parsing and drawing overlap
+  // instead of alternating one block at a time. The renderer refuses a fourth.
+  var maxOutstanding = 3;
   function send(type, fields, transfer) {
     var message = fields || {}; message.type = type; message.id = job && job.id;
     self.postMessage(message, transfer || []);
@@ -25,14 +28,17 @@
       send('segments', { sequence: sequence, data: buffer }, [buffer]);
       data = new Float64Array(blockSize * 5); used = 0;
     }
-    function pressure() {
-      if (!outstanding) return null;
-      return new Promise(function (resolve) { state.resume = resolve; });
+    // Resolves once fewer than `limit` blocks are outstanding.
+    function waitBelow(limit) {
+      if (outstanding < limit) return null;
+      return new Promise(function (resolve) { state.resume = resolve; state.resumeBelow = limit; });
     }
+    function pressure() { return waitBelow(maxOutstanding); }
+    function drain() { return waitBelow(1); }
     state.ack = function (number) {
       if (!pending[number]) { fail(new Error('Acquittement de parcours invalide')); return; }
       delete pending[number]; outstanding--;
-      if (!outstanding && state.resume) { var resume = state.resume; state.resume = null; resume(); }
+      if (state.resume && outstanding < state.resumeBelow) { var resume = state.resume; state.resume = null; resume(); }
     };
     // Joining and both parsing passes happen in the worker. Only bounded text
     // and geometry blocks cross the UI boundary; never the whole G-code.
@@ -49,7 +55,7 @@
         data[used++] = x; data[used++] = y; data[used++] = xx; data[used++] = yy; data[used++] = mode;
         if (used === data.length) flush();
       }, cancelled, null, pressure).then(function () {
-        flush(); return pressure();
+        flush(); return drain();
       }).then(function () {
         if (cancelled()) return;
         state.text = ''; send('done');
