@@ -36,6 +36,11 @@ Nothing above was run with a real controller. Overrides and macros stay disabled
 
 Réglages now has two tabs, "Affichage" (the existing display settings) and "Système", a read-only panel in the spirit of KlipperScreen's system screen: usage of each CPU core as a bar, total CPU, temperature sensors, memory (based on `MemAvailable`), load average, battery and mains state, and the memory and uptime of the CNCjs process. The figures describe the computer that runs CNCjs, which is the tablet itself in the kiosk setup. They come from `GET /api/touch-system` (`src/server/services/touch/system-stats.js`: `os.cpus()` deltas and a few small sysfs files, one shared sample per 500 ms). The page polls every 2 s and only while that tab is on screen. Failed requests back off up to 30 s. Nothing is sent to the controller.
 
+## Grbl simulator (2026-10-16/17)
+
+[grbl-sim/](grbl-sim/README.md) builds the official Grbl 1.1h firmware as a Linux program with grbl-sim, patched to run in real time on a small ARM board, and exposes it as a serial port that CNCjs opens like a board. A run against it found and fixed five defects that the browser-only simulation could not show; see TESTING.md, "Grbl simulator run".
+
+
 ## Preview performance pass (2026-10-16)
 
 The G-code preview parser is 2.8–3.7× faster and the preview worker overlaps parsing with drawing; the full 20 MB pipeline runs in 55 % of its previous time on the development PC. Behaviour is unchanged (differentially fuzzed against the previous parser). See [TESTING.md](TESTING.md), "Preview pipeline measurements", for the numbers, the rejected approaches and the caveats. Measurements on the real touchscreen remain to be made: open a page with `?perf=1` and export the report (see TESTING.md, "Measuring on the device").

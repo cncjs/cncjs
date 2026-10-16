@@ -38,6 +38,29 @@ Added without a controller, so covered by mocks only: `test-preview.cjs` and `te
 
 `system-stats.test.js` (Jest) checks per-core usage from `os.cpus()` deltas, the shared sample within 500 ms, `MemAvailable` over `MemFree`, millidegree sensors, skipped or unreadable zones, battery and mains state, and a server without sysfs (Windows/macOS). `api.touch.test.js` covers the session check, `Cache-Control: no-store` and hidden error details for `GET /api/touch-system`. `test-system-monitor.cjs` checks that the page polls only while the tab is shown on a visible page, never with two requests in flight, renders one bar per core, writes nothing for an unchanged sample, backs off on failures (4, 8, 16 then 30 s), recovers, and never shows NaN for malformed data.
 
+## Grbl simulator run (2026-10-16/17)
+
+Setup: the Surface RT running the integrated server (PM2 `cncjs-next`), the official Grbl 1.1h firmware built with grbl-sim and the patches in [grbl-sim/](grbl-sim/README.md), exposed as `/home/pi/ttyGRBL-sim` and opened by CNCjs as a Grbl controller (115200, `$5=1`, `$6=1`). The touch interface was driven from a browser at 1366 × 768 against the same server. Test file: 18 lines, a 40 mm square and a 10 mm radius circle at 400 mm/min, `M3 S1000`, uploaded through the touch library so it has a preview and a trail. No machine, no motors.
+
+What worked as designed: controller selection, load, start with its confirmation, fresh status reports about every 250 ms during the whole program, feed override +10 % (Grbl reported `Ov:110`) and back to 100 %, pause (Grbl `Hold`, position unchanged), resume through its confirmation, the tool marker following the square and the circle, the trail ahead of the tool by the acknowledged lines, a CNCjs macro run from the Macros sheet through its confirmation (Z +5 mm), the alarm shown in the header and on the menu.
+
+Defects found and fixed (server side, with Jest tests):
+
+1. **A controller destroyed by CNCjs broke every later snapshot.** When the port disappears (a USB cable pulled, the board reset), CNCjs sets `runner` and `sender` to `null`; the job service, the probe-input observer and the motion preflight then threw while removing their listeners, kept the dead record, and `GET /api/touch-job` answered 500 until CNCjs was restarted. The records are now forgotten first and listeners removed only from objects that still exist. The touch API also logs such failures (the client still gets a generic message).
+2. **A pause near the end of a program could not be resumed from the touch screen.** CNCjs appends `%wait` to every loaded program and holds its sender with that reason; a pause made then kept the `%wait` reason, and the resume rule refused any hold with a reason. Only a program-requested pause (`M0`, `M1`, `M6`, or another reason) now needs the operator in CNCjs.
+3. **The work offset became unknown during every program**, which hid the tool marker: CNCjs stops asking `$G` while streaming. The offset seen at start is kept while the job runs or is paused, but only when the loaded program contains no `G54`–`G59.x`, `G10` or `G92`.
+4. **A finished program looked stopped** ("Travail arrêté", 0 %): CNCjs rewinds the line counters when a program ends. The server now remembers CNCjs's sender `end` event (cleared by an operator stop or a new load) and the dashboard shows "Terminé — programme exécuté jusqu’au bout", 100 % and the whole trail.
+5. **The trail vanished whenever the tool position could not be drawn** (stale report, unknown offset). It only depends on acknowledged lines and the preview, and is now drawn on its own (browser side).
+
+Observed, not changed:
+
+- **Forced stop ends in an alarm.** "Arrêter le travail" runs CNCjs's forced stop: feed hold, then 500 ms later a soft reset if Grbl reports `Hold`. With the simulator's 10 mm/s² acceleration the axes are still decelerating at that moment, so Grbl raises ALARM 3 (reset while in motion) and the position must be re-established. A machine with similar settings will do the same; the alarm is shown, but the touch interface has no unlock (`$X`) or homing command yet.
+- **CNCjs never reads the Grbl settings if it connects while Grbl is not idle.** It sends `$$` on the first status report; Grbl answers `error:8` outside Idle/Alarm and CNCjs does not retry, so `$13` (report units) stays unknown until the next connection and the tool marker stays hidden with its reason. Sending `$$` from the touch service would fix it but means the interface writing to the controller on its own; left for review.
+- After `pm2 restart` the touch page once showed "Chargement incomplet" on a browser over Wi-Fi while the tablet was busy; "Réessayer" loaded normally. Not reproduced.
+
+Simulator limits: approximate real time, no physics (inertia, missed steps, real switches or probe contact). These results do not replace the supervised machine tests in HANDOFF.md.
+
+
 ## Prior development observations
 
 During development, separate workstation browser checks covered seven views at 1366 × 768, 1024 × 600 and 800 × 480 without measured page overflow. Ten navigation cycles showed stable instrumented timer/worker/observer counts. These measurements are limited to the observed resources and do not establish the absence of every memory leak.
