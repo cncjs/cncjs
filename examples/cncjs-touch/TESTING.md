@@ -8,7 +8,7 @@ From this directory, run:
 node verify-project.cjs
 ```
 
-Node.js 18 or newer is required. No external packages, running CNCjs server or CNC controller are required. The suite consists of 47 browser-side test scripts plus script syntax and HTML resource checks, for 49 checks in this source package. The runner uses an explicit list and does not launch the visual fixture or hardware checks.
+Node.js 18 or newer is required. No external packages, running CNCjs server or CNC controller are required. The suite consists of 48 browser-side test scripts plus script syntax and HTML resource checks, for 50 checks in this source package. The runner uses an explicit list and does not launch the visual fixture or hardware checks.
 
 The backend (job service, event stream, motion preflight, probe input and the `api.touch` handlers) is tested with the root Jest suite instead:
 
@@ -60,12 +60,41 @@ Open either page with `?perf=1` (for example `…/touch/index.html?perf=1`). A s
 
 The report contains device information, the renderer, frame-gap statistics (median, p95, p99, max, count over 50 ms), long tasks, JS heap range, time spent per screen, the number of state updates and the phase timings of each preview generation. It contains no G-code, no file names and no machine state. Without `?perf=1` the script does nothing: no listeners, no timers, no DOM.
 
+## Integrated server run (2026-10-16)
+
+Environment: Windows 11, Node.js 24.20, the Chromium browser pane of the development tool, `yarn build-dev` then `yarn start-server-dev` (`NODE_ENV=development`, `output/cncjs`) with `-c` pointing at a throwaway `.cncrc` holding one enabled local user and `-w` pointing at a folder containing a seven-line `carre-test.nc`. No controller and no serial port were involved; the Raspberry Pi was not touched. The CNCjs app was opened at the server root, the test user signed in through the normal login form, then `/touch/index.html` was opened in the same browser.
+
+Responses observed with `curl`, token obtained from `POST /api/signin` with the user's name and password (`{"enabled":true,"token":"…","name":"touch-test"}`; a wrong password gave `401 {"msg":"Authentication failed"}`):
+
+| Request | Response |
+| --- | --- |
+| `GET /touch/`, `/touch/index.html`, `/touch/simulation.html`, `/touch/cnc-state.js` | `200`, `text/html` / `application/javascript`, no token needed |
+| `GET /socket.io/socket.io.js` | `200 application/javascript` |
+| `GET /api/custom/health` without token, or with a malformed token | `401 {"message":"Session CNCjs requise."}` |
+| `GET /api/custom/health` with `Authorization: Bearer <jwt>` | `200 {"loaded":true,"version":"3.0.0","protocol":1,"transport":"ndjson"}` |
+| `GET /api/touch-job` with token | `200 {"version":1,"epoch":"…","sequence":1,"sentAt":…,"controllers":[]}` |
+| `GET /api/touch-job` without token | `401 {"message":"Session CNCjs requise."}` |
+| `POST /api/touch-job` `{}` with token | `409 {"message":"Choisissez une machine."}` |
+| `POST /api/touch-motion/preview` with token, body `{"port":"COM9","axis":"X","direction":1,"step":1,"feed":800}` | `409 {"message":"Contrôleur Grbl prêt et connecté requis."}` |
+| same with an incomplete body (`{}` or `{"port","gcode"}`) | `409 {"message":"Axe, sens, pas ou vitesse invalide."}` |
+| `GET /api/touch-events` with token, kept open 3.5 s | `200`, `Content-Type: application/x-ndjson; charset=utf-8`, `Cache-Control: no-store, no-transform`, `X-Accel-Buffering: no`, chunked; first line a full snapshot with `transportId`, then one heartbeat line per second (`sequence` 2, 3, 4, 5, `controllers: []`) |
+| `GET /api/touch-events` without token | `401 {"message":"Session CNCjs requise."}` |
+| `GET /api/watch/files` with token | `200 {"path":"","files":[{"name":"carre-test.nc","type":"f","size":65,…}]}` |
+
+In the browser, the touch page loaded without console errors (a fresh tab shows none), the header read "Serveur : suivi connecté", "Contrôleur : aucun sélectionné" and "État : données indisponibles" with the notice "Choisissez le contrôleur dans Fichiers.", the dashboard showed "Indisponible" for the controller and dashes for X/Y/Z, and the Files view listed `carre-test.nc` (1 Ko, selected, "État chargé indisponible"). After Ctrl+C on the server the same page switched to "Serveur : suivi indisponible" on its own.
+
+Ctrl+C in the terminal running `yarn start-server-dev`, with one browser event stream still open, returned the shell to its prompt at once and left nothing listening on port 8000. A separate check (`require` the compiled touch service, `touch.start()`, no server) exited on its own, confirming that the `unref()`ed heartbeat does not keep the process alive. `touch.stop()` is still never called by `src/server/index.js`, like `cncengine.stop()` and `monitor.stop()`: CNCjs has no graceful-shutdown path, Node's default SIGINT handling ends the process.
+
+Note the development bypass: with `NODE_ENV=development` the express-jwt error handler in `src/server/app.js` lets a request without a token through, so the `401` above comes from the explicit `req.user` check in `api.touch.js`. A production build would answer `403 Forbidden Access` before reaching the handler; that path was not run here because `dist/cncjs` is not built on this machine.
+
+First attempt, before the asset ordering change: the ~60 scripts of the page, loaded in one burst over six keep-alive connections with the same session cookie, made `session-file-store` fail with `EPERM: operation not permitted, rename '….cncjs-sessions\<sid>.json.<tmp>'` (write-file-atomic renaming over a session file another request still had open), which express-session turned into a 500 after the response had been sent, which in turn made Express destroy the socket, so 6 to 8 scripts per load arrived truncated (`ERR_INCOMPLETE_CHUNKED_ENCODING`) and the page stopped at "Chargement incomplet". The same error already appeared once during the main CNCjs app's own i18n burst. Serving static assets before the session middleware removed it (0 errors over several loads); the race is Windows-specific (Linux allows the rename) and was not reproduced with `curl`, which does not share one session file between concurrent requests.
+
 ## Not yet validated
 
 - Physical CNC movement, cutting/laser behavior, offsets and homing.
 - Real start/pause/resume/stop timing, controller errors, reconnects and emergencies during an actual job.
 - Real probing cycles, calibration, contact bounce and tool/fixture geometry.
-- Running the integrated server against a real CNCjs installation (routes are registered and unit-tested; no end-to-end run against a live `cncjs` process has been made), supported Node/browser matrix and other controller families.
+- The integrated server with a controller attached, a production build (`dist/cncjs`, `NODE_ENV` unset, hashed asset route), a non-root `settings.route`, Linux/Raspberry Pi, other browsers than Chromium and other controller families. Only the no-controller paths above were exercised, in development mode on Windows.
 - Long-running operation, Wi-Fi interruptions, memory pressure and screen wake behavior on the target touchscreen.
 
 Keep initial evaluation in the mock demo. Any later hardware validation needs an operator who knows the machine and can verify each action independently.
