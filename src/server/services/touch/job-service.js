@@ -1,0 +1,482 @@
+// Job service for the touch interface: load, start, pause, resume and stop a
+// program on a connected Grbl controller, with every state-changing action
+// re-checked against a fresh controller report. Start and resume additionally
+// require a short-lived confirmation ticket bound to the client's event
+// stream, so a stale page or a replayed request cannot move the machine.
+import crypto from 'crypto';
+import { promises as fs } from 'fs';
+import path from 'path';
+// Explicit extensions: examples/cncjs-touch/preview-server.cjs loads this
+// module with Node's native ES module loader, outside of Babel.
+// eslint-disable-next-line import/extensions
+import { createPreflight, controllerStatus } from './motion-preflight.js';
+// eslint-disable-next-line import/extensions
+import { createProbeInput } from './probe-input.js';
+
+// A status report older than this is not trusted to describe the machine.
+const MAX_REPORT_AGE_MS = 2500;
+
+// A start/resume confirmation must be used within this window.
+const TICKET_LIFETIME_MS = 15000;
+
+const MAX_FILE_SIZE = 20 * 1048576;
+
+// Grbl settings exposed to the client: report mask/units, max rates, max
+// accelerations and travel limits. Nothing else from the controller is copied.
+const EXPOSED_SETTINGS = [20, 21, 22, 110, 111, 112, 120, 121, 122, 130, 131, 132];
+
+// Errors carry an HTTP status so the API layer can answer without matching on
+// message text.
+const conflict = (message) => {
+  const err = new Error(message);
+  err.status = 409;
+  return err;
+};
+
+const hasAutomations = (config) => {
+  return (config.get('events') || []).some((event) => event.enabled !== false);
+};
+
+export const createService = (store, config, clock = Date.now) => {
+  const records = new Map();
+  const listeners = new Set();
+  const transports = new Set();
+  let disposed = false;
+
+  const changed = () => {
+    listeners.forEach((fn) => fn());
+  };
+
+  const controllers = () => store.get('controllers') || {};
+
+  const record = (c) => {
+    if (!records.has(c)) {
+      const r = {
+        seen: null,
+        modalSeen: null,
+        wcs: null,
+        job: null,
+        loading: false,
+        ticket: null,
+        generation: crypto.randomBytes(12).toString('hex')
+      };
+      r.status = () => {
+        r.seen = clock();
+        changed();
+      };
+      r.reset = () => {
+        r.seen = null;
+        r.modalSeen = null;
+        r.wcs = null;
+        r.ticket = null;
+        changed();
+      };
+      // GrblRunner initializes G54 before receiving $G: accept only an observed report.
+      r.modal = (payload) => {
+        r.modalSeen = clock();
+        const value = payload && payload.modal && payload.modal.wcs;
+        r.wcs = /^G5[4-9]$/.test(value || '') ? value : null;
+        changed();
+      };
+      r.file = () => {
+        r.job = null;
+        r.ticket = null;
+        changed();
+      };
+      c.runner.on('status', r.status);
+      c.runner.on('startup', r.reset);
+      c.runner.on('parserstate', r.modal);
+      c.sender.on('load', r.file);
+      c.sender.on('unload', r.file);
+      records.set(c, r);
+    }
+    return records.get(c);
+  };
+
+  const remove = (c, r) => {
+    c.runner.removeListener('status', r.status);
+    c.runner.removeListener('startup', r.reset);
+    c.runner.removeListener('parserstate', r.modal);
+    c.sender.removeListener('load', r.file);
+    c.sender.removeListener('unload', r.file);
+    records.delete(c);
+  };
+
+  const probeInput = createProbeInput(store, clock);
+  const motion = createPreflight(store, config, (c) => {
+    const r = record(c);
+    return {
+      loading: r.loading,
+      confirmationPending: !!r.ticket && clock() <= r.ticket.expires
+    };
+  }, clock);
+
+  const get = (port) => {
+    if (disposed) {
+      throw conflict('Service indisponible.');
+    }
+    const registry = controllers();
+    const c = Object.prototype.hasOwnProperty.call(registry, port) && registry[port];
+    if (!c || c.isClose() || c.type !== 'Grbl') {
+      throw conflict('Contrôleur Grbl non connecté.');
+    }
+    return c;
+  };
+
+  const available = (c) => {
+    const r = record(c);
+    if (controllers()[c.options.port] !== c || c.isClose() || !c.ready) {
+      throw conflict('Connexion machine indisponible.');
+    }
+    if (!Number.isFinite(r.seen) || clock() < r.seen || clock() - r.seen > MAX_REPORT_AGE_MS) {
+      throw conflict('État machine trop ancien : attendre un rapport récent.');
+    }
+  };
+
+  const idle = (c) => {
+    available(c);
+    const feeder = c.feeder.toJSON();
+    if (c.workflow.state !== 'idle' || controllerStatus(c).activeState !== 'Idle' || feeder.queue || feeder.pending) {
+      throw conflict('La machine doit être au repos (Idle), sans commande en attente.');
+    }
+  };
+
+  const validJob = (c, revision) => {
+    const j = record(c).job;
+    if (!j || j.revision !== revision ||
+        c.sender.state.context.touchJob !== j.revision || c.sender.state.name !== j.name) {
+      throw conflict('Le fichier chargé a changé. Rechargez-le et confirmez à nouveau.');
+    }
+    return j;
+  };
+
+  const readyFor = (c, action, revision) => {
+    const j = validJob(c, revision);
+    available(c);
+    if (action === 'start') {
+      idle(c);
+      if (j.started || !c.sender.state.total) {
+        throw conflict('Rechargez le fichier avant un nouveau démarrage.');
+      }
+    } else if (!j.started || c.workflow.state !== 'paused' ||
+        controllerStatus(c).activeState !== 'Hold' || c.sender.state.holdReason) {
+      throw conflict('La reprise exige une pause simple confirmée par la machine.');
+    }
+    if (hasAutomations(config)) {
+      throw conflict('Des automatismes CNCjs sont configurés. Leur compatibilité doit être vérifiée avant utilisation.');
+    }
+    return j;
+  };
+
+  // Runs a guard and returns its failure message, or '' when it passes.
+  const reason = (guard) => {
+    try {
+      guard();
+      return '';
+    } catch (err) {
+      return err.message;
+    }
+  };
+
+  const snapshot = (c) => {
+    const r = record(c);
+    const sender = c.sender.toJSON();
+    const state = controllerStatus(c);
+    const motionState = motion.inspect(c.options.port);
+    const revision = r.job && r.job.revision;
+
+    const loadReason = reason(() => {
+      idle(c);
+      if (r.loading) {
+        throw conflict('Chargement en cours.');
+      }
+    });
+    const startReason = reason(() => readyFor(c, 'start', revision));
+    const resumeReason = reason(() => readyFor(c, 'resume', revision));
+
+    const age = (Number.isFinite(r.seen) && clock() >= r.seen) ? clock() - r.seen : null;
+
+    const source = (c.settings && c.settings.settings) || {};
+    const settings = {};
+    EXPOSED_SETTINGS.forEach((n) => {
+      const v = source['$' + n];
+      if ((typeof v === 'number' && Number.isFinite(v)) || (typeof v === 'string' && v.length < 32)) {
+        settings['$' + n] = v;
+      }
+    });
+
+    const coordinates = {};
+    ['wpos', 'mpos'].forEach((kind) => {
+      coordinates[kind] = {};
+      ['x', 'y', 'z'].forEach((axis) => {
+        const v = state[kind] && state[kind][axis];
+        if ((typeof v === 'number' && Number.isFinite(v)) ||
+            (typeof v === 'string' && v.length < 32 && Number.isFinite(Number(v)))) {
+          coordinates[kind][axis] = v;
+        }
+      });
+    });
+
+    const reportSetting = source.$13;
+    let reportUnits = null;
+    if (reportSetting === 0 || reportSetting === '0') {
+      reportUnits = 'mm';
+    } else if (reportSetting === 1 || reportSetting === '1') {
+      reportUnits = 'in';
+    }
+    const modalFresh = Number.isFinite(r.modalSeen) && clock() >= r.modalSeen && clock() - r.modalSeen <= MAX_REPORT_AGE_MS;
+    const wcs = modalFresh ? r.wcs : null;
+
+    return {
+      port: c.options.port,
+      controllerId: c.options.port,
+      generation: r.generation,
+      operator: { reportUnits, wcs },
+      type: c.type,
+      activeState: state.activeState || '',
+      workflow: c.workflow.state,
+      statusAgeMs: age,
+      statusObservedAt: r.seen,
+      coordinates,
+      settings,
+      fresh: age !== null && age <= MAX_REPORT_AGE_MS,
+      name: sender.name || '',
+      revision,
+      originalName: r.job && r.job.originalName,
+      total: sender.total,
+      sent: sender.sent,
+      received: sender.received,
+      probeInput: probeInput.inspect(c.options.port),
+      loading: r.loading,
+      canPreviewMotion: motionState.available,
+      motionReason: motionState.reason,
+      canLoad: !loadReason,
+      loadReason,
+      canStart: !startReason,
+      startReason,
+      canResume: !resumeReason,
+      resumeReason,
+      canPause: c.workflow.state === 'running',
+      canStop: c.workflow.state !== 'idle' || ['Run', 'Hold'].includes(state.activeState)
+    };
+  };
+
+  // Reads a program from the watch directory and hands it to the controller.
+  // The file must sit directly in the watch directory and must not change
+  // while it is read.
+  const load = async (c, r, body) => {
+    idle(c);
+    if (r.loading) {
+      throw conflict('Un chargement est déjà en cours.');
+    }
+    if (typeof body.file !== 'string' || body.file !== path.basename(body.file) ||
+        /[\\/\0]/.test(body.file) || !/\.(nc|gcode|ngc|tap|cnc|txt)$/i.test(body.file)) {
+      throw conflict('Nom de fichier invalide.');
+    }
+
+    r.loading = true;
+    r.ticket = null;
+    try {
+      const root = await fs.realpath(config.get('watchDirectory'));
+      const file = await fs.realpath(path.join(root, body.file));
+      if (path.dirname(file) !== root) {
+        throw conflict('Fichier hors de la bibliothèque.');
+      }
+      const before = await fs.stat(file);
+      if (!before.isFile() || before.size === 0 || before.size > MAX_FILE_SIZE) {
+        throw conflict('Fichier vide ou supérieur à 20 Mo.');
+      }
+      const buffer = await fs.readFile(file);
+      const after = await fs.stat(file);
+      if (before.mtimeMs !== after.mtimeMs || before.ino !== after.ino ||
+          buffer.length !== before.size || buffer.includes(0)) {
+        throw conflict('Fichier modifié pendant la lecture ou format invalide.');
+      }
+      const gcode = buffer.toString('utf8');
+      // CNCjs % directives execute expressions; this library accepts plain G-code only.
+      if (/^[ \t]*%[ \t]*[^\r\n \t]/m.test(gcode)) {
+        throw conflict('Les directives CNCjs % ne sont pas acceptées par cette bibliothèque.');
+      }
+
+      // Recheck after asynchronous disk access, before replacing the loaded job.
+      idle(c);
+      if (hasAutomations(config)) {
+        throw conflict('Automatismes CNCjs à vérifier avant chargement.');
+      }
+
+      const revision = crypto.randomBytes(20).toString('hex');
+      await new Promise((resolve, reject) => {
+        c.command('gcode:load', body.file, gcode, { touchJob: revision }, (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        });
+      });
+      r.job = {
+        revision,
+        name: body.file,
+        originalName: body.file.replace(/--touch-\d{14}-[a-f0-9]{16}(?=\.[^.]+$)/, ''),
+        started: false
+      };
+      return { message: 'Fichier chargé dans CNCjs. Aucun démarrage envoyé.' };
+    } finally {
+      r.loading = false;
+      changed();
+    }
+  };
+
+  const perform = (body) => {
+    if (!body || typeof body.port !== 'string') {
+      throw conflict('Choisissez une machine.');
+    }
+    const c = get(body.port);
+    const r = record(c);
+    const a = body.action;
+
+    if (['prepare', 'start', 'resume'].includes(a)) {
+      if (typeof body.generation !== 'string' || body.generation !== r.generation) {
+        throw conflict('Le contrôleur a changé ou son identité manque. Choisissez-le à nouveau.');
+      }
+      if (typeof body.transportId !== 'string' || !transports.has(body.transportId)) {
+        throw conflict('Connexion de suivi interrompue. Confirmez à nouveau.');
+      }
+    }
+    if (body.generation !== undefined && body.generation !== r.generation) {
+      throw conflict('Le contrôleur a changé. Choisissez-le à nouveau.');
+    }
+    if (body.transportId !== undefined && !transports.has(body.transportId) && !['pause', 'stop'].includes(a)) {
+      throw conflict('Connexion de suivi interrompue. Confirmez à nouveau.');
+    }
+
+    if (a === 'load') {
+      return load(c, r, body);
+    }
+
+    if (a === 'prepare') {
+      if (!['start', 'resume'].includes(body.operation)) {
+        throw conflict('Action invalide.');
+      }
+      const j = readyFor(c, body.operation, body.revision);
+      const nonce = crypto.randomBytes(24).toString('hex');
+      r.ticket = {
+        nonce,
+        revision: j.revision,
+        operation: body.operation,
+        expires: clock() + TICKET_LIFETIME_MS,
+        transportId: body.transportId
+      };
+      return {
+        nonce,
+        name: j.originalName,
+        operation: body.operation,
+        expiresIn: TICKET_LIFETIME_MS / 1000,
+        generation: r.generation
+      };
+    }
+
+    if (a === 'start' || a === 'resume') {
+      const t = r.ticket;
+      r.ticket = null;
+      if (!t || t.nonce !== body.nonce || t.operation !== a || clock() > t.expires || t.transportId !== body.transportId) {
+        throw conflict('Confirmation expirée ou déjà utilisée.');
+      }
+      const j = readyFor(c, a, t.revision);
+      j.started = true;
+      c.command(a === 'start' ? 'gcode:start' : 'gcode:resume');
+      return { message: a === 'start' ? 'Démarrage demandé.' : 'Reprise demandée.' };
+    }
+
+    if (a === 'pause') {
+      if (c.workflow.state !== 'running') {
+        throw conflict('Aucun travail en cours.');
+      }
+      r.ticket = null;
+      c.command('gcode:pause');
+      return { message: 'Pause demandée. Attendre l’état Hold.' };
+    }
+
+    if (a === 'stop') {
+      if (c.workflow.state === 'idle' && !['Run', 'Hold'].includes(controllerStatus(c).activeState)) {
+        throw conflict('Aucun travail à arrêter.');
+      }
+      r.ticket = null;
+      if (r.job) {
+        r.job.started = true;
+      }
+      c.command('gcode:stop', { force: true });
+      return { message: 'Arrêt demandé. Vérifiez l’immobilisation ; ce bouton ne remplace pas l’arrêt physique.' };
+    }
+
+    throw conflict('Action inconnue.');
+  };
+
+  // perform() starts synchronously, so a pending load is visible to the very
+  // next snapshot; every refusal still reaches the caller as a rejection.
+  const action = (body) => {
+    try {
+      return Promise.resolve(perform(body));
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  };
+
+  const list = () => {
+    if (disposed) {
+      throw conflict('Service indisponible.');
+    }
+    const registry = controllers();
+    for (const [c, r] of records) {
+      if (registry[c.options.port] !== c || c.isClose()) {
+        motion.inspect(c.options.port);
+        remove(c, r);
+      }
+    }
+    probeInput.sync();
+    return Object.values(registry)
+      .filter((c) => c && !c.isClose() && c.type === 'Grbl')
+      .map(snapshot);
+  };
+
+  const subscribe = (fn) => {
+    listeners.add(fn);
+    return () => listeners.delete(fn);
+  };
+
+  const openTransport = (id) => {
+    transports.add(id);
+  };
+
+  // Closing a transport revokes every confirmation it was issued.
+  const closeTransport = (id) => {
+    transports.delete(id);
+    records.forEach((r) => {
+      if (r.ticket && r.ticket.transportId === id) {
+        r.ticket = null;
+      }
+    });
+    changed();
+  };
+
+  const dispose = () => {
+    disposed = true;
+    listeners.clear();
+    transports.clear();
+    for (const [c, r] of records) {
+      remove(c, r);
+    }
+    motion.dispose();
+    probeInput.dispose();
+  };
+
+  return {
+    action,
+    previewMotion: motion.preview,
+    list,
+    subscribe,
+    openTransport,
+    closeTransport,
+    dispose
+  };
+};

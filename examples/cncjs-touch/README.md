@@ -6,7 +6,7 @@ The project was developed with AI coding assistance. This contribution preserves
 
 ## Try it without a machine
 
-Use Node.js 18 or newer. These commands require no npm packages and do not connect to a CNC controller:
+Use Node.js 22.12 or newer: the demo loads the job service from `src/server` as a native ES module (the offline suite itself still runs on Node.js 18). These commands require no npm packages and do not connect to a CNC controller:
 
 ```sh
 cd examples/cncjs-touch
@@ -16,11 +16,17 @@ node preview-server.cjs
 
 Open the localhost URL printed by the preview server. It serves a local visual fixture with synthetic files, a virtual controller and simulated progress. Stop it with Ctrl+C. The mock controller rejects physical commands. The fixture is for local evaluation only; do not deploy its fake authentication or mock responses to a real CNCjs server.
 
-## Latest handoff (2026-10-16)
+## Server integration (2026-10-16)
+
+The backend now lives in the CNCjs source tree instead of being patched into a compiled build: `src/server/services/touch/` holds the job service, NDJSON event stream, motion preflight and probe-input observer; `src/server/api/api.touch.js` adds the session check and HTTP status mapping; `src/server/app.js` registers the routes next to the other API routes and `src/server/index.js` starts the service with the other services. The former `install-custom.cjs` patcher and the `CNC_TOUCH_MODULE` bootstrap are gone. The backend tests were ported to Jest (`yarn test`); the offline suite in this directory now covers the browser side only (49/49 checks).
+
+Route names (`api/custom/health`, `api/touch-job`, `api/touch-motion/preview`, `api/touch-events`), the French server-side messages (CNCjs uses i18next elsewhere) and the error payload shape (`{message}` rather than the `{msg}` of the existing API) were kept as the browser code expects them; all three still need maintainer agreement.
+
+## Previous handoff (2026-10-16)
 
 This update includes FR/EN/ES settings and exports; coordinate preparation, read-only machine limits and a compatible preview position marker inspired by Shopfloor Tablet; guarded local storage; bounded download cleanup; active-job screen-blanking inhibition; stricter state protocol validation; conservative time estimates; and fresh monitoring after network loss or page restoration. See [touch/THIRD-PARTY-NOTICES.md](touch/THIRD-PARTY-NOTICES.md).
 
-**54/54 offline source-package checks pass. Physical CNC validation remains outstanding.** Development is paused at the author’s request pending further review and testing by someone with an operational CNC.
+**All offline checks pass (49/49 browser-side checks here, backend covered by the root Jest suite). Physical CNC validation remains outstanding.** Development is paused at the author’s request pending further review and testing by someone with an operational CNC.
 
 ## What is included
 
@@ -49,20 +55,16 @@ An interface stop button is not a physical emergency stop. Offline checks and co
 | `touch/job-controls.js`, `touch/job-dashboard.js`, `touch/job-stream.js` | Job interaction, dashboard and state transport |
 | `touch/shared-library.js`, `touch/library-preview*.js`, `touch/library-payload.js` | File library, worker preview and upload payload preparation |
 | `touch/probe-*.js`, `touch/dry-motion.js` | Probe preparation and movement preflight UI |
-| `job-service.js`, `touch-stream.js` | Experimental CNCjs job service and HTTP routes |
-| `motion-preflight.js`, `probe-input.js` | Read-only movement checks and probe input observation |
-| `install-custom.cjs` | Optional, version-sensitive patcher for an installed CNCjs build |
-| `test-*.cjs`, `dom-fixture.cjs`, `verify-project.cjs` | Offline regression suite |
+| `test-*.cjs`, `dom-fixture.cjs`, `verify-project.cjs` | Offline browser-side regression suite |
 | `preview-server.cjs` | Local mock demo |
+| `../../src/server/services/touch/`, `../../src/server/api/api.touch.js` | Job service, event stream, motion preflight, probe input and their HTTP routes (Jest tests alongside) |
 
 ## Integration status
 
-These files are isolated under `examples/cncjs-touch`; they do not change CNCjs core source, dependencies, build scripts or startup behavior. This location is proposed for review and handoff, not as an agreed upstream architecture. A standalone pendant repository may be a better home if maintainers prefer it.
+The browser assets stay under `examples/cncjs-touch`; the backend is part of `src/server` (see above) and is registered behind the same express-jwt protection as the rest of the API, with an explicit `req.user` check so the development-mode bypass never reaches a machine command. This layout is proposed for review, not as an agreed upstream architecture. A standalone pendant repository may still be a better home if maintainers prefer it.
 
-The prototype was developed against an installed CNCjs 1.11.5 build. The optional patcher depends on that build's generated `server/app.js` route structure, and the service accesses internal store/config/controller objects. **Compatibility with current master and other controllers has not been established.** The backend currently filters for Grbl. Marlin, Smoothieware and TinyG support must not be inferred from CNCjs itself.
+The service reads internal store/config/controller objects (`runner`, `sender`, `workflow`, `feeder`, `settings`) and was written against CNCjs 1.11.5 behaviour; those internal APIs should be reviewed against current master. **Compatibility with other controllers has not been established.** The backend filters for Grbl. Marlin, Smoothieware and TinyG support must not be inferred from CNCjs itself.
 
-For developers reviewing the integration, `install-custom.cjs` accepts an absolute path to a compiled CNCjs `server/app.js`. It checks expected authentication/route markers, writes a backup and inserts a bootstrap that reads an absolute `CNC_TOUCH_MODULE` path pointing to `job-service.js`. It does not install packages, serve the touch assets, configure the watch directory, or restart CNCjs. Those deployment steps are deliberately not automated here. Keep the four backend modules together and preserve CNCjs authentication when adapting the service. Test only against an isolated installation first, with physical controllers disconnected.
-
-Static assets must be served with the correct CNCjs route prefix and session integration; the shared library also needs a configured watch directory. The local demo does not validate these deployment details. Credentials, machine configuration, user G-code, local deployment scripts and operational logs are excluded from this contribution.
+Serving the touch pages themselves (with the correct CNCjs route prefix and session integration) is not wired up: `touch/index.html` is not yet a CNCjs asset route, and the shared library needs a configured watch directory. The local demo does not validate these deployment details. Test only against an isolated installation first, with physical controllers disconnected. Credentials, machine configuration, user G-code, local deployment scripts and operational logs are excluded from this contribution.
 
 See [TESTING.md](TESTING.md) for the validation scope and [HANDOFF.md](HANDOFF.md) for the remaining work.

@@ -2,7 +2,8 @@
 const http=require('http'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'touch');
 const idleFixture=process.argv.includes('--idle-fixture');
-const {EventEmitter}=require('node:events'),{createService}=require('./job-service');
+// The job service is an ES module in src/server; Node.js 22.12 or newer can require() it directly.
+const {EventEmitter}=require('node:events'),{createService}=require('../../src/server/services/touch/job-service.js');
 const mock={type:'Grbl',options:{port:'/dev/fixture'},ready:true,isClose:()=>false,
  runner:new EventEmitter(),sender:new EventEmitter(),workflow:{state:'idle'},
  state:{status:{activeState:idleFixture?'Idle':'Alarm'}},feeder:{toJSON:()=>({queue:0,pending:false})},

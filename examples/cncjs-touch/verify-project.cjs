@@ -6,17 +6,19 @@ const crypto = require('crypto');
 const {spawnSync} = require('child_process');
 const root = __dirname;
 const tests = [
- 'arcs','dashboard','dry-motion','home-actions','job-dialog','job-display','job',
- 'library-transitions','library-file-state','machine-limits','motion-integration','motion-preflight',
- 'preview-dimensions','preview-viewer','preview','probe-diagram','probe-input',
+ 'arcs','dashboard','dry-motion','home-actions','job-dialog','job-display',
+ 'library-transitions','library-file-state','machine-limits',
+ 'preview-dimensions','preview-viewer','preview','probe-diagram',
  'probe-lock','probe-model','probe-preparation','probe-profiles','probe-transfer',
  'real-history','screen-saver','simulation-alarm','simulation-history',
  'simulation-motion','simulation-report','simulation-ui','simulation',
  'transition-performance','viewport-fit','startup','display-settings','download-file',
  'viewport-phases','hidden-views','preview-worker','library-payload',
  'library-lifecycle','library-upload-payload','library-regeneration-cancel','history-view',
- 'touch-stream','job-stream-client','stream-protocol','controller-state','connection-status','operator-tools','i18n','journal-languages','profile-storage'
+ 'job-stream-client','stream-protocol','controller-state','connection-status','operator-tools','i18n','journal-languages','profile-storage'
 ].map(name=>'test-'+name+'.cjs');
+// The backend (job service, event stream, motion preflight, probe input) lives in
+// src/server/services/touch and is covered by the root Jest suite (`yarn test`).
 const results = [];
 const args = process.argv.slice(2);
 if(args.length && (args.length!==2 || args[0]!=='--report')) {
@@ -52,7 +54,7 @@ if(fs.existsSync(manifestPath)) check('Intégrité de la sauvegarde',()=>{
 if(!results.some(result=>!result.ok)) {
  check('Syntaxe des scripts',()=>{
   const scripts=fs.readdirSync(path.join(root,'touch')).filter(name=>name.endsWith('.js')).map(name=>'touch/'+name);
-  scripts.push('job-service.js','motion-preflight.js','probe-input.js','touch-stream.js','install-custom.cjs','dom-fixture.cjs','verify-project.cjs');
+  scripts.push('preview-server.cjs','dom-fixture.cjs','verify-project.cjs');
   scripts.concat(tests).forEach(file=>run(file,true));
  });
  check('Ressources locales des deux pages',()=>{

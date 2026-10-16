@@ -326,6 +326,13 @@ const appMain = () => {
     app.put(urljoin(settings.route, 'api/watch/file'), api.watch.writeFile);
     app.delete(urljoin(settings.route, 'api/watch/file'), api.watch.deleteFile);
     app.post(urljoin(settings.route, 'api/watch/file/rename'), api.watch.renameFile);
+
+    // Touch (experimental touchscreen interface, see examples/cncjs-touch)
+    app.get(urljoin(settings.route, 'api/custom/health'), api.touch.getHealth);
+    app.get(urljoin(settings.route, 'api/touch-job'), api.touch.getJob);
+    app.post(urljoin(settings.route, 'api/touch-job'), api.touch.postJob);
+    app.post(urljoin(settings.route, 'api/touch-motion/preview'), api.touch.previewMotion);
+    app.get(urljoin(settings.route, 'api/touch-events'), api.touch.getEvents);
   }
 
   // page

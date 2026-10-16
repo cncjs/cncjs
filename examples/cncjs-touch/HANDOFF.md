@@ -5,7 +5,7 @@ This prototype was developed by @storm8488 with AI coding assistance. The author
 ## Suggested next steps
 
 1. Review the architecture with CNCjs maintainers: decide whether to keep an isolated example, extract a standalone pendant or integrate selected parts into the main frontend.
-2. Replace the version-sensitive compiled-build patch with an agreed integration point; review authentication, stream cleanup, internal controller APIs and watch-directory behavior against current CNCjs.
+2. ~~Replace the version-sensitive compiled-build patch with an agreed integration point~~ — done on 2026-10-16: the backend is in `src/server/services/touch` with routes in `src/server/app.js` (see README, "Server integration"). Still open: review authentication, stream cleanup, internal controller APIs and watch-directory behavior against current CNCjs master; agree on route names, server-side message language and error payload shape; serve `touch/index.html` as a CNCjs asset route.
 3. Reproduce the offline suite and local demo. Review the existing French, English and Spanish resources, formatting and upstream test conventions.
 4. Establish a documented hardware/browser matrix and an explicit supervised test plan with the machine owner. Distinguish mock results from actual machine results in all reports.
 5. Validate existing job load/start/pause/resume/stop behavior on Grbl, including stale state, alarms, disconnection, controller replacement and conflicting clients. No automatic resume should be introduced.
@@ -17,6 +17,6 @@ This prototype was developed by @storm8488 with AI coding assistance. The author
 
 Include CNCjs revision, Node/browser version, controller/firmware, display resolution, test scenario, expected/actual behavior and whether the test was mocked, disconnected or physical. Remove credentials, private addresses and personal G-code from public logs. A passing mock test must not be recorded as a completed hardware test.
 
-Development is paused as of 2026-10-16 at the author’s request. The contribution is being submitted for review and continuation, not as a production-ready interface.
+Development resumed on 2026-10-16 with the server integration above. The contribution is being submitted for review and continuation, not as a production-ready interface.
 
 The contribution is intended to make this existing work reviewable and available for continuation. It does not claim that all features are finished or ready to merge.
