@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
-import { createService } from '../job-service';
+import { createService, changesOffset } from '../job-service';
 
 // A fake Grbl controller that records commands and mimics the sender/workflow
 // transitions the service observes. It never touches a serial port.
@@ -52,6 +52,7 @@ beforeAll(async () => {
   root = await fs.mkdtemp(path.join(os.tmpdir(), 'cnc-touch-job-'));
   await fs.writeFile(path.join(root, 'test.nc'), 'G21 G90\nG1 X1 F100\nM2');
   await fs.writeFile(path.join(root, 'macro.nc'), '%wait\nG1 X1');
+  await fs.writeFile(path.join(root, 'offset.nc'), 'G21 G90\nG55\nG1 X1 F100\nM2');
 });
 
 afterAll(async () => {
@@ -88,6 +89,27 @@ const setup = () => {
 };
 
 describe('job service', () => {
+  test('a controller destroyed by CNCjs (runner and sender set to null) is forgotten, not fatal', () => {
+    const ctx = setup();
+    ctx.report();
+    expect(ctx.service.list()).toHaveLength(1);
+    // What GrblController.destroy() leaves behind when the port disappears.
+    ctx.c.isClose = () => true;
+    ctx.c.runner = null;
+    ctx.c.sender = null;
+    expect(() => ctx.service.list()).not.toThrow();
+    expect(ctx.service.list()).toEqual([]);
+    delete ctx.controllers.TEST;
+    expect(ctx.service.list()).toEqual([]);
+    // Reconnected on the same port: a new controller, a new generation.
+    const fresh = fakeController();
+    ctx.controllers.TEST = fresh;
+    fresh.runner.emit('status');
+    const [state] = ctx.service.list();
+    expect(state.port).toBe('TEST');
+    expect(state.generation).not.toBe(ctx.generation);
+  });
+
   test('load needs a fresh idle controller and a plain file name', async () => {
     const ctx = setup();
     await expect(ctx.req('load', { file: 'test.nc' })).rejects.toThrow(/trop ancien/);
@@ -153,6 +175,83 @@ describe('job service', () => {
     await ctx.req('stop');
     expect(ctx.c.commands.at(-1)).toEqual(['gcode:stop', { force: true }]);
     await expect(ctx.req('prepare', { operation: 'start', revision: state.revision })).rejects.toThrow(/Rechargez/);
+  });
+
+  test('a pause made while CNCjs holds for its end-of-program %wait can be resumed; M0 cannot', async () => {
+    const ctx = setup();
+    const state = await ctx.loaded();
+    const ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+    await ctx.req('start', { nonce: ticket.nonce });
+    await ctx.req('pause');
+    // What the real Sender keeps after hold() was first called by %wait.
+    ctx.c.sender.state.holdReason = { data: '%wait', msg: '%wait ; Wait for the planner to empty' };
+    ctx.report();
+    expect(ctx.state().canResume).toBe(true);
+    ctx.c.sender.state.holdReason = { data: 'M0', msg: 'M0' };
+    expect(ctx.state().canResume).toBe(false);
+    expect(ctx.state().resumeReason).toMatch(/pause simple/);
+  });
+
+  test('the work offset seen at start holds during a program that cannot change it', async () => {
+    const ctx = setup();
+    ctx.report();
+    ctx.c.runner.emit('parserstate', { modal: { wcs: 'G54' } });
+    let state = await ctx.loaded();
+    expect(state.operator.wcs).toBe('G54');
+    const ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+    await ctx.req('start', { nonce: ticket.nonce });
+    // CNCjs stops asking $G while streaming: the modal report grows old.
+    ctx.now += 10000;
+    ctx.report();
+    expect(ctx.state().operator.wcs).toBe('G54');
+    await ctx.req('pause');
+    expect(ctx.state().operator.wcs).toBe('G54');
+    await ctx.req('stop');
+    expect(ctx.state().operator.wcs).toBe(null);
+  });
+
+  test('a program that selects or changes an offset leaves the offset unknown once $G is old', async () => {
+    const ctx = setup();
+    ctx.report();
+    ctx.c.runner.emit('parserstate', { modal: { wcs: 'G54' } });
+    await ctx.req('load', { file: 'offset.nc' });
+    const state = ctx.state();
+    const ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+    await ctx.req('start', { nonce: ticket.nonce });
+    ctx.now += 10000;
+    ctx.report();
+    expect(ctx.state().operator.wcs).toBe(null);
+  });
+
+  test('changesOffset finds offset words, not comments or other codes', () => {
+    ['G55', 'g54', 'G59.1', 'G10 L2 P1 X0', 'G92 X0', 'G92.1', 'G0 X1\nG57 G0 Y2', 'G055'].forEach((code) => {
+      expect(changesOffset(code)).toBe(true);
+    });
+    ['G0 X54', 'G1 F555', '(G55 in a comment)', '; G92 here', 'G21 G90 G17\nG1 X10 F400', 'G540', 'M5'].forEach((code) => {
+      expect(changesOffset(code)).toBe(false);
+    });
+  });
+
+  test('a program that ends is reported finished even after CNCjs rewinds the sender; a stop is not', async () => {
+    const ctx = setup();
+    let state = await ctx.loaded();
+    let ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+    await ctx.req('start', { nonce: ticket.nonce });
+    expect(ctx.state().finished).toBe(false);
+    ctx.c.sender.emit('end', ctx.now);
+    expect(ctx.state().finished).toBe(false); // still running
+    ctx.c.workflow.state = 'idle';
+    ctx.c.sender.state = { ...ctx.c.sender.state, received: 0 }; // CNCjs rewinds at the end
+    ctx.report();
+    expect(ctx.state().finished).toBe(true);
+    // A new load starts from scratch.
+    state = await ctx.loaded();
+    expect(state.finished).toBe(false);
+    ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+    await ctx.req('start', { nonce: ticket.nonce });
+    await ctx.req('stop');
+    ctx.c.sender.emit('end', ctx.now);
+    expect(ctx.state().finished).toBe(false);
   });
 
   test('a sender load or a stale report invalidates a pending confirmation', async () => {

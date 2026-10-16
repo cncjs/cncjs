@@ -213,3 +213,4 @@ window.CNCTouchMessages.push(['Mesures système indisponibles.','System figures 
 window.CNCTouchMessages.push(['Serveur injoignable. Nouvel essai automatique.','Server unreachable. Retrying automatically.','Servidor inaccesible. Nuevo intento automático.']);
 window.CNCTouchMessages.push(['Lecture des mesures…','Reading figures…','Leyendo medidas…']);
 window.CNCTouchMessages.push(['Affichage · veille · système','Display · sleep · system','Pantalla · reposo · sistema']);
+window.CNCTouchMessages.push(['Terminé — programme exécuté jusqu’au bout','Finished — program run to the end','Terminado — programa ejecutado hasta el final']);

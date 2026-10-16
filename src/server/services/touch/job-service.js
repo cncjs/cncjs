@@ -42,6 +42,12 @@ const overridesOf = (state) => {
   return { feed: ov[0], rapid: ov[1], spindle: ov[2] };
 };
 
+// Words that select or change the work offset; comments are ignored.
+export const changesOffset = (gcode) => {
+  const code = String(gcode).replace(/\([^)]*\)/g, ' ').replace(/;.*$/gm, ' ');
+  return /\bG\s*0*5[4-9](?:\.\d)?\b|\bG\s*0*10\b|\bG\s*0*92(?:\.\d)?\b/i.test(code);
+};
+
 // Only names and ids leave the server; macro contents stay in the configuration.
 const macrosOf = (config) => {
   return (config.get('macros') || [])
@@ -110,20 +116,42 @@ export const createService = (store, config, clock = Date.now) => {
       c.runner.on('status', r.status);
       c.runner.on('startup', r.reset);
       c.runner.on('parserstate', r.modal);
+      // CNCjs rewinds the sender when a program ends, so "all lines acknowledged"
+      // must be remembered when it happens to tell a finished job from a stopped one.
+      r.end = () => {
+        if (r.job && r.job.started && !r.job.stopped) {
+          r.job.finishedAt = clock();
+          changed();
+        }
+      };
       c.sender.on('load', r.file);
       c.sender.on('unload', r.file);
+      c.sender.on('end', r.end);
       records.set(c, r);
     }
     return records.get(c);
   };
 
+  // CNCjs sets runner and sender to null when it destroys a controller (port
+  // closed or gone, e.g. a USB cable pulled): forget the record in any case,
+  // otherwise every later snapshot would fail on the same dead controller.
+  const modalWcs = (r) => {
+    const fresh = Number.isFinite(r.modalSeen) && clock() >= r.modalSeen && clock() - r.modalSeen <= MAX_REPORT_AGE_MS;
+    return fresh ? r.wcs : null;
+  };
+
   const remove = (c, r) => {
-    c.runner.removeListener('status', r.status);
-    c.runner.removeListener('startup', r.reset);
-    c.runner.removeListener('parserstate', r.modal);
-    c.sender.removeListener('load', r.file);
-    c.sender.removeListener('unload', r.file);
     records.delete(c);
+    if (c.runner) {
+      c.runner.removeListener('status', r.status);
+      c.runner.removeListener('startup', r.reset);
+      c.runner.removeListener('parserstate', r.modal);
+    }
+    if (c.sender) {
+      c.sender.removeListener('load', r.file);
+      c.sender.removeListener('unload', r.file);
+      c.sender.removeListener('end', r.end);
+    }
   };
 
   const probeInput = createProbeInput(store, clock);
@@ -174,6 +202,14 @@ export const createService = (store, config, clock = Date.now) => {
     return j;
   };
 
+  // CNCjs appends "%wait" to every loaded program and holds the sender with that
+  // reason while it runs; a pause made then keeps the %wait reason. Only a
+  // pause the program itself asked for (M0, M1, M6...) must be resumed in CNCjs.
+  const programPause = (c) => {
+    const reason = c.sender.state.holdReason;
+    return Boolean(reason) && !(reason && reason.data === '%wait');
+  };
+
   const readyFor = (c, action, revision) => {
     const j = validJob(c, revision);
     available(c);
@@ -183,7 +219,7 @@ export const createService = (store, config, clock = Date.now) => {
         throw conflict('Rechargez le fichier avant un nouveau démarrage.');
       }
     } else if (!j.started || c.workflow.state !== 'paused' ||
-        controllerStatus(c).activeState !== 'Hold' || c.sender.state.holdReason) {
+        controllerStatus(c).activeState !== 'Hold' || programPause(c)) {
       throw conflict('La reprise exige une pause simple confirmée par la machine.');
     }
     if (hasAutomations(config)) {
@@ -277,8 +313,12 @@ export const createService = (store, config, clock = Date.now) => {
     } else if (reportSetting === 1 || reportSetting === '1') {
       reportUnits = 'in';
     }
-    const modalFresh = Number.isFinite(r.modalSeen) && clock() >= r.modalSeen && clock() - r.modalSeen <= MAX_REPORT_AGE_MS;
-    const wcs = modalFresh ? r.wcs : null;
+    let wcs = modalWcs(r);
+    // While a program that cannot change the offset runs, the offset seen at its start holds.
+    if (!wcs && r.job && r.job.started && !r.job.changesOffset && r.job.wcsAtStart &&
+        ['running', 'paused'].includes(c.workflow.state)) {
+      wcs = r.job.wcsAtStart;
+    }
 
     return {
       port: c.options.port,
@@ -309,6 +349,8 @@ export const createService = (store, config, clock = Date.now) => {
       startReason,
       canResume: !resumeReason,
       resumeReason,
+      // Every line acknowledged and the program over (not stopped by the operator).
+      finished: Boolean(r.job && r.job.finishedAt && !r.job.stopped && c.workflow.state === 'idle'),
       canPause: c.workflow.state === 'running',
       canStop: c.workflow.state !== 'idle' || ['Run', 'Hold'].includes(state.activeState),
       overrides: overridesOf(state),
@@ -377,7 +419,10 @@ export const createService = (store, config, clock = Date.now) => {
         revision,
         name: body.file,
         originalName: body.file.replace(/--touch-\d{14}-[a-f0-9]{16}(?=\.[^.]+$)/, ''),
-        started: false
+        started: false,
+        // G54-G59.x select, G10 L2/L20 and G92 change the work offset.
+        changesOffset: changesOffset(gcode),
+        wcsAtStart: null
       };
       return { message: 'Fichier chargé dans CNCjs. Aucun démarrage envoyé.' };
     } finally {
@@ -481,6 +526,9 @@ export const createService = (store, config, clock = Date.now) => {
         throw conflict('Confirmation expirée ou déjà utilisée.');
       }
       const j = readyFor(c, a, t.revision);
+      if (a === 'start') {
+        j.wcsAtStart = modalWcs(r);
+      }
       j.started = true;
       c.command(a === 'start' ? 'gcode:start' : 'gcode:resume');
       return { message: a === 'start' ? 'Démarrage demandé.' : 'Reprise demandée.' };
@@ -502,6 +550,8 @@ export const createService = (store, config, clock = Date.now) => {
       r.ticket = null;
       if (r.job) {
         r.job.started = true;
+        r.job.stopped = true;
+        r.job.finishedAt = null;
       }
       c.command('gcode:stop', { force: true });
       return { message: 'Arrêt demandé. Vérifiez l’immobilisation ; ce bouton ne remplace pas l’arrêt physique.' };
