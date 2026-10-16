@@ -122,6 +122,43 @@ const appMain = () => {
   // Middleware
   // https://github.com/senchalabs/connect
 
+  if (settings.verbosity > 0) {
+    // https://github.com/expressjs/morgan#use-custom-token-formats
+    // Add an ID to all requests and displays it using the :id token
+    morgan.token('id', (req, res) => {
+      // Static assets are served before the session middleware (see below).
+      return _get(req, 'session.id', '-');
+    });
+    app.use(morgan(settings.middleware.morgan.format));
+  }
+  app.use(compress(settings.middleware.compression));
+
+  // Static assets are served before the session and body parsers: they need
+  // neither, and loading or rewriting the session file for every script of a
+  // page burst makes session-file-store race against itself (EPERM on rename
+  // under Windows), which turns into truncated responses.
+  Object.keys(settings.assets).forEach((name) => {
+    const asset = settings.assets[name];
+
+    log.debug('assets: name=%s, asset=%s', name, JSON.stringify(asset));
+    if (!(asset.path)) {
+      log.error('asset path is not defined');
+      return;
+    }
+    if (!fs.existsSync(asset.path)) {
+      log.warn('assets: name=%s, path=%s does not exist, skipping', name, asset.path);
+      return;
+    }
+
+    asset.routes.forEach((assetRoute) => {
+      const route = urljoin(settings.route || '/', assetRoute || '');
+      log.debug('> route=%s', name, route);
+      app.use(route, serveStatic(asset.path, {
+        maxAge: asset.maxAge
+      }));
+    });
+  });
+
   try {
     // https://github.com/valery-barysok/session-file-store
     const path = settings.middleware.session.path; // Defaults to './cncjs-sessions'
@@ -171,33 +208,6 @@ const appMain = () => {
 
   // https://github.com/expressjs/method-override
   app.use(methodOverride());
-  if (settings.verbosity > 0) {
-    // https://github.com/expressjs/morgan#use-custom-token-formats
-    // Add an ID to all requests and displays it using the :id token
-    morgan.token('id', (req, res) => {
-      return req.session.id;
-    });
-    app.use(morgan(settings.middleware.morgan.format));
-  }
-  app.use(compress(settings.middleware.compression));
-
-  Object.keys(settings.assets).forEach((name) => {
-    const asset = settings.assets[name];
-
-    log.debug('assets: name=%s, asset=%s', name, JSON.stringify(asset));
-    if (!(asset.path)) {
-      log.error('asset path is not defined');
-      return;
-    }
-
-    asset.routes.forEach((assetRoute) => {
-      const route = urljoin(settings.route || '/', assetRoute || '');
-      log.debug('> route=%s', name, route);
-      app.use(route, serveStatic(asset.path, {
-        maxAge: asset.maxAge
-      }));
-    });
-  });
 
   app.use(i18nextHandle(i18next, {}));
 

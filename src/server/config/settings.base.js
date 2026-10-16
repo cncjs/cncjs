@@ -24,6 +24,22 @@ export default {
   // Allow Remote Access
   allowRemoteAccess: false,
 
+  // Static assets; the environment-specific settings add the main web app.
+  assets: {
+    // The experimental touchscreen interface (examples/cncjs-touch) is served
+    // from the repository checkout at "<route>/touch/". The path is resolved
+    // from the compiled server (output/cncjs/server/config or
+    // dist/cncjs/server/config), so a packaged install without the examples
+    // directory simply skips this asset (see app.js).
+    touch: {
+      routes: [
+        'touch/'
+      ],
+      path: path.resolve(__dirname, '..', '..', '..', '..', 'examples', 'cncjs-touch', 'touch'),
+      maxAge: 0 // the pages carry their own cache-busting query strings
+    }
+  },
+
   // Express view engine
   view: {
     // Set html (w/o dot) as the default extension

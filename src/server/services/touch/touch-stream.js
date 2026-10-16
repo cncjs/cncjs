@@ -98,6 +98,11 @@ export const createStream = (service, options = {}) => {
     }
   });
   const heartbeat = timers.setInterval(publish, HEARTBEAT_MS);
+  // Connected clients keep the process alive on their own; an idle heartbeat
+  // must not hold the event loop open once the server has been closed.
+  if (heartbeat && typeof heartbeat.unref === 'function') {
+    heartbeat.unref();
+  }
 
   // Turns `res` into an NDJSON event stream for `req`. Returns false, without
   // touching the response, when another client cannot be accepted.

@@ -254,6 +254,15 @@ describe('touch stream', () => {
     expect(opened.every(({ res: r }) => r.ended)).toBe(true);
   });
 
+  test('the heartbeat never keeps the process alive on its own', () => {
+    const ctx = setup();
+    const handle = { unref: jest.fn() };
+    const timers = { ...ctx.timers, setInterval: () => handle };
+    const stream = createStream(ctx.service, { clock: () => ctx.now, timers });
+    expect(handle.unref).toHaveBeenCalledTimes(1);
+    stream.dispose();
+  });
+
   test('dispose clears timers, listeners and the service', () => {
     const ctx = setup();
     const { res } = ctx.connect();
