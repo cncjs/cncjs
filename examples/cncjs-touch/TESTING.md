@@ -68,6 +68,14 @@ Device: Surface RT, Tegra 3 (4 × ARMv7, no cpufreq), 2 GB, Raspbian 11 armhf, m
 
 Steady state was already at 60 frames per second; the gains are in the screen transitions (long tasks −30 to −45 %, worst frame about halved) and the first opening of a screen no longer measures it hidden. Chromium flags were compared on the device (`--enable-low-end-device-mode` on/off, 3 or 4 raster threads, `--disable-lcd-text`): all within noise of a single run, so the kiosk flags were left unchanged. `--enable-low-end-device-mode` makes Chromium report 0.5 GB of device memory on this 2 GB tablet.
 
+### Where the remaining time goes (Chromium trace on the device)
+
+A 48 s `--trace-startup` recording of the same scripted navigation, renderer main thread: Layout ≈ 1.5 s (39 ×, up to 200–260 ms), style recalculation ≈ 1.0 s (100 ×, up to 120 ms), paint ≈ 0.4 s (max 30 ms), JavaScript ≈ 1.2 s. The 200 ms tasks are the full style and layout of a screen when it is shown: with software rendering on this CPU that is the cost of one dense screen, not of the scripts. A sampled V8 profile puts most of the script time in `shared-library.js` (building the file rows, the request path that re-parses the stored CNCjs session on every call) and in `viewport-fit.js`.
+
+Tried on the device with two traces per variant and **rejected** (no gain or worse): inactive screens kept with `content-visibility: hidden` instead of `display: none` (Layout +18 %, worst layout 335 ms instead of ~200); `contain: layout paint` on every card (within noise). Intl formatting is not a hot spot here: `toLocaleString` costs 0.14 ms per call on the tablet, 1–2 ms with options.
+
+Further reductions would have to come from lighter screens (fewer boxes and text runs per screen, in particular Fichiers and Préparer), not from browser or CSS switches.
+
 ## Measuring on the device
 
 Open either page with `?perf=1` (for example `…/touch/index.html?perf=1`). A small badge appears bottom-right with the live median frame gap, the 95th percentile, the number of long tasks and `CPU` or `GPU` (from the WebGL renderer string: SwiftShader, llvmpipe or no WebGL means software rendering, which is the expected case for Chromium on a Tegra 3 under Linux). Use the interface normally for a few minutes: menu, files, preview, follow-up screen during a simulated job, settings. Tap the badge to download `cnc-touch-perf-<timestamp>.json`.
