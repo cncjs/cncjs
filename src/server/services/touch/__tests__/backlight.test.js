@@ -70,12 +70,14 @@ const FILE = '/sys/class/backlight/backlight/brightness';
 describe('backlight', () => {
   test('reports the panel level as a percentage', () => {
     const backlight = createBacklight({ fs: makeFs() });
-    expect(backlight.status()).toEqual({ available: true, writable: true, device: 'backlight', percent: 50, minPercent: MIN_PERCENT });
+    expect(backlight.status()).toEqual({ available: true, writable: true, device: 'backlight', percent: 50, userPercent: 50, temporary: false, minPercent: MIN_PERCENT });
   });
 
   test('reports a computer without a backlight, and refuses to set it', () => {
     const backlight = createBacklight({ fs: makeFs({ devices: [] }) });
-    expect(backlight.status()).toEqual({ available: false, writable: false, percent: null, minPercent: MIN_PERCENT });
+    expect(backlight.status()).toEqual({ available: false, writable: false, percent: null, userPercent: null, temporary: false, minPercent: MIN_PERCENT });
+    expect(() => backlight.dim(0)).toThrow(/Aucun rétroéclairage/);
+    expect(() => backlight.wake()).toThrow(/Aucun rétroéclairage/);
     expect(() => backlight.set(50)).toThrow(/Aucun rétroéclairage/);
   });
 
@@ -141,5 +143,55 @@ describe('backlight', () => {
   test('skips devices without a sensible maximum', () => {
     const backlight = createBacklight({ fs: makeFs({ max: '0\n' }) });
     expect(backlight.status().available).toBe(false);
+  });
+
+  test('the screen saver can turn the panel off, never stores it, and wake puts the operator level back', () => {
+    const timers = manualTimers();
+    const config = makeConfig();
+    const fs = makeFs();
+    const backlight = createBacklight({ fs, config, setTimer: timers.setTimer, clearTimer: timers.clearTimer });
+    backlight.set(70);
+    timers.pending.shift().fn();
+    expect(config.set).toHaveBeenCalledTimes(1);
+    let state = backlight.dim(0);
+    expect(fs.files[FILE]).toBe('0');
+    expect(state).toMatchObject({ percent: 0, userPercent: 70, temporary: true });
+    state = backlight.dim(MIN_PERCENT);
+    expect(fs.files[FILE]).toBe(String(Math.round(MIN_PERCENT / 100 * 254)));
+    expect(state.userPercent).toBe(70);
+    expect(timers.pending).toHaveLength(0);
+    expect(config.set).toHaveBeenCalledTimes(1);
+    state = backlight.wake();
+    expect(fs.files[FILE]).toBe(String(Math.round(0.7 * 254)));
+    expect(state).toMatchObject({ percent: 70, userPercent: 70, temporary: false });
+    // A second wake, or a wake without a dim, changes nothing.
+    fs.files[FILE] = '100';
+    backlight.wake();
+    expect(fs.files[FILE]).toBe('100');
+    ['0', null, NaN].forEach((value) => {
+      expect(() => backlight.dim(value)).toThrow(/invalide/);
+    });
+  });
+
+  test('a normal level ends a temporary one', () => {
+    const fs = makeFs();
+    const backlight = createBacklight({ fs });
+    backlight.dim(0);
+    expect(backlight.set(40)).toMatchObject({ percent: 40, userPercent: 40, temporary: false });
+  });
+
+  test('a read-only panel refuses to dim or wake', () => {
+    const backlight = createBacklight({ fs: makeFs({ writable: false }) });
+    expect(() => backlight.dim(0)).toThrow(/Réglage refusé/);
+    expect(() => backlight.wake()).toThrow(/Réglage refusé/);
+  });
+
+  test('a panel found dark at start is not taken as the operator level', () => {
+    const fs = makeFs({ level: '0\n' });
+    const backlight = createBacklight({ fs });
+    expect(backlight.status()).toMatchObject({ percent: 0, userPercent: 50 });
+    backlight.dim(0);
+    backlight.wake();
+    expect(fs.files[FILE]).toBe(String(Math.round(0.5 * 254)));
   });
 });

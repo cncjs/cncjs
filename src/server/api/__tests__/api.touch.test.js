@@ -15,7 +15,9 @@ jest.mock('../../services/touch', () => ({
     openEvents: jest.fn(() => true),
     systemStats: jest.fn(() => ({ cores: [12.5, 3], cpu: 7.8 })),
     backlightStatus: jest.fn(() => ({ available: true, writable: true, percent: 50 })),
-    setBacklight: jest.fn((percent) => ({ available: true, writable: true, percent }))
+    setBacklight: jest.fn((percent) => ({ available: true, writable: true, percent })),
+    dimBacklight: jest.fn((percent) => ({ available: true, writable: true, percent, temporary: true })),
+    wakeBacklight: jest.fn(() => ({ available: true, writable: true, percent: 60, temporary: false }))
   }
 }));
 
@@ -197,5 +199,21 @@ describe('api.touch', () => {
     postBacklight(makeReq({ body: null }), res);
     expect(res.statusCode).toBe(500);
     expect(res.payload.message).not.toMatch(/private/);
+  });
+
+  test('postBacklight routes temporary dimming and wake to the screen-saver calls', () => {
+    let res = makeRes();
+    postBacklight(makeReq({ body: { percent: 0, temporary: true } }), res);
+    expect(touch.dimBacklight).toHaveBeenCalledWith(0);
+    expect(touch.setBacklight).not.toHaveBeenCalled();
+    expect(res.payload.temporary).toBe(true);
+    res = makeRes();
+    postBacklight(makeReq({ body: { wake: true } }), res);
+    expect(touch.wakeBacklight).toHaveBeenCalledTimes(1);
+    expect(res.payload.percent).toBe(60);
+    // Only a literal true selects them.
+    res = makeRes();
+    postBacklight(makeReq({ body: { percent: 30, temporary: 'yes', wake: 1 } }), res);
+    expect(touch.setBacklight).toHaveBeenCalledWith(30);
   });
 });

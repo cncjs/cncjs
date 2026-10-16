@@ -84,9 +84,18 @@ export const getBacklight = authorized((req, res) => {
   }
 });
 
+// { percent } sets the operator's level; { percent, temporary: true } is the
+// screen saver dimming (never stored); { wake: true } puts the operator's level back.
 export const postBacklight = authorized((req, res) => {
+  const body = req.body || {};
   try {
-    res.send(touch.setBacklight(req.body && req.body.percent));
+    if (body.wake === true) {
+      res.send(touch.wakeBacklight());
+    } else if (body.temporary === true) {
+      res.send(touch.dimBacklight(body.percent));
+    } else {
+      res.send(touch.setBacklight(body.percent));
+    }
   } catch (err) {
     if (err.status) {
       res.status(err.status).send({ message: err.message });

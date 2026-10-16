@@ -261,3 +261,9 @@ window.CNCTouchMessages.push(['Aucun rétroéclairage réglable sur cet ordinate
 window.CNCTouchMessages.push(['Réglage bloqué : CNCjs n’a pas le droit de modifier la luminosité (règle udev à installer, voir README).','Blocked: CNCjs is not allowed to change the brightness (install the udev rule, see README).','Bloqueado: CNCjs no tiene permiso para cambiar el brillo (instale la regla udev, vea el README).']);
 window.CNCTouchMessages.push(['Ce serveur CNCjs ne gère pas la luminosité.','This CNCjs server does not handle brightness.','Este servidor CNCjs no gestiona el brillo.']);
 window.CNCTouchMessages.push(['Luminosité indisponible.','Brightness unavailable.','Brillo no disponible.']);
+window.CNCTouchMessages.push(['Pendant la veille','During screen sleep','Durante el reposo']);
+window.CNCTouchMessages.push(['Luminosité pendant la veille','Brightness during screen sleep','Brillo durante el reposo']);
+window.CNCTouchMessages.push(['Écran éteint','Screen off','Pantalla apagada']);
+window.CNCTouchMessages.push(['Luminosité minimale','Minimum brightness','Brillo mínimo']);
+window.CNCTouchMessages.push(['Inchangée','Unchanged','Sin cambios']);
+window.CNCTouchMessages.push(['Choix appliqué ; mémorisation indisponible dans ce navigateur.','Applied; this browser cannot remember it.','Aplicado; este navegador no puede recordarlo.']);

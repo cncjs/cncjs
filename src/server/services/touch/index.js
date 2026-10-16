@@ -54,6 +54,10 @@ const backlightStatus = () => backlight.status();
 
 const setBacklight = (percent) => backlight.set(percent);
 
+const dimBacklight = (percent) => backlight.dim(percent);
+
+const wakeBacklight = () => backlight.wake();
+
 export default {
   VERSION,
   start,
@@ -66,5 +70,7 @@ export default {
   openEvents,
   systemStats,
   backlightStatus,
-  setBacklight
+  setBacklight,
+  dimBacklight,
+  wakeBacklight
 };

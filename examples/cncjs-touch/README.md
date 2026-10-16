@@ -55,6 +55,8 @@ sudo udevadm control --reload && sudo udevadm trigger --subsystem-match=backligh
 
 Without it the card says the setting is blocked and sends nothing.
 
+**Pendant la veille** (same card) chooses what the screen saver does with the backlight: *Écran éteint* (default, level 0), *Luminosité minimale* (5 %) or *Inchangée*. These are temporary levels: the server never stores them, and the first touch on the sleeping screen puts the operator's level back (`POST {wake: true}`). A page that loads while the panel may still be off sends the same wake request once. The choice is kept per browser (`localStorage`, `cncjs-touch-backlight-v1`).
+
 ## Preview performance pass (2026-10-16)
 
 The G-code preview parser is 2.8–3.7× faster and the preview worker overlaps parsing with drawing; the full 20 MB pipeline runs in 55 % of its previous time on the development PC. Behaviour is unchanged (differentially fuzzed against the previous parser). See [TESTING.md](TESTING.md), "Preview pipeline measurements", for the numbers, the rejected approaches and the caveats. Measurements on the real touchscreen remain to be made: open a page with `?perf=1` and export the report (see TESTING.md, "Measuring on the device").

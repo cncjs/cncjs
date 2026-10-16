@@ -47,4 +47,16 @@ assert(overlay.hidden);document.hidden=false;docHandlers.visibilitychange();tick
 // The old-browser fallback remains bounded after a backward wall-clock change.
 delete window.performance;wallOffset=0;api.configure(1);tick(30000);wallOffset-=3600000;tick(30000);
 assert(overlay.hidden);assert.equal(timers.size,1);tick(60000);assert(!overlay.hidden);api.configure(0);
+// Sleep/wake announcements for the backlight: once per change, wake on the first touch.
+{
+  const seen=[],h={};let ov;
+  const doc={hidden:false,activeElement:null,body:{children:[],appendChild(el){this.children.push(el);}},createElement(){return ov={tagName:'BUTTON',setAttribute(){},focus(){}};},querySelectorAll(){return [];},addEventListener(){}};
+  const win={performance:{now:()=>now},addEventListener(n,f){h[n]=f;},dispatchEvent(e){if(e.type==='cnc-screen-saver-sleep')seen.push(e.detail);}};
+  vm.runInNewContext(fs.readFileSync(__dirname+'/touch/screen-saver.js','utf8'),{document:doc,window:win,CustomEvent:function(type,init){this.type=type;this.detail=init.detail;},Date:{now:()=>now},setTimeout(fn,ms){const id=++nextId;timers.set(id,{fn,at:now+ms});return id;},clearTimeout(id){timers.delete(id);}});
+  const fire=(type,data={})=>h[type]({type,...data,preventDefault(){},stopImmediatePropagation(){}});
+  win.cncScreenSaver.configure(0);assert(win.cncScreenSaver.preview());assert.deepEqual(seen,[true]);
+  fire('touchstart',{touches:[{}]});assert.deepEqual(seen,[true,false],'the panel lights up on the first touch, before release');
+  fire('touchend',{touches:[]});tick(450);assert(ov.hidden);assert.deepEqual(seen,[true,false],'no second wake');
+  assert(win.cncScreenSaver.preview());win.cncScreenSaver.configure(0);assert.deepEqual(seen,[true,false,true,false],'a configuration change wakes too');
+}
 console.log('PASS: sleep deadlines, independent clock, visibility return and wake shield; job/pause/alarm/probe inhibition, stale/disconnected/other-controller retention, confirmed-idle reset, automatic wake and no timer during work.');

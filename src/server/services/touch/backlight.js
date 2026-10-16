@@ -4,6 +4,8 @@
 // a udev rule; without it the setting is reported as read-only. Nothing here
 // talks to a controller. The last level is kept in the CNCjs configuration and
 // applied again when the service starts, since the kernel resets it on boot.
+// The screen saver may set a temporary level (down to 0, fully off) that is
+// never stored; `wake` puts the operator's level back.
 import nodeFs from 'fs';
 import path from 'path';
 
@@ -56,16 +58,32 @@ export const createBacklight = ({ fs = nodeFs, config = null, setTimer = setTime
     }
   };
 
+  const current = () => {
+    const raw = device ? readNumber(device.file) : null;
+    return raw === null ? null : Math.round(raw / device.max * 100);
+  };
+
+  // The operator's level, as opposed to a temporary screen-saver level. A panel
+  // found dark (CNCjs restarted while the screen saver had it off) is not one.
+  const DEFAULT_PERCENT = 50;
+  const found = current();
+  let userPercent = found;
+  if (found !== null && found < MIN_PERCENT) {
+    userPercent = DEFAULT_PERCENT;
+  }
+  let temporary = false;
+
   const status = () => {
     if (!device) {
-      return { available: false, writable: false, percent: null, minPercent: MIN_PERCENT };
+      return { available: false, writable: false, percent: null, userPercent: null, temporary: false, minPercent: MIN_PERCENT };
     }
-    const raw = readNumber(device.file);
     return {
       available: true,
       writable: writable(),
       device: device.name,
-      percent: raw === null ? null : Math.round(raw / device.max * 100),
+      percent: current(),
+      userPercent,
+      temporary,
       minPercent: MIN_PERCENT
     };
   };
@@ -76,17 +94,47 @@ export const createBacklight = ({ fs = nodeFs, config = null, setTimer = setTime
     return value;
   };
 
-  const set = (percent) => {
-    if (typeof percent !== 'number' || !Number.isFinite(percent)) {
-      throw Object.assign(new Error('Luminosité invalide.'), { status: 400 });
-    }
+  const check = () => {
     if (!device) {
       throw Object.assign(new Error('Aucun rétroéclairage réglable sur cet ordinateur.'), { status: 409 });
     }
     if (!writable()) {
       throw Object.assign(new Error('Réglage refusé : le système ne permet pas à CNCjs de modifier la luminosité.'), { status: 409 });
     }
+  };
+
+  // Screen saver: 0 turns the panel off; anything else is clamped like a normal level.
+  const dim = (percent) => {
+    if (typeof percent !== 'number' || !Number.isFinite(percent)) {
+      throw Object.assign(new Error('Luminosité invalide.'), { status: 400 });
+    }
+    check();
+    if (percent <= 0) {
+      fs.writeFileSync(device.file, '0');
+    } else {
+      apply(percent);
+    }
+    temporary = true;
+    return status();
+  };
+
+  const wake = () => {
+    check();
+    if (temporary && typeof userPercent === 'number') {
+      apply(userPercent);
+    }
+    temporary = false;
+    return status();
+  };
+
+  const set = (percent) => {
+    if (typeof percent !== 'number' || !Number.isFinite(percent)) {
+      throw Object.assign(new Error('Luminosité invalide.'), { status: 400 });
+    }
+    check();
     const value = apply(percent);
+    userPercent = value;
+    temporary = false;
     if (config) {
       clearTimer(saveTimer);
       saveTimer = setTimer(() => {
@@ -107,14 +155,14 @@ export const createBacklight = ({ fs = nodeFs, config = null, setTimer = setTime
       return false;
     }
     try {
-      apply(stored);
+      userPercent = apply(stored);
       return true;
     } catch (err) {
       return false;
     }
   };
 
-  return { status, set, restore };
+  return { status, set, dim, wake, restore };
 };
 
 export default createBacklight;

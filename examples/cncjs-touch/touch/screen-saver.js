@@ -9,7 +9,13 @@
   function elapsedClock(){return window.performance&&typeof window.performance.now==='function'?window.performance.now():Date.now();}
   var minutes = 0, lastActivity = elapsedClock(), timer = null, wakeTimer = null;
   var asleep = false, waking = false, previousFocus = null, background = [], held = {};
-  var activeController = null, policyReason = '';
+  var activeController = null, policyReason = '', announced = false;
+  // Other scripts (backlight.js) follow sleep and wake; the first touch counts as wake.
+  function announce(state) {
+    if (announced === state || !window.dispatchEvent) return;
+    announced = state;
+    window.dispatchEvent(new CustomEvent('cnc-screen-saver-sleep', { detail: state }));
+  }
   function arm() {
     clearTimeout(timer); timer = null;
     if (!minutes || asleep || waking || document.hidden || activeController) return;
@@ -23,7 +29,7 @@
     clearTimeout(timer); timer = null; previousFocus = document.activeElement;
     background = Array.prototype.filter.call(document.body.children, function (el) { return el !== overlay && !/^(SCRIPT|STYLE|LINK)$/.test(el.tagName); })
       .map(function (el) { var entry = { el: el, inert: el.inert }; el.inert = true; return entry; });
-    held = {}; asleep = true; overlay.hidden = false; overlay.focus({ preventScroll: true }); return true;
+    held = {}; asleep = true; overlay.hidden = false; overlay.focus({ preventScroll: true }); announce(true); return true;
   }
   function check() {
     var now=elapsedClock();if(now<lastActivity)lastActivity=now;
@@ -33,7 +39,7 @@
   function restore() {
     clearTimeout(wakeTimer); wakeTimer = null;
     if (!asleep && !waking) return;
-    asleep = false; waking = false; held = {}; overlay.hidden = true;
+    asleep = false; waking = false; held = {}; overlay.hidden = true; announce(false);
     background.forEach(function (entry) { entry.el.inert = entry.inert; }); background = [];
     if (previousFocus && previousFocus.isConnected) previousFocus.focus({ preventScroll: true });
     lastActivity = elapsedClock(); arm();
@@ -53,7 +59,7 @@
   }
   function activity(e) {
     if (asleep || waking) {
-      e.preventDefault(); e.stopImmediatePropagation(); track(e);
+      e.preventDefault(); e.stopImmediatePropagation(); track(e); announce(false);
       // Keep the shield through release and the following synthetic/double click.
       if (e.type === 'click' || e.type === 'pointerup' || e.type === 'mouseup' || e.type === 'touchend' || e.type === 'keyup') {
         asleep = false; waking = true;
@@ -82,7 +88,7 @@
       clearTimeout(timer); timer = null; lastActivity = elapsedClock();
       if (activeController && (asleep || waking)) {
         // Wake without exposing controls under a held touch or its synthetic click.
-        asleep = false; waking = true; finishWake();
+        asleep = false; waking = true; announce(false); finishWake();
       } else arm();
     }
     if ((wasBlocked !== !!activeController || previousReason !== policyReason) && window.dispatchEvent)
