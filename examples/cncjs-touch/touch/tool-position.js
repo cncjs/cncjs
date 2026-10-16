@@ -34,7 +34,8 @@
     var samples=meta.trail;
     if(!Array.isArray(samples)||samples.length<6||typeof s.total!=='number'||!(s.total>0)||typeof s.received!=='number'||!(s.received>=0)){trail.hidden=true;return;}
     // Simulation counts percent, real jobs count sender lines; both scale onto the trail's line count.
-    var totalLines=samples[samples.length-3],acknowledged=Math.min(totalLines,Math.max(0,s.received/s.total*totalLines));
+    // A finished program shows its whole path: CNCjs rewinds the line counters at the end.
+    var totalLines=samples[samples.length-3],acknowledged=s.finished===true&&s.workflow==='idle'?totalLines:Math.min(totalLines,Math.max(0,s.received/s.total*totalLines));
     var n=trailCount(samples,acknowledged);
     if(drawnTrail.source!==samples||drawnTrail.points!==n){
       var points=[];

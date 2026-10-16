@@ -86,6 +86,8 @@
     Array.prototype.forEach.call(overrideButtons(),function(button){if(button.disabled!==!overrideOn)button.disabled=!overrideOn;});
     set('home-override-note','textContent',overrideOn?uiLocale.t('Pas de ±1 % / ±10 % envoyés au contrôleur en temps réel ; 100 % rétablit la valeur programmée.'):(c&&c.overrideReason)||'');
     var valid=c&&c.fresh&&c.name&&finiteNumber(c.total)&&c.total>0&&finiteNumber(c.received)&&c.received>=0&&c.received<=c.total,p=valid?c.received/c.total*100:0;
+    // CNCjs rewinds the line counters when a program ends: the server says whether it finished.
+    if(valid&&c.finished===true&&c.workflow==='idle')p=100;
     var percent=valid?Math.floor(p)+' %':'—',remaining=null,eta=uiLocale.t('Temps restant : —');
     var key=c?simulation+':'+c.port+':'+c.name+':'+c.revision+':'+c.total:'';
     if(!valid){track=null;eta=c&&c.fresh&&!c.name?uiLocale.t('Temps restant : chargez un fichier'):uiLocale.t('Temps restant : état indisponible');}
@@ -99,7 +101,8 @@
       if(simulation){if(finiteNumber(c.remainingSeconds)&&c.remainingSeconds>=0)remaining=c.remainingSeconds;}
       else if(track.active>=10&&track.advance>0)remaining=(100-p)*track.active/track.advance;
       if(!finiteNumber(remaining)||remaining<0)remaining=null;
-      if(p>=100)eta=simulation?uiLocale.t('Terminé — 0 s restantes'):uiLocale.t('Toutes les lignes acquittées — attendre la fin des mouvements');
+      if(p>=100&&(simulation||c.finished===true))eta=simulation?uiLocale.t('Terminé — 0 s restantes'):uiLocale.t('Terminé — programme exécuté jusqu’au bout');
+      else if(p>=100)eta=uiLocale.t('Toutes les lignes acquittées — attendre la fin des mouvements');
       else if(c.workflow==='idle'&&!c.canStart)eta=uiLocale.t('Travail arrêté — temps restant indisponible');
       else if(c.canStart)eta=simulation?(remaining!==null?uiLocale.t('Durée simulée : ')+duration(remaining):uiLocale.t('Temps restant : état indisponible')):uiLocale.t('Temps restant : estimation après démarrage');
       else if(c.workflow==='paused')eta=uiLocale.t('En pause — ')+(remaining!==null?duration(remaining)+uiLocale.t(' restantes'):uiLocale.t('estimation suspendue'));

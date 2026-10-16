@@ -14,6 +14,9 @@ const current=requests[1].xhr;current.status=200;current.responseText=JSON.strin
 now+=10000;status({...c,workflow:'paused'});assert.match(el('home-job-eta').textContent,/En pause.*45 s/);
 status({...c,received:100,remainingSeconds:0,workflow:'idle'});assert.equal(el('home-job-percent').textContent,'100 %');assert.match(el('home-job-eta').textContent,/Terminé/);
 status({...c,workflow:'idle',canStart:false});assert.match(el('home-job-eta').textContent,/arrêté/);
+// Real CNCjs rewinds the counters at the end of a program: the server's finished flag says it ended.
+status({...c,received:0,remainingSeconds:undefined,workflow:'idle',canStart:false,finished:true},false);assert.equal(el('home-job-percent').textContent,'100 %');assert.match(el('home-job-eta').textContent,/Terminé — programme exécuté/);
+status({...c,received:0,workflow:'idle',canStart:false,finished:false},false);assert.match(el('home-job-eta').textContent,/arrêté/);
 status(null);assert.equal(el('home-job-percent').textContent,'—');assert.match(el('home-job-eta').textContent,/indisponible/);
 // Overrides block: hidden for snapshots without the field, values and gating otherwise.
 assert.equal(el('home-overrides').hidden,true);

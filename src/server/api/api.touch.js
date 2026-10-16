@@ -1,3 +1,4 @@
+import logger from '../lib/logger';
 import touch from '../services/touch';
 import {
   ERR_BAD_REQUEST,
@@ -6,6 +7,8 @@ import {
   ERR_INTERNAL_SERVER_ERROR,
   ERR_SERVICE_UNAVAILABLE
 } from '../constants';
+
+const log = logger('api:touch');
 
 // express-jwt populates req.user, but the error handler in app.js lets
 // unauthenticated requests through in development mode. These routes can move
@@ -30,6 +33,8 @@ export const getJob = authorized((req, res) => {
   try {
     res.send(touch.snapshot());
   } catch (err) {
+    // The client only gets a generic message; the details belong in the log.
+    log.error(`snapshot failed: ${err && err.stack}`);
     res.status(ERR_INTERNAL_SERVER_ERROR).send({ message: 'État indisponible.' });
   }
 });
@@ -53,6 +58,7 @@ export const previewMotion = authorized((req, res) => {
     if (err.code) {
       res.status(ERR_CONFLICT).send({ message: err.message });
     } else {
+      log.error(`motion preview failed: ${err && err.stack}`);
       res.status(ERR_INTERNAL_SERVER_ERROR).send({ message: 'Vérification serveur indisponible.' });
     }
   }
@@ -70,6 +76,7 @@ export const getSystem = authorized((req, res) => {
     res.set('Cache-Control', 'no-store');
     res.send(touch.systemStats());
   } catch (err) {
+    log.error(`system figures failed: ${err && err.stack}`);
     res.status(ERR_INTERNAL_SERVER_ERROR).send({ message: 'Mesures système indisponibles.' });
   }
 });

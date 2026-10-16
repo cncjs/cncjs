@@ -267,3 +267,4 @@ window.CNCTouchMessages.push(['Écran éteint','Screen off','Pantalla apagada'])
 window.CNCTouchMessages.push(['Luminosité minimale','Minimum brightness','Brillo mínimo']);
 window.CNCTouchMessages.push(['Inchangée','Unchanged','Sin cambios']);
 window.CNCTouchMessages.push(['Choix appliqué ; mémorisation indisponible dans ce navigateur.','Applied; this browser cannot remember it.','Aplicado; este navegador no puede recordarlo.']);
+window.CNCTouchMessages.push(['Terminé — programme exécuté jusqu’au bout','Finished — program run to the end','Terminado — programa ejecutado hasta el final']);

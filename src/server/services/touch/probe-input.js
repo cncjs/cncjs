@@ -10,13 +10,14 @@ const STATUS_REPORT = /^<(?:Idle|Run|Hold(?::\d+)?|Jog|Alarm|Door(?::\d+)?|Check
 export const createProbeInput = (store, clock = Date.now) => {
   const observed = new Map();
 
+  // A controller destroyed by CNCjs has runner set to null: forget it anyway.
   const remove = (port) => {
     const record = observed.get(port);
-    if (record) {
+    observed.delete(port);
+    if (record && record.controller.runner) {
       record.controller.runner.removeListener('status', record.status);
       record.controller.runner.removeListener('startup', record.reset);
     }
-    observed.delete(port);
   };
 
   // Drops records whose controller has been closed or replaced.

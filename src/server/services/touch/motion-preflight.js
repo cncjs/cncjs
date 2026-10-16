@@ -34,12 +34,13 @@ export const createPreflight = (store, config, sessionState, clock = Date.now) =
   const observed = new Map();
   let disposed = false;
 
+  // A controller destroyed by CNCjs has runner set to null: forget it anyway.
   const unwatch = (port) => {
     const record = observed.get(port);
-    if (record) {
+    observed.delete(port);
+    if (record && record.controller.runner) {
       record.controller.runner.removeListener('status', record.listener);
     }
-    observed.delete(port);
   };
 
   // Returns the controller when it is ready for a dry run, otherwise throws
