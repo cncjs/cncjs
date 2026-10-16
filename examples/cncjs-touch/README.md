@@ -42,6 +42,10 @@ Réglages now has two tabs, "Affichage" (the existing display settings) and "Sys
 - **Tablette** (in Système) shows the installed interface version from `touch/VERSION.json` (written by the deployment script: commit, branch, repository, date). When that file names a GitHub repository, the page compares it with the latest commit of the branch through the public GitHub API, at most every ten minutes. Below it are the host commands configured in CNCjs (Settings → Commands, `commands` in `.cncrc`), for example update the interface, restart CNCjs, reboot or shut down. The page shows their titles only. Each needs a second tap within 8 s, and all are refused while a job is running or paused. What a command does is up to whoever configures CNCjs; this interface adds no server route for it and runs nothing else.
 - **Affichage → Horloge** shows the time in the header. It updates once a minute on the minute, and not at all while the page is hidden or the clock is switched off.
 
+## Grbl simulator (2026-10-16/17)
+
+[grbl-sim/](grbl-sim/README.md) builds the official Grbl 1.1h firmware as a Linux program with grbl-sim, patched to run in real time on a small ARM board, and exposes it as a serial port that CNCjs opens like a board. A run against it found and fixed five defects that the browser-only simulation could not show; see TESTING.md, "Grbl simulator run".
+
 ## Readable settings (2026-10-16)
 
 Every screen is still scaled to fit without scrolling, except **Réglages**. It is marked `data-fit="scroll"`, so `viewport-fit.js` leaves it at full size and lets it scroll vertically. Opening the screen starts at the top, and later refits keep the reading position. `touch/settings-list.css` lays it out the way KlipperScreen does: one centred column of rows (title and description on the left, the control on the right), 19–22 px text, 60 px touch targets, and Affichage/Système tabs that stay at the top while the list scrolls. Système uses two columns with larger figures.
