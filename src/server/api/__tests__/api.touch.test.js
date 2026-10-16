@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import touch from '../../services/touch';
-import { getHealth, getJob, postJob, previewMotion, getEvents, getSystem } from '../api.touch';
+import { getHealth, getJob, postJob, previewMotion, getEvents, getSystem, getBacklight, postBacklight } from '../api.touch';
 
 // babel-jest hoists this above the imports above.
 jest.mock('../../services/touch', () => ({
@@ -13,7 +13,9 @@ jest.mock('../../services/touch', () => ({
     action: jest.fn(() => Promise.resolve({ message: 'ok' })),
     previewMotion: jest.fn(() => ({ dryRun: true })),
     openEvents: jest.fn(() => true),
-    systemStats: jest.fn(() => ({ cores: [12.5, 3], cpu: 7.8 }))
+    systemStats: jest.fn(() => ({ cores: [12.5, 3], cpu: 7.8 })),
+    backlightStatus: jest.fn(() => ({ available: true, writable: true, percent: 50 })),
+    setBacklight: jest.fn((percent) => ({ available: true, writable: true, percent }))
   }
 }));
 
@@ -42,7 +44,7 @@ const settled = () => new Promise((resolve) => {
   setImmediate(resolve);
 });
 
-const handlers = { getHealth, getJob, postJob, previewMotion, getEvents, getSystem };
+const handlers = { getHealth, getJob, postJob, previewMotion, getEvents, getSystem, getBacklight, postBacklight };
 
 describe('api.touch', () => {
   beforeEach(() => {
@@ -162,6 +164,37 @@ describe('api.touch', () => {
     });
     res = makeRes();
     getSystem(makeReq(), res);
+    expect(res.statusCode).toBe(500);
+    expect(res.payload.message).not.toMatch(/private/);
+  });
+
+  test('getBacklight sends the panel status, uncached', () => {
+    const res = makeRes();
+    getBacklight(makeReq(), res);
+    expect(res.payload).toEqual({ available: true, writable: true, percent: 50 });
+    expect(res.headers['Cache-Control']).toBe('no-store');
+  });
+
+  test('postBacklight sets the level and maps refusals to their status', () => {
+    let res = makeRes();
+    postBacklight(makeReq({ body: { percent: 70 } }), res);
+    expect(touch.setBacklight).toHaveBeenCalledWith(70);
+    expect(res.payload.percent).toBe(70);
+
+    const refused = Object.assign(new Error('Réglage refusé.'), { status: 409 });
+    touch.setBacklight.mockImplementationOnce(() => {
+      throw refused;
+    });
+    res = makeRes();
+    postBacklight(makeReq({ body: { percent: 70 } }), res);
+    expect(res.statusCode).toBe(409);
+    expect(res.payload).toEqual({ message: 'Réglage refusé.' });
+
+    touch.setBacklight.mockImplementationOnce(() => {
+      throw new Error('private');
+    });
+    res = makeRes();
+    postBacklight(makeReq({ body: null }), res);
     expect(res.statusCode).toBe(500);
     expect(res.payload.message).not.toMatch(/private/);
   });

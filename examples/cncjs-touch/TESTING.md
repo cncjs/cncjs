@@ -8,7 +8,7 @@ From this directory, run:
 node verify-project.cjs
 ```
 
-Node.js 18 or newer is required. No external packages, running CNCjs server or CNC controller are required. The suite consists of 54 browser-side test scripts plus script syntax and HTML resource checks, for 56 checks in this source package. The runner uses an explicit list and does not launch the visual fixture or hardware checks.
+Node.js 18 or newer is required. No external packages, running CNCjs server or CNC controller are required. The suite consists of 55 browser-side test scripts plus script syntax and HTML resource checks, for 57 checks in this source package. The runner uses an explicit list and does not launch the visual fixture or hardware checks.
 
 The backend (job service, event stream, motion preflight, probe input and the `api.touch` handlers) is tested with the root Jest suite instead:
 
@@ -41,6 +41,10 @@ Added without a controller, so covered by mocks only: `test-preview.cjs` and `te
 ## Network, history, tablet actions and clock (2026-10-16)
 
 `system-stats.test.js` adds the `iw` parser (missing fields stay null), background Wi-Fi reads at most every 10 s with a 1.5 s timeout, no child process without a wireless interface or without `iw`, a 120-point history with copies per response, and the history timer's start/stop. `test-system-monitor.cjs` checks the network tile and the sparkline points. `test-tablet-actions.cjs` checks that only titles of enabled commands are shown, the two-tap confirmation and its expiry, refusal during a running or paused job, error messages, and the version and update check, including that the CNCjs token is never sent to GitHub. `test-header-clock.cjs` checks minute-aligned updates, no redundant writes, the off switch and hidden pages. `test-display-settings.cjs` covers the stored clock preference.
+
+## Screen brightness (2026-10-16)
+
+`backlight.test.js` (Jest) checks the percentage reading, a computer without a backlight, a read-only file (409, nothing written), the 5 % floor and the 100 % ceiling, rejection of non-numbers, saving only the last level of a burst 2 s later on an unref'd timer, and restoring the stored level at start (not without a stored number or without rights). `api.touch.test.js` covers both routes. `test-backlight.cjs` checks reads only while the settings screen is shown, one request at a time with the last slider position winning, the ±10 steps and the floor, and the read-only, missing-panel, 404 and no-session messages.
 
 ## Prior development observations
 

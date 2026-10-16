@@ -253,3 +253,11 @@ window.CNCTouchMessages.push(['Heure affichée dans l’en-tête.','Time shown i
 window.CNCTouchMessages.push(['Heure dans l’en-tête','Time in the header','Hora en el encabezado']);
 window.CNCTouchMessages.push(['Affichée','Shown','Mostrada']);
 window.CNCTouchMessages.push(['Masquée','Hidden','Oculta']);
+window.CNCTouchMessages.push(['Luminosité','Brightness','Brillo']);
+window.CNCTouchMessages.push(['Rétroéclairage de l’écran branché sur l’ordinateur qui exécute CNCjs.','Backlight of the screen attached to the computer running CNCjs.','Retroiluminación de la pantalla conectada al ordenador que ejecuta CNCjs.']);
+window.CNCTouchMessages.push(['Moins lumineux','Dimmer','Menos brillo']);
+window.CNCTouchMessages.push(['Plus lumineux','Brighter','Más brillo']);
+window.CNCTouchMessages.push(['Aucun rétroéclairage réglable sur cet ordinateur.','No adjustable backlight on this computer.','Este ordenador no tiene retroiluminación ajustable.']);
+window.CNCTouchMessages.push(['Réglage bloqué : CNCjs n’a pas le droit de modifier la luminosité (règle udev à installer, voir README).','Blocked: CNCjs is not allowed to change the brightness (install the udev rule, see README).','Bloqueado: CNCjs no tiene permiso para cambiar el brillo (instale la regla udev, vea el README).']);
+window.CNCTouchMessages.push(['Ce serveur CNCjs ne gère pas la luminosité.','This CNCjs server does not handle brightness.','Este servidor CNCjs no gestiona el brillo.']);
+window.CNCTouchMessages.push(['Luminosité indisponible.','Brightness unavailable.','Brillo no disponible.']);

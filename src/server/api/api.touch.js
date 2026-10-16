@@ -73,3 +73,25 @@ export const getSystem = authorized((req, res) => {
     res.status(ERR_INTERNAL_SERVER_ERROR).send({ message: 'Mesures système indisponibles.' });
   }
 });
+
+// Screen backlight of the computer running CNCjs (settings screen).
+export const getBacklight = authorized((req, res) => {
+  try {
+    res.set('Cache-Control', 'no-store');
+    res.send(touch.backlightStatus());
+  } catch (err) {
+    res.status(ERR_INTERNAL_SERVER_ERROR).send({ message: 'Luminosité indisponible.' });
+  }
+});
+
+export const postBacklight = authorized((req, res) => {
+  try {
+    res.send(touch.setBacklight(req.body && req.body.percent));
+  } catch (err) {
+    if (err.status) {
+      res.status(err.status).send({ message: err.message });
+    } else {
+      res.status(ERR_INTERNAL_SERVER_ERROR).send({ message: 'Luminosité non modifiée.' });
+    }
+  }
+});

@@ -42,6 +42,19 @@ Réglages now has two tabs, "Affichage" (the existing display settings) and "Sys
 - **Tablette** (in Système) shows the installed interface version from `touch/VERSION.json` (written by the deployment script: commit, branch, repository, date). When that file names a GitHub repository, the page compares it with the latest commit of the branch through the public GitHub API, at most every ten minutes. Below it are the host commands configured in CNCjs (Settings → Commands, `commands` in `.cncrc`), for example update the interface, restart CNCjs, reboot or shut down. The page shows their titles only. Each needs a second tap within 8 s, and all are refused while a job is running or paused. What a command does is up to whoever configures CNCjs; this interface adds no server route for it and runs nothing else.
 - **Affichage → Horloge** shows the time in the header. It updates once a minute on the minute, and not at all while the page is hidden or the clock is switched off.
 
+## Screen brightness (2026-10-16)
+
+Affichage has a **Luminosité** card: a slider and −/+ buttons (steps of 10 %, never below 5 % so the screen can always be found again). It drives `/sys/class/backlight/*/brightness` on the computer running CNCjs through `GET`/`POST /api/touch-backlight` (`src/server/services/touch/backlight.js`). The last level is stored in `.cncrc` (`touch.backlight.percent`, written 2 s after the slider stops) and applied again when CNCjs starts, since the kernel resets it on boot.
+
+The brightness file belongs to root, so CNCjs needs write access through a udev rule. On a Raspberry Pi OS style system where the CNCjs user is in the `video` group, run once:
+
+```sh
+echo 'ACTION=="add", SUBSYSTEM=="backlight", RUN+="/bin/chgrp video /sys/class/backlight/%k/brightness", RUN+="/bin/chmod g+w /sys/class/backlight/%k/brightness"' | sudo tee /etc/udev/rules.d/90-backlight.rules
+sudo udevadm control --reload && sudo udevadm trigger --subsystem-match=backlight --action=add
+```
+
+Without it the card says the setting is blocked and sends nothing.
+
 ## Preview performance pass (2026-10-16)
 
 The G-code preview parser is 2.8–3.7× faster and the preview worker overlaps parsing with drawing; the full 20 MB pipeline runs in 55 % of its previous time on the development PC. Behaviour is unchanged (differentially fuzzed against the previous parser). See [TESTING.md](TESTING.md), "Preview pipeline measurements", for the numbers, the rejected approaches and the caveats. Measurements on the real touchscreen remain to be made: open a page with `?perf=1` and export the report (see TESTING.md, "Measuring on the device").

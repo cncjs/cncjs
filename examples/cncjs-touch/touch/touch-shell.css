@@ -320,3 +320,9 @@ body.ks-real #screen-files .library-execution>.mute{display:block;font-size:12px
 .ks-tablet-action[data-state=armed]{background:#5a3b12;border-color:#f0b35a;color:#fff}
 @media(max-width:900px){.ks-system-history{grid-column:1/-1}}
 .ks-clock{font-size:22px;color:#edf3f5;font-variant-numeric:tabular-nums;margin-right:6px;white-space:nowrap}.display-hide-clock .ks-clock{display:none}
+/* Affichage → Luminosité (backlight.js). */
+.ks-backlight-row{display:grid;grid-template-columns:56px 1fr 56px 64px;align-items:center;gap:10px;margin-top:10px}
+.ks-backlight-step{min-height:52px;font-size:24px!important;padding:0!important}
+.ks-backlight-slider{width:100%;height:44px;accent-color:#f0b35a;touch-action:none}
+.ks-backlight-value{text-align:right;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums}
+.ks-backlight-status:empty{display:none}

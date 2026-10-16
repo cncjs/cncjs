@@ -5,10 +5,12 @@ import config from '../configstore';
 import { createService } from './job-service';
 import { createStream, VERSION } from './touch-stream';
 import { createSystemStats } from './system-stats';
+import { createBacklight } from './backlight';
 
 let service = null;
 let stream = null;
 let system = null;
+let backlight = null;
 
 const start = () => {
   if (stream) {
@@ -18,6 +20,8 @@ const start = () => {
   stream = createStream(service);
   system = createSystemStats();
   system.start();
+  backlight = createBacklight({ config });
+  backlight.restore();
 };
 
 const stop = () => {
@@ -29,6 +33,7 @@ const stop = () => {
   stream = null;
   service = null;
   system = null;
+  backlight = null;
 };
 
 const isStarted = () => Boolean(stream);
@@ -45,6 +50,10 @@ const openEvents = (req, res) => stream.open(req, res);
 
 const systemStats = () => system.read();
 
+const backlightStatus = () => backlight.status();
+
+const setBacklight = (percent) => backlight.set(percent);
+
 export default {
   VERSION,
   start,
@@ -55,5 +64,7 @@ export default {
   action,
   previewMotion,
   openEvents,
-  systemStats
+  systemStats,
+  backlightStatus,
+  setBacklight
 };
