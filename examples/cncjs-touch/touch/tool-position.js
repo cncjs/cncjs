@@ -53,18 +53,6 @@
     var meta=img.cncPreview,s=state;
     if(!s||!s.fresh||Date.now()-received>2500||img.hidden||!meta||!s.name||meta.file!==s.name){hide('Position outil : données ou aperçu indisponibles.');return;}
     if(!meta.projection){hide('Position outil : régénérez cet ancien aperçu dans Fichiers.');return;}
-    var point;
-    if(simulation){
-      if(s.wcs!=='G54'){hide('Position fictive : aperçu limité au repère G54.');return;}
-      point=s.workPosition;
-    }else{
-      if(!s.operator||s.operator.reportUnits!=='mm'||s.operator.wcs!=='G54'){hide('Position outil : repère G54 et rapports en mm requis.');return;}
-      var w=s.coordinates&&s.coordinates.wpos;
-      if(!w||w.x===undefined||w.y===undefined){hide('Position outil inconnue.');return;}
-      point={x:typeof w.x==='string'&&w.x.trim()!==''?Number(w.x):w.x,y:typeof w.y==='string'&&w.y.trim()!==''?Number(w.y):w.y};
-    }
-    var pixel=project(meta.projection,point);
-    if(!pixel){hide('Position outil hors aperçu ou projection invalide.');return;}
     // Layout reads are batched in one animation frame, only on the visible view.
     var r=img.getBoundingClientRect(),parent=img.parentNode.getBoundingClientRect();
     // viewport-fit may scale the screen with a CSS transform: rects are screen pixels,
@@ -73,11 +61,26 @@
     var box={left:(r.left-parent.left)/k,top:(r.top-parent.top)/k,width:r.width/k,height:r.height/k};
     var ratio=Math.min(box.width/960,box.height/540),width=960*ratio,height=540*ratio;
     if(!width||!height){hide('');return;}
+    // The trail only needs the acknowledged lines and the preview, not the tool
+    // position: it stays visible when the position cannot be projected.
     drawTrail(meta,s,box);
+    var trailLabel=trail.hidden?'':simulation?' Tracé orange : avancement fictif.':' Tracé orange : lignes acquittées, indicatif.';
+    function noMarker(message){marker.hidden=true;var text=message+trailLabel;if(note.textContent!==text)note.textContent=text;}
+    var point;
+    if(simulation){
+      if(s.wcs!=='G54'){noMarker('Position fictive : aperçu limité au repère G54.');return;}
+      point=s.workPosition;
+    }else{
+      if(!s.operator||s.operator.reportUnits!=='mm'||s.operator.wcs!=='G54'){noMarker('Position outil : repère G54 et rapports en mm requis.');return;}
+      var w=s.coordinates&&s.coordinates.wpos;
+      if(!w||w.x===undefined||w.y===undefined){noMarker('Position outil inconnue.');return;}
+      point={x:typeof w.x==='string'&&w.x.trim()!==''?Number(w.x):w.x,y:typeof w.y==='string'&&w.y.trim()!==''?Number(w.y):w.y};
+    }
+    var pixel=project(meta.projection,point);
+    if(!pixel){noMarker('Position outil hors aperçu ou projection invalide.');return;}
     marker.style.left=(box.left+(box.width-width)/2+pixel.x*width)+'px';
     marker.style.top=(box.top+(box.height-height)/2+pixel.y*height)+'px';marker.hidden=false;
-    var label=simulation?'Point rose : position fictive G54. Le travail simulé ne déplace pas ce point.':'Point rose : position de travail rapportée, G54 · projection indicative.';
-    if(!trail.hidden)label+=simulation?' Tracé orange : avancement fictif.':' Tracé orange : lignes acquittées, indicatif.';
+    var label=(simulation?'Point rose : position fictive G54. Le travail simulé ne déplace pas ce point.':'Point rose : position de travail rapportée, G54 · projection indicative.')+trailLabel;
     if(note.textContent!==label)note.textContent=label;
   }
   function schedule(){
