@@ -19,6 +19,9 @@ for(let i=0;i<20;i++){for(const f of [before,after].filter(Boolean)){f.handlers[
 assert.equal(after.writes,0);if(before)assert(before.writes>0);
 after.observers[0]([{target:after.hidden}]);assert.equal(after.scheduled,20);
 after.grow();after.observers[0]([{target:after.screen}]);after.flush();assert(after.writes>0);
+// Growth on a shown screen shrinks it in place: never hidden, never reset to scale 1.
+assert.notEqual(after.screen.style.visibility,'hidden','overflow refit must not hide a shown screen');
+assert.match(after.screen.style.transform,/^scale\(/);
 // Content that changes but still fits at the current scale must not be re-measured (no blink).
 const settled=after.writes;after.resize(800);after.observers[0]([{target:after.screen}]);after.flush();
 assert.equal(after.writes,settled,'fitting content change: no style writes');assert.equal(after.screen.style.visibility,'');

@@ -105,6 +105,7 @@
       frames: { count: frames, sampled: gaps.length, medianMs: percentile(gaps, 0.5), p95Ms: percentile(gaps, 0.95), p99Ms: percentile(gaps, 0.99), maxMs: Math.round(worstGap * 10) / 10, over50Ms: slowFrames },
       longTasks: { observed: !!observer, count: longTasks.count, totalMs: Math.round(longTasks.totalMs), maxMs: Math.round(longTasks.maxMs) },
       memoryMb: memory, screens: screens, statusEvents: statusEvents, previewRenders: renders,
+      viewportFit: (root.cncViewportFit && root.cncViewportFit.stats) || null,
       note: 'Mesures navigateur sur l’appareil. Aucune commande machine. Rendu logiciel probable si renderer.software est vrai.'
     };
   }

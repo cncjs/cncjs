@@ -35,13 +35,17 @@
       if(screen)screenObserver.observe(screen,{childList:true,subtree:true,characterData:true});
     }
     if(screen&&!fits&&(!cached||cached.key!==key||cached.width!==sw||cached.height!==sh)){
-      // An interrupted fit must not reuse the old cache after transform reset.
+      // A shown screen whose content grew is only shrunk, starting from its
+      // current scale: no reset to full size, nothing hidden, a small gradual
+      // adjustment instead of a flash. The first fit of a screen and a changed
+      // viewport measure from scale 1 with the screen invisible (layout still
+      // runs) so none of the intermediate frames is painted.
+      var incremental=!activated&&!!cached&&cached.key===key&&cached.scale>0;
       layouts.delete(screen);
-      var version=revision,scale=1,passes=0;
-      // Measuring takes several frames at changing widths; keep the screen
-      // invisible (layout still runs) so none of them is painted.
-      style(screen,'visibility','hidden');screen._fitHidden=true;
-      style(screen,'transform','none');style(screen,'width',w+'px');
+      var version=revision,scale=incremental?cached.scale:1,passes=0;
+      stats.measurements++;
+      if(!incremental){stats.hidden++;style(screen,'visibility','hidden');screen._fitHidden=true;style(screen,'transform','none');}
+      style(screen,'width',(w/scale)+'px');
       function measure(){
         if(disposed||version!==revision||main.querySelector('.screen.active')!==screen)return;
         var naturalW=screen.scrollWidth,naturalH=screen.scrollHeight;
@@ -65,6 +69,8 @@
     main.scrollTop=0;main.scrollLeft=0;
   }
   function reveal(screen){if(screen._fitHidden){screen._fitHidden=false;screen.style.visibility='';}}
+  // Counters for the on-device perf report: full measurements, and how many hid the screen.
+  var stats={measurements:0,hidden:0};
   var readyCallbacks=[];
   function ready(){var callbacks=readyCallbacks;readyCallbacks=[];callbacks.forEach(function(fn){fn();});}
   function schedule(){if(disposed)return;revision++;if(!pending){pending=true;frame=requestAnimationFrame(fit);}}
@@ -108,7 +114,7 @@
     if(document.removeEventListener){['click','change','focusin'].forEach(function(n){document.removeEventListener(n,schedule);});document.removeEventListener('toggle',schedule,true);document.removeEventListener('load',schedule,true);}
   }
   function leave(event){if(!event||!event.persisted)dispose();}
-  window.cncViewportFit={whenReady:function(fn){readyCallbacks.push(fn);schedule();},dispose:dispose};
+  window.cncViewportFit={whenReady:function(fn){readyCallbacks.push(fn);schedule();},dispose:dispose,stats:stats};
   window.addEventListener('pagehide',leave);
   schedule();
 })();
