@@ -31,6 +31,9 @@
       // An interrupted fit must not reuse the old cache after transform reset.
       layouts.delete(screen);
       var version=revision,scale=1,passes=0;
+      // Measuring takes several frames at changing widths; keep the screen
+      // invisible (layout still runs) so none of them is painted.
+      style(screen,'visibility','hidden');screen._fitHidden=true;
       style(screen,'transform','none');style(screen,'width',w+'px');
       function measure(){
         if(disposed||version!==revision||main.querySelector('.screen.active')!==screen)return;
@@ -41,16 +44,20 @@
         }
         // A final conservative scale also handles content that does not reflow.
         scale=next;style(screen,'transform','scale('+scale+')');
+        reveal(screen);
         layouts.set(screen,{key:key,width:naturalW,height:naturalH});
         ready();
       }
       frame=requestAnimationFrame(measure);
     }else{
+      // A screen left hidden by an interrupted measurement is shown again here.
+      if(screen)reveal(screen);
       ready();
     }
     // Focusing a control can scroll an overflow:hidden container.
     main.scrollTop=0;main.scrollLeft=0;
   }
+  function reveal(screen){if(screen._fitHidden){screen._fitHidden=false;screen.style.visibility='';}}
   var readyCallbacks=[];
   function ready(){var callbacks=readyCallbacks;readyCallbacks=[];callbacks.forEach(function(fn){fn();});}
   function schedule(){if(disposed)return;revision++;if(!pending){pending=true;frame=requestAnimationFrame(fit);}}

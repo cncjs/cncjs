@@ -25,8 +25,18 @@ const oldWrites=writes;handlers.get('doc:click')();flush();assert.equal(writes,o
 context.window.innerHeight=600;handlers.get('resize')();
 {const [i,fn]=queue.entries().next().value;queue.delete(i);wrote=false;fn();}
 assert.equal(active.style.transform,'none');
+// No intermediate measurement frame may be painted: the screen stays invisible until its final scale.
+assert.equal(active.style.visibility,'hidden','screen hidden while measured');
 context.window.innerHeight=768;handlers.get('resize')();flush();
-assert.match(active.style.transform,/^scale\(/);
+assert.match(active.style.transform,/^scale\(/);assert.equal(active.style.visibility,'','screen shown with its final scale');
+// Leaving a screen mid-measurement must not leave it invisible when it is shown again.
+const measured=active;context.window.innerHeight=640;handlers.get('resize')();
+{const [i,fn]=queue.entries().next().value;queue.delete(i);wrote=false;fn();}
+assert.equal(measured.style.visibility,'hidden');
+active=measured===first?second:first;handlers.get('cnc-screen-change')();flush();
+active=measured;handlers.get('cnc-screen-change')();flush();
+assert.equal(measured.style.visibility,'');assert.match(measured.style.transform,/^scale\(/);
+const settledWrites=writes;handlers.get('doc:click')();flush();assert.equal(writes,settledWrites,'revealed screens cost no writes on revisit');
 handlers.get('pagehide')({persisted:true});assert(handlers.has('resize'),'BFCache page remains resumable');
 context.window.cncViewportFit.dispose();context.window.cncViewportFit.dispose();
 assert.equal(handlers.size,0);assert(observers.every(o=>o.targets.length===0));assert.equal(queue.size,0);assert(reads>0);
