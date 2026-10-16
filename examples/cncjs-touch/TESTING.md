@@ -54,6 +54,20 @@ Two approaches were tried and rejected because the end-to-end numbers got worse 
 
 Caveat: in a browser page that is not being displayed, `canvas.toBlob()` waits about one second for an idle period before encoding, so the "Encodage" phase measured about 1 000 ms here regardless of the code; the synchronous PNG encode of the same 960 × 540 canvas took 3 ms. This still needs to be observed on the real, visible touchscreen.
 
+## On-device measurements (2026-10-16, Surface RT)
+
+Device: Surface RT, Tegra 3 (4 × ARMv7, no cpufreq), 2 GB, Raspbian 11 armhf, mainline kernel 5.17, Xorg with the `opentegra` driver (2D acceleration only: stock Mesa has no 3D for Tegra 3, so Chromium 106 runs with `--disable-gpu`, software rasterization and compositing). Scenario: the real interface (`index.html?perf=1`), three rounds of Menu → Fichiers → Suivi → Préparer → Fichiers driven by `xdotool`, about 60 s, report exported from the badge.
+
+| Measure | Before (first deployment) | After (remembered scales) |
+| --- | --- | --- |
+| Frame gap median / p95 | 16.7 / 16.7 ms | 16.7 / 16.7 ms |
+| Frame gap p99 / max | 83–150 / 367–467 ms | 100 / 217 ms |
+| Frames over 50 ms | 42–49 | 40 |
+| Long tasks: count / total / max | 31–35 / 3.6–4.4 s / 287–380 ms | 22 / 2.5 s / 181 ms |
+| Hidden screen measurements | 4–6 | 0 |
+
+Steady state was already at 60 frames per second; the gains are in the screen transitions (long tasks −30 to −45 %, worst frame about halved) and the first opening of a screen no longer measures it hidden. Chromium flags were compared on the device (`--enable-low-end-device-mode` on/off, 3 or 4 raster threads, `--disable-lcd-text`): all within noise of a single run, so the kiosk flags were left unchanged. `--enable-low-end-device-mode` makes Chromium report 0.5 GB of device memory on this 2 GB tablet.
+
 ## Measuring on the device
 
 Open either page with `?perf=1` (for example `…/touch/index.html?perf=1`). A small badge appears bottom-right with the live median frame gap, the 95th percentile, the number of long tasks and `CPU` or `GPU` (from the WebGL renderer string: SwiftShader, llvmpipe or no WebGL means software rendering, which is the expected case for Chromium on a Tegra 3 under Linux). Use the interface normally for a few minutes: menu, files, preview, follow-up screen during a simulated job, settings. Tap the badge to download `cnc-touch-perf-<timestamp>.json`.
