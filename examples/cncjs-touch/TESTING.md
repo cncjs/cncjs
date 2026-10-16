@@ -61,6 +61,22 @@ Observed, not changed:
 Simulator limits: approximate real time, no physics (inertia, missed steps, real switches or probe contact). These results do not replace the supervised machine tests in HANDOFF.md.
 
 
+## Spindle run on the simulator (2026-10-17)
+
+Target machine: a LUNYEE 4040 Nova (Grbl_ESP32 1.3a, 400 × 400 × 130 mm, 1204 ball screws, NEMA 23, 5000 mm/min) with a G-Penny 1.5 kW 65 mm spindle on a VFD, driven by the controller's PWM through a PWM to 0–10 V module plus a run relay. The simulator (Grbl 1.1h, same protocol) was given an estimated profile: `$100–$102=400` (1/8 microstep assumed), `$110/$111=5000`, `$112=1500`, `$120/$121=400`, `$122=200`, `$130–$132=400/400/130`, `$30=24000`, `$31=6000`, `$32=0`. Steps per mm, accelerations and the minimum spindle speed are guesses to replace with the machine's own `$$`. A 100 mm move at 5000 mm/min took 1.58 s (about 1.4 s expected).
+
+Test program: `M3 S12000`, `G4 P2`, a 120 mm square, `M5`. Results through CNCjs and the touch screen:
+
+- The follow-up screen shows the real values from Grbl: "Avance réelle 300 mm/min · Broche 12 000 tr/min".
+- Spindle override +10 %: Grbl reported `Ov:100,100,110` and 13 200 rpm.
+- Pause: the axes stopped (feed 0) and the spindle kept turning at 13 200 rpm, as Grbl does on a feed hold; the new warning appeared ("les axes sont arrêtés mais la broche tourne toujours").
+- Resume through its confirmation: running again at 13 200 rpm.
+- Stop: `Run` then `Idle`, spindle 0, no alarm. With these accelerations the axes are still before CNCjs's soft reset; the ALARM 3 seen earlier came from the simulator's slow default settings.
+- The program ran to the end with "Terminé", 100 % and the whole trail.
+
+Two defects found and fixed: the preview rejected `G4` (dwell), so any program with a spin-up pause after `M3` had no preview or trail; and the library list did not show a file just uploaded, because CNCjs's watch list sees a new file about 4 s after it is written (measured). The preview now accepts `G4 P…` without motion (a `P` word elsewhere, or `G4` with axis words, is still refused), and the list is refreshed again 2, 5 and 9 s after an upload.
+
+
 ## Prior development observations
 
 During development, separate workstation browser checks covered seven views at 1366 × 768, 1024 × 600 and 800 × 480 without measured page overflow. Ten navigation cycles showed stable instrumented timer/worker/observer counts. These measurements are limited to the observed resources and do not establish the absence of every memory leak.

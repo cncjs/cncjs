@@ -2,7 +2,7 @@
 (function (root) {
   'use strict';
   var source = typeof document !== 'undefined' && document.currentScript && document.currentScript.src;
-  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker3') : 'library-preview-worker.js?v=worker3';
+  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker4') : 'library-preview-worker.js?v=worker4';
   var generation = 0;
   function scan(text, segment, cancelled, progress, yieldAfterLine) {
     return new Promise(function (resolve, reject) {
@@ -61,10 +61,10 @@
       }
       // Per-line word state, reset by resetLine(). Kept outside read() so the
       // fast tokenizer and the regex fallback share one word() implementation.
-      var nx, ny, axis, seenX, seenY, seenZ, seenI, seenJ, seenR, hasI, hasJ, iWord, jWord, radiusWord, finish;
+      var nx, ny, axis, seenX, seenY, seenZ, seenI, seenJ, seenR, hasI, hasJ, iWord, jWord, radiusWord, finish, dwell, seenP;
       var groupMotion, groupDistance, groupArc, groupUnits;
       function resetLine() {
-        nx = null; ny = null; axis = false; finish = false; radiusWord = null;
+        nx = null; ny = null; axis = false; finish = false; radiusWord = null; dwell = false; seenP = false;
         seenX = seenY = seenZ = seenI = seenJ = seenR = hasI = hasJ = false; iWord = jWord = 0;
         groupMotion = groupDistance = groupArc = groupUnits = false;
       }
@@ -75,6 +75,8 @@
           else if (v === 90 || v === 91) { if (groupDistance) throw new Error('modes G contradictoires'); groupDistance = true; absolute = v === 90; }
           else if (v === 90.1 || v === 91.1) { if (groupArc) throw new Error('modes G contradictoires'); groupArc = true; arcAbsolute = v === 90.1; }
           else if (v === 20 || v === 21) { if (groupUnits) throw new Error('modes G contradictoires'); groupUnits = true; unit = v === 20 ? 25.4 : 1; }
+          // G4 P… dwell (e.g. spindle spin-up after M3): no motion, the modal state is unchanged.
+          else if (v === 4) dwell = true;
           else if (v !== 17 && v !== 40 && v !== 49 && v !== 54 && v !== 94) throw new Error('G' + v + ' non pris en charge par cet aperçu');
         } else if (letter === 'X') { if (seenX) throw new Error('axe répété'); seenX = true; axis = true; nx = v; }
         else if (letter === 'Y') { if (seenY) throw new Error('axe répété'); seenY = true; axis = true; ny = v; }
@@ -85,7 +87,8 @@
         else if (letter === 'M') {
           if (v !== 0 && v !== 1 && v !== 2 && v !== 3 && v !== 4 && v !== 5 && v !== 7 && v !== 8 && v !== 9 && v !== 30) throw new Error('M' + v + ' non pris en charge par cet aperçu');
           if (v === 2 || v === 30) finish = true;
-        } else if (letter !== 'N' && letter !== 'F' && letter !== 'S' && letter !== 'T') throw new Error('mot ' + letter + ' non pris en charge');
+        } else if (letter === 'P') { if (seenP) throw new Error('paramètre P répété'); seenP = true; }
+        else if (letter !== 'N' && letter !== 'F' && letter !== 'S' && letter !== 'T') throw new Error('mot ' + letter + ' non pris en charge');
       }
       // Hand-written tokenizer for the common case: ASCII letters, each followed
       // by an optional space/tab run and a plain decimal number. Anything else
@@ -138,6 +141,8 @@
           if (residue.trim()) throw new Error('syntaxe non prise en charge');
         }
         var hasArc = hasI || hasJ || radiusWord !== null;
+        if (seenP && !dwell) throw new Error('mot P hors G4 non pris en charge');
+        if (dwell && (!seenP || axis || hasArc)) throw new Error('G4 attend seulement P');
         if (hasArc && motion !== 2 && motion !== 3) throw new Error('paramètre d’arc hors mode G2/G3');
         if (axis || hasArc) {
           if (motion === null) throw new Error('mode G0/G1 non défini');

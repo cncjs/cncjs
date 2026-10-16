@@ -19,6 +19,13 @@ const {scan, render} = require('./touch/library-preview.js');
   await assert.rejects(scan('G90 G91 G1 X1'), /contradictoires/);
   await assert.rejects(scan('X2'), /mode G0/);
   await assert.rejects(scan('G1 X1',null,()=>true), /Annulé/);
+  // G4 dwell (spindle spin-up after M3) is accepted without motion; P alone or G4 with axes is not.
+  result = await scan('G21 G90\nM3 S12000\nG4 P2\nG1 X10 Y0 F600\nG4P0.5\nM5');
+  assert.equal(result.count, 1); assert.deepEqual(result.bounds, [0,0,10,0]); assert.equal(result.lines, 6);
+  await assert.rejects(scan('G1 X1 P2'), /P hors G4/);
+  await assert.rejects(scan('G4 X1 P1'), /G4 attend seulement P/);
+  await assert.rejects(scan('G4'), /G4 attend seulement P/);
+  await assert.rejects(scan('G4 P1 P2'), /P répété/);
   let count=0;
   const big = 'G90 G21\nG1 X1\n' + Array.from({length:120001},(_,i)=>'X'+(i%2 ? 1 : 2)).join('\n');
   result = await scan(big,()=>count++);

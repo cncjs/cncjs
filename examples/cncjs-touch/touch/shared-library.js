@@ -342,6 +342,9 @@
       publishSelection(stored, file.name);
       status('✓ ' + file.name + uiLocale.t(' enregistré. Disponible sur la Surface.') + (meta.previewError ? uiLocale.t(' Aperçu indisponible : ') + meta.previewError : ''));
       previewChanged(stored);
+      // CNCjs's watch list sees a new file a few seconds after it is written
+      // (measured: about 4 s on the tablet): look again a few times.
+      [2000, 5000, 9000].forEach(function (delay) { setTimeout(function () { refresh(true); }, delay); });
       return refresh(true);
     }).catch(function (error) {
       if (cancelled()) return;
