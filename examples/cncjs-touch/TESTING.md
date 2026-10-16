@@ -54,6 +54,12 @@ Two approaches were tried and rejected because the end-to-end numbers got worse 
 
 Caveat: in a browser page that is not being displayed, `canvas.toBlob()` waits about one second for an idle period before encoding, so the "Encodage" phase measured about 1 000 ms here regardless of the code; the synchronous PNG encode of the same 960 × 540 canvas took 3 ms. This still needs to be observed on the real, visible touchscreen.
 
+## Measuring on the device
+
+Open either page with `?perf=1` (for example `…/touch/index.html?perf=1`). A small badge appears bottom-right with the live median frame gap, the 95th percentile, the number of long tasks and `CPU` or `GPU` (from the WebGL renderer string: SwiftShader, llvmpipe or no WebGL means software rendering, which is the expected case for Chromium on a Tegra 3 under Linux). Use the interface normally for a few minutes: menu, files, preview, follow-up screen during a simulated job, settings. Tap the badge to download `cnc-touch-perf-<timestamp>.json`.
+
+The report contains device information, the renderer, frame-gap statistics (median, p95, p99, max, count over 50 ms), long tasks, JS heap range, time spent per screen, the number of state updates and the phase timings of each preview generation. It contains no G-code, no file names and no machine state. Without `?perf=1` the script does nothing: no listeners, no timers, no DOM.
+
 ## Not yet validated
 
 - Physical CNC movement, cutting/laser behavior, offsets and homing.

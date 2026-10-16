@@ -149,3 +149,6 @@ window.CNCTouchMessages.push(
 );
 
 window.CNCTouchMessages.push(['Nouvelle instance du contrôleur observée sur le même port.','New controller instance observed on the same port.','Nueva instancia del controlador observada en el mismo puerto.']);
+window.CNCTouchMessages.push(['Mesure de performance : touchez pour exporter le rapport.','Performance measurement: tap to export the report.','Medición de rendimiento: toque para exportar el informe.']);
+window.CNCTouchMessages.push(['Rapport exporté','Report exported','Informe exportado']);
+window.CNCTouchMessages.push(['Export impossible','Export failed','Exportación imposible']);

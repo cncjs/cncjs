@@ -24,7 +24,7 @@ Route names (`api/custom/health`, `api/touch-job`, `api/touch-motion/preview`, `
 
 ## Preview performance pass (2026-10-16)
 
-The G-code preview parser is 2.8–3.7× faster and the preview worker overlaps parsing with drawing; the full 20 MB pipeline runs in 55 % of its previous time on the development PC. Behaviour is unchanged (differentially fuzzed against the previous parser). See [TESTING.md](TESTING.md), "Preview pipeline measurements", for the numbers, the rejected approaches and the caveats. Measurements on the real touchscreen remain to be made.
+The G-code preview parser is 2.8–3.7× faster and the preview worker overlaps parsing with drawing; the full 20 MB pipeline runs in 55 % of its previous time on the development PC. Behaviour is unchanged (differentially fuzzed against the previous parser). See [TESTING.md](TESTING.md), "Preview pipeline measurements", for the numbers, the rejected approaches and the caveats. Measurements on the real touchscreen remain to be made: open a page with `?perf=1` and export the report (see TESTING.md, "Measuring on the device").
 
 ## Previous handoff (2026-10-16)
 
@@ -59,6 +59,7 @@ An interface stop button is not a physical emergency stop. Offline checks and co
 | `touch/job-controls.js`, `touch/job-dashboard.js`, `touch/job-stream.js` | Job interaction, dashboard and state transport |
 | `touch/shared-library.js`, `touch/library-preview*.js`, `touch/library-payload.js` | File library, worker preview and upload payload preparation |
 | `touch/probe-*.js`, `touch/dry-motion.js` | Probe preparation and movement preflight UI |
+| `touch/perf-harness.js` | Opt-in (`?perf=1`) on-device measurement badge and JSON report |
 | `test-*.cjs`, `dom-fixture.cjs`, `verify-project.cjs` | Offline browser-side regression suite |
 | `preview-server.cjs` | Local mock demo |
 | `../../src/server/services/touch/`, `../../src/server/api/api.touch.js` | Job service, event stream, motion preflight, probe input and their HTTP routes (Jest tests alongside) |
