@@ -80,6 +80,37 @@ The DOM is small (45–87 elements per screen, 939 in the page, 668 CSS rules): 
 
 Beyond that, further reductions would have to come from lighter screens (fewer boxes and text runs per screen), not from browser or CSS switches.
 
+### Preview regeneration on the device (2026-10-16)
+
+The parser speed-up (commit `de975611`, `library-preview.js` + `library-preview-worker.js`) had only been measured on the PC and in Node. Measured here on the Surface RT itself, with the two files of the watched folder, through the real "Fichiers → Détails de l’aperçu → Régénérer l’aperçu depuis ce PC" flow.
+
+Method. Same device, Chromium 106 and kiosk flags as above. The kiosk was frozen (`kill -STOP` on its processes, 11:24–11:49) and a second Chromium was started with a fresh profile (`--user-data-dir=/tmp/cr-regen-*`, Local Storage copied from the kiosk, `--remote-debugging-port=9222`) on `index.html?perf=1`. The page was driven over the DevTools protocol from the tablet itself (Node 12 plus the `ws` module of the CNCjs install): DOM `click()` on the file row, on "Détails de l’aperçu" and on `#library-regenerate`, then `#library-regenerate-status` polled every 100 ms until "✓ Aperçu mis à jour". During each regeneration a `requestAnimationFrame` loop recorded the frame gaps of the UI thread and a `PerformanceObserver` the long tasks; the phase times come from `previewRenders[].phaseStartMs` of the harness (`analyse` = first "Analyse du parcours" message, `dessin` = first "Dessin du parcours", `encodage` = "Encodage de l’image PNG"). "Old parser" is the deployment backup `touch-20261016-094419` (the two preview files of commit `daa0350d`, md5 `40be09dc` / `6f75eb8a`), served temporarily by copying them into the touch folder; "new parser" is the current branch. One regeneration per file with the old parser, two with the new one (the second run of the 7.9 MB file with the new parser completed in about 80 s according to the sidecar write time, but its report was lost to a DevTools timeout and is not counted).
+
+| File (response size, segments) | Parser | End to end | `renderResponse` | Analyse (two passes, worker) | Dessin (UI thread) | Encodage |
+| --- | --- | --- | --- | --- | --- | --- |
+| Ebauche 233 KB (263 KB JSON, 15 405 segments) | old | 16.2 s | 14.4 s | 5.5 s | 7.8 s | 0.7 s |
+| Ebauche 233 KB | **new** | 8.5 / 8.3 s | 7.2 / 7.1 s | 1.8 / 1.9 s | 4.7 / 4.5 s | 0.5 / 0.5 s |
+| Finition 7.9 MB (8.9 MB JSON, 309 982 segments) | old | 222.1 s | 207.5 s | 69.6 s | 136.3 s | 0.5 s |
+| Finition 7.9 MB | **new** | 76.1 s | 63.0 s | 11.2 s | 50.6 s | 0.4 s |
+
+The time between "end to end" and `renderResponse` is the server round trip before the worker starts (both `POST file` requests and the download of the JSON envelope): about 1 s for the small file and 13–14.5 s for the 7.9 MB one, on the Node process of the same CPU. It is unchanged by the parser.
+
+Fluidity of the interface while the preview is computed (sheet open, status text updating):
+
+| Run | Frames | Gap median / p95 / p99 / max | Gaps over 50 / 100 / 250 ms | Long tasks: count / total / max |
+| --- | --- | --- | --- | --- |
+| 233 KB, old | 885 | 16.7 / 16.7 / 66.7 / 300 ms | 9 / 2 / 1 | 6 / 459 ms / 107 ms |
+| 233 KB, new (two runs) | 472, 451 | 16.7 / 16.7–33.3 / 50 / 200 ms | 4, 3 / 1, 1 / 0, 0 | 3, 2 / 188, 127 ms / 75 ms |
+| 7.9 MB, old | 13 199 | 16.7 / 16.7 / 16.7 / 200 ms | 10 / 3 / 0 | 5 / 314 ms / 84 ms |
+| 7.9 MB, new | 4 516 | 16.7 / 16.7 / 16.7 / 200 ms | 5 / 2 / 0 | 2 / 102 ms / 51 ms |
+
+Findings:
+
+- On this CPU the parsing passes are 3× faster on the small file and 6× faster on the large one (69.6 s → 11.2 s). The drawing phase is also 1.7× to 2.7× shorter, although the drawing code did not change: the old worker paused after every geometry block until the UI thread acknowledged it, so drawing and parsing alternated; with three blocks in flight the UI thread now draws without waiting. End to end, regenerating the 7.9 MB preview on the tablet goes from 3 min 42 s to 1 min 16 s.
+- The interface stayed fluid in every run: median and p95 frame gaps at 16.7 ms (60 frames per second) during the whole computation, long tasks of at most 107 ms. The few 200–300 ms gaps are at the very start (opening the sheet and issuing the requests) and at the very end (writing the sidecar and refreshing the list), not during parsing or drawing. The JS heap stayed between 6 and 10 MB.
+- What remains is the drawing phase: 309 982 segments at about 0.16 ms each (one `beginPath`/`stroke` per segment on a software-rendered 2D canvas), 50 s of the 76 s, plus the 13 s server round trip for the 8.9 MB envelope. Those are the next targets if regeneration on the device needs to be faster; the parser is no longer the bottleneck.
+- Caveat: the old-parser runs were done once each, and the kiosk was frozen during the whole session, so the numbers describe an otherwise idle tablet. After the comparison the optimised version was redeployed (`deploy-touch.sh`, backup `touch-20261016-114947`) and verified (`function tokenize` served); the two sidecar files were last rewritten by the old parser, which produces the same segments, bounds and image pipeline.
+
 ## Measuring on the device
 
 Open either page with `?perf=1` (for example `…/touch/index.html?perf=1`). A small badge appears bottom-right with the live median frame gap, the 95th percentile, the number of long tasks and `CPU` or `GPU` (from the WebGL renderer string: SwiftShader, llvmpipe or no WebGL means software rendering, which is the expected case for Chromium on a Tegra 3 under Linux). Use the interface normally for a few minutes: menu, files, preview, follow-up screen during a simulated job, settings. Tap the badge to download `cnc-touch-perf-<timestamp>.json`.
