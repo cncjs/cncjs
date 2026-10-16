@@ -11,6 +11,17 @@
     var screen=main.querySelector('.screen.active');
     var w=Math.max(1,main.clientWidth-(shell?32:16)),h=Math.max(1,vh-Math.ceil(top)-Math.ceil(bottom)-(shell?32:16));
     var key=[vw,vh,w,h,document.body.classList.contains('display-large')].join(':'),cached=screen&&layouts.get(screen);
+    if(screen&&!cached){
+      var saved=recall(screen,key);
+      if(saved){
+        // A scale remembered from an earlier page load is applied at once, with
+        // the screen visible, and only verified by reads in the next frame: no
+        // blank measurement on the first opening of a screen.
+        layouts.set(screen,{key:saved.key,width:saved.width,height:saved.height,scale:saved.scale});
+        style(screen,'width',(w/saved.scale)+'px');style(screen,'transform','scale('+saved.scale+')');
+        activation=false;pending=true;frame=requestAnimationFrame(fit);return;
+      }
+    }
     var sw=screen&&screen.scrollWidth,sh=screen&&screen.scrollHeight,activated=activation;activation=false;
     // Content that changes while a screen is shown (a list arriving, an image
     // loading) is only re-measured when it no longer fits at the current scale:
@@ -56,7 +67,8 @@
         // A final conservative scale also handles content that does not reflow.
         scale=next;style(screen,'transform','scale('+scale+')');
         reveal(screen);
-        layouts.set(screen,{key:key,width:naturalW,height:naturalH,scale:scale});
+        var entry={key:key,width:naturalW,height:naturalH,scale:scale};
+        layouts.set(screen,entry);remember(screen,entry);
         ready();
       }
       frame=requestAnimationFrame(measure);
@@ -71,6 +83,19 @@
   function reveal(screen){if(screen._fitHidden){screen._fitHidden=false;screen.style.visibility='';}}
   // Counters for the on-device perf report: full measurements, and how many hid the screen.
   var stats={measurements:0,hidden:0};
+  // Fitted scales survive page loads (per screen id and display size). Storage
+  // failures only cost the first-opening measurement, never the fit itself.
+  var storeKey='cncjs-touch-fit-v1',persisted={};
+  try{if(typeof localStorage!=='undefined')persisted=JSON.parse(localStorage.getItem(storeKey)||'{}')||{};}catch(_){persisted={};}
+  function recall(screen,key){
+    var p=screen.id&&Object.prototype.hasOwnProperty.call(persisted,screen.id)&&persisted[screen.id];
+    return p&&p.key===key&&typeof p.scale==='number'&&p.scale>0&&p.scale<=1&&p.width>0&&p.height>0?p:null;
+  }
+  function remember(screen,entry){
+    if(!screen.id)return;
+    persisted[screen.id]={key:entry.key,width:entry.width,height:entry.height,scale:entry.scale};
+    try{if(typeof localStorage!=='undefined')localStorage.setItem(storeKey,JSON.stringify(persisted));}catch(_){}
+  }
   var readyCallbacks=[];
   function ready(){var callbacks=readyCallbacks;readyCallbacks=[];callbacks.forEach(function(fn){fn();});}
   function schedule(){if(disposed)return;revision++;if(!pending){pending=true;frame=requestAnimationFrame(fit);}}
