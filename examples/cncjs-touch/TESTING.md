@@ -151,7 +151,7 @@ First attempt, before the asset ordering change: the ~60 scripts of the page, lo
 - Physical CNC movement, cutting/laser behavior, offsets and homing.
 - Real start/pause/resume/stop timing, controller errors, reconnects and emergencies during an actual job.
 - Real probing cycles, calibration, contact bounce and tool/fixture geometry.
-- The integrated server with a controller attached, a production build (`dist/cncjs`, `NODE_ENV` unset, hashed asset route), a non-root `settings.route`, Linux/Raspberry Pi, other browsers than Chromium and other controller families. Only the no-controller paths above were exercised, in development mode on Windows.
+- The integrated server with a controller attached, a non-root `settings.route`, other browsers than Chromium and other controller families. The production build (`dist/cncjs`) has since been run on the Surface RT (Raspbian 11 armhf, Node 18, PM2 `cncjs-next`, kiosk connected to the integrated event stream) — still without a controller.
 - Long-running operation, Wi-Fi interruptions, memory pressure and screen wake behavior on the target touchscreen.
 
 Keep initial evaluation in the mock demo. Any later hardware validation needs an operator who knows the machine and can verify each action independently.
