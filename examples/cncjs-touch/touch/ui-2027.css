@@ -1,0 +1,202 @@
+/* CNCjs Touch — composants UI 2027. Construits uniquement sur design-tokens.css.
+ * Préfixe t- (touch). Aucune action au survol : les états sont :active (< 100 ms,
+ * par transform/opacity) et :focus-visible. Pas de backdrop-filter, pas de blur. */
+
+/* --- Boutons ----------------------------------------------------------- */
+.t-btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  min-height:var(--tap);min-width:var(--tap);padding:var(--sp-2) var(--sp-4);
+  font:600 var(--fs-18)/var(--lh-tight) var(--font);color:var(--fg);
+  background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-m);
+  cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none;
+  transition:transform var(--motion) var(--ease),opacity var(--motion) var(--ease);
+  overflow-wrap:anywhere;text-align:center}
+.t-btn svg{width:1.4em;height:1.4em;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.t-btn:active:not(:disabled){transform:scale(.97);opacity:.85}
+.t-btn:focus-visible,.t-seg button:focus-visible,.t-tile:focus-visible,.t-row:focus-visible,.t-check:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+/* Action principale : 64 px, une par écran. */
+.t-btn--primary{min-height:var(--tap-primary);font-size:var(--fs-24);background:var(--ok);color:var(--on-ok);border-color:transparent}
+/* Attention / pause. */
+.t-btn--warn{background:var(--warn);color:var(--on-warn);border-color:transparent}
+/* Arrêt / danger : 64 px, isolé, texte ≥ 24 px gras. */
+.t-btn--danger{min-height:var(--tap-primary);font-size:var(--fs-24);font-weight:700;background:var(--danger);color:var(--on-danger);border-color:transparent}
+.t-btn--info{background:var(--info);color:var(--on-info);border-color:transparent}
+.t-btn--ghost{background:transparent;border-color:var(--line)}
+.t-btn--lg{min-height:var(--tap-primary);font-size:var(--fs-24)}
+.t-btn--block{width:100%}
+/* Désactivé : contraste réduit mais ≥ 4,5, rayures, et cadenas ; la raison vient
+ * d'un appui (data-reason → feuille d'aide), jamais d'un survol. */
+.t-btn:disabled,.t-seg button:disabled{color:var(--disabled-fg);background:var(--disabled-bg);border-color:var(--line);cursor:not-allowed;
+  background-image:repeating-linear-gradient(135deg,var(--disabled-stripe) 0 6px,transparent 6px 14px)}
+.t-btn:disabled .t-lock{display:inline-block}
+.t-lock{display:none;width:1em;height:1em;flex:none}
+/* Bouton avec raison : reste appuyable (pointer-events) pour ouvrir la raison. */
+.t-btn[aria-disabled="true"]{color:var(--disabled-fg);background:var(--disabled-bg);border-color:var(--line);
+  background-image:repeating-linear-gradient(135deg,var(--disabled-stripe) 0 6px,transparent 6px 14px)}
+.t-btn[aria-disabled="true"] .t-lock{display:inline-block}
+.t-btn[aria-disabled="true"]:active{transform:none;opacity:1}
+
+/* Retour « envoyée → confirmée » : pastille d'état à droite de l'action. */
+.t-sent{display:inline-flex;align-items:center;gap:var(--sp-2);font:var(--fs-16)/var(--lh) var(--font);color:var(--mute);min-height:var(--sp-6)}
+.t-sent i{width:12px;height:12px;border-radius:50%;background:var(--faint);flex:none}
+.t-sent[data-state="sent"] i{background:var(--info)}.t-sent[data-state="sent"]{color:var(--info-text)}
+.t-sent[data-state="confirmed"] i{background:var(--ok)}.t-sent[data-state="confirmed"]{color:var(--ok-text)}
+.t-sent[data-state="failed"] i{background:var(--danger)}.t-sent[data-state="failed"]{color:var(--danger-text)}
+
+/* --- Segments (sélecteur de pas, filtres) ----------------------------- */
+.t-seg{display:inline-flex;gap:0;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-m);padding:3px}
+.t-seg button{flex:1 1 0;min-width:var(--tap);min-height:calc(var(--tap) - 6px);padding:var(--sp-2) var(--sp-4);
+  font:600 var(--fs-18)/var(--lh-tight) var(--font);color:var(--mute);background:transparent;border:0;border-radius:calc(var(--r-m) - 3px);
+  cursor:pointer;touch-action:manipulation;transition:transform var(--motion) var(--ease)}
+.t-seg button:active:not(:disabled){transform:scale(.96)}
+.t-seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.t-seg--lg button{min-height:calc(var(--tap-primary) - 6px);font-size:var(--fs-24)}
+.t-seg--block{display:flex;width:100%}
+
+/* --- Tuiles du menu --------------------------------------------------- */
+.t-tile{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:var(--sp-3);
+  min-height:160px;padding:var(--sp-5);text-align:left;
+  font:var(--fs-24)/var(--lh-tight) var(--font);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:var(--r-l);
+  cursor:pointer;touch-action:manipulation;transition:transform var(--motion) var(--ease)}
+.t-tile:active{transform:scale(.98)}
+.t-tile svg{width:40px;height:40px;fill:none;stroke:var(--mute);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.t-tile strong{font-weight:600;display:block}
+.t-tile small{display:block;font-size:var(--fs-16);color:var(--mute);line-height:var(--lh)}
+/* Indicateur vivant : pastille et texte, forme + couleur + mot. */
+.t-tile .t-live{align-self:flex-start;display:inline-flex;align-items:center;gap:var(--sp-2);font:600 var(--fs-16)/var(--lh) var(--font);color:var(--mute);
+  padding:var(--sp-1) var(--sp-3);border-radius:var(--r-pill);background:var(--surface-2)}
+.t-live i{width:10px;height:10px;border-radius:50%;background:var(--faint);flex:none}
+.t-live[data-tone="ok"]{color:var(--ok-text);background:var(--ok-soft)}.t-live[data-tone="ok"] i{background:var(--ok)}
+.t-live[data-tone="warn"]{color:var(--warn-text);background:var(--warn-soft)}.t-live[data-tone="warn"] i{background:var(--warn);border-radius:2px}
+.t-live[data-tone="danger"]{color:var(--danger-text);background:var(--danger-soft)}.t-live[data-tone="danger"] i{background:var(--danger);border-radius:0;transform:rotate(45deg)}
+.t-live[data-tone="info"]{color:var(--info-text);background:var(--info-soft)}.t-live[data-tone="info"] i{background:var(--info)}
+
+/* --- Bandeau d'état fixe (tous les écrans) ----------------------------- */
+.t-statusbar{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-4);
+  height:var(--statusbar-h);padding:0 var(--sp-4);background:var(--surface);border-bottom:1px solid var(--line)}
+.t-state{display:inline-flex;align-items:center;gap:var(--sp-3);min-width:200px;height:52px;padding:0 var(--sp-4);
+  font:700 var(--fs-28)/1 var(--font);letter-spacing:.02em;border-radius:var(--r-m);color:var(--fg);background:var(--surface-2);border-left:6px solid var(--faint)}
+.t-state svg{width:28px;height:28px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.t-state[data-tone="ok"]{color:var(--ok-text);background:var(--ok-soft);border-left-color:var(--ok)}
+.t-state[data-tone="run"]{color:var(--info-text);background:var(--info-soft);border-left-color:var(--info)}
+.t-state[data-tone="warn"]{color:var(--warn-text);background:var(--warn-soft);border-left-color:var(--warn)}
+.t-state[data-tone="danger"]{color:var(--danger-text);background:var(--danger-soft);border-left-color:var(--danger)}
+.t-state[data-tone="off"]{color:var(--mute);background:var(--surface-2);border-left-color:var(--faint)}
+.t-vitals{display:flex;gap:var(--sp-5);align-items:center;min-width:0}
+.t-vital{display:flex;flex-direction:column;gap:2px;min-width:0}
+.t-vital span{font:var(--fs-14)/1 var(--font);color:var(--mute);letter-spacing:.06em;text-transform:uppercase}
+.t-vital b{font:600 var(--fs-20)/1.1 var(--font-num);color:var(--fg);font-variant-numeric:tabular-nums;white-space:nowrap}
+.t-vital--file b{font-weight:500;overflow:hidden;text-overflow:ellipsis;max-width:360px}
+.t-fresh{display:inline-flex;align-items:center;gap:var(--sp-2);font:var(--fs-16)/1 var(--font-num);color:var(--mute);font-variant-numeric:tabular-nums;white-space:nowrap}
+.t-fresh i{width:10px;height:10px;border-radius:50%;background:var(--ok)}
+.t-fresh[data-stale="true"]{color:var(--warn-text)}.t-fresh[data-stale="true"] i{background:var(--warn);border-radius:2px}
+.t-statusbar .t-actions{display:flex;gap:var(--tap-gap)}
+.t-statusbar .t-btn{min-height:52px}
+
+/* --- Rail de navigation ------------------------------------------------ */
+.t-rail{display:flex;flex-direction:column;gap:var(--sp-2);width:var(--rail-w);padding:var(--sp-2);background:var(--bg);border-right:1px solid var(--line)}
+.t-rail button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-1);min-height:76px;padding:var(--sp-2) 2px;
+  font:600 var(--fs-14)/1 var(--font);color:var(--mute);background:transparent;border:0;border-radius:var(--r-m);cursor:pointer;touch-action:manipulation;transition:transform var(--motion) var(--ease)}
+.t-rail button:active:not(:disabled){transform:scale(.95)}
+.t-rail button svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.t-rail button[aria-current]{background:var(--surface-2);color:var(--fg);box-shadow:inset 4px 0 0 var(--accent)}
+.t-rail button:disabled{color:var(--disabled-fg);cursor:default}
+.t-rail .t-rail-spacer{flex:1}
+
+/* --- Cartes, lignes, libellés ----------------------------------------- */
+.t-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-l);padding:var(--sp-4);min-width:0}
+.t-card h2{margin:0 0 var(--sp-3);font:600 var(--fs-18)/var(--lh-tight) var(--font);color:var(--mute);letter-spacing:.04em;text-transform:uppercase}
+.t-label{font:var(--fs-16)/1 var(--font);color:var(--mute);letter-spacing:.06em;text-transform:uppercase}
+.t-help{font:var(--fs-16)/var(--lh) var(--font);color:var(--mute);margin:0}
+.t-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--sp-4);min-height:var(--tap-primary);padding:var(--sp-3) var(--sp-4);
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-m);color:var(--fg);font:var(--fs-18)/var(--lh) var(--font);text-align:left;cursor:pointer;touch-action:manipulation;width:100%}
+.t-row[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 6px 0 0 var(--accent)}
+
+/* Coordonnées : 48 px minimum, chiffres tabulaires. */
+.t-coords{display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:var(--sp-4);row-gap:var(--sp-1);align-items:baseline}
+.t-coords .t-axis{font:700 var(--fs-28)/1 var(--font);color:var(--mute)}
+.t-coords .t-val{font:500 var(--fs-48)/1 var(--font-num);color:var(--fg);font-variant-numeric:tabular-nums;text-align:right;letter-spacing:-.01em}
+.t-coords .t-unit{font:var(--fs-16)/1 var(--font);color:var(--mute)}
+.t-coords--m .t-val{font-size:var(--fs-28);color:var(--mute);font-weight:400}
+
+/* Progression : barre haute, pourcentage géant, temps restant lisible à 1 m. */
+.t-progress{display:flex;flex-direction:column;gap:var(--sp-2)}
+.t-progress .t-pct{font:700 var(--fs-64)/1 var(--font-num);font-variant-numeric:tabular-nums;color:var(--fg);letter-spacing:-.02em}
+.t-progress .t-eta{font:500 var(--fs-28)/1.1 var(--font-num);color:var(--fg);font-variant-numeric:tabular-nums}
+.t-progress .t-eta small{font-size:var(--fs-18);color:var(--mute);font-weight:400}
+.t-bar{height:18px;border-radius:var(--r-pill);background:var(--surface-3);overflow:hidden}
+.t-bar i{display:block;height:100%;background:var(--info);transform-origin:0 50%;border-radius:var(--r-pill)}
+.t-bar[data-tone="warn"] i{background:var(--warn)}.t-bar[data-tone="ok"] i{background:var(--ok)}
+
+/* Corrections (avance / broche) : gros pas, les pas de 1 % en second niveau. */
+.t-override{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:center;gap:var(--sp-3)}
+.t-override .t-ov-name{font:600 var(--fs-18)/1.1 var(--font);color:var(--mute)}
+.t-override .t-ov-name b{display:block;font:700 var(--fs-28)/1 var(--font-num);color:var(--fg);font-variant-numeric:tabular-nums;margin-top:2px}
+.t-override .t-ov-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--tap-gap)}
+.t-override .t-ov-steps .t-btn{min-height:56px;font-size:var(--fs-24)}
+.t-override .t-ov-fine{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--tap-gap);margin-top:var(--sp-2)}
+.t-override .t-ov-fine .t-btn{min-height:var(--tap);font-size:var(--fs-18);font-weight:500}
+
+/* Croix de déplacement 96 px. */
+.t-pad{display:grid;grid-template-columns:repeat(3,var(--tap-jog));grid-template-rows:repeat(3,var(--tap-jog));gap:var(--tap-gap);justify-content:center}
+.t-pad .t-btn,.t-zpad .t-btn{min-height:var(--tap-jog);min-width:var(--tap-jog);font-size:var(--fs-28);font-weight:700;border-radius:var(--r-l)}
+.t-pad .t-center{display:flex;align-items:center;justify-content:center;font:var(--fs-16)/1 var(--font);color:var(--mute);border:1px dashed var(--line);border-radius:var(--r-l)}
+.t-zpad{display:grid;grid-template-rows:repeat(2,var(--tap-jog));gap:var(--tap-gap)}
+
+/* Mise à zéro protégée : armer (1er appui) puis confirmer (2e appui) en 3 s. */
+.t-btn[data-armed="true"]{background:var(--warn);color:var(--on-warn);border-color:transparent}
+
+/* --- Dialogue de confirmation ------------------------------------------ */
+.t-scrim{position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;padding:var(--sp-6);background:rgba(0,0,0,.72)}
+.t-dialog{width:min(720px,100%);background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-l);padding:var(--sp-6);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:var(--sp-4)}
+.t-dialog h2{margin:0;font:700 var(--fs-28)/var(--lh-tight) var(--font);color:var(--fg)}
+.t-dialog p{margin:0;font:var(--fs-18)/var(--lh) var(--font);color:var(--mute);overflow-wrap:anywhere}
+.t-dialog .t-file{color:var(--fg);font-weight:600}
+.t-check{display:flex;align-items:center;gap:var(--sp-4);min-height:var(--tap-primary);padding:var(--sp-2) var(--sp-3);border:1px solid var(--line);border-radius:var(--r-m);font:600 var(--fs-18)/var(--lh) var(--font);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.t-check input{width:var(--tap);height:var(--tap);margin:0;flex:none;accent-color:var(--ok);cursor:pointer}
+.t-countdown{display:flex;align-items:center;gap:var(--sp-3);font:600 var(--fs-18)/1 var(--font-num);color:var(--warn-text);font-variant-numeric:tabular-nums}
+.t-countdown .t-bar{flex:1;height:10px}.t-countdown .t-bar i{background:var(--warn)}
+.t-dialog .t-dialog-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:var(--tap-gap)}
+
+/* --- Messages courts (quoi faire ensuite) ------------------------------ */
+.t-notice{display:flex;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);border-radius:var(--r-m);font:var(--fs-18)/var(--lh) var(--font);color:var(--fg);background:var(--surface-2);border-left:6px solid var(--faint)}
+.t-notice[data-tone="ok"]{background:var(--ok-soft);border-left-color:var(--ok)}
+.t-notice[data-tone="warn"]{background:var(--warn-soft);border-left-color:var(--warn)}
+.t-notice[data-tone="danger"]{background:var(--danger-soft);border-left-color:var(--danger)}
+.t-notice[data-tone="info"]{background:var(--info-soft);border-left-color:var(--info)}
+.t-notice b{display:block;font-weight:700}
+.t-notice svg{width:28px;height:28px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Aide en un appui : bouton « ? » de 48 px. */
+.t-why{display:inline-flex;align-items:center;justify-content:center;width:var(--tap);height:var(--tap);border-radius:50%;border:1px solid var(--line-strong);background:var(--surface-2);color:var(--fg);font:700 var(--fs-20)/1 var(--font);cursor:pointer;touch-action:manipulation;flex:none}
+
+/* === Coque : bandeau d'état en haut, rail à gauche (direction A) ============ */
+.ks-ui{font-family:var(--font)}
+.ks-ui #real-banner,.ks-ui #simulation-banner{height:var(--statusbar-h);display:grid;grid-template-columns:auto auto minmax(0,1fr) auto auto;align-items:center;gap:var(--sp-4);padding:0 var(--sp-4)!important;background:var(--surface)!important;border-bottom:1px solid var(--line);color:var(--fg);font-size:var(--fs-18)}
+.ks-ui #simulation-banner{position:static}
+.t-strip-actions{display:flex;gap:var(--tap-gap)}
+.t-strip-actions .t-btn{min-height:52px}
+.t-strip-actions .t-btn--danger{font-size:var(--fs-20);min-width:140px}
+.t-strip-actions:empty{display:none}
+.t-strip-right{display:flex;align-items:center;gap:var(--sp-3);white-space:nowrap}
+.t-strip-right .ks-clock{font-size:var(--fs-20);color:var(--fg);margin:0}
+.ks-ui .ks-simulation{font:600 var(--fs-16)/1 var(--font);letter-spacing:.08em;color:var(--warn-text);border:1px solid var(--warn);border-radius:var(--r-s);padding:var(--sp-2) var(--sp-3)}
+.ks-ui .ks-real .ks-simulation,.ks-real .ks-simulation{color:var(--danger-text);border-color:var(--danger)}
+.ks-ui .ks-exit{display:inline-flex;align-items:center;min-height:var(--tap);padding:0 var(--sp-3);border:1px solid var(--line);border-radius:var(--r-m);color:var(--mute);font-size:var(--fs-16);text-decoration:none}
+/* The old badge bar of index.html is superseded by the strip; #notice stays (what to do next). */
+.ks-real #status-bar{display:none}
+.ks-ui #notice{margin:0;border-radius:0;border:0;border-bottom:1px solid var(--line);border-left:6px solid var(--warn);background:var(--warn-soft);color:var(--fg);font:var(--fs-18)/var(--lh) var(--font);padding:var(--sp-2) var(--sp-4)}
+.ks-ui #tabbar{width:var(--rail-w);background:var(--bg);border-right:1px solid var(--line);padding:var(--sp-2)!important;gap:var(--sp-2)}
+.ks-ui .ks-nav{min-height:76px;gap:var(--sp-1);padding:var(--sp-2) 2px;font:600 var(--fs-14)/1 var(--font);letter-spacing:.02em;color:var(--mute);border:0;border-radius:var(--r-m);transition:transform var(--motion) var(--ease)}
+.ks-ui .ks-nav span{font-size:var(--fs-16);font-weight:500}
+.ks-ui .ks-nav svg{width:28px;height:28px;stroke-width:1.8}
+.ks-ui .ks-nav.active{background:var(--surface-2);color:var(--fg);box-shadow:inset 4px 0 0 var(--accent);border-left:0}
+.ks-ui .ks-nav:active:not(:disabled){transform:scale(.95)}
+.ks-ui .ks-nav:hover,.ks-ui .ks-tile:hover{background:transparent}.ks-ui .ks-nav.active:hover{background:var(--surface-2)}
+.ks-ui .ks-nav[hidden]{display:none}
+.ks-ui .ks-nav:disabled{opacity:1;color:var(--disabled-fg)}
+.ks-ui{--ks-rail:var(--rail-w)}
+.ks-ui main{background:var(--bg)}
+.ks-ui button:focus-visible,.ks-ui a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+@media(max-height:650px){.ks-ui #tabbar .ks-nav{max-height:none}}
+/* Component display rules must never beat the hidden attribute. */
+.ks-ui [hidden]{display:none!important}

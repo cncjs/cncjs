@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquettes Touch 2027</title>
+<link rel="stylesheet" href="../touch/design-tokens.css">
+<link rel="stylesheet" href="../touch/ui-2027.css">
+<style>
+/* Page de validation : chaque maquette est un cadre de 1366 × 768 à l'échelle 1,
+ * réduit par transform pour tenir dans la fenêtre. Les composants sont ceux de ui-2027.css. */
+body{margin:0;background:var(--bg);color:var(--fg);font:var(--fs-18)/var(--lh) var(--font);padding-block:var(--sp-6);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1366px;margin:0 auto;display:flex;flex-direction:column;gap:var(--sp-10)}
+header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--sp-4)}
+h1{margin:0;font:700 var(--fs-36)/var(--lh-tight) var(--font);text-wrap:balance}
+h1 small{display:block;font:var(--fs-18)/var(--lh) var(--font);color:var(--mute);margin-top:var(--sp-1);max-width:70ch}
+.toc{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
+.toc a{color:var(--info-text);text-decoration:none;padding:var(--sp-2) var(--sp-3);border:1px solid var(--line);border-radius:var(--r-pill);font-size:var(--fs-16)}
+.mock{display:flex;flex-direction:column;gap:var(--sp-3)}
+.mock>h2{margin:0;font:600 var(--fs-28)/var(--lh-tight) var(--font);scroll-margin-top:var(--sp-6)}
+.mock>h2 small{display:block;color:var(--mute);font-weight:400;font-size:var(--fs-16);margin-top:var(--sp-1)}
+.notes{margin:0;padding-left:1.2em;color:var(--mute);font-size:var(--fs-16);columns:2;column-gap:var(--sp-8);max-width:1100px}
+.notes li{break-inside:avoid;margin-bottom:var(--sp-1)}
+.viewport{width:100%;overflow:hidden;border:1px solid var(--line-strong);border-radius:var(--r-s);background:#000}
+.screen{width:1366px;height:768px;transform-origin:0 0;background:var(--bg);color:var(--fg);position:relative;overflow:hidden}
+/* Gabarit de l'application. */
+.app{display:grid;grid-template-columns:var(--rail-w) minmax(0,1fr);grid-template-rows:var(--statusbar-h) minmax(0,1fr);width:1366px;height:768px}
+.app .t-statusbar{grid-column:1/-1}
+.app .t-rail{grid-row:2}
+.app main{grid-row:2;min-width:0;min-height:0;padding:var(--sp-4);display:grid;gap:var(--sp-4)}
+/* Direction B : bandeau en bas, onglets en haut. */
+.app--b{grid-template-columns:minmax(0,1fr);grid-template-rows:64px minmax(0,1fr) 88px}
+.app--b .t-tabs{display:flex;gap:var(--sp-2);padding:var(--sp-2) var(--sp-4);background:var(--surface);border-bottom:1px solid var(--line);align-items:center}
+.app--b .t-tabs button{min-height:48px;padding:0 var(--sp-5);font:600 var(--fs-18)/1 var(--font);color:var(--mute);background:transparent;border:0;border-radius:var(--r-m);cursor:pointer}
+.app--b .t-tabs button[aria-current]{background:var(--surface-2);color:var(--fg);box-shadow:inset 0 -4px 0 var(--accent)}
+.app--b .t-tabs .t-brand{margin-right:auto;font:700 var(--fs-20)/1 var(--font);letter-spacing:.08em;color:var(--mute)}
+.app--b main{grid-row:2}
+.app--b .t-statusbar{grid-row:3;grid-column:1;height:88px;border-bottom:0;border-top:1px solid var(--line)}
+.app--b .t-statusbar .t-btn{min-height:64px}
+.app--b .t-statusbar .t-btn--danger{min-width:200px;font-size:var(--fs-24)}
+/* Menu */
+.menu{grid-template-rows:auto minmax(0,1fr)}
+.resume{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-4);min-height:var(--tap-primary);padding:0 var(--sp-3) 0 var(--sp-5);background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--info);border-radius:var(--r-l);color:var(--fg);font:var(--fs-20)/var(--lh-tight) var(--font);text-align:left;cursor:pointer}
+.resume svg{width:32px;height:32px;fill:none;stroke:var(--info-text);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.resume b{display:block;font-weight:700}.resume small{color:var(--mute);font-size:var(--fs-16)}
+.resume .t-btn{min-height:52px}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:var(--sp-4);min-height:0}
+.tiles .t-tile{min-height:0;font-size:var(--fs-28)}
+.tiles .t-tile svg{width:48px;height:48px}
+/* Suivi */
+.follow{grid-template-columns:minmax(0,1fr) 520px}
+.follow .t-card,.files .detail{padding:var(--sp-3)}
+.follow .t-card h2{margin-bottom:var(--sp-2)}
+.follow .t-sent{min-height:0}
+.col{display:flex;flex-direction:column;gap:var(--sp-3);min-height:0;min-width:0}
+.preview{flex:1;min-height:0;position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-l);overflow:hidden}
+.preview svg{position:absolute;inset:0;width:100%;height:100%}
+.preview .cap{position:absolute;left:var(--sp-3);top:var(--sp-3);display:flex;gap:var(--sp-2)}
+.preview .cap span{font:var(--fs-16)/1 var(--font);color:var(--mute);background:var(--bg);padding:var(--sp-2) var(--sp-3);border-radius:var(--r-pill);border:1px solid var(--line)}
+.overrides{display:grid;gap:var(--sp-3)}
+.overrides .t-override{grid-template-columns:96px minmax(0,1fr)}
+.t-ov-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) var(--sp-4) repeat(2,minmax(0,.8fr));gap:var(--tap-gap)}
+.t-ov-row .t-btn{min-height:56px;font-size:var(--fs-24);padding:0 var(--sp-2);white-space:nowrap}
+.t-ov-row .t-fine{min-height:var(--tap);font-size:var(--fs-18);font-weight:500;align-self:center}
+.t-ov-row .t-fine:first-of-type{grid-column:5}
+.stack{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)}
+.stack .t-coords .t-val{font-size:var(--fs-48)}
+.vitals2{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)}
+.vitals2 .t-card{display:flex;flex-direction:column;gap:2px;padding:var(--sp-3) var(--sp-4)}
+.vitals2 b{font:600 var(--fs-28)/1 var(--font-num);font-variant-numeric:tabular-nums}
+.vitals2 small{color:var(--mute);font-size:var(--fs-16)}
+.actions{display:flex;flex-direction:column;gap:var(--tap-gap)}
+.actions .pair{display:grid;grid-template-columns:2fr 1fr;gap:var(--tap-gap)}
+.stop-zone{margin-top:auto;padding-top:var(--sp-3);border-top:1px dashed var(--line);display:grid;grid-template-columns:1fr;gap:var(--sp-2)}
+/* Fichiers */
+.files{grid-template-columns:minmax(0,1fr) 560px}
+.search{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:var(--tap-gap)}
+.search input{min-height:56px;font:var(--fs-20)/1 var(--font);color:var(--fg);background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-m);padding:0 var(--sp-4)}
+.list{display:flex;flex-direction:column;gap:var(--sp-2);min-height:0;overflow:auto}
+.file{display:grid;grid-template-columns:96px minmax(0,1fr) auto;align-items:center;gap:var(--sp-4);min-height:92px;padding:var(--sp-2) var(--sp-4) var(--sp-2) var(--sp-2);background:var(--surface);border:1px solid var(--line);border-radius:var(--r-m);color:var(--fg);text-align:left;cursor:pointer;font:var(--fs-18)/var(--lh) var(--font)}
+.file[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 6px 0 0 var(--accent)}
+.file .thumb{width:96px;height:72px;border-radius:var(--r-s);background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.file .thumb svg{width:84px;height:60px;fill:none;stroke:var(--info-text);stroke-width:1.5}
+.file strong{display:block;font-size:var(--fs-20);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file span{color:var(--mute);font-size:var(--fs-16)}
+.file .dur{font:600 var(--fs-20)/1 var(--font-num);font-variant-numeric:tabular-nums;color:var(--fg);white-space:nowrap}
+.file .dur small{display:block;color:var(--mute);font:var(--fs-14)/1.2 var(--font);text-align:right;margin-top:4px}
+.detail{display:flex;flex-direction:column;gap:var(--sp-3);min-height:0}
+.detail .preview{flex:1;min-height:140px}
+.dims{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-3)}
+.dims div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-m);padding:var(--sp-2) var(--sp-3)}
+.dims span{display:block;color:var(--mute);font-size:var(--fs-16)}
+.dims b{font:600 var(--fs-24)/1.2;white-space:nowrap var(--font-num);font-variant-numeric:tabular-nums}
+/* Préparer */
+.prep{grid-template-columns:560px minmax(0,1fr)}
+.coordgrid{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr) auto;column-gap:var(--sp-4);row-gap:var(--sp-5);align-items:center}
+.coordgrid .hd{font:var(--fs-16)/1 var(--font);color:var(--mute);letter-spacing:.06em;text-transform:uppercase;text-align:right}
+.coordgrid .t-axis{font:700 var(--fs-28)/1 var(--font);color:var(--mute)}
+.coordgrid .w{font:500 var(--fs-48)/1 var(--font-num);font-variant-numeric:tabular-nums;text-align:right}
+.coordgrid .m{font:400 var(--fs-24)/1 var(--font-num);font-variant-numeric:tabular-nums;text-align:right;color:var(--mute)}
+.coordgrid .t-btn{min-width:124px}
+.jogarea{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--sp-6);align-items:center;justify-items:center}
+.steprow{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:var(--sp-4)}
+.steprow .t-label{white-space:nowrap}
+.prep-foot{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--tap-gap)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <h1>Maquettes Touch 2027<small>Quatre écrans en 1366 × 768 à l'échelle 1, construits avec les composants réels (<code>design-tokens.css</code>, <code>ui-2027.css</code>). Deux directions pour le bandeau d'état : A (en haut, rail à gauche) et B (en bas, sous le pouce, onglets en haut).</small></h1>
+  <div style="display:flex;gap:var(--sp-3);flex-wrap:wrap;align-items:center">
+    <div class="t-seg" role="group" aria-label="Thème"><button type="button" id="theme-dark" aria-pressed="true">Sombre</button><button type="button" id="theme-light" aria-pressed="false">Clair</button></div>
+    <nav class="toc"><a href="#menu">Menu</a><a href="#suivi">Suivi A</a><a href="#suivi-pret">Suivi prêt</a><a href="#suivi-b">Suivi B</a><a href="#fichiers">Fichiers</a><a href="#preparer">Préparer</a></nav>
+  </div>
+</header>
+
+<!-- ============================ MENU ============================ -->
+<section class="mock">
+  <h2 id="menu">Menu<small>Toute la hauteur ; tuiles avec indicateurs vivants ; raccourci « Reprendre où j'en étais ».</small></h2>
+  <ul class="notes">
+    <li>Bandeau d'état fixe (72 px) : état en 28 px, fraîcheur, broche, avance, fichier ; Pause et Arrêter n'apparaissent que pendant un travail.</li>
+    <li>Rail de 88 px avec libellés 14 px majuscules espacés (icône + mot) ; les sept écrans sont accessibles.</li>
+    <li>Le raccourci rappelle l'écran quitté et l'action suivante.</li>
+    <li>Chaque tuile porte un indicateur forme + couleur + mot ; Machine passe en rouge sur alarme.</li>
+  </ul>
+  <div class="viewport"><div class="screen"><div class="app">
+    <div class="t-statusbar">
+      <span class="t-state" data-tone="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>REPOS</span>
+      <span class="t-fresh"><i></i>0,2 s</span>
+      <div class="t-vitals"><div class="t-vital"><span>Broche</span><b>0 tr/min</b></div><div class="t-vital"><span>Avance</span><b>—</b></div><div class="t-vital t-vital--file"><span>Fichier</span><b>support-moteur-v3.nc</b></div></div>
+      <div class="t-actions"><span class="t-fresh" style="color:var(--mute)">14:52</span></div>
+    </div>
+    <nav class="t-rail" data-rail="menu"></nav>
+    <main class="menu">
+      <button class="resume" type="button"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6.2"/><path d="M4 4v5h5"/></svg><span><b>Reprendre où j'en étais : Suivi</b><small>support-moteur-v3.nc chargé · prêt à démarrer</small></span><span class="t-btn">Ouvrir →</span></button>
+      <div class="tiles">
+        <button class="t-tile" type="button"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M6 13l3-4 3 3 4-5 2 3"/></svg><div><strong>Suivi</strong><small>Avancement et commandes</small></div><span class="t-live" data-tone="ok"><i></i>Prêt à démarrer</span></button>
+        <button class="t-tile" type="button"><svg viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10H3z"/></svg><div><strong>Fichiers</strong><small>Choisir et charger un parcours</small></div><span class="t-live" data-tone="info"><i></i>12 fichiers · 1 chargé</span></button>
+        <button class="t-tile" type="button"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/></svg><div><strong>Préparer</strong><small>Déplacer, origine, palpage</small></div><span class="t-live" data-tone="warn"><i></i>Déplacements à blanc</span></button>
+        <button class="t-tile" type="button"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><div><strong>Machine</strong><small>État, alarmes, limites</small></div><span class="t-live" data-tone="warn"><i></i>Mise en service à faire</span></button>
+        <button class="t-tile" type="button"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><div><strong>Journal</strong><small>Événements et exports</small></div><span class="t-live"><i></i>3 événements · 0 erreur</span></button>
+        <button class="t-tile" type="button"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2.5"/><circle cx="15" cy="17" r="2.5"/></svg><div><strong>Réglages</strong><small>Affichage, veille, système</small></div><span class="t-live"><i></i>Sombre · veille 10 min</span></button>
+      </div>
+    </main>
+  </div></div></div>
+</section>
+
+<!-- ============================ SUIVI A (en cours) ============================ -->
+<section class="mock">
+  <h2 id="suivi">Suivi du travail — direction A, pendant un travail<small>Aperçu et corrections à gauche ; progression, coordonnées, avance/broche réelles et actions à droite ; Arrêter isolé en bas.</small></h2>
+  <ul class="notes">
+    <li>Pourcentage 64 px, temps restant 28 px, coordonnées 48 px : lisibles à 1 m.</li>
+    <li>Démarrer et Reprendre partagent la place principale (64 px) selon l'état ; Pause en ambre à côté ; Arrêter seul, en rouge, séparé par une ligne.</li>
+    <li>Pause et Arrêter sont aussi dans le bandeau : accessibles depuis tout écran.</li>
+    <li>Corrections : −10 % / 100 % / +10 % en 56 px ; −1 % / +1 % en second niveau.</li>
+    <li>Rien d'autre à l'écran pendant un travail : pas d'aide longue, pas de liste.</li>
+  </ul>
+  <div class="viewport"><div class="screen"><div class="app">
+    <div class="t-statusbar">
+      <span class="t-state" data-tone="run"><svg viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z"/></svg>EN COURS</span>
+      <span class="t-fresh"><i></i>0,3 s</span>
+      <div class="t-vitals"><div class="t-vital"><span>Broche</span><b>12 000 tr/min</b></div><div class="t-vital"><span>Avance</span><b>1 800 mm/min</b></div><div class="t-vital t-vital--file"><span>Fichier</span><b>support-moteur-v3.nc</b></div></div>
+      <div class="t-actions"><button class="t-btn t-btn--warn" type="button">Pause</button><button class="t-btn t-btn--danger" type="button" style="min-height:52px;font-size:var(--fs-20)">Arrêter</button></div>
+    </div>
+    <nav class="t-rail" data-rail="home"></nav>
+    <main class="follow">
+      <div class="col">
+        <div class="preview">
+          <svg viewBox="0 0 640 420" preserveAspectRatio="xMidYMid meet"><g stroke="var(--line)" stroke-width="1"><path d="M40 20v380M40 400h560"/><path d="M140 400v6M240 400v6M340 400v6M440 400v6M540 400v6M40 300h-6M40 200h-6M40 100h-6" /></g><polyline fill="none" stroke="var(--faint)" stroke-width="2" points="80,360 560,360 560,80 80,80 80,360"/><path fill="none" stroke="var(--faint)" stroke-width="2" d="M200 220a60 60 0 1 0 120 0a60 60 0 1 0 -120 0"/><polyline fill="none" stroke="var(--info)" stroke-width="3.5" stroke-linecap="round" points="80,360 560,360 560,80 300,80"/><circle cx="300" cy="80" r="9" fill="var(--warn)" stroke="var(--bg)" stroke-width="3"/><text x="52" y="395" fill="var(--mute)" font-size="14" font-family="Segoe UI,system-ui,sans-serif">0</text><text x="520" y="416" fill="var(--mute)" font-size="14" font-family="Segoe UI,system-ui,sans-serif">400 mm</text></svg>
+          <div class="cap"><span>Parcours 400 × 300 mm</span><span>Outil X 148 · Y 300</span></div>
+        </div>
+        <div class="t-card"><h2>Corrections</h2>
+          <div class="overrides">
+            <div class="t-override"><div class="t-ov-name">Avance<b>100 %</b></div><div class="t-ov-row"><button class="t-btn" type="button">−10 %</button><button class="t-btn t-btn--ghost" type="button">100 %</button><button class="t-btn" type="button">+10 %</button><button class="t-btn t-btn--ghost t-fine" type="button">−1 %</button><button class="t-btn t-btn--ghost t-fine" type="button">+1 %</button></div></div>
+            <div class="t-override"><div class="t-ov-name">Broche<b>100 %</b></div><div class="t-ov-row"><button class="t-btn" type="button">−10 %</button><button class="t-btn t-btn--ghost" type="button">100 %</button><button class="t-btn" type="button">+10 %</button><button class="t-btn t-btn--ghost t-fine" type="button">−1 %</button><button class="t-btn t-btn--ghost t-fine" type="button">+1 %</button></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="t-card"><div class="t-progress"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3)"><span class="t-pct">42 %</span><span class="t-eta">reste 18 min 40 s<br><small>fin vers 15:12 · ligne 8 412 / 20 030</small></span></div><div class="t-bar"><i style="transform:scaleX(.42)"></i></div></div></div>
+        <div class="t-card"><h2>Position travail · G54</h2><div class="t-coords"><span class="t-axis">X</span><span class="t-val">148.000</span><span class="t-unit">mm</span><span class="t-axis">Y</span><span class="t-val">300.000</span><span class="t-unit">mm</span><span class="t-axis">Z</span><span class="t-val">−3.200</span><span class="t-unit">mm</span></div></div>
+        <div class="vitals2"><div class="t-card"><small>Avance réelle</small><b>1 800 mm/min</b></div><div class="t-card"><small>Broche réelle</small><b>12 000 tr/min</b></div></div>
+        <div class="actions" style="flex:1">
+          <div class="pair"><button class="t-btn t-btn--primary" type="button" disabled><svg class="t-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Reprendre</button><button class="t-btn t-btn--warn t-btn--lg" type="button">Pause</button></div>
+          <span class="t-sent" data-state="confirmed"><i></i>Démarrage confirmé par la machine à 14:53</span>
+          <div class="stop-zone"><button class="t-btn t-btn--danger" type="button"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>Arrêter le travail</button><span class="t-help" style="text-align:center">Arrêt logiciel · pas un arrêt d'urgence</span></div>
+        </div>
+      </div>
+    </main>
+  </div></div></div>
+</section>
+
+<!-- ============================ SUIVI A (prêt) ============================ -->
+<section class="mock">
+  <h2 id="suivi-pret">Suivi du travail — direction A, fichier chargé, machine au repos<small>Même gabarit ; l'action principale devient Démarrer ; les corrections sont verrouillées avec leur raison en un appui.</small></h2>
+  <div class="viewport"><div class="screen"><div class="app">
+    <div class="t-statusbar">
+      <span class="t-state" data-tone="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>REPOS</span>
+      <span class="t-fresh"><i></i>0,2 s</span>
+      <div class="t-vitals"><div class="t-vital"><span>Broche</span><b>0 tr/min</b></div><div class="t-vital"><span>Avance</span><b>—</b></div><div class="t-vital t-vital--file"><span>Fichier</span><b>support-moteur-v3.nc</b></div></div>
+      <div class="t-actions"><span class="t-fresh" style="color:var(--mute)">14:52</span></div>
+    </div>
+    <nav class="t-rail" data-rail="home"></nav>
+    <main class="follow">
+      <div class="col">
+        <div class="preview">
+          <svg viewBox="0 0 640 420" preserveAspectRatio="xMidYMid meet"><g stroke="var(--line)" stroke-width="1"><path d="M40 20v380M40 400h560"/></g><polyline fill="none" stroke="var(--mute)" stroke-width="2" points="80,360 560,360 560,80 80,80 80,360"/><path fill="none" stroke="var(--mute)" stroke-width="2" d="M200 220a60 60 0 1 0 120 0a60 60 0 1 0 -120 0"/><circle cx="80" cy="360" r="9" fill="var(--warn)" stroke="var(--bg)" stroke-width="3"/></svg>
+          <div class="cap"><span>Parcours 400 × 300 mm</span><span>Outil à l'origine</span></div>
+        </div>
+        <div class="t-card"><div style="display:flex;align-items:center;gap:var(--sp-3);justify-content:space-between"><h2 style="margin:0">Corrections</h2><button class="t-why" type="button" aria-label="Pourquoi verrouillé ?">?</button></div>
+          <div class="overrides" style="margin-top:var(--sp-3)">
+            <div class="t-override"><div class="t-ov-name">Avance<b>100 %</b></div><div class="t-ov-row"><button class="t-btn" type="button" disabled>−10 %</button><button class="t-btn t-btn--ghost" type="button" disabled>100 %</button><button class="t-btn" type="button" disabled>+10 %</button><button class="t-btn t-btn--ghost t-fine" type="button" disabled>−1 %</button><button class="t-btn t-btn--ghost t-fine" type="button" disabled>+1 %</button></div></div>
+            <div class="t-override"><div class="t-ov-name">Broche<b>100 %</b></div><div class="t-ov-row"><button class="t-btn" type="button" disabled>−10 %</button><button class="t-btn t-btn--ghost" type="button" disabled>100 %</button><button class="t-btn" type="button" disabled>+10 %</button><button class="t-btn t-btn--ghost t-fine" type="button" disabled>−1 %</button><button class="t-btn t-btn--ghost t-fine" type="button" disabled>+1 %</button></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="t-card"><div class="t-progress"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3)"><span class="t-pct">0 %</span><span class="t-eta">18 min estimées<br><small>20 030 lignes · 400 × 300 × 12 mm</small></span></div><div class="t-bar"><i style="transform:scaleX(0)"></i></div></div></div>
+        <div class="t-card"><h2>Position travail · G54</h2><div class="t-coords"><span class="t-axis">X</span><span class="t-val">0.000</span><span class="t-unit">mm</span><span class="t-axis">Y</span><span class="t-val">0.000</span><span class="t-unit">mm</span><span class="t-axis">Z</span><span class="t-val">15.000</span><span class="t-unit">mm</span></div></div>
+        <div class="t-notice" data-tone="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg><div><b>Fichier chargé, parcours dans la course</b>Touchez Démarrer pour confirmer.</div></div>
+        <div class="actions" style="flex:1">
+          <div class="pair"><button class="t-btn t-btn--primary" type="button"><svg viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z"/></svg>Démarrer…</button><button class="t-btn t-btn--warn t-btn--lg" type="button" disabled>Pause</button></div>
+          <span class="t-sent" data-state="idle"><i></i>Aucune commande en attente</span>
+          <div class="stop-zone"><button class="t-btn t-btn--danger" type="button" disabled><svg class="t-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Arrêter le travail</button><span class="t-help" style="text-align:center">Arrêt logiciel · pas un arrêt d'urgence</span></div>
+        </div>
+      </div>
+    </main>
+  </div></div></div>
+</section>
+
+<!-- ============================ SUIVI B ============================ -->
+<section class="mock">
+  <h2 id="suivi-b">Suivi du travail — direction B, bandeau en bas<small>Même contenu ; le bandeau d'état passe en bas (88 px) avec Pause et un grand Arrêter à droite, sous le pouce ; la navigation devient une rangée d'onglets en haut.</small></h2>
+  <ul class="notes">
+    <li>Avantage : Arrêter toujours au même endroit, en bas à droite, à hauteur de main pour un opérateur debout ; plus de largeur pour l'aperçu (pas de rail).</li>
+    <li>Inconvénient : les onglets du haut sont plus loin de la main ; l'état est lu en bas de l'écran.</li>
+  </ul>
+  <div class="viewport"><div class="screen"><div class="app app--b">
+    <div class="t-tabs"><span class="t-brand">CNCjs TOUCH</span><button type="button">Menu</button><button type="button">Préparer</button><button type="button">Fichiers</button><button type="button" aria-current="page">Suivi</button><button type="button">Machine</button><button type="button">Journal</button><button type="button">Réglages</button></div>
+    <main class="follow" style="grid-template-columns:minmax(0,1fr) 520px">
+      <div class="col">
+        <div class="preview">
+          <svg viewBox="0 0 640 420" preserveAspectRatio="xMidYMid meet"><g stroke="var(--line)" stroke-width="1"><path d="M40 20v380M40 400h560"/></g><polyline fill="none" stroke="var(--faint)" stroke-width="2" points="80,360 560,360 560,80 80,80 80,360"/><path fill="none" stroke="var(--faint)" stroke-width="2" d="M200 220a60 60 0 1 0 120 0a60 60 0 1 0 -120 0"/><polyline fill="none" stroke="var(--info)" stroke-width="3.5" stroke-linecap="round" points="80,360 560,360 560,80 300,80"/><circle cx="300" cy="80" r="9" fill="var(--warn)" stroke="var(--bg)" stroke-width="3"/></svg>
+          <div class="cap"><span>Parcours 400 × 300 mm</span><span>Outil X 148 · Y 300</span></div>
+        </div>
+        <div class="t-card"><h2>Corrections</h2>
+          <div class="overrides">
+            <div class="t-override"><div class="t-ov-name">Avance<b>100 %</b></div><div class="t-ov-row"><button class="t-btn" type="button">−10 %</button><button class="t-btn t-btn--ghost" type="button">100 %</button><button class="t-btn" type="button">+10 %</button><button class="t-btn t-btn--ghost t-fine" type="button">−1 %</button><button class="t-btn t-btn--ghost t-fine" type="button">+1 %</button></div></div>
+            <div class="t-override"><div class="t-ov-name">Broche<b>100 %</b></div><div class="t-ov-row"><button class="t-btn" type="button">−10 %</button><button class="t-btn t-btn--ghost" type="button">100 %</button><button class="t-btn" type="button">+10 %</button><button class="t-btn t-btn--ghost t-fine" type="button">−1 %</button><button class="t-btn t-btn--ghost t-fine" type="button">+1 %</button></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="t-card"><div class="t-progress"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3)"><span class="t-pct">42 %</span><span class="t-eta">reste 18 min 40 s<br><small>fin vers 15:12 · ligne 8 412 / 20 030</small></span></div><div class="t-bar"><i style="transform:scaleX(.42)"></i></div></div></div>
+        <div class="t-card"><h2>Position travail · G54</h2><div class="t-coords"><span class="t-axis">X</span><span class="t-val">148.000</span><span class="t-unit">mm</span><span class="t-axis">Y</span><span class="t-val">300.000</span><span class="t-unit">mm</span><span class="t-axis">Z</span><span class="t-val">−3.200</span><span class="t-unit">mm</span></div></div>
+        <div class="vitals2"><div class="t-card"><small>Avance réelle</small><b>1 800 mm/min</b></div><div class="t-card"><small>Broche réelle</small><b>12 000 tr/min</b></div></div>
+        <div class="actions" style="flex:1;justify-content:flex-end">
+          <button class="t-btn t-btn--primary" type="button" disabled><svg class="t-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Reprendre</button>
+          <span class="t-sent" data-state="confirmed"><i></i>Démarrage confirmé par la machine à 14:53</span>
+        </div>
+      </div>
+    </main>
+    <div class="t-statusbar">
+      <span class="t-state" data-tone="run"><svg viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z"/></svg>EN COURS</span>
+      <span class="t-fresh"><i></i>0,3 s</span>
+      <div class="t-vitals"><div class="t-vital"><span>Broche</span><b>12 000 tr/min</b></div><div class="t-vital"><span>Avance</span><b>1 800 mm/min</b></div><div class="t-vital t-vital--file"><span>Fichier</span><b>support-moteur-v3.nc</b></div></div>
+      <div class="t-actions"><button class="t-btn t-btn--warn t-btn--lg" type="button">Pause</button><button class="t-btn t-btn--danger" type="button"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>Arrêter</button></div>
+    </div>
+  </div></div></div>
+</section>
+
+<!-- ============================ FICHIERS ============================ -->
+<section class="mock">
+  <h2 id="fichiers">Fichiers<small>Grandes lignes avec vignette, dimensions et durée ; recherche ; panneau de détail avec « Charger » ; le chargement mène au Suivi.</small></h2>
+  <ul class="notes">
+    <li>Lignes de 92 px : vignette 96 × 72, nom 20 px, dimensions et date 16 px, durée estimée à droite.</li>
+    <li>Une seule action principale : Charger (64 px). Démarrer, Pause et Arrêter ne sont plus dans Fichiers.</li>
+    <li>Le fichier déjà chargé est marqué ; Ajouter et Actualiser restent secondaires (48 px).</li>
+    <li>Liste défilante ; le reste tient à l'échelle 1.</li>
+  </ul>
+  <div class="viewport"><div class="screen"><div class="app">
+    <div class="t-statusbar">
+      <span class="t-state" data-tone="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>REPOS</span>
+      <span class="t-fresh"><i></i>0,2 s</span>
+      <div class="t-vitals"><div class="t-vital"><span>Broche</span><b>0 tr/min</b></div><div class="t-vital"><span>Avance</span><b>—</b></div><div class="t-vital t-vital--file"><span>Fichier</span><b>support-moteur-v3.nc</b></div></div>
+      <div class="t-actions"><span class="t-fresh" style="color:var(--mute)">14:52</span></div>
+    </div>
+    <nav class="t-rail" data-rail="files"></nav>
+    <main class="files">
+      <div class="col">
+        <div class="search"><input type="search" id="q" placeholder="Rechercher parmi 12 fichiers" aria-label="Rechercher"><button class="t-btn" type="button" style="min-height:56px">↻ Actualiser</button><button class="t-btn t-btn--info" type="button" style="min-height:56px">＋ Ajouter</button></div>
+        <div class="list">
+          <button class="file" type="button" aria-pressed="true"><span class="thumb"><svg viewBox="0 0 84 60"><rect x="8" y="8" width="68" height="44"/><circle cx="42" cy="30" r="12"/></svg></span><span><strong>support-moteur-v3.nc</strong><span>400 × 300 × 12 mm · 238 Ko · hier 16:40</span></span><span class="dur">18 min<small>chargé</small></span></button>
+          <button class="file" type="button"><span class="thumb"><svg viewBox="0 0 84 60"><path d="M10 50 L30 10 L50 50 Z"/><circle cx="64" cy="20" r="8"/></svg></span><span><strong>plaque-fixation-4-trous.gcode</strong><span>120 × 80 × 6 mm · 61 Ko · 14 oct.</span></span><span class="dur">6 min</span></button>
+          <button class="file" type="button"><span class="thumb"><svg viewBox="0 0 84 60"><path d="M8 30 Q 42 0 76 30 Q 42 60 8 30 Z"/></svg></span><span><strong>logo-atelier-gravure.nc</strong><span>90 × 50 × 0,5 mm · 1,2 Mo · 12 oct.</span></span><span class="dur">41 min</span></button>
+          <button class="file" type="button"><span class="thumb"><svg viewBox="0 0 84 60"><rect x="6" y="6" width="30" height="48"/><rect x="48" y="6" width="30" height="48"/></svg></span><span><strong>cales-x2.tap</strong><span>60 × 40 × 18 mm · 42 Ko · 10 oct.</span></span><span class="dur">9 min</span></button>
+          <button class="file" type="button"><span class="thumb"><svg viewBox="0 0 84 60"><path d="M6 54 L42 6 L78 54"/><path d="M20 54 L42 26 L64 54"/></svg></span><span><strong>test-surface-planage.nc</strong><span>400 × 400 × 1 mm · 18 Ko · 8 oct.</span></span><span class="dur">12 min<small>aperçu à régénérer</small></span></button>
+          <button class="file" type="button"><span class="thumb"><svg viewBox="0 0 84 60"><circle cx="42" cy="30" r="22"/><circle cx="42" cy="30" r="6"/></svg></span><span><strong>poulie-gt2-60.gcode</strong><span>45 × 45 × 10 mm · 530 Ko · 3 oct.</span></span><span class="dur">27 min</span></button>
+        </div>
+      </div>
+      <div class="detail t-card">
+        <div style="display:flex;justify-content:space-between;gap:var(--sp-3);align-items:flex-start"><div><div class="t-label">Sélection</div><div style="font:600 var(--fs-24)/var(--lh-tight) var(--font);overflow-wrap:anywhere">support-moteur-v3.nc</div></div><span class="t-live" data-tone="ok"><i></i>Chargé</span></div>
+        <div class="preview"><svg viewBox="0 0 520 300" preserveAspectRatio="xMidYMid meet"><polyline fill="none" stroke="var(--mute)" stroke-width="2" points="60,260 460,260 460,40 60,40 60,260"/><path fill="none" stroke="var(--mute)" stroke-width="2" d="M200 150a50 50 0 1 0 100 0a50 50 0 1 0 -100 0"/><circle cx="60" cy="260" r="7" fill="var(--warn)"/></svg></div>
+        <div class="dims"><div><span>X</span><b>400 mm</b></div><div><span>Y</span><b>300 mm</b></div><div><span>Z</span><b>−12 → 15 mm</b></div></div>
+        <div class="dims"><div><span>Durée estimée</span><b>18 min</b></div><div><span>Lignes</span><b>20 030</b></div><div><span>Avance max</span><b>1 800</b></div></div>
+        <div class="t-notice" data-tone="info"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></svg><div>Déjà chargé sur la machine. Charger à nouveau remplace le programme et ouvre le Suivi.</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--tap-gap);margin-top:auto"><button class="t-btn t-btn--ghost" type="button">Dimensions et aperçu</button><button class="t-btn t-btn--ghost" type="button">Régénérer l'aperçu</button></div>
+        <button class="t-btn t-btn--primary" type="button"><svg viewBox="0 0 24 24"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg>Charger et ouvrir le Suivi</button>
+      </div>
+    </main>
+  </div></div></div>
+</section>
+
+<!-- ============================ PRÉPARER ============================ -->
+<section class="mock">
+  <h2 id="preparer">Préparer<small>Croix XY et Z de 96 px ; pas en segments ; coordonnées travail 48 px et machine 24 px ; mise à zéro armée puis confirmée.</small></h2>
+  <ul class="notes">
+    <li>Les déplacements restent « à blanc » tant que la sécurité de course n'est pas en place : avis ambre permanent et mot « À BLANC » dans la croix.</li>
+    <li>Zéro X/Y/Z : premier appui arme (ambre, 3 s), second appui confirme ; Zéro XYZ passe par le dialogue de confirmation.</li>
+    <li>Pas en segments 64 px (0,1 · 1 · 10 · 50), vitesse en second niveau.</li>
+    <li>Palpage, Macros et Aller à restent secondaires en bas.</li>
+  </ul>
+  <div class="viewport"><div class="screen"><div class="app">
+    <div class="t-statusbar">
+      <span class="t-state" data-tone="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>REPOS</span>
+      <span class="t-fresh"><i></i>0,2 s</span>
+      <div class="t-vitals"><div class="t-vital"><span>Broche</span><b>0 tr/min</b></div><div class="t-vital"><span>Avance</span><b>—</b></div><div class="t-vital t-vital--file"><span>Fichier</span><b>support-moteur-v3.nc</b></div></div>
+      <div class="t-actions"><span class="t-fresh" style="color:var(--mute)">14:52</span></div>
+    </div>
+    <nav class="t-rail" data-rail="jog"></nav>
+    <main class="prep">
+      <div class="col">
+        <div class="t-card" style="flex:1">
+          <h2>Coordonnées · mm · G54</h2>
+          <div class="coordgrid">
+            <span></span><span class="hd">Travail</span><span class="hd">Machine</span><span></span>
+            <span class="t-axis">X</span><span class="w">0.000</span><span class="m">−212.400</span><button class="t-btn" type="button">Zéro X</button>
+            <span class="t-axis">Y</span><span class="w">0.000</span><span class="m">−148.000</span><button class="t-btn" type="button" data-armed="true">Confirmer · 3 s</button>
+            <span class="t-axis">Z</span><span class="w">15.000</span><span class="m">−5.200</span><button class="t-btn" type="button">Zéro Z</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--tap-gap);margin-top:var(--sp-4)"><button class="t-btn" type="button">Zéro XYZ…</button><button class="t-btn t-btn--ghost" type="button">Aller à…</button></div>
+        </div>
+        <div class="t-notice" data-tone="warn"><svg viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></svg><div><b>Déplacements à blanc</b>Aucune commande envoyée : sécurité de course à valider dans Machine → Mise en service.</div></div>
+      </div>
+      <div class="col">
+        <div class="t-card" style="flex:1;display:flex;flex-direction:column;gap:var(--sp-4)">
+          <div class="steprow"><span class="t-label">Pas</span><div class="t-seg t-seg--lg t-seg--block" role="group"><button type="button" aria-pressed="false">0,1 mm</button><button type="button" aria-pressed="true">1 mm</button><button type="button" aria-pressed="false">10 mm</button><button type="button" aria-pressed="false">50 mm</button></div></div>
+          <div class="jogarea" style="flex:1">
+            <div class="t-pad"><span></span><button class="t-btn" type="button">Y+</button><span></span><button class="t-btn" type="button">X−</button><span class="t-center">1 mm<br>À BLANC</span><button class="t-btn" type="button">X+</button><span></span><button class="t-btn" type="button">Y−</button><span></span></div>
+            <div class="t-zpad"><button class="t-btn" type="button">Z+</button><button class="t-btn" type="button">Z−</button></div>
+          </div>
+          <div class="prep-foot"><button class="t-btn" type="button">Palpage X / Y / Z</button><button class="t-btn" type="button">Macros</button><button class="t-btn t-btn--ghost" type="button">Vitesse 800</button></div>
+        </div>
+      </div>
+    </main>
+  </div></div></div>
+</section>
+</div>
+<script>
+(function(){
+  var root=document.documentElement;
+  function setTheme(t){if(t==='light')root.setAttribute('data-theme','light');else root.removeAttribute('data-theme');
+    document.getElementById('theme-dark').setAttribute('aria-pressed',String(t!=='light'));document.getElementById('theme-light').setAttribute('aria-pressed',String(t==='light'));}
+  document.getElementById('theme-dark').addEventListener('click',function(){setTheme('dark');});
+  document.getElementById('theme-light').addEventListener('click',function(){setTheme('light');});
+  var icons={menu:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
+    jog:'<path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/>',
+    files:'<path d="M3 7h6l2 2h10v10H3z"/>',home:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M6 13l3-4 3 3 4-5 2 3"/>',
+    machine:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',history:'<path d="M4 6h16M4 12h16M4 18h10"/>',
+    settings:'<path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2.5"/><circle cx="15" cy="17" r="2.5"/>'};
+  var labels={menu:'Menu',jog:'Préparer',files:'Fichiers',home:'Suivi',machine:'Machine',history:'Journal',settings:'Réglages'};
+  document.querySelectorAll('.t-rail[data-rail]').forEach(function(rail){
+    var current=rail.getAttribute('data-rail');
+    rail.innerHTML=Object.keys(labels).map(function(k){return '<button type="button"'+(k===current?' aria-current="page"':'')+'><svg viewBox="0 0 24 24">'+icons[k]+'</svg>'+labels[k]+'</button>';}).join('');
+  });
+  function fit(){document.querySelectorAll('.viewport').forEach(function(v){var s=Math.min(1,v.clientWidth/1366);var sc=v.firstElementChild;sc.style.transform='scale('+s+')';v.style.height=Math.round(768*s)+'px';});}
+  window.addEventListener('resize',fit);fit();
+})();
+</script>
+</body>
+</html>
