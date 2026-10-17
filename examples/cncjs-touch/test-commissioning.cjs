@@ -52,6 +52,13 @@ const M=(extra)=>Object.assign({port:'/dev/ttyUSB0',fresh:true,workflow:'idle',a
  // Homing: Home then Idle; an alarm in between is a failure.
  st={};C.observe('homing',st,M({activeState:'Home'}));C.observe('homing',st,M({activeState:'Alarm'}));assert(st.failed&&!st.homed);
  C.observe('homing',st,M({activeState:'Home'}));C.observe('homing',st,M());assert.equal(C.result('homing',st),'ok');
+ // A controller silent during the cycle: $H sent from Idle, no report, then ALARM:9.
+ st={sent:true,from:'Idle'};C.observe('homing',st,M());assert(!st.left);C.observe('homing',st,null);C.observe('homing',st,M({activeState:'Alarm'}));assert(st.failed&&!st.homed);
+ // Sent from an alarm: back to Idle after a silent cycle is a success; staying in alarm is not.
+ st={sent:true,from:'Alarm'};C.observe('homing',st,M({activeState:'Alarm'}));assert(!st.failed&&!st.homed);
+ C.observe('homing',st,null);C.observe('homing',st,M());assert.equal(C.result('homing',st),'ok');
+ // Sent from Idle and back to Idle without any Home report: not proven.
+ st={sent:true,from:'Idle'};C.observe('homing',st,null);C.observe('homing',st,M());assert.equal(C.result('homing',st),'');
  // Spindle: seen turning, then stopped, plus the three checks.
  st={};C.observe('spindle',st,M({spindleSpeed:6000}));C.observe('spindle',st,M({spindleSpeed:0}));assert.equal(C.result('spindle',st),'');
  st.checks={direction:true,noise:true,vfd:true};assert.equal(C.result('spindle',st),'ok');
@@ -90,6 +97,8 @@ const M=(extra)=>Object.assign({port:'/dev/ttyUSB0',fresh:true,workflow:'idle',a
  f.byText('Passer cette étape').click();assert.equal(f.title(),'Prise d’origine');
  const home=f.byText('Lancer la prise');assert(home.disabled,'hand on the E-stop first');f.tick(0);assert(!home.disabled);
  home.click();assert.deepEqual(f.calls.at(-1),['prepare','home']);
+ f.handlers['cnc-command-sent']({detail:'home'});f.send(M({fresh:false}));f.send(M({activeState:'Alarm',canUnlock:true}));
+ assert(f.find(n=>n.className==='ks-wiz-strong'&&/Échec/.test(n.textContent)),'silent cycle then alarm: failure shown');assert(f.next().disabled);
  f.send(M({activeState:'Home'}));f.send(M());f.next().click();
  assert.equal(f.title(),'Broche et variateur');
  const start=f.byText('Démarrer à 6000');assert(start.disabled);f.tick(0);f.tick(1);assert(!start.disabled);

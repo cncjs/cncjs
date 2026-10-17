@@ -37,10 +37,14 @@
         st.free[a]=true;
       });
     }else if(id==='homing'){
+      // st.sent: $H accepted by the server, in state st.from. Some controllers stop
+      // answering during the cycle, so leaving that state (Home, or no report)
+      // counts as the cycle; an alarm afterwards is a failure.
+      if(st.sent&&(!m||!m.fresh||m.activeState!==st.from))st.left=true;
       if(m&&m.fresh){
-        if(m.activeState==='Home')st.homing=true,st.failed=false;
-        else if(st.homing&&m.activeState==='Idle')st.homed=true,st.homing=false;
-        else if(st.homing&&alarm(m))st.failed=true,st.homing=false;
+        if(m.activeState==='Home'){st.homing=true;st.failed=false;}
+        else if(alarm(m)&&(st.homing||st.sent&&st.left)){st.failed=true;st.homing=false;st.sent=false;}
+        else if(m.activeState==='Idle'&&(st.homing||st.sent&&st.left&&alarm({activeState:st.from}))){st.homed=true;st.homing=false;st.sent=false;}
       }
     }else if(id==='spindle'){
       var rpm=m&&m.fresh&&typeof m.spindleSpeed==='number'?m.spindleSpeed:null;
@@ -224,7 +228,7 @@
       return function(m){
         prop(start,'disabled',!checked(st,['hand'])||!m||!m.canHome);
         set(why,m&&!m.canHome?m.homeReason||'':'');
-        set(state,st.homed?t('Prise d’origine terminée ✓'):st.homing?t('Prise d’origine en cours…'):st.failed?t('Échec : alarme pendant la prise d’origine (contact non trouvé ?). Déverrouillez, vérifiez la fin de course puis relancez.'):'');
+        set(state,st.homed?t('Prise d’origine terminée ✓'):st.homing||st.sent?t('Prise d’origine en cours…'):st.failed?t('Échec : alarme pendant la prise d’origine (contact non trouvé ?). Déverrouillez, vérifiez la fin de course puis relancez.'):'');
         prop(unlockButton,'disabled',!m||!m.canUnlock);unlockButton.hidden=!alarm(m);
       };
     },
@@ -338,6 +342,10 @@
     overview.appendChild(tools);
   }
 
+  window.addEventListener('cnc-command-sent',function(e){
+    if(!view||STEPS[index]!=='homing'||!e||e.detail!=='home')return;
+    st.sent=true;st.left=false;st.failed=false;st.from=machine&&machine.activeState||'';refresh();
+  });
   window.addEventListener('cnc-screen-change',function(e){
     var was=current;current=e&&e.detail;
     if(was==='commissioning'&&current!=='commissioning'){stopSpindle();view=null;}

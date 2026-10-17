@@ -36,7 +36,7 @@
 .ks-wiz-summary li.ok span{color:#8ff0e3}.ks-wiz-summary li.manual span{color:#c9d6dc}.ks-wiz-summary li.skipped span{color:#ffc982}
 .ks-wiz-warning{border-color:#f18b23!important}
 .ks-wiz-warning>*{margin:0 0 12px}
-.ks-wiz-nav{display:flex;gap:12px;position:sticky;bottom:-16px;padding:12px 0;background:#10191e}
+.ks-wiz-nav{display:flex;gap:12px;padding:4px 0 12px}
 .ks-wiz-nav button{flex:1 1 0}
 .ks-ui #screen-settings .ks-commissioning-card>button{grid-column:2;grid-row:1/span 2}
 .ks-machine-commands{margin-top:12px}

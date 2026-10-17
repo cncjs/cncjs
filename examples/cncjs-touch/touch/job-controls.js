@@ -218,7 +218,10 @@
   bind($('job-confirm'),'click',function(){
     if(!confirmable()){dismiss();return;}
     if(!$('job-check').checked)return;
-    var t=ticket;dismiss();command(t.operation,{nonce:t.nonce}).catch(function(){});
+    var t=ticket;dismiss();command(t.operation,{nonce:t.nonce}).then(function(){
+      // Tells the commissioning assistant which confirmed command the server accepted.
+      if(Object.prototype.hasOwnProperty.call(COMMANDS,t.operation))window.dispatchEvent(new CustomEvent('cnc-command-sent',{detail:t.operation}));
+    }).catch(function(){});
   });
   bind(document,'keydown',function(e){
     if(e.key==='Escape'){var visible=!$('job-dialog').hidden;dismiss();if(visible){e.preventDefault();e.stopImmediatePropagation();}return;}
