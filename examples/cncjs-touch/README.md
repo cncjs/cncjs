@@ -40,6 +40,10 @@ Réglages now has two tabs, "Affichage" (the existing display settings) and "Sys
 
 A full review of the touch code fixed defects in the spindle and stop guards, the commissioning E-stop and spindle steps, previews that could hide moves, the file selected after an upload, translations and the simulator tools. Details in `TESTING.md`, "Code review before the machine".
 
+## Second pass (2026-10-17)
+
+Four remaining defects (a screen left hidden while its content changed, a program ending in a Grbl error shown as finished, Latin-1 files losing their accents, durations on the wall clock), snapshots no longer built for repeated status reports (measured on the tablet), and a counter-review of the first pass (stop during a macro or with the door open, spindle check without `FS`, stream timeouts, translations). Details in `TESTING.md`, "Second pass".
+
 ## Commissioning assistant (2026-10-17)
 
 Réglages → "Mise en service de la machine" (also opened by itself the first time a real controller is connected, and from the Machine screen) walks through nine steps before the first job: checklist, `$$` backup download, emergency stop, limit switches, probe, homing (`$H`), spindle and VFD test at the minimum speed, an air-cut test file, and a summary saved with the date for that controller port. Each step can be skipped, and so can the whole assistant after ticking "Je passe les vérifications sous ma responsabilité"; it resumes where it was left. `$X`, `$H` and the spindle start go through the same confirmation dialog as a job start and are refused during a job; the Machine screen also has `$X` and `$H`. The other checks only read the controller's reports (alarm, `Pn` inputs, spindle speed).
