@@ -221,7 +221,12 @@
   }
   bind(window,'cnc-library-select',function(event){selection=event.detail;if(store)store.set({selection:selection});render();});
   bind($('job-port'),'change',function(){generation++;explicitPort=!!$('job-port').value;dismiss();latestMachine=machines.filter(function(m){return m.port===$('job-port').value;})[0]||null;render();});
-  bind($('job-load'),'click',function(){if(!selection||busy)return;dismiss();command('load',{file:selection.file}).catch(function(){});});
+  bind($('job-load'),'click',function(){
+    if(!selection||busy)return;dismiss();
+    // Loading from Fichiers leads to the Suivi, where the start is confirmed.
+    var files=document.getElementById('screen-files'),fromFiles=!!(files&&files.classList&&files.classList.contains('active'));
+    command('load',{file:selection.file}).then(function(){if(fromFiles&&!disposed)window.dispatchEvent(new CustomEvent('cnc-navigate',{detail:'home'}));}).catch(function(){});
+  });
   bind($('job-start'),'click',function(){prepare('start');});
   bind($('job-resume'),'click',function(){prepare('resume');});
   bind($('job-pause'),'click',function(){dismiss();command('pause').catch(function(){});});

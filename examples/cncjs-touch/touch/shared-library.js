@@ -122,6 +122,45 @@
       setText('library-dimensions-' + field, valid ? (Math.abs(value) < 0.005 ? 0 : value).toLocaleString(window.cncI18n?window.cncI18n.locale:'fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—');
     });
   }
+  // Row thumbnails and XY extents come from each file's stored preview, read one
+  // at a time in idle time after the list is drawn (never before the selected
+  // file's own detail), and cached per file version. Without requestIdleCallback
+  // (tests, very old browsers) rows simply show no thumbnail.
+  var thumbs = Object.create(null), thumbBusy = false, thumbIdle = null;
+  function thumbKey(f) { return f.name + ':' + (f.previewMtime || ''); }
+  function rowInfo(f, bounds) {
+    var valid = Array.isArray(bounds) && bounds.length === 4 && bounds.every(function (n) { return typeof n === 'number' && isFinite(n); }) && bounds[2] >= bounds[0] && bounds[3] >= bounds[1];
+    var extent = valid ? Math.round(bounds[2] - bounds[0]) + ' × ' + Math.round(bounds[3] - bounds[1]) + ' mm · ' : '';
+    return extent + size(f.size) + ' · ' + new Date(f.mtime).toLocaleString(window.cncI18n ? window.cncI18n.locale : 'fr-FR');
+  }
+  function scheduleThumbs() {
+    if (typeof requestIdleCallback !== 'function' || thumbIdle !== null) return;
+    thumbIdle = requestIdleCallback(function () { thumbIdle = null; nextThumb(); }, { timeout: 2500 });
+  }
+  function nextThumb() {
+    if (thumbBusy || !visible() || detailLoading) { if (detailLoading) scheduleThumbs(); return; }
+    var row = null, names = Object.keys(rows);
+    for (var i = 0; i < names.length && !row; i++) { var candidate = rows[names[i]], f = candidate._file; if (f && f.previewMtime && !thumbs[thumbKey(f)]) row = candidate; }
+    if (!row) return;
+    var file = row._file, key = thumbKey(file);
+    if (Object.keys(thumbs).length > 40) thumbs = Object.create(null);
+    thumbBusy = true;
+    request('POST', 'file', { file: file.name + suffix }, 'thumb').then(function (response) {
+      var meta = JSON.parse(response.data), p = meta && meta.file === file.name && meta.preview || {};
+      var image = typeof p.image === 'string' && p.image.length <= 2500000 && /^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(p.image) ? p.image : '';
+      thumbs[key] = { image: image, bounds: Array.isArray(p.bounds) ? p.bounds : null };
+    }).catch(function () { thumbs[key] = { image: '', bounds: null }; }).then(function () { thumbBusy = false; applyThumbs(); scheduleThumbs(); });
+  }
+  function applyThumbs() {
+    if (!visible()) return;
+    Object.keys(rows).forEach(function (name) {
+      var row = rows[name], f = row._file, t = f && thumbs[thumbKey(f)];
+      if (!t || !row._img) return;
+      if (t.image) { if (row._img.getAttribute('src') !== t.image) row._img.setAttribute('src', t.image); property(row._img, 'hidden', false); }
+      else property(row._img, 'hidden', true);
+      property(row._info, 'textContent', rowInfo(f, t.bounds));
+    });
+  }
   function selectedRow() {
     if (!visible()) return;
     Object.keys(rows).forEach(function (key) {
@@ -155,19 +194,25 @@
       var button = rows[f.name];
       if (!button) {
         button = document.createElement('button'); button.type = 'button'; button.className = 'library-file'; button.setAttribute('data-file', f.name);
+        // Thumbnail (the stored preview, loaded in idle time), name, then size and date.
+        button._thumb = document.createElement('span'); button._thumb.className = 'library-thumb';
+        button._img = document.createElement('img'); button._img.alt = ''; button._img.hidden = true; button._thumb.appendChild(button._img);
         button._name = document.createElement('strong'); button._info = document.createElement('span');
         button._state = document.createElement('span'); button._state.className = 'library-file-state';
+        var text = document.createElement('div'); text.className = 'library-row-text';
         var meta = document.createElement('div'); meta.className = 'library-row-meta';
-        meta.appendChild(button._info); meta.appendChild(button._state);
-        button.appendChild(button._name); button.appendChild(meta);
+        meta.appendChild(button._info); text.appendChild(button._name); text.appendChild(meta);
+        button.appendChild(button._thumb); button.appendChild(text); button.appendChild(button._state);
         button.addEventListener('click', function () { select(button._file, false); });
         rows[f.name] = button;
       }
       button._file = f;
       property(button._name, 'textContent', displayName(f.name));
-      property(button._info, 'textContent', size(f.size) + ' · ' + new Date(f.mtime).toLocaleString(window.cncI18n?window.cncI18n.locale:'fr-FR'));
+      var known = thumbs[thumbKey(f)];
+      property(button._info, 'textContent', rowInfo(f, known && known.bounds));
       desired.push(button); keep[f.name] = true;
     });
+    applyThumbs(); scheduleThumbs();
     if (!desired.length) {
       var empty = list._empty || (list._empty = document.createElement('p'));
       property(empty, 'textContent', files.length ? uiLocale.t('Aucun résultat.') : listState === 'loading' ? uiLocale.t('Chargement de la liste…') :
@@ -429,7 +474,7 @@
   });
   window.addEventListener('cnc-library-page-size',function(e){
     var size=Number(e.detail);
-    if(size!==2&&size!==4)return;
+    if(size!==2&&size!==4&&size!==5)return;
     if(size!==pageSize){page=Math.floor(page*pageSize/size);pageSize=size;renderList();}
   });
   function mount() {
@@ -445,7 +490,7 @@
     mounted = false; refreshId++; requestId++;
     if (detailLoading) detailVersion = '';
     detailLoading = false; $('library-image').onload = null; $('library-image').onerror = null;
-    cancelRequest('list'); cancelRequest('detail');
+    cancelRequest('list'); cancelRequest('detail'); cancelRequest('thumb'); thumbBusy = false;
     refreshing = false; refreshPromise = null;
   }
   window.addEventListener('cnc-screen-change', function (e) { if (e.detail === 'files') mount(); else unmount(); });

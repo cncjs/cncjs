@@ -47,7 +47,7 @@
     var b=document.createElement('button');b.className='ks-nav';b.setAttribute('aria-label',label);b.innerHTML=icon(name)+uiLocale.html('<span>')+label+uiLocale.html('</span>');b.setAttribute('data-ks-screen',name);b.addEventListener('click',function(){go(name==='back'?trail.pop()||'menu':name,name==='back');});nav.appendChild(b);
   });
   var active='menu',trail=[];
-  function fitLibrary(){window.dispatchEvent(new CustomEvent('cnc-library-page-size',{detail:window.innerHeight<650?2:4}));window.dispatchEvent(new CustomEvent('cnc-history-page-size',{detail:window.innerHeight<650?3:5}));}
+  function fitLibrary(){window.dispatchEvent(new CustomEvent('cnc-library-page-size',{detail:window.innerHeight<650?2:5}));window.dispatchEvent(new CustomEvent('cnc-history-page-size',{detail:window.innerHeight<650?3:5}));}
   window.addEventListener('resize',fitLibrary);fitLibrary();
   var openedSheet=null,sheetReturn=null;
   function closeSheet(){
@@ -88,7 +88,7 @@
   var uploadBlock=document.getElementById('library-upload');uploadBlock.open=true;uploadBlock.querySelector('summary').hidden=true;upload.content.appendChild(uploadBlock);
   var uploadButton=document.createElement('button');uploadButton.type='button';uploadButton.className='ks-upload-button';uploadButton.textContent=uiLocale.t('＋ Ajouter un fichier');uploadButton.addEventListener('click',upload.open);document.querySelector('.library-list-panel').appendChild(uploadButton);
   var refresh=document.getElementById('library-refresh');document.querySelector('.library-list-title').appendChild(refresh);document.querySelector('.library-header').hidden=true;
-  document.getElementById('job-load').textContent=uiLocale.t('Charger la sélection');
+  document.getElementById('job-load').textContent=uiLocale.t('Charger et ouvrir le Suivi');
   document.querySelector('.library-execution h2').textContent=simulation?uiLocale.t('Travail simulé'):uiLocale.t('Exécution sur la machine');
   function bindSheet(id,title,contentId,buttonId){
     var panel=sheet(id,title),content=document.getElementById(contentId);
