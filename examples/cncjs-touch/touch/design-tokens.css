@@ -29,7 +29,8 @@
   /* Accent neutre d'interaction (sélection, focus) : jamais porteur d'état machine. */
   --accent:#8ecbff;--focus:#ffd166;
   --shadow:0 2px 6px rgba(0,0,0,.35);
-  /* Typographie : pile système (Segoe UI sur la Surface RT), aucune police web. */
+  /* Typographie : pile système, aucune police web. Sur la tablette (Raspbian) elle se résout en
+     Bitstream Vera Sans, large : les mises en page sont vérifiées avec Verdana, de métrique voisine. */
   --font:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
   --font-num:var(--font);
   --fs-12:12px;--fs-14:14px;--fs-16:16px;--fs-18:18px;--fs-20:20px;--fs-24:24px;--fs-28:28px;--fs-36:36px;--fs-48:48px;--fs-64:64px;

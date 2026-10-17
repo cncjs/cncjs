@@ -558,3 +558,45 @@
 .ks-ui button:disabled{pointer-events:none}
 .ks-why{position:fixed;left:50%;bottom:var(--sp-6);transform:translateX(-50%);z-index:900;max-width:min(900px,90vw);padding:var(--sp-3) var(--sp-5);background:var(--surface-2);color:var(--fg);border:1px solid var(--line-strong);border-left:6px solid var(--info);border-radius:var(--r-m);box-shadow:var(--shadow);font:var(--fs-20)/var(--lh) var(--font);text-align:center;overflow-wrap:anywhere}
 .ks-why[hidden]{display:none}
+/* Fichiers : rangées de hauteur définie (grille), pour un seul passage de mise en page des images. */
+.ks-ui #screen-files .library-detail{display:grid;grid-template-rows:auto auto auto auto minmax(0,1fr) auto auto;gap:var(--sp-2)}
+.ks-ui #screen-files .library-detail>*{min-height:0}
+.ks-ui #screen-files .library-image-wrap{flex:none;min-height:0;height:auto;overflow:hidden}
+.ks-ui #screen-files #library-preview-note,.ks-ui #screen-files #library-dimensions-content,.ks-ui #screen-files #library-regenerate,.ks-ui #screen-files #library-regenerate-status{display:none}
+
+/* === Corrections relevées sur la tablette (police système plus large que Segoe UI) === */
+.t-vitals{gap:var(--sp-4)}
+.t-vital{flex:none}
+.t-vital--file{flex:1 1 auto;min-width:0}
+.t-vital--file b{max-width:none}
+.t-ov-name b{white-space:nowrap}
+.ks-ui .t-override{grid-template-columns:104px minmax(0,1fr)}
+.home-live-tiles .t-card{flex-wrap:wrap;row-gap:0}
+.home-live-tiles small{flex:1 0 auto}
+.ks-ui .ks-tile .t-live{font:600 var(--fs-16)/var(--lh) var(--font)}
+.ks-ui .ks-tile .t-live>span{font:inherit}
+.ks-ui #screen-jog .ks-panel-intro{flex-direction:row;align-items:center}
+.ks-ui #screen-jog .ks-panel-intro>div:first-child{justify-content:flex-start}
+.ks-ui #screen-machine .ks-machine-overview>.ks-machine-word{font:700 var(--fs-36)/1.1 var(--font);order:1}
+.ks-ui #screen-machine .ks-machine-overview>.ks-machine-word[data-tone=ok]{color:var(--ok-text)}
+.ks-ui #screen-machine .ks-machine-overview>.ks-machine-word[data-tone=run]{color:var(--info-text)}
+.ks-ui #screen-machine .ks-machine-overview>.ks-machine-word[data-tone=warn]{color:var(--warn-text)}
+.ks-ui #screen-machine .ks-machine-overview>.ks-machine-word[data-tone=danger]{color:var(--danger-text)}
+.ks-ui #screen-machine .ks-machine-overview>.ks-machine-word[data-tone=off]{color:var(--mute)}
+.ks-ui .home-overrides[data-on=true] #home-override-note{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.ks-ui .preview-open{font-size:var(--fs-16);min-height:var(--tap)}
+.ks-ui #screen-settings .language-settings label{font-size:var(--fs-16)}
+.ks-ui .ks-tile .t-live>span{min-width:0}
+.ks-ui .ks-tile .t-live{max-width:100%;overflow:hidden}
+/* Suivi : la colonne de droite tient aussi après un arrêt avec une autre sélection (police large). */
+.ks-ui #home-job-eta{font-size:var(--fs-20);line-height:1.2}
+.ks-ui .home-progress-head{align-items:center}
+.ks-ui #home-job-selection{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ks-ui .t-coords-card{padding:6px var(--sp-3)!important}
+.ks-ui .home-stop{padding-top:6px;gap:0}
+.ks-ui .job-metrics{gap:6px}
+.ks-ui .t-coords-card .t-val{line-height:.9}
+.ks-ui .home-progress{padding:var(--sp-2) var(--sp-4)!important}
+/* Machine : la ligne « État : … » répète le mot d’état ; elle reste pour les lecteurs d’écran. */
+.ks-ui #screen-machine .ks-machine-overview>.ks-real-state{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.ks-ui #screen-machine .ks-machine-overview{gap:6px var(--tap-gap)}

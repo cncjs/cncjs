@@ -102,7 +102,11 @@
     var held=!!(c&&c.workflow==='paused');
     set('home-job-resume-row','hidden',!held);set('home-job-primary-row','hidden',held);
     // Charger only shows while the machine is idle and something is selected: one primary action per screen.
-    set('home-job-load','hidden',!selection||!!(c&&c.workflow&&c.workflow!=='idle'));
+    var busyJob=!!(c&&c.workflow&&c.workflow!=='idle');
+    set('home-job-load','hidden',!selection||busyJob);
+    // During a job nothing else distracts: no selection notice, the override help only as a reason.
+    set('home-job-selection','hidden',busyJob);
+    var box=$('home-overrides');if(box&&typeof box.setAttribute==='function'&&(!box.getAttribute||box.getAttribute('data-on')!==String(overrideOn)))box.setAttribute('data-on',String(overrideOn));
     if(simulationPage&&c&&c.workPosition)['x','y','z'].forEach(function(a){set('home-sim-'+a,'textContent',finiteNumber(c.workPosition[a])?c.workPosition[a].toFixed(3):'—');});
     var spinning=!!(c&&c.workflow==='paused'&&rpm!==null&&rpm>0);
     set('home-spindle-warning','hidden',!spinning);
@@ -153,7 +157,8 @@
       set('home-job-title','textContent',simulation?uiLocale.t('Suivi — SIMULATION'):uiLocale.t('Suivi du travail'));
       set('home-job-name','textContent',c&&c.name?(c.originalName||c.name):selection?uiLocale.t('Sélectionné : ')+selection.name:uiLocale.t('Aucun fichier chargé'));
       set('home-job-percent','textContent',percent);set('home-job-progress','value',p);
-      set('home-job-eta','textContent',eta);set('home-job-feedback','textContent',feedback);
+      // The static help sentence of the job controls is not a command result: only results show here.
+      set('home-job-eta','textContent',eta);set('home-job-feedback','textContent',feedback===uiLocale.t('Le chargement ne démarre pas le travail.')?'':feedback);
       set('home-job-note','textContent',simulation?uiLocale.t('Progression fictive sur 60 secondes, hors pauses. Aucun G-code exécuté.'):uiLocale.t('Progression des lignes acquittées. Estimation indicative selon le rythme observé, pas selon la durée des mouvements.'));
     }
     if(visible('files'))set('job-progress-summary','textContent',percent+' · '+eta);
