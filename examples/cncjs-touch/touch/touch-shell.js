@@ -185,6 +185,31 @@
   window.addEventListener('cnc-navigate',function(e){if(Object.prototype.hasOwnProperty.call(names,e.detail))go(e.detail);});
   function setText(el,value){if(el&&el.textContent!==value)el.textContent=value;}
   updateTiles(null,false);
+  // A disabled control answers a tap with its reason: disabled buttons let the
+  // tap through (pointer-events: none in ui-2027.css), the document finds the
+  // button under the finger and shows its title, its data-reason, or the
+  // screen's own status line, in a short toast. No hover, no long press.
+  var toast=document.createElement('div');toast.id='ks-why';toast.className='ks-why';toast.setAttribute('role','status');toast.hidden=true;document.body.appendChild(toast);
+  var toastTimer=null;
+  function whyFor(button){
+    var reason=button.title||button.getAttribute('data-reason')||'';
+    if(!reason){
+      var status=document.querySelector('#screen-'+active+' [role="status"]'),text=status&&status.textContent.trim();
+      if(button.id==='t-pause'||button.id==='t-stop')reason=uiLocale.t('Aucun travail en cours.');
+      else if(text)reason=text;
+      else reason=uiLocale.t('Indisponible dans l’état actuel de la machine.');
+    }
+    return reason;
+  }
+  document.addEventListener('click',function(e){
+    if(!e.isTrusted||(e.target&&e.target.closest&&e.target.closest('button,a,input,select,label')))return;
+    var x=e.clientX,y=e.clientY,hit=null;
+    var candidates=document.querySelectorAll('.screen.active button:disabled, #real-banner button:disabled, #simulation-banner button:disabled, .job-dialog button:disabled, .ks-sheet button:disabled');
+    for(var i=0;i<candidates.length&&!hit;i++){var r=candidates[i].getBoundingClientRect();if(r.width&&x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom)hit=candidates[i];}
+    if(!hit)return;
+    setText(toast,whyFor(hit));toast.hidden=false;
+    if(toastTimer!==null)clearTimeout(toastTimer);toastTimer=setTimeout(function(){toast.hidden=true;toastTimer=null;},4000);
+  });
   // Shared with later modules (macros): sheets with focus trapping and navigation.
   window.cncShell={sheet:sheet,closeSheet:closeSheet,go:go,preparationActions:preparationActions};
   go('menu',true);

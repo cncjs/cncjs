@@ -554,3 +554,7 @@
 .ks-wiz-warning{border-color:var(--warn)!important;background:var(--warn-soft)}
 .ks-ui .job-dialog{position:fixed;inset:0;z-index:800;display:flex;align-items:center;justify-content:center}
 .ks-ui .ks-sheet-card{color:var(--fg)}
+/* A disabled button lets the tap reach the document, which answers with the reason (touch-shell.js). */
+.ks-ui button:disabled{pointer-events:none}
+.ks-why{position:fixed;left:50%;bottom:var(--sp-6);transform:translateX(-50%);z-index:900;max-width:min(900px,90vw);padding:var(--sp-3) var(--sp-5);background:var(--surface-2);color:var(--fg);border:1px solid var(--line-strong);border-left:6px solid var(--info);border-radius:var(--r-m);box-shadow:var(--shadow);font:var(--fs-20)/var(--lh) var(--font);text-align:center;overflow-wrap:anywhere}
+.ks-why[hidden]{display:none}
