@@ -600,3 +600,7 @@
 /* Machine : la ligne « État : … » répète le mot d’état ; elle reste pour les lecteurs d’écran. */
 .ks-ui #screen-machine .ks-machine-overview>.ks-real-state{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 .ks-ui #screen-machine .ks-machine-overview{gap:6px var(--tap-gap)}
+/* Bandeau pendant un travail : le nom du fichier garde sa place. */
+.ks-ui [data-job=true] .ks-exit{display:none}
+.t-vital--file{min-width:140px}
+.t-vital--file span{overflow:visible}

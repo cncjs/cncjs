@@ -69,6 +69,8 @@
     text(file,m&&m.name?(m.originalName||m.name):'—');
     var running=!!(m&&m.workflow&&m.workflow!=='idle');
     prop(pause,'hidden',!running);prop(stop,'hidden',!running);
+    // During a job the page switch link gives its room to the file name (and is not to be tapped then).
+    attr(banner,'data-job',String(running));
     prop(pause,'disabled',!m||!m.canPause);prop(stop,'disabled',!m||!m.canStop);
   }
   var disposed=false;
