@@ -842,6 +842,50 @@ export const createService = (store, config, clock = monotonic) => {
       .map(snapshot);
   };
 
+  // Cheap key of everything a snapshot depends on, apart from elapsed time
+  // (report ages, ticket expiry), which the stream heartbeat covers. GrblRunner
+  // replaces its state and settings objects only when they change, so their
+  // identity tells a repeated status report from a new one without building
+  // the snapshot.
+  const ids = new WeakMap();
+  let nextId = 0;
+  const idOf = (o) => {
+    if (!o || typeof o !== 'object') {
+      return o === undefined ? '' : String(o);
+    }
+    if (!ids.has(o)) {
+      nextId += 1;
+      ids.set(o, nextId);
+    }
+    return ids.get(o);
+  };
+  const fingerprint = () => {
+    if (disposed) {
+      return '';
+    }
+    const registry = controllers();
+    return Object.keys(registry).map((port) => {
+      const c = registry[port];
+      if (!c) {
+        return port;
+      }
+      const runner = c.runner || {};
+      const state = runner.state || {};
+      const s = (c.sender && c.sender.state) || {};
+      const feeder = c.feeder && typeof c.feeder.toJSON === 'function' ? c.feeder.toJSON() : {};
+      const r = records.get(c);
+      const j = r && r.job;
+      return [
+        port, idOf(c), c.type, c.isClose(), c.ready, c.workflow && c.workflow.state,
+        idOf(state), idOf(state.status), idOf(state.parserstate), idOf(runner.settings), idOf(c.settings),
+        s.name, s.total, s.sent, s.received, s.hold, idOf(s.holdReason), idOf(s.context),
+        feeder.queue, feeder.pending,
+        r ? [r.loading, r.seen === null, r.modalSeen === null, r.wcs, r.ticket && r.ticket.nonce, r.firmware, r.startups].join(',') : '',
+        j ? [idOf(j), j.started, j.stopped, j.finishedAt, j.errors].join(',') : ''
+      ].join(';');
+    }).join('|');
+  };
+
   const subscribe = (fn) => {
     listeners.add(fn);
     return () => listeners.delete(fn);
@@ -886,6 +930,7 @@ export const createService = (store, config, clock = monotonic) => {
     action,
     previewMotion: motion.preview,
     list,
+    fingerprint,
     subscribe,
     openTransport,
     closeTransport,
