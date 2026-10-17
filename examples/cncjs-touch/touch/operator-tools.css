@@ -1,33 +1,33 @@
 .coordinate-entry{width:100%;margin-top:8px}
 .coordinate-editor[hidden]{display:none!important}
 .coordinate-editor{position:fixed;inset:0;z-index:700;background:#000b;display:flex;align-items:center;justify-content:center;padding:12px}
-.coordinate-card{width:min(760px,100%);background:#17232a;border:1px solid #59717e;border-radius:10px;padding:18px;font-size:16px}
+.coordinate-card{width:min(760px,100%);background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;padding:18px;font-size:16px}
 .coordinate-card header{display:flex;align-items:center;justify-content:space-between;gap:12px}.coordinate-card h2{margin:0;font-size:22px}
-.coordinate-card button,.coordinate-card select,.coordinate-card input{font:inherit;min-height:48px;border:1px solid #49616c;border-radius:6px;color:#edf3f5;background:#20313a;padding:8px 12px;min-width:0}
+.coordinate-card button,.coordinate-card select,.coordinate-card input{font:inherit;min-height:48px;border:1px solid var(--line-strong);border-radius:6px;color:var(--fg);background:var(--surface-2);padding:8px 12px;min-width:0}
 .coordinate-card button{cursor:pointer}.coordinate-card button:disabled{opacity:.45;cursor:default}
 .coordinate-fields{display:grid;grid-template-columns:80px 90px 115px minmax(150px,1fr);gap:10px;margin:10px 0}
 .coordinate-card label{display:block}.coordinate-card select,.coordinate-card input{display:block;width:100%;margin-top:4px}
 .coordinate-input-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .coordinate-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.coordinate-keypad button[data-coordinate-key="Effacer"]{grid-column:span 2}
-.coordinate-card p{margin:8px 0;line-height:1.35}.coordinate-note{font-size:13px;color:#a4bac4}.coordinate-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.coordinate-actions button{border-bottom:3px solid #36c3b8}
-#coordinate-result{min-height:44px;color:#70dfd3}#coordinate-value{font-size:24px}#coordinate-state{font-size:14px;min-height:19px}
-.job-art{position:relative}.tool-position-marker{position:absolute;width:16px;height:16px;border:2px solid white;border-radius:50%;background:#f05aaa;box-shadow:0 0 0 2px #111;pointer-events:none;transform:translate(-50%,-50%);z-index:2}
-.tool-position-note{font-size:12px!important;color:#b8c7ce;min-height:16px}.tool-position-marker[hidden]{display:none}
+.coordinate-card p{margin:8px 0;line-height:1.35}.coordinate-note{font-size:13px;color:var(--mute)}.coordinate-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.coordinate-actions button{border-bottom:3px solid var(--ok-text)}
+#coordinate-result{min-height:44px;color:var(--ok-text)}#coordinate-value{font-size:24px}#coordinate-state{font-size:14px;min-height:19px}
+.job-art{position:relative}.tool-position-marker{position:absolute;width:16px;height:16px;border:2px solid white;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px #111;pointer-events:none;transform:translate(-50%,-50%);z-index:2}
+.tool-position-note{font-size:12px!important;color:var(--mute);min-height:16px}.tool-position-marker[hidden]{display:none}
 /* Acknowledged part of the toolpath, drawn over the stored preview image. */
 .toolpath-progress{position:absolute;pointer-events:none;z-index:1;overflow:visible}.toolpath-progress[hidden]{display:none}
-.toolpath-progress polyline{fill:none;stroke:#f7a449;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:.85;vector-effect:non-scaling-stroke}
+.toolpath-progress polyline{fill:none;stroke:var(--warn-text);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:.85;vector-effect:non-scaling-stroke}
 @media(max-height:650px){.coordinate-card{padding:10px;font-size:14px}.coordinate-card h2{font-size:18px}.coordinate-card button,.coordinate-card select,.coordinate-card input{min-height:40px;padding:5px 8px}.coordinate-keypad{gap:3px}.coordinate-card p{margin:4px 0}.coordinate-fields{margin:5px 0}.coordinate-card #coordinate-result{min-height:36px}.coordinate-card #coordinate-value{font-size:20px}}
 @media(max-width:600px){.coordinate-fields{grid-template-columns:1fr 1fr}.coordinate-card h2{font-size:16px}.coordinate-input-grid{gap:8px}}
-.coordinate-frame{color:#70dfd3;white-space:nowrap}
-.connection-details{border-top:1px solid #31434c;margin-top:12px;padding-top:8px}
+.coordinate-frame{color:var(--ok-text);white-space:nowrap}
+.connection-details{border-top:1px solid var(--line);margin-top:12px;padding-top:8px}
 .connection-details h3{font-size:16px;font-weight:500;margin:0 0 6px}
 .ks-ui .connection-details p{font-size:13px;margin:5px 0;overflow-wrap:anywhere}
-.connection-report.ok{color:#8be4d9}.connection-report.warn{color:#ffca80}.connection-report.err{color:#ff9797}
-.connection-report.simulation,#connection-explanation{color:#a0b0b9}
+.connection-report.ok{color:var(--ok-text)}.connection-report.warn{color:var(--warn-text)}.connection-report.err{color:var(--danger-text)}
+.connection-report.simulation,#connection-explanation{color:var(--mute)}
 #st-report-age{font-variant-numeric:tabular-nums;white-space:nowrap}
 .library-row-meta{display:flex;align-items:baseline;justify-content:space-between;gap:4px 10px;flex-wrap:wrap}
-#screen-files .library-file .library-file-state{color:#8be4d9;font-size:12px;line-height:1.3}
+#screen-files .library-file .library-file-state{color:var(--ok-text);font-size:12px;line-height:1.3}
 #screen-files .library-file .library-file-state[hidden]{display:none}
-#screen-files .library-selection-state{font-size:13px;color:#8be4d9;margin:3px 0 6px}
+#screen-files .library-selection-state{font-size:13px;color:var(--ok-text);margin:3px 0 6px}
 #screen-files .library-selection-state:empty{display:none}
 @media(max-height:520px) and (min-width:650px){.coordinate-keypad{grid-template-columns:repeat(4,1fr)}.coordinate-card{padding:8px}.coordinate-editor{padding:8px}.coordinate-card #coordinate-result{min-height:32px}.coordinate-card .coordinate-note{font-size:12px}}

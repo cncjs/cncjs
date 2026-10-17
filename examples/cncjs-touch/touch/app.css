@@ -1,7 +1,7 @@
-:root{--bg:#10151a;--card:#1b232b;--txt:#e8edf2;--mute:#8fa0b0;--ok:#2e9e5b;--warn:#d9a21b;--err:#d64545;--line:#2c3844}
+:root{--bg:var(--bg);--card:var(--surface);--txt:var(--fg);--mute:var(--mute);--ok:#2e9e5b;--warn:#d9a21b;--err:#d64545;--line:var(--line)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--txt);font:18px/1.4 system-ui,sans-serif}
-#status-bar{display:flex;gap:8px;padding:10px;background:#0b0f13;border-bottom:1px solid var(--line);flex-wrap:wrap}
+#status-bar{display:flex;gap:8px;padding:10px;background:var(--bg);border-bottom:1px solid var(--line);flex-wrap:wrap}
 .badge{padding:8px 14px;border-radius:6px;background:var(--card);border:1px solid var(--line);min-height:40px}
 .badge.ok{border-color:var(--ok)}
 .badge.warn{border-color:var(--warn)}
@@ -14,7 +14,7 @@ main{padding:12px;display:grid;gap:12px;grid-template-columns:1fr 1fr}
 .coords span{display:block;color:var(--mute);font-size:14px}
 .coords b{font-size:30px;font-variant-numeric:tabular-nums}
 .coords.small b{font-size:20px}
-#notice{grid-column:1/-1;padding:12px;border-radius:8px;background:#3a2f10;border:1px solid var(--warn)}
+#notice{grid-column:1/-1;padding:12px;border-radius:8px;background:var(--warn-soft);border:1px solid var(--warn)}
 #notice[hidden]{display:none}
 @media (max-width:700px){main{grid-template-columns:1fr}}
 
@@ -24,16 +24,16 @@ main{padding:12px 12px 80px}
 .card.wide{grid-column:1/-1}
 .mute{color:var(--mute)}
 #notice{margin:8px 12px 0}
-#tabbar{position:fixed;left:0;right:0;bottom:0;display:flex;background:#0b0f13;border-top:1px solid var(--line)}
+#tabbar{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--bg);border-top:1px solid var(--line)}
 .tab{flex:1;min-height:56px;border:0;border-right:1px solid var(--line);background:transparent;color:var(--mute);font:inherit;font-size:16px;cursor:pointer}
 .tab:last-child{border-right:0}
 .tab.active{background:var(--card);color:var(--txt);box-shadow:inset 0 3px 0 var(--ok)}
 @media (max-width:700px){.screen.active{grid-template-columns:1fr}}
 
-.tag{font-size:12px;font-weight:700;color:#10151a;background:var(--warn);padding:2px 8px;border-radius:6px;vertical-align:middle;margin-left:8px}
+.tag{font-size:12px;font-weight:700;color:var(--bg);background:var(--warn);padding:2px 8px;border-radius:6px;vertical-align:middle;margin-left:8px}
 .steps{display:flex;gap:8px;margin-bottom:12px}
 .step{flex:1;min-height:52px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--txt);font:inherit;font-size:18px;cursor:pointer}
-.step.active{background:var(--ok);border-color:var(--ok);color:#fff;font-weight:700}
+.step.active{background:var(--ok);border-color:var(--ok);color:var(--fg);font-weight:700}
 .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 .pad-mid{display:flex;align-items:center;justify-content:center;color:var(--mute)}
 .zrow{display:flex;gap:8px}
@@ -81,10 +81,10 @@ main{
   background:#163326;
 }
 .badge.warn{
-  background:#3a2f10;
+  background:var(--warn-soft);
 }
 .badge.err{
-  background:#491e23;
+  background:var(--danger-soft);
   border-width:2px;
   font-weight:700;
 }
@@ -259,17 +259,17 @@ input:focus-visible {
 :root {
   --bg: #111820;
   --card: #1c2733;
-  --txt: #f1f5fa;
+  --txt: var(--fg);
   --mute: #a6b7c8;
-  --line: #344556;
+  --line: var(--line-strong);
 }
 body {
   background: var(--bg);
   color: var(--txt);
 }
 #status-bar {
-  background: #0b1118;
-  border-bottom: 2px solid #344556;
+  background: var(--bg);
+  border-bottom: 2px solid var(--line-strong);
   align-items: center;
 }
 #status-bar .badge {
@@ -289,7 +289,7 @@ body {
   color: #cbd9e7;
 }
 .coords b {
-  color: #ffffff;
+  color: var(--fg);
   font-variant-numeric: tabular-nums;
   font-size: 42px;
 }
@@ -298,7 +298,7 @@ body {
 }
 button {
   background: #263747;
-  color: #f1f5fa;
+  color: var(--fg);
   border: 1px solid #486077;
   border-radius: 10px;
   min-height: 60px;
@@ -319,8 +319,8 @@ button:focus-visible {
   outline-offset: 2px;
 }
 #tabbar {
-  background: #0b1118;
-  border-top: 2px solid #344556;
+  background: var(--bg);
+  border-top: 2px solid var(--line-strong);
   gap: 6px;
   padding: 8px;
 }

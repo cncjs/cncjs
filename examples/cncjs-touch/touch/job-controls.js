@@ -17,8 +17,9 @@
     uiLocale.html('<div id="job-dialog" class="job-dialog" role="dialog" aria-modal="true" aria-labelledby="job-dialog-title" hidden>') +
     uiLocale.html('<div class="job-dialog-card"><h2 id="job-dialog-title">Confirmer le démarrage</h2><p id="job-dialog-file"></p><p id="job-travel" class="job-travel" hidden></p>') +
     uiLocale.html('<p>')+(simulation?uiLocale.t('Test des boutons uniquement. Aucun mouvement ni activation du laser.'):uiLocale.t('Cette action met la machine en mouvement et peut activer l’outil. Vérifiez la machine, l’origine et la zone de travail.'))+uiLocale.html('</p>') +
-    uiLocale.html('<label class="job-confirm-label"><input id="job-check" type="checkbox">')+(simulation?uiLocale.t('Je souhaite lancer cette simulation.'):uiLocale.t('Je suis devant la machine et prêt à lancer ce fichier.'))+uiLocale.html('</label>') +
-    uiLocale.html('<p id="job-countdown"></p><button id="job-confirm" disabled>Confirmer</button><button id="job-dismiss">Annuler</button></div></div>');
+    uiLocale.html('<label class="job-confirm-label t-check"><input id="job-check" type="checkbox">')+(simulation?uiLocale.t('Je souhaite lancer cette simulation.'):uiLocale.t('Je suis devant la machine et prêt à lancer ce fichier.'))+uiLocale.html('</label>') +
+    // The confirmation window is visible: a countdown in words and a bar that empties.
+    uiLocale.html('<div class="t-countdown"><p id="job-countdown"></p><div class="t-bar"><i id="job-countdown-bar"></i></div></div><div class="job-dialog-actions"><button id="job-dismiss" class="t-btn t-btn--ghost t-btn--lg">Annuler</button><button id="job-confirm" class="t-btn t-btn--primary" disabled>Confirmer</button></div></div></div>');
   var $ = function(id) {return document.getElementById(id);};
   // The confirmation must remain visible when opened from the home screen.
   document.body.appendChild($('job-dialog'));
@@ -215,7 +216,7 @@
       // Start of a real job: is the program's XY extent inside the machine travel?
       if(window.CNCTravelCheck){var img=$('home-job-image'),pv=img&&img.cncPreview&&img.cncPreview.file===current.name?img.cncPreview:null;
         window.CNCTravelCheck.show($('job-travel'),operation==='start'&&!simulation?window.CNCTravelCheck.check(pv,current):null);}
-      text('job-countdown',uiLocale.t('Confirmation valable ')+Math.max(0,Math.ceil((until-elapsedClock())/1000))+' s.');
+      countdown(Math.max(0,Math.ceil((until-elapsedClock())/1000)));
       $('job-check').checked=false;$('job-confirm').disabled=true;$('job-dialog').hidden=false;$('job-dismiss').focus();
     },function(){preparing--;});
   }
@@ -271,7 +272,13 @@
   }
   bind(window,'offline',function(){network(false);});
   bind(window,'online',function(){network(true);});
-  var interval=setInterval(function(){render();if(ticket){var now=elapsedClock(),left=Math.ceil((until-now)/1000);text('job-countdown',uiLocale.t('Confirmation valable ')+Math.max(0,left)+' s.');if(left<=0||now<ticket.started)dismiss();}if(!document.hidden)poll();},1000);
+  // Seconds left in words, and the bar's remaining fraction of the ticket window (15 s at most).
+  function countdown(left){
+    text('job-countdown',uiLocale.t('Confirmation valable ')+Math.max(0,left)+' s.');
+    var bar=$('job-countdown-bar'),total=ticket?Math.max(1,Math.round((until-ticket.started)/1000)):15;
+    if(bar&&bar.style)bar.style.transform='scaleX('+Math.max(0,Math.min(1,left/total))+')';
+  }
+  var interval=setInterval(function(){render();if(ticket){var now=elapsedClock(),left=Math.ceil((until-now)/1000);countdown(left);if(left<=0||now<ticket.started)dismiss();}if(!document.hidden)poll();},1000);
   if(compact&&!simulation){
     stream=window.CNCJobStream.create({apiBase:store.get().apiBase,token:token,
       onSnapshot:function(data){transportId=data.transportId;streamReason='';apply(data,data.transitMs);},

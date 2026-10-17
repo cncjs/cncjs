@@ -1,6 +1,6 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const key='cncjs-touch-display-v1',defaults={size:'standard',machine:true,sleepMinutes:5,clock:true};
+const key='cncjs-touch-display-v1',defaults={size:'standard',machine:true,sleepMinutes:5,clock:true,theme:'dark'};
 function memory(initial=null){
  const values=new Map([[key,initial],['unrelated','preserve']]);
  return {values,writeCount:0,failRead:false,failWrite:false,silent:false,
@@ -22,7 +22,7 @@ function fixture(storage=memory()){
 let s=memory(),a=fixture(s);assert.equal(s.writeCount,0);assert.equal(a.sleep.at(-1),5);
 a.delay(10);assert.deepEqual(JSON.parse(s.getItem(key)),{...defaults,sleepMinutes:10});assert.match(a.feedback(),/enregistrées/);
 a.sizes[1].click();a.node('display-machine-toggle').click();
-assert.deepEqual(JSON.parse(s.getItem(key)),{size:'large',machine:false,sleepMinutes:10,clock:true});
+assert.deepEqual(JSON.parse(s.getItem(key)),{size:'large',machine:false,sleepMinutes:10,clock:true,theme:'dark'});
 let restored=fixture(s);assert(restored.classes.has('display-large'));assert(restored.classes.has('display-hide-machine'));assert.equal(restored.sleep.at(-1),10);
 assert.equal(restored.node('display-resolution').textContent,'1366 × 768');
 // A second tab may change persistent state; a stale page must not overwrite it, even via reset.
