@@ -33,4 +33,9 @@ for(const [p,c,why] of [[preview([0,0,1,1]),machine(-1,-1,{$22:'0'}),/\$22/],[pr
 const {show}=require('./touch/travel-check');const line={hidden:true,textContent:'',className:'job-travel'};
 show(line,check(preview([0,0,60,70]),machine(-30,-250)));assert.equal(line.hidden,false);assert.equal(line.className,'job-travel outside');assert.match(line.textContent,/^Hors course/);
 show(line,null);assert.equal(line.hidden,true);assert.equal(line.textContent,'');assert.equal(line.className,'job-travel');
+// Both pages load the two helper modules before the job controls that use them.
+for(const name of ['index.html','simulation.html']){
+  const html=require('fs').readFileSync(__dirname+'/touch/'+name,'utf8'),at=f=>html.indexOf(f+'?v=');
+  for(const f of ['grbl-help.js','travel-check.js'])assert(at(f)>0&&at(f)<at('job-controls.js')&&at(f)<at('job-dashboard.js'),f+' loaded early in '+name);
+}
 console.log('PASS travel check: XY extent at the work offset against both homing directions, outside detection, and every untrusted case reported unknown.');
