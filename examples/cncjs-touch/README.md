@@ -16,6 +16,21 @@ node preview-server.cjs
 
 Open the localhost URL printed by the preview server. It serves a local visual fixture with synthetic files, a virtual controller and simulated progress. Stop it with Ctrl+C. The mock controller rejects physical commands. The fixture is for local evaluation only; do not deploy its fake authentication or mock responses to a real CNCjs server.
 
+## UI 2027 (2026-10-17)
+
+The interface was redesigned for an operator standing about a metre from a 1366 × 768 tablet, often with gloves, looking at the machine more than at the screen. Nothing changed in the contract with the server or in the safety rules (confirmation tickets, guards, ≤ 2.5 s freshness, no automatic resume, software stop is not an emergency stop): only the presentation and the organisation of the screens.
+
+- **One design system.** `touch/design-tokens.css` holds every colour (a dark workshop theme by default and a high-contrast light theme under `html[data-theme="light"]`, chosen in Réglages → Thème), the type scale (nothing useful under 16 px), 4 px spacings, radii, tap sizes (64 px primary, 48 px secondary, 12 px gaps, 96 px jog cross) and motion limits (transform/opacity only, 150 ms). `touch/ui-2027.css` builds the components and the screen layouts on those tokens; the older sheets now reference the tokens too. Colours carry meaning only: green safe, amber attention, red stop or alarm, blue information, grey disabled (reduced contrast plus a stripe pattern; a tap on a disabled control shows its reason). The component sheet and the validated mockups are in [design/](design/).
+- **A status strip on every screen** (`touch/status-strip.js`): the Grbl state as a word, an icon and a colour, the age of the last report, spindle and feed, the loaded file, and Pause / Arrêter while a job runs (relayed to the existing buttons, so every guard is unchanged). The rail lists all seven screens.
+- **Suivi**: preview and overrides (−10 / 100 / +10 % large, ±1 % smaller) on the left; percentage in 64 px, remaining time, work coordinates in 48 px, real feed and spindle, a short readiness notice and the actions on the right. Démarrer or Reprendre is the one primary action; Arrêter stands alone at the bottom.
+- **Fichiers**: 92 px rows with a thumbnail and the XY extent from each stored preview (read one at a time in idle time), search, and a single action, "Charger et ouvrir le Suivi". Démarrer, Pause, Reprendre and Arrêter left this screen.
+- **Préparer**: 96 px jog cross, segmented step, work coordinates in 48 px; setting a work zero takes two taps (arm, then confirm within three seconds).
+- **Menu**: a "Reprendre où j'en étais" bar and six tiles with live indicators (job and progress, loaded file, dry-run moves, alarm or commissioning to do).
+- **Machine**: the state as one word, an alarm explained with what to do next, $X and $H as large commands, then the links and the report freshness. **Journal**: a timeline with colour stripes and filters (errors, jobs, alarms). **Réglages**: the KlipperScreen list on the tokens, plus the theme. The confirmation dialog shows a 48 px "I am in front of the machine" box and a visible countdown bar.
+- **Every screen fits 1366 × 768 at scale 1**; `viewport-fit.js` only scrolls the long lists (and Réglages), and a remembered scale is re-measured when the content became smaller.
+
+On-device measurements (opening time of each screen, CPU at rest and during a simulated job, before and after) and the simulator run are in TESTING.md, "UI 2027": CPU is unchanged, Préparer and Réglages open faster, Journal (about 90 ms), Menu and Suivi (30–40 ms) open slower. Nothing was run on a real machine.
+
 ## Server integration (2026-10-16)
 
 The backend now lives in the CNCjs source tree instead of being patched into a compiled build: `src/server/services/touch/` holds the job service, NDJSON event stream, motion preflight and probe-input observer; `src/server/api/api.touch.js` adds the session check and HTTP status mapping; `src/server/app.js` registers the routes next to the other API routes and `src/server/index.js` starts the service with the other services. The former `install-custom.cjs` patcher and the `CNC_TOUCH_MODULE` bootstrap are gone. The backend tests were ported to Jest (`yarn test`); the offline suite in this directory now covers the browser side only (50/50 checks).
@@ -89,7 +104,7 @@ The G-code preview parser is 2.8–3.7× faster and the preview worker overlaps 
 
 This update includes FR/EN/ES settings and exports; coordinate preparation, read-only machine limits and a compatible preview position marker inspired by Shopfloor Tablet; guarded local storage; bounded download cleanup; active-job screen-blanking inhibition; stricter state protocol validation; conservative time estimates; and fresh monitoring after network loss or page restoration. See [touch/THIRD-PARTY-NOTICES.md](touch/THIRD-PARTY-NOTICES.md).
 
-**All offline checks pass (50/50 browser-side checks here, backend covered by the root Jest suite). Physical CNC validation remains outstanding.** Development is paused at the author’s request pending further review and testing by someone with an operational CNC.
+**All offline checks pass (65/65 browser-side checks here, backend covered by the root Jest suite). Physical CNC validation remains outstanding.** Development is paused at the author’s request pending further review and testing by someone with an operational CNC.
 
 ## What is included
 

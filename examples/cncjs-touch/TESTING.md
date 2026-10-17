@@ -26,6 +26,34 @@ An optional report can be written outside the source tree:
 node verify-project.cjs --report /absolute/path/to/offline-report.json
 ```
 
+## UI 2027 (2026-10-17)
+
+Redesign of every screen for an operator standing about a metre from the tablet (README, "UI 2027"). Branch `feat/touch-settings-extras`, commits `78db2971` (tokens, components, validated mockups in [design/](design/)) to `e2bf37eb`, deployed on the Surface RT. The server contract and the safety rules did not change; the offline suite keeps its ids and events (one new test, `test-status-strip.cjs`, and three tests adapted to new defaults or wording: display settings gain `theme`, the viewport memory key is `cncjs-touch-fit-v2`, a recalled scale is re-measured when the content shrank).
+
+**Audit before the redesign** (in-app browser, 1366 × 768, both pages; script measuring target sizes, real text sizes after `viewport-fit` scaling and WCAG contrast on the inherited background): Suivi was scaled to 0.96 (simulation) / 0.88 (real page), Préparer to 0.94 / 0.74, Machine to 0.92 / 0.66; on the real page Préparer's help lines were 9.6 px and Machine's 8–12 px with 35 px buttons; 13–26 texts under 16 px per screen; the rail labels were 12 px; disabled buttons (`opacity:.4`) had 2.7–3.8:1 contrast; the overrides were 70 × 46 px; Fichiers left 140 px unused and Journal half the screen. Full list in the session notes.
+
+**Checks after.** Every screen at 1366 × 768 with the default font and with Verdana (the tablet resolves the system stack to Bitstream Vera Sans, much wider than Segoe UI; screenshots taken on the device first showed overlaps that the PC did not): scale 1 everywhere, no horizontal overflow, no visible text under 16 px, Suivi in its five states (loaded, running, paused, stopped with another selection, alarm). Targets: primary actions 64 px, secondary 48 px, jog cross 96 px, gaps 12 px, confirmation box 48 px. Contrasts of the token pairs are listed in the header of `design-tokens.css`: every text at least 4.5:1, critical information (state words on their tint, values, white on the stop button) 7.0–8.9:1 in both themes, disabled labels 5.3:1 (dark) and 4.6:1 (light). Two pairs were below 7:1 at first (light-theme state words 5.7:1, white on red 4.7:1) and were darkened.
+
+**Simulator run** (Grbl 1.1h simulator on the tablet, real page in a second Chromium 106 driven over DevTools, script `ui2027-runthrough.js` in the session notes): the port opened through CNCjs, file selected in Fichiers, "Charger et ouvrir le Suivi" loaded it and went to Suivi, start confirmed in the dialog (box ticked, countdown running), feed override +10 % (Grbl `Ov:110`, feed 1 100 mm/min), Pause from the status strip (`Hold`), Reprendre through its confirmation, Arrêter (back to Idle), then Machine, Préparer, Journal, Réglages, the commissioning assistant, the menu and the light theme. Screenshots of each screen are in the before/after report. The simulator was stopped afterwards.
+
+**Opening times on the tablet.** Same harness as above (second Chromium with the kiosk flags, kiosk frozen), `index.html`, no remembered screen scale for either version, each screen opened from the previous one, time from `go()` to the first frame where the screen is visible. "Before" is the deployed backup of `a997faaf`, served temporarily in place of `touch/`; passes alternate after, before, after, before (five openings each); medians of the re-openings, the first opening apart:
+
+| Screen | First opening, before | First opening, after | Re-opening, before | Re-opening, after | Style per opening, before → after |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Préparer | 496 ms | 569 ms | 217 ms | 166 ms | 46 → 48 ms |
+| Fichiers | 378 ms | 300 ms | 243 ms | 272 ms | 61 → 77 ms |
+| Suivi | 499 ms | 686 ms | 156 ms | 190 ms | 29 → 46 ms |
+| Machine | 192 ms | 237 ms | 142 ms | 143 ms | 28 → 36 ms |
+| Journal | 212 ms | 394 ms | 76 ms | 167 ms | 13 → 46 ms |
+| Réglages | 529 ms | 411 ms | 302 ms | 262 ms | 64 → 83 ms |
+| Menu | 171 ms | 396 ms | 133 ms | 171 ms | 26 → 47 ms |
+
+Run-to-run noise on this CPU is large (the same build varies by up to ±50 % between passes), so differences under about 20 % are not significant. **Result: Préparer and Réglages re-open faster, Machine the same, Fichiers (+12 %), Suivi (+22 %) and Menu (+30 %) slower by 30–40 ms, near the noise, and Journal clearly slower (76 → 167 ms; style 13 → 46 ms). The goal "no screen slower" is not fully met.** What the traces show (`ui2027-trace.js`, devtools.timeline): rasterisation is the same before and after, and the number of elements restyled per opening is the same within a few elements; style costs about 20 % more per element (≈ 300 more selectors) and layout is heavier on Fichiers and Menu (grid layouts, larger rail). Tried and measured: resolving every `var()` to its value (style −8 ms on Machine, no change on Réglages or Suivi, not kept: the tokens must stay in one file); `contain` on the strip, the rail and `main` (Fichiers −9 %, neutral elsewhere, kept); idle-only thumbnails, no button transitions, lazy last-screen write (kept).
+
+CPU (sum of Chromium and Node in `top`, 20 s, same script): Menu at rest 59.0 % before, 58.5 % after; Suivi at rest 69.7 % / 66.0 %; Suivi during a simulated job 68.8 % / 71.7 % (the same within the run-to-run spread). Two regressions were found by this measurement and fixed: the report age shown in tenths of a second repainted the strip four times a second (Suivi at rest 84 %), and the thumbnail scheduler re-armed idle callbacks in a loop (Menu at rest 73 %).
+
+Not tested on the machine: everything above ran against the simulator or the offline mocks.
+
 ## Latest regression coverage (2026-10-16)
 
 The refreshed suite also covers FR/EN/ES messages and exports, storage conflicts and readback, temporary download cleanup, protocol schema/ordering, clock corrections, job-aware screen blanking, controller generation changes, offline recovery and hidden-page/browser-cache return. Old replies cannot reopen a confirmation; reconnects do not replay commands. All checks use offline mocks.
