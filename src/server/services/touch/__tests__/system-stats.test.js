@@ -239,6 +239,13 @@ describe('system stats', () => {
     stats.record();
     clock += 100;
     expect(stats.read().cpu).toBe(10);
+    // A history point taken while a read is still shared shows up in that read.
+    clock += 4900;
+    expect(stats.read().history.cpu).toHaveLength(13);
+    clock += 200;
+    stats.record();
+    clock += 100;
+    expect(stats.read().history.cpu).toHaveLength(14);
   });
 
   test('samples the history on an unref timer that start and stop control', () => {

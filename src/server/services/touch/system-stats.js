@@ -249,6 +249,10 @@ export const createSystemStats = ({
     // Copies, so a response already sent never changes under its reader.
     history.cpu = history.cpu.concat([sample.cpu]).slice(-HISTORY_LENGTH);
     history.temperature = history.temperature.concat([mainTemperature(temperatures())]).slice(-HISTORY_LENGTH);
+    // A read shared for the next half second must show the new point.
+    if (last) {
+      last.history = { interval: HISTORY_INTERVAL_MS / 1000, cpu: history.cpu, temperature: history.temperature };
+    }
   };
 
   let timer = null;
