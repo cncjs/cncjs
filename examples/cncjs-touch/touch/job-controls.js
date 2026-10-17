@@ -57,8 +57,12 @@
     if(restore!==false&&!document.hidden&&target&&target.isConnected&&!target.disabled&&target.getClientRects().length)target.focus({preventScroll:true});
   }
   // Whether the machine state still allows what a ticket was issued for.
+  // Commissioning commands confirmed through the same dialog (no loaded program involved).
+  var COMMANDS={unlock:'canUnlock',home:'canHome',spindle:'canSpindleTest'};
+  function standalone(operation){return operation==='macro'||Object.prototype.hasOwnProperty.call(COMMANDS,operation);}
   function ticketAllowed(t,state){
     if(t.operation==='macro')return !!state.canMacro;
+    if(Object.prototype.hasOwnProperty.call(COMMANDS,t.operation))return !!state[COMMANDS[t.operation]];
     if(state.revision!==t.revision)return false;
     return t.operation==='start'?!!state.canStart:!!state.canResume;
   }
@@ -164,7 +168,7 @@
   }
   function run(action,extra) {
     if(!current || Date.now()-lastSeen>=3000)return Promise.reject(new Error('État indisponible.'));
-    if(!simulation&&['prepare','start','resume','macro','override'].indexOf(action)>=0&&(!current.generation||!transportId||!stream||!stream.alive()))return Promise.reject(new Error(uiLocale.t('Suivi continu interrompu. Nouvelle confirmation requise.')));
+    if(!simulation&&['prepare','start','resume','macro','override','unlock','home','spindle','spindleStop','readSettings'].indexOf(action)>=0&&(!current.generation||!transportId||!stream||!stream.alive()))return Promise.reject(new Error(uiLocale.t('Suivi continu interrompu. Nouvelle confirmation requise.')));
     var body={action:action,port:current.port};
     if(current.generation)body.generation=current.generation;
     if(transportId)body.transportId=transportId;
@@ -187,16 +191,16 @@
   function prepare(operation,extra) {
     if(busy||!current)return;
     var port=current.port,revision=current.revision, ownGeneration=generation, ownConfirmation=++confirmation, started=elapsedClock(),origin=document.activeElement;
-    var request=operation==='macro'?{operation:'macro',macroId:extra&&extra.macroId}:{operation:operation,revision:revision};
+    var request=operation==='macro'?{operation:'macro',macroId:extra&&extra.macroId}:standalone(operation)?{operation:operation}:{operation:operation,revision:revision};
     command('prepare',request).then(function(data){
-      if(ownGeneration!==generation||ownConfirmation!==confirmation||document.hidden||!current||current.port!==port||(operation!=='macro'&&current.revision!==revision))return;
+      if(ownGeneration!==generation||ownConfirmation!==confirmation||document.hidden||!current||current.port!==port||(!standalone(operation)&&current.revision!==revision))return;
       until=started+Math.min(15,Number(data.expiresIn)||0)*1000;
       if(elapsedClock()<started||elapsedClock()>=until){text('job-feedback',uiLocale.t('Confirmation expirée. Préparez une nouvelle confirmation.'));return;}
       ticket={nonce:data.nonce,operation:operation,port:port,revision:revision,generation:generation,started:started};
       if(!confirmable()||otherDialog()){dismiss(false);return;}
       dialogReturn=origin;
       dialogBackground=Array.prototype.filter.call(document.body.children||[],function(node){return node!==$('job-dialog')&&!/^(SCRIPT|LINK|STYLE)$/.test(node.tagName);}).map(function(node){var entry={node:node,inert:node.inert};node.inert=true;return entry;});
-      $('job-dialog-title').textContent=operation==='start'?uiLocale.t('Confirmer le démarrage'):operation==='macro'?uiLocale.t('Exécuter la macro'):uiLocale.t('Confirmer la reprise');
+      $('job-dialog-title').textContent=({start:uiLocale.t('Confirmer le démarrage'),macro:uiLocale.t('Exécuter la macro'),unlock:uiLocale.t('Déverrouiller la machine'),home:uiLocale.t('Lancer la prise d’origine'),spindle:uiLocale.t('Démarrer la broche')})[operation]||uiLocale.t('Confirmer la reprise');
       $('job-dialog-file').textContent=data.name+' · '+port;
       text('job-countdown',uiLocale.t('Confirmation valable ')+Math.max(0,Math.ceil((until-elapsedClock())/1000))+' s.');
       $('job-check').checked=false;$('job-confirm').disabled=true;$('job-dialog').hidden=false;$('job-dismiss').focus();
@@ -262,7 +266,13 @@
     // Realtime override step (kind: feed | spindle | rapid; value as accepted by the server).
     override:function(kind,value){if(busy||!current)return Promise.reject(new Error(uiLocale.t('Opération en cours…')));return command('override',{kind:kind,value:value});},
     // Opens the confirmation for a CNCjs macro; the macro runs only after the confirmed nonce.
-    prepareMacro:function(id){prepare('macro',{macroId:id});}};
+    prepareMacro:function(id){prepare('macro',{macroId:id});},
+    // Commissioning: unlock ($X), home ($H) or spindle test (M3), each after the confirmation dialog.
+    prepareCommand:function(operation){if(Object.prototype.hasOwnProperty.call(COMMANDS,operation))prepare(operation);},
+    spindleStop:function(){if(!current)return Promise.reject(new Error(uiLocale.t('État indisponible.')));return command('spindleStop');},
+    readSettings:function(){if(busy||!current)return Promise.reject(new Error(uiLocale.t('Opération en cours…')));return command('readSettings');},
+    // Full $$ list and firmware banner, read-only.
+    settings:function(){if(!current)return Promise.reject(new Error(uiLocale.t('État indisponible.')));return run('settings');}};
   // Deferred subscribers can load after the first resolved local snapshot.
   bind(document,'DOMContentLoaded',function(){stateSignature='';render();});
   poll(true);

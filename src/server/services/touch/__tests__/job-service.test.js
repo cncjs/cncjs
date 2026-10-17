@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
-import { createService, changesOffset } from '../job-service';
+import { createService, changesOffset, spindleTestSpeed } from '../job-service';
 
 // A fake Grbl controller that records commands and mimics the sender/workflow
 // transitions the service observes. It never touches a serial port.
@@ -436,5 +436,118 @@ describe('job service', () => {
     ctx.c.runner.emit('status', { raw: '<Idle|MPos:0,0,0|Pn:P>' });
     expect(ctx.state().probeInput.state).toBe('contact');
     expect(ctx.state().probeInput.canProbe).toBe(false);
+  });
+
+  test('the snapshot lists the triggered limit and probe inputs (Pn absent means none)', () => {
+    const ctx = setup();
+    expect(ctx.state().probeInput.pins).toBe(null);
+    ctx.c.runner.emit('status', { raw: '<Idle|MPos:0,0,0|Pn:XZD>' });
+    expect(ctx.state().probeInput.pins).toBe('XZ');
+    ctx.c.runner.emit('status', { raw: '<Idle|MPos:0,0,0>' });
+    expect(ctx.state().probeInput.pins).toBe('');
+    ctx.now += 3000;
+    expect(ctx.state().probeInput.pins).toBe(null);
+  });
+
+  test('spindle test speed: $31 minimum, else a quarter of $30', () => {
+    expect(spindleTestSpeed({ $30: 24000, $31: 6000 })).toBe(6000);
+    expect(spindleTestSpeed({ $30: 24000, $31: 0 })).toBe(6000);
+    expect(spindleTestSpeed({ $30: 1000, $31: '0' })).toBe(250);
+    expect(spindleTestSpeed({ $30: 0, $31: 0 })).toBe(null);
+    expect(spindleTestSpeed({})).toBe(null);
+  });
+
+  describe('commissioning commands', () => {
+    const commissioning = () => {
+      const ctx = setup();
+      ctx.c.settings = { version: 'Grbl 1.1h', settings: { $22: 1, $30: 24000, $31: 6000, $110: 1000, $111: 1000, $112: 200 } };
+      ctx.report();
+      return ctx;
+    };
+
+    test('unlock ($X) only in alarm, through a ticket, never during a job', async () => {
+      const ctx = commissioning();
+      expect(ctx.state().canUnlock).toBe(false);
+      expect(ctx.state().unlockReason).toMatch(/alarme/);
+      await expect(ctx.req('prepare', { operation: 'unlock' })).rejects.toThrow(/alarme/);
+
+      ctx.c.state.status.activeState = 'Alarm';
+      expect(ctx.state().canUnlock).toBe(true);
+      await expect(ctx.req('unlock', { nonce: 'x' })).rejects.toThrow(/expirée/);
+      const ticket = await ctx.req('prepare', { operation: 'unlock' });
+      expect(ticket.name).toMatch(/\$X/);
+      expect((await ctx.req('unlock', { nonce: ticket.nonce })).message).toMatch(/\$X/);
+      expect(ctx.c.commands).toEqual([['unlock']]);
+      await expect(ctx.req('unlock', { nonce: ticket.nonce })).rejects.toThrow(/expirée/);
+
+      ctx.c.workflow.state = 'running';
+      expect(ctx.state().canUnlock).toBe(false);
+      expect(ctx.state().unlockReason).toMatch(/travail/);
+    });
+
+    test('a ticket is bound to its operation and the guard is checked again at run time', async () => {
+      const ctx = commissioning();
+      ctx.c.state.status.activeState = 'Alarm';
+      const ticket = await ctx.req('prepare', { operation: 'unlock' });
+      await expect(ctx.req('home', { nonce: ticket.nonce })).rejects.toThrow(/expirée/);
+      const again = await ctx.req('prepare', { operation: 'unlock' });
+      ctx.c.state.status.activeState = 'Idle';
+      await expect(ctx.req('unlock', { nonce: again.nonce })).rejects.toThrow(/alarme/);
+      expect(ctx.c.commands).toEqual([]);
+    });
+
+    test('homing ($H) needs $22=1, idle or alarm, no automations', async () => {
+      const ctx = commissioning();
+      expect(ctx.state().canHome).toBe(true);
+      ctx.c.settings.settings.$22 = 0;
+      expect(ctx.state().homeReason).toMatch(/\$22=0/);
+      delete ctx.c.settings.settings.$22;
+      expect(ctx.state().homeReason).toMatch(/\$22 inconnu/);
+      ctx.c.settings.settings.$22 = '1';
+      ctx.c.state.status.activeState = 'Hold';
+      expect(ctx.state().canHome).toBe(false);
+      ctx.c.state.status.activeState = 'Alarm';
+      expect(ctx.state().canHome).toBe(true);
+      const ticket = await ctx.req('prepare', { operation: 'home' });
+      await ctx.req('home', { nonce: ticket.nonce });
+      expect(ctx.c.commands).toEqual([['homing']]);
+      ctx.events = [{ enabled: true }];
+      expect(ctx.state().homeReason).toMatch(/automatismes/i);
+    });
+
+    test('spindle test: M3 at the test speed from an idle machine, M5 to stop', async () => {
+      const ctx = commissioning();
+      const state = ctx.state();
+      expect(state.canSpindleTest).toBe(true);
+      expect(state.spindleTestSpeed).toBe(6000);
+      expect(state.canSpindleStop).toBe(true);
+      const ticket = await ctx.req('prepare', { operation: 'spindle' });
+      expect(ticket.name).toMatch(/S6000/);
+      await ctx.req('spindle', { nonce: ticket.nonce });
+      await ctx.req('spindleStop');
+      expect(ctx.c.commands).toEqual([['gcode', 'M3 S6000'], ['gcode', 'M5']]);
+
+      ctx.c.state.status.activeState = 'Alarm';
+      expect(ctx.state().canSpindleTest).toBe(false);
+      await expect(ctx.req('prepare', { operation: 'spindle' })).rejects.toThrow(/repos/);
+      ctx.c.state.status.activeState = 'Idle';
+      ctx.c.settings.settings = {};
+      expect(ctx.state().spindleReason).toMatch(/\$30/);
+    });
+
+    test('the full settings and firmware are returned on request only', async () => {
+      const ctx = commissioning();
+      ctx.c.settings.settings.junk = 'x';
+      const state = ctx.state();
+      expect(state.firmware).toBe('Grbl 1.1h');
+      expect(state.settingsCount).toBe(6);
+      expect(state.settings.$31).toBe(6000);
+      const result = await ctx.req('settings');
+      expect(result.settings).toEqual({ $22: 1, $30: 24000, $31: 6000, $110: 1000, $111: 1000, $112: 200 });
+      await ctx.req('readSettings');
+      expect(ctx.c.commands).toEqual([['gcode', '$$']]);
+      ctx.c.workflow.state = 'running';
+      await expect(ctx.req('readSettings')).rejects.toThrow(/repos/);
+    });
   });
 });

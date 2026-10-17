@@ -288,6 +288,7 @@
     return base + '--touch-' + new Date().toISOString().replace(/\D/g, '').slice(0, 14) + '-' + random + extension;
   }
   function read(file) {
+    if (typeof file.text === 'string') return Promise.resolve(file.text); // generated in the page (commissioning test file)
     return new Promise(function (resolve, reject) {
       reader = new FileReader();
       reader.onload = function () { resolve(String(reader.result || '')); };
@@ -305,18 +306,18 @@
     if (reader && reader.readyState === 1) reader.abort();
     lock(false); $('library-upload-status').textContent = uiLocale.t('Préparation annulée. Aucun fichier envoyé.');
   });
-  $('library-send').addEventListener('click', function () {
-    var file = $('library-input').files[0];
-    if (!file || busy) return;
+  // Stores a G-code and its 2D preview in the library; resolves with the stored name.
+  function send(file) {
+    if (!file || busy) return Promise.reject(new Error(uiLocale.t('Un envoi est déjà en cours.')));
     if (!/\.(nc|gcode|tap|ngc|cnc|txt)$/i.test(file.name) || !file.size || file.size > 20 * 1048576) {
-      $('library-upload-status').textContent = uiLocale.t('Choisissez un G-code non vide de 20 Mo maximum.'); return;
+      $('library-upload-status').textContent = uiLocale.t('Choisissez un G-code non vide de 20 Mo maximum.'); return Promise.reject(new Error($('library-upload-status').textContent));
     }
     var current = ++generation, text = '', stored = safeName(file.name), wrote = false;
     var meta = { version: 1, file: stored, originalName: file.name, bytes: file.size, createdAt: new Date().toISOString() };
     function cancelled() { return current !== generation; }
     function status(s) { if (!cancelled()) setText('library-upload-status', s); }
     lock(true); status(uiLocale.t('Lecture du fichier…'));
-    read(file).then(function (data) {
+    return read(file).then(function (data) {
       if (cancelled()) throw new Error(uiLocale.t('Annulé'));
       text = data;
       if (/\x00/.test(text)) throw new Error(uiLocale.t('Ce fichier semble binaire. Un G-code texte est attendu.'));
@@ -345,13 +346,18 @@
       // CNCjs's watch list sees a new file a few seconds after it is written
       // (measured: about 4 s on the tablet): look again a few times.
       [2000, 5000, 9000].forEach(function (delay) { setTimeout(function () { refresh(true); }, delay); });
-      return refresh(true);
+      refresh(true);
+      return stored;
     }).catch(function (error) {
-      if (cancelled()) return;
+      if (cancelled()) throw error;
       lock(false); status((wrote ? uiLocale.t('G-code enregistré, mais image non enregistrée. ') : uiLocale.t('Envoi non confirmé. ')) + error.message);
       refresh(true);
+      throw error;
     });
-  });
+  }
+  $('library-send').addEventListener('click', function () { send($('library-input').files[0]).catch(function () {}); });
+  // Adds a G-code generated in the page (commissioning air-cut test) to the library.
+  window.cncLibraryImport = function (name, text) { return send({ name: name, size: text.length, text: String(text) }); };
   $('library-refresh').addEventListener('click', function () { refresh(true); });
   $('library-regenerate').addEventListener('click', function () {
     if (regenerating || !selected) return;

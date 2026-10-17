@@ -22,8 +22,43 @@ const TICKET_LIFETIME_MS = 15000;
 const MAX_FILE_SIZE = 20 * 1048576;
 
 // Grbl settings exposed to the client: report mask/units, max rates, max
-// accelerations and travel limits. Nothing else from the controller is copied.
-const EXPOSED_SETTINGS = [20, 21, 22, 110, 111, 112, 120, 121, 122, 130, 131, 132];
+// accelerations, travel limits and spindle range. The full list ($$) is only
+// sent on request, for the commissioning backup.
+const EXPOSED_SETTINGS = [20, 21, 22, 30, 31, 32, 110, 111, 112, 120, 121, 122, 130, 131, 132];
+
+// Commissioning spindle test: the minimum speed ($31), or a quarter of the
+// maximum ($30) when no minimum is set.
+const settingNumber = (settings, n) => {
+  const v = Number(settings['$' + n]);
+  return Number.isFinite(v) ? v : null;
+};
+export const spindleTestSpeed = (settings) => {
+  const max = settingNumber(settings, 30);
+  const min = settingNumber(settings, 31);
+  if (!max || max <= 0) {
+    return null;
+  }
+  const speed = min && min > 0 && min <= max ? min : max / 4;
+  return Math.round(speed);
+};
+
+// Every numeric setting read from $$, nothing else.
+const allSettings = (c) => {
+  const source = (c.settings && c.settings.settings) || {};
+  const out = {};
+  Object.keys(source).filter((k) => /^\$\d{1,4}$/.test(k)).forEach((k) => {
+    const v = source[k];
+    if ((typeof v === 'number' && Number.isFinite(v)) || (typeof v === 'string' && v.length < 32)) {
+      out[k] = v;
+    }
+  });
+  return out;
+};
+
+const firmwareOf = (c) => {
+  const v = c.settings && c.settings.version;
+  return typeof v === 'string' && v.length < 64 ? v : '';
+};
 
 // Realtime override steps accepted by the Grbl controller commands
 // (feedOverride / spindleOverride: reset, ±10 %, ±1 %; rapidOverride: 100/50/25 %).
@@ -251,12 +286,93 @@ export const createService = (store, config, clock = Date.now) => {
     }
   };
 
+  // Commissioning commands ($X, $H, spindle test) never run during a job.
+  const noJob = (c) => {
+    available(c);
+    const feeder = c.feeder.toJSON();
+    if (c.workflow.state !== 'idle' || feeder.queue || feeder.pending) {
+      throw conflict('Impossible pendant un travail ou avec des commandes en attente.');
+    }
+    if (record(c).loading) {
+      throw conflict('Chargement en cours.');
+    }
+  };
+
+  const unlockReady = (c) => {
+    noJob(c);
+    if (!/^Alarm/.test(controllerStatus(c).activeState || '')) {
+      throw conflict('Le déverrouillage ($X) ne sert qu’en alarme.');
+    }
+  };
+
+  const homeReady = (c) => {
+    noJob(c);
+    const state = controllerStatus(c).activeState || '';
+    if (state !== 'Idle' && !/^Alarm/.test(state)) {
+      throw conflict('La prise d’origine exige une machine au repos ou en alarme.');
+    }
+    const homing = settingNumber(allSettings(c), 22);
+    if (homing === null) {
+      throw conflict('Réglage $22 inconnu : relisez les réglages de la carte.');
+    }
+    if (homing === 0) {
+      throw conflict('Prise d’origine désactivée sur la carte ($22=0).');
+    }
+    if (hasAutomations(config)) {
+      throw conflict('Des automatismes CNCjs sont configurés. Leur compatibilité doit être vérifiée avant utilisation.');
+    }
+  };
+
+  const spindleReady = (c) => {
+    idle(c);
+    noJob(c);
+    if (!spindleTestSpeed(allSettings(c))) {
+      throw conflict('Vitesse maximale de broche ($30) inconnue : relisez les réglages de la carte.');
+    }
+    if (hasAutomations(config)) {
+      throw conflict('Des automatismes CNCjs sont configurés. Leur compatibilité doit être vérifiée avant utilisation.');
+    }
+  };
+
   const findMacro = (id) => {
     const macro = macrosOf(config).find((m) => m.id === id);
     if (!macro) {
       throw conflict('Macro introuvable. Actualisez la liste.');
     }
     return macro;
+  };
+
+  // Confirmed commissioning operations: guard (checked at prepare and again at
+  // run time), the name shown in the confirmation, and the command sent.
+  const COMMISSIONING = {
+    unlock: {
+      guard: unlockReady,
+      name: () => 'Déverrouillage ($X)',
+      run: (c) => {
+        unlockReady(c);
+        c.command('unlock');
+        return { message: 'Déverrouillage ($X) envoyé. Vérifiez le retour à Idle.' };
+      }
+    },
+    home: {
+      guard: homeReady,
+      name: () => 'Prise d’origine ($H)',
+      run: (c) => {
+        homeReady(c);
+        c.command('homing');
+        return { message: 'Prise d’origine ($H) lancée. Main sur l’arrêt d’urgence.' };
+      }
+    },
+    spindle: {
+      guard: spindleReady,
+      name: (c) => 'Test broche M3 S' + spindleTestSpeed(allSettings(c)),
+      run: (c) => {
+        spindleReady(c);
+        const speed = spindleTestSpeed(allSettings(c));
+        c.command('gcode', 'M3 S' + speed);
+        return { message: 'Broche démarrée à ' + speed + ' tr/min (M3). Arrêt : bouton Arrêter la broche.' };
+      }
+    }
   };
 
   // Runs a guard and returns its failure message, or '' when it passes.
@@ -286,6 +402,10 @@ export const createService = (store, config, clock = Date.now) => {
     const resumeReason = reason(() => readyFor(c, 'resume', revision));
     const overrideReason = reason(() => overridable(c));
     const macroReason = reason(() => macroReady(c));
+    const unlockReason = reason(() => unlockReady(c));
+    const homeReason = reason(() => homeReady(c));
+    const spindleReason = reason(() => spindleReady(c));
+    const spindleStopReason = reason(() => idle(c));
 
     const age = (Number.isFinite(r.seen) && clock() >= r.seen) ? clock() - r.seen : null;
 
@@ -364,7 +484,18 @@ export const createService = (store, config, clock = Date.now) => {
       overrideReason,
       macros: macrosOf(config),
       canMacro: !macroReason,
-      macroReason
+      macroReason,
+      // Commissioning: firmware banner, whether $$ was read, guarded $X / $H / spindle test.
+      firmware: firmwareOf(c),
+      settingsCount: Object.keys(allSettings(c)).length,
+      canUnlock: !unlockReason,
+      unlockReason,
+      canHome: !homeReason,
+      homeReason,
+      canSpindleTest: !spindleReason,
+      spindleReason,
+      spindleTestSpeed: spindleTestSpeed(allSettings(c)),
+      canSpindleStop: !spindleStopReason
     };
   };
 
@@ -445,7 +576,7 @@ export const createService = (store, config, clock = Date.now) => {
     const r = record(c);
     const a = body.action;
 
-    if (['prepare', 'start', 'resume', 'macro', 'override'].includes(a)) {
+    if (['prepare', 'start', 'resume', 'macro', 'override', 'unlock', 'home', 'spindle', 'spindleStop', 'readSettings'].includes(a)) {
       if (typeof body.generation !== 'string' || body.generation !== r.generation) {
         throw conflict('Le contrôleur a changé ou son identité manque. Choisissez-le à nouveau.');
       }
@@ -464,13 +595,29 @@ export const createService = (store, config, clock = Date.now) => {
       return load(c, r, body);
     }
 
+    if (a === 'settings') {
+      return { firmware: firmwareOf(c), settings: allSettings(c) };
+    }
+
+    if (a === 'readSettings') {
+      idle(c);
+      noJob(c);
+      c.command('gcode', '$$');
+      return { message: 'Lecture des réglages ($$) demandée.' };
+    }
+
     if (a === 'prepare') {
-      if (!['start', 'resume', 'macro'].includes(body.operation)) {
+      if (!['start', 'resume', 'macro', 'unlock', 'home', 'spindle'].includes(body.operation)) {
         throw conflict('Action invalide.');
       }
       const nonce = crypto.randomBytes(24).toString('hex');
       let name;
-      if (body.operation === 'macro') {
+      if (COMMISSIONING[body.operation]) {
+        const op = COMMISSIONING[body.operation];
+        op.guard(c);
+        name = op.name(c);
+        r.ticket = { nonce, operation: body.operation, expires: clock() + TICKET_LIFETIME_MS, transportId: body.transportId };
+      } else if (body.operation === 'macro') {
         macroReady(c);
         const macro = findMacro(body.macroId);
         name = macro.name;
@@ -506,6 +653,21 @@ export const createService = (store, config, clock = Date.now) => {
           }
         });
       });
+    }
+
+    if (COMMISSIONING[a]) {
+      const t = r.ticket;
+      r.ticket = null;
+      if (!t || t.nonce !== body.nonce || t.operation !== a || clock() > t.expires || t.transportId !== body.transportId) {
+        throw conflict('Confirmation expirée ou déjà utilisée.');
+      }
+      return COMMISSIONING[a].run(c);
+    }
+
+    if (a === 'spindleStop') {
+      idle(c);
+      c.command('gcode', 'M5');
+      return { message: 'Arrêt broche (M5) envoyé.' };
     }
 
     if (a === 'override') {
