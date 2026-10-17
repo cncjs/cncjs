@@ -38,13 +38,17 @@ Réglages now has two tabs, "Affichage" (the existing display settings) and "Sys
 
 ## Network, history, tablet actions and clock (2026-10-16)
 
-- **Système** also shows the network link (IPv4 addresses, and for Wi-Fi the SSID, signal in dBm and bitrate, read with `iw dev <name> link` at most every 10 s in the background), and a ten-minute history of CPU usage and temperature. The server samples it every 5 s, even with the tab closed, on an `unref`'d timer.
+- **Système** also shows the network link (IPv4 addresses, and for Wi-Fi the SSID, signal in dBm and bitrate, read with `iw dev <name> link` at most every 10 s while the tab asks for it), and a ten-minute history of CPU usage and temperature. The server samples that history (CPU and temperature only) every 5 s, even with the tab closed, on an `unref`'d timer.
 - **Tablette** (in Système) shows the installed interface version from `touch/VERSION.json` (written by the deployment script: commit, branch, repository, date). When that file names a GitHub repository, the page compares it with the latest commit of the branch through the public GitHub API, at most every ten minutes. Below it are the host commands configured in CNCjs (Settings → Commands, `commands` in `.cncrc`), for example update the interface, restart CNCjs, reboot or shut down. The page shows their titles only. Each needs a second tap within 8 s, and all are refused while a job is running or paused. What a command does is up to whoever configures CNCjs; this interface adds no server route for it and runs nothing else.
 - **Affichage → Horloge** shows the time in the header. It updates once a minute on the minute, and not at all while the page is hidden or the clock is switched off.
 
 ## Code review before the machine (2026-10-17)
 
 A full review of the touch code fixed 25 defects (spindle and stop guards, the commissioning E-stop and spindle steps, previews that could hide moves, the wrong file selected after an upload, tablet commands during motion, translations, simulator robustness). Details in `TESTING.md`, "Code review before the machine".
+
+## Second pass (2026-10-17)
+
+Four remaining defects (a screen left hidden while its content changed, a program ending in a Grbl error shown as finished, Latin-1 files losing their accents, durations on the wall clock), two optimisations measured on the tablet (snapshots no longer built for repeated reports, no `iw` process at rest: about −20 % CPU for CNCjs at rest), and a counter-review of the first pass (stop during a macro or with the door open, spindle check without `FS`, stream timeouts, translations). Details in `TESTING.md`, "Second pass".
 
 ## Commissioning assistant (2026-10-17)
 

@@ -81,7 +81,53 @@ Checked on the tablet against the simulator: firmware read through `$I` ("Grbl 1
 Not changed, with the reason:
 - Deduplicating `cnc-job-status` events: the probe screen computes freshness from the age carried by each event; suppressing them would show fresh data as too old.
 - Prerequisites before enabling real jogging and probing (today dry run / simulation only): check every destination against `$130`-`$132` and the homing state, retract Z before X/Y moves, tie the tool diameter to the tool, and convert `PRB` values when `$13=1`.
-- Server snapshot work (about 4 of 5 snapshots discarded as duplicates at idle) and the `iw` call every 10 s: measurable optimisations left for a session on the tablet.
+- Server snapshot work (about 4 of 5 snapshots discarded as duplicates at idle) and the `iw` call every 10 s: measurable optimisations left for a session on the tablet (done in the second pass below).
+
+## Second pass (2026-10-17)
+
+Four remaining minor defects, two measured optimisations, missing tests, then a counter-review of the first pass by three read-only reviews (server, browser, tools and tests); every finding was checked in the code before being fixed, each fix with a test that failed before.
+
+Fixed (remaining defects):
+- `viewport-fit.js`: a screen opened while its content changed (coordinates 4×/s) had its hidden measurement cancelled and restarted by every mutation, so it could stay invisible. Only a viewport change or an activation cancels a measurement now (`test-viewport-mutation.cjs`).
+- A program whose last line ended in `error:N` (CNCjs pauses, acknowledges it, then stops the workflow), or any line failing with `ignoreErrors`, was reported "finished". The job service counts runner errors during the job (`finishedWithErrors`, `jobErrors`); the dashboard shows the end of the program with the error count, never "Terminé", and the trail stays complete.
+- Uploads read files as UTF-8 only: a Windows-1252 file lost its accents (U+FFFD). It is read again as Windows-1252 and the operator is told so; a valid UTF-8 file holding a real U+FFFD is kept as is.
+- Ticket lifetime, report ages and the event-stream heartbeat and rotation used `Date.now()`: an NTP correction backwards kept a ticket alive and suspended the heartbeat. They use `performance.now()`; `sentAt` stays a wall-clock time and the clock stays injectable for tests.
+
+Optimisations, measured on the Surface RT (simulator connected, kiosk on the real interface at rest, CPU of the `cncjs-next` process from `/proc/<pid>/stat`, CPU time of its reaped children for `iw`; same protocol before and after: 3 windows of 180 s right after a restart):
+
+| | before (5468cd20) | after (A + B) |
+| --- | --- | --- |
+| `cncjs-next` CPU, per window | 16.8 / 13.0 / 11.9 % (mean 13.9 %) | 12.7 / 11.1 / 9.6 % (mean 11.1 %) |
+| CPU of child processes (`iw`) per 180 s | 38–41 ticks | 0 |
+
+- A. At rest Grbl repeats the same report 4×/s and each one built a full snapshot only to drop it as a duplicate until the next heartbeat (about 5 builds/s). A snapshot plus its signature costs 4.6 ms on the Tegra; the new fingerprint (identity of the runner state and settings objects, which GrblRunner replaces only on change, workflow state, sender and feeder counters, job and ticket fields) costs 0.08 ms. Builds drop to about one per second, an expected saving of about 1.8 points of one core. Kept.
+- B. The history point every 5 s ran the full `read()`, so `iw` was spawned every 10 s with nobody on the system tab. The history samples only the CPU and the temperatures; Wi-Fi is read when the screen asks. Children CPU went to zero. Kept.
+- Each window is 1.9 to 4.1 points lower after (−2.8 on average, about −20 % of the process at rest). The process CPU also drifts down after a restart in both series, which is why the comparison uses the same protocol rather than the earlier 60 s windows (before: 14.9 / 14.9 / 14.3 / 12.5 / 11.3 %; A alone: 11.2 / 13.9 / 12.7 / 10.7 %).
+
+Tests added: `dom-fixture.cjs` kept one listener per event (a second one silently replaced the first); it keeps them all now (`test-dom-fixture.cjs`). New behaviour tests for the usage guide (`test-interface-guide.cjs`) and the missing cases of the probing diagram (SVG parts written), preparation (titles), profiles (restore past the end, corrupt index) and transfer (inclusive size limit, invalid stored profile). The probing diagram's "X non sélectionné" was not translated.
+
+Fixed, counter-review of the first pass:
+- Stop during a macro or console commands (workflow idle, Run/Hold) never emptied the CNCjs feeder: the queue stayed pending, every guard refused, and the next `ok` sent the rest of the macro. The feeder is stopped too, and a loaded file never started is no longer marked stopped.
+- With the door open, CNCjs's forced stop sends neither feed hold nor reset, so Grbl kept its planned moves: the touch stop resets Grbl in `Door` and is offered in that state.
+- The spindle guard trusted only `FS:`; without it (no variable spindle, Grbl 0.9) homing, macros and start ran after the spindle test. A fresh `$G` with M3/M4 blocks too (CNCjs asks for `$G` about twice a second at rest).
+- The stream client timed out at 70 s and aborted at 600 000 characters, before the server's rotation grace (80 s, 1 MiB) for a pending confirmation, which revoked it: now 90 s and 1.2 M characters, tied to the server limits by a test.
+- An upload CNCjs still did not list after 15 s was replaced by the first file of the list: the selection is cleared instead.
+- Previews accepted `% (note)` and `%;…` lines that the server's load refuses: refused at upload now.
+- Without a controllable backlight (409/404) or a session (401/403), every touch sent a new wake request.
+- EN/ES: catalog rows written exactly as called got the French spaces back around the translation ("Sending “ Reboot ”").
+- A history point taken during a shared system read (500 ms) was missing from it.
+- `grbl-sim-port.py`: a simulator that could not start left the port link behind, and a broken build was restarted every second forever; the bridge now gives up after five stops in a minute (`grbl-sim/test-bridge.sh`, run on the tablet: fails before, passes after).
+
+Checked, no defect: stop in Home and Jog (`reset` and `jogCancel` exist and do what is assumed), `%` and blank lines after `M30` (accepted on both sides), tablet actions without a controller, the bounded wake retries, `viewport-fit.js` never leaving a screen hidden, every snapshot field covered by the fingerprint except the macros list and automations from the configuration (seen at the next heartbeat, about 1 s).
+
+Not changed, with the reason:
+- Commissioning sends M5 again on every exit while its saved step is the spindle test: the server refuses it outside Idle, and an extra M5 is on the safe side.
+- A rejection inside the confirmation-dialog setup is no longer silenced (`job-controls.js`): it only reaches the console.
+- Preview error texts and the server's dynamic messages ("La broche tourne encore (N tr/min)") are French only.
+- Host commands are allowed while a non-Grbl controller runs a job (only Grbl controllers are listed); a mixed setup is out of scope.
+- Many offline tests build their own `window`/`document` mocks that still replace listeners on add; no module registers the same event twice today.
+
+Checked on the tablet against the Grbl 1.1h simulator after deployment (server and interface of this pass): a program ending in `M100` gave `error:20`, CNCjs paused then stopped it, and Suivi showed "Fin du programme avec 1 erreur(s) Grbl — vérifiez la pièce" at 100 % (`finished: false`, `finishedWithErrors: true`); Stop during three console moves queued in the CNCjs feeder stopped X at 4.5 mm and nothing else moved, even after a later `ok`; the Wi-Fi link was read on the first system request and not before. Nothing was tested on the real machine (LUNYEE 4040 Nova, Grbl_ESP32 1.3a), which has not arrived.
 
 ## Commissioning assistant (2026-10-17)
 
