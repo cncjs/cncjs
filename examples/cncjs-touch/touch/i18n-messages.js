@@ -383,3 +383,4 @@ window.CNCTouchMessages.push(["Action inconnue.", "Unknown action.", "Acción de
 window.CNCTouchMessages.push(['Fin du programme avec ','Program ended with ','Programa terminado con '],[' erreur(s) Grbl — vérifiez la pièce',' Grbl error(s) — check the part',' error(es) de Grbl — compruebe la pieza']);
 window.CNCTouchMessages.push([' Fichier non UTF-8 : lu en Windows-1252 (accents convertis).',' Not a UTF-8 file: read as Windows-1252 (accents converted).',' Archivo no UTF-8: leído como Windows-1252 (acentos convertidos).']);
 window.CNCTouchMessages.push(['X non sélectionné','X not selected','X no seleccionado']);
+window.CNCTouchMessages.push(["Arrêt avec porte ouverte (réinitialisation). La carte peut demander $H ou $X.", "Stopped with the door open (reset). The board may ask for $H or $X.", "Parada con la puerta abierta (reinicio). La placa puede pedir $H o $X."]);

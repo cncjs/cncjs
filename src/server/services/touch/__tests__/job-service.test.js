@@ -675,6 +675,51 @@ describe('job service', () => {
       await expect(ctx.req('stop')).rejects.toThrow(/Aucun travail/);
     });
 
+    test('without FS in the reports, a spindle commanded on in a fresh $G still blocks', async () => {
+      const ctx = ready();
+      delete ctx.c.state.status.spindle; // Grbl built without variable spindle, or 0.9
+      const modal = (spindle) => {
+        ctx.c.state.parserstate = { modal: { wcs: 'G54', spindle } };
+        ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      };
+      modal('M3');
+      expect(ctx.state().homeReason).toMatch(/broche/);
+      expect(ctx.state().macroReason).toMatch(/broche/);
+      modal('M4');
+      await expect(ctx.req('prepare', { operation: 'home' })).rejects.toThrow(/broche/);
+      modal('M5');
+      expect(ctx.state().canHome).toBe(true);
+      // A modal state older than the report window is not trusted either way.
+      modal('M3');
+      ctx.now += 3000;
+      ctx.report();
+      expect(ctx.state().homeReason).not.toMatch(/broche/);
+    });
+
+    test('stop during a macro or console command also clears the CNCjs queue', async () => {
+      const ctx = ready();
+      await ctx.req('load', { file: 'test.nc' });
+      ctx.c.state.status.activeState = 'Run'; // a macro runs from the feeder, workflow idle
+      expect(ctx.state().canStop).toBe(true);
+      await ctx.req('stop');
+      expect(ctx.c.commands.slice(-2)).toEqual([['feeder:stop'], ['gcode:stop', { force: true }]]);
+      // The loaded file was never started: it can still be started.
+      ctx.c.state.status.activeState = 'Idle';
+      expect(ctx.state().canStart).toBe(true);
+    });
+
+    test('stop with the door open resets Grbl, during a job or at rest', async () => {
+      const ctx = ready();
+      ctx.c.workflow.state = 'running';
+      ctx.c.state.status.activeState = 'Door';
+      await ctx.req('stop');
+      expect(ctx.c.commands).toEqual([['gcode:stop', { force: true }], ['reset']]);
+      ctx.c.state.status.activeState = 'Door';
+      expect(ctx.state().canStop).toBe(true);
+      await ctx.req('stop');
+      expect(ctx.c.commands.at(-1)).toEqual(['reset']);
+    });
+
     test('board restarts are counted and the banner gives the firmware', () => {
       const ctx = ready();
       expect(ctx.state().startups).toBe(0);

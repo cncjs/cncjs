@@ -206,10 +206,8 @@ export const createService = (store, config, clock = monotonic) => {
   // CNCjs sets runner and sender to null when it destroys a controller (port
   // closed or gone, e.g. a USB cable pulled): forget the record in any case,
   // otherwise every later snapshot would fail on the same dead controller.
-  const modalWcs = (r) => {
-    const fresh = Number.isFinite(r.modalSeen) && clock() >= r.modalSeen && clock() - r.modalSeen <= MAX_REPORT_AGE_MS;
-    return fresh ? r.wcs : null;
-  };
+  const modalFresh = (r) => Number.isFinite(r.modalSeen) && clock() >= r.modalSeen && clock() - r.modalSeen <= MAX_REPORT_AGE_MS;
+  const modalWcs = (r) => (modalFresh(r) ? r.wcs : null);
 
   const remove = (c, r) => {
     records.delete(c);
@@ -283,11 +281,20 @@ export const createService = (store, config, clock = monotonic) => {
     return Boolean(reason) && !(reason && reason.data === '%wait');
   };
 
-  // Grbl reports the spindle speed in FS:; it is 0 once M5 is executed.
+  // Grbl reports the spindle speed in FS:; it is 0 once M5 is executed. A
+  // firmware without FS (no variable spindle, Grbl 0.9) is judged on the
+  // spindle state of a fresh $G, which CNCjs asks for about twice a second at rest.
   const spindleStill = (c) => {
     const speed = realtimeValue(controllerStatus(c).spindle);
     if (speed !== null && speed > 0) {
       throw conflict('La broche tourne encore (' + speed + ' tr/min) : arrêtez-la d’abord (M5).');
+    }
+    if (speed === null && modalFresh(record(c))) {
+      const parser = (c.runner && c.runner.state && c.runner.state.parserstate) || {};
+      const spindle = parser.modal && parser.modal.spindle;
+      if (spindle === 'M3' || spindle === 'M4') {
+        throw conflict('La broche est commandée (' + spindle + ') : arrêtez-la d’abord (M5).');
+      }
     }
   };
 
@@ -544,7 +551,7 @@ export const createService = (store, config, clock = monotonic) => {
       finishedWithErrors: ended && jobErrors > 0,
       jobErrors,
       canPause: c.workflow.state === 'running',
-      canStop: c.workflow.state !== 'idle' || ['Run', 'Hold', 'Home', 'Jog'].includes(state.activeState),
+      canStop: c.workflow.state !== 'idle' || ['Run', 'Hold', 'Home', 'Jog'].includes(state.activeState) || /^Door/.test(state.activeState || ''),
       overrides: overridesOf(state),
       canOverride: !overrideReason,
       overrideReason,
@@ -799,16 +806,31 @@ export const createService = (store, config, clock = monotonic) => {
         c.command('reset');
         return { message: 'Prise d’origine interrompue (réinitialisation). La carte demandera $H ou $X.' };
       }
+      // Door open: CNCjs's stop sends neither feed hold nor reset in that
+      // state, so Grbl would keep its planned moves for the next cycle start.
+      const door = /^Door/.test(activeState || '');
+      if (c.workflow.state === 'idle' && door) {
+        r.ticket = null;
+        c.command('reset');
+        return { message: 'Arrêt avec porte ouverte (réinitialisation). La carte peut demander $H ou $X.' };
+      }
       if (c.workflow.state === 'idle' && !['Run', 'Hold'].includes(activeState)) {
         throw conflict('Aucun travail à arrêter.');
       }
       r.ticket = null;
-      if (r.job) {
+      if (c.workflow.state === 'idle') {
+        // A macro or console commands (CNCjs feeder) move the machine: its
+        // queue must be emptied too, or the next 'ok' would send the rest.
+        c.command('feeder:stop');
+      } else if (r.job) {
         r.job.started = true;
         r.job.stopped = true;
         r.job.finishedAt = null;
       }
       c.command('gcode:stop', { force: true });
+      if (door) {
+        c.command('reset');
+      }
       return { message: 'Arrêt demandé. Vérifiez l’immobilisation ; ce bouton ne remplace pas l’arrêt physique.' };
     }
 
