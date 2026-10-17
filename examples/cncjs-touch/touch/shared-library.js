@@ -293,14 +293,23 @@
     for (var j = 0; j < bytes.length; j++) random += ('0' + bytes[j].toString(16)).slice(-2);
     return base + '--touch-' + new Date().toISOString().replace(/\D/g, '').slice(0, 14) + '-' + random + extension;
   }
-  function read(file) {
-    if (typeof file.text === 'string') return Promise.resolve(file.text); // generated in the page (commissioning test file)
+  function readAs(file, encoding) {
     return new Promise(function (resolve, reject) {
       reader = new FileReader();
       reader.onload = function () { resolve(String(reader.result || '')); };
       reader.onerror = function () { reject(new Error(uiLocale.t('Lecture du fichier impossible.'))); };
       reader.onabort = function () { reject(new Error(uiLocale.t('Annulé'))); };
-      reader.readAsText(file);
+      if (encoding) reader.readAsText(file, encoding); else reader.readAsText(file);
+    });
+  }
+  // Read as UTF-8; a file that is not valid UTF-8 (U+FFFD replacements, typically
+  // an older CAM writing Latin-1 comments) is read again as Windows-1252.
+  // Resolves with { text, legacy }.
+  function read(file) {
+    if (typeof file.text === 'string') return Promise.resolve({ text: file.text, legacy: false }); // generated in the page (commissioning test file)
+    return readAs(file).then(function (text) {
+      if (text.indexOf('�') < 0) return { text: text, legacy: false };
+      return readAs(file, 'windows-1252').then(function (legacy) { return { text: legacy, legacy: true }; });
     });
   }
   $('library-input').addEventListener('change', function () {
@@ -318,14 +327,14 @@
     if (!/\.(nc|gcode|tap|ngc|cnc|txt)$/i.test(file.name) || !file.size || file.size > 20 * 1048576) {
       $('library-upload-status').textContent = uiLocale.t('Choisissez un G-code non vide de 20 Mo maximum.'); return Promise.reject(new Error($('library-upload-status').textContent));
     }
-    var current = ++generation, text = '', stored = safeName(file.name), wrote = false;
+    var current = ++generation, text = '', stored = safeName(file.name), wrote = false, legacy = false;
     var meta = { version: 1, file: stored, originalName: file.name, bytes: file.size, createdAt: new Date().toISOString() };
     function cancelled() { return current !== generation; }
     function status(s) { if (!cancelled()) setText('library-upload-status', s); }
     lock(true); status(uiLocale.t('Lecture du fichier…'));
     return read(file).then(function (data) {
       if (cancelled()) throw new Error(uiLocale.t('Annulé'));
-      text = data;
+      text = data.text; legacy = data.legacy;
       if (/\x00/.test(text)) throw new Error(uiLocale.t('Ce fichier semble binaire. Un G-code texte est attendu.'));
       return window.CNCLibraryPreview.render(text, document.createElement('canvas'), cancelled, status).then(function (preview) {
         if (preview.image.length > 2500000) meta.previewError = uiLocale.t('image trop volumineuse'); else meta.preview = preview;
@@ -347,7 +356,7 @@
       if (selected !== stored) { cancelRegeneration(); setText('library-regenerate-status', ''); }
       selected = stored; pendingUpload = stored; pendingUntil = Date.now() + 15000; detailVersion = ''; $('library-input').value = ''; lock(false);
       publishSelection(stored, file.name);
-      status('✓ ' + file.name + uiLocale.t(' enregistré. Disponible sur la Surface.') + (meta.previewError ? uiLocale.t(' Aperçu indisponible : ') + meta.previewError : ''));
+      status('✓ ' + file.name + uiLocale.t(' enregistré. Disponible sur la Surface.') + (legacy ? uiLocale.t(' Fichier non UTF-8 : lu en Windows-1252 (accents convertis).') : '') + (meta.previewError ? uiLocale.t(' Aperçu indisponible : ') + meta.previewError : ''));
       previewChanged(stored);
       // CNCjs's watch list sees a new file a few seconds after it is written
       // (measured: about 4 s on the tablet): look again a few times.

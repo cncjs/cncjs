@@ -1,13 +1,14 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 (async()=>{
  let listed=[];
- const {document,node,activeScreens}=require('./dom-fixture.cjs').createDOM(['files']),handlers={},encodings=[],puts=[],emitted=[];
+ const {document,node,activeScreens}=require('./dom-fixture.cjs').createDOM(['files']),handlers={},encodings=[],puts=[],emitted=[],reads=[];
  const window={addEventListener:(n,f)=>handlers[n]=f,dispatchEvent:e=>emitted.push(e),
   CNCLibraryPreview:{render:()=>Promise.resolve({image:'data:image/png;base64,AA==',bounds:[0,0,1,1]})},
   CNCLibraryPayload:{encodeFile(file,text,cancelled,progress){progress('Préparation JSON…');return new Promise(resolve=>encodings.push({file,text,cancelled,resolve}));}}
  };
- const ctx={document,window,Blob,CustomEvent:function(type,o){this.type=type;this.detail=o.detail;},localStorage:{getItem:()=>JSON.stringify({state:{session:{token:'fake'}}})},
-  FileReader:function(){this.readAsText=()=>{this.result='G0 X0\nG1 X1';Promise.resolve().then(()=>this.onload());};},
+ const ctx={document,window,Blob,setTimeout:()=>0,CustomEvent:function(type,o){this.type=type;this.detail=o.detail;},localStorage:{getItem:()=>JSON.stringify({state:{session:{token:'fake'}}})},
+  // A file flagged latin1 holds Windows-1252 bytes: read as UTF-8, its accents become U+FFFD.
+  FileReader:function(){this.readAsText=(file,encoding)=>{reads.push(encoding||'utf-8');this.result=file.latin1?(encoding==='windows-1252'?'G0 X0 (pièce)':'G0 X0 (pi�ce)'):'G0 X0\nG1 X1';Promise.resolve().then(()=>this.onload());};},
   XMLHttpRequest:function(){this.open=(method,url)=>{this.method=method;this.url=url;};this.setRequestHeader=()=>{};this.send=body=>{if(this.method==='PUT')puts.push({url:this.url,body});this.status=200;this.responseText=JSON.stringify(this.url.endsWith('/status')?{configured:true}:this.url.endsWith('/files')?{files:listed}:{});Promise.resolve().then(()=>this.onload());};}
  };
  vm.runInNewContext(fs.readFileSync(__dirname+'/touch/shared-library.js','utf8'),ctx);
@@ -28,5 +29,13 @@ const fs=require('fs'),vm=require('vm'),assert=require('assert');
  listed=[{name:prepared.file,type:'f',size:14,mtime:'2026-10-17T00:00:00Z'},listed[0]];
  node('library-refresh').handlers.click();await flush();await flush();
  assert.equal(window.cncLibrarySelection.file,prepared.file);
+ // A Latin-1 (Windows-1252) file is read again in that encoding instead of losing its accents.
+ reads.length=0;node('library-input').files=[{name:'latin.nc',size:14,latin1:true}];node('library-send').handlers.click();await flush();await flush();
+ const latin=encodings.shift();assert.equal(latin.text,'G0 X0 (pièce)','accents kept');assert.deepEqual(reads,['utf-8','windows-1252']);
+ latin.resolve(new Blob([JSON.stringify({file:latin.file,data:latin.text})]));for(let i=0;i<5;i++)await flush();
+ assert.match(node('library-upload-status').textContent,/Windows-1252/,'the operator is told the file was converted');
+ // A UTF-8 file is read once.
+ reads.length=0;node('library-input').files=[{name:'utf8.nc',size:14}];node('library-send').handlers.click();await flush();assert.deepEqual(reads,['utf-8']);
+ encodings.shift().resolve(new Blob(['{}']));for(let i=0;i<5;i++)await flush();
  console.log('PASS: cancellable payload preparation, Blob upload without stringify, preserved Unicode/global selection while hidden, kept until CNCjs lists the upload, and preview invalidation.');
 })().catch(e=>{console.error(e);process.exitCode=1;});
