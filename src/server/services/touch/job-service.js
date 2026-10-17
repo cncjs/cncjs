@@ -25,7 +25,16 @@ const MAX_FILE_SIZE = 20 * 1048576;
 // Grbl settings exposed to the client: report mask/units, max rates, max
 // accelerations, travel limits and spindle range. The full list ($$) is only
 // sent on request, for the commissioning backup.
-const EXPOSED_SETTINGS = [20, 21, 22, 30, 31, 32, 110, 111, 112, 120, 121, 122, 130, 131, 132];
+const EXPOSED_SETTINGS = [20, 21, 22, 23, 30, 31, 32, 110, 111, 112, 120, 121, 122, 130, 131, 132];
+
+// A running job is reported stalled when Grbl stays idle this long while CNCjs
+// still waits for acknowledgements (a lost 'ok' or a line lost on the link).
+const STALL_MS = 30000;
+
+const grblCode = (res) => {
+  const n = Number(res && res.message);
+  return Number.isInteger(n) && n > 0 && n < 1000 ? n : null;
+};
 
 // Commissioning spindle test: the minimum speed ($31), or a quarter of the
 // maximum ($30) when no minimum is set.
@@ -136,10 +145,26 @@ export const createService = (store, config, clock = monotonic) => {
         // times the board restarted (an E-stop wired to reset restarts it).
         firmware: '',
         startups: 0,
+        // Last ALARM:n code, kept until the board restarts.
+        alarm: null,
+        // Since when Grbl is idle while the job waits for acknowledgements.
+        stall: null,
         generation: crypto.randomBytes(12).toString('hex')
       };
       r.status = () => {
         r.seen = clock();
+        const s = c.sender && c.sender.state;
+        const waiting = c.workflow && c.workflow.state === 'running' && controllerStatus(c).activeState === 'Idle' &&
+          s && Number.isFinite(s.sent) && Number.isFinite(s.received) && s.received < s.sent;
+        if (!waiting) {
+          r.stall = null;
+        } else if (!r.stall || r.stall.received !== s.received) {
+          r.stall = { since: r.seen, received: s.received };
+        }
+        changed();
+      };
+      r.alarmed = (res) => {
+        r.alarm = grblCode(res);
         changed();
       };
       r.reset = (payload) => {
@@ -147,6 +172,8 @@ export const createService = (store, config, clock = monotonic) => {
         r.modalSeen = null;
         r.wcs = null;
         r.ticket = null;
+        r.alarm = null;
+        r.stall = null;
         r.startups += 1;
         if (payload && typeof payload.firmware === 'string' && typeof payload.version === 'string') {
           r.firmware = (payload.firmware + ' ' + payload.version).slice(0, 63);
@@ -188,13 +215,15 @@ export const createService = (store, config, clock = monotonic) => {
       // A line refused by Grbl (error:N) during the job: CNCjs pauses on it,
       // or goes on with ignoreErrors, and ends the job either way when it was
       // the last line. Such a program is never reported finished.
-      r.error = () => {
+      r.error = (res) => {
         if (r.job && r.job.started && !r.job.stopped && c.workflow && c.workflow.state !== 'idle') {
           r.job.errors = (r.job.errors || 0) + 1;
+          r.job.lastError = grblCode(res);
           changed();
         }
       };
       c.runner.on('error', r.error);
+      c.runner.on('alarm', r.alarmed);
       c.sender.on('load', r.file);
       c.sender.on('unload', r.file);
       c.sender.on('end', r.end);
@@ -217,6 +246,7 @@ export const createService = (store, config, clock = monotonic) => {
       c.runner.removeListener('parserstate', r.modal);
       c.runner.removeListener('raw', r.raw);
       c.runner.removeListener('error', r.error);
+      c.runner.removeListener('alarm', r.alarmed);
     }
     if (c.sender) {
       c.sender.removeListener('load', r.file);
@@ -550,6 +580,10 @@ export const createService = (store, config, clock = monotonic) => {
       finished: ended && !jobErrors,
       finishedWithErrors: ended && jobErrors > 0,
       jobErrors,
+      jobLastError: (r.job && r.job.lastError) || null,
+      // ALARM:n while the controller is in alarm (null: no code received, e.g. homing lock).
+      alarmCode: /^Alarm/.test(state.activeState || '') ? r.alarm : null,
+      stalledMs: r.stall && Number.isFinite(r.seen) && r.seen - r.stall.since >= STALL_MS ? r.seen - r.stall.since : null,
       canPause: c.workflow.state === 'running',
       canStop: c.workflow.state !== 'idle' || ['Run', 'Hold', 'Home', 'Jog'].includes(state.activeState) || /^Door/.test(state.activeState || ''),
       overrides: overridesOf(state),
@@ -902,7 +936,7 @@ export const createService = (store, config, clock = monotonic) => {
         idOf(state), idOf(state.status), idOf(state.parserstate), idOf(runner.settings), idOf(c.settings),
         s.name, s.total, s.sent, s.received, s.hold, idOf(s.holdReason), idOf(s.context),
         feeder.queue, feeder.pending,
-        r ? [r.loading, r.seen === null, r.modalSeen === null, r.wcs, r.ticket && r.ticket.nonce, r.firmware, r.startups].join(',') : '',
+        r ? [r.loading, r.seen === null, r.modalSeen === null, r.wcs, r.ticket && r.ticket.nonce, r.firmware, r.startups, r.alarm, r.stall && r.stall.since].join(',') : '',
         j ? [idOf(j), j.started, j.stopped, j.finishedAt, j.errors].join(',') : ''
       ].join(';');
     }).join('|');

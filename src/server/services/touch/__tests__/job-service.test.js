@@ -288,6 +288,69 @@ describe('job service', () => {
     }
   });
 
+  test('the alarm code is reported while the controller is in alarm, and forgotten after a restart', () => {
+    const ctx = setup();
+    ctx.report();
+    expect(ctx.state().alarmCode).toBe(null);
+    ctx.c.runner.emit('alarm', { message: '9', raw: 'ALARM:9' });
+    ctx.c.state.status.activeState = 'Alarm';
+    ctx.report();
+    expect(ctx.state().alarmCode).toBe(9);
+    ctx.c.state.status.activeState = 'Idle';
+    ctx.report();
+    expect(ctx.state().alarmCode).toBe(null);
+    ctx.c.runner.emit('alarm', { message: '1', raw: 'ALARM:1' });
+    ctx.c.runner.emit('startup', { firmware: 'Grbl', version: '1.1h' });
+    ctx.c.state.status.activeState = 'Alarm'; // homing lock after the reset: no code sent
+    ctx.report();
+    expect(ctx.state().alarmCode).toBe(null);
+  });
+
+  test('the last Grbl error code of the job and the homing direction setting are reported', async () => {
+    const ctx = setup();
+    ctx.c.settings.settings.$23 = 3;
+    const state = await ctx.loaded();
+    expect(state.settings.$23).toBe(3);
+    expect(state.jobLastError).toBe(null);
+    const ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+    await ctx.req('start', { nonce: ticket.nonce });
+    ctx.c.runner.emit('error', { message: '24', raw: 'error:24' });
+    ctx.c.runner.emit('error', { message: '2', raw: 'error:2' });
+    expect(ctx.state()).toMatchObject({ jobErrors: 2, jobLastError: 2 });
+  });
+
+  test('a job that waits for acknowledgements while Grbl stays idle is reported stalled after 30 s', async () => {
+    const ctx = setup();
+    const state = await ctx.loaded();
+    const ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+    await ctx.req('start', { nonce: ticket.nonce });
+    ctx.c.sender.state = { ...ctx.c.sender.state, sent: 3, received: 1 };
+    ctx.c.state.status.activeState = 'Idle';
+    ctx.report();
+    expect(ctx.state().stalledMs).toBe(null);
+    ctx.now += 20000;
+    ctx.report();
+    expect(ctx.state().stalledMs).toBe(null);
+    ctx.now += 15000;
+    ctx.report();
+    expect(ctx.state().stalledMs).toBe(35000);
+    // An acknowledgement, or motion, restarts the count.
+    ctx.c.sender.state = { ...ctx.c.sender.state, received: 2 };
+    ctx.report();
+    expect(ctx.state().stalledMs).toBe(null);
+    ctx.now += 40000;
+    ctx.c.state.status.activeState = 'Run';
+    ctx.report();
+    expect(ctx.state().stalledMs).toBe(null);
+    // Every line acknowledged: nothing is waited for.
+    ctx.c.state.status.activeState = 'Idle';
+    ctx.c.sender.state = { ...ctx.c.sender.state, received: 3 };
+    ctx.report();
+    ctx.now += 40000;
+    ctx.report();
+    expect(ctx.state().stalledMs).toBe(null);
+  });
+
   test('a program whose lines failed is never reported finished', async () => {
     const ctx = setup();
     const run = async () => {
