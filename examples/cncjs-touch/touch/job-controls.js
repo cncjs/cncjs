@@ -15,7 +15,7 @@
     uiLocale.html('<p id="job-feedback" role="status">Le chargement ne démarre pas le travail.</p>') +
     uiLocale.html('<p class="mute">L’arrêt logiciel ne remplace pas l’arrêt physique de la machine.</p>') +
     uiLocale.html('<div id="job-dialog" class="job-dialog" role="dialog" aria-modal="true" aria-labelledby="job-dialog-title" hidden>') +
-    uiLocale.html('<div class="job-dialog-card"><h2 id="job-dialog-title">Confirmer le démarrage</h2><p id="job-dialog-file"></p>') +
+    uiLocale.html('<div class="job-dialog-card"><h2 id="job-dialog-title">Confirmer le démarrage</h2><p id="job-dialog-file"></p><p id="job-travel" class="job-travel" hidden></p>') +
     uiLocale.html('<p>')+(simulation?uiLocale.t('Test des boutons uniquement. Aucun mouvement ni activation du laser.'):uiLocale.t('Cette action met la machine en mouvement et peut activer l’outil. Vérifiez la machine, l’origine et la zone de travail.'))+uiLocale.html('</p>') +
     uiLocale.html('<label class="job-confirm-label"><input id="job-check" type="checkbox">')+(simulation?uiLocale.t('Je souhaite lancer cette simulation.'):uiLocale.t('Je suis devant la machine et prêt à lancer ce fichier.'))+uiLocale.html('</label>') +
     uiLocale.html('<p id="job-countdown"></p><button id="job-confirm" disabled>Confirmer</button><button id="job-dismiss">Annuler</button></div></div>');
@@ -108,7 +108,7 @@
     var loadedText=online?(current.name?uiLocale.t('Chargé dans CNCjs : ')+(current.originalName||current.name):uiLocale.t('Aucun fichier chargé dans CNCjs.')):uiLocale.t('Fichier chargé : état indisponible.');
     var reason='';
     if(!online) reason=streamReason||uiLocale.t('Connectez le contrôleur dans CNCjs et attendez un état récent.');
-    else if(/^alarm/i.test(current.activeState)) reason=simulation?uiLocale.t('Alarme fictive : ouvrez Machine pour terminer le test d’alarme. La reprise devra être confirmée.'):uiLocale.t('Chargement et démarrage bloqués : le contrôleur est en ALARM. Consultez le message d’alarme dans CNCjs et résolvez sa cause. Quand la machine sera prête (Idle), chargez le fichier puis touchez Démarrer.');
+    else if(/^alarm/i.test(current.activeState)) reason=simulation?uiLocale.t('Alarme fictive : ouvrez Machine pour terminer le test d’alarme. La reprise devra être confirmée.'):(window.CNCGrblHelp?window.CNCGrblHelp.text(window.CNCGrblHelp.alarm(current.alarmCode))+' ':'')+uiLocale.t('Chargement et démarrage bloqués : le contrôleur est en ALARM. Consultez le message d’alarme dans CNCjs et résolvez sa cause. Quand la machine sera prête (Idle), chargez le fichier puis touchez Démarrer.');
     else if(!current.fresh) reason=uiLocale.t('En attente d’un état récent du contrôleur.');
     else if(!current.name) reason=current.canLoad?(selection?uiLocale.t('Étape suivante : Charger le fichier sélectionné, puis Démarrer.'):uiLocale.t('Sélectionnez un fichier dans la bibliothèque.')):(current.loadReason||uiLocale.t('Chargement indisponible.'));
     else if(current.workflow==='paused') reason=current.canResume?uiLocale.t('Travail en pause. Touchez Reprendre pour confirmer la reprise.'):current.resumeReason;
@@ -212,6 +212,9 @@
       dialogBackground=Array.prototype.filter.call(document.body.children||[],function(node){return node!==$('job-dialog')&&!/^(SCRIPT|LINK|STYLE)$/.test(node.tagName);}).map(function(node){var entry={node:node,inert:node.inert};node.inert=true;return entry;});
       $('job-dialog-title').textContent=({start:uiLocale.t('Confirmer le démarrage'),macro:uiLocale.t('Exécuter la macro'),unlock:uiLocale.t('Déverrouiller la machine'),home:uiLocale.t('Lancer la prise d’origine'),spindle:uiLocale.t('Démarrer la broche')})[operation]||uiLocale.t('Confirmer la reprise');
       $('job-dialog-file').textContent=data.name+' · '+port;
+      // Start of a real job: is the program's XY extent inside the machine travel?
+      if(window.CNCTravelCheck){var img=$('home-job-image'),pv=img&&img.cncPreview&&img.cncPreview.file===current.name?img.cncPreview:null;
+        window.CNCTravelCheck.show($('job-travel'),operation==='start'&&!simulation?window.CNCTravelCheck.check(pv,current):null);}
       text('job-countdown',uiLocale.t('Confirmation valable ')+Math.max(0,Math.ceil((until-elapsedClock())/1000))+' s.');
       $('job-check').checked=false;$('job-confirm').disabled=true;$('job-dialog').hidden=false;$('job-dismiss').focus();
     },function(){preparing--;});
