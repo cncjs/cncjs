@@ -36,6 +36,10 @@ Nothing above was run with a real controller. Overrides and macros stay disabled
 
 Réglages now has two tabs, "Affichage" (the existing display settings) and "Système", a read-only panel in the spirit of KlipperScreen's system screen: usage of each CPU core as a bar, total CPU, temperature sensors, memory (based on `MemAvailable`), load average, battery and mains state, and the memory and uptime of the CNCjs process. The figures describe the computer that runs CNCjs, which is the tablet itself in the kiosk setup. They come from `GET /api/touch-system` (`src/server/services/touch/system-stats.js`: `os.cpus()` deltas and a few small sysfs files, one shared sample per 500 ms). The page polls every 2 s and only while that tab is on screen. Failed requests back off up to 30 s. Nothing is sent to the controller.
 
+## Code review before the machine (2026-10-17)
+
+A full review of the touch code fixed defects in the spindle and stop guards, the commissioning E-stop and spindle steps, previews that could hide moves, the file selected after an upload, translations and the simulator tools. Details in `TESTING.md`, "Code review before the machine".
+
 ## Commissioning assistant (2026-10-17)
 
 Réglages → "Mise en service de la machine" (also opened by itself the first time a real controller is connected, and from the Machine screen) walks through nine steps before the first job: checklist, `$$` backup download, emergency stop, limit switches, probe, homing (`$H`), spindle and VFD test at the minimum speed, an air-cut test file, and a summary saved with the date for that controller port. Each step can be skipped, and so can the whole assistant after ticking "Je passe les vérifications sous ma responsabilité"; it resumes where it was left. `$X`, `$H` and the spindle start go through the same confirmation dialog as a job start and are refused during a job; the Machine screen also has `$X` and `$H`. The other checks only read the controller's reports (alarm, `Pn` inputs, spindle speed).

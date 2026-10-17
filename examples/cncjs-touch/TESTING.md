@@ -38,6 +38,37 @@ Added without a controller, so covered by mocks only: `test-preview.cjs` and `te
 
 `system-stats.test.js` (Jest) checks per-core usage from `os.cpus()` deltas, the shared sample within 500 ms, `MemAvailable` over `MemFree`, millidegree sensors, skipped or unreadable zones, battery and mains state, and a server without sysfs (Windows/macOS). `api.touch.test.js` covers the session check, `Cache-Control: no-store` and hidden error details for `GET /api/touch-system`. `test-system-monitor.cjs` checks that the page polls only while the tab is shown on a visible page, never with two requests in flight, renders one bar per core, writes nothing for an unchanged sample, backs off on failures (4, 8, 16 then 30 s), recovers, and never shows NaN for malformed data.
 
+## Code review before the machine (2026-10-17)
+
+Five read-only reviews (server, job control, library and preview, probe and motion, shell and tools) were run over the whole touch code; every finding was checked against the code before being fixed, each with a test that failed before.
+
+Fixed, server (`job-service.test.js`, `touch-stream.test.js`, `probe-input.test.js`, `writeStream.test.js`):
+- Homing, macros and start were allowed while the spindle still turned after the commissioning spindle test (Grbl stays Idle with M3): refused until `FS` reports 0.
+- Pause, stop and M5 were refused after a reconnection (stale identity or stream); M5 also needed a fresh report and an empty queue. Stop did nothing during a homing cycle or a jog: it now sends a soft reset or a jog cancel.
+- The spindle test speed was recomputed after the confirmation: the confirmed speed is now the one sent.
+- Work-offset words were missed in compact G-code (`G90G55`, `G10L20P1X0`).
+- A controller destroyed during a load was re-registered and failed with a TypeError; start was allowed during a load.
+- The firmware was unknown whenever CNCjs connected after the banner: `[VER:]` from `$I` is kept, and `$I` is sent with the `$$` re-read while it is unknown.
+- Grbl_ESP32 reports A/B/C limits and macro buttons 0-3 in `Pn`; such a report was taken as malformed.
+- The event stream rotates every minute and that revoked any open confirmation; it now waits for it (20 s at most).
+- `/api/watch/file` reads were not confined to the watch directory (writes were).
+
+Fixed, browser (`test-commissioning.cjs`, `test-job-dialog.cjs`, `test-preview.cjs`, `test-arcs.cjs`, `test-preview-worker.cjs`, `test-library-upload-payload.cjs`, `test-i18n.cjs`):
+- The commissioning E-stop step validated itself when the event stream renewed (a gap in the reports looked like a board reset). It now needs a fresh alarm or a restart counted by the server.
+- Leaving the spindle step sent M5 only if a speed was already reported: a start still on its way was left running. M5 is now sent whenever a start was asked, and a pending confirmation is closed.
+- Previews: an unclosed `(` comment hid every following line; moves after `M2`/`M30` were not drawn although Grbl runs them; `G90.1` and arcs without X/Y were drawn although Grbl refuses them; a lone CR made Grbl and the CNCjs sender count different lines; arc direction now follows Grbl's `mc_arc` rule. All of these files are now refused with the line number instead of being drawn wrongly.
+- After an upload, the first list refresh did not contain the new file yet and selected another one, which could then be loaded.
+- 21 phrases written with outer spaces were never translated; server messages are now translated in EN/ES.
+
+Fixed, tools: a killed simulator bridge left the simulator running at full CPU (now `PR_SET_PDEATHSIG`); `build.sh` built an unpatched simulator when a patch failed.
+
+Checked on the tablet against the simulator: firmware read through `$I` ("Grbl 1.1h.20190825"); with `M3 S8000` homing and macros refused ("La broche tourne encore"), M5 accepted, then back to normal; a board reset counted (1 → 2) and accepted by the E-stop step; a killed bridge takes the simulator with it.
+
+Not changed, with the reason:
+- Deduplicating `cnc-job-status` events: the probe screen computes freshness from the age carried by each event; suppressing them would show fresh data as too old.
+- Prerequisites before enabling real jogging and probing (today dry run / simulation only): check every destination against `$130`-`$132` and the homing state, retract Z before X/Y moves, tie the tool diameter to the tool, and convert `PRB` values when `$13=1`.
+- Server snapshot work (about 4 of 5 snapshots discarded as duplicates at idle): a measurable optimisation left for a session on the tablet.
+
 ## Commissioning assistant (2026-10-17)
 
 `job-service.test.js` (Jest) checks that `$X` is accepted only in alarm and `$H` only with `$22=1` from Idle or Alarm, that both and the spindle test (`M3 S` at `$31`, or `$30`/4 when `$31` is 0) need a ticket for the same operation and are checked again at run time, that none runs during a job or with CNCjs automations, `M5` and the `$$` re-read from Idle only, and the full settings list on request. The snapshot reports the triggered X/Y/Z/P inputs (`Pn` absent means none, an old report means unknown). `test-commissioning.cjs` checks the step model (an alarm already present is not taken for the E-stop, a reset counts, each limit must be seen free then triggered, probe contact then release, homing Home → Idle, a silent cycle followed by an alarm is a failure, spindle seen turning then stopped, air-cut file finished), the automatic opening on the first real controller only (not on a simulator port, not twice), resume on the saved step, `M5` when leaving the spindle step, skipping only after the responsibility box, and the saved summary. `test-job-dialog.cjs` checks that the three commands use the confirmation dialog and its nonce, and that a state change closes it.
