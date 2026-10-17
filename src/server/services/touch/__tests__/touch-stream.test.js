@@ -147,6 +147,51 @@ describe('touch stream', () => {
     ctx.stream.dispose();
   });
 
+  test('identical status reports at rest build no snapshot between heartbeats', () => {
+    const ctx = setup();
+    const first = ctx.registry.A;
+    const { res } = ctx.connect();
+    const list = jest.spyOn(ctx.service, 'list');
+    first.runner.emit('status', {});
+    ctx.timers.flush();
+    expect(list).toHaveBeenCalledTimes(1); // the first report changes freshness
+    const sent = res.lines.length;
+    // Grbl answers `?` 4x/s with the same report: GrblRunner keeps its state object.
+    for (let i = 0; i < 3; i++) {
+      ctx.now += 250;
+      first.runner.emit('status', {});
+      ctx.timers.flush();
+    }
+    expect(list).toHaveBeenCalledTimes(1);
+    expect(res.lines.length).toBe(sent);
+    // A changed report (new state object) is built and sent at once.
+    ctx.now += 100;
+    first.runner.state = { ...first.runner.state, status: { ...first.runner.state.status, wpos: { x: 7, y: 2, z: 3 } } };
+    first.runner.emit('status', {});
+    ctx.timers.flush();
+    expect(list).toHaveBeenCalledTimes(2);
+    expect(res.lines.at(-1).controllers[0].coordinates.wpos.x).toBe(7);
+    // A job state or sender counter change is seen too.
+    ctx.now += 100;
+    first.workflow.state = 'running';
+    first.runner.emit('status', {});
+    ctx.timers.flush();
+    expect(list).toHaveBeenCalledTimes(3);
+    first.workflow.state = 'idle';
+    ctx.now += 100;
+    first.sender.state = { ...first.sender.state, received: 1 };
+    first.runner.emit('status', {});
+    ctx.timers.flush();
+    expect(list).toHaveBeenCalledTimes(4);
+    // The heartbeat still builds and sends once a second (ages, expiries).
+    ctx.now += 1000;
+    ctx.stream.publish();
+    expect(list).toHaveBeenCalledTimes(5);
+    expect(res.lines.at(-1).sequence).toBeGreaterThan(res.lines.at(-2).sequence);
+    list.mockRestore();
+    ctx.stream.dispose();
+  });
+
   test('reports units and WCS only from observed parser reports', () => {
     const ctx = setup();
     const first = ctx.registry.A;

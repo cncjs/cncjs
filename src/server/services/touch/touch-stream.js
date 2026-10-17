@@ -38,6 +38,7 @@ export const createStream = (service, options = {}) => {
   let disposed = false;
   let lastSignature = '';
   let lastPublished = 0;
+  let lastKey = null;
 
   const snapshot = () => ({
     version: 1,
@@ -83,6 +84,13 @@ export const createStream = (service, options = {}) => {
       scheduled = null;
     }
     try {
+      // At rest Grbl repeats the same report 4x/s: skip building a snapshot
+      // that could only be dropped as a duplicate until the next heartbeat.
+      const key = typeof service.fingerprint === 'function' ? service.fingerprint() : null;
+      if (key !== null && key === lastKey && elapsed() - lastPublished < HEARTBEAT_MS) {
+        return;
+      }
+      lastKey = key;
       const packet = snapshot();
       const signature = JSON.stringify(packet.controllers, (key, value) => {
         return VOLATILE_KEYS.includes(key) ? undefined : value;
