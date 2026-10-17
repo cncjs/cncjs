@@ -47,7 +47,7 @@ window.CNCTouchMessages = [
 ['L’estimation du suivi est indicative. Toutes les lignes acquittées ne signifient pas que les mouvements sont terminés. L’arrêt logiciel ne remplace pas l’arrêt physique.','Monitoring estimates are indicative. All lines acknowledged does not mean motion is complete. Software stop does not replace the physical stop.','La estimación es orientativa. Todas las líneas confirmadas no significa que los movimientos hayan terminado. La parada por software no sustituye a la parada física.'],
 ['Confort sur la Surface','Surface comfort','Comodidad en la Surface'],
 ['Réglages propose la taille du texte, les coordonnées du suivi, le plein écran et la durée avant veille.','Settings provides text size, monitoring coordinates, full screen and the sleep delay.','Ajustes permite cambiar el tamaño del texto, las coordenadas del seguimiento, la pantalla completa y el tiempo de suspensión.'],
-['La veille noire est suspendue pendant un travail, une pause ou un palpage simulé. Le délai repart après le retour au repos confirmé. Elle ne coupe pas le rétroéclairage.','Black-screen sleep is suspended during a job, pause or simulated probing. Its delay restarts after a confirmed return to idle. It does not switch off the backlight.','La pantalla negra se suspende durante un trabajo, una pausa o un sondeo simulado. El plazo vuelve a empezar tras confirmar el reposo. No apaga la retroiluminación.'],
+['La veille noire est suspendue pendant un travail, une pause ou un palpage simulé. Le délai repart après le retour au repos confirmé. Selon le réglage Luminosité, elle éteint ou baisse l’écran.','Black-screen sleep is suspended during a job, pause or simulated probing. Its delay restarts after a confirmed return to idle. Depending on the Brightness setting, it switches the screen off or dims it.','La pantalla negra se suspende durante un trabajo, una pausa o un sondeo simulado. El plazo vuelve a empezar tras confirmar el reposo. Según el ajuste de Brillo, apaga o atenúa la pantalla.'],
 ['Le premier toucher réveille seulement l’écran. Touchez ensuite la commande voulue.','The first touch only wakes the screen. Then touch the desired control.','El primer toque solo despierta la pantalla. Después toque el control deseado.'],
 ['Préférences et navigation','Preferences and navigation','Preferencias y navegación'],
 ['Le menu et les commandes restent dans la fenêtre. Les longues listes utilisent Précédent / Suivant.','Menus and controls stay within the window. Long lists use Previous / Next.','El menú y los controles permanecen dentro de la ventana. Las listas largas usan Anterior / Siguiente.'],
@@ -385,3 +385,52 @@ window.CNCTouchMessages.push(["Démarrer la broche", "Start the spindle", "Arran
 window.CNCTouchMessages.push(["État indisponible.", "State unavailable.", "Estado no disponible."]);
 window.CNCTouchMessages.push(["Un envoi est déjà en cours.", "A transfer is already in progress.", "Ya hay un envío en curso."]);
 window.CNCTouchMessages.push(["Mise en service", "Commissioning", "Puesta en marcha"]);
+// Review 2026-10-17: server messages and tablet checks.
+window.CNCTouchMessages.push(["Confirmation annulée : le suivi a été renouvelé. Touchez à nouveau le bouton.", "Confirmation cancelled: monitoring was renewed. Touch the button again.", "Confirmación cancelada: el seguimiento se renovó. Toque de nuevo el botón."]);
+window.CNCTouchMessages.push(["Vérification de l’état de la machine…", "Checking the machine state…", "Comprobando el estado de la máquina…"]);
+window.CNCTouchMessages.push(["État de la machine illisible : commande non lancée.", "Machine state unreadable: command not run.", "Estado de la máquina ilegible: comando no ejecutado."]);
+window.CNCTouchMessages.push(["État de la machine trop ancien : commande non lancée.", "Machine state too old: command not run.", "Estado de la máquina demasiado antiguo: comando no ejecutado."]);
+window.CNCTouchMessages.push(["Machine en mouvement ou occupée : commande non lancée.", "Machine moving or busy: command not run.", "Máquina en movimiento u ocupada: comando no ejecutado."]);
+window.CNCTouchMessages.push(["Rapport machine périmé.", "Machine report out of date.", "Informe de la máquina caducado."]);
+window.CNCTouchMessages.push(["Service indisponible.", "Service unavailable.", "Servicio no disponible."]);
+window.CNCTouchMessages.push(["Contrôleur Grbl non connecté.", "Grbl controller not connected.", "Controlador Grbl no conectado."]);
+window.CNCTouchMessages.push(["Connexion machine indisponible.", "Machine connection unavailable.", "Conexión con la máquina no disponible."]);
+window.CNCTouchMessages.push(["La machine doit être au repos (Idle), sans commande en attente.", "The machine must be at rest (Idle), with no command waiting.", "La máquina debe estar en reposo (Idle), sin comandos en espera."]);
+window.CNCTouchMessages.push(["Le fichier chargé a changé. Rechargez-le et confirmez à nouveau.", "The loaded file changed. Load it again and confirm again.", "El archivo cargado cambió. Vuelva a cargarlo y confirme de nuevo."]);
+window.CNCTouchMessages.push(["Chargement en cours.", "Loading in progress.", "Carga en curso."]);
+window.CNCTouchMessages.push(["Rechargez le fichier avant un nouveau démarrage.", "Load the file again before a new start.", "Vuelva a cargar el archivo antes de un nuevo arranque."]);
+window.CNCTouchMessages.push(["La reprise exige une pause simple confirmée par la machine.", "Resuming needs a plain pause confirmed by the machine.", "La reanudación requiere una pausa simple confirmada por la máquina."]);
+window.CNCTouchMessages.push(["Des automatismes CNCjs sont configurés. Leur compatibilité doit être vérifiée avant utilisation.", "CNCjs automations are configured. Their compatibility must be checked before use.", "Hay automatismos de CNCjs configurados. Debe comprobarse su compatibilidad antes de usarlo."]);
+window.CNCTouchMessages.push(["Impossible pendant un travail ou avec des commandes en attente.", "Not possible during a job or with commands waiting.", "No es posible durante un trabajo o con comandos en espera."]);
+window.CNCTouchMessages.push(["Le déverrouillage ($X) ne sert qu’en alarme.", "Unlocking ($X) is only for an alarm.", "El desbloqueo ($X) solo sirve en alarma."]);
+window.CNCTouchMessages.push(["La prise d’origine exige une machine au repos ou en alarme.", "Homing needs a machine at rest or in alarm.", "La búsqueda de origen requiere la máquina en reposo o en alarma."]);
+window.CNCTouchMessages.push(["Réglage $22 inconnu : relisez les réglages de la carte.", "Setting $22 unknown: read the board settings again.", "Ajuste $22 desconocido: vuelva a leer los ajustes de la placa."]);
+window.CNCTouchMessages.push(["Prise d’origine désactivée sur la carte ($22=0).", "Homing disabled on the board ($22=0).", "Búsqueda de origen desactivada en la placa ($22=0)."]);
+window.CNCTouchMessages.push(["Pendant un travail, utilisez Pause ou Arrêter.", "During a job, use Pause or Stop.", "Durante un trabajo, use Pausa o Detener."]);
+window.CNCTouchMessages.push(["Vitesse maximale de broche ($30) inconnue : relisez les réglages de la carte.", "Maximum spindle speed ($30) unknown: read the board settings again.", "Velocidad máxima del husillo ($30) desconocida: vuelva a leer los ajustes de la placa."]);
+window.CNCTouchMessages.push(["Déverrouillage ($X) envoyé. Vérifiez le retour à Idle.", "Unlock ($X) sent. Check the return to Idle.", "Desbloqueo ($X) enviado. Compruebe la vuelta a Idle."]);
+window.CNCTouchMessages.push(["Prise d’origine ($H) lancée. Main sur l’arrêt d’urgence.", "Homing ($H) started. Hand on the emergency stop.", "Búsqueda de origen ($H) iniciada. Mano sobre la parada de emergencia."]);
+window.CNCTouchMessages.push(["La vitesse de test a changé depuis la confirmation. Confirmez à nouveau.", "The test speed changed since the confirmation. Confirm again.", "La velocidad de prueba cambió desde la confirmación. Confirme de nuevo."]);
+window.CNCTouchMessages.push(["Un chargement est déjà en cours.", "A load is already in progress.", "Ya hay una carga en curso."]);
+window.CNCTouchMessages.push(["Nom de fichier invalide.", "Invalid file name.", "Nombre de archivo no válido."]);
+window.CNCTouchMessages.push(["Fichier hors de la bibliothèque.", "File outside the library.", "Archivo fuera de la biblioteca."]);
+window.CNCTouchMessages.push(["Fichier vide ou supérieur à 20 Mo.", "File empty or larger than 20 MB.", "Archivo vacío o de más de 20 MB."]);
+window.CNCTouchMessages.push(["Fichier modifié pendant la lecture ou format invalide.", "File changed while being read, or invalid format.", "Archivo modificado durante la lectura o formato no válido."]);
+window.CNCTouchMessages.push(["Les directives CNCjs % ne sont pas acceptées par cette bibliothèque.", "CNCjs % directives are not accepted by this library.", "Esta biblioteca no acepta las directivas % de CNCjs."]);
+window.CNCTouchMessages.push(["Automatismes CNCjs à vérifier avant chargement.", "CNCjs automations to check before loading.", "Automatismos de CNCjs que comprobar antes de cargar."]);
+window.CNCTouchMessages.push(["Fichier chargé dans CNCjs. Aucun démarrage envoyé.", "File loaded in CNCjs. No start sent.", "Archivo cargado en CNCjs. No se ha enviado ningún arranque."]);
+window.CNCTouchMessages.push(["Choisissez une machine.", "Choose a machine.", "Elija una máquina."]);
+window.CNCTouchMessages.push(["Le contrôleur a changé ou son identité manque. Choisissez-le à nouveau.", "The controller changed or its identity is missing. Choose it again.", "El controlador cambió o falta su identidad. Vuelva a elegirlo."]);
+window.CNCTouchMessages.push(["Connexion de suivi interrompue. Confirmez à nouveau.", "Monitoring connection interrupted. Confirm again.", "Conexión de seguimiento interrumpida. Confirme de nuevo."]);
+window.CNCTouchMessages.push(["Le contrôleur a changé. Choisissez-le à nouveau.", "The controller changed. Choose it again.", "El controlador cambió. Vuelva a elegirlo."]);
+window.CNCTouchMessages.push(["Lecture des réglages ($$) demandée.", "Settings read ($$) requested.", "Lectura de los ajustes ($$) solicitada."]);
+window.CNCTouchMessages.push(["Action invalide.", "Invalid action.", "Acción no válida."]);
+window.CNCTouchMessages.push(["Confirmation expirée ou déjà utilisée.", "Confirmation expired or already used.", "Confirmación caducada o ya utilizada."]);
+window.CNCTouchMessages.push(["Arrêt broche (M5) envoyé.", "Spindle stop (M5) sent.", "Parada del husillo (M5) enviada."]);
+window.CNCTouchMessages.push(["Aucun travail en cours.", "No job running.", "Ningún trabajo en curso."]);
+window.CNCTouchMessages.push(["Pause demandée. Attendre l’état Hold.", "Pause requested. Wait for the Hold state.", "Pausa solicitada. Espere el estado Hold."]);
+window.CNCTouchMessages.push(["Déplacement annulé.", "Move cancelled.", "Desplazamiento cancelado."]);
+window.CNCTouchMessages.push(["Prise d’origine interrompue (réinitialisation). La carte demandera $H ou $X.", "Homing interrupted (reset). The board will ask for $H or $X.", "Búsqueda de origen interrumpida (reinicio). La placa pedirá $H o $X."]);
+window.CNCTouchMessages.push(["Aucun travail à arrêter.", "No job to stop.", "Ningún trabajo que detener."]);
+window.CNCTouchMessages.push(["Arrêt demandé. Vérifiez l’immobilisation ; ce bouton ne remplace pas l’arrêt physique.", "Stop requested. Check that the machine is still; this button does not replace the physical stop.", "Parada solicitada. Compruebe que la máquina se ha detenido; este botón no sustituye a la parada física."]);
+window.CNCTouchMessages.push(["Action inconnue.", "Unknown action.", "Acción desconocida."]);

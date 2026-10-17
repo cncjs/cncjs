@@ -17,7 +17,7 @@
   function render(){
     var macros=machine&&Array.isArray(machine.macros)?machine.macros.filter(function(m){return m&&typeof m.id==='string'&&typeof m.name==='string';}):[];
     var ready=!!(machine&&machine.fresh&&machine.canMacro);
-    var key=JSON.stringify([macros,ready]);
+    var key=JSON.stringify([macros,ready,machine&&machine.macroReason]);
     var disabled=!machine||!macros.length;
     if(button.disabled!==disabled)button.disabled=disabled;
     if(key===signature)return;signature=key;

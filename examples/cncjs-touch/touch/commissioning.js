@@ -23,9 +23,18 @@
     if(id==='estop'){
       // Armed once the machine was seen out of alarm: an alarm already present
       // (homing required at power-on) is not taken for the E-stop.
-      if(!m||!m.fresh){if(st.armed)st.lost=true;}
-      else if(alarm(m)){if(st.armed)st.alarm=true;}
-      else{if(m.activeState==='Idle'&&(st.alarm||st.lost))st.back=true;st.armed=true;}
+      // A gap in the reports is not an E-stop (the event stream renews itself
+      // every minute): only a fresh alarm, or a board restart counted by the
+      // server (m.startups), proves that the E-stop acted.
+      if(!m||!m.fresh)return st;
+      var starts=typeof m.startups==='number'?m.startups:null;
+      if(alarm(m)){if(st.armed)st.alarm=true;}
+      else{
+        if(st.armed&&starts!==null&&st.startups!==null&&starts>st.startups)st.lost=true;
+        if(m.activeState==='Idle'&&(st.alarm||st.lost))st.back=true;
+        if(!st.armed)st.startups=starts;
+        st.armed=true;
+      }
     }else if(id==='limits'||id==='probe'){
       var p=pins(m),letters=id==='limits'?['X','Y','Z']:['P'];
       st.free=st.free||{};st.seen=st.seen||{};st.active=st.active||{};
@@ -126,7 +135,8 @@
 
   var machine=null,port=null,index=0,st={},view=null,current='menu',autoDone=false;
   function jc(){return window.cncJobControls||null;}
-  function command(fn){var c=jc();if(!c)return;try{var p=fn(c);if(p&&typeof p.then==='function')p.then(function(r){if(r&&r.message)set(status,r.message);},function(e){set(status,e.message);});}catch(e){set(status,e.message);}}
+  function shown(text){return window.cncI18n&&window.cncI18n.message?window.cncI18n.message(text):t(text);}
+  function command(fn){var c=jc();if(!c)return;try{var p=fn(c);if(p&&typeof p.then==='function')p.then(function(r){if(r&&r.message)set(status,shown(r.message));},function(e){set(status,shown(e.message));});}catch(e){set(status,shown(e.message));}}
   function record(r){var e=entry(port);if(!e)return;e.results=e.results||{};e.results[STEPS[index]]=r;save();}
   function finish(how){
     if(!port){shell.go('menu');return;}
@@ -135,7 +145,13 @@
     if(how==='done'||how==='skipped')stopSpindle();
     skipBox.hidden=true;settingsCard();shell.go('menu');
   }
-  function stopSpindle(){if(machine&&machine.spindleSpeed>0&&machine.canSpindleStop)command(function(c){return c.spindleStop();});}
+  // Sent whenever a start was asked on this step, whatever speed is observed:
+  // the M3 may still be on its way, or the report may lack the FS field.
+  function stopSpindle(){
+    var c=jc();if(c&&typeof c.cancel==='function')c.cancel();
+    if(!machine||!(machine.spindleSpeed>0||st.spindleAsked||st.ran))return;
+    st.spindleAsked=false;command(function(c){return c.spindleStop();});
+  }
 
   // Each view builds its controls once and refreshes them from the snapshot.
   function checkbox(name,label){var l=el('label','ks-wiz-check'),i=el('input');i.type='checkbox';i.checked=!!(st.checks&&st.checks[name]);
@@ -236,7 +252,7 @@
       box.appendChild(checkbox('empty',t('Aucune fraise dans la pince ; écrou de pince bien serré ou retiré.')));
       box.appendChild(checkbox('clear',t('Variateur sous tension, câbles et mains loin de la broche.')));
       var row=el('div','ks-wiz-row');
-      var start=button('','ks-wiz-next',function(){command(function(c){c.prepareCommand('spindle');});});
+      var start=button('','ks-wiz-next',function(){st.spindleAsked=true;command(function(c){c.prepareCommand('spindle');});});
       var stop=button(t('Arrêter la broche (M5)'),'ks-secondary ks-wiz-danger',function(){command(function(c){return c.spindleStop();});});
       row.appendChild(start);row.appendChild(stop);box.appendChild(row);
       var live=para('','ks-wiz-strong'),note=para(t('Grbl affiche la vitesse demandée, pas une mesure : comparez avec la fréquence du variateur (24 000 tr/min = 400 Hz, soit 1 Hz pour 60 tr/min).'),'ks-help');
