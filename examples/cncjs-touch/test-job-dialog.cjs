@@ -19,7 +19,7 @@ async function fixture(monotonic=false){
  const machine={port:'SIMULATION',type:'Virtual',generation:'g1',revision:1,name:'leaf.nc',fresh:true,statusAgeMs:0,activeState:'Idle',workflow:'idle',canLoad:true,canStart:true,canResume:false,canStop:false};
  const snapshot=()=>({controllers:[Object.assign({},machine)]});
  const sim={request(method,body){if(method==='GET')return Promise.resolve(snapshot());calls.push(body);if(body.action==='prepare')return new Promise(resolve=>pending=resolve);return Promise.resolve({});}};
- const win={cncJobSimulation:sim,addEventListener:on,removeEventListener:doc.removeEventListener,dispatchEvent(){}};
+ const win={cncJobSimulation:sim,CNCTravelCheck:require('./touch/travel-check'),addEventListener:on,removeEventListener:doc.removeEventListener,dispatchEvent(){}};
  if(monotonic)win.performance={now:()=>elapsed};
  const ctx={window:win,document:doc,Date:{now:()=>now},Promise,CustomEvent:function(){},setInterval:f=>{timers.push(f);return 1;},clearInterval(){},XMLHttpRequest(){throw Error('No hardware/network permitted');}};
  vm.runInNewContext(fs.readFileSync(__dirname+'/touch/job-controls.js','utf8'),ctx);
@@ -43,6 +43,8 @@ async function fixture(monotonic=false){
    assert(timed.node('job-dialog').hidden,'A delayed response cannot reopen an expired elapsed-time confirmation');
  }
  let f=await fixture();await f.open();
+ // The simulation has no machine travel: the travel line stays hidden.
+ assert.equal(f.node('job-travel').hidden,true);
  assert.equal(f.doc.activeElement.id,'job-dismiss');assert(f.node('main').inert);
  assert.match(f.node('job-countdown').textContent,/15 s/);
  function key(key,shiftKey=false){let prevented=false;f.emit('keydown',{key,shiftKey,preventDefault(){prevented=true;},stopImmediatePropagation(){}});return prevented;}

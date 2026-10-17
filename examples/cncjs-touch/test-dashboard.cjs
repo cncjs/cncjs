@@ -1,7 +1,7 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 let now=10000;const listeners={},requests=[];
 const {document,node:el,activeScreens,stats}=require('./dom-fixture.cjs').createDOM(['home']);
-const context={document,window:{cncLibrarySelection:{file:'b.nc',name:'b.nc'},addEventListener:(n,f)=>listeners[n]=f},Date:{now:()=>now},localStorage:{getItem:()=>JSON.stringify({state:{session:{token:'fake'}}})},XMLHttpRequest:function(){this.open=(m,p)=>{assert.equal(m,'POST');assert.equal(p,'/api/watch/file');};this.setRequestHeader=()=>{};this.abort=()=>{this.aborted=true;};this.send=body=>requests.push({xhr:this,file:JSON.parse(body).file});}};
+const context={document,window:{CNCGrblHelp:require('./touch/grbl-help'),cncLibrarySelection:{file:'b.nc',name:'b.nc'},addEventListener:(n,f)=>listeners[n]=f},Date:{now:()=>now},localStorage:{getItem:()=>JSON.stringify({state:{session:{token:'fake'}}})},XMLHttpRequest:function(){this.open=(m,p)=>{assert.equal(m,'POST');assert.equal(p,'/api/watch/file');};this.setRequestHeader=()=>{};this.abort=()=>{this.aborted=true;};this.send=body=>requests.push({xhr:this,file:JSON.parse(body).file});}};
 vm.runInNewContext(fs.readFileSync(__dirname+'/touch/job-dashboard.js','utf8'),context);
 assert.equal(requests.length,1);assert.equal(requests[0].file,'b.nc.cnctouch.json'); // Late subscriber gets initial preview.
 const select=file=>listeners['cnc-library-select']({detail:{file,name:file}});
@@ -17,6 +17,17 @@ status({...c,workflow:'idle',canStart:false});assert.match(el('home-job-eta').te
 // Real CNCjs rewinds the counters at the end of a program: the server's finished flag says it ended.
 status({...c,received:0,remainingSeconds:undefined,workflow:'idle',canStart:false,finished:true},false);assert.equal(el('home-job-percent').textContent,'100 %');assert.match(el('home-job-eta').textContent,/Terminé — programme exécuté/);
 status({...c,received:0,workflow:'idle',canStart:false,finished:false},false);assert.match(el('home-job-eta').textContent,/arrêté/);
+// Real controller in alarm: the alarm is explained in plain words.
+status({...c,activeState:'Alarm',alarmCode:9,workflow:'idle',canStart:false},false);assert.match(el('home-job-ready').textContent,/^Alarme 9 : Prise d’origine : capteur non trouvé\. .*\$23/);
+status({...c,activeState:'Alarm',alarmCode:null,workflow:'idle',canStart:false},false);assert.match(el('home-job-ready').textContent,/^Alarme\. Code non reçu/);
+// The simulation keeps its own alarm wording.
+status({...c,activeState:'Alarm',workflow:'idle',canStart:false,loadReason:'Alarme simulée : voir l’onglet Machine.'},true);assert.equal(el('home-job-ready').textContent,'Alarme simulée : voir l’onglet Machine.');
+// A job ended with Grbl errors names the last one.
+status({...c,activeState:'Idle',received:0,workflow:'idle',canStart:false,canLoad:true,finished:false,finishedWithErrors:true,jobErrors:1,jobLastError:24},false);
+assert.match(el('home-job-ready').textContent,/^Dernière erreur : Erreur 24 : Deux commandes de mouvement/);
+// CNCjs waiting for replies while Grbl idles: the operator is told, with the duration.
+status({...c,activeState:'Idle',workflow:'running',stalledMs:42000},false);assert.match(el('home-job-ready').textContent,/^Travail bloqué \? Grbl est au repos depuis 42 s/);
+status({...c,activeState:'Run',workflow:'running',stalledMs:null},false);assert.equal(el('home-job-ready').textContent,'Travail en cours.');
 // A program that reached its end with lines refused by Grbl is never shown as finished.
 status({...c,received:0,workflow:'idle',canStart:false,finished:false,finishedWithErrors:true,jobErrors:2},false);assert.equal(el('home-job-percent').textContent,'100 %');assert.doesNotMatch(el('home-job-eta').textContent,/Terminé/);assert.match(el('home-job-eta').textContent,/2 erreur/);
 status(null);assert.equal(el('home-job-percent').textContent,'—');assert.match(el('home-job-eta').textContent,/indisponible/);
