@@ -5,13 +5,14 @@
  * Thème sombre par défaut (atelier) ; thème clair à fort contraste choisi
  * dans Réglages, posé par touch-shell.js : <html data-theme="light">.
  *
- * Contrastes vérifiés (WCAG, texte sur fond) :
- *   sombre  fg/bg 16,6 · fg/surface 14,7 · mute/surface 8,1 · faint/surface-2 4,6
- *           ok-text/bg 11,4 · warn-text/bg 12,1 · danger-text/bg 8,1 · info-text/bg 9,3
- *           texte sur aplat : ok 8,1 · warn 10,1 · danger (blanc) 4,7 (texte ≥ 24 px gras)
- *   clair   fg/bg 16,1 · fg/surface 18,3 · mute/surface 8,7 · faint/surface-2 4,6
- *           ok-text/bg 5,7 · warn-text/bg 6,1 · danger-text/bg 6,8 · info-text/bg 7,0
- *           texte sur aplat : ok 5,0 · warn 4,6 · danger 5,7 · info 6,3
+ * Contrastes vérifiés (WCAG, texte sur fond) ; 7:1 au moins pour l'information critique
+ * (mots d'état, valeurs, Arrêter), 4,5:1 pour tout autre texte :
+ *   sombre  fg/bg 16,6 · fg/surface 14,7 · mute/surface 8,1 · mute/surface-2 6,9 · faint/surface-2 4,6
+ *           états sur fond teinté : ok 8,3 · warn 8,9 · danger 7,0 · info 7,3
+ *           blanc sur danger (Arrêter) 7,5 · on-ok/ok 8,1 · on-warn/warn 10,1 · désactivé 5,3
+ *   clair   fg/bg 16,1 · fg/surface 18,3 · mute/surface 8,7 · faint/surface-2 4,8
+ *           états sur fond teinté : ok 8,1 · warn 8,1 · danger 7,8 · info 8,4
+ *           blanc sur danger 7,5 · blanc sur ok 5,0 et sur warn 4,6 (libellés ≥ 24 px gras) · désactivé 4,6
  * Chromium 106 : pas d'imbrication, pas de color-mix(), pas de dvh. */
 :root{
   color-scheme:dark;
@@ -22,7 +23,7 @@
   /* Sens, et seulement sens : vert sûr, ambre attention, rouge arrêt, bleu information. */
   --ok:#2fbf6b;--ok-text:#5fe39a;--ok-soft:#133523;--on-ok:#06130b;
   --warn:#f0b13a;--warn-text:#ffc857;--warn-soft:#3a2b0b;--on-warn:#1a1200;
-  --danger:#d9322e;--danger-text:#ff8a80;--danger-soft:#3d1512;--on-danger:#ffffff;
+  --danger:#a51d19;--danger-text:#ff8a80;--danger-soft:#3d1512;--on-danger:#ffffff;
   --info:#3b8fe6;--info-text:#7cbcff;--info-soft:#102a44;--on-info:#06111c;
   /* Désactivé : contraste réduit mais lisible (≥ 4,5), plus un motif rayé et une icône. */
   --disabled-fg:#8a98a1;--disabled-bg:#1b242b;--disabled-stripe:rgba(255,255,255,.045);
@@ -50,10 +51,10 @@
   color-scheme:light;
   --bg:#eef1f4;--surface:#ffffff;--surface-2:#e2e7eb;--surface-3:#d3dae0;--line:#aeb9c1;--line-strong:#7f8f9a;
   --fg:#101619;--mute:#3f4d56;--faint:#56656f;
-  --ok:#15803d;--ok-text:#146c34;--ok-soft:#dcf5e5;--on-ok:#ffffff;
-  --warn:#b45f06;--warn-text:#8a4a05;--warn-soft:#fdebcc;--on-warn:#ffffff;
-  --danger:#c81e1e;--danger-text:#a51616;--danger-soft:#fbe0e0;--on-danger:#ffffff;
-  --info:#1d5fb5;--info-text:#17509a;--info-soft:#dbe8fa;--on-info:#ffffff;
+  --ok:#15803d;--ok-text:#0d5226;--ok-soft:#dcf5e5;--on-ok:#ffffff;
+  --warn:#b45f06;--warn-text:#6b3903;--warn-soft:#fdebcc;--on-warn:#ffffff;
+  --danger:#a51d19;--danger-text:#8a1010;--danger-soft:#fbe0e0;--on-danger:#ffffff;
+  --info:#1d5fb5;--info-text:#123f7a;--info-soft:#dbe8fa;--on-info:#ffffff;
   --disabled-fg:#5c6a73;--disabled-bg:#e6eaed;--disabled-stripe:rgba(0,0,0,.05);
   --accent:#1d5fb5;--focus:#b45f06;
   --shadow:0 2px 6px rgba(0,0,0,.18);
