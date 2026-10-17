@@ -82,6 +82,11 @@ mark=requests.length;document.handlers.pointerdown();assert.equal(requests.lengt
 saver(true);answer(200,{});saver(false);for(let i=0;i<5;i++){answer(0,null);const t=timers.filter(x=>x.live).at(-1);t.live=false;t.f();}
 answer(0,null);assert(!timers.some(x=>x.live),'five automatic tries at most');
 mark=requests.length;document.handlers.pointerdown();assert.equal(requests.length,mark+1,'then the next touch tries again');answer(200,{});
+// A host without a controllable backlight (409/404) or a lost session (401/403) is not retried on every touch.
+for(const code of [401,403,404,409]){
+  saver(true);answer(200,{});saver(false);answer(code,{message:'refusé'});
+  mark=requests.length;document.handlers.pointerdown();document.handlers.pointerdown();assert.equal(requests.length,mark,'no wake retry after '+code);
+}
 select.value='keep';select.handlers.change();mark=requests.length;saver(true);saver(false);assert.equal(requests.length,mark,'unchanged: nothing sent');
 select.value='bogus';select.handlers.change();assert.deepEqual(JSON.parse(storage.get('cncjs-touch-backlight-v1')),{sleep:'keep'});
 // A read-only panel is left alone.

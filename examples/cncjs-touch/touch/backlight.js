@@ -94,7 +94,8 @@
     var x=request('POST',body,function(code){
       saverBusy=false;
       if(body.wake){
-        if(code===200){wakePending=false;wakeTries=0;}
+        // No controllable backlight here (404/409) or no session (401/403): a retry on every touch would not help.
+        if(code===200||code===401||code===403||code===404||code===409){wakePending=false;wakeTries=0;}
         else if(!saverNext&&!dimmed&&wakeTries<5&&code!==401&&code!==403&&code!==404&&code!==409){wakeTries++;wakeTimer=setTimeout(function(){wakeTimer=null;if(wakePending&&!dimmed)saver({wake:true});},2000);}
       }
       if(saverNext){var next=saverNext;saverNext=null;saver(next);}

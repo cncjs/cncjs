@@ -17,6 +17,9 @@ for(const language of ['en','es']){
  // Rows written with outer spaces are found too, and the caller's spaces are kept.
  assert.equal(i.t(' tr/min'),' rpm');assert.equal(i.t('Avance réelle '),language==='en'?'Actual feed ':'Avance real ');
  assert.equal(i.t(' · Broche '),language==='en'?' · Spindle ':' · Husillo ');
+ // Rows matched exactly keep their translation as written (French « » need spaces, “ ” do not).
+ assert.equal(i.t('Envoi de « '),language==='en'?'Sending “':'Enviando «');assert.equal(i.t(' »…'),language==='en'?'”…':'»…');
+ assert.equal(i.t('Envoi de « ')+'Reboot'+i.t(' »…'),language==='en'?'Sending “Reboot”…':'Enviando «Reboot»…');
  assert.equal(i.t('Menu.gcode'),'Menu.gcode');assert.equal(i.t('G54 G0 X1'),'G54 G0 X1');
  assert.equal(i.t('Unknown controller message'),'Unknown controller message');
  assert.equal(i.html('<button id="Fichiers" data-route="files" title="Fichiers">Fichiers</button>'),language==='en'?'<button id="Fichiers" data-route="files" title="Files">Files</button>':'<button id="Fichiers" data-route="files" title="Archivos">Archivos</button>');

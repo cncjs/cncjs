@@ -8,7 +8,11 @@
   function text(value) {
     if(typeof value!=='string'||language==='fr')return value;
     var parts=/^(\s*)([\s\S]*?)(\s*)$/.exec(value), row=messages[parts[2].replace(/\s+/g,' ')];
-    return row?parts[1]+row[language==='en'?1:2].trim()+parts[3]:value;
+    if(!row)return value;
+    // Written exactly as in the catalog: the translation as written there (French
+    // puts spaces inside « », English “” and Spanish «» do not).
+    if(row[0]===value)return row[language==='en'?1:2];
+    return parts[1]+row[language==='en'?1:2].trim()+parts[3];
   }
   function message(value){
     if(typeof value!=='string')return value;
