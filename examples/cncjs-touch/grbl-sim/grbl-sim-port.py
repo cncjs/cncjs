@@ -4,7 +4,8 @@
 CNCjs opens LINK like a real serial port. Bytes are relayed, untouched, between
 that pseudo-terminal and a second one on which grbl_sim.exe runs. Both are raw,
 so Grbl realtime bytes (Ctrl-X, ?, !, ~, overrides 0x90-0x9F) pass through.
-The simulator is restarted if it exits. Stop with SIGTERM.
+The simulator is restarted if it exits, unless it stops more than five times
+in a minute (wrong or broken build): the bridge then gives up. Stop with SIGTERM.
 """
 import ctypes, os, pty, tty, signal, subprocess, select, sys, termios, time
 
@@ -53,11 +54,19 @@ def start_sim():
     log('simulateur lancé pid=%d sur %s' % (proc.pid, os.ttyname(host_slave)))
     return proc, sim_master
 
-proc, sim_master = start_sim()
-log('port virtuel prêt : %s -> %s' % (LINK, os.ttyname(host_slave)))
+proc = None
+restarts = []
 try:
+    # Inside the try: a simulator that cannot start still removes the port link.
+    proc, sim_master = start_sim()
+    log('port virtuel prêt : %s -> %s' % (LINK, os.ttyname(host_slave)))
     while running:
         if proc.poll() is not None:
+            now = time.monotonic()
+            restarts = [t for t in restarts if now - t < 60] + [now]
+            if len(restarts) > 5:
+                log('simulateur arrêté %d fois en une minute (code %s) : abandon' % (len(restarts), proc.returncode))
+                break
             log('simulateur arrêté (code %s), relance' % proc.returncode)
             os.close(sim_master)
             time.sleep(1)
@@ -81,11 +90,12 @@ try:
                 # The simulator died between select() and write(): restarted above.
                 log('écriture impossible (%s)' % err)
 finally:
-    proc.terminate()
-    try:
-        proc.wait(3)
-    except subprocess.TimeoutExpired:
-        proc.kill()
+    if proc is not None:
+        proc.terminate()
+        try:
+            proc.wait(3)
+        except subprocess.TimeoutExpired:
+            proc.kill()
     try:
         os.unlink(LINK)
     except FileNotFoundError:

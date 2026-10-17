@@ -9,7 +9,10 @@ On a Linux machine with `gcc`, `make`, `git` and `python3` (tested on the Surfac
 ```sh
 bash build.sh                       # clones gnea/grbl v1.1h and grbl-sim, applies the patches, builds
 python3 grbl-sim-port.py &          # creates ~/ttyGRBL-sim, restarts the simulator if it exits
+bash test-bridge.sh                 # bridge self-test: gives up on a crashing simulator, removes its link
 ```
+
+The simulator path defaults to the `build.sh` output; set `GRBL_SIM` for another build. A simulator that stops more than five times in a minute makes the bridge give up (see `port.log`).
 
 Add the port to `.cncrc` so CNCjs lists it, then open it in CNCjs like a board (Grbl, any baud rate):
 
