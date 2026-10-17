@@ -16,7 +16,8 @@ const NET = '/sys/class/net';
 const IW = ['/usr/sbin/iw', '/sbin/iw', '/usr/bin/iw'];
 // Several screens or tabs polling at once share one sample.
 const MIN_INTERVAL_MS = 500;
-// History: one point every 5 s, ten minutes kept, sampled even when nobody looks.
+// History: one point every 5 s, ten minutes kept, sampled even when nobody looks
+// (CPU and temperature only: no Wi-Fi child process, no other file).
 const HISTORY_INTERVAL_MS = 5000;
 const HISTORY_LENGTH = 120;
 // The Wi-Fi link is read with a child process, so less often and never inline.
@@ -186,7 +187,28 @@ export const createSystemStats = ({
     return list.length ? Math.max(...list.map((zone) => zone.celsius)) : null;
   };
 
+  // CPU usage since the previous sample, shared by the history and full reads;
+  // two samples closer than MIN_INTERVAL_MS share the first one.
   let baseline = os.cpus().map(totals);
+  let cpuSample = null;
+  const sampleCpu = (at) => {
+    if (cpuSample && at - cpuSample.at < MIN_INTERVAL_MS) {
+      return cpuSample;
+    }
+    const cpus = os.cpus();
+    const current = cpus.map(totals);
+    const cores = usage(baseline, current);
+    baseline = current;
+    const known = cores.filter((value) => value !== null);
+    cpuSample = {
+      at,
+      model: cpus[0] ? cpus[0].model : '',
+      cores,
+      cpu: known.length ? round1(known.reduce((sum, value) => sum + value, 0) / known.length) : null
+    };
+    return cpuSample;
+  };
+
   let last = null;
   const history = { cpu: [], temperature: [] };
   let historyAt = null;
@@ -196,20 +218,16 @@ export const createSystemStats = ({
     if (last && at - last.sampledAt < MIN_INTERVAL_MS) {
       return last;
     }
-    const cpus = os.cpus();
-    const current = cpus.map(totals);
-    const cores = usage(baseline, current);
-    baseline = current;
-    const known = cores.filter((value) => value !== null);
+    const sample = sampleCpu(at);
     const mem = memoryUsage();
     last = {
       sampledAt: at,
       hostname: os.hostname(),
       platform: os.platform(),
       arch: os.arch(),
-      model: cpus[0] ? cpus[0].model : '',
-      cores,
-      cpu: known.length ? round1(known.reduce((sum, value) => sum + value, 0) / known.length) : null,
+      model: sample.model,
+      cores: sample.cores,
+      cpu: sample.cpu,
       load: os.loadavg().map(round1),
       memory: memory(),
       temperatures: temperatures(),
@@ -223,15 +241,14 @@ export const createSystemStats = ({
   };
 
   const record = () => {
-    const sample = read();
-    if (sample.sampledAt === historyAt) {
+    const sample = sampleCpu(now());
+    if (sample.at === historyAt) {
       return;
     }
-    historyAt = sample.sampledAt;
+    historyAt = sample.at;
     // Copies, so a response already sent never changes under its reader.
     history.cpu = history.cpu.concat([sample.cpu]).slice(-HISTORY_LENGTH);
-    history.temperature = history.temperature.concat([mainTemperature(sample.temperatures)]).slice(-HISTORY_LENGTH);
-    sample.history = { interval: HISTORY_INTERVAL_MS / 1000, cpu: history.cpu, temperature: history.temperature };
+    history.temperature = history.temperature.concat([mainTemperature(temperatures())]).slice(-HISTORY_LENGTH);
   };
 
   let timer = null;

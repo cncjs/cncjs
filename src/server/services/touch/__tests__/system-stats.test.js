@@ -207,6 +207,40 @@ describe('system stats', () => {
     expect(stats.read().history.cpu).not.toBe(before);
   });
 
+  test('the history reads only CPU and temperature: no Wi-Fi process while nobody looks', () => {
+    const { files, dirs } = tablet();
+    Object.assign(files, { '/sys/class/net/mlan0/operstate': 'up\n' });
+    Object.assign(dirs, { '/sys/class/net': ['lo', 'mlan0'], '/sys/class/net/mlan0': ['operstate', 'wireless'] });
+    const base = makeFs(files, dirs, ['/usr/sbin/iw']);
+    const read = [];
+    const fs = {
+      ...base,
+      readFileSync: (file) => {
+        read.push(file);
+        return base.readFileSync(file);
+      }
+    };
+    const execFile = jest.fn();
+    let clock = 0;
+    const samples = Array.from({ length: 20 }, (_, i) => [cpu(10 * i, 100 * i - 10 * i)]);
+    const stats = createSystemStats({ os: makeOs(samples), fs, execFile, now: () => clock });
+    read.length = 0;
+    for (let i = 0; i < 12; i++) {
+      clock += 5000;
+      stats.record();
+    }
+    expect(execFile).not.toHaveBeenCalled();
+    expect(new Set(read)).toEqual(new Set(['/sys/class/thermal/thermal_zone0/temp', '/sys/class/thermal/thermal_zone2/temp']));
+    expect(stats.read().history.cpu).toEqual(Array(12).fill(10));
+    // The settings screen asks: the Wi-Fi link is read then.
+    expect(execFile).toHaveBeenCalledTimes(1);
+    // A read right after a history point still reports a usage window.
+    clock += 5000;
+    stats.record();
+    clock += 100;
+    expect(stats.read().cpu).toBe(10);
+  });
+
   test('samples the history on an unref timer that start and stop control', () => {
     jest.useFakeTimers();
     try {
