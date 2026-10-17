@@ -3,6 +3,9 @@ const {scan, render} = require('./touch/library-preview.js');
 (async () => {
   // Grbl executes lines after M2/M30 and the CNCjs sender sends them: refused, never hidden.
   await assert.rejects(scan('G21 G90\nG1 X10 Y10 F100\nM30\nG0 X300 Y300'), /après M2\/M30/);
+  // CNCjs '%' directives: the server refuses any '%' line with more than spaces after it.
+  for (const line of ['% (fin)', '%;fin', '%wait', ' %X=1']) await assert.rejects(scan('G21 G90\nG1 X1 F100\n' + line + '\nM30'), /directive/, line);
+  await scan('G21 G90\nG1 X1 F100\nM30\n%\n % \n\n');
   let result = await scan('G21 G90\nG0 X10 Y10\nG1 X30 Y20 F200\nG91\nX-5 Y5\nM2\n%\n\n');
   assert.equal(result.count, 3);
   assert.deepEqual(result.bounds, [0,0,30,25]);

@@ -2,7 +2,7 @@
 (function (root) {
   'use strict';
   var source = typeof document !== 'undefined' && document.currentScript && document.currentScript.src;
-  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker5') : 'library-preview-worker.js?v=worker5';
+  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker6') : 'library-preview-worker.js?v=worker6';
   var generation = 0;
   function scan(text, segment, cancelled, progress, yieldAfterLine) {
     return new Promise(function (resolve, reject) {
@@ -122,6 +122,9 @@
       }
       function read(raw) {
         var clean;
+        // CNCjs '%' directives (%wait, %X=..., even '% (note)') are refused by the
+        // server's load: refuse them here too, rather than after the upload.
+        if (!comment && /^[ \t]*%[ \t]*[^ \t\r\n]/.test(raw)) throw new Error('directive CNCjs % non acceptée par la bibliothèque');
         if (!comment && raw.indexOf('(') < 0 && raw.indexOf(';') < 0) clean = raw;
         else {
           clean = '';

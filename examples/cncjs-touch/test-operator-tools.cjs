@@ -1,6 +1,11 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const model=require('./touch/coordinate-plan'),{project}=require('./touch/tool-position');
+const model=require('./touch/coordinate-plan'),{project,acknowledged}=require('./touch/tool-position');
+// CNCjs rewinds its counters at the end: a finished program, with or without Grbl errors, shows its whole path.
+assert.equal(acknowledged({finished:true,workflow:'idle',received:0,total:10},500),500);
+assert.equal(acknowledged({finished:false,finishedWithErrors:true,workflow:'idle',received:0,total:10},500),500);
+assert.equal(acknowledged({finished:false,workflow:'idle',received:0,total:10},500),0);
+assert.equal(acknowledged({finished:false,workflow:'running',received:5,total:10},500),250);
 const initial={wcs:'G54',machinePosition:{x:20,y:10,z:5},workPosition:{x:3,y:2,z:1}};
 const input={operation:'set',axis:'x',value:'-2,5',unit:'mm',feed:800};
 assert.deepEqual(model.plan(initial,input),{axis:'x',wcs:'G54',operation:'set',valueMm:-2.5,targetWorkMm:-2.5,targetMachineMm:20,offsetMm:22.5,feedMmMin:800});

@@ -255,8 +255,12 @@
       // A file just uploaded appears in CNCjs's list a few seconds later: keep it
       // selected meanwhile instead of falling back to another file.
       if (f && f.name === pendingUpload) pendingUpload = '';
-      if (!f && selected && selected === pendingUpload && Date.now() < pendingUntil) return;
-      f = f || files[0];
+      var waited = !f && selected && selected === pendingUpload;
+      if (waited && Date.now() < pendingUntil) return;
+      // Still not listed after that: clear the selection rather than silently
+      // selecting another file, which could then be loaded by mistake.
+      if (waited) pendingUpload = '';
+      f = f || (waited ? null : files[0]);
       if (f) select(f, !!manual);
       else {
         if (selected) { cancelRegeneration(); setText('library-regenerate-status', ''); }
@@ -309,7 +313,10 @@
     if (typeof file.text === 'string') return Promise.resolve({ text: file.text, legacy: false }); // generated in the page (commissioning test file)
     return readAs(file).then(function (text) {
       if (text.indexOf('�') < 0) return { text: text, legacy: false };
-      return readAs(file, 'windows-1252').then(function (legacy) { return { text: legacy, legacy: true }; });
+      return readAs(file, 'windows-1252').then(function (legacy) {
+        // EF BF BD read as Windows-1252: the file was valid UTF-8 holding a real U+FFFD.
+        return legacy.indexOf('ï¿½') >= 0 ? { text: text, legacy: false } : { text: legacy, legacy: true };
+      });
     });
   }
   $('library-input').addEventListener('change', function () {

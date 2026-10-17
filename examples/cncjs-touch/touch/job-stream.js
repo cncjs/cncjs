@@ -38,12 +38,12 @@
       if (disposed || offline || xhr || !available || clock() < retryAt) return;
       var id = ++generation, cursor = 0, rotate = false, clockOffset = null, sequence = 0, epoch = '', transport = '';
       xhr = new XHR(); var request = xhr; openedAt = clock();
-      request.open('GET', base+'/touch-events', true); request.timeout = 70000;
+      request.open('GET', base+'/touch-events', true); request.timeout = 90000; // > server lifetime + confirmation grace (80 s)
       request.setRequestHeader('Authorization','Bearer '+token());
       request.onprogress = function () {
         if (id !== generation || request.status !== 200) return;
         var data = request.responseText || '', end;
-        if (data.length > 600000) { close('Flux trop volumineux.'); return; }
+        if (data.length > 1200000) { close('Flux trop volumineux.'); return; } // > server grace limit (1 MiB)
         while ((end = data.indexOf('\n', cursor)) >= 0) {
           var line = data.slice(cursor, end); cursor = end + 1;
           if (!line) continue;

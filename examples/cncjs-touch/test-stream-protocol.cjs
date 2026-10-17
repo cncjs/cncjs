@@ -61,4 +61,15 @@ for(const suffix of ['{"rotate":true}\n{"rotate":true}\n','{"rotate":true}\n'+JS
   assert(f.stream.aborted);assert.match(f.disconnects.at(-1),/invalide/);
   assert.equal(f.snapshots.length,1);f.dispose();
 }
+// The server keeps a stream up to its lifetime plus the confirmation grace, and
+// up to MAX_GRACE_BYTES: the client must not time out or abort before that,
+// or it would close the stream and revoke the very confirmation being waited for.
+{
+  const server=fs.readFileSync(__dirname+'/../../src/server/services/touch/touch-stream.js','utf8'),client=fs.readFileSync(__dirname+'/touch/job-stream.js','utf8');
+  const value=(re,text)=>{const m=re.exec(text);assert(m,String(re));return Function('return '+m[1])();};
+  const lifetime=value(/MAX_CLIENT_LIFETIME_MS = ([^;]+);/,server)+value(/ROTATION_GRACE_MS = ([^;]+);/,server);
+  const bytes=value(/MAX_GRACE_BYTES = ([^;]+);/,server);
+  assert(value(/request\.timeout = (\d+);/,client)>lifetime+5000,'client timeout outlasts the longest stream');
+  assert(value(/data\.length > (\d+)\)/,client)>bytes,'client size limit above the server grace limit');
+}
 console.log('PASS: invalid/overflowing envelopes, controller identities and flags, duplicate/out-of-order packets, partial NDJSON, stale reports, bounded recovery and rotation; no network.');

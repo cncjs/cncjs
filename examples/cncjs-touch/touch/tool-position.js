@@ -18,7 +18,13 @@
     while(lo<hi){var mid=(lo+hi)>>1;if(samples[mid*3]<=acknowledged)lo=mid+1;else hi=mid;}
     return lo;
   }
-  if(typeof module!=='undefined'&&module.exports){module.exports={project:project,trailCount:trailCount};return;}
+  // Trail lines acknowledged so far. CNCjs rewinds its counters when a program
+  // ends: a program run to its end (even with Grbl errors) shows its whole path.
+  function acknowledged(s,totalLines){
+    if((s.finished===true||s.finishedWithErrors===true)&&s.workflow==='idle')return totalLines;
+    return Math.min(totalLines,Math.max(0,s.received/s.total*totalLines));
+  }
+  if(typeof module!=='undefined'&&module.exports){module.exports={project:project,trailCount:trailCount,acknowledged:acknowledged};return;}
   var img=document.getElementById('home-job-image');if(!img)return;
   var marker=document.createElement('span');marker.className='tool-position-marker';marker.hidden=true;marker.setAttribute('aria-hidden','true');img.parentNode.appendChild(marker);
   // Progress trail: the acknowledged part of the toolpath, drawn from the
@@ -35,8 +41,8 @@
     if(!Array.isArray(samples)||samples.length<6||typeof s.total!=='number'||!(s.total>0)||typeof s.received!=='number'||!(s.received>=0)){trail.hidden=true;return;}
     // Simulation counts percent, real jobs count sender lines; both scale onto the trail's line count.
     // A finished program shows its whole path: CNCjs rewinds the line counters at the end.
-    var totalLines=samples[samples.length-3],acknowledged=s.finished===true&&s.workflow==='idle'?totalLines:Math.min(totalLines,Math.max(0,s.received/s.total*totalLines));
-    var n=trailCount(samples,acknowledged);
+    var totalLines=samples[samples.length-3];
+    var n=trailCount(samples,acknowledged(s,totalLines));
     if(drawnTrail.source!==samples||drawnTrail.points!==n){
       var points=[];
       for(var i=0;i<n;i++){var p=project(meta.projection,{x:samples[i*3+1],y:samples[i*3+2]});if(p)points.push((p.x*960).toFixed(1)+','+(p.y*540).toFixed(1));}

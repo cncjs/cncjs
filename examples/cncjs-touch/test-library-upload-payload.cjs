@@ -1,14 +1,15 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 (async()=>{
- let listed=[];
+ let listed=[],offset=0;
+ class FakeDate extends Date { static now(){ return Date.now()+offset; } }
  const {document,node,activeScreens}=require('./dom-fixture.cjs').createDOM(['files']),handlers={},encodings=[],puts=[],emitted=[],reads=[];
  const window={addEventListener:(n,f)=>handlers[n]=f,dispatchEvent:e=>emitted.push(e),
   CNCLibraryPreview:{render:()=>Promise.resolve({image:'data:image/png;base64,AA==',bounds:[0,0,1,1]})},
   CNCLibraryPayload:{encodeFile(file,text,cancelled,progress){progress('Préparation JSON…');return new Promise(resolve=>encodings.push({file,text,cancelled,resolve}));}}
  };
- const ctx={document,window,Blob,setTimeout:()=>0,CustomEvent:function(type,o){this.type=type;this.detail=o.detail;},localStorage:{getItem:()=>JSON.stringify({state:{session:{token:'fake'}}})},
+ const ctx={document,window,Blob,Date:FakeDate,setTimeout:()=>0,CustomEvent:function(type,o){this.type=type;this.detail=o.detail;},localStorage:{getItem:()=>JSON.stringify({state:{session:{token:'fake'}}})},
   // A file flagged latin1 holds Windows-1252 bytes: read as UTF-8, its accents become U+FFFD.
-  FileReader:function(){this.readAsText=(file,encoding)=>{reads.push(encoding||'utf-8');this.result=file.latin1?(encoding==='windows-1252'?'G0 X0 (pièce)':'G0 X0 (pi�ce)'):'G0 X0\nG1 X1';Promise.resolve().then(()=>this.onload());};},
+  FileReader:function(){this.readAsText=(file,encoding)=>{reads.push(encoding||'utf-8');this.result=file.latin1?(encoding==='windows-1252'?'G0 X0 (pièce)':'G0 X0 (pi�ce)'):file.genuine?(encoding==='windows-1252'?'G0 X0 (ï¿½)':'G0 X0 (�)'):'G0 X0\nG1 X1';Promise.resolve().then(()=>this.onload());};},
   XMLHttpRequest:function(){this.open=(method,url)=>{this.method=method;this.url=url;};this.setRequestHeader=()=>{};this.send=body=>{if(this.method==='PUT')puts.push({url:this.url,body});this.status=200;this.responseText=JSON.stringify(this.url.endsWith('/status')?{configured:true}:this.url.endsWith('/files')?{files:listed}:{});Promise.resolve().then(()=>this.onload());};}
  };
  vm.runInNewContext(fs.readFileSync(__dirname+'/touch/shared-library.js','utf8'),ctx);
@@ -37,5 +38,17 @@ const fs=require('fs'),vm=require('vm'),assert=require('assert');
  // A UTF-8 file is read once.
  reads.length=0;node('library-input').files=[{name:'utf8.nc',size:14}];node('library-send').handlers.click();await flush();assert.deepEqual(reads,['utf-8']);
  encodings.shift().resolve(new Blob(['{}']));for(let i=0;i<5;i++)await flush();
+ // A valid UTF-8 file that really contains U+FFFD keeps its UTF-8 text.
+ node('library-input').files=[{name:'vrai.nc',size:14,genuine:true}];node('library-send').handlers.click();await flush();await flush();
+ const genuine=encodings.shift();assert.equal(genuine.text,'G0 X0 (�)');
+ genuine.resolve(new Blob(['{}']));for(let i=0;i<5;i++)await flush();
+ assert.doesNotMatch(node('library-upload-status').textContent,/Windows-1252/);
+ // An upload CNCjs still does not list 15 s later is never replaced by another file.
+ node('library-input').files=[{name:'lent.nc',size:14}];node('library-send').handlers.click();await flush();
+ const slow=encodings.shift();slow.resolve(new Blob(['{}']));for(let i=0;i<5;i++)await flush();
+ assert.equal(window.cncLibrarySelection.name,'lent.nc');
+ listed=[{name:'ancien.nc',type:'f',size:10,mtime:'2026-10-01T00:00:00Z'}];offset+=16000;
+ node('library-refresh').handlers.click();await flush();await flush();
+ assert.notEqual(window.cncLibrarySelection&&window.cncLibrarySelection.file,'ancien.nc','no other file selected in its place');
  console.log('PASS: cancellable payload preparation, Blob upload without stringify, preserved Unicode/global selection while hidden, kept until CNCjs lists the upload, and preview invalidation.');
 })().catch(e=>{console.error(e);process.exitCode=1;});
