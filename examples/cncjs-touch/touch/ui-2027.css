@@ -606,3 +606,7 @@
 .ks-ui [data-job=true] .ks-exit{display:none}
 .t-vital--file{min-width:140px}
 .t-vital--file span{overflow:visible}
+/* Isolation de mise en page (mesurée sur la tablette : Fichiers −9 %, neutre ailleurs) :
+ * ouvrir un écran ne remet en page ni le bandeau ni le rail. Feuilles et dialogues sont hors de main. */
+.ks-ui #real-banner,.ks-ui #simulation-banner,.ks-ui #tabbar{contain:strict}
+.ks-ui main{contain:strict}
