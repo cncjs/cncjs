@@ -41,7 +41,7 @@
   function live(name,tone,text){var el=lives[name];if(!el)return;if(el.getAttribute('data-tone')!==tone)el.setAttribute('data-tone',tone);setText(el.lastChild,text);}
   nav.innerHTML='';
   // Every screen on the rail; Retour appears only on a sub-screen (probe, limits…).
-  var mainScreens=['menu','jog','files','home','machine','history','settings'],keptScreens=['menu','home','history'];
+  var mainScreens=['menu','jog','files','home','machine','history','settings'],keptScreens=['menu','jog','files','home','machine','history'];
   ['back'].concat(mainScreens).forEach(function(name){
     var label=name==='back'?uiLocale.t('Retour'):menuLabels[name]||names[name];
     var b=document.createElement('button');b.className='ks-nav';b.setAttribute('aria-label',label);b.innerHTML=icon(name)+uiLocale.html('<span>')+label+uiLocale.html('</span>');b.setAttribute('data-ks-screen',name);b.addEventListener('click',function(){go(name==='back'?trail.pop()||'menu':name,name==='back');});nav.appendChild(b);

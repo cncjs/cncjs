@@ -68,6 +68,22 @@ Same opening bench as above, passes alternating after, before, after, before (fi
 
 **Result: Journal, Menu and Suivi now re-open faster than before the redesign** (the main thread per opening, from the traces: Journal 105–114 → 66–94 ms, Menu 122–138 → 78–89 ms, Suivi 210–333 → 100–178 ms). Machine and Réglages are not kept screens and did not change with this commit: against `e2bf37eb` in the trace bench, Machine has the same minimum (117–133 vs 119–127 ms) whether opened from Suivi or from Fichiers, and Réglages opens in 291–314 ms vs 401–413 ms; their "before" figures here are lower than in the first measurement (Machine 116 vs 142 ms, Réglages 236 vs 302 ms), within the noise noted above. CPU, same script as above (new twice, `e2bf37eb`, pre-redesign): Menu at rest 60.5 / 66.2 %, 60.2 %, 61.4 %; Suivi at rest 66.4 / 62.4 %, 61.0 %, 60.6 %; Suivi during a simulated job 61.7 / 61.8 %, 63.0 %, 65.5 %.
 
+**Préparer, Fichiers and Machine kept too (2026-10-18).** Same mechanism, nothing else changed: the three screens join the kept list in `touch-shell.js`, their `.active` rules in `ui-2027.css` and `viewport-fit.css` (including the narrow-width media query) also list `.kept`, and they are positioned like the other kept screens; `test-kept-screens.cjs` now checks all six. Checked in the local fixture at 1366 × 768, with the server answers made deterministic (touch-job and touch-system answered by an immediate network error, so both versions show the same controller state): computed styles and boxes of every rendered element, all 7 main screens re-opened after a first round, both themes, both pages, against the previous commit — identical apart from `position`/`inset` of the three sections and the minute shown by the clocks; taps on every visible button reach the active screen. At rest, a parked Fichiers sends no request (thumbnails and refreshes only run while it is active); the only writes into it are the loaded-file text and button titles from `job-controls.js`, as before, which a locked screen neither restyles nor lays out.
+
+Tablet, same opening bench, passes alternating new, before, `9aeb8a29` (deployed), new, before, `9aeb8a29`, five openings each, medians of the re-openings:
+
+| Screen | Before the redesign | `9aeb8a29` | New | Style before → new | Layout before → new |
+| --- | ---: | ---: | ---: | --- | --- |
+| Préparer | 185 ms | 195 ms | 83 ms | 42 → 6 ms | 48 → 4 ms |
+| Fichiers | 268 ms | 285 ms | 214 ms | 67 → 10 ms | 56 → 43 ms |
+| Machine | 117 ms | 143 ms | 66 ms | 24 → 6 ms | 28 → 3 ms |
+| Suivi | 194 ms | 76 ms | 81 ms | 54 → 7 ms | 41 → 3 ms |
+| Journal | 81 ms | 81 ms | 62 ms | 12 → 6 ms | 12 → 2 ms |
+| Menu | 154 ms | 81 ms | 78 ms | 38 → 10 ms | 36 → 5 ms |
+| Réglages | 243 ms | 330 ms | 297 ms | 66 → 97 ms | 49 → 52 ms |
+
+**Result: every screen except Réglages now re-opens faster than before the redesign; Préparer, Fichiers and Machine gain 22–57 %, Journal, Menu and Suivi are unchanged against `9aeb8a29` (within the noise).** Fichiers keeps 43 ms of layout per opening: the list is redrawn by `mount()` at every opening. Réglages is not a kept screen (it scrolls, `data-fit="scroll"`). CPU, same script as above (new twice, pre-redesign, `9aeb8a29`): Menu at rest 64.2 / 58.3 %, 57.0 %, 58.8 %; Suivi at rest 62.4 / 63.6 %, 64.0 %, 60.3 %; Suivi during a simulated job 64.6 / 66.3 %, 65.8 %, 63.9 % — within the usual spread.
+
 Not tested on the machine: everything above ran against the simulator or the offline mocks.
 
 ## Latest regression coverage (2026-10-16)

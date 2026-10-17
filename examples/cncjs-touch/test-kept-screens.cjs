@@ -1,10 +1,10 @@
 'use strict';
-// Kept screens (Menu, Suivi, Journal): once shown they stay laid out and are parked
+// Kept screens (Menu, Préparer, Fichiers, Suivi, Machine, Journal): once shown they stay laid out and are parked
 // under the active screen. Their parked layout must be the active one, so every rule
 // that styles them through .active also lists .kept; modules keep looking at .active only.
 const fs=require('fs'),assert=require('assert');
 const dir=__dirname+'/touch/';
-const kept=['menu','home','history'];
+const kept=['menu','jog','files','home','machine','history'];
 const css=fs.readdirSync(dir).filter(f=>f.endsWith('.css'));
 const strip=s=>s.replace(/\/\*[\s\S]*?\*\//g,'');
 let checked=0;
@@ -30,7 +30,7 @@ assert(ui.includes('.ks-ui main>.screen.kept:not(.active){content-visibility:hid
 // The offset is the padding of main.
 assert(/\.ks-ui main\{[^}]*padding:16px!important/.test(strip(fs.readFileSync(dir+'touch-shell.css','utf8'))),'main padding is 16 px');
 const shell=fs.readFileSync(dir+'touch-shell.js','utf8');
-assert(shell.includes("keptScreens=['menu','home','history']"),'kept list in the shell');
+assert(shell.includes("keptScreens=['"+kept.join("','")+"']"),'kept list in the shell');
 assert(/s\.classList\.toggle\('active',on\);if\(on&&keptScreens\.indexOf\(name\)>=0/.test(shell),'kept only once activated');
 // Nothing else reads the kept class: visibility checks stay on .active.
 fs.readdirSync(dir).filter(f=>f.endsWith('.js')&&f!=='touch-shell.js').forEach(f=>assert(!/['".]kept\b(?!\s+for)/.test(fs.readFileSync(dir+f,'utf8').replace(/\/\/.*$/gm,'')),f+' must not depend on .kept'));

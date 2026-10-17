@@ -16,7 +16,7 @@ main{position:fixed;left:0;right:0;top:64px;bottom:60px;display:block!important;
 #home-job-image{height:clamp(100px,calc(var(--view-height,600px)*.45),440px);min-height:0}
 #home-job-percent{font-size:38px;margin:6px 0}#home-job-eta{font-size:20px}
 .home-job-actions{gap:8px;margin-top:10px}.home-job-actions button{min-height:44px;padding:8px 12px}
-#screen-files.active{grid-template-columns:minmax(240px,.8fr) minmax(380px,1.5fr);gap:8px}
+#screen-files.active,#screen-files.kept{grid-template-columns:minmax(240px,.8fr) minmax(380px,1.5fr);gap:8px}
 #screen-files h2{font-size:18px}#screen-files p{font-size:14px;line-height:1.25;margin:5px 0}
 #screen-files button{min-height:42px;padding:6px 10px}
 #screen-files .library-file{min-height:52px;margin:5px 0}
@@ -33,7 +33,7 @@ main{position:fixed;left:0;right:0;top:64px;bottom:60px;display:block!important;
 .job-dialog-card{max-height:none;overflow:visible;transform-origin:center;max-width:660px;padding:16px}
 .job-dialog-card p{margin:8px 0}.job-confirm-label{padding:10px 0}
 @media(max-width:760px){
- #screen-files.active{grid-template-columns:minmax(0,1fr)}
+ #screen-files.active,#screen-files.kept{grid-template-columns:minmax(0,1fr)}
  .job-dashboard{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
  #tabbar .tab{font-size:12px}
 }
