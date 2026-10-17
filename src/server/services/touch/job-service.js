@@ -180,6 +180,16 @@ export const createService = (store, config, clock = Date.now) => {
           changed();
         }
       };
+      // A line refused by Grbl (error:N) during the job: CNCjs pauses on it,
+      // or goes on with ignoreErrors, and ends the job either way when it was
+      // the last line. Such a program is never reported finished.
+      r.error = () => {
+        if (r.job && r.job.started && !r.job.stopped && c.workflow && c.workflow.state !== 'idle') {
+          r.job.errors = (r.job.errors || 0) + 1;
+          changed();
+        }
+      };
+      c.runner.on('error', r.error);
       c.sender.on('load', r.file);
       c.sender.on('unload', r.file);
       c.sender.on('end', r.end);
@@ -203,6 +213,7 @@ export const createService = (store, config, clock = Date.now) => {
       c.runner.removeListener('startup', r.reset);
       c.runner.removeListener('parserstate', r.modal);
       c.runner.removeListener('raw', r.raw);
+      c.runner.removeListener('error', r.error);
     }
     if (c.sender) {
       c.sender.removeListener('load', r.file);
@@ -451,6 +462,9 @@ export const createService = (store, config, clock = Date.now) => {
     const spindleReason = reason(() => spindleReady(c));
     const spindleStopReason = reason(() => spindleStopReady(c));
 
+    const jobErrors = (r.job && r.job.errors) || 0;
+    const ended = Boolean(r.job && r.job.finishedAt && !r.job.stopped && c.workflow.state === 'idle');
+
     const age = (Number.isFinite(r.seen) && clock() >= r.seen) ? clock() - r.seen : null;
 
     const source = (c.settings && c.settings.settings) || {};
@@ -519,8 +533,11 @@ export const createService = (store, config, clock = Date.now) => {
       startReason,
       canResume: !resumeReason,
       resumeReason,
-      // Every line acknowledged and the program over (not stopped by the operator).
-      finished: Boolean(r.job && r.job.finishedAt && !r.job.stopped && c.workflow.state === 'idle'),
+      // Every line acknowledged and the program over (not stopped by the operator),
+      // without any line refused by Grbl.
+      finished: ended && !jobErrors,
+      finishedWithErrors: ended && jobErrors > 0,
+      jobErrors,
       canPause: c.workflow.state === 'running',
       canStop: c.workflow.state !== 'idle' || ['Run', 'Hold', 'Home', 'Jog'].includes(state.activeState),
       overrides: overridesOf(state),

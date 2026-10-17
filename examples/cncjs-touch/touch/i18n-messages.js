@@ -380,3 +380,4 @@ window.CNCTouchMessages.push(["Prise d’origine interrompue (réinitialisation)
 window.CNCTouchMessages.push(["Aucun travail à arrêter.", "No job to stop.", "Ningún trabajo que detener."]);
 window.CNCTouchMessages.push(["Arrêt demandé. Vérifiez l’immobilisation ; ce bouton ne remplace pas l’arrêt physique.", "Stop requested. Check that the machine is still; this button does not replace the physical stop.", "Parada solicitada. Compruebe que la máquina se ha detenido; este botón no sustituye a la parada física."]);
 window.CNCTouchMessages.push(["Action inconnue.", "Unknown action.", "Acción desconocida."]);
+window.CNCTouchMessages.push(['Fin du programme avec ','Program ended with ','Programa terminado con '],[' erreur(s) Grbl — vérifiez la pièce',' Grbl error(s) — check the part',' error(es) de Grbl — compruebe la pieza']);
