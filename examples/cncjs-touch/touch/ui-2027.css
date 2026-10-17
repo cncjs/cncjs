@@ -204,7 +204,7 @@
 .ks-ui [hidden]{display:none!important}
 
 /* === Suivi du travail ======================================================= */
-.ks-ui #screen-home.active{display:block}
+.ks-ui #screen-home.active,.ks-ui #screen-home.kept{display:block}
 .ks-ui #screen-home>.card.wide{background:transparent;border:0;padding:0!important;margin:0}
 .ks-ui .job-dashboard{display:grid;grid-template-columns:minmax(0,1fr) 520px;gap:var(--sp-4);margin:0;align-items:stretch;height:calc(var(--view-height) - 32px);min-height:0}
 .home-left,.ks-ui .job-metrics{display:flex;flex-direction:column;gap:var(--sp-2);min-height:0;min-width:0}
@@ -363,7 +363,7 @@
 .ks-ui #screen-jog .card{align-self:stretch;height:100%}
 
 /* === Menu =================================================================== */
-.ks-ui #screen-menu.active{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:var(--sp-4)!important;height:calc(var(--view-height) - 32px);min-height:0}
+.ks-ui #screen-menu.active,.ks-ui #screen-menu.kept{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:var(--sp-4)!important;height:calc(var(--view-height) - 32px);min-height:0}
 .ks-resume{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-4);min-height:var(--tap-primary);padding:0 var(--sp-3) 0 var(--sp-5);background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--info);border-radius:var(--r-l);color:var(--fg);font:var(--fs-20)/var(--lh-tight) var(--font);text-align:left;cursor:pointer;touch-action:manipulation}
 .ks-resume:active{transform:scale(.99)}
 .ks-resume svg{width:32px;height:32px;stroke:var(--info-text);transform:rotate(180deg)}
@@ -424,11 +424,11 @@
 .ks-ui #screen-machine #sim-machine-feedback,.ks-ui #screen-machine .ks-help{font-size:var(--fs-16);color:var(--mute);margin:var(--sp-2) 0 0!important}
 .ks-ui #screen-machine .card>h2{margin:0 0 var(--sp-2);font:600 var(--fs-16)/1 var(--font);color:var(--mute);letter-spacing:.06em;text-transform:uppercase}
 /* The screens fill their height: the generic start alignment of app.css is for the legacy layout. */
-.ks-ui .screen.active{align-items:stretch;align-content:stretch}
+.ks-ui .screen.active,.ks-ui .screen.kept{align-items:stretch;align-content:stretch}
 .ks-ui #screen-jog.active,.ks-ui #screen-files.active,.ks-ui #screen-machine.active{gap:var(--sp-3) var(--sp-4)!important}
 
 /* === Journal ================================================================ */
-.ks-ui #screen-history.active{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:var(--sp-3)!important;height:calc(var(--view-height) - 32px)}
+.ks-ui #screen-history.active,.ks-ui #screen-history.kept{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:var(--sp-3)!important;height:calc(var(--view-height) - 32px)}
 .ks-ui #screen-history .ks-panel-intro{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);padding:0 0 var(--sp-3)!important;border-bottom:1px solid var(--line);background:transparent;flex-wrap:wrap}
 .ks-ui #screen-history .ks-panel-intro h2{margin:0!important;font:600 var(--fs-24)/1.1 var(--font);color:var(--fg)}
 .ks-ui #screen-history .ks-panel-intro p{margin:0;font-size:var(--fs-16);color:var(--mute)}
@@ -610,5 +610,12 @@
  * ouvrir un écran ne remet en page ni le bandeau ni le rail. Feuilles et dialogues sont hors de main. */
 .ks-ui #real-banner,.ks-ui #simulation-banner,.ks-ui #tabbar{contain:strict}
 .ks-ui main{contain:strict}
+/* Écrans gardés (Menu, Suivi, Journal) : une fois montré, l'écran reste mis en page et, quitté, il est
+ * garé sous l'écran actif, verrouillé (content-visibility:hidden : ni style, ni layout, ni peinture tant
+ * qu'il est garé). Le rouvrir réutilise son style et sa mise en page (mesuré sur la tablette : layout
+ * 20–55 → 2–6 ms, style 23–45 → 7–12 ms par ouverture). Ils sont placés en absolu exactement où l'écran
+ * en flux se trouve (padding de main : 16 px) ; .kept reprend toutes les règles de .active. */
+.ks-ui main>#screen-menu,.ks-ui main>#screen-home,.ks-ui main>#screen-history{position:absolute;top:16px;left:16px;right:16px}
+.ks-ui main>.screen.kept:not(.active){content-visibility:hidden;z-index:-1}
 /* Arrêter : un liseré clair détache l'aplat rouge foncé du fond sombre (composant ≥ 3:1). */
 .t-btn--danger{border-color:var(--danger-text)}

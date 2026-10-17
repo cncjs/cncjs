@@ -20,7 +20,7 @@ main{padding:12px;display:grid;gap:12px;grid-template-columns:1fr 1fr}
 
 main{padding:12px 12px 80px}
 .screen{display:none}
-.screen.active{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+.screen.active,.screen.kept{display:grid;gap:12px;grid-template-columns:1fr 1fr}
 .card.wide{grid-column:1/-1}
 .mute{color:var(--mute)}
 #notice{margin:8px 12px 0}
@@ -28,7 +28,7 @@ main{padding:12px 12px 80px}
 .tab{flex:1;min-height:56px;border:0;border-right:1px solid var(--line);background:transparent;color:var(--mute);font:inherit;font-size:16px;cursor:pointer}
 .tab:last-child{border-right:0}
 .tab.active{background:var(--card);color:var(--txt);box-shadow:inset 0 3px 0 var(--ok)}
-@media (max-width:700px){.screen.active{grid-template-columns:1fr}}
+@media (max-width:700px){.screen.active,.screen.kept{grid-template-columns:1fr}}
 
 .tag{font-size:12px;font-weight:700;color:var(--bg);background:var(--warn);padding:2px 8px;border-radius:6px;vertical-align:middle;margin-left:8px}
 .steps{display:flex;gap:8px;margin-bottom:12px}
@@ -52,7 +52,7 @@ main{
   display:block;
   padding:18px 18px 100px;
 }
-.screen.active{
+.screen.active,.screen.kept{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
   gap:18px;
@@ -155,7 +155,7 @@ button:focus-visible{
   outline-offset:3px;
 }
 @media(max-width:800px){
-  .screen.active{
+  .screen.active,.screen.kept{
     grid-template-columns:1fr;
   }
   .tab{
@@ -387,7 +387,7 @@ main {
   padding: 8px 4px;
   font-size: 18px;
 }
-.screen.active {
+.screen.active,.screen.kept {
   gap: 12px;
   align-items: start;
 }

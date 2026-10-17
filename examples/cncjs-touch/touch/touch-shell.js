@@ -41,7 +41,7 @@
   function live(name,tone,text){var el=lives[name];if(!el)return;if(el.getAttribute('data-tone')!==tone)el.setAttribute('data-tone',tone);setText(el.lastChild,text);}
   nav.innerHTML='';
   // Every screen on the rail; Retour appears only on a sub-screen (probe, limits…).
-  var mainScreens=['menu','jog','files','home','machine','history','settings'];
+  var mainScreens=['menu','jog','files','home','machine','history','settings'],keptScreens=['menu','home','history'];
   ['back'].concat(mainScreens).forEach(function(name){
     var label=name==='back'?uiLocale.t('Retour'):menuLabels[name]||names[name];
     var b=document.createElement('button');b.className='ks-nav';b.setAttribute('aria-label',label);b.innerHTML=icon(name)+uiLocale.html('<span>')+label+uiLocale.html('</span>');b.setAttribute('data-ks-screen',name);b.addEventListener('click',function(){go(name==='back'?trail.pop()||'menu':name,name==='back');});nav.appendChild(b);
@@ -135,7 +135,8 @@
     else if(name!==active&&!back){var earlier=trail.lastIndexOf(name);if(earlier>=0)trail=trail.slice(0,earlier);else{trail.push(active);if(trail.length>20)trail.shift();}}
     active=name;
     if(name==='menu')resumeBar();else remember(name);
-    document.querySelectorAll('.screen').forEach(function(s){s.classList.toggle('active',s.id==='screen-'+name);});
+    // Kept screens stay laid out once shown (ui-2027.css): modules still only look at .active.
+    document.querySelectorAll('.screen').forEach(function(s){var on=s.id==='screen-'+name;s.classList.toggle('active',on);if(on&&keptScreens.indexOf(name)>=0&&!s.classList.contains('kept'))s.classList.add('kept');});
     var navScreen=name==='probe'||name.indexOf('probe-')===0?'jog':name==='limits'||name==='commissioning'?'machine':name==='guide'?'settings':name;
     var sub=mainScreens.indexOf(name)<0;
     document.querySelectorAll('.ks-nav').forEach(function(b){var target=b.getAttribute('data-ks-screen');b.classList.toggle('active',target===navScreen);if(target===navScreen)b.setAttribute('aria-current',target===name?'page':'location');else b.removeAttribute('aria-current');if(target==='back'){b.disabled=name==='menu';if(b.hidden!==!sub)b.hidden=!sub;}});
