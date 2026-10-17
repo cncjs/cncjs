@@ -359,3 +359,68 @@
 .ks-ui #screen-jog .pad-mid{display:flex;align-items:center;justify-content:center;font:600 var(--fs-20)/1 var(--font-num);color:var(--mute);border:1px dashed var(--line-strong);border-radius:var(--r-l)}
 .ks-ui #screen-jog #jog-msg,.ks-ui #screen-jog .sim-motion-state{font-size:var(--fs-18);color:var(--mute)}
 .ks-ui #screen-jog .card{align-self:stretch;height:100%}
+
+/* === Menu =================================================================== */
+.ks-ui #screen-menu.active{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:var(--sp-4)!important;height:calc(var(--view-height) - 32px);min-height:0}
+.ks-resume{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-4);min-height:var(--tap-primary);padding:0 var(--sp-3) 0 var(--sp-5);background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--info);border-radius:var(--r-l);color:var(--fg);font:var(--fs-20)/var(--lh-tight) var(--font);text-align:left;cursor:pointer;touch-action:manipulation;transition:transform var(--motion) var(--ease)}
+.ks-resume:active{transform:scale(.99)}
+.ks-resume svg{width:32px;height:32px;stroke:var(--info-text);transform:rotate(180deg)}
+.ks-resume-text{min-width:0}
+.ks-resume b{display:block;font-weight:700}
+.ks-resume small{display:block;color:var(--mute);font-size:var(--fs-16);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ks-resume-go{display:inline-flex;align-items:center;min-height:52px;padding:0 var(--sp-4);border:1px solid var(--line-strong);border-radius:var(--r-m);font:600 var(--fs-18)/1 var(--font)}
+.ks-ui .ks-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:var(--sp-4);padding:0;min-height:0}
+.ks-ui .ks-tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:var(--sp-3);min-height:0;padding:var(--sp-5);text-align:left;font:var(--fs-28)/var(--lh-tight) var(--font);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-bottom-width:1px;border-radius:var(--r-l);transition:transform var(--motion) var(--ease)}
+.ks-ui .ks-tile:active{transform:scale(.98);background:var(--surface-2)}
+.ks-ui .ks-tile svg{width:48px;height:48px;stroke:var(--mute);stroke-width:1.6}
+.ks-ui .ks-tile-text{display:flex;flex-direction:column;gap:var(--sp-1)}
+.ks-ui .ks-tile span{font-weight:600}
+.ks-ui .ks-tile small{font-size:var(--fs-16);color:var(--mute);line-height:var(--lh)}
+.ks-ui .ks-tile .t-live{align-self:flex-start;max-width:100%}
+.ks-ui .ks-tile .t-live>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* === Machine ================================================================ */
+.ks-ui #screen-machine.active{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:var(--sp-3) var(--sp-4);height:calc(var(--view-height) - 32px)}
+.ks-ui #screen-machine .ks-panel-intro{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);padding:0 0 var(--sp-3)!important;border-bottom:1px solid var(--line);background:transparent}
+.ks-ui #screen-machine .ks-panel-intro h2{margin:0!important;font:600 var(--fs-24)/1.1 var(--font);color:var(--fg)}
+.ks-ui #screen-machine .ks-panel-intro p{margin:0;font-size:var(--fs-18);color:var(--mute)}
+.ks-ui #screen-machine .ks-secondary{min-height:var(--tap);font:600 var(--fs-18)/1 var(--font);color:var(--fg);background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-m);padding:var(--sp-2) var(--sp-3);box-shadow:none;white-space:normal}
+.ks-ui #screen-machine .card{padding:var(--sp-3) var(--sp-4)!important;min-height:0;align-self:stretch}
+.ks-ui #screen-machine .ks-machine-overview{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:max-content;align-content:start;gap:var(--sp-2) var(--tap-gap);justify-content:stretch}
+.ks-ui #screen-machine .ks-machine-overview>*{grid-column:1/-1;margin:0}
+.ks-ui #screen-machine .ks-machine-overview>h2{font:600 var(--fs-16)/1 var(--font);color:var(--mute);letter-spacing:.06em;text-transform:uppercase;order:0}
+.ks-ui .ks-machine-word{order:1;font:700 var(--fs-36)/1.1 var(--font);color:var(--fg);padding:var(--sp-2) var(--sp-4);border-left:8px solid var(--faint);background:var(--surface-2);border-radius:var(--r-m)}
+.ks-ui .ks-machine-word[data-tone=ok]{color:var(--ok-text);border-left-color:var(--ok);background:var(--ok-soft)}
+.ks-ui .ks-machine-word[data-tone=run]{color:var(--info-text);border-left-color:var(--info);background:var(--info-soft)}
+.ks-ui .ks-machine-word[data-tone=warn]{color:var(--warn-text);border-left-color:var(--warn);background:var(--warn-soft)}
+.ks-ui .ks-machine-word[data-tone=danger]{color:var(--danger-text);border-left-color:var(--danger);background:var(--danger-soft)}
+.ks-ui .ks-machine-word[data-tone=off]{color:var(--mute)}
+.ks-ui #ks-machine-alarm{order:2;font-size:var(--fs-18)}
+.ks-ui #ks-machine-alarm b{margin-bottom:var(--sp-1)}
+.ks-ui #screen-machine .ks-machine-overview>p{order:3;font-size:var(--fs-18);color:var(--mute);overflow-wrap:anywhere}
+.ks-ui #screen-machine .ks-machine-overview>p>.badge{display:inline-block;font:600 var(--fs-18)/1 var(--font);padding:var(--sp-2) var(--sp-3);border-radius:var(--r-pill);border:1px solid var(--line);background:var(--surface-2);color:var(--fg)}
+.ks-ui #screen-machine .ks-machine-overview>p>.badge.err{color:var(--danger-text);border-color:var(--danger);background:var(--danger-soft)}
+.ks-ui #screen-machine .ks-machine-overview>p>.badge.ok{color:var(--ok-text);border-color:var(--ok);background:var(--ok-soft)}
+.ks-ui #screen-machine .ks-real-state{border:0;padding:0;font-size:var(--fs-18)}
+.ks-ui #screen-machine .ks-machine-commands{order:4;display:grid;grid-template-columns:1fr 1fr;gap:var(--tap-gap);margin-top:var(--sp-2)}
+.ks-ui #screen-machine .ks-machine-commands button{min-height:var(--tap-primary);font-size:var(--fs-20)}
+.ks-ui #screen-machine .ks-machine-commands button:first-child{background:var(--info);color:var(--on-info);border-color:transparent}
+.ks-ui #screen-machine .ks-machine-commands button:last-child{grid-column:1/-1;min-height:var(--tap)}
+.ks-ui #screen-machine .ks-machine-overview>.ks-secondary{order:5;grid-column:auto;min-height:var(--tap);background:transparent;font-weight:500}
+.ks-ui #screen-machine .ks-machine-overview>.connection-details{order:6;border-top:1px solid var(--line);margin-top:var(--sp-2);padding-top:var(--sp-2)}
+.ks-ui #screen-machine .connection-details h3{font:600 var(--fs-16)/1 var(--font);color:var(--mute);letter-spacing:.06em;text-transform:uppercase;margin:0 0 var(--sp-1)}
+.ks-ui #screen-machine .connection-details p{font-size:var(--fs-16);margin:2px 0;color:var(--mute)}
+.ks-ui #screen-machine .connection-report.ok{color:var(--ok-text)}.ks-ui #screen-machine .connection-report.warn{color:var(--warn-text)}.ks-ui #screen-machine .connection-report.err{color:var(--danger-text)}
+.ks-ui #screen-machine .ks-machine-overview button:disabled{opacity:1;color:var(--disabled-fg);background:var(--disabled-bg);border-color:var(--line);background-image:repeating-linear-gradient(135deg,var(--disabled-stripe) 0 6px,transparent 6px 14px)}
+.ks-ui #screen-machine .ks-alarm-buttons{display:grid;grid-template-columns:1fr 1fr;gap:var(--tap-gap);margin:0}
+.ks-ui #screen-machine .ks-command{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-2);min-height:120px;font:600 var(--fs-20)/1.1 var(--font);color:var(--fg);background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-l);padding:var(--sp-3);cursor:pointer;touch-action:manipulation;transition:transform var(--motion) var(--ease)}
+.ks-ui #screen-machine .ks-command svg{width:40px;height:40px}
+.ks-ui #screen-machine .ks-command:active:not(:disabled){transform:scale(.97)}
+.ks-ui #screen-machine #sim-trigger-alarm{color:var(--danger-text);border-color:var(--danger)}
+.ks-ui #screen-machine #sim-clear-alarm{color:var(--ok-text);border-color:var(--ok)}
+.ks-ui #screen-machine .ks-command:disabled{opacity:1;color:var(--disabled-fg);background:var(--disabled-bg);border-color:var(--line);background-image:repeating-linear-gradient(135deg,var(--disabled-stripe) 0 6px,transparent 6px 14px)}
+.ks-ui #screen-machine #sim-machine-feedback,.ks-ui #screen-machine .ks-help{font-size:var(--fs-16);color:var(--mute);margin:var(--sp-2) 0 0!important}
+.ks-ui #screen-machine .card>h2{margin:0 0 var(--sp-2);font:600 var(--fs-16)/1 var(--font);color:var(--mute);letter-spacing:.06em;text-transform:uppercase}
+/* The screens fill their height: the generic start alignment of app.css is for the legacy layout. */
+.ks-ui .screen.active{align-items:stretch;align-content:stretch}
+.ks-ui #screen-jog.active,.ks-ui #screen-files.active,.ks-ui #screen-machine.active{gap:var(--sp-3) var(--sp-4)!important}

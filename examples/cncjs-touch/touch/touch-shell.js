@@ -26,19 +26,19 @@
   // screen title stays for assistive technology; the rail shows the place.
   banner.innerHTML=uiLocale.html('<h1 id="ks-title" class="ks-sr-only">Menu</h1><div class="t-strip-right"><span class="ks-simulation">')+(simulation?uiLocale.t('SIMULATION'):uiLocale.t('MACHINE RÉELLE'))+uiLocale.html('</span><a href="')+(simulation?'index.html':'simulation.html')+'" class="ks-exit">'+(simulation?uiLocale.t('Réel ↗'):uiLocale.t('Simulation ↗'))+uiLocale.html('</a></div>');
   var menu=document.createElement('section');menu.id='screen-menu';menu.className='screen';
-  menu.innerHTML=uiLocale.html('<aside class="ks-overview"><div class="ks-state-label">CONTRÔLEUR VIRTUEL</div><h2 id="ks-state">Prêt</h2><p id="ks-current-file">Aucun fichier chargé</p><div class="ks-axis"><span>X</span><b id="ks-x">0.000</b><small>mm</small></div><div class="ks-axis"><span>Y</span><b id="ks-y">0.000</b><small>mm</small></div><div class="ks-axis"><span>Z</span><b id="ks-z">0.000</b><small>mm</small></div><p class="ks-help">Coordonnées de travail fictives.<br>Aucune commande au laser.</p></aside><div class="ks-tiles"></div>');
+  // Menu (UI 2027): the machine state lives in the strip; the menu is the
+  // "resume where I was" shortcut plus six tiles, each with a live indicator.
+  menu.innerHTML=uiLocale.html('<button type="button" id="ks-resume" class="ks-resume" hidden>')+icon('back')+uiLocale.html('<span class="ks-resume-text"><b id="ks-resume-title"></b><small id="ks-resume-hint"></small></span><span class="ks-resume-go">Ouvrir →</span></button><div class="ks-tiles"></div>');
   main.insertBefore(menu,main.firstChild);
-  if(!simulation){
-    menu.querySelector('.ks-state-label').textContent=uiLocale.t('CONTRÔLEUR CNCjs');
-    menu.querySelector('.ks-help').textContent=uiLocale.t('Coordonnées de travail du contrôleur. Déplacements à blanc ; origines désactivées.');
-    document.getElementById('ks-state').textContent=uiLocale.t('Connexion…');
-    ['x','y','z'].forEach(function(a){document.getElementById('ks-'+a).textContent='—';});
-  }
   var menuLabels={jog:uiLocale.t('Préparer'),home:uiLocale.t('Suivi')},menuHints={jog:uiLocale.t('Déplacer · Origine · Palpage'),files:uiLocale.t('Choisir et charger un parcours'),home:uiLocale.t('Avancement et commandes'),machine:uiLocale.t('État et limites'),history:uiLocale.t('Événements et exports'),settings:uiLocale.t('Affichage · veille · système')};
-  ['jog','files','home','machine','history','settings'].forEach(function(name){
-    var i={files:0,jog:1,home:3,machine:4,history:2,settings:5}[name];
-    var b=document.createElement('button');b.type='button';b.className='ks-tile ks-accent-'+i;b.innerHTML=icon(name)+uiLocale.html('<span>')+(menuLabels[name]||names[name])+uiLocale.html('</span><small>')+menuHints[name]+uiLocale.html('</small>');b.addEventListener('click',function(){go(name);});menu.querySelector('.ks-tiles').appendChild(b);
+  var tileOrder=['home','files','jog','machine','history','settings'],lives={};
+  tileOrder.forEach(function(name){
+    var b=document.createElement('button');b.type='button';b.className='ks-tile';b.setAttribute('data-ks-tile',name);
+    b.innerHTML=icon(name)+uiLocale.html('<div class="ks-tile-text"><span>')+(menuLabels[name]||names[name])+uiLocale.html('</span><small>')+menuHints[name]+uiLocale.html('</small></div><span class="t-live"><i></i><span></span></span>');
+    lives[name]=b.querySelector('.t-live');
+    b.addEventListener('click',function(){go(name);});menu.querySelector('.ks-tiles').appendChild(b);
   });
+  function live(name,tone,text){var el=lives[name];if(!el)return;if(el.getAttribute('data-tone')!==tone)el.setAttribute('data-tone',tone);setText(el.lastChild,text);}
   nav.innerHTML='';
   // Every screen on the rail; Retour appears only on a sub-screen (probe, limits…).
   var mainScreens=['menu','jog','files','home','machine','history','settings'];
@@ -110,10 +110,17 @@
   }
   bindSheet('ks-history-export-sheet',uiLocale.t('Exporter le journal'),'ks-history-export-content','ks-history-export');
   if(!simulation){
-    var historyButton=document.createElement('button');historyButton.type='button';historyButton.className='ks-secondary';
+    var historyButton=document.createElement('button');historyButton.type='button';historyButton.id='ks-machine-history';historyButton.className='ks-secondary';
     historyButton.textContent=uiLocale.t('Journal des événements →');historyButton.addEventListener('click',function(){go('history');});
     document.querySelector('.ks-machine-overview').appendChild(historyButton);
   }
+  // Machine (UI 2027): the state as one large word, and an alarm explained in
+  // plain words with what to do next, at the top of the overview card.
+  var overview=document.querySelector('.ks-machine-overview');
+  var machineWord=document.createElement('p');machineWord.id='ks-machine-word';machineWord.className='ks-machine-word';machineWord.setAttribute('data-tone','off');machineWord.textContent=uiLocale.t('Hors ligne');
+  var machineAlarm=document.createElement('div');machineAlarm.id='ks-machine-alarm';machineAlarm.className='t-notice';machineAlarm.setAttribute('data-tone','danger');machineAlarm.hidden=true;
+  machineAlarm.innerHTML=uiLocale.html('<div><b id="ks-machine-alarm-title"></b><span id="ks-machine-alarm-action"></span></div>');
+  overview.insertBefore(machineAlarm,overview.firstChild);overview.insertBefore(machineWord,overview.firstChild);
   document.getElementById('ks-machine-follow').addEventListener('click',function(){go('home');});
   document.getElementById('ks-machine-limits').addEventListener('click',function(){go('limits');});
   document.getElementById('ks-machine-display').addEventListener('click',function(){go('settings');});
@@ -127,6 +134,7 @@
     if(name==='menu')trail=[];
     else if(name!==active&&!back){var earlier=trail.lastIndexOf(name);if(earlier>=0)trail=trail.slice(0,earlier);else{trail.push(active);if(trail.length>20)trail.shift();}}
     active=name;
+    if(name==='menu')resumeBar();else remember(name);
     document.querySelectorAll('.screen').forEach(function(s){s.classList.toggle('active',s.id==='screen-'+name);});
     var navScreen=name==='probe'||name.indexOf('probe-')===0?'jog':name==='limits'||name==='commissioning'?'machine':name==='guide'?'settings':name;
     var sub=mainScreens.indexOf(name)<0;
@@ -134,19 +142,49 @@
     document.getElementById('ks-title').textContent=names[name];
     window.dispatchEvent(new CustomEvent('cnc-screen-change',{detail:name}));
   }
+  // The last screen used survives a reload (the kiosk reloads after a deployment).
+  var lastKey='cncjs-touch-last-screen',lastScreen='',lastMachine=null;
+  try{var savedScreen=localStorage.getItem(lastKey);if(savedScreen&&mainScreens.indexOf(savedScreen)>0)lastScreen=savedScreen;}catch(_){}
+  function remember(name){if(mainScreens.indexOf(name)<=0)return;lastScreen=name;try{localStorage.setItem(lastKey,name);}catch(_){}}
+  function resumeBar(){
+    var bar=document.getElementById('ks-resume');if(!bar)return;
+    var show=!!lastScreen&&lastScreen!==active;
+    if(bar.hidden!==!show)bar.hidden=!show;
+    if(!show)return;
+    var m=lastMachine;
+    setText(document.getElementById('ks-resume-title'),uiLocale.t('Reprendre où j’en étais : ')+(menuLabels[lastScreen]||names[lastScreen]));
+    setText(document.getElementById('ks-resume-hint'),m&&m.name?(m.originalName||m.name)+(m.workflow==='running'?uiLocale.t(' · en cours'):m.workflow==='paused'?uiLocale.t(' · en pause'):m.canStart?uiLocale.t(' · prêt à démarrer'):''):uiLocale.t('Aucun fichier chargé'));
+  }
+  document.getElementById('ks-resume').addEventListener('click',function(){if(lastScreen)go(lastScreen);});
+  function updateTiles(m,connected){
+    var alarm=!!(m&&/^alarm/i.test(m.activeState||'')),running=!!(m&&m.workflow==='running'),paused=!!(m&&m.workflow==='paused');
+    var pct=m&&typeof m.total==='number'&&m.total>0&&typeof m.received==='number'?Math.min(100,Math.floor(m.received/m.total*100)):null;
+    var file=m&&m.name?(m.originalName||m.name):'';
+    var word=window.cncStatusStrip?window.cncStatusStrip.describe(m,connected):{word:connected&&m?m.activeState:uiLocale.t('Hors ligne'),tone:connected&&m?'info':'off'};
+    live('home',!m||!connected?'off':alarm?'danger':running?'info':paused?'warn':m.canStart?'ok':'',
+      !m||!connected?uiLocale.t('Hors ligne'):alarm?uiLocale.t('Alarme'):running?uiLocale.t('En cours')+(pct!==null?' · '+pct+' %':''):paused?uiLocale.t('En pause'):m.canStart?uiLocale.t('Prêt à démarrer'):file||uiLocale.t('Aucun fichier chargé'));
+    live('files',file?'ok':'',file?uiLocale.t('Chargé : ')+file:uiLocale.t('Choisir un parcours'));
+    live('jog',alarm?'danger':running||paused?'warn':simulation?'':'warn',alarm?uiLocale.t('Bloqué : alarme'):running||paused?uiLocale.t('Bloqué : travail en cours'):simulation?uiLocale.t('Simulateur'):uiLocale.t('Déplacements à blanc'));
+    var commissioning=!simulation&&window.cncCommissioning&&typeof window.cncCommissioning.status==='function'?window.cncCommissioning.status():null;
+    var toDo=commissioning&&(commissioning.state==='none'||commissioning.state==='progress');
+    live('machine',alarm?'danger':toDo?'warn':word.tone,alarm?word.word:toDo?(commissioning.state==='progress'?uiLocale.t('Mise en service en cours'):uiLocale.t('Mise en service à faire')):word.word);
+    live('history','',uiLocale.t('Chronologie et export'));
+    live('settings','',uiLocale.t('Affichage · veille · système'));
+    // Machine screen: the state word and the alarm explained.
+    setText(machineWord,word.word);if(machineWord.getAttribute('data-tone')!==word.tone)machineWord.setAttribute('data-tone',word.tone);
+    var help=alarm?(simulation?{title:uiLocale.t('Alarme fictive'),action:uiLocale.t('Effacez l’alarme ci-contre, puis confirmez la reprise dans Suivi.')}:window.CNCGrblHelp?window.CNCGrblHelp.alarm(m.alarmCode):{title:word.word,action:''}):null;
+    if(machineAlarm.hidden!==!help)machineAlarm.hidden=!help;
+    if(help){setText(document.getElementById('ks-machine-alarm-title'),help.title);setText(document.getElementById('ks-machine-alarm-action'),help.action);}
+  }
   window.addEventListener('cnc-job-status',function(e){
-    var s=e.detail.machine;if(!!e.detail.simulation!==simulation)return;
-    var el=document.getElementById('ks-state');setText(el,!s?uiLocale.t('Indisponible'):({Idle:uiLocale.t('Prêt'),Run:uiLocale.t('En cours'),Hold:uiLocale.t('En pause'),Alarm:uiLocale.t('Alarme')}[s.activeState]||s.activeState));el.classList.toggle('ks-alarm',!!s&&s.activeState==='Alarm');
-    setText(document.getElementById('ks-current-file'),s&&s.name?(s.originalName||s.name):uiLocale.t('Aucun fichier chargé'));
-    if(simulation)['x','y','z'].forEach(function(a){setText(document.getElementById('ks-'+a),s&&s.workPosition?s.workPosition[a].toFixed(3):'—');});
+    if(!!e.detail.simulation!==simulation)return;
+    lastMachine=e.detail.machine;
+    updateTiles(e.detail.machine,simulation?!!e.detail.machine:!!e.detail.transportConnected);
+    if(active==='menu')resumeBar();
   });
   window.addEventListener('cnc-navigate',function(e){if(Object.prototype.hasOwnProperty.call(names,e.detail))go(e.detail);});
-  function setText(el,value){if(el.textContent!==value)el.textContent=value;}
-  if(!simulation){
-    function copyCoordinates(){['x','y','z'].forEach(function(a){setText(document.getElementById('ks-'+a),document.getElementById('w'+a).textContent);});}
-    var coordinateObserver=new MutationObserver(copyCoordinates);
-    ['wx','wy','wz'].forEach(function(id){coordinateObserver.observe(document.getElementById(id),{childList:true,characterData:true,subtree:true});});copyCoordinates();
-  }
+  function setText(el,value){if(el&&el.textContent!==value)el.textContent=value;}
+  updateTiles(null,false);
   // Shared with later modules (macros): sheets with focus trapping and navigation.
   window.cncShell={sheet:sheet,closeSheet:closeSheet,go:go,preparationActions:preparationActions};
   go('menu',true);

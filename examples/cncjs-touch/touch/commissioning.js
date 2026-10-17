@@ -379,5 +379,6 @@
     }
   });
   settingsCard();
-  window.cncCommissioning={open:open};
+  // status(): for the menu tile. 'unknown' (no controller), 'none', 'progress', 'done' or 'skipped'.
+  window.cncCommissioning={open:open,status:function(){var e=port?entry(port):null;return {port:port,state:!port?'unknown':!e?'none':e.status};}};
 })();

@@ -20,7 +20,6 @@ body.ks-real.display-large{font-size:20px}.ks-real.display-large .screen p,.ks-r
 .ks-real #status-bar{min-height:40px;border-bottom:1px solid #31434c;padding:4px 16px;font-size:13px}
 .ks-real #status-bar button{min-height:30px;padding:4px 12px}
 .ks-sheet a{display:block;margin-top:16px;color:#a5d5e7}
-.ks-real-state{font-size:26px;border-left:4px solid #e39a45;padding-left:16px}
 .ks-real #screen-settings select,.ks-real #screen-settings button{font:inherit;min-height:52px}
 .ks-real #screen-settings .display-check{align-items:center}
 @media(max-width:650px){.ks-ui #real-banner{gap:8px;padding:6px 10px}}
@@ -29,25 +28,13 @@ body.ks-real.display-large{font-size:20px}.ks-real.display-large .screen p,.ks-r
 .ks-nav{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:80px;width:100%;padding:10px 4px;background:transparent;border:0;font:inherit;cursor:pointer}
 .ks-nav svg{width:30px;height:30px}
 .ks-ui svg{fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
-.ks-ui #screen-menu.active{display:grid;grid-template-columns:minmax(220px,.65fr) minmax(0,2fr);gap:24px!important;align-items:stretch;min-height:calc(var(--view-height) - 32px)}
-.ks-overview{padding:24px 20px;border-right:1px solid #2a3b43;min-width:0;display:flex;flex-direction:column;justify-content:center}
-.ks-state-label{font-size:12px;color:#91a5af;letter-spacing:2px}#ks-state{font-size:38px;margin:10px 0!important;font-weight:400;color:#f5f8fa}#ks-state.ks-alarm{color:#f26667}
-#ks-current-file{min-height:52px;color:#b7c5cd;font-size:16px;overflow-wrap:anywhere;margin:0 0 24px}
-.ks-axis{display:flex;align-items:baseline;gap:16px;padding:12px 0;border-bottom:1px solid #263840}.ks-axis span{color:#f5a147;font-size:22px;width:20px}.ks-axis b{font-size:30px;font-weight:400;flex:1;font-variant-numeric:tabular-nums}.ks-axis small{color:#81949e}
 .ks-help{color:#81949e;font-size:13px;margin-top:24px!important}
-.ks-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:1fr 1fr;gap:16px;padding:12px 0}
-.ks-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;min-height:160px;padding:16px 12px;background:#17232a;color:#fff;border:1px solid #283b44;border-bottom:5px solid var(--accent,#f18b23);border-radius:8px;font:inherit;font-size:22px;cursor:pointer;touch-action:manipulation}
-.ks-tile small{font-size:14px;line-height:1.35;color:#a0b0b9}
-.ks-tile svg{width:64px;height:64px}.ks-tile:hover,.ks-nav:hover{background:#23363f}.ks-tile:active{background:#304650}
-.ks-accent-0{--accent:#f18b23}.ks-accent-1{--accent:#20b7ac}.ks-accent-2{--accent:#cb4f98}.ks-accent-3{--accent:#68aee8}.ks-accent-4{--accent:#b2d743}.ks-accent-5{--accent:#ad91db}
 .ks-nav:disabled{opacity:.35;cursor:default}.ks-nav:disabled:hover{background:transparent}
 .ks-ui .card{background:#17232a;border:1px solid #293b44;border-radius:8px;padding:16px!important}.ks-ui .screen h2{font-size:20px;color:#b7c9d1;font-weight:400}
 .ks-ui .screen p{line-height:1.4}.ks-ui button{touch-action:manipulation}.ks-ui button:focus-visible,.ks-ui a:focus-visible{outline:3px solid #f5a147;outline-offset:3px}
 .ks-ui #screen-home>.card>h2,.ks-ui #file{display:none}
 .ks-ui .library-header p,.ks-ui .library-eyebrow{display:none}
 .ks-ui #screen-history li{border-bottom:1px solid #2b3d46;padding:8px 0}.ks-ui #screen-history li strong{font-size:17px;font-weight:500}
-@media(max-width:1000px){.ks-tiles{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,1fr);gap:10px}.ks-tile{min-height:110px;font-size:19px;gap:10px}.ks-tile svg{width:42px;height:42px}.ks-overview{padding:10px}.ks-ui{--ks-rail:72px!important}}
-@media(max-width:650px){.ks-ui #simulation-banner{gap:8px;padding:6px 10px!important}.ks-brand,.ks-exit{display:none}.ks-ui #screen-menu.active{grid-template-columns:1fr;gap:8px!important}.ks-overview{display:none}.ks-nav{min-height:65px}}
 /* File selection: one panel per task, details in an accessible sheet. */
 .ks-file-tools{display:flex;gap:10px;margin-top:8px}.ks-file-tools button{flex:1}
 .ks-dimensions-table{width:100%;border-collapse:collapse;table-layout:fixed;font-variant-numeric:tabular-nums}
@@ -72,14 +59,6 @@ body.ks-real.display-large{font-size:20px}.ks-real.display-large .screen p,.ks-r
 .ks-macro:disabled{opacity:.4;cursor:not-allowed}.ks-macro:hover:not(:disabled){background:#2c414b}
 @media(max-height:650px){.ks-macro{min-height:52px;font-size:16px;padding:8px}.ks-macro-list{gap:8px}}
 .ks-ui button:disabled{cursor:not-allowed}
-.ks-ui #screen-machine.active{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)}
-.ks-machine-overview{display:flex;flex-direction:column;justify-content:center;gap:16px;min-height:360px}
-.ks-machine-overview p{margin:0;overflow-wrap:anywhere}.ks-machine-overview .badge{display:block;font-size:34px;font-weight:400;padding:18px;border-width:0;border-left-width:4px;border-radius:0;background:#12231f}
-.ks-machine-overview .badge.err{background:#351e23;color:#ff9696}.ks-machine-overview .badge.ok{color:#b2d743}
-#sim-machine-workflow{font-size:24px}#sim-machine-file{color:#a0b0b9;font-size:16px}
-.ks-alarm-buttons{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
-#sim-trigger-alarm{border-bottom-color:#ef7a65}#sim-trigger-alarm svg{color:#ef7a65}#sim-clear-alarm svg{color:#b2d743}
-.ks-ui #sim-machine-feedback{font-size:16px;color:#c7d5dd;min-height:48px}
 .ks-ui #screen-history.active{grid-template-columns:minmax(0,1fr)}
 .ks-ui .ks-history-card{border-top:3px solid #ad91db}
 .ks-ui #screen-history li{padding:12px 10px;border-bottom:1px solid #31434c}
@@ -92,7 +71,6 @@ body.ks-real.display-large{font-size:20px}.ks-real.display-large .screen p,.ks-r
  .ks-ui #screen-history li{padding:9px}.ks-ui #screen-history li strong{font-size:16px}
 }
 @media(max-width:900px){
- .ks-machine-overview .badge{font-size:26px}.ks-alarm-buttons{gap:8px}
 }
 @media(max-height:650px){.ks-sheet-card{padding:16px}.ks-sheet p{margin:8px 0;font-size:14px}.ks-sheet header{margin-bottom:10px}}
 @media(max-height:650px){
