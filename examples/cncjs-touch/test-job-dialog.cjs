@@ -72,5 +72,17 @@ async function fixture(monotonic=false){
  // Overrides go through the same command path and need a current machine.
  f.machine.canMacro=true;f.machine.canOverride=true;await f.win.cncJobControls.override('feed',10);
  assert.deepEqual(f.calls.at(-1),{action:'override',port:'SIMULATION',generation:'g1',kind:'feed',value:10});
+ // Commissioning commands ($X, $H, spindle test) use the same dialog and nonce,
+ // without a loaded program; the ticket follows the matching can* flag.
+ for(const [op,flag,label] of [['unlock','canUnlock','Déverrouiller la machine'],['home','canHome','Lancer la prise d’origine'],['spindle','canSpindleTest','Démarrer la broche']]){
+   f=await fixture();f.machine[flag]=true;f.machine.revision=undefined;f.win.cncJobControls.refresh();await f.flush();
+   f.win.cncJobControls.prepareCommand(op);await f.flush();
+   assert.deepEqual(f.calls.at(-1),{action:'prepare',port:'SIMULATION',generation:'g1',operation:op});
+   await f.resolve();assert.equal(f.node('job-dialog').hidden,false);assert.equal(f.node('job-dialog-title').textContent,label);
+   f.check();f.node('job-confirm').click();await f.flush();assert.deepEqual(f.calls.at(-1),{action:op,port:'SIMULATION',generation:'g1',nonce:'ticket'});
+   f=await fixture();f.machine[flag]=true;f.win.cncJobControls.refresh();await f.flush();f.win.cncJobControls.prepareCommand(op);await f.flush();await f.resolve();
+   f.machine[flag]=false;f.win.cncJobControls.refresh();await f.flush();assert(f.node('job-dialog').hidden,op+': state change invalidates the ticket');
+ }
+ f=await fixture();f.win.cncJobControls.prepareCommand('gcode');await f.flush();assert(!f.calls.some(c=>c.action==='prepare'),'unknown command refused');
  console.log('PASS: focus, inert restoration, keyboard trap, delayed prepare, modal exclusion, stale click, alarm/revision invalidation, visibility/disposal and single confirmation; no network.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

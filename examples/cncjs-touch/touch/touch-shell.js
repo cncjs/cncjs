@@ -18,6 +18,7 @@
   names['probe-transfer']=uiLocale.t('Sauvegarde des profils');
   names['probe-preparation']=uiLocale.t('Préparation du palpage');
   names['guide']=uiLocale.t('Guide d’utilisation');
+  names['commissioning']=uiLocale.t('Mise en service');
   var main=document.querySelector('main'),nav=document.getElementById('tabbar'),banner=document.getElementById(simulation?'simulation-banner':'real-banner');
   document.body.classList.add('ks-ui');
   document.body.classList.toggle('ks-real',!simulation);

@@ -1,0 +1,44 @@
+/* Mise en service (commissioning.js): one step per page, large controls, the
+ * screen scrolls (data-fit="scroll") so text keeps its real size. */
+.ks-ui #screen-commissioning.active{display:block!important;max-width:1180px;margin:0 auto;padding:0 6px 28px;font-size:19px;line-height:1.4}
+.ks-ui #screen-commissioning>*{margin:0 0 12px}
+.ks-ui #screen-commissioning .card{background:#16222a;border:1px solid #2a3b45;border-radius:12px;padding:18px 22px!important}
+.ks-wiz-head{display:flex;align-items:center;gap:16px 24px;flex-wrap:wrap}
+.ks-wiz-head>div{flex:1 1 300px;min-width:0}
+.ks-ui #screen-commissioning .ks-wiz-head h2{font-size:28px;color:#edf3f5;margin:0 0 4px!important}
+.ks-wiz-progress{margin:0;color:#a3b3bd;font-size:16px}
+.ks-wiz-steps{display:flex;gap:8px;list-style:none;padding:0;margin:0 0 12px}
+.ks-wiz-steps li{flex:1 1 0;text-align:center;padding:8px 0;border-radius:8px;background:#1d2b33;color:#8fa0aa;font-size:17px;border-bottom:4px solid #31434c}
+.ks-wiz-steps li.current{background:#20343e;color:#fff;border-bottom-color:#68aee8}
+.ks-wiz-steps li.ok{color:#8ff0e3;border-bottom-color:#20b7ac}
+.ks-wiz-steps li.skipped{color:#f3c27a;border-bottom-color:#f18b23}
+.ks-wiz-content>*{margin:0 0 14px}
+.ks-wiz-content p{color:#c9d6dc;font-size:19px}
+.ks-wiz-check{display:flex;align-items:center;gap:16px;min-height:60px;padding:8px 14px;border:1px solid #31434c;border-radius:10px;background:#10191e;font-size:19px;cursor:pointer}
+.ks-wiz-check input{width:34px;height:34px;flex:none}
+.ks-wiz-row{display:flex;gap:12px;flex-wrap:wrap}
+.ks-ui #screen-commissioning button{min-height:62px;font-size:19px;padding:10px 22px;border-radius:10px}
+.ks-ui #screen-commissioning .ks-wiz-next{background:#1f4d4a;color:#fff;border:1px solid #20b7ac;font-weight:600}
+.ks-ui #screen-commissioning .ks-wiz-next:disabled,.ks-ui #screen-commissioning button:disabled{opacity:.45}
+.ks-ui #screen-commissioning .ks-wiz-danger{border-color:#d85b5b;color:#ffb4b4}
+.ks-wiz-lamp{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:10px 18px;border-radius:10px;background:#10191e;border:1px solid #31434c;border-left:8px solid #49616c;font-size:20px}
+.ks-wiz-lamp.ok{border-left-color:#20b7ac}.ks-wiz-lamp.ok span{color:#8ff0e3}
+.ks-wiz-lamp.act{border-left-color:#f18b23}.ks-wiz-lamp.act span{color:#ffc982;font-weight:600}
+.ks-wiz-lamp span{color:#a3b3bd}
+.ks-wiz-strong{font-weight:600;color:#edf3f5!important}
+.ks-wiz-alert{color:#ffc982!important}
+.ks-wiz-alert:empty,.ks-wiz-status:empty{display:none}
+.ks-wiz-status{margin:8px 0 0;color:#8ff0e3;font-size:17px}
+.ks-wiz-manual>*{margin:0 0 10px}
+.ks-wiz-list{margin:0;padding-left:28px}.ks-wiz-list li{margin:0 0 8px}
+.ks-wiz-summary{list-style:none;padding:0;margin:0}
+.ks-wiz-summary li{display:flex;justify-content:space-between;padding:12px 6px;border-bottom:1px solid #2a3b45}
+.ks-wiz-summary li.ok span{color:#8ff0e3}.ks-wiz-summary li.manual span{color:#c9d6dc}.ks-wiz-summary li.skipped span{color:#ffc982}
+.ks-wiz-warning{border-color:#f18b23!important}
+.ks-wiz-warning>*{margin:0 0 12px}
+.ks-wiz-nav{display:flex;gap:12px;position:sticky;bottom:-16px;padding:12px 0;background:#10191e}
+.ks-wiz-nav button{flex:1 1 0}
+.ks-ui #screen-settings .ks-commissioning-card>button{grid-column:2;grid-row:1/span 2}
+.ks-machine-commands{margin-top:12px}
+.ks-machine-commands button{min-height:52px}
+@media(max-width:800px){.ks-wiz-steps li{font-size:14px}.ks-wiz-nav{flex-wrap:wrap}}

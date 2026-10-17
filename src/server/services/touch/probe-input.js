@@ -33,11 +33,12 @@ export const createProbeInput = (store, clock = Date.now) => {
   };
 
   const watch = (port, c) => {
-    const record = { controller: c, seen: null, state: 'unknown', code: 'WAITING' };
+    const record = { controller: c, seen: null, state: 'unknown', code: 'WAITING', pins: null };
     record.reset = () => {
       record.seen = null;
       record.state = 'unknown';
       record.code = 'WAITING';
+      record.pins = null;
     };
     // Read the raw report: GrblRunner fills a missing pinState with an empty
     // string, which would hide the difference between "free" and "unreported".
@@ -45,6 +46,7 @@ export const createProbeInput = (store, clock = Date.now) => {
       record.seen = clock();
       record.state = 'unknown';
       record.code = 'MALFORMED';
+      record.pins = null;
 
       const raw = report && report.raw;
       if (typeof raw !== 'string' || raw.length > 2048 || !STATUS_REPORT.test(raw)) {
@@ -53,7 +55,9 @@ export const createProbeInput = (store, clock = Date.now) => {
       const fields = raw.slice(1, -1).split('|').slice(1);
       const pins = fields.filter((field) => /^Pn(?::|$)/.test(field));
       if (!pins.length) {
+        // Grbl 1.1 leaves Pn out when no input is triggered.
         record.code = 'MISSING';
+        record.pins = '';
         return;
       }
       if (pins.length !== 1 || !/^Pn:[XYZPDHRS]+$/.test(pins[0])) {
@@ -65,6 +69,7 @@ export const createProbeInput = (store, clock = Date.now) => {
       }
       record.state = value.includes('P') ? 'contact' : 'free';
       record.code = 'EXPLICIT';
+      record.pins = value.replace(/[^XYZP]/g, '');
     };
     observed.set(port, record);
     c.runner.on('status', record.status);
@@ -83,7 +88,9 @@ export const createProbeInput = (store, clock = Date.now) => {
       observedAt: null,
       source: 'Grbl Pn',
       readOnly: true,
-      canProbe: false
+      canProbe: false,
+      // Triggered limit and probe inputs (X, Y, Z, P) from a fresh report, or null.
+      pins: null
     };
 
     if (!c || c.type !== 'Grbl' || !c.options || c.options.port !== port ||
@@ -113,6 +120,7 @@ export const createProbeInput = (store, clock = Date.now) => {
     result.fresh = true;
     result.state = record.state;
     result.code = record.code;
+    result.pins = record.pins;
     if (record.code === 'EXPLICIT') {
       result.reason = record.state === 'contact'
         ? 'Contact signalé par le champ Pn du rapport Grbl.'
