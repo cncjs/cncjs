@@ -33,7 +33,7 @@ function setup(options = {}) {
   const metrics = { inputBytes: 0, geometryBytes: 0, outstanding: 0, peak: 0, transfers: 0, responseBlobs: 0 };
   class BrowserWorker {
     constructor(url) {
-      assert.match(url, /library-preview-worker\.js\?v=worker4$/);
+      assert.match(url, /library-preview-worker\.js\?v=worker5$/);
       if (options.constructorFailure) throw Error('CSP denied');
       this.terminated = false;
       this.thread = new Worker(harness, { eval: true, workerData: { directory: path.join(__dirname, 'touch'), readerMode: options.readerMode } });
@@ -91,7 +91,7 @@ function setup(options = {}) {
   const browser = { FileReader: Reader, Blob };
   if (!options.noWorker) browser.Worker = BrowserWorker;
   const context = {
-    window: browser, document: { currentScript: { src: 'https://offline.invalid/touch/library-preview.js?v=worker4' } },
+    window: browser, document: { currentScript: { src: 'https://offline.invalid/touch/library-preview.js?v=worker5' } },
     Promise, Date, Uint16Array, Float64Array, setTimeout, clearTimeout,
     setInterval(fn, delay) { const timer = setInterval(fn, delay); intervals.add(timer); return timer; },
     clearInterval(timer) { clearInterval(timer); intervals.delete(timer); }
@@ -119,8 +119,8 @@ function setup(options = {}) {
 async function run() {
   // A nearly maximum-size arc flushes several blocks in one line. Compare
   // every drawn endpoint/color with the supported parser's exact geometry.
-  const code = 'G21 G90\nG0 X268000 Y0\nG3 I-268000\nG1 X0 Y0\n' +
-    Array.from({ length: 3000 }, (_, i) => 'G1 X' + (i % 2)).join('\n') + '\nM2\nG1 X999999';
+  const code = 'G21 G90\nG0 X268000 Y0\nG3 X268000 Y0 I-268000\nG1 X0 Y0\n' +
+    Array.from({ length: 3000 }, (_, i) => 'G1 X' + (i % 2)).join('\n') + '\nM2\n%\n';
   const segments = [], expected = await scan(code, (...values) => segments.push(values));
   const b = expected.bounds, scale = Math.min(880 / (b[2] - b[0] || 1), 440 / (b[3] - b[1] || 1));
   const ox = (960 - (b[2] - b[0]) * scale) / 2, oy = (540 - (b[3] - b[1]) * scale) / 2;
@@ -156,7 +156,8 @@ async function run() {
   // Cancellation while a transferred arc is being drawn must terminate work,
   // settle the promise and stop all subsequent writes and owned timers.
   const cancel = setup({ noRecord: true }); let cancelled = false;
-  const pending = cancel.render(code.repeat(40), () => cancelled);
+  // Repeated without its M2: lines after a program end are refused.
+  const pending = cancel.render((code.replace('\nM2\n%\n', '\n')).repeat(40), () => cancelled);
   const trigger = setInterval(() => { if (cancel.strokes) cancelled = true; }, 1);
   await assert.rejects(pending, /Annulé/); clearInterval(trigger);
   const stoppedAt = cancel.strokes; await new Promise(resolve => setTimeout(resolve, 30));

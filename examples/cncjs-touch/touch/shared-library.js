@@ -73,6 +73,7 @@
     try { var d = JSON.parse(localStorage.getItem('cnc') || '{}'); return d.state.session.token || ''; }
     catch (_) { return ''; }
   }
+  var pendingUpload = '', pendingUntil = 0;
   function request(method, path, body, kind, cancelled, responseBlob) {
     return new Promise(function (resolve, reject) {
       if (cancelled && cancelled()) { reject(new Error(uiLocale.t('Lecture annulée.'))); return; }
@@ -250,7 +251,12 @@
       files.sort(function (a, b) { return new Date(b.mtime) - new Date(a.mtime) || a.name.localeCompare(b.name); });
       listState = 'ready'; renderList();
       setText('library-status', uiLocale.t('À jour · ') + new Date().toLocaleTimeString(window.cncI18n?window.cncI18n.locale:'fr-FR', { hour: '2-digit', minute: '2-digit' }));
-      var f = files.filter(function (item) { return item.name === selected; })[0] || files[0];
+      var f = files.filter(function (item) { return item.name === selected; })[0];
+      // A file just uploaded appears in CNCjs's list a few seconds later: keep it
+      // selected meanwhile instead of falling back to another file.
+      if (f && f.name === pendingUpload) pendingUpload = '';
+      if (!f && selected && selected === pendingUpload && Date.now() < pendingUntil) return;
+      f = f || files[0];
       if (f) select(f, !!manual);
       else {
         if (selected) { cancelRegeneration(); setText('library-regenerate-status', ''); }
@@ -339,7 +345,7 @@
       return request('PUT', 'file', { file: stored + suffix, data: JSON.stringify(meta) });
     }).then(function () {
       if (selected !== stored) { cancelRegeneration(); setText('library-regenerate-status', ''); }
-      selected = stored; detailVersion = ''; $('library-input').value = ''; lock(false);
+      selected = stored; pendingUpload = stored; pendingUntil = Date.now() + 15000; detailVersion = ''; $('library-input').value = ''; lock(false);
       publishSelection(stored, file.name);
       status('✓ ' + file.name + uiLocale.t(' enregistré. Disponible sur la Surface.') + (meta.previewError ? uiLocale.t(' Aperçu indisponible : ') + meta.previewError : ''));
       previewChanged(stored);

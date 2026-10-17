@@ -1,13 +1,15 @@
 const assert = require('node:assert/strict');
 const {scan, render} = require('./touch/library-preview.js');
 (async () => {
-  let result = await scan('G21 G90\nG0 X10 Y10\nG1 X30 Y20 F200\nG91\nX-5 Y5\nM2\nG1 X999');
+  // Grbl executes lines after M2/M30 and the CNCjs sender sends them: refused, never hidden.
+  await assert.rejects(scan('G21 G90\nG1 X10 Y10 F100\nM30\nG0 X300 Y300'), /après M2\/M30/);
+  let result = await scan('G21 G90\nG0 X10 Y10\nG1 X30 Y20 F200\nG91\nX-5 Y5\nM2\n%\n\n');
   assert.equal(result.count, 3);
   assert.deepEqual(result.bounds, [0,0,30,25]);
   // Progress trail: [sentLines, x, y, ...] samples, sent lines counted like the CNCjs sender (non-empty).
-  assert.equal(result.lines, 6, 'lines up to M2 are counted, the line after the program end is not');
+  assert.equal(result.lines, 7, 'every non-empty line is counted, as the sender sends them (the % after M2 too)');
   assert.equal(result.trail.length % 3, 0); assert(result.trail.length >= 6);
-  assert.deepEqual(result.trail.slice(-3), [6, 25, 25], 'last sample: final sent line and position');
+  assert.deepEqual(result.trail.slice(-3), [7, 25, 25], 'last sample: final sent line and position');
   for (let i = 3; i < result.trail.length; i += 3) assert(result.trail[i] >= result.trail[i - 3], 'line counts are monotonic');
   const sparse = await scan('\n\n  \nG1 X1\n\n;comment only\n(paren)\nG1 X2\n');
   assert.equal(sparse.lines, 4, 'comment-only lines count as sent lines, blank lines do not');
@@ -16,6 +18,15 @@ const {scan, render} = require('./touch/library-preview.js');
   await assert.rejects(scan('G1 X1\nG2 X2 I1'), /centre/);
   await assert.rejects(scan('G1 X1 X2'), /axe répété/);
   await assert.rejects(scan('G1 X1 (oops'), /commentaire/);
+  // An unclosed comment must not hide the following lines (Grbl ends it at the line end).
+  await assert.rejects(scan('G1 X10 Y10 F100 (oops\nG0 X200 Y200 (end)\nG1 X20 Y10'), /Ligne 1 : commentaire/);
+  await assert.rejects(scan('G90.1\nG2 X10 Y0 I5 J0'), /G90.1/);
+  await assert.rejects(scan('G1 X10 F100\nG2 I-5'), /arc sans X ni Y/);
+  await assert.rejects(scan('G1 X10 F100\nG2 Z-1 I-5'), /arc sans X ni Y/);
+  await assert.rejects(scan('G1 X1 F100\rG1 X2'), /CR seule/);
+  // An arc ending a hair short of its start is a full circle for Grbl.
+  result = await scan('G21 G90\nG0 X10 Y0\nG2 X10 Y0.0000000001 I-10 J0 F100');
+  assert(result.bounds[0] < -9.9 && result.bounds[2] > 9.9, 'full circle drawn: ' + result.bounds);
   await assert.rejects(scan('G90 G91 G1 X1'), /contradictoires/);
   await assert.rejects(scan('X2'), /mode G0/);
   await assert.rejects(scan('G1 X1',null,()=>true), /Annulé/);

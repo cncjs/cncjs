@@ -2,7 +2,7 @@
 (function (root) {
   'use strict';
   var source = typeof document !== 'undefined' && document.currentScript && document.currentScript.src;
-  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker4') : 'library-preview-worker.js?v=worker4';
+  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker5') : 'library-preview-worker.js?v=worker5';
   var generation = 0;
   function scan(text, segment, cancelled, progress, yieldAfterLine) {
     return new Promise(function (resolve, reject) {
@@ -43,10 +43,13 @@
           var endRadius = Math.sqrt((xx - cx) * (xx - cx) + (yy - cy) * (yy - cy));
           if (!radius || Math.abs(radius - endRadius) > Math.min(0.5, Math.max(0.005, radius * 0.001))) throw new Error('centre I/J incompatible avec les extrémités');
         }
-        var start = Math.atan2(y - cy, x - cx), end = Math.atan2(yy - cy, xx - cx), tau = 2 * Math.PI;
-        var angle = end - start;
-        if (clockwise) { while (angle >= 0) angle -= tau; }
-        else { while (angle <= 0) angle += tau; }
+        // Same decision as Grbl's mc_arc: the travel in (-pi, pi], then a full
+        // turn added within 5e-7 rad, so an arc ending a hair short is a circle.
+        var start = Math.atan2(y - cy, x - cx), tau = 2 * Math.PI;
+        var r0 = x - cx, r1 = y - cy, t0 = xx - cx, t1 = yy - cy;
+        var angle = Math.atan2(r0 * t1 - r1 * t0, r0 * t0 + r1 * t1);
+        if (clockwise) { if (angle >= -5e-7) angle -= tau; }
+        else if (angle <= 5e-7) angle += tau;
         // Sagitta <= 0.02 mm and angular step <= 5 degrees.
         var step = Math.min(Math.PI / 36, 2 * Math.acos(Math.max(-1, Math.min(1, 1 - 0.02 / radius))));
         var parts = Math.ceil(Math.abs(angle) / step);
@@ -73,7 +76,8 @@
         if (letter === 'G') {
           if (v === 0 || v === 1 || v === 2 || v === 3) { if (groupMotion) throw new Error('modes G contradictoires'); groupMotion = true; motion = v; }
           else if (v === 90 || v === 91) { if (groupDistance) throw new Error('modes G contradictoires'); groupDistance = true; absolute = v === 90; }
-          else if (v === 90.1 || v === 91.1) { if (groupArc) throw new Error('modes G contradictoires'); groupArc = true; arcAbsolute = v === 90.1; }
+          // Grbl 1.1 accepts G91.1 only (G90.1 is refused with an error).
+          else if (v === 91.1) { if (groupArc) throw new Error('modes G contradictoires'); groupArc = true; arcAbsolute = false; }
           else if (v === 20 || v === 21) { if (groupUnits) throw new Error('modes G contradictoires'); groupUnits = true; unit = v === 20 ? 25.4 : 1; }
           // G4 P… dwell (e.g. spindle spin-up after M3): no motion, the modal state is unchanged.
           else if (v === 4) dwell = true;
@@ -129,8 +133,13 @@
             else clean += c;
           }
         }
+        // A comment left open at the end of the line would hide the next lines
+        // from the preview while Grbl ends it there: refuse the file instead.
+        if (comment) throw new Error('commentaire non fermé');
         clean = clean.trim();
         if (!clean || clean === '%') return;
+        // The CNCjs sender sends every line, and Grbl keeps executing after M2/M30.
+        if (ended) throw new Error('instructions après M2/M30 : Grbl les exécuterait, l’aperçu ne les montrerait pas');
         resetLine();
         if (!tokenize(clean)) {
           resetLine();
@@ -144,6 +153,7 @@
         if (seenP && !dwell) throw new Error('mot P hors G4 non pris en charge');
         if (dwell && (!seenP || axis || hasArc)) throw new Error('G4 attend seulement P');
         if (hasArc && motion !== 2 && motion !== 3) throw new Error('paramètre d’arc hors mode G2/G3');
+        if ((motion === 2 || motion === 3) && (axis || hasArc) && !seenX && !seenY) throw new Error('arc sans X ni Y (refusé par Grbl, erreur 26)');
         if (axis || hasArc) {
           if (motion === null) throw new Error('mode G0/G1 non défini');
           var xx = nx === null ? x : nx * unit + (absolute ? 0 : x);
@@ -153,7 +163,7 @@
           else add(x, y, xx, yy, motion);
           x = xx; y = yy;
         }
-        ended = finish;
+        if (finish) ended = true;
       }
       // Line ends are located with indexOf; each separator position is cached
       // so a file without one of them is not rescanned on every line.
@@ -162,7 +172,7 @@
         if (cancelled && cancelled()) { reject(new Error('Annulé')); return; }
         var deadline = Date.now() + 8;
         try {
-          while (offset < text.length && !ended && Date.now() < deadline) {
+          while (offset < text.length && Date.now() < deadline) {
             var start = offset;
             if (nextLf < start) { nextLf = text.indexOf('\n', start); if (nextLf < 0) nextLf = text.length; }
             if (nextCr < start) { nextCr = text.indexOf('\r', start); if (nextCr < 0) nextCr = text.length; }
@@ -172,6 +182,8 @@
             line++; read(raw);
             if (raw.trim().length) sentLines++;
             if (offset >= nextSample) { sample(); nextSample += sampleStep; }
+            // A lone CR ends a line for Grbl but not for the CNCjs sender (it splits on LF).
+            if (text[offset] === '\r' && text[offset + 1] !== '\n') throw new Error('fin de ligne CR seule : CNCjs et Grbl ne compteraient pas les mêmes lignes');
             if (text[offset++] === '\r' && text[offset] === '\n') offset++;
             // A worker waits for the renderer after a full block. At most one
             // line (8192 arc segments) can be produced before this boundary.
@@ -183,7 +195,7 @@
             }
           }
           if (progress) progress(Math.min(1, offset / (text.length || 1)));
-          if (offset < text.length && !ended) { setTimeout(batch, 0); return; }
+          if (offset < text.length) { setTimeout(batch, 0); return; }
           if (comment) throw new Error('commentaire non fermé');
           sample();
           resolve({ count: count, bounds: bounds, trail: trail, lines: sentLines });
