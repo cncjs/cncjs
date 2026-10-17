@@ -32,4 +32,10 @@ for(const index of [null,NaN,0.5,-2,99,'0'])assert.throws(()=>manager.remove(sav
 const removedFirst=manager.remove(again,0),removedNext=manager.remove(removedFirst,1);
 assert.equal(removedNext.removed.profile.name,'Copie · Plaque fine');
 assert.equal(manager.restore(removedNext).profiles[1].name,'Copie · Plaque fine');
+// A removal saved at an index past the end (list shortened since) is restored at the end;
+// a corrupted removal index is refused without changing anything.
+const shortened={...JSON.parse(JSON.stringify(deleted)),removed:{...deleted.removed,index:5}};
+const atEnd=manager.restore(shortened);assert.equal(atEnd.profiles.at(-1).name,'Plaque fine');assert.equal(atEnd.selected,atEnd.profiles.length-1);
+for(const index of [-1,1.5,'1',null])assert.throws(()=>manager.restore({...shortened,removed:{...shortened.removed,index}}),/invalide/);
+assert.equal(shortened.removed.index,5);
 console.log('PASS: profile creation/copies/unique names, saved values, capacity, deletion/restore across reload, conflicts and immutable failures; no machine transport.');

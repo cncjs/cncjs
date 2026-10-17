@@ -32,4 +32,8 @@ assert.equal(JSON.stringify([base,second]),before);
 // Exact field copying: no diameter, confirmation or motion/session state can be transferred.
 assert.deepEqual(Object.keys(JSON.parse(text)),['kind','version','mode','units','profiles']);
 assert.deepEqual(Object.keys(transfer.decode(text,'real')[0]),Object.keys(model.empty()));
+// The size limit is inclusive: 64 KiB is parsed (and refused here as JSON), one more byte is too large.
+assert.throws(()=>transfer.decode('x'.repeat(65536),'real'),/illisible/);
+// An invalid profile already stored blocks the merge instead of being carried along.
+assert.throws(()=>transfer.merge([{...base,faceX:500}],[second]),/hors limites/);
 console.log('PASS: probe backup round-trip, strict schema/units/modes/bounds, incomplete values, duplicate/conflict/capacity handling, atomic immutable merge.');

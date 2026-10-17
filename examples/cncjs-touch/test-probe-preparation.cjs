@@ -26,4 +26,10 @@ assert(preparation.inspect({...good,state:engine.snapshot()}).ready);
 engine.start({profile:good.profile,operation:good.operation,diameter:good.diameter,wcs:good.wcs,scenario:'success',confirmed:true,idle:true});
 assert.equal(preparation.inspect({...good,state:engine.snapshot()}).ready,false);
 assert.equal(preparation.inspect({}).ready,false);
+// What the operator reads: the count of blocking points, the ready title, the real-mode title and notes.
+assert.equal(preparation.inspect(good).title,'Prêt pour la simulation uniquement');
+assert.equal(preparation.inspect({...good,confirmed:false,available:false}).title,'2 point(s) avant simulation');
+const real=preparation.inspect({...good,simulation:false});
+assert.equal(real.title,'Préparation réelle · lancement désactivé');assert.match(real.note,/câblage/);assert.match(preparation.inspect(good).note,/banc fictif/);
+assert.equal(real.items.length,1,'real mode: only the disabled launch, no simulation gate');
 console.log('PASS: all missing parameters, operation-specific requirements, no null comparison, simulation gates, real always blocked, immutable inputs and engine agreement.');
