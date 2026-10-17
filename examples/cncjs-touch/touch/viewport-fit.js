@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  var main=document.querySelector('main'),pending=false,layouts=new WeakMap(),revision=0,disposed=false,frame=0,observed=null,activation=false;
+  var main=document.querySelector('main'),pending=false,layouts=new WeakMap(),revision=0,disposed=false,frame=0,observed=null,activation=false,measuring=null;
   if(!main)return;
   function fit(){
     pending=false;if(disposed)return;
@@ -45,7 +45,11 @@
       observed=screen;
       if(screen)screenObserver.observe(screen,{childList:true,subtree:true,characterData:true});
     }
-    if(screen&&!fits&&(!cached||cached.key!==key||cached.width!==sw||cached.height!==sh)){
+    if(measuring&&measuring.screen===screen&&measuring.key===key&&!activated){
+      // A measurement is already running for this screen and viewport: content
+      // that changed meanwhile (coordinates 4x/s) is read by its next pass.
+      // Restarting it here would keep the screen hidden as long as it changes.
+    }else if(screen&&!fits&&(!cached||cached.key!==key||cached.width!==sw||cached.height!==sh)){
       // A shown screen whose content grew is only shrunk, starting from its
       // current scale: no reset to full size, nothing hidden, a small gradual
       // adjustment instead of a flash. The first fit of a screen and a changed
@@ -53,12 +57,13 @@
       // runs) so none of the intermediate frames is painted.
       var incremental=!activated&&!!cached&&cached.key===key&&cached.scale>0;
       layouts.delete(screen);
-      var version=revision,scale=incremental?cached.scale:1,passes=0;
+      var version=++revision,scale=incremental?cached.scale:1,passes=0;
+      measuring={screen:screen,key:key};
       stats.measurements++;
       if(!incremental){stats.hidden++;style(screen,'visibility','hidden');screen._fitHidden=true;style(screen,'transform','none');}
       style(screen,'width',(w/scale)+'px');
       function measure(){
-        if(disposed||version!==revision||main.querySelector('.screen.active')!==screen)return;
+        if(disposed||version!==revision||main.querySelector('.screen.active')!==screen){if(version===revision)measuring=null;return;}
         var naturalW=screen.scrollWidth,naturalH=screen.scrollHeight;
         var next=Math.min(scale,h/Math.max(1,naturalH),w/Math.max(1,naturalW));
         if(next<scale-.002&&passes++<4){
@@ -66,7 +71,7 @@
         }
         // A final conservative scale also handles content that does not reflow.
         scale=next;style(screen,'transform','scale('+scale+')');
-        reveal(screen);
+        reveal(screen);measuring=null;
         var entry={key:key,width:naturalW,height:naturalH,scale:scale};
         layouts.set(screen,entry);remember(screen,entry);
         ready();
@@ -123,11 +128,14 @@
     }
     scheduleWarm();
   }
-  function schedule(){if(disposed)return;revision++;if(!pending){pending=true;frame=requestAnimationFrame(fit);}}
-  function activate(){activation=true;schedule();}
-  window.addEventListener('resize',schedule);
+  // Only a viewport change or an activation cancels a running measurement;
+  // other requests (content, clicks, focus) just ask for a fit.
+  function schedule(){if(disposed)return;if(!pending){pending=true;frame=requestAnimationFrame(fit);}}
+  function resized(){if(disposed)return;revision++;measuring=null;schedule();}
+  function activate(){activation=true;resized();}
+  window.addEventListener('resize',resized);
   window.addEventListener('cnc-screen-change',activate);
-  if(window.visualViewport)window.visualViewport.addEventListener('resize',schedule);
+  if(window.visualViewport)window.visualViewport.addEventListener('resize',resized);
   document.addEventListener('click',schedule);
   document.addEventListener('change',schedule);
   document.addEventListener('focusin',schedule);
@@ -159,8 +167,8 @@
     if(disposed)return;disposed=true;revision++;readyCallbacks=[];warmQueue=[];if(warmTimer!==null)clearTimeout(warmTimer);
     if(window.cancelAnimationFrame)window.cancelAnimationFrame(frame);
     [screenObserver,dialogObserver,noticeObserver].forEach(function(o){if(o.disconnect)o.disconnect();});
-    if(window.removeEventListener){window.removeEventListener('resize',schedule);window.removeEventListener('cnc-screen-change',activate);window.removeEventListener('pagehide',leave);}
-    if(window.visualViewport)window.visualViewport.removeEventListener('resize',schedule);
+    if(window.removeEventListener){window.removeEventListener('resize',resized);window.removeEventListener('cnc-screen-change',activate);window.removeEventListener('pagehide',leave);}
+    if(window.visualViewport)window.visualViewport.removeEventListener('resize',resized);
     if(document.removeEventListener){['click','change','focusin'].forEach(function(n){document.removeEventListener(n,schedule);});document.removeEventListener('toggle',schedule,true);document.removeEventListener('load',schedule,true);}
   }
   function leave(event){if(!event||!event.persisted)dispose();}
