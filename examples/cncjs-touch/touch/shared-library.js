@@ -137,9 +137,14 @@
     if (typeof requestIdleCallback !== 'function' || thumbIdle !== null) return;
     // Only in a real idle period (parsing a stored preview can take a few hundred ms on
     // the tablet): never with a timeout, so a screen opening is never delayed by it.
+    // A short idle period is retried half a second later (never in a loop of idle callbacks),
+    // and nothing is retried once Fichiers is left: mount() schedules again.
     thumbIdle = requestIdleCallback(function (deadline) {
       thumbIdle = null;
-      if (deadline && typeof deadline.timeRemaining === 'function' && deadline.timeRemaining() < 45) { scheduleThumbs(); return; }
+      if (!visible()) return;
+      if (deadline && typeof deadline.timeRemaining === 'function' && deadline.timeRemaining() < 45) {
+        thumbIdle = setTimeout(function () { thumbIdle = null; scheduleThumbs(); }, 500); return;
+      }
       nextThumb();
     });
   }
