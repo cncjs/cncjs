@@ -381,3 +381,4 @@ window.CNCTouchMessages.push(["Aucun travail à arrêter.", "No job to stop.", "
 window.CNCTouchMessages.push(["Arrêt demandé. Vérifiez l’immobilisation ; ce bouton ne remplace pas l’arrêt physique.", "Stop requested. Check that the machine is still; this button does not replace the physical stop.", "Parada solicitada. Compruebe que la máquina se ha detenido; este botón no sustituye a la parada física."]);
 window.CNCTouchMessages.push(["Action inconnue.", "Unknown action.", "Acción desconocida."]);
 window.CNCTouchMessages.push(['Fin du programme avec ','Program ended with ','Programa terminado con '],[' erreur(s) Grbl — vérifiez la pièce',' Grbl error(s) — check the part',' error(es) de Grbl — compruebe la pieza']);
+window.CNCTouchMessages.push([' Fichier non UTF-8 : lu en Windows-1252 (accents convertis).',' Not a UTF-8 file: read as Windows-1252 (accents converted).',' Archivo no UTF-8: leído como Windows-1252 (acentos convertidos).']);
