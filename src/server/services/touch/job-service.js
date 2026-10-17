@@ -6,6 +6,7 @@
 import crypto from 'crypto';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { performance } from 'perf_hooks';
 // Explicit extensions: examples/cncjs-touch/preview-server.cjs loads this
 // module with Node's native ES module loader, outside of Babel.
 // eslint-disable-next-line import/extensions
@@ -106,7 +107,11 @@ const hasAutomations = (config) => {
   return (config.get('events') || []).some((event) => event.enabled !== false);
 };
 
-export const createService = (store, config, clock = Date.now) => {
+// Durations (ticket lifetime, report age) are measured on a monotonic clock:
+// the wall clock can be set back by NTP, which would keep a ticket alive.
+const monotonic = () => performance.now();
+
+export const createService = (store, config, clock = monotonic) => {
   const records = new Map();
   const listeners = new Set();
   const transports = new Set();

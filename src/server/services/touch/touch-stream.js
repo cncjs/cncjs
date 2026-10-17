@@ -2,6 +2,7 @@
 // response per client. It never joins a controller socket and never sends
 // G-code; it only publishes job-service snapshots.
 import crypto from 'crypto';
+import { performance } from 'perf_hooks';
 
 export const VERSION = '3.0.0';
 
@@ -25,7 +26,10 @@ const HEARTBEAT_MS = 1000;
 const VOLATILE_KEYS = ['statusAgeMs', 'statusObservedAt', 'ageMs', 'observedAt'];
 
 export const createStream = (service, options = {}) => {
+  // sentAt is a wall-clock time; lifetimes and the heartbeat are durations,
+  // measured on a monotonic clock unless the tests inject one.
   const clock = options.clock || Date.now;
+  const elapsed = options.clock || (() => performance.now());
   const timers = options.timers || { setInterval, clearInterval, setTimeout, clearTimeout };
   const clients = new Set();
   const epoch = crypto.randomBytes(12).toString('hex');
@@ -50,7 +54,7 @@ export const createStream = (service, options = {}) => {
     try {
       const line = JSON.stringify({ ...packet, transportId: client.id }) + '\n';
       client.bytes += Buffer.byteLength(line);
-      const age = clock() - client.started;
+      const age = elapsed() - client.started;
       if (client.bytes > MAX_CLIENT_BYTES || age >= MAX_CLIENT_LIFETIME_MS) {
         const waiting = typeof service.ticketPending === 'function' && service.ticketPending(client.id);
         if (!waiting || client.bytes > MAX_GRACE_BYTES || age >= MAX_CLIENT_LIFETIME_MS + ROTATION_GRACE_MS) {
@@ -83,11 +87,11 @@ export const createStream = (service, options = {}) => {
       const signature = JSON.stringify(packet.controllers, (key, value) => {
         return VOLATILE_KEYS.includes(key) ? undefined : value;
       });
-      if (signature === lastSignature && clock() - lastPublished < HEARTBEAT_MS) {
+      if (signature === lastSignature && elapsed() - lastPublished < HEARTBEAT_MS) {
         return;
       }
       lastSignature = signature;
-      lastPublished = clock();
+      lastPublished = elapsed();
       clients.forEach((client) => send(client, packet));
     } catch (err) {
       Array.from(clients).forEach((client) => client.close());
@@ -129,7 +133,7 @@ export const createStream = (service, options = {}) => {
     const client = {
       res,
       id: crypto.randomBytes(16).toString('hex'),
-      started: clock(),
+      started: elapsed(),
       bytes: 0,
       closed: false
     };
