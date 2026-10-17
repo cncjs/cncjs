@@ -437,3 +437,4 @@ window.CNCTouchMessages.push(["Prise d’origine interrompue (réinitialisation)
 window.CNCTouchMessages.push(["Aucun travail à arrêter.", "No job to stop.", "Ningún trabajo que detener."]);
 window.CNCTouchMessages.push(["Arrêt demandé. Vérifiez l’immobilisation ; ce bouton ne remplace pas l’arrêt physique.", "Stop requested. Check that the machine is still; this button does not replace the physical stop.", "Parada solicitada. Compruebe que la máquina se ha detenido; este botón no sustituye a la parada física."]);
 window.CNCTouchMessages.push(["Action inconnue.", "Unknown action.", "Acción desconocida."]);
+window.CNCTouchMessages.push(["Arrêt avec porte ouverte (réinitialisation). La carte peut demander $H ou $X.", "Stopped with the door open (reset). The board may ask for $H or $X.", "Parada con la puerta abierta (reinicio). La placa puede pedir $H o $X."]);
