@@ -25,7 +25,7 @@ assert(f.byId('t-pause').hidden&&f.byId('t-stop').hidden);
 const m=(patch)=>Object.assign({port:'A',activeState:'Idle',workflow:'idle',fresh:true,statusAgeMs:300,feedrate:0,spindleSpeed:0,name:'',canPause:false,canStop:false},patch);
 f.send({machine:m(),transportConnected:true});
 assert.equal(f.byId('t-state-text').textContent,'Repos');assert.equal(f.byId('t-state').getAttribute('data-tone'),'ok');
-assert.equal(f.byId('t-fresh-text').textContent,'0,3 s');assert.equal(f.byId('t-fresh').getAttribute('data-stale'),'false');
+assert.equal(f.byId('t-fresh-text').textContent,'< 1 s');assert.equal(f.byId('t-fresh').getAttribute('data-stale'),'false');
 assert.equal(f.byId('t-spindle').textContent,'0 tr/min');assert.equal(f.byId('t-file').textContent,'—');
 let writes=f.stats.writes;f.send({machine:m(),transportConnected:true});assert.equal(f.stats.writes,writes,'no unchanged writes');
 f.send({machine:m({activeState:'Run',workflow:'running',feedrate:1800,spindleSpeed:12000,name:'a.nc',originalName:'Support moteur.nc',canPause:true,canStop:true}),transportConnected:true});

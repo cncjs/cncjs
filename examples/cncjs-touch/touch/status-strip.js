@@ -61,7 +61,9 @@
     text(stateText,d.word);
     if(d.tone!==tone){tone=d.tone;attr(state,'data-tone',tone);state.querySelector('path').setAttribute('d',icons[tone]);}
     var age=m&&m.statusAgeMs,known=finite(age)&&age>=0;
-    text(freshText,simulation&&m?uiLocale.t('simulé'):!known?'—':age<1000?(age/1000).toFixed(1).replace('.',',')+' s':age<60000?Math.ceil(age/1000)+' s':Math.ceil(age/60000)+' min');
+    // Whole seconds only: a text that changed at every report (4 per second) would repaint the
+    // strip continuously, which costs measurable CPU on the tablet at rest.
+    text(freshText,simulation&&m?uiLocale.t('simulé'):!known?'—':age<1000?'< 1 s':age<60000?Math.ceil(age/1000)+' s':Math.ceil(age/60000)+' min');
     attr(fresh,'data-stale',String(!m||(!simulation&&(!known||age>2500||!m.fresh))));
     var live=!!(m&&m.fresh);
     text(spindle,live&&finite(m.spindleSpeed)?number(m.spindleSpeed)+uiLocale.t(' tr/min'):'—');
