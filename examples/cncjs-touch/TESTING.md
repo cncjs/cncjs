@@ -50,6 +50,23 @@ Added without a controller, so covered by mocks only: `test-preview.cjs` and `te
 
 `test-viewport-scroll.cjs` checks that a `data-fit="scroll"` screen is never scaled or hidden for a measurement, that nothing is remembered and content changes are not observed, that the scroll position survives a refit but resets when the screen is reopened, and that the next screen is fitted again with `main` no longer scrolling.
 
+## Commissioning assistant (2026-10-17)
+
+`job-service.test.js` (Jest) checks that `$X` is accepted only in alarm and `$H` only with `$22=1` from Idle or Alarm, that both and the spindle test (`M3 S` at `$31`, or `$30`/4 when `$31` is 0) need a ticket for the same operation and are checked again at run time, that none runs during a job or with CNCjs automations, `M5` and the `$$` re-read from Idle only, and the full settings list on request. The snapshot reports the triggered X/Y/Z/P inputs (`Pn` absent means none, an old report means unknown). `test-commissioning.cjs` checks the step model (an alarm already present is not taken for the E-stop, a reset counts, each limit must be seen free then triggered, probe contact then release, homing Home → Idle, a silent cycle followed by an alarm is a failure, spindle seen turning then stopped, air-cut file finished), the automatic opening on the first real controller only (not on a simulator port, not twice), resume on the saved step, `M5` when leaving the spindle step, skipping only after the responsibility box, and the saved summary. `test-job-dialog.cjs` checks that the three commands use the confirmation dialog and its nonce, and that a state change closes it.
+
+Run on the tablet against the Grbl simulator through CNCjs (homing temporarily enabled with `$22=1`, restored afterwards):
+
+- Backup: 34 settings read; the `$$` re-read accepted while Idle.
+- E-stop step: a soft reset of the board (what an E-stop wired to reset does) was detected, then back to Idle.
+- Limit and probe indicators: "au repos" / "libre" read from the reports.
+- `$X` from alarm through the confirmation: back to Idle.
+- `$H` through the confirmation: the simulator has no switches and answered `ALARM:9` (homing fail); it does not answer `?` during the cycle. The first version waited for a `Home` report and never showed the failure; the assistant now learns when `$H` was accepted and treats an alarm after it as a failure ("Échec … contact non trouvé ?"), with Next blocked.
+- Spindle: "Démarrer à 6000 tr/min" → `M3 S6000`, "6000 tr/min demandés", stop → `M5`, "Broche arrêtée", "environ 100 Hz" expected at the VFD.
+- Air-cut file added to the library with its preview, selected, loaded and run through the normal start confirmation: `Run` with the spindle at 6000, then `Idle`; the step ticked itself ("Programme d’essai terminé").
+- Summary saved; Réglages shows "Faite le 17/10/2026 04:25:39".
+
+The physical E-stop, the limit switches, the probe and a real homing cycle can only be checked on the machine.
+
 ## Grbl simulator run (2026-10-16/17)
 
 Setup: the Surface RT running the integrated server (PM2 `cncjs-next`), the official Grbl 1.1h firmware built with grbl-sim and the patches in [grbl-sim/](grbl-sim/README.md), exposed as `/home/pi/ttyGRBL-sim` and opened by CNCjs as a Grbl controller (115200, `$5=1`, `$6=1`). The touch interface was driven from a browser at 1366 × 768 against the same server. Test file: 18 lines, a 40 mm square and a 10 mm radius circle at 400 mm/min, `M3 S1000`, uploaded through the touch library so it has a preview and a trail. No machine, no motors.
