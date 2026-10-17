@@ -74,6 +74,9 @@ fire();const inflight=requests.at(-1);tabDisplay.click();assert(inflight.aborted
 // A hidden page stops polling; visible again resumes at once.
 tabSystem.click();const n=requests.length;answer(200,sample);document.hidden=true;handlers['cnc-screen-change']();assert.equal(live().length,0);
 document.hidden=false;document.handlers.visibilitychange();assert.equal(requests.length,n+1);
+// Behind the screen saver too; the wake resumes at once.
+answer(200,sample);handlers['cnc-screen-saver-sleep']({detail:true});assert.equal(live().length,0);
+handlers['cnc-screen-saver-sleep']({detail:false});assert.equal(requests.length,n+2);
 // Failures: message, stale styling, exponential back-off capped at 30 s, recovery.
 answer(503,{message:'Suivi indisponible.'});assert.equal(status(),'Suivi indisponible.');assert.equal(section.getAttribute('data-stale'),'true');assert.equal(live()[0].ms,4000);
 fire();answer(401,{});assert.match(status(),/Session CNCjs requise/);assert.equal(live()[0].ms,8000);

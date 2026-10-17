@@ -57,14 +57,27 @@ const arm=timers.filter(x=>x.live).at(-1);assert.equal(arm.ms,8000);arm.live=fal
 assert.equal(upd.textContent,'Mettre à jour l’interface');
 upd.click();reboot.click();assert.equal(reboot.getAttribute('data-state'),'armed');assert.equal(upd.getAttribute('data-state'),'idle','arming another action disarms the first');
 reboot.click();
+// The real machine state is asked to the server first, whatever the page shows.
+const quiet={controllers:[{port:'/dev/ttyUSB0',fresh:true,workflow:'idle',activeState:'Idle'}]};
+assert.equal(requests.at(-1).url,'/api/touch-job');assert.equal(requests.at(-1).method,'GET');
+answer('/api/touch-job',200,quiet);
 const post=requests.at(-1);assert.equal(post.method,'POST');assert.equal(post.url,'/api/commands/run/r1');assert.equal(post.headers.Authorization,'Bearer jwt');
 assert(reboot.disabled&&upd.disabled,'buttons are disabled while the request is in flight');
 reboot.click();assert.equal(requests.filter(r=>r.method==='POST').length,1);
 post.status=200;post.responseText=JSON.stringify({taskId:'t1'});post.onload();
 assert.match(status.textContent,/« Redémarrer la tablette » lancée/);assert(!reboot.disabled);
 // Errors.
-upd.click();upd.click();let p=requests.at(-1);p.status=404;p.responseText='{}';p.onload();assert.match(status.textContent,/introuvable/);
-upd.click();upd.click();p=requests.at(-1);p.onerror();assert.match(status.textContent,/non lancée/);
+upd.click();upd.click();answer('/api/touch-job',200,quiet);let p=requests.at(-1);p.status=404;p.responseText='{}';p.onload();assert.match(status.textContent,/introuvable/);
+upd.click();upd.click();answer('/api/touch-job',200,quiet);p=requests.at(-1);p.onerror();assert.match(status.textContent,/non lancée/);
+// Homing, jogging, a stale report or an unreadable state: nothing is run.
+for(const [controllers,reason] of [[[{fresh:true,workflow:'idle',activeState:'Home'}],/mouvement/],[[{fresh:true,workflow:'idle',activeState:'Jog'}],/mouvement/],
+  [[{fresh:false,workflow:'idle',activeState:'Idle'}],/trop ancien/],[null,/illisible/]]){
+  const posts=requests.filter(r=>r.method==='POST').length;
+  upd.click();upd.click();answer('/api/touch-job',controllers?200:500,controllers?{controllers}:{});
+  assert.equal(requests.filter(r=>r.method==='POST').length,posts,'no command sent');assert.match(status.textContent,reason);assert(!upd.disabled);
+}
+// No controller connected at all: allowed.
+upd.click();upd.click();answer('/api/touch-job',200,{controllers:[]});assert.equal(requests.at(-1).method,'POST');requests.at(-1).onerror();
 
 // Refused during a running or paused job, with the reason shown.
 for(const workflow of ['running','paused']){

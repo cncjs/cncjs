@@ -55,7 +55,26 @@
   function run(command){
     if(busy||jobActive())return;
     if(armed!==command.id){armed=command.id;clearTimeout(armTimer);armTimer=setTimeout(disarm,CONFIRM_MS);paint();return;}
-    clearTimeout(armTimer);armTimer=null;armed=null;busy=true;set(status,t('Envoi de « ')+command.title+t(' »…'));paint();
+    clearTimeout(armTimer);armTimer=null;armed=null;busy=true;set(status,t('Vérification de l’état de la machine…'));paint();
+    // Asked to the server at the last moment, whatever this page shows: the
+    // simulation page does not see a real job, and a homing or a jog is not a
+    // job for CNCjs. Every connected controller must be fresh and at rest.
+    request('GET',apiBase()+'/touch-job',undefined,true,function(code,data){
+      var reason=code!==200||!data||!Array.isArray(data.controllers)?t('État de la machine illisible : commande non lancée.'):restless(data.controllers);
+      if(reason){busy=false;set(status,reason);paint();return;}
+      send(command);
+    });
+  }
+  function restless(controllers){
+    for(var i=0;i<controllers.length;i++){
+      var c=controllers[i]||{};
+      if(!c.fresh)return t('État de la machine trop ancien : commande non lancée.');
+      if(c.workflow!=='idle'||['Idle','Alarm','Sleep'].indexOf(c.activeState)<0)return t('Machine en mouvement ou occupée : commande non lancée.');
+    }
+    return '';
+  }
+  function send(command){
+    set(status,t('Envoi de « ')+command.title+t(' »…'));
     request('POST',apiBase()+'/commands/run/'+encodeURIComponent(command.id),{},true,function(code,data){
       busy=false;
       if(code===200&&data&&data.taskId)set(status,t('« ')+command.title+t(' » lancée sur l’ordinateur du serveur.'));

@@ -84,18 +84,30 @@
     slider.value=String(v);set(value,v+' %');send(v);
   }
   // Screen saver: one request at a time, the latest wish (dim or wake) wins.
-  var dimmed=false,saverBusy=false,saverNext=null;
+  // A wake that fails (server busy, timeout) would leave the panel dark: it is
+  // retried a few times, then again on the next touch, until the server confirms.
+  var dimmed=false,saverBusy=false,saverNext=null,wakePending=false,wakeTries=0,wakeTimer=null;
   function saver(body){
     if(saverBusy){saverNext=body;return;}
     saverBusy=true;
-    var x=request('POST',body,function(){saverBusy=false;if(saverNext){var next=saverNext;saverNext=null;saver(next);}});
+    if(body.wake){wakePending=true;clearTimeout(wakeTimer);wakeTimer=null;}
+    var x=request('POST',body,function(code){
+      saverBusy=false;
+      if(body.wake){
+        if(code===200){wakePending=false;wakeTries=0;}
+        else if(!saverNext&&!dimmed&&wakeTries<5&&code!==401&&code!==403&&code!==404&&code!==409){wakeTries++;wakeTimer=setTimeout(function(){wakeTimer=null;if(wakePending&&!dimmed)saver({wake:true});},2000);}
+      }
+      if(saverNext){var next=saverNext;saverNext=null;saver(next);}
+    });
     if(!x){saverBusy=false;saverNext=null;}
   }
+  function retryWake(){if(wakePending&&!dimmed&&!saverBusy&&!wakeTimer){wakeTries=0;saver({wake:true});}}
+  document.addEventListener('pointerdown',retryWake,true);document.addEventListener('keydown',retryWake,true);
   window.addEventListener('cnc-screen-saver-sleep',function(e){
     var asleep=!!(e&&e.detail);
     if(asleep){
       if(mode==='keep'||(state&&!usable()))return;
-      dimmed=true;saver({percent:mode==='off'?0:MIN,temporary:true});
+      dimmed=true;wakePending=false;clearTimeout(wakeTimer);wakeTimer=null;saver({percent:mode==='off'?0:MIN,temporary:true});
     }else if(dimmed){dimmed=false;saver({wake:true});}
   });
   sleepSelect.addEventListener('change',function(){

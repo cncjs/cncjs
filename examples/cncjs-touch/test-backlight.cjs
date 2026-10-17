@@ -13,7 +13,8 @@ XHR.prototype.open=function(m,u){this.method=m;this.url=u;};
 XHR.prototype.setRequestHeader=function(k,v){this.headers[k]=v;};
 XHR.prototype.send=function(body){this.body=body;};
 const storage=new Map();
-const context={window,document,XMLHttpRequest:XHR,localStorage:{getItem:k=>k==='cnc'?(token?JSON.stringify({state:{session:{token}}}):null):(storage.has(k)?storage.get(k):null),setItem:(k,v)=>storage.set(k,String(v))}};
+const timers=[];
+const context={window,document,XMLHttpRequest:XHR,setTimeout:(f,ms)=>{timers.push({f,ms,live:true});return timers.length;},clearTimeout:id=>{if(timers[id-1])timers[id-1].live=false;},localStorage:{getItem:k=>k==='cnc'?(token?JSON.stringify({state:{session:{token}}}):null):(storage.has(k)?storage.get(k):null),setItem:(k,v)=>storage.set(k,String(v))}};
 vm.runInNewContext(fs.readFileSync(__dirname+'/touch/backlight.js','utf8'),context);
 // A page loaded while the panel may be off asks the server to wake it, once.
 assert.equal(requests.length,1);assert.equal(requests[0].method,'POST');assert.deepEqual(JSON.parse(requests[0].body),{wake:true});
@@ -73,6 +74,14 @@ assert.equal(slider.value,'60','a temporary level never reaches the slider');
 saver(false);assert.equal(requests.length,mark+2,'no wake without a dim');
 select.value='min';select.handlers.change();assert.deepEqual(JSON.parse(storage.get('cncjs-touch-backlight-v1')),{sleep:'min'});
 saver(true);assert.deepEqual(JSON.parse(requests.at(-1).body),{percent:5,temporary:true});answer(200,{});saver(false);answer(200,{});
+// A failed wake is retried (2 s later, then on the next touch) until the server confirms it.
+saver(true);answer(200,{});saver(false);mark=requests.length;answer(0,null);
+const retry=timers.filter(x=>x.live).at(-1);assert.equal(retry.ms,2000);retry.live=false;retry.f();
+assert.equal(requests.length,mark+1);assert.deepEqual(JSON.parse(requests.at(-1).body),{wake:true});answer(200,{});
+mark=requests.length;document.handlers.pointerdown();assert.equal(requests.length,mark,'nothing more once confirmed');
+saver(true);answer(200,{});saver(false);for(let i=0;i<5;i++){answer(0,null);const t=timers.filter(x=>x.live).at(-1);t.live=false;t.f();}
+answer(0,null);assert(!timers.some(x=>x.live),'five automatic tries at most');
+mark=requests.length;document.handlers.pointerdown();assert.equal(requests.length,mark+1,'then the next touch tries again');answer(200,{});
 select.value='keep';select.handlers.change();mark=requests.length;saver(true);saver(false);assert.equal(requests.length,mark,'unchanged: nothing sent');
 select.value='bogus';select.handlers.change();assert.deepEqual(JSON.parse(storage.get('cncjs-touch-backlight-v1')),{sleep:'keep'});
 // A read-only panel is left alone.

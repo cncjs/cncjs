@@ -152,7 +152,9 @@
   var tab='display',timer=null,xhr=null,disposed=false,failures=0;
   function token(){try{return JSON.parse(localStorage.getItem('cnc')).state.session.token||'';}catch(_){return '';}}
   function apiBase(){try{return window.cncState.get().apiBase;}catch(_){return '/api';}}
-  function shown(){return !disposed&&tab==='system'&&!document.hidden&&panel.classList.contains('active');}
+  // Not behind the screen saver either: the tab may stay open for days.
+  var asleep=false;
+  function shown(){return !disposed&&!asleep&&tab==='system'&&!document.hidden&&panel.classList.contains('active');}
   function stop(){clearTimeout(timer);timer=null;if(xhr){var x=xhr;xhr=null;x.abort();}}
   function schedule(delay){clearTimeout(timer);timer=null;if(shown()&&!xhr)timer=setTimeout(poll,delay);}
   function fail(message){failures++;set(status,message);attr(section,'data-stale','true');schedule(Math.min(PERIOD*Math.pow(2,failures),30000));}
@@ -183,6 +185,7 @@
     window.dispatchEvent(new Event('resize'));
   }
   function refresh(){if(shown()){if(!timer&&!xhr)poll();}else stop();}
+  window.addEventListener('cnc-screen-saver-sleep',function(e){asleep=!!(e&&e.detail);refresh();});
   // A tab chosen by the operator starts at its top (Réglages scrolls, see viewport-fit.js).
   function choose(name){select(name);var main=document.querySelector('main');if(main&&main.scrollTop)main.scrollTop=0;}
   tabDisplay.addEventListener('click',function(){choose('display');});
