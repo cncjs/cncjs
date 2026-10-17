@@ -268,6 +268,7 @@ window.CNCTouchMessages.push(['Luminosité minimale','Minimum brightness','Brill
 window.CNCTouchMessages.push(['Inchangée','Unchanged','Sin cambios']);
 window.CNCTouchMessages.push(['Choix appliqué ; mémorisation indisponible dans ce navigateur.','Applied; this browser cannot remember it.','Aplicado; este navegador no puede recordarlo.']);
 window.CNCTouchMessages.push([' Fichier non UTF-8 : lu en Windows-1252 (accents convertis).',' Not a UTF-8 file: read as Windows-1252 (accents converted).',' Archivo no UTF-8: leído como Windows-1252 (acentos convertidos).']);
+window.CNCTouchMessages.push(['X non sélectionné','X not selected','X no seleccionado']);
 window.CNCTouchMessages.push(['Fin du programme avec ','Program ended with ','Programa terminado con '],[' erreur(s) Grbl — vérifiez la pièce',' Grbl error(s) — check the part',' error(es) de Grbl — compruebe la pieza']);
 window.CNCTouchMessages.push(['Terminé — programme exécuté jusqu’au bout','Finished — program run to the end','Terminado — programa ejecutado hasta el final']);
 window.CNCTouchMessages.push(['Avance réelle ','Actual feed ','Avance real ']);

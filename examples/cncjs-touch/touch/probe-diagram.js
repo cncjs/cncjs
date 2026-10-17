@@ -16,7 +16,7 @@
       edgeX:corner&&x?'M'+cx+' 50V125':'',edgeY:corner&&y?'M70 '+cy+'H210':'',
       arrowX:x&&dx?(dx===1?'M85 148H195L188 142M195 148L188 154':'M195 148H85L92 142M85 148L92 154'):'',
       arrowY:y&&dy?(dy===1?'M35 115V65L29 72M35 65L41 72':'M35 65V115L29 108M35 115L41 108'):'',
-      labelX:x?uiLocale.t('Sens X')+sign(dx):'X non sélectionné',labelY:y?'Y'+sign(dy):'Y —',z:z,
+      labelX:x?uiLocale.t('Sens X')+sign(dx):uiLocale.t('X non sélectionné'),labelY:y?'Y'+sign(dy):'Y —',z:z,
       thickness:uiLocale.t('Épaisseur : ')+number(p.thickness,0.001,100),tool:uiLocale.t('Outil Ø : ')+number(diameter,0.01,100),
       description:uiLocale.t('Schéma de principe, sans échelle. ')+(corner?uiLocale.t('Coin '):'')+cornerLabel+'. '+(x?uiLocale.t('Recherche X')+sign(dx)+'. ':'')+(y?uiLocale.t('Recherche Y')+sign(dy)+'. ':'')+(z?uiLocale.t('Z vers le bas sur une plaque posée au-dessus. '):'')+uiLocale.t('Aucun trajet calculé.')};
   }
