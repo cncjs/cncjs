@@ -22,7 +22,9 @@
   var main=document.querySelector('main'),nav=document.getElementById('tabbar'),banner=document.getElementById(simulation?'simulation-banner':'real-banner');
   document.body.classList.add('ks-ui');
   document.body.classList.toggle('ks-real',!simulation);
-  banner.innerHTML=uiLocale.html('<div class="ks-brand">CNCjs <strong>TOUCH</strong></div><h1 id="ks-title">Menu</h1><span class="ks-simulation">')+(simulation?uiLocale.t('SIMULATION'):uiLocale.t('MACHINE RÉELLE'))+uiLocale.html('</span><a href="')+(simulation?'index.html':'simulation.html')+'" class="ks-exit">'+(simulation?uiLocale.t('Interface réelle ↗'):uiLocale.t('Simulation ↗'))+uiLocale.html('</a>');
+  // The header is the status strip (status-strip.js fills its left part). The
+  // screen title stays for assistive technology; the rail shows the place.
+  banner.innerHTML=uiLocale.html('<h1 id="ks-title" class="ks-sr-only">Menu</h1><div class="t-strip-right"><span class="ks-simulation">')+(simulation?uiLocale.t('SIMULATION'):uiLocale.t('MACHINE RÉELLE'))+uiLocale.html('</span><a href="')+(simulation?'index.html':'simulation.html')+'" class="ks-exit">'+(simulation?uiLocale.t('Réel ↗'):uiLocale.t('Simulation ↗'))+uiLocale.html('</a></div>');
   var menu=document.createElement('section');menu.id='screen-menu';menu.className='screen';
   menu.innerHTML=uiLocale.html('<aside class="ks-overview"><div class="ks-state-label">CONTRÔLEUR VIRTUEL</div><h2 id="ks-state">Prêt</h2><p id="ks-current-file">Aucun fichier chargé</p><div class="ks-axis"><span>X</span><b id="ks-x">0.000</b><small>mm</small></div><div class="ks-axis"><span>Y</span><b id="ks-y">0.000</b><small>mm</small></div><div class="ks-axis"><span>Z</span><b id="ks-z">0.000</b><small>mm</small></div><p class="ks-help">Coordonnées de travail fictives.<br>Aucune commande au laser.</p></aside><div class="ks-tiles"></div>');
   main.insertBefore(menu,main.firstChild);
@@ -38,7 +40,9 @@
     var b=document.createElement('button');b.type='button';b.className='ks-tile ks-accent-'+i;b.innerHTML=icon(name)+uiLocale.html('<span>')+(menuLabels[name]||names[name])+uiLocale.html('</span><small>')+menuHints[name]+uiLocale.html('</small>');b.addEventListener('click',function(){go(name);});menu.querySelector('.ks-tiles').appendChild(b);
   });
   nav.innerHTML='';
-  ['back','menu','jog','files','home'].forEach(function(name){
+  // Every screen on the rail; Retour appears only on a sub-screen (probe, limits…).
+  var mainScreens=['menu','jog','files','home','machine','history','settings'];
+  ['back'].concat(mainScreens).forEach(function(name){
     var label=name==='back'?uiLocale.t('Retour'):menuLabels[name]||names[name];
     var b=document.createElement('button');b.className='ks-nav';b.setAttribute('aria-label',label);b.innerHTML=icon(name)+uiLocale.html('<span>')+label+uiLocale.html('</span>');b.setAttribute('data-ks-screen',name);b.addEventListener('click',function(){go(name==='back'?trail.pop()||'menu':name,name==='back');});nav.appendChild(b);
   });
@@ -124,8 +128,9 @@
     else if(name!==active&&!back){var earlier=trail.lastIndexOf(name);if(earlier>=0)trail=trail.slice(0,earlier);else{trail.push(active);if(trail.length>20)trail.shift();}}
     active=name;
     document.querySelectorAll('.screen').forEach(function(s){s.classList.toggle('active',s.id==='screen-'+name);});
-    var navScreen=name==='probe'||name.indexOf('probe-')===0?'jog':name;
-    document.querySelectorAll('.ks-nav').forEach(function(b){var target=b.getAttribute('data-ks-screen');b.classList.toggle('active',target===navScreen);if(target===navScreen)b.setAttribute('aria-current',target===name?'page':'location');else b.removeAttribute('aria-current');if(target==='back')b.disabled=name==='menu';});
+    var navScreen=name==='probe'||name.indexOf('probe-')===0?'jog':name==='limits'||name==='commissioning'?'machine':name==='guide'?'settings':name;
+    var sub=mainScreens.indexOf(name)<0;
+    document.querySelectorAll('.ks-nav').forEach(function(b){var target=b.getAttribute('data-ks-screen');b.classList.toggle('active',target===navScreen);if(target===navScreen)b.setAttribute('aria-current',target===name?'page':'location');else b.removeAttribute('aria-current');if(target==='back'){b.disabled=name==='menu';if(b.hidden!==!sub)b.hidden=!sub;}});
     document.getElementById('ks-title').textContent=names[name];
     window.dispatchEvent(new CustomEvent('cnc-screen-change',{detail:name}));
   }

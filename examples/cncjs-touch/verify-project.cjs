@@ -15,7 +15,7 @@ const tests = [
  'transition-performance','viewport-fit','startup','display-settings','download-file',
  'viewport-phases','hidden-views','preview-worker','library-payload',
  'library-lifecycle','library-upload-payload','library-regeneration-cancel','history-view',
- 'job-stream-client','stream-protocol','controller-state','connection-status','operator-tools','i18n','journal-languages','profile-storage','perf-harness','viewport-recall','viewport-warmup','macros','system-monitor','tablet-actions','header-clock','backlight','viewport-scroll','commissioning','viewport-mutation','dom-fixture','interface-guide','grbl-help','travel-check'
+ 'job-stream-client','stream-protocol','controller-state','connection-status','operator-tools','i18n','journal-languages','profile-storage','perf-harness','viewport-recall','viewport-warmup','macros','system-monitor','tablet-actions','header-clock','backlight','viewport-scroll','commissioning','viewport-mutation','dom-fixture','interface-guide','grbl-help','travel-check','status-strip'
 ].map(name=>'test-'+name+'.cjs');
 // The backend (job service, event stream, motion preflight, probe input) lives in
 // src/server/services/touch and is covered by the root Jest suite (`yarn test`).
