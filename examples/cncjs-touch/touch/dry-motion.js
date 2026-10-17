@@ -27,6 +27,8 @@
     buttons.forEach(function (b) { if (b.disabled !== disabled) b.disabled = disabled; });
     if(currentScreen!=='jog')return;
     setText($('jog-msg'), why || (request ? 'Vérification par le serveur…' : 'Prêt pour un essai à blanc · pas ' + step + ' mm · ' + feed + ' mm/min.'));
+    var mid=typeof document.querySelector==='function'?document.querySelector('#screen-jog .pad-mid'):null;
+    if(mid)setText(mid, step + ' mm');
     setText($('jog-controller'), machine && machine.port ? uiLocale.t('Contrôleur suivi : ') + machine.port : uiLocale.t('Contrôleur suivi : aucun'));
     if (why) setText($('jog-feedback'), uiLocale.t('Aucun déplacement réel. Origines et palpage non activés.'));
   }

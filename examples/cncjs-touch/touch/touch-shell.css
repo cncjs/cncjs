@@ -20,13 +20,10 @@ body.ks-real.display-large{font-size:20px}.ks-real.display-large .screen p,.ks-r
 .ks-real #status-bar{min-height:40px;border-bottom:1px solid #31434c;padding:4px 16px;font-size:13px}
 .ks-real #status-bar button{min-height:30px;padding:4px 12px}
 .ks-sheet a{display:block;margin-top:16px;color:#a5d5e7}
-.ks-real .ks-coordinate-table b{font-size:26px;font-weight:400}
-.ks-real .ks-coordinate-table [data-coordinate=machine]{color:#9db2bd}
 .ks-real-state{font-size:26px;border-left:4px solid #e39a45;padding-left:16px}
 .ks-real #screen-settings select,.ks-real #screen-settings button{font:inherit;min-height:52px}
 .ks-real #screen-settings .display-check{align-items:center}
 @media(max-width:650px){.ks-ui #real-banner{gap:8px;padding:6px 10px}}
-@media(max-height:650px){.ks-real .ks-coordinate-table b{font-size:22px}.ks-real #screen-jog .ks-help{margin:6px 0!important;font-size:12px}}
 .ks-ui main{left:var(--ks-rail)!important;width:calc(100% - var(--ks-rail))!important;bottom:0!important;padding:16px!important}
 .ks-ui #tabbar{top:64px;left:0;bottom:0;right:auto;width:var(--ks-rail);height:auto;flex-direction:column;justify-content:flex-start;gap:8px;border-top:0;padding:12px 8px!important}
 .ks-nav{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:80px;width:100%;padding:10px 4px;background:transparent;border:0;font:inherit;cursor:pointer}
@@ -47,8 +44,6 @@ body.ks-real.display-large{font-size:20px}.ks-real.display-large .screen p,.ks-r
 .ks-ui .card{background:#17232a;border:1px solid #293b44;border-radius:8px;padding:16px!important}.ks-ui .screen h2{font-size:20px;color:#b7c9d1;font-weight:400}
 .ks-ui .screen p{line-height:1.4}.ks-ui button{touch-action:manipulation}.ks-ui button:focus-visible,.ks-ui a:focus-visible{outline:3px solid #f5a147;outline-offset:3px}
 .ks-ui #screen-home>.card>h2,.ks-ui #file{display:none}
-.ks-ui #screen-jog .pad{gap:12px}.ks-ui #screen-jog .jog{min-height:86px;font-size:30px;font-weight:400;border-bottom:4px solid #20b7ac}.ks-ui .coords b{font-size:32px;font-weight:400}
-.ks-ui #screen-jog .step,.ks-ui #screen-origin button{min-height:60px;font-size:20px}
 .ks-ui .library-header p,.ks-ui .library-eyebrow{display:none}
 .ks-ui #screen-history li{border-bottom:1px solid #2b3d46;padding:8px 0}.ks-ui #screen-history li strong{font-size:17px;font-weight:500}
 @media(max-width:1000px){.ks-tiles{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,1fr);gap:10px}.ks-tile{min-height:110px;font-size:19px;gap:10px}.ks-tile svg{width:42px;height:42px}.ks-overview{padding:10px}.ks-ui{--ks-rail:72px!important}}
@@ -72,41 +67,17 @@ body.ks-real.display-large{font-size:20px}.ks-real.display-large .screen p,.ks-r
 .ks-ui .ks-panel-intro{display:flex;align-items:center;justify-content:space-between;gap:20px;background:transparent;border:0;border-bottom:1px solid #31434c;border-radius:0}
 .ks-ui .ks-panel-intro h2{font-size:24px;margin-bottom:6px!important;color:#edf3f5}
 .ks-ui .ks-panel-intro p{margin:0;font-size:16px;color:#a0b0b9}
-.ks-ui #screen-jog .ks-panel-intro>div:first-child{flex:1;min-width:0}
-.ks-preparation-actions{display:flex;gap:12px;align-items:stretch;flex-shrink:0}
-.ks-preparation-actions .probe-entry{border-bottom:3px solid #cb4f98;color:#f4d5e8;background:#302631}
-.ks-preparation-actions .probe-entry:hover:not(:disabled){background:#493147}
-.ks-preparation-actions #ks-origin-info{font-size:15px;color:#b7c9d1}
-.ks-preparation-actions .ks-macros-open{border-bottom:3px solid #b2d743}
 .ks-macro-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
 .ks-macro{min-height:64px;font:inherit;font-size:18px;color:#edf3f5;background:#20313a;border:1px solid #3c535f;border-bottom:4px solid #b2d743;border-radius:8px;padding:12px;cursor:pointer;overflow-wrap:anywhere;touch-action:manipulation}
 .ks-macro:disabled{opacity:.4;cursor:not-allowed}.ks-macro:hover:not(:disabled){background:#2c414b}
 @media(max-height:650px){.ks-macro{min-height:52px;font-size:16px;padding:8px}.ks-macro-list{gap:8px}}
-.ks-secondary,.ks-coordinate-table button{font:inherit;color:#edf3f5;background:#20313a;border:1px solid #3c535f;border-radius:7px;padding:12px 18px;min-height:52px;cursor:pointer}
 .ks-ui button:disabled{cursor:not-allowed}
-.ks-secondary:disabled,.ks-command:disabled,.ks-coordinate-table button:disabled{opacity:.4}
-.ks-secondary:hover:not(:disabled),.ks-coordinate-table button:hover:not(:disabled){background:#2c414b}
-.ks-ui #screen-origin.active{grid-template-columns:minmax(0,1.5fr) minmax(250px,1fr)}
-.ks-coordinate-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-.ks-coordinate-table th,.ks-coordinate-table td{padding:20px 8px;text-align:right;border-bottom:1px solid #31434c}
-.ks-coordinate-table thead th{font-size:14px;color:#9db2bd;font-weight:400;padding-top:10px;padding-bottom:10px}
-.ks-coordinate-table tbody th{color:#d76baa;text-align:left;font-size:26px;font-weight:400}
-.ks-coordinate-table td[data-sim-coordinate]{font-size:28px}
-.ks-coordinate-table td[data-sim-coordinate=machinePosition]{color:#9db2bd}
-.ks-ui #screen-origin .ks-coordinate-table button{min-height:56px;font-size:18px;white-space:nowrap;border-bottom:3px solid #cb4f98}
-.ks-origin-actions{display:flex;flex-direction:column;gap:14px}
-.ks-origin-actions p{margin:0;color:#a0b0b9;font-size:16px}
-.ks-command{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;min-height:150px;border:1px solid #40505a;border-bottom:4px solid #b2d743;border-radius:8px;background:#20313a;color:#fff;font:inherit;font-size:22px;padding:20px;cursor:pointer}
-.ks-command svg{width:48px;height:48px}.ks-command:hover:not(:disabled){background:#2c414b}
-.ks-origin-zero{border-bottom-color:#cb4f98;flex:1}
-.ks-ui #screen-origin .sim-motion-feedback{font-size:15px;color:#a6c3ce;min-height:22px}
 .ks-ui #screen-machine.active{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)}
 .ks-machine-overview{display:flex;flex-direction:column;justify-content:center;gap:16px;min-height:360px}
 .ks-machine-overview p{margin:0;overflow-wrap:anywhere}.ks-machine-overview .badge{display:block;font-size:34px;font-weight:400;padding:18px;border-width:0;border-left-width:4px;border-radius:0;background:#12231f}
 .ks-machine-overview .badge.err{background:#351e23;color:#ff9696}.ks-machine-overview .badge.ok{color:#b2d743}
 #sim-machine-workflow{font-size:24px}#sim-machine-file{color:#a0b0b9;font-size:16px}
 .ks-alarm-buttons{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
-.ks-alarm-buttons .ks-command{min-height:190px;font-size:20px}
 #sim-trigger-alarm{border-bottom-color:#ef7a65}#sim-trigger-alarm svg{color:#ef7a65}#sim-clear-alarm svg{color:#b2d743}
 .ks-ui #sim-machine-feedback{font-size:16px;color:#c7d5dd;min-height:48px}
 .ks-ui #screen-history.active{grid-template-columns:minmax(0,1fr)}
@@ -118,43 +89,16 @@ body.ks-real.display-large{font-size:20px}.ks-real.display-large .screen p,.ks-r
 .ks-export-buttons{display:flex;gap:12px}.ks-export-buttons button{flex:1;min-height:64px;border-bottom:3px solid #ad91db}
 @media(max-height:650px){
  .ks-ui .ks-panel-intro{padding:8px!important}.ks-ui .ks-panel-intro h2{font-size:20px}.ks-ui .ks-panel-intro p{font-size:14px}
- .ks-coordinate-table th,.ks-coordinate-table td{padding:10px 6px}.ks-coordinate-table td[data-sim-coordinate]{font-size:23px}
- .ks-ui #screen-origin .ks-coordinate-table button{min-height:48px;font-size:16px}
- .ks-origin-actions{gap:10px}.ks-command{min-height:110px;padding:12px;gap:10px}.ks-command svg{width:36px;height:36px}
- .ks-machine-overview{min-height:260px;gap:12px}.ks-alarm-buttons .ks-command{min-height:140px;font-size:18px}
  .ks-ui #screen-history li{padding:9px}.ks-ui #screen-history li strong{font-size:16px}
 }
 @media(max-width:900px){
- .ks-ui #screen-origin.active{grid-template-columns:minmax(0,1.5fr) minmax(200px,1fr)}
- .ks-ui #screen-origin .ks-secondary{font-size:16px;padding:10px}
- .ks-coordinate-table td[data-sim-coordinate]{font-size:22px}
  .ks-machine-overview .badge{font-size:26px}.ks-alarm-buttons{gap:8px}
 }
 @media(max-height:650px){.ks-sheet-card{padding:16px}.ks-sheet p{margin:8px 0;font-size:14px}.ks-sheet header{margin-bottom:10px}}
 @media(max-height:650px){
 }
 /* One manipulation panel: jog and work zero are always available together. */
-.ks-ui #screen-jog.active{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
-.ks-ui #screen-jog .ks-coordinate-table th,.ks-ui #screen-jog .ks-coordinate-table td{padding:12px 8px}
-.ks-ui #screen-jog .ks-coordinate-table button{min-height:50px;font-size:18px;border-bottom:3px solid #cb4f98}
-.ks-ui #screen-jog .ks-coordinate-table td[data-sim-coordinate]{font-size:26px}
-.ks-motion-step{margin-top:18px}.ks-motion-step .steps{margin-bottom:12px}
-.ks-motion-zero{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.ks-motion-zero .ks-origin-zero{display:flex;align-items:center;justify-content:center;gap:12px;border-bottom:3px solid #cb4f98}
-.ks-motion-zero svg{width:26px;height:26px}
-.ks-ui #screen-jog .sim-motion-feedback{font-size:14px;color:#a6c3ce;margin:12px 0 0}
-.ks-motion-arrows{display:flex;flex-direction:column;justify-content:center}
-.ks-ui #screen-jog .pad{flex:1;min-height:270px;margin-bottom:20px}
-.ks-ui #screen-jog .zrow .jog{min-height:80px}
-@media(max-width:1000px){.ks-tile{padding:10px 8px}.ks-tile small{font-size:12px}.ks-ui #screen-jog .ks-panel-intro{gap:12px}.ks-preparation-actions{gap:8px}.ks-preparation-actions .ks-secondary{font-size:16px;padding:10px}.ks-preparation-actions #ks-origin-info{font-size:14px}}
-@media(max-width:760px){.ks-ui #screen-jog .ks-panel-intro{flex-wrap:wrap}.ks-preparation-actions{width:100%}.ks-preparation-actions button{flex:1}}
 @media(max-height:650px){
- .ks-ui #screen-jog .ks-coordinate-table th,.ks-ui #screen-jog .ks-coordinate-table td{padding:6px}
- .ks-ui #screen-jog .ks-coordinate-table td[data-sim-coordinate]{font-size:22px}
- .ks-ui #screen-jog .ks-coordinate-table button{min-height:44px;font-size:16px;padding:8px 12px}
- .ks-ui #screen-jog .step,.ks-motion-zero .ks-secondary{min-height:44px;font-size:16px;padding:8px}
- .ks-motion-step{margin-top:10px}.ks-ui #screen-jog .pad{min-height:190px;gap:8px;margin-bottom:10px}
- .ks-ui #screen-jog .jog{min-height:58px;font-size:24px}.ks-ui #screen-jog .zrow .jog{min-height:58px}
 }
 @media(max-height:650px){
  .ks-ui #tabbar .ks-nav{min-height:0;flex:1;max-height:80px;padding:6px 4px}

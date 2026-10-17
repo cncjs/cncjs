@@ -7,6 +7,9 @@
   function render(){
     if(currentScreen!=='jog'||document.hidden)return;
     buttons.forEach(function(b){var disabled=busy||!state||!state.canJog;if(b.disabled!==disabled)b.disabled=disabled;});
+    if(armed&&armed.disabled)disarm();
+    var mid=typeof document.querySelector==='function'?document.querySelector('#screen-jog .pad-mid'):null;
+    if(mid)text(mid,step+' mm');
     document.querySelectorAll('[data-sim-coordinate]').forEach(function(el){
       var coords=state&&state[el.getAttribute('data-sim-coordinate')],axis=el.getAttribute('data-axis');
       text(el,coords?coords[axis].toFixed(3):'—');
@@ -23,8 +26,25 @@
       document.querySelectorAll('[data-sim-step]').forEach(function(other){other.classList.toggle('active',other===b);other.setAttribute('aria-pressed',String(other===b));});render();
     });
   });
+  // Setting a work zero is protected against an accidental tap: the first tap
+  // arms the button (amber, "Confirmer") for three seconds, the second one acts.
+  var armed=null,armTimer=null;
+  function label(b){return typeof b.querySelector==='function'&&b.querySelector('span')||b;}
+  function disarm(){
+    if(armTimer!==null&&typeof clearTimeout==='function')clearTimeout(armTimer);armTimer=null;
+    if(!armed)return;var b=armed;armed=null;
+    if(b._label!==undefined)text(label(b),b._label);
+    if(typeof b.removeAttribute==='function')b.removeAttribute('data-armed');
+  }
+  function arm(b){
+    disarm();armed=b;b._label=label(b).textContent;text(label(b),uiLocale.t('Confirmer'));
+    if(typeof b.setAttribute==='function')b.setAttribute('data-armed','true');
+    if(typeof setTimeout==='function')armTimer=setTimeout(disarm,3000);
+  }
   buttons.forEach(function(b){b.addEventListener('click',function(){
-    if(busy||!state||!state.canJog||!window.cncJobSimulation)return;
+    if(busy||!state||!state.canJog||!window.cncJobSimulation){disarm();return;}
+    if(b.getAttribute('data-sim-motion')==='zero'&&armed!==b){arm(b);return;}
+    disarm();
     var body={action:b.getAttribute('data-sim-motion'),port:'SIMULATION',axis:b.getAttribute('data-axis'),step:step,direction:Number(b.getAttribute('data-direction'))};
     busy=true;render();
     window.cncJobSimulation.request('POST',body).then(function(result){feedback(result.message);return window.cncJobSimulation.request('GET');})
