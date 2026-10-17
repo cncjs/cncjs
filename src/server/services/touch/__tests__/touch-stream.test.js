@@ -292,6 +292,46 @@ describe('touch stream', () => {
     expect(opened.every(({ res: r }) => r.ended)).toBe(true);
   });
 
+  test('heartbeat and rotation use a monotonic clock by default (wall clock set back by NTP)', () => {
+    let wall = 1800000000000;
+    let mono = 50000;
+    const wallSpy = jest.spyOn(Date, 'now').mockImplementation(() => wall);
+    const monoSpy = jest.spyOn(performance, 'now').mockImplementation(() => mono);
+    try {
+      const timers = fakeTimers();
+      const service = {
+        list: () => [{ port: 'A' }],
+        subscribe: () => () => {},
+        openTransport() {},
+        closeTransport() {},
+        ticketPending: () => false,
+        dispose() {}
+      };
+      const stream = createStream(service, { timers });
+      const req = new EventEmitter();
+      const res = fakeResponse();
+      stream.open(req, res);
+      expect(res.lines).toHaveLength(1);
+      const [heartbeat] = timers.intervals.values();
+      mono += 1100;
+      heartbeat();
+      expect(res.lines).toHaveLength(2);
+      mono += 1100;
+      wall -= 3600000;
+      heartbeat();
+      expect(res.lines).toHaveLength(3); // the heartbeat goes on
+      expect(res.lines[2].sentAt).toBe(wall); // sentAt stays a wall-clock time
+      mono += 60000;
+      heartbeat();
+      expect(res.ended).toBe(true); // rotated after its lifetime
+      expect(res.lines[res.lines.length - 1]).toEqual({ rotate: true });
+      stream.dispose();
+    } finally {
+      wallSpy.mockRestore();
+      monoSpy.mockRestore();
+    }
+  });
+
   test('the heartbeat never keeps the process alive on its own', () => {
     const ctx = setup();
     const handle = { unref: jest.fn() };

@@ -256,6 +256,38 @@ describe('job service', () => {
     expect(ctx.state().finished).toBe(false);
   });
 
+  test('ticket lifetime and report age use a monotonic clock by default (wall clock set back by NTP)', async () => {
+    let wall = 1800000000000;
+    let mono = 50000;
+    const wallSpy = jest.spyOn(Date, 'now').mockImplementation(() => wall);
+    const monoSpy = jest.spyOn(performance, 'now').mockImplementation(() => mono);
+    try {
+      const c = fakeController();
+      const service = createService({ get: () => ({ TEST: c }) },
+        { get: (key) => (key === 'watchDirectory' ? root : []) });
+      service.openTransport('t');
+      const generation = service.list()[0].generation;
+      const req = (action, extra = {}) => service.action({ port: 'TEST', generation, transportId: 't', action, ...extra });
+      c.runner.emit('status');
+      await req('load', { file: 'test.nc' });
+      const { revision } = service.list()[0];
+      const ticket = await req('prepare', { operation: 'start', revision });
+      // 16 s pass while the wall clock is set back one hour.
+      mono += 16000;
+      wall -= 3600000;
+      c.runner.emit('status');
+      await expect(req('start', { nonce: ticket.nonce })).rejects.toThrow(/expirée/);
+      expect(c.commands.map((x) => x[0])).not.toContain('gcode:start');
+      // A fresh report is fresh whatever the wall clock does.
+      wall += 7200000;
+      expect(service.list()[0].fresh).toBe(true);
+      service.dispose();
+    } finally {
+      wallSpy.mockRestore();
+      monoSpy.mockRestore();
+    }
+  });
+
   test('a program whose lines failed is never reported finished', async () => {
     const ctx = setup();
     const run = async () => {
