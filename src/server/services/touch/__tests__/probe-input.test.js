@@ -41,6 +41,16 @@ describe('probe input', () => {
     expect(ctx.read().state).toBe('contact');
   });
 
+  test('Grbl_ESP32 inputs (A/B/C limits, macro buttons 0-3) are read too', () => {
+    const ctx = setup();
+    ctx.emit('<Idle|MPos:0,0,0|Pn:PXA2>');
+    expect(ctx.read().state).toBe('contact');
+    expect(ctx.read().pins).toBe('PX');
+    ctx.emit('<Idle|MPos:0,0,0|Pn:Z0>');
+    expect(ctx.read().state).toBe('free');
+    expect(ctx.read().pins).toBe('Z');
+  });
+
   test('a report without Pn is "missing", never "free"', () => {
     const ctx = setup();
     ctx.emit('<Idle|MPos:0,0,0>');

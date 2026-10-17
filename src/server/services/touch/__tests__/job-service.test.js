@@ -224,10 +224,12 @@ describe('job service', () => {
   });
 
   test('changesOffset finds offset words, not comments or other codes', () => {
-    ['G55', 'g54', 'G59.1', 'G10 L2 P1 X0', 'G92 X0', 'G92.1', 'G0 X1\nG57 G0 Y2', 'G055'].forEach((code) => {
+    ['G55', 'g54', 'G59.1', 'G10 L2 P1 X0', 'G92 X0', 'G92.1', 'G0 X1\nG57 G0 Y2', 'G055',
+      // Compact G-code, as many CAM post-processors write it.
+      'G90G55', 'N10G55', 'G21G90G55', 'G10L20P1X0', 'G92X0Y0'].forEach((code) => {
       expect(changesOffset(code)).toBe(true);
     });
-    ['G0 X54', 'G1 F555', '(G55 in a comment)', '; G92 here', 'G21 G90 G17\nG1 X10 F400', 'G540', 'M5'].forEach((code) => {
+    ['G0 X54', 'G1 F555', '(G55 in a comment)', '; G92 here', 'G21 G90 G17\nG1 X10 F400', 'G540', 'M5', 'G100', 'G920', 'G55.12'].forEach((code) => {
       expect(changesOffset(code)).toBe(false);
     });
   });
@@ -544,10 +546,95 @@ describe('job service', () => {
       expect(state.settings.$31).toBe(6000);
       const result = await ctx.req('settings');
       expect(result.settings).toEqual({ $22: 1, $30: 24000, $31: 6000, $110: 1000, $111: 1000, $112: 200 });
+      // Firmware unknown (CNCjs connected after the banner): $I is asked too.
       await ctx.req('readSettings');
-      expect(ctx.c.commands).toEqual([['gcode', '$$']]);
+      expect(ctx.c.commands).toEqual([['gcode', ['$I', '$$']]]);
+      ctx.c.runner.emit('raw', { raw: '[VER:1.3a.20210424:]' });
+      expect(ctx.state().firmware).toBe('Grbl 1.3a.20210424');
+      await ctx.req('readSettings');
+      expect(ctx.c.commands.at(-1)).toEqual(['gcode', '$$']);
       ctx.c.workflow.state = 'running';
       await expect(ctx.req('readSettings')).rejects.toThrow(/repos/);
+    });
+  });
+
+  describe('spindle, stops and board restarts', () => {
+    const ready = () => {
+      const ctx = setup();
+      ctx.c.settings = { version: '1.1h', settings: { $22: 1, $30: 24000, $31: 6000, $110: 1000, $111: 1000, $112: 200 } };
+      ctx.report();
+      return ctx;
+    };
+
+    test('homing, macros and start are refused while the spindle still turns', async () => {
+      const ctx = ready();
+      ctx.c.state.status.spindle = 6000;
+      expect(ctx.state().homeReason).toMatch(/broche tourne encore/);
+      expect(ctx.state().macroReason).toMatch(/broche tourne encore/);
+      await expect(ctx.req('prepare', { operation: 'home' })).rejects.toThrow(/broche tourne/);
+      ctx.c.state.status.spindle = 0;
+      await ctx.req('load', { file: 'test.nc' });
+      expect(ctx.state().canStart).toBe(true);
+      ctx.c.state.status.spindle = 1200;
+      expect(ctx.state().startReason).toMatch(/broche tourne encore/);
+      expect(ctx.state().canSpindleStop).toBe(true);
+    });
+
+    test('M5 is accepted with a stale report, a stale identity or a closed stream, never during a job', async () => {
+      const ctx = ready();
+      ctx.now += 10000;
+      expect(ctx.state().fresh).toBe(false);
+      await ctx.service.action({ port: 'TEST', generation: 'old', transportId: 'gone', action: 'spindleStop' });
+      expect(ctx.c.commands).toEqual([['gcode', 'M5']]);
+      ctx.c.workflow.state = 'running';
+      await expect(ctx.req('spindleStop')).rejects.toThrow(/Pause ou Arrêter/);
+    });
+
+    test('the confirmed spindle speed is the one sent', async () => {
+      const ctx = ready();
+      const ticket = await ctx.req('prepare', { operation: 'spindle' });
+      ctx.c.settings.settings.$31 = 9000;
+      await expect(ctx.req('spindle', { nonce: ticket.nonce })).rejects.toThrow(/vitesse de test a changé/);
+      expect(ctx.c.commands).toEqual([]);
+    });
+
+    test('a homing cycle is stopped by a soft reset, a jog by a jog cancel', async () => {
+      const ctx = ready();
+      ctx.c.state.status.activeState = 'Home';
+      expect(ctx.state().canStop).toBe(true);
+      expect((await ctx.req('stop')).message).toMatch(/interrompue/);
+      ctx.c.state.status.activeState = 'Jog';
+      await ctx.req('stop');
+      expect(ctx.c.commands).toEqual([['reset'], ['jogCancel']]);
+      ctx.c.state.status.activeState = 'Idle';
+      await expect(ctx.req('stop')).rejects.toThrow(/Aucun travail/);
+    });
+
+    test('board restarts are counted and the banner gives the firmware', () => {
+      const ctx = ready();
+      expect(ctx.state().startups).toBe(0);
+      ctx.c.runner.emit('startup', { firmware: 'Grbl', version: '1.3a', message: '[$ for help]' });
+      ctx.report();
+      expect(ctx.state().startups).toBe(1);
+      expect(ctx.state().firmware).toBe('Grbl 1.3a');
+    });
+
+    test('a controller destroyed during a load is refused, not re-registered', async () => {
+      const ctx = ready();
+      const load = ctx.req('load', { file: 'test.nc' });
+      ctx.c.isClose = () => true;
+      ctx.c.runner = null;
+      await expect(load).rejects.toThrow(/indisponible|non connecté/);
+    });
+
+    test('a pending confirmation is reported per transport', async () => {
+      const ctx = ready();
+      expect(ctx.service.ticketPending(ctx.transportId)).toBe(false);
+      await ctx.req('prepare', { operation: 'spindle' });
+      expect(ctx.service.ticketPending(ctx.transportId)).toBe(true);
+      expect(ctx.service.ticketPending('other')).toBe(false);
+      ctx.now += 16000;
+      expect(ctx.service.ticketPending(ctx.transportId)).toBe(false);
     });
   });
 });
