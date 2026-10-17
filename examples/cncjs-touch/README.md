@@ -46,6 +46,10 @@ Réglages now has two tabs, "Affichage" (the existing display settings) and "Sys
 
 A full review of the touch code fixed 25 defects (spindle and stop guards, the commissioning E-stop and spindle steps, previews that could hide moves, the wrong file selected after an upload, tablet commands during motion, translations, simulator robustness). Details in `TESTING.md`, "Code review before the machine".
 
+## Alarm help and travel check (2026-10-17)
+
+Alarms and Grbl errors are explained in plain words (FR/EN/ES), the start confirmation warns when the program would leave the machine travel ($130/$131 and the homing direction $23, valid after homing), and Suivi says when a job waits for Grbl's replies while Grbl stays idle. Details in `TESTING.md`.
+
 ## Second pass (2026-10-17)
 
 Four remaining defects (a screen left hidden while its content changed, a program ending in a Grbl error shown as finished, Latin-1 files losing their accents, durations on the wall clock), two optimisations measured on the tablet (snapshots no longer built for repeated reports, no `iw` process at rest: about −20 % CPU for CNCjs at rest), and a counter-review of the first pass (stop during a macro or with the door open, spindle check without `FS`, stream timeouts, translations). Details in `TESTING.md`, "Second pass".

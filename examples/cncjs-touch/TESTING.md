@@ -83,6 +83,15 @@ Not changed, with the reason:
 - Prerequisites before enabling real jogging and probing (today dry run / simulation only): check every destination against `$130`-`$132` and the homing state, retract Z before X/Y moves, tie the tool diameter to the tool, and convert `PRB` values when `$13=1`.
 - Server snapshot work (about 4 of 5 snapshots discarded as duplicates at idle) and the `iw` call every 10 s: measurable optimisations left for a session on the tablet (done in the second pass below).
 
+## Alarm help, travel check and stalled job (2026-10-17)
+
+Three ideas taken from a review of ncSender (GPL-3.0: ideas only, our own code), chosen because they help as soon as the machine runs:
+- **Alarm and error help** (`grbl-help.js`): alarms 1-9 (Grbl 1.1, same on Grbl_ESP32) and the common Grbl errors get a title and what to do, in FR/EN/ES. The server reports the `ALARM:n` code while the controller is in alarm (`alarmCode`, forgotten after a board restart; `null` for the homing lock, which sends no code) and the job's last error (`jobLastError`). Suivi and the job panel show it; other codes get a generic line.
+- **Off-travel warning before a start** (`travel-check.js`): the start confirmation places the program's XY extent (from the stored preview) at the current work offset (`mpos - wpos`) and compares it with the machine space after homing, `[-$13x, 0]`, or `[0, $13x]` for an axis whose `$23` bit is set. It warns, it does not block. It says when it cannot be trusted: homing disabled (`$22=0`), positions in inches, unknown travel, position or preview. Z is not checked (the preview is 2D), and the check assumes the program runs in the active work offset.
+- **Stalled job notice**: the 3-hour run showed CNCjs waiting forever for replies while Grbl stayed idle (lines lost inside the simulator). The server reports `stalledMs` once a running job has waited 30 s with Grbl idle and no acknowledgement, and Suivi asks the operator to stop the job if nothing moves.
+
+Tests: `test-grbl-help.cjs` (codes, generic cases, every phrase in the catalog), `test-travel-check.cjs` (both homing directions, work offsets, every untrusted case), `test-dashboard.cjs`, `test-job-dialog.cjs`, `job-service.test.js`. Checked on the tablet against the Grbl 1.1h simulator: a `G38.2` without contact gave `ALARM:5` and Suivi showed "Alarme 5 : Palpage sans contact…"; with `$22=0` the confirmation said the travel could not be checked; with `$22=1` set for the test (put back to 0) it warned "Hors course machine : X 0,0 → 60,0 mm (course -400,0 → 0,0)…". Not tested on the real machine.
+
 ## Second pass (2026-10-17)
 
 Four remaining minor defects, two measured optimisations, missing tests, then a counter-review of the first pass by three read-only reviews (server, browser, tools and tests); every finding was checked in the code before being fixed, each fix with a test that failed before.
