@@ -80,7 +80,7 @@ const overridesOf = (state) => {
 // Words that select or change the work offset; comments are ignored.
 export const changesOffset = (gcode) => {
   const code = String(gcode).replace(/\([^)]*\)/g, ' ').replace(/;.*$/gm, ' ');
-  return /\bG\s*0*5[4-9](?:\.\d)?\b|\bG\s*0*10\b|\bG\s*0*92(?:\.\d)?\b/i.test(code);
+  return /(?<![A-Z])G\s*0*(?:5[4-9](?:\.\d)?|10|92(?:\.\d)?)(?![\d.])/i.test(code);
 };
 
 // Grbl reports the real feed rate and spindle speed as FS:feed,speed; CNCjs
@@ -127,18 +127,34 @@ export const createService = (store, config, clock = Date.now) => {
         job: null,
         loading: false,
         ticket: null,
+        // Firmware seen in the startup banner or a $I reply, and how many
+        // times the board restarted (an E-stop wired to reset restarts it).
+        firmware: '',
+        startups: 0,
         generation: crypto.randomBytes(12).toString('hex')
       };
       r.status = () => {
         r.seen = clock();
         changed();
       };
-      r.reset = () => {
+      r.reset = (payload) => {
         r.seen = null;
         r.modalSeen = null;
         r.wcs = null;
         r.ticket = null;
+        r.startups += 1;
+        if (payload && typeof payload.firmware === 'string' && typeof payload.version === 'string') {
+          r.firmware = (payload.firmware + ' ' + payload.version).slice(0, 63);
+        }
         changed();
+      };
+      // [VER:1.1h.20190825:] from $I, which CNCjs does not keep.
+      r.raw = (payload) => {
+        const m = payload && typeof payload.raw === 'string' && /^\[VER:([^\]:]{1,40})[^\]]*\]$/.exec(payload.raw.trim());
+        if (m && r.firmware.indexOf(m[1]) < 0) {
+          r.firmware = 'Grbl ' + m[1];
+          changed();
+        }
       };
       // GrblRunner initializes G54 before receiving $G: accept only an observed report.
       r.modal = (payload) => {
@@ -155,6 +171,7 @@ export const createService = (store, config, clock = Date.now) => {
       c.runner.on('status', r.status);
       c.runner.on('startup', r.reset);
       c.runner.on('parserstate', r.modal);
+      c.runner.on('raw', r.raw);
       // CNCjs rewinds the sender when a program ends, so "all lines acknowledged"
       // must be remembered when it happens to tell a finished job from a stopped one.
       r.end = () => {
@@ -185,6 +202,7 @@ export const createService = (store, config, clock = Date.now) => {
       c.runner.removeListener('status', r.status);
       c.runner.removeListener('startup', r.reset);
       c.runner.removeListener('parserstate', r.modal);
+      c.runner.removeListener('raw', r.raw);
     }
     if (c.sender) {
       c.sender.removeListener('load', r.file);
@@ -215,10 +233,10 @@ export const createService = (store, config, clock = Date.now) => {
   };
 
   const available = (c) => {
-    const r = record(c);
-    if (controllers()[c.options.port] !== c || c.isClose() || !c.ready) {
+    if (controllers()[c.options.port] !== c || c.isClose() || !c.ready || !c.runner || !c.sender) {
       throw conflict('Connexion machine indisponible.');
     }
+    const r = record(c);
     if (!Number.isFinite(r.seen) || clock() < r.seen || clock() - r.seen > MAX_REPORT_AGE_MS) {
       throw conflict('État machine trop ancien : attendre un rapport récent.');
     }
@@ -249,11 +267,23 @@ export const createService = (store, config, clock = Date.now) => {
     return Boolean(reason) && !(reason && reason.data === '%wait');
   };
 
+  // Grbl reports the spindle speed in FS:; it is 0 once M5 is executed.
+  const spindleStill = (c) => {
+    const speed = realtimeValue(controllerStatus(c).spindle);
+    if (speed !== null && speed > 0) {
+      throw conflict('La broche tourne encore (' + speed + ' tr/min) : arrêtez-la d’abord (M5).');
+    }
+  };
+
   const readyFor = (c, action, revision) => {
     const j = validJob(c, revision);
     available(c);
     if (action === 'start') {
       idle(c);
+      spindleStill(c);
+      if (record(c).loading) {
+        throw conflict('Chargement en cours.');
+      }
       if (j.started || !c.sender.state.total) {
         throw conflict('Rechargez le fichier avant un nouveau démarrage.');
       }
@@ -278,6 +308,7 @@ export const createService = (store, config, clock = Date.now) => {
   // A macro moves the machine from rest: idle, nothing loading, no automations.
   const macroReady = (c) => {
     idle(c);
+    spindleStill(c);
     if (record(c).loading) {
       throw conflict('Chargement en cours.');
     }
@@ -311,6 +342,7 @@ export const createService = (store, config, clock = Date.now) => {
     if (state !== 'Idle' && !/^Alarm/.test(state)) {
       throw conflict('La prise d’origine exige une machine au repos ou en alarme.');
     }
+    spindleStill(c);
     const homing = settingNumber(allSettings(c), 22);
     if (homing === null) {
       throw conflict('Réglage $22 inconnu : relisez les réglages de la carte.');
@@ -320,6 +352,15 @@ export const createService = (store, config, clock = Date.now) => {
     }
     if (hasAutomations(config)) {
       throw conflict('Des automatismes CNCjs sont configurés. Leur compatibilité doit être vérifiée avant utilisation.');
+    }
+  };
+
+  const spindleStopReady = (c) => {
+    if (controllers()[c.options.port] !== c || c.isClose() || !c.ready) {
+      throw conflict('Connexion machine indisponible.');
+    }
+    if (c.workflow.state !== 'idle') {
+      throw conflict('Pendant un travail, utilisez Pause ou Arrêter.');
     }
   };
 
@@ -366,9 +407,12 @@ export const createService = (store, config, clock = Date.now) => {
     spindle: {
       guard: spindleReady,
       name: (c) => 'Test broche M3 S' + spindleTestSpeed(allSettings(c)),
-      run: (c) => {
+      run: (c, t) => {
         spindleReady(c);
         const speed = spindleTestSpeed(allSettings(c));
+        if (speed !== t.speed) {
+          throw conflict('La vitesse de test a changé depuis la confirmation. Confirmez à nouveau.');
+        }
         c.command('gcode', 'M3 S' + speed);
         return { message: 'Broche démarrée à ' + speed + ' tr/min (M3). Arrêt : bouton Arrêter la broche.' };
       }
@@ -405,7 +449,7 @@ export const createService = (store, config, clock = Date.now) => {
     const unlockReason = reason(() => unlockReady(c));
     const homeReason = reason(() => homeReady(c));
     const spindleReason = reason(() => spindleReady(c));
-    const spindleStopReason = reason(() => idle(c));
+    const spindleStopReason = reason(() => spindleStopReady(c));
 
     const age = (Number.isFinite(r.seen) && clock() >= r.seen) ? clock() - r.seen : null;
 
@@ -478,7 +522,7 @@ export const createService = (store, config, clock = Date.now) => {
       // Every line acknowledged and the program over (not stopped by the operator).
       finished: Boolean(r.job && r.job.finishedAt && !r.job.stopped && c.workflow.state === 'idle'),
       canPause: c.workflow.state === 'running',
-      canStop: c.workflow.state !== 'idle' || ['Run', 'Hold'].includes(state.activeState),
+      canStop: c.workflow.state !== 'idle' || ['Run', 'Hold', 'Home', 'Jog'].includes(state.activeState),
       overrides: overridesOf(state),
       canOverride: !overrideReason,
       overrideReason,
@@ -486,7 +530,8 @@ export const createService = (store, config, clock = Date.now) => {
       canMacro: !macroReason,
       macroReason,
       // Commissioning: firmware banner, whether $$ was read, guarded $X / $H / spindle test.
-      firmware: firmwareOf(c),
+      firmware: r.firmware || firmwareOf(c),
+      startups: r.startups,
       settingsCount: Object.keys(allSettings(c)).length,
       canUnlock: !unlockReason,
       unlockReason,
@@ -576,7 +621,7 @@ export const createService = (store, config, clock = Date.now) => {
     const r = record(c);
     const a = body.action;
 
-    if (['prepare', 'start', 'resume', 'macro', 'override', 'unlock', 'home', 'spindle', 'spindleStop', 'readSettings'].includes(a)) {
+    if (['prepare', 'start', 'resume', 'macro', 'override', 'unlock', 'home', 'spindle', 'readSettings'].includes(a)) {
       if (typeof body.generation !== 'string' || body.generation !== r.generation) {
         throw conflict('Le contrôleur a changé ou son identité manque. Choisissez-le à nouveau.');
       }
@@ -584,10 +629,11 @@ export const createService = (store, config, clock = Date.now) => {
         throw conflict('Connexion de suivi interrompue. Confirmez à nouveau.');
       }
     }
-    if (body.generation !== undefined && body.generation !== r.generation) {
+    const stopping = ['pause', 'stop', 'spindleStop'].includes(a);
+    if (body.generation !== undefined && body.generation !== r.generation && !stopping) {
       throw conflict('Le contrôleur a changé. Choisissez-le à nouveau.');
     }
-    if (body.transportId !== undefined && !transports.has(body.transportId) && !['pause', 'stop'].includes(a)) {
+    if (body.transportId !== undefined && !transports.has(body.transportId) && !stopping) {
       throw conflict('Connexion de suivi interrompue. Confirmez à nouveau.');
     }
 
@@ -596,13 +642,13 @@ export const createService = (store, config, clock = Date.now) => {
     }
 
     if (a === 'settings') {
-      return { firmware: firmwareOf(c), settings: allSettings(c) };
+      return { firmware: r.firmware || firmwareOf(c), settings: allSettings(c) };
     }
 
     if (a === 'readSettings') {
       idle(c);
       noJob(c);
-      c.command('gcode', '$$');
+      c.command('gcode', record(c).firmware ? '$$' : ['$I', '$$']);
       return { message: 'Lecture des réglages ($$) demandée.' };
     }
 
@@ -616,7 +662,13 @@ export const createService = (store, config, clock = Date.now) => {
         const op = COMMISSIONING[body.operation];
         op.guard(c);
         name = op.name(c);
-        r.ticket = { nonce, operation: body.operation, expires: clock() + TICKET_LIFETIME_MS, transportId: body.transportId };
+        r.ticket = {
+          nonce,
+          operation: body.operation,
+          speed: body.operation === 'spindle' ? spindleTestSpeed(allSettings(c)) : undefined,
+          expires: clock() + TICKET_LIFETIME_MS,
+          transportId: body.transportId
+        };
       } else if (body.operation === 'macro') {
         macroReady(c);
         const macro = findMacro(body.macroId);
@@ -661,11 +713,11 @@ export const createService = (store, config, clock = Date.now) => {
       if (!t || t.nonce !== body.nonce || t.operation !== a || clock() > t.expires || t.transportId !== body.transportId) {
         throw conflict('Confirmation expirée ou déjà utilisée.');
       }
-      return COMMISSIONING[a].run(c);
+      return COMMISSIONING[a].run(c, t);
     }
 
     if (a === 'spindleStop') {
-      idle(c);
+      spindleStopReady(c);
       c.command('gcode', 'M5');
       return { message: 'Arrêt broche (M5) envoyé.' };
     }
@@ -712,7 +764,20 @@ export const createService = (store, config, clock = Date.now) => {
     }
 
     if (a === 'stop') {
-      if (c.workflow.state === 'idle' && !['Run', 'Hold'].includes(controllerStatus(c).activeState)) {
+      const activeState = controllerStatus(c).activeState;
+      if (c.workflow.state === 'idle' && activeState === 'Jog') {
+        r.ticket = null;
+        c.command('jogCancel');
+        return { message: 'Déplacement annulé.' };
+      }
+      // CNCjs's stop only acts in Run or Hold; a homing cycle needs a soft reset
+      // (Grbl then asks for a new homing or $X).
+      if (c.workflow.state === 'idle' && activeState === 'Home') {
+        r.ticket = null;
+        c.command('reset');
+        return { message: 'Prise d’origine interrompue (réinitialisation). La carte demandera $H ou $X.' };
+      }
+      if (c.workflow.state === 'idle' && !['Run', 'Hold'].includes(activeState)) {
         throw conflict('Aucun travail à arrêter.');
       }
       r.ticket = null;
@@ -764,6 +829,15 @@ export const createService = (store, config, clock = Date.now) => {
     transports.add(id);
   };
 
+  const ticketPending = (id) => {
+    for (const r of records.values()) {
+      if (r.ticket && r.ticket.transportId === id && clock() <= r.ticket.expires) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   // Closing a transport revokes every confirmation it was issued.
   const closeTransport = (id) => {
     transports.delete(id);
@@ -793,6 +867,7 @@ export const createService = (store, config, clock = Date.now) => {
     subscribe,
     openTransport,
     closeTransport,
+    ticketPending,
     dispose
   };
 };

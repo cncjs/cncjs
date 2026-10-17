@@ -60,7 +60,8 @@ export const createProbeInput = (store, clock = Date.now) => {
         record.pins = '';
         return;
       }
-      if (pins.length !== 1 || !/^Pn:[XYZPDHRS]+$/.test(pins[0])) {
+      // Grbl_ESP32 also reports A/B/C limits and macro buttons 0-3.
+      if (pins.length !== 1 || !/^Pn:[XYZABCPDHRS0-3]+$/.test(pins[0])) {
         return;
       }
       const value = pins[0].slice(3);

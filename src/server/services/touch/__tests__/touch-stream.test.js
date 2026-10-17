@@ -231,7 +231,9 @@ describe('touch stream', () => {
     expect(first.runner.listenerCount('status')).toBe(0);
     expect(first.runner.listenerCount('parserstate')).toBe(0);
     expect(first.sender.listenerCount('load')).toBe(0);
-    await expect(ctx.service.action({ port: 'A', generation: machine.generation, action: 'pause' })).rejects.toThrow(/changé/);
+    // Pause and stop are never refused for a stale identity: only the machine state decides.
+    await expect(ctx.service.action({ port: 'A', generation: machine.generation, action: 'pause' })).rejects.toThrow(/Aucun travail/);
+    await expect(ctx.service.action({ port: 'A', generation: machine.generation, action: 'prepare', operation: 'start' })).rejects.toThrow(/changé|identité/);
 
     // A long-lived response is rotated so the client reconnects.
     ctx.now += 60000;
@@ -239,6 +241,42 @@ describe('touch stream', () => {
     expect(second.ended).toBe(true);
     expect(second.lines.at(-1).rotate).toBe(true);
     ctx.stream.dispose();
+  });
+
+  test('a stream holding a pending confirmation is renewed after it, within a bounded grace', () => {
+    let now = 1000;
+    let pending = true;
+    const closed = [];
+    const service = {
+      list: () => [],
+      subscribe: () => () => {},
+      openTransport: () => {},
+      closeTransport: (id) => closed.push(id),
+      ticketPending: () => pending,
+      dispose: () => {}
+    };
+    const stream = createStream(service, { clock: () => now, timers: fakeTimers() });
+    const res = fakeResponse();
+    stream.open(new EventEmitter(), res);
+    now += 60000;
+    stream.publish();
+    expect(res.ended).toBe(false);
+    now += 18999;
+    stream.publish();
+    expect(res.ended).toBe(false);
+    now += 1001;
+    stream.publish();
+    expect(res.ended).toBe(true);
+    expect(closed).toHaveLength(1);
+
+    // Without a pending confirmation, the usual minute applies.
+    pending = false;
+    const other = fakeResponse();
+    stream.open(new EventEmitter(), other);
+    now += 60000;
+    stream.publish();
+    expect(other.ended).toBe(true);
+    stream.dispose();
   });
 
   test('refuses more than the maximum number of clients', () => {

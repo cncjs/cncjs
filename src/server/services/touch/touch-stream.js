@@ -12,6 +12,10 @@ export const MAX_CLIENTS = 8;
 // long or carried this many bytes, so a stream never grows without bound.
 const MAX_CLIENT_LIFETIME_MS = 60000;
 const MAX_CLIENT_BYTES = 512 * 1024;
+// Rotating revokes the confirmations issued to that stream: wait for a pending
+// one (15 s at most) unless the response is far past its limits.
+const ROTATION_GRACE_MS = 20000;
+const MAX_GRACE_BYTES = 1024 * 1024;
 
 // Status reports arrive in bursts; publish at most once per coalescing window.
 const COALESCE_MS = 150;
@@ -46,9 +50,13 @@ export const createStream = (service, options = {}) => {
     try {
       const line = JSON.stringify({ ...packet, transportId: client.id }) + '\n';
       client.bytes += Buffer.byteLength(line);
-      if (client.bytes > MAX_CLIENT_BYTES || clock() - client.started >= MAX_CLIENT_LIFETIME_MS) {
-        client.close(true);
-        return;
+      const age = clock() - client.started;
+      if (client.bytes > MAX_CLIENT_BYTES || age >= MAX_CLIENT_LIFETIME_MS) {
+        const waiting = typeof service.ticketPending === 'function' && service.ticketPending(client.id);
+        if (!waiting || client.bytes > MAX_GRACE_BYTES || age >= MAX_CLIENT_LIFETIME_MS + ROTATION_GRACE_MS) {
+          client.close(true);
+          return;
+        }
       }
       if (client.res.write(line) === false) {
         client.close();
