@@ -2,11 +2,13 @@
   'use strict';
   var key='cncjs-touch-language-v1', language='fr', messages=Object.create(null);
   try { var saved=localStorage.getItem(key); if(saved==='en'||saved==='es')language=saved; } catch (_) {}
-  (window.CNCTouchMessages||[]).forEach(function(row){messages[row[0]]=row;});
+  // Rows are found by their trimmed text: a phrase written with its outer
+  // spaces (' tr/min', 'Confirmer : ') keeps the caller's spaces around it.
+  (window.CNCTouchMessages||[]).forEach(function(row){messages[row[0].trim().replace(/\s+/g,' ')]=row;});
   function text(value) {
     if(typeof value!=='string'||language==='fr')return value;
     var parts=/^(\s*)([\s\S]*?)(\s*)$/.exec(value), row=messages[parts[2].replace(/\s+/g,' ')];
-    return row?parts[1]+row[language==='en'?1:2]+parts[3]:value;
+    return row?parts[1]+row[language==='en'?1:2].trim()+parts[3]:value;
   }
   function message(value){
     if(typeof value!=='string')return value;

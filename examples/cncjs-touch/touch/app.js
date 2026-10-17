@@ -109,7 +109,7 @@
       clearCoords();
       badge('st-ctrl', machine ? uiLocale.t('Contrôleur : ')+machine.port : uiLocale.t('Contrôleur : aucun sélectionné'), 'warn');
       badge('st-state', uiLocale.t('État : données indisponibles'), 'warn');
-      notice(state.transportReason || (machine ? 'Rapport machine périmé.' : uiLocale.t('Choisissez le contrôleur dans Fichiers.')));
+      notice(state.transportReason || (machine ? uiLocale.t('Rapport machine périmé.') : uiLocale.t('Choisissez le contrôleur dans Fichiers.')));
       return;
     }
     receive(machine.type, {status:{activeState:machine.activeState,wpos:machine.coordinates&&machine.coordinates.wpos,mpos:machine.coordinates&&machine.coordinates.mpos}},machine.port);

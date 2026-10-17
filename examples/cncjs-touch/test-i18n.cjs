@@ -14,12 +14,15 @@ for(const language of ['en','es']){
  assert.equal(i.t('Fichiers'),language==='en'?'Files':'Archivos');
  assert.equal(i.t('Réponse de suivi invalide.'),language==='en'?'Invalid monitoring response.':'Respuesta de seguimiento no válida.');
  assert.equal(i.t('  Fichiers  '),language==='en'?'  Files  ':'  Archivos  ');
+ // Rows written with outer spaces are found too, and the caller's spaces are kept.
+ assert.equal(i.t(' tr/min'),' rpm');assert.equal(i.t('Avance réelle '),language==='en'?'Actual feed ':'Avance real ');
+ assert.equal(i.t(' · Broche '),language==='en'?' · Spindle ':' · Husillo ');
  assert.equal(i.t('Menu.gcode'),'Menu.gcode');assert.equal(i.t('G54 G0 X1'),'G54 G0 X1');
  assert.equal(i.t('Unknown controller message'),'Unknown controller message');
  assert.equal(i.html('<button id="Fichiers" data-route="files" title="Fichiers">Fichiers</button>'),language==='en'?'<button id="Fichiers" data-route="files" title="Files">Files</button>':'<button id="Fichiers" data-route="files" title="Archivos">Archivos</button>');
  assert.equal(i.html('<option value="simulation">SIMULATION</option>'),language==='en'?'<option value="simulation">SIMULATION</option>':'<option value="simulation">SIMULACIÓN</option>');
  assert.equal(i.html('<h2>Fichiers'),language==='en'?'<h2>Files':'<h2>Archivos');
- const keys=new Set();s.window.CNCTouchMessages.forEach(row=>{assert(!keys.has(row[0]),'duplicate: '+row[0]);keys.add(row[0]);assert.equal(row.length,3);row.forEach(value=>assert(typeof value==='string'&&value.length>0));});
+ const keys=new Set();s.window.CNCTouchMessages.forEach(row=>{const key=row[0].trim().replace(/\s+/g,' ');assert(!keys.has(key),'duplicate: '+row[0]);keys.add(key);assert.equal(row.length,3);row.forEach(value=>assert(typeof value==='string'&&value.length>0));});
  // A translated browser must retain the exact protocol and calculation contracts.
  const runtime={window:s.window};
  ['probe-model.js','coordinate-plan.js'].forEach(name=>vm.runInNewContext(fs.readFileSync(path.join(__dirname,'touch',name),'utf8'),runtime));

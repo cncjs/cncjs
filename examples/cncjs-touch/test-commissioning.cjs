@@ -10,7 +10,7 @@ const source=fs.readFileSync(__dirname+'/touch/commissioning.js','utf8');
 function fixture(saved){
  const dom=createDOM(['menu']),handlers={},store=new Map(saved?[['cncjs-touch-commissioning-v1',saved]]:[]),screens=[],calls=[];
  dom.document.body.getAttribute=()=>null;
- const controls={prepareCommand:op=>calls.push(['prepare',op]),spindleStop:()=>{calls.push(['spindleStop']);return Promise.resolve({message:'M5'});},
+ const controls={cancel:()=>calls.push(['cancel']),prepareCommand:op=>calls.push(['prepare',op]),spindleStop:()=>{calls.push(['spindleStop']);return Promise.resolve({message:'M5'});},
   readSettings:()=>{calls.push(['readSettings']);return Promise.resolve({});},settings:()=>Promise.resolve({firmware:'Grbl 1.1h',settings:{$31:6000,$1:25}})};
  const window={addEventListener:(n,f)=>handlers[n]=f,cncJobControls:controls,
   cncShell:{go:name=>{screens.push(name);if(handlers['cnc-screen-change'])handlers['cnc-screen-change']({detail:name});}}};
@@ -38,8 +38,12 @@ const M=(extra)=>Object.assign({port:'/dev/ttyUSB0',fresh:true,workflow:'idle',a
  C.observe('estop',st,M());assert(st.armed&&!st.back);
  C.observe('estop',st,M({activeState:'Alarm'}));assert(st.alarm);assert.equal(C.result('estop',st),'');
  C.observe('estop',st,M());assert.equal(C.result('estop',st),'ok');
- // A board reset by the E-stop (connection lost) counts too.
- st=C.observe('estop',{},M());C.observe('estop',st,null);C.observe('estop',st,M());assert.equal(C.result('estop',st),'ok');
+ // A gap in the reports (the event stream renews every minute) is not an E-stop.
+ st=C.observe('estop',{},M({startups:2}));C.observe('estop',st,null);C.observe('estop',st,M({fresh:false}));C.observe('estop',st,M({startups:2}));assert.equal(C.result('estop',st),'');
+ // A board restart counted by the server (E-stop wired to reset) counts.
+ C.observe('estop',st,null);C.observe('estop',st,M({startups:3}));assert.equal(C.result('estop',st),'ok');
+ // Without the counter (older server), only an alarm proves it.
+ st=C.observe('estop',{},M());C.observe('estop',st,null);C.observe('estop',st,M());assert.equal(C.result('estop',st),'');
  st={manual:true};assert.equal(C.result('estop',st),'');st.checks={motors:true};assert.equal(C.result('estop',st),'manual');
  // Limits: each axis must be seen free, then triggered.
  st=C.observe('limits',{},M({probeInput:{fresh:true,pins:'X'}}));assert(!st.seen.X,'active from the start: not counted');
@@ -104,8 +108,11 @@ const M=(extra)=>Object.assign({port:'/dev/ttyUSB0',fresh:true,workflow:'idle',a
  const start=f.byText('Démarrer à 6000');assert(start.disabled);f.tick(0);f.tick(1);assert(!start.disabled);
  start.click();assert.deepEqual(f.calls.at(-1),['prepare','spindle']);
  f.send(M({spindleSpeed:6000}));assert(f.byText('Démarrer à').disabled,'already turning');
- // Leaving the step while the spindle turns sends M5.
- f.byText('Passer cette étape').click();assert.deepEqual(f.calls.at(-1),['spindleStop']);
+ // Leaving the step while the spindle turns sends M5 and closes any confirmation.
+ f.byText('Passer cette étape').click();assert.deepEqual(f.calls.slice(-2),[['cancel'],['spindleStop']]);
+ // A start asked but not yet seen turning (M3 on its way) is stopped too.
+ f.byText('← Précédent').click();assert.equal(f.title(),'Broche et variateur');f.send(M());f.tick(0);f.tick(1);
+ f.byText('Démarrer à').click();f.byText('Passer cette étape').click();assert.deepEqual(f.calls.slice(-2),[['cancel'],['spindleStop']]);
  assert.equal(f.title(),'Fichier « en l’air »');
  // Leaving the screen and resuming later: back on the same step.
  f.window.cncShell.go('menu');

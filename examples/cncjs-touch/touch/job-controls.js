@@ -26,7 +26,7 @@
   var store=window.cncState, compact=!!(store&&window.CNCJobStream), stream=null, transportId=null, epoch='', serverSequence=0;
   var generation=0, mutation=0, confirmation=0, pending=0, commandSequence=0, feedbackSequence=0, nextPoll=0, disposed=false, stateSignature='', streamReason='';
   var latestMachine=null, lastTransit=0, appliedRequest=0, requestSequence=0, requests=[], bindings=[], explicitPort=false, protocolReady=false;
-  var dialogReturn=null,dialogBackground=[], observationSuspended=!!document.hidden;
+  var dialogReturn=null,dialogBackground=[], observationSuspended=!!document.hidden, preparing=0;
   function bind(target,name,fn){target.addEventListener(name,fn);bindings.push(function(){if(target.removeEventListener)target.removeEventListener(name,fn);});}
   function text(id,value){if(window.cncI18n&&(id==='job-feedback'||id==='job-reason'||id==='job-state'))value=window.cncI18n.message(value);var node=$(id);if(node&&node.textContent!==String(value))node.textContent=String(value);}
   function prop(id,name,value){var node=$(id);if(node&&node[name]!==value)node[name]=value;}
@@ -74,7 +74,15 @@
   function otherDialog(){
     return document.querySelectorAll&&Array.prototype.some.call(document.querySelectorAll('[role="dialog"]'),function(node){return node!==$('job-dialog')&&!node.hidden&&node.getClientRects().length;});
   }
-  function unavailable(reason){generation++;mutation++;dismiss();transportId=null;current=null;latestMachine=null;lastSeen=0;streamReason=reason||'';render();}
+  // rotating: the server renews the event stream (every minute); the machine
+  // state stays shown, but confirmations bound to the old stream are void.
+  function unavailable(reason,rotating){
+    var dropped=!!ticket||preparing>0;generation++;mutation++;dismiss();transportId=null;
+    if(!rotating){current=null;latestMachine=null;lastSeen=0;}
+    streamReason=reason||'';
+    if(dropped)text('job-feedback',uiLocale.t('Confirmation annulée : le suivi a été renouvelé. Touchez à nouveau le bouton.'));
+    render();
+  }
   function projected(){
     if(!latestMachine)return null;
     var elapsed=Math.max(0,Date.now()-lastSeen), next={};
@@ -168,7 +176,7 @@
   }
   function run(action,extra) {
     if(!current || Date.now()-lastSeen>=3000)return Promise.reject(new Error('État indisponible.'));
-    if(!simulation&&['prepare','start','resume','macro','override','unlock','home','spindle','spindleStop','readSettings'].indexOf(action)>=0&&(!current.generation||!transportId||!stream||!stream.alive()))return Promise.reject(new Error(uiLocale.t('Suivi continu interrompu. Nouvelle confirmation requise.')));
+    if(!simulation&&['prepare','start','resume','macro','override','unlock','home','spindle','readSettings'].indexOf(action)>=0&&(!current.generation||!transportId||!stream||!stream.alive()))return Promise.reject(new Error(uiLocale.t('Suivi continu interrompu. Nouvelle confirmation requise.')));
     var body={action:action,port:current.port};
     if(current.generation)body.generation=current.generation;
     if(transportId)body.transportId=transportId;
@@ -192,7 +200,9 @@
     if(busy||!current)return;
     var port=current.port,revision=current.revision, ownGeneration=generation, ownConfirmation=++confirmation, started=elapsedClock(),origin=document.activeElement;
     var request=operation==='macro'?{operation:'macro',macroId:extra&&extra.macroId}:standalone(operation)?{operation:operation}:{operation:operation,revision:revision};
+    preparing++;
     command('prepare',request).then(function(data){
+      preparing--;
       if(ownGeneration!==generation||ownConfirmation!==confirmation||document.hidden||!current||current.port!==port||(!standalone(operation)&&current.revision!==revision))return;
       until=started+Math.min(15,Number(data.expiresIn)||0)*1000;
       if(elapsedClock()<started||elapsedClock()>=until){text('job-feedback',uiLocale.t('Confirmation expirée. Préparez une nouvelle confirmation.'));return;}
@@ -204,7 +214,7 @@
       $('job-dialog-file').textContent=data.name+' · '+port;
       text('job-countdown',uiLocale.t('Confirmation valable ')+Math.max(0,Math.ceil((until-elapsedClock())/1000))+' s.');
       $('job-check').checked=false;$('job-confirm').disabled=true;$('job-dialog').hidden=false;$('job-dismiss').focus();
-    }).catch(function(){});
+    },function(){preparing--;});
   }
   bind(window,'cnc-library-select',function(event){selection=event.detail;if(store)store.set({selection:selection});render();});
   bind($('job-port'),'change',function(){generation++;explicitPort=!!$('job-port').value;dismiss();latestMachine=machines.filter(function(m){return m.port===$('job-port').value;})[0]||null;render();});
@@ -257,7 +267,7 @@
   if(compact&&!simulation){
     stream=window.CNCJobStream.create({apiBase:store.get().apiBase,token:token,
       onSnapshot:function(data){transportId=data.transportId;streamReason='';apply(data,data.transitMs);},
-      onDisconnect:function(reason){unavailable(reason);},onStatus:function(reason){streamReason=reason;render();}});
+      onDisconnect:function(reason,rotating){unavailable(reason,rotating);},onStatus:function(reason){streamReason=reason;render();}});
   }
   if(!simulation&&!compact&&window.cncSocket){
     ['disconnect','connect_error','error'].forEach(function(name){var fn=function(){if(stream)stream.reconnect();else unavailable(uiLocale.t('Connexion interrompue. Nouvelle confirmation requise.'));};window.cncSocket.on(name,fn);bindings.push(function(){if(window.cncSocket.off)window.cncSocket.off(name,fn);});});
@@ -271,6 +281,8 @@
     // Opens the confirmation for a CNCjs macro; the macro runs only after the confirmed nonce.
     prepareMacro:function(id){prepare('macro',{macroId:id});},
     // Commissioning: unlock ($X), home ($H) or spindle test (M3), each after the confirmation dialog.
+    // Closes an open confirmation and drops a prepare still on its way.
+    cancel:function(){dismiss(false);},
     prepareCommand:function(operation){if(Object.prototype.hasOwnProperty.call(COMMANDS,operation))prepare(operation);},
     spindleStop:function(){if(!current)return Promise.reject(new Error(uiLocale.t('État indisponible.')));return command('spindleStop');},
     readSettings:function(){if(busy||!current)return Promise.reject(new Error(uiLocale.t('Opération en cours…')));return command('readSettings');},

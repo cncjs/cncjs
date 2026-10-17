@@ -28,11 +28,11 @@
     var xhr = null, generation = 0, disposed = false, available = false, retryAt = 0, healthAt = 0, lastMessage = 0, openedAt = 0;
     var token = options.token, clock = options.clock || Date.now, timer = options.timer || root;
     var XHR = options.XMLHttpRequest || root.XMLHttpRequest, base = options.apiBase || '/api';
-    function close(reason, delay) {
+    function close(reason, delay, rotating) {
       generation++; var old = xhr; xhr = null; lastMessage = 0;
       if (old) { old.onload = old.onerror = old.ontimeout = old.onprogress = null; old.abort(); }
       retryAt = clock() + (delay === undefined ? 30000 : delay);
-      options.onDisconnect(locale.t(reason));
+      options.onDisconnect(locale.t(reason), !!rotating);
     }
     function open() {
       if (disposed || offline || xhr || !available || clock() < retryAt) return;
@@ -65,7 +65,7 @@
         if (id !== generation) return;
         request.onprogress();
         if (id !== generation) return;
-        close(rotate ? 'Renouvellement du suivi…' : 'Flux interrompu. Secours toutes les 10 s.', rotate ? 0 : 30000);
+        close(rotate ? 'Renouvellement du suivi…' : 'Flux interrompu. Secours toutes les 10 s.', rotate ? 0 : 30000, rotate);
         if (rotate) open();
       };
       request.onerror = request.ontimeout = function () { if (id === generation) close('Flux indisponible. Secours toutes les 10 s.'); };
