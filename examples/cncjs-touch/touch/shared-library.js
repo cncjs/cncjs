@@ -148,8 +148,20 @@
     request('POST', 'file', { file: file.name + suffix }, 'thumb').then(function (response) {
       var meta = JSON.parse(response.data), p = meta && meta.file === file.name && meta.preview || {};
       var image = typeof p.image === 'string' && p.image.length <= 2500000 && /^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(p.image) ? p.image : '';
-      thumbs[key] = { image: image, bounds: Array.isArray(p.bounds) ? p.bounds : null };
+      var bounds = Array.isArray(p.bounds) ? p.bounds : null;
+      // The stored preview is 960 × 540: a 192 × 108 copy is kept for the row, so the
+      // list never decodes five full previews when it is shown again.
+      return downscale(image).then(function (small) { thumbs[key] = { image: small, bounds: bounds }; });
     }).catch(function () { thumbs[key] = { image: '', bounds: null }; }).then(function () { thumbBusy = false; applyThumbs(); scheduleThumbs(); });
+  }
+  function downscale(image) {
+    return new Promise(function (resolve) {
+      if (!image || typeof Image !== 'function') { resolve(''); return; }
+      var im = new Image();
+      im.onload = function () { try { var c = document.createElement('canvas'); c.width = 192; c.height = 108; c.getContext('2d').drawImage(im, 0, 0, 192, 108); resolve(c.toDataURL('image/png')); } catch (_) { resolve(''); } };
+      im.onerror = function () { resolve(''); };
+      im.src = image;
+    });
   }
   function applyThumbs() {
     if (!visible()) return;
