@@ -1,7 +1,7 @@
 /* Response decoding and geometry only. No controller, network or canvas API. */
 (function () {
   'use strict';
-  importScripts('library-preview.js?v=worker4');
+  importScripts('library-preview.js?v=worker5');
   var job = null, maxText = 20 * 1048576, blockSize = 2048;
   // Geometry blocks in flight before parsing pauses: parsing and drawing overlap
   // instead of alternating one block at a time. The renderer refuses a fourth.
