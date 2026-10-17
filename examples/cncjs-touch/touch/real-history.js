@@ -4,12 +4,19 @@
   if (document.body.getAttribute('data-simulation') === 'true') return;
   var journal = window.cncSessionJournal.create(), page = 0, size = 5, dirty = true;
   var $ = function (id) { return document.getElementById(id); };
-  var rows = Object.create(null), mounted = false;
+  var rows = Object.create(null), mounted = false, filter = 'all';
   function set(el, key, value) { if (el[key] !== value) el[key] = value; }
+  // Filters (UI 2027): errors = lost connection or unavailable state; jobs = files and workflow; alarms = an alarm state.
+  function matches(e) {
+    if (filter === 'errors') return e.kind === 'connection' && /indisponible|unavailable|no disponible/i.test(e.message) || e.kind === 'availability';
+    if (filter === 'jobs') return e.kind === 'workflow' || e.kind === 'file';
+    if (filter === 'alarms') return e.kind === 'state' && /alarm/i.test(e.message);
+    return true;
+  }
   function render() {
     if (!mounted || document.hidden || !$('screen-history').classList.contains('active') || !dirty) return;
     dirty = false;
-    var events = journal.report().events, list = $('real-history-list');
+    var events = journal.report().events.filter(matches), list = $('real-history-list');
     page = Math.min(page, Math.max(0, Math.ceil(events.length / size) - 1));
     var desired = [], keep = Object.create(null);
     events.slice(page * size, (page + 1) * size).forEach(function (e) {
@@ -19,6 +26,7 @@
         row.appendChild(row._title); row.appendChild(row._detail); rows[e.id] = row;
       }
       set(row._title, 'textContent', new Date(e.time).toLocaleTimeString(window.cncI18n?window.cncI18n.locale:'fr-FR') + ' — ' + e.message);
+      if (typeof row.setAttribute === 'function' && row.getAttribute('data-kind') !== e.kind) row.setAttribute('data-kind', e.kind);
       set(row._detail, 'textContent', (e.port || '') + (e.file ? ' · ' + e.file : ''));
       set(row._detail, 'hidden', !row._detail.textContent); desired.push(row); keep[e.id] = true;
     });
@@ -31,6 +39,14 @@
     set($('real-history-next'), 'disabled', (page + 1) * size >= events.length);
   }
   function changed(value) { if (value) { dirty = true; page = 0; render(); } }
+  var filters = typeof document.querySelectorAll === 'function' ? document.querySelectorAll('[data-history-filter]') : [];
+  Array.prototype.forEach.call(filters, function (b) {
+    b.addEventListener('click', function () {
+      filter = b.getAttribute('data-history-filter') || 'all'; page = 0; dirty = true;
+      Array.prototype.forEach.call(filters, function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+      render();
+    });
+  });
   $('real-history-prev').addEventListener('click', function () { page = Math.max(0, page - 1); dirty = true; render(); });
   $('real-history-next').addEventListener('click', function () { page++; dirty = true; render(); });
   function mount() { if (document.hidden || !$('screen-history').classList.contains('active')) return; mounted = true; render(); }
@@ -39,7 +55,7 @@
   document.addEventListener('visibilitychange', function () { if (document.hidden) unmount(); else mount(); });
   window.cncRealHistoryView = { mount: mount, unmount: unmount };
   window.addEventListener('cnc-history-page-size', function (e) {
-    var next = Number(e.detail); if ((next !== 3 && next !== 5) || next === size) return;
+    var next = Number(e.detail); if ((next !== 3 && next !== 5 && next !== 8) || next === size) return;
     page = Math.floor(page * size / next); size = next; dirty = true; render();
   });
   window.addEventListener('cnc-job-status', function (e) {

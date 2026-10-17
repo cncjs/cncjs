@@ -34,7 +34,6 @@ body.ks-real.display-large{font-size:20px}.ks-real.display-large .screen p,.ks-r
 .ks-ui .screen p{line-height:1.4}.ks-ui button{touch-action:manipulation}.ks-ui button:focus-visible,.ks-ui a:focus-visible{outline:3px solid #f5a147;outline-offset:3px}
 .ks-ui #screen-home>.card>h2,.ks-ui #file{display:none}
 .ks-ui .library-header p,.ks-ui .library-eyebrow{display:none}
-.ks-ui #screen-history li{border-bottom:1px solid #2b3d46;padding:8px 0}.ks-ui #screen-history li strong{font-size:17px;font-weight:500}
 /* File selection: one panel per task, details in an accessible sheet. */
 .ks-file-tools{display:flex;gap:10px;margin-top:8px}.ks-file-tools button{flex:1}
 .ks-dimensions-table{width:100%;border-collapse:collapse;table-layout:fixed;font-variant-numeric:tabular-nums}
@@ -59,16 +58,8 @@ body.ks-real.display-large{font-size:20px}.ks-real.display-large .screen p,.ks-r
 .ks-macro:disabled{opacity:.4;cursor:not-allowed}.ks-macro:hover:not(:disabled){background:#2c414b}
 @media(max-height:650px){.ks-macro{min-height:52px;font-size:16px;padding:8px}.ks-macro-list{gap:8px}}
 .ks-ui button:disabled{cursor:not-allowed}
-.ks-ui #screen-history.active{grid-template-columns:minmax(0,1fr)}
-.ks-ui .ks-history-card{border-top:3px solid #ad91db}
-.ks-ui #screen-history li{padding:12px 10px;border-bottom:1px solid #31434c}
-.ks-ui #screen-history li strong{font-size:18px;font-weight:500;color:#e8edf2}
-.ks-ui #screen-history li p{font-size:14px;color:#a0b0b9;margin:5px 0 0;overflow-wrap:anywhere}
-.ks-history-pagination{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:16px;font-size:15px}
-.ks-export-buttons{display:flex;gap:12px}.ks-export-buttons button{flex:1;min-height:64px;border-bottom:3px solid #ad91db}
 @media(max-height:650px){
  .ks-ui .ks-panel-intro{padding:8px!important}.ks-ui .ks-panel-intro h2{font-size:20px}.ks-ui .ks-panel-intro p{font-size:14px}
- .ks-ui #screen-history li{padding:9px}.ks-ui #screen-history li strong{font-size:16px}
 }
 @media(max-width:900px){
 }

@@ -424,3 +424,26 @@
 /* The screens fill their height: the generic start alignment of app.css is for the legacy layout. */
 .ks-ui .screen.active{align-items:stretch;align-content:stretch}
 .ks-ui #screen-jog.active,.ks-ui #screen-files.active,.ks-ui #screen-machine.active{gap:var(--sp-3) var(--sp-4)!important}
+
+/* === Journal ================================================================ */
+.ks-ui #screen-history.active{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:var(--sp-3)!important;height:calc(var(--view-height) - 32px)}
+.ks-ui #screen-history .ks-panel-intro{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);padding:0 0 var(--sp-3)!important;border-bottom:1px solid var(--line);background:transparent;flex-wrap:wrap}
+.ks-ui #screen-history .ks-panel-intro h2{margin:0!important;font:600 var(--fs-24)/1.1 var(--font);color:var(--fg)}
+.ks-ui #screen-history .ks-panel-intro p{margin:0;font-size:var(--fs-16);color:var(--mute)}
+.ks-ui #screen-history .ks-history-filters{margin-left:auto}
+.ks-ui #screen-history .ks-history-filters button{min-width:112px}
+.ks-ui #screen-history .ks-secondary{min-height:var(--tap);font:600 var(--fs-18)/1 var(--font);color:var(--fg);background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-m);padding:var(--sp-2) var(--sp-3)}
+.ks-ui #screen-history .ks-history-card{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:var(--sp-2);padding:var(--sp-2) var(--sp-3)!important;border-top:1px solid var(--line);min-height:0}
+.ks-ui #screen-history ol{display:flex;flex-direction:column;gap:var(--sp-1);min-height:0;overflow:auto}
+.ks-ui #screen-history li{display:grid;grid-template-columns:minmax(0,1fr);gap:2px;min-height:56px;padding:var(--sp-2) var(--sp-3) var(--sp-2) var(--sp-4);border:0;border-left:6px solid var(--faint);border-radius:var(--r-s);background:var(--surface-2)}
+.ks-ui #screen-history li[data-kind=connection],.ks-ui #screen-history li[data-kind=availability]{border-left-color:var(--warn)}
+.ks-ui #screen-history li[data-kind=workflow],.ks-ui #screen-history li[data-kind=file]{border-left-color:var(--info)}
+.ks-ui #screen-history li[data-kind=alarm]{border-left-color:var(--danger)}
+.ks-ui #screen-history li strong{font:500 var(--fs-20)/1.25 var(--font);color:var(--fg);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.ks-ui #screen-history li p{font-size:var(--fs-16);color:var(--mute);margin:0;overflow-wrap:anywhere}
+.ks-ui #screen-history li p:empty{display:none}
+.ks-ui .ks-history-pagination{display:flex;justify-content:space-between;align-items:center;gap:var(--sp-3);margin:0;font-size:var(--fs-16);color:var(--mute)}
+.ks-ui .ks-history-pagination button{min-height:var(--tap);min-width:150px;font:600 var(--fs-18)/1 var(--font);color:var(--fg);background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-m);padding:var(--sp-2) var(--sp-3)}
+.ks-ui .ks-history-pagination button:disabled{opacity:1;color:var(--disabled-fg);background:var(--disabled-bg);border-color:var(--line);background-image:repeating-linear-gradient(135deg,var(--disabled-stripe) 0 6px,transparent 6px 14px)}
+.ks-export-buttons{display:flex;gap:var(--tap-gap)}
+.ks-export-buttons button{flex:1;min-height:var(--tap-primary);border-bottom-width:1px}

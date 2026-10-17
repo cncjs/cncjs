@@ -47,7 +47,7 @@
     var b=document.createElement('button');b.className='ks-nav';b.setAttribute('aria-label',label);b.innerHTML=icon(name)+uiLocale.html('<span>')+label+uiLocale.html('</span>');b.setAttribute('data-ks-screen',name);b.addEventListener('click',function(){go(name==='back'?trail.pop()||'menu':name,name==='back');});nav.appendChild(b);
   });
   var active='menu',trail=[];
-  function fitLibrary(){window.dispatchEvent(new CustomEvent('cnc-library-page-size',{detail:window.innerHeight<650?2:5}));window.dispatchEvent(new CustomEvent('cnc-history-page-size',{detail:window.innerHeight<650?3:5}));}
+  function fitLibrary(){window.dispatchEvent(new CustomEvent('cnc-library-page-size',{detail:window.innerHeight<650?2:5}));window.dispatchEvent(new CustomEvent('cnc-history-page-size',{detail:window.innerHeight<650?3:8}));}
   window.addEventListener('resize',fitLibrary);fitLibrary();
   var openedSheet=null,sheetReturn=null;
   function closeSheet(){
