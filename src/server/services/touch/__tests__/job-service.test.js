@@ -256,6 +256,39 @@ describe('job service', () => {
     expect(ctx.state().finished).toBe(false);
   });
 
+  test('a program whose lines failed is never reported finished', async () => {
+    const ctx = setup();
+    const run = async () => {
+      const state = await ctx.loaded();
+      const ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+      await ctx.req('start', { nonce: ticket.nonce });
+    };
+    // GrblController order on an error on the last line: pause (unless
+    // ignoreErrors), ack (the sender emits 'end'), then the runner listeners.
+    await run();
+    ctx.c.workflow.state = 'paused';
+    ctx.c.sender.emit('end', ctx.now);
+    ctx.c.runner.emit('error', { message: '20', raw: 'error:20' });
+    ctx.c.workflow.state = 'idle'; // CNCjs stops the workflow once the sender is done
+    ctx.report();
+    expect(ctx.state()).toMatchObject({ finished: false, finishedWithErrors: true, jobErrors: 1 });
+    // ignoreErrors: the program goes on, ends normally, but still failed a line.
+    await run();
+    expect(ctx.state()).toMatchObject({ finished: false, finishedWithErrors: false, jobErrors: 0 });
+    ctx.c.runner.emit('error', { message: '33', raw: 'error:33' });
+    ctx.c.sender.emit('end', ctx.now);
+    ctx.c.workflow.state = 'idle';
+    ctx.report();
+    expect(ctx.state()).toMatchObject({ finished: false, finishedWithErrors: true, jobErrors: 1 });
+    // An error outside a running job (a console command at rest) is not the job's.
+    await run();
+    ctx.c.sender.emit('end', ctx.now);
+    ctx.c.workflow.state = 'idle';
+    ctx.c.runner.emit('error', { message: '20', raw: 'error:20' });
+    ctx.report();
+    expect(ctx.state()).toMatchObject({ finished: true, finishedWithErrors: false, jobErrors: 0 });
+  });
+
   test('reports the real feed rate and spindle speed from the status report', () => {
     const ctx = setup();
     ctx.report();

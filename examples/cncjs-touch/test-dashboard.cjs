@@ -17,6 +17,8 @@ status({...c,workflow:'idle',canStart:false});assert.match(el('home-job-eta').te
 // Real CNCjs rewinds the counters at the end of a program: the server's finished flag says it ended.
 status({...c,received:0,remainingSeconds:undefined,workflow:'idle',canStart:false,finished:true},false);assert.equal(el('home-job-percent').textContent,'100 %');assert.match(el('home-job-eta').textContent,/Terminé — programme exécuté/);
 status({...c,received:0,workflow:'idle',canStart:false,finished:false},false);assert.match(el('home-job-eta').textContent,/arrêté/);
+// A program that reached its end with lines refused by Grbl is never shown as finished.
+status({...c,received:0,workflow:'idle',canStart:false,finished:false,finishedWithErrors:true,jobErrors:2},false);assert.equal(el('home-job-percent').textContent,'100 %');assert.doesNotMatch(el('home-job-eta').textContent,/Terminé/);assert.match(el('home-job-eta').textContent,/2 erreur/);
 status(null);assert.equal(el('home-job-percent').textContent,'—');assert.match(el('home-job-eta').textContent,/indisponible/);
 // Overrides block: hidden for snapshots without the field, values and gating otherwise.
 assert.equal(el('home-overrides').hidden,true);
