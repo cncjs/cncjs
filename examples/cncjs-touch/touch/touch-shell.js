@@ -145,7 +145,11 @@
   // The last screen used survives a reload (the kiosk reloads after a deployment).
   var lastKey='cncjs-touch-last-screen',lastScreen='',lastMachine=null;
   try{var savedScreen=localStorage.getItem(lastKey);if(savedScreen&&mainScreens.indexOf(savedScreen)>0)lastScreen=savedScreen;}catch(_){}
-  function remember(name){if(mainScreens.indexOf(name)<=0)return;lastScreen=name;try{localStorage.setItem(lastKey,name);}catch(_){}}
+  // Written when the page is hidden or left, not at every navigation (storage writes cost on the tablet).
+  function remember(name){if(mainScreens.indexOf(name)<=0)return;lastScreen=name;}
+  function persistLast(){if(!lastScreen)return;try{if(localStorage.getItem(lastKey)!==lastScreen)localStorage.setItem(lastKey,lastScreen);}catch(_){}}
+  window.addEventListener('pagehide',persistLast);
+  document.addEventListener('visibilitychange',function(){if(document.hidden)persistLast();});
   function resumeBar(){
     var bar=document.getElementById('ks-resume');if(!bar)return;
     var show=!!lastScreen&&lastScreen!==active;

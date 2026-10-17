@@ -135,7 +135,13 @@
   }
   function scheduleThumbs() {
     if (typeof requestIdleCallback !== 'function' || thumbIdle !== null) return;
-    thumbIdle = requestIdleCallback(function () { thumbIdle = null; nextThumb(); }, { timeout: 2500 });
+    // Only in a real idle period (parsing a stored preview can take a few hundred ms on
+    // the tablet): never with a timeout, so a screen opening is never delayed by it.
+    thumbIdle = requestIdleCallback(function (deadline) {
+      thumbIdle = null;
+      if (deadline && typeof deadline.timeRemaining === 'function' && deadline.timeRemaining() < 45) { scheduleThumbs(); return; }
+      nextThumb();
+    });
   }
   function nextThumb() {
     if (thumbBusy || !visible() || detailLoading) { if (detailLoading) scheduleThumbs(); return; }
