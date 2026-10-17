@@ -25,7 +25,7 @@ function memory(){const m=new Map();return {getItem:k=>m.has(k)?m.get(k):null,se
 // First page load: nothing remembered, so the first fit hides the screen and then stores its scale.
 const store=memory();let s=session(store);s.flush();
 assert.equal(s.stats.hidden,1);assert(s.log.includes('visibility=hidden'));
-const saved=JSON.parse(store.getItem('cncjs-touch-fit-v1'));assert(saved['screen-files'].scale<1);assert.match(saved['screen-files'].key,/^1366:768:/);
+const saved=JSON.parse(store.getItem('cncjs-touch-fit-v2'));assert(saved['screen-files'].scale<1);assert.match(saved['screen-files'].key,/^1366:768:/);
 const firstScale=saved['screen-files'].scale;
 // Second page load, same display: the remembered scale is applied visibly, verified next frame, nothing hidden.
 s=session(store);const frames=s.flush();
@@ -37,9 +37,12 @@ s=session(store,2400);s.flush();assert.equal(s.stats.measurements,0);assert.equa
 // Content that overflows it: the remembered scale is applied, then shrunk in place without hiding.
 s=session(store,4000);s.flush();
 assert.equal(s.stats.hidden,0);assert.equal(s.stats.measurements,1);assert(Number(s.screen.style.transform.match(/scale\(([^)]+)\)/)[1])<firstScale);
-assert.equal(JSON.parse(store.getItem('cncjs-touch-fit-v1'))['screen-files'].height>saved['screen-files'].height,true,'new size remembered');
+assert.equal(JSON.parse(store.getItem('cncjs-touch-fit-v2'))['screen-files'].height>saved['screen-files'].height,true,'new size remembered');
+// Content now smaller than remembered (an interface update): measured again from scale 1, once, hidden; the screen grows back.
+const grown=memory();grown.setItem('cncjs-touch-fit-v2',JSON.stringify({'screen-files':{key:'1366:768:1248:736:false',width:1248,height:2400,scale:.3}}));
+s=session(grown,1200);s.flush();assert.equal(s.stats.hidden,1,'smaller content: one hidden measurement');assert(Number(s.screen.style.transform.match(/scale\(([^)]+)\)/)[1])>.3,'grows back');
 // A different display size ignores the memory and measures hidden again.
-const wide=memory();wide.setItem('cncjs-touch-fit-v1',JSON.stringify({'screen-files':{key:'800:480:700:400:false',width:700,height:900,scale:.5}}));
+const wide=memory();wide.setItem('cncjs-touch-fit-v2',JSON.stringify({'screen-files':{key:'800:480:700:400:false',width:700,height:900,scale:.5}}));
 s=session(wide);s.flush();assert.equal(s.stats.hidden,1,'mismatched key: hidden measurement');
 // Corrupt or failing storage never breaks the fit.
 s=session({getItem:()=>'{not json',setItem(){throw Error('full');}});s.flush();assert.equal(s.stats.hidden,1);assert.match(s.screen.style.transform,/^scale\(/);

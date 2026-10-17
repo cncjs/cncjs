@@ -20,12 +20,17 @@
         // A scale remembered from an earlier page load is applied at once, with
         // the screen visible, and only verified by reads in the next frame: no
         // blank measurement on the first opening of a screen.
-        layouts.set(screen,{key:saved.key,width:saved.width,height:saved.height,scale:saved.scale});
+        layouts.set(screen,{key:saved.key,width:saved.width,height:saved.height,scale:saved.scale,recalled:true});
         style(screen,'width',(w/saved.scale)+'px');style(screen,'transform','scale('+saved.scale+')');
         activation=false;pending=true;frame=requestAnimationFrame(fit);return;
       }
     }
     var sw=screen&&screen.scrollWidth,sh=screen&&screen.scrollHeight,activated=activation;activation=false;
+    // A remembered scale is verified once: content that became smaller than
+    // remembered (an interface update) is measured again from scale 1, so a
+    // screen never stays shrunk by an old memory. Content that grew still
+    // shrinks in place below.
+    if(cached&&cached.recalled){delete cached.recalled;if(sh<cached.height||sw<cached.width){layouts.delete(screen);cached=null;activated=true;}}
     // Content that changes while a screen is shown (a list arriving, an image
     // loading) is only re-measured when it no longer fits at the current scale:
     // a full measurement hides the screen for several frames, which would be
@@ -105,7 +110,7 @@
   var stats={measurements:0,hidden:0};
   // Fitted scales survive page loads (per screen id and display size). Storage
   // failures only cost the first-opening measurement, never the fit itself.
-  var storeKey='cncjs-touch-fit-v1',persisted={};
+  var storeKey='cncjs-touch-fit-v2',persisted={};
   try{if(typeof localStorage!=='undefined')persisted=JSON.parse(localStorage.getItem(storeKey)||'{}')||{};}catch(_){persisted={};}
   function recall(screen,key){
     var p=screen.id&&Object.prototype.hasOwnProperty.call(persisted,screen.id)&&persisted[screen.id];

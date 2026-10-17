@@ -30,5 +30,4 @@
 #screen-files .library-file .library-file-state[hidden]{display:none}
 #screen-files .library-selection-state{font-size:13px;color:#8be4d9;margin:3px 0 6px}
 #screen-files .library-selection-state:empty{display:none}
-.ks-ui .home-job-primary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.ks-ui .home-job-primary button{font-size:16px;min-height:48px;padding:8px 10px}#home-job-start{border-bottom:3px solid #36c3b8}#home-job-ready{color:#70dfd3;font-size:15px;margin:8px 0 4px}#home-job-selection{color:#ffca80;font-size:13px;overflow-wrap:anywhere;margin:4px 0}#home-job-selection:empty{display:none}
 @media(max-height:520px) and (min-width:650px){.coordinate-keypad{grid-template-columns:repeat(4,1fr)}.coordinate-card{padding:8px}.coordinate-editor{padding:8px}.coordinate-card #coordinate-result{min-height:32px}.coordinate-card .coordinate-note{font-size:12px}}

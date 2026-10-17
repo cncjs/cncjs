@@ -3,10 +3,17 @@
   var uiLocale=window.cncI18n||{t:function(s){return s;},html:function(s){return s;}};
   var $=function(id){return document.getElementById(id);};
   var home=$('file');if(!home)return;
-  home.parentNode.insertAdjacentHTML('beforeend',uiLocale.html('<div class="job-dashboard"><div class="job-art"><img id="home-job-image" alt="Aperçu du fichier" hidden><p id="home-image-status">Sélectionnez un fichier pour afficher son aperçu.</p></div><div class="job-metrics"><h2 id="home-job-title">Suivi du travail</h2><p id="home-job-name"></p><strong id="home-job-percent">—</strong><progress id="home-job-progress" max="100" value="0" aria-label="Avancement du travail"></progress><p id="home-job-eta">Temps restant : —</p><p id="home-job-note"></p></div></div>'));
+  // UI 2027: preview and overrides on the left; progress, coordinates, live
+  // values and the actions on the right. Démarrer or Reprendre is the one
+  // primary action; Arrêter stands alone at the bottom, never next to Pause.
+  var simulationPage=document.body.getAttribute('data-simulation')==='true';
+  home.parentNode.insertAdjacentHTML('beforeend',uiLocale.html('<div class="job-dashboard"><div id="home-left" class="home-left"><div class="job-art"><img id="home-job-image" alt="Aperçu du fichier" hidden><p id="home-image-status">Sélectionnez un fichier pour afficher son aperçu.</p></div></div><div class="job-metrics"><h2 id="home-job-title" class="ks-sr-only">Suivi du travail</h2><div class="t-card home-progress"><div class="home-progress-head"><strong id="home-job-percent">—</strong><div class="home-progress-text"><p id="home-job-eta">Temps restant : —</p><p id="home-job-name" class="ks-sr-only"></p></div></div><progress id="home-job-progress" max="100" value="0" aria-label="Avancement du travail"></progress></div><div id="home-coords" class="home-coords"></div><div class="home-live-tiles"><div class="t-card"><small>Avance réelle</small><b id="home-live-feed">—</b></div><div class="t-card"><small>Broche réelle</small><b id="home-live-spindle">—</b></div></div><p id="home-job-note" class="ks-sr-only"></p></div></div>'));
   var execution=document.querySelector('.library-execution');
-  $('home-job-note').insertAdjacentHTML('afterend',uiLocale.html('<div class="home-job-actions"><button id="home-job-pause" disabled>Pause</button><button id="home-job-resume" disabled>Reprendre…</button><button id="home-job-stop" disabled>Arrêter le travail</button></div><p id="home-job-feedback" role="status"></p>'));
-  $('home-job-note').insertAdjacentHTML('afterend',uiLocale.html('<p id="home-job-ready" role="status"></p><p id="home-job-selection"></p><div class="home-job-actions home-job-primary"><button id="home-job-load" disabled>Charger la sélection</button><button id="home-job-start" disabled>Démarrer le fichier chargé…</button></div>'));
+  $('home-job-note').insertAdjacentHTML('afterend',uiLocale.html('<p id="home-job-ready" class="t-notice" role="status"></p><p id="home-job-selection" class="t-help"></p><button id="home-job-load" class="t-btn home-load" disabled>Charger la sélection</button><div id="home-job-primary-row" class="home-job-actions home-job-primary"><button id="home-job-start" class="t-btn t-btn--primary" disabled>Démarrer…</button><button id="home-job-pause" class="t-btn t-btn--warn t-btn--lg" disabled>Pause</button></div><div id="home-job-resume-row" class="home-job-actions home-job-resume" hidden><button id="home-job-resume" class="t-btn t-btn--primary" disabled>Reprendre…</button></div><p id="home-job-feedback" class="t-sent" role="status"></p><div class="home-stop"><button id="home-job-stop" class="t-btn t-btn--danger" disabled>Arrêter le travail</button><span class="t-help">Arrêt logiciel · pas un arrêt d’urgence</span></div>'));
+  // The real page keeps its coordinate cards (#wx…, #mx…, written by app.js): they move under the progress.
+  var coordsBox=$('home-coords');
+  ['home-work-card','home-machine-card'].forEach(function(id){var card=$(id);if(card&&coordsBox&&typeof coordsBox.appendChild==='function')coordsBox.appendChild(card);});
+  if(simulationPage&&coordsBox)coordsBox.insertAdjacentHTML('beforeend',uiLocale.html('<div class="card t-coords-card"><h2>Travail</h2><div class="t-coords"><span class="t-axis">X</span><b id="home-sim-x" class="t-val">—</b><span class="t-unit">mm</span><span class="t-axis">Y</span><b id="home-sim-y" class="t-val">—</b><span class="t-unit">mm</span><span class="t-axis">Z</span><b id="home-sim-z" class="t-val">—</b><span class="t-unit">mm</span></div></div>'));
   ['load','start','pause','resume','stop'].forEach(function(action){
     $('home-job-'+action).addEventListener('click',function(){
       var source=$('job-'+action);
@@ -14,12 +21,13 @@
     });
   });
   // Realtime overrides (feed and spindle), active only while a program runs or is held.
-  $('home-job-feedback').insertAdjacentHTML('afterend',uiLocale.html('<div id="home-overrides" class="home-overrides" hidden><p class="home-overrides-title">Corrections en cours de travail</p><p id="home-live" class="home-live"></p><p id="home-spindle-warning" class="home-spindle-warning" role="alert" hidden></p>')+
+  // Overrides under the preview: ±10 % and 100 % as large steps, ±1 % as a second level.
+  $('home-left').insertAdjacentHTML('beforeend',uiLocale.html('<div id="home-overrides" class="home-overrides t-card" hidden><div class="home-overrides-head"><p class="home-overrides-title">Corrections</p><p id="home-live" class="home-live ks-sr-only"></p></div><p id="home-spindle-warning" class="t-notice" data-tone="warn" role="alert" hidden></p>')+
     ['feed','spindle'].map(function(kind){
       var label=kind==='feed'?uiLocale.t('Avance'):uiLocale.t('Broche');
-      return '<div class="home-override" data-kind="'+kind+'"><span>'+label+'</span><b id="home-override-'+kind+'">—</b><div class="home-override-buttons">'+
-        [[-10,'−10'],[-1,'−1'],[0,'100 %'],[1,'+1'],[10,'+10']].map(function(step){return '<button type="button" data-kind="'+kind+'" data-value="'+step[0]+'" disabled>'+step[1]+'</button>';}).join('')+'</div></div>';
-    }).join('')+uiLocale.html('<p id="home-override-note" class="home-overrides-note"></p></div>'));
+      return '<div class="t-override" data-kind="'+kind+'"><div class="t-ov-name">'+label+'<b id="home-override-'+kind+'">—</b></div><div class="t-ov-row">'+
+        [[-10,'−10 %',''],[0,'100 %',' t-btn--ghost'],[10,'+10 %',''],[-1,'−1 %',' t-btn--ghost t-fine'],[1,'+1 %',' t-btn--ghost t-fine']].map(function(step){return '<button type="button" class="t-btn'+step[2]+'" data-kind="'+kind+'" data-value="'+step[0]+'" disabled>'+step[1]+'</button>';}).join('')+'</div></div>';
+    }).join('')+uiLocale.html('<p id="home-override-note" class="t-help"></p></div>'));
   var overridesBox=$('home-overrides');
   overridesBox.addEventListener('click',function(e){
     var button=e.target&&e.target.closest?e.target.closest('button[data-kind]'):null;
@@ -88,6 +96,14 @@
     // Real values from Grbl's FS: field. A feed hold stops the axes, not the spindle.
     var liveOk=!!(c&&c.fresh),feed=liveOk&&finiteNumber(c.feedrate)?c.feedrate:null,rpm=liveOk&&finiteNumber(c.spindleSpeed)?c.spindleSpeed:null;
     set('home-live','textContent',feed===null&&rpm===null?'':uiLocale.t('Avance réelle ')+(feed===null?'—':number(feed)+' mm/min')+uiLocale.t(' · Broche ')+(rpm===null?'—':number(rpm)+uiLocale.t(' tr/min')));
+    set('home-live-feed','textContent',feed===null?'—':number(feed)+' mm/min');
+    set('home-live-spindle','textContent',rpm===null?'—':number(rpm)+uiLocale.t(' tr/min'));
+    // Reprendre takes the primary place while the job is held; Démarrer otherwise.
+    var held=!!(c&&c.workflow==='paused');
+    set('home-job-resume-row','hidden',!held);set('home-job-primary-row','hidden',held);
+    // Charger only shows while the machine is idle and something is selected: one primary action per screen.
+    set('home-job-load','hidden',!selection||!!(c&&c.workflow&&c.workflow!=='idle'));
+    if(simulationPage&&c&&c.workPosition)['x','y','z'].forEach(function(a){set('home-sim-'+a,'textContent',finiteNumber(c.workPosition[a])?c.workPosition[a].toFixed(3):'—');});
     var spinning=!!(c&&c.workflow==='paused'&&rpm!==null&&rpm>0);
     set('home-spindle-warning','hidden',!spinning);
     set('home-spindle-warning','textContent',spinning?uiLocale.t('Pause : les axes sont arrêtés mais la broche tourne toujours (Grbl ne l’arrête pas en pause). Ne mettez pas les mains près de l’outil.'):'');
@@ -128,6 +144,9 @@
         c.name?(same?uiLocale.t('Rechargez le fichier pour un nouveau départ.'):uiLocale.t('Choisissez et chargez le fichier du prochain travail.')):
         selection?uiLocale.t('Chargez la sélection avant de démarrer.'):uiLocale.t('Choisissez un fichier dans Fichiers.');
       set('home-job-ready','textContent',readiness);
+      // The notice's tone follows the colour rules: red alarm, amber hold, blue running, green ready.
+      var tone=!c||!c.fresh?'off':/^alarm/i.test(c.activeState||'')||failed?'danger':c.workflow==='paused'||finiteNumber(c.stalledMs)&&c.workflow==='running'?'warn':c.workflow==='running'?'info':c.canStart?'ok':'off';
+      var ready=$('home-job-ready');if(ready&&typeof ready.setAttribute==='function'&&(!ready.getAttribute||ready.getAttribute('data-tone')!==tone))ready.setAttribute('data-tone',tone);
       set('home-job-selection','textContent',different?uiLocale.t('Sélection différente : ')+selection.name+uiLocale.t('. Charger la sélection remplacera le fichier chargé.'):'');
       set('home-job-load','textContent',same?uiLocale.t('Recharger le fichier'):uiLocale.t('Charger la sélection'));
       preview(file);

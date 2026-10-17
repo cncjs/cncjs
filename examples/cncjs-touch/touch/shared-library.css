@@ -50,23 +50,13 @@
 #home-job-eta{font-size:24px}#home-job-note{color:#a8b9c8;font-size:14px}
 #home-job-name{overflow-wrap:anywhere}#job-progress-summary{font-weight:700;color:#80dfed}
 @media(max-width:780px){.job-dashboard{grid-template-columns:1fr}}
-.home-job-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
 /* Realtime overrides on the follow-up screen: one row per kind, Grbl step buttons. */
-.home-overrides{margin-top:16px;padding-top:12px;border-top:1px solid #31434c}.home-overrides[hidden]{display:none}
-.home-overrides-title{margin:0 0 8px;font-size:14px;color:#a0b0b9;letter-spacing:1px;text-transform:uppercase}
-.home-override{display:flex;align-items:center;gap:12px;margin:8px 0}.home-override>span{width:72px;color:#a0b0b9;font-size:15px}
-.home-override>b{min-width:64px;font-size:22px;font-weight:400;font-variant-numeric:tabular-nums}
-.home-override-buttons{display:flex;gap:6px;flex:1}.home-override-buttons button{flex:1;min-height:48px;padding:6px 4px;font-size:16px;border:1px solid #415565;border-radius:8px;background:#202f3b;color:#edf5f8;font-variant-numeric:tabular-nums;cursor:pointer;touch-action:manipulation}
-.home-override-buttons button:disabled{opacity:.4;cursor:not-allowed}.home-override-buttons button[data-value="0"]{border-bottom:3px solid #f18b23}
-.home-overrides-note{margin:6px 0 0;font-size:12px;color:#8fa0b0}
-.home-job-actions button,.job-dialog button{min-height:56px;padding:12px 22px;border:1px solid #415565;border-radius:10px;background:#202f3b;color:#edf5f8;font:inherit;cursor:pointer;touch-action:manipulation}
-.home-job-actions button:disabled,.job-dialog button:disabled{opacity:.45;cursor:not-allowed}
+.job-dialog button{min-height:56px;padding:12px 22px;border:1px solid #415565;border-radius:10px;background:#202f3b;color:#edf5f8;font:inherit;cursor:pointer;touch-action:manipulation}
+.job-dialog button:disabled{opacity:.45;cursor:not-allowed}
 #home-job-stop{background:#702d32;border-color:#c27070}
 #home-job-resume{background:#176047;border-color:#3a9c74}
-.home-job-actions button:focus-visible,.job-dialog button:focus-visible{outline:3px solid #55d6ed;outline-offset:3px}
+.job-dialog button:focus-visible{outline:3px solid #55d6ed;outline-offset:3px}
 .job-dialog[hidden]{display:none!important}
 .job-dialog button{margin:8px}
 #home-job-feedback{color:#a8b9c8;overflow-wrap:anywhere}
-.home-live{margin:0 0 6px;font-size:15px;color:#c9d6dc;font-variant-numeric:tabular-nums}.home-live:empty{display:none}
-.home-spindle-warning{margin:6px 0;padding:8px 10px;border-left:4px solid #ef6f6f;background:#3a1f22;color:#ffd7d7;font-size:15px}.home-spindle-warning[hidden]{display:none}
 .job-travel{font-size:.95em}.job-travel.outside{color:#ffb347;font-weight:700}.job-travel.unknown{opacity:.75}

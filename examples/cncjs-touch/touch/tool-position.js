@@ -33,7 +33,9 @@
   trail.setAttribute('class','toolpath-progress');trail.setAttribute('viewBox','0 0 960 540');trail.setAttribute('aria-hidden','true');trail.setAttribute('preserveAspectRatio','none');
   trail.appendChild(trailLine);trail.hidden=true;img.parentNode.appendChild(trail);
   var drawnTrail={source:null,points:-1};
-  var note=document.createElement('p');note.className='tool-position-note';note.id='tool-position-note';document.getElementById('home-job-note').insertAdjacentElement('afterend',note);
+  // The note explains the marker: it sits right under the preview (UI 2027), not among the actions.
+  var note=document.createElement('p');note.className='tool-position-note';note.id='tool-position-note';
+  if(img.parentNode&&typeof img.parentNode.insertAdjacentElement==='function')img.parentNode.insertAdjacentElement('afterend',note);else document.getElementById('home-job-note').insertAdjacentElement('afterend',note);
   var state=null,simulation=false,received=0,frame=null,expiry=null,disposed=false;
   function hide(message){marker.hidden=true;trail.hidden=true;if(note.textContent!==message)note.textContent=message;}
   function drawTrail(meta,s,box){

@@ -19,11 +19,6 @@ body.ks-real.display-large{font-size:20px}.ks-real.display-large .screen p,.ks-r
 .ks-real .ks-simulation{color:#ff9d91;border-color:#985449}
 .ks-real #status-bar{min-height:40px;border-bottom:1px solid #31434c;padding:4px 16px;font-size:13px}
 .ks-real #status-bar button{min-height:30px;padding:4px 12px}
-.ks-real #screen-home .coords b{font-size:24px}
-.ks-real #screen-home>.card:not(.wide)>h2{display:block}
-.ks-real #screen-home .job-dashboard{min-height:0;gap:20px}
-.ks-real #home-job-image{height:calc(var(--view-height)*.43);min-height:100px}
-.ks-real #home-job-percent{font-size:44px}.ks-real #home-job-eta{font-size:20px}
 body.ks-real #screen-files .library-execution>h2{display:block;color:#ffb0a5;font-size:17px}
 body.ks-real #screen-files .library-execution>.mute{display:block;font-size:12px}
 .ks-sheet a{display:block;margin-top:16px;color:#a5d5e7}
@@ -54,10 +49,6 @@ body.ks-real #screen-files .library-execution>.mute{display:block;font-size:12px
 .ks-ui .card{background:#17232a;border:1px solid #293b44;border-radius:8px;padding:16px!important}.ks-ui .screen h2{font-size:20px;color:#b7c9d1;font-weight:400}
 .ks-ui .screen p{line-height:1.4}.ks-ui button{touch-action:manipulation}.ks-ui button:focus-visible,.ks-ui a:focus-visible{outline:3px solid #f5a147;outline-offset:3px}
 .ks-ui #screen-home>.card>h2,.ks-ui #file{display:none}
-.ks-ui .job-dashboard{margin:0;gap:26px;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);min-height:calc(var(--view-height) - 64px)}
-.ks-ui #home-job-image{height:calc(var(--view-height)*.64);max-height:550px}.ks-ui .job-art{background:#0e181e;border:0}
-.ks-ui #home-job-percent{font-size:64px;font-weight:400;color:#f7a449}.ks-ui #home-job-progress{accent-color:#f18b23;height:18px}.ks-ui #home-job-eta{font-size:24px}
-.ks-ui .home-job-actions button{min-height:58px;padding:12px 18px;font-size:18px}.ks-ui .job-metrics{min-width:0}
 .ks-ui #screen-jog .pad{gap:12px}.ks-ui #screen-jog .jog{min-height:86px;font-size:30px;font-weight:400;border-bottom:4px solid #20b7ac}.ks-ui .coords b{font-size:32px;font-weight:400}
 .ks-ui #screen-jog .step,.ks-ui #screen-origin button{min-height:60px;font-size:20px}
 .ks-ui #screen-files .library-execution{border:0!important;border-top:1px solid #31434c!important;border-radius:0}
@@ -65,7 +56,7 @@ body.ks-real #screen-files .library-execution>.mute{display:block;font-size:12px
 .ks-ui #screen-files .library-file{border-radius:5px;border-left:4px solid transparent;min-height:66px}.ks-ui #screen-files .library-file[aria-pressed=true]{border-left-color:#f18b23;box-shadow:none;background:#263a43}
 .ks-ui #screen-history li{border-bottom:1px solid #2b3d46;padding:8px 0}.ks-ui #screen-history li strong{font-size:17px;font-weight:500}
 @media(max-width:1000px){.ks-tiles{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,1fr);gap:10px}.ks-tile{min-height:110px;font-size:19px;gap:10px}.ks-tile svg{width:42px;height:42px}.ks-overview{padding:10px}.ks-ui{--ks-rail:72px!important}}
-@media(max-width:650px){.ks-ui #simulation-banner{gap:8px;padding:6px 10px!important}.ks-brand,.ks-exit{display:none}.ks-ui #screen-menu.active{grid-template-columns:1fr;gap:8px!important}.ks-overview{display:none}.ks-ui .job-dashboard{grid-template-columns:1fr 1fr;gap:12px}.ks-ui #home-job-percent{font-size:40px}.ks-nav{min-height:65px}}
+@media(max-width:650px){.ks-ui #simulation-banner{gap:8px;padding:6px 10px!important}.ks-brand,.ks-exit{display:none}.ks-ui #screen-menu.active{grid-template-columns:1fr;gap:8px!important}.ks-overview{display:none}.ks-nav{min-height:65px}}
 /* File selection: one panel per task, details in an accessible sheet. */
 .ks-ui #screen-files.active{grid-template-columns:minmax(280px,.85fr) minmax(0,1.4fr);align-items:start}
 .ks-ui #screen-files .library-list-title{flex-wrap:wrap;gap:8px}
