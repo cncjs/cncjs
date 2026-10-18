@@ -16,6 +16,10 @@ node preview-server.cjs
 
 Open the localhost URL printed by the preview server. It serves a local visual fixture with synthetic files, a virtual controller and simulated progress. Stop it with Ctrl+C. The mock controller rejects physical commands. The fixture is for local evaluation only; do not deploy its fake authentication or mock responses to a real CNCjs server.
 
+## Resume from a line and tool change (2026-10-18)
+
+Suivi can restart a program from one of its lines: the server replays the program's state up to that line, checks it, and loads a rebuilt program with a safe preamble (clearance height, XY start, spindle and coolant with a spin-up dwell, slow plunge). Pauses asked by the program (`M0`, `M1`, tool change `M6`) can be resumed from the touch screen; after a tool change the spindle is started again before the program resumes. Details in `TESTING.md`.
+
 ## Server integration (2026-10-16)
 
 The backend now lives in the CNCjs source tree instead of being patched into a compiled build: `src/server/services/touch/` holds the job service, NDJSON event stream, motion preflight and probe-input observer; `src/server/api/api.touch.js` adds the session check and HTTP status mapping; `src/server/app.js` registers the routes next to the other API routes and `src/server/index.js` starts the service with the other services. The former `install-custom.cjs` patcher and the `CNC_TOUCH_MODULE` bootstrap are gone. The backend tests were ported to Jest (`yarn test`); the offline suite in this directory now covers the browser side only (50/50 checks).
