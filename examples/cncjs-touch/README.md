@@ -16,6 +16,10 @@ node preview-server.cjs
 
 Open the localhost URL printed by the preview server. It serves a local visual fixture with synthetic files, a virtual controller and simulated progress. Stop it with Ctrl+C. The mock controller rejects physical commands. The fixture is for local evaluation only; do not deploy its fake authentication or mock responses to a real CNCjs server.
 
+## Resume from a line and tool change (2026-10-18)
+
+Suivi can restart a program from one of its lines: the server replays the program's state up to that line, checks it, and loads a rebuilt program with a safe preamble (clearance height, XY start, spindle and coolant with a spin-up dwell, slow plunge). Pauses asked by the program (`M0`, `M1`, tool change `M6`) can be resumed from the touch screen; after a tool change the spindle is started again before the program resumes. Details in `TESTING.md`.
+
 ## UI 2027 (2026-10-17)
 
 The interface was redesigned for an operator standing about a metre from a 1366 × 768 tablet, often with gloves, looking at the machine more than at the screen. Nothing changed in the contract with the server or in the safety rules (confirmation tickets, guards, ≤ 2.5 s freshness, no automatic resume, software stop is not an emergency stop): only the presentation and the organisation of the screens.

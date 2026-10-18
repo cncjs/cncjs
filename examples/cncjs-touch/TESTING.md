@@ -26,6 +26,31 @@ An optional report can be written outside the source tree:
 node verify-project.cjs --report /absolute/path/to/offline-report.json
 ```
 
+## Resume from a line and tool change (2026-10-18)
+
+**Resume from a line** (`src/server/services/touch/resume.js`, Suivi → "Reprendre à une ligne…", `touch/job-resume.js`). The server replays the program's state up to the chosen line and loads a rebuilt program:
+- State replayed: units, plane, work offset, motion mode, feed, plunge feed (feed of the last cutting move down in Z), spindle and speed, coolant, tool, and the work position. `G91` sections are followed.
+- Preamble: modes with `G90`, rapid to the clearance height (highest Z seen before the line), rapid over the XY start, spindle back on with a 3 s dwell, coolant, plunge at the plunge feed, then the cutting feed. A first line that relies on the modal motion (`X10 Y5` after `G1`) gets it back.
+- Refused instead of guessed: `G10`/`G92` before the line, `G93`, a resume inside `G91`, a position unknown since a `G53`/`G28`/`G30` move, unknown clearance, feed or spindle speed.
+- Lines are numbered like the CNCjs sender (non-empty lines, comment lines included). After a stop, the suggested line is the last acknowledged one minus 15, since Grbl plans moves ahead of execution. The line is checked first (`resumePlan`, nothing loaded), then loaded (`load` with `fromLine`), and the normal start confirmation says it is a resume and which tool is expected.
+
+**Program pauses.** CNCjs comments `M6` out and pauses; `M0`/`M1` pause too. Such a pause could only be resumed in CNCjs before; it can now be resumed from the touch screen once the machine has stopped (Idle or Hold, nothing queued).
+- During a tool change Suivi says what to do: wait for the stop, M5, change the tool, set Z zero again if the length changes. It offers M5 while the spindle turns.
+- The resume confirmation asks for the tool and the Z zero, and the server starts the spindle again at the programmed speed, with a 3 s dwell, before resuming.
+- The spindle to restart is learnt from fresh reports during the whole pause: on the simulator, `$G` still said M5 when the pause began.
+- A pause on a Grbl error still cannot be resumed: stop the job, then resume from a line.
+
+Found on the way: previews refused every file with a tool change ("M6 non pris en charge"); they accept `M6` now.
+
+Tests: `resume.test.js` (state, preamble, refusals), `job-service.test.js` (plan, load from a line, stopped line in the original numbering, M6/M0/M1 resume, spindle learnt during the pause, error pause refused), `test-job-resume.cjs` (texts, suggested line, check then load, a passing refusal keeps the panel, M5 button, dialog note, translations), `test-preview.cjs` (M6).
+
+Checked on the tablet against the Grbl 1.1h simulator:
+- A program with `T2 M6` in the middle, spindle on: the pause notice and the M5 button were shown. The confirmation said "Outil T2 en place et zéro Z vérifié ? La broche sera relancée (M3 S8000, 3 s)". The spindle came back at 8000 before the program resumed, and the job ended finished.
+- The same program stopped at line 19 and resumed from line 15: the suggested line 4 was refused (position unknown); line 15 rose to Z 5, moved to X0 Y15, started the spindle, plunged slowly to Z -1, ran to the end and ended finished.
+- A first attempt showed that the M5 sent after the stop closed the panel and dropped the check; fixed.
+
+Not tested on the real machine. A real tool change also needs the Z zero set again for the new tool; the touch screen does not do that yet (probing is still simulated).
+
 ## UI 2027 (2026-10-17)
 
 Redesign of every screen for an operator standing about a metre from the tablet (README, "UI 2027"). Branch `feat/touch-settings-extras`, commits `78db2971` (tokens, components, validated mockups in [design/](design/)) to `e2bf37eb`, deployed on the Surface RT. The server contract and the safety rules did not change; the offline suite keeps its ids and events (one new test, `test-status-strip.cjs`, and three tests adapted to new defaults or wording: display settings gain `theme`, the viewport memory key is `cncjs-touch-fit-v2`, a recalled scale is re-measured when the content shrank).
