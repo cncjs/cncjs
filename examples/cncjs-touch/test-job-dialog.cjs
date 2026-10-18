@@ -86,5 +86,10 @@ async function fixture(monotonic=false){
    f.machine[flag]=false;f.win.cncJobControls.refresh();await f.flush();assert(f.node('job-dialog').hidden,op+': state change invalidates the ticket');
  }
  f=await fixture();f.win.cncJobControls.prepareCommand('gcode');await f.flush();assert(!f.calls.some(c=>c.action==='prepare'),'unknown command refused');
+ // A confirmed command with parameters (Z zero with a plate) sends them with the prepare request and uses its own title.
+ {const g=await fixture();g.machine.canZeroZ=true;g.win.cncJobControls.prepareCommand('zeroZ',{thickness:10,search:15});await g.flush();
+  const req=g.calls.at(-1);assert.equal(req.action,'prepare');assert.equal(req.operation,'zeroZ');assert.equal(req.thickness,10);assert.equal(req.search,15);assert.equal(req.revision,undefined);
+  await g.resolve();assert.equal(g.node('job-dialog').hidden,false);assert.equal(g.node('job-dialog-title').textContent,'Régler le zéro Z avec la plaque');
+  g.machine.canZeroZ=false;g.win.cncJobControls.refresh();await g.flush();assert(g.node('job-dialog').hidden,'the dialog closes when the server no longer allows the probe');}
  console.log('PASS: focus, inert restoration, keyboard trap, delayed prepare, modal exclusion, stale click, alarm/revision invalidation, visibility/disposal and single confirmation; no network.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

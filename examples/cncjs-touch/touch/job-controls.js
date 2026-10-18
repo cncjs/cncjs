@@ -59,7 +59,7 @@
   }
   // Whether the machine state still allows what a ticket was issued for.
   // Commissioning commands confirmed through the same dialog (no loaded program involved).
-  var COMMANDS={unlock:'canUnlock',home:'canHome',spindle:'canSpindleTest'};
+  var COMMANDS={unlock:'canUnlock',home:'canHome',spindle:'canSpindleTest',zeroZ:'canZeroZ'};
   function standalone(operation){return operation==='macro'||Object.prototype.hasOwnProperty.call(COMMANDS,operation);}
   function ticketAllowed(t,state){
     if(t.operation==='macro')return !!state.canMacro;
@@ -201,6 +201,8 @@
     if(busy||!current)return;
     var port=current.port,revision=current.revision, ownGeneration=generation, ownConfirmation=++confirmation, started=elapsedClock(),origin=document.activeElement;
     var request=operation==='macro'?{operation:'macro',macroId:extra&&extra.macroId}:standalone(operation)?{operation:operation}:{operation:operation,revision:revision};
+    // Commands with parameters (the plate probe: thickness and search distance).
+    if(standalone(operation)&&operation!=='macro'&&extra)Object.keys(extra).forEach(function(k){request[k]=extra[k];});
     preparing++;
     command('prepare',request).then(function(data){
       preparing--;
@@ -211,7 +213,7 @@
       if(!confirmable()||otherDialog()){dismiss(false);return;}
       dialogReturn=origin;
       dialogBackground=Array.prototype.filter.call(document.body.children||[],function(node){return node!==$('job-dialog')&&!/^(SCRIPT|LINK|STYLE)$/.test(node.tagName);}).map(function(node){var entry={node:node,inert:node.inert};node.inert=true;return entry;});
-      $('job-dialog-title').textContent=({start:uiLocale.t('Confirmer le démarrage'),macro:uiLocale.t('Exécuter la macro'),unlock:uiLocale.t('Déverrouiller la machine'),home:uiLocale.t('Lancer la prise d’origine'),spindle:uiLocale.t('Démarrer la broche')})[operation]||uiLocale.t('Confirmer la reprise');
+      $('job-dialog-title').textContent=({start:uiLocale.t('Confirmer le démarrage'),macro:uiLocale.t('Exécuter la macro'),unlock:uiLocale.t('Déverrouiller la machine'),home:uiLocale.t('Lancer la prise d’origine'),spindle:uiLocale.t('Démarrer la broche'),zeroZ:uiLocale.t('Régler le zéro Z avec la plaque')})[operation]||uiLocale.t('Confirmer la reprise');
       $('job-dialog-file').textContent=data.name+' · '+port;
       // Start of a real job: is the program's XY extent inside the machine travel?
       if(window.CNCTravelCheck){var img=$('home-job-image'),pv=img&&img.cncPreview&&img.cncPreview.file===current.name?img.cncPreview:null;
@@ -300,7 +302,7 @@
     // Commissioning: unlock ($X), home ($H) or spindle test (M3), each after the confirmation dialog.
     // Closes an open confirmation and drops a prepare still on its way.
     cancel:function(){dismiss(false);},
-    prepareCommand:function(operation){if(Object.prototype.hasOwnProperty.call(COMMANDS,operation))prepare(operation);},
+    prepareCommand:function(operation,extra){if(Object.prototype.hasOwnProperty.call(COMMANDS,operation))prepare(operation,extra);},
     spindleStop:function(){if(!current)return Promise.reject(new Error(uiLocale.t('État indisponible.')));return command('spindleStop');},
     // Resume from a line: what would be sent (nothing loaded), then the load itself.
     resumePlan:function(file,line){if(!current)return Promise.reject(new Error(uiLocale.t('État indisponible.')));return run('resumePlan',{file:file,line:line});},

@@ -15,8 +15,19 @@
     if(p.kind==='error')return t('Pause sur une erreur Grbl : arrêtez le travail, corrigez la cause, puis reprenez à une ligne.');
     return '';
   }
+  // Plate probe parameters of the confirmation being prepared (set by the panel below).
+  var pendingPlate=null;
+  function plateNote(p){
+    return t('Plaque de ')+p.thickness+t(' mm posée sous l’outil et sonde branchée ? Descente de ')+p.search+t(' mm au plus ; le dessus de la plaque deviendra Z = épaisseur, puis l’outil remontera 5 mm au-dessus.');
+  }
+  function lastZeroText(z){
+    if(!z)return '';
+    if(z.failed)return t('Dernier palpage échoué : ')+z.failed;
+    return t('Dernier zéro Z : plaque ')+z.thickness+t(' mm, repère ')+z.wcs+t(', contact à Z machine ')+z.machineZ+'.';
+  }
   // Extra line in the confirmation dialog.
   function dialogNote(operation,c){
+    if(operation==='zeroZ')return pendingPlate?plateNote(pendingPlate):'';
     if(!c)return '';
     var p=c.programPause;
     if(operation==='resume'&&p&&p.kind==='M6')return t('Outil')+(p.tool!==null&&p.tool!==undefined?' T'+p.tool:'')+t(' en place et zéro Z vérifié ?')+(p.restartSpindle?t(' La broche sera relancée (')+spindleText(p.restartSpindle)+t(', 3 s) avant la reprise.'):'');
@@ -36,7 +47,8 @@
     if(plan.tool!==null&&plan.tool!==undefined)parts.push(t('Outil attendu : T')+plan.tool+t(' (vérifiez qu’il est en place et que le zéro Z lui correspond).'));
     return parts.join(' ');
   }
-  var api={pauseText:pauseText,dialogNote:dialogNote,suggestedLine:suggestedLine,planText:planText,PLANNER_MARGIN:PLANNER_MARGIN};
+  var api={pauseText:pauseText,dialogNote:dialogNote,suggestedLine:suggestedLine,planText:planText,plateNote:plateNote,lastZeroText:lastZeroText,PLANNER_MARGIN:PLANNER_MARGIN,
+    setPendingPlate:function(p){pendingPlate=p;}};
   if(typeof module==='object'&&module.exports){module.exports=api;return;}
   root.CNCJobResume=api;
   var ready=document.getElementById('home-job-ready');if(!ready)return;
@@ -55,7 +67,22 @@
   input.setAttribute('type','number');input.setAttribute('min','2');input.setAttribute('inputmode','numeric');
   plan.setAttribute('role','status');open.hidden=true;panel.hidden=true;load.disabled=true;
   [label,input,hint,check,load,cancel,plan].forEach(function(n){panel.appendChild(n);});
-  after(ready,pause);after(pause,open);after(open,panel);
+  // Z zero with a touch plate: thickness and search distance, remembered on this device.
+  var plate=el('div','home-plate','t-card'),plateTitle=el('p','home-plate-title','','Zéro Z avec une plaque'),
+    thickLabel=el('label','home-plate-thickness-label','','Épaisseur de la plaque (mm)'),thick=el('input','home-plate-thickness'),
+    searchLabel=el('label','home-plate-search-label','','Descente maximale (mm)'),search=el('input','home-plate-search'),
+    probe=el('button','home-plate-probe','t-btn','Palper le zéro Z…'),plateHelp=el('p','home-plate-help','t-help','Posez la plaque sur la pièce sous l’outil et branchez la sonde. Descente à 100 mm/min, recul 1 mm, seconde touche à 25 mm/min ; le dessus de la plaque devient Z = épaisseur, puis l’outil remonte 5 mm au-dessus.'),
+    plateLast=el('p','home-plate-last','t-help'),plateStatus=el('p','home-plate-status','t-notice');
+  [thick,search].forEach(function(i){i.setAttribute('type','number');i.setAttribute('step','0.01');i.setAttribute('inputmode','decimal');});
+  plateStatus.setAttribute('role','status');plate.hidden=true;
+  [plateTitle,thickLabel,thick,searchLabel,search,probe,plateHelp,plateLast,plateStatus].forEach(function(n){plate.appendChild(n);});
+  var PLATE_KEY='cncjs-touch-plate-v1';
+  function loadPlate(){try{var v=JSON.parse(localStorage.getItem(PLATE_KEY)||'null');if(v&&typeof v==='object'){thick.value=v.thickness>0?String(v.thickness):'';search.value=v.search>0?String(v.search):'10';return;}}catch(_){}
+    thick.value='';search.value='10';}
+  function savePlate(p){try{localStorage.setItem(PLATE_KEY,JSON.stringify(p));}catch(_){}}
+  function numberOf(v){var n=Number(String(v).replace(',','.'));return isFinite(n)?n:NaN;}
+  loadPlate();
+  after(ready,pause);after(pause,open);after(open,panel);after(panel,plate);
   var machine=null,selection=window.cncLibrarySelection||null,checked=null,sequence=0;
   function controls(){return window.cncJobControls;}
   function set(node,key,value){if(node[key]!==value)node[key]=value;}
@@ -63,7 +90,12 @@
   function close(){panel.hidden=true;checked=null;sequence++;set(load,'disabled',true);set(plan,'textContent','');}
   function render(){
     var p=machine&&machine.programPause;
-    set(pause,'hidden',!p||!pauseText(p));set(pauseText_,'textContent',pauseText(p));
+    var text=pauseText(p);if(p&&p.kind==='M6'&&machine.canZeroZ)text+=t(' Le zéro Z avec la plaque se règle ci-dessous.');
+    set(pause,'hidden',!p||!text);set(pauseText_,'textContent',text);
+    set(plate,'hidden',!(machine&&(machine.canZeroZ||machine.probing)));
+    set(probe,'disabled',!(machine&&machine.canZeroZ));
+    set(plateLast,'textContent',lastZeroText(machine&&machine.zeroZ));
+    set(plateStatus,'textContent',machine&&machine.probing?t('Palpage en cours… Arrêter interrompt.'):'');
     set(m5,'hidden',!(p&&machine.canSpindleStop&&machine.spindleSpeed>0));
     var can=canResumeFromLine();set(open,'hidden',!can||!panel.hidden);
     // A job that starts closes the panel; a passing refusal (an M5 or a $G on
@@ -94,6 +126,15 @@
     var c=controls();if(!checked||!c||typeof c.loadFrom!=='function'||load.disabled)return;
     var target=checked;set(load,'disabled',true);
     c.loadFrom(target.file,target.line).then(function(){close();render();},function(e){set(plan,'textContent',e.message);set(load,'disabled',false);});
+  });
+  probe.addEventListener('click',function(){
+    var c=controls();if(!c||typeof c.prepareCommand!=='function'||probe.disabled)return;
+    var th=numberOf(thick.value),se=numberOf(search.value);
+    if(!(th>0&&th<=50)){set(plateStatus,'textContent',t('Indiquez l’épaisseur de la plaque (mm).'));return;}
+    if(!(se>=1&&se<=100)){set(plateStatus,'textContent',t('Descente maximale invalide (1 à 100 mm).'));return;}
+    var params={thickness:Math.round(th*1000)/1000,search:Math.round(se*1000)/1000};
+    savePlate(params);pendingPlate=params;set(plateStatus,'textContent','');
+    c.prepareCommand('zeroZ',params);
   });
   m5.addEventListener('click',function(){var c=controls();if(c&&typeof c.spindleStop==='function')c.spindleStop().catch(function(){});});
   window.addEventListener('cnc-job-status',function(e){var d=e&&e.detail||{};if(d.simulation)return;machine=d.machine||null;render();});
