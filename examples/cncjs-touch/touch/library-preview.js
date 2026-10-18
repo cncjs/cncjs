@@ -2,7 +2,7 @@
 (function (root) {
   'use strict';
   var source = typeof document !== 'undefined' && document.currentScript && document.currentScript.src;
-  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker6') : 'library-preview-worker.js?v=worker6';
+  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker7') : 'library-preview-worker.js?v=worker7';
   var generation = 0;
   function scan(text, segment, cancelled, progress, yieldAfterLine) {
     return new Promise(function (resolve, reject) {
@@ -89,7 +89,7 @@
         else if (letter === 'J') { if (seenJ) throw new Error('paramètre d’arc répété'); seenJ = true; hasJ = true; jWord = v; }
         else if (letter === 'R') { if (seenR) throw new Error('paramètre d’arc répété'); seenR = true; radiusWord = v; }
         else if (letter === 'M') {
-          if (v !== 0 && v !== 1 && v !== 2 && v !== 3 && v !== 4 && v !== 5 && v !== 7 && v !== 8 && v !== 9 && v !== 30) throw new Error('M' + v + ' non pris en charge par cet aperçu');
+          if (v !== 0 && v !== 1 && v !== 2 && v !== 3 && v !== 4 && v !== 5 && v !== 6 && v !== 7 && v !== 8 && v !== 9 && v !== 30) throw new Error('M' + v + ' non pris en charge par cet aperçu');
           if (v === 2 || v === 30) finish = true;
         } else if (letter === 'P') { if (seenP) throw new Error('paramètre P répété'); seenP = true; }
         else if (letter !== 'N' && letter !== 'F' && letter !== 'S' && letter !== 'T') throw new Error('mot ' + letter + ' non pris en charge');
