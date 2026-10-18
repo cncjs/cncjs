@@ -44,7 +44,7 @@
   var refreshing = false, busy = false, generation = 0, reader = null, pageSize = 4, page = 0;
   var mounted = false, refreshId = 0, refreshAgain = 0, refreshPromise = null, requests = {}, rows = Object.create(null), listKey = '', deferredText = {}, detailLoading = false;
   var regenerating = false, regenerationId = 0;
-  var machine = null, fileStateKey = '', listState = 'loading';
+  var machine = null, fileStateKey = '', listState = 'loading', listSignature = '';
   var suffix = '.cnctouch.json';
   function visible() { return !document.hidden && screen.classList.contains('active'); }
   function setText(id, value) {
@@ -304,7 +304,13 @@
   function refresh(manual) {
     if (!visible()) { refreshAgain = Math.max(refreshAgain, manual ? 2 : 1); return Promise.resolve(); }
     if (refreshing) { refreshAgain = Math.max(refreshAgain, manual ? 2 : 1); return refreshPromise; }
-    refreshing = true; listState = 'loading'; renderList(); setText('library-status', uiLocale.t('Actualisation de la bibliothèque…')); var id = ++refreshId;
+    // Re-opening Fichiers checks a list already shown without touching the screen: the
+    // status and the rows are only written again when the answer differs (each write
+    // makes the tablet lay the whole screen out again).
+    var quiet = !manual && listState === 'ready';
+    refreshing = true;
+    if (!quiet) { listState = 'loading'; renderList(); setText('library-status', uiLocale.t('Actualisation de la bibliothèque…')); }
+    var id = ++refreshId;
     refreshPromise = request('GET', 'status', null, 'list').then(function (status) {
       if (id !== refreshId) return null;
       if (!status.configured) throw new Error(uiLocale.t('Le dossier partagé CNCjs n’est pas encore configuré.'));
@@ -317,8 +323,9 @@
       all.forEach(function (f) { if (f.name.slice(-suffix.length) === suffix) previews[f.name.slice(0, -suffix.length)] = f.mtime; });
       files.forEach(function (f) { f.previewMtime = previews[f.name] || ''; });
       files.sort(function (a, b) { return new Date(b.mtime) - new Date(a.mtime) || a.name.localeCompare(b.name); });
+      var signature = JSON.stringify(files), unchanged = quiet && signature === listSignature; listSignature = signature;
       listState = 'ready'; renderList();
-      setText('library-status', uiLocale.t('À jour · ') + new Date().toLocaleTimeString(window.cncI18n?window.cncI18n.locale:'fr-FR', { hour: '2-digit', minute: '2-digit' }));
+      if (!unchanged) setText('library-status', uiLocale.t('À jour · ') + new Date().toLocaleTimeString(window.cncI18n?window.cncI18n.locale:'fr-FR', { hour: '2-digit', minute: '2-digit' }));
       var f = files.filter(function (item) { return item.name === selected; })[0];
       // A file just uploaded appears in CNCjs's list a few seconds later: keep it
       // selected meanwhile instead of falling back to another file.
@@ -504,7 +511,7 @@
     if (mounted || !visible()) return;
     mounted = true;
     Object.keys(deferredText).forEach(function (id) { setText(id, deferredText[id]); }); deferredText = {};
-    renderList();
+    renderList(); applyThumbs(); scheduleThumbs();
     var manual = refreshAgain === 2; refreshAgain = 0;
     refresh(manual);
   }

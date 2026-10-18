@@ -13,13 +13,14 @@ const fs=require('fs'),vm=require('vm'),assert=require('assert');
  await flush();assert.equal(calls.length,initial);
  const row=node('library-list').children[0];row.focus();
  const navigate=name=>{activeScreens.clear();activeScreens.add(name);handlers['cnc-screen-change']({detail:name});};
- navigate('home');time+=5000;navigate('files');await flush();assert.equal(previewCount(),1);
+ const reopen=stats.writes;navigate('home');time+=5000;navigate('files');await flush();assert.equal(previewCount(),1);
+ assert.equal(stats.writes,reopen,'re-opening with an unchanged list writes nothing');
  assert.strictEqual(node('library-list').children[0],row);assert.strictEqual(document.activeElement,row);
  const writes=stats.writes;navigate('home');document.hidden=true;document.handlers.visibilitychange();document.hidden=false;document.handlers.visibilitychange();await flush();assert.equal(stats.writes,writes);assert.equal(calls.length,initial+2);
  mtime='b';time+=5000;navigate('files');await flush();assert.equal(previewCount(),2);
  assert(emitted.some(e=>e.type==='cnc-library-preview-updated'&&e.detail.file==='test.nc'));
  node('library-refresh').handlers.click();await flush();assert.equal(previewCount(),3);
  assert.equal(intervals,0);
- console.log('PASS: entry/action refresh only, zero library interval, hidden visibility no requests or repaint, retained row/focus, unchanged preview reuse and same-file invalidation.');
+ console.log('PASS: entry/action refresh only, zero library interval, hidden visibility no requests or repaint, retained row/focus, no write on an unchanged re-opening, unchanged preview reuse and same-file invalidation.');
 })().catch(e=>{console.error(e);process.exitCode=1});
 
