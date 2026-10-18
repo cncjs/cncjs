@@ -15,7 +15,7 @@
     uiLocale.html('<p id="job-feedback" role="status">Le chargement ne démarre pas le travail.</p>') +
     uiLocale.html('<p class="mute">L’arrêt logiciel ne remplace pas l’arrêt physique de la machine.</p>') +
     uiLocale.html('<div id="job-dialog" class="job-dialog" role="dialog" aria-modal="true" aria-labelledby="job-dialog-title" hidden>') +
-    uiLocale.html('<div class="job-dialog-card"><h2 id="job-dialog-title">Confirmer le démarrage</h2><p id="job-dialog-file"></p><p id="job-travel" class="job-travel" hidden></p>') +
+    uiLocale.html('<div class="job-dialog-card"><h2 id="job-dialog-title">Confirmer le démarrage</h2><p id="job-dialog-file"></p><p id="job-travel" class="job-travel" hidden></p><p id="job-note" class="job-note" hidden></p>') +
     uiLocale.html('<p>')+(simulation?uiLocale.t('Test des boutons uniquement. Aucun mouvement ni activation du laser.'):uiLocale.t('Cette action met la machine en mouvement et peut activer l’outil. Vérifiez la machine, l’origine et la zone de travail.'))+uiLocale.html('</p>') +
     uiLocale.html('<label class="job-confirm-label t-check"><input id="job-check" type="checkbox">')+(simulation?uiLocale.t('Je souhaite lancer cette simulation.'):uiLocale.t('Je suis devant la machine et prêt à lancer ce fichier.'))+uiLocale.html('</label>') +
     // The confirmation window is visible: a countdown in words and a bar that empties.
@@ -216,6 +216,8 @@
       // Start of a real job: is the program's XY extent inside the machine travel?
       if(window.CNCTravelCheck){var img=$('home-job-image'),pv=img&&img.cncPreview&&img.cncPreview.file===current.name?img.cncPreview:null;
         window.CNCTravelCheck.show($('job-travel'),operation==='start'&&!simulation?window.CNCTravelCheck.check(pv,current):null);}
+      // Tool change resume or a resume from a line: what will happen, in one line.
+      var note=window.CNCJobResume&&!simulation?window.CNCJobResume.dialogNote(operation,current):'';if($('job-note')){$('job-note').textContent=note;$('job-note').hidden=!note;}
       countdown(Math.max(0,Math.ceil((until-elapsedClock())/1000)));
       $('job-check').checked=false;$('job-confirm').disabled=true;$('job-dialog').hidden=false;$('job-dismiss').focus();
     },function(){preparing--;});
@@ -300,6 +302,9 @@
     cancel:function(){dismiss(false);},
     prepareCommand:function(operation){if(Object.prototype.hasOwnProperty.call(COMMANDS,operation))prepare(operation);},
     spindleStop:function(){if(!current)return Promise.reject(new Error(uiLocale.t('État indisponible.')));return command('spindleStop');},
+    // Resume from a line: what would be sent (nothing loaded), then the load itself.
+    resumePlan:function(file,line){if(!current)return Promise.reject(new Error(uiLocale.t('État indisponible.')));return run('resumePlan',{file:file,line:line});},
+    loadFrom:function(file,line){if(busy||!current)return Promise.reject(new Error(uiLocale.t('Opération en cours…')));return command('load',{file:file,fromLine:line});},
     readSettings:function(){if(busy||!current)return Promise.reject(new Error(uiLocale.t('Opération en cours…')));return command('readSettings');},
     // Full $$ list and firmware banner, read-only.
     settings:function(){if(!current)return Promise.reject(new Error(uiLocale.t('État indisponible.')));return run('settings');}};
