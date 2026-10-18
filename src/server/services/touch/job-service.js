@@ -13,6 +13,8 @@ import { performance } from 'perf_hooks';
 import { createPreflight, controllerStatus } from './motion-preflight.js';
 // eslint-disable-next-line import/extensions
 import { createProbeInput } from './probe-input.js';
+// eslint-disable-next-line import/extensions
+import { buildResume, programLines } from './resume.js';
 
 // A status report older than this is not trusted to describe the machine.
 const MAX_REPORT_AGE_MS = 2500;
@@ -30,6 +32,9 @@ const EXPOSED_SETTINGS = [20, 21, 22, 23, 30, 31, 32, 110, 111, 112, 120, 121, 1
 // A running job is reported stalled when Grbl stays idle this long while CNCjs
 // still waits for acknowledgements (a lost 'ok' or a line lost on the link).
 const STALL_MS = 30000;
+
+// Spin-up dwell when the spindle is started again after a tool change.
+const TOOL_CHANGE_SPINUP_S = 3;
 
 const grblCode = (res) => {
   const n = Number(res && res.message);
@@ -149,6 +154,10 @@ export const createService = (store, config, clock = monotonic) => {
         alarm: null,
         // Since when Grbl is idle while the job waits for acknowledgements.
         stall: null,
+        // Spindle state when a tool change (M6) pause began, to restart it on resume.
+        toolChange: null,
+        // Line (of the original file) acknowledged when the last job was stopped.
+        lastStop: null,
         generation: crypto.randomBytes(12).toString('hex')
       };
       r.status = () => {
@@ -161,6 +170,7 @@ export const createService = (store, config, clock = monotonic) => {
         } else if (!r.stall || r.stall.received !== s.received) {
           r.stall = { since: r.seen, received: s.received };
         }
+        observeToolChange(c, r);
         changed();
       };
       r.alarmed = (res) => {
@@ -238,6 +248,22 @@ export const createService = (store, config, clock = monotonic) => {
   const modalFresh = (r) => Number.isFinite(r.modalSeen) && clock() >= r.modalSeen && clock() - r.modalSeen <= MAX_REPORT_AGE_MS;
   const modalWcs = (r) => (modalFresh(r) ? r.wcs : null);
 
+  // The spindle state is read when a tool change pause begins, before the
+  // operator stops the spindle, so the resume can start it again.
+  const observeToolChange = (c, r) => {
+    const reason = c.sender && c.sender.state && c.sender.state.holdReason;
+    if (!(c.workflow && c.workflow.state === 'paused' && reason && reason.data === 'M6')) {
+      r.toolChange = null;
+      return;
+    }
+    if (!r.toolChange) {
+      const parser = (c.runner && c.runner.state && c.runner.state.parserstate) || {};
+      const mode = parser.modal && parser.modal.spindle;
+      const speed = Number(parser.spindle) > 0 ? Number(parser.spindle) : realtimeValue(controllerStatus(c).spindle);
+      r.toolChange = { restart: (mode === 'M3' || mode === 'M4') && speed > 0 ? { mode, speed } : null };
+    }
+  };
+
   const remove = (c, r) => {
     records.delete(c);
     if (c.runner) {
@@ -303,12 +329,19 @@ export const createService = (store, config, clock = monotonic) => {
     return j;
   };
 
-  // CNCjs appends "%wait" to every loaded program and holds the sender with that
-  // reason while it runs; a pause made then keeps the %wait reason. Only a
-  // pause the program itself asked for (M0, M1, M6...) must be resumed in CNCjs.
-  const programPause = (c) => {
-    const reason = c.sender.state.holdReason;
-    return Boolean(reason) && !(reason && reason.data === '%wait');
+  // Why CNCjs holds the program: null for an operator pause (CNCjs appends
+  // "%wait" to every program and a pause made then keeps that reason), 'M0',
+  // 'M1' or 'M6' when the program asked for it (CNCjs comments M6 out and
+  // pauses), 'error' when a line was refused by Grbl.
+  const pauseKind = (c) => {
+    const reason = c.sender && c.sender.state && c.sender.state.holdReason;
+    if (!reason || reason.data === '%wait') {
+      return null;
+    }
+    if (reason.err) {
+      return 'error';
+    }
+    return ['M0', 'M1', 'M6'].includes(reason.data) ? reason.data : 'other';
   };
 
   // Grbl reports the spindle speed in FS:; it is 0 once M5 is executed. A
@@ -340,9 +373,26 @@ export const createService = (store, config, clock = monotonic) => {
       if (j.started || !c.sender.state.total) {
         throw conflict('Rechargez le fichier avant un nouveau démarrage.');
       }
-    } else if (!j.started || c.workflow.state !== 'paused' ||
-        controllerStatus(c).activeState !== 'Hold' || programPause(c)) {
-      throw conflict('La reprise exige une pause simple confirmée par la machine.');
+    } else {
+      const kind = pauseKind(c);
+      const state = controllerStatus(c).activeState;
+      if (!j.started || c.workflow.state !== 'paused') {
+        throw conflict('La reprise exige une pause simple confirmée par la machine.');
+      }
+      if (kind === 'error') {
+        throw conflict('Pause sur une erreur Grbl : arrêtez le travail, corrigez la cause, puis reprenez à une ligne.');
+      }
+      if (kind === 'M0' || kind === 'M1' || kind === 'M6') {
+        if (state !== 'Idle' && state !== 'Hold') {
+          throw conflict('Attendez l’arrêt de la machine (Idle ou Hold) avant de reprendre.');
+        }
+        const feeder = c.feeder.toJSON();
+        if (feeder.queue || feeder.pending) {
+          throw conflict('Des commandes sont en attente : attendez avant de reprendre.');
+        }
+      } else if (kind === 'other' || state !== 'Hold') {
+        throw conflict('La reprise exige une pause simple confirmée par la machine.');
+      }
     }
     if (hasAutomations(config)) {
       throw conflict('Des automatismes CNCjs sont configurés. Leur compatibilité doit être vérifiée avant utilisation.');
@@ -412,7 +462,10 @@ export const createService = (store, config, clock = monotonic) => {
     if (controllers()[c.options.port] !== c || c.isClose() || !c.ready) {
       throw conflict('Connexion machine indisponible.');
     }
-    if (c.workflow.state !== 'idle') {
+    // At rest, or during a pause the program asked for once the machine has stopped (tool change).
+    const programStop = c.workflow.state === 'paused' && ['M0', 'M1', 'M6'].includes(pauseKind(c)) &&
+      controllerStatus(c).activeState === 'Idle';
+    if (c.workflow.state !== 'idle' && !programStop) {
       throw conflict('Pendant un travail, utilisez Pause ou Arrêter.');
     }
   };
@@ -480,6 +533,22 @@ export const createService = (store, config, clock = monotonic) => {
     } catch (err) {
       return err.message;
     }
+  };
+
+  const programPauseOf = (c, r) => {
+    const kind = c.workflow.state === 'paused' ? pauseKind(c) : null;
+    if (!kind) {
+      return null;
+    }
+    const reason = c.sender.state.holdReason || {};
+    const message = typeof reason.msg === 'string' ? reason.msg.slice(0, 120) : '';
+    const tool = /(?:^|[^A-Z])T\s*(\d{1,3})/i.exec(message);
+    return {
+      kind,
+      message,
+      tool: tool ? Number(tool[1]) : null,
+      restartSpindle: kind === 'M6' && r.toolChange ? r.toolChange.restart : null
+    };
   };
 
   const snapshot = (c) => {
@@ -584,6 +653,10 @@ export const createService = (store, config, clock = monotonic) => {
       // ALARM:n while the controller is in alarm (null: no code received, e.g. homing lock).
       alarmCode: /^Alarm/.test(state.activeState || '') ? r.alarm : null,
       stalledMs: r.stall && Number.isFinite(r.seen) && r.seen - r.stall.since >= STALL_MS ? r.seen - r.stall.since : null,
+      programPause: programPauseOf(c, r),
+      resume: r.job && r.job.resume ? { ...r.job.resume } : null,
+      stoppedAtLine: r.lastStop ? r.lastStop.line : null,
+      stoppedFile: r.lastStop ? r.lastStop.file : null,
       canPause: c.workflow.state === 'running',
       canStop: c.workflow.state !== 'idle' || ['Run', 'Hold', 'Home', 'Jog'].includes(state.activeState) || /^Door/.test(state.activeState || ''),
       overrides: overridesOf(state),
@@ -610,39 +683,59 @@ export const createService = (store, config, clock = monotonic) => {
   // Reads a program from the watch directory and hands it to the controller.
   // The file must sit directly in the watch directory and must not change
   // while it is read.
+  const validName = (file) => {
+    if (typeof file !== 'string' || file !== path.basename(file) ||
+        /[\\/\0]/.test(file) || !/\.(nc|gcode|ngc|tap|cnc|txt)$/i.test(file)) {
+      throw conflict('Nom de fichier invalide.');
+    }
+  };
+
+  const readProgram = async (name) => {
+    const root = await fs.realpath(config.get('watchDirectory'));
+    const file = await fs.realpath(path.join(root, name));
+    if (path.dirname(file) !== root) {
+      throw conflict('Fichier hors de la bibliothèque.');
+    }
+    const before = await fs.stat(file);
+    if (!before.isFile() || before.size === 0 || before.size > MAX_FILE_SIZE) {
+      throw conflict('Fichier vide ou supérieur à 20 Mo.');
+    }
+    const buffer = await fs.readFile(file);
+    const after = await fs.stat(file);
+    if (before.mtimeMs !== after.mtimeMs || before.ino !== after.ino ||
+        buffer.length !== before.size || buffer.includes(0)) {
+      throw conflict('Fichier modifié pendant la lecture ou format invalide.');
+    }
+    const gcode = buffer.toString('utf8');
+    // CNCjs % directives execute expressions; this library accepts plain G-code only.
+    if (/^[ \t]*%[ \t]*[^\r\n \t]/m.test(gcode)) {
+      throw conflict('Les directives CNCjs % ne sont pas acceptées par cette bibliothèque.');
+    }
+    return gcode;
+  };
+
+  // What a resume from a line would send, without loading anything.
+  const resumePlan = async (c, body) => {
+    available(c);
+    validName(body.file);
+    const gcode = await readProgram(body.file);
+    const plan = buildResume(gcode, Number(body.line), { name: body.file.replace(/--touch-\d{14}-[a-f0-9]{16}(?=\.[^.]+$)/, '') });
+    const summary = { ...plan };
+    delete summary.program;
+    return summary;
+  };
+
   const load = async (c, r, body) => {
     idle(c);
     if (r.loading) {
       throw conflict('Un chargement est déjà en cours.');
     }
-    if (typeof body.file !== 'string' || body.file !== path.basename(body.file) ||
-        /[\\/\0]/.test(body.file) || !/\.(nc|gcode|ngc|tap|cnc|txt)$/i.test(body.file)) {
-      throw conflict('Nom de fichier invalide.');
-    }
+    validName(body.file);
 
     r.loading = true;
     r.ticket = null;
     try {
-      const root = await fs.realpath(config.get('watchDirectory'));
-      const file = await fs.realpath(path.join(root, body.file));
-      if (path.dirname(file) !== root) {
-        throw conflict('Fichier hors de la bibliothèque.');
-      }
-      const before = await fs.stat(file);
-      if (!before.isFile() || before.size === 0 || before.size > MAX_FILE_SIZE) {
-        throw conflict('Fichier vide ou supérieur à 20 Mo.');
-      }
-      const buffer = await fs.readFile(file);
-      const after = await fs.stat(file);
-      if (before.mtimeMs !== after.mtimeMs || before.ino !== after.ino ||
-          buffer.length !== before.size || buffer.includes(0)) {
-        throw conflict('Fichier modifié pendant la lecture ou format invalide.');
-      }
-      const gcode = buffer.toString('utf8');
-      // CNCjs % directives execute expressions; this library accepts plain G-code only.
-      if (/^[ \t]*%[ \t]*[^\r\n \t]/m.test(gcode)) {
-        throw conflict('Les directives CNCjs % ne sont pas acceptées par cette bibliothèque.');
-      }
+      const gcode = await readProgram(body.file);
 
       // Recheck after asynchronous disk access, before replacing the loaded job.
       idle(c);
@@ -650,9 +743,26 @@ export const createService = (store, config, clock = monotonic) => {
         throw conflict('Automatismes CNCjs à vérifier avant chargement.');
       }
 
+      const originalName = body.file.replace(/--touch-\d{14}-[a-f0-9]{16}(?=\.[^.]+$)/, '');
+      let program = gcode;
+      let resume = null;
+      if (body.fromLine !== undefined && body.fromLine !== null) {
+        const plan = buildResume(gcode, Number(body.fromLine), { name: originalName });
+        program = plan.program;
+        resume = {
+          from: plan.from,
+total: plan.total,
+line: plan.line,
+tool: plan.tool,
+toolChanged: plan.toolChanged,
+          spindle: plan.spindle,
+coolant: plan.coolant,
+preambleLength: plan.preamble.length
+        };
+      }
       const revision = crypto.randomBytes(20).toString('hex');
       await new Promise((resolve, reject) => {
-        c.command('gcode:load', body.file, gcode, { touchJob: revision }, (err) => {
+        c.command('gcode:load', body.file, program, { touchJob: revision }, (err) => {
           if (err) {
             reject(err);
           } else {
@@ -663,18 +773,40 @@ export const createService = (store, config, clock = monotonic) => {
       r.job = {
         revision,
         name: body.file,
-        originalName: body.file.replace(/--touch-\d{14}-[a-f0-9]{16}(?=\.[^.]+$)/, ''),
+        originalName,
         started: false,
         // G54-G59.x select, G10 L2/L20 and G92 change the work offset.
-        changesOffset: changesOffset(gcode),
-        wcsAtStart: null
+        changesOffset: changesOffset(resume ? programLines(gcode).slice(resume.from - 1).join('\n') : gcode),
+        wcsAtStart: null,
+        resume
       };
-      return { message: 'Fichier chargé dans CNCjs. Aucun démarrage envoyé.' };
+      return { message: resume ? 'Reprise à la ligne ' + resume.from + ' chargée dans CNCjs. Aucun démarrage envoyé.' : 'Fichier chargé dans CNCjs. Aucun démarrage envoyé.' };
     } finally {
       r.loading = false;
       changed();
     }
   };
+
+  // After a tool change the spindle was stopped by the operator: start it at
+  // the programmed speed and wait for the spin-up dwell to be acknowledged
+  // (CNCjs resets its command queue on resume) before resuming the program.
+  const SPINUP_MS_MAX = 20000;
+  const restartSpindleThenResume = (c, restart) => new Promise((resolve, reject) => {
+    c.command('gcode', [restart.mode + ' S' + restart.speed, 'G4 P' + TOOL_CHANGE_SPINUP_S]);
+    const deadline = clock() + SPINUP_MS_MAX;
+    const check = () => {
+      const feeder = c.feeder.toJSON();
+      if (!feeder.queue && !feeder.pending) {
+        c.command('gcode:resume');
+        resolve({ message: 'Broche relancée (' + restart.mode + ' S' + restart.speed + '), reprise demandée.' });
+      } else if (clock() > deadline || controllers()[c.options.port] !== c || c.isClose() || c.workflow.state !== 'paused') {
+        reject(conflict('Broche non relancée à temps : reprise annulée. Vérifiez la machine.'));
+      } else {
+        setTimeout(check, 100);
+      }
+    };
+    check();
+  });
 
   const perform = (body) => {
     if (!body || typeof body.port !== 'string') {
@@ -702,6 +834,10 @@ export const createService = (store, config, clock = monotonic) => {
 
     if (a === 'load') {
       return load(c, r, body);
+    }
+
+    if (a === 'resumePlan') {
+      return resumePlan(c, body);
     }
 
     if (a === 'settings') {
@@ -813,6 +949,10 @@ export const createService = (store, config, clock = monotonic) => {
         j.wcsAtStart = modalWcs(r);
       }
       j.started = true;
+      const restart = a === 'resume' && pauseKind(c) === 'M6' && r.toolChange && r.toolChange.restart;
+      if (restart) {
+        return restartSpindleThenResume(c, restart);
+      }
       c.command(a === 'start' ? 'gcode:start' : 'gcode:resume');
       return { message: a === 'start' ? 'Démarrage demandé.' : 'Reprise demandée.' };
     }
@@ -852,6 +992,16 @@ export const createService = (store, config, clock = monotonic) => {
         throw conflict('Aucun travail à arrêter.');
       }
       r.ticket = null;
+      if (c.workflow.state !== 'idle' && r.job) {
+        const k = Number(c.sender.state.received) || 0;
+        const res = r.job.resume;
+        let line = k;
+        if (res) {
+          // Preamble lines are not lines of the file.
+          line = k <= res.preambleLength ? res.from - 1 : res.from + (k - res.preambleLength - 1);
+        }
+        r.lastStop = { file: r.job.name, line };
+      }
       if (c.workflow.state === 'idle') {
         // A macro or console commands (CNCjs feeder) move the machine: its
         // queue must be emptied too, or the next 'ok' would send the rest.
@@ -936,7 +1086,8 @@ export const createService = (store, config, clock = monotonic) => {
         idOf(state), idOf(state.status), idOf(state.parserstate), idOf(runner.settings), idOf(c.settings),
         s.name, s.total, s.sent, s.received, s.hold, idOf(s.holdReason), idOf(s.context),
         feeder.queue, feeder.pending,
-        r ? [r.loading, r.seen === null, r.modalSeen === null, r.wcs, r.ticket && r.ticket.nonce, r.firmware, r.startups, r.alarm, r.stall && r.stall.since].join(',') : '',
+        r ? [r.loading, r.seen === null, r.modalSeen === null, r.wcs, r.ticket && r.ticket.nonce, r.firmware, r.startups, r.alarm, r.stall && r.stall.since,
+          idOf(r.toolChange), r.lastStop && r.lastStop.line].join(',') : '',
         j ? [idOf(j), j.started, j.stopped, j.finishedAt, j.errors].join(',') : ''
       ].join(';');
     }).join('|');
