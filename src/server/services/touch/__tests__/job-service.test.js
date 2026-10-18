@@ -896,6 +896,36 @@ describe('job service', () => {
       expect(ctx.c.commands.slice(-3)).toEqual([['gcode', 'M5'], ['gcode', ['M3 S12000', 'G4 P3']], ['gcode:resume']]);
     });
 
+    test('the spindle to restart is learnt during the tool change pause, until the operator stops it', async () => {
+      const ctx = setup();
+      await started(ctx);
+      // Seen on the simulator: when the pause begins, $G still says M5 and FS says 0.
+      ctx.c.state.parserstate = { modal: { wcs: 'G54', spindle: 'M5' }, spindle: '0' };
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.c.workflow.state = 'paused';
+      ctx.c.sender.state = { ...ctx.c.sender.state, hold: true, holdReason: { data: 'M6', msg: 'T2 M6' } };
+      ctx.c.state.status.activeState = 'Idle';
+      ctx.c.state.status.spindle = 0;
+      ctx.report();
+      expect(ctx.state().programPause.restartSpindle).toBe(null);
+      // A fresh $G then shows the spindle on.
+      ctx.now += 500;
+      ctx.c.state.status.spindle = 8000;
+      ctx.c.state.parserstate = { modal: { wcs: 'G54', spindle: 'M3' }, spindle: '8000' };
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.report();
+      expect(ctx.state().programPause.restartSpindle).toEqual({ mode: 'M3', speed: 8000 });
+      // The operator stops it: what to restart is kept.
+      ctx.now += 500;
+      ctx.c.state.status.spindle = 0;
+      ctx.c.state.parserstate = { modal: { wcs: 'G54', spindle: 'M5' }, spindle: '8000' };
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.report();
+      ctx.now += 5000;
+      ctx.report();
+      expect(ctx.state().programPause.restartSpindle).toEqual({ mode: 'M3', speed: 8000 });
+    });
+
     test('M0 and M1 pauses can be resumed; a pause on a Grbl error cannot', async () => {
       const ctx = setup();
       const state = await started(ctx);
