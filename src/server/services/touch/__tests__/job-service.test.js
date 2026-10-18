@@ -53,6 +53,8 @@ beforeAll(async () => {
   await fs.writeFile(path.join(root, 'test.nc'), 'G21 G90\nG1 X1 F100\nM2');
   await fs.writeFile(path.join(root, 'macro.nc'), '%wait\nG1 X1');
   await fs.writeFile(path.join(root, 'offset.nc'), 'G21 G90\nG55\nG1 X1 F100\nM2');
+  await fs.writeFile(path.join(root, 'resume.nc'), ['G21 G90', 'M3 S9000', 'G0 Z5', 'G0 X0 Y0', 'G1 Z-1 F200',
+    'G1 X10 F800', 'G1 Y10', 'G1 X0', 'G0 Z5', 'M5', 'M30'].join('\n'));
 });
 
 afterAll(async () => {
@@ -177,7 +179,7 @@ describe('job service', () => {
     await expect(ctx.req('prepare', { operation: 'start', revision: state.revision })).rejects.toThrow(/Rechargez/);
   });
 
-  test('a pause made while CNCjs holds for its end-of-program %wait can be resumed; M0 cannot', async () => {
+  test('a pause made while CNCjs holds for its end-of-program %wait can be resumed; an unknown hold cannot', async () => {
     const ctx = setup();
     const state = await ctx.loaded();
     const ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
@@ -187,7 +189,8 @@ describe('job service', () => {
     ctx.c.sender.state.holdReason = { data: '%wait', msg: '%wait ; Wait for the planner to empty' };
     ctx.report();
     expect(ctx.state().canResume).toBe(true);
-    ctx.c.sender.state.holdReason = { data: 'M0', msg: 'M0' };
+    // M0, M1 and M6 pauses have their own test; any other hold stays CNCjs's business.
+    ctx.c.sender.state.holdReason = { data: 'M7?', msg: 'unknown' };
     expect(ctx.state().canResume).toBe(false);
     expect(ctx.state().resumeReason).toMatch(/pause simple/);
   });
@@ -808,6 +811,108 @@ describe('job service', () => {
       expect(ctx.service.ticketPending('other')).toBe(false);
       ctx.now += 16000;
       expect(ctx.service.ticketPending(ctx.transportId)).toBe(false);
+    });
+  });
+
+  describe('resume from a line and program pauses', () => {
+    const started = async (ctx, file = 'test.nc', extra = {}) => {
+      ctx.report();
+      await ctx.req('load', { file, ...extra });
+      const state = ctx.state();
+      const ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+      await ctx.req('start', { nonce: ticket.nonce });
+      return ctx.state();
+    };
+
+    test('a resume plan is computed without loading anything', async () => {
+      const ctx = setup();
+      ctx.report();
+      const plan = await ctx.req('resumePlan', { file: 'resume.nc', line: 7 });
+      expect(plan).toMatchObject({ from: 7, total: 11, line: 'G1 Y10', spindle: { mode: 'M3', speed: 9000 } });
+      expect(plan.preamble).toEqual(['(CNCjs Touch : reprise a la ligne 7 de resume.nc)', 'G21 G90 G17 G54 G94', 'G0 Z5', 'G0 X10 Y0', 'M3 S9000', 'G4 P3', 'G1 Z-1 F200', 'F800']);
+      expect(ctx.c.commands).toEqual([]);
+      await expect(ctx.req('resumePlan', { file: 'resume.nc', line: 4 })).rejects.toThrow(/Position|dégagement/);
+      await expect(ctx.req('resumePlan', { file: '../resume.nc', line: 7 })).rejects.toThrow(/Nom de fichier/);
+    });
+
+    test('loading from a line sends the rebuilt program and reports it as a resume', async () => {
+      const ctx = setup();
+      ctx.report();
+      await ctx.req('load', { file: 'resume.nc', fromLine: 7 });
+      const [name, file, program] = ctx.c.commands[0];
+      expect(name).toBe('gcode:load');
+      expect(file).toBe('resume.nc');
+      expect(program.split('\n').slice(0, 9)).toEqual(['(CNCjs Touch : reprise a la ligne 7 de resume.nc)', 'G21 G90 G17 G54 G94', 'G0 Z5', 'G0 X10 Y0', 'M3 S9000', 'G4 P3', 'G1 Z-1 F200', 'F800', 'G1 Y10']);
+      const state = ctx.state();
+      expect(state.resume).toMatchObject({ from: 7, total: 11, line: 'G1 Y10' });
+      expect(state.canStart).toBe(true);
+      // A normal load clears it.
+      await ctx.req('load', { file: 'resume.nc' });
+      expect(ctx.state().resume).toBe(null);
+    });
+
+    test('the line where a job was stopped is kept, in the numbering of the original file', async () => {
+      const ctx = setup();
+      await started(ctx);
+      ctx.c.sender.state = { ...ctx.c.sender.state, received: 2 };
+      await ctx.req('stop');
+      expect(ctx.state().stoppedAtLine).toBe(2);
+      // In a resume program, preamble lines are not lines of the file.
+      await started(ctx, 'resume.nc', { fromLine: 7 });
+      ctx.c.sender.state = { ...ctx.c.sender.state, received: 10 };
+      await ctx.req('stop');
+      expect(ctx.state().stoppedAtLine).toBe(8);
+      await started(ctx, 'resume.nc', { fromLine: 7 });
+      ctx.c.sender.state = { ...ctx.c.sender.state, received: 3 };
+      await ctx.req('stop');
+      expect(ctx.state().stoppedAtLine).toBe(6); // stopped in the preamble: before line 7
+    });
+
+    test('a tool change (M6) pause is explained, M5 is allowed, and the resume restarts the spindle first', async () => {
+      const ctx = setup();
+      await started(ctx);
+      ctx.c.state.parserstate = { modal: { wcs: 'G54', spindle: 'M3' }, spindle: '12000', tool: '1' };
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.c.workflow.state = 'paused';
+      ctx.c.sender.state = { ...ctx.c.sender.state, hold: true, holdReason: { data: 'M6', msg: 'T2 M6' } };
+      ctx.c.state.status.activeState = 'Run'; // buffered moves still running
+      ctx.c.state.status.spindle = 12000;
+      ctx.report();
+      expect(ctx.state()).toMatchObject({ programPause: { kind: 'M6', message: 'T2 M6', tool: 2 }, canResume: false });
+      ctx.c.state.status.activeState = 'Idle';
+      ctx.report();
+      let state = ctx.state();
+      expect(state.canResume).toBe(true);
+      expect(state.canSpindleStop).toBe(true);
+      await ctx.req('spindleStop');
+      ctx.c.state.status.spindle = 0;
+      ctx.c.state.parserstate = { modal: { wcs: 'G54', spindle: 'M5' }, spindle: '12000', tool: '1' };
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.report();
+      state = ctx.state();
+      expect(state.programPause).toMatchObject({ kind: 'M6', restartSpindle: { mode: 'M3', speed: 12000 } });
+      const ticket = await ctx.req('prepare', { operation: 'resume', revision: state.revision });
+      await ctx.req('resume', { nonce: ticket.nonce });
+      expect(ctx.c.commands.slice(-3)).toEqual([['gcode', 'M5'], ['gcode', ['M3 S12000', 'G4 P3']], ['gcode:resume']]);
+    });
+
+    test('M0 and M1 pauses can be resumed; a pause on a Grbl error cannot', async () => {
+      const ctx = setup();
+      const state = await started(ctx);
+      ctx.c.workflow.state = 'paused';
+      ctx.c.state.status.activeState = 'Hold';
+      ctx.c.sender.state = { ...ctx.c.sender.state, hold: true, holdReason: { data: 'M0', msg: 'M0 (check the clamps)' } };
+      ctx.report();
+      expect(ctx.state()).toMatchObject({ programPause: { kind: 'M0', message: 'M0 (check the clamps)', restartSpindle: null }, canResume: true });
+      const ticket = await ctx.req('prepare', { operation: 'resume', revision: state.revision });
+      await ctx.req('resume', { nonce: ticket.nonce });
+      expect(ctx.c.commands.at(-1)).toEqual(['gcode:resume']);
+      ctx.c.workflow.state = 'paused';
+      ctx.c.state.status.activeState = 'Idle';
+      ctx.c.sender.state = { ...ctx.c.sender.state, hold: true, holdReason: { err: true, msg: 'error:24' } };
+      ctx.report();
+      expect(ctx.state()).toMatchObject({ programPause: { kind: 'error' }, canResume: false });
+      expect(ctx.state().resumeReason).toMatch(/erreur/);
     });
   });
 });
