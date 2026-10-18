@@ -257,10 +257,24 @@ export const createService = (store, config, clock = monotonic) => {
       return;
     }
     if (!r.toolChange) {
-      const parser = (c.runner && c.runner.state && c.runner.state.parserstate) || {};
-      const mode = parser.modal && parser.modal.spindle;
-      const speed = Number(parser.spindle) > 0 ? Number(parser.spindle) : realtimeValue(controllerStatus(c).spindle);
-      r.toolChange = { restart: (mode === 'M3' || mode === 'M4') && speed > 0 ? { mode, speed } : null };
+      r.toolChange = { restart: null, frozen: false };
+    }
+    if (r.toolChange.frozen) {
+      return;
+    }
+    // When the pause begins, $G and FS may still describe the state before the
+    // program's M3: keep learning from fresh reports until the operator stops
+    // the spindle, then keep what was learnt.
+    const parser = (c.runner && c.runner.state && c.runner.state.parserstate) || {};
+    const mode = modalFresh(r) && parser.modal ? parser.modal.spindle : null;
+    const turning = realtimeValue(controllerStatus(c).spindle);
+    if (mode === 'M3' || mode === 'M4') {
+      const speed = Number(parser.spindle) > 0 ? Number(parser.spindle) : turning;
+      if (speed > 0) {
+        r.toolChange.restart = { mode, speed };
+      }
+    } else if (r.toolChange.restart && (mode === 'M5' || turning === 0)) {
+      r.toolChange.frozen = true;
     }
   };
 
