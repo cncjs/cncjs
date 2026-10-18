@@ -36,6 +36,27 @@ const STALL_MS = 30000;
 // Spin-up dwell when the spindle is started again after a tool change.
 const TOOL_CHANGE_SPINUP_S = 3;
 
+// Z zero with a touch plate: a fast probe down, a 1 mm back-off, a slow probe,
+// then the work Z is set so that the plate top reads its thickness, and the
+// tool rises 5 mm above it. Everything in absolute coordinates (G90, mm), so
+// an alarm in the middle leaves no relative mode behind.
+const PLATE = {
+  fastFeed: 100,
+  slowFeed: 25,
+  backOff: 1,
+  clearance: 5,
+  minSearch: 1,
+  maxSearch: 100,
+  maxThickness: 50
+};
+
+const axisNumber = (v) => {
+  const n = typeof v === 'string' ? Number(v) : v;
+  return typeof n === 'number' && Number.isFinite(n) ? n : null;
+};
+
+const fmt = (n) => String(Math.round(n * 1000) / 1000);
+
 const grblCode = (res) => {
   const n = Number(res && res.message);
   return Number.isInteger(n) && n > 0 && n < 1000 ? n : null;
@@ -158,10 +179,16 @@ export const createService = (store, config, clock = monotonic) => {
         toolChange: null,
         // Line (of the original file) acknowledged when the last job was stopped.
         lastStop: null,
+        // Plate probe in progress, and the last one (result or failure).
+        probing: null,
+        zeroZ: null,
+        // Status reports received, so a step can wait for a newer one.
+        reports: 0,
         generation: crypto.randomBytes(12).toString('hex')
       };
       r.status = () => {
         r.seen = clock();
+        r.reports += 1;
         const s = c.sender && c.sender.state;
         const waiting = c.workflow && c.workflow.state === 'running' && controllerStatus(c).activeState === 'Idle' &&
           s && Number.isFinite(s.sent) && Number.isFinite(s.received) && s.received < s.sent;
@@ -226,6 +253,9 @@ export const createService = (store, config, clock = monotonic) => {
       // or goes on with ignoreErrors, and ends the job either way when it was
       // the last line. Such a program is never reported finished.
       r.error = (res) => {
+        if (r.probing) {
+          r.probing.error = grblCode(res);
+        }
         if (r.job && r.job.started && !r.job.stopped && c.workflow && c.workflow.state !== 'idle') {
           r.job.errors = (r.job.errors || 0) + 1;
           r.job.lastError = grblCode(res);
@@ -328,6 +358,9 @@ export const createService = (store, config, clock = monotonic) => {
 
   const idle = (c) => {
     available(c);
+    if (record(c).probing) {
+      throw conflict('Palpage en cours.');
+    }
     const feeder = c.feeder.toJSON();
     if (c.workflow.state !== 'idle' || controllerStatus(c).activeState !== 'Idle' || feeder.queue || feeder.pending) {
       throw conflict('La machine doit être au repos (Idle), sans commande en attente.');
@@ -378,6 +411,9 @@ export const createService = (store, config, clock = monotonic) => {
   const readyFor = (c, action, revision) => {
     const j = validJob(c, revision);
     available(c);
+    if (record(c).probing) {
+      throw conflict('Palpage en cours.');
+    }
     if (action === 'start') {
       idle(c);
       spindleStill(c);
@@ -437,6 +473,9 @@ export const createService = (store, config, clock = monotonic) => {
   // Commissioning commands ($X, $H, spindle test) never run during a job.
   const noJob = (c) => {
     available(c);
+    if (record(c).probing) {
+      throw conflict('Palpage en cours.');
+    }
     const feeder = c.feeder.toJSON();
     if (c.workflow.state !== 'idle' || feeder.queue || feeder.pending) {
       throw conflict('Impossible pendant un travail ou avec des commandes en attente.');
@@ -495,6 +534,161 @@ export const createService = (store, config, clock = monotonic) => {
     }
   };
 
+  // The plate probe runs at rest, or during a pause the program asked for
+  // (tool change) once the machine has stopped, with the probe free, the
+  // spindle still and the modal state known: G90 and G21.
+  const zeroZReady = (c) => {
+    available(c);
+    const r = record(c);
+    if (r.probing) {
+      throw conflict('Palpage en cours.');
+    }
+    if (r.loading) {
+      throw conflict('Chargement en cours.');
+    }
+    const programPause = c.workflow.state === 'paused' && ['M0', 'M1', 'M6'].includes(pauseKind(c));
+    if (c.workflow.state !== 'idle' && !programPause) {
+      throw conflict('Le zéro Z avec plaque se règle au repos ou pendant une pause du programme (M0, M1, M6).');
+    }
+    const status = controllerStatus(c);
+    if (status.activeState !== 'Idle') {
+      throw conflict('La machine doit être au repos (Idle).');
+    }
+    const feeder = c.feeder.toJSON();
+    if (feeder.queue || feeder.pending) {
+      throw conflict('Des commandes sont en attente.');
+    }
+    spindleStill(c);
+    if (!modalFresh(r)) {
+      throw conflict('État modal ($G) trop ancien : attendre un rapport récent.');
+    }
+    const modal = ((c.runner.state && c.runner.state.parserstate) || {}).modal || {};
+    if (modal.distance !== 'G90') {
+      throw conflict('Mode relatif (G91) actif : le zéro Z avec plaque exige G90.');
+    }
+    if (modal.units !== 'G21') {
+      throw conflict('Unités en pouces (G20) : le zéro Z avec plaque exige G21.');
+    }
+    if (!r.wcs) {
+      throw conflict('Repère de travail inconnu : attendre un rapport $G.');
+    }
+    if (axisNumber(status.wpos && status.wpos.z) === null) {
+      throw conflict('Position Z inconnue.');
+    }
+    const probe = probeInput.inspect(c.options.port);
+    if (!probe.fresh) {
+      throw conflict('Entrée sonde : rapport trop ancien.');
+    }
+    if (probe.state === 'contact') {
+      throw conflict('La sonde est déjà en contact : dégagez-la avant de palper.');
+    }
+    if (probe.code !== 'EXPLICIT' && probe.code !== 'MISSING') {
+      throw conflict('Entrée sonde illisible dans le rapport Grbl.');
+    }
+    if (hasAutomations(config)) {
+      throw conflict('Des automatismes CNCjs sont configurés. Leur compatibilité doit être vérifiée avant utilisation.');
+    }
+  };
+
+  const plateParams = (body) => {
+    const thickness = Number(body.thickness);
+    const search = Number(body.search);
+    if (!Number.isFinite(thickness) || thickness <= 0 || thickness > PLATE.maxThickness) {
+      throw conflict('Épaisseur de plaque invalide (plus de 0 et au plus ' + PLATE.maxThickness + ' mm).');
+    }
+    if (!Number.isFinite(search) || search < PLATE.minSearch || search > PLATE.maxSearch) {
+      throw conflict('Distance de recherche invalide (' + PLATE.minSearch + ' à ' + PLATE.maxSearch + ' mm).');
+    }
+    return { thickness: Math.round(thickness * 1000) / 1000, search: Math.round(search * 1000) / 1000 };
+  };
+
+  // Resolves once the line sent is acknowledged, the machine idle and a report
+  // received after the `after`th; rejects on an alarm, a Grbl error, a lost
+  // controller or the time limit.
+  const quiet = (c, r, after, limitMs) => new Promise((resolve, reject) => {
+    const deadline = clock() + limitMs;
+    const check = () => {
+      if (controllers()[c.options.port] !== c || c.isClose() || !c.runner || !c.feeder) {
+        reject(conflict('Connexion machine perdue pendant le palpage.'));
+        return;
+      }
+      const state = controllerStatus(c).activeState || '';
+      if (/^Alarm/.test(state)) {
+        reject(conflict('Alarme pendant le palpage (' + (r.alarm ? 'ALARM:' + r.alarm : 'code non reçu') + ') : arrêtez le travail, déverrouillez ($X) et vérifiez la sonde.'));
+        return;
+      }
+      if (r.probing && r.probing.error) {
+        reject(conflict('Grbl a refusé une ligne du palpage (error:' + r.probing.error + ').'));
+        return;
+      }
+      if (r.probing && r.probing.cancelled) {
+        reject(conflict('Palpage interrompu par l’opérateur.'));
+        return;
+      }
+      const feeder = c.feeder.toJSON();
+      if (!feeder.queue && !feeder.pending && state === 'Idle' && r.reports > after) {
+        resolve();
+        return;
+      }
+      if (clock() > deadline) {
+        reject(conflict('Palpage sans réponse à temps : arrêtez et vérifiez la machine.'));
+        return;
+      }
+      setTimeout(check, 100);
+    };
+    check();
+  });
+
+  const zeroZ = (c, t) => {
+    zeroZReady(c);
+    const r = record(c);
+    const p = t.params;
+    const zOf = () => axisNumber(controllerStatus(c).wpos && controllerStatus(c).wpos.z);
+    const send = (line, limitMs) => {
+      const mark = r.reports;
+      c.command('gcode', line);
+      return quiet(c, r, mark, limitMs);
+    };
+    r.probing = { contact: null, error: null };
+    changed();
+    const z0 = zOf();
+    return send('G38.2 Z' + fmt(z0 - p.search) + ' F' + PLATE.fastFeed, 60000 * p.search / PLATE.fastFeed + 15000)
+      .then(() => {
+        const cz = zOf();
+        if (cz === null || cz > z0 - 0.01 || cz <= z0 - p.search + 0.001) {
+          throw conflict('Palpage sans contact net (Z ' + cz + ' depuis ' + z0 + ').');
+        }
+        r.probing.contact = cz;
+        return send('G0 Z' + fmt(cz + PLATE.backOff), 15000);
+      })
+      .then(() => send('G38.2 Z' + fmt(r.probing.contact - PLATE.backOff) + ' F' + PLATE.slowFeed, 30000))
+      .then(() => {
+        const status = controllerStatus(c);
+        r.probing.contact = zOf();
+        r.probing.machineZ = axisNumber(status.mpos && status.mpos.z);
+        return send('G10 L20 P0 Z' + fmt(p.thickness), 15000);
+      })
+      .then(() => {
+        const now = zOf();
+        if (now === null || Math.abs(now - p.thickness) > 0.05) {
+          throw conflict('Le repère n’a pas pris la valeur attendue (Z ' + now + ' au lieu de ' + p.thickness + ').');
+        }
+        return send('G0 Z' + fmt(p.thickness + PLATE.clearance), 15000);
+      })
+      .then(() => {
+        r.zeroZ = { at: Date.now(), thickness: p.thickness, machineZ: r.probing.machineZ, wcs: r.wcs };
+        r.probing = null;
+        changed();
+        return { message: 'Zéro Z réglé avec la plaque de ' + p.thickness + ' mm (contact à Z machine ' + fmt(r.zeroZ.machineZ) + ', repère ' + r.zeroZ.wcs + '). Outil dégagé à Z ' + fmt(p.thickness + PLATE.clearance) + '.' };
+      })
+      .catch((err) => {
+        r.zeroZ = { at: Date.now(), failed: err.message };
+        r.probing = null;
+        changed();
+        throw err;
+      });
+  };
+
   const findMacro = (id) => {
     const macro = macrosOf(config).find((m) => m.id === id);
     if (!macro) {
@@ -536,6 +730,12 @@ export const createService = (store, config, clock = monotonic) => {
         c.command('gcode', 'M3 S' + speed);
         return { message: 'Broche démarrée à ' + speed + ' tr/min (M3). Arrêt : bouton Arrêter la broche.' };
       }
+    },
+    zeroZ: {
+      guard: zeroZReady,
+      params: plateParams,
+      name: (c, params) => 'Zéro Z avec plaque de ' + params.thickness + ' mm (recherche ' + params.search + ' mm)',
+      run: zeroZ
     }
   };
 
@@ -586,6 +786,7 @@ export const createService = (store, config, clock = monotonic) => {
     const homeReason = reason(() => homeReady(c));
     const spindleReason = reason(() => spindleReady(c));
     const spindleStopReason = reason(() => spindleStopReady(c));
+    const zeroZReason = reason(() => zeroZReady(c));
 
     const jobErrors = (r.job && r.job.errors) || 0;
     const ended = Boolean(r.job && r.job.finishedAt && !r.job.stopped && c.workflow.state === 'idle');
@@ -672,7 +873,7 @@ export const createService = (store, config, clock = monotonic) => {
       stoppedAtLine: r.lastStop ? r.lastStop.line : null,
       stoppedFile: r.lastStop ? r.lastStop.file : null,
       canPause: c.workflow.state === 'running',
-      canStop: c.workflow.state !== 'idle' || ['Run', 'Hold', 'Home', 'Jog'].includes(state.activeState) || /^Door/.test(state.activeState || ''),
+      canStop: c.workflow.state !== 'idle' || ['Run', 'Hold', 'Home', 'Jog'].includes(state.activeState) || /^Door/.test(state.activeState || '') || !!r.probing,
       overrides: overridesOf(state),
       canOverride: !overrideReason,
       overrideReason,
@@ -690,7 +891,12 @@ export const createService = (store, config, clock = monotonic) => {
       canSpindleTest: !spindleReason,
       spindleReason,
       spindleTestSpeed: spindleTestSpeed(allSettings(c)),
-      canSpindleStop: !spindleStopReason
+      canSpindleStop: !spindleStopReason,
+      // Z zero with a touch plate (guarded like the commissioning commands).
+      canZeroZ: !zeroZReason,
+      zeroZReason,
+      probing: !!r.probing,
+      zeroZ: r.zeroZ ? { ...r.zeroZ } : null
     };
   };
 
@@ -830,7 +1036,7 @@ preambleLength: plan.preamble.length
     const r = record(c);
     const a = body.action;
 
-    if (['prepare', 'start', 'resume', 'macro', 'override', 'unlock', 'home', 'spindle', 'readSettings'].includes(a)) {
+    if (['prepare', 'start', 'resume', 'macro', 'override', 'unlock', 'home', 'spindle', 'zeroZ', 'readSettings'].includes(a)) {
       if (typeof body.generation !== 'string' || body.generation !== r.generation) {
         throw conflict('Le contrôleur a changé ou son identité manque. Choisissez-le à nouveau.');
       }
@@ -866,18 +1072,20 @@ preambleLength: plan.preamble.length
     }
 
     if (a === 'prepare') {
-      if (!['start', 'resume', 'macro', 'unlock', 'home', 'spindle'].includes(body.operation)) {
+      if (!['start', 'resume', 'macro', 'unlock', 'home', 'spindle', 'zeroZ'].includes(body.operation)) {
         throw conflict('Action invalide.');
       }
       const nonce = crypto.randomBytes(24).toString('hex');
       let name;
       if (COMMISSIONING[body.operation]) {
         const op = COMMISSIONING[body.operation];
+        const params = op.params ? op.params(body) : undefined;
         op.guard(c);
-        name = op.name(c);
+        name = op.name(c, params);
         r.ticket = {
           nonce,
           operation: body.operation,
+          params,
           speed: body.operation === 'spindle' ? spindleTestSpeed(allSettings(c)) : undefined,
           expires: clock() + TICKET_LIFETIME_MS,
           transportId: body.transportId
@@ -1002,6 +1210,15 @@ preambleLength: plan.preamble.length
         c.command('reset');
         return { message: 'Arrêt avec porte ouverte (réinitialisation). La carte peut demander $H ou $X.' };
       }
+      // A plate probe in progress: feed hold then reset through CNCjs's forced
+      // stop, and the sequence gives up at its next step.
+      if (r.probing) {
+        r.ticket = null;
+        r.probing.cancelled = true;
+        c.command('feeder:stop');
+        c.command('gcode:stop', { force: true });
+        return { message: 'Palpage interrompu. Vérifiez l’immobilisation ; le zéro Z n’est pas réglé.' };
+      }
       if (c.workflow.state === 'idle' && !['Run', 'Hold'].includes(activeState)) {
         throw conflict('Aucun travail à arrêter.');
       }
@@ -1101,7 +1318,7 @@ preambleLength: plan.preamble.length
         s.name, s.total, s.sent, s.received, s.hold, idOf(s.holdReason), idOf(s.context),
         feeder.queue, feeder.pending,
         r ? [r.loading, r.seen === null, r.modalSeen === null, r.wcs, r.ticket && r.ticket.nonce, r.firmware, r.startups, r.alarm, r.stall && r.stall.since,
-          idOf(r.toolChange), r.lastStop && r.lastStop.line].join(',') : '',
+          idOf(r.toolChange), r.lastStop && r.lastStop.line, idOf(r.probing), idOf(r.zeroZ)].join(',') : '',
         j ? [idOf(j), j.started, j.stopped, j.finishedAt, j.errors].join(',') : ''
       ].join(';');
     }).join('|');

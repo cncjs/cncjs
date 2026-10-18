@@ -945,4 +945,157 @@ describe('job service', () => {
       expect(ctx.state().resumeReason).toMatch(/erreur/);
     });
   });
+
+  describe('Z zero with a touch plate', () => {
+    // A controller whose Z axis answers probes: the plate sits at `plateZ`
+    // (work coordinates), or nowhere when null. Every 'gcode' line completes a
+    // few ms later with a fresh status report, like CNCjs's feeder and Grbl.
+    const probeController = ({ plateZ = -12.3, delay = 5 } = {}) => {
+      const c = fakeController();
+      c.settings = { version: '1.1h', settings: { $22: 1, $30: 24000, $31: 6000, $110: 1000, $111: 1000, $112: 200 } };
+      c.state.status = { activeState: 'Idle', wpos: { x: '0.000', y: '0.000', z: '3.000' }, mpos: { x: '-100.000', y: '-100.000', z: '-20.000' }, spindle: 0 };
+      c.runner.state = c.state;
+      c.state.parserstate = { modal: { wcs: 'G54', distance: 'G90', units: 'G21', spindle: 'M5' } };
+      let pending = false;
+      c.feeder = { toJSON: () => ({ queue: 0, pending }) };
+      c.sent = [];
+      c.pinState = '';
+      const report = () => c.runner.emit('status', { raw: '<' + c.state.status.activeState + '|WPos:0,0,' + c.state.status.wpos.z + (c.pinState ? '|Pn:' + c.pinState : '') + '>' });
+      c.report = report;
+      const z = () => Number(c.state.status.wpos.z);
+      const setZ = (v) => {
+        const offset = Number(c.state.status.mpos.z) - z();
+        c.state.status = { ...c.state.status, wpos: { ...c.state.status.wpos, z: v.toFixed(3) }, mpos: { ...c.state.status.mpos, z: (v + offset).toFixed(3) } };
+        c.runner.state = c.state;
+      };
+      const original = c.command;
+      c.command = (name, ...args) => {
+        if (name !== 'gcode') {
+          original(name, ...args);
+          return;
+        }
+        const line = args[0];
+        c.sent.push(line);
+        pending = true;
+        setTimeout(() => {
+          let m;
+          if ((m = /^G38\.2 Z(-?[\d.]+) F(\d+)$/.exec(line))) {
+            const target = Number(m[1]);
+            if (plateZ !== null && plateZ >= target && plateZ <= z()) {
+              setZ(plateZ);
+              c.pinState = 'P';
+            } else {
+              setZ(target);
+              c.state.status = { ...c.state.status, activeState: 'Alarm' };
+              c.runner.state = c.state;
+              c.runner.emit('alarm', { message: '5', raw: 'ALARM:5' });
+            }
+          } else if ((m = /^G0 Z(-?[\d.]+)$/.exec(line))) {
+            setZ(Number(m[1]));
+            c.pinState = '';
+          } else if ((m = /^G10 L20 P0 Z(-?[\d.]+)$/.exec(line))) {
+            // The work offset moves so that the current position reads Z = value.
+            c.state.status = { ...c.state.status, wpos: { ...c.state.status.wpos, z: Number(m[1]).toFixed(3) } };
+            c.runner.state = c.state;
+          }
+          pending = false;
+          report();
+        }, delay);
+      };
+      return c;
+    };
+    const plate = (options) => {
+      const ctx = setup();
+      ctx.c = probeController(options);
+      ctx.controllers.TEST = ctx.c;
+      ctx.generation = ctx.service.list()[0].generation;
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.c.report();
+      return ctx;
+    };
+
+    test('a confirmed plate probe sets the work Z and leaves the modal state alone', async () => {
+      const ctx = plate();
+      expect(ctx.state().canZeroZ).toBe(true);
+      const ticket = await ctx.req('prepare', { operation: 'zeroZ', thickness: 10, search: 20 });
+      expect(ticket.name).toMatch(/10 mm/);
+      const result = await ctx.req('zeroZ', { nonce: ticket.nonce });
+      expect(result.message).toMatch(/Zéro Z réglé/);
+      expect(ctx.c.sent).toEqual(['G38.2 Z-17 F100', 'G0 Z-11.3', 'G38.2 Z-13.3 F25', 'G10 L20 P0 Z10', 'G0 Z15']);
+      expect(ctx.c.sent.some((l) => /G91|G21|G20/.test(l))).toBe(false);
+      expect(ctx.state().zeroZ).toMatchObject({ thickness: 10, wcs: 'G54', machineZ: -35.3 });
+      expect(ctx.state().probing).toBe(false);
+    });
+
+    test('while probing, loads, starts, macros and resumes are refused; stop stays possible', async () => {
+      const ctx = plate({ delay: 60 });
+      const ticket = await ctx.req('prepare', { operation: 'zeroZ', thickness: 5, search: 20 });
+      const run = ctx.req('zeroZ', { nonce: ticket.nonce });
+      await new Promise((resolve) => {
+        setTimeout(resolve, 20);
+      });
+      const state = ctx.state();
+      expect(state.probing).toBe(true);
+      expect(state.loadReason).toMatch(/Palpage en cours/);
+      expect(state.macroReason).toMatch(/Palpage en cours/);
+      expect(state.canZeroZ).toBe(false);
+      expect(state.canStop).toBe(true);
+      await run;
+      expect(ctx.state().probing).toBe(false);
+    });
+
+    test('no contact within the search distance: the alarm ends the sequence and is explained', async () => {
+      const ctx = plate({ plateZ: null });
+      const ticket = await ctx.req('prepare', { operation: 'zeroZ', thickness: 10, search: 20 });
+      await expect(ctx.req('zeroZ', { nonce: ticket.nonce })).rejects.toThrow(/Alarme pendant le palpage \(ALARM:5\)/);
+      expect(ctx.c.sent).toEqual(['G38.2 Z-17 F100']);
+      expect(ctx.state().zeroZ).toMatchObject({ failed: expect.stringMatching(/ALARM:5/) });
+      expect(ctx.state().probing).toBe(false);
+    });
+
+    test('refused: probe in contact, relative or inch mode, spindle on, running job, bad parameters', async () => {
+      const ctx = plate();
+      ctx.c.pinState = 'P';
+      ctx.c.report();
+      expect(ctx.state().zeroZReason).toMatch(/déjà en contact/);
+      ctx.c.pinState = '';
+      ctx.c.state.parserstate = { modal: { wcs: 'G54', distance: 'G91', units: 'G21', spindle: 'M5' } };
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.c.report();
+      expect(ctx.state().zeroZReason).toMatch(/G91/);
+      ctx.c.state.parserstate = { modal: { wcs: 'G54', distance: 'G90', units: 'G20', spindle: 'M5' } };
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.c.report();
+      expect(ctx.state().zeroZReason).toMatch(/G20/);
+      ctx.c.state.parserstate = { modal: { wcs: 'G54', distance: 'G90', units: 'G21', spindle: 'M5' } };
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.c.state.status = { ...ctx.c.state.status, spindle: 9000 };
+      ctx.c.report();
+      expect(ctx.state().zeroZReason).toMatch(/broche/);
+      ctx.c.state.status = { ...ctx.c.state.status, spindle: 0 };
+      ctx.c.workflow.state = 'running';
+      ctx.c.report();
+      expect(ctx.state().zeroZReason).toMatch(/repos ou pendant une pause/);
+      ctx.c.workflow.state = 'idle';
+      ctx.c.report();
+      await expect(ctx.req('prepare', { operation: 'zeroZ', thickness: 0, search: 20 })).rejects.toThrow(/Épaisseur/);
+      await expect(ctx.req('prepare', { operation: 'zeroZ', thickness: 10, search: 500 })).rejects.toThrow(/recherche/);
+      expect(ctx.c.sent).toEqual([]);
+    });
+
+    test('allowed during a tool change pause once the machine has stopped', async () => {
+      const ctx = plate();
+      ctx.c.workflow.state = 'paused';
+      ctx.c.sender.state = { ...ctx.c.sender.state, hold: true, holdReason: { data: 'M6', msg: 'T2 M6' } };
+      ctx.c.report();
+      expect(ctx.state().canZeroZ).toBe(true);
+      const ticket = await ctx.req('prepare', { operation: 'zeroZ', thickness: 10, search: 20 });
+      await ctx.req('zeroZ', { nonce: ticket.nonce });
+      expect(ctx.c.sent).toHaveLength(5);
+      ctx.c.sender.state = { ...ctx.c.sender.state, holdReason: { data: '%wait', msg: '' } };
+      ctx.c.state.status = { ...ctx.c.state.status, activeState: 'Hold' };
+      ctx.c.report();
+      expect(ctx.state().zeroZReason).toMatch(/repos ou pendant une pause|Idle/);
+    });
+  });
 });
