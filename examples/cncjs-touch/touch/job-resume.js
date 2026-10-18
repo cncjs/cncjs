@@ -66,7 +66,10 @@
     set(pause,'hidden',!p||!pauseText(p));set(pauseText_,'textContent',pauseText(p));
     set(m5,'hidden',!(p&&machine.canSpindleStop&&machine.spindleSpeed>0));
     var can=canResumeFromLine();set(open,'hidden',!can||!panel.hidden);
-    if(!can&&!panel.hidden)close();
+    // A job that starts closes the panel; a passing refusal (an M5 or a $G on
+    // its way) only disables the load and keeps the check.
+    if(!panel.hidden&&(!machine||!selection||machine.workflow!=='idle'))close();
+    else set(load,'disabled',!checked||!can);
   }
   function line(){var n=Number(input.value);return Number.isInteger(n)&&n>=2?n:null;}
   open.addEventListener('click',function(){
