@@ -50,6 +50,9 @@ byId('home-resume-check').click();
   planResult=Promise.reject(new Error('Position avant la ligne 190 inconnue'));byId('home-resume-check').click();await flush();
   assert.equal(byId('home-resume-plan').textContent,'Position avant la ligne 190 inconnue');assert.equal(byId('home-resume-load').disabled,true);
   planResult=Promise.resolve(plan);byId('home-resume-check').click();await flush();
+  // A passing state where loading is refused (an M5 or a $G on its way) keeps the panel and the check.
+  status({...idle,canLoad:false});assert.equal(byId('home-resume-panel').hidden,false);assert.equal(byId('home-resume-load').disabled,true);
+  status(idle);assert.equal(byId('home-resume-load').disabled,false,'the check still holds once loading is possible again');
   byId('home-resume-load').click();await flush();assert.deepEqual(calls.at(-1),['load','a.nc',190]);assert.equal(byId('home-resume-panel').hidden,true);
   // A running job hides the resume, a tool change pause explains itself and offers M5 while the spindle turns.
   status({...idle,workflow:'paused',canLoad:false,programPause:m6,canSpindleStop:true,spindleSpeed:12000});
