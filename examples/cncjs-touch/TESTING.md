@@ -26,6 +26,27 @@ An optional report can be written outside the source tree:
 node verify-project.cjs --report /absolute/path/to/offline-report.json
 ```
 
+## Z zero with a touch plate (2026-10-18)
+
+The first real probing operation of the touch screen, chosen because a tool change needs the Z zero set again and the touch screen could not do it. Suivi → "Zéro Z avec une plaque" (`touch/job-resume.js`), server operation `zeroZ` in `job-service.js`, confirmed through the same ticket dialog as `$X`, `$H` and the spindle test, with the plate thickness and the maximum travel down as parameters (remembered on the device).
+
+Sequence sent, every move absolute (no `G91`, so an alarm in the middle leaves no relative mode behind):
+1. `G38.2 Z{z0 - search} F100`, the fast touch;
+2. `G0 Z{contact + 1}`, the back-off;
+3. `G38.2 Z{contact - 1} F25`, the slow touch;
+4. `G10 L20 P0 Z{thickness}`: the plate top reads Z = thickness in the active work offset;
+5. `G0 Z{thickness + 5}`.
+
+Each step waits for the acknowledgement, the idle state and a status report newer than the one before the line; the fast touch must have moved the tool down and stopped short of the target, and the work Z is checked after `G10 L20`. An alarm, a line refused by Grbl, a lost controller, the time limit or the operator's Stop ends the sequence with an explanation; the result or the failure is kept and shown under the card.
+
+Allowed at rest, or during a pause the program asked for (M0, M1, M6) once the machine has stopped, with the probe input free (`Pn` without `P`, or no `Pn` field), the spindle still, a fresh `$G` showing `G90` and `G21`, the work offset known and no CNCjs automation. Loads, starts, macros and resumes are refused while probing, and Stop interrupts it (feed hold, then reset).
+
+Tests: `job-service.test.js` "Z zero with a touch plate" (the sequence against a fake Z axis with a plate, refusals, the alarm path, Stop while probing, the tool change pause), `test-job-resume.cjs` (card, parameters checked and remembered, confirmation note, last result), `test-job-dialog.cjs` (parameters sent with the prepare request, own title).
+
+Checked on the tablet against the Grbl 1.1h simulator (no plate, so no contact possible): with the probe input free, the card appears at rest; 10 mm and 5 mm give the confirmation "Régler le zéro Z avec la plaque · Zéro Z avec plaque de 10 mm (recherche 5 mm)" with its note; during the probe the card says "Palpage en cours…" and Stop stays enabled; after 3.2 s the simulator answers `ALARM:5`, Suivi shows "Alarme 5 : Palpage sans contact…", the card shows "Dernier palpage échoué : Alarme pendant le palpage (ALARM:5)…" and the probe is refused until `$X`; after `$X` the card is back and `$G` still gives `G90 G21`. With the simulator's probe input forced active (`$6=0`, put back to 1) the operation is refused: "La sonde est déjà en contact".
+
+Not tested on the real machine: a real contact (steps 2 to 5 ran only against the fake controller of the Jest test), the plate's electrical contact with the LUNYEE spindle, and the Grbl_ESP32 probe input. The supervised plan is in `HANDOFF.md`, step 9: in the air first.
+
 ## Resume from a line and tool change (2026-10-18)
 
 **Resume from a line** (`src/server/services/touch/resume.js`, Suivi → "Reprendre à une ligne…", `touch/job-resume.js`). The server replays the program's state up to the chosen line and loads a rebuilt program:
