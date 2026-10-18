@@ -24,15 +24,21 @@ const phrases=[...source.matchAll(/\bt\('((?:[^'\\]|\\.)*)'\)/g)].map(m=>m[1]).c
 const catalog={window:{}};vm.runInNewContext(fs.readFileSync(__dirname+'/touch/i18n-messages.js','utf8'),catalog);
 const keys=new Set(catalog.window.CNCTouchMessages.map(r=>r[0].trim().replace(/\s+/g,' ')));
 for(const p of new Set(phrases))assert(keys.has(p.trim().replace(/\s+/g,' ')),'missing translation: '+p);
+// Plate probe texts.
+assert.equal(R.plateNote({thickness:10.5,search:15}),'Plaque de 10.5 mm posée sous l’outil et sonde branchée ? Descente de 15 mm au plus ; le dessus de la plaque deviendra Z = épaisseur, puis l’outil remontera 5 mm au-dessus.');
+R.setPendingPlate({thickness:10.5,search:15});assert.match(R.dialogNote('zeroZ',null),/^Plaque de 10\.5 mm/);R.setPendingPlate(null);assert.equal(R.dialogNote('zeroZ',{}),'');
+assert.equal(R.lastZeroText({thickness:10,wcs:'G54',machineZ:-35.3}),'Dernier zéro Z : plaque 10 mm, repère G54, contact à Z machine -35.3.');
+assert.match(R.lastZeroText({failed:'Alarme pendant le palpage (ALARM:5)'}),/^Dernier palpage échoué : Alarme/);assert.equal(R.lastZeroText(null),'');
 // DOM flow on the real page.
 const {document,node,element}=require('./dom-fixture.cjs').createDOM(['home']);
 const ready=node('home-job-ready'),parent=element('div','home-actions');parent.appendChild(ready);
 document.body.getAttribute=()=>null;
 const listeners={},calls=[];let planResult=Promise.resolve(plan);
+const stored=new Map();
 const window={cncLibrarySelection:{file:'a.nc',name:'a.nc'},addEventListener:(n,f)=>(listeners[n]=listeners[n]||[]).push(f),
-  cncJobControls:{resumePlan:(f,l)=>{calls.push(['plan',f,l]);return planResult;},loadFrom:(f,l)=>{calls.push(['load',f,l]);return Promise.resolve({});},spindleStop:()=>{calls.push(['m5']);return Promise.resolve({});}}};
-vm.runInNewContext(source,{window,document});
-const ids=parent.children.map(c=>c.id);assert.deepEqual(ids,['home-job-ready','home-program-pause','home-resume-line','home-resume-panel']);
+  cncJobControls:{resumePlan:(f,l)=>{calls.push(['plan',f,l]);return planResult;},loadFrom:(f,l)=>{calls.push(['load',f,l]);return Promise.resolve({});},spindleStop:()=>{calls.push(['m5']);return Promise.resolve({});},prepareCommand:(op,extra)=>{calls.push(['prepare',op,extra]);}}};
+vm.runInNewContext(source,{window,document,localStorage:{getItem:k=>stored.has(k)?stored.get(k):null,setItem:(k,v)=>stored.set(k,v)}});
+const ids=parent.children.map(c=>c.id);assert.deepEqual(ids,['home-job-ready','home-program-pause','home-resume-line','home-resume-panel','home-plate']);
 const byId=id=>parent.children.find(c=>c.id===id)||parent.children.flatMap(c=>c.children).find(c=>c.id===id);
 const status=machine=>listeners['cnc-job-status'].forEach(f=>f({detail:{machine,simulation:false}}));
 const idle={fresh:true,workflow:'idle',canLoad:true,stoppedAtLine:200,stoppedFile:'a.nc',programPause:null};
@@ -63,6 +69,18 @@ byId('home-resume-check').click();
   // Open panel closed when the machine is no longer idle; the simulation events are ignored.
   status(idle);byId('home-resume-line').click();status({...idle,workflow:'running',canLoad:false});assert.equal(byId('home-resume-panel').hidden,true);
   listeners['cnc-job-status'].forEach(f=>f({detail:{machine:{...idle,programPause:m6},simulation:true}}));assert.equal(byId('home-program-pause').hidden,true);
+  // Z zero with a plate: shown when the server allows it, parameters checked and remembered, confirmation prepared.
+  assert.equal(byId('home-plate').hidden,true);
+  status({...idle,canZeroZ:true,zeroZ:null});assert.equal(byId('home-plate').hidden,false);assert.equal(byId('home-plate-search').value,'10');
+  byId('home-plate-probe').click();assert.match(byId('home-plate-status').textContent,/épaisseur/);assert.notEqual(calls.at(-1)[0],'prepare');
+  byId('home-plate-thickness').value='10,5';byId('home-plate-search').value='15';byId('home-plate-probe').click();
+  assert.equal(JSON.stringify(calls.at(-1)),JSON.stringify(['prepare','zeroZ',{thickness:10.5,search:15}]));assert.deepEqual(JSON.parse(stored.get('cncjs-touch-plate-v1')),{thickness:10.5,search:15});
+  assert.match(window.CNCJobResume.dialogNote('zeroZ',idle),/^Plaque de 10\.5 mm/);
+  byId('home-plate-search').value='500';byId('home-plate-probe').click();assert.match(byId('home-plate-status').textContent,/Descente maximale invalide/);
+  status({...idle,canZeroZ:false,probing:true,canLoad:false});assert.equal(byId('home-plate').hidden,false);assert.equal(byId('home-plate-probe').disabled,true);assert.match(byId('home-plate-status').textContent,/Palpage en cours/);
+  status({...idle,canZeroZ:true,zeroZ:{thickness:10.5,wcs:'G54',machineZ:-35.3}});assert.match(byId('home-plate-last').textContent,/^Dernier zéro Z : plaque 10\.5 mm/);
+  status({...idle,workflow:'paused',canLoad:false,programPause:m6,canZeroZ:true});assert.match(byId('home-program-pause-text').textContent,/se règle ci-dessous\.$/);
+  status({...idle,canZeroZ:false});assert.equal(byId('home-plate').hidden,true);
   // Both pages load the module after the dashboard that creates #home-job-ready.
   for(const name of ['index.html','simulation.html']){const html=fs.readFileSync(__dirname+'/touch/'+name,'utf8'),at=f=>html.indexOf(f+'?v=');assert(at('job-resume.js')>at('job-dashboard.js')&&at('job-dashboard.js')>0,name);}
   console.log('PASS job resume: pause texts, suggested line after a stop, check then load, M5 during a tool change, dialog note, translations and page order.');
