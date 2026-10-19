@@ -34,12 +34,15 @@ const fmt = (n) => String(Math.round(n * 10000) / 10000);
 export const programLines = (gcode) => String(gcode).split('\n').filter((line) => line.trim().length > 0);
 
 // State of the program just before line `from` (1-based, sender numbering).
+// Units and work offset stay null when the program never chose them: the
+// program then relies on the controller's own state, which the preamble must
+// leave alone (a forced G54 would move a G55 job to another origin).
 export const stateBefore = (lines, from) => {
   const s = {
-    units: 'G21',
+    units: null,
 distance: 'G90',
 plane: 'G17',
-wcs: 'G54',
+wcs: null,
 feedMode: 'G94',
 motion: null,
     feed: null,
@@ -164,7 +167,7 @@ export const buildResume = (gcode, from, { name = '' } = {}) => {
   }
   const preamble = [
     '(CNCjs Touch : reprise a la ligne ' + from + (name ? ' de ' + name.replace(/[()]/g, '') : '') + ')',
-    [s.units, 'G90', s.plane, s.wcs, s.feedMode].join(' '),
+    [s.units, 'G90', s.plane, s.wcs, s.feedMode].filter(Boolean).join(' '),
     'G0 Z' + fmt(s.safeZ),
     'G0 X' + fmt(s.pos.X) + ' Y' + fmt(s.pos.Y)
   ];
@@ -183,7 +186,8 @@ export const buildResume = (gcode, from, { name = '' } = {}) => {
   let first = lines[from - 1];
   const firstCode = clean(first);
   const hasAxis = /(^|[^A-Z])[XYZIJKR]\s*[-+]?[\d.]/.test(firstCode);
-  const hasMotion = /(^|[^A-Z\d.])G0*[0123](?![\d.])/.test(firstCode);
+  // Motion words, compact code included (G90G1X10: the G1 follows a digit).
+  const hasMotion = words(firstCode).some(([l, v]) => l === 'G' && [0, 1, 2, 3].includes(v));
   if (hasAxis && !hasMotion && s.motion) {
     first = s.motion + ' ' + first.trim();
   }

@@ -48,6 +48,21 @@ describe('resume from a line', () => {
     expect(r).toMatchObject({ tool: 2, toolChanged: true, spindle: { mode: 'M3', speed: 12000 }, coolant: 'M8', total: 16 });
   });
 
+  test('units and work offset the program never chose are left to the controller (no forced G54/G21)', () => {
+    const prog = ['G0 Z5', 'G0 X0 Y0', 'G1 Z-1 F200', 'G1 X10 F800', 'G1 Y10', 'G1 X0', 'M30'].join('\n');
+    const r = buildResume(prog, 5);
+    expect(r.preamble[1]).toBe('G90 G17 G94');
+    expect(r).toMatchObject({ wcs: null, units: null });
+    const chosen = buildResume('G20 G55\n' + prog, 6);
+    expect(chosen.preamble[1]).toBe('G20 G90 G17 G55 G94');
+  });
+
+  test('a compact first line keeps its own motion word (G90G1X10)', () => {
+    const prog = ['G21 G90', 'G0 Z5', 'G0 X0 Y0', 'G1 Z-1 F200', 'G90G1X20', 'N7G1X30', 'M30'].join('\n');
+    expect(buildResume(prog, 5).program.split('\n')).toContain('G90G1X20');
+    expect(buildResume(prog, 6).program.split('\n')).toContain('N7G1X30');
+  });
+
   test('a first line relying on the modal motion gets it back', () => {
     const r = buildResume(PROGRAM, 11);
     expect(r.position).toEqual({ X: 40, Y: 10, Z: -1.5 });
@@ -83,7 +98,7 @@ describe('resume from a line', () => {
   test('a program without spindle or coolant gets neither, and comments do not count as moves', () => {
     const prog = ['G20 G90', 'G0 Z0.5 (clear)', 'G0 X1 Y1 ; start', 'G1 Z-0.1 F10', '(note X99)', 'G1 X2', 'M30'].join('\n');
     const r = buildResume(prog, 6);
-    expect(r.preamble).toEqual(['(CNCjs Touch : reprise a la ligne 6)', 'G20 G90 G17 G54 G94', 'G0 Z0.5', 'G0 X1 Y1', 'G1 Z-0.1 F10']);
+    expect(r.preamble).toEqual(['(CNCjs Touch : reprise a la ligne 6)', 'G20 G90 G17 G94', 'G0 Z0.5', 'G0 X1 Y1', 'G1 Z-0.1 F10']);
     expect(r.spindle).toBe(null);
     expect(r.coolant).toBe(null);
   });

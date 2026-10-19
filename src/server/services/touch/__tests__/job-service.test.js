@@ -940,7 +940,7 @@ describe('job service', () => {
       ctx.report();
       const plan = await ctx.req('resumePlan', { file: 'resume.nc', line: 7 });
       expect(plan).toMatchObject({ from: 7, total: 11, line: 'G1 Y10', spindle: { mode: 'M3', speed: 9000 } });
-      expect(plan.preamble).toEqual(['(CNCjs Touch : reprise a la ligne 7 de resume.nc)', 'G21 G90 G17 G54 G94', 'G0 Z5', 'G0 X10 Y0', 'M3 S9000', 'G4 P3', 'G1 Z-1 F200', 'F800']);
+      expect(plan.preamble).toEqual(['(CNCjs Touch : reprise a la ligne 7 de resume.nc)', 'G21 G90 G17 G94', 'G0 Z5', 'G0 X10 Y0', 'M3 S9000', 'G4 P3', 'G1 Z-1 F200', 'F800']);
       expect(ctx.c.commands).toEqual([]);
       await expect(ctx.req('resumePlan', { file: 'resume.nc', line: 4 })).rejects.toThrow(/Position|dégagement/);
       await expect(ctx.req('resumePlan', { file: '../resume.nc', line: 7 })).rejects.toThrow(/Nom de fichier/);
@@ -953,7 +953,7 @@ describe('job service', () => {
       const [name, file, program] = ctx.c.commands[0];
       expect(name).toBe('gcode:load');
       expect(file).toBe('resume.nc');
-      expect(program.split('\n').slice(0, 9)).toEqual(['(CNCjs Touch : reprise a la ligne 7 de resume.nc)', 'G21 G90 G17 G54 G94', 'G0 Z5', 'G0 X10 Y0', 'M3 S9000', 'G4 P3', 'G1 Z-1 F200', 'F800', 'G1 Y10']);
+      expect(program.split('\n').slice(0, 9)).toEqual(['(CNCjs Touch : reprise a la ligne 7 de resume.nc)', 'G21 G90 G17 G94', 'G0 Z5', 'G0 X10 Y0', 'M3 S9000', 'G4 P3', 'G1 Z-1 F200', 'F800', 'G1 Y10']);
       const state = ctx.state();
       expect(state.resume).toMatchObject({ from: 7, total: 11, line: 'G1 Y10' });
       expect(state.canStart).toBe(true);
