@@ -9,6 +9,8 @@
   var probeLocked=false;
   // Overrides and macros exist in the simulation so the controls can be tried without a machine.
   var overrides={feed:100,rapid:100,spindle:100};
+  // Like Grbl: back to 100 % at the end of the program (M2/M30) and after a stop (soft reset).
+  function resetOverrides(){overrides.feed=100;overrides.rapid=100;overrides.spindle=100;}
   var OVERRIDES={feed:[0,10,-10,1,-1],spindle:[0,10,-10,1,-1],rapid:[0,100,50,25]};
   var macros=[{id:'sim-clear-z',name:uiLocale.t('Dégagement Z fictif')},{id:'sim-park',name:uiLocale.t('Position de repos fictive')}];
   function log(action,message){
@@ -22,7 +24,7 @@
     if(elapsed<0){elapsed=0;ticket=null;}
     if(workflow==='running') {
       progress=Math.min(100,progress+elapsed/600);
-      if(progress>=100) {workflow='idle';log('complete',uiLocale.t('Travail fictif terminé.'));}
+      if(progress>=100) {workflow='idle';resetOverrides();log('complete',uiLocale.t('Travail fictif terminé.'));}
     }
     last=now;
   }
@@ -127,7 +129,7 @@
           if(!state.canPause) throw new Error(uiLocale.t('Aucune simulation en cours.'));
           workflow='paused';ticket=null;
         } else if(a==='stop') {
-          workflow='idle';ticket=null;started=true;
+          workflow='idle';ticket=null;started=true;resetOverrides();
         } else throw new Error(uiLocale.t('Action simulée inconnue.'));
         var message=({load:uiLocale.t('Fichier sélectionné pour le test ; aucun G-code exécuté.'),start:uiLocale.t('Démarrage fictif.'),resume:uiLocale.t('Reprise fictive.'),pause:uiLocale.t('Pause fictive.'),stop:uiLocale.t('Travail fictif arrêté.')}[a]);
         log(a,message);resolve({message:uiLocale.t('SIMULATION — ')+message});

@@ -60,7 +60,7 @@ const post=(action,extra={})=>api('POST',{action,port:'SIMULATION',...extra});
  await post('override',{kind:'rapid',value:25});assert.equal((await get()).overrides.rapid,25);
  await post('override',{kind:'feed',value:0});assert.equal((await get()).overrides.feed,100);
  assert.match((await get()).history[0].message,/Correction fictive/);
- await post('stop');s=await get();assert.equal(s.canOverride,false);assert.match(s.overrideReason,/en cours ou en pause/);
+ await post('override',{kind:'feed',value:10});await post('override',{kind:'rapid',value:25});await post('stop');s=await get();assert.equal(s.canOverride,false);assert.deepEqual(s.overrides,{feed:100,rapid:100,spindle:100},'a stop returns to 100 % like Grbl');assert.match(s.overrideReason,/en cours ou en pause/);
  await assert.rejects(post('override',{kind:'feed',value:10}),/en cours ou en pause/);
  // Macros: listed by name, ticket flow from an idle machine, start tickets cannot run them.
  assert.deepEqual(s.macros.map(m=>m.id),['sim-clear-z','sim-park']);assert.equal(s.canMacro,true);
