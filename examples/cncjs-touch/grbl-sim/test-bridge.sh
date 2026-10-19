@@ -27,4 +27,21 @@ code=$(run "$TMP/missing-grbl_sim.exe" 2>/dev/null)
 [ "$code" != "0" ] || fail "a missing simulator should fail"
 [ ! -e "$TMP/tty" ] && [ ! -L "$TMP/tty" ] || fail "link left after a failed start"
 
-echo "PASS bridge: gives up on a crashing simulator, removes the link when the simulator cannot start"
+# A hang-up (SSH session closed) removes the link, and a bridge never removes a link that
+# another bridge created after it (a stand-in simulator that stays up).
+printf '#!/bin/sh\nexec sleep 60\n' > "$TMP/sim.sh"; chmod +x "$TMP/sim.sh"
+rm -f "$TMP/port.log"
+GRBL_SIM="$TMP/sim.sh" GRBL_SIM_PORT="$TMP/tty" GRBL_SIM_LOG="$TMP/port.log" python3 "$HERE/grbl-sim-port.py" & first=$!
+for i in $(seq 1 20); do [ -L "$TMP/tty" ] && break; sleep 0.2; done
+[ -L "$TMP/tty" ] || fail "no link"
+kill -HUP $first; wait $first
+[ ! -e "$TMP/tty" ] && [ ! -L "$TMP/tty" ] || fail "link left after SIGHUP"
+GRBL_SIM="$TMP/sim.sh" GRBL_SIM_PORT="$TMP/tty" GRBL_SIM_LOG="$TMP/port.log" python3 "$HERE/grbl-sim-port.py" & a=$!
+for i in $(seq 1 20); do [ -L "$TMP/tty" ] && break; sleep 0.2; done
+GRBL_SIM="$TMP/sim.sh" GRBL_SIM_PORT="$TMP/tty" GRBL_SIM_LOG="$TMP/port.log" python3 "$HERE/grbl-sim-port.py" & b=$!
+sleep 1; second=$(readlink "$TMP/tty")
+kill $a; wait $a
+[ "$(readlink "$TMP/tty")" = "$second" ] || fail "the first bridge removed the second one's link"
+kill $b; wait $b
+
+echo "PASS bridge: gives up on a crashing simulator, removes the link when the simulator cannot start, on SIGHUP, and only its own link"

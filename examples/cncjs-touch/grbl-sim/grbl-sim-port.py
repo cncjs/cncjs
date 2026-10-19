@@ -5,7 +5,8 @@ CNCjs opens LINK like a real serial port. Bytes are relayed, untouched, between
 that pseudo-terminal and a second one on which grbl_sim.exe runs. Both are raw,
 so Grbl realtime bytes (Ctrl-X, ?, !, ~, overrides 0x90-0x9F) pass through.
 The simulator is restarted if it exits, unless it stops more than five times
-in a minute (wrong or broken build): the bridge then gives up. Stop with SIGTERM.
+in a minute (wrong or broken build): the bridge then gives up. Stop with SIGTERM
+(SIGINT and SIGHUP too: a closed SSH session still removes the port link).
 """
 import ctypes, os, pty, tty, signal, subprocess, select, sys, termios, time
 
@@ -26,7 +27,8 @@ try:
     os.unlink(LINK)
 except FileNotFoundError:
     pass
-os.symlink(os.ttyname(host_slave), LINK)
+PTY = os.ttyname(host_slave)
+os.symlink(PTY, LINK)
 
 running = True
 def stop(*_):
@@ -34,6 +36,7 @@ def stop(*_):
     running = False
 signal.signal(signal.SIGTERM, stop)
 signal.signal(signal.SIGINT, stop)
+signal.signal(signal.SIGHUP, stop)
 
 def die_with_parent():
     # Linux: the simulator gets SIGTERM if this bridge dies, so a killed bridge
@@ -96,8 +99,10 @@ finally:
             proc.wait(3)
         except subprocess.TimeoutExpired:
             proc.kill()
+    # Only our own link: a bridge started meanwhile owns the path now.
     try:
-        os.unlink(LINK)
-    except FileNotFoundError:
+        if os.readlink(LINK) == PTY:
+            os.unlink(LINK)
+    except OSError:
         pass
     log('port virtuel fermé')
