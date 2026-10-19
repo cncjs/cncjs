@@ -1003,8 +1003,67 @@ describe('job service', () => {
       state = ctx.state();
       expect(state.programPause).toMatchObject({ kind: 'M6', restartSpindle: { mode: 'M3', speed: 12000 } });
       const ticket = await ctx.req('prepare', { operation: 'resume', revision: state.revision });
-      await ctx.req('resume', { nonce: ticket.nonce });
+      const resumed = ctx.req('resume', { nonce: ticket.nonce });
+      ctx.c.runner.emit('ok'); // M3
+      await new Promise((resolve) => {
+        setTimeout(resolve, 150);
+      });
+      // CNCjs's feeder has sent the G4 and is no longer pending, but the dwell runs.
+      expect(ctx.c.commands.at(-1)).toEqual(['gcode', ['M3 S12000', 'G4 P3']]);
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.c.runner.emit('ok'); // the $G reply's ok
+      await new Promise((resolve) => {
+        setTimeout(resolve, 150);
+      });
+      expect(ctx.c.commands.at(-1)).toEqual(['gcode', ['M3 S12000', 'G4 P3']]);
+      ctx.c.runner.emit('ok'); // G4, once the dwell is over
+      expect((await resumed).message).toMatch(/Broche relancée/);
       expect(ctx.c.commands.slice(-3)).toEqual([['gcode', 'M5'], ['gcode', ['M3 S12000', 'G4 P3']], ['gcode:resume']]);
+    });
+
+    const toolChangePause = async (ctx) => {
+      await started(ctx);
+      ctx.c.workflow.state = 'paused';
+      ctx.c.sender.state = { ...ctx.c.sender.state, hold: true, holdReason: { data: 'M6', msg: 'T2 M6' } };
+      ctx.c.state.status.activeState = 'Idle';
+      ctx.c.state.status.spindle = 12000;
+      ctx.c.state.parserstate = { modal: { wcs: 'G54', spindle: 'M3' }, spindle: '12000' };
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.report();
+      ctx.c.state.status.spindle = 0;
+      ctx.c.state.parserstate = { modal: { wcs: 'G54', spindle: 'M5' }, spindle: '12000' };
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.report();
+      const state = ctx.state();
+      return ctx.req('prepare', { operation: 'resume', revision: state.revision });
+    };
+
+    test('a controller destroyed during the spin-up ends the resume without throwing', async () => {
+      const ctx = setup();
+      const ticket = await toolChangePause(ctx);
+      const resumed = ctx.req('resume', { nonce: ticket.nonce });
+      // USB cable pulled: CNCjs destroys the controller.
+      ctx.c.isClose = () => true;
+      ctx.c.feeder = null;
+      ctx.c.workflow = null;
+      await expect(resumed).rejects.toThrow(/Reprise annulée/i);
+      expect(ctx.c.commands.some(([n]) => n === 'gcode:resume')).toBe(false);
+    });
+
+    test('a refused spin-up line or a stop during the spin-up never resumes', async () => {
+      let ctx = setup();
+      let ticket = await toolChangePause(ctx);
+      let resumed = ctx.req('resume', { nonce: ticket.nonce });
+      ctx.c.runner.emit('error', { message: '20' });
+      await expect(resumed).rejects.toThrow(/error:20/);
+      ctx = setup();
+      ticket = await toolChangePause(ctx);
+      resumed = ctx.req('resume', { nonce: ticket.nonce });
+      ctx.c.runner.emit('ok');
+      ctx.c.workflow.state = 'idle'; // the operator stopped the job
+      ctx.c.runner.emit('ok');
+      await expect(resumed).rejects.toThrow(/Reprise annulée/i);
+      expect(ctx.c.commands.some(([n]) => n === 'gcode:resume')).toBe(false);
     });
 
     test('the spindle to restart is learnt during the tool change pause, until the operator stops it', async () => {
@@ -1059,8 +1118,10 @@ describe('job service', () => {
 
   describe('Z zero with a touch plate', () => {
     // A controller whose Z axis answers probes: the plate sits at `plateZ`
-    // (work coordinates), or nowhere when null. Every 'gcode' line completes a
-    // few ms later with a fresh status report, like CNCjs's feeder and Grbl.
+    // (work coordinates), or nowhere when null. Like CNCjs's feeder, a single
+    // line is no longer pending once sent; like Grbl, a report taken before the
+    // line runs still shows the old state, and the line answers `ok` once done,
+    // followed by fresh reports. $G replies ([GC:…] + ok) come in between.
     const probeController = ({ plateZ = -12.3, delay = 5 } = {}) => {
       const c = fakeController();
       c.settings = { version: '1.1h', settings: { $22: 1, $30: 24000, $31: 6000, $110: 1000, $111: 1000, $112: 200 } };
@@ -1087,7 +1148,12 @@ describe('job service', () => {
         }
         const line = args[0];
         c.sent.push(line);
-        pending = true;
+        pending = false;
+        setTimeout(() => {
+          report(); // taken before Grbl started the line
+          c.runner.emit('parserstate', c.state.parserstate);
+          c.runner.emit('ok'); // the $G reply's ok, not the line's
+        }, 1);
         setTimeout(() => {
           let m;
           if ((m = /^G38\.2 Z(-?[\d.]+) F(\d+)$/.exec(line))) {
@@ -1109,8 +1175,12 @@ describe('job service', () => {
             c.state.status = { ...c.state.status, wpos: { ...c.state.status.wpos, z: Number(m[1]).toFixed(3) } };
             c.runner.state = c.state;
           }
-          pending = false;
+          if (!/^Alarm/.test(c.state.status.activeState)) {
+            c.runner.emit('ok');
+          }
           report();
+          setTimeout(report, delay);
+          setTimeout(report, 2 * delay);
         }, delay);
       };
       return c;
@@ -1137,6 +1207,14 @@ describe('job service', () => {
       expect(ctx.state().zeroZ).toMatchObject({ thickness: 10, wcs: 'G54', machineZ: -35.3 });
       expect(ctx.state().probing).toBe(false);
     });
+
+    test('a report taken before Grbl starts a probe line is not taken for its end (the ok of the line is awaited)', async () => {
+      const ctx = plate({ delay: 250 });
+      const ticket = await ctx.req('prepare', { operation: 'zeroZ', thickness: 10, search: 20 });
+      const result = await ctx.req('zeroZ', { nonce: ticket.nonce });
+      expect(result.message).toMatch(/Zéro Z réglé/);
+      expect(ctx.c.sent).toEqual(['G38.2 Z-17 F100', 'G0 Z-11.3', 'G38.2 Z-13.3 F25', 'G10 L20 P0 Z10', 'G0 Z15']);
+    }, 15000);
 
     test('while probing, loads, starts, macros and resumes are refused; stop stays possible', async () => {
       const ctx = plate({ delay: 60 });

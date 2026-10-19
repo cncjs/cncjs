@@ -686,10 +686,46 @@ export const createService = (store, config, clock = monotonic) => {
     return { thickness: Math.round(thickness * 1000) / 1000, search: Math.round(search * 1000) / 1000 };
   };
 
-  // Resolves once the line sent is acknowledged, the machine idle and a report
-  // received after the `after`th; rejects on an alarm, a Grbl error, a lost
-  // controller or the time limit.
-  const quiet = (c, r, after, limitMs) => new Promise((resolve, reject) => {
+  // Grbl's answers to lines the touch service sends through CNCjs's feeder:
+  // the feeder clears `pending` as soon as it sends its last line, before
+  // Grbl answers, so only the `ok` tells that a line was executed (G38.2 and
+  // G4 answer once done). The `ok` that follows a $G reply belongs to CNCjs's
+  // own parser state query, sent every 500 ms, paused or not.
+  const answers = (c, r) => {
+    const runner = c.runner;
+    const t = { oks: 0, error: null, reportsAtOk: 0 };
+    let parserReply = false;
+    const onParser = () => {
+      parserReply = true;
+    };
+    const onOk = () => {
+      if (parserReply) {
+        parserReply = false;
+        return;
+      }
+      t.oks += 1;
+      t.reportsAtOk = r.reports;
+    };
+    const onError = (res) => {
+      parserReply = false;
+      t.error = grblCode(res) || -1;
+    };
+    runner.on('parserstate', onParser);
+    runner.on('ok', onOk);
+    runner.on('error', onError);
+    t.done = () => {
+      runner.removeListener('parserstate', onParser);
+      runner.removeListener('ok', onOk);
+      runner.removeListener('error', onError);
+    };
+    return t;
+  };
+
+  // Resolves once the line sent is acknowledged and two reports received after
+  // its `ok` show the machine idle (a move answers `ok` when it is planned;
+  // the second report is at least one polling period later); rejects on an
+  // alarm, a Grbl error, a lost controller or the time limit.
+  const quiet = (c, r, t, limitMs) => new Promise((resolve, reject) => {
     const deadline = clock() + limitMs;
     const check = () => {
       if (controllers()[c.options.port] !== c || c.isClose() || !c.runner || !c.feeder) {
@@ -709,8 +745,11 @@ export const createService = (store, config, clock = monotonic) => {
         reject(conflict('Palpage interrompu par l’opérateur.'));
         return;
       }
-      const feeder = c.feeder.toJSON();
-      if (!feeder.queue && !feeder.pending && state === 'Idle' && r.reports > after) {
+      if (t.error) {
+        reject(conflict('Grbl a refusé une ligne du palpage (error:' + t.error + ').'));
+        return;
+      }
+      if (t.oks >= 1 && state === 'Idle' && r.reports >= t.reportsAtOk + 2) {
         resolve();
         return;
       }
@@ -729,9 +768,12 @@ export const createService = (store, config, clock = monotonic) => {
     const p = t.params;
     const zOf = () => axisNumber(controllerStatus(c).wpos && controllerStatus(c).wpos.z);
     const send = (line, limitMs) => {
-      const mark = r.reports;
+      const t = answers(c, r);
       c.command('gcode', line);
-      return quiet(c, r, mark, limitMs);
+      return quiet(c, r, t, limitMs).then(() => t.done(), (err) => {
+        t.done();
+        throw err;
+      });
     };
     r.probing = { contact: null, error: null };
     changed();
@@ -1099,20 +1141,41 @@ preambleLength: plan.preamble.length
   // After a tool change the spindle was stopped by the operator: start it at
   // the programmed speed and wait for the spin-up dwell to be acknowledged
   // (CNCjs resets its command queue on resume) before resuming the program.
+  // Both lines must be answered: resuming during the dwell made CNCjs take
+  // the G4's `ok` for a program line, one line off in its count of Grbl's
+  // receive buffer for the rest of the job.
   const SPINUP_MS_MAX = 20000;
   const restartSpindleThenResume = (c, restart) => new Promise((resolve, reject) => {
+    const r = record(c);
+    const t = answers(c, r);
+    const fail = (message) => {
+      t.done();
+      reject(conflict(message));
+    };
     c.command('gcode', [restart.mode + ' S' + restart.speed, 'G4 P' + TOOL_CHANGE_SPINUP_S]);
     const deadline = clock() + SPINUP_MS_MAX;
     const check = () => {
+      // The controller may be gone (port closed): never touch a destroyed one.
+      if (controllers()[c.options.port] !== c || c.isClose() || !c.feeder || !c.workflow || c.workflow.state !== 'paused') {
+        fail('Broche non relancée : la machine a changé d’état. Reprise annulée, vérifiez la machine.');
+        return;
+      }
+      if (t.error) {
+        fail('Grbl a refusé la relance de la broche (error:' + t.error + ') : reprise annulée.');
+        return;
+      }
       const feeder = c.feeder.toJSON();
-      if (!feeder.queue && !feeder.pending) {
+      if (t.oks >= 2 && !feeder.queue && !feeder.pending) {
+        t.done();
         c.command('gcode:resume');
         resolve({ message: 'Broche relancée (' + restart.mode + ' S' + restart.speed + '), reprise demandée.' });
-      } else if (clock() > deadline || controllers()[c.options.port] !== c || c.isClose() || c.workflow.state !== 'paused') {
-        reject(conflict('Broche non relancée à temps : reprise annulée. Vérifiez la machine.'));
-      } else {
-        setTimeout(check, 100);
+        return;
       }
+      if (clock() > deadline) {
+        fail('Broche non relancée à temps : reprise annulée. Vérifiez la machine.');
+        return;
+      }
+      setTimeout(check, 100);
     };
     check();
   });
