@@ -27,7 +27,11 @@
   var store=window.cncState, compact=!!(store&&window.CNCJobStream), stream=null, transportId=null, epoch='', serverSequence=0;
   var generation=0, mutation=0, confirmation=0, pending=0, commandSequence=0, feedbackSequence=0, nextPoll=0, disposed=false, stateSignature='', streamReason='';
   var latestMachine=null, lastTransit=0, appliedRequest=0, requestSequence=0, requests=[], bindings=[], explicitPort=false, protocolReady=false;
-  var dialogReturn=null,dialogBackground=[], observationSuspended=!!document.hidden, preparing=0;
+  var dialogReturn=null,dialogBackground=[], observationSuspended=!!document.hidden, preparing=0, renewing=0;
+  // A planned stream renewal (every minute) is not a disconnection: for up to 3 s
+  // the transport still counts as connected and no notice is shown, while the
+  // confirmations bound to the old stream are void as before.
+  function renewalGrace(){return renewing>0&&Date.now()-renewing>=0&&Date.now()-renewing<3000&&Date.now()-lastSeen<3000;}
   function bind(target,name,fn){target.addEventListener(name,fn);bindings.push(function(){if(target.removeEventListener)target.removeEventListener(name,fn);});}
   function text(id,value){if(window.cncI18n&&(id==='job-feedback'||id==='job-reason'||id==='job-state'))value=window.cncI18n.message(value);var node=$(id);if(node&&node.textContent!==String(value))node.textContent=String(value);}
   function prop(id,name,value){var node=$(id);if(node&&node[name]!==value)node[name]=value;}
@@ -79,6 +83,7 @@
   // state stays shown, but confirmations bound to the old stream are void.
   function unavailable(reason,rotating){
     var dropped=!!ticket||preparing>0;generation++;mutation++;dismiss();transportId=null;
+    renewing=rotating?Date.now():0;
     if(!rotating){current=null;latestMachine=null;lastSeen=0;}
     streamReason=reason||'';
     if(dropped)text('job-feedback',uiLocale.t('Confirmation annulée : le suivi a été renouvelé. Touchez à nouveau le bouton.'));
@@ -100,9 +105,10 @@
   function render() {
     current=projected();
     var online=current && Date.now()-lastSeen<3000;
-    var transportConnected=compact&&!simulation?!!transportId&&!!stream&&stream.alive():!!lastSeen&&Date.now()-lastSeen<3000;
+    var grace=compact&&!simulation&&!transportId&&renewalGrace();
+    var transportConnected=compact&&!simulation?(!!transportId&&!!stream&&stream.alive())||grace:!!lastSeen&&Date.now()-lastSeen<3000;
     var detail={machine:online?current:null,observedAt:lastSeen,transportConnected:transportConnected,simulation:!!simulation,busy:busy,feedback:$('job-feedback').textContent};
-    if(store)store.set({machine:detail.machine,controllerId:detail.machine?detail.machine.port:null,transportConnected:transportConnected,transportReason:streamReason});
+    if(store)store.set({machine:detail.machine,controllerId:detail.machine?detail.machine.port:null,transportConnected:transportConnected,transportReason:grace?'':streamReason});
     var signature=JSON.stringify(detail);
     if(signature!==stateSignature){stateSignature=signature;window.dispatchEvent(new CustomEvent('cnc-job-status',{detail:detail}));}
     var selectedText=selection?uiLocale.t('Sélectionné dans la bibliothèque : ')+selection.name:uiLocale.t('Aucun fichier sélectionné dans la bibliothèque.');
@@ -285,7 +291,7 @@
   var interval=setInterval(function(){render();if(ticket){var now=elapsedClock(),left=Math.ceil((until-now)/1000);countdown(left);if(left<=0||now<ticket.started)dismiss();}if(!document.hidden)poll();},1000);
   if(compact&&!simulation){
     stream=window.CNCJobStream.create({apiBase:store.get().apiBase,token:token,
-      onSnapshot:function(data){transportId=data.transportId;streamReason='';apply(data,data.transitMs);},
+      onSnapshot:function(data){transportId=data.transportId;streamReason='';renewing=0;apply(data,data.transitMs);},
       onDisconnect:function(reason,rotating){unavailable(reason,rotating);},onStatus:function(reason){streamReason=reason;render();}});
   }
   if(!simulation&&!compact&&window.cncSocket){

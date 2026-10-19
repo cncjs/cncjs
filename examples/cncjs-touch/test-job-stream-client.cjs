@@ -76,7 +76,17 @@ function machine(port='A'){return {port,controllerId:port,generation:'gen-'+port
   const rotating=requests.find(r=>r.url.endsWith('/touch-events'));
   push(rotating,packet(1,[machine()]));push(rotating,{rotate:true});rotating.onload();
   assert(rotating.aborted);assert.equal(requests.filter(r=>r.url.endsWith('/touch-events')).length,2);assert.equal(el('job-start').disabled,true);
+  // Until the new stream's first packet, the renewal is not published as a disconnection
+  // (the strip would hide Stop, the journal log a loss, the notice push the screen down).
+  const renewal=events.filter(e=>e.type==='cnc-job-status').at(-1).detail;
+  assert.equal(renewal.transportConnected,true,'a planned renewal is not a disconnection');assert(renewal.machine);
+  assert.equal(window.cncState.get().transportReason,'','no notice for a planned renewal');
   push(requests.filter(r=>r.url.endsWith('/touch-events')).at(-1),packet(2,[machine()],'stream-two'));assert.equal(el('job-start').disabled,false);
+  // A renewal that does not come back within 3 s is a loss after all.
+  const second=requests.filter(r=>r.url.endsWith('/touch-events')).at(-1);push(second,{rotate:true});second.onload();
+  assert.equal(window.cncState.get().transportConnected,true);
+  now+=3001;Array.from(intervals.values()).forEach(fn=>fn());
+  assert.equal(window.cncState.get().transportConnected,false,'no packet within the grace: disconnected');assert.notEqual(window.cncState.get().transportReason,'');
   const beforePageHide=requests.filter(r=>r.url.endsWith('/touch-events')).at(-1);
   window.dispatchEvent({type:'pagehide',persisted:true});assert(intervals.size>0,'BFcache must keep lifecycle timers');assert.equal(el('job-start').disabled,true);
   window.dispatchEvent({type:'pageshow',persisted:true});
