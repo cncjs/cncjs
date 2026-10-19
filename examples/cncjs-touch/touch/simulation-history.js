@@ -5,7 +5,8 @@
   function set(el,key,value){if(el[key]!==value)el[key]=value;}
   // Filters (UI 2027) on the simulated controller's actions.
   function keepEvent(e){
-    if(filter==='errors')return /erreur|error|refus|rejet/i.test(e.message||'');
+    // Rejected actions are logged translated: their kind tells them, whatever the language.
+    if(filter==='errors')return e.action==='rejected'||/erreur|error|refus|rejet/i.test(e.message||'');
     if(filter==='jobs')return ['load','start','pause','resume','stop','complete'].indexOf(e.action)>=0;
     if(filter==='alarms')return /alarm/i.test(e.action||'')||/alarme|alarm/i.test(e.message||'');
     return true;

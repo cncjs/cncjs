@@ -18,4 +18,14 @@ document.hidden=false;document.handlers.visibilitychange();assert.match(node('si
 activeScreens.clear();handlers['cnc-screen-change']({detail:'menu'});const hiddenAgain=stats.writes;
 emit(Array.from({length:220},(_,i)=>event(300-i)));assert.equal(stats.writes,hiddenAgain);
 activeScreens.add('history');handlers['cnc-screen-change']({detail:'history'});assert.match(node('sim-history-page').textContent,/200 événements/);
+// The Errors filter finds rejected actions in any language (their message is translated).
+{
+ const f=require('./dom-fixture.cjs').createDOM(['history']),h={};
+ const errorsButton=f.element('button');errorsButton.setAttribute('data-history-filter','errors');
+ f.document.querySelectorAll=sel=>sel==='[data-history-filter]'?[errorsButton]:[];
+ vm.runInNewContext(fs.readFileSync(__dirname+'/touch/simulation-history.js','utf8'),{document:f.document,window:{addEventListener:(n,fn)=>h[n]=fn},Date});
+ h['cnc-job-status']({detail:{simulation:true,machine:{history:[{id:2,time:Date.UTC(2026,9,14),action:'rejected',message:'Action rejected: X axis out of range'},{id:1,time:Date.UTC(2026,9,14),action:'jog',message:'Move X : 1 mm.'}]}}});
+ errorsButton.handlers.click();
+ assert.match(f.node('sim-history-page').textContent,/1 /,'one error in English: '+f.node('sim-history-page').textContent);
+}
 console.log('PASS: journal view keyed identity, no unchanged/hidden paint, amended event, focus, immediate return and bounded display.');

@@ -79,6 +79,7 @@ window.CNCTouchMessages.push(
 ['La mémorisation des profils n’a pas pu être confirmée. Conservez cette page ouverte et exportez vos valeurs.','Profile storage could not be confirmed. Keep this page open and export your values.','No se pudo confirmar el almacenamiento de los perfiles. Mantenga esta página abierta y exporte sus valores.'],
 ['Stockage des profils indisponible ou illisible. Les données enregistrées ne sont pas remplacées.','Profile storage unavailable or unreadable. Saved data is not replaced.','Almacenamiento de perfiles no disponible o ilegible. Los datos guardados no se sustituyen.'],
 ['en cours','running','en curso'],
+['suspendu','paused','en pausa'],
 ['aucun','none','ninguno'],
 ['Les coordonnées ont changé. Recalculez la préparation.','Coordinates changed. Recalculate the preparation.','Las coordenadas han cambiado. Recalcule la preparación.'],
 ['Arrêtez le travail simulé avant de déplacer les axes ou modifier l’origine.','Stop the simulated job before moving axes or changing the origin.','Detenga el trabajo simulado antes de mover los ejes o cambiar el origen.'],
