@@ -28,8 +28,11 @@ function machine(port='A'){return {port,controllerId:port,generation:'gen-'+port
   assert.equal(lateSnapshot.observedAt,now);
   answer(initial,packet(1,[]));await flush();assert.equal(el('job-start').disabled,false); // older snapshot ignored
   const httpAtStart=requests.length;
+  // Titles that do not change are not written again at every report.
+  let titleWrites=0;for(const id of ['job-start','job-load']){const n=el(id);let v=n.title||'';Object.defineProperty(n,'title',{get:()=>v,set(x){titleWrites++;v=x;},configurable:true});}
   for(let i=0;i<20;i++){now+=1000;push(stream,packet(11+i,[machine()]));Array.from(intervals.values()).forEach(fn=>fn());await flush();}
   assert.equal(requests.length,httpAtStart,'healthy stream must replace polling');
+  assert(titleWrites<=2,'unchanged titles are not rewritten: '+titleWrites);
   let immediate;window.cncState.subscribe(s=>immediate=s);assert.equal(immediate.machine.port,'A');
   // A second controller appearing while the implicitly selected one runs a job keeps the
   // selection (its Stop must not vanish); once idle, the choice is asked again.

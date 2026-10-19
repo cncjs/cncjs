@@ -18,7 +18,7 @@
     for(var n=0;n<dialogs.length;n++)if(!dialogs[n].hidden&&dialogs[n].getClientRects().length)return i18n.t('Fermez la confirmation ouverte avant de changer de langue.');
     return '';
   }
-  function render(){if(disposed)return;var changed=select.value!==i18n.language,why=reason();if(note.hidden===changed)note.hidden=!changed;apply.disabled=!changed||!!why;if(status.textContent!==why)status.textContent=why;}
+  function render(){if(disposed)return;var changed=select.value!==i18n.language,why=reason();if(note.hidden===changed)note.hidden=!changed;var off=!changed||!!why;if(apply.disabled!==off)apply.disabled=off;if(status.textContent!==why)status.textContent=why;}
   function job(e){busy=!!(e.detail&&e.detail.busy);render();}
   function change(){render();window.dispatchEvent(new Event('resize'));}
   function commit(){

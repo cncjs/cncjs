@@ -383,8 +383,8 @@
     var d=e&&e.detail||{};if(d.simulation)return;
     machine=d.machine||null;
     if(machine&&machine.port!==port){port=machine.port;settingsCard();}
-    if(machineUnlock){prop(machineUnlock,'disabled',!machine||!machine.canUnlock);machineUnlock.title=machine&&machine.unlockReason||'';}
-    if(machineHome){prop(machineHome,'disabled',!machine||!machine.canHome);machineHome.title=machine&&machine.homeReason||'';}
+    if(machineUnlock){prop(machineUnlock,'disabled',!machine||!machine.canUnlock);prop(machineUnlock,'title',machine&&machine.unlockReason||'');}
+    if(machineHome){prop(machineHome,'disabled',!machine||!machine.canHome);prop(machineHome,'title',machine&&machine.homeReason||'');}
     if(view){observe(STEPS[index],st,machine);refresh();}
     // First real controller seen on this port: open the assistant once, from the menu.
     if(!autoDone&&machine&&machine.fresh&&machine.workflow==='idle'&&!/sim/i.test(machine.port)&&!entry(machine.port)&&(current==='menu'||current==='home')){

@@ -139,7 +139,8 @@
     prop('job-progress','value',current.total?Math.min(100,Math.round(current.received/current.total*100)):0);
     var label=(simulation?uiLocale.t('Progression fictive : '):uiLocale.t('Lignes acquittées : '))+$('job-progress').value+' %';
     if(!$('job-progress').getAttribute||$('job-progress').getAttribute('aria-label')!==label)$('job-progress').setAttribute('aria-label',label);
-    $('job-start').title=current.canStart?'':uiLocale.t(reason); $('job-load').title=uiLocale.t(current.loadReason||'');
+    // Unchanged titles are not written again (an attribute write at every report, also while Fichiers is parked).
+    prop('job-start','title',current.canStart?'':uiLocale.t(reason));prop('job-load','title',uiLocale.t(current.loadReason||''));
     if(ticket && (ticket.port!==current.port || !ticketAllowed(ticket,current))) dismiss();
   }
   function apply(data,transit) {
