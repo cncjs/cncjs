@@ -26,8 +26,9 @@
     return t('Dernier zéro Z : plaque ')+z.thickness+t(' mm, repère ')+z.wcs+t(', contact à Z machine ')+z.machineZ+'.';
   }
   // Extra line in the confirmation dialog.
-  function dialogNote(operation,c){
-    if(operation==='zeroZ')return pendingPlate?plateNote(pendingPlate):'';
+  // `request`: the parameters the confirmation was prepared with (a later tap must not change the note).
+  function dialogNote(operation,c,request){
+    if(operation==='zeroZ')return request&&request.thickness!==undefined?plateNote(request):pendingPlate?plateNote(pendingPlate):'';
     if(!c)return '';
     var p=c.programPause;
     if(operation==='resume'&&p&&p.kind==='M6')return t('Outil')+(p.tool!==null&&p.tool!==undefined?' T'+p.tool:'')+t(' en place et zéro Z vérifié ?')+(p.restartSpindle?t(' La broche sera relancée (')+spindleText(p.restartSpindle)+t(', 3 s) avant la reprise.'):'');
@@ -83,7 +84,7 @@
   function numberOf(v){var n=Number(String(v).replace(',','.'));return isFinite(n)?n:NaN;}
   loadPlate();
   after(ready,pause);after(pause,open);after(open,panel);after(panel,plate);
-  var machine=null,selection=window.cncLibrarySelection||null,checked=null,sequence=0;
+  var machine=null,selection=window.cncLibrarySelection||null,checked=null,sequence=0,plateMessage='';
   function controls(){return window.cncJobControls;}
   function set(node,key,value){if(node[key]!==value)node[key]=value;}
   function canResumeFromLine(){return !!(machine&&selection&&machine.fresh&&machine.workflow==='idle'&&machine.canLoad);}
@@ -95,7 +96,8 @@
     set(plate,'hidden',!(machine&&(machine.canZeroZ||machine.probing)));
     set(probe,'disabled',!(machine&&machine.canZeroZ));
     set(plateLast,'textContent',lastZeroText(machine&&machine.zeroZ));
-    set(plateStatus,'textContent',machine&&machine.probing?t('Palpage en cours… Arrêter interrompt.'):'');
+    // A refused parameter stays shown until the field changes (reports come several times a second).
+    set(plateStatus,'textContent',machine&&machine.probing?t('Palpage en cours… Arrêter interrompt.'):plateMessage);
     set(m5,'hidden',!(p&&machine.canSpindleStop&&machine.spindleSpeed>0));
     var can=canResumeFromLine();set(open,'hidden',!can||!panel.hidden);
     // A job that starts closes the panel; a passing refusal (an M5 or a $G on
@@ -130,12 +132,13 @@
   probe.addEventListener('click',function(){
     var c=controls();if(!c||typeof c.prepareCommand!=='function'||probe.disabled)return;
     var th=numberOf(thick.value),se=numberOf(search.value);
-    if(!(th>0&&th<=50)){set(plateStatus,'textContent',t('Indiquez l’épaisseur de la plaque (mm).'));return;}
-    if(!(se>=1&&se<=100)){set(plateStatus,'textContent',t('Descente maximale invalide (1 à 100 mm).'));return;}
+    if(!(th>0&&th<=50)){plateMessage=t('Indiquez l’épaisseur de la plaque (mm).');render();return;}
+    if(!(se>=1&&se<=100)){plateMessage=t('Descente maximale invalide (1 à 100 mm).');render();return;}
     var params={thickness:Math.round(th*1000)/1000,search:Math.round(se*1000)/1000};
-    savePlate(params);pendingPlate=params;set(plateStatus,'textContent','');
+    savePlate(params);pendingPlate=params;plateMessage='';render();
     c.prepareCommand('zeroZ',params);
   });
+  [thick,search].forEach(function(field){field.addEventListener('input',function(){if(plateMessage){plateMessage='';render();}});});
   m5.addEventListener('click',function(){var c=controls();if(c&&typeof c.spindleStop==='function')c.spindleStop().catch(function(){});});
   window.addEventListener('cnc-job-status',function(e){var d=e&&e.detail||{};if(d.simulation)return;machine=d.machine||null;render();});
   window.addEventListener('cnc-library-select',function(e){selection=e&&e.detail||null;if(checked&&(!selection||checked.file!==selection.file))close();render();});

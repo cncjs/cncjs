@@ -44,7 +44,8 @@
     return new Promise(function(resolve,reject) {
       var credential=token();
       if (!credential) {reject(new Error(uiLocale.t('Session CNCjs requise.')));return;}
-      var xhr=new XMLHttpRequest(); requests.push(xhr); xhr.open(method,(store?store.get().apiBase:'/api')+'/touch-job',true); xhr.timeout=30000;
+      // The plate probe is answered once its whole sequence is over (up to about 3 min).
+      var xhr=new XMLHttpRequest(); requests.push(xhr); xhr.open(method,(store?store.get().apiBase:'/api')+'/touch-job',true); xhr.timeout=body&&body.action==='zeroZ'?180000:30000;
       xhr.setRequestHeader('Authorization','Bearer '+credential);
       function done(){var i=requests.indexOf(xhr);if(i>=0)requests.splice(i,1);}
       if(body) xhr.setRequestHeader('Content-Type','application/json');
@@ -236,7 +237,7 @@
       if(window.CNCTravelCheck){var img=$('home-job-image'),pv=img&&img.cncPreview&&img.cncPreview.file===current.name?img.cncPreview:null;
         window.CNCTravelCheck.show($('job-travel'),operation==='start'&&!simulation?window.CNCTravelCheck.check(pv,current):null);}
       // Tool change resume or a resume from a line: what will happen, in one line.
-      var note=window.CNCJobResume&&!simulation?window.CNCJobResume.dialogNote(operation,current):'';if($('job-note')){$('job-note').textContent=note;$('job-note').hidden=!note;}
+      var note=window.CNCJobResume&&!simulation?window.CNCJobResume.dialogNote(operation,current,request):'';if($('job-note')){$('job-note').textContent=note;$('job-note').hidden=!note;}
       countdown(Math.max(0,Math.ceil((until-elapsedClock())/1000)));
       $('job-check').checked=false;$('job-confirm').disabled=true;$('job-dialog').hidden=false;$('job-dismiss').focus();
     },function(){preparing--;});

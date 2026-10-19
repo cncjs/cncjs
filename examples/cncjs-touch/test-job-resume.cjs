@@ -73,9 +73,12 @@ byId('home-resume-check').click();
   assert.equal(byId('home-plate').hidden,true);
   status({...idle,canZeroZ:true,zeroZ:null});assert.equal(byId('home-plate').hidden,false);assert.equal(byId('home-plate-search').value,'10');
   byId('home-plate-probe').click();assert.match(byId('home-plate-status').textContent,/épaisseur/);assert.notEqual(calls.at(-1)[0],'prepare');
+  status({...idle,canZeroZ:true,zeroZ:null});assert.match(byId('home-plate-status').textContent,/épaisseur/,'the refusal stays shown after the next report');
   byId('home-plate-thickness').value='10,5';byId('home-plate-search').value='15';byId('home-plate-probe').click();
   assert.equal(JSON.stringify(calls.at(-1)),JSON.stringify(['prepare','zeroZ',{thickness:10.5,search:15}]));assert.deepEqual(JSON.parse(stored.get('cncjs-touch-plate-v1')),{thickness:10.5,search:15});
   assert.match(window.CNCJobResume.dialogNote('zeroZ',idle),/^Plaque de 10\.5 mm/);
+  // The note follows the prepared request, not a later tap.
+  assert.match(window.CNCJobResume.dialogNote('zeroZ',idle,{operation:'zeroZ',thickness:7,search:15}),/^Plaque de 7 mm/);
   byId('home-plate-search').value='500';byId('home-plate-probe').click();assert.match(byId('home-plate-status').textContent,/Descente maximale invalide/);
   status({...idle,canZeroZ:false,probing:true,canLoad:false});assert.equal(byId('home-plate').hidden,false);assert.equal(byId('home-plate-probe').disabled,true);assert.match(byId('home-plate-status').textContent,/Palpage en cours/);
   status({...idle,canZeroZ:true,zeroZ:{thickness:10.5,wcs:'G54',machineZ:-35.3}});assert.match(byId('home-plate-last').textContent,/^Dernier zéro Z : plaque 10\.5 mm/);
