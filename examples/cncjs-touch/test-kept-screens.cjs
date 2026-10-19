@@ -34,4 +34,4 @@ assert(shell.includes("keptScreens=['"+kept.join("','")+"']"),'kept list in the 
 assert(/s\.classList\.toggle\('active',on\);if\(on&&keptScreens\.indexOf\(name\)>=0/.test(shell),'kept only once activated');
 // Nothing else reads the kept class: visibility checks stay on .active.
 fs.readdirSync(dir).filter(f=>f.endsWith('.js')&&f!=='touch-shell.js').forEach(f=>assert(!/['".]kept\b(?!\s+for)/.test(fs.readFileSync(dir+f,'utf8').replace(/\/\/.*$/gm,'')),f+' must not depend on .kept'));
-console.log('kept screens: '+checked+' active rules mirrored, parked rule present');
+console.log('PASS kept screens: '+checked+' active rules mirrored, parked rule present');

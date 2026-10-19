@@ -28,4 +28,4 @@ assert.equal(after.writes,settled,'fitting content change: no style writes');ass
 after.resize(300);after.observers[0]([{target:after.screen}]);after.flush();assert.equal(after.writes,settled,'shrinking content: no style writes while shown');
 // Re-opening the screen re-measures and lets it grow back.
 after.handlers['w:cnc-screen-change']();after.flush();assert(after.writes>settled,'activation re-measures');
-console.log('20 unchanged revisits: screen layout writes before='+(before?before.writes:'not measured')+', after=0. Hidden changes schedule no fit; content growth triggers refit.');
+console.log('PASS 20 unchanged revisits: screen layout writes before='+(before?before.writes:'not measured')+', after=0. Hidden changes schedule no fit; content growth triggers refit.');

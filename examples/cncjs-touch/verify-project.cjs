@@ -38,6 +38,9 @@ function run(file, syntax) {
  const child=spawnSync(process.execPath,syntax?['--check',path.join(root,file)]:[path.join(root,file)],
   {cwd:root,encoding:'utf8',timeout:30000,maxBuffer:1024*1024,windowsHide:true});
  if(child.error || child.status!==0) throw Error(child.error?child.error.message:(child.stderr||child.stdout||'Processus interrompu'));
+ // A test whose awaited promise never settles exits 0 without running its last checks:
+ // every test ends by printing its PASS line, so a missing one is a failure.
+ if(!syntax){const last=String(child.stdout||'').trim().split('\n').pop()||'';if(!/\bPASS\b|\bpass(ed)?\b/i.test(last))throw Error('Test interrompu avant sa fin (pas de ligne PASS) : '+file);}
 }
 const manifestPath=path.join(root,'release-manifest.json');
 if(fs.existsSync(manifestPath)) check('Intégrité de la sauvegarde',()=>{
