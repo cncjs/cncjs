@@ -63,11 +63,17 @@ const M=(extra)=>Object.assign({port:'/dev/ttyUSB0',fresh:true,workflow:'idle',a
  C.observe('homing',st,null);C.observe('homing',st,M());assert.equal(C.result('homing',st),'ok');
  // Sent from Idle and back to Idle without any Home report: not proven.
  st={sent:true,from:'Idle'};C.observe('homing',st,null);C.observe('homing',st,M());assert.equal(C.result('homing',st),'');
+ // $H from an alarm that fails at once (still Alarm), then $X: Idle without any homing.
+ st={};C.commandSent('homing',st,'home',M({activeState:'Alarm'}));C.observe('homing',st,M({activeState:'Alarm'}));C.observe('homing',st,M({activeState:'Alarm'}));
+ C.commandSent('homing',st,'unlock',M({activeState:'Alarm'}));C.observe('homing',st,M());assert.equal(C.result('homing',st),'','an unlock is not a homing');
+ // The server's homing flag (no report during the cycle) followed by Idle completes it.
+ st={};C.commandSent('homing',st,'home',M());C.observe('homing',st,M({homing:true,fresh:false}));C.observe('homing',st,M());assert.equal(C.result('homing',st),'ok');
  // Spindle: seen turning, then stopped, plus the three checks.
  st={};C.observe('spindle',st,M({spindleSpeed:6000}));C.observe('spindle',st,M({spindleSpeed:0}));assert.equal(C.result('spindle',st),'');
  st.checks={direction:true,noise:true,vfd:true};assert.equal(C.result('spindle',st),'ok');
  // Air cut: the test program finished (stored name carries the library suffix).
- st={};C.observe('aircut',st,M({finished:true,originalName:'essai-en-l-air.nc'}));assert.equal(C.result('aircut',st),'ok');
+ st={};C.observe('aircut',st,M({finished:true,originalName:'essai-en-l-air.nc'}));assert.equal(C.result('aircut',st),'','a finished flag left from an earlier run does not count');
+ C.observe('aircut',st,M({workflow:'running',activeState:'Run',originalName:'essai-en-l-air.nc'}));C.observe('aircut',st,M({finished:true,originalName:'essai-en-l-air.nc'}));assert.equal(C.result('aircut',st),'ok');
  st={};C.observe('aircut',st,M({finished:true,originalName:'other.nc'}));assert.equal(C.result('aircut',st),'');
  const program=C.program(6000);
  assert.match(program,/M3 S6000/);assert.match(program,/M5\nG0 X0 Y0\nM2/);

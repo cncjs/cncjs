@@ -50,6 +50,8 @@
       // answering during the cycle, so leaving that state (Home, or no report)
       // counts as the cycle; an alarm afterwards is a failure.
       if(st.sent&&(!m||!m.fresh||m.activeState!==st.from))st.left=true;
+      // The server knows the cycle from the $H it sent (Grbl may report nothing during it).
+      if(m&&m.homing){st.homing=true;st.failed=false;}
       if(m&&m.fresh){
         if(m.activeState==='Home'){st.homing=true;st.failed=false;}
         else if(alarm(m)&&(st.homing||st.sent&&st.left)){st.failed=true;st.homing=false;st.sent=false;}
@@ -59,7 +61,10 @@
       var rpm=m&&m.fresh&&typeof m.spindleSpeed==='number'?m.spindleSpeed:null;
       if(rpm!==null){st.rpm=rpm;if(rpm>0)st.ran=true;else if(st.ran)st.stopped=true;}
     }else if(id==='aircut'){
-      if(m&&m.finished&&String(m.originalName||m.name||'').indexOf('essai-en-l-air')===0)st.finished=true;
+      // Only a run seen during this step counts: the server keeps `finished` until the next load.
+      var aircut=m&&String(m.originalName||m.name||'').indexOf('essai-en-l-air')===0;
+      if(aircut&&m.workflow==='running')st.ran=true;
+      if(aircut&&st.ran&&m.finished)st.finished=true;
     }
     return st;
   }
@@ -87,7 +92,15 @@
     var keys=Object.keys(s).filter(function(k){return /^\$\d+$/.test(k);}).sort(function(a,b){return Number(a.slice(1))-Number(b.slice(1));});
     return ['; Réglages Grbl ($$) — '+port+' — '+date,'; '+(data&&data.firmware||'firmware inconnu')].concat(keys.map(function(k){return k+'='+s[k];})).join('\n')+'\n';
   }
-  window.CNCCommissioning={STEPS:STEPS,observe:observe,result:result,program:program,settingsText:settingsText};
+  // A command the server accepted during a step. $X leaves an alarm for Idle without any
+  // homing: after a $H that failed, it must not complete the homing step.
+  function commandSent(id,st,detail,m){
+    if(id!=='homing')return st;
+    if(detail==='home'){st.sent=true;st.left=false;st.failed=false;st.from=m&&m.activeState||'';}
+    else if(detail==='unlock'){st.sent=false;st.left=false;st.homing=false;}
+    return st;
+  }
+  window.CNCCommissioning={STEPS:STEPS,observe:observe,result:result,program:program,settingsText:settingsText,commandSent:commandSent};
 
   if(typeof document==='undefined')return;
   var shell=window.cncShell,main=document.querySelector('main');
@@ -359,8 +372,8 @@
   }
 
   window.addEventListener('cnc-command-sent',function(e){
-    if(!view||STEPS[index]!=='homing'||!e||e.detail!=='home')return;
-    st.sent=true;st.left=false;st.failed=false;st.from=machine&&machine.activeState||'';refresh();
+    if(!view||!e)return;
+    commandSent(STEPS[index],st,e.detail,machine);refresh();
   });
   window.addEventListener('cnc-screen-change',function(e){
     var was=current;current=e&&e.detail;
