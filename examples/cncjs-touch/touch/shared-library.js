@@ -335,7 +335,9 @@
       // Still not listed after that: clear the selection rather than silently
       // selecting another file, which could then be loaded by mistake.
       if (waited) pendingUpload = '';
-      f = f || (waited ? null : files[0]);
+      // Only an empty selection defaults to the newest file: a selected file that disappeared
+      // (deleted, renamed) clears the selection too.
+      f = f || (waited || selected ? null : files[0]);
       if (f) select(f, !!manual);
       else {
         if (selected) { cancelRegeneration(); setText('library-regenerate-status', ''); }

@@ -50,5 +50,13 @@ const fs=require('fs'),vm=require('vm'),assert=require('assert');
  listed=[{name:'ancien.nc',type:'f',size:10,mtime:'2026-10-01T00:00:00Z'}];offset+=16000;
  node('library-refresh').handlers.click();await flush();await flush();
  assert.notEqual(window.cncLibrarySelection&&window.cncLibrarySelection.file,'ancien.nc','no other file selected in its place');
+ // A selected file that disappears from the list (deleted or renamed) is not replaced by the newest one.
+ listed=[{name:'b.nc',type:'f',size:10,mtime:'2026-10-02T00:00:00Z'},{name:'ancien.nc',type:'f',size:10,mtime:'2026-10-01T00:00:00Z'}];
+ node('library-refresh').handlers.click();await flush();await flush();
+ const row=node('library-list').children.find(r=>r.getAttribute&&r.getAttribute('data-file')==='ancien.nc');row.handlers.click();await flush();
+ assert.equal(window.cncLibrarySelection.file,'ancien.nc');
+ listed=[{name:'b.nc',type:'f',size:10,mtime:'2026-10-02T00:00:00Z'}];
+ node('library-refresh').handlers.click();await flush();await flush();
+ assert.equal(window.cncLibrarySelection,null,'the selection is cleared, never moved to another file');
  console.log('PASS: cancellable payload preparation, Blob upload without stringify, preserved Unicode/global selection while hidden, kept until CNCjs lists the upload, and preview invalidation.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

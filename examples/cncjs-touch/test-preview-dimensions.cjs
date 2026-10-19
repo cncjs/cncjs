@@ -17,7 +17,9 @@ const fs=require('fs'),vm=require('vm'),assert=require('assert');
    await refresh();pending.shift()(reply(invalid));await flush();assert(node('library-dimensions-table').hidden);assert.equal(value('width'),'—');
  }
  // A delayed response for the previous selection must never restore its dimensions.
+ // (a.nc disappears: the selection is cleared, never moved to b.nc; the operator picks b.nc.)
  await refresh();const old=pending.shift();files=[{name:'b.nc',type:'f',size:100,mtime:'2026-10-14'}];await refresh();
+ assert.equal(value('file'),'');node('library-list').children.find(r=>r.getAttribute&&r.getAttribute('data-file')==='b.nc').handlers.click();await flush();
  pending.shift()(reply([0,0,60,30],'b.nc'));await flush();old(reply([0,0,10,10]));await flush();
  assert.equal(value('width'),'60,00');assert.equal(value('file'),'b.nc');
  await refresh();pending.shift()({data:'bad json'});await flush();assert(node('library-dimensions-table').hidden);assert.equal(value('width'),'—');
