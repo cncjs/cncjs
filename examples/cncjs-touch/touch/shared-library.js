@@ -440,6 +440,17 @@
       if (selected !== stored) { cancelRegeneration(); setText('library-regenerate-status', ''); }
       selected = stored; pendingUpload = stored; pendingUntil = Date.now() + 15000; detailVersion = ''; $('library-input').value = ''; lock(false);
       publishSelection(stored, file.name);
+      // Until CNCjs lists the new file (about 4 s), the card shows it from what was just
+      // written: the file named here is the one that "Charger" loads.
+      cancelRequest('detail'); requestId++; detailLoading = false; selectedRow();
+      $('library-name').textContent = file.name; $('library-dimensions-file').textContent = file.name;
+      $('library-meta').textContent = size(file.size) + ' · ' + new Date().toLocaleString(window.cncI18n?window.cncI18n.locale:'fr-FR');
+      dimensions(meta.preview && meta.preview.bounds);
+      var uploadedImage = meta.preview && meta.preview.image;
+      $('library-image').onload = $('library-image').onerror = null;
+      if (typeof uploadedImage === 'string' && uploadedImage) { $('library-image').src = uploadedImage; $('library-image').hidden = false; $('library-image-status').hidden = true; }
+      else { $('library-image').hidden = true; $('library-image').removeAttribute('src'); $('library-image-status').hidden = false;
+        $('library-image-status').textContent = uiLocale.t('Aperçu indisponible : ') + String(meta.previewError || uiLocale.t('aucune image enregistrée')) + uiLocale.t('. Le G-code reste disponible.'); }
       status('✓ ' + file.name + uiLocale.t(' enregistré. Disponible sur la Surface.') + (legacy ? uiLocale.t(' Fichier non UTF-8 : lu en Windows-1252 (accents convertis).') : '') + (meta.previewError ? uiLocale.t(' Aperçu indisponible : ') + meta.previewError : ''));
       previewChanged(stored);
       // CNCjs's watch list sees a new file a few seconds after it is written

@@ -22,6 +22,8 @@ const fs=require('fs'),vm=require('vm'),assert=require('assert');
  const payload=new Blob([JSON.stringify({file:prepared.file,data:prepared.text})],{type:'application/json'});prepared.resolve(payload);await flush();
  assert.equal(puts.length,2);assert.strictEqual(puts[0].body,payload);assert.equal(JSON.parse(await puts[0].body.text()).data,prepared.text);
  assert.equal(node('library-cancel').hidden,true);assert.equal(window.cncLibrarySelection.file,prepared.file);assert.equal(window.cncLibrarySelection.name,'pièce.nc');
+ // The card names the uploaded file at once (it is what "Charger" loads), before CNCjs lists it.
+ assert.equal(node('library-name').textContent,'pièce.nc');assert.equal(node('library-image').hidden,false);
  assert(emitted.some(e=>e.type==='cnc-library-preview-updated'&&e.detail.file===prepared.file));
  // CNCjs lists the new file a few seconds later: an older file must not take the selection meanwhile.
  listed=[{name:'ancien.nc',type:'f',size:10,mtime:'2026-10-01T00:00:00Z'}];
