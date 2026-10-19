@@ -1124,10 +1124,10 @@ describe('job service', () => {
     // followed by fresh reports. $G replies ([GC:…] + ok) come in between.
     const probeController = ({ plateZ = -12.3, delay = 5 } = {}) => {
       const c = fakeController();
-      c.settings = { version: '1.1h', settings: { $22: 1, $30: 24000, $31: 6000, $110: 1000, $111: 1000, $112: 200 } };
+      c.settings = { version: '1.1h', settings: { $13: 0, $22: 1, $30: 24000, $31: 6000, $110: 1000, $111: 1000, $112: 200 } };
       c.state.status = { activeState: 'Idle', wpos: { x: '0.000', y: '0.000', z: '3.000' }, mpos: { x: '-100.000', y: '-100.000', z: '-20.000' }, spindle: 0 };
       c.runner.state = c.state;
-      c.state.parserstate = { modal: { wcs: 'G54', distance: 'G90', units: 'G21', spindle: 'M5' } };
+      c.state.parserstate = { modal: { motion: 'G1', wcs: 'G54', distance: 'G90', units: 'G21', spindle: 'M5' }, feedrate: '800' };
       let pending = false;
       c.feeder = { toJSON: () => ({ queue: 0, pending }) };
       c.sent = [];
@@ -1272,6 +1272,83 @@ describe('job service', () => {
       expect(ctx.c.sent).toEqual([]);
     });
 
+    test('refused when the reports are in inches ($13=1) or $13 is unknown', () => {
+      const ctx = plate();
+      ctx.c.settings.settings.$13 = 1;
+      ctx.c.report();
+      expect(ctx.state().zeroZReason).toMatch('$13=0');
+      delete ctx.c.settings.settings.$13;
+      expect(ctx.state().zeroZReason).toMatch('$13=0');
+      ctx.c.settings.settings.$13 = '0';
+      expect(ctx.state().canZeroZ).toBe(true);
+    });
+
+    const pausedPlate = (options) => {
+      const ctx = plate(options);
+      ctx.c.workflow.state = 'paused';
+      ctx.c.sender.state = { ...ctx.c.sender.state, hold: true, holdReason: { data: 'M6', msg: 'T2 M6' } };
+      ctx.c.report();
+      return ctx;
+    };
+
+    test('during a pause, an arc motion mode (not restorable without axis words) is refused', () => {
+      const ctx = pausedPlate();
+      ctx.c.state.parserstate = { ...ctx.c.state.parserstate, modal: { ...ctx.c.state.parserstate.modal, motion: 'G2' } };
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.c.report();
+      expect(ctx.state().zeroZReason).toMatch(/G2/);
+    });
+
+    test('a probe failed during a pause forbids resuming the paused program', async () => {
+      const ctx = setup();
+      ctx.c = probeController({ plateZ: null });
+      ctx.controllers.TEST = ctx.c;
+      ctx.generation = ctx.service.list()[0].generation;
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.c.report();
+      await ctx.req('load', { file: 'test.nc' });
+      let state = ctx.state();
+      let ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+      await ctx.req('start', { nonce: ticket.nonce });
+      ctx.c.workflow.state = 'paused';
+      ctx.c.sender.state = { ...ctx.c.sender.state, hold: true, holdReason: { data: 'M6', msg: 'T2 M6' } };
+      ctx.c.report();
+      ticket = await ctx.req('prepare', { operation: 'zeroZ', thickness: 10, search: 20 });
+      await expect(ctx.req('zeroZ', { nonce: ticket.nonce })).rejects.toThrow(/ALARM:5/);
+      ctx.c.state.status = { ...ctx.c.state.status, activeState: 'Idle' }; // after $X
+      ctx.c.report();
+      state = ctx.state();
+      expect(state.canResume).toBe(false);
+      expect(state.resumeReason).toMatch(/Palpage échoué/);
+    });
+
+    test('stop while probing during a pause ends the job like any stop (line kept, not finished)', async () => {
+      const ctx = setup();
+      ctx.c = probeController({ delay: 80 });
+      ctx.controllers.TEST = ctx.c;
+      ctx.generation = ctx.service.list()[0].generation;
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.c.report();
+      await ctx.req('load', { file: 'test.nc' });
+      let state = ctx.state();
+      let ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+      await ctx.req('start', { nonce: ticket.nonce });
+      ctx.c.sender.state = { ...ctx.c.sender.state, received: 2 };
+      ctx.c.workflow.state = 'paused';
+      ctx.c.sender.state = { ...ctx.c.sender.state, hold: true, holdReason: { data: 'M6', msg: 'T2 M6' } };
+      ctx.c.report();
+      ticket = await ctx.req('prepare', { operation: 'zeroZ', thickness: 10, search: 20 });
+      const run = ctx.req('zeroZ', { nonce: ticket.nonce }).catch((err) => err);
+      await new Promise((resolve) => {
+        setTimeout(resolve, 20);
+      });
+      expect((await ctx.req('stop')).message).toMatch(/Palpage interrompu/);
+      await run;
+      state = ctx.state();
+      expect(state.stoppedAtLine).toBe(2);
+      expect(state.finished).toBe(false);
+    });
+
     test('allowed during a tool change pause once the machine has stopped', async () => {
       const ctx = plate();
       ctx.c.workflow.state = 'paused';
@@ -1280,7 +1357,8 @@ describe('job service', () => {
       expect(ctx.state().canZeroZ).toBe(true);
       const ticket = await ctx.req('prepare', { operation: 'zeroZ', thickness: 10, search: 20 });
       await ctx.req('zeroZ', { nonce: ticket.nonce });
-      expect(ctx.c.sent).toHaveLength(5);
+      // The program's motion mode and feed are given back (the probe ended in G0 F25).
+      expect(ctx.c.sent).toEqual(['G38.2 Z-17 F100', 'G0 Z-11.3', 'G38.2 Z-13.3 F25', 'G10 L20 P0 Z10', 'G0 Z15', 'G1 F800']);
       ctx.c.sender.state = { ...ctx.c.sender.state, holdReason: { data: '%wait', msg: '' } };
       ctx.c.state.status = { ...ctx.c.state.status, activeState: 'Hold' };
       ctx.c.report();

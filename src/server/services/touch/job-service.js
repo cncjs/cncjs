@@ -516,6 +516,9 @@ export const createService = (store, config, clock = monotonic) => {
       if (kind === 'error') {
         throw conflict('Pause sur une erreur Grbl : arrêtez le travail, corrigez la cause, puis reprenez à une ligne.');
       }
+      if (j.probeFailed) {
+        throw conflict('Palpage échoué pendant la pause : l’état modal du programme est perdu. Arrêtez le travail, puis reprenez à une ligne.');
+      }
       if (kind === 'M0' || kind === 'M1' || kind === 'M6') {
         if (state !== 'Idle' && state !== 'Hold') {
           throw conflict('Attendez l’arrêt de la machine (Idle ou Hold) avant de reprendre.');
@@ -653,6 +656,17 @@ export const createService = (store, config, clock = monotonic) => {
     if (modal.units !== 'G21') {
       throw conflict('Unités en pouces (G20) : le zéro Z avec plaque exige G21.');
     }
+    // The positions read back are in the report units: $13=1 reports inches
+    // whatever G21 says, and they would be sent back as millimetres.
+    if (settingNumber(allSettings(c), 13) !== 0) {
+      throw conflict('Rapports en pouces ($13=1) ou réglage $13 inconnu : le zéro Z avec plaque exige $13=0.');
+    }
+    // During a program pause, the probe ends in G0 with F25: the program's own
+    // motion mode and feed are sent back at the end, which Grbl accepts without
+    // axis words for G0 and G1 only.
+    if (programPause && modal.motion !== 'G0' && !(modal.motion === 'G1' && Number(((c.runner.state && c.runner.state.parserstate) || {}).feedrate) > 0)) {
+      throw conflict('Mode de déplacement ' + (modal.motion || 'inconnu') + ' actif : pendant une pause, le zéro Z avec plaque exige G0 ou G1 avec une avance.');
+    }
     if (!r.wcs) {
       throw conflict('Repère de travail inconnu : attendre un rapport $G.');
     }
@@ -778,6 +792,11 @@ export const createService = (store, config, clock = monotonic) => {
     r.probing = { contact: null, error: null };
     changed();
     const z0 = zOf();
+    // What the paused program expects back (see zeroZReady).
+    const parser = (c.runner.state && c.runner.state.parserstate) || {};
+    const inPause = c.workflow.state === 'paused';
+    const feed = Number(parser.feedrate);
+    const restore = inPause ? parser.modal.motion + (feed > 0 ? ' F' + fmt(feed) : '') : null;
     return send('G38.2 Z' + fmt(z0 - p.search) + ' F' + PLATE.fastFeed, 60000 * p.search / PLATE.fastFeed + 15000)
       .then(() => {
         const cz = zOf();
@@ -801,6 +820,7 @@ export const createService = (store, config, clock = monotonic) => {
         }
         return send('G0 Z' + fmt(p.thickness + PLATE.clearance), 15000);
       })
+      .then(() => (restore ? send(restore, 15000) : null))
       .then(() => {
         r.zeroZ = { at: Date.now(), thickness: p.thickness, machineZ: r.probing.machineZ, wcs: r.wcs };
         r.probing = null;
@@ -809,6 +829,10 @@ export const createService = (store, config, clock = monotonic) => {
       })
       .catch((err) => {
         r.zeroZ = { at: Date.now(), failed: err.message };
+        // The modal state the paused program relies on is no longer known.
+        if (inPause && r.job) {
+          r.job.probeFailed = true;
+        }
         r.probing = null;
         changed();
         throw err;
@@ -1364,11 +1388,29 @@ preambleLength: plan.preamble.length
         c.command('reset');
         return { message: 'Arrêt avec porte ouverte (réinitialisation). La carte peut demander $H ou $X.' };
       }
-      // A plate probe in progress: feed hold then reset through CNCjs's forced
-      // stop, and the sequence gives up at its next step.
+      // The line reached, kept for a resume from a line, and the job marked
+      // stopped (also when the stop interrupts a probe during a pause).
+      const markStopped = () => {
+        if (c.workflow.state !== 'idle' && r.job) {
+          const k = Number(c.sender.state.received) || 0;
+          const res = r.job.resume;
+          let line = k;
+          if (res) {
+            // Preamble lines are not lines of the file.
+            line = k <= res.preambleLength ? res.from - 1 : res.from + (k - res.preambleLength - 1);
+          }
+          r.lastStop = { file: r.job.name, line };
+          r.job.started = true;
+          r.job.stopped = true;
+          r.job.finishedAt = null;
+        }
+      };
+      // A plate probe in progress: feed hold then reset, and the sequence gives
+      // up at its next step.
       if (r.probing) {
         r.ticket = null;
         r.probing.cancelled = true;
+        markStopped();
         const plan = haltPlan(c);
         c.command('feeder:stop');
         c.command('gcode:stop');
@@ -1381,25 +1423,12 @@ preambleLength: plan.preamble.length
       }
       r.ticket = null;
       const plan = door ? '' : haltPlan(c);
-      if (c.workflow.state !== 'idle' && r.job) {
-        const k = Number(c.sender.state.received) || 0;
-        const res = r.job.resume;
-        let line = k;
-        if (res) {
-          // Preamble lines are not lines of the file.
-          line = k <= res.preambleLength ? res.from - 1 : res.from + (k - res.preambleLength - 1);
-        }
-        r.lastStop = { file: r.job.name, line };
-      }
       if (c.workflow.state === 'idle') {
         // A macro or console commands (CNCjs feeder) move the machine: its
         // queue must be emptied too, or the next 'ok' would send the rest.
         c.command('feeder:stop');
-      } else if (r.job) {
-        r.job.started = true;
-        r.job.stopped = true;
-        r.job.finishedAt = null;
       }
+      markStopped();
       c.command('gcode:stop');
       if (door) {
         c.command('reset');
