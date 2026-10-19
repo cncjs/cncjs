@@ -2,7 +2,7 @@
 (function (root) {
   'use strict';
   var source = typeof document !== 'undefined' && document.currentScript && document.currentScript.src;
-  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker8') : 'library-preview-worker.js?v=worker8';
+  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker9') : 'library-preview-worker.js?v=worker9';
   var generation = 0;
   function scan(text, segment, cancelled, progress, yieldAfterLine) {
     return new Promise(function (resolve, reject) {
@@ -133,7 +133,7 @@
           clean = '';
           for (var i = 0; i < raw.length; i++) {
             var c = raw.charAt(i);
-            if (comment) { if (c === ')') comment = false; }
+            if (comment) { if (c === ')') comment = false; else if (c === '(') throw new Error('commentaire imbriqué : CNCjs et l’aperçu ne liraient pas la même ligne'); }
             else if (c === ';') break;
             else if (c === '(') comment = true;
             else clean += c;

@@ -8,6 +8,9 @@ const {scan, render} = require('./touch/library-preview.js');
   await scan('G21 G90\nG1 X1 F100\nM30\n%\n % \n\n');
   // A tool change (CNCjs comments M6 out and pauses) does not move: the preview accepts it.
   assert.equal((await scan('G21 G90\nT1 M6\nM3 S9000\nG0 X0 Y0\nG1 X10 F300\nT2 M6\nG1 Y10\nM30')).lines, 8);
+  // A '(' inside a comment: CNCjs counts nesting and would send nothing of this line,
+  // while the preview would draw the move after the first ')'. Refused instead.
+  await assert.rejects(scan('G21 G91\n(a (b) G0 X50\nG1 X10 F100\nM2'), /commentaire imbriqué/);
   // Relative moves before any absolute X/Y start from the tool's place: flagged for the travel check.
   assert.equal((await scan('G21 G91\nG1 X100 F500\nG1 Y50\nG1 X-100\nM2')).relativeStart, true);
   assert.equal((await scan('G21 G90\nG0 X0 Y0\nG91\nG1 X10 F300\nM2')).relativeStart, false);
