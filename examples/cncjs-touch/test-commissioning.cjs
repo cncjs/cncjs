@@ -68,6 +68,9 @@ const M=(extra)=>Object.assign({port:'/dev/ttyUSB0',fresh:true,workflow:'idle',a
  C.commandSent('homing',st,'unlock',M({activeState:'Alarm'}));C.observe('homing',st,M());assert.equal(C.result('homing',st),'','an unlock is not a homing');
  // The server's homing flag (no report during the cycle) followed by Idle completes it.
  st={};C.commandSent('homing',st,'home',M());C.observe('homing',st,M({homing:true,fresh:false}));C.observe('homing',st,M());assert.equal(C.result('homing',st),'ok');
+ // The snapshot answering the $H itself (fresh Idle, homing just set) is not the end of the cycle.
+ st={};C.commandSent('homing',st,'home',M());C.observe('homing',st,M({homing:true}));assert.equal(C.result('homing',st),'','not done before the machine moved');
+ C.observe('homing',st,M({homing:true,fresh:false}));C.observe('homing',st,M({activeState:'Alarm'}));assert(st.failed&&!st.homed,'a failed cycle is a failure');
  // Spindle: seen turning, then stopped, plus the three checks.
  st={};C.observe('spindle',st,M({spindleSpeed:6000}));C.observe('spindle',st,M({spindleSpeed:0}));assert.equal(C.result('spindle',st),'');
  st.checks={direction:true,noise:true,vfd:true};assert.equal(C.result('spindle',st),'ok');

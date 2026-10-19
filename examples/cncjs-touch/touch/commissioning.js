@@ -50,12 +50,14 @@
       // answering during the cycle, so leaving that state (Home, or no report)
       // counts as the cycle; an alarm afterwards is a failure.
       if(st.sent&&(!m||!m.fresh||m.activeState!==st.from))st.left=true;
-      // The server knows the cycle from the $H it sent (Grbl may report nothing during it).
-      if(m&&m.homing){st.homing=true;st.failed=false;}
+      // The server knows the cycle from the $H it sent: reports that stop meanwhile (Grbl
+      // answers nothing during the cycle) show it running. A fresh Idle report still saying
+      // homing is the one taken before the cycle, not its end.
+      if(m&&m.homing&&!m.fresh){st.homing=true;st.failed=false;}
       if(m&&m.fresh){
         if(m.activeState==='Home'){st.homing=true;st.failed=false;}
         else if(alarm(m)&&(st.homing||st.sent&&st.left)){st.failed=true;st.homing=false;st.sent=false;}
-        else if(m.activeState==='Idle'&&(st.homing||st.sent&&st.left&&alarm({activeState:st.from}))){st.homed=true;st.homing=false;st.sent=false;}
+        else if(m.activeState==='Idle'&&!m.homing&&(st.homing||st.sent&&st.left&&alarm({activeState:st.from}))){st.homed=true;st.homing=false;st.sent=false;}
       }
     }else if(id==='spindle'){
       var rpm=m&&m.fresh&&typeof m.spindleSpeed==='number'?m.spindleSpeed:null;
