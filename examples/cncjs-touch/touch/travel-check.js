@@ -11,6 +11,9 @@
     var p=preview&&preview.projection,b=p&&p.bounds,c=machine||{},s=c.settings||{},co=c.coordinates||{};
     function unknown(reason){return {state:'unknown',message:uiLocale.t('Course machine non vérifiée : ')+uiLocale.t(reason)};}
     if(!p||p.units!=='mm'||!Array.isArray(b)||b.length!==4||!b.every(function(v){return number(v)!==null;})||b[2]<b[0]||b[3]<b[1])return unknown('aperçu du fichier indisponible.');
+    // A program that starts with relative (G91) moves runs from the tool's current place,
+    // not from the work origin the extent is placed at.
+    if(p.relativeStart)return unknown('programme en déplacements relatifs (G91) depuis la position de l’outil.');
     if(number(s.$22)!==1)return unknown('prise d’origine désactivée ($22), les coordonnées machine ne sont pas repérées.');
     if(c.operator&&c.operator.reportUnits&&c.operator.reportUnits!=='mm')return unknown('positions rapportées en pouces ($13=1).');
     var mask=number(s.$23)||0,axes=[],outside=[];

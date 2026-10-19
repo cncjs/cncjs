@@ -8,6 +8,9 @@ const {scan, render} = require('./touch/library-preview.js');
   await scan('G21 G90\nG1 X1 F100\nM30\n%\n % \n\n');
   // A tool change (CNCjs comments M6 out and pauses) does not move: the preview accepts it.
   assert.equal((await scan('G21 G90\nT1 M6\nM3 S9000\nG0 X0 Y0\nG1 X10 F300\nT2 M6\nG1 Y10\nM30')).lines, 8);
+  // Relative moves before any absolute X/Y start from the tool's place: flagged for the travel check.
+  assert.equal((await scan('G21 G91\nG1 X100 F500\nG1 Y50\nG1 X-100\nM2')).relativeStart, true);
+  assert.equal((await scan('G21 G90\nG0 X0 Y0\nG91\nG1 X10 F300\nM2')).relativeStart, false);
   let result = await scan('G21 G90\nG0 X10 Y10\nG1 X30 Y20 F200\nG91\nX-5 Y5\nM2\n%\n\n');
   assert.equal(result.count, 3);
   assert.deepEqual(result.bounds, [0,0,30,25]);

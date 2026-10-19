@@ -2,11 +2,14 @@
 (function (root) {
   'use strict';
   var source = typeof document !== 'undefined' && document.currentScript && document.currentScript.src;
-  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker7') : 'library-preview-worker.js?v=worker7';
+  var workerURL = source ? source.split(/[?#]/)[0].replace(/[^/]*$/, 'library-preview-worker.js?v=worker8') : 'library-preview-worker.js?v=worker8';
   var generation = 0;
   function scan(text, segment, cancelled, progress, yieldAfterLine) {
     return new Promise(function (resolve, reject) {
       var offset = 0, line = 0, x = 0, y = 0, absolute = true;
+      // A relative (G91) move on an axis whose absolute position was never given starts
+      // from wherever the tool is: the drawing still starts at 0, but its placement is unknown.
+      var knownX = false, knownY = false, relativeStart = false;
       var unit = 1, motion = null, comment = false, ended = false, count = 0, arcAbsolute = false;
       var bounds = [Infinity, Infinity, -Infinity, -Infinity];
       // Progress trail: about a thousand samples of [sent line count, x, y],
@@ -161,6 +164,8 @@
           if (motion === null) throw new Error('mode G0/G1 non défini');
           var xx = nx === null ? x : nx * unit + (absolute ? 0 : x);
           var yy = ny === null ? y : ny * unit + (absolute ? 0 : y);
+          if (nx !== null) { if (absolute) knownX = true; else if (!knownX) relativeStart = true; }
+          if (ny !== null) { if (absolute) knownY = true; else if (!knownY) relativeStart = true; }
           if (!isFinite(xx) || !isFinite(yy) || Math.abs(xx) > 1e9 || Math.abs(yy) > 1e9) throw new Error('coordonnées hors plage');
           if (motion === 2 || motion === 3) arc(xx, yy, hasI, iWord, hasJ, jWord, radiusWord);
           else add(x, y, xx, yy, motion);
@@ -201,7 +206,7 @@
           if (offset < text.length) { setTimeout(batch, 0); return; }
           if (comment) throw new Error('commentaire non fermé');
           sample();
-          resolve({ count: count, bounds: bounds, trail: trail, lines: sentLines });
+          resolve({ count: count, bounds: bounds, trail: trail, lines: sentLines, relativeStart: relativeStart });
         } catch (error) { reject(new Error('Ligne ' + line + ' : ' + error.message)); }
       }
       setTimeout(batch, 0);
@@ -250,7 +255,7 @@
       function encoded(image, synchronous) {
         if (!check()) return;
         finish(null, { image: image, segments: result.count, bounds: result.bounds,
-          projection: {version:1,width:960,height:540,bounds:result.bounds,units:'mm',wcs:'G54'},
+          projection: {version:1,width:960,height:540,bounds:result.bounds,units:'mm',wcs:'G54',relativeStart:!!result.relativeStart},
           trail: result.trail, lines: result.lines,
           note: 'Projection XY indicative — G1/G2/G3 bleu, G0 gris. Arcs XY interpolés à 0,02 mm. Départ supposé X0 Y0, mm, absolu et centres I/J relatifs. Z et puissance laser non simulés.' +
             (fallback ? ' Calcul local de secours : réactivité à vérifier sur cet appareil.' : '') +

@@ -23,6 +23,9 @@ assert.equal(check(preview([0,0,60,70]),machine(-350,10,{$23:'2'})).state,'ok');
 // A work offset with G92 or another WCS is just the difference mpos - wpos.
 const m=machine(-350,-250);m.coordinates.wpos={x:'10',y:'20',z:'0'};
 r=check(preview([0,0,60,70]),m);assert.deepEqual([r.axes[0].min,r.axes[1].min],[-360,-270]);
+// A program starting with relative moves runs from the tool's place, not from the work origin.
+r=check({projection:{version:1,units:'mm',wcs:'G54',bounds:[0,0,100,50],relativeStart:true}},machine(-50,-250));
+assert.equal(r.state,'unknown');assert.match(r.message,/relatifs/);
 // Cannot be trusted: no homing, inches, unknown travel or position, no preview.
 for(const [p,c,why] of [[preview([0,0,1,1]),machine(-1,-1,{$22:'0'}),/\$22/],[preview([0,0,1,1]),{...machine(-1,-1),operator:{reportUnits:'in'}},/pouces/],
   [preview([0,0,1,1]),machine(-1,-1,{$131:undefined}),/\$131/],[preview([0,0,1,1]),{...machine(-1,-1),coordinates:{mpos:{},wpos:{}}},/position/],
