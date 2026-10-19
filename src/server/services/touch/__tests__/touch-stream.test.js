@@ -97,7 +97,7 @@ let dir;
 
 beforeAll(() => {
   dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cnc-touch-stream-'));
-  fs.writeFileSync(path.join(dir, 'test.nc'), 'G1 X1');
+  fs.writeFileSync(path.join(dir, 'test.nc'), 'G21 G90\nG1 X1');
 });
 
 afterAll(() => {

@@ -14,7 +14,7 @@ import { createPreflight, controllerStatus } from './motion-preflight.js';
 // eslint-disable-next-line import/extensions
 import { createProbeInput } from './probe-input.js';
 // eslint-disable-next-line import/extensions
-import { buildResume, programLines } from './resume.js';
+import { buildResume, modalsBeforeFirstMove, programLines } from './resume.js';
 
 // A status report older than this is not trusted to describe the machine.
 const MAX_REPORT_AGE_MS = 2500;
@@ -231,6 +231,11 @@ export const createService = (store, config, clock = monotonic) => {
         r.stall = null;
         r.homing = null;
         r.startups += 1;
+        // A restart (E-stop wired to reset, an alarm abort, a reset from another
+        // client) during a pause: Grbl is back to G54, G21, G0 and F0.
+        if (r.job && r.job.started && c.workflow && c.workflow.state !== 'idle') {
+          r.job.boardRestarted = true;
+        }
         if (payload && typeof payload.firmware === 'string' && typeof payload.version === 'string') {
           r.firmware = (payload.firmware + ' ' + payload.version).slice(0, 63);
         }
@@ -507,6 +512,20 @@ export const createService = (store, config, clock = monotonic) => {
       if (j.started || !c.sender.state.total) {
         throw conflict('Rechargez le fichier avant un nouveau démarrage.');
       }
+      // A program that does not set its units or distance mode runs in Grbl's
+      // current ones, while its preview assumes millimetres and absolute.
+      if (j.sets && (!j.sets.units || !j.sets.distance)) {
+        if (!modalFresh(record(c))) {
+          throw conflict('Le programme ne fixe pas ses unités ou son mode (G21/G90) : attendre un état modal ($G) récent.');
+        }
+        const modal = ((c.runner.state && c.runner.state.parserstate) || {}).modal || {};
+        if (!j.sets.units && modal.units !== 'G21') {
+          throw conflict('Le programme ne fixe pas ses unités et la machine est en ' + (modal.units || 'unités inconnues') + ' : ajoutez G21 au début du programme ou remettez la machine en G21.');
+        }
+        if (!j.sets.distance && modal.distance !== 'G90') {
+          throw conflict('Le programme ne fixe pas son mode et la machine est en ' + (modal.distance || 'mode inconnu') + ' : ajoutez G90 au début du programme ou remettez la machine en G90.');
+        }
+      }
     } else {
       const kind = pauseKind(c);
       const state = controllerStatus(c).activeState;
@@ -515,6 +534,9 @@ export const createService = (store, config, clock = monotonic) => {
       }
       if (kind === 'error') {
         throw conflict('Pause sur une erreur Grbl : arrêtez le travail, corrigez la cause, puis reprenez à une ligne.');
+      }
+      if (j.boardRestarted) {
+        throw conflict('La carte a redémarré pendant le travail (arrêt d’urgence, alarme ou réinitialisation) : elle a perdu repère, unités et avance. Arrêtez le travail, puis reprenez à une ligne.');
       }
       if (j.probeFailed) {
         throw conflict('Palpage échoué pendant la pause : l’état modal du programme est perdu. Arrêtez le travail, puis reprenez à une ligne.');
@@ -1152,6 +1174,7 @@ preambleLength: plan.preamble.length
         started: false,
         // G54-G59.x select, G10 L2/L20 and G92 change the work offset.
         changesOffset: changesOffset(resume ? programLines(gcode).slice(resume.from - 1).join('\n') : gcode),
+        sets: modalsBeforeFirstMove(program),
         wcsAtStart: null,
         resume
       };

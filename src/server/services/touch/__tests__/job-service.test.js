@@ -53,6 +53,7 @@ beforeAll(async () => {
   await fs.writeFile(path.join(root, 'test.nc'), 'G21 G90\nG1 X1 F100\nM2');
   await fs.writeFile(path.join(root, 'macro.nc'), '%wait\nG1 X1');
   await fs.writeFile(path.join(root, 'offset.nc'), 'G21 G90\nG55\nG1 X1 F100\nM2');
+  await fs.writeFile(path.join(root, 'bare.nc'), '(no units, no distance mode)\nG1 X1 F100\nM2');
   await fs.writeFile(path.join(root, 'resume.nc'), ['G21 G90', 'M3 S9000', 'G0 Z5', 'G0 X0 Y0', 'G1 Z-1 F200',
     'G1 X10 F800', 'G1 Y10', 'G1 X0', 'G0 Z5', 'M5', 'M30'].join('\n'));
 });
@@ -179,6 +180,47 @@ describe('job service', () => {
     await ctx.req('stop');
     expect(ctx.c.commands.slice(-2)).toEqual([['gcode:stop'], ['reset']]);
     await expect(ctx.req('prepare', { operation: 'start', revision: state.revision })).rejects.toThrow(/Rechargez/);
+  });
+
+  test('a program that sets neither units nor distance mode starts only in G21 and G90 (fresh $G)', async () => {
+    const ctx = setup();
+    ctx.report();
+    await ctx.req('load', { file: 'bare.nc' });
+    expect(ctx.state().startReason).toMatch(/\$G/);
+    const modal = (units, distance) => {
+      ctx.c.state.parserstate = { modal: { wcs: 'G54', units, distance } };
+      ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+      ctx.report();
+    };
+    modal('G20', 'G90'); // left by an inch program ended with M30
+    expect(ctx.state().startReason).toMatch(/G20/);
+    modal('G21', 'G91'); // left by a macro
+    expect(ctx.state().startReason).toMatch(/G91/);
+    modal('G21', 'G90');
+    const state = ctx.state();
+    expect(state.canStart).toBe(true);
+    const ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+    modal('G20', 'G90');
+    await expect(ctx.req('start', { nonce: ticket.nonce })).rejects.toThrow(/G20/);
+    // A program that sets them does not depend on Grbl's modes.
+    await ctx.req('load', { file: 'test.nc' });
+    expect(ctx.state().canStart).toBe(true);
+  });
+
+  test('a board restart during a program pause forbids resuming it', async () => {
+    const ctx = setup();
+    let state = await ctx.loaded();
+    const ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+    await ctx.req('start', { nonce: ticket.nonce });
+    ctx.c.workflow.state = 'paused';
+    ctx.c.sender.state = { ...ctx.c.sender.state, hold: true, holdReason: { data: 'M6', msg: 'T2 M6' } };
+    ctx.report();
+    expect(ctx.state().canResume).toBe(true);
+    ctx.c.runner.emit('startup', { firmware: 'Grbl', version: '1.3a' }); // E-stop wired to reset
+    ctx.report();
+    state = ctx.state();
+    expect(state.canResume).toBe(false);
+    expect(state.resumeReason).toMatch(/redémarré/);
   });
 
   test('a pause made while CNCjs holds for its end-of-program %wait can be resumed; an unknown hold cannot', async () => {

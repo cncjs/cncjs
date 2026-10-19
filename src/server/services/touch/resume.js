@@ -142,6 +142,29 @@ safeZ: null
   return s;
 };
 
+// Whether a program sets its units (G20/G21) and distance mode (G90/G91)
+// before its first move. When it does not, it runs in whatever modes Grbl is
+// left in (Grbl keeps G20 after M2/M30, and a macro can leave G91), while the
+// preview and the travel check assume millimetres and absolute coordinates.
+export const modalsBeforeFirstMove = (gcode) => {
+  const out = { units: false, distance: false };
+  const lines = programLines(gcode);
+  for (let i = 0; i < lines.length; i++) {
+    const w = words(clean(lines[i]));
+    w.forEach(([l, v]) => {
+      if (l === 'G' && (v === 20 || v === 21)) {
+        out.units = true;
+      } else if (l === 'G' && (v === 90 || v === 91)) {
+        out.distance = true;
+      }
+    });
+    if ((out.units && out.distance) || w.some(([l]) => 'XYZIJKR'.indexOf(l) >= 0)) {
+      break;
+    }
+  }
+  return out;
+};
+
 // Builds the program that restarts at line `from`.
 export const buildResume = (gcode, from, { name = '' } = {}) => {
   const lines = programLines(gcode);
