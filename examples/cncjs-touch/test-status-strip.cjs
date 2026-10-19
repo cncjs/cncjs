@@ -46,6 +46,13 @@ f.send({machine:m({activeState:'Door:1'}),transportConnected:true});assert.equal
 f.send({machine:m({statusAgeMs:4000,fresh:false}),transportConnected:true});
 assert.equal(f.byId('t-state-text').textContent,'Rapport ancien');assert.equal(f.byId('t-fresh').getAttribute('data-stale'),'true');assert.equal(f.byId('t-fresh-text').textContent,'4 s');assert.equal(f.byId('t-spindle').textContent,'—');
 f.send({machine:m(),transportConnected:false});assert.equal(f.byId('t-state-text').textContent,'Hors ligne');
+// Stream down, state read by HTTP during a job: Stop and Pause stay offered (the server
+// accepts them without the stream).
+f.send({machine:m({activeState:'Run',workflow:'running',canPause:true,canStop:true}),transportConnected:false});
+assert(!f.byId('t-stop').hidden&&!f.byId('t-stop').disabled&&!f.byId('t-pause').hidden);
+f.send({machine:m({activeState:'Hold:0',workflow:'paused',canStop:true,canResume:true}),transportConnected:false});
+assert(!f.byId('t-stop').hidden);
+f.send({machine:null,transportConnected:false});assert(f.byId('t-stop').hidden);
 // Events of the other page kind are ignored.
 f.listeners['cnc-job-status']({detail:{simulation:true,machine:m({activeState:'Run'})}});assert.equal(f.byId('t-state-text').textContent,'Hors ligne');
 f.listeners.pagehide({persisted:true});assert(f.listeners['cnc-job-status']);f.listeners.pagehide({persisted:false});assert(!f.listeners['cnc-job-status']);

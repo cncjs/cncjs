@@ -52,6 +52,19 @@ function machine(port='A'){return {port,controllerId:port,generation:'gen-'+port
   const pendingGet=requests.filter(r=>r.url.endsWith('/touch-job')&&r.method==='GET'&&!r.aborted).at(-1);
   if(pendingGet&&pendingGet!==initial){answer(pendingGet,packet(45,[machine('B')]));await flush();}
   assert.equal(el('job-start').disabled,true,'fallback GET must not restore start without a live stream');assert.equal(el('job-resume').disabled,true);assert.equal(window.cncState.get().transportConnected,false);
+  // A job running while the stream is down: the state is read every 2 s, so Stop and
+  // Pause (which need a state younger than 3 s) stay usable between two reads.
+  const running=machine('B');running.workflow='running';running.activeState='Run';running.canStart=false;running.canPause=true;running.canStop=true;
+  window.cncJobControls.refresh();answer(requests.filter(r=>r.url.endsWith('/touch-job')&&r.method==='GET').at(-1),packet(46,[running]));await flush();
+  let stopUsable=0;
+  for(let i=0;i<20;i++){
+    now+=500;Array.from(intervals.values()).forEach(fn=>fn());
+    const get=requests.filter(r=>r.url.endsWith('/touch-job')&&r.method==='GET'&&!r.status).at(-1);
+    if(get){running.statusObservedAt=now;answer(get,packet(47+i,[running]));}
+    await flush();Array.from(intervals.values()).forEach(fn=>fn());
+    if(!el('job-stop').disabled)stopUsable++;
+  }
+  assert.equal(stopUsable,20,'Stop stays usable during a job read by HTTP');
   window.cncJobControls.dispose();assert.equal(intervals.size,0);assert(requests.filter(r=>r.url.endsWith('/touch-events')).every(r=>r.aborted));
   // Legacy backend: diagnose it, retain read-only fallback, never enable activation
   // from a boolean freshness flag with no timestamp/identity protocol.

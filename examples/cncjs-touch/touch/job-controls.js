@@ -174,12 +174,19 @@
   function poll(force) {
     if(disposed||networkOffline||polling)return;
     if(!force&&!simulation&&(stream&&stream.alive()||Date.now()<nextPoll))return;
-    polling=true;nextPoll=Date.now()+10000;
+    // Without the stream, a job (or anything Stop can end) is read every 2 s, so Stop and
+    // Pause, which need a state younger than 3 s, stay usable between two reads.
+    var active=!!(latestMachine&&(latestMachine.workflow!=='idle'||latestMachine.canStop));
+    polling=true;nextPoll=Date.now()+(active?2000:10000);
     var id=++requestSequence, ownGeneration=generation, ownMutation=mutation, started=Date.now();
     api('GET').then(function(data){
       if(disposed||ownGeneration!==generation||ownMutation!==mutation||id<appliedRequest)return;
       appliedRequest=id;apply(data,Date.now()-started);
-    }).catch(function(e){if(ownGeneration===generation&&ownMutation===mutation){unavailable(e.message);text('job-state',e.message);}}).then(function(){polling=false;});
+    }).catch(function(e){if(ownGeneration===generation&&ownMutation===mutation){unavailable(e.message);text('job-state',e.message);}}).then(function(){
+      polling=false;
+      // The answer may be the first to show a job: the next read comes 2 s after this one.
+      if(latestMachine&&(latestMachine.workflow!=='idle'||latestMachine.canStop))nextPoll=Math.min(nextPoll,started+2000);
+    });
   }
   function run(action,extra) {
     if(!current || Date.now()-lastSeen>=3000)return Promise.reject(new Error('État indisponible.'));
