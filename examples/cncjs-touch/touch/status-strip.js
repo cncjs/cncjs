@@ -43,6 +43,8 @@
     if(!m||!connected)return {word:uiLocale.t('Hors ligne'),tone:'off'};
     var a=String(m.activeState||'');
     if(/^alarm/i.test(a))return {word:uiLocale.t('Alarme')+(finite(m.alarmCode)?' '+m.alarmCode:''),tone:'danger'};
+    // Grbl sends no report during a homing cycle: the server knows it from the $H sent.
+    if(m.homing)return {word:uiLocale.t('Prise d’origine'),tone:'run'};
     if(!m.fresh)return {word:uiLocale.t('Rapport ancien'),tone:'warn'};
     if(/^hold/i.test(a))return {word:uiLocale.t('Pause'),tone:'warn'};
     if(/^door/i.test(a))return {word:uiLocale.t('Porte ouverte'),tone:'warn'};

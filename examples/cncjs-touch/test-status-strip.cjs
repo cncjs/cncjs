@@ -38,6 +38,8 @@ f.byId('t-pause').click();f.byId('t-stop').click();assert.equal(f.clicks.pause,1
 f.node('job-stop').disabled=true;f.byId('t-stop').click();assert.equal(f.clicks.stop,1);f.node('job-stop').disabled=false;
 f.send({machine:m({activeState:'Hold:0',workflow:'paused',canPause:false,canStop:true,canResume:true}),transportConnected:true});
 assert.equal(f.byId('t-state-text').textContent,'Pause');assert.equal(f.byId('t-state').getAttribute('data-tone'),'warn');assert(f.byId('t-pause').disabled);
+// Grbl sends no report during homing: the stale report still says Idle, the server says homing.
+f.send({machine:m({activeState:'Idle',fresh:false,statusAgeMs:4000,homing:true,canStop:true}),transportConnected:true});assert.equal(f.byId('t-state-text').textContent,'Prise d’origine');
 f.send({machine:m({activeState:'Alarm',alarmCode:1}),transportConnected:true});
 assert.equal(f.byId('t-state-text').textContent,'Alarme 1');assert.equal(f.byId('t-state').getAttribute('data-tone'),'danger');
 f.send({machine:m({activeState:'Door:1'}),transportConnected:true});assert.equal(f.byId('t-state-text').textContent,'Porte ouverte');

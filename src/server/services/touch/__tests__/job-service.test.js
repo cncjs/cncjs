@@ -174,8 +174,10 @@ describe('job service', () => {
     await ctx.req('resume', { nonce: ticket.nonce });
     expect(ctx.c.commands.at(-1)[0]).toBe('gcode:resume');
 
+    // Grbl is in Hold after the pause: the touch service resets it itself.
+    ctx.c.state.status.activeState = 'Hold';
     await ctx.req('stop');
-    expect(ctx.c.commands.at(-1)).toEqual(['gcode:stop', { force: true }]);
+    expect(ctx.c.commands.slice(-2)).toEqual([['gcode:stop'], ['reset']]);
     await expect(ctx.req('prepare', { operation: 'start', revision: state.revision })).rejects.toThrow(/Rechargez/);
   });
 
@@ -768,7 +770,7 @@ describe('job service', () => {
       ctx.c.state.status.activeState = 'Run'; // a macro runs from the feeder, workflow idle
       expect(ctx.state().canStop).toBe(true);
       await ctx.req('stop');
-      expect(ctx.c.commands.slice(-2)).toEqual([['feeder:stop'], ['gcode:stop', { force: true }]]);
+      expect(ctx.c.commands.slice(-3)).toEqual([['feeder:stop'], ['gcode:stop'], ['feedhold']]);
       // The loaded file was never started: it can still be started.
       ctx.c.state.status.activeState = 'Idle';
       expect(ctx.state().canStart).toBe(true);
@@ -779,11 +781,120 @@ describe('job service', () => {
       ctx.c.workflow.state = 'running';
       ctx.c.state.status.activeState = 'Door';
       await ctx.req('stop');
-      expect(ctx.c.commands).toEqual([['gcode:stop', { force: true }], ['reset']]);
+      expect(ctx.c.commands).toEqual([['gcode:stop'], ['reset']]);
       ctx.c.state.status.activeState = 'Door';
       expect(ctx.state().canStop).toBe(true);
       await ctx.req('stop');
       expect(ctx.c.commands.at(-1)).toEqual(['reset']);
+    });
+
+    // Grbl's state as the next reports will give it, without the fake's shortcuts.
+    const realistic = (ctx) => {
+      const command = ctx.c.command;
+      ctx.c.command = (name, ...args) => {
+        if (name === 'gcode:stop') {
+          ctx.c.commands.push([name, ...args]);
+          ctx.c.workflow.state = 'idle';
+          ctx.c.sender.state = { ...ctx.c.sender.state, sent: 0, received: 0 }; // CNCjs rewinds its sender
+          return;
+        }
+        command(name, ...args);
+      };
+    };
+    const wait = (ms) => new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+
+    test('stop resets Grbl when it is idle with lines still buffered (a dwell), whatever CNCjs cached', async () => {
+      const ctx = ready();
+      await ctx.req('load', { file: 'test.nc' });
+      realistic(ctx);
+      ctx.c.workflow.state = 'running';
+      ctx.c.state.status.activeState = 'Idle'; // G4 of a resume preamble: Grbl reports Idle
+      ctx.c.sender.state = { ...ctx.c.sender.state, sent: 8, received: 3 };
+      await ctx.req('stop');
+      expect(ctx.c.commands.slice(-2)).toEqual([['gcode:stop'], ['reset']]);
+    });
+
+    test('stop at a tool change pause with the spindle on resets Grbl (M5 alone was not sent)', async () => {
+      const ctx = ready();
+      await ctx.req('load', { file: 'test.nc' });
+      realistic(ctx);
+      ctx.c.workflow.state = 'paused';
+      ctx.c.state.status = { activeState: 'Idle', spindle: 12000 };
+      ctx.c.state.status.activeState = 'Idle';
+      ctx.report();
+      await ctx.req('stop');
+      expect(ctx.c.commands.slice(-2)).toEqual([['gcode:stop'], ['reset']]);
+    });
+
+    test('stop of moving axes holds first, then resets once Grbl is at rest (Hold:0), not before', async () => {
+      const ctx = ready();
+      await ctx.req('load', { file: 'test.nc' });
+      realistic(ctx);
+      ctx.c.workflow.state = 'running';
+      ctx.c.state.status = { activeState: 'Run', subState: 0 };
+      await ctx.req('stop');
+      expect(ctx.c.commands.slice(-2)).toEqual([['gcode:stop'], ['feedhold']]);
+      ctx.c.state.status = { activeState: 'Hold', subState: 1 }; // decelerating
+      await wait(150);
+      expect(ctx.c.commands.at(-1)).toEqual(['feedhold']);
+      ctx.c.state.status = { activeState: 'Hold', subState: 0 };
+      await wait(150);
+      expect(ctx.c.commands.at(-1)).toEqual(['reset']);
+      expect(ctx.c.commands.filter(([n]) => n === 'reset')).toHaveLength(1);
+    });
+
+    test('a hold that never completes is reset anyway after the time limit', async () => {
+      const ctx = ready();
+      await ctx.req('load', { file: 'test.nc' });
+      realistic(ctx);
+      ctx.c.workflow.state = 'running';
+      ctx.c.state.status = { activeState: 'Run' };
+      await ctx.req('stop');
+      await wait(120);
+      expect(ctx.c.commands.at(-1)).toEqual(['feedhold']);
+      ctx.now += 6000;
+      await wait(120);
+      expect(ctx.c.commands.at(-1)).toEqual(['reset']);
+    });
+
+    test('a macro waiting in a dwell (CNCjs queue not empty) can be stopped', async () => {
+      const ctx = ready();
+      realistic(ctx);
+      ctx.c.feeder = { toJSON: () => ({ queue: 2, pending: true }) };
+      ctx.report();
+      expect(ctx.state().canStop).toBe(true);
+      await ctx.req('stop');
+      expect(ctx.c.commands).toEqual([['feeder:stop'], ['gcode:stop'], ['reset']]);
+    });
+
+    test('stop during homing: Grbl sends no report in the cycle, the $H sent is enough', async () => {
+      const ctx = ready();
+      const ticket = await ctx.req('prepare', { operation: 'home' });
+      await ctx.req('home', { nonce: ticket.nonce });
+      // No report during the cycle: the last one still says Idle.
+      ctx.now += 4000;
+      expect(ctx.state().canStop).toBe(true);
+      expect(ctx.state().homing).toBe(true);
+      expect((await ctx.req('stop')).message).toMatch(/interrompue/);
+      expect(ctx.c.commands.at(-1)).toEqual(['reset']);
+    });
+
+    test('the homing cycle ends with the first Idle or Alarm report after it, an alarm or a restart', async () => {
+      const ctx = ready();
+      let ticket = await ctx.req('prepare', { operation: 'home' });
+      await ctx.req('home', { nonce: ticket.nonce });
+      ctx.report(); // a report already on its way
+      expect(ctx.state().homing).toBe(true);
+      ctx.now += 5000;
+      ctx.report();
+      expect(ctx.state().homing).toBe(false);
+      expect(ctx.state().canStop).toBe(false);
+      ticket = await ctx.req('prepare', { operation: 'home' });
+      await ctx.req('home', { nonce: ticket.nonce });
+      ctx.c.runner.emit('alarm', { message: '9' });
+      expect(ctx.state().homing).toBe(false);
     });
 
     test('board restarts are counted and the banner gives the firmware', () => {

@@ -36,6 +36,17 @@ const STALL_MS = 30000;
 // Spin-up dwell when the spindle is started again after a tool change.
 const TOOL_CHANGE_SPINUP_S = 3;
 
+// Stop: how long a feed hold may take to bring the axes to rest before the
+// soft reset is sent anyway.
+const HALT_MS = 5000;
+
+// Grbl sends no status report during a homing cycle: the cycle is taken as
+// running from the $H until a report shows Idle or Alarm again (at least this
+// long after it, so a report already on its way does not end it), an alarm,
+// a board restart, or this limit.
+const HOMING_MIN_MS = 1000;
+const HOMING_MAX_MS = 180000;
+
 // Z zero with a touch plate: a fast probe down, a 1 mm back-off, a slow probe,
 // then the work Z is set so that the plate top reads its thickness, and the
 // tool rises 5 mm above it. Everything in absolute coordinates (G90, mm), so
@@ -182,6 +193,8 @@ export const createService = (store, config, clock = monotonic) => {
         // Plate probe in progress, and the last one (result or failure).
         probing: null,
         zeroZ: null,
+        // Homing cycle sent ($H) and not yet over (see HOMING_MIN_MS).
+        homing: null,
         // Status reports received, so a step can wait for a newer one.
         reports: 0,
         generation: crypto.randomBytes(12).toString('hex')
@@ -189,6 +202,10 @@ export const createService = (store, config, clock = monotonic) => {
       r.status = () => {
         r.seen = clock();
         r.reports += 1;
+        if (r.homing && clock() - r.homing.since >= HOMING_MIN_MS &&
+            /^(Idle|Alarm)/.test(controllerStatus(c).activeState || '')) {
+          r.homing = null;
+        }
         const s = c.sender && c.sender.state;
         const waiting = c.workflow && c.workflow.state === 'running' && controllerStatus(c).activeState === 'Idle' &&
           s && Number.isFinite(s.sent) && Number.isFinite(s.received) && s.received < s.sent;
@@ -202,6 +219,7 @@ export const createService = (store, config, clock = monotonic) => {
       };
       r.alarmed = (res) => {
         r.alarm = grblCode(res);
+        r.homing = null;
         changed();
       };
       r.reset = (payload) => {
@@ -211,6 +229,7 @@ export const createService = (store, config, clock = monotonic) => {
         r.ticket = null;
         r.alarm = null;
         r.stall = null;
+        r.homing = null;
         r.startups += 1;
         if (payload && typeof payload.firmware === 'string' && typeof payload.version === 'string') {
           r.firmware = (payload.firmware + ' ' + payload.version).slice(0, 63);
@@ -406,6 +425,71 @@ export const createService = (store, config, clock = monotonic) => {
         throw conflict('La broche est commandée (' + spindle + ') : arrêtez-la d’abord (M5).');
       }
     }
+  };
+
+  const spindleOn = (c) => {
+    try {
+      spindleStill(c);
+      return false;
+    } catch (_) {
+      return true;
+    }
+  };
+
+  const homingActive = (r) => !!r.homing && clock() - r.homing.since < HOMING_MAX_MS;
+
+  // CNCjs's forced stop decides from its own copy of the state, refreshed every
+  // 250 ms: it sends a feed hold only if that copy says Run and a reset only if
+  // it says Hold, so lines already buffered in Grbl kept running when Grbl was
+  // Idle at that moment (a G4 dwell, the first instants of a start, a tool
+  // change with the spindle on). The decision is taken here from the latest
+  // report, before CNCjs rewinds its sender: moving axes are held, then reset
+  // once at rest (Hold:0) or after HALT_MS; anything else still able to act
+  // (buffered lines, CNCjs queue, spindle on, a hold) is reset at once.
+  const haltPlan = (c) => {
+    const s = controllerStatus(c);
+    const state = s.activeState || '';
+    const sender = (c.sender && c.sender.state) || {};
+    const feeder = c.feeder.toJSON();
+    if (state === 'Run') {
+      return 'hold';
+    }
+    if (state === 'Hold' && Number(s.subState) === 1) {
+      return 'settle';
+    }
+    if (state === 'Hold' || Number(sender.sent) > Number(sender.received) || feeder.queue || feeder.pending || spindleOn(c)) {
+      return 'reset';
+    }
+    return '';
+  };
+  const halt = (c, plan) => {
+    if (plan === 'reset') {
+      c.command('reset');
+      return;
+    }
+    if (plan !== 'hold' && plan !== 'settle') {
+      return;
+    }
+    if (plan === 'hold') {
+      c.command('feedhold');
+    }
+    const deadline = clock() + HALT_MS;
+    const wait = () => {
+      if (controllers()[c.options.port] !== c || c.isClose() || !c.runner) {
+        return;
+      }
+      const s = controllerStatus(c);
+      const state = s.activeState || '';
+      if (/^(Alarm|Door)/.test(state)) {
+        return;
+      }
+      if ((state === 'Hold' && Number(s.subState) !== 1) || state === 'Idle' || clock() > deadline) {
+        c.command('reset');
+        return;
+      }
+      setTimeout(wait, 50);
+    };
+    setTimeout(wait, 50);
   };
 
   const readyFor = (c, action, revision) => {
@@ -714,6 +798,7 @@ export const createService = (store, config, clock = monotonic) => {
       name: () => 'Prise d’origine ($H)',
       run: (c) => {
         homeReady(c);
+        record(c).homing = { since: clock() };
         c.command('homing');
         return { message: 'Prise d’origine ($H) lancée. Main sur l’arrêt d’urgence.' };
       }
@@ -768,6 +853,7 @@ export const createService = (store, config, clock = monotonic) => {
   const snapshot = (c) => {
     const r = record(c);
     const sender = c.sender.toJSON();
+    const feederState = c.feeder.toJSON();
     const state = controllerStatus(c);
     const motionState = motion.inspect(c.options.port);
     const revision = r.job && r.job.revision;
@@ -873,7 +959,10 @@ export const createService = (store, config, clock = monotonic) => {
       stoppedAtLine: r.lastStop ? r.lastStop.line : null,
       stoppedFile: r.lastStop ? r.lastStop.file : null,
       canPause: c.workflow.state === 'running',
-      canStop: c.workflow.state !== 'idle' || ['Run', 'Hold', 'Home', 'Jog'].includes(state.activeState) || /^Door/.test(state.activeState || '') || !!r.probing,
+      // A macro waiting in a dwell (CNCjs queue not empty) can be stopped too.
+      canStop: c.workflow.state !== 'idle' || ['Run', 'Hold', 'Home', 'Jog'].includes(state.activeState) || /^Door/.test(state.activeState || '') ||
+        !!r.probing || homingActive(r) || !!(feederState.queue || feederState.pending),
+      homing: homingActive(r),
       overrides: overridesOf(state),
       canOverride: !overrideReason,
       overrideReason,
@@ -1196,9 +1285,11 @@ preambleLength: plan.preamble.length
         return { message: 'Déplacement annulé.' };
       }
       // CNCjs's stop only acts in Run or Hold; a homing cycle needs a soft reset
-      // (Grbl then asks for a new homing or $X).
-      if (c.workflow.state === 'idle' && activeState === 'Home') {
+      // (Grbl then asks for a new homing or $X). Grbl reports nothing during
+      // the cycle, so the $H sent is enough to know it runs.
+      if (c.workflow.state === 'idle' && (activeState === 'Home' || homingActive(r))) {
         r.ticket = null;
+        r.homing = null;
         c.command('reset');
         return { message: 'Prise d’origine interrompue (réinitialisation). La carte demandera $H ou $X.' };
       }
@@ -1215,14 +1306,18 @@ preambleLength: plan.preamble.length
       if (r.probing) {
         r.ticket = null;
         r.probing.cancelled = true;
+        const plan = haltPlan(c);
         c.command('feeder:stop');
-        c.command('gcode:stop', { force: true });
+        c.command('gcode:stop');
+        halt(c, plan);
         return { message: 'Palpage interrompu. Vérifiez l’immobilisation ; le zéro Z n’est pas réglé.' };
       }
-      if (c.workflow.state === 'idle' && !['Run', 'Hold'].includes(activeState)) {
+      const feeder = c.feeder.toJSON();
+      if (c.workflow.state === 'idle' && !['Run', 'Hold'].includes(activeState) && !feeder.queue && !feeder.pending) {
         throw conflict('Aucun travail à arrêter.');
       }
       r.ticket = null;
+      const plan = door ? '' : haltPlan(c);
       if (c.workflow.state !== 'idle' && r.job) {
         const k = Number(c.sender.state.received) || 0;
         const res = r.job.resume;
@@ -1242,9 +1337,11 @@ preambleLength: plan.preamble.length
         r.job.stopped = true;
         r.job.finishedAt = null;
       }
-      c.command('gcode:stop', { force: true });
+      c.command('gcode:stop');
       if (door) {
         c.command('reset');
+      } else {
+        halt(c, plan);
       }
       return { message: 'Arrêt demandé. Vérifiez l’immobilisation ; ce bouton ne remplace pas l’arrêt physique.' };
     }
@@ -1318,7 +1415,7 @@ preambleLength: plan.preamble.length
         s.name, s.total, s.sent, s.received, s.hold, idOf(s.holdReason), idOf(s.context),
         feeder.queue, feeder.pending,
         r ? [r.loading, r.seen === null, r.modalSeen === null, r.wcs, r.ticket && r.ticket.nonce, r.firmware, r.startups, r.alarm, r.stall && r.stall.since,
-          idOf(r.toolChange), r.lastStop && r.lastStop.line, idOf(r.probing), idOf(r.zeroZ)].join(',') : '',
+          idOf(r.toolChange), r.lastStop && r.lastStop.line, idOf(r.probing), idOf(r.zeroZ), r.homing && r.homing.since].join(',') : '',
         j ? [idOf(j), j.started, j.stopped, j.finishedAt, j.errors].join(',') : ''
       ].join(';');
     }).join('|');
