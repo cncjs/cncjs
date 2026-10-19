@@ -291,6 +291,22 @@ export const createService = (store, config, clock = monotonic) => {
       c.sender.on('load', r.file);
       c.sender.on('unload', r.file);
       c.sender.on('end', r.end);
+      // A new run of the loaded program (also started from CNCjs on the PC) starts
+      // clean: the end, stop, restart and probe of an earlier run do not apply to it.
+      r.run = () => {
+        if (r.job) {
+          r.job.stopped = false;
+          r.job.finishedAt = null;
+          r.job.boardRestarted = false;
+          r.job.probeFailed = false;
+          r.job.errors = 0;
+          r.job.lastError = null;
+          changed();
+        }
+      };
+      if (c.workflow && typeof c.workflow.on === 'function') {
+        c.workflow.on('start', r.run);
+      }
       records.set(c, r);
     }
     return records.get(c);
@@ -341,6 +357,9 @@ export const createService = (store, config, clock = monotonic) => {
       c.runner.removeListener('raw', r.raw);
       c.runner.removeListener('error', r.error);
       c.runner.removeListener('alarm', r.alarmed);
+    }
+    if (c.workflow && typeof c.workflow.removeListener === 'function') {
+      c.workflow.removeListener('start', r.run);
     }
     if (c.sender) {
       c.sender.removeListener('load', r.file);
@@ -448,9 +467,12 @@ export const createService = (store, config, clock = monotonic) => {
   // it says Hold, so lines already buffered in Grbl kept running when Grbl was
   // Idle at that moment (a G4 dwell, the first instants of a start, a tool
   // change with the spindle on). The decision is taken here from the latest
-  // report, before CNCjs rewinds its sender: moving axes are held, then reset
-  // once at rest (Hold:0) or after HALT_MS; anything else still able to act
-  // (buffered lines, CNCjs queue, spindle on, a hold) is reset at once.
+  // report, before CNCjs rewinds its sender. Moving axes, or buffered lines that
+  // may start moving any moment (the report can be 250 ms old), get a feed hold
+  // first (in Idle Grbl turns Hold:0 at once and starts no new block), then a
+  // reset once a report newer than the request shows them at rest, or after
+  // HALT_MS: a reset in motion would raise ALARM:3 and lose the position. A hold
+  // or a spindle left on with nothing buffered is reset at once.
   const haltPlan = (c) => {
     const s = controllerStatus(c);
     const state = s.activeState || '';
@@ -462,10 +484,13 @@ export const createService = (store, config, clock = monotonic) => {
     if (state === 'Hold' && Number(s.subState) === 1) {
       return 'settle';
     }
-    if (state === 'Hold' || Number(sender.sent) > Number(sender.received) || feeder.queue || feeder.pending || spindleOn(c)) {
+    if (state === 'Hold') {
       return 'reset';
     }
-    return '';
+    if (Number(sender.sent) > Number(sender.received) || feeder.queue || feeder.pending) {
+      return 'hold';
+    }
+    return spindleOn(c) ? 'reset' : '';
   };
   const halt = (c, plan) => {
     if (plan === 'reset') {
@@ -479,8 +504,13 @@ export const createService = (store, config, clock = monotonic) => {
       c.command('feedhold');
     }
     const deadline = clock() + HALT_MS;
+    const mark = record(c).reports;
     const wait = () => {
       if (controllers()[c.options.port] !== c || c.isClose() || !c.runner) {
+        return;
+      }
+      if (record(c).reports <= mark && clock() <= deadline) {
+        setTimeout(wait, 50);
         return;
       }
       const s = controllerStatus(c);
@@ -730,7 +760,8 @@ export const createService = (store, config, clock = monotonic) => {
   const answers = (c, r) => {
     const runner = c.runner;
     const t = { oks: 0, error: null, reportsAtOk: 0 };
-    let parserReply = false;
+    // A $G reply already parsed whose ok is still on its way (CNCjs's own flag).
+    let parserReply = !!(c.actionMask && c.actionMask.queryParserState && c.actionMask.queryParserState.reply);
     const onParser = () => {
       parserReply = true;
     };

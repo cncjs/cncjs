@@ -15,7 +15,7 @@ const fakeController = (port = 'TEST') => {
     isClose: () => false,
     runner: new EventEmitter(),
     sender: new EventEmitter(),
-    workflow: { state: 'idle' },
+    workflow: Object.assign(new EventEmitter(), { state: 'idle' }),
     state: { status: { activeState: 'Idle' } },
     feeder: { toJSON: () => ({ queue: 0, pending: false }) },
     settings: { settings: { $110: 1000, $111: 1000, $112: 200 } },
@@ -33,6 +33,9 @@ const fakeController = (port = 'TEST') => {
     }
     if (name === 'gcode:start' || name === 'gcode:resume') {
       c.workflow.state = 'running';
+      if (name === 'gcode:start') {
+        c.workflow.emit('start');
+      }
     }
     if (name === 'gcode:pause') {
       c.workflow.state = 'paused';
@@ -216,6 +219,51 @@ describe('job service', () => {
     ctx.c.sender.state = { ...ctx.c.sender.state, sent: 3, received: 3 };
     await ctx.req('stop');
     expect(ctx.state()).toMatchObject({ jobStopped: true, finished: false });
+  });
+
+  test('a new run of the loaded file (also from the PC) clears the flags of the run before', async () => {
+    const ctx = setup();
+    const state = await ctx.loaded();
+    const ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+    await ctx.req('start', { nonce: ticket.nonce });
+    await ctx.req('stop');
+    expect(ctx.state().jobStopped).toBe(true);
+    // CNCjs on the PC starts the same loaded file again.
+    ctx.c.workflow.state = 'running';
+    ctx.c.workflow.emit('start');
+    ctx.report();
+    expect(ctx.state().jobStopped).toBe(false);
+  });
+
+  test('an ok still on its way for CNCjs own $G is not taken for the answer to a line', async () => {
+    const ctx = setup();
+    const loaded = await ctx.loaded();
+    const start = await ctx.req('prepare', { operation: 'start', revision: loaded.revision });
+    await ctx.req('start', { nonce: start.nonce });
+    ctx.c.workflow.state = 'paused';
+    ctx.c.sender.state = { ...ctx.c.sender.state, hold: true, holdReason: { data: 'M6', msg: 'T2 M6' } };
+    ctx.c.state.status.activeState = 'Idle';
+    ctx.c.state.status.spindle = 12000;
+    ctx.c.state.parserstate = { modal: { wcs: 'G54', spindle: 'M3' }, spindle: '12000' };
+    ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+    ctx.report();
+    ctx.c.state.status.spindle = 0;
+    ctx.c.state.parserstate = { modal: { wcs: 'G54', spindle: 'M5' }, spindle: '12000' };
+    ctx.c.runner.emit('parserstate', ctx.c.state.parserstate);
+    ctx.report();
+    const ticket = await ctx.req('prepare', { operation: 'resume', revision: ctx.state().revision });
+    // A [GC:] reply was parsed just before; its ok arrives right after the request.
+    ctx.c.actionMask = { queryParserState: { reply: true } };
+    const resumed = ctx.req('resume', { nonce: ticket.nonce });
+    ctx.c.runner.emit('ok'); // the $G reply's ok
+    ctx.c.runner.emit('ok'); // M3
+    await new Promise((resolve) => {
+      setTimeout(resolve, 150);
+    });
+    expect(ctx.c.commands.some(([n]) => n === 'gcode:resume')).toBe(false);
+    ctx.c.runner.emit('ok'); // G4
+    await resumed;
+    expect(ctx.c.commands.at(-1)).toEqual(['gcode:resume']);
   });
 
   test('a board restart during a program pause forbids resuming it', async () => {
@@ -866,7 +914,14 @@ describe('job service', () => {
       ctx.c.state.status.activeState = 'Idle'; // G4 of a resume preamble: Grbl reports Idle
       ctx.c.sender.state = { ...ctx.c.sender.state, sent: 8, received: 3 };
       await ctx.req('stop');
-      expect(ctx.c.commands.slice(-2)).toEqual([['gcode:stop'], ['reset']]);
+      // Held first: the dwell may end and the next move start before a reset arrives.
+      expect(ctx.c.commands.slice(-2)).toEqual([['gcode:stop'], ['feedhold']]);
+      await wait(150);
+      expect(ctx.c.commands.at(-1)).toEqual(['feedhold'], 'no reset on the report taken before the request');
+      ctx.c.state.status = { activeState: 'Hold', subState: 0 };
+      ctx.report();
+      await wait(150);
+      expect(ctx.c.commands.at(-1)).toEqual(['reset']);
     });
 
     test('stop at a tool change pause with the spindle on resets Grbl (M5 alone was not sent)', async () => {
@@ -890,9 +945,11 @@ describe('job service', () => {
       await ctx.req('stop');
       expect(ctx.c.commands.slice(-2)).toEqual([['gcode:stop'], ['feedhold']]);
       ctx.c.state.status = { activeState: 'Hold', subState: 1 }; // decelerating
+      ctx.report();
       await wait(150);
       expect(ctx.c.commands.at(-1)).toEqual(['feedhold']);
       ctx.c.state.status = { activeState: 'Hold', subState: 0 };
+      ctx.report();
       await wait(150);
       expect(ctx.c.commands.at(-1)).toEqual(['reset']);
       expect(ctx.c.commands.filter(([n]) => n === 'reset')).toHaveLength(1);
@@ -919,7 +976,11 @@ describe('job service', () => {
       ctx.report();
       expect(ctx.state().canStop).toBe(true);
       await ctx.req('stop');
-      expect(ctx.c.commands).toEqual([['feeder:stop'], ['gcode:stop'], ['reset']]);
+      expect(ctx.c.commands).toEqual([['feeder:stop'], ['gcode:stop'], ['feedhold']]);
+      ctx.c.state.status = { activeState: 'Hold', subState: 0 };
+      ctx.report();
+      await wait(150);
+      expect(ctx.c.commands.at(-1)).toEqual(['reset']);
     });
 
     test('stop during homing: Grbl sends no report in the cycle, the $H sent is enough', async () => {
