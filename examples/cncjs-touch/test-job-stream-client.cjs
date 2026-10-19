@@ -31,6 +31,12 @@ function machine(port='A'){return {port,controllerId:port,generation:'gen-'+port
   for(let i=0;i<20;i++){now+=1000;push(stream,packet(11+i,[machine()]));Array.from(intervals.values()).forEach(fn=>fn());await flush();}
   assert.equal(requests.length,httpAtStart,'healthy stream must replace polling');
   let immediate;window.cncState.subscribe(s=>immediate=s);assert.equal(immediate.machine.port,'A');
+  // A second controller appearing while the implicitly selected one runs a job keeps the
+  // selection (its Stop must not vanish); once idle, the choice is asked again.
+  const busyA=machine('A');busyA.workflow='running';busyA.activeState='Run';busyA.canStop=true;busyA.canPause=true;
+  push(stream,packet(31,[busyA]));push(stream,packet(32,[busyA,machine('B')]));
+  assert.equal(el('job-port').value,'A');assert.equal(el('job-stop').disabled,false,'Stop of the running controller stays usable');
+  push(stream,packet(33,[machine('A')]));
   push(stream,packet(40,[machine('A'),machine('B')]));assert.equal(el('job-start').disabled,true,'second controller cancels implicit single selection');
   assert.equal(window.cncState.get().transportConnected,true,'choosing between controllers must not disconnect the server');assert.equal(window.cncState.get().machine,null);
   el('job-port').value='B';el('job-port').handlers.change[0]();assert.equal(window.cncState.get().machine.port,'B');

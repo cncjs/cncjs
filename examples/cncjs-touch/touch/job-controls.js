@@ -163,7 +163,10 @@
         portSignature=signature;$('job-port').textContent='';
         var blank=document.createElement('option');blank.value='';blank.textContent=machines.length?uiLocale.t('Choisir une machine'):uiLocale.t('Aucune machine connectée');$('job-port').appendChild(blank);
         machines.forEach(function(m){var o=document.createElement('option');o.value=m.port;o.textContent=m.port+' · '+m.type;$('job-port').appendChild(o);});
-        $('job-port').value=machines.some(function(m){return m.port===old;})&&(explicitPort||machines.length===1)?old:(machines.length===1?machines[0].port:'');
+        // A controller busy with a job (or anything Stop can end) stays selected when another
+        // one appears, so its Stop and Pause never vanish while it moves.
+        var oldBusy=!!(latestMachine&&latestMachine.port===old&&(latestMachine.workflow!=='idle'||latestMachine.canStop));
+        $('job-port').value=machines.some(function(m){return m.port===old;})&&(explicitPort||machines.length===1||oldBusy)?old:(machines.length===1?machines[0].port:'');
         if(!$('job-port').value)explicitPort=false;
       }
       var next=machines.filter(function(m){return m.port===$('job-port').value;})[0]||null;
