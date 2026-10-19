@@ -71,7 +71,7 @@ upd.click();upd.click();answer('/api/touch-job',200,quiet);let p=requests.at(-1)
 upd.click();upd.click();answer('/api/touch-job',200,quiet);p=requests.at(-1);p.onerror();assert.match(status.textContent,/non lancée/);
 // Homing, jogging, a stale report or an unreadable state: nothing is run.
 for(const [controllers,reason] of [[[{fresh:true,workflow:'idle',activeState:'Home'}],/mouvement/],[[{fresh:true,workflow:'idle',activeState:'Jog'}],/mouvement/],
-  [[{fresh:false,workflow:'idle',activeState:'Idle'}],/trop ancien/],[null,/illisible/]]){
+  [[{fresh:false,workflow:'idle',activeState:'Idle'}],/trop ancien/],[[{fresh:true,workflow:'idle',activeState:'Idle',spindleSpeed:8000}],/broche/],[null,/illisible/]]){
   const posts=requests.filter(r=>r.method==='POST').length;
   upd.click();upd.click();answer('/api/touch-job',controllers?200:500,controllers?{controllers}:{});
   assert.equal(requests.filter(r=>r.method==='POST').length,posts,'no command sent');assert.match(status.textContent,reason);assert(!upd.disabled);

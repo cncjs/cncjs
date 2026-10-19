@@ -31,6 +31,7 @@ job({generation:'two'});assert(api.status().blocked,'a replaced controller does 
 job({fresh:false});assert(api.status().blocked,'stale Idle cannot clear the observed job');
 job({received:100,total:100,workflow:'running',activeState:'Run',canStop:true});assert(api.status().blocked,'100% acknowledged is not idle');
 job({workflow:'idle',activeState:'Run',canStop:true});assert(api.status().blocked,'sender idle alone is not controller idle');
+job({spindleSpeed:12000});assert(api.status().blocked,'Idle with the spindle on never sleeps');assert.match(api.status().reason,/broche/);job({spindleSpeed:0});
 job({});assert(!api.status().blocked);tick(59999);assert(overlay.hidden);tick(1);assert(!overlay.hidden,'full delay starts after confirmed idle');
 // A job observed while asleep wakes the display; a held touch still shields controls.
 event('pointerdown',{pointerId:8});job({workflow:'running',activeState:'Run',canStop:true});tick(1000);assert(!overlay.hidden);

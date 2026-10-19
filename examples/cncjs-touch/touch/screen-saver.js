@@ -75,7 +75,9 @@
   function status() { return { blocked: !!activeController, reason: policyReason }; }
   function jobStatus(event) {
     var c = event.detail && event.detail.machine, wasBlocked = !!activeController, previousReason = policyReason;
-    var active = c && (c.probeBusy || c.canStop || c.workflow === 'running' || c.workflow === 'paused' || /^(Run|Hold|Jog|Home|Door)(:|$)/.test(c.activeState || ''));
+    // The spindle may turn with Grbl Idle (M3 from the PC, the commissioning test): never blank it.
+    var spinning = !!(c && c.fresh && typeof c.spindleSpeed === 'number' && c.spindleSpeed > 0);
+    var active = c && (c.probeBusy || c.canStop || spinning || c.workflow === 'running' || c.workflow === 'paused' || /^(Run|Hold|Jog|Home|Door)(:|$)/.test(c.activeState || ''));
     if (!activeController && active) activeController = { port: c.port, generation: c.generation };
     // A different controller or a disconnected/replaced instance cannot prove this operation ended.
     var same = activeController && c && c.port === activeController.port && c.generation === activeController.generation;
@@ -83,6 +85,7 @@
     policyReason = !activeController ? '' : !same || !c.fresh ? uiLocale.t('Veille suspendue : retour au repos non confirmé.') :
       c.probeBusy ? uiLocale.t('Veille suspendue pendant le palpage simulé.') : /^Alarm/.test(c.activeState || '') ? uiLocale.t('Veille suspendue : alarme pendant le travail.') :
       c.workflow === 'paused' || /^Hold/.test(c.activeState || '') ? uiLocale.t('Veille suspendue pendant la pause.') :
+      spinning && c.workflow === 'idle' ? uiLocale.t('Veille suspendue : la broche tourne.') :
       active ? uiLocale.t('Veille suspendue pendant le travail.') : uiLocale.t('Veille suspendue : retour au repos non confirmé.');
     if (wasBlocked !== !!activeController) {
       clearTimeout(timer); timer = null; lastActivity = elapsedClock();

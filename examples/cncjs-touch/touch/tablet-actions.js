@@ -70,6 +70,9 @@
       var c=controllers[i]||{};
       if(!c.fresh)return t('État de la machine trop ancien : commande non lancée.');
       if(c.workflow!=='idle'||['Idle','Alarm','Sleep'].indexOf(c.activeState)<0)return t('Machine en mouvement ou occupée : commande non lancée.');
+      // Grbl stays Idle with the spindle on (M3 from the PC, the commissioning test): a restart
+      // would take the touch screen, its Stop and its M5 away while it turns.
+      if(typeof c.spindleSpeed==='number'&&c.spindleSpeed>0)return t('La broche tourne encore : arrêtez-la (M5) avant cette commande.');
     }
     return '';
   }
