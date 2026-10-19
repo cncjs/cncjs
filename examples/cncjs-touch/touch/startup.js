@@ -21,7 +21,8 @@
     // A fit may need several frames; reveal only once its measurements settle.
     function reveal(){
       if(failed||finished)return;
-      if(!document.body.classList.contains('ks-ui')||!document.querySelector('#screen-menu.active')){fail();return;}
+      // Any active screen: the job follow-up may already have opened Suivi (a job started from the PC).
+      if(!document.body.classList.contains('ks-ui')||!document.querySelector('main .screen.active')){fail();return;}
       finished=true;clearTimeout(timer);window.removeEventListener('error',error,true);
       document.documentElement.classList.remove('cnc-loading');
       var boot=document.getElementById('cnc-boot');if(boot)boot.hidden=true;
