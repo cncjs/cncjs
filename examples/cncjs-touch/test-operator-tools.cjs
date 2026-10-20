@@ -6,6 +6,9 @@ assert.equal(acknowledged({finished:true,workflow:'idle',received:0,total:10},50
 assert.equal(acknowledged({finished:false,finishedWithErrors:true,workflow:'idle',received:0,total:10},500),500);
 assert.equal(acknowledged({finished:false,workflow:'idle',received:0,total:10},500),0);
 assert.equal(acknowledged({finished:false,workflow:'running',received:5,total:10},500),250);
+// Resumed at line 400 with an 8-line preamble: line 399 is done before the first line runs.
+assert.equal(acknowledged({workflow:'running',received:0,total:109,resume:{from:400,preambleLength:8}},500),399);
+assert.equal(acknowledged({workflow:'running',received:58,total:109,resume:{from:400,preambleLength:8}},500),449);
 const initial={wcs:'G54',machinePosition:{x:20,y:10,z:5},workPosition:{x:3,y:2,z:1}};
 const input={operation:'set',axis:'x',value:'-2,5',unit:'mm',feed:800};
 assert.deepEqual(model.plan(initial,input),{axis:'x',wcs:'G54',operation:'set',valueMm:-2.5,targetWorkMm:-2.5,targetMachineMm:20,offsetMm:22.5,feedMmMin:800});

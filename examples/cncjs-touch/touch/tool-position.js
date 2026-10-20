@@ -22,6 +22,10 @@
   // ends: a program run to its end (even with Grbl errors) shows its whole path.
   function acknowledged(s,totalLines){
     if((s.finished===true||s.finishedWithErrors===true)&&s.workflow==='idle')return totalLines;
+    // A resume from a line runs a preamble, then the file from that line: the lines before it
+    // count as done, the preamble's do not (lines in the sender's numbering, like the trail).
+    var r=s.resume;
+    if(r&&typeof r.from==='number'&&typeof r.preambleLength==='number')return Math.min(totalLines,Math.max(0,r.from-1+Math.max(0,s.received-r.preambleLength)));
     return Math.min(totalLines,Math.max(0,s.received/s.total*totalLines));
   }
   if(typeof module!=='undefined'&&module.exports){module.exports={project:project,trailCount:trailCount,acknowledged:acknowledged};return;}
