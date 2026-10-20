@@ -8,7 +8,7 @@ From this directory, run:
 node verify-project.cjs
 ```
 
-Node.js 18 or newer is required. No external packages, running CNCjs server or CNC controller are required. The suite consists of 56 browser-side test scripts plus script syntax and HTML resource checks, for 58 checks in this source package. The runner uses an explicit list and does not launch the visual fixture or hardware checks.
+Node.js 18 or newer is required. No external packages, running CNCjs server or CNC controller are required. The suite consists of 67 browser-side test scripts plus script syntax and HTML resource checks, for 69 checks in this source package; each test must end with its PASS line. The runner uses an explicit list and does not launch the visual fixture or hardware checks.
 
 The backend (job service, event stream, motion preflight, probe input and the `api.touch` handlers) is tested with the root Jest suite instead:
 
@@ -25,6 +25,48 @@ An optional report can be written outside the source tree:
 ```sh
 node verify-project.cjs --report /absolute/path/to/offline-report.json
 ```
+
+## Full pass (2026-10-19/20)
+
+A complete bug hunt and fluidity pass over the touch page, the server touch services, `api.touch`, the monitor and the simulator tools. Method: six independent read-only reviews (server, job control page, shell and long-running page, library/preview/probing, translations/CSS/HTML, simulation and tools), every finding re-read in the code, then each group handed to a second reviewer whose job was to refute it (3 refuters: 37 findings confirmed, 3 partial, 1 refuted). After the fixes, a second-round review of the fixes themselves found 5 more defects, fixed too. Each fix has a test that fails before and passes after (Jest for the server, `test-*.cjs` for the page); one commit per subject. The pass was made on the tablet branch, which also carries pendant features not proposed here (strip Resume/Unlock, screen lock, job follow-up, rapid override); the fixes that only concern them are not in this branch.
+
+### Found and fixed: machine safety (server)
+
+- **Stop did nothing when Grbl reported Idle** while lines were still buffered (a G4 dwell of a resume preamble, the first instants of a start, a tool change pause with the spindle on): CNCjs's forced stop decides from its own 250 ms copy of the state and only acts in Run or Hold. The touch service now decides from the latest report: moving axes and buffered lines get a feed hold, then a soft reset once a newer report shows them at rest (Hold:0) or after 5 s; a hold or a lone spindle is reset at once; the hold is sent again every 400 ms while Grbl still says Run (a lost byte). Seen on the simulator with the old server: after a stop the spindle kept turning at 12 000 rpm, or Grbl stayed in Hold so the next load was refused.
+- **Stop during homing** was not accepted: Grbl sends no report during `$H`. The `$H` sent marks the cycle (`homing` in the snapshot, "Prise d'origine" in the strip, `canStop` for Suivi's Stop) until a later Idle/Alarm report, an alarm or a restart.
+- **A macro waiting in a dwell** (CNCjs queue not empty) could not be stopped.
+- **Tool change spin-up and plate probe** took CNCjs's feeder "not pending" (last line sent) for "done": the resume went out during the G4, whose `ok` then counted as a program line (one line off in the RX buffer count for the rest of the job); a stale report could end a probe step. Both now count Grbl's answers (skipping the `ok` of CNCjs's own `$G`). A USB cable pulled during the spin-up threw in a timer and ended the CNCjs process; a Stop during it no longer resumes.
+- **Plate probe with `$13=1`**: positions in inches were sent back as millimetres (back-off = rapid into the plate): refused unless `$13=0`. In a program pause the probe left G0 and F25 modal: the program's G0/G1 and feed are sent back (G2/G3 refused); a probe failed in a pause forbids resuming it. Stop while probing in a pause records the stopped line.
+- **Resume from a line** forced G54 and G21 when the program chose neither (a G55 job resumed at the G54 origin); compact first lines (`G90G1X10`) got a second motion word.
+- **Start** of a file that sets neither G20/G21 nor G90/G91 before its first move now needs a fresh `$G` showing G21 and G90 (Grbl keeps G20 after M30, a macro can leave G91; the preview assumes mm/absolute). **A board restart during a program pause** (E-stop wired to reset, alarm abort) forbids resuming it.
+- The snapshot says `jobStopped` for the touch screen's own jobs: Grbl acknowledges lines up to about 15 moves before running them, so "every line acknowledged" alone does not mean the end.
+- Counter-review: the stop no longer resets on a report taken before the request; the line-answer tracker starts from CNCjs's "reply pending" flag; the stop/restart/probe flags of a run are cleared when the loaded file runs again (also from the PC).
+
+### Found and fixed: page
+
+- **Suivi's Stop disabled without the event stream** (Wi-Fi gap, stream silent 3 s): it was disabled 7 s out of 10 (HTTP read every 10 s, state needed < 3 s). The fallback now reads every 2 s during a job or while Stop can act.
+- **Every planned stream renewal (once a minute)** looked like a disconnection: "Hors ligne" for a moment, a lost/back pair in the session journal each minute (after ~50 min the journal held nothing else), and the notice bar flash made viewport-fit measure the screen hidden twice. A 3 s grace now covers the renewal.
+- A second Grbl controller appearing during a job cleared the implicit selection (Stop/Pause gone).
+- Tablet restarts and the screen saver ignored a spindle turning at rest; start-up failed ("Chargement incomplet") when a screen other than Menu was shown before the reveal.
+- Commissioning: a `$X` after a failed `$H` completed the homing step, and so did the snapshot answering the `$H` (counter-review); the air-cut step took a `finished` flag from an earlier run.
+- Travel check said OK for a program starting in relative moves; previews drew moves after a `(` inside a comment that CNCjs drops; a selected file that disappeared was replaced by the newest one; after an upload the card showed the previous file while Charger loaded the new one; the trail of a resume from a line started at the program start; the plate card lost its refusal message at the next report, could show the wrong thickness in its note, and its request timed out at 30 s.
+- Translations: Préparer, the tool marker notes, server reasons and this pass's messages; `test-i18n` now checks that every literal passed to `t()` has a row. Simulator: overrides back to 100 % after a stop or the end, journal "Errors" filter in EN/ES.
+- Tools: the offline runner counted a test that stopped before its end as passed (now requires its PASS line); the simulator bridge ignored SIGHUP (port link left on a freed pty) and removed a link that was no longer its own (`test-bridge.sh`, run on the tablet).
+
+### Fluidity, measured on the Surface RT
+
+Measured on the tablet branch (same Suivi screen, plus the pendant features), by replaying the same recorded minute of a job (288 status events) on Suivi, 4 windows of 60 s per version, passes alternating; CPU from `/proc/<pid>/stat`, main-thread and layout time from `Performance.getMetrics`. Real simulator jobs were rejected as a comparison method: their pace varies more than the effects.
+
+- `viewport-fit.js` re-fits on content changes at most once a second, the tool marker reads the image box at most once a second and moves with a transform: layouts per second 7.8 → 4.7.
+- The remaining time is shown to the minute above 2 minutes (it changed at every report), live values are written into their text node instead of replacing it; attributes are no longer rewritten when unchanged.
+- Overall: **Chromium CPU 71.3 → 64.4 % (−10 %), main thread 341 → 296 ms/s (−13 %), layout 97.5 → 77.7 ms/s (−20 %), layouts 7.8 → 4.1 per second.** A three-hour fast-forward run (43 200 status events) showed no memory growth after the first warm-up (JS heap 2.2–2.3 MB, 2 448 DOM nodes).
+
+### Not changed, with the reason
+
+- "Texte agrandi" barely changes anything since UI 2027 (the tokens set explicit sizes): which sizes to enlarge is a design decision.
+- A preview is matched to its G-code by name only (an outside overwrite under the same name keeps the old preview): needs a content check at upload.
+- After the reset of a stop, CNCjs reads `$G` again only after about 10 s: a file that sets neither G21 nor G90 is refused for that time ("attendre un état modal récent").
+- Not tested on a real machine: every stop sequence above (feed hold, reset at Hold:0) against real inertia, homing and its stop, the plate probe, the tool change spin-up, a board restart during a pause, and the start guard on G20/G91 left by another program.
 
 ## Z zero with a touch plate (2026-10-18)
 

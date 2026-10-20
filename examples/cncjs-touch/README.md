@@ -16,6 +16,10 @@ node preview-server.cjs
 
 Open the localhost URL printed by the preview server. It serves a local visual fixture with synthetic files, a virtual controller and simulated progress. Stop it with Ctrl+C. The mock controller rejects physical commands. The fixture is for local evaluation only; do not deploy its fake authentication or mock responses to a real CNCjs server.
 
+## Full pass (2026-10-19/20)
+
+A complete bug hunt (six reviews, refuters, a second round on the fixes) and a fluidity pass measured on the Surface RT: Stop now reaches Grbl whatever CNCjs cached (also during homing and macro dwells), stream renewals and Wi-Fi gaps no longer hide or disable Stop, and Suivi costs about 10 % less CPU during a job. Details, figures and what was not changed in `TESTING.md`, "Full pass".
+
 ## Z zero with a touch plate (2026-10-18)
 
 Suivi can set the work Z with a touch plate, at rest or during a tool change pause: thickness and maximum travel down, then the usual confirmation; fast touch, back-off, slow touch, `G10 L20`, 5 mm clearance, all in absolute coordinates. Refused when the probe is already in contact, the spindle turns, or `$G` is not `G90 G21`; Stop interrupts it. Details and the simulator run in `TESTING.md`; the plan for the machine in `HANDOFF.md`, step 9.
