@@ -71,7 +71,7 @@
   }
   $('probe-transfer-open').addEventListener('click',function(){
     if(engine.snapshot().running||!transfer)return;clearImport();$('probe-profiles-file').value='';
-    text('probe-transfer-count',profiles.length+uiLocale.t(' / 8 profils enregistrés · ')+(simulation?'simulation':'préparation réelle'));
+    text('probe-transfer-count',profiles.length+uiLocale.t(' / 8 profils enregistrés · ')+(simulation?'simulation':uiLocale.t('préparation réelle')));
     text('probe-import-status',uiLocale.t('Choisissez un fichier pour afficher son contenu avant l’ajout.'));go('probe-transfer');
   });
   $('probe-transfer-back').addEventListener('click',function(){go('probe');});

@@ -50,4 +50,15 @@ s=setup();choose(s,'en');s.document.hidden=true;s.node('language-apply').handler
 s=setup('fr',true);choose(s,'es');s.node('language-apply').click();assert.equal(s.calls.reload,0);assert(s.node('language-status').textContent.includes('Impossible'));
 s=setup();choose(s,'es');s.events.pagehide({persisted:true});assert(s.events['cnc-job-status']);s.events.pagehide({persisted:false});assert(!s.events['cnc-job-status']);assert(!s.node('language-apply').handlers.click);
 for(const name of ['index.html','simulation.html']){const html=fs.readFileSync(path.join(__dirname,'touch',name),'utf8');assert(html.indexOf('i18n-messages.js')<html.indexOf('i18n.js'));assert(html.indexOf('i18n.js')<html.indexOf('cnc-state.js'));assert(html.indexOf('language-settings.js')>html.indexOf('touch-shell.js'));}
+// Every literal passed to t() in the page scripts has a catalog row (a missing row stays French in EN/ES).
+{
+ const sandbox={window:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'touch','i18n-messages.js'),'utf8'),sandbox);
+ const known=new Set(sandbox.window.CNCTouchMessages.map(r=>r[0].trim().replace(/\s+/g,' ')));
+ const missing=[];
+ for(const file of fs.readdirSync(path.join(__dirname,'touch')).filter(n=>n.endsWith('.js')&&!/^(i18n|i18n-messages|startup)\.js$/.test(n))){
+  const src=fs.readFileSync(path.join(__dirname,'touch',file),'utf8');
+  for(const m of src.matchAll(/\bt\('((?:[^'\\]|\\.)*)'\)/g)){const v=m[1].replace(/\\n/g," ").replace(/\\'/g,"'").trim().replace(/\s+/g,' ');if(v&&/[a-zà-ÿ]{2}/i.test(v)&&!known.has(v)&&v!=='Idle ✓')missing.push(file+': '+v);}
+ }
+ assert.deepEqual(missing,[],'phrases without a catalog row');
+}
 console.log('PASS languages: catalogs, whitespace, HTML attributes, protocol/data preservation, persistence, idle-only reload, pending actions, dialogs, storage failures and lifecycle.');

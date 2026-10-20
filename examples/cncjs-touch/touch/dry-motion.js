@@ -1,6 +1,7 @@
 (function () {
   'use strict';
   var uiLocale=(typeof window!=='undefined'&&window.cncI18n)||{t:function(s){return s;},html:function(s){return s;}};
+  var t=uiLocale.t,msg=uiLocale.message||uiLocale.t;
   // Server-validated rehearsal only. This endpoint cannot execute a movement.
   if (document.body && document.body.getAttribute('data-simulation') === 'true') return;
   var $ = function (id) { return document.getElementById(id); };
@@ -9,15 +10,15 @@
   var request = null, version = 0, currentScreen='jog', timer=null;
   function setText(el, text) { if (el && el.textContent !== text) el.textContent = text; }
   function reason() {
-    if (document.hidden) return 'Page masquée : essais bloqués.';
-    if (compact ? !window.cncState.get().transportConnected : blocked || !socket || !socket.connected) return 'Serveur déconnecté : essais bloqués.';
-    if (!machine) return 'Aucun contrôleur suivi. Ouvrez la connexion dans CNCjs.';
-    if (!machine.fresh || Date.now() - received >= 3000) return 'État du contrôleur périmé : attendez son actualisation.';
-    if (machine.type !== 'Grbl' || !machine.port) return 'Contrôleur Grbl requis pour cet essai.';
-    if (busy || machine.loading) return 'Une opération est en cours : essais bloqués.';
-    if (machine.workflow !== 'idle' || machine.activeState !== 'Idle') return 'Contrôleur non prêt (' + (machine.activeState || uiLocale.t('état inconnu')) + ') : essais bloqués.';
-    if (!machine.canLoad) return machine.loadReason || 'Commandes en attente : essais bloqués.';
-    if (machine.canPreviewMotion !== true) return machine.motionReason || 'Vérification serveur indisponible : actualisez la page.';
+    if (document.hidden) return t('Page masquée : essais bloqués.');
+    if (compact ? !window.cncState.get().transportConnected : blocked || !socket || !socket.connected) return t('Serveur déconnecté : essais bloqués.');
+    if (!machine) return t('Aucun contrôleur suivi. Ouvrez la connexion dans CNCjs.');
+    if (!machine.fresh || Date.now() - received >= 3000) return t('État du contrôleur périmé : attendez son actualisation.');
+    if (machine.type !== 'Grbl' || !machine.port) return t('Contrôleur Grbl requis pour cet essai.');
+    if (busy || machine.loading) return t('Une opération est en cours : essais bloqués.');
+    if (machine.workflow !== 'idle' || machine.activeState !== 'Idle') return t('Contrôleur non prêt (') + (machine.activeState || t('état inconnu')) + t(') : essais bloqués.');
+    if (!machine.canLoad) return msg(machine.loadReason) || t('Commandes en attente : essais bloqués.');
+    if (machine.canPreviewMotion !== true) return msg(machine.motionReason) || t('Vérification serveur indisponible : actualisez la page.');
     return '';
   }
   function render() {
@@ -26,7 +27,7 @@
     var disabled = !!why || !!request;
     buttons.forEach(function (b) { if (b.disabled !== disabled) b.disabled = disabled; });
     if(currentScreen!=='jog')return;
-    setText($('jog-msg'), why || (request ? 'Vérification par le serveur…' : 'Prêt pour un essai à blanc · pas ' + step + ' mm · ' + feed + ' mm/min.'));
+    setText($('jog-msg'), why || (request ? t('Vérification par le serveur…') : t('Prêt pour un essai à blanc · pas ') + step + ' mm · ' + feed + ' mm/min.'));
     var mid=typeof document.querySelector==='function'?document.querySelector('#screen-jog .pad-mid'):null;
     if(mid)setText(mid, step + ' mm');
     setText($('jog-controller'), machine && machine.port ? uiLocale.t('Contrôleur suivi : ') + machine.port : uiLocale.t('Contrôleur suivi : aucun'));
@@ -40,7 +41,7 @@
   function verify(body) {
     var token = '';
     try { token = JSON.parse(localStorage.getItem('cnc')).state.session.token; } catch (_) {}
-    if (!token) { setText($('jog-feedback'), 'Session CNCjs requise. Aucun mouvement envoyé.'); return; }
+    if (!token) { setText($('jog-feedback'), t('Session CNCjs requise. Aucun mouvement envoyé.')); return; }
     var xhr = new XMLHttpRequest(), id = ++version;
     request = xhr;
     xhr.open('POST', (window.cncState?window.cncState.get().apiBase:'/api')+'/touch-motion/preview', true); xhr.timeout = 5000;
@@ -56,18 +57,18 @@
       var data;
       try { data = JSON.parse(xhr.responseText); } catch (_) { data = {}; }
       if (xhr.status < 200 || xhr.status >= 300) {
-        finish((typeof data.message === 'string' ? data.message : 'Vérification refusée par le serveur.') + ' Aucun mouvement envoyé.'); return;
+        finish((typeof data.message === 'string' ? msg(data.message) : t('Vérification refusée par le serveur.')) + t(' Aucun mouvement envoyé.')); return;
       }
       if (data.dryRun !== true || data.port !== body.port || data.axis !== body.axis ||
           data.distanceMm !== body.direction * body.step || data.feedMmMin !== body.feed) {
-        finish('Réponse serveur incohérente. Aucun mouvement envoyé.'); return;
+        finish(t('Réponse serveur incohérente. Aucun mouvement envoyé.')); return;
       }
-      finish('Vérifié par le serveur : ' + body.axis + (body.direction > 0 ? '+' : '−') + ' · ' + body.step + ' mm · ' + body.feed + ' mm/min. Aucun mouvement envoyé.');
+      finish(t('Vérifié par le serveur : ') + body.axis + (body.direction > 0 ? '+' : '−') + ' · ' + body.step + ' mm · ' + body.feed + t(' mm/min. Aucun mouvement envoyé.'));
     };
-    xhr.onerror = xhr.ontimeout = function () { finish('Serveur injoignable. Essai non validé ; aucun mouvement envoyé.'); };
+    xhr.onerror = xhr.ontimeout = function () { finish(t('Serveur injoignable. Essai non validé ; aucun mouvement envoyé.')); };
     render();
-    setText($('jog-feedback'), 'Vérification en cours. Aucun mouvement envoyé.');
-    try { xhr.send(JSON.stringify(body)); } catch (_) { finish('Vérification impossible. Aucun mouvement envoyé.'); }
+    setText($('jog-feedback'), t('Vérification en cours. Aucun mouvement envoyé.'));
+    try { xhr.send(JSON.stringify(body)); } catch (_) { finish(t('Vérification impossible. Aucun mouvement envoyé.')); }
   }
   function choice(id, attribute, values, assign) {
     var options = $(id).querySelectorAll('button');

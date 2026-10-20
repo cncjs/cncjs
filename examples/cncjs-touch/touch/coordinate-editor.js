@@ -29,7 +29,7 @@
   function reason(){
     if(document.hidden||!machine||!machine.fresh||Date.now()-received>2500)return uiLocale.t('État absent ou périmé : attendre un rapport récent.');
     if(busy||machine.loading||machine.probeBusy||machine.workflow!=='idle'||machine.activeState!=='Idle')return uiLocale.t('Travail, alarme ou palpage : préparation bloquée.');
-    if(!simulation&&machine.canPreviewMotion!==true)return machine.motionReason||uiLocale.t('État machine incompatible avec la préparation.');
+    if(!simulation&&machine.canPreviewMotion!==true)return machine.motionReason?uiLocale.t(machine.motionReason):uiLocale.t('État machine incompatible avec la préparation.');
     var s=snapshot();if(!s||model.frames.indexOf(s.wcs)<0)return uiLocale.t('Unité de rapport ou repère machine inconnu. Aucune valeur supposée.');
     return '';
   }

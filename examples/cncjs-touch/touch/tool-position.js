@@ -36,6 +36,7 @@
   // The note explains the marker: it sits right under the preview (UI 2027), not among the actions.
   var note=document.createElement('p');note.className='tool-position-note';note.id='tool-position-note';
   if(img.parentNode&&typeof img.parentNode.insertAdjacentElement==='function')img.parentNode.insertAdjacentElement('afterend',note);else document.getElementById('home-job-note').insertAdjacentElement('afterend',note);
+  var t=(root.cncI18n&&root.cncI18n.t)||function(s){return s;};
   var state=null,simulation=false,received=0,frame=null,expiry=null,disposed=false;
   // The image box is read at most once a second (and at once after a screen change, a resize
   // or a new image): reading it forces a layout of the screen, and reports come 4 times a
@@ -65,8 +66,8 @@
     var screen=document.getElementById('screen-home');
     if(document.hidden||!screen.classList.contains('active')){hide('');return;}
     var meta=img.cncPreview,s=state;
-    if(!s||!s.fresh||Date.now()-received>2500||img.hidden||!meta||!s.name||meta.file!==s.name){hide('Position outil : données ou aperçu indisponibles.');return;}
-    if(!meta.projection){hide('Position outil : régénérez cet ancien aperçu dans Fichiers.');return;}
+    if(!s||!s.fresh||Date.now()-received>2500||img.hidden||!meta||!s.name||meta.file!==s.name){hide(t('Position outil : données ou aperçu indisponibles.'));return;}
+    if(!meta.projection){hide(t('Position outil : régénérez cet ancien aperçu dans Fichiers.'));return;}
     // Layout reads are batched in one animation frame, only on the visible view.
     if(!box||Date.now()-boxAt>=1000||Date.now()<boxAt){
       var r=img.getBoundingClientRect(),parent=img.parentNode.getBoundingClientRect();
@@ -80,24 +81,24 @@
     // The trail only needs the acknowledged lines and the preview, not the tool
     // position: it stays visible when the position cannot be projected.
     drawTrail(meta,s,box);
-    var trailLabel=trail.hidden?'':simulation?' Tracé orange : avancement fictif.':' Tracé orange : lignes acquittées, indicatif.';
+    var trailLabel=trail.hidden?'':simulation?t(' Tracé orange : avancement fictif.'):t(' Tracé orange : lignes acquittées, indicatif.');
     function noMarker(message){marker.hidden=true;var text=message+trailLabel;if(note.textContent!==text)note.textContent=text;}
     var point;
     if(simulation){
-      if(s.wcs!=='G54'){noMarker('Position fictive : aperçu limité au repère G54.');return;}
+      if(s.wcs!=='G54'){noMarker(t('Position fictive : aperçu limité au repère G54.'));return;}
       point=s.workPosition;
     }else{
-      if(!s.operator||s.operator.reportUnits!=='mm'||s.operator.wcs!=='G54'){noMarker('Position outil : repère G54 et rapports en mm requis.');return;}
+      if(!s.operator||s.operator.reportUnits!=='mm'||s.operator.wcs!=='G54'){noMarker(t('Position outil : repère G54 et rapports en mm requis.'));return;}
       var w=s.coordinates&&s.coordinates.wpos;
-      if(!w||w.x===undefined||w.y===undefined){noMarker('Position outil inconnue.');return;}
+      if(!w||w.x===undefined||w.y===undefined){noMarker(t('Position outil inconnue.'));return;}
       point={x:typeof w.x==='string'&&w.x.trim()!==''?Number(w.x):w.x,y:typeof w.y==='string'&&w.y.trim()!==''?Number(w.y):w.y};
     }
     var pixel=project(meta.projection,point);
-    if(!pixel){noMarker('Position outil hors aperçu ou projection invalide.');return;}
+    if(!pixel){noMarker(t('Position outil hors aperçu ou projection invalide.'));return;}
     var left=(box.left+(box.width-width)/2)+'px',top=(box.top+(box.height-height)/2)+'px',move='translate('+(pixel.x*width)+'px,'+(pixel.y*height)+'px) translate(-50%,-50%)';
     if(marker.style.left!==left)marker.style.left=left;if(marker.style.top!==top)marker.style.top=top;
     if(marker.style.transform!==move)marker.style.transform=move;marker.hidden=false;
-    var label=(simulation?'Point rose : position fictive G54. Le travail simulé ne déplace pas ce point.':'Point rose : position de travail rapportée, G54 · projection indicative.')+trailLabel;
+    var label=(simulation?t('Point rose : position fictive G54. Le travail simulé ne déplace pas ce point.'):t('Point rose : position de travail rapportée, G54 · projection indicative.'))+trailLabel;
     if(note.textContent!==label)note.textContent=label;
   }
   function schedule(){

@@ -36,7 +36,7 @@
     });
     while(list.children.length>macros.length)list.removeChild(list.lastChild);
     Object.keys(rows).forEach(function(id){if(!keep[id])delete rows[id];});
-    setText(status,!machine?uiLocale.t('État machine indisponible.'):!macros.length?uiLocale.t('Aucune macro définie dans CNCjs.'):ready?uiLocale.t('Machine au repos : touchez une macro pour la confirmer.'):(machine.macroReason||uiLocale.t('Macros indisponibles dans l’état actuel.')));
+    setText(status,!machine?uiLocale.t('État machine indisponible.'):!macros.length?uiLocale.t('Aucune macro définie dans CNCjs.'):ready?uiLocale.t('Machine au repos : touchez une macro pour la confirmer.'):(machine.macroReason?(uiLocale.message||uiLocale.t)(machine.macroReason):uiLocale.t('Macros indisponibles dans l’état actuel.')));
   }
   window.addEventListener('cnc-job-status',function(e){machine=e.detail&&e.detail.machine||null;render();});
   render();

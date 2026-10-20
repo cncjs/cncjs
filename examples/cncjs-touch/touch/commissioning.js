@@ -258,7 +258,7 @@
       unlockButton=unlockControl();box.appendChild(unlockButton);
       return function(m){
         prop(start,'disabled',!checked(st,['hand'])||!m||!m.canHome);
-        set(why,m&&!m.canHome?m.homeReason||'':'');
+        set(why,m&&!m.canHome?t(m.homeReason||''):'');
         set(state,st.homed?t('Prise d’origine terminée ✓'):st.homing||st.sent?t('Prise d’origine en cours…'):st.failed?t('Échec : alarme pendant la prise d’origine (contact non trouvé ?). Déverrouillez, vérifiez la fin de course puis relancez.'):'');
         prop(unlockButton,'disabled',!m||!m.canUnlock);unlockButton.hidden=!alarm(m);
       };
@@ -285,7 +285,7 @@
         prop(stop,'disabled',!m||!m.canSpindleStop);
         set(live,st.rpm>0?t('Broche : ')+st.rpm+t(' tr/min demandés'):st.ran?t('Broche arrêtée ✓'):t('Broche à l’arrêt'));
         after.hidden=!st.ran;
-        set(why,m&&!m.canSpindleTest&&!(st.rpm>0)?m.spindleReason||'':'');
+        set(why,m&&!m.canSpindleTest&&!(st.rpm>0)?t(m.spindleReason||''):'');
       };
     },
     aircut:function(box){
@@ -385,8 +385,8 @@
     var d=e&&e.detail||{};if(d.simulation)return;
     machine=d.machine||null;
     if(machine&&machine.port!==port){port=machine.port;settingsCard();}
-    if(machineUnlock){prop(machineUnlock,'disabled',!machine||!machine.canUnlock);prop(machineUnlock,'title',machine&&machine.unlockReason||'');}
-    if(machineHome){prop(machineHome,'disabled',!machine||!machine.canHome);prop(machineHome,'title',machine&&machine.homeReason||'');}
+    if(machineUnlock){prop(machineUnlock,'disabled',!machine||!machine.canUnlock);prop(machineUnlock,'title',t(machine&&machine.unlockReason||''));}
+    if(machineHome){prop(machineHome,'disabled',!machine||!machine.canHome);prop(machineHome,'title',t(machine&&machine.homeReason||''));}
     if(view){observe(STEPS[index],st,machine);refresh();}
     // First real controller seen on this port: open the assistant once, from the menu.
     if(!autoDone&&machine&&machine.fresh&&machine.workflow==='idle'&&!/sim/i.test(machine.port)&&!entry(machine.port)&&(current==='menu'||current==='home')){
