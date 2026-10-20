@@ -151,6 +151,17 @@
   // Only a viewport change or an activation cancels a running measurement;
   // other requests (content, clicks, focus) just ask for a fit.
   function schedule(){if(disposed)return;if(!pending){pending=true;frame=requestAnimationFrame(fit);}}
+  // Content changes of the shown screen (machine values, 4 per second during a job) ask for
+  // a fit at most once a second: each fit reads the layout (a forced layout of the screen),
+  // and content that grew is still shrunk, within a second. Opening, resizing, taps and
+  // dialogs still fit at the next frame.
+  var contentAt=-Infinity,contentTimer=null;
+  function contentChanged(){
+    if(disposed)return;
+    var now=Date.now(),wait=contentAt+1000-now;
+    if(wait<=0||typeof setTimeout!=='function'){contentAt=now;schedule();return;}
+    if(contentTimer===null)contentTimer=setTimeout(function(){contentTimer=null;contentAt=Date.now();schedule();},wait);
+  }
   function resized(){if(disposed)return;revision++;measuring=null;schedule();}
   function activate(){activation=true;resized();}
   window.addEventListener('resize',resized);
@@ -169,7 +180,7 @@
       while(el&&el!==main){
         if(el.hidden)break;
         if(el.classList&&el.classList.contains('screen')){
-          if(el.classList.contains('active')){schedule();return;}
+          if(el.classList.contains('active')){contentChanged();return;}
           break;
         }
         el=el.parentElement;
@@ -184,7 +195,7 @@
   var noticeObserver=new MutationObserver(schedule);
   if(notice)noticeObserver.observe(notice,{attributes:true,attributeFilter:['hidden'],childList:true,subtree:true});
   function dispose(){
-    if(disposed)return;disposed=true;revision++;readyCallbacks=[];warmQueue=[];if(warmTimer!==null)clearTimeout(warmTimer);
+    if(disposed)return;disposed=true;revision++;readyCallbacks=[];warmQueue=[];if(warmTimer!==null)clearTimeout(warmTimer);if(contentTimer!==null)clearTimeout(contentTimer);
     if(window.cancelAnimationFrame)window.cancelAnimationFrame(frame);
     [screenObserver,dialogObserver,noticeObserver].forEach(function(o){if(o.disconnect)o.disconnect();});
     if(window.removeEventListener){window.removeEventListener('resize',resized);window.removeEventListener('cnc-screen-change',activate);window.removeEventListener('pagehide',leave);}

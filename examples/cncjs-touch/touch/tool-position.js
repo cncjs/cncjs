@@ -37,6 +37,11 @@
   var note=document.createElement('p');note.className='tool-position-note';note.id='tool-position-note';
   if(img.parentNode&&typeof img.parentNode.insertAdjacentElement==='function')img.parentNode.insertAdjacentElement('afterend',note);else document.getElementById('home-job-note').insertAdjacentElement('afterend',note);
   var state=null,simulation=false,received=0,frame=null,expiry=null,disposed=false;
+  // The image box is read at most once a second (and at once after a screen change, a resize
+  // or a new image): reading it forces a layout of the screen, and reports come 4 times a
+  // second during a job. The marker then moves with a transform, which needs no layout.
+  var box=null,boxAt=-Infinity;
+  function invalidate(){box=null;}
   function hide(message){marker.hidden=true;trail.hidden=true;if(note.textContent!==message)note.textContent=message;}
   function drawTrail(meta,s,box){
     var samples=meta.trail;
@@ -63,11 +68,13 @@
     if(!s||!s.fresh||Date.now()-received>2500||img.hidden||!meta||!s.name||meta.file!==s.name){hide('Position outil : données ou aperçu indisponibles.');return;}
     if(!meta.projection){hide('Position outil : régénérez cet ancien aperçu dans Fichiers.');return;}
     // Layout reads are batched in one animation frame, only on the visible view.
-    var r=img.getBoundingClientRect(),parent=img.parentNode.getBoundingClientRect();
-    // viewport-fit may scale the screen with a CSS transform: rects are screen pixels,
-    // left/top/width styles are layout pixels, so divide by the current scale.
-    var k=img.offsetWidth>0?r.width/img.offsetWidth:1;if(!(k>0))k=1;
-    var box={left:(r.left-parent.left)/k,top:(r.top-parent.top)/k,width:r.width/k,height:r.height/k};
+    if(!box||Date.now()-boxAt>=1000||Date.now()<boxAt){
+      var r=img.getBoundingClientRect(),parent=img.parentNode.getBoundingClientRect();
+      // viewport-fit may scale the screen with a CSS transform: rects are screen pixels,
+      // left/top/width styles are layout pixels, so divide by the current scale.
+      var k=img.offsetWidth>0?r.width/img.offsetWidth:1;if(!(k>0))k=1;
+      box={left:(r.left-parent.left)/k,top:(r.top-parent.top)/k,width:r.width/k,height:r.height/k};boxAt=Date.now();
+    }
     var ratio=Math.min(box.width/960,box.height/540),width=960*ratio,height=540*ratio;
     if(!width||!height){hide('');return;}
     // The trail only needs the acknowledged lines and the preview, not the tool
@@ -87,8 +94,9 @@
     }
     var pixel=project(meta.projection,point);
     if(!pixel){noMarker('Position outil hors aperçu ou projection invalide.');return;}
-    marker.style.left=(box.left+(box.width-width)/2+pixel.x*width)+'px';
-    marker.style.top=(box.top+(box.height-height)/2+pixel.y*height)+'px';marker.hidden=false;
+    var left=(box.left+(box.width-width)/2)+'px',top=(box.top+(box.height-height)/2)+'px',move='translate('+(pixel.x*width)+'px,'+(pixel.y*height)+'px) translate(-50%,-50%)';
+    if(marker.style.left!==left)marker.style.left=left;if(marker.style.top!==top)marker.style.top=top;
+    if(marker.style.transform!==move)marker.style.transform=move;marker.hidden=false;
     var label=(simulation?'Point rose : position fictive G54. Le travail simulé ne déplace pas ce point.':'Point rose : position de travail rapportée, G54 · projection indicative.')+trailLabel;
     if(note.textContent!==label)note.textContent=label;
   }
@@ -99,8 +107,8 @@
   }
   function expire(){clearTimeout(expiry);expiry=null;if(!document.hidden&&document.getElementById('screen-home').classList.contains('active'))expiry=setTimeout(schedule,2600);}
   root.addEventListener('cnc-job-status',function(e){state=e.detail.machine;simulation=!!e.detail.simulation;received=Date.now();schedule();expire();});
-  root.addEventListener('cnc-screen-change',function(){schedule();expire();});
-  root.addEventListener('resize',schedule);img.addEventListener('load',schedule);
+  root.addEventListener('cnc-screen-change',function(){invalidate();schedule();expire();});
+  root.addEventListener('resize',function(){invalidate();schedule();});img.addEventListener('load',function(){invalidate();schedule();});
   document.addEventListener('visibilitychange',function(){schedule();expire();});
   root.addEventListener('pagehide',function(e){if(e.persisted)return;disposed=true;if(frame!==null)cancelAnimationFrame(frame);clearTimeout(expiry);});
   schedule();
