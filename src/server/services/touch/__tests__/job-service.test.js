@@ -955,6 +955,23 @@ describe('job service', () => {
       expect(ctx.c.commands.filter(([n]) => n === 'reset')).toHaveLength(1);
     });
 
+    test('a feed hold that does not take (byte lost) is sent again while reports still say Run', async () => {
+      const ctx = ready();
+      await ctx.req('load', { file: 'test.nc' });
+      realistic(ctx);
+      ctx.c.workflow.state = 'running';
+      ctx.c.state.status = { activeState: 'Run' };
+      await ctx.req('stop');
+      ctx.now += 500;
+      ctx.report(); // still Run
+      await wait(150);
+      expect(ctx.c.commands.filter(([n]) => n === 'feedhold')).toHaveLength(2);
+      ctx.c.state.status = { activeState: 'Hold', subState: 0 };
+      ctx.report();
+      await wait(150);
+      expect(ctx.c.commands.at(-1)).toEqual(['reset']);
+    });
+
     test('a hold that never completes is reset anyway after the time limit', async () => {
       const ctx = ready();
       await ctx.req('load', { file: 'test.nc' });

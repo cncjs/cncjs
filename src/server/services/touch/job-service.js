@@ -505,6 +505,9 @@ export const createService = (store, config, clock = monotonic) => {
     }
     const deadline = clock() + HALT_MS;
     const mark = record(c).reports;
+    // A feed hold byte lost on the link (seen with the simulator) would leave the axes
+    // running until the time limit: while a newer report still says Run, it is sent again.
+    let heldAt = clock();
     const wait = () => {
       if (controllers()[c.options.port] !== c || c.isClose() || !c.runner) {
         return;
@@ -521,6 +524,10 @@ export const createService = (store, config, clock = monotonic) => {
       if ((state === 'Hold' && Number(s.subState) !== 1) || state === 'Idle' || clock() > deadline) {
         c.command('reset');
         return;
+      }
+      if (state === 'Run' && clock() - heldAt >= 400) {
+        heldAt = clock();
+        c.command('feedhold');
       }
       setTimeout(wait, 50);
     };
