@@ -1036,6 +1036,8 @@ export const createService = (store, config, clock = monotonic) => {
       // Every line acknowledged and the program over (not stopped by the operator),
       // without any line refused by Grbl.
       finished: ended && !jobErrors,
+      // Stopped by the operator (Grbl may have acknowledged every line before running them).
+      jobStopped: !!(r.job && r.job.stopped),
       finishedWithErrors: ended && jobErrors > 0,
       jobErrors,
       jobLastError: (r.job && r.job.lastError) || null,

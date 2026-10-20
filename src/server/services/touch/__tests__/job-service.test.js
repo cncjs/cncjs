@@ -207,6 +207,17 @@ describe('job service', () => {
     expect(ctx.state().canStart).toBe(true);
   });
 
+  test('a job stopped by the operator says so, even with every line acknowledged', async () => {
+    const ctx = setup();
+    const state = await ctx.loaded();
+    expect(state.jobStopped).toBe(false);
+    const ticket = await ctx.req('prepare', { operation: 'start', revision: state.revision });
+    await ctx.req('start', { nonce: ticket.nonce });
+    ctx.c.sender.state = { ...ctx.c.sender.state, sent: 3, received: 3 };
+    await ctx.req('stop');
+    expect(ctx.state()).toMatchObject({ jobStopped: true, finished: false });
+  });
+
   test('a board restart during a program pause forbids resuming it', async () => {
     const ctx = setup();
     let state = await ctx.loaded();
