@@ -12,7 +12,7 @@
   if(!banner)return;
   var $=function(id){return document.getElementById(id);};
   function el(tag,cls,id){var n=document.createElement(tag);if(cls)n.className=cls;if(id)n.id=id;return n;}
-  function text(node,value){if(node&&node.textContent!==value)node.textContent=value;}
+  function text(node,value){if(!node||node.textContent===value)return;var n=node.firstChild;if(n&&n.nodeType===3&&!n.nextSibling)n.data=value;else node.textContent=value;}
   function attr(node,name,value){if(node.getAttribute(name)!==value)node.setAttribute(name,value);}
   function prop(node,key,value){if(node[key]!==value)node[key]=value;}
   // Icons: one shape per tone, so the state is never carried by colour alone.

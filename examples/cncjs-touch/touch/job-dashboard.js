@@ -42,7 +42,9 @@
   function finiteNumber(value){return typeof value==='number'&&isFinite(value);}
   function elapsedClock(){return window.performance&&typeof window.performance.now==='function'?window.performance.now():Date.now();}
   function visible(name){var screen=$('screen-'+name);return !document.hidden&&!!screen&&screen.classList.contains('active');}
-  function set(id,key,value){var el=$(id);if(el[key]!==value)el[key]=value;}
+  // A text is written into its single text node: replacing the node (textContent) also
+  // restyles it, at every report for the live values.
+  function set(id,key,value){var el=$(id);if(el[key]===value)return;var n=key==='textContent'&&el.firstChild;if(n&&n.nodeType===3&&!n.nextSibling)n.data=value;else el[key]=value;}
   function cancelPreview(){
     request++;var xhr=previewRequest;previewRequest=null;
     if(xhr&&typeof xhr.abort==='function')xhr.abort();
@@ -52,6 +54,13 @@
   function duration(s) {
     s=Math.max(0,Math.ceil(s));var h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;
     return (h?h+' h ':'')+(m?m+' min ':'')+sec+' s';
+  }
+  // Remaining time: to the second under 2 minutes, then to the (next) minute. Shown at every
+  // report, a seconds count rewrote the text 4 times a second, and each rewrite lays Suivi out.
+  function remainingText(s) {
+    if(!(s>=120))return duration(s);
+    var m=Math.ceil(s/60),h=Math.floor(m/60);m%=60;
+    return (h?h+' h ':'')+(h&&!m?'':m+' min');
   }
   function preview(file) {
     if(file===imageKey)return;
@@ -135,8 +144,8 @@
       else if(p>=100)eta=uiLocale.t('Toutes les lignes acquittées — attendre la fin des mouvements');
       else if(c.workflow==='idle'&&!c.canStart)eta=uiLocale.t('Travail arrêté — temps restant indisponible');
       else if(c.canStart)eta=simulation?(remaining!==null?uiLocale.t('Durée simulée : ')+duration(remaining):uiLocale.t('Temps restant : état indisponible')):uiLocale.t('Temps restant : estimation après démarrage');
-      else if(c.workflow==='paused')eta=uiLocale.t('En pause — ')+(remaining!==null?duration(remaining)+uiLocale.t(' restantes'):uiLocale.t('estimation suspendue'));
-      else eta=remaining!==null?uiLocale.t('Temps restant ')+(simulation?uiLocale.t('simulé'):uiLocale.t('estimé'))+' : '+duration(remaining):uiLocale.t('Temps restant : calcul en cours…');
+      else if(c.workflow==='paused')eta=uiLocale.t('En pause — ')+(remaining!==null?remainingText(remaining)+uiLocale.t(' restantes'):uiLocale.t('estimation suspendue'));
+      else eta=remaining!==null?uiLocale.t('Temps restant ')+(simulation?uiLocale.t('simulé'):uiLocale.t('estimé'))+' : '+remainingText(remaining):uiLocale.t('Temps restant : calcul en cours…');
     }
     if(visible('home')){
       var same=!!(c&&selection&&c.name===selection.file),different=!!(c&&c.name&&selection&&!same);

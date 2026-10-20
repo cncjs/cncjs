@@ -3,7 +3,9 @@
   var uiLocale=window.cncI18n||{t:function(s){return s;},html:function(s){return s;}};
   var $ = function (id) { return document.getElementById(id); };
   var store = window.cncState, compact = !!(store&&window.CNCJobStream), disposers = [], droTimer = null, latestState = null, lastPaint = 0, coordinateSignature='';
-  function setText(el, text) { if (el && el.textContent !== text) el.textContent = text; }
+  // Live values (4 per second during a job) are written into their single text node:
+  // replacing the node (textContent) also restyles it.
+  function setText(el, text) { if (!el || el.textContent === text) return; var n = el.firstChild; if (n && n.nodeType === 3 && !n.nextSibling) n.data = text; else el.textContent = text; }
   function bind(target,name,fn){target.addEventListener(name,fn);disposers.push(function(){target.removeEventListener(name,fn);});}
 
   function badge(id, text, cls) {

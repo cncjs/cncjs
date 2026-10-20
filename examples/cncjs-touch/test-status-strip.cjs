@@ -28,6 +28,11 @@ assert.equal(f.byId('t-state-text').textContent,'Repos');assert.equal(f.byId('t-
 assert.equal(f.byId('t-fresh-text').textContent,'< 1 s');assert.equal(f.byId('t-fresh').getAttribute('data-stale'),'false');
 assert.equal(f.byId('t-spindle').textContent,'0 tr/min');assert.equal(f.byId('t-file').textContent,'—');
 let writes=f.stats.writes;f.send({machine:m(),transportConnected:true});assert.equal(f.stats.writes,writes,'no unchanged writes');
+// A value held in a single text node is written into that node (replacing the node restyles it).
+{const feedNode=f.byId('t-feed'),textNode={nodeType:3,data:'—',nextSibling:null};Object.defineProperty(feedNode,'firstChild',{get:()=>textNode,configurable:true});
+ const before=f.stats.writes;f.send({machine:m({feedrate:1234}),transportConnected:true});
+ assert.match(textNode.data,/1.234 mm\/min/);assert.equal(f.byId('t-feed').textContent,'0 mm/min','the node was not replaced');
+ delete feedNode.firstChild;f.send({machine:m(),transportConnected:true});writes=f.stats.writes;}
 f.send({machine:m({activeState:'Run',workflow:'running',feedrate:1800,spindleSpeed:12000,name:'a.nc',originalName:'Support moteur.nc',canPause:true,canStop:true}),transportConnected:true});
 assert.equal(f.byId('t-state-text').textContent,'En cours');assert.equal(f.byId('t-state').getAttribute('data-tone'),'run');
 assert.match(f.byId('t-spindle').textContent,/12.000 tr\/min/);assert.match(f.byId('t-feed').textContent,/1.800 mm\/min/);

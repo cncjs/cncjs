@@ -72,6 +72,7 @@ function estimateFixture(monotonic=false){
   return {
     send(changes={},simulation=false){machine={...machine,...changes};events['cnc-job-status']({detail:{machine,simulation}});},
     advance(ms){wall+=ms;elapsed+=ms;},jumpWall(ms){wall+=ms;},
+    dom,
     eta:()=>dom.node('home-job-eta').textContent,
     percent:()=>dom.node('home-job-percent').textContent,
     progress:()=>dom.node('home-job-progress').value
@@ -120,6 +121,14 @@ for(const changes of [{revision:2},{total:200},{received:5},{name:'other.nc'}]){
   const f=estimateFixture();f.send({name:'',total:0,received:0});assert.match(f.eta(),/chargez un fichier/);
   f.send({name:'part.nc',received:12.5,remainingSeconds:52.5},true);
   f.send({total:100},true);assert.equal(f.percent(),'12 %');assert.match(f.eta(),/53 s/);
+}
+// Above 2 minutes the remaining time is shown to the (next) minute: the text does not change
+// at every report (each change lays Suivi out on the tablet); seconds come back under 2 min.
+{
+  const f=estimateFixture();f.send({total:1000,received:10});for(let i=1;i<=10;i++){f.advance(1000);f.send({received:10+i});}
+  const shown=f.eta();assert.match(shown,/Temps restant estimé : 17 min$/,shown);
+  for(let i=1;i<=4;i++){f.advance(250);f.send({received:20+i/4});}assert.equal(f.eta(),shown,'unchanged over a second of reports at the same pace');
+  const g=estimateFixture();g.send({total:100,received:10});for(let i=1;i<=10;i++){g.advance(1000);g.send({received:10+i});}assert.match(g.eta(),/1 min 20 s/);
 }
 console.log('PASS: strict finite counters, stale status, clock jumps, pause, sleep/relearning, job identity, malformed simulation duration and acknowledged-lines completion.');
 

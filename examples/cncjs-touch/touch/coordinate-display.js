@@ -9,7 +9,9 @@
         activeCopies[i].getAttribute('data-machine-copy')
       );
       if (source && activeCopies[i].textContent !== source.textContent) {
-        activeCopies[i].textContent = source.textContent;
+        var n = activeCopies[i].firstChild;
+        if (n && n.nodeType === 3 && !n.nextSibling) n.data = source.textContent;
+        else activeCopies[i].textContent = source.textContent;
       }
     }
   }
