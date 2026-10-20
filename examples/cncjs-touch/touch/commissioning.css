@@ -1,0 +1,44 @@
+/* Mise en service (commissioning.js): one step per page, large controls, the
+ * screen scrolls (data-fit="scroll") so text keeps its real size. */
+.ks-ui #screen-commissioning.active{display:block!important;max-width:1180px;margin:0 auto;padding:0 6px 28px;font-size:19px;line-height:1.4}
+.ks-ui #screen-commissioning>*{margin:0 0 12px}
+.ks-ui #screen-commissioning .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 22px!important}
+.ks-wiz-head{display:flex;align-items:center;gap:16px 24px;flex-wrap:wrap}
+.ks-wiz-head>div{flex:1 1 300px;min-width:0}
+.ks-ui #screen-commissioning .ks-wiz-head h2{font-size:28px;color:var(--fg);margin:0 0 4px!important}
+.ks-wiz-progress{margin:0;color:var(--mute);font-size:16px}
+.ks-wiz-steps{display:flex;gap:8px;list-style:none;padding:0;margin:0 0 12px}
+.ks-wiz-steps li{flex:1 1 0;text-align:center;padding:8px 0;border-radius:8px;background:var(--surface);color:var(--mute);font-size:17px;border-bottom:4px solid var(--line)}
+.ks-wiz-steps li.current{background:var(--surface-2);color:var(--fg);border-bottom-color:var(--info-text)}
+.ks-wiz-steps li.ok{color:var(--ok-text);border-bottom-color:var(--ok-text)}
+.ks-wiz-steps li.skipped{color:var(--warn-text);border-bottom-color:var(--warn-text)}
+.ks-wiz-content>*{margin:0 0 14px}
+.ks-wiz-content p{color:var(--mute);font-size:19px}
+.ks-wiz-check{display:flex;align-items:center;gap:16px;min-height:60px;padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font-size:19px;cursor:pointer}
+.ks-wiz-check input{width:34px;height:34px;flex:none}
+.ks-wiz-row{display:flex;gap:12px;flex-wrap:wrap}
+.ks-ui #screen-commissioning button{min-height:62px;font-size:19px;padding:10px 22px;border-radius:10px}
+.ks-ui #screen-commissioning .ks-wiz-next{background:var(--surface-2);color:var(--fg);border:1px solid var(--ok-text);font-weight:600}
+.ks-ui #screen-commissioning .ks-wiz-next:disabled,.ks-ui #screen-commissioning button:disabled{opacity:.45}
+.ks-ui #screen-commissioning .ks-wiz-danger{border-color:var(--danger-text);color:var(--danger-text)}
+.ks-wiz-lamp{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:10px 18px;border-radius:10px;background:var(--bg);border:1px solid var(--line);border-left:8px solid var(--line-strong);font-size:20px}
+.ks-wiz-lamp.ok{border-left-color:var(--ok-text)}.ks-wiz-lamp.ok span{color:var(--ok-text)}
+.ks-wiz-lamp.act{border-left-color:var(--warn-text)}.ks-wiz-lamp.act span{color:var(--warn-text);font-weight:600}
+.ks-wiz-lamp span{color:var(--mute)}
+.ks-wiz-strong{font-weight:600;color:var(--fg)!important}
+.ks-wiz-alert{color:var(--warn-text)!important}
+.ks-wiz-alert:empty,.ks-wiz-status:empty{display:none}
+.ks-wiz-status{margin:8px 0 0;color:var(--ok-text);font-size:17px}
+.ks-wiz-manual>*{margin:0 0 10px}
+.ks-wiz-list{margin:0;padding-left:28px}.ks-wiz-list li{margin:0 0 8px}
+.ks-wiz-summary{list-style:none;padding:0;margin:0}
+.ks-wiz-summary li{display:flex;justify-content:space-between;padding:12px 6px;border-bottom:1px solid var(--line)}
+.ks-wiz-summary li.ok span{color:var(--ok-text)}.ks-wiz-summary li.manual span{color:var(--mute)}.ks-wiz-summary li.skipped span{color:var(--warn-text)}
+.ks-wiz-warning{border-color:var(--warn-text)!important}
+.ks-wiz-warning>*{margin:0 0 12px}
+.ks-wiz-nav{display:flex;gap:12px;padding:4px 0 12px}
+.ks-wiz-nav button{flex:1 1 0}
+.ks-ui #screen-settings .ks-commissioning-card>button{grid-column:2;grid-row:1/span 2}
+.ks-machine-commands{margin-top:12px}
+.ks-machine-commands button{min-height:52px}
+@media(max-width:800px){.ks-wiz-steps li{font-size:14px}.ks-wiz-nav{flex-wrap:wrap}}

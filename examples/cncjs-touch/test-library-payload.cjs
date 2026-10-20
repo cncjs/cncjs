@@ -1,0 +1,20 @@
+'use strict';
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+let scheduled=0,largestString=0;
+const ctx={window:{},Blob,Date,Promise,setTimeout(fn){scheduled++;return setTimeout(fn,0);},JSON:{stringify(value){if(typeof value==='string')largestString=Math.max(largestString,value.length);return JSON.stringify(value);}}};
+vm.runInNewContext(fs.readFileSync(__dirname+'/touch/library-payload.js','utf8'),ctx);
+(async()=>{
+ const encode=ctx.window.CNCLibraryPayload.encodeFile;
+ const text='a'.repeat(32767)+'😀\n\r\t"\\\u0000'+'é漢字'.repeat(30000)+'\uD800';
+ let result=await encode('pièce".nc',text);
+ assert.deepEqual(JSON.parse(await result.text()),{file:'pièce".nc',data:text});
+ assert.equal(result.type,'application/json');assert(largestString<=32769);
+ result=await encode('vide.nc','');assert.equal(JSON.parse(await result.text()).data,'');
+ let cancel=false;
+ await assert.rejects(encode('cancel.nc','G1 X1\n'.repeat(2000000),()=>cancel,()=>{cancel=true;}),/Annulé/);
+ largestString=0;scheduled=0;const progress=[];
+ const big='G1 X1 Y2\n'.repeat(Math.ceil(20*1048576/9)).slice(0,20*1048576);
+ result=await encode('20Mo.nc',big,()=>false,message=>progress.push(message));
+ assert.equal(JSON.parse(await result.text()).data,big);assert(largestString<=32769);assert(scheduled>1);assert(progress.length>1);
+ console.log('PASS upload JSON: 20 MiB roundtrip, bounded stringify, yields, Unicode boundary, empty data and cancellation.');
+})().catch(error=>{console.error(error);process.exitCode=1;});

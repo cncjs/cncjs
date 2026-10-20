@@ -1,0 +1,135 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+let now=10000;const listeners={},requests=[];
+const {document,node:el,activeScreens,stats}=require('./dom-fixture.cjs').createDOM(['home']);
+const context={document,window:{CNCGrblHelp:require('./touch/grbl-help'),cncLibrarySelection:{file:'b.nc',name:'b.nc'},addEventListener:(n,f)=>listeners[n]=f},Date:{now:()=>now},localStorage:{getItem:()=>JSON.stringify({state:{session:{token:'fake'}}})},XMLHttpRequest:function(){this.open=(m,p)=>{assert.equal(m,'POST');assert.equal(p,'/api/watch/file');};this.setRequestHeader=()=>{};this.abort=()=>{this.aborted=true;};this.send=body=>requests.push({xhr:this,file:JSON.parse(body).file});}};
+vm.runInNewContext(fs.readFileSync(__dirname+'/touch/job-dashboard.js','utf8'),context);
+assert.equal(requests.length,1);assert.equal(requests[0].file,'b.nc.cnctouch.json'); // Late subscriber gets initial preview.
+const select=file=>listeners['cnc-library-select']({detail:{file,name:file}});
+const status=(machine,simulation=true)=>listeners['cnc-job-status']({detail:{machine,simulation}});
+const c={port:'SIMULATION',name:'a.nc',originalName:'A',revision:1,fresh:true,total:100,received:25,workflow:'running',remainingSeconds:45};
+select('b.nc');status(c);assert.equal(requests.at(-1).file,'a.nc.cnctouch.json');
+select('c.nc');assert.equal(requests.length,2);assert.equal(el('home-job-percent').textContent,'25 %');assert.match(el('home-job-eta').textContent,/45 s/);
+const old=requests[0].xhr;old.status=200;old.responseText=JSON.stringify({data:JSON.stringify({file:'b.nc',preview:{image:'data:image/png;base64,AAAA'}})});old.onload();assert.equal(el('home-job-image').src,undefined);
+const current=requests[1].xhr;current.status=200;current.responseText=JSON.stringify({data:JSON.stringify({file:'a.nc',preview:{image:'data:image/png;base64,AAAA'}})});current.onload();el('home-job-image').onload();assert.equal(el('home-job-image').hidden,false);
+now+=10000;status({...c,workflow:'paused'});assert.match(el('home-job-eta').textContent,/En pause.*45 s/);
+status({...c,received:100,remainingSeconds:0,workflow:'idle'});assert.equal(el('home-job-percent').textContent,'100 %');assert.match(el('home-job-eta').textContent,/Terminé/);
+status({...c,workflow:'idle',canStart:false});assert.match(el('home-job-eta').textContent,/arrêté/);
+// Real CNCjs rewinds the counters at the end of a program: the server's finished flag says it ended.
+status({...c,received:0,remainingSeconds:undefined,workflow:'idle',canStart:false,finished:true},false);assert.equal(el('home-job-percent').textContent,'100 %');assert.match(el('home-job-eta').textContent,/Terminé — programme exécuté/);
+status({...c,received:0,workflow:'idle',canStart:false,finished:false},false);assert.match(el('home-job-eta').textContent,/arrêté/);
+// Real controller in alarm: the alarm is explained in plain words.
+status({...c,activeState:'Alarm',alarmCode:9,workflow:'idle',canStart:false},false);assert.match(el('home-job-ready').textContent,/^Alarme 9 : Prise d’origine : capteur non trouvé\. .*\$23/);
+status({...c,activeState:'Alarm',alarmCode:null,workflow:'idle',canStart:false},false);assert.match(el('home-job-ready').textContent,/^Alarme\. Code non reçu/);
+// The simulation keeps its own alarm wording.
+status({...c,activeState:'Alarm',workflow:'idle',canStart:false,loadReason:'Alarme simulée : voir l’onglet Machine.'},true);assert.equal(el('home-job-ready').textContent,'Alarme simulée : voir l’onglet Machine.');
+// A job ended with Grbl errors names the last one.
+status({...c,activeState:'Idle',received:0,workflow:'idle',canStart:false,canLoad:true,finished:false,finishedWithErrors:true,jobErrors:1,jobLastError:24},false);
+assert.match(el('home-job-ready').textContent,/^Dernière erreur : Erreur 24 : Deux commandes de mouvement/);
+// CNCjs waiting for replies while Grbl idles: the operator is told, with the duration.
+status({...c,activeState:'Idle',workflow:'running',stalledMs:42000},false);assert.match(el('home-job-ready').textContent,/^Travail bloqué \? Grbl est au repos depuis 42 s/);
+status({...c,activeState:'Run',workflow:'running',stalledMs:null},false);assert.equal(el('home-job-ready').textContent,'Travail en cours.');
+// A program that reached its end with lines refused by Grbl is never shown as finished.
+status({...c,received:0,workflow:'idle',canStart:false,finished:false,finishedWithErrors:true,jobErrors:2},false);assert.equal(el('home-job-percent').textContent,'100 %');assert.doesNotMatch(el('home-job-eta').textContent,/Terminé/);assert.match(el('home-job-eta').textContent,/2 erreur/);
+status(null);assert.equal(el('home-job-percent').textContent,'—');assert.match(el('home-job-eta').textContent,/indisponible/);
+// Overrides block: hidden for snapshots without the field, values and gating otherwise.
+assert.equal(el('home-overrides').hidden,true);
+status({...c,canOverride:true,overrides:{feed:90,rapid:100,spindle:110}});
+assert.equal(el('home-overrides').hidden,false);assert.equal(el('home-override-feed').textContent,'90 %');assert.equal(el('home-override-spindle').textContent,'110 %');assert.match(el('home-override-note').textContent,/temps réel/);
+status({...c,workflow:'idle',canOverride:false,overrideReason:'Les corrections s’appliquent pendant un travail en cours ou en pause.',overrides:null});
+assert.equal(el('home-override-feed').textContent,'—');assert.match(el('home-override-note').textContent,/en cours ou en pause/);
+status({...c,canOverride:true,overrides:{feed:'x',rapid:100,spindle:Infinity}});assert.equal(el('home-override-feed').textContent,'—');assert.equal(el('home-override-spindle').textContent,'—');
+// Real feed and spindle speed from Grbl; a pause with the spindle on is flagged.
+status({...c,canOverride:true,feedrate:400,spindleSpeed:12000});assert.match(el('home-live').textContent,/Avance réelle 400 mm\/min · Broche 12.000 tr\/min/);assert.equal(el('home-spindle-warning').hidden,true);
+status({...c,canOverride:true,workflow:'paused',feedrate:0,spindleSpeed:12000});assert.equal(el('home-spindle-warning').hidden,false);assert.match(el('home-spindle-warning').textContent,/broche tourne toujours/);
+status({...c,canOverride:true,workflow:'paused',feedrate:0,spindleSpeed:0});assert.equal(el('home-spindle-warning').hidden,true);
+status({...c,fresh:false,canOverride:true,workflow:'paused',spindleSpeed:12000});assert.equal(el('home-live').textContent,'');assert.equal(el('home-spindle-warning').hidden,true,'stale data never claims anything');
+status({...c,canOverride:true});assert.equal(el('home-live').textContent,'','simulation snapshots without the fields show nothing');
+let real={...c,port:'REAL',remainingSeconds:undefined,received:10};status(real,false);
+for(let i=0;i<11;i++){now+=1000;real={...real,received:real.received+1};status(real,false);}
+assert.match(el('home-job-eta').textContent,/estimé/);assert.match(el('home-job-note').textContent,/indicative/);
+const navigate=name=>{activeScreens.clear();activeScreens.add(name);listeners['cnc-screen-change']({detail:name});};
+navigate('menu');const count=requests.length,writes=stats.writes;
+for(let i=0;i<50;i++)status(real,false);
+assert.equal(stats.writes,writes);assert.equal(requests.length,count);
+listeners['cnc-library-preview-updated']({detail:{file:'a.nc'}});assert.equal(requests.length,count);
+navigate('home');assert.equal(requests.length,count+1);assert.equal(requests.at(-1).file,'a.nc.cnctouch.json');
+const pending=requests.at(-1).xhr;navigate('menu');assert(pending.aborted);
+const stable=stats.writes;pending.status=200;pending.responseText=JSON.stringify({data:JSON.stringify({file:'a.nc',preview:{image:'data:image/png;base64,AAAA'}})});pending.onload();assert.equal(stats.writes,stable);
+navigate('home');assert.equal(requests.length,count+2);
+console.log('PASS: loaded-file image, stale response, progress/estimate, zero hidden repaint/request, same-file invalidation, view abort and immediate reentry.');
+
+// Estimation runs entirely on synthetic snapshots: no server and no controller commands.
+function estimateFixture(monotonic=false){
+  let wall=10000,elapsed=10000;
+  const events={},dom=require('./dom-fixture.cjs').createDOM(['home']);
+  const window={addEventListener:(name,fn)=>events[name]=fn};
+  if(monotonic)window.performance={now:()=>elapsed};
+  vm.runInNewContext(fs.readFileSync(__dirname+'/touch/job-dashboard.js','utf8'),{
+    window,document:dom.document,Date:{now:()=>wall},localStorage:{getItem:()=>null},
+    XMLHttpRequest:function(){throw Error('Unexpected network request');}
+  });
+  let machine={port:'TEST',name:'part.nc',revision:1,fresh:true,total:100,received:10,workflow:'running'};
+  return {
+    send(changes={},simulation=false){machine={...machine,...changes};events['cnc-job-status']({detail:{machine,simulation}});},
+    advance(ms){wall+=ms;elapsed+=ms;},jumpWall(ms){wall+=ms;},
+    dom,
+    eta:()=>dom.node('home-job-eta').textContent,
+    percent:()=>dom.node('home-job-percent').textContent,
+    progress:()=>dom.node('home-job-progress').value
+  };
+}
+function learn(f){f.send({received:10});for(let i=1;i<=10;i++){f.advance(1000);f.send({received:10+i});}assert.match(f.eta(),/1 min 20 s/);}
+for(const changes of [
+  {total:Infinity},{total:NaN},{total:'100'},{total:0},{total:-1},
+  {received:Infinity},{received:NaN},{received:null},{received:'25'},
+  {received:-1},{received:101},{fresh:false}
+]){
+  const f=estimateFixture();learn(f);f.send(changes);
+  assert.equal(f.percent(),'—',JSON.stringify(changes));assert.equal(f.progress(),0);
+  assert.match(f.eta(),/état indisponible/);assert.doesNotMatch(f.eta(),/chargez|NaN|Infinity/);
+  f.send({fresh:true,total:100,received:21});assert.match(f.eta(),/calcul en cours/);
+}
+for(const gap of [-1000,4000,3600000]){
+  const f=estimateFixture();learn(f);f.advance(gap);f.send({received:21});
+  assert.match(f.eta(),/calcul en cours/,'Discard an estimate across a discontinuity');
+  for(let i=1;i<=10;i++){f.advance(1000);f.send({received:21+i});}
+  assert.match(f.eta(),/1 min 9 s/);
+}
+{
+  const f=estimateFixture(true);learn(f);f.jumpWall(-3600000);f.advance(1000);f.send({received:21});
+  assert.match(f.eta(),/1 min 19 s/,'Elapsed clock must ignore wall-clock changes');
+  f.send({workflow:'paused'});
+  for(let i=0;i<20;i++){f.advance(1000);f.send();}
+  assert.match(f.eta(),/En pause.*1 min 19 s/);
+  f.send({workflow:'running'});f.advance(1000);f.send({received:22});
+  assert.match(f.eta(),/1 min 18 s/,'Paused time must not increase the estimate');
+  for(let i=0;i<20;i++)f.send();
+  assert.match(f.eta(),/1 min 18 s/,'Repeated paints must not change the estimate');
+  f.send({received:100});assert.match(f.eta(),/attendre la fin des mouvements/);
+  assert.doesNotMatch(f.eta(),/Terminé/);
+}
+for(const remainingSeconds of [null,undefined,NaN,Infinity,-1,'60']){
+  const f=estimateFixture();f.send({received:0,canStart:true,remainingSeconds},true);
+  assert.match(f.eta(),/état indisponible/);assert.doesNotMatch(f.eta(),/0 s|NaN|Infinity/);
+  f.send({canStart:false,workflow:'running'},true);assert.match(f.eta(),/calcul en cours/);
+  f.send({workflow:'paused'},true);assert.match(f.eta(),/estimation suspendue/);
+}
+for(const changes of [{revision:2},{total:200},{received:5},{name:'other.nc'}]){
+  const f=estimateFixture();learn(f);f.send(changes);assert.match(f.eta(),/calcul en cours/);
+}
+{
+  const f=estimateFixture();f.send({name:'',total:0,received:0});assert.match(f.eta(),/chargez un fichier/);
+  f.send({name:'part.nc',received:12.5,remainingSeconds:52.5},true);
+  f.send({total:100},true);assert.equal(f.percent(),'12 %');assert.match(f.eta(),/53 s/);
+}
+// Above 2 minutes the remaining time is shown to the (next) minute: the text does not change
+// at every report (each change lays Suivi out on the tablet); seconds come back under 2 min.
+{
+  const f=estimateFixture();f.send({total:1000,received:10});for(let i=1;i<=10;i++){f.advance(1000);f.send({received:10+i});}
+  const shown=f.eta();assert.match(shown,/Temps restant estimé : 17 min$/,shown);
+  for(let i=1;i<=4;i++){f.advance(250);f.send({received:20+i/4});}assert.equal(f.eta(),shown,'unchanged over a second of reports at the same pace');
+  const g=estimateFixture();g.send({total:100,received:10});for(let i=1;i<=10;i++){g.advance(1000);g.send({received:10+i});}assert.match(g.eta(),/1 min 20 s/);
+}
+console.log('PASS: strict finite counters, stale status, clock jumps, pause, sleep/relearning, job identity, malformed simulation duration and acknowledged-lines completion.');
+
+

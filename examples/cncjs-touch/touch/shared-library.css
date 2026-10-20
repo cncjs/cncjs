@@ -1,0 +1,19 @@
+.job-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#job-port{width:100%;padding:10px;min-height:48px;background:var(--bg);color:var(--fg);border:1px solid var(--line-strong);border-radius:8px;font:inherit}
+#job-progress{width:100%;height:12px;accent-color:var(--line-strong);margin:6px 0 14px}
+.job-dashboard{display:grid;grid-template-columns:minmax(240px,1.4fr) minmax(220px,1fr);gap:24px;margin-top:20px;align-items:center}
+.job-art{background:var(--bg);border:1px solid var(--line);border-radius:12px;min-height:240px;display:flex;align-items:center;justify-content:center;padding:16px}
+#home-job-image{width:100%;height:36vh;min-height:220px;object-fit:contain}
+.job-dashboard [hidden]{display:none!important}
+#home-job-percent{display:block;font-size:48px;color:var(--line-strong);margin:12px 0}
+#home-job-progress{width:100%;height:28px;accent-color:var(--line-strong)}
+#home-job-eta{font-size:24px}#home-job-note{color:var(--mute);font-size:14px}
+#home-job-name{overflow-wrap:anywhere}#job-progress-summary{font-weight:700;color:var(--info-text)}
+@media(max-width:780px){.job-dashboard{grid-template-columns:1fr}}
+/* Realtime overrides on the follow-up screen: one row per kind, Grbl step buttons. */
+#home-job-stop{background:var(--danger-soft);border-color:var(--danger-text)}
+#home-job-resume{background:var(--ok);border-color:var(--ok-text)}
+#home-job-feedback{color:var(--mute);overflow-wrap:anywhere}
+.job-travel{font-size:.95em}.job-travel.outside{color:var(--warn-text);font-weight:700}.job-travel.unknown{opacity:.75}
+
+.job-dialog[hidden]{display:none!important}

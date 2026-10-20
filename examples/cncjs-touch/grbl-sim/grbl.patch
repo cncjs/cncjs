@@ -1,0 +1,78 @@
+diff --git a/grbl/system.c b/grbl/system.c
+index 55e6c40..bc44ffd 100644
+--- a/grbl/system.c
++++ b/grbl/system.c
+@@ -354,57 +354,41 @@ uint8_t system_check_travel_limits(float *target)
+ 
+ // Special handlers for setting and clearing Grbl's real-time execution flags.
+ void system_set_exec_state_flag(uint8_t mask) {
+-  uint8_t sreg = SREG;
+-  cli();
+-  sys_rt_exec_state |= (mask);
+-  SREG = sreg;
++  // grbl-sim: atomic, interrupts run on another thread
++  __atomic_fetch_or(&sys_rt_exec_state, mask, __ATOMIC_SEQ_CST);
+ }
+ 
+ void system_clear_exec_state_flag(uint8_t mask) {
+-  uint8_t sreg = SREG;
+-  cli();
+-  sys_rt_exec_state &= ~(mask);
+-  SREG = sreg;
++  // grbl-sim: atomic, interrupts run on another thread
++  __atomic_fetch_and(&sys_rt_exec_state, (uint8_t)~mask, __ATOMIC_SEQ_CST);
+ }
+ 
+ void system_set_exec_alarm(uint8_t code) {
+-  uint8_t sreg = SREG;
+-  cli();
+-  sys_rt_exec_alarm = code;
+-  SREG = sreg;
++  // grbl-sim: atomic, interrupts run on another thread
++  __atomic_store_n(&sys_rt_exec_alarm, code, __ATOMIC_SEQ_CST);
+ }
+ 
+ void system_clear_exec_alarm() {
+-  uint8_t sreg = SREG;
+-  cli();
+-  sys_rt_exec_alarm = 0;
+-  SREG = sreg;
++  // grbl-sim: atomic, interrupts run on another thread
++  __atomic_store_n(&sys_rt_exec_alarm, 0, __ATOMIC_SEQ_CST);
+ }
+ 
+ void system_set_exec_motion_override_flag(uint8_t mask) {
+-  uint8_t sreg = SREG;
+-  cli();
+-  sys_rt_exec_motion_override |= (mask);
+-  SREG = sreg;
++  // grbl-sim: atomic, interrupts run on another thread
++  __atomic_fetch_or(&sys_rt_exec_motion_override, mask, __ATOMIC_SEQ_CST);
+ }
+ 
+ void system_set_exec_accessory_override_flag(uint8_t mask) {
+-  uint8_t sreg = SREG;
+-  cli();
+-  sys_rt_exec_accessory_override |= (mask);
+-  SREG = sreg;
++  // grbl-sim: atomic, interrupts run on another thread
++  __atomic_fetch_or(&sys_rt_exec_accessory_override, mask, __ATOMIC_SEQ_CST);
+ }
+ 
+ void system_clear_exec_motion_overrides() {
+-  uint8_t sreg = SREG;
+-  cli();
+-  sys_rt_exec_motion_override = 0;
+-  SREG = sreg;
++  // grbl-sim: atomic, interrupts run on another thread
++  __atomic_store_n(&sys_rt_exec_motion_override, 0, __ATOMIC_SEQ_CST);
+ }
+ 
+ void system_clear_exec_accessory_overrides() {
+-  uint8_t sreg = SREG;
+-  cli();
+-  sys_rt_exec_accessory_override = 0;
+-  SREG = sreg;
++  // grbl-sim: atomic, interrupts run on another thread
++  __atomic_store_n(&sys_rt_exec_accessory_override, 0, __ATOMIC_SEQ_CST);
+ }
