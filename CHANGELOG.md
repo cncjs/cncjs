@@ -1,5 +1,17 @@
 # cncjs
 
+## 1.11.6
+
+### Patch Changes
+
+- c28068d: feat(watch): add rename and delete for files in the watch directory
+
+  `DELETE /api/watch/file` removes a file from the watched directory and `POST /api/watch/file/rename` renames one within it. Both act on plain files only and refuse a name containing directory components rather than stripping it, so they cannot act on a file outside the watched directory. Renaming refuses to overwrite an existing target and answers 409 instead. Symbolic links are refused rather than followed, and renaming falls back to an exclusive copy on filesystems without hard-link support.
+
+- 747ffcd: feat(watch): stream raw uploads to the watch directory instead of buffering them
+
+  `PUT /api/watch/file` now accepts a raw request body and streams it straight to disk, so large G-code programs no longer have to be held in memory as a JSON string. Sending a JSON body is unchanged; when the body is not JSON the file name is taken from the `file` query parameter. The streamed write goes to a temporary name and is renamed into place on completion, so a partially written file never appears under its final name inside the watched directory. Streamed uploads are bounded by a new `middleware.upload.maxFileSize` setting (256MB, matching the JSON body limit) and answer 413 when exceeded.
+
 ## 1.11.5
 
 ### Patch Changes
