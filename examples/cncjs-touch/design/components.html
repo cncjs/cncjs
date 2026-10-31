@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Composants Touch 2027</title>
+<link rel="stylesheet" href="../touch/design-tokens.css">
+<link rel="stylesheet" href="../touch/ui-2027.css">
+<style>
+/* Page de démonstration : une colonne, un bloc par composant, les deux thèmes au choix. */
+body{margin:0;background:var(--bg);color:var(--fg);font:var(--fs-18)/var(--lh) var(--font);padding-block:var(--sp-6);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:var(--sp-8)}
+header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--sp-4)}
+h1{margin:0;font:700 var(--fs-36)/var(--lh-tight) var(--font);text-wrap:balance}
+h1 small{display:block;font:var(--fs-18)/var(--lh) var(--font);color:var(--mute);margin-top:var(--sp-1)}
+section{display:flex;flex-direction:column;gap:var(--sp-4)}
+section>h2{margin:0;font:600 var(--fs-24)/var(--lh-tight) var(--font)}
+section>h2 small{color:var(--mute);font-weight:400;font-size:var(--fs-16);margin-left:var(--sp-3)}
+.demo{display:flex;flex-wrap:wrap;gap:var(--tap-gap);align-items:center}
+.demo.col{flex-direction:column;align-items:stretch}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--sp-3)}
+.sw{border-radius:var(--r-m);border:1px solid var(--line);padding:var(--sp-3);min-height:84px;display:flex;flex-direction:column;justify-content:space-between;font-size:var(--fs-14);font-variant-numeric:tabular-nums}
+.sw b{font-size:var(--fs-16)}
+.scale{display:grid;grid-template-columns:90px minmax(0,1fr);gap:var(--sp-2) var(--sp-4);align-items:baseline}
+.scale span{color:var(--mute);font-size:var(--fs-14);font-variant-numeric:tabular-nums}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:var(--sp-4)}
+.ruler{display:flex;gap:var(--sp-4);align-items:flex-end;color:var(--mute);font-size:var(--fs-14)}
+.ruler i{display:block;background:var(--surface-3);border-radius:var(--r-s)}
+.t-scrim.inline{position:static;padding:0;background:transparent}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <h1>Composants Touch 2027<small>Tous les jetons viennent de <code>design-tokens.css</code> ; les composants de <code>ui-2027.css</code>. Chromium 106, Tegra 3 : aucune police web, ombres rares, animations transform/opacity ≤ 150 ms.</small></h1>
+  <div class="t-seg" role="group" aria-label="Thème">
+    <button type="button" id="theme-dark" aria-pressed="true">Sombre (atelier)</button>
+    <button type="button" id="theme-light" aria-pressed="false">Clair (plein jour)</button>
+  </div>
+</header>
+
+<section>
+  <h2>Couleurs <small>contraste texte/fond calculé en direct</small></h2>
+  <div class="swatches" id="swatches"></div>
+</section>
+
+<section>
+  <h2>Typographie <small>pile système, rien sous 16 px pour une information utile</small></h2>
+  <div class="scale">
+    <span>64 / pct</span><div style="font:700 var(--fs-64)/1 var(--font-num);font-variant-numeric:tabular-nums">42 %</div>
+    <span>48 / coord</span><div style="font:500 var(--fs-48)/1 var(--font-num);font-variant-numeric:tabular-nums">−123.456</div>
+    <span>36 / titre</span><div style="font:700 var(--fs-36)/1.1 var(--font)">Suivi du travail</div>
+    <span>28 / état</span><div style="font:700 var(--fs-28)/1.1 var(--font)">EN COURS · Pause · Alarme</div>
+    <span>24 / action</span><div style="font:600 var(--fs-24)/1.1 var(--font)">Démarrer le fichier chargé</div>
+    <span>20 / valeur</span><div style="font:600 var(--fs-20)/1.1 var(--font-num)">12 000 tr/min · 1 800 mm/min</div>
+    <span>18 / texte</span><div style="font:var(--fs-18)/var(--lh) var(--font)">Fichier chargé. Touchez Démarrer pour confirmer.</div>
+    <span>16 / aide</span><div style="font:var(--fs-16)/var(--lh) var(--font);color:var(--mute)">Minimum pour tout texte utile ; les libellés du rail et les unités.</div>
+    <span>14 / étiquette</span><div class="t-label">seulement en majuscules espacées, jamais seul porteur d'une information</div>
+  </div>
+</section>
+
+<section>
+  <h2>Espacements et cibles <small>base 4 px · 64 px principal · 48 px secondaire · 12 px d'écart · 96 px croix</small></h2>
+  <div class="ruler">
+    <div><i style="width:4px;height:4px"></i>4</div><div><i style="width:8px;height:8px"></i>8</div><div><i style="width:12px;height:12px"></i>12</div><div><i style="width:16px;height:16px"></i>16</div><div><i style="width:24px;height:24px"></i>24</div><div><i style="width:32px;height:32px"></i>32</div><div><i style="width:48px;height:48px"></i>48 tap</div><div><i style="width:64px;height:64px"></i>64 principal</div><div><i style="width:96px;height:96px"></i>96 croix</div>
+  </div>
+</section>
+
+<section>
+  <h2>Boutons <small>une action principale par écran ; le danger est isolé et jamais à côté de Pause</small></h2>
+  <div class="demo">
+    <button class="t-btn t-btn--primary" type="button">Démarrer le fichier chargé</button>
+    <button class="t-btn t-btn--warn" type="button">Pause</button>
+    <button class="t-btn" type="button">Charger</button>
+    <button class="t-btn t-btn--ghost" type="button">Détails</button>
+    <button class="t-btn t-btn--info" type="button">Déverrouiller ($X)</button>
+    <button class="t-why" type="button" aria-label="Pourquoi ?">?</button>
+  </div>
+  <div class="demo">
+    <button class="t-btn t-btn--danger" type="button"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>Arrêter le travail</button>
+    <span class="t-help">Arrêt logiciel : n'est pas un arrêt d'urgence.</span>
+  </div>
+  <div class="demo">
+    <button class="t-btn t-btn--primary" type="button" disabled><svg class="t-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Démarrer</button>
+    <button class="t-btn" type="button" disabled><svg class="t-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Zéro X</button>
+    <button class="t-btn" type="button" aria-disabled="true"><svg class="t-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Reprendre</button>
+    <span class="t-help">Désactivé : contraste réduit mais ≥ 4,5, rayures et cadenas ; <code>aria-disabled</code> reste appuyable pour afficher la raison.</span>
+  </div>
+  <div class="demo">
+    <span class="t-sent" data-state="idle"><i></i>En attente</span>
+    <span class="t-sent" data-state="sent"><i></i>Envoyée…</span>
+    <span class="t-sent" data-state="confirmed"><i></i>Confirmée par la machine</span>
+    <span class="t-sent" data-state="failed"><i></i>Refusée : error:9</span>
+  </div>
+</section>
+
+<section>
+  <h2>Segments <small>pas de déplacement, filtres</small></h2>
+  <div class="demo">
+    <div class="t-seg t-seg--lg" role="group" aria-label="Pas"><button type="button" aria-pressed="false">0,1</button><button type="button" aria-pressed="true">1</button><button type="button" aria-pressed="false">10</button><button type="button" aria-pressed="false">50</button></div>
+    <div class="t-seg" role="group" aria-label="Filtre"><button type="button" aria-pressed="true">Tout</button><button type="button" aria-pressed="false">Erreurs</button><button type="button" aria-pressed="false">Travaux</button><button type="button" aria-pressed="false">Alarmes</button></div>
+  </div>
+</section>
+
+<section>
+  <h2>Bandeau d'état <small>fixe sur tous les écrans : état, fraîcheur, broche, avance, fichier, Pause et Arrêter pendant un travail</small></h2>
+  <div class="demo col">
+    <div class="t-statusbar">
+      <span class="t-state" data-tone="run"><svg viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z"/></svg>EN COURS</span>
+      <span class="t-fresh"><i></i>0,3 s</span>
+      <div class="t-vitals"><div class="t-vital"><span>Broche</span><b>12 000 tr/min</b></div><div class="t-vital"><span>Avance</span><b>1 800 mm/min</b></div><div class="t-vital t-vital--file"><span>Fichier</span><b>support-moteur-v3.nc</b></div></div>
+      <div class="t-actions"><button class="t-btn t-btn--warn" type="button">Pause</button><button class="t-btn t-btn--danger" type="button" style="min-height:52px;font-size:var(--fs-20)">Arrêter</button></div>
+    </div>
+    <div class="t-statusbar">
+      <span class="t-state" data-tone="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>REPOS</span>
+      <span class="t-fresh"><i></i>0,2 s</span>
+      <div class="t-vitals"><div class="t-vital"><span>Broche</span><b>0 tr/min</b></div><div class="t-vital"><span>Avance</span><b>—</b></div><div class="t-vital t-vital--file"><span>Fichier</span><b>support-moteur-v3.nc</b></div></div>
+      <div class="t-actions"><button class="t-btn t-btn--warn" type="button" disabled>Pause</button><button class="t-btn t-btn--danger" type="button" disabled style="min-height:52px;font-size:var(--fs-20)">Arrêter</button></div>
+    </div>
+    <div class="t-statusbar">
+      <span class="t-state" data-tone="danger"><svg viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></svg>ALARME 1</span>
+      <span class="t-fresh" data-stale="true"><i></i>4,1 s</span>
+      <div class="t-vitals"><div class="t-vital"><span>Broche</span><b>0 tr/min</b></div><div class="t-vital"><span>Avance</span><b>—</b></div><div class="t-vital t-vital--file"><span>Fichier</span><b>—</b></div></div>
+      <div class="t-actions"><button class="t-btn t-btn--info" type="button" style="min-height:52px">Que faire ?</button></div>
+    </div>
+    <div class="t-statusbar">
+      <span class="t-state" data-tone="off"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg>HORS LIGNE</span>
+      <span class="t-fresh" data-stale="true"><i></i>— </span>
+      <div class="t-vitals"><div class="t-vital"><span>Serveur</span><b>Reconnexion…</b></div></div>
+      <div class="t-actions"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Tuiles du menu <small>indicateur vivant : forme + couleur + mot</small></h2>
+  <div class="grid2">
+    <button class="t-tile" type="button"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M6 13l3-4 3 3 4-5 2 3"/></svg><div><strong>Suivi</strong><small>Avancement et commandes</small></div><span class="t-live" data-tone="info"><i></i>42 % · reste 18 min</span></button>
+    <button class="t-tile" type="button"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><div><strong>Machine</strong><small>État, alarmes, limites</small></div><span class="t-live" data-tone="danger"><i></i>Alarme 1 · fin de course</span></button>
+    <button class="t-tile" type="button"><svg viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10H3z"/></svg><div><strong>Fichiers</strong><small>Choisir et charger un parcours</small></div><span class="t-live" data-tone="ok"><i></i>support-moteur-v3.nc chargé</span></button>
+    <button class="t-tile" type="button"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/></svg><div><strong>Préparer</strong><small>Déplacer, origine, palpage</small></div><span class="t-live" data-tone="warn"><i></i>Mise en service à faire</span></button>
+  </div>
+</section>
+
+<section>
+  <h2>Coordonnées et progression</h2>
+  <div class="grid2">
+    <div class="t-card"><h2>Travail · G54</h2><div class="t-coords"><span class="t-axis">X</span><span class="t-val">−12.500</span><span class="t-unit">mm</span><span class="t-axis">Y</span><span class="t-val">148.000</span><span class="t-unit">mm</span><span class="t-axis">Z</span><span class="t-val">−3.200</span><span class="t-unit">mm</span></div></div>
+    <div class="t-card"><h2>Progression</h2><div class="t-progress"><span class="t-pct">42 %</span><span class="t-eta">reste 18 min 40 s <small>· fin vers 15:12</small></span><div class="t-bar"><i style="transform:scaleX(.42)"></i></div></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Corrections <small>gros pas ; les pas de 1 % en second niveau</small></h2>
+  <div class="t-card" style="max-width:640px">
+    <div class="t-override"><div class="t-ov-name">Avance<b>110 %</b></div><div><div class="t-ov-steps"><button class="t-btn" type="button">−10 %</button><button class="t-btn" type="button">100 %</button><button class="t-btn" type="button">+10 %</button></div><div class="t-ov-fine"><button class="t-btn t-btn--ghost" type="button">−1 %</button><span class="t-help" style="text-align:center;align-self:center">pas fin</span><button class="t-btn t-btn--ghost" type="button">+1 %</button></div></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Croix de déplacement <small>96 px, 12 px d'écart</small></h2>
+  <div class="demo" style="align-items:flex-start">
+    <div class="t-pad"><span></span><button class="t-btn" type="button">Y+</button><span></span><button class="t-btn" type="button">X−</button><span class="t-center">1 mm</span><button class="t-btn" type="button">X+</button><span></span><button class="t-btn" type="button">Y−</button><span></span></div>
+    <div class="t-zpad"><button class="t-btn" type="button">Z+</button><button class="t-btn" type="button">Z−</button></div>
+    <div class="demo col" style="max-width:260px"><button class="t-btn" type="button">Zéro X</button><button class="t-btn" type="button" data-armed="true">Confirmer zéro X · 3 s</button><span class="t-help">Mise à zéro protégée : premier appui arme (ambre), second appui confirme dans les 3 s.</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Messages courts <small>disent quoi faire ensuite</small></h2>
+  <div class="demo col">
+    <div class="t-notice" data-tone="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg><div><b>Fichier chargé</b>Touchez Démarrer pour confirmer.</div></div>
+    <div class="t-notice" data-tone="warn"><svg viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></svg><div><b>Parcours hors course en Y (+12 mm)</b>Déplacez l'origine ou réduisez la pièce avant de démarrer.</div></div>
+    <div class="t-notice" data-tone="danger"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg><div><b>Alarme 1 · fin de course touchée</b>1. Vérifiez les axes. 2. Déverrouillez ($X). 3. Refaites la prise d'origine ($H).</div></div>
+    <div class="t-notice" data-tone="info"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></svg><div><b>Déplacements à blanc</b>Aucune commande envoyée tant que la sécurité de course n'est pas en place.</div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Dialogue de confirmation <small>compte à rebours visible, case de 48 px, Confirmer en principal</small></h2>
+  <div class="t-scrim inline"><div class="t-dialog" role="dialog" aria-labelledby="d1">
+    <h2 id="d1">Confirmer le démarrage</h2>
+    <p><span class="t-file">support-moteur-v3.nc</span> · /dev/ttyUSB0 · 18 min estimées</p>
+    <div class="t-notice" data-tone="warn"><svg viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></svg><div>La broche démarrera à 12 000 tr/min. Vérifiez le serrage de la pièce et de la fraise.</div></div>
+    <label class="t-check"><input type="checkbox" id="c1">Je suis devant la machine et prêt à lancer ce fichier.</label>
+    <div class="t-countdown"><span>Valable 22 s</span><div class="t-bar"><i style="transform:scaleX(.73)"></i></div></div>
+    <div class="t-dialog-actions"><button class="t-btn t-btn--lg t-btn--ghost" type="button">Annuler</button><button class="t-btn t-btn--primary" type="button" disabled><svg class="t-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Démarrer maintenant</button></div>
+  </div></div>
+</section>
+</div>
+<script>
+(function(){
+  var root=document.documentElement;
+  function setTheme(t){if(t==='light')root.setAttribute('data-theme','light');else root.removeAttribute('data-theme');
+    document.getElementById('theme-dark').setAttribute('aria-pressed',String(t!=='light'));document.getElementById('theme-light').setAttribute('aria-pressed',String(t==='light'));swatches();}
+  document.getElementById('theme-dark').addEventListener('click',function(){setTheme('dark');});
+  document.getElementById('theme-light').addEventListener('click',function(){setTheme('light');});
+  function parse(c){var m=c.match(/[\d.]+/g);return m?m.map(Number):[0,0,0];}
+  function lum(c){function f(v){v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);}return 0.2126*f(c[0])+0.7152*f(c[1])+0.0722*f(c[2]);}
+  function ratio(a,b){var l1=lum(parse(a)),l2=lum(parse(b));return ((Math.max(l1,l2)+0.05)/(Math.min(l1,l2)+0.05)).toFixed(1);}
+  function swatches(){
+    var cs=getComputedStyle(root),box=document.getElementById('swatches');box.innerHTML='';
+    var pairs=[['fg','bg'],['mute','surface'],['faint','surface-2'],['ok-text','bg'],['warn-text','bg'],['danger-text','bg'],['info-text','bg'],['on-ok','ok'],['on-warn','warn'],['on-danger','danger'],['on-info','info'],['disabled-fg','disabled-bg']];
+    pairs.forEach(function(p){var fg=cs.getPropertyValue('--'+p[0]).trim(),bg=cs.getPropertyValue('--'+p[1]).trim();
+      var d=document.createElement('div');d.className='sw';d.style.background=bg;d.style.color=fg;
+      var probe=document.createElement('span');probe.style.color=fg;probe.style.background=bg;d.appendChild(probe);
+      document.body.appendChild(probe);var r=ratio(getComputedStyle(probe).color,getComputedStyle(probe).backgroundColor);probe.remove();
+      d.innerHTML='<b>--'+p[0]+'</b><span>sur --'+p[1]+'<br>'+r+' : 1'+(r>=7?' · AAA':r>=4.5?' · AA':' · grand texte')+'</span>';box.appendChild(d);});
+  }
+  swatches();
+  document.querySelectorAll('.t-seg').forEach(function(seg){seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b||seg.id)return;seg.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',String(x===b));});});});
+  var c1=document.getElementById('c1');if(c1)c1.addEventListener('change',function(){c1.closest('.t-dialog').querySelector('.t-btn--primary').disabled=!c1.checked;});
+})();
+</script>
+</body>
+</html>

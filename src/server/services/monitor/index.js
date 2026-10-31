@@ -79,9 +79,20 @@ const getFiles = (searchPath) => {
 
 const readFile = (file, callback) => {
   const root = monitor.root;
-  file = path.join(root, file);
 
-  fs.readFile(file, 'utf8', callback);
+  if (!root) {
+    callback(new Error('Watch directory is not configured'));
+    return;
+  }
+
+  // Refuse names that leave the watched directory (`../`, absolute paths).
+  const target = path.resolve(root, String(file));
+  if (path.relative(path.resolve(root), target).split(path.sep)[0] === '..' || path.isAbsolute(path.relative(path.resolve(root), target))) {
+    callback(new Error('File is outside of the watch directory'));
+    return;
+  }
+
+  fs.readFile(target, 'utf8', callback);
 };
 
 const writeFile = (file, data, callback) => {

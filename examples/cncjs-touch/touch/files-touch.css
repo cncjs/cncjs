@@ -1,0 +1,41 @@
+
+/* Réglages limités au panneau Fichiers */
+#screen-files button {
+  min-height: 48px;
+  padding: 12px 18px;
+  font-size: 18px;
+  touch-action: manipulation;
+}
+
+#screen-files input[type="file"] {
+  display: block;
+  max-width: 100%;
+  margin: 12px 0;
+  font-size: 16px;
+}
+
+#screen-files input[type="file"]::-webkit-file-upload-button {
+  min-height: 48px;
+  padding: 10px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#screen-files input[type="file"]::file-selector-button {
+  min-height: 48px;
+  padding: 10px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#screen-files pre {
+  max-height: 38vh;
+  overflow: auto;
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#screen-files .card {
+  min-width: 0;
+}

@@ -1,0 +1,62 @@
+/* CNCjs Touch — jetons de conception (UI 2027).
+ *
+ * Un seul fichier pour toutes les couleurs, l'échelle typographique, les
+ * espacements (base 4 px), les rayons, les tailles de cible et les états.
+ * Thème sombre par défaut (atelier) ; thème clair à fort contraste choisi
+ * dans Réglages, posé par touch-shell.js : <html data-theme="light">.
+ *
+ * Contrastes vérifiés (WCAG, texte sur fond) ; 7:1 au moins pour l'information critique
+ * (mots d'état, valeurs, Arrêter), 4,5:1 pour tout autre texte :
+ *   sombre  fg/bg 16,6 · fg/surface 14,7 · mute/surface 8,1 · mute/surface-2 6,9 · faint/surface-2 4,6
+ *           états sur fond teinté : ok 8,3 · warn 8,9 · danger 7,0 · info 7,3
+ *           blanc sur danger (Arrêter) 7,5 · on-ok/ok 8,1 · on-warn/warn 10,1 · désactivé 5,3
+ *   clair   fg/bg 16,1 · fg/surface 18,3 · mute/surface 8,7 · faint/surface-2 4,8
+ *           états sur fond teinté : ok 8,1 · warn 8,1 · danger 7,8 · info 8,4
+ *           blanc sur danger 7,5 · blanc sur ok 5,0 et sur warn 4,6 (libellés ≥ 24 px gras) · désactivé 4,6
+ * Chromium 106 : pas d'imbrication, pas de color-mix(), pas de dvh. */
+:root{
+  color-scheme:dark;
+  /* Surfaces, du plus profond au plus proche. */
+  --bg:#0e1417;--surface:#182028;--surface-2:#222d36;--surface-3:#2c3942;--line:#34434d;--line-strong:#4a5b66;
+  /* Texte. --faint n'est jamais utilisé sous 16 px pour une information utile. */
+  --fg:#eef3f6;--mute:#aab8c1;--faint:#87969f;
+  /* Sens, et seulement sens : vert sûr, ambre attention, rouge arrêt, bleu information. */
+  --ok:#2fbf6b;--ok-text:#5fe39a;--ok-soft:#133523;--on-ok:#06130b;
+  --warn:#f0b13a;--warn-text:#ffc857;--warn-soft:#3a2b0b;--on-warn:#1a1200;
+  --danger:#a51d19;--danger-text:#ff8a80;--danger-soft:#3d1512;--on-danger:#ffffff;
+  --info:#3b8fe6;--info-text:#7cbcff;--info-soft:#102a44;--on-info:#06111c;
+  /* Désactivé : contraste réduit mais lisible (≥ 4,5), plus un motif rayé et une icône. */
+  --disabled-fg:#8a98a1;--disabled-bg:#1b242b;--disabled-stripe:rgba(255,255,255,.045);
+  /* Accent neutre d'interaction (sélection, focus) : jamais porteur d'état machine. */
+  --accent:#8ecbff;--focus:#ffd166;
+  --shadow:0 2px 6px rgba(0,0,0,.35);
+  /* Typographie : pile système, aucune police web. Sur la tablette (Raspbian) elle se résout en
+     Bitstream Vera Sans, large : les mises en page sont vérifiées avec Verdana, de métrique voisine. */
+  --font:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-num:var(--font);
+  --fs-12:12px;--fs-14:14px;--fs-16:16px;--fs-18:18px;--fs-20:20px;--fs-24:24px;--fs-28:28px;--fs-36:36px;--fs-48:48px;--fs-64:64px;
+  --lh-tight:1.1;--lh:1.35;--lh-loose:1.5;
+  /* Espacements sur base 4 px. */
+  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;--sp-8:32px;--sp-10:40px;--sp-12:48px;
+  /* Rayons. */
+  --r-s:6px;--r-m:10px;--r-l:14px;--r-pill:999px;
+  /* Cibles tactiles : 64 px principal, 48 px secondaire, 12 px d'écart, 96 px pour la croix. */
+  --tap:48px;--tap-primary:64px;--tap-gap:12px;--tap-jog:96px;
+  /* Mouvement : transform/opacity seulement, 150 ms maximum. */
+  --motion:150ms;--ease:cubic-bezier(.2,.7,.3,1);
+  /* Gabarit 1366 × 768 : bandeau 72 px, rail 88 px. */
+  --statusbar-h:72px;--rail-w:88px;
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#eef1f4;--surface:#ffffff;--surface-2:#e2e7eb;--surface-3:#d3dae0;--line:#aeb9c1;--line-strong:#7f8f9a;
+  --fg:#101619;--mute:#3f4d56;--faint:#56656f;
+  --ok:#15803d;--ok-text:#0d5226;--ok-soft:#dcf5e5;--on-ok:#ffffff;
+  --warn:#b45f06;--warn-text:#6b3903;--warn-soft:#fdebcc;--on-warn:#ffffff;
+  --danger:#a51d19;--danger-text:#8a1010;--danger-soft:#fbe0e0;--on-danger:#ffffff;
+  --info:#1d5fb5;--info-text:#123f7a;--info-soft:#dbe8fa;--on-info:#ffffff;
+  --disabled-fg:#5c6a73;--disabled-bg:#e6eaed;--disabled-stripe:rgba(0,0,0,.05);
+  --accent:#1d5fb5;--focus:#b45f06;
+  --shadow:0 2px 6px rgba(0,0,0,.18);
+}
+@media(prefers-reduced-motion:reduce){:root{--motion:0ms}}

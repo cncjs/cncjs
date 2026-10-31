@@ -135,4 +135,24 @@ describe('monitor.writeStream', () => {
       });
     });
   });
+
+  test('reads stay inside the watch directory', () => {
+    fs.writeFileSync(path.join(watchDirectory, 'inside.nc'), 'G0 X1');
+    return new Promise((resolve, reject) => {
+      monitor.readFile('inside.nc', (err, data) => {
+        if (err || data !== 'G0 X1') {
+          reject(err || new Error('wrong data'));
+          return;
+        }
+        monitor.readFile('../' + path.basename(watchDirectory) + '-outside.nc', (outsideErr) => {
+          try {
+            expect(outsideErr && outsideErr.message).toMatch(/outside/);
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
+        });
+      });
+    });
+  });
 });

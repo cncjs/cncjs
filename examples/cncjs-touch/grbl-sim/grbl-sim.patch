@@ -1,0 +1,225 @@
+diff --git a/avr/interrupt.c b/avr/interrupt.c
+index bf66458..24f1cd6 100644
+--- a/avr/interrupt.c
++++ b/avr/interrupt.c
+@@ -153,3 +153,77 @@ void timer_interrupts() {
+ 
+ }
+ 
++
++
++// ---- event-driven helpers (added for grbl-sim on slow ARM boards) ----
++static enum sim_wgm_mode timer_mode(int i){
++  if (i==0 || i==2) { return sim_wgm_3[((io.tccrb[i]&0x08)>>1) | (io.tccra[i]&3)]; }
++  return sim_wgm_4[((io.tccrb[i]&0x18)>>1) | (io.tccra[i]&3)];
++}
++
++// Counter period: CTC counts 0..OCRA, the other supported modes 0..max.
++static uint32_t timer_period(int i){
++  uint32_t mask = timer_bitdepth[i];
++  if (timer_mode(i)==wgm_CTC) return (io.ocra[i]&mask)+1;
++  return mask+1;
++}
++
++// Increments from the current count until the counter equals value (never 0).
++static uint32_t increments_to(int i, uint32_t value){
++  uint32_t period = timer_period(i);
++  uint32_t cnt = io.tcnt[i] & timer_bitdepth[i];
++  if (value >= period) return 0;                 // never reached in this mode
++  uint32_t d = (value + period - (cnt % period)) % period;
++  return d ? d : period;
++}
++
++// CPU ticks until the next tick that can run one of Grbl's interrupt
++// routines (compare match with its interrupt enabled and a handler, or an
++// overflow/CTC top with an overflow handler). Capped at limit.
++uint32_t timer_ticks_to_next_event(uint32_t limit){
++  uint64_t best = limit;
++  int i;
++  for (i=0;i<SIM_N_TIMERS;i++){
++    int16_t inc = sim_scaling[io.tccrb[i]&7];
++    if (!inc) continue;                            // timer stopped
++    uint32_t mask = timer_bitdepth[i];
++    uint32_t first = inc - (io.prescaler % inc);   // ticks to the next increment
++    uint32_t d[4]; int n=0, k;
++    if (ovf_vect[i]) d[n++] = increments_to(i, timer_mode(i)==wgm_CTC ? (io.ocra[i]&mask) : 0);
++    if (compa_vect[i] && (io.timsk[i]&(1<<SIM_OCA))) d[n++] = increments_to(i, io.ocra[i]&mask);
++    if (compb_vect[i] && (io.timsk[i]&(1<<SIM_OCB))) d[n++] = increments_to(i, io.ocrb[i]&mask);
++    for (k=0;k<n;k++){
++      if (!d[k]) continue;
++      uint64_t ticks = (uint64_t)first + (uint64_t)(d[k]-1)*inc;
++      if (ticks < best) best = ticks;
++    }
++  }
++  return best ? (uint32_t)best : 1;
++}
++
++// Advance prescaler and counters by n CPU ticks inside which no interrupt can
++// run; flags set on the way are left as the per-tick code would leave them.
++void timer_skip(uint32_t n){
++  int i;
++  for (i=0;i<SIM_N_TIMERS;i++){
++    int16_t inc = sim_scaling[io.tccrb[i]&7];
++    if (!inc) continue;
++    uint32_t p = io.prescaler;
++    uint32_t increments = (uint32_t)((p + n) / inc - p / inc);
++    if (!increments) continue;
++    uint32_t mask = timer_bitdepth[i];
++    uint32_t period = timer_period(i);
++    uint32_t cnt = io.tcnt[i] & mask;
++    if (timer_mode(i)==wgm_CTC) {
++      uint32_t top = period-1;
++      // A pending rollover means the count is at TOP and wraps to 0 on the next increment.
++      uint32_t next = (cnt % period + increments) % period;
++      io.tifr[i] &= ~(1<<SIM_ROLL);
++      io.tcnt[i] = next;
++      if (next==top) io.tifr[i] |= (1<<SIM_TOV)|(1<<SIM_ROLL);
++    } else {
++      io.tcnt[i] = (cnt + increments) & mask;
++    }
++  }
++  io.prescaler += n;
++}
+diff --git a/avr/interrupt.h b/avr/interrupt.h
+index 3722b3e..f11edd5 100644
+--- a/avr/interrupt.h
++++ b/avr/interrupt.h
+@@ -53,6 +53,8 @@ void cli();
+ 
+ //simulate timer operation
+ void timer_interrupts();
++uint32_t timer_ticks_to_next_event(uint32_t limit);
++void timer_skip(uint32_t n);
+ 
+ 
+ #endif
+diff --git a/platform_LINUX.c b/platform_LINUX.c
+index 426d6c3..98e734a 100644
+--- a/platform_LINUX.c
++++ b/platform_LINUX.c
+@@ -47,7 +47,7 @@ uint32_t platform_ns()
+   static uint32_t timestamp;
+   struct timespec ts;
+   clock_gettime(CLOCK_MONOTONIC,&ts);
+-  timestamp = ts.tv_sec*1e9+ts.tv_nsec;
++  timestamp = (uint32_t)((uint64_t)ts.tv_sec*1000000000ULL + (uint64_t)ts.tv_nsec);
+   if (gTimeBase== 0){gTimeBase=timestamp;}
+   return timestamp - gTimeBase;;
+ }
+@@ -128,10 +128,9 @@ void platform_kill_thread(plat_thread_t* th){
+ //return char if one available.
+ uint8_t platform_poll_stdin() {
+   uint8_t char_in=0;
+-  enable_kbhit(1);
+   if ( kbhit()) {
+-	 char_in = getchar();
++	 unsigned char c;
++	 if (read(STDIN_FILENO, &c, 1) == 1) { char_in = c; }
+   }
+-  enable_kbhit(0);
+   return char_in;
+ }
+diff --git a/serial.c b/serial.c
+index 5fd57db..8b2ac03 100644
+--- a/serial.c
++++ b/serial.c
+@@ -37,13 +37,16 @@ uint8_t orig_serial_read();
+ //used to inject a sleep in grbl main loop, 
+ // ensures hardware simulator gets some cycles in "parallel"
+ uint8_t serial_read() {
+-  platform_sleep(0);
++  platform_sleep(200);
+   return orig_serial_read();
+ }
+ 
+ 
++volatile uint8_t sim_serial_busy = 0; // traffic seen in the last byte slot
++
+ void simulate_write_interrupt(){
+   while (UCSR0B & (1<<UDRIE0)){
++	 sim_serial_busy = 1;
+ 	 interrupt_SERIAL_UDRE();
+ 	 sim_serial_out(UDR0);
+   }
+@@ -52,6 +55,7 @@ void simulate_write_interrupt(){
+ void simulate_read_interrupt(){
+   uint8_t char_in = platform_poll_stdin();
+   if (char_in) {
++	 sim_serial_busy = 1;
+ 	 UDR0 = char_in;
+ 	 //EOF or CTRL-F to exit
+ 	 if (UDR0 == EOF || UDR0 == 0xFF || UDR0 == 0x06 ) {
+@@ -69,6 +73,7 @@ void simulate_read_interrupt(){
+ extern volatile uint8_t serial_rx_buffer_head;
+ extern volatile uint8_t serial_rx_buffer_tail;
+ void simulate_serial(){
++  sim_serial_busy = 0;
+   simulate_write_interrupt();
+   uint8_t head = serial_rx_buffer_head+1;
+   if (head==RX_BUFFER_SIZE) { head = 0; }
+diff --git a/simulator.c b/simulator.c
+index b863d13..2e2e042 100644
+--- a/simulator.c
++++ b/simulator.c
+@@ -1,3 +1,4 @@
++#include <stdlib.h>
+ /*
+   simulator.c - functions to simulate how the buffer is emptied and the
+     stepper interrupt is called
+@@ -79,6 +80,7 @@ void simulate_hardware(bool do_serial){
+ }
+ 
+ //runs the hardware simulator at the desired rate until sim.exit is set
++uint64_t dbg_loops=0, dbg_ticks=0, dbg_byte_limited=0, dbg_short=0, dbg_sreg_fixes=0;
+ void sim_loop(){
+   uint64_t simulated_ticks=0;
+   uint32_t ns_prev = platform_ns();
+@@ -100,6 +102,32 @@ void sim_loop(){
+     
+    while (sim.masterclock < simulated_ticks){
+ 
++    // Event-driven: skip the ticks on which nothing can happen (capped at 1 ms).
++    // GRBLSIM_NOSKIP=1 restores the original tick-by-tick loop for comparison.
++    static int noskip = -1;
++    if (noskip < 0) { noskip = getenv("GRBLSIM_NOSKIP") != NULL; }
++    if (!noskip) {
++      uint64_t room = simulated_ticks - sim.masterclock;
++      uint64_t to_byte = next_byte_tick > sim.masterclock ? next_byte_tick - sim.masterclock : 1;
++      uint32_t limit = F_CPU/1000;
++      if (room < limit) limit = (uint32_t)room;
++      if (to_byte < limit) limit = (uint32_t)to_byte;
++      uint32_t gap = timer_ticks_to_next_event(limit);
++      dbg_loops++; if (gap == limit && limit == (uint32_t)to_byte) dbg_byte_limited++; if (gap < 64) dbg_short++;
++      if (gap > 1) {
++        timer_skip(gap-1);
++        sim.masterclock += gap-1;
++      }
++    }
++
++    // Simulator artefact guard: interrupts left disabled for 5 ms are re-enabled.
++    {
++      static uint64_t cli_since = 0;
++      if (io.sreg & SEI) { cli_since = 0; }
++      else if (!cli_since) { cli_since = sim.masterclock ? sim.masterclock : 1; }
++      else if (sim.masterclock - cli_since > F_CPU/200) { io.sreg |= SEI; cli_since = 0; dbg_sreg_fixes++; }
++    }
++
+     //only read serial port as fast as the baud rate allows
+     bool read_serial = (sim.masterclock >= next_byte_tick);
+ 
+@@ -115,12 +143,14 @@ void sim_loop(){
+       if (UCSR0A & (1<<U2X0)) { sim.baud_ticks*=2; }
+ 
+       next_byte_tick+=sim.baud_ticks;
++      // Idle line: poll again in 0.5 ms of simulated time rather than every byte slot.
++      { extern volatile uint8_t sim_serial_busy; if (!sim_serial_busy) next_byte_tick += F_CPU/2000; }
+       // do app-specific per-byte processing
+       sim_hook[sh_BYTE]();
+     }
+    }
+ 
+-   platform_sleep(0); //yield
++   platform_sleep(1000); //yield (1 ms: keeps the CPU free on a small ARM board)
+   }
+ }
+ 

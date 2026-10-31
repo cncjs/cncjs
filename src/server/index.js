@@ -20,6 +20,7 @@ import settings from './config/settings';
 import app from './app';
 import cncengine from './services/cncengine';
 import monitor from './services/monitor';
+import touch from './services/touch';
 import config from './services/configstore';
 import logger, { setLevel } from './lib/logger';
 import urljoin from './lib/urljoin';
@@ -235,6 +236,9 @@ const createServer = (options, callback) => {
     .on('ready', (server) => {
       // cncengine service
       cncengine.start(server, options.controller || config.get('controller', ''));
+
+      // touch service
+      touch.start();
 
       const address = server.address().address;
       const port = server.address().port;
