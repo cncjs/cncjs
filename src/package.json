@@ -14,7 +14,7 @@
   "dependencies": {
     "@serialport/parser-readline": "^10.0.0",
     "bcrypt-nodejs": "0.0.3",
-    "body-parser": "~1.18.3",
+    "body-parser": "~2.3.0",
     "chalk": "~4.1.1",
     "commander": "~9.1.0",
     "compression": "~1.7.4",
@@ -46,7 +46,7 @@
     "method-override": "~3.0.0",
     "minimatch": "~3.1.4",
     "mkdirp": "~0.5.1",
-    "morgan": "~1.9.1",
+    "morgan": "~1.12.1",
     "range_check": "~1.4.0",
     "regenerator-runtime": "~0.13.10",
     "registry-auth-token": "~3.4.0",
@@ -61,7 +61,7 @@
     "socketio-jwt": "~4.5.0",
     "spawn-default-shell": "~2.0.0",
     "superagent": "~3.8.3",
-    "uuid": "~3.3.2",
+    "uuid": "~14.0.2",
     "watch": "~1.0.2",
     "webappengine": "~1.2.0",
     "winston": "~3.14.1"
