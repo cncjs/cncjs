@@ -35,3 +35,24 @@
         background: url("./images/select-all.svg") no-repeat 0 0;
     }
 }
+
+.terminal-container {
+    border-top: 5px solid;
+    border-left: 5px solid;
+    border-right: 5px solid;
+    padding-bottom: 5px;
+
+    canvas { transform translate(5px, 5px) }
+
+    :global(.ps--scrolling-y) > :global(.ps__rail-y) {
+        opacity: 0.9;
+    }
+
+    &::-webkit-scrollbar { height: 15px }
+    &::-webkit-scrollbar-track { background-color: var(--terminal-bg) }
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--terminal-thumb);
+        border-radius: 8px;
+        border: 3px solid var(--terminal-bg);
+    }
+}
