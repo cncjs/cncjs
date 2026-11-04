@@ -44,12 +44,14 @@ class TerminalWrapper extends PureComponent {
 
     prompt = '> ';
 
+    // Matches "canvas { transform: translate(5px, 5px) }" in index.styl, which adds 5px of scrollable width
+    canvasOffset = 5;
     history = new History(1000);
-
+    viewportElement = null;
+    verticalRail = null;
+    horizontalScroller = null;
     verticalScrollbar = null;
-
     terminalContainer = null;
-
     term = null;
 
     eventHandler = {
@@ -59,6 +61,7 @@ class TerminalWrapper extends PureComponent {
 
         if (this.verticalScrollbar) {
           this.verticalScrollbar.update();
+          this.syncScrollbarRail();
         }
       },
       onKey: (() => {
@@ -255,6 +258,30 @@ class TerminalWrapper extends PureComponent {
       }
     };
 
+    syncScrollbarRail = () => {
+      const scroller = this.horizontalScroller;
+      const viewport = this.viewportElement;
+      const rail = this.verticalRail;
+      if (!scroller || !viewport || !rail) {
+        return;
+      }
+
+      const canvas = scroller && scroller.querySelector('canvas');
+      if (!canvas) {
+        return;
+      }
+
+      const visibleWidth = scroller.clientWidth;
+      const contentWidth = Math.max(canvas.offsetWidth + this.canvasOffset, visibleWidth);
+
+      // The viewport must span the content so the rail has room to move inside its box
+      viewport.style.width = `${contentWidth}px`;
+
+      // The rail sits at the viewport's right edge; keep it at the right edge of the visible area
+      const offset = Math.min(0, scroller.scrollLeft - (contentWidth - visibleWidth));
+      rail.style.transform = `translateX(${offset}px)`;
+    };
+
     invertColor(bg) {
         const color = bg.replace('#', '');
         const r = 255 - parseInt(color.substring(0, 2), 16);
@@ -317,13 +344,25 @@ class TerminalWrapper extends PureComponent {
       this.term.setOption('letterSpacing', 1);
 
       const viewportElement = el.querySelector('.xterm-viewport');
-      this.verticalScrollbar = new PerfectScrollbar(viewportElement);
+      this.viewportElement = viewportElement;
+      // Horizontal scrolling is native (on the container), so PerfectScrollbar must never offer it
+      this.verticalScrollbar = new PerfectScrollbar(viewportElement, { suppressScrollX: true });
+      this.verticalRail = viewportElement.querySelector('.ps__rail-y');
+      this.horizontalScroller = el;
+      this.horizontalScroller.addEventListener('scroll', this.syncScrollbarRail, { passive: true });
       this.applyBackground(theme.background);
       this.resize();
+      this.syncScrollbarRail();
     }
 
     componentWillUnmount() {
       if (this.verticalScrollbar) {
+        if (this.horizontalScroller) {
+          this.horizontalScroller.removeEventListener('scroll', this.syncScrollbarRail);
+          this.horizontalScroller = null;
+        }
+        this.viewportElement = null;
+        this.verticalRail = null;
         this.verticalScrollbar.destroy();
         this.verticalScrollbar = null;
       }
@@ -368,6 +407,7 @@ class TerminalWrapper extends PureComponent {
         if (this.verticalScrollbar) {
           this.verticalScrollbar.update();
         }
+        this.syncScrollbarRail();
       }
     }
 
@@ -409,6 +449,7 @@ class TerminalWrapper extends PureComponent {
       cols = (!cols || cols === 'auto') ? geometry.cols : cols;
       rows = (!rows || rows === 'auto') ? geometry.rows : rows;
       this.term.resize(cols, rows);
+      this.syncScrollbarRail();
     }
 
     clear() {
