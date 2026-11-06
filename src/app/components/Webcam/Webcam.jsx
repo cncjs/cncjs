@@ -1,6 +1,7 @@
 /* eslint jsx-a11y/media-has-caption: 0 */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import log from 'app/lib/log';
 
 class Webcam extends Component {
     static propTypes = {
@@ -35,6 +36,8 @@ class Webcam extends Component {
       screenshotFormat: 'image/webp'
     };
 
+    static requestToken = 0;
+
     static mountedInstances = [];
 
     static userMediaRequested = false;
@@ -43,6 +46,24 @@ class Webcam extends Component {
         navigator.webkitGetUserMedia ||
         navigator.mozGetUserMedia ||
         navigator.msGetUserMedia;
+
+    static isSupported() {
+      return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) || !!Webcam.getUserMedia;
+    }
+
+    static stopStream(stream) {
+      if (!stream) {
+        return;
+      }
+      if (stream.stop) {
+        stream.stop();
+        return;
+      }
+      [].concat(
+        stream.getVideoTracks ? stream.getVideoTracks() : [],
+        stream.getAudioTracks ? stream.getAudioTracks() : []
+      ).forEach(track => track.stop());
+    }
 
     state = {
       hasUserMedia: false,
@@ -56,7 +77,7 @@ class Webcam extends Component {
     ctx = null;
 
     componentDidMount() {
-      if (!Webcam.getUserMedia) {
+      if (!Webcam.isSupported()) {
         return;
       }
 
@@ -67,7 +88,15 @@ class Webcam extends Component {
       }
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
+      if (prevProps.video !== this.props.video || prevProps.audio !== this.props.audio) {
+        // A different device was selected: release the current one, then open the new one
+        Webcam.stopStream(this.state.stream);
+        Webcam.userMediaRequested = false;
+        this.requestUserMedia();
+        return;
+      }
+
       if (this.video.srcObject !== this.state.stream) {
         this.video.srcObject = this.state.stream;
       }
@@ -75,28 +104,15 @@ class Webcam extends Component {
 
     componentWillUnmount() {
       const index = Webcam.mountedInstances.indexOf(this);
-      Webcam.mountedInstances.splice(index, 1);
+      if (index >= 0) {
+        Webcam.mountedInstances.splice(index, 1);
+      }
 
       const { hasUserMedia, stream } = this.state;
 
       if (Webcam.mountedInstances.length === 0 && hasUserMedia) {
-        if (stream.stop) {
-          stream.stop();
-        } else {
-          if (stream.getVideoTracks) {
-            for (let track of stream.getVideoTracks()) {
-              track.stop();
-            }
-          }
-
-          if (stream.getAudioTracks) {
-            for (let track of stream.getAudioTracks()) {
-              track.stop();
-            }
-          }
-        }
+        Webcam.stopStream(stream);
         Webcam.userMediaRequested = false;
-
         window.URL.revokeObjectURL(stream);
       }
 
@@ -104,82 +120,62 @@ class Webcam extends Component {
       this.ctx = null;
     }
 
-    requestUserMedia() {
-      if (!Webcam.getUserMedia) {
-        return;
-      }
-
-      const getUserMedia = (constraints) => {
-        Webcam.getUserMedia.call(
-          navigator,
-          constraints,
-          (stream) => {
-            Webcam.mountedInstances.forEach(instance => {
-              instance.setState({
-                hasUserMedia: true,
-                stream: stream
-              });
-            });
-            Webcam.userMediaRequested = true;
-          },
-          (err) => {
-            Webcam.mountedInstances.forEach(instance => {
-              instance.setState({
-                hasUserMedia: false,
-                stream: null
-              });
-            });
-            Webcam.userMediaRequested = false;
-          }
-        );
-      };
-
+    buildConstraints({ fallback = false } = {}) {
       const { audio, video } = this.props;
-      const constraints = {
-        audio: !!audio,
-        video: !!video
+      const pick = (value) => {
+        if (!fallback && typeof value === 'string' && value.length > 0) {
+          return { deviceId: { exact: value } };
+        }
+        return !!value;
       };
-      if (typeof video === 'string' && video.length > 0) {
-        constraints.video = {
-          optional: [{ sourceId: video }]
-        };
-      }
-      if (typeof audio === 'string' && audio.length > 0) {
-        constraints.audio = {
-          optional: [{ sourceId: audio }]
-        };
-      }
+      return { audio: pick(audio), video: pick(video) };
+    }
 
-      if (!('mediaDevices' in navigator)) {
-        getUserMedia(constraints);
+    requestUserMedia() {
+      if (!Webcam.isSupported()) {
         return;
       }
 
-      navigator.mediaDevices.enumerateDevices().then(devices => {
-        devices.forEach(device => {
-          // audioinput
-          if (device.kind === 'audioinput' && constraints.audio === true) {
-            constraints.audio = {
-              optional: [{ sourceId: device.deviceId }]
-            };
+      const token = ++Webcam.requestToken;
+
+      const request = (constraints) => {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          return navigator.mediaDevices.getUserMedia(constraints);
+        }
+        return new Promise((resolve, reject) => {
+          Webcam.getUserMedia.call(navigator, constraints, resolve, reject);
+        });
+      };
+
+      request(this.buildConstraints())
+        .catch((err) => {
+          // The saved device may be gone (unplugged): fall back to the default device
+          if (err && (err.name === 'OverconstrainedError' || err.name === 'NotFoundError')) {
+            log.warn('Webcam: the selected device is unavailable, using the default device');
+            return request(this.buildConstraints({ fallback: true }));
           }
-          // videoinput
-          if (device.kind === 'videoinput' && constraints.video === true) {
-            constraints.video = {
-              optional: [{ sourceId: device.deviceId }]
-            };
+          throw err;
+        })
+        .then((stream) => {
+          if (token !== Webcam.requestToken || Webcam.mountedInstances.length === 0) {
+            // Superseded by a newer request, or nobody is mounted anymore: do not leak the device
+            Webcam.stopStream(stream);
+            return;
+          }
+          Webcam.userMediaRequested = true;
+          Webcam.mountedInstances.forEach(instance => {
+            instance.setState({ hasUserMedia: true, stream: stream });
+          });
+        })
+        .catch((err) => {
+          log.error(`${err.name}: ${err.message}`);
+          if (token === Webcam.requestToken) {
+            Webcam.userMediaRequested = false;
+            Webcam.mountedInstances.forEach(instance => {
+              instance.setState({ hasUserMedia: false, stream: null });
+            });
           }
         });
-
-        getUserMedia(constraints);
-      }).catch(error => {
-        console.error(`${error.name}: ${error.message}`); // eslint-disable-line no-console
-      });
-
-      // https://www.chromestatus.com/feature/4765305641369600
-      // Remove support for the MediaStreamTrack.getSources() method.
-      // This method was removed from the spec in favor of MediaDevices.enumerateDevices().
-      // This was deprecated in Chrome 40.
     }
 
     getScreenshot() {
