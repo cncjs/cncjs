@@ -154,6 +154,11 @@ class Webcam extends Component {
             log.warn('Webcam: the selected device is unavailable, using the default device');
             return request(this.buildConstraints({ fallback: true }));
           }
+          if (err && this.props.audio &&
+              (err.name === 'NotReadableError' || (err.name === 'NotAllowedError' && /system/i.test(err.message)))) {
+            log.warn('Webcam: audio is unavailable, showing video only');
+            return request({ ...this.buildConstraints(), audio: false });
+          }
           throw err;
         })
         .then((stream) => {
