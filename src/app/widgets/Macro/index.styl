@@ -7,7 +7,7 @@
 }
 
 .btn-link {
-    color: #222;
+    color: var(--color-text);
     padding-left: 0;
     padding-right: 0;
     box-shadow: none;
@@ -49,13 +49,13 @@
     }
 
     > thead > tr {
-        background-color: #eee;
+        background-color: var(--color-surface-active);
     }
 
     > thead > tr > th,
     > tbody > tr > td {
-        border-top: 1px solid #ddd;
-        border-bottom: 1px solid #ddd;
+        border-top: 1px solid var(--color-border);
+        border-bottom: 1px solid var(--color-border);
 
         &:first-child {
             border-left-width: 0;
@@ -83,5 +83,5 @@
 }
 
 .table-bordered {
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-border);
 }

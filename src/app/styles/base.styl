@@ -6,9 +6,9 @@ body {
     margin: 0;
     font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
     font-size: 13px;
-    color: #222222;
+    color: var(--color-text);
+    background-color: var(--color-content-bg);
     text-align: left;
-    background-color: #ffffff;
     min-width: 960px;
 
     @media (max-width: 767px) {
@@ -23,12 +23,12 @@ body {
  */
 
 ::-moz-selection {
-    background: #b3d4fc;
+    background: var(--color-selection-bg);
     text-shadow: none;
 }
 
 ::selection {
-    background: #b3d4fc;
+    background: var(--color-selection-bg);
     text-shadow: none;
 }
 
@@ -40,7 +40,7 @@ hr {
     display: block;
     height: 1px;
     border: 0;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid var(--color-border-strong);
     margin: 1em 0;
     padding: 0;
 }

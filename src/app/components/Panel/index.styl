@@ -1,5 +1,5 @@
 .panel {
-    background-color: #fff;
+    background-color: var(--color-surface);
     border: 1px solid transparent;
     box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
     margin-bottom: 10px;
@@ -15,12 +15,12 @@
 }
 
 .panel-default {
-    border-color: #ccc;
+    border-color: var(--color-border-strong);
 
     > .panel-heading {
-        color: #333;
-        background-color: #fafafa;
-        border-color: #ccc;
+        color: var(--color-text-alt);
+        background-color:  var(--color-surface-faint);
+        border-color: var(--color-border-strong);
     }
     > .panel-heading:last-child {
         border-color: transparent;
