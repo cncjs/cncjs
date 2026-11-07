@@ -14,7 +14,7 @@ import {
 
 const MutedText = styled.div`
     display: inline-block;
-    color: #767676;
+    color: var(--color-text-hint);
 `;
 
 class Settings extends PureComponent {

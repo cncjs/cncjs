@@ -16,12 +16,12 @@ const keypadTooltip = () => {
       marginRight: 10
     },
     divider: {
-      borderTop: '1px solid #ccc',
+      borderTop: '1px solid var(--color-border-strong)',
       marginTop: 5,
       paddingTop: 5
     },
     kbd: {
-      border: '1px solid #aaa',
+      border: '1px solid var(--color-border-mid)',
       padding: '1px 4px',
       fontFamily: 'sans-serif',
       whiteSpace: 'nowrap'

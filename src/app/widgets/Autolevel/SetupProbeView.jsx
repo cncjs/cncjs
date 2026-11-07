@@ -85,7 +85,7 @@ const SetupProbeView = ({ state, actions }) => {
                 <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
               {validationErrors.startZ && (
-                <small style={{ color: '#a94442' }}>{validationErrors.startZ}</small>
+                <small style={{ color: 'var(--color-error-text)' }}>{validationErrors.startZ}</small>
               )}
             </div>
           </div>
@@ -105,7 +105,7 @@ const SetupProbeView = ({ state, actions }) => {
                 <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
               {validationErrors.endZ && (
-                <small style={{ color: '#a94442' }}>{validationErrors.endZ}</small>
+                <small style={{ color: 'var(--color-error-text)' }}>{validationErrors.endZ}</small>
               )}
             </div>
           </div>
@@ -128,7 +128,7 @@ const SetupProbeView = ({ state, actions }) => {
                 <div className="input-group-addon">{feedrateUnits}</div>
               </div>
               {validationErrors.feedrate && (
-                <small style={{ color: '#a94442' }}>{validationErrors.feedrate}</small>
+                <small style={{ color: 'var(--color-error-text)' }}>{validationErrors.feedrate}</small>
               )}
             </div>
           </div>
@@ -149,7 +149,7 @@ const SetupProbeView = ({ state, actions }) => {
                 <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
               {validationErrors.clearanceZ && (
-                <small style={{ color: '#a94442' }}>{validationErrors.clearanceZ}</small>
+                <small style={{ color: 'var(--color-error-text)' }}>{validationErrors.clearanceZ}</small>
               )}
             </div>
           </div>
@@ -157,7 +157,7 @@ const SetupProbeView = ({ state, actions }) => {
       </div>
       <div className={styles.section}>
         <div className={styles.sectionTitle}>{i18n._('Probe Area')}</div>
-        <div style={{ textAlign: 'center', color: '#666' }}>
+        <div style={{ textAlign: 'center', color: 'var(--color-icon)' }}>
           {i18n._('{{count}} points', { count: totalPoints })}
         </div>
         <ProbeAreaDiagram
@@ -178,7 +178,7 @@ const SetupProbeView = ({ state, actions }) => {
                 <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
               {validationErrors.startX && (
-                <small style={{ color: '#a94442' }}>{validationErrors.startX}</small>
+                <small style={{ color: 'var(--color-error-text)' }}>{validationErrors.startX}</small>
               )}
             </div>
           </div>
@@ -190,7 +190,7 @@ const SetupProbeView = ({ state, actions }) => {
                 <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
               {validationErrors.startY && (
-                <small style={{ color: '#a94442' }}>{validationErrors.startY}</small>
+                <small style={{ color: 'var(--color-error-text)' }}>{validationErrors.startY}</small>
               )}
             </div>
           </div>
@@ -204,7 +204,7 @@ const SetupProbeView = ({ state, actions }) => {
                 <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
               {validationErrors.endX && (
-                <small style={{ color: '#a94442' }}>{validationErrors.endX}</small>
+                <small style={{ color: 'var(--color-error-text)' }}>{validationErrors.endX}</small>
               )}
             </div>
           </div>
@@ -216,7 +216,7 @@ const SetupProbeView = ({ state, actions }) => {
                 <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
               {validationErrors.endY && (
-                <small style={{ color: '#a94442' }}>{validationErrors.endY}</small>
+                <small style={{ color: 'var(--color-error-text)' }}>{validationErrors.endY}</small>
               )}
             </div>
           </div>
@@ -246,7 +246,7 @@ const SetupProbeView = ({ state, actions }) => {
                 <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
               {validationErrors.stepX && (
-                <small style={{ color: '#a94442' }}>{validationErrors.stepX}</small>
+                <small style={{ color: 'var(--color-error-text)' }}>{validationErrors.stepX}</small>
               )}
             </div>
           </div>
@@ -274,7 +274,7 @@ const SetupProbeView = ({ state, actions }) => {
                 <div className="input-group-addon">{toDisplayUnits(units)}</div>
               </div>
               {validationErrors.stepY && (
-                <small style={{ color: '#a94442' }}>{validationErrors.stepY}</small>
+                <small style={{ color: 'var(--color-error-text)' }}>{validationErrors.stepY}</small>
               )}
             </div>
           </div>
