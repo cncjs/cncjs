@@ -63,6 +63,9 @@ import {
 } from './constants';
 import styles from './index.styl';
 
+const CAMERA_POSITIONS = ['top', '3d', 'front', 'left', 'right'];
+const normalizeCameraPosition = (value) => (CAMERA_POSITIONS.includes(value) ? value : 'top');
+
 const translateExpression = (function() {
   const { Parser } = ExpressionEvaluator;
   const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
@@ -903,6 +906,9 @@ class VisualizerWidget extends PureComponent {
       if (this.state.cameraMode !== prevState.cameraMode) {
         this.config.set('cameraMode', this.state.cameraMode);
       }
+      if (this.state.cameraPosition !== prevState.cameraPosition) {
+        this.config.set('cameraPosition', this.state.cameraPosition);
+      }
       if (this.state.gcode.displayName !== prevState.gcode.displayName) {
         this.config.set('gcode.displayName', this.state.gcode.displayName);
       }
@@ -993,7 +999,7 @@ class VisualizerWidget extends PureComponent {
           }
         },
         cameraMode: this.config.get('cameraMode', CAMERA_MODE_PAN),
-        cameraPosition: 'top', // 'top', '3d', 'front', 'left', 'right'
+        cameraPosition: normalizeCameraPosition(this.config.get('cameraPosition', 'top')),
         isAgitated: false // Defaults to false
       };
     }
