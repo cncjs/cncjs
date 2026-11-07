@@ -30,6 +30,10 @@ class General extends PureComponent {
         const target = event.target;
         actions.changeLanguage(target.value);
       },
+      changeTheme: (event) => {
+        const { actions } = this.props;
+        actions.changeTheme(event.target.value);
+      },
       cancel: (event) => {
         const { actions } = this.props;
         actions.restoreSettings();
@@ -48,6 +52,7 @@ class General extends PureComponent {
     render() {
       const { state, stateChanged } = this.props;
       const lang = get(state, 'lang', 'en');
+      const theme = get(state, 'theme', 'dark');
 
       if (state.api.loading) {
         return (
@@ -105,6 +110,33 @@ class General extends PureComponent {
                   {SUPPORTED_LANGUAGES.map(({ value, label }) => (
                     <option key={value} value={value}>{label}</option>
                   ))}
+                </select>
+              </div>
+            </div>
+          </div>
+          <div style={{ marginBottom: 24 }}>
+            <h5>{i18n._('Appearance')}</h5>
+            <div className={styles.formFields}>
+              <div
+                className={styles.formGroup}
+                style={{
+                  display: 'flex',
+                  columnGap: '8px',
+                  alignItems: 'center',
+                }}
+              >
+                <label>{i18n._('Theme:')}</label>
+                <select
+                  className={classNames(
+                    'form-control',
+                    styles.formControl,
+                    styles.short
+                  )}
+                  value={theme}
+                  onChange={this.handlers.changeTheme}
+                >
+                  <option value="light">{i18n._('Light')}</option>
+                  <option value="dark">{i18n._('Dark')}</option>
                 </select>
               </div>
             </div>

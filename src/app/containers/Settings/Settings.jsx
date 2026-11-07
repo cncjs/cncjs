@@ -19,6 +19,7 @@ import settings from 'app/config/settings';
 import Breadcrumbs from 'app/components/Breadcrumbs';
 import i18n from 'app/lib/i18n';
 import store from 'app/store';
+import { applyTheme, DEFAULT_THEME } from 'app/lib/theme';
 import General from './General';
 import Workspace from './Workspace';
 import MachineProfiles from './MachineProfiles';
@@ -112,6 +113,7 @@ class Settings extends PureComponent {
             .then((res) => {
               const {
                 allowAnonymousUsageDataCollection,
+                theme,
               } = { ...res.body };
 
               const nextState = {
@@ -123,6 +125,7 @@ class Settings extends PureComponent {
                 },
                 // followed by data
                 allowAnonymousUsageDataCollection: !!allowAnonymousUsageDataCollection,
+                theme: theme || DEFAULT_THEME,
                 lang: i18next.language // TODO: Store language settings into the state
               };
 
@@ -146,6 +149,7 @@ class Settings extends PureComponent {
         save: () => {
           const {
             allowAnonymousUsageDataCollection,
+            theme = DEFAULT_THEME,
             lang = 'en',
           } = this.state.general;
 
@@ -162,6 +166,7 @@ class Settings extends PureComponent {
 
           const data = {
             allowAnonymousUsageDataCollection,
+            theme
           };
 
           api.setState(data)
@@ -179,6 +184,7 @@ class Settings extends PureComponent {
               this.initialState.general = nextState;
 
               this.setState({ general: nextState });
+              applyTheme(theme);
             })
             .catch((res) => {
               this.setState({
@@ -224,6 +230,14 @@ class Settings extends PureComponent {
             general: {
               ...this.state.general,
               lang: lang
+            }
+          });
+        },
+        changeTheme: (theme) => {
+          this.setState({
+            general: {
+              ...this.state.general,
+              theme
             }
           });
         }
@@ -1095,6 +1109,7 @@ class Settings extends PureComponent {
             saving: false
           },
           allowAnonymousUsageDataCollection: false,
+          theme: DEFAULT_THEME,
           lang: i18next.language
         },
         // Workspace
