@@ -643,5 +643,9 @@
   "None": "なし",
   "WebGL:": "WebGL:",
   "Drop files to upload": "アップロードするファイルをここにドラッグ＆ドロップ",
-  "Uploading...": "アップロード中..."
+  "Uploading...": "アップロード中...",
+  "Appearance": "外観",
+  "Theme:": "テーマ：",
+  "Light": "ライト",
+  "Dark": "ダーク"
 }

@@ -644,5 +644,9 @@
   "None": "None",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Drop files to upload",
-  "Uploading...": "Uploading..."
+  "Uploading...": "Uploading...",
+  "Appearance": "Appearance",
+  "Theme:": "Theme:",
+  "Light": "Light",
+  "Dark": "Dark"
 }

@@ -646,5 +646,9 @@
   "None": "Нет",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Перетащите файлы для загрузки",
-  "Uploading...": "Загрузка..."
+  "Uploading...": "Загрузка...",
+  "Appearance": "Внешний вид",
+  "Theme:": "Тема:",
+  "Light": "Светлый",
+  "Dark": "Тёмный"
 }

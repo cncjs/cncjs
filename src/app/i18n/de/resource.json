@@ -644,5 +644,9 @@
   "None": "Keine",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Dateien zum Hochladen hier ablegen",
-  "Uploading...": "Wird hochgeladen..."
+  "Uploading...": "Wird hochgeladen...",
+  "Appearance": "Erscheinung",
+  "Theme:": "Schema:",
+  "Light": "Hell",
+  "Dark": "Dunkel"
 }

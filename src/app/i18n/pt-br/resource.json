@@ -645,5 +645,9 @@
   "None": "Nenhum",
   "WebGL:": "WebGL:",
   "Drop files to upload": "Solte os arquivos para enviar",
-  "Uploading...": "Enviando..."
+  "Uploading...": "Enviando...",
+  "Appearance": "Aparência",
+  "Theme:": "Tema:",
+  "Light": "Claro",
+  "Dark": "Escuro"
 }
