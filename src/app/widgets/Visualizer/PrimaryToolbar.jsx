@@ -323,7 +323,7 @@ class PrimaryToolbar extends PureComponent {
               <Dropdown.Toggle btnSize="sm" />
               <Dropdown.Menu>
                 <MenuItem
-                  style={{ color: '#222' }}
+                  style={{ color: 'var(--color-text)' }}
                   header
                 >
                   {WebGL.isWebGLAvailable() && (

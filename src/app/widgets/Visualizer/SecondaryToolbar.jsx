@@ -53,29 +53,38 @@ const IconButton = styled(Button)`
         border-radius: 0;
     }
 
-    filter: invert(40%);
+    filter: var(--toolbar-filter);
 
     &.highlight,
     &:hover.highlight {
         background-image: none;
-        background-color: rgba(255, 255, 255, .7);
+        background-color: var(--toolbar-highlight-bg);
         outline: 0;
-        color: #333;
+        color: var(--color-text-alt);
         text-decoration: none;
-        filter: invert(100%);
+        filter: var(--toolbar-filter-highlight);
+    }
+
+    &.highlight img,
+    &:hover.highlight img {
+        filter: var(--toolbar-img-filter-highlight) !important;
     }
 
     &:hover {
         background-image: none;
-        background-color: #e6e6e6;
-        filter: invert(0%);
+        background-color: var(--color-action-hover-bg);
+        filter: var(--toolbar-filter-hover);
     }
+
+    &:hover img {
+        filter: var(--toolbar-img-filter-hover) !important;
+    }    
 
     &:hover,
     &:focus,
     &:active {
         outline: 0;
-        color: #333;
+        color: var(--color-text-alt);
         text-decoration: none;
     }
 

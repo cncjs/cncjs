@@ -28,7 +28,8 @@ import CuttingPointer from './CuttingPointer';
 import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
-import GCodeVisualizer from './GCodeVisualizer';
+import { getSceneThemeName, getScenePalette } from './scene-theme';
+import GCodeVisualizer, { setToolpathColors } from './GCodeVisualizer';
 import ProbeVisualization from './ProbeVisualization';
 import {
   CAMERA_MODE_PAN,
@@ -85,6 +86,27 @@ class Visualizer extends Component {
     group = new THREE.Group();
 
     probeVisualization = null;
+
+    sceneThemeName = null;
+
+    themeObserver = null;
+
+    applySceneTheme = () => {
+      const name = getSceneThemeName();
+      const palette = getScenePalette(name);
+      if (name === this.sceneThemeName) {
+        return;
+      }
+      this.sceneThemeName = name;
+      setToolpathColors(getScenePalette(name));
+      this.applyCanvasColor(palette);
+
+      if (this.gcodeVisualizer) {
+        this.gcodeVisualizer.refreshColors();
+      }
+      this.rebuildCoordinateSystems();
+      this.updateScene({ forceUpdate: true });
+    };
 
     pivotPoint = new PivotPoint3({ x: 0, y: 0, z: 0 }, (x, y, z) => { // relative position
       _each(this.group.children, (o) => {
@@ -224,6 +246,12 @@ class Visualizer extends Component {
       this.gcodeVisualizer = null;
     }
 
+    applyCanvasColor(palette) {
+      if (this.renderer) {
+        this.renderer.setClearColor(new THREE.Color(palette.canvas), palette.canvasOpacity);
+      }
+    }
+
     componentDidMount() {
       this.subscribe();
       this.addResizeEventListener();
@@ -232,6 +260,8 @@ class Visualizer extends Component {
         const el = ReactDOM.findDOMNode(this.node);
         this.createScene(el);
         this.resizeRenderer();
+        this.themeObserver = new MutationObserver(this.applySceneTheme);
+        this.themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
       }
 
       // Apply any machine profile already in the store (e.g., hydrated from
@@ -403,6 +433,10 @@ class Visualizer extends Component {
       this.unsubscribe();
       this.removeResizeEventListener();
       store.removeListener('change', this.changeMachineProfile);
+      if (this.themeObserver) {
+        this.themeObserver.disconnect();
+        this.themeObserver = null;
+      }
       this.clearScene();
     }
 
@@ -703,9 +737,12 @@ class Visualizer extends Component {
       const { minX, maxX, minY, maxY, minZ, maxZ, gridSpacing } = this.getCoordinateBounds(units);
       const labelOffset = gridSpacing * 2;
       const group = new THREE.Group();
+      const palette = getScenePalette(this.sceneThemeName);
 
       { // Coordinate Grid
-        const gridLine = new GridLine(minX, maxX, gridSpacing, minY, maxY, gridSpacing, colornames('blue'), colornames('gray 44'));
+        const gridLine = new GridLine(minX, maxX, gridSpacing, minY, maxY, gridSpacing, palette.gridCenter, palette.grid);
+        // axis labels: color: palette.axisX / palette.axisY / palette.axisZ  (instead of colornames('red'|'green'|'blue'))
+
         _each(gridLine.children, (o) => {
           o.material.opacity = 0.15;
           o.material.transparent = true;
@@ -716,7 +753,7 @@ class Visualizer extends Component {
       }
 
       { // Coordinate Axes — extend to the full grid extent
-        const coordinateAxes = new CoordinateAxes({ minX, maxX, minY, maxY, minZ, maxZ });
+        const coordinateAxes = new CoordinateAxes({ minX, maxX, minY, maxY, minZ, maxZ, colors: { x: palette.axisX, y: palette.axisY, z: palette.axisZ } });
         coordinateAxes.name = 'CoordinateAxes';
         group.add(coordinateAxes);
       }
@@ -760,6 +797,7 @@ class Visualizer extends Component {
       const textSize = (units === IMPERIAL_UNITS) ? (25.4 / 3) : (10 / 3);
       const textOffset = (units === IMPERIAL_UNITS) ? (25.4 / 5) : (10 / 5);
       const group = new THREE.Group();
+      const palette = getScenePalette(this.sceneThemeName);
 
       // X-axis labels
       for (let x = minX; x <= maxX; x += gridSpacing) {
@@ -774,7 +812,7 @@ class Visualizer extends Component {
             text: mapValueToUnits(x, units),
             textAlign: 'center',
             textBaseline: 'bottom',
-            color: colornames('red'),
+            color: palette.axisX,
             opacity: 0.5
           }));
         }
@@ -791,7 +829,7 @@ class Visualizer extends Component {
             text: mapValueToUnits(y, units),
             textAlign: 'right',
             textBaseline: 'middle',
-            color: colornames('green'),
+            color: palette.axisY,
             opacity: 0.5
           }));
         }
@@ -855,6 +893,10 @@ class Visualizer extends Component {
         return;
       }
 
+      this.sceneThemeName = getSceneThemeName();
+      setToolpathColors(getScenePalette(this.sceneThemeName));
+      const palette = getScenePalette(this.sceneThemeName);
+
       const { state } = this.props;
       const { units, objects } = state;
       const width = this.getVisibleWidth();
@@ -868,7 +910,7 @@ class Visualizer extends Component {
       });
       this.renderer.shadowMap.enabled = true;
       this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      this.renderer.setClearColor(new THREE.Color(colornames('white')), 1);
+      this.applyCanvasColor(palette);
       this.renderer.setPixelRatio(getRenderPixelRatio());
       this.renderer.setSize(width, height);
       this.renderer.clear();
