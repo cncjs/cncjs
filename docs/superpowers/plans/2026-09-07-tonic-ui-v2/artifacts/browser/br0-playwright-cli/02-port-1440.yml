@@ -1,0 +1,321 @@
+- banner "Application header":
+  - button
+  - button "CNCjs 2.0.0-dev - View release notes": CNCjs
+  - text: en Workspace
+  - button
+- navigation: Workspace Administration
+- main:
+  - button "Hide left panel"
+  - button "Manage Widgets (1)"
+  - button "Collapse all left panel widgets"
+  - button "Expand all left panel widgets"
+  - region "Connection widget":
+    - button
+    - text: Connection
+    - toolbar "Widget controls":
+      - button "Collapse" [expanded]
+      - button "More options"
+    - button "Grbl"
+    - button "Marlin"
+    - button "Smoothie"
+    - button "TinyG"
+    - button "Serial Port"
+    - button "Wi-Fi"
+    - text: Serial port Choose a port
+    - textbox
+    - text: Baud rate 115200
+    - textbox
+    - text: Set DTR line status upon opening Set RTS line status upon opening Use RTS/CTS flow control Connect automatically
+    - button "Open" [disabled]
+  - region "Console widget":
+    - button
+    - text: Console
+    - toolbar "Widget controls":
+      - button "Clear console"
+      - button "Collapse" [expanded]
+      - button "Enter full screen"
+      - button "More options"
+    - text: No serial connection
+  - region "Grbl widget":
+    - button
+    - text: Grbl
+    - toolbar "Widget controls":
+      - button "More options"
+  - region "Marlin widget":
+    - button
+    - text: Marlin
+    - toolbar "Widget controls":
+      - button "More options"
+  - region "Smoothie widget":
+    - button
+    - text: Smoothie
+    - toolbar "Widget controls":
+      - button "More options"
+  - region "TinyG widget":
+    - button
+    - text: TinyG
+    - toolbar "Widget controls":
+      - button "More options"
+  - region "Webcam widget":
+    - button
+    - text: Webcam
+    - toolbar "Widget controls":
+      - button "Enable Webcam"
+      - button "Refresh webcam"
+      - button "Collapse" [expanded]
+      - button "More options"
+    - text: Webcam is off
+  - region "3D Visualizer widget":
+    - button "G54 (P1)" [disabled]
+    - button "3D View options": 3D View
+    - button
+    - button "Upload G-code" [disabled]
+    - button [disabled]
+    - button "Run" [disabled]
+    - button "Pause" [disabled]
+    - button "Stop" [disabled]
+    - button "Close G-code file" [disabled]
+    - text: G-code G-code not loaded
+  - button "Collapse all right panel widgets"
+  - button "Expand all right panel widgets"
+  - button "Manage Widgets (1)"
+  - button "Hide right panel"
+  - region "Axes widget":
+    - button
+    - text: Axes
+    - toolbar "Widget controls":
+      - button "Toggle keypad jogging"
+      - button "Toggle manual data input mode": MDI
+      - button "Collapse" [expanded]
+      - button "More options"
+    - table:
+      - rowgroup:
+        - row "Axis Machine Position Work Position Select work coordinate system":
+          - columnheader "Axis"
+          - columnheader "Machine Position"
+          - columnheader "Work Position"
+          - columnheader "Select work coordinate system":
+            - button "Select work coordinate system" [disabled]
+      - rowgroup:
+        - 'row "X mm 0.000 Go to zero: X Home: X 0.000 Move X backward Move X forward Zero out X work offsets Set X work offsets X axis actions"':
+          - cell "X mm"
+          - 'cell "0.000 Go to zero: X Home: X"':
+            - text: "0.000"
+            - 'button "Go to zero: X" [disabled]'
+            - 'button "Home: X" [disabled]'
+          - cell "0.000 Move X backward Move X forward Zero out X work offsets Set X work offsets":
+            - text: "0.000"
+            - button "Move X backward" [disabled]
+            - button "Move X forward" [disabled]
+            - button "Zero out X work offsets" [disabled]
+            - button "Set X work offsets" [disabled]
+          - cell "X axis actions":
+            - button "X axis actions" [disabled]
+        - 'row "Y mm 0.000 Go to zero: Y Home: Y 0.000 Move Y backward Move Y forward Zero out Y work offsets Set Y work offsets Y axis actions"':
+          - cell "Y mm"
+          - 'cell "0.000 Go to zero: Y Home: Y"':
+            - text: "0.000"
+            - 'button "Go to zero: Y" [disabled]'
+            - 'button "Home: Y" [disabled]'
+          - cell "0.000 Move Y backward Move Y forward Zero out Y work offsets Set Y work offsets":
+            - text: "0.000"
+            - button "Move Y backward" [disabled]
+            - button "Move Y forward" [disabled]
+            - button "Zero out Y work offsets" [disabled]
+            - button "Set Y work offsets" [disabled]
+          - cell "Y axis actions":
+            - button "Y axis actions" [disabled]
+        - 'row "Z mm 0.000 Go to zero: Z Home: Z 0.000 Move Z backward Move Z forward Zero out Z work offsets Set Z work offsets Z axis actions"':
+          - cell "Z mm"
+          - 'cell "0.000 Go to zero: Z Home: Z"':
+            - text: "0.000"
+            - 'button "Go to zero: Z" [disabled]'
+            - 'button "Home: Z" [disabled]'
+          - cell "0.000 Move Z backward Move Z forward Zero out Z work offsets Set Z work offsets":
+            - text: "0.000"
+            - button "Move Z backward" [disabled]
+            - button "Move Z forward" [disabled]
+            - button "Zero out Z work offsets" [disabled]
+            - button "Set Z work offsets" [disabled]
+          - cell "Z axis actions":
+            - button "Z axis actions" [disabled]
+    - button "Move X negative Y positive" [disabled]
+    - button "Move Y positive" [disabled]: Y +
+    - button "Move X positive Y positive" [disabled]
+    - button "Move Z positive" [disabled]: Z +
+    - button "Move X negative" [disabled]: X -
+    - button "X 0 Y 0" [disabled]
+    - button "Move X positive" [disabled]: X +
+    - button "Z 0" [disabled]
+    - button "Move X negative Y negative" [disabled]
+    - button "Move Y negative" [disabled]: Y -
+    - button "Move X positive Y negative" [disabled]
+    - button "Move Z negative" [disabled]: Z -
+    - button "G21 (mm)" [disabled]
+    - button "1 mm" [disabled]:
+      - text: "1"
+      - subscript: mm
+    - button "Decrease step size" [disabled]
+    - button "Increase step size" [disabled]
+    - button "xy" [disabled]
+    - button "Z 3mm" [disabled]
+    - button "Z 4mm" [disabled]
+    - button "xyz" [disabled]
+    - button "Continue" [disabled]
+    - button "Pause" [disabled]
+    - button "FORCE" [disabled]
+    - button "Home XY" [disabled]
+    - button "G92 Z0" [disabled]
+    - button "100" [disabled]
+    - button "90" [disabled]
+    - button "80" [disabled]
+    - button "180" [disabled]
+    - button "G90" [disabled]
+    - button "G91" [disabled]
+  - region "G-code widget":
+    - button
+    - text: G-code
+    - toolbar "Widget controls":
+      - button "Collapse" [expanded]
+      - button "More options"
+    - text: Axis Min Max Dimension X 0.000 in 0.000 in 0.000 in Y 0.000 in 0.000 in 0.000 in Z 0.000 in 0.000 in 0.000 in Sent – Received – Start Time – Elapsed Time – Finish Time – Remaining Time –
+  - region "Macro widget":
+    - button
+    - text: Macro
+    - toolbar "Widget controls":
+      - button "Collapse" [expanded]
+      - button "More options"
+    - button "New macro": New
+    - button "Export"
+    - button "Refresh"
+    - text: Loading...
+  - region:
+    - button ""
+    - text: Autolevel
+    - toolbar "Widget controls":
+      - button ""
+      - button ""
+    - img "Target": 🎯
+    - text: PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data.
+    - button "Start New Probe"
+    - img "Wrench": 🔧
+    - text: APPLY COMPENSATION Load a previously saved .probe file and apply it to your G-code.
+    - button "Load Probe Data"
+  - region "Probe widget":
+    - button
+    - text: Probe
+    - toolbar "Widget controls":
+      - button "Collapse" [expanded]
+      - button "More options"
+    - text: Probe Axis
+    - button "Z"
+    - button "X"
+    - button "Y"
+    - text: "Probe Command: G38.2"
+    - button "G38.2"
+    - button "G38.3"
+    - button "G38.4"
+    - button "G38.5"
+    - text: Probe Depth
+    - spinbutton: "10"
+    - text: in Probe Feedrate
+    - spinbutton: "20"
+    - text: in/min Touch Plate Thickness
+    - spinbutton: "10"
+    - text: in Retraction Distance
+    - spinbutton: "4"
+    - text: in
+    - button "Probe Axis Z" [disabled]
+  - region "Tool widget":
+    - button
+    - text: Tool
+    - toolbar "Widget controls":
+      - button "Refresh tool configuration"
+      - button "Collapse" [expanded]
+      - button "More options"
+    - text: Tool Change Policy Select...
+    - textbox
+    - text: Tool Change Position X
+    - spinbutton: "0.000"
+    - text: mm
+    - button "Use the current machine position as the tool change position." [disabled]
+    - text: "Y"
+    - spinbutton: "0.000"
+    - text: mm
+    - button "Use the current machine position as the tool change position." [disabled]
+    - text: Z
+    - spinbutton: "0.000"
+    - text: mm
+    - button "Use the current machine position as the tool change position." [disabled]
+    - text: Tool Probe Position X
+    - spinbutton: "0.000"
+    - text: mm
+    - button "Use the current machine position as the tool probe position." [disabled]
+    - text: "Y"
+    - spinbutton: "0.000"
+    - text: mm
+    - button "Use the current machine position as the tool probe position." [disabled]
+    - text: Z
+    - spinbutton: "0.000"
+    - text: mm
+    - button "Use the current machine position as the tool probe position." [disabled]
+    - text: Probe Command
+    - toolbar:
+      - button "G38.2"
+      - button "G38.3"
+      - button "G38.4"
+      - button "G38.5"
+    - paragraph: G38.3 probe toward workpiece, stop on contact
+    - text: Probe Distance
+    - spinbutton: "0.185"
+    - text: mm Probe Feedrate
+    - spinbutton: "0"
+    - text: mm/min Touch Plate Height
+    - spinbutton: "0"
+    - text: mm Tool Probe Commands Connect to the controller to view the tool probe commands.
+  - region "Spindle widget":
+    - button
+    - text: Spindle
+    - toolbar "Widget controls":
+      - button "Collapse" [expanded]
+      - button "More options"
+    - text: Coolant
+    - button "M7" [disabled]
+    - button "M8" [disabled]
+    - button "M9" [disabled]
+    - text: Spindle
+    - button "M3" [disabled]
+    - button "M4" [disabled]
+    - button "M5" [disabled]
+    - text: Spindle Speed
+    - spinbutton: "1000"
+    - text: RPM
+  - region "Laser widget":
+    - button
+    - text: Laser
+    - toolbar "Widget controls":
+      - button "Collapse" [expanded]
+      - button "More options"
+    - text: Laser Intensity Control 0%
+    - button "-10%"
+    - button "-1%"
+    - button "1%"
+    - button "10%"
+    - button "Laser Test" [expanded]
+    - text: Power (%) 0%
+    - slider
+    - text: Test duration
+    - spinbutton "Test duration in milliseconds": "0"
+    - text: ms Maximum value S
+    - spinbutton "Maximum S value": "1000"
+    - button "Laser Test" [disabled]
+    - button "Laser Off" [disabled]
+- text: WebGL Error Message Your graphics card does not seem to support
+- link "WebGL":
+  - /url: http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation
+- text: . Find out how to get it
+- link "here":
+  - /url: http://get.webgl.org/
+- text: .
+- button "OK"
+- button

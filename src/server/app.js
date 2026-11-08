@@ -1,5 +1,5 @@
 /* eslint callback-return: 0 */
-import fs from 'fs';
+import crypto from 'crypto';
 import path from 'path';
 import bodyParser from 'body-parser';
 import chalk from 'chalk';
@@ -15,18 +15,15 @@ import {
   expressjwt,
   UnauthorizedError as ExpressJWTUnauthorizedError,
 } from 'express-jwt';
-import session from 'express-session';
 import i18next from 'i18next';
 import i18nextFSBackend from 'i18next-fs-backend';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
 import favicon from 'serve-favicon';
 import serveStatic from 'serve-static';
-import sessionFileStore from 'session-file-store';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
 import _isPlainObject from 'lodash/isPlainObject';
-import rimraf from 'rimraf';
 import {
   LanguageDetector as i18nextLanguageDetector,
   handle as i18nextHandle,
@@ -187,35 +184,6 @@ const appMain = () => {
   // Middleware
   // https://github.com/senchalabs/connect
 
-  try {
-    // https://github.com/valery-barysok/session-file-store
-    const path = settings.middleware.session.path; // Defaults to './cncjs-sessions'
-
-    rimraf.sync(path);
-    fs.mkdirSync(path);
-
-    const FileStore = sessionFileStore(session);
-    app.use(session({
-      // https://github.com/expressjs/session#secret
-      secret: settings.secret,
-
-      // https://github.com/expressjs/session#resave
-      resave: true,
-
-      // https://github.com/expressjs/session#saveuninitialized
-      saveUninitialized: true,
-
-      store: new FileStore({
-        path: path,
-        logFn: (...args) => {
-          log.debug.apply(log, args);
-        }
-      })
-    }));
-  } catch (err) {
-    log.error(err);
-  }
-
   app.use(favicon(path.join(_get(settings, 'assets.app.path', ''), 'favicon.ico')));
 
   // Connect's body parsing middleware. This only handles urlencoded and json bodies.
@@ -241,8 +209,11 @@ const appMain = () => {
   if (settings.verbosity > 0) {
     // https://github.com/expressjs/morgan#use-custom-token-formats
     // Add an ID to all requests and displays it using the :id token
-    morgan.token('id', (req, res) => {
-      return req.session.id;
+    morgan.token('id', (req) => {
+      if (!req.id) {
+        req.id = crypto.randomUUID();
+      }
+      return req.id;
     });
     app.use(morgan(settings.middleware.morgan.format));
   }

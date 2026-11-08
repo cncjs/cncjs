@@ -1,0 +1,200 @@
+{
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "151.0.7922.34",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true
+  },
+  "gates": [
+    {
+      "name": "load-workspace",
+      "status": "passed",
+      "durationMs": 1516,
+      "route": "/workspace"
+    },
+    {
+      "name": "disable-auto-reconnect",
+      "status": "passed",
+      "durationMs": 122,
+      "wasChecked": true,
+      "checkedAfter": false
+    },
+    {
+      "name": "select-grbl",
+      "status": "passed",
+      "durationMs": 2,
+      "selected": true
+    },
+    {
+      "name": "select-simulator-port",
+      "status": "passed",
+      "durationMs": 219,
+      "optionLabel": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator"
+    },
+    {
+      "name": "connect-simulator",
+      "status": "passed",
+      "durationMs": 156,
+      "closeControlVisible": true
+    },
+    {
+      "name": "jog-arrow-right-keydown",
+      "status": "passed",
+      "durationMs": 3077,
+      "key": "ArrowRight",
+      "clicked": "Axes widget title",
+      "activeElementTag": "DIV",
+      "commands": [
+        "G91",
+        "G0 X1",
+        "G90"
+      ]
+    },
+    {
+      "name": "jog-axes-button-pointerdown-and-release",
+      "status": "passed",
+      "durationMs": 851,
+      "button": "Move X positive",
+      "pointerDownMs": 250,
+      "commands": [
+        "G91",
+        "G0 X1",
+        "G90"
+      ],
+      "oneShotAfterRelease": true
+    },
+    {
+      "name": "jog-keyup-release",
+      "status": "passed",
+      "durationMs": 504,
+      "gcodeCountBefore": 6,
+      "gcodeCountAfter": 6,
+      "noExtraCommandsAfterRelease": true
+    },
+    {
+      "name": "disconnect-simulator",
+      "status": "passed",
+      "durationMs": 394,
+      "disconnected": true
+    }
+  ],
+  "wire": [
+    {
+      "event": "open",
+      "controllerType": "Grbl",
+      "connectionType": "serial",
+      "serial": {
+        "path": "/tmp/ttyGRBL",
+        "baudRate": 115200
+      }
+    },
+    {
+      "event": "gcode",
+      "command": "G91"
+    },
+    {
+      "event": "gcode",
+      "command": "G0 X1"
+    },
+    {
+      "event": "gcode",
+      "command": "G90"
+    },
+    {
+      "event": "gcode",
+      "command": "G91"
+    },
+    {
+      "event": "gcode",
+      "command": "G0 X1"
+    },
+    {
+      "event": "gcode",
+      "command": "G90"
+    },
+    {
+      "event": "close"
+    }
+  ],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/W"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13c0051e400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13c0051e400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13c0051e400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13c0051e400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "type": "error",
+      "text": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `TooltipTrigger`. \n    at Button (webpack-internal:///./components/Widget/Button.jsx:33:23)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/TooltipTrigger.js:33:103)\n    at eval (webpack-internal:///."
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": []
+}

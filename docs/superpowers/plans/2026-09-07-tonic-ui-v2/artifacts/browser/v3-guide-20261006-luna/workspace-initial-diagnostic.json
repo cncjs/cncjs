@@ -1,0 +1,39 @@
+{
+  "url": "http://127.0.0.1:8080/#/login",
+  "title": "CNCjs 2.0.0-dev",
+  "browser": "153.0.8010.12",
+  "bodyText": "Sign in to CNCjs\nUsername\nPassword\nForgot your password?\nSign In",
+  "landmarks": [
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "aria": null,
+      "name": "Sign In",
+      "display": "inline-flex",
+      "visibility": "visible",
+      "rect": [
+        788,
+        352,
+        92,
+        32
+      ]
+    },
+    {
+      "tag": "svg",
+      "role": "img",
+      "aria": null,
+      "display": "block",
+      "visibility": "visible",
+      "rect": [
+        801,
+        361,
+        14,
+        14
+      ]
+    }
+  ],
+  "events": {
+    "errors": [],
+    "failures": []
+  }
+}

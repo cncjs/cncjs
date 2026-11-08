@@ -1,0 +1,25 @@
+{
+  "total_count": 1,
+  "artifacts": [
+    {
+      "id": 11233755349,
+      "node_id": "MDg6QXJ0aWZhY3QxMTIzMzc1NTM0OQ==",
+      "name": "ui-migration-production-b0612c796e3ddf6aa445933a66047a8aa83db6f5",
+      "size_in_bytes": 10024294,
+      "url": "https://api.github.com/repos/cheton/cncjs/actions/artifacts/11233755349",
+      "archive_download_url": "https://api.github.com/repos/cheton/cncjs/actions/artifacts/11233755349/zip",
+      "expired": false,
+      "digest": "sha256:9a9440f8c1b76e9ba581858f30f6ee2cbf2c9ac3796d3a9bf791ca773fa403e0",
+      "created_at": "2026-10-02T14:36:19Z",
+      "updated_at": "2026-10-02T14:36:19Z",
+      "expires_at": "2026-10-09T14:36:16Z",
+      "workflow_run": {
+        "id": 37020168380,
+        "repository_id": 1359716562,
+        "head_repository_id": 1359716562,
+        "head_branch": "feat/tonic-ui-v2-migration",
+        "head_sha": "b0612c796e3ddf6aa445933a66047a8aa83db6f5"
+      }
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true,
+    "args": [
+      "--disable-webgl",
+      "--disable-webgl2",
+      "--disable-3d-apis"
+    ]
+  },
+  "gates": [
+    {
+      "name": "real WebGL-unavailable fallback keeps workspace usable and disables 3D controls",
+      "status": "passed",
+      "capability": {
+        "webglContextAvailable": false,
+        "webglConstructorAvailable": true,
+        "pageCanvasCount": 0,
+        "configDisabled": false
+      },
+      "enableTitle": "Enable 3D View",
+      "webglStatus": "Disabled",
+      "perspectiveDisabled": true,
+      "screenshot": "webgl-fallback-r6.png"
+    },
+    {
+      "name": "G-code upload completes without a WebGL engine",
+      "status": "passed",
+      "runEnabled": true,
+      "closeEnabled": true,
+      "loadingIndicator": 0,
+      "renderingIndicator": 0,
+      "canvasCount": 0,
+      "commandNames": [
+        "sender_load"
+      ],
+      "screenshot": "webgl-fallback-gcode-loaded-r6.png"
+    },
+    {
+      "name": "G-code unload clears unavailable-engine UI state",
+      "status": "passed",
+      "runDisabled": true,
+      "closeDisabled": true,
+      "commandNames": [
+        "sender_load",
+        "sender_unload"
+      ],
+      "screenshot": "webgl-fallback-gcode-unloaded-r6.png"
+    }
+  ],
+  "fixture": {
+    "name": "webgl-fallback-e4.gcode",
+    "bytes": 38,
+    "sha256": "8f37789b906aaab434613a2567a4b3f208c31945bcb8a00426f28c0d26479ff2"
+  },
+  "setup": {
+    "port": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+    "connectedSimulator": true
+  },
+  "commandNamesAfterLoadStart": [
+    "sender_load",
+    "sender_unload"
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 18.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.\n\nPlease update the following components: %s VirtualList"
+    }
+  ],
+  "finishedAt": "2026-10-02T02:39:18.139Z"
+}

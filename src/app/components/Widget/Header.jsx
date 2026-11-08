@@ -1,13 +1,19 @@
-import { Box } from '@tonic-ui/react';
+import { Box, useColorMode } from '@tonic-ui/react';
 import cx from 'classnames';
-import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './index.styl';
 
-function Header({ fixed, className, ...props }) {
+/** @param {{ fixed?: boolean, className?: string, children?: React.ReactNode, [key: string]: unknown }} props */
+function Header({ fixed = false, className, ...props }) {
+  const [colorMode] = useColorMode();
+
   return (
     <Box
       {...props}
+      backgroundColor={colorMode === 'dark' ? 'background.highest' : 'background.high'}
+      border="1px solid"
+      borderColor="border.secondary"
+      color="text.primary"
       className={cx(
         className,
         styles.widgetHeader,
@@ -16,12 +22,5 @@ function Header({ fixed, className, ...props }) {
     />
   );
 }
-
-Header.propTypes = {
-  fixed: PropTypes.bool
-};
-Header.defaultProps = {
-  fixed: false
-};
 
 export default Header;

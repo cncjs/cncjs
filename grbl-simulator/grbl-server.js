@@ -21,12 +21,12 @@ class GrblServer {
         this.simulator = new GrblSimulator();
     }
 
-    start() {
+    start(host) {
         this.server = net.createServer((socket) => {
             this.handleConnection(socket);
         });
 
-        this.server.listen(this.port, () => {
+        this.server.listen(this.port, host, () => {
             console.log(`Listening on port ${this.port}`);
         });
 

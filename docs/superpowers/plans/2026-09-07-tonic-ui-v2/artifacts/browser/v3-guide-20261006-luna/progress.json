@@ -1,0 +1,684 @@
+{
+  "task": "V3-GV official-guide visual follow-up",
+  "status": "completed",
+  "phase": "all bounded gates passed with classified console warnings; owned browser/runtime/fixtures stopped and final report recorded",
+  "startedAt": "2026-10-06T08:02:24.407Z",
+  "workspace": {
+    "head": "5e8757b4277ec3c15d8e44ab7d8771512facb739",
+    "sourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+    "expectedSourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+    "initialDirtyFiles": [
+      "M docs/superpowers/cncjs-next-tonic-ui-v2-handoff.md",
+      " M docs/superpowers/plans/2026-09-07-tonic-ui-v2/10-tonic-ui-v3-alpha.md",
+      " M docs/superpowers/plans/2026-09-07-tonic-ui-v2/STATUS.md",
+      " M docs/superpowers/plans/2026-09-07-tonic-ui-v2/execution-log.md",
+      " M package.json",
+      " M src/app/containers/app/Header.jsx",
+      " M src/app/containers/app/MainPage.jsx",
+      " M src/app/containers/app/SideNav.jsx",
+      " M src/app/containers/app/components/NavLink.jsx",
+      " M src/app/pages/About/components/AlertButtonLink.jsx",
+      " M src/app/pages/Administration/Commands/Commands.jsx",
+      " M src/app/pages/Administration/Events/Events.js",
+      " M src/app/pages/Administration/GeneralSettings/GeneralSettings.jsx",
+      " M src/app/pages/Administration/Machines/Machines.jsx",
+      " M src/app/pages/Administration/Macros/Macros.jsx",
+      " M src/app/pages/Administration/Users/Users.jsx",
+      " M src/app/pages/Administration/WorkspaceSettings/modals/ConfirmImportWorkspaceSettingsModal.jsx",
+      " M src/app/pages/Administration/WorkspaceSettings/modals/ConfirmRestoreDefaultsModal.jsx",
+      " M src/app/pages/Administration/components/FieldInput.jsx",
+      " M src/app/pages/Administration/components/FieldTextarea.jsx",
+      " M src/app/pages/Workspace/Workspace.jsx",
+      " M src/app/pages/Workspace/widget-manager/WidgetListItem.jsx",
+      " M src/app/sagas/app/index.js",
+      " M src/app/widgets/Autolevel/LandingView.jsx",
+      " M src/app/widgets/Axes/Settings/MDI/CreateRecord.jsx",
+      " M src/app/widgets/Axes/Settings/MDI/TableRecords.jsx",
+      " M src/app/widgets/Axes/Settings/MDI/UpdateRecord.jsx",
+      " M src/app/widgets/Axes/Settings/index.jsx",
+      " M src/app/widgets/Grbl/modals/ControllerModal.jsx",
+      " M src/app/widgets/Macro/modals/ConfirmDeleteMacro.jsx",
+      " M src/app/widgets/Marlin/Controller.jsx",
+      " M src/app/widgets/Visualizer/index.jsx",
+      " M yarn.lock",
+      "?? docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/v3-guide-20261006-luna/",
+      "?? docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/v3/migration-guide-followup.json",
+      "?? docs/superpowers/plans/2026-09-07-tonic-ui-v2/v3-guide-visual-brief.md"
+    ]
+  },
+  "model": {
+    "name": "gpt-6-luna",
+    "reasoningEffort": "xhigh",
+    "basis": "active user-selected session/task assignment; no model/effort shell environment variable is exposed"
+  },
+  "artifacts": {
+    "directory": "docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/v3-guide-20261006-luna",
+    "runnerCopies": [
+      "workspace-matrix-v3.mjs",
+      "routes-semantic-v3.mjs",
+      "marlin-replay-focused-v3.mjs",
+      "visualizer-probe-compensation-v3.mjs"
+    ]
+  },
+  "runtime": {
+    "scratchPath": "/tmp/cncjs-v3-guide-20261006-luna-0e46609d",
+    "configPath": "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/config.cncrc",
+    "watchDirectory": "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/watch-tree",
+    "serialPath": "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/ttyGRBL",
+    "backendPid": 22933,
+    "frontendPid": 18804,
+    "simulatorPid": 17433,
+    "bridgePid": 17434,
+    "ports": {
+      "backend": 8000,
+      "frontend": 8080,
+      "simulator": 60565
+    },
+    "status": "stopped_clean",
+    "configHasUsers": false,
+    "isolatedConfigCreated": true,
+    "fixtureFiles": [
+      "AL_part.gcode (comment-only)"
+    ],
+    "children": [
+      {
+        "name": "backend",
+        "pid": 17430,
+        "command": "yarn run start-server-dev"
+      },
+      {
+        "name": "frontend",
+        "pid": 17432,
+        "command": "yarn run start-app-dev"
+      },
+      {
+        "name": "simulator",
+        "pid": 17433,
+        "command": "/Users/cheton/.nvm/versions/node/v24.21.0/bin/node grbl-simulator/grbl-server.js 60565"
+      },
+      {
+        "name": "bridge",
+        "pid": 17434,
+        "command": "/Users/cheton/.nvm/versions/node/v24.21.0/bin/node grbl-simulator/serial-bridge.js 60565 /tmp/cncjs-v3-guide-20261006-luna-0e46609d/ttyGRBL"
+      }
+    ],
+    "simulatorPort": 60565,
+    "startedAt": "2026-10-06T08:05:26.850Z",
+    "ready": {
+      "backend": true,
+      "frontend": true,
+      "simulator": true,
+      "tty": true
+    },
+    "readyAt": "2026-10-06T08:05:28.359Z",
+    "frontendRestart": {
+      "previousPid": 17432,
+      "previousProcessGroupTerminated": true,
+      "pid": 18804,
+      "env": {
+        "PROXY_TARGET": "http://127.0.0.1:8000"
+      },
+      "ready": true
+    },
+    "frontendProxyTarget": "http://127.0.0.1:8000",
+    "backendRestart": {
+      "previousPid": 17430,
+      "previousProcessGroupTerminated": true,
+      "pid": 22933,
+      "faviconSource": "src/app/favicon.ico",
+      "faviconRestoredPath": "output/cncjs/app/favicon.ico",
+      "faviconSha256": "f403da3212c4ab41755a21d2de774f9f18a5813d58d18467a63dd9a269a381b3",
+      "signinChecks": [
+        {
+          "label": "backend",
+          "status": 200,
+          "keys": [
+            "enabled",
+            "token",
+            "name"
+          ],
+          "anonymousEnabled": false,
+          "tokenPresent": true
+        },
+        {
+          "label": "frontendProxy",
+          "status": 200,
+          "keys": [
+            "enabled",
+            "token",
+            "name"
+          ],
+          "anonymousEnabled": false,
+          "tokenPresent": true
+        }
+      ]
+    },
+    "ownedProcessGroups": [
+      17433,
+      17434,
+      18804,
+      22933
+    ],
+    "lastListenerCheck": {
+      "backendPid": 22946,
+      "frontendPid": 18807,
+      "simulatorPid": 17433,
+      "ports": {
+        "backend": 8000,
+        "frontend": 8080,
+        "simulator": 60565
+      },
+      "checkedAt": "2026-10-06T13:47:27.883Z"
+    },
+    "cleanupReport": "cleanup.json",
+    "postCleanup": {
+      "allOwnedPidsAbsent": true,
+      "ports8000_8080_60565Absent": true,
+      "ptyAbsent": true,
+      "configAndFixturesRemoved": true,
+      "logsAndRuntimeRecordsRetained": true
+    }
+  },
+  "gates": [
+    {
+      "name": "Workspace theme/viewport matrix",
+      "status": "passed",
+      "report": "workspace-theme-matrix-v3.json",
+      "states": 6,
+      "autoLive": "passed",
+      "screenshots": 12
+    },
+    {
+      "name": "Administration/Settings/modal/Widgets/Console/Webcam routes",
+      "status": "passed",
+      "report": "routes-semantic-v3-guide.json",
+      "assertions": 15,
+      "screenshots": 29,
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "httpErrors": 0,
+      "unclassifiedConsoleErrors": 0,
+      "apiWrites": [
+        "POST /api/signin (anonymous session initialization)"
+      ]
+    },
+    {
+      "name": "Visualizer filename + warning badge",
+      "status": "passed",
+      "report": "visualizer-probe-compensation-v3.json",
+      "cases": [
+        {
+          "theme": "light",
+          "status": "passed",
+          "filenameContrast": 3.71,
+          "badgeContrast": 5.744,
+          "onlySenderLoad": true,
+          "noMotionRunJog": true,
+          "screenshot": "screenshots/visualizer-probe-compensation-light-1440x900.png"
+        },
+        {
+          "theme": "dark",
+          "status": "passed",
+          "filenameContrast": 3.71,
+          "badgeContrast": 7.256,
+          "onlySenderLoad": true,
+          "noMotionRunJog": true,
+          "screenshot": "screenshots/visualizer-probe-compensation-dark-1440x900.png"
+        }
+      ],
+      "outgoingCommands": [
+        {
+          "theme": "light",
+          "event": "command",
+          "name": "sender_load",
+          "classification": "authorized-fixture-load",
+          "payloadBytes": 91,
+          "payloadSha256": "eda2d22573ca9a4102c456b127964875ea7620013aada98fcdaa455de28f1984",
+          "fixtureName": "AL_part.gcode",
+          "commentOnly": true,
+          "contentBytes": 53
+        },
+        {
+          "theme": "dark",
+          "event": "command",
+          "name": "sender_load",
+          "classification": "authorized-fixture-load",
+          "payloadBytes": 91,
+          "payloadSha256": "eda2d22573ca9a4102c456b127964875ea7620013aada98fcdaa455de28f1984",
+          "fixtureName": "AL_part.gcode",
+          "commentOnly": true,
+          "contentBytes": 53
+        }
+      ]
+    },
+    {
+      "name": "Four controller light/dark previews",
+      "status": "passed",
+      "report": "controller-matrix-v3.json",
+      "cases": [
+        {
+          "key": "grbl-light",
+          "status": "passed",
+          "report": "controller-grbl-light.json",
+          "screenshotCount": 1,
+          "outgoingCommandCount": 0,
+          "pageErrorCount": 0,
+          "requestFailureCount": 0
+        },
+        {
+          "key": "grbl-dark",
+          "status": "passed",
+          "report": "controller-grbl-dark.json",
+          "screenshotCount": 1,
+          "outgoingCommandCount": 0,
+          "pageErrorCount": 0,
+          "requestFailureCount": 0
+        },
+        {
+          "key": "marlin-light",
+          "status": "passed",
+          "report": "controller-marlin-light.json",
+          "screenshotCount": 1,
+          "outgoingCommandCount": 0,
+          "pageErrorCount": 0,
+          "requestFailureCount": 0
+        },
+        {
+          "key": "marlin-dark",
+          "status": "passed",
+          "report": "controller-marlin-dark.json",
+          "screenshotCount": 1,
+          "outgoingCommandCount": 0,
+          "pageErrorCount": 0,
+          "requestFailureCount": 0
+        },
+        {
+          "key": "smoothie-light",
+          "status": "passed",
+          "report": "controller-smoothie-light.json",
+          "screenshotCount": 1,
+          "outgoingCommandCount": 0,
+          "pageErrorCount": 0,
+          "requestFailureCount": 0
+        },
+        {
+          "key": "smoothie-dark",
+          "status": "passed",
+          "report": "controller-smoothie-dark.json",
+          "screenshotCount": 1,
+          "outgoingCommandCount": 0,
+          "pageErrorCount": 0,
+          "requestFailureCount": 0
+        },
+        {
+          "key": "tinyg-light",
+          "status": "passed",
+          "report": "controller-tinyg-light.json",
+          "screenshotCount": 1,
+          "outgoingCommandCount": 0,
+          "pageErrorCount": 0,
+          "requestFailureCount": 0
+        },
+        {
+          "key": "tinyg-dark",
+          "status": "passed",
+          "report": "controller-tinyg-dark.json",
+          "screenshotCount": 1,
+          "outgoingCommandCount": 0,
+          "pageErrorCount": 0,
+          "requestFailureCount": 0
+        }
+      ],
+      "activeFixtureInvariant": "one controller/theme per fresh context"
+    },
+    {
+      "name": "Guide-specific focus/hover/active, confirmation outside-close, settings routes, Axes and Autolevel states",
+      "status": "passed",
+      "report": "guide-focused-acceptance-v3.json",
+      "assertionGroups": 7,
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "httpErrors": 0,
+      "notes": [
+        "Header and mobile SideNav controls acquired focus; selected NavLink focus was not acquired programmatically and is not claimed as a focus pass.",
+        "Import/Restore/Delete confirmations closed on outside pointer interaction; no import/restore/delete action was confirmed.",
+        "Axes required-field error and Autolevel card/drop prompt captured."
+      ]
+    },
+    {
+      "name": "Grbl/Marlin fixed-dark settings preview in light/dark",
+      "status": "passed",
+      "report": "controller-settings-preview-matrix-v3.json",
+      "cases": 4,
+      "contrastRatio": 12.722854488142998,
+      "outgoingCommands": 0,
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "httpErrors": 0
+    },
+    {
+      "name": "Workspace file-drop prompt, connected/disconnected in light/dark",
+      "status": "passed",
+      "report": "guide-file-drop-connected-v3.json",
+      "cases": 4,
+      "dropEventFired": false,
+      "fileUploaded": false,
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "httpErrors": 0,
+      "apiWrites": [
+        "POST /api/signin (anonymous session initialization)"
+      ]
+    }
+  ],
+  "screenshots": [
+    "screenshots/workspace-theme-light-1440x900.png",
+    "screenshots/workspace-theme-dark-1440x900.png",
+    "screenshots/workspace-theme-auto-1440x900.png",
+    "screenshots/workspace-theme-light-768x900.png",
+    "screenshots/workspace-theme-dark-768x900.png",
+    "screenshots/workspace-theme-auto-768x900.png",
+    "screenshots/workspace-auto-live-light-1440x900.png",
+    "screenshots/workspace-auto-live-dark-1440x900.png",
+    "screenshots/workspace-auto-live-restored-light-1440x900.png",
+    "screenshots/workspace-widget-target-webcam-widget-1440x900.png",
+    "screenshots/workspace-widget-target-autolevel-widget-1440x900.png",
+    "screenshots/workspace-widget-target-probe-widget-1440x900.png",
+    "screenshots/workspace-widget-target-tool-widget-1440x900.png",
+    "screenshots/workspace-widget-target-spindle-widget-1440x900.png",
+    "screenshots/workspace-widget-target-laser-widget-1440x900.png",
+    "screenshots/sidebar-header-768x900.png",
+    "screenshots/dialog-widget-manager-open.png",
+    "screenshots/dialog-widget-manager-open-768x900.png",
+    "screenshots/workspace-panels-collapsed-canvas-768x900.png",
+    "screenshots/administration-commands-list-1440x900.png",
+    "screenshots/administration-commands-drawer-1440x900.png",
+    "screenshots/administration-commands-validation-1440x900.png",
+    "screenshots/administration-events-list-1440x900.png",
+    "screenshots/administration-events-drawer-1440x900.png",
+    "screenshots/administration-events-validation-1440x900.png",
+    "screenshots/administration-machines-list-1440x900.png",
+    "screenshots/administration-machines-drawer-1440x900.png",
+    "screenshots/administration-machines-validation-1440x900.png",
+    "screenshots/administration-macros-list-1440x900.png",
+    "screenshots/administration-macros-drawer-1440x900.png",
+    "screenshots/administration-macros-validation-1440x900.png",
+    "screenshots/administration-users-list-1440x900.png",
+    "screenshots/administration-users-drawer-1440x900.png",
+    "screenshots/administration-users-validation-1440x900.png",
+    "screenshots/settings-general-1440x900.png",
+    "screenshots/settings-workspace-1440x900.png",
+    "screenshots/macro-editor-variable-menu-open.png",
+    "screenshots/macro-editor-variable-inserted.png",
+    "screenshots/administration-macros-drawer-dark-1440x900.png",
+    "screenshots/administration-macros-validation-dark-1440x900.png",
+    "screenshots/administration-macros-variable-menu-dark-1440x900.png",
+    "screenshots/console-fixed-black-target-1440x900.png",
+    "screenshots/webcam-empty-target-1440x900.png",
+    "screenshots/webcam-settings-video-labels.png",
+    "screenshots/visualizer-probe-compensation-light-1440x900.png",
+    "screenshots/visualizer-probe-compensation-dark-1440x900.png",
+    "screenshots/controller-grbl-light-1440x900.png",
+    "screenshots/controller-grbl-dark-1440x900.png",
+    "screenshots/controller-marlin-light-1440x900.png",
+    "screenshots/controller-marlin-dark-1440x900.png",
+    "screenshots/controller-smoothie-light-1440x900.png",
+    "screenshots/controller-smoothie-dark-1440x900.png",
+    "screenshots/controller-tinyg-light-1440x900.png",
+    "screenshots/controller-tinyg-dark-1440x900.png"
+  ],
+  "updatedAt": "2026-10-06T08:29:59.938Z",
+  "evidenceCounts": {
+    "assertionsPassed": 15,
+    "assertionsFailed": 0,
+    "screenshots": 44
+  },
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "headless": true,
+    "deviceScaleFactor": 1
+  },
+  "matrix": "workspace-theme-matrix-v3.json",
+  "matrixFirstAttempt": {
+    "status": "failed",
+    "file": "workspace-theme-matrix-v3-first-attempt-failure.json",
+    "cause": "frontend PROXY_TARGET unset; app redirected to #/login after expected /api/signin 404",
+    "screenshot": "screenshots/workspace-initial-diagnostic-1440x900.png"
+  },
+  "matrixProxyRetry": {
+    "status": "failed",
+    "file": "workspace-theme-matrix-v3-proxy-retry-timeout.json",
+    "cause": "still redirected to #/login despite PROXY_TARGET"
+  },
+  "signinProbe": [
+    {
+      "label": "backend",
+      "status": 404,
+      "keys": [],
+      "enabled": null,
+      "tokenPresent": false
+    },
+    {
+      "label": "frontendProxy",
+      "status": 404,
+      "keys": [],
+      "enabled": null,
+      "tokenPresent": false
+    }
+  ],
+  "supplemental": "routes-semantic-v3-guide.json",
+  "runnerLifecycle": {
+    "currentRunner": {
+      "pid": 28920,
+      "status": "running focused synthetic Grbl UI upload badge cases",
+      "result": "visualizer-probe-compensation-v3.json",
+      "progress": "visualizer-probe-compensation-v3-progress.json",
+      "sourceHashes": {
+        "tableSourceSha256": "ee8c70464d8752841d0b281aae953dcb098db7c0adbaf9e901e8fee8cfdb9ddb",
+        "visualizerSourceSha256": "0e3be41eaee0eacf6ba9e095d8a6e1f3d5fd082d4ebc0ac0caa937af0d8ba53e"
+      },
+      "revision": "5e8757b4277ec3c15d8e44ab7d8771512facb739"
+    }
+  },
+  "warningClassification": {
+    "status": "classified_with_unresolved_product_warning",
+    "known": [
+      {
+        "type": "Emotion SSR pseudo-class safety",
+        "message": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering.",
+        "classification": "development styling diagnostic; emitted through console.error, not a page exception"
+      },
+      {
+        "type": "React list key",
+        "message": "Each child in a list should have a unique \"key\" prop; render method SideNav.",
+        "classification": "product console warning in changed SideNav; unresolved for root review"
+      },
+      {
+        "type": "EventEmitter listener count",
+        "message": "MaxListenersExceededWarning in WorkspaceLayoutProvider subscribeToConfig.",
+        "classification": "development/runtime warning; not a page exception; unresolved root review"
+      },
+      {
+        "type": "legacy renderer",
+        "message": "THREE.BufferGeometry.addAttribute() renamed to setAttribute().",
+        "classification": "legacy Visualizer dependency warning"
+      },
+      {
+        "type": "browser GPU",
+        "message": "SwiftShader GPU stall due to ReadPixels.",
+        "classification": "headless Chromium software-renderer diagnostic"
+      },
+      {
+        "type": "legacy component lifecycle",
+        "message": "VirtualList componentWillReceiveProps deprecation.",
+        "classification": "legacy component warning"
+      }
+    ]
+  },
+  "focusedBadge": {
+    "runnerPid": 28920,
+    "current": {
+      "action": "runner complete",
+      "status": "passed"
+    },
+    "cases": [
+      {
+        "theme": "light",
+        "status": "passed",
+        "screenshotCount": 1
+      },
+      {
+        "theme": "dark",
+        "status": "passed",
+        "screenshotCount": 1
+      }
+    ],
+    "fixtureUpload": {
+      "path": "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/AL_part.gcode",
+      "name": "AL_part.gcode",
+      "bytes": 53,
+      "contentLines": 1,
+      "commentOnly": true,
+      "ran": false
+    },
+    "socketTransport": {
+      "method": "Socket.IO polling request observer; records only command/write/writeln names and sanitized payload summaries",
+      "websocketUpgradeClosed": 2,
+      "pollingPostCount": 12,
+      "outgoingCommands": [
+        {
+          "theme": "light",
+          "event": "command",
+          "name": "sender_load",
+          "classification": "authorized-fixture-load",
+          "payloadBytes": 91,
+          "payloadSha256": "eda2d22573ca9a4102c456b127964875ea7620013aada98fcdaa455de28f1984",
+          "fixtureName": "AL_part.gcode",
+          "commentOnly": true,
+          "contentBytes": 53
+        },
+        {
+          "theme": "dark",
+          "event": "command",
+          "name": "sender_load",
+          "classification": "authorized-fixture-load",
+          "payloadBytes": 91,
+          "payloadSha256": "eda2d22573ca9a4102c456b127964875ea7620013aada98fcdaa455de28f1984",
+          "fixtureName": "AL_part.gcode",
+          "commentOnly": true,
+          "contentBytes": 53
+        }
+      ]
+    },
+    "sourceContext": {
+      "dirtyFiles": [
+        "src/app/containers/app/Header.jsx",
+        "src/app/containers/app/MainPage.jsx",
+        "src/app/containers/app/SideNav.jsx",
+        "src/app/containers/app/components/NavLink.jsx",
+        "src/app/pages/About/components/AlertButtonLink.jsx",
+        "src/app/pages/Administration/Commands/Commands.jsx",
+        "src/app/pages/Administration/Events/Events.js",
+        "src/app/pages/Administration/GeneralSettings/GeneralSettings.jsx",
+        "src/app/pages/Administration/Machines/Machines.jsx",
+        "src/app/pages/Administration/Macros/Macros.jsx",
+        "src/app/pages/Administration/Users/Users.jsx",
+        "src/app/pages/Administration/WorkspaceSettings/modals/ConfirmImportWorkspaceSettingsModal.jsx",
+        "src/app/pages/Administration/WorkspaceSettings/modals/ConfirmRestoreDefaultsModal.jsx",
+        "src/app/pages/Administration/components/FieldInput.jsx",
+        "src/app/pages/Administration/components/FieldTextarea.jsx",
+        "src/app/pages/Workspace/Workspace.jsx",
+        "src/app/pages/Workspace/widget-manager/WidgetListItem.jsx",
+        "src/app/sagas/app/index.js",
+        "src/app/widgets/Autolevel/LandingView.jsx",
+        "src/app/widgets/Axes/Settings/MDI/CreateRecord.jsx",
+        "src/app/widgets/Axes/Settings/MDI/TableRecords.jsx",
+        "src/app/widgets/Axes/Settings/MDI/UpdateRecord.jsx",
+        "src/app/widgets/Axes/Settings/index.jsx",
+        "src/app/widgets/Grbl/modals/ControllerModal.jsx",
+        "src/app/widgets/Macro/modals/ConfirmDeleteMacro.jsx",
+        "src/app/widgets/Marlin/Controller.jsx",
+        "src/app/widgets/Visualizer/index.jsx"
+      ],
+      "tableSourceSha256": "ee8c70464d8752841d0b281aae953dcb098db7c0adbaf9e901e8fee8cfdb9ddb",
+      "visualizerSourceSha256": "0e3be41eaee0eacf6ba9e095d8a6e1f3d5fd082d4ebc0ac0caa937af0d8ba53e",
+      "fixtureDelivery": "Connected only to the configured local Grbl simulator (/tmp/cncjs-v3-guide-20261006-luna-0e46609d/ttyGRBL); uploaded a comment-only AL_part.gcode through the Visualizer file chooser, never ran it; after the visible filename appeared, window.PubSub.publish(\"gcode:load\", {name,gcode,isProbeCompensationApplied:true}) set badge state",
+      "hmrEvidence": "owned development frontend webpack log compiled successfully after context.jsx and Visualizer changes"
+    },
+    "updatedAt": "2026-10-06T08:26:13.791Z"
+  },
+  "focusedControllerMatrix": {
+    "status": "passed",
+    "current": null,
+    "cases": [
+      {
+        "key": "grbl-light",
+        "status": "passed",
+        "report": "controller-grbl-light.json",
+        "gates": 4,
+        "screenshots": 1,
+        "outgoingCommands": 0
+      },
+      {
+        "key": "grbl-dark",
+        "status": "passed",
+        "report": "controller-grbl-dark.json",
+        "gates": 4,
+        "screenshots": 1,
+        "outgoingCommands": 0
+      },
+      {
+        "key": "marlin-light",
+        "status": "passed",
+        "report": "controller-marlin-light.json",
+        "gates": 4,
+        "screenshots": 1,
+        "outgoingCommands": 0
+      },
+      {
+        "key": "marlin-dark",
+        "status": "passed",
+        "report": "controller-marlin-dark.json",
+        "gates": 4,
+        "screenshots": 1,
+        "outgoingCommands": 0
+      },
+      {
+        "key": "smoothie-light",
+        "status": "passed",
+        "report": "controller-smoothie-light.json",
+        "gates": 4,
+        "screenshots": 1,
+        "outgoingCommands": 0
+      },
+      {
+        "key": "smoothie-dark",
+        "status": "passed",
+        "report": "controller-smoothie-dark.json",
+        "gates": 4,
+        "screenshots": 1,
+        "outgoingCommands": 0
+      },
+      {
+        "key": "tinyg-light",
+        "status": "passed",
+        "report": "controller-tinyg-light.json",
+        "gates": 4,
+        "screenshots": 1,
+        "outgoingCommands": 0
+      },
+      {
+        "key": "tinyg-dark",
+        "status": "passed",
+        "report": "controller-tinyg-dark.json",
+        "gates": 4,
+        "screenshots": 1,
+        "outgoingCommands": 0
+      }
+    ]
+  },
+  "lastCheckpointAt": "2026-10-06T13:48:49.968Z",
+  "completedAt": "2026-10-06T13:48:49.968Z",
+  "finalReport": "report.json"
+}

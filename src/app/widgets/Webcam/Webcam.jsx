@@ -1,19 +1,13 @@
 import {
   Box,
   Text,
+  Tooltip,
 } from '@tonic-ui/react';
+import { ensureString } from 'ensure-type';
 import cx from 'classnames';
-import _isEqual from 'lodash/isEqual';
 import Slider from 'rc-slider';
 import React, { useEffect, useRef } from 'react';
-import compose from 'recompose/compose';
-import styled from 'styled-components';
-import Anchor from '@app/components/Anchor';
-import { Container, Row, Col } from '@app/components/GridSystem';
-import Image from '@app/components/Image';
-import Tooltip from '@app/components/Tooltip';
 import WebcamComponent from '@app/components/Webcam';
-import withMemo from '@app/hocs/withMemo';
 import i18n from '@app/lib/i18n';
 import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
 import useWidgetEvent from '@app/widgets/shared/useWidgetEvent';
@@ -35,7 +29,7 @@ import styles from './index.styl';
 const mapMetaAddressToHostname = (url) => {
   const hostname = window.location.hostname;
 
-  return String(url).trim().replace(/((?:https?:)?\/\/)?(0.0.0.0)/i, (match, p1, p2, offset, string) => {
+  return ensureString(url).trim().replace(/((?:https?:)?\/\/)?(0.0.0.0)/i, (match, p1) => {
     // p1 = 'http://'
     // p2 = '0.0.0.0'
     return [p1, hostname].join('');
@@ -49,6 +43,29 @@ const normalizeMediaSource = (mediaSource) => {
   return MEDIA_SOURCE_LOCAL;
 };
 
+/**
+ * @param {{ label: string, onClick: () => void, iconClass: string }} props
+ */
+function ControlButton({ label, onClick, iconClass }) {
+  return (
+    <Tooltip label={label} shouldWrapChildren>
+      <Box
+        as="button"
+        aria-label={label}
+        type="button"
+        className={styles.btnIcon}
+        sx={{ background: 'transparent', border: 0, padding: 0 }}
+        onClick={onClick}
+      >
+        <i className={iconClass} />
+      </Box>
+    </Tooltip>
+  );
+}
+
+/**
+ * @param {{ disabled: boolean, isFullscreen: boolean }} props
+ */
 function Webcam({
   disabled,
   isFullscreen,
@@ -64,15 +81,22 @@ function Webcam({
   const flipVertically = widgetConfig.get('geometry.flipVertically', false);
   const crosshair = widgetConfig.get('crosshair', false);
   const muted = widgetConfig.get('muted', false);
-  const streamRef = useRef();
+  const streamRef = useRef(null);
+  const refreshTimeoutRef = useRef(null);
 
   useEffect(() => {
     const onRefreshStream = () => {
       const el = streamRef.current;
+      if (!el) {
+        return;
+      }
       el.src = '';
 
-      setTimeout(() => {
-        el.src = mapMetaAddressToHostname(url);
+      clearTimeout(refreshTimeoutRef.current);
+      refreshTimeoutRef.current = setTimeout(() => {
+        if (streamRef.current === el) {
+          el.src = mapMetaAddressToHostname(url);
+        }
       }, 10); // delay 10ms
     };
 
@@ -80,6 +104,8 @@ function Webcam({
 
     return () => {
       widgetEmitter.off('refresh', onRefreshStream);
+      clearTimeout(refreshTimeoutRef.current);
+      refreshTimeoutRef.current = null;
     };
   }, [widgetEmitter, url]);
 
@@ -128,31 +154,42 @@ function Webcam({
 
   // Find a better solution to determine whether to use the <video/> or <img/> tag.
   // Currently using the URL extension check for ".mp4" as a proxy.
-  const isVideoStream = url.endsWith('.mp4');
+  const isVideoStream = ensureString(url).endsWith('.mp4');
 
   return (
     <>
       {disabled && (
-        <WebcamDisabledContainer>
-          <Image src={webcamIcon} width={128} height={128} />
+        <Box sx={{ padding: '1rem', textAlign: 'center' }}>
+          <Box
+            as="img" src={webcamIcon} width={128}
+            height={128}
+          />
           <Box top="4x">
             <Text size="2xl">
               {i18n._('Webcam is off')}
             </Text>
           </Box>
-        </WebcamDisabledContainer>
+        </Box>
       )}
-      <WebcamContainer
-        style={{
+      <Box
+        sx={{
           display: disabled ? 'none' : 'block',
           minHeight: isFullscreen ? '100%' : 240,
+          backgroundColor: 'background._fixed.dark.low',
+          overflow: 'hidden',
+          position: 'relative',
+          textAlign: 'center',
+          '&:hover .webcam-control-bar': {
+            opacity: 1,
+            transition: 'all 250ms ease-out',
+          },
         }}
       >
         {mediaSource === MEDIA_SOURCE_LOCAL && (
-          <div style={{ width: '100%' }}>
+          <Box sx={{ width: '100%' }}>
             <WebcamComponent
               className={styles.center}
-              style={{
+              sx={{
                 transform: transformStyle,
               }}
               width={(100 * scale).toFixed(0) + '%'}
@@ -160,14 +197,14 @@ function Webcam({
               muted={muted}
               video={!!deviceId ? deviceId : true}
             />
-          </div>
+          </Box>
         )}
         {(mediaSource === MEDIA_SOURCE_STREAM && isVideoStream) && (
-          // eslint-disable-next-line jsx-a11y/media-has-caption
-          <video
+          <Box
+            as="video"
             ref={streamRef}
             src={mapMetaAddressToHostname(url)}
-            style={{
+            sx={{
               width: (100 * scale).toFixed(0) + '%',
               transform: transformStyle,
             }}
@@ -178,10 +215,11 @@ function Webcam({
           />
         )}
         {(mediaSource === MEDIA_SOURCE_STREAM && !isVideoStream) && (
-          <Image
+          <Box
+            as="img"
             ref={streamRef}
             src={mapMetaAddressToHostname(url)}
-            style={{
+            sx={{
               width: (100 * scale).toFixed(0) + '%',
               transform: transformStyle,
             }}
@@ -189,7 +227,7 @@ function Webcam({
           />
         )}
         {crosshair && (
-          <div>
+          <Box>
             <Line
               className={cx(
                 styles.center
@@ -215,14 +253,25 @@ function Webcam({
               )}
               diameter={40}
             />
-          </div>
+          </Box>
         )}
-        <ControlBar>
+        <Box
+          className="webcam-control-bar"
+          sx={{
+            bottom: 0,
+            left: 0,
+            opacity: 0,
+            position: 'absolute',
+            right: 0,
+            transition: 'all 200ms ease-in',
+          }}
+        >
           <Box
             mx="3x"
             mb="1x"
           >
             <Slider
+              ariaLabelForHandle={i18n._('Image scale')}
               defaultValue={scale}
               min={0.1}
               max={10}
@@ -231,174 +280,34 @@ function Webcam({
               onChange={changeImageScale}
             />
           </Box>
-          <Container
-            fluid
-            style={{
-              backgroundColor: '#000',
+          <Box
+            sx={{
+              backgroundColor: 'background._fixed.dark.low',
               padding: '.125rem .75rem',
+              display: 'flex',
+              alignItems: 'center',
             }}
           >
-            <Row>
-              <Col width="auto">
-                <ScaleText>{scale}x</ScaleText>
-              </Col>
-              <Col>
-                {mediaSource === MEDIA_SOURCE_LOCAL && (
-                  <Anchor
-                    className={styles.btnIcon}
-                    onClick={toggleMuted}
-                  >
-                    <i
-                      className={cx(
-                        styles.icon,
-                        styles.inverted,
-                        { [styles.iconUnmute]: !muted },
-                        { [styles.iconMute]: muted }
-                      )}
-                    />
-                  </Anchor>
-                )}
-                <Tooltip
-                  content={i18n._('Rotate Left')}
-                  enterDelay={500}
-                  hideOnClick
-                  placement="top"
-                >
-                  <Anchor
-                    className={styles.btnIcon}
-                    onClick={rotateLeft}
-                  >
-                    <i
-                      className={cx(
-                        styles.icon,
-                        styles.inverted,
-                        styles.iconRotateLeft
-                      )}
-                    />
-                  </Anchor>
-                </Tooltip>
-                <Tooltip
-                  content={i18n._('Rotate Right')}
-                  enterDelay={500}
-                  hideOnClick
-                  placement="top"
-                >
-                  <Anchor
-                    className={styles.btnIcon}
-                    onClick={rotateRight}
-                  >
-                    <i
-                      className={cx(
-                        styles.icon,
-                        styles.inverted,
-                        styles.iconRotateRight
-                      )}
-                    />
-                  </Anchor>
-                </Tooltip>
-                <Tooltip
-                  content={i18n._('Flip Horizontally')}
-                  enterDelay={500}
-                  hideOnClick
-                  placement="top"
-                >
-                  <Anchor
-                    className={styles.btnIcon}
-                    onClick={toggleFlipHorizontally}
-                  >
-                    <i
-                      className={cx(
-                        styles.icon,
-                        styles.inverted,
-                        styles.iconFlipHorizontally
-                      )}
-                    />
-                  </Anchor>
-                </Tooltip>
-                <Tooltip
-                  content={i18n._('Flip Vertically')}
-                  enterDelay={500}
-                  hideOnClick
-                  placement="top"
-                >
-                  <Anchor
-                    className={styles.btnIcon}
-                    onClick={toggleFlipVertically}
-                  >
-                    <i
-                      className={cx(
-                        styles.icon,
-                        styles.inverted,
-                        styles.iconFlipVertically
-                      )}
-                    />
-                  </Anchor>
-                </Tooltip>
-                <Tooltip
-                  content={i18n._('Crosshair')}
-                  enterDelay={500}
-                  hideOnClick
-                  placement="top"
-                >
-                  <Anchor
-                    className={styles.btnIcon}
-                    onClick={toggleCrosshair}
-                  >
-                    <i
-                      className={cx(
-                        styles.icon,
-                        styles.inverted,
-                        styles.iconCrosshair
-                      )}
-                    />
-                  </Anchor>
-                </Tooltip>
-              </Col>
-            </Row>
-          </Container>
-        </ControlBar>
-      </WebcamContainer>
+            <Text sx={{ color: 'text._fixed.dark.primary', fontSize: '14px', textShadow: '0 0 5px #333' }}>{scale}x</Text>
+            <Box sx={{ flex: 1 }}>
+              {mediaSource === MEDIA_SOURCE_LOCAL && (
+                <ControlButton
+                  label={i18n._(muted ? 'Unmute' : 'Mute')}
+                  onClick={toggleMuted}
+                  iconClass={cx(styles.icon, styles.inverted, { [styles.iconUnmute]: !muted }, { [styles.iconMute]: muted })}
+                />
+              )}
+              <ControlButton label={i18n._('Rotate Left')} onClick={rotateLeft} iconClass={cx(styles.icon, styles.inverted, styles.iconRotateLeft)} />
+              <ControlButton label={i18n._('Rotate Right')} onClick={rotateRight} iconClass={cx(styles.icon, styles.inverted, styles.iconRotateRight)} />
+              <ControlButton label={i18n._('Flip Horizontally')} onClick={toggleFlipHorizontally} iconClass={cx(styles.icon, styles.inverted, styles.iconFlipHorizontally)} />
+              <ControlButton label={i18n._('Flip Vertically')} onClick={toggleFlipVertically} iconClass={cx(styles.icon, styles.inverted, styles.iconFlipVertically)} />
+              <ControlButton label={i18n._('Crosshair')} onClick={toggleCrosshair} iconClass={cx(styles.icon, styles.inverted, styles.iconCrosshair)} />
+            </Box>
+          </Box>
+        </Box>
+      </Box>
     </>
   );
 }
 
-export default compose(
-  withMemo(_isEqual),
-)(Webcam);
-
-const ControlBar = styled.div`
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
-    opacity: 0;
-    transition: all 200ms ease-in; // use "ease-in" when things are moving out
-`;
-
-const ScaleText = styled.div`
-    float: left;
-    color: #f5f5f5;
-    font-size: 14px;
-    text-shadow: 0 0 5px #333;
-`;
-
-const WebcamDisabledContainer = styled.div`
-    padding: 1rem;
-    text-align: center;
-`;
-
-const WebcamContainer = styled.div`
-    background-color: #000;
-    min-height: 240px;
-    text-align: center;
-    overflow: hidden;
-    position: relative;
-
-    &:hover {
-        ${ControlBar} {
-            opacity: 1;
-            transition: all 250ms ease-out; // use "ease-out" when things are moving in
-        }
-    }
-`;
+export default Webcam;

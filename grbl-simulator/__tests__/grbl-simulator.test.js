@@ -5,6 +5,27 @@
 
 const GrblSimulator = require('../grbl-simulator');
 
+// Each fixture starts a real planner interval. Release only timers created by
+// this test before moving to the next one; production simulator behavior stays
+// intact during the assertions.
+const fixtureIntervals = new Set();
+const startInterval = global.setInterval;
+let intervalSpy;
+
+beforeEach(() => {
+    intervalSpy = jest.spyOn(global, 'setInterval').mockImplementation((...args) => {
+        const timer = startInterval(...args);
+        fixtureIntervals.add(timer);
+        return timer;
+    });
+});
+
+afterEach(() => {
+    fixtureIntervals.forEach(timer => clearInterval(timer));
+    fixtureIntervals.clear();
+    intervalSpy.mockRestore();
+});
+
 describe('GrblSimulator - Initialization', () => {
     it('should initialize with default state', () => {
         const sim = new GrblSimulator();

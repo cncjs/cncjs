@@ -1432,7 +1432,7 @@ class GrblController {
         if (value.result === 1) {
           // $13=1 means Grbl reports positions in inches (including PRB)
           // PRB units follow $13 (firmware setting), NOT G20/G21 modal state
-          const reportInches = this.runner.settings?.settings?.['$13'] === '1';
+          const reportInches = this.runner.settings?.settings?.$13 === '1';
 
           // Convert probe result to work coordinates, then to mm
           // Probe data is always stored in mm for consistent compensation math

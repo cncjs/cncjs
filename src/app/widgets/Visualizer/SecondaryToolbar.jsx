@@ -1,24 +1,25 @@
+import { useQueryClient } from '@tanstack/react-query';
 import {
+  Box,
+  Button,
+  ButtonGroup,
+  Dropdown,
+  DropdownButton,
+  Flex,
   Space,
+  Tooltip,
 } from '@tonic-ui/react';
-import cx from 'classnames';
-import _find from 'lodash/find';
+import { ensureArray } from 'ensure-type';
 import _get from 'lodash/get';
 import _isEqual from 'lodash/isEqual';
-import { ensureArray } from 'ensure-type';
-import PropTypes from 'prop-types';
 import pubsub from 'pubsub-js';
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import { Button, ButtonToolbar, ButtonGroup } from '@app/components/Buttons';
-import Dropdown, { MenuItem } from '@app/components/Dropdown';
-import { Container, Row, Col } from '@app/components/GridSystem';
-import Image from '@app/components/Image';
-import RepeatableButton from '@app/components/RepeatableButton';
-import Tooltip from '@app/components/Tooltip';
-import api from '@app/api';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import i18n from '@app/lib/i18n';
 import config from '@app/store/config';
+import {
+  API_MACHINES_QUERY_KEY,
+  useFetchMachinesQuery,
+} from '@app/pages/Administration/Machines/queries';
 import iconTopView from './images/camera-top-view.png';
 import icon3DView from './images/camera-3d-view.svg';
 import iconFrontView from './images/camera-front-view.png';
@@ -31,452 +32,409 @@ import iconMoveCamera from './images/move-camera.svg';
 import iconRotateCamera from './images/rotate-camera.svg';
 import {
   CAMERA_MODE_PAN,
-  CAMERA_MODE_ROTATE
 } from './constants';
 
-// Sentinel eventKey for the "None" item in the machine-profile dropdown.
+const REPEAT_DELAY = 500;
+const REPEAT_INTERVAL = Math.floor(1000 / 15);
 const CLEAR_MACHINE_PROFILE = '__clear__';
 
-const IconButton = styled(Button)`
-    display: inline-block;
-    padding: 8px;
-    margin-bottom: 0;
-    font-weight: normal;
-    text-align: center;
-    white-space: nowrap;
-    touch-action: manipulation;
-    cursor: pointer;
-    user-select: none;
-    background-image: none;
-    background-color: inherit;
-    transition: none;
-    min-width: 36px; // 8px + 20px + 8px
-    height: 36px; // 8px + 20px + 8px
-    outline: none;
-    filter: invert(40%);
+/**
+ * @param {Function} onAction
+ * @param {boolean} disabled
+ * @returns {object}
+ */
+function useRepeatable(onAction, disabled) {
+  const delayTimer = useRef(null);
+  const intervalTimer = useRef(null);
+  const active = useRef(false);
+  const action = useRef(onAction);
+  const releaseHandler = useRef(null);
 
-    && {
-        border: 0;
-        border-radius: 0;
+  useEffect(() => {
+    action.current = onAction;
+  }, [onAction]);
+
+  const clear = useCallback(() => {
+    if (delayTimer.current) {
+      clearTimeout(delayTimer.current);
+      delayTimer.current = null;
     }
-
-    &.highlight,
-    &:hover.highlight {
-        background-image: none;
-        background-color: rgba(255, 255, 255, .7);
-        outline: 0;
-        color: #333;
-        text-decoration: none;
-        filter: invert(100%);
+    if (intervalTimer.current) {
+      clearInterval(intervalTimer.current);
+      intervalTimer.current = null;
     }
-
-    &:hover {
-        background-image: none;
-        background-color: #e6e6e6;
-        filter: invert(0%);
+    if (releaseHandler.current) {
+      document.documentElement.removeEventListener('mouseup', releaseHandler.current);
+      releaseHandler.current = null;
     }
+    active.current = false;
+  }, []);
 
-    &:hover,
-    &:focus,
-    &:active {
-        outline: 0;
-        color: #333;
-        text-decoration: none;
-    }
-
-    & + & {
-        margin-left: 0;
-    }
-`;
-
-class SecondaryToolbar extends Component {
-  static propTypes = {
-    is3DView: PropTypes.bool,
-    cameraMode: PropTypes.oneOf([
-      CAMERA_MODE_PAN,
-      CAMERA_MODE_ROTATE,
-    ]),
-    cameraPosition: PropTypes.oneOf(['top', '3d', 'front', 'left', 'right']),
-    camera: PropTypes.object,
-  };
-
-  state = {
-    machineProfile: config.get('workspace.machineProfile'),
-    machineProfiles: []
-  };
-
-  pubsubTokens = [];
-
-  fetchMachineProfiles = async () => {
-    try {
-      const res = await api.machines.fetch();
-      const { records: machineProfiles } = res.body;
-
-      this.setState({
-        machineProfiles: ensureArray(machineProfiles)
-      });
-    } catch (err) {
-      // Ignore
-    }
-  };
-
-  updateMachineProfileFromStore = () => {
-    const machineProfile = config.get('workspace.machineProfile');
-    if (!machineProfile || _isEqual(machineProfile, this.state.machineProfile)) {
+  const release = useCallback(() => {
+    if (!active.current || disabled) {
       return;
     }
+    clear();
+    action.current();
+  }, [clear, disabled]);
 
-    this.setState({ machineProfile });
+  const start = useCallback(() => {
+    if (disabled) {
+      return;
+    }
+    clear();
+    active.current = true;
+    releaseHandler.current = release;
+    document.documentElement.addEventListener('mouseup', release);
+    delayTimer.current = setTimeout(() => {
+      if (!active.current) {
+        return;
+      }
+      action.current();
+      intervalTimer.current = setInterval(() => {
+        if (active.current) {
+          action.current();
+        }
+      }, REPEAT_INTERVAL);
+    }, REPEAT_DELAY);
+  }, [clear, disabled, release]);
+
+  useEffect(() => {
+    if (disabled) {
+      clear();
+    }
+    return clear;
+  }, [clear, disabled]);
+
+  return {
+    onMouseDown: start,
+    onTouchStart: start,
+    onTouchCancel: release,
+    onTouchEnd: release,
+    onBlur: clear,
   };
+}
 
-  updateMachineProfilesFromSubscriber = (machineProfiles) => {
-    this.setState({
-      machineProfiles: ensureArray(machineProfiles)
-    });
-  };
+/**
+ * @param {{ src: string }} props
+ */
+function CameraIcon({ src }) {
+  return (
+    <Box
+      as="span"
+      role="img"
+      aria-hidden="true"
+      display="inline-block"
+      flexShrink={0}
+      width="20px"
+      height="20px"
+      sx={{
+        backgroundColor: 'currentColor',
+        mask: `url("${src}") center / contain no-repeat`,
+        WebkitMask: `url("${src}") center / contain no-repeat`,
+      }}
+    />
+  );
+}
 
-  changeMachineProfileById = (id) => {
-    const machineProfile = _find(this.state.machineProfiles, { id });
-    if (machineProfile) {
-      config.set('workspace.machineProfile', machineProfile);
+/**
+ * @param {{ children?: React.ReactNode, label: string, onClick: Function, selected?: boolean }} props
+ */
+function CameraIconButton({ children, label, onClick, selected = false }) {
+  return (
+    <Tooltip label={label} placement="top">
+      <Button
+        aria-label={label}
+        onClick={onClick}
+        aria-pressed={selected}
+        variant="ghost"
+        sx={{
+          display: 'inline-flex',
+          backgroundColor: selected ? '_foreground.subtle.selected' : 'transparent',
+          height: '32px',
+          minWidth: '32px',
+          padding: '6px',
+          width: '32px',
+        }}
+      >
+        {children}
+      </Button>
+    </Tooltip>
+  );
+}
+
+/**
+ * @param {{ children?: React.ReactNode, label: string, onClick: Function }} props
+ */
+function RepeatableCameraButton({ children, label, onClick }) {
+  const repeatableProps = useRepeatable(onClick, false);
+  const handleKeyDown = event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onClick();
     }
   };
 
-  clearMachineProfile = () => {
-    // Match the shape used by Settings.jsx when a profile is deleted, so
-    // every reader (Visualizer changeMachineProfile, this toolbar's
-    // updateMachineProfileFromStore) handles "no profile" the same way.
-    config.set('workspace.machineProfile', { id: null });
-  };
+  return (
+    <Tooltip label={label} placement="top">
+      <Button
+        {...repeatableProps}
+        aria-label={label}
+        onKeyDown={handleKeyDown}
+        variant="ghost"
+        sx={{
+          display: 'inline-flex',
+          height: '32px',
+          minWidth: '32px',
+          padding: '6px',
+          width: '32px',
+        }}
+      >
+        {children}
+      </Button>
+    </Tooltip>
+  );
+}
 
-  subscribe() {
-    const tokens = [
-      pubsub.subscribe('updateMachineProfiles', (msg, machineProfiles) => {
-        this.updateMachineProfilesFromSubscriber(machineProfiles);
-      })
-    ];
-    this.pubsubTokens = this.pubsubTokens.concat(tokens);
-  }
+/**
+ * @param {{ is3DView?: boolean, cameraMode?: string, cameraPosition?: string, camera?: object }} props
+ */
+function SecondaryToolbar({
+  is3DView = false,
+  cameraMode = CAMERA_MODE_PAN,
+  cameraPosition = 'top',
+  camera = {},
+}) {
+  const queryClient = useQueryClient();
+  const machineProfilesQuery = useFetchMachinesQuery();
+  const machineProfiles = ensureArray(machineProfilesQuery.data?.records);
+  const [machineProfile, setMachineProfile] = useState(() => config.get('workspace.machineProfile'));
+  const selectedMachineProfile = machineProfiles.find(({ id }) => id === _get(machineProfile, 'id'));
 
-  unsubscribe() {
-    this.pubsubTokens.forEach((token) => {
+  useEffect(() => {
+    const updateMachineProfileFromStore = () => {
+      const nextMachineProfile = config.get('workspace.machineProfile');
+      setMachineProfile(previous => (_isEqual(nextMachineProfile, previous) ? previous : nextMachineProfile));
+    };
+
+    config.on('change', updateMachineProfileFromStore);
+    return () => {
+      config.removeListener('change', updateMachineProfileFromStore);
+    };
+  }, []);
+
+  useEffect(() => {
+    const token = pubsub.subscribe('updateMachineProfiles', () => {
+      queryClient.invalidateQueries({ queryKey: API_MACHINES_QUERY_KEY });
+    });
+
+    return () => {
       pubsub.unsubscribe(token);
-    });
-    this.pubsubTokens = [];
-  }
+    };
+  }, [queryClient]);
 
-  componentDidMount() {
-    config.on('change', this.updateMachineProfileFromStore);
-    this.subscribe();
+  const changeMachineProfileById = useCallback((id) => {
+    const nextMachineProfile = machineProfiles.find(profile => profile.id === id);
+    if (nextMachineProfile) {
+      config.set('workspace.machineProfile', nextMachineProfile);
+    }
+  }, [machineProfiles]);
 
-    this.fetchMachineProfiles();
-  }
+  const clearMachineProfile = useCallback(() => {
+    config.set('workspace.machineProfile', { id: null });
+  }, []);
 
-  componentWillUnmount() {
-    config.removeListener('change', this.updateMachineProfileFromStore);
-    this.unsubscribe();
-  }
+  const selectMachineProfile = useCallback((id) => {
+    if (id === CLEAR_MACHINE_PROFILE) {
+      clearMachineProfile();
+      return;
+    }
+    changeMachineProfileById(id);
+  }, [changeMachineProfileById, clearMachineProfile]);
 
-  render() {
-    const { is3DView, cameraMode, cameraPosition, camera } = this.props;
-    const { machineProfile, machineProfiles } = this.state;
-    const selectedMachineProfile = _find(machineProfiles, {
-      id: _get(machineProfile, 'id')
-    });
-    const selectedMachineProfileId = _get(selectedMachineProfile, 'id');
-    const selectedMachineProfileName = _get(selectedMachineProfile, 'name');
-
-    return (
-      <Container fluid>
-        <Row
-          style={{
-            justifyContent: 'space-between',
-            flexWrap: 'nowrap',
-          }}
-        >
-          <Col width="auto">
-            {is3DView && (
-              <ButtonToolbar>
-                <ButtonGroup sm>
-                  <IconButton
-                    aria-label="Top view"
-                    className={cx({
-                      'highlight': cameraPosition === 'top'
-                    })}
-                    onClick={camera.toTopView}
-                  >
-                    <Tooltip
-                      content={i18n._('Top View')}
-                      hideOnClick
-                      placement="top"
-                    >
-                      <Image
-                        aria-hidden="true"
-                        src={iconTopView}
-                        width="20"
-                        height="20"
-                      />
-                    </Tooltip>
-                  </IconButton>
-                  <IconButton
-                    aria-label="Front view"
-                    className={cx({
-                      'highlight': cameraPosition === 'front'
-                    })}
-                    onClick={camera.toFrontView}
-                  >
-                    <Tooltip
-                      content={i18n._('Front View')}
-                      hideOnClick
-                      placement="top"
-                    >
-                      <Image
-                        aria-hidden="true"
-                        src={iconFrontView}
-                        width="20"
-                        height="20"
-                      />
-                    </Tooltip>
-                  </IconButton>
-                  <IconButton
-                    aria-label="Right side view"
-                    className={cx({
-                      'highlight': cameraPosition === 'right'
-                    })}
-                    onClick={camera.toRightSideView}
-                  >
-                    <Tooltip
-                      content={i18n._('Right Side View')}
-                      hideOnClick
-                      placement="top"
-                    >
-                      <Image
-                        aria-hidden="true"
-                        src={iconRightSideView}
-                        width="20"
-                        height="20"
-                      />
-                    </Tooltip>
-                  </IconButton>
-                  <IconButton
-                    aria-label="Left side view"
-                    className={cx({
-                      'highlight': cameraPosition === 'left'
-                    })}
-                    onClick={camera.toLeftSideView}
-                  >
-                    <Tooltip
-                      content={i18n._('Left Side View')}
-                      hideOnClick
-                      placement="top"
-                    >
-                      <Image
-                        aria-hidden="true"
-                        src={iconLeftSideView}
-                        width="20"
-                        height="20"
-                      />
-                    </Tooltip>
-                  </IconButton>
-                  <IconButton
-                    aria-label="3D view"
-                    className={cx({
-                      'highlight': cameraPosition === '3d'
-                    })}
-                    onClick={camera.to3DView}
-                  >
-                    <Tooltip
-                      content={i18n._('3D View')}
-                      hideOnClick
-                      placement="top"
-                    >
-                      <Image
-                        aria-hidden="true"
-                        src={icon3DView}
-                        width="20"
-                        height="20"
-                      />
-                    </Tooltip>
-                  </IconButton>
-                  <RepeatableButton
-                    aria-label="Zoom to fit"
-                    tag={IconButton}
-                    onClick={camera.zoomFit}
-                  >
-                    <Tooltip
-                      content={i18n._('Zoom to Fit')}
-                      hideOnClick
-                      placement="top"
-                    >
-                      <Image
-                        aria-hidden="true"
-                        src={iconZoomFit}
-                        width="20"
-                        height="20"
-                      />
-                    </Tooltip>
-                  </RepeatableButton>
-                  <RepeatableButton
-                    aria-label="Zoom in"
-                    tag={IconButton}
-                    onClick={camera.zoomIn}
-                  >
-                    <Tooltip
-                      content={i18n._('Zoom In')}
-                      hideOnClick
-                      placement="top"
-                    >
-                      <Image
-                        aria-hidden="true"
-                        src={iconZoomIn}
-                        width="20"
-                        height="20"
-                      />
-                    </Tooltip>
-                  </RepeatableButton>
-                  <RepeatableButton
-                    aria-label="Zoom out"
-                    tag={IconButton}
-                    onClick={camera.zoomOut}
-                  >
-                    <Tooltip
-                      content={i18n._('Zoom Out')}
-                      hideOnClick
-                      placement="top"
-                    >
-                      <Image
-                        aria-hidden="true"
-                        src={iconZoomOut}
-                        width="20"
-                        height="20"
-                      />
-                    </Tooltip>
-                  </RepeatableButton>
-                </ButtonGroup>
-                <Dropdown
-                  componentClass={ButtonGroup}
-                  style={{ marginLeft: 0 }}
-                  dropup
-                  onSelect={eventKey => {
-                    if (eventKey === CAMERA_MODE_PAN) {
-                      camera.toPanMode();
-                    } else if (eventKey === CAMERA_MODE_ROTATE) {
-                      camera.toRotateMode();
-                    }
-                  }}
-                >
-                  <Dropdown.Toggle
-                    aria-label={cameraMode === CAMERA_MODE_PAN ? 'Camera mode: Pan' : 'Camera mode: Rotate'}
-                    componentClass={IconButton}
-                  >
-                    {(cameraMode === CAMERA_MODE_PAN) && (
-                      <Image
-                        aria-hidden="true"
-                        src={iconMoveCamera}
-                        width="20"
-                        height="20"
-                      />
-                    )}
-                    {(cameraMode === CAMERA_MODE_ROTATE) && (
-                      <Image
-                        aria-hidden="true"
-                        src={iconRotateCamera}
-                        width="20"
-                        height="20"
-                      />
-                    )}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <MenuItem eventKey={CAMERA_MODE_PAN}>
-                      <Image src={iconMoveCamera} width="20" height="20" />
-                      <Space width={4} />
-                      {i18n._('Move the camera')}
-                    </MenuItem>
-                    <MenuItem eventKey={CAMERA_MODE_ROTATE}>
-                      <Image src={iconRotateCamera} width="20" height="20" />
-                      <Space width={4} />
-                      {i18n._('Rotate the camera')}
-                    </MenuItem>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </ButtonToolbar>
-            )}
-          </Col>
-          <Col width="auto">
-            {(machineProfiles.length > 0) && (
-              <Dropdown
-                componentClass={ButtonGroup}
-                style={{ marginLeft: 0 }}
-                dropup
-                onSelect={(eventKey) => {
-                  if (eventKey === CLEAR_MACHINE_PROFILE) {
-                    this.clearMachineProfile();
-                    return;
-                  }
-                  this.changeMachineProfileById(eventKey);
-                }}
+  return (
+    <Flex
+      aria-label="Visualizer camera toolbar"
+      role="toolbar"
+      alignItems="center"
+      justifyContent="space-between"
+      flexWrap="wrap"
+      gap="2x"
+      sx={{ '& button:focus-visible': { color: 'text.accent' } }}
+    >
+      <Box width="auto">
+        {is3DView && (
+          <Flex alignItems="center" gap="1x">
+            <ButtonGroup>
+              <CameraIconButton
+                label={i18n._('Top View')}
+                selected={cameraPosition === 'top'}
+                onClick={camera.toTopView}
               >
-                <Dropdown.Toggle
-                  aria-label="Select machine profile"
-                  componentClass={IconButton}
+                <CameraIcon src={iconTopView} />
+              </CameraIconButton>
+              <CameraIconButton
+                label={i18n._('Front View')}
+                selected={cameraPosition === 'front'}
+                onClick={camera.toFrontView}
+              >
+                <CameraIcon src={iconFrontView} />
+              </CameraIconButton>
+              <CameraIconButton
+                label={i18n._('Right Side View')}
+                selected={cameraPosition === 'right'}
+                onClick={camera.toRightSideView}
+              >
+                <CameraIcon src={iconRightSideView} />
+              </CameraIconButton>
+              <CameraIconButton
+                label={i18n._('Left Side View')}
+                selected={cameraPosition === 'left'}
+                onClick={camera.toLeftSideView}
+              >
+                <CameraIcon src={iconLeftSideView} />
+              </CameraIconButton>
+              <CameraIconButton
+                label={i18n._('3D View')}
+                selected={cameraPosition === '3d'}
+                onClick={camera.to3DView}
+              >
+                <CameraIcon src={icon3DView} />
+              </CameraIconButton>
+              <RepeatableCameraButton
+                label={i18n._('Zoom to Fit')}
+                onClick={camera.zoomFit}
+              >
+                <CameraIcon src={iconZoomFit} />
+              </RepeatableCameraButton>
+              <RepeatableCameraButton
+                label={i18n._('Zoom In')}
+                onClick={camera.zoomIn}
+              >
+                <CameraIcon src={iconZoomIn} />
+              </RepeatableCameraButton>
+              <RepeatableCameraButton
+                label={i18n._('Zoom Out')}
+                onClick={camera.zoomOut}
+              >
+                <CameraIcon src={iconZoomOut} />
+              </RepeatableCameraButton>
+            </ButtonGroup>
+            <Dropdown
+              placement="top-start"
+              items={[
+                {
+                  value: 'pan',
+                  content: (
+                    <>
+                      <CameraIcon src={iconMoveCamera} />
+                      <Space width="1x" />
+                      {i18n._('Move the camera')}
+                    </>
+                  ),
+                  props: { onClick: camera.toPanMode },
+                },
+                {
+                  value: 'rotate',
+                  content: (
+                    <>
+                      <CameraIcon src={iconRotateCamera} />
+                      <Space width="1x" />
+                      {i18n._('Rotate the camera')}
+                    </>
+                  ),
+                  props: { onClick: camera.toRotateMode },
+                },
+              ]}
+              renderItem={item => item?.content}
+              renderToggle={() => (
+                <DropdownButton
+                  aria-label={cameraMode === CAMERA_MODE_PAN ? i18n._('Camera mode: Pan') : i18n._('Camera mode: Rotate')}
+                  variant="ghost"
+                  sx={{ minWidth: '56px', width: '56px', height: '32px', padding: '6px' }}
                 >
-                  {!!selectedMachineProfile && (
-                    <div
-                      style={{
-                        display: 'inline-block',
-                        maxWidth: 120,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        verticalAlign: 'top',
-                      }}
-                      title={selectedMachineProfileName}
-                    >
-                      {selectedMachineProfileName}
-                    </div>
-                  )}
-                  {!selectedMachineProfile && (
-                    i18n._('No machine profile selected')
-                  )}
-                </Dropdown.Toggle>
-                <Dropdown.Menu style={{ maxHeight: 320, overflowY: 'auto' }}>
-                  <MenuItem header>
+                  <CameraIcon src={cameraMode === CAMERA_MODE_PAN ? iconMoveCamera : iconRotateCamera} />
+                </DropdownButton>
+              )}
+            />
+          </Flex>
+        )}
+      </Box>
+      <Box width="auto">
+        {machineProfiles.length > 0 && (
+          <Dropdown
+            placement="top-end"
+            items={[
+              {
+                value: 'heading',
+                type: 'custom',
+                content: (
+                  <Box px="3x" py="2x" fontWeight="bold">
                     {i18n._('Machine Profiles')}
-                  </MenuItem>
-                  <MenuItem
-                    active={!selectedMachineProfile}
-                    eventKey={CLEAR_MACHINE_PROFILE}
+                  </Box>
+                ),
+              },
+              {
+                value: CLEAR_MACHINE_PROFILE,
+                content: i18n._('None'),
+                props: {
+                  selected: !selectedMachineProfile,
+                  onClick: () => selectMachineProfile(CLEAR_MACHINE_PROFILE),
+                },
+              },
+              { type: 'divider' },
+              ...machineProfiles.map(({ id, name }) => ({
+                value: id,
+                content: (
+                  <Box
+                    as="span"
+                    sx={{
+                      display: 'inline-block',
+                      maxWidth: 240,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      verticalAlign: 'top',
+                    }}
                   >
-                    {i18n._('None')}
-                  </MenuItem>
-                  <MenuItem divider />
-                  {machineProfiles.map(({ id, name }) => (
-                    <MenuItem
-                      active={id === selectedMachineProfileId}
-                      key={id}
-                      eventKey={id}
-                      title={name}
-                    >
-                      <div
-                        style={{
-                          display: 'inline-block',
-                          verticalAlign: 'top',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          maxWidth: 240,
-                        }}
-                      >
-                        {name}
-                      </div>
-                    </MenuItem>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
+                    {name}
+                  </Box>
+                ),
+                props: {
+                  selected: id === _get(machineProfile, 'id'),
+                  onClick: () => selectMachineProfile(id),
+                  title: name,
+                },
+              })),
+            ]}
+            renderItem={item => item?.content}
+            renderToggle={() => (
+              <DropdownButton
+                aria-label={i18n._('Select machine profile')}
+                variant="ghost"
+                sx={{ minWidth: '36px', padding: '8px' }}
+              >
+                {selectedMachineProfile ? (
+                  <Box
+                    as="span"
+                    title={selectedMachineProfile.name}
+                    sx={{
+                      display: 'inline-block',
+                      maxWidth: 120,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      verticalAlign: 'top',
+                    }}
+                  >
+                    {selectedMachineProfile.name}
+                  </Box>
+                ) : i18n._('No machine profile selected')}
+              </DropdownButton>
             )}
-          </Col>
-        </Row>
-      </Container>
-    );
-  }
+          />
+        )}
+      </Box>
+    </Flex>
+  );
 }
 
 export default SecondaryToolbar;

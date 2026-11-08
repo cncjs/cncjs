@@ -1,0 +1,178 @@
+{
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "151.0.7922.34",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true
+  },
+  "fixture": {
+    "path": "/tmp/cncjs-r6-20261001/r6-simulator-dwell.gcode",
+    "bytes": 41,
+    "sha256": "b30e3fe9af0fa87c87d11f6660c6420997d931d28146fdd8c884e26b3f4f9763",
+    "commands": [
+      "G21",
+      "G90",
+      "G0 X0 Y0 Z0",
+      "G4 P12",
+      "G1 X5 Y0 F120"
+    ]
+  },
+  "gates": [
+    {
+      "name": "disable-auto-reconnect",
+      "status": "failed",
+      "durationMs": 15115,
+      "error": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Connection widget' }).getByText('Connect automatically', { exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <div class=\"css-1gb30hg-Box eecupy40\">…</div>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - don"
+    },
+    {
+      "name": "select-grbl-controller",
+      "status": "passed",
+      "durationMs": 4,
+      "selectedBefore": true,
+      "selectedAfter": true
+    },
+    {
+      "name": "choose-simulator-port",
+      "status": "failed",
+      "durationMs": 15005,
+      "error": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Connection widget' }).getByRole('button', { name: 'Serial port', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button tabindex=\"0\" type=\"button\" role=\"button\" aria-haspopup=\"menu\" data-tonic=\"MenuButton\" aria-label=\"Serial port\" id=\"connection-serial-port\" class=\"css-1o4icmh-Box eecupy40\" aria-controls=\"@tonic-ui/react:Menu-:r3:\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b["
+    },
+    {
+      "name": "connect-grbl-simulator",
+      "status": "failed",
+      "durationMs": 2,
+      "error": "Error: Open is disabled after selecting simulator and Grbl"
+    },
+    {
+      "name": "load-dwell-gcode",
+      "status": "failed",
+      "durationMs": 15003,
+      "error": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Upload G-code', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button disabled type=\"button\" data-tonic=\"Button\" aria-disabled=\"true\" title=\"Upload G-code\" class=\"css-wo6ff0-Box eecupy40\">Upload G-code</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying"
+    },
+    {
+      "name": "run",
+      "status": "failed",
+      "durationMs": 15004,
+      "error": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Run', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button disabled title=\"Run\" type=\"button\" aria-label=\"Run\" data-tonic=\"Button\" aria-disabled=\"true\" class=\"css-1uopr4h-Box eecupy40\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b"
+    },
+    {
+      "name": "pause",
+      "status": "failed",
+      "durationMs": 15002,
+      "error": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Pause', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button disabled type=\"button\" title=\"Pause\" aria-label=\"Pause\" data-tonic=\"Button\" aria-disabled=\"true\" class=\"css-1uopr4h-Box eecupy40\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click a"
+    },
+    {
+      "name": "resume",
+      "status": "failed",
+      "durationMs": 2,
+      "error": "Error: Run control is not in Resume state"
+    },
+    {
+      "name": "pause-before-stop",
+      "status": "failed",
+      "durationMs": 15003,
+      "error": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Pause', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button disabled type=\"button\" title=\"Pause\" aria-label=\"Pause\" data-tonic=\"Button\" aria-disabled=\"true\" class=\"css-1uopr4h-Box eecupy40\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click a"
+    },
+    {
+      "name": "stop",
+      "status": "failed",
+      "durationMs": 15004,
+      "error": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Stop', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button disabled title=\"Stop\" type=\"button\" aria-label=\"Stop\" data-tonic=\"Button\" aria-disabled=\"true\" class=\"css-1uopr4h-Box eecupy40\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click acti"
+    },
+    {
+      "name": "unload-gcode",
+      "status": "passed",
+      "durationMs": 312,
+      "closeFileEnabledAfterUnload": false
+    },
+    {
+      "name": "jog-keydown-and-release",
+      "status": "failed",
+      "durationMs": 15003,
+      "error": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Axes widget', exact: true }).getByRole('button', { name: 'Toggle keypad jogging', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button disabled type=\"button\" aria-disabled=\"true\" title=\"Keypad jogging\" data-tonic=\"LinkButton\" aria-label=\"Toggle keypad jogging\" class=\"eecupy40 css-p7skoi-Box-Box eecupy40\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting fo"
+    },
+    {
+      "name": "disconnect-simulator",
+      "status": "failed",
+      "durationMs": 15002,
+      "error": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Connection widget' }).getByRole('button', { name: 'Close', exact: true })\u001b[22m\n"
+    }
+  ],
+  "wire": {
+    "outgoing": [],
+    "incomingEvents": [
+      {
+        "name": "startup"
+      }
+    ]
+  },
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "[webpack-dev-server] Errors while compiling. Reload prevented."
+    },
+    {
+      "type": "error",
+      "text": "[webpack-dev-server] ERROR\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Administration/Machines/limits.js\n  49:16  error  Expected { after 'if' condition  curly\n\n✖ 1 problem (1 error, 0 warnings)\n  1 error and 0 warnings potentially fixable with the `--fix` option.\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/W"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1240051c600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1240051c600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1240051c600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": []
+}

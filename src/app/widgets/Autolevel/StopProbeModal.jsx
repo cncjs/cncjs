@@ -1,48 +1,60 @@
-import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import Modal from '@app/components/Modal';
-import ModalTemplate from '@app/components/ModalTemplate';
-import { Button } from '@app/components/Buttons';
+import {
+  Box,
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Space,
+  Text,
+} from '@tonic-ui/react';
+import { StopIcon } from '@tonic-ui/react-icons';
+import React, { useRef, useState } from 'react';
 import i18n from '@app/lib/i18n';
 
-class StopProbeModal extends PureComponent {
-  static propTypes = {
-    actions: PropTypes.object.isRequired,
+/**
+ * @param {{onCancel?: Function, onConfirm?: Function}} props
+ */
+function StopProbeModal({ onCancel = () => {}, onConfirm = () => {} }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitLock = useRef(false);
+
+  const submit = () => {
+    if (submitLock.current) {
+      return;
+    }
+    submitLock.current = true;
+    setIsSubmitting(true);
+    onConfirm();
   };
 
-  render() {
-    const { actions } = this.props;
-
-    return (
-      <Modal disableOverlay size="sm" onClose={actions.closeModal}>
-        <Modal.Header>
-          <Modal.Title>
+  return (
+    <Modal
+      closeOnInteractOutside={false} isClosable isOpen
+      onClose={onCancel} size="sm"
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>{i18n._('Stop Probing')}</ModalHeader>
+        <ModalBody>
+          <Box color="error.text">
+            <Text mb="2x">{i18n._('Are you sure you want to stop probing?')}</Text>
+            <Text>{i18n._('This will reset the controller and cancel the probe cycle.')}</Text>
+          </Box>
+        </ModalBody>
+        <ModalFooter>
+          <Button onClick={onCancel} variant="secondary">{i18n._('Continue Probing')}</Button>
+          <Button disabled={isSubmitting} onClick={submit} variant="primary">
+            <StopIcon aria-hidden="true" size="1em" />
+            <Space width="1x" />
             {i18n._('Stop Probing')}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ModalTemplate type="warning">
-            <p>{i18n._('Are you sure you want to stop probing?')}</p>
-            <p>{i18n._('This will reset the controller and cancel the probe cycle.')}</p>
-          </ModalTemplate>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            btnStyle="flat"
-            onClick={actions.closeModal}
-          >
-            {i18n._('Continue Probing')}
           </Button>
-          <Button
-            btnStyle="danger"
-            onClick={actions.stopProbing}
-          >
-            <i className="fa fa-stop" /> {i18n._('Stop Probing')}
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
 }
 
 export default StopProbeModal;

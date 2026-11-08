@@ -1,6 +1,8 @@
 import {
   Space,
+  Spinner,
 } from '@tonic-ui/react';
+import { ChevronDownIcon, ChevronRightIcon, FileOIcon, FolderOIcon, FolderOpenOIcon } from '@tonic-ui/react-icons';
 import path from 'path';
 import cx from 'classnames';
 import { format } from 'date-fns';
@@ -73,17 +75,11 @@ function TreeNodeToggler({ show, expanded }) {
         styles.treeToggler
       )}
     >
-      <i
-        className={cx(
-          'fa',
-          'fa-fw',
-          { 'fa-chevron-down': expanded },
-          { 'fa-chevron-right': !expanded }
-        )}
-        style={{
-          opacity: expanded ? 1 : 0.5
-        }}
-      />
+      {expanded ? (
+        <ChevronDownIcon aria-hidden="true" size="1em" style={{ opacity: 1 }} />
+      ) : (
+        <ChevronRightIcon aria-hidden="true" size="1em" style={{ opacity: 0.5 }} />
+      )}
     </span>
   );
 }
@@ -92,27 +88,10 @@ TreeNodeToggler.propTypes = {
   expanded: PropTypes.bool
 };
 
-function TreeNodeLoader({ show }) {
-  if (!show) {
-    return null;
-  }
-
-  return (
-    <i
-      style={{ marginLeft: 5 }}
-      className={cx(
-        { 'hidden': !show },
-        'fa',
-        'fa-circle-o-notch',
-        'fa-fw',
-        { 'fa-spin': show }
-      )}
-    />
-  );
+/** @param {{ show?: boolean }} props */
+function TreeNodeLoader({ show = false }) {
+  return show ? <Spinner size="xs" ml={5} aria-label={i18n._('Loading...')} /> : null;
 }
-TreeNodeLoader.propTypes = {
-  show: PropTypes.bool
-};
 
 const renderer = (node, treeOptions) => {
   const { id, loadOnDemand = false } = node;
@@ -173,15 +152,10 @@ const renderer = (node, treeOptions) => {
             show={more || loadOnDemand}
             expanded={more && open}
           />
-          <i
-            className={cx(
-              'fa',
-              { 'fa-folder-open-o': more && open },
-              { 'fa-folder-o': more && !open },
-              { 'fa-file-o': !more }
-            )}
-          />
-          <Space width={8} />
+          {more && open && <FolderOpenOIcon aria-hidden="true" size="1em" />}
+          {more && !open && <FolderOIcon aria-hidden="true" size="1em" />}
+          {!more && <FileOIcon aria-hidden="true" size="1em" />}
+          <Space width="2x" />
           {node.name}
           <TreeNodeLoader show={loading} />
         </div>

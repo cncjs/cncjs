@@ -1,19 +1,20 @@
+import { faCodeBranch, faCompress, faExpand } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  Box,
+  Button,
+  Dropdown,
+  DropdownToggle,
   Space,
 } from '@tonic-ui/react';
+import { AppIcon, ChevronDownIcon, ChevronUpIcon, CloseIcon, InfoIcon, MenuIcon, MoreIcon } from '@tonic-ui/react-icons';
 import _get from 'lodash/get';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
-import FormGroup from '@app/components/FormGroup';
-import { Container } from '@app/components/GridSystem';
-import { ModalProvider, ModalConsumer, ModalRoot } from '@app/components/Modal';
 import Widget from '@app/components/Widget';
+import widgetStyles from '@app/components/Widget/index.styl';
 import i18n from '@app/lib/i18n';
 import controller from '@app/lib/controller';
-import WidgetConfig from '@app/widgets/shared/WidgetConfig';
 import WidgetConfigProvider from '@app/widgets/shared/WidgetConfigProvider';
 import {
   GRBL,
@@ -29,248 +30,237 @@ import SpindleOverride from './SpindleOverride';
 import RapidOverride from './RapidOverride';
 import ControllerModal from './modals/ControllerModal';
 
-class GrblWidget extends Component {
-  static propTypes = {
-    widgetId: PropTypes.string.isRequired,
-    onFork: PropTypes.func.isRequired,
-    onRemove: PropTypes.func.isRequired,
-    sortable: PropTypes.object
-  };
+const widgetActionSx = {
+  alignSelf: 'stretch',
+  border: 0,
+  borderRadius: 0,
+  minHeight: 'auto',
+  backgroundColor: 'inherit',
+  color: 'inherit',
+  _hover: { backgroundColor: 'actions.hovered', color: 'inherit' },
+  _disabled: { backgroundColor: 'inherit', color: 'text.disabled' },
+};
 
-  // Public methods
-  collapse = () => {
-    this.setState({ minimized: true });
-  };
+/**
+ * @param {{
+ *   isReady?: boolean,
+ *   onFork: () => void,
+ *   onRemove: () => void,
+ *   onViewChange: (view: 'normal' | 'collapsed' | 'fullscreen') => void,
+ *   sortable: { filterClassName: string, handleClassName: string },
+ *   view: 'normal' | 'collapsed' | 'fullscreen',
+ *   widgetId: string,
+ * }} props
+ */
+function GrblWidget({
+  isReady,
+  onFork,
+  onRemove,
+  onViewChange,
+  sortable,
+  view,
+  widgetId,
+}) {
+  const [isControllerModalOpen, setIsControllerModalOpen] = useState(false);
+  const isCollapsed = view === 'collapsed';
+  const isFullscreen = view === 'fullscreen';
+  const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
 
-  expand = () => {
-    this.setState({ minimized: false });
-  };
-
-  config = new WidgetConfig(this.props.widgetId);
-
-  state = this.getInitialState();
-
-  toggleFullscreen = () => {
-    this.setState(state => ({
-      minimized: state.isFullscreen ? state.minimized : false,
-      isFullscreen: !state.isFullscreen,
-    }));
-  };
-
-  toggleMinimized = () => {
-    this.setState(state => ({
-      minimized: !state.minimized,
-    }));
-  };
-
-  componentDidUpdate(prevProps, prevState) {
-    const {
-      minimized,
-    } = this.state;
-
-    this.config.set('minimized', minimized);
-  }
-
-  getInitialState() {
-    return {
-      minimized: this.config.get('minimized', false),
-      isFullscreen: false,
-    };
-  }
-
-  render() {
-    const {
-      widgetId,
-      isReady,
-    } = this.props;
-    const { minimized, isFullscreen } = this.state;
-    const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
-
-    return (
-      <WidgetConfigProvider widgetId={widgetId}>
-        <ModalProvider>
-          <ModalRoot />
-          <ModalConsumer>
-            {({ openModal }) => (
-              <Widget aria-label="Grbl widget" fullscreen={isFullscreen}>
-                <Widget.Header>
-                  <Widget.Title>
-                    <Widget.Sortable className={this.props.sortable.handleClassName}>
-                      <FontAwesomeIcon icon="bars" fixedWidth />
-                      <Space width={4} />
-                    </Widget.Sortable>
-                    {isForkedWidget &&
-                      <FontAwesomeIcon icon="code-branch" fixedWidth />}
-                    Grbl
-                  </Widget.Title>
-                  <Widget.Controls className={this.props.sortable.filterClassName}>
-                    {isReady && (
-                      <Widget.Button
-                        aria-label="Grbl controller info"
-                        onClick={(event) => {
-                          openModal(ControllerModal);
-                        }}
-                      >
-                        <i className="fa fa-info" />
-                      </Widget.Button>
-                    )}
-                    {isReady && (
-                      <Widget.DropdownButton
-                        aria-label="Grbl commands"
-                        toggle={<i className="fa fa-th-large" />}
-                      >
-                        <Widget.DropdownMenuItem
-                          onSelect={() => controller.write('?')}
-                        >
-                          {i18n._('Status Report (?)')}
-                        </Widget.DropdownMenuItem>
-                        <Widget.DropdownMenuItem
-                          onSelect={() => controller.writeln('$C')}
-                        >
-                          {i18n._('Check G-code Mode ($C)')}
-                        </Widget.DropdownMenuItem>
-                        <Widget.DropdownMenuItem
-                          onSelect={() => controller.command('homing')}
-                        >
-                          {i18n._('Homing ($H)')}
-                        </Widget.DropdownMenuItem>
-                        <Widget.DropdownMenuItem
-                          onSelect={() => controller.command('unlock')}
-                        >
-                          {i18n._('Kill Alarm Lock ($X)')}
-                        </Widget.DropdownMenuItem>
-                        <Widget.DropdownMenuItem
-                          onSelect={() => controller.command('sleep')}
-                        >
-                          {i18n._('Sleep ($SLP)')}
-                        </Widget.DropdownMenuItem>
-                        <Widget.DropdownMenuItem divider />
-                        <Widget.DropdownMenuItem
-                          onSelect={() => controller.writeln('$')}
-                        >
-                          {i18n._('Help ($)')}
-                        </Widget.DropdownMenuItem>
-                        <Widget.DropdownMenuItem
-                          onSelect={() => controller.writeln('$$')}
-                        >
-                          {i18n._('Settings ($$)')}
-                        </Widget.DropdownMenuItem>
-                        <Widget.DropdownMenuItem
-                          onSelect={() => controller.writeln('$#')}
-                        >
-                          {i18n._('View G-code Parameters ($#)')}
-                        </Widget.DropdownMenuItem>
-                        <Widget.DropdownMenuItem
-                          onSelect={() => controller.writeln('$G')}
-                        >
-                          {i18n._('View G-code Parser State ($G)')}
-                        </Widget.DropdownMenuItem>
-                        <Widget.DropdownMenuItem
-                          onSelect={() => controller.writeln('$I')}
-                        >
-                          {i18n._('View Build Info ($I)')}
-                        </Widget.DropdownMenuItem>
-                        <Widget.DropdownMenuItem
-                          onSelect={() => controller.writeln('$N')}
-                        >
-                          {i18n._('View Startup Blocks ($N)')}
-                        </Widget.DropdownMenuItem>
-                      </Widget.DropdownButton>
-                    )}
-                    {isReady && (
-                      <Widget.Button
-                        aria-label={minimized ? 'Expand' : 'Collapse'}
-                        aria-expanded={!minimized}
-                        disabled={isFullscreen}
-                        title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                        onClick={this.toggleMinimized}
-                      >
-                        {minimized &&
-                          <FontAwesomeIcon icon="chevron-down" fixedWidth />}
-                        {!minimized &&
-                          <FontAwesomeIcon icon="chevron-up" fixedWidth />}
-                      </Widget.Button>
-                    )}
-                    {isFullscreen && (
-                      <Widget.Button
-                        title={i18n._('Exit Full Screen')}
-                        onClick={this.toggleFullscreen}
-                      >
-                        <FontAwesomeIcon icon="compress" fixedWidth />
-                      </Widget.Button>
-                    )}
-                    <Widget.DropdownButton
-                      aria-label="More options"
-                      title={i18n._('More')}
-                      toggle={(
-                        <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
-                      )}
-                      onSelect={(eventKey) => {
-                        if (eventKey === 'fullscreen') {
-                          this.toggleFullscreen();
-                        } else if (eventKey === 'fork') {
-                          this.props.onFork();
-                        } else if (eventKey === 'remove') {
-                          this.props.onRemove();
-                        }
-                      }}
-                    >
-                      <Widget.DropdownMenuItem eventKey="fullscreen" disabled={!isReady}>
-                        {!isFullscreen && (
-                          <FontAwesomeIcon icon="expand" fixedWidth />
-                        )}
-                        {isFullscreen && (
-                          <FontAwesomeIcon icon="compress" fixedWidth />
-                        )}
-                        <Space width={8} />
-                        {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
-                      </Widget.DropdownMenuItem>
-                      <Widget.DropdownMenuItem eventKey="fork">
-                        <FontAwesomeIcon icon="code-branch" fixedWidth />
-                        <Space width={8} />
-                        {i18n._('Fork Widget')}
-                      </Widget.DropdownMenuItem>
-                      <Widget.DropdownMenuItem eventKey="remove">
-                        <FontAwesomeIcon icon="times" fixedWidth />
-                        <Space width={8} />
-                        {i18n._('Remove Widget')}
-                      </Widget.DropdownMenuItem>
-                    </Widget.DropdownButton>
-                  </Widget.Controls>
-                </Widget.Header>
-                {isReady && (
-                  <Widget.Content
-                    aria-hidden={minimized}
-                    style={{
-                      display: (minimized ? 'none' : 'block'),
-                    }}
-                  >
-                    <Container
-                      fluid
-                      style={{
-                        padding: '.75rem',
-                      }}
-                    >
-                      <FormGroup>
-                        <FeedOverride />
-                        <SpindleOverride />
-                        <RapidOverride />
-                      </FormGroup>
-                      <Accordion>
-                        <QueueReports />
-                        <StatusReports />
-                        <ModalGroups />
-                      </Accordion>
-                    </Container>
-                  </Widget.Content>
-                )}
-              </Widget>
+  return (
+    <WidgetConfigProvider widgetId={widgetId}>
+      <Widget aria-label="Grbl widget" fullscreen={isFullscreen}>
+        <Widget.Header>
+          <Widget.Title>
+            <Widget.Sortable className={sortable.handleClassName}>
+              <MenuIcon aria-hidden="true" size="1em" width="1.25em" />
+              <Space width="1x" />
+            </Widget.Sortable>
+            {isForkedWidget &&
+            <FontAwesomeIcon icon={faCodeBranch} fixedWidth aria-hidden="true" />}
+            Grbl
+          </Widget.Title>
+          <Widget.Controls className={sortable.filterClassName}>
+            {isReady && (
+              <Button
+                variant="ghost"
+                className={widgetStyles.widgetButton}
+                sx={widgetActionSx}
+                aria-label="Grbl controller info"
+                onClick={(event) => {
+                  setIsControllerModalOpen(true);
+                }}
+              >
+                <InfoIcon aria-hidden="true" size="1em" />
+              </Button>
             )}
-          </ModalConsumer>
-        </ModalProvider>
-      </WidgetConfigProvider>
-    );
-  }
+            {isReady && (
+              <Dropdown
+                style={{ display: 'flex', alignSelf: 'stretch' }}
+                items={[
+                  {
+                    label: i18n._('Status Report (?)'),
+                    action: () => controller.write('?'),
+                  },
+                  {
+                    label: i18n._('Check G-code Mode ($C)'),
+                    action: () => controller.writeln('$C'),
+                  },
+                  {
+                    label: i18n._('Homing ($H)'),
+                    action: () => controller.command('homing'),
+                  },
+                  {
+                    label: i18n._('Kill Alarm Lock ($X)'),
+                    action: () => controller.command('unlock'),
+                  },
+                  {
+                    label: i18n._('Sleep ($SLP)'),
+                    action: () => controller.command('sleep'),
+                  },
+                  { type: 'divider' },
+                  {
+                    label: i18n._('Help ($)'),
+                    action: () => controller.writeln('$'),
+                  },
+                  {
+                    label: i18n._('Settings ($$)'),
+                    action: () => controller.writeln('$$'),
+                  },
+                  {
+                    label: i18n._('View G-code Parameters ($#)'),
+                    action: () => controller.writeln('$#'),
+                  },
+                  {
+                    label: i18n._('View G-code Parser State ($G)'),
+                    action: () => controller.writeln('$G'),
+                  },
+                  {
+                    label: i18n._('View Build Info ($I)'),
+                    action: () => controller.writeln('$I'),
+                  },
+                  {
+                    label: i18n._('View Startup Blocks ($N)'),
+                    action: () => controller.writeln('$N'),
+                  },
+                ]}
+                onChange={(item) => item.action?.()}
+                renderToggle={() => (
+                  <DropdownToggle aria-label="Grbl commands" className={widgetStyles.widgetButton}>
+                    <AppIcon aria-hidden="true" size="1em" />
+                  </DropdownToggle>
+                )}
+              />
+            )}
+            {isReady && (
+              <Button
+                variant="ghost"
+                className={widgetStyles.widgetButton}
+                sx={widgetActionSx}
+                aria-label={isCollapsed ? 'Expand' : 'Collapse'}
+                aria-expanded={!isCollapsed}
+                disabled={isFullscreen}
+                title={isCollapsed ? i18n._('Expand') : i18n._('Collapse')}
+                onClick={() => onViewChange(isCollapsed ? 'normal' : 'collapsed')}
+              >
+                {isCollapsed &&
+                <ChevronDownIcon aria-hidden="true" size="1em" width="1.25em" />}
+                {!isCollapsed &&
+                <ChevronUpIcon aria-hidden="true" size="1em" width="1.25em" />}
+              </Button>
+            )}
+            {isFullscreen && (
+              <Button
+                variant="ghost"
+                className={widgetStyles.widgetButton}
+                sx={widgetActionSx}
+                title={i18n._('Exit Full Screen')}
+                onClick={() => onViewChange(isFullscreen ? 'normal' : 'fullscreen')}
+              >
+                <FontAwesomeIcon icon={faCompress} fixedWidth aria-hidden="true" />
+              </Button>
+            )}
+            <Dropdown
+              style={{ display: 'flex', alignSelf: 'stretch' }}
+              items={[
+                {
+                  value: 'fullscreen',
+                  label: (
+                    <>
+                      {!isFullscreen && (
+                        <FontAwesomeIcon icon={faExpand} fixedWidth aria-hidden="true" />
+                      )}
+                      {isFullscreen && (
+                        <FontAwesomeIcon icon={faCompress} fixedWidth aria-hidden="true" />
+                      )}
+                      <Space width="2x" />
+                      {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
+                    </>
+                  ),
+                  props: { disabled: !isReady },
+                },
+                {
+                  value: 'fork',
+                  label: (
+                    <>
+                      <FontAwesomeIcon icon={faCodeBranch} fixedWidth aria-hidden="true" />
+                      <Space width="2x" />
+                      {i18n._('Fork Widget')}
+                    </>
+                  ),
+                },
+                {
+                  value: 'remove',
+                  label: (
+                    <>
+                      <CloseIcon aria-hidden="true" size="1em" width="1.25em" />
+                      <Space width="2x" />
+                      {i18n._('Remove Widget')}
+                    </>
+                  ),
+                },
+              ]}
+              onChange={({ value: eventKey }) => {
+                if (eventKey === 'fullscreen') {
+                  onViewChange(isFullscreen ? 'normal' : 'fullscreen');
+                } else if (eventKey === 'fork') {
+                  onFork();
+                } else if (eventKey === 'remove') {
+                  onRemove();
+                }
+              }}
+              renderToggle={() => (
+                <DropdownToggle aria-label="More options" title={i18n._('More')} className={widgetStyles.widgetButton}>
+                  <MoreIcon aria-hidden="true" size="1em" width="1.25em" />
+                </DropdownToggle>
+              )}
+            />
+          </Widget.Controls>
+        </Widget.Header>
+        {isReady && (
+          <Widget.Content
+            aria-hidden={isCollapsed}
+            sx={{ display: (isCollapsed ? 'none' : 'block') }}
+          >
+            <Box p="3x">
+              <Box mb="3x">
+                <FeedOverride />
+                <SpindleOverride />
+                <RapidOverride />
+              </Box>
+              <Box sx={{ '> :not(:first-child)': { borderTop: 0 } }}>
+                <QueueReports />
+                <StatusReports />
+                <ModalGroups />
+              </Box>
+            </Box>
+          </Widget.Content>
+        )}
+      </Widget>
+      {isControllerModalOpen && (
+        <ControllerModal onClose={() => setIsControllerModalOpen(false)} />
+      )}
+    </WidgetConfigProvider>
+  );
 }
 
 export default connect(store => {
@@ -282,9 +272,3 @@ export default connect(store => {
     isReady,
   };
 })(GrblWidget);
-
-const Accordion = styled.div`
-    > :not(:first-child) {
-        border-top: 0;
-    }
-`;

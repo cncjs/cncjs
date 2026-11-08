@@ -1,249 +1,213 @@
 import {
-  Text,
+  Accordion,
+  AccordionBody,
+  AccordionHeader,
+  AccordionItem,
+  Box,
+  Button,
+  Flex,
+  InputControl,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupAppend,
+  InputGroupPrepend,
+  TextLabel,
 } from '@tonic-ui/react';
 import { ensurePositiveNumber } from 'ensure-type';
 import _get from 'lodash/get';
-import React from 'react';
-import { Form, Field, FormSpy } from 'react-final-form';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import Slider from 'rc-slider';
-import { Button } from '@app/components/Buttons';
-import CollapsibleCard from '@app/components/CollapsibleCard';
-import Input from '@app/components/FormControl/Input';
-import FormGroup from '@app/components/FormGroup';
-import { Container, Row, Col } from '@app/components/GridSystem';
-import HorizontalForm from '@app/components/HorizontalForm';
-import InputGroup from '@app/components/InputGroup';
 import {
   CONNECTION_STATE_CONNECTED,
 } from '@app/constants/connection';
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
-import OverflowEllipsis from './components/OverflowEllipsis';
 
+const powerTrackSx = {
+  height: '8px',
+  border: 1,
+  borderColor: 'border.primary',
+  borderRadius: 'full',
+  background: 'linear-gradient(to right, var(--tonic-colors-info-icon) var(--laser-power), var(--tonic-colors-border-secondary) var(--laser-power))',
+};
+
+const powerThumbSx = {
+  appearance: 'none',
+  width: '16px',
+  height: '16px',
+  borderRadius: '50%',
+  border: '2px solid',
+  borderColor: 'background.highest',
+  backgroundColor: 'info.icon',
+  boxShadow: '0 0 0 1px var(--tonic-colors-border-primary)',
+};
+
+/**
+ * @param {{ isConnected: boolean }} props
+ */
 function LaserTest({
   isConnected,
 }) {
   const config = useWidgetConfig();
-  const initialValues = {
-    test: {
-      power: ensurePositiveNumber(config.get('test.power', 0)),
-      duration: ensurePositiveNumber(config.get('test.duration', 0)),
-      maxS: ensurePositiveNumber(config.get('test.maxS', 1000)),
-    },
-  };
+  const [powerDraft, setPowerDraft] = useState(() => (
+    String(ensurePositiveNumber(config.get('test.power', 0)))
+  ));
+  const [durationDraft, setDurationDraft] = useState(() => (
+    String(ensurePositiveNumber(config.get('test.duration', 0)))
+  ));
+  const [maxSDraft, setMaxSDraft] = useState(() => (
+    String(ensurePositiveNumber(config.get('test.maxS', 1000)))
+  ));
   const expanded = config.get('panel.laserTest.expanded');
-  const collapsed = !expanded;
+
+  const numericPower = powerDraft === '' ? null : Number(powerDraft);
+  const numericDuration = durationDraft === '' ? null : Number(durationDraft);
+  const numericMaxS = maxSDraft === '' ? null : Number(maxSDraft);
+  const isLaserTestReady = (
+    isConnected &&
+    [numericPower, numericDuration, numericMaxS].every(value => (
+      value !== null && Number.isFinite(value) && value >= 0
+    ))
+  );
+
+  const updateDraft = (path, setDraft, value) => {
+    const draft = String(value);
+    setDraft(draft);
+    config.set(path, ensurePositiveNumber(value));
+  };
 
   return (
-    <CollapsibleCard
-      easing="ease-out"
-      collapsed={collapsed}
-    >
-      {({ collapsed, ToggleIcon, Header, Body }) => {
-        const expanded = !collapsed;
-        config.set('panel.laserTest.expanded', expanded);
-
-        return (
-          <Container fluid style={{ width: '100%' }}>
-            <Header>
-              {({ hovered }) => (
-                <Row>
-                  <Col>{i18n._('Laser Test')}</Col>
-                  <Col width="auto">
-                    <ToggleIcon style={{ opacity: hovered ? 1 : 0.5 }} />
-                  </Col>
-                </Row>
-              )}
-            </Header>
-            <Body>
-              <Form
-                initialValues={initialValues}
-                onSubmit={(values) => {
-                  // No submit handler required
-                }}
-                subscription={{}}
-              >
-                {({ form }) => (
-                  <>
-                    <FormGroup>
-                      <HorizontalForm spacing={['.75rem', '.75rem']}>
-                        {({ FormContainer, FormRow, FormCol }) => (
-                          <FormContainer>
-                            <FormRow>
-                              <FormCol>
-                                <OverflowEllipsis title={i18n._('Power (%)')}>
-                                  {i18n._('Power (%)')}
-                                </OverflowEllipsis>
-                              </FormCol>
-                              <FormCol style={{ wordBreak: 'break-all', textAlign: 'center' }}>
-                                <Field name="test.power">
-                                  {({ input, meta }) => (
-                                    <>
-                                      <Text>{input.value}%</Text>
-                                      <Slider
-                                        aria-label="Laser power"
-                                        style={{ padding: 0 }}
-                                        value={input.value}
-                                        min={0}
-                                        max={100}
-                                        step={1}
-                                        onChange={(value) => {
-                                          input.onChange(value);
-
-                                          const power = ensurePositiveNumber(value);
-                                          config.set('test.power', power);
-                                        }}
-                                      />
-                                    </>
-                                  )}
-                                </Field>
-                              </FormCol>
-                            </FormRow>
-                            <FormRow>
-                              <FormCol>
-                                <OverflowEllipsis title={i18n._('Test duration')}>
-                                  {i18n._('Test duration')}
-                                </OverflowEllipsis>
-                              </FormCol>
-                              <FormCol style={{ wordBreak: 'break-all' }}>
-                                <Field name="test.duration">
-                                  {({ input, meta }) => (
-                                    <InputGroup sm>
-                                      <Input
-                                        aria-label="Test duration in milliseconds"
-                                        type="number"
-                                        value={input.value}
-                                        min={0}
-                                        step={1}
-                                        onChange={(event) => {
-                                          const value = event.target.value;
-                                          input.onChange(value);
-
-                                          const duration = ensurePositiveNumber(value);
-                                          config.set('test.duration', duration);
-                                        }}
-                                      />
-                                      <InputGroup.Append>
-                                        <InputGroup.Text>
-                                          {i18n._('ms')}
-                                        </InputGroup.Text>
-                                      </InputGroup.Append>
-                                    </InputGroup>
-                                  )}
-                                </Field>
-                              </FormCol>
-                            </FormRow>
-                            <FormRow>
-                              <FormCol>
-                                <OverflowEllipsis title={i18n._('Maximum value')}>
-                                  {i18n._('Maximum value')}
-                                </OverflowEllipsis>
-                              </FormCol>
-                              <FormCol style={{ wordBreak: 'break-all' }}>
-                                <Field name="test.maxS">
-                                  {({ input, meta }) => (
-                                    <InputGroup sm>
-                                      <InputGroup.Prepend>
-                                        <InputGroup.Text>
-                                          S
-                                        </InputGroup.Text>
-                                      </InputGroup.Prepend>
-                                      <Input
-                                        aria-label="Maximum S value"
-                                        type="number"
-                                        value={input.value}
-                                        min={0}
-                                        step={1}
-                                        onChange={(event) => {
-                                          const value = event.target.value;
-                                          input.onChange(value);
-
-                                          const maxS = ensurePositiveNumber(value);
-                                          config.set('test.maxS', maxS);
-                                        }}
-                                      />
-                                    </InputGroup>
-                                  )}
-                                </Field>
-                              </FormCol>
-                            </FormRow>
-                          </FormContainer>
-                        )}
-                      </HorizontalForm>
-                    </FormGroup>
-                    <FormSpy
-                      subscription={{
-                        values: true,
-                        invalid: true,
-                      }}
-                    >
-                      {({ values, invalid }) => {
-                        const power = _get(values, 'test.power');
-                        const duration = _get(values, 'test.duration');
-                        const maxS = _get(values, 'test.maxS');
-
-                        const isLaserTestReady = (() => {
-                          if (!isConnected) {
-                            return false;
-                          }
-
-                          if (invalid) {
-                            return false;
-                          }
-
-                          if (!Number.isFinite(power)) {
-                            return false;
-                          }
-
-                          if (!Number.isFinite(duration)) {
-                            return false;
-                          }
-
-                          if (!Number.isFinite(maxS)) {
-                            return false;
-                          }
-
-                          return true;
-                        })();
-
-                        const turnLaserTestOn = () => {
-                          controller.command('laser_test', power, duration, maxS);
-                        };
-
-                        const turnLaserTestOff = () => {
-                          controller.command('laser_test', 0);
-                        };
-
-                        return (
-                          <div>
-                            <Button
-                              sm
-                              disabled={!isLaserTestReady}
-                              onClick={turnLaserTestOn}
-                            >
-                              {i18n._('Laser Test')}
-                            </Button>
-                            <Button
-                              sm
-                              disabled={!isConnected}
-                              onClick={turnLaserTestOff}
-                            >
-                              {i18n._('Laser Off')}
-                            </Button>
-                          </div>
-                        );
-                      }}
-                    </FormSpy>
-                  </>
+    <Accordion border={1} borderColor="border.secondary">
+      <AccordionItem
+        isExpanded={Boolean(expanded)}
+        onToggle={({ isExpanded }) => config.set('panel.laserTest.expanded', isExpanded)}
+      >
+        <AccordionHeader aria-label={i18n._(expanded ? 'Collapse' : 'Expand')}>
+          {i18n._('Laser Test')}
+        </AccordionHeader>
+        <AccordionBody>
+          <Box p="3x">
+            <Flex alignItems="center" mb="2x">
+              <Box width="35%">
+                <TextLabel>{i18n._('Power (%)')}</TextLabel>
+              </Box>
+              <Box width="65%" textAlign="center">
+                <Box
+                  as="output"
+                  display="inline-block"
+                  mb="2x"
+                >
+                  {powerDraft}%
+                </Box>
+                <Box
+                  as="input"
+                  type="range"
+                  aria-label="Laser power"
+                  aria-valuetext={`${powerDraft}%`}
+                  value={numericPower === null ? 0 : numericPower}
+                  min={0}
+                  max={100}
+                  step={1}
+                  onChange={event => updateDraft('test.power', setPowerDraft, event.target.value)}
+                  style={{ '--laser-power': `${numericPower === null ? 0 : numericPower}%` }}
+                  sx={{
+                    appearance: 'none',
+                    display: 'block',
+                    width: '100%',
+                    height: '24px',
+                    margin: 0,
+                    padding: 0,
+                    background: 'transparent',
+                    cursor: 'pointer',
+                    borderRadius: 'sm',
+                    '&::-webkit-slider-runnable-track': powerTrackSx,
+                    '&::-moz-range-track': powerTrackSx,
+                    '&::-webkit-slider-thumb': { ...powerThumbSx, marginTop: '-5px' },
+                    '&::-moz-range-thumb': powerThumbSx,
+                    _focusVisible: { outline: '2px solid', outlineColor: 'info.border', outlineOffset: '2px' },
+                  }}
+                />
+              </Box>
+            </Flex>
+            <Flex alignItems="center" mb="2x">
+              <Box width="35%">
+                <TextLabel>{i18n._('Test duration')}</TextLabel>
+              </Box>
+              <Box width="65%">
+                <InputGroup>
+                  <InputControl
+                    flex="1"
+                    minWidth="0"
+                    type="number"
+                    value={durationDraft}
+                    min={0}
+                    step={1}
+                    slotProps={{ input: { 'aria-label': 'Test duration in milliseconds' } }}
+                    onChange={event => updateDraft(
+                      'test.duration',
+                      setDurationDraft,
+                      event.target.value
+                    )}
+                  />
+                  <InputGroupAppend>
+                    <InputGroupAddon>{i18n._('ms')}</InputGroupAddon>
+                  </InputGroupAppend>
+                </InputGroup>
+              </Box>
+            </Flex>
+            <Flex alignItems="center" mb="2x">
+              <Box width="35%">
+                <TextLabel>{i18n._('Maximum value')}</TextLabel>
+              </Box>
+              <Box width="65%">
+                <InputGroup>
+                  <InputGroupPrepend>
+                    <InputGroupAddon>S</InputGroupAddon>
+                  </InputGroupPrepend>
+                  <InputControl
+                    flex="1"
+                    minWidth="0"
+                    type="number"
+                    value={maxSDraft}
+                    min={0}
+                    step={1}
+                    slotProps={{ input: { 'aria-label': 'Maximum S value' } }}
+                    onChange={event => updateDraft(
+                      'test.maxS',
+                      setMaxSDraft,
+                      event.target.value
+                    )}
+                  />
+                </InputGroup>
+              </Box>
+            </Flex>
+            <Flex>
+              <Button
+                type="button"
+                disabled={!isLaserTestReady}
+                onClick={() => controller.command(
+                  'laser_test',
+                  numericPower,
+                  numericDuration,
+                  numericMaxS
                 )}
-              </Form>
-            </Body>
-          </Container>
-        );
-      }}
-    </CollapsibleCard>
+              >
+                {i18n._('Laser Test')}
+              </Button>
+              <Button
+                type="button"
+                ml="2x"
+                disabled={!isConnected}
+                onClick={() => controller.command('laser_test', 0)}
+              >
+                {i18n._('Laser Off')}
+              </Button>
+            </Flex>
+          </Box>
+        </AccordionBody>
+      </AccordionItem>
+    </Accordion>
   );
 }
 

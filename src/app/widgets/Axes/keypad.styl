@@ -1,42 +1,53 @@
 .keypad {
+    overflow-x: auto;
+
+    .keypad-controls {
+        min-width: 280px;
+    }
+
     button.btn-keypad {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 32px;
         font-size: 16px;
         padding: 0;
         width: 100%;
-        line-height: 30px;
-        text-align: center;
-        vertical-align: middle;
-        box-shadow: 1px 1px 2px rgba(0, 0, 0, .1);
+        line-height: 1;
 
         &:active,
         &.active {
-            box-shadow: 0 0 2px rgba(0, 0, 0, .1);
+            box-shadow: var(--tonic-shadows-low-main);
             transform: translate(1px, 1px);
         }
 
         :global {
             i.fa,
             span.fa {
-                color: #333;
+                color: var(--tonic-colors-text-primary);
             }
         }
 
         &.highlight {
-            background-color: rgba(240, 240, 240, .8);
+            background-color: var(--tonic-colors-actions-hovered);
             background-image: none;
-            box-shadow: 1px 1px 2px rgba(0, 0, 0, .2);
-            border-color: rgba(0, 0, 0, .4);
+            box-shadow: var(--tonic-shadows-low-main);
+            border-color: var(--tonic-colors-border-secondary);
 
             &:hover,
             &.hover {
-                background-color: rgba(0, 0, 0, .1);
+                background-color: var(--tonic-colors-actions-hovered);
             }
 
             &:active,
             &.active {
-                box-shadow: 0 0 2px rgba(0, 0, 0, .2);
+                box-shadow: var(--tonic-shadows-low-main);
                 transform: translate(1px, 1px);
             }
         }
+    }
+    .col-space {
+        width: 100%;
+        min-width: 0;
     }
 }

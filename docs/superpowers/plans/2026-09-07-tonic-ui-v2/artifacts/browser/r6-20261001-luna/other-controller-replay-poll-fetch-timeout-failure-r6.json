@@ -1,0 +1,105 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "channel": "bundled Chromium",
+    "viewport": "1440x900",
+    "dpr": 1
+  },
+  "transport": {
+    "method": "Socket.IO polling GET response with Engine.IO length-prefixed synthetic incoming events",
+    "injected": [],
+    "pollingGetCount": 8
+  },
+  "gates": [
+    {
+      "name": "connect actual GRBL simulator through Connection widget",
+      "status": "passed",
+      "durationMs": 1060,
+      "alreadyConnected": false,
+      "selectedPort": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator"
+    },
+    {
+      "name": "Marlin controller replay updates body and controller state/settings modal",
+      "status": "failed",
+      "durationMs": 20043,
+      "error": "Error: Timed out waiting for Marlin controller:settings polling replay"
+    },
+    {
+      "name": "Marlin connected widget collapse and fullscreen view actions",
+      "status": "failed",
+      "durationMs": 12003,
+      "error": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Marlin widget', exact: true }).getByRole('button', { name: 'Collapse', exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "name": "Smoothie controller replay updates body and controller state/settings modal",
+      "status": "failed",
+      "durationMs": 14225,
+      "error": "Error: page.waitForTimeout: Target page, context or browser has been closed"
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:2"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1040044bc00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1040044bc00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1040044bc00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    }
+  ],
+  "outgoingCommands": []
+}

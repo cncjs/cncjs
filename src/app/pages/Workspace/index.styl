@@ -1,5 +1,11 @@
 @import "../../styles/variables";
 
+@media (max-width: 900px) {
+    .panel-action-label {
+        display: none;
+    }
+}
+
 .workspace {
     .dropzone-overlay {
         position: fixed;
@@ -8,8 +14,8 @@
         left: 0;
         right: 0;
         z-index: 100;
-        background-color: rgba(255, 255, 255, .5);
-        border: 4px dashed #286090;
+        background-color: var(--tonic-colors-actions-hovered);
+        border: 4px dashed var(--tonic-colors-border-secondary);
         text-align: center;
         pointer-events: none;
 
@@ -18,7 +24,7 @@
             top: 25%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: #666;
+            color: var(--tonic-colors-text-secondary);
             font-size: 32px;
         }
     }

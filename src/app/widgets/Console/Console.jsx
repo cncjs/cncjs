@@ -16,6 +16,7 @@ import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import useWidgetEvent from '@app/widgets/shared/useWidgetEvent';
 import Terminal from './Terminal';
+import useTerminal from './useTerminal';
 import styles from './index.styl';
 
 function Console({
@@ -24,19 +25,28 @@ function Console({
 }) {
   const emitter = useWidgetEvent();
   const prevIsFullscreen = usePrevious(isFullscreen);
-  const terminalRef = useRef();
   const sender = useRef(uuidv4());
+  const onData = useCallback((data) => {
+    controller.write(data, {
+      __sender__: sender.current,
+    });
+  }, []);
+  const { containerRef, prompt, actions } = useTerminal({
+    enabled: isConnected,
+    cols: 254,
+    rows: isFullscreen ? 'auto' : 15,
+    cursorBlink: true,
+    scrollback: 1000,
+    tabStopWidth: 2,
+    onData,
+  });
 
   useEffectOnce(() => {
     const onConnectionOpen = (state) => {
       const { type, options } = state;
-      const { current: term } = terminalRef;
-      if (!term) {
-        return;
-      }
 
       const { productName, version } = settings;
-      term.writeln(chalk.white.bold(`${productName} ${version} [${controller.type}]`));
+      actions.writeln(chalk.white.bold(`${productName} ${version} [${controller.type}]`));
 
       if (type === CONNECTION_TYPE_SERIAL) {
         const { path, baudRate } = options;
@@ -44,55 +54,40 @@ function Console({
           path: chalk.yellowBright(path),
           baudRate: chalk.blueBright(baudRate),
         });
-        term.writeln(chalk.white(line));
+        actions.writeln(chalk.white(line));
       } else if (type === CONNECTION_TYPE_SOCKET) {
         const { host, port } = options;
         const line = i18n._('Connected to {{host}}:{{port}}', {
           host: chalk.blueBright(host),
           port: chalk.blueBright(port),
         });
-        term.writeln(chalk.white(line));
+        actions.writeln(chalk.white(line));
       }
     };
 
     const onConnectionClose = (state) => {
-      const { current: term } = terminalRef;
-      if (!term) {
-        return;
-      }
-
-      term.current.clear();
+      actions.clear();
     };
 
     const onConnectionWrite = (state, data, context) => {
       const { source, __sender__ } = { ...context };
-      const { current: term } = terminalRef;
 
       if (__sender__ === sender.current) {
         // Do not write to the terminal console if the sender is the widget itself
         return;
       }
 
-      if (!term) {
-        return;
-      }
-
       data = String(data).trim();
 
       if (source) {
-        term.writeln(chalk.blackBright(source) + chalk.white(term.prompt + data));
+        actions.writeln(chalk.blackBright(source) + chalk.white(prompt + data));
       } else {
-        term.writeln(chalk.white(term.prompt + data));
+        actions.writeln(chalk.white(prompt + data));
       }
     };
 
     const onConnectionRead = (state, data) => {
-      const { current: term } = terminalRef;
-      if (!term) {
-        return;
-      }
-
-      term.writeln(data);
+      actions.writeln(data);
     };
 
     controller.addListener('connection:open', onConnectionOpen);
@@ -110,12 +105,7 @@ function Console({
 
   useEffectOnce(() => {
     const onResizeToken = pubsub.subscribe('resize', (msg) => {
-      const { current: term } = terminalRef;
-      if (!term) {
-        return;
-      }
-
-      term.resize();
+      actions.resize();
     });
 
     return () => {
@@ -124,51 +114,39 @@ function Console({
   });
 
   useEffect(() => {
+    const onClear = () => actions.clear();
+
     const onClearSelection = () => {
-      const { current: term } = terminalRef;
-      term && term.clearSelection();
+      actions.clearSelection();
     };
 
     const onRefresh = () => {
-      const { current: term } = terminalRef;
-      term && term.refresh();
+      actions.refresh();
     };
 
     const onSelectAll = () => {
-      const { current: term } = terminalRef;
-      term && term.selectAll();
+      actions.selectAll();
     };
 
+    emitter.on('terminal:clear', onClear);
     emitter.on('terminal:clearSelection', onClearSelection);
     emitter.on('terminal:refresh', onRefresh);
     emitter.on('terminal:selectAll', onSelectAll);
 
     return () => {
+      emitter.off('terminal:clear', onClear);
       emitter.off('terminal:clearSelection', onClearSelection);
       emitter.off('terminal:refresh', onRefresh);
       emitter.off('terminal:selectAll', onSelectAll);
     };
-  }, [emitter]);
+  }, [actions, emitter]);
 
   // Run the effect after every render
   useEffect(() => {
-    const { current: term } = terminalRef;
-    if (!term) {
-      return;
-    }
-
     if (prevIsFullscreen !== isFullscreen) {
-      term.resize();
+      actions.resize();
     }
   });
-
-  const onData = useCallback((data) => {
-    const context = {
-      __sender__: sender.current,
-    };
-
-    controller.write(data, context);
-  }, [sender]);
 
   if (!isConnected) {
     return (
@@ -179,16 +157,7 @@ function Console({
   }
 
   return (
-    <Terminal
-      ref={terminalRef}
-      // The buffer starts with 254 bytes free. The terminating <LF> or <CR> counts as a byte.
-      cols={254}
-      rows={isFullscreen ? 'auto' : 15}
-      cursorBlink={true}
-      scrollback={1000}
-      tabStopWidth={2}
-      onData={onData}
-    />
+    <Terminal containerRef={containerRef} />
   );
 }
 

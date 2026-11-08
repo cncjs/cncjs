@@ -3,10 +3,13 @@ import _get from 'lodash/get';
 import { differenceInSeconds, format } from 'date-fns';
 import React from 'react';
 import { connect } from 'react-redux';
-import FormGroup from '@app/components/FormGroup';
-import { Container, Row, Col } from '@app/components/GridSystem';
-import HorizontalForm from '@app/components/HorizontalForm';
-import ProgressBar from '@app/components/ProgressBar';
+import {
+  Box,
+  Flex,
+  LinearProgress,
+  Text,
+  TextLabel,
+} from '@tonic-ui/react';
 import i18n from '@app/lib/i18n';
 import { mapPositionToUnits } from '@app/lib/units';
 import {
@@ -29,8 +32,8 @@ const formatDuration = (start, finish) => {
   ].join(':');
 };
 
-const formatISODateTime = (time) => {
-  return time > 0 ? format(time / 1000, 'YYYY-MM-dd HH:mm:ss') : '–';
+export const formatISODateTime = (time) => {
+  return time > 0 ? format(time, 'yyyy-MM-dd HH:mm:ss') : '–';
 };
 
 const formatElapsedTime = (elapsedTime) => {
@@ -47,10 +50,28 @@ const formatRemainingTime = (remainingTime) => {
   return formatDuration(0, remainingTime);
 };
 
+const Stat = ({ label, value }) => (
+  <Box flex="1" mb="2x">
+    <TextLabel mb="1x">{i18n._(label)}</TextLabel>
+    <Text>{value}</Text>
+  </Box>
+);
+
+const DimensionRow = ({ axis, min, max, dimension }) => (
+  <Flex>
+    <Box width="15%"><Text>{i18n._(axis)}</Text></Box>
+    <Box width="28%"><Text>{min}</Text></Box>
+    <Box width="28%"><Text>{max}</Text></Box>
+    <Box width="29%"><Text>{dimension}</Text></Box>
+  </Flex>
+);
+
 function GCodeStats({
   units,
   boundingBox,
   loaded,
+  name,
+  size,
   total,
   sent,
   received,
@@ -69,125 +90,81 @@ function GCodeStats({
   const dX = maxX - minX;
   const dY = maxY - minY;
   const dZ = maxZ - minZ;
+  const hasLoadedGCode = Boolean(loaded && total > 0);
+
+  if (!hasLoadedGCode) {
+    return (
+      <Box className="gcode-stats">
+        <Text role="status">{i18n._('G-code not loaded')}</Text>
+      </Box>
+    );
+  }
 
   // Received, not sent. Sent counts lines handed to the controller, which
   // runs several seconds behind while its planner buffer drains, so a bar
   // driven by it reads ahead of the tool and reaches 100% with the job
   // still cutting. Received counts lines the controller acknowledged.
-  const progress = total > 0 ? Math.min(100, Math.round((received / total) * 100)) : 0;
+  const progress = Math.min(100, Math.round((received / total) * 100));
 
   return (
-    <Container fluid>
-      <FormGroup>
-        <HorizontalForm
-          spacing={['.75rem', '.5rem']}
-        >
-          {({ FormContainer, FormRow, FormCol }) => (
-            <FormContainer>
-              <FormRow>
-                <FormCol style={{ width: '1%' }}>
-                  {i18n._('Axis')}
-                </FormCol>
-                <FormCol>
-                  {i18n._('Min')}
-                </FormCol>
-                <FormCol>
-                  {i18n._('Max')}
-                </FormCol>
-                <FormCol>
-                  {i18n._('Dimension')}
-                </FormCol>
-              </FormRow>
-              <FormRow>
-                <FormCol>
-                  X
-                </FormCol>
-                <FormCol>
-                  {mapPositionToUnits(minX, units)} {displayUnits}
-                </FormCol>
-                <FormCol>
-                  {mapPositionToUnits(maxX, units)} {displayUnits}
-                </FormCol>
-                <FormCol>
-                  {mapPositionToUnits(dX, units)} {displayUnits}
-                </FormCol>
-              </FormRow>
-              <FormRow>
-                <FormCol>
-                  Y
-                </FormCol>
-                <FormCol>
-                  {mapPositionToUnits(minY)} {displayUnits}
-                </FormCol>
-                <FormCol>
-                  {mapPositionToUnits(maxY)} {displayUnits}
-                </FormCol>
-                <FormCol>
-                  {mapPositionToUnits(dY)} {displayUnits}
-                </FormCol>
-              </FormRow>
-              <FormRow>
-                <FormCol>
-                  Z
-                </FormCol>
-                <FormCol>
-                  {mapPositionToUnits(minZ)} {displayUnits}
-                </FormCol>
-                <FormCol>
-                  {mapPositionToUnits(maxZ)} {displayUnits}
-                </FormCol>
-                <FormCol>
-                  {mapPositionToUnits(dZ)} {displayUnits}
-                </FormCol>
-              </FormRow>
-            </FormContainer>
-          )}
-        </HorizontalForm>
-      </FormGroup>
-      {total > 0 && (
-        <Row>
-          <Col>
-            <ProgressBar
-              variant="info"
-              min={0}
-              max={total}
-              now={received}
-              label={`${progress}%`}
-            />
-          </Col>
-        </Row>
-      )}
-      <Row>
-        <Col>
-          <div>{i18n._('Sent')}</div>
-          <div>{total > 0 ? `${sent} / ${total}` : '–'}</div>
-        </Col>
-        <Col>
-          <div>{i18n._('Received')}</div>
-          <div>{total > 0 ? `${received} / ${total}` : '–'}</div>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <div>{i18n._('Start Time')}</div>
-          <div>{formatISODateTime(startTime)}</div>
-        </Col>
-        <Col>
-          <div>{i18n._('Elapsed Time')}</div>
-          <div>{formatElapsedTime(elapsedTime)}</div>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <div>{i18n._('Finish Time')}</div>
-          <div>{formatISODateTime(finishTime)}</div>
-        </Col>
-        <Col>
-          <div>{i18n._('Remaining Time')}</div>
-          <div>{formatRemainingTime(remainingTime)}</div>
-        </Col>
-      </Row>
-    </Container>
+    <Box className="gcode-stats">
+      <Flex wrap="wrap">
+        <Stat label="File" value={name} />
+        <Stat label="Size" value={`${size} ${i18n._('bytes')}`} />
+        <Stat label="Lines" value={total} />
+      </Flex>
+
+      <Box mb="4x">
+        <Flex>
+          <Box width="15%"><TextLabel>{i18n._('Axis')}</TextLabel></Box>
+          <Box width="28%"><TextLabel>{i18n._('Min')}</TextLabel></Box>
+          <Box width="28%"><TextLabel>{i18n._('Max')}</TextLabel></Box>
+          <Box width="29%"><TextLabel>{i18n._('Dimension')}</TextLabel></Box>
+        </Flex>
+        <DimensionRow
+          axis="X"
+          min={`${mapPositionToUnits(minX, units)} ${displayUnits}`}
+          max={`${mapPositionToUnits(maxX, units)} ${displayUnits}`}
+          dimension={`${mapPositionToUnits(dX, units)} ${displayUnits}`}
+        />
+        <DimensionRow
+          axis="Y"
+          min={`${mapPositionToUnits(minY, units)} ${displayUnits}`}
+          max={`${mapPositionToUnits(maxY, units)} ${displayUnits}`}
+          dimension={`${mapPositionToUnits(dY, units)} ${displayUnits}`}
+        />
+        <DimensionRow
+          axis="Z"
+          min={`${mapPositionToUnits(minZ, units)} ${displayUnits}`}
+          max={`${mapPositionToUnits(maxZ, units)} ${displayUnits}`}
+          dimension={`${mapPositionToUnits(dZ, units)} ${displayUnits}`}
+        />
+      </Box>
+
+      <Box mb="4x">
+        <LinearProgress
+          aria-label={i18n._('G-code progress')}
+          variant="determinate"
+          min={0}
+          max={total}
+          value={received}
+        />
+        <Text>{progress}%</Text>
+      </Box>
+
+      <Flex>
+        <Stat label="Sent" value={`${sent} / ${total}`} />
+        <Stat label="Received" value={`${received} / ${total}`} />
+      </Flex>
+      <Flex>
+        <Stat label="Start Time" value={formatISODateTime(startTime)} />
+        <Stat label="Elapsed Time" value={formatElapsedTime(elapsedTime)} />
+      </Flex>
+      <Flex>
+        <Stat label="Finish Time" value={formatISODateTime(finishTime)} />
+        <Stat label="Remaining Time" value={formatRemainingTime(remainingTime)} />
+      </Flex>
+    </Box>
   );
 }
 
@@ -198,24 +175,20 @@ export default connect(store => {
     'G21': METRIC_UNITS,
   }[modalUnits];
   const boundingBox = _get(store, 'controller.boundingBox');
-  const senderStatus = _get(store, 'controller.sender.status');
-  const total = _get(senderStatus, 'total');
-  const sent = _get(senderStatus, 'sent');
-  const received = _get(senderStatus, 'received');
-  const startTime = _get(senderStatus, 'startTime');
-  const finishTime = _get(senderStatus, 'finishTime');
-  const elapsedTime = _get(senderStatus, 'elapsedTime');
-  const remainingTime = _get(senderStatus, 'remainingTime');
+  const senderStatus = _get(store, 'controller.sender.status') || {};
 
   return {
     units,
     boundingBox,
-    total,
-    sent,
-    received,
-    startTime,
-    finishTime,
-    elapsedTime,
-    remainingTime,
+    loaded: _get(senderStatus, 'loaded'),
+    name: _get(senderStatus, 'name'),
+    size: _get(senderStatus, 'size'),
+    total: _get(senderStatus, 'total'),
+    sent: _get(senderStatus, 'sent'),
+    received: _get(senderStatus, 'received'),
+    startTime: _get(senderStatus, 'startTime'),
+    finishTime: _get(senderStatus, 'finishTime'),
+    elapsedTime: _get(senderStatus, 'elapsedTime'),
+    remainingTime: _get(senderStatus, 'remainingTime'),
   };
 })(GCodeStats);

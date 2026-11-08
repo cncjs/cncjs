@@ -34,7 +34,6 @@
     "expand-tilde": "~2.0.2",
     "express": "~4.18.1",
     "express-jwt": "~7.7.5",
-    "express-session": "~1.17.2",
     "gcode-parser": "^2.2.0",
     "hogan.js": "~3.0.2",
     "http-proxy": "~1.18.1",
@@ -52,11 +51,9 @@
     "regenerator-runtime": "~0.13.10",
     "registry-auth-token": "~4.2.1",
     "registry-url": "~5.1.0",
-    "rimraf": "~3.0.2",
     "serialport": "^10.0.0",
     "serve-favicon": "~2.5.0",
     "serve-static": "~1.15.0",
-    "session-file-store": "~1.5.0",
     "shortid": "~2.2.16",
     "socket.io": "~2.3.0",
     "socketio-jwt": "~4.6.2",
@@ -64,7 +61,6 @@
     "superagent": "~6.1.0",
     "uuid": "~9.0.0",
     "watch": "~1.0.2",
-    "webappengine": "~1.2.0",
     "winston": "~3.6.0"
   }
 }

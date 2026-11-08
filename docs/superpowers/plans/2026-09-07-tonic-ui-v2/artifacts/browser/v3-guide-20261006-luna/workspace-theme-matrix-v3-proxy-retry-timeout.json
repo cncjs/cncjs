@@ -1,0 +1,87 @@
+{
+  "task": "V3-V Workspace theme matrix",
+  "revision": "fce8ab51225fa6e2b36d45217b52a215f7ddeb03",
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "headless": true,
+    "deviceScaleFactor": 1
+  },
+  "states": [],
+  "autoLive": null,
+  "events": {
+    "console": [
+      {
+        "type": "info",
+        "text": "[webpack-dev-server] Server started: Hot Module Replacement enabled, Live Reloading disabled, Progress enabled, Overlay enabled."
+      },
+      {
+        "type": "log",
+        "text": "[HMR] Waiting for update signal from WDS..."
+      },
+      {
+        "type": "info",
+        "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+      },
+      {
+        "type": "info",
+        "text": "🌐 i18next is made possible by our own product, Locize — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙"
+      },
+      {
+        "type": "startGroupCollapsed",
+        "text": "%c action %c7da5b624-070c-43ab-893b-9315436e74d3:APP_INIT %c@ 16:08:53.957 color: gray; font-weight: lighter; color: inherit; color: gray; font-weight: lighter;"
+      },
+      {
+        "type": "log",
+        "text": "%c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object}"
+      },
+      {
+        "type": "log",
+        "text": "%c action     color: #03A9F4; font-weight: bold {payload: Object, type: 7da5b624-070c-43ab-893b-9315436e74d3:APP_INIT}"
+      },
+      {
+        "type": "log",
+        "text": "%c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object}"
+      },
+      {
+        "type": "endGroup",
+        "text": "console.groupEnd"
+      },
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      },
+      {
+        "type": "startGroupCollapsed",
+        "text": "%c action %c7da5b624-070c-43ab-893b-9315436e74d3:APP_INIT_SUCCESS %c@ 16:08:54.001 color: gray; font-weight: lighter; color: inherit; color: gray; font-weight: lighter;"
+      },
+      {
+        "type": "log",
+        "text": "%c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object}"
+      },
+      {
+        "type": "log",
+        "text": "%c action     color: #03A9F4; font-weight: bold {payload: Object, type: 7da5b624-070c-43ab-893b-9315436e74d3:APP_INIT_SUCCESS}"
+      },
+      {
+        "type": "log",
+        "text": "%c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object}"
+      },
+      {
+        "type": "endGroup",
+        "text": "console.groupEnd"
+      }
+    ],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpErrors": [
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:8080/api/signin"
+      }
+    ]
+  },
+  "status": "failed",
+  "startupError": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Connection widget', exact: true }) to be visible\u001b[22m\n",
+  "completedAt": "2026-10-06T08:09:23.961Z"
+}

@@ -1,0 +1,203 @@
+  console.error
+    Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead.
+
+      23 | export const renderAppUI = (ui, options = {}) => {
+      24 |   const client = createTestQueryClient();
+    > 25 |   const result = render(ui, { wrapper: createTestWrapper(client), ...options });
+         |                        ^
+      26 |   return {
+      27 |     ...result,
+      28 |     queryClient: client,
+
+      at Object.warnDeprecatedProps (node_modules/@tonic-ui/utils/dist/cjs/shared.js:218:11)
+      at node_modules/@tonic-ui/styled-system/dist/cjs/pseudo.js:77:15
+      at node_modules/@tonic-ui/styled-system/dist/cjs/sx.js:49:36
+      at node_modules/@tonic-ui/styled-system/dist/cjs/sx.js:112:48
+      at handleInterpolation (node_modules/@emotion/serialize/dist/emotion-serialize.cjs.js:119:24)
+      at handleInterpolation (node_modules/@emotion/serialize/dist/emotion-serialize.cjs.js:121:18)
+      at Object.serializeStyles (node_modules/@emotion/serialize/dist/emotion-serialize.cjs.js:219:15)
+      at node_modules/@emotion/styled/base/dist/emotion-styled-base.browser.cjs.js:141:34
+      at node_modules/@emotion/react/dist/emotion-element-25f9958c.browser.cjs.js:57:12
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+      at updateForwardRef (node_modules/react-dom/cjs/react-dom.development.js:19245:20)
+      at beginWork (node_modules/react-dom/cjs/react-dom.development.js:21675:16)
+      at beginWork$1 (node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+      at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25777:74)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:180:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:271:10)
+      at renderAppUI (src/app/test/render.jsx:25:24)
+      at src/app/pages/Administration/__tests__/ResourceLists.test.jsx:54:27
+
+  console.error
+    Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead.
+
+      23 | export const renderAppUI = (ui, options = {}) => {
+      24 |   const client = createTestQueryClient();
+    > 25 |   const result = render(ui, { wrapper: createTestWrapper(client), ...options });
+         |                        ^
+      26 |   return {
+      27 |     ...result,
+      28 |     queryClient: client,
+
+      at Object.warnDeprecatedProps (node_modules/@tonic-ui/utils/dist/cjs/shared.js:218:11)
+      at node_modules/@tonic-ui/styled-system/dist/cjs/pseudo.js:62:15
+      at node_modules/@tonic-ui/styled-system/dist/cjs/sx.js:49:36
+      at node_modules/@tonic-ui/styled-system/dist/cjs/sx.js:112:48
+      at handleInterpolation (node_modules/@emotion/serialize/dist/emotion-serialize.cjs.js:119:24)
+      at handleInterpolation (node_modules/@emotion/serialize/dist/emotion-serialize.cjs.js:121:18)
+      at Object.serializeStyles (node_modules/@emotion/serialize/dist/emotion-serialize.cjs.js:219:15)
+      at node_modules/@emotion/styled/base/dist/emotion-styled-base.browser.cjs.js:141:34
+      at node_modules/@emotion/react/dist/emotion-element-25f9958c.browser.cjs.js:57:12
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+      at updateForwardRef (node_modules/react-dom/cjs/react-dom.development.js:19245:20)
+      at beginWork (node_modules/react-dom/cjs/react-dom.development.js:21675:16)
+      at beginWork$1 (node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+      at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25777:74)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:180:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:271:10)
+      at renderAppUI (src/app/test/render.jsx:25:24)
+      at src/app/pages/Administration/__tests__/ResourceLists.test.jsx:54:27
+
+  console.error
+    Warning: [object Object]: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/tooltip/TooltipTrigger.js:18:26
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/tooltip/Tooltip.js:17:26
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/tooltip/OverflowTooltip.js:13:23
+        at row (/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Administration/Commands/Commands.jsx:296:16)
+        at div
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@emotion/react/dist/emotion-element-25f9958c.browser.cjs.js:56:23
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/table/TableCell.js:17:26
+        at div
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@emotion/react/dist/emotion-element-25f9958c.browser.cjs.js:56:23
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/table/TableRow.js:16:26
+        at div
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@emotion/react/dist/emotion-element-25f9958c.browser.cjs.js:56:23
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/table/TableBody.js:16:26
+        at div
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@emotion/react/dist/emotion-element-25f9958c.browser.cjs.js:56:23
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@emotion/react/dist/emotion-element-25f9958c.browser.cjs.js:56:23
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/scrollbar/ScrollView.js:11:18
+        at div
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@emotion/react/dist/emotion-element-25f9958c.browser.cjs.js:56:23
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/scrollbar/Scrollbar.js:23:26
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/table/TableScrollbar.js:12:26
+        at div
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@emotion/react/dist/emotion-element-25f9958c.browser.cjs.js:56:23
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/table/Table.js:15:26
+        at children (/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Administration/__tests__/ResourceLists.test.jsx:32:15)
+        at div
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@emotion/react/dist/emotion-element-25f9958c.browser.cjs.js:56:23
+        at div
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@emotion/react/dist/emotion-element-25f9958c.browser.cjs.js:56:23
+        at div
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@emotion/react/dist/emotion-element-25f9958c.browser.cjs.js:56:23
+        at /Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/flex/Flex.js:11:26
+        at Commands (/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Administration/Commands/Commands.jsx:72:35)
+        at PortalManager (/Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/portal/PortalManager.js:19:26)
+        at ToastManager (/Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/toast/ToastManager.js:47:26)
+        at ColorStyleProvider (/Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/color-style/ColorStyleProvider.js:16:26)
+        at ColorModeProvider (/Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/color-mode/ColorModeProvider.js:24:26)
+        at DefaultPropsProvider (/Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/default-props/DefaultPropsProvider.js:7:20)
+        at ThemeProvider (/Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@emotion/react/dist/emotion-element-25f9958c.browser.cjs.js:83:32)
+        at ThemeProvider (/Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/theme/ThemeProvider.js:10:23)
+        at EnvironmentProvider (/Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/environment/EnvironmentProvider.js:24:21)
+        at TonicProvider (/Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tonic-ui/react/dist/cjs/provider/TonicProvider.js:12:23)
+        at QueryClientProvider (/Users/cheton/Code/cncjs/cncjs-cheton/node_modules/@tanstack/react-query/build/lib/QueryClientProvider.js:65:3)
+        at children (/Users/cheton/Code/cncjs/cncjs-cheton/src/app/test/render.jsx:14:35)
+
+      at printWarning (node_modules/react/cjs/react-jsx-runtime.development.js:87:30)
+      at error (node_modules/react/cjs/react-jsx-runtime.development.js:61:7)
+      at Object.warnAboutAccessingRef (node_modules/react/cjs/react-jsx-runtime.development.js:794:9)
+      at node_modules/@tonic-ui/react/dist/cjs/tooltip/TooltipTrigger.js:155:173
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+      at updateForwardRef (node_modules/react-dom/cjs/react-dom.development.js:19245:20)
+      at beginWork (node_modules/react-dom/cjs/react-dom.development.js:21675:16)
+      at beginWork$1 (node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26124:20)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at node_modules/react-dom/cjs/react-dom.development.js:25690:13
+      at invokeTheCallbackFunction (node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:554:9
+
+  console.error
+    Error: List unavailable
+        at /Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Administration/__tests__/ResourceLists.test.jsx:95:37
+
+      at Object.error [as onError] (node_modules/@tanstack/query-core/src/query.ts:446:23)
+      at onError (node_modules/@tanstack/query-core/src/retryer.ts:112:14)
+      at reject (node_modules/@tanstack/query-core/src/retryer.ts:174:11)
+
+  console.error
+    Error: List unavailable
+        at /Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Administration/__tests__/ResourceLists.test.jsx:95:37
+
+      at Object.error [as onError] (node_modules/@tanstack/query-core/src/query.ts:446:23)
+      at onError (node_modules/@tanstack/query-core/src/retryer.ts:112:14)
+      at reject (node_modules/@tanstack/query-core/src/retryer.ts:174:11)
+
+  console.error
+    Error: List unavailable
+        at /Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Administration/__tests__/ResourceLists.test.jsx:95:37
+
+      at Object.error [as onError] (node_modules/@tanstack/query-core/src/query.ts:446:23)
+      at onError (node_modules/@tanstack/query-core/src/retryer.ts:112:14)
+      at reject (node_modules/@tanstack/query-core/src/retryer.ts:174:11)
+
+  console.error
+    Error: List unavailable
+        at /Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Administration/__tests__/ResourceLists.test.jsx:95:37
+
+      at Object.error [as onError] (node_modules/@tanstack/query-core/src/query.ts:446:23)
+      at onError (node_modules/@tanstack/query-core/src/retryer.ts:112:14)
+      at reject (node_modules/@tanstack/query-core/src/retryer.ts:174:11)
+
+  console.error
+    Error: List unavailable
+        at /Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Administration/__tests__/ResourceLists.test.jsx:95:37
+
+      at Object.error [as onError] (node_modules/@tanstack/query-core/src/query.ts:446:23)
+      at onError (node_modules/@tanstack/query-core/src/retryer.ts:112:14)
+      at reject (node_modules/@tanstack/query-core/src/retryer.ts:174:11)
+
+PASS src/app/pages/Administration/__tests__/ResourceLists.test.jsx (14.995 s)
+  ✓ commands retains server order, row/bulk selection and 1-based paging (1071 ms)
+  ✓ events retains server order, row/bulk selection and 1-based paging (1021 ms)
+  ✓ machines retains server order, row/bulk selection and 1-based paging (1069 ms)
+  ✓ macros retains server order, row/bulk selection and 1-based paging (1087 ms)
+  ✓ users retains server order, row/bulk selection and 1-based paging (979 ms)
+  ✓ commands distinguishes loading, empty and error and can retry (174 ms)
+  ✓ events distinguishes loading, empty and error and can retry (170 ms)
+  ✓ machines distinguishes loading, empty and error and can retry (160 ms)
+  ✓ macros distinguishes loading, empty and error and can retry (176 ms)
+  ✓ users distinguishes loading, empty and error and can retry (167 ms)
+  ✓ commands updates the visible cache after create, update and bulk delete (1080 ms)
+  ✓ events updates the visible cache after create, update and bulk delete (1183 ms)
+  ✓ macros updates the visible cache after create, update and bulk delete (1163 ms)
+  ✓ users updates the visible cache after create, update and bulk delete (1075 ms)
+  ✓ Machines create, update and bulk delete preserve the server name and numeric limits contract (1599 ms)
+  ✓ commands toggles row details without fetching or mutating (429 ms)
+  ✓ events toggles row details without fetching or mutating (426 ms)
+  ✓ machines toggles row details without fetching or mutating (483 ms)
+  ✓ macros toggles row details without fetching or mutating (465 ms)
+  ✓ Users and Commands keep separate list caches (289 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       20 passed, 20 total
+Snapshots:   0 total
+Time:        15.094 s, estimated 16 s
+Ran all test suites matching /src\/app\/pages\/Administration\/__tests__\/ResourceLists.test.jsx/i.

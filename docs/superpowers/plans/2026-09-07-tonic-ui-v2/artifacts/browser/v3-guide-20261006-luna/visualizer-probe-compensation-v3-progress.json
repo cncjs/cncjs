@@ -1,0 +1,100 @@
+{
+  "revision": "5e8757b4277ec3c15d8e44ab7d8771512facb739",
+  "runnerPid": 28920,
+  "sourceContext": {
+    "dirtyFiles": [
+      "src/app/containers/app/Header.jsx",
+      "src/app/containers/app/MainPage.jsx",
+      "src/app/containers/app/SideNav.jsx",
+      "src/app/containers/app/components/NavLink.jsx",
+      "src/app/pages/About/components/AlertButtonLink.jsx",
+      "src/app/pages/Administration/Commands/Commands.jsx",
+      "src/app/pages/Administration/Events/Events.js",
+      "src/app/pages/Administration/GeneralSettings/GeneralSettings.jsx",
+      "src/app/pages/Administration/Machines/Machines.jsx",
+      "src/app/pages/Administration/Macros/Macros.jsx",
+      "src/app/pages/Administration/Users/Users.jsx",
+      "src/app/pages/Administration/WorkspaceSettings/modals/ConfirmImportWorkspaceSettingsModal.jsx",
+      "src/app/pages/Administration/WorkspaceSettings/modals/ConfirmRestoreDefaultsModal.jsx",
+      "src/app/pages/Administration/components/FieldInput.jsx",
+      "src/app/pages/Administration/components/FieldTextarea.jsx",
+      "src/app/pages/Workspace/Workspace.jsx",
+      "src/app/pages/Workspace/widget-manager/WidgetListItem.jsx",
+      "src/app/sagas/app/index.js",
+      "src/app/widgets/Autolevel/LandingView.jsx",
+      "src/app/widgets/Axes/Settings/MDI/CreateRecord.jsx",
+      "src/app/widgets/Axes/Settings/MDI/TableRecords.jsx",
+      "src/app/widgets/Axes/Settings/MDI/UpdateRecord.jsx",
+      "src/app/widgets/Axes/Settings/index.jsx",
+      "src/app/widgets/Grbl/modals/ControllerModal.jsx",
+      "src/app/widgets/Macro/modals/ConfirmDeleteMacro.jsx",
+      "src/app/widgets/Marlin/Controller.jsx",
+      "src/app/widgets/Visualizer/index.jsx"
+    ],
+    "tableSourceSha256": "ee8c70464d8752841d0b281aae953dcb098db7c0adbaf9e901e8fee8cfdb9ddb",
+    "visualizerSourceSha256": "0e3be41eaee0eacf6ba9e095d8a6e1f3d5fd082d4ebc0ac0caa937af0d8ba53e",
+    "fixtureDelivery": "Connected only to the configured local Grbl simulator (/tmp/cncjs-v3-guide-20261006-luna-0e46609d/ttyGRBL); uploaded a comment-only AL_part.gcode through the Visualizer file chooser, never ran it; after the visible filename appeared, window.PubSub.publish(\"gcode:load\", {name,gcode,isProbeCompensationApplied:true}) set badge state",
+    "hmrEvidence": "owned development frontend webpack log compiled successfully after context.jsx and Visualizer changes"
+  },
+  "status": "in_progress",
+  "current": {
+    "action": "runner complete",
+    "status": "passed"
+  },
+  "cases": [
+    {
+      "theme": "light",
+      "status": "passed",
+      "action": "capture screenshot after gcode:load fixture and geometry settlement",
+      "screenshots": [
+        "screenshots/visualizer-probe-compensation-light-1440x900.png"
+      ]
+    },
+    {
+      "theme": "dark",
+      "status": "passed",
+      "action": "capture screenshot after gcode:load fixture and geometry settlement",
+      "screenshots": [
+        "screenshots/visualizer-probe-compensation-dark-1440x900.png"
+      ]
+    }
+  ],
+  "fixtureUpload": {
+    "path": "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/AL_part.gcode",
+    "name": "AL_part.gcode",
+    "bytes": 53,
+    "contentLines": 1,
+    "commentOnly": true,
+    "ran": false
+  },
+  "socketTransport": {
+    "method": "Socket.IO polling request observer; records only command/write/writeln names and sanitized payload summaries",
+    "websocketUpgradeClosed": 2,
+    "pollingPostCount": 12,
+    "outgoingCommands": [
+      {
+        "theme": "light",
+        "event": "command",
+        "name": "sender_load",
+        "classification": "authorized-fixture-load",
+        "payloadBytes": 91,
+        "payloadSha256": "eda2d22573ca9a4102c456b127964875ea7620013aada98fcdaa455de28f1984",
+        "fixtureName": "AL_part.gcode",
+        "commentOnly": true,
+        "contentBytes": 53
+      },
+      {
+        "theme": "dark",
+        "event": "command",
+        "name": "sender_load",
+        "classification": "authorized-fixture-load",
+        "payloadBytes": 91,
+        "payloadSha256": "eda2d22573ca9a4102c456b127964875ea7620013aada98fcdaa455de28f1984",
+        "fixtureName": "AL_part.gcode",
+        "commentOnly": true,
+        "contentBytes": 53
+      }
+    ]
+  },
+  "updatedAt": "2026-10-06T08:26:13.791Z"
+}

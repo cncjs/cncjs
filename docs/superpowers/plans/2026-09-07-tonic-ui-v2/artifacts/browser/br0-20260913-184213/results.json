@@ -1,0 +1,27 @@
+{
+  "session": "br0-20260913-184213",
+  "sourceRevision": "62ea82cab0c680596ac89318b100be15133f1b63",
+  "status": "in_progress",
+  "blocking": true,
+  "blocker": "socat is not installed; sandboxed bind to required 0.0.0.0:8000 and 0.0.0.0:8080 is EPERM",
+  "commands": [
+    {"command": "yarn build-dev", "exitCode": 0},
+    {"command": "CONFIG_PATH=/tmp/cncjs-browser-test.cncrc SUPPRESS_WEBGL_WARNING=1 yarn dev", "mode": "sandbox", "exitCode": 1},
+    {"command": "CONFIG_PATH=/tmp/cncjs-browser-test.cncrc SUPPRESS_WEBGL_WARNING=1 yarn dev", "mode": "elevated retry", "exitCode": 1}
+  ],
+  "fixtures": {
+    "largeLines": 100001,
+    "watchDirectories": 100,
+    "watchFiles": 4900,
+    "sha256": {
+      "br0-small.gcode": "08c3db3f70e0f311bd9f30033191578605b7b8c240a8a2fcb2952fd261a842cd",
+      "br0-linear.gcode": "25f85611408d61472d1c955470309bf11f9d9fd19040e03af5e49fe8f484b49e",
+      "br0-arc.gcode": "bf76edba7275c98a5c2f5f842ca659dd36c40ae6be2821c9116dc247a9202a77",
+      "br0-probe.gcode": "310543d14c62cd0895199b0a3bddc7893a2a54a80b403c6bd144c8159da1c94b",
+      "br0-large-100000.gcode": "45397ed84742e57ba0941be8c0035736bb5d39e6903a6cf7c5848ba985b2f19c"
+    }
+  },
+  "browser": {"executed": false, "reason": "required dev server and simulator unavailable", "chromium": null, "headless": null, "dpr": null, "gpu": null, "theme": null, "viewports": ["1440x900", "768x900"]},
+  "assertions": {"serverPorts": false, "simulatorTty": false, "anonymousWorkspace": null, "connection": null, "gcodeUpload": null, "workflow": null, "jog": null, "disconnect": null, "largeFixture": null, "watchTree": null},
+  "cleanup": {"tcp8000": false, "tcp8080": false, "ttyGRBLExists": false}
+}

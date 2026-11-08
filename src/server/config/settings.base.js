@@ -2,7 +2,6 @@ import path from 'path';
 import pkg from '../../package.json';
 
 const RC_FILE = '.cncrc';
-const SESSION_PATH = '.cncjs-sessions';
 
 // Secret
 const secret = pkg.version;
@@ -66,10 +65,6 @@ export default {
       // response is only compressed if the byte size is at or above this threshold.
       threshold: 512
     },
-    // https://github.com/expressjs/session
-    'session': {
-      path: path.resolve(getUserHome(), SESSION_PATH)
-    }
   },
   siofu: { // SocketIOFileUploader
     dir: './tmp/siofu'

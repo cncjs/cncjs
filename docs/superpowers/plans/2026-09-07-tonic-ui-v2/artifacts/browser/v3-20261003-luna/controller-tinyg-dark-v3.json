@@ -1,0 +1,974 @@
+{
+  "task": "V3-V focused Marlin controller visual replay",
+  "revision": "fbea204268dd00a67a7f345fb367589ca1e1c79f",
+  "theme": "dark",
+  "runnerPid": 94227,
+  "sourceContext": {
+    "dirtySourceFiles": [
+      "src/app/i18n/cs/resource.json",
+      "src/app/i18n/de/resource.json",
+      "src/app/i18n/en/resource.json",
+      "src/app/i18n/es/resource.json",
+      "src/app/i18n/fr/resource.json",
+      "src/app/i18n/hu/resource.json",
+      "src/app/i18n/it/resource.json",
+      "src/app/i18n/ja/resource.json",
+      "src/app/i18n/nb/resource.json",
+      "src/app/i18n/nl/resource.json",
+      "src/app/i18n/pt-br/resource.json",
+      "src/app/i18n/pt/resource.json",
+      "src/app/i18n/ru/resource.json",
+      "src/app/i18n/tr/resource.json",
+      "src/app/i18n/uk/resource.json",
+      "src/app/i18n/zh-cn/resource.json",
+      "src/app/i18n/zh-tw/resource.json"
+    ],
+    "tableSourceSha256": "ee8c70464d8752841d0b281aae953dcb098db7c0adbaf9e901e8fee8cfdb9ddb",
+    "visualizerSourceSha256": "c428b8756176eb1b698529fe3e2c3e19df8330566416c8f8e7b0ee7b1060a043",
+    "fixture": "R6 incoming state/settings fixture replay filtered to one active controller only; fresh empty browser context"
+  },
+  "browser": {
+    "version": "153.0.8010.12",
+    "channel": "Playwright bundled Chromium",
+    "headless": true,
+    "viewport": "1440x900",
+    "dpr": 1,
+    "environment": {
+      "colorScheme": "dark",
+      "devicePixelRatio": 1,
+      "webgl": {
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "webgpuAvailable": true
+    }
+  },
+  "transport": {
+    "method": "Socket.IO Engine.IO v3 polling response relay with synthetic incoming controller events appended after the actual connection:open event",
+    "injected": [
+      {
+        "event": "controller:settings",
+        "controller": "TinyG",
+        "payloadBytes": 71,
+        "payloadSha256": "0981a4a35f9758c9e8bb3add74e051ca3c93ae30c2809d5ae665d947b1647f2c",
+        "pollingGet": 5
+      },
+      {
+        "event": "controller:state",
+        "controller": "TinyG",
+        "payloadBytes": 143,
+        "payloadSha256": "2e7be2b09b272c09aa1a48aecbb7f8d2f109ceb83aef0dd9a717a0eda27ab598",
+        "pollingGet": 5
+      }
+    ],
+    "pollingGetCount": 10,
+    "websocketUpgradeClosed": 1,
+    "suppressedGrblControllerEvents": 0,
+    "incomingEvents": [
+      {
+        "pollingGet": 1,
+        "name": "startup",
+        "controller": null
+      },
+      {
+        "pollingGet": 4,
+        "name": "controller:type",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 5,
+        "name": "feeder:status",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "sender:status",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "workflow:state",
+        "controller": "idle"
+      },
+      {
+        "pollingGet": 5,
+        "name": "connection:open",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "connection:change",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "fixture:batch",
+        "controller": "TinyG",
+        "afterActualConnectionOpen": true
+      },
+      {
+        "pollingGet": 6,
+        "name": "controller:settings",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 7,
+        "name": "Grbl:settings",
+        "controller": null
+      },
+      {
+        "pollingGet": 7,
+        "name": "controller:state",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 7,
+        "name": "Grbl:state",
+        "controller": null
+      },
+      {
+        "pollingGet": 8,
+        "name": "connection:close",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:change",
+        "controller": null
+      }
+    ],
+    "suppressedEvents": []
+  },
+  "gates": [
+    {
+      "name": "connect actual GRBL simulator through Connection widget",
+      "status": "passed",
+      "durationMs": 570,
+      "alreadyConnected": false,
+      "selectedPort": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+      "actualConnectionOpenForwarded": true,
+      "fixtureEventsAppended": 2,
+      "pollingGetCount": 6,
+      "websocketUpgradeClosed": 1
+    },
+    {
+      "name": "TinyG controller replay updates body and controller state/settings modal",
+      "status": "passed",
+      "durationMs": 464,
+      "bodyExcerpt": "TinyG F 125% -10% -1% 1% 10% S 80% -10% -1% 1% 10% T 100% 100% 50% 25% Power Management Queue Reports Planner Buffer 21 Status Reports State Run Feed Rate 0 Velocity 0 Line 742 Modal Groups Motion Linear Move (G1) Coordinate P3 (G56) Plane – Distance – Feed Rate – Units Millimeters (G21) Path – Spindle – Coolant",
+      "expectedBodyText": [
+        "Planner Buffer",
+        "742"
+      ],
+      "visibleBodyValuesFound": true,
+      "stateFixtureIdVisible": true,
+      "settingsFixtureIdVisible": true,
+      "stateShapeKeys": [
+        "r6FixtureId",
+        "machineState",
+        "line",
+        "qr",
+        "pwr",
+        "modal"
+      ],
+      "settingsShapeKeys": [
+        "r6FixtureId",
+        "fv",
+        "mfo",
+        "mto",
+        "sso"
+      ],
+      "screenshot": "controller-tinyg-dark-1440x900.png",
+      "visualEvidence": {
+        "rect": {
+          "x": 84,
+          "y": 68,
+          "width": 335,
+          "height": 859
+        },
+        "visibleTextLeaves": [
+          {
+            "found": true,
+            "text": "F",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "24px",
+            "rect": {
+              "x": 97,
+              "y": 124,
+              "width": 21,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "125%",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 118,
+              "y": 120,
+              "width": 48,
+              "height": 28
+            }
+          },
+          {
+            "found": true,
+            "text": "-10%",
+            "color": "color(srgb 1 1 1 / 0.96)",
+            "background": "rgb(57, 57, 57)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 188,
+              "y": 124,
+              "width": 34,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "-1%",
+            "color": "color(srgb 1 1 1 / 0.96)",
+            "background": "rgb(57, 57, 57)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 245,
+              "y": 124,
+              "width": 26,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "1%",
+            "color": "color(srgb 1 1 1 / 0.96)",
+            "background": "rgb(57, 57, 57)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 300,
+              "y": 124,
+              "width": 19,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "10%",
+            "color": "color(srgb 1 1 1 / 0.96)",
+            "background": "rgb(57, 57, 57)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 346,
+              "y": 124,
+              "width": 28,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "S",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "24px",
+            "rect": {
+              "x": 97,
+              "y": 164,
+              "width": 22,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "80%",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 119,
+              "y": 160,
+              "width": 48,
+              "height": 28
+            }
+          },
+          {
+            "found": true,
+            "text": "-10%",
+            "color": "color(srgb 1 1 1 / 0.96)",
+            "background": "rgb(57, 57, 57)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 188,
+              "y": 164,
+              "width": 34,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "-1%",
+            "color": "color(srgb 1 1 1 / 0.96)",
+            "background": "rgb(57, 57, 57)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 245,
+              "y": 164,
+              "width": 26,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "1%",
+            "color": "color(srgb 1 1 1 / 0.96)",
+            "background": "rgb(57, 57, 57)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 300,
+              "y": 164,
+              "width": 19,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "10%",
+            "color": "color(srgb 1 1 1 / 0.96)",
+            "background": "rgb(57, 57, 57)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 346,
+              "y": 164,
+              "width": 28,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "T",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "24px",
+            "rect": {
+              "x": 97,
+              "y": 204,
+              "width": 24,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "100%",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 121,
+              "y": 200,
+              "width": 51,
+              "height": 28
+            }
+          },
+          {
+            "found": true,
+            "text": "Power Management",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 114,
+              "y": 250,
+              "width": 128,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "text": "Queue Reports",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 114,
+              "y": 290,
+              "width": 97,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "text": "Planner Buffer",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 109,
+              "y": 332,
+              "width": 143,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "21",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 252,
+              "y": 334,
+              "width": 143,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "Status Reports",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 114,
+              "y": 386,
+              "width": 96,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "text": "State",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 109,
+              "y": 428,
+              "width": 143,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "Run",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 252,
+              "y": 426,
+              "width": 143,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Feed Rate",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 109,
+              "y": 460,
+              "width": 143,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "0",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 252,
+              "y": 458,
+              "width": 143,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Velocity",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 109,
+              "y": 492,
+              "width": 143,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "0",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 252,
+              "y": 490,
+              "width": 143,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Line",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 109,
+              "y": 524,
+              "width": 143,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "742",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 252,
+              "y": 522,
+              "width": 143,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Modal Groups",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 114,
+              "y": 578,
+              "width": 90,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "text": "Motion",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 109,
+              "y": 620,
+              "width": 143,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "Linear Move (G1)",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 252,
+              "y": 618,
+              "width": 143,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Coordinate",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 109,
+              "y": 652,
+              "width": 143,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "P3 (G56)",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 252,
+              "y": 650,
+              "width": 143,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Plane",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 109,
+              "y": 684,
+              "width": 143,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "–",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 252,
+              "y": 682,
+              "width": 143,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Distance",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 109,
+              "y": 716,
+              "width": 143,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "–",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 252,
+              "y": 714,
+              "width": 143,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Feed Rate",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 109,
+              "y": 748,
+              "width": 143,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "–",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 252,
+              "y": 746,
+              "width": 143,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Units",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 109,
+              "y": 780,
+              "width": 143,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "Millimeters (G21)",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 252,
+              "y": 778,
+              "width": 143,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Path",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 109,
+              "y": 812,
+              "width": 143,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "–",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 252,
+              "y": 810,
+              "width": 143,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Spindle",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 109,
+              "y": 844,
+              "width": 143,
+              "height": 20
+            }
+          },
+          {
+            "found": true,
+            "text": "–",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "color(srgb 1 1 1 / 0.08)",
+            "fontSize": "12px",
+            "rect": {
+              "x": 252,
+              "y": 842,
+              "width": 143,
+              "height": 24
+            }
+          },
+          {
+            "found": true,
+            "text": "Coolant",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(255, 255, 255)",
+            "fontSize": "14px",
+            "rect": {
+              "x": 109,
+              "y": 874,
+              "width": 143,
+              "height": 20
+            }
+          }
+        ],
+        "icons": [
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "bars",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 1 1 1 / 0.64)",
+            "rect": {
+              "x": 97,
+              "y": 77,
+              "width": 20,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "chevron-up",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "rgb(166, 197, 252)",
+            "rect": {
+              "x": 393,
+              "y": 71,
+              "width": 18,
+              "height": 14
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "ellipsis-vertical",
+            "fillAttribute": null,
+            "computedFill": "rgb(0, 0, 0)",
+            "computedStroke": "none",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "rect": {
+              "x": 335,
+              "y": 78,
+              "width": 20,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "ChevronDownIcon",
+            "fillAttribute": "currentColor",
+            "computedFill": "color(srgb 1 1 1 / 0.8)",
+            "computedStroke": "none",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "rect": {
+              "x": 373,
+              "y": 250,
+              "width": 16,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "ChevronDownIcon",
+            "fillAttribute": "currentColor",
+            "computedFill": "color(srgb 1 1 1 / 0.8)",
+            "computedStroke": "none",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "rect": {
+              "x": 373,
+              "y": 290,
+              "width": 16,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "ChevronDownIcon",
+            "fillAttribute": "currentColor",
+            "computedFill": "color(srgb 1 1 1 / 0.8)",
+            "computedStroke": "none",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "rect": {
+              "x": 373,
+              "y": 386,
+              "width": 16,
+              "height": 16
+            }
+          },
+          {
+            "found": true,
+            "ariaLabel": null,
+            "title": null,
+            "dataIcon": "ChevronDownIcon",
+            "fillAttribute": "currentColor",
+            "computedFill": "color(srgb 1 1 1 / 0.8)",
+            "computedStroke": "none",
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "rect": {
+              "x": 373,
+              "y": 578,
+              "width": 16,
+              "height": 16
+            }
+          }
+        ],
+        "warningIndicators": []
+      },
+      "outgoingCommandDelta": 0
+    },
+    {
+      "name": "TinyG connected widget collapse and fullscreen view actions",
+      "status": "passed",
+      "durationMs": 340,
+      "collapsedExpanded": "false",
+      "expandedRestored": true,
+      "fullscreen": {
+        "position": "fixed",
+        "width": 1380,
+        "height": 852
+      },
+      "exited": true,
+      "outgoingCommandDelta": 0
+    },
+    {
+      "name": "disconnect simulator through Connection widget",
+      "status": "passed",
+      "durationMs": 281,
+      "disconnected": true
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:2"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1340044c800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1340044c800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1340044c800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1340044c800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    }
+  ],
+  "outgoingCommands": [],
+  "status": "passed",
+  "completedAt": "2026-10-06T06:31:40.467Z"
+}

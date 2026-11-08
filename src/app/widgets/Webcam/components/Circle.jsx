@@ -1,41 +1,34 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 
-class Circle extends Component {
-  static propTypes = {
-    style: PropTypes.object,
-    color: PropTypes.string,
-    opacity: PropTypes.number,
-    diameter: PropTypes.number,
-    width: PropTypes.number
-  };
-
-  static defaultProps = {
-    color: '#fff',
-    opacity: 0.8,
-    diameter: 0,
-    width: 1
-  };
-
-  render() {
-    const { style, color, opacity, diameter, width, ...props } = this.props;
-    const componentStyle = {
-      backgroundClip: 'padding-box',
-      borderRadius: '50%',
-      borderColor: color,
-      borderStyle: 'solid',
-      borderWidth: width,
-      boxShadow: '0 0 2px #333',
-      opacity: opacity,
-      width: diameter,
-      height: diameter,
-      ...style,
-    };
-
-    return (
-      <div {...props} style={componentStyle} />
-    );
-  }
+/**
+ * @param {{ color?: string, opacity?: number, diameter?: number, width?: number, [key: string]: unknown }} props
+ */
+function Circle({
+  color = '#fff',
+  opacity = 0.8,
+  diameter = 0,
+  width = 1,
+  ...props
+}) {
+  const radius = (diameter - width) / 2;
+  return (
+    <svg
+      {...props}
+      width={diameter}
+      height={diameter}
+      viewBox={`0 0 ${diameter} ${diameter}`}
+    >
+      <circle
+        cx={diameter / 2}
+        cy={diameter / 2}
+        r={radius}
+        fill="none"
+        stroke={color}
+        strokeOpacity={opacity}
+        strokeWidth={width}
+      />
+    </svg>
+  );
 }
 
 export default Circle;

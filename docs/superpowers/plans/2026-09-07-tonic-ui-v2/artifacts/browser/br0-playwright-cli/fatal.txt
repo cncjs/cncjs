@@ -1,0 +1,28 @@
+locator.click: Timeout 5000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: 'Grbl', exact: true })[22m
+[2m    - locator resolved to <button type="button" tabindex="-1" data-selected="" data-tonic="Button" class="css-iha0j6-Box eecupy40">Grbl</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <div role="presentation" class="components-Modal-index__modal-overlay--xcmjl components-Modal-index__centered--m1A9c">…</div> from <div data-reactportal="">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <div role="presentation" class="components-Modal-index__modal-overlay--xcmjl components-Modal-index__centered--m1A9c">…</div> from <div data-reactportal="">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    10 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is visible, enabled and stable[22m
+[2m       - scrolling into view if needed[22m
+[2m       - done scrolling[22m
+[2m       - <div role="presentation" class="components-Modal-index__modal-overlay--xcmjl components-Modal-index__centered--m1A9c">…</div> from <div data-reactportal="">…</div> subtree intercepts pointer events[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+    at main (/tmp/br0-cli.js:33:65)

@@ -1,0 +1,32 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "port": "8082",
+    "route": "/#/administration/macros",
+    "viewport": "1440x900",
+    "dpr": 1
+  },
+  "api": [
+    {
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "status": 200,
+      "path": "/api/macros"
+    }
+  ],
+  "tooltipWarnings": [
+    {
+      "type": "error",
+      "text": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `VisualizerWidget`. \n    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)\n    at VisualizerWidget (webpack-internal:///./widgets/Visualizer/index.jsx:210:5)\n    at WidgetHost (webpack-internal:///./pages/Workspace/Widget.jsx:53:24)\n    at div\n    at div\n    at DefaultWidgets (webpack-internal:"
+    },
+    {
+      "type": "error",
+      "text": "Warning: findDOMNode is deprecated and will be removed in the next major release. Instead, add a ref directly to the element you want to reference. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-find-node%s \n    at Visualizer (webpack-internal:///./widgets/Visualizer/Visualizer.jsx:139:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-in"
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "status": "completed"
+}

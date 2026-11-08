@@ -5,9 +5,10 @@ import { IMPERIAL_UNITS, METRIC_UNITS } from '@app/constants';
 import i18n from '@app/lib/i18n';
 import log from '@app/lib/log';
 import TextSprite from './TextSprite';
+import { recordOwnedListenerDelta } from './metrics';
 
 class ProbeVisualization {
-  constructor(probeData = [], config = {}, camera = null, domElement = null, trackballControls = null, sceneUpdateCallback = null) {
+  constructor(probeData = [], config = {}, camera = null, domElement = null, trackballControls = null, sceneUpdateCallback = null, metricsOwner = null) {
     // Create THREE.Object3D group for all visual elements
     this.group = new THREE.Object3D();
     this.group.name = 'ProbeVisualization';
@@ -41,6 +42,7 @@ class ProbeVisualization {
     this.domElement = domElement;
     this.controls = trackballControls;
     this.sceneUpdateCallback = sceneUpdateCallback;
+    this.metricsOwner = metricsOwner;
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
     this.interactionState = 'NONE'; // NONE | DRAGGING_AREA | RESIZING_CORNER
@@ -507,6 +509,7 @@ class ProbeVisualization {
     this.domElement.addEventListener('mousemove', this.onMouseMoveBound, true);
     this.domElement.addEventListener('mousedown', this.onMouseDownBound, true);
     this.domElement.addEventListener('mouseup', this.onMouseUpBound, true);
+    recordOwnedListenerDelta(this.metricsOwner, 3);
 
     log.info('[ProbeVisualization] Event listeners bound (capture phase)');
   }
@@ -519,6 +522,7 @@ class ProbeVisualization {
     this.domElement.removeEventListener('mousemove', this.onMouseMoveBound, true);
     this.domElement.removeEventListener('mousedown', this.onMouseDownBound, true);
     this.domElement.removeEventListener('mouseup', this.onMouseUpBound, true);
+    recordOwnedListenerDelta(this.metricsOwner, -3);
 
     // Reset cursor
     this.domElement.style.cursor = 'default';
@@ -914,13 +918,34 @@ class ProbeVisualization {
   dispose() {
     this.unbindEvents();
 
+    const disposedResources = new Set();
+    const disposeResource = resource => {
+      if (!resource || disposedResources.has(resource)) {
+        return;
+      }
+      disposedResources.add(resource);
+      if (typeof resource.dispose === 'function') {
+        resource.dispose();
+      }
+    };
+
     this.group.traverse(obj => {
-      if (obj.geometry) {
-        obj.geometry.dispose();
+      if (obj.geometry && !obj.isSprite) {
+        disposeResource(obj.geometry);
       }
-      if (obj.material) {
-        obj.material.dispose();
-      }
+      const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+      materials.forEach(material => {
+        if (!material) {
+          return;
+        }
+        Object.keys(material).forEach(key => {
+          const value = material[key];
+          if (value && value.isTexture) {
+            disposeResource(value);
+          }
+        });
+        disposeResource(material);
+      });
     });
   }
 }

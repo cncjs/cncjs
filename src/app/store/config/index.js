@@ -15,6 +15,7 @@ import reduxStore from '@app/store/redux';
 import { promptUserForCorruptedWorkspaceSettings } from '@app/containers/app/actions';
 import EventEmitterStore from './EventEmitterStore';
 import defaultState from './defaultState';
+import { hydrateConfig } from './hydration';
 
 const cnc = {
   version: settings.version,
@@ -178,7 +179,7 @@ const migrateStore = () => {
     config.unset('widgets.connection.baudrate');
   }
 
-  if (semverLt(cnc.version, '2.0.0')) {
+  if (semverLt(cnc.version, '2.0.0-0')) {
     log.info(`Migrating configuration settings from v${cnc.version} to v2.0.0`);
 
     // appearance
@@ -192,29 +193,22 @@ const migrateStore = () => {
 };
 
 (async () => {
-  let canMigrateStore = false;
+  await hydrateConfig({
+    config,
+    read: () => config.toJSONString(),
+    onParsed: ({ version, state }) => {
+      cnc.version = version;
+      cnc.state = state;
+    },
+    normalize: state => normalizeState(_merge({}, defaultState, state ?? {})),
+    migrate: migrateStore,
+    onError: e => {
+      log.error(e);
 
-  try {
-    const content = await config.toJSONString();
-    const { version, state } = JSON.parse(content);
-    cnc.version = version;
-    cnc.state = state;
-
-    config.state = normalizeState(_merge({}, defaultState, cnc.state ?? {}));
-
-    if (!!cnc.version) {
-      canMigrateStore = true;
-    }
-  } catch (e) {
-    log.error(e);
-
-    // Dispatch an action to prompt user for corrupted workspace settings
-    reduxStore.dispatch(promptUserForCorruptedWorkspaceSettings());
-  }
-
-  if (canMigrateStore) {
-    migrateStore();
-  }
+      // Dispatch an action to prompt user for corrupted workspace settings
+      reduxStore.dispatch(promptUserForCorruptedWorkspaceSettings());
+    },
+  });
 })();
 
 export default config;

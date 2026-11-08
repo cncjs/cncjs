@@ -1,0 +1,437 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "channel": "bundled Chromium",
+    "viewport": "1440x900",
+    "dpr": 1
+  },
+  "transport": {
+    "method": "Socket.IO Engine.IO v3 polling response relay with synthetic incoming controller events at the network boundary",
+    "injected": [
+      {
+        "event": "controller:settings",
+        "controller": "Marlin",
+        "payloadBytes": 79,
+        "payloadSha256": "732e457a21307d2c92b4a9e69cbe72de134010aabc30dac25cccdee1e5e85d97",
+        "pollingGet": 8
+      },
+      {
+        "event": "controller:state",
+        "controller": "Marlin",
+        "payloadBytes": 231,
+        "payloadSha256": "6fda8f0646d6d2d872141d93607f9286782987d1bc39d05966fae532582e30ea",
+        "pollingGet": 8
+      }
+    ],
+    "pollingGetCount": 12,
+    "websocketUpgradeClosed": 2,
+    "suppressedGrblControllerEvents": 3,
+    "incomingEvents": [
+      {
+        "pollingGet": 1,
+        "name": "startup",
+        "controller": null
+      },
+      {
+        "pollingGet": 4,
+        "name": "controller:type",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 5,
+        "name": "feeder:status",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "sender:status",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "workflow:state",
+        "controller": "idle"
+      },
+      {
+        "pollingGet": 5,
+        "name": "connection:open",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "connection:change",
+        "controller": null
+      },
+      {
+        "pollingGet": 6,
+        "name": "controller:settings",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 7,
+        "name": "Grbl:settings",
+        "controller": null
+      },
+      {
+        "pollingGet": 7,
+        "name": "controller:state",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 7,
+        "name": "Grbl:state",
+        "controller": null
+      },
+      {
+        "pollingGet": 8,
+        "name": "connection:write",
+        "controller": null
+      },
+      {
+        "pollingGet": 8,
+        "name": "fixture:batch",
+        "controller": "Marlin"
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:read",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "controller:settings",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 9,
+        "name": "Grbl:settings",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "controller:state",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 9,
+        "name": "Grbl:state",
+        "controller": null
+      },
+      {
+        "pollingGet": 10,
+        "name": "controller:state",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 11,
+        "name": "startup",
+        "controller": null
+      }
+    ],
+    "suppressedEvents": [
+      {
+        "pollingGet": 9,
+        "name": "controller:settings",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 9,
+        "name": "controller:state",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 10,
+        "name": "controller:state",
+        "controller": "Grbl"
+      }
+    ]
+  },
+  "gates": [
+    {
+      "name": "connect actual GRBL simulator through Connection widget",
+      "status": "passed",
+      "durationMs": 1035,
+      "alreadyConnected": false,
+      "selectedPort": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+      "pollingGetCount": 8,
+      "websocketUpgradeClosed": 1
+    },
+    {
+      "name": "Marlin controller replay updates body and controller state/settings modal",
+      "status": "passed",
+      "durationMs": 2950,
+      "bodyExcerpt": "Marlin F 92% -10% -1% 1% 10% E 88% -10% -1% 1% 10% Heater Control Extruder °C Heated Bed °C Extruder Temperature 201°C / 220°C Heated Bed Temperature 59°C / 65°C Extruder Power 45 Heated Bed Power 17 Status Reports Modal Groups",
+      "expectedBodyText": [
+        "Extruder Temperature",
+        "201°C / 220°C"
+      ],
+      "stateFixtureIdVisible": true,
+      "settingsFixtureIdVisible": true,
+      "stateShapeKeys": [
+        "r6FixtureId",
+        "feedrate",
+        "spindle",
+        "ovF",
+        "ovS",
+        "extruder",
+        "heatedBed",
+        "modal"
+      ],
+      "settingsShapeKeys": [
+        "r6FixtureId",
+        "baudrate",
+        "max_feedrate"
+      ],
+      "outgoingCommandDelta": 0
+    },
+    {
+      "name": "disconnect simulator through Connection widget",
+      "status": "failed",
+      "durationMs": 12003,
+      "error": "TimeoutError: locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Connection widget', exact: true }).getByRole('button', { name: 'Close', exact: true })\u001b[22m\n"
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:2"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10400449800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10400449800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10400449800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently"
+    }
+  ],
+  "outgoingCommands": []
+}

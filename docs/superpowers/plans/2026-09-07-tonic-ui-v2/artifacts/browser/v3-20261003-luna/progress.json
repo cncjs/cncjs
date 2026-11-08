@@ -1,0 +1,284 @@
+{
+  "task": "V3-V visual semantic migration rerun",
+  "revision": "fbea204268dd00a67a7f345fb367589ca1e1c79f",
+  "model": "gpt-6-luna",
+  "reasoning_effort": "xhigh",
+  "status": "complete",
+  "phase": "fbea focused evidence accepted; warning classification and owned cleanup complete",
+  "scratchPath": "/tmp/cncjs-v3-visual-KaoUqg",
+  "evidenceCounts": {
+    "assertionsPassed": 15,
+    "assertionsFailed": 0,
+    "screenshots": 46
+  },
+  "runtime": {
+    "configPath": "/tmp/cncjs-v3-visual-KaoUqg/config.cncrc",
+    "watchDirectory": "/tmp/cncjs-v3-visual-KaoUqg/watch-tree",
+    "browserUrl": "http://127.0.0.1:8080/#/workspace",
+    "backend": {
+      "pid": 34632,
+      "port": 8000
+    },
+    "frontend": {
+      "pid": 34633,
+      "port": 8080
+    },
+    "simulator": {
+      "pid": 34657,
+      "tcpListenerPort": 60565,
+      "configuredDevice": "/tmp/ttyGRBL"
+    },
+    "serialBridge": {
+      "pid": 34723,
+      "device": "/tmp/ttyGRBL -> /dev/ttys005"
+    },
+    "lifecycleToolSession": 98385,
+    "lifecycleLog": "/tmp/cncjs-v3-visual-KaoUqg/lifecycle.log",
+    "lifecycleStatus": "running; owned services PID 34632:8000, 34633:8080, 34657 simulator:60565, 34723 serial bridge; lifecycle session 98385"
+  },
+  "buildDev": {
+    "exitCode": 0,
+    "observedWarnings": [
+      "existing eslint warning Workspace.jsx:90",
+      "existing eslint warning Axes/DisplayPanel.jsx:279",
+      "existing eslint warning Connection.jsx:164"
+    ],
+    "localeScannerTouched": [
+      "cs",
+      "de",
+      "en",
+      "es",
+      "fr",
+      "hu",
+      "it",
+      "ja",
+      "nb",
+      "nl",
+      "pt-br",
+      "pt",
+      "ru",
+      "tr",
+      "uk",
+      "zh-cn",
+      "zh-tw"
+    ],
+    "action": "left locale files untouched per browser-worker instruction"
+  },
+  "concurrentOutOfScopeChangesObserved": [
+    "docs/superpowers/cncjs-next-tonic-ui-v2-handoff.md",
+    "docs/superpowers/plans/2026-09-07-tonic-ui-v2/STATUS.md",
+    "docs/superpowers/plans/2026-09-07-tonic-ui-v2/execution-log.md"
+  ],
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "headless": true,
+    "deviceScaleFactor": 1
+  },
+  "screenshots": [
+    "screenshots/workspace-theme-light-1440x900.png",
+    "screenshots/workspace-theme-dark-1440x900.png",
+    "screenshots/workspace-theme-auto-1440x900.png",
+    "screenshots/workspace-theme-light-768x900.png",
+    "screenshots/workspace-theme-dark-768x900.png",
+    "screenshots/workspace-theme-auto-768x900.png",
+    "screenshots/workspace-auto-live-light-1440x900.png",
+    "screenshots/workspace-auto-live-dark-1440x900.png",
+    "screenshots/workspace-auto-live-restored-light-1440x900.png",
+    "screenshots/workspace-widget-target-webcam-widget-1440x900.png",
+    "screenshots/workspace-widget-target-autolevel-widget-1440x900.png",
+    "screenshots/workspace-widget-target-probe-widget-1440x900.png",
+    "screenshots/workspace-widget-target-tool-widget-1440x900.png",
+    "screenshots/workspace-widget-target-spindle-widget-1440x900.png",
+    "screenshots/workspace-widget-target-laser-widget-1440x900.png",
+    "screenshots/sidebar-header-768x900.png",
+    "screenshots/dialog-widget-manager-open.png",
+    "screenshots/dialog-widget-manager-open-768x900.png",
+    "screenshots/workspace-panels-collapsed-canvas-768x900.png",
+    "screenshots/administration-commands-list-1440x900.png",
+    "screenshots/administration-commands-drawer-1440x900.png",
+    "screenshots/administration-commands-validation-1440x900.png",
+    "screenshots/administration-events-list-1440x900.png",
+    "screenshots/administration-events-drawer-1440x900.png",
+    "screenshots/administration-events-validation-1440x900.png",
+    "screenshots/administration-machines-list-1440x900.png",
+    "screenshots/administration-machines-drawer-1440x900.png",
+    "screenshots/administration-machines-validation-1440x900.png",
+    "screenshots/administration-macros-list-1440x900.png",
+    "screenshots/administration-macros-drawer-1440x900.png",
+    "screenshots/administration-macros-validation-1440x900.png",
+    "screenshots/administration-users-list-1440x900.png",
+    "screenshots/administration-users-drawer-1440x900.png",
+    "screenshots/administration-users-validation-1440x900.png",
+    "screenshots/settings-general-1440x900.png",
+    "screenshots/settings-workspace-1440x900.png",
+    "screenshots/macro-editor-variable-menu-open.png",
+    "screenshots/macro-editor-variable-inserted.png",
+    "screenshots/administration-macros-drawer-dark-1440x900.png",
+    "screenshots/administration-macros-validation-dark-1440x900.png",
+    "screenshots/administration-macros-variable-menu-dark-1440x900.png",
+    "screenshots/failure-console-terminal-uses-fixed-black-background.png",
+    "screenshots/failure-webcam-empty-state-and-video-device-settings-labels.png",
+    "screenshots/console-fixed-black-target-1440x900.png",
+    "screenshots/webcam-empty-target-1440x900.png",
+    "screenshots/webcam-settings-video-labels.png"
+  ],
+  "matrix": "workspace-theme-matrix-v3.json",
+  "supplemental": "routes-semantic-v3-after-table-fix.json",
+  "warningClassification": {
+    "console-info": 44,
+    "known-runtime-deprecation": 4,
+    "application-warning": 8
+  },
+  "rootReviewFollowup": {
+    "drawerAnimationSettlement": "implemented in screenshot helper; rerunning captures",
+    "console": "synthetic Grbl connected and fixed-black terminal screenshot passed; no motion/run/jog",
+    "webcam": "mounted video accepted only if no source, frames, dimensions, live tracks, or playback; recording computed visibility/source/readiness",
+    "knownBaselineIssues": "narrow-pane clipping and disabled Axes SVG contrast noted by root; no source edits"
+  },
+  "diagnostic": {
+    "preservedAttempts": [
+      "routes-semantic-v3-failed-attempt-root-review.json",
+      "routes-semantic-v3-interrupted-animation-finish-attempt.json",
+      "routes-semantic-v3-partial-failed-attempt-root-review.json",
+      "routes-semantic-v3-partial-animation-diagnostic-attempt.json"
+    ],
+    "animationDiagnostic": "seven fresh Chromium scenarios; 0 Maximum update depth errors in all, both finish and disabled modes, including full Workspace modal/collapse-to-Administration prefix",
+    "warningStatus": "prior repeated update-depth errors remain preserved and classified as unresolved prior-run console errors until the full post-fix runner completes"
+  },
+  "sourceContext": {
+    "revision": "fbea204268dd00a67a7f345fb367589ca1e1c79f",
+    "visualizerSourceSha256": "c428b8756176eb1b698529fe3e2c3e19df8330566416c8f8e7b0ee7b1060a043",
+    "tableSourceSha256": "ee8c70464d8752841d0b281aae953dcb098db7c0adbaf9e901e8fee8cfdb9ddb",
+    "dirtySourceFilesAtRun": [
+      "src/app/i18n/cs/resource.json",
+      "src/app/i18n/de/resource.json",
+      "src/app/i18n/en/resource.json",
+      "src/app/i18n/es/resource.json",
+      "src/app/i18n/fr/resource.json",
+      "src/app/i18n/hu/resource.json",
+      "src/app/i18n/it/resource.json",
+      "src/app/i18n/ja/resource.json",
+      "src/app/i18n/nb/resource.json",
+      "src/app/i18n/nl/resource.json",
+      "src/app/i18n/pt-br/resource.json",
+      "src/app/i18n/pt/resource.json",
+      "src/app/i18n/ru/resource.json",
+      "src/app/i18n/tr/resource.json",
+      "src/app/i18n/uk/resource.json",
+      "src/app/i18n/zh-cn/resource.json",
+      "src/app/i18n/zh-tw/resource.json"
+    ],
+    "dirtySourceFilesAtFinalization": []
+  },
+  "navigationComparison": {
+    "evidence": "admin-navigation-compare-v3-after-table-fix.json",
+    "directGoto": "routeResolved/listVisible; 0 Maximum update depth, 0 pageErrors, 0 requestFailures",
+    "nativeClick": "same route; clean comparison will be refreshed as follow-up",
+    "anonymousSessionInitialization": "POST /api/signin classified separately from user resource mutations"
+  },
+  "runnerLifecycle": {
+    "previousRouteRunner": "terminated after preserved update-depth failure JSON; only its browser lineage was stopped",
+    "awaiting": "full routes rerun with original Workspace panel state restored; native click comparison follow-up",
+    "currentRunner": null,
+    "ownedRuntimeStatus": "stopped; PIDs/listeners 8000/8080/60565 and /tmp/ttyGRBL verified absent",
+    "currentTurnBrowserRunnerPids": {
+      "pids": [
+        94115,
+        93822,
+        93935,
+        93433,
+        94172,
+        94144,
+        94227,
+        94200,
+        92844
+      ],
+      "status": "all exited"
+    },
+    "cleanup": "cleanup.json"
+  },
+  "focusedBadge": {
+    "report": "visualizer-probe-compensation-v3.json",
+    "priorOracleAttempt": "visualizer-probe-compensation-v3-fbea-contrast-oracle-attempt-failed.json",
+    "revision": "fbea204268dd00a67a7f345fb367589ca1e1c79f",
+    "status": "passed",
+    "cases": [
+      {
+        "theme": "light",
+        "status": "passed",
+        "gcodeNameWhiteCanvasContrast": 3.71,
+        "gcodeNameFontSizePx": 24,
+        "badgeContrast": 6.411
+      },
+      {
+        "theme": "dark",
+        "status": "passed",
+        "gcodeNameWhiteCanvasContrast": 3.71,
+        "gcodeNameFontSizePx": 24,
+        "badgeContrast": 9.573
+      }
+    ],
+    "fixtureUpload": {
+      "path": "removed after run from unique scratch",
+      "name": "AL_part.gcode",
+      "commentOnly": true,
+      "uploaded": true,
+      "ran": false,
+      "authorizedCommand": "sender_load",
+      "motionRunJog": false
+    }
+  },
+  "focusedControllerMatrix": {
+    "status": "passed",
+    "cases": 8,
+    "gatesPassed": 32,
+    "gatesFailed": 0,
+    "reports": [
+      "controller-marlin-light-v3.json",
+      "controller-marlin-dark-v3.json",
+      "controller-grbl-light-v3.json",
+      "controller-grbl-dark-v3.json",
+      "controller-smoothie-light-v3.json",
+      "controller-smoothie-dark-v3.json",
+      "controller-tinyg-light-v3.json",
+      "controller-tinyg-dark-v3.json"
+    ]
+  },
+  "finalFocusedEvidence": {
+    "revision": "fbea204268dd00a67a7f345fb367589ca1e1c79f",
+    "badgeCases": {
+      "count": 2,
+      "status": "passed",
+      "report": "visualizer-probe-compensation-v3.json"
+    },
+    "controllerThemeCases": {
+      "count": 8,
+      "status": "passed",
+      "gatesPassed": 32,
+      "gatesFailed": 0,
+      "reports": [
+        "controller-marlin-light-v3.json",
+        "controller-marlin-dark-v3.json",
+        "controller-grbl-light-v3.json",
+        "controller-grbl-dark-v3.json",
+        "controller-smoothie-light-v3.json",
+        "controller-smoothie-dark-v3.json",
+        "controller-tinyg-light-v3.json",
+        "controller-tinyg-dark-v3.json"
+      ]
+    },
+    "acceptedScreenshots": 18,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "outgoingControllerCommands": 0,
+    "consoleIssuesClassified": 130,
+    "unclassifiedConsoleIssues": 0
+  },
+  "completedAt": "2026-10-06T06:38:12.561Z",
+  "securityRedaction": {
+    "status": "passed",
+    "remainingUnredactedValues": 0,
+    "redactedArtifactFiles": 10
+  }
+}

@@ -1,0 +1,2105 @@
+{
+  "task": "V3-V focused Visualizer GCodeName and probe-compensation badge visual cases",
+  "revision": "f050804ef6b485b0190f29557d79df43f53316b0",
+  "sourceContext": {
+    "dirtyFiles": [],
+    "tableSourceSha256": "ee8c70464d8752841d0b281aae953dcb098db7c0adbaf9e901e8fee8cfdb9ddb",
+    "fixtureDelivery": "Connected only to the configured local Grbl simulator (/tmp/ttyGRBL); uploaded a comment-only AL_part.gcode through the Visualizer file chooser, never ran it; after the visible filename appeared, window.PubSub.publish(\"gcode:load\", {name,gcode,isProbeCompensationApplied:true}) set badge state"
+  },
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "headless": true,
+    "deviceScaleFactor": 1
+  },
+  "fixture": {
+    "name": "AL_part.gcode",
+    "gcode": "; V3 visual-only badge fixture; loaded but never run\n",
+    "isProbeCompensationApplied": true
+  },
+  "fixtureUpload": {
+    "path": "/tmp/cncjs-v3-visual-KaoUqg/AL_part.gcode",
+    "name": "AL_part.gcode",
+    "bytes": 53,
+    "contentLines": 1,
+    "commentOnly": true,
+    "ran": false
+  },
+  "cases": [
+    {
+      "theme": "light",
+      "actionTrace": [
+        {
+          "action": "page.goto #/workspace",
+          "at": "2026-10-03T14:37:02.070Z"
+        },
+        {
+          "action": "connect owned local Grbl simulator through Connection widget",
+          "at": "2026-10-03T14:37:03.836Z"
+        },
+        {
+          "action": "upload comment-only AL_part.gcode through the Visualizer UI file chooser",
+          "at": "2026-10-03T14:37:04.403Z"
+        },
+        {
+          "action": "publish probe-compensation state after sender filename load",
+          "at": "2026-10-03T14:37:04.743Z"
+        },
+        {
+          "action": "capture screenshot after gcode:load fixture and geometry settlement",
+          "at": "2026-10-03T14:37:04.967Z"
+        }
+      ],
+      "pageErrors": [],
+      "consoleIssues": [
+        {
+          "type": "error",
+          "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead.",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "error",
+          "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead.",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "warning",
+          "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24925:9)\n    at commitPassiveMountEffects_begin (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24912:7)\n    at commitPassiveMountEffects (webpack-internal:///../../node_",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute().",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute().",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute().",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x13c0044ce00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x13c0044ce00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x13c0044ce00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "warning",
+          "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 18.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.\n\nPlease update the following components: %s VirtualList",
+          "action": "upload comment-only AL_part.gcode through the Visualizer UI file chooser"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x13c0044ce00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+          "action": "upload comment-only AL_part.gcode through the Visualizer UI file chooser"
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+          "action": "upload comment-only AL_part.gcode through the Visualizer UI file chooser"
+        }
+      ],
+      "requestFailures": [],
+      "httpErrors": [],
+      "apiWrites": [
+        {
+          "method": "POST",
+          "path": "/api/signin",
+          "action": "page.goto #/workspace"
+        }
+      ],
+      "screenshots": [
+        "screenshots/visualizer-probe-compensation-light-1440x900.png"
+      ],
+      "connection": {
+        "selectedPort": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+        "connected": true,
+        "endpoint": "owned local simulator only",
+        "noRealMachine": true
+      },
+      "upload": {
+        "startedByVisibleUploadButton": true,
+        "file": "AL_part.gcode",
+        "commentOnly": true,
+        "fileBytes": 53,
+        "backendRequestClass": "explicitly authorized fixture ingestion only"
+      },
+      "loadedFilenameBeforeBadgeFlag": [
+        "AL_part.gcode",
+        "AL_part.gcode",
+        "AL_part.gcode"
+      ],
+      "pubsubReturn": true,
+      "details": {
+        "themeSurface": {
+          "bodyBackground": "rgb(34, 34, 34)",
+          "bodyColor": "color(srgb 0 0 0 / 0.8)",
+          "rootBackground": "rgba(0, 0, 0, 0)"
+        },
+        "gcodeNameVisibleTexts": [
+          "AL_part.gcode",
+          "AL_part.gcode"
+        ],
+        "semanticTextSamples": [
+          {
+            "text": "AL_part.gcode",
+            "tag": "DIV",
+            "dataTonic": null,
+            "className": "css-d8km0f-Box eecupy40",
+            "foreground": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(252, 252, 252)",
+            "contrastRatio": 12.424,
+            "rect": {
+              "x": 440,
+              "y": 818,
+              "width": 153,
+              "height": 20
+            },
+            "ancestors": [
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-d8km0f-Box eecupy40",
+                "text": "AL_part.gcode",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-5qi0fe-Box eecupy40",
+                "text": "AL_part.gcode Probe Compensation Applied",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "components-Widget-index__widget-content--bwilF css-5qi0fe-Box eecupy40",
+                "text": "Upload G-code AL_part.gcode Probe Compensation Applied",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "rgb(169, 169, 169) color(srgb 0 0 0 / 0.8) color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "1px 0px 0px"
+              },
+              {
+                "tag": "DIV",
+                "role": "region",
+                "dataTonic": null,
+                "className": "components-Widget-index__widget--pzPdi components-Widget-index__widget-borderless--iOLgq css-1v24e4f-Box eecupy40",
+                "text": "Grbl G54 (P1) 3D View Upload G-code AL_part.gcode Probe Compensation Applied",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          },
+          {
+            "text": "Probe Compensation Applied",
+            "tag": "DIV",
+            "dataTonic": null,
+            "className": "css-1kuiwmk-Box eecupy40",
+            "foreground": "rgb(148, 72, 15)",
+            "background": "rgb(252, 252, 252)",
+            "contrastRatio": 6.411,
+            "rect": {
+              "x": 790,
+              "y": 99,
+              "width": 282,
+              "height": 28
+            },
+            "ancestors": [
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-1kuiwmk-Box eecupy40",
+                "text": "Probe Compensation Applied",
+                "color": "rgb(148, 72, 15)",
+                "backgroundColor": "rgb(252, 252, 252)",
+                "borderColor": "rgb(148, 72, 15)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-5qi0fe-Box eecupy40",
+                "text": "AL_part.gcode Probe Compensation Applied",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "components-Widget-index__widget-content--bwilF css-5qi0fe-Box eecupy40",
+                "text": "Upload G-code AL_part.gcode Probe Compensation Applied",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "rgb(169, 169, 169) color(srgb 0 0 0 / 0.8) color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "1px 0px 0px"
+              },
+              {
+                "tag": "DIV",
+                "role": "region",
+                "dataTonic": null,
+                "className": "components-Widget-index__widget--pzPdi components-Widget-index__widget-borderless--iOLgq css-1v24e4f-Box eecupy40",
+                "text": "Grbl G54 (P1) 3D View Upload G-code AL_part.gcode Probe Compensation Applied",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          },
+          {
+            "text": "AL_part.gcode",
+            "tag": "DIV",
+            "dataTonic": "Text",
+            "className": "css-1w58lrj-Box eecupy40",
+            "foreground": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrastRatio": 12.143,
+            "rect": {
+              "x": 1106,
+              "y": 614,
+              "width": 103,
+              "height": 20
+            },
+            "ancestors": [
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Text",
+                "className": "css-1w58lrj-Box eecupy40",
+                "text": "AL_part.gcode",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-1qg1e22-Box eecupy40",
+                "text": "File AL_part.gcode",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Flex",
+                "className": "css-1u66gm6-Box eecupy40",
+                "text": "File AL_part.gcode Size 91 bytes Lines 2",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "gcode-stats css-5qi0fe-Box eecupy40",
+                "text": "File AL_part.gcode Size 91 bytes Lines 2 Axis Min Max Dimension X 0.000 mm 0.000 mm 0.000 mm Y 0.000 mm 0.000 mm 0.000 mm Z 0.000 mm 0.000 m",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          },
+          {
+            "text": "Set up the probe area and probe the work surface to generate height compensation data.",
+            "tag": "DIV",
+            "dataTonic": "Text",
+            "className": "widgets-Autolevel-LandingView__path-description--q528D css-1suyeff-Box eecupy40",
+            "foreground": "color(srgb 0 0 0 / 0.64)",
+            "background": "rgb(248, 248, 248)",
+            "contrastRatio": 6.567,
+            "rect": {
+              "x": 1120,
+              "y": 1184,
+              "width": 281,
+              "height": 34
+            },
+            "ancestors": [
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Text",
+                "className": "widgets-Autolevel-LandingView__path-description--q528D css-1suyeff-Box eecupy40",
+                "text": "Set up the probe area and probe the work surface to generate height compensation data.",
+                "color": "color(srgb 0 0 0 / 0.64)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.64)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__path-card--qmP4m css-1ds0zl3-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgb(248, 248, 248)",
+                "borderColor": "rgb(169, 169, 169)",
+                "borderWidth": "1px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__landing-view--DwGxe css-5qi0fe-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-1riy26x-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8) rgb(169, 169, 169) rgb(169, 169, 169)",
+                "borderWidth": "0px 1px 1px"
+              }
+            ]
+          },
+          {
+            "text": "Start New Probe",
+            "tag": "BUTTON",
+            "dataTonic": "Button",
+            "className": "css-1mehtt2-Box eecupy40",
+            "foreground": "color(srgb 0 0 0 / 0.64)",
+            "background": "rgb(248, 248, 248)",
+            "contrastRatio": 6.567,
+            "rect": {
+              "x": 1120,
+              "y": 1230,
+              "width": 132,
+              "height": 32
+            },
+            "ancestors": [
+              {
+                "tag": "BUTTON",
+                "role": null,
+                "dataTonic": "Button",
+                "className": "css-1mehtt2-Box eecupy40",
+                "text": "Start New Probe",
+                "color": "color(srgb 0 0 0 / 0.64)",
+                "backgroundColor": "color(srgb 0 0 0 / 0)",
+                "borderColor": "rgba(0, 0, 0, 0)",
+                "borderWidth": "1px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__path-card--qmP4m css-1ds0zl3-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgb(248, 248, 248)",
+                "borderColor": "rgb(169, 169, 169)",
+                "borderWidth": "1px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__landing-view--DwGxe css-5qi0fe-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-1riy26x-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8) rgb(169, 169, 169) rgb(169, 169, 169)",
+                "borderWidth": "0px 1px 1px"
+              }
+            ]
+          },
+          {
+            "text": "Load a previously saved .probe file and apply it to your G-code.",
+            "tag": "DIV",
+            "dataTonic": "Text",
+            "className": "widgets-Autolevel-LandingView__path-description--q528D css-1suyeff-Box eecupy40",
+            "foreground": "color(srgb 0 0 0 / 0.64)",
+            "background": "rgb(248, 248, 248)",
+            "contrastRatio": 6.567,
+            "rect": {
+              "x": 1120,
+              "y": 1332,
+              "width": 281,
+              "height": 34
+            },
+            "ancestors": [
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Text",
+                "className": "widgets-Autolevel-LandingView__path-description--q528D css-1suyeff-Box eecupy40",
+                "text": "Load a previously saved .probe file and apply it to your G-code.",
+                "color": "color(srgb 0 0 0 / 0.64)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.64)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__path-card--qmP4m css-1ds0zl3-Box eecupy40",
+                "text": "🔧 APPLY COMPENSATION Load a previously saved .probe file and apply it to your G-code. Load Probe Data",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgb(248, 248, 248)",
+                "borderColor": "rgb(169, 169, 169)",
+                "borderWidth": "1px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__landing-view--DwGxe css-5qi0fe-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-1riy26x-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8) rgb(169, 169, 169) rgb(169, 169, 169)",
+                "borderWidth": "0px 1px 1px"
+              }
+            ]
+          },
+          {
+            "text": "Load Probe Data",
+            "tag": "BUTTON",
+            "dataTonic": "Button",
+            "className": "css-1mehtt2-Box eecupy40",
+            "foreground": "color(srgb 0 0 0 / 0.64)",
+            "background": "rgb(248, 248, 248)",
+            "contrastRatio": 6.567,
+            "rect": {
+              "x": 1120,
+              "y": 1377,
+              "width": 133,
+              "height": 32
+            },
+            "ancestors": [
+              {
+                "tag": "BUTTON",
+                "role": null,
+                "dataTonic": "Button",
+                "className": "css-1mehtt2-Box eecupy40",
+                "text": "Load Probe Data",
+                "color": "color(srgb 0 0 0 / 0.64)",
+                "backgroundColor": "color(srgb 0 0 0 / 0)",
+                "borderColor": "rgba(0, 0, 0, 0)",
+                "borderWidth": "1px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__path-card--qmP4m css-1ds0zl3-Box eecupy40",
+                "text": "🔧 APPLY COMPENSATION Load a previously saved .probe file and apply it to your G-code. Load Probe Data",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgb(248, 248, 248)",
+                "borderColor": "rgb(169, 169, 169)",
+                "borderWidth": "1px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__landing-view--DwGxe css-5qi0fe-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-1riy26x-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8) rgb(169, 169, 169) rgb(169, 169, 169)",
+                "borderWidth": "0px 1px 1px"
+              }
+            ]
+          },
+          {
+            "text": "Probe Axis",
+            "tag": "LABEL",
+            "dataTonic": "TextLabel",
+            "className": "css-139tte9-Box eecupy40",
+            "foreground": "color(srgb 0 0 0 / 0.64)",
+            "background": "rgb(248, 248, 248)",
+            "contrastRatio": 6.567,
+            "rect": {
+              "x": 1106,
+              "y": 1494,
+              "width": 309,
+              "height": 20
+            },
+            "ancestors": [
+              {
+                "tag": "LABEL",
+                "role": null,
+                "dataTonic": "TextLabel",
+                "className": "css-139tte9-Box eecupy40",
+                "text": "Probe Axis",
+                "color": "color(srgb 0 0 0 / 0.64)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.64)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Stack",
+                "className": "css-lrwfte-Box eecupy40",
+                "text": "Probe Axis Z X Y",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-ki6t1l-Box eecupy40",
+                "text": "Probe Axis Z X Y",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-5qi0fe-Box eecupy40",
+                "text": "Probe Axis Z X Y Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5 Probe Depth mm Probe Feedrate mm/min Touch Plate Thickness mm Retraction Dista",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          },
+          {
+            "text": "Probe Command: G38.2",
+            "tag": "LABEL",
+            "dataTonic": "TextLabel",
+            "className": "css-1suyeff-Box eecupy40",
+            "foreground": "color(srgb 0 0 0 / 0.64)",
+            "background": "rgb(248, 248, 248)",
+            "contrastRatio": 6.567,
+            "rect": {
+              "x": 1106,
+              "y": 1566,
+              "width": 155,
+              "height": 20
+            },
+            "ancestors": [
+              {
+                "tag": "LABEL",
+                "role": null,
+                "dataTonic": "TextLabel",
+                "className": "css-1suyeff-Box eecupy40",
+                "text": "Probe Command: G38.2",
+                "color": "color(srgb 0 0 0 / 0.64)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.64)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-1pdn63a-Box eecupy40",
+                "text": "Probe Command: G38.2",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Stack",
+                "className": "css-lrwfte-Box eecupy40",
+                "text": "Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-ki6t1l-Box eecupy40",
+                "text": "Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          },
+          {
+            "text": "Probe Depth",
+            "tag": "LABEL",
+            "dataTonic": "TextLabel",
+            "className": "css-139tte9-Box eecupy40",
+            "foreground": "color(srgb 0 0 0 / 0.64)",
+            "background": "rgb(248, 248, 248)",
+            "contrastRatio": 6.567,
+            "rect": {
+              "x": 1106,
+              "y": 1638,
+              "width": 309,
+              "height": 20
+            },
+            "ancestors": [
+              {
+                "tag": "LABEL",
+                "role": null,
+                "dataTonic": "TextLabel",
+                "className": "css-139tte9-Box eecupy40",
+                "text": "Probe Depth",
+                "color": "color(srgb 0 0 0 / 0.64)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.64)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Stack",
+                "className": "css-lrwfte-Box eecupy40",
+                "text": "Probe Depth mm",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-ki6t1l-Box eecupy40",
+                "text": "Probe Depth mm",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-5qi0fe-Box eecupy40",
+                "text": "Probe Axis Z X Y Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5 Probe Depth mm Probe Feedrate mm/min Touch Plate Thickness mm Retraction Dista",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          },
+          {
+            "text": "Probe Feedrate",
+            "tag": "LABEL",
+            "dataTonic": "TextLabel",
+            "className": "css-139tte9-Box eecupy40",
+            "foreground": "color(srgb 0 0 0 / 0.64)",
+            "background": "rgb(248, 248, 248)",
+            "contrastRatio": 6.567,
+            "rect": {
+              "x": 1106,
+              "y": 1710,
+              "width": 309,
+              "height": 20
+            },
+            "ancestors": [
+              {
+                "tag": "LABEL",
+                "role": null,
+                "dataTonic": "TextLabel",
+                "className": "css-139tte9-Box eecupy40",
+                "text": "Probe Feedrate",
+                "color": "color(srgb 0 0 0 / 0.64)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.64)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Stack",
+                "className": "css-lrwfte-Box eecupy40",
+                "text": "Probe Feedrate mm/min",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-ki6t1l-Box eecupy40",
+                "text": "Probe Feedrate mm/min",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-5qi0fe-Box eecupy40",
+                "text": "Probe Axis Z X Y Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5 Probe Depth mm Probe Feedrate mm/min Touch Plate Thickness mm Retraction Dista",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          },
+          {
+            "text": "Probe Axis Z",
+            "tag": "BUTTON",
+            "dataTonic": "Button",
+            "className": "css-nzbl5g-Box eecupy40",
+            "foreground": "color(srgb 0 0 0 / 0.24)",
+            "background": "rgb(248, 248, 248)",
+            "contrastRatio": 1.779,
+            "rect": {
+              "x": 1106,
+              "y": 1926,
+              "width": 108,
+              "height": 32
+            },
+            "ancestors": [
+              {
+                "tag": "BUTTON",
+                "role": null,
+                "dataTonic": "Button",
+                "className": "css-nzbl5g-Box eecupy40",
+                "text": "Probe Axis Z",
+                "color": "color(srgb 0 0 0 / 0.24)",
+                "backgroundColor": "color(srgb 0 0 0 / 0)",
+                "borderColor": "color(srgb 0.811765 0.811765 0.811765 / 0.48)",
+                "borderWidth": "1px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-ysbaxv-Box eecupy40",
+                "text": "Probe Axis Z",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-5qi0fe-Box eecupy40",
+                "text": "Probe Axis Z X Y Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5 Probe Depth mm Probe Feedrate mm/min Touch Plate Thickness mm Retraction Dista",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-xulm39-Box eecupy40",
+                "text": "Probe Axis Z X Y Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5 Probe Depth mm Probe Feedrate mm/min Touch Plate Thickness mm Retraction Dista",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          }
+        ],
+        "badgeCandidates": [],
+        "sidePanelBorders": [
+          {
+            "ariaLabel": "Connection widget",
+            "rect": {
+              "x": 84,
+              "y": 96,
+              "width": 335,
+              "height": 527
+            },
+            "borderColor": "color(srgb 0 0 0 / 0.8)",
+            "borderLeftColor": "color(srgb 0 0 0 / 0.8)",
+            "borderRightColor": "color(srgb 0 0 0 / 0.8)",
+            "borderWidth": "0px",
+            "backgroundColor": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "ariaLabel": "Webcam widget",
+            "rect": {
+              "x": 84,
+              "y": 1713,
+              "width": 335,
+              "height": 236
+            },
+            "borderColor": "color(srgb 0 0 0 / 0.8)",
+            "borderLeftColor": "color(srgb 0 0 0 / 0.8)",
+            "borderRightColor": "color(srgb 0 0 0 / 0.8)",
+            "borderWidth": "0px",
+            "backgroundColor": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "ariaLabel": "G-code widget",
+            "rect": {
+              "x": 1093,
+              "y": 540,
+              "width": 335,
+              "height": 407
+            },
+            "borderColor": "color(srgb 0 0 0 / 0.8)",
+            "borderLeftColor": "color(srgb 0 0 0 / 0.8)",
+            "borderRightColor": "color(srgb 0 0 0 / 0.8)",
+            "borderWidth": "0px",
+            "backgroundColor": "rgba(0, 0, 0, 0)"
+          }
+        ],
+        "visualizer": {
+          "visible": true,
+          "rect": {
+            "x": 432,
+            "y": 48,
+            "width": 648,
+            "height": 852
+          },
+          "canvas": {
+            "rect": {
+              "x": 432,
+              "y": 91,
+              "width": 648,
+              "height": 755,
+              "right": 1080,
+              "bottom": 846
+            },
+            "buffer": {
+              "width": 648,
+              "height": 755
+            },
+            "fitsHost": true,
+            "host": {
+              "x": 432,
+              "y": 91,
+              "width": 648,
+              "height": 755
+            }
+          }
+        },
+        "metrics": {
+          "loadCount": 1,
+          "engines": [
+            {
+              "hasGCode": true,
+              "width": 648,
+              "height": 755,
+              "canvasAttached": true,
+              "geometryCount": 252,
+              "renderFrameCount": 10
+            }
+          ]
+        }
+      },
+      "assertions": {
+        "pubsubSubscriberPresent": true,
+        "fixtureNameVisible": true,
+        "syntheticGrblConnectedForUpload": true,
+        "visualizerHasLoadedCanvas": true,
+        "compensationBadgeOrTextFound": true,
+        "allSampledContrastResolved": true,
+        "probeCompensationContrastAtLeast45": true,
+        "noUnexpectedRequestFailures": true,
+        "noPageErrors": true,
+        "onlyExpectedApiWrites": false
+      },
+      "status": "failed",
+      "before": {
+        "subscriptions": 1,
+        "metrics": {
+          "loadCount": 0,
+          "hasGCode": false
+        }
+      },
+      "fixtureMockState": {
+        "file": {
+          "name": "AL_part.gcode",
+          "content": "; V3 visual-only badge fixture; loaded but never run\n",
+          "commentOnly": true,
+          "loadedThroughVisibleVisualizerUploadControl": true
+        },
+        "badgeState": {
+          "event": "gcode:load",
+          "isProbeCompensationApplied": true
+        },
+        "controller": "owned local Grbl simulator only",
+        "uploadedButNeverRun": true,
+        "noMotionOrCNCCommand": true
+      },
+      "consoleSummary": {
+        "error\nWarning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead.": {
+          "type": "error",
+          "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead.",
+          "count": 1,
+          "firstAction": "page.goto #/workspace"
+        },
+        "error\nWarning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead.": {
+          "type": "error",
+          "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead.",
+          "count": 1,
+          "firstAction": "page.goto #/workspace"
+        },
+        "error\nThe pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".": {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+          "count": 3,
+          "firstAction": "page.goto #/workspace"
+        },
+        "warning\nMaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24925:9)\n    at commitPassiveMountEffects_begin (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24912:7)\n    at commitPassiveMountEffects (webpack-internal:///../../node_": {
+          "type": "warning",
+          "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24925:9)\n    at commitPassiveMountEffects_begin (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24912:7)\n    at commitPassiveMountEffects (webpack-internal:///../../node_",
+          "count": 1,
+          "firstAction": "page.goto #/workspace"
+        },
+        "warning\nTHREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute().": {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute().",
+          "count": 3,
+          "firstAction": "page.goto #/workspace"
+        },
+        "warning\n[.WebGL-0x13c0044ce00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels": {
+          "type": "warning",
+          "text": "[.WebGL-0x13c0044ce00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+          "count": 3,
+          "firstAction": "page.goto #/workspace"
+        },
+        "warning\nWarning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 18.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.\n\nPlease update the following components: %s VirtualList": {
+          "type": "warning",
+          "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 18.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.\n\nPlease update the following components: %s VirtualList",
+          "count": 1,
+          "firstAction": "upload comment-only AL_part.gcode through the Visualizer UI file chooser"
+        },
+        "warning\n[.WebGL-0x13c0044ce00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)": {
+          "type": "warning",
+          "text": "[.WebGL-0x13c0044ce00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+          "count": 1,
+          "firstAction": "upload comment-only AL_part.gcode through the Visualizer UI file chooser"
+        }
+      },
+      "elapsedMs": 2949,
+      "disconnect": {
+        "completed": true,
+        "method": "Connection widget Close + confirmation"
+      }
+    },
+    {
+      "theme": "dark",
+      "actionTrace": [
+        {
+          "action": "page.goto #/workspace",
+          "at": "2026-10-03T14:37:05.326Z"
+        },
+        {
+          "action": "connect owned local Grbl simulator through Connection widget",
+          "at": "2026-10-03T14:37:07.072Z"
+        },
+        {
+          "action": "upload comment-only AL_part.gcode through the Visualizer UI file chooser",
+          "at": "2026-10-03T14:37:07.605Z"
+        },
+        {
+          "action": "publish probe-compensation state after sender filename load",
+          "at": "2026-10-03T14:37:07.902Z"
+        },
+        {
+          "action": "capture screenshot after gcode:load fixture and geometry settlement",
+          "at": "2026-10-03T14:37:08.126Z"
+        }
+      ],
+      "pageErrors": [],
+      "consoleIssues": [
+        {
+          "type": "error",
+          "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead.",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "error",
+          "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead.",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "warning",
+          "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24925:9)\n    at commitPassiveMountEffects_begin (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24912:7)\n    at commitPassiveMountEffects (webpack-internal:///../../node_",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute().",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute().",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute().",
+          "action": "page.goto #/workspace"
+        },
+        {
+          "type": "warning",
+          "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 18.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.\n\nPlease update the following components: %s VirtualList",
+          "action": "upload comment-only AL_part.gcode through the Visualizer UI file chooser"
+        },
+        {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+          "action": "upload comment-only AL_part.gcode through the Visualizer UI file chooser"
+        }
+      ],
+      "requestFailures": [],
+      "httpErrors": [],
+      "apiWrites": [
+        {
+          "method": "POST",
+          "path": "/api/signin",
+          "action": "page.goto #/workspace"
+        }
+      ],
+      "screenshots": [
+        "screenshots/visualizer-probe-compensation-dark-1440x900.png"
+      ],
+      "connection": {
+        "selectedPort": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+        "connected": true,
+        "endpoint": "owned local simulator only",
+        "noRealMachine": true
+      },
+      "upload": {
+        "startedByVisibleUploadButton": true,
+        "file": "AL_part.gcode",
+        "commentOnly": true,
+        "fileBytes": 53,
+        "backendRequestClass": "explicitly authorized fixture ingestion only"
+      },
+      "loadedFilenameBeforeBadgeFlag": [
+        "AL_part.gcode",
+        "AL_part.gcode",
+        "AL_part.gcode"
+      ],
+      "pubsubReturn": true,
+      "details": {
+        "themeSurface": {
+          "bodyBackground": "rgb(34, 34, 34)",
+          "bodyColor": "color(srgb 1 1 1 / 0.8)",
+          "rootBackground": "rgba(0, 0, 0, 0)"
+        },
+        "gcodeNameVisibleTexts": [
+          "AL_part.gcode",
+          "AL_part.gcode"
+        ],
+        "semanticTextSamples": [
+          {
+            "text": "AL_part.gcode",
+            "tag": "DIV",
+            "dataTonic": null,
+            "className": "css-d8km0f-Box eecupy40",
+            "foreground": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(27, 27, 27)",
+            "contrastRatio": 1.181,
+            "rect": {
+              "x": 440,
+              "y": 818,
+              "width": 153,
+              "height": 20
+            },
+            "ancestors": [
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-d8km0f-Box eecupy40",
+                "text": "AL_part.gcode",
+                "color": "color(srgb 0 0 0 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 0 0 0 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-5qi0fe-Box eecupy40",
+                "text": "AL_part.gcode Probe Compensation Applied",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "components-Widget-index__widget-content--bwilF css-5qi0fe-Box eecupy40",
+                "text": "Upload G-code AL_part.gcode Probe Compensation Applied",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "rgb(82, 82, 82) color(srgb 1 1 1 / 0.8) color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "1px 0px 0px"
+              },
+              {
+                "tag": "DIV",
+                "role": "region",
+                "dataTonic": null,
+                "className": "components-Widget-index__widget--pzPdi components-Widget-index__widget-borderless--iOLgq css-1v24e4f-Box eecupy40",
+                "text": "Grbl G54 (P1) 3D View Upload G-code AL_part.gcode Probe Compensation Applied",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          },
+          {
+            "text": "Probe Compensation Applied",
+            "tag": "DIV",
+            "dataTonic": null,
+            "className": "css-1kuiwmk-Box eecupy40",
+            "foreground": "rgb(254, 176, 115)",
+            "background": "rgb(27, 27, 27)",
+            "contrastRatio": 9.573,
+            "rect": {
+              "x": 790,
+              "y": 99,
+              "width": 282,
+              "height": 28
+            },
+            "ancestors": [
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-1kuiwmk-Box eecupy40",
+                "text": "Probe Compensation Applied",
+                "color": "rgb(254, 176, 115)",
+                "backgroundColor": "rgb(27, 27, 27)",
+                "borderColor": "rgb(254, 176, 115)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-5qi0fe-Box eecupy40",
+                "text": "AL_part.gcode Probe Compensation Applied",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "components-Widget-index__widget-content--bwilF css-5qi0fe-Box eecupy40",
+                "text": "Upload G-code AL_part.gcode Probe Compensation Applied",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "rgb(82, 82, 82) color(srgb 1 1 1 / 0.8) color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "1px 0px 0px"
+              },
+              {
+                "tag": "DIV",
+                "role": "region",
+                "dataTonic": null,
+                "className": "components-Widget-index__widget--pzPdi components-Widget-index__widget-borderless--iOLgq css-1v24e4f-Box eecupy40",
+                "text": "Grbl G54 (P1) 3D View Upload G-code AL_part.gcode Probe Compensation Applied",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          },
+          {
+            "text": "AL_part.gcode",
+            "tag": "DIV",
+            "dataTonic": "Text",
+            "className": "css-1w58lrj-Box eecupy40",
+            "foreground": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(22, 22, 22)",
+            "contrastRatio": 11.78,
+            "rect": {
+              "x": 1106,
+              "y": 614,
+              "width": 103,
+              "height": 20
+            },
+            "ancestors": [
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Text",
+                "className": "css-1w58lrj-Box eecupy40",
+                "text": "AL_part.gcode",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-1qg1e22-Box eecupy40",
+                "text": "File AL_part.gcode",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Flex",
+                "className": "css-1u66gm6-Box eecupy40",
+                "text": "File AL_part.gcode Size 91 bytes Lines 2",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "gcode-stats css-5qi0fe-Box eecupy40",
+                "text": "File AL_part.gcode Size 91 bytes Lines 2 Axis Min Max Dimension X 0.000 mm 0.000 mm 0.000 mm Y 0.000 mm 0.000 mm 0.000 mm Z 0.000 mm 0.000 m",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          },
+          {
+            "text": "Set up the probe area and probe the work surface to generate height compensation data.",
+            "tag": "DIV",
+            "dataTonic": "Text",
+            "className": "widgets-Autolevel-LandingView__path-description--q528D css-1suyeff-Box eecupy40",
+            "foreground": "color(srgb 1 1 1 / 0.64)",
+            "background": "rgb(22, 22, 22)",
+            "contrastRatio": 7.891,
+            "rect": {
+              "x": 1120,
+              "y": 1184,
+              "width": 281,
+              "height": 34
+            },
+            "ancestors": [
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Text",
+                "className": "widgets-Autolevel-LandingView__path-description--q528D css-1suyeff-Box eecupy40",
+                "text": "Set up the probe area and probe the work surface to generate height compensation data.",
+                "color": "color(srgb 1 1 1 / 0.64)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.64)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__path-card--qmP4m css-1ds0zl3-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgb(22, 22, 22)",
+                "borderColor": "rgb(82, 82, 82)",
+                "borderWidth": "1px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__landing-view--DwGxe css-5qi0fe-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-1riy26x-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8) rgb(82, 82, 82) rgb(82, 82, 82)",
+                "borderWidth": "0px 1px 1px"
+              }
+            ]
+          },
+          {
+            "text": "Start New Probe",
+            "tag": "BUTTON",
+            "dataTonic": "Button",
+            "className": "css-ru409o-Box eecupy40",
+            "foreground": "color(srgb 1 1 1 / 0.64)",
+            "background": "rgb(22, 22, 22)",
+            "contrastRatio": 7.891,
+            "rect": {
+              "x": 1120,
+              "y": 1230,
+              "width": 132,
+              "height": 32
+            },
+            "ancestors": [
+              {
+                "tag": "BUTTON",
+                "role": null,
+                "dataTonic": "Button",
+                "className": "css-ru409o-Box eecupy40",
+                "text": "Start New Probe",
+                "color": "color(srgb 1 1 1 / 0.64)",
+                "backgroundColor": "color(srgb 0 0 0 / 0)",
+                "borderColor": "rgba(0, 0, 0, 0)",
+                "borderWidth": "1px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__path-card--qmP4m css-1ds0zl3-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgb(22, 22, 22)",
+                "borderColor": "rgb(82, 82, 82)",
+                "borderWidth": "1px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__landing-view--DwGxe css-5qi0fe-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-1riy26x-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8) rgb(82, 82, 82) rgb(82, 82, 82)",
+                "borderWidth": "0px 1px 1px"
+              }
+            ]
+          },
+          {
+            "text": "Load a previously saved .probe file and apply it to your G-code.",
+            "tag": "DIV",
+            "dataTonic": "Text",
+            "className": "widgets-Autolevel-LandingView__path-description--q528D css-1suyeff-Box eecupy40",
+            "foreground": "color(srgb 1 1 1 / 0.64)",
+            "background": "rgb(22, 22, 22)",
+            "contrastRatio": 7.891,
+            "rect": {
+              "x": 1120,
+              "y": 1332,
+              "width": 281,
+              "height": 34
+            },
+            "ancestors": [
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Text",
+                "className": "widgets-Autolevel-LandingView__path-description--q528D css-1suyeff-Box eecupy40",
+                "text": "Load a previously saved .probe file and apply it to your G-code.",
+                "color": "color(srgb 1 1 1 / 0.64)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.64)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__path-card--qmP4m css-1ds0zl3-Box eecupy40",
+                "text": "🔧 APPLY COMPENSATION Load a previously saved .probe file and apply it to your G-code. Load Probe Data",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgb(22, 22, 22)",
+                "borderColor": "rgb(82, 82, 82)",
+                "borderWidth": "1px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__landing-view--DwGxe css-5qi0fe-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-1riy26x-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8) rgb(82, 82, 82) rgb(82, 82, 82)",
+                "borderWidth": "0px 1px 1px"
+              }
+            ]
+          },
+          {
+            "text": "Load Probe Data",
+            "tag": "BUTTON",
+            "dataTonic": "Button",
+            "className": "css-ru409o-Box eecupy40",
+            "foreground": "color(srgb 1 1 1 / 0.64)",
+            "background": "rgb(22, 22, 22)",
+            "contrastRatio": 7.891,
+            "rect": {
+              "x": 1120,
+              "y": 1377,
+              "width": 133,
+              "height": 32
+            },
+            "ancestors": [
+              {
+                "tag": "BUTTON",
+                "role": null,
+                "dataTonic": "Button",
+                "className": "css-ru409o-Box eecupy40",
+                "text": "Load Probe Data",
+                "color": "color(srgb 1 1 1 / 0.64)",
+                "backgroundColor": "color(srgb 0 0 0 / 0)",
+                "borderColor": "rgba(0, 0, 0, 0)",
+                "borderWidth": "1px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__path-card--qmP4m css-1ds0zl3-Box eecupy40",
+                "text": "🔧 APPLY COMPENSATION Load a previously saved .probe file and apply it to your G-code. Load Probe Data",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgb(22, 22, 22)",
+                "borderColor": "rgb(82, 82, 82)",
+                "borderWidth": "1px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "widgets-Autolevel-LandingView__landing-view--DwGxe css-5qi0fe-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-1riy26x-Box eecupy40",
+                "text": "🎯 PROBE NEW SURFACE Set up the probe area and probe the work surface to generate height compensation data. Start New Probe 🔧 APPLY COMPENS",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8) rgb(82, 82, 82) rgb(82, 82, 82)",
+                "borderWidth": "0px 1px 1px"
+              }
+            ]
+          },
+          {
+            "text": "Probe Axis",
+            "tag": "LABEL",
+            "dataTonic": "TextLabel",
+            "className": "css-139tte9-Box eecupy40",
+            "foreground": "color(srgb 1 1 1 / 0.64)",
+            "background": "rgb(22, 22, 22)",
+            "contrastRatio": 7.891,
+            "rect": {
+              "x": 1106,
+              "y": 1494,
+              "width": 309,
+              "height": 20
+            },
+            "ancestors": [
+              {
+                "tag": "LABEL",
+                "role": null,
+                "dataTonic": "TextLabel",
+                "className": "css-139tte9-Box eecupy40",
+                "text": "Probe Axis",
+                "color": "color(srgb 1 1 1 / 0.64)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.64)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Stack",
+                "className": "css-lrwfte-Box eecupy40",
+                "text": "Probe Axis Z X Y",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-ki6t1l-Box eecupy40",
+                "text": "Probe Axis Z X Y",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-5qi0fe-Box eecupy40",
+                "text": "Probe Axis Z X Y Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5 Probe Depth mm Probe Feedrate mm/min Touch Plate Thickness mm Retraction Dista",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          },
+          {
+            "text": "Probe Command: G38.2",
+            "tag": "LABEL",
+            "dataTonic": "TextLabel",
+            "className": "css-1suyeff-Box eecupy40",
+            "foreground": "color(srgb 1 1 1 / 0.64)",
+            "background": "rgb(22, 22, 22)",
+            "contrastRatio": 7.891,
+            "rect": {
+              "x": 1106,
+              "y": 1566,
+              "width": 155,
+              "height": 20
+            },
+            "ancestors": [
+              {
+                "tag": "LABEL",
+                "role": null,
+                "dataTonic": "TextLabel",
+                "className": "css-1suyeff-Box eecupy40",
+                "text": "Probe Command: G38.2",
+                "color": "color(srgb 1 1 1 / 0.64)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.64)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-1pdn63a-Box eecupy40",
+                "text": "Probe Command: G38.2",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Stack",
+                "className": "css-lrwfte-Box eecupy40",
+                "text": "Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-ki6t1l-Box eecupy40",
+                "text": "Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          },
+          {
+            "text": "Probe Depth",
+            "tag": "LABEL",
+            "dataTonic": "TextLabel",
+            "className": "css-139tte9-Box eecupy40",
+            "foreground": "color(srgb 1 1 1 / 0.64)",
+            "background": "rgb(22, 22, 22)",
+            "contrastRatio": 7.891,
+            "rect": {
+              "x": 1106,
+              "y": 1638,
+              "width": 309,
+              "height": 20
+            },
+            "ancestors": [
+              {
+                "tag": "LABEL",
+                "role": null,
+                "dataTonic": "TextLabel",
+                "className": "css-139tte9-Box eecupy40",
+                "text": "Probe Depth",
+                "color": "color(srgb 1 1 1 / 0.64)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.64)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Stack",
+                "className": "css-lrwfte-Box eecupy40",
+                "text": "Probe Depth mm",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-ki6t1l-Box eecupy40",
+                "text": "Probe Depth mm",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-5qi0fe-Box eecupy40",
+                "text": "Probe Axis Z X Y Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5 Probe Depth mm Probe Feedrate mm/min Touch Plate Thickness mm Retraction Dista",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          },
+          {
+            "text": "Probe Feedrate",
+            "tag": "LABEL",
+            "dataTonic": "TextLabel",
+            "className": "css-139tte9-Box eecupy40",
+            "foreground": "color(srgb 1 1 1 / 0.64)",
+            "background": "rgb(22, 22, 22)",
+            "contrastRatio": 7.891,
+            "rect": {
+              "x": 1106,
+              "y": 1710,
+              "width": 309,
+              "height": 20
+            },
+            "ancestors": [
+              {
+                "tag": "LABEL",
+                "role": null,
+                "dataTonic": "TextLabel",
+                "className": "css-139tte9-Box eecupy40",
+                "text": "Probe Feedrate",
+                "color": "color(srgb 1 1 1 / 0.64)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.64)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": "Stack",
+                "className": "css-lrwfte-Box eecupy40",
+                "text": "Probe Feedrate mm/min",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-ki6t1l-Box eecupy40",
+                "text": "Probe Feedrate mm/min",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-5qi0fe-Box eecupy40",
+                "text": "Probe Axis Z X Y Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5 Probe Depth mm Probe Feedrate mm/min Touch Plate Thickness mm Retraction Dista",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          },
+          {
+            "text": "Probe Axis Z",
+            "tag": "BUTTON",
+            "dataTonic": "Button",
+            "className": "css-j7gqbi-Box eecupy40",
+            "foreground": "color(srgb 1 1 1 / 0.24)",
+            "background": "rgb(22, 22, 22)",
+            "contrastRatio": 2.172,
+            "rect": {
+              "x": 1106,
+              "y": 1926,
+              "width": 108,
+              "height": 32
+            },
+            "ancestors": [
+              {
+                "tag": "BUTTON",
+                "role": null,
+                "dataTonic": "Button",
+                "className": "css-j7gqbi-Box eecupy40",
+                "text": "Probe Axis Z",
+                "color": "color(srgb 1 1 1 / 0.24)",
+                "backgroundColor": "color(srgb 0 0 0 / 0)",
+                "borderColor": "color(srgb 0.223529 0.223529 0.223529 / 0.48)",
+                "borderWidth": "1px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-ysbaxv-Box eecupy40",
+                "text": "Probe Axis Z",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-5qi0fe-Box eecupy40",
+                "text": "Probe Axis Z X Y Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5 Probe Depth mm Probe Feedrate mm/min Touch Plate Thickness mm Retraction Dista",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              },
+              {
+                "tag": "DIV",
+                "role": null,
+                "dataTonic": null,
+                "className": "css-xulm39-Box eecupy40",
+                "text": "Probe Axis Z X Y Probe Command: G38.2 G38.2 G38.3 G38.4 G38.5 Probe Depth mm Probe Feedrate mm/min Touch Plate Thickness mm Retraction Dista",
+                "color": "color(srgb 1 1 1 / 0.8)",
+                "backgroundColor": "rgba(0, 0, 0, 0)",
+                "borderColor": "color(srgb 1 1 1 / 0.8)",
+                "borderWidth": "0px"
+              }
+            ]
+          }
+        ],
+        "badgeCandidates": [],
+        "sidePanelBorders": [
+          {
+            "ariaLabel": "Connection widget",
+            "rect": {
+              "x": 84,
+              "y": 96,
+              "width": 335,
+              "height": 527
+            },
+            "borderColor": "color(srgb 1 1 1 / 0.8)",
+            "borderLeftColor": "color(srgb 1 1 1 / 0.8)",
+            "borderRightColor": "color(srgb 1 1 1 / 0.8)",
+            "borderWidth": "0px",
+            "backgroundColor": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "ariaLabel": "Webcam widget",
+            "rect": {
+              "x": 84,
+              "y": 1713,
+              "width": 335,
+              "height": 236
+            },
+            "borderColor": "color(srgb 1 1 1 / 0.8)",
+            "borderLeftColor": "color(srgb 1 1 1 / 0.8)",
+            "borderRightColor": "color(srgb 1 1 1 / 0.8)",
+            "borderWidth": "0px",
+            "backgroundColor": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "ariaLabel": "G-code widget",
+            "rect": {
+              "x": 1093,
+              "y": 540,
+              "width": 335,
+              "height": 407
+            },
+            "borderColor": "color(srgb 1 1 1 / 0.8)",
+            "borderLeftColor": "color(srgb 1 1 1 / 0.8)",
+            "borderRightColor": "color(srgb 1 1 1 / 0.8)",
+            "borderWidth": "0px",
+            "backgroundColor": "rgba(0, 0, 0, 0)"
+          }
+        ],
+        "visualizer": {
+          "visible": true,
+          "rect": {
+            "x": 432,
+            "y": 48,
+            "width": 648,
+            "height": 852
+          },
+          "canvas": {
+            "rect": {
+              "x": 432,
+              "y": 91,
+              "width": 648,
+              "height": 755,
+              "right": 1080,
+              "bottom": 846
+            },
+            "buffer": {
+              "width": 648,
+              "height": 755
+            },
+            "fitsHost": true,
+            "host": {
+              "x": 432,
+              "y": 91,
+              "width": 648,
+              "height": 755
+            }
+          }
+        },
+        "metrics": {
+          "loadCount": 1,
+          "engines": [
+            {
+              "hasGCode": true,
+              "width": 648,
+              "height": 755,
+              "canvasAttached": true,
+              "geometryCount": 252,
+              "renderFrameCount": 10
+            }
+          ]
+        }
+      },
+      "assertions": {
+        "pubsubSubscriberPresent": true,
+        "fixtureNameVisible": true,
+        "syntheticGrblConnectedForUpload": true,
+        "visualizerHasLoadedCanvas": true,
+        "compensationBadgeOrTextFound": true,
+        "allSampledContrastResolved": true,
+        "probeCompensationContrastAtLeast45": true,
+        "noUnexpectedRequestFailures": true,
+        "noPageErrors": true,
+        "onlyExpectedApiWrites": false
+      },
+      "status": "failed",
+      "before": {
+        "subscriptions": 1,
+        "metrics": {
+          "loadCount": 0,
+          "hasGCode": false
+        }
+      },
+      "fixtureMockState": {
+        "file": {
+          "name": "AL_part.gcode",
+          "content": "; V3 visual-only badge fixture; loaded but never run\n",
+          "commentOnly": true,
+          "loadedThroughVisibleVisualizerUploadControl": true
+        },
+        "badgeState": {
+          "event": "gcode:load",
+          "isProbeCompensationApplied": true
+        },
+        "controller": "owned local Grbl simulator only",
+        "uploadedButNeverRun": true,
+        "noMotionOrCNCCommand": true
+      },
+      "consoleSummary": {
+        "error\nWarning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead.": {
+          "type": "error",
+          "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead.",
+          "count": 1,
+          "firstAction": "page.goto #/workspace"
+        },
+        "error\nWarning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead.": {
+          "type": "error",
+          "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead.",
+          "count": 1,
+          "firstAction": "page.goto #/workspace"
+        },
+        "error\nThe pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".": {
+          "type": "error",
+          "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+          "count": 3,
+          "firstAction": "page.goto #/workspace"
+        },
+        "warning\nMaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24925:9)\n    at commitPassiveMountEffects_begin (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24912:7)\n    at commitPassiveMountEffects (webpack-internal:///../../node_": {
+          "type": "warning",
+          "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24925:9)\n    at commitPassiveMountEffects_begin (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24912:7)\n    at commitPassiveMountEffects (webpack-internal:///../../node_",
+          "count": 1,
+          "firstAction": "page.goto #/workspace"
+        },
+        "warning\nTHREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute().": {
+          "type": "warning",
+          "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute().",
+          "count": 3,
+          "firstAction": "page.goto #/workspace"
+        },
+        "warning\nWarning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 18.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.\n\nPlease update the following components: %s VirtualList": {
+          "type": "warning",
+          "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 18.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.\n\nPlease update the following components: %s VirtualList",
+          "count": 1,
+          "firstAction": "upload comment-only AL_part.gcode through the Visualizer UI file chooser"
+        }
+      },
+      "elapsedMs": 2881,
+      "disconnect": {
+        "completed": true,
+        "method": "Connection widget Close + confirmation"
+      }
+    }
+  ],
+  "startedAt": "2026-10-03T14:37:02.041Z",
+  "status": "failed",
+  "completedAt": "2026-10-03T14:37:08.478Z"
+}

@@ -1,6 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Box,
+  Button,
+  ButtonGroup,
   Flex,
   Space,
   Text,
@@ -12,17 +14,16 @@ import _pick from 'lodash/pick';
 import _pullAll from 'lodash/pullAll';
 import _size from 'lodash/size';
 import _throttle from 'lodash/throttle';
-import cx from 'classnames';
 import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
-import React, { Component } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { connect } from 'react-redux';
-import compose from 'recompose/compose';
-import styled from 'styled-components';
-import api from '@app/api';
-import { Button, ButtonGroup } from '@app/components/Buttons';
-import { Row, Col } from '@app/components/GridSystem';
-import withRouter from '@app/components/withRouter'; // withRouter is deprecated
 import {
   CONNECTION_STATE_CONNECTED,
 } from '@app/constants/connection';
@@ -32,11 +33,16 @@ import {
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import log from '@app/lib/log';
+import { useLoadGCodeMutation } from '@app/queries/gcode';
 import config from '@app/store/config';
 import * as widgetManager from './widget-manager';
 import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';
 import SecondaryWidgets from './SecondaryWidgets';
+import { useWidgetGroup } from './useWidgetGroup';
+import { useWorkspaceLayout } from './useWorkspaceLayout';
+import { WIDGET_REGISTRY } from './widgetRegistry';
+import { selectVisibleWidgetIds } from './widgetLayoutState';
 import FeederPaused from './modals/FeederPaused';
 import FeederWait from './modals/FeederWait';
 import ServerDisconnected from './modals/ServerDisconnected';
@@ -61,107 +67,95 @@ const stopWaiting = () => {
   root.classList.remove('wait');
 };
 
-class Workspace extends Component {
-  state = {
-    modal: {
+/**
+ * Owns Workspace-level modal, panel, drag/drop, and controller lifecycle state.
+ *
+ * @param {Object} props Workspace view props.
+ * @returns {JSX.Element}
+ */
+const Workspace = ({
+  isConnected,
+  className,
+  workspaceLayout,
+  primaryWidgetIds,
+  secondaryWidgetIds,
+  location,
+  ...props
+}) => {
+  const [modal, setModal] = useState({
+    name: MODAL_NONE,
+    params: {}
+  });
+  const [isDraggingWidget, setIsDraggingWidget] = useState(false);
+  const [, setIsUploading] = useState(false);
+  const [showPrimaryContainer, setShowPrimaryContainer] = useState(
+    () => config.get('workspace.container.primary.show')
+  );
+  const [showSecondaryContainer, setShowSecondaryContainer] = useState(
+    () => config.get('workspace.container.secondary.show')
+  );
+  const [inactiveCount, setInactiveCount] = useState(
+    () => _size(widgetManager.getInactiveWidgets())
+  );
+  const loadGCodeMutation = useLoadGCodeMutation();
+  const mountedRef = useRef(false);
+  const layoutRef = useRef({
+    showPrimaryContainer,
+    showSecondaryContainer,
+  });
+  const locationRef = useRef(location);
+  const previousPathnameRef = useRef(location?.pathname);
+  layoutRef.current = {
+    showPrimaryContainer,
+    showSecondaryContainer,
+  };
+  locationRef.current = location;
+
+  const openModal = useCallback((name = MODAL_NONE, params = {}) => {
+    setModal({ name, params });
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setModal({
       name: MODAL_NONE,
       params: {}
-    },
-    isDraggingWidget: false,
-    isUploading: false,
-    showPrimaryContainer: config.get('workspace.container.primary.show'),
-    showSecondaryContainer: config.get('workspace.container.secondary.show'),
-    inactiveCount: _size(widgetManager.getInactiveWidgets())
-  };
+    });
+  }, []);
 
-  action = {
-    openModal: (name = MODAL_NONE, params = {}) => {
-      this.setState(state => ({
-        modal: {
-          name: name,
-          params: params
-        }
-      }));
-    },
-    closeModal: () => {
-      this.setState(state => ({
-        modal: {
-          name: MODAL_NONE,
-          params: {}
-        }
-      }));
-    },
-    updateModalParams: (params = {}) => {
-      this.setState(state => ({
-        modal: {
-          ...state.modal,
-          params: {
-            ...state.modal.params,
-            ...params
-          }
-        }
-      }));
-    }
-  };
+  const handleFeederStatus = useCallback((status) => {
+    const { hold, holdReason } = { ...status };
 
-  sortableGroup = {
-    primary: null,
-    secondary: null
-  };
-
-  primaryWidgets = null;
-
-  secondaryWidgets = null;
-
-  controllerEvents = {
-    'connect': () => {
-      if (controller.connected) {
-        this.action.closeModal();
-      } else {
-        this.action.openModal(MODAL_SERVER_DISCONNECTED);
-      }
-    },
-    'connect_error': () => {
-      if (controller.connected) {
-        this.action.closeModal();
-      } else {
-        this.action.openModal(MODAL_SERVER_DISCONNECTED);
-      }
-    },
-    'disconnect': () => {
-      if (controller.connected) {
-        this.action.closeModal();
-      } else {
-        this.action.openModal(MODAL_SERVER_DISCONNECTED);
-      }
-    },
-    'feeder:status': (status) => {
-      const { modal } = this.state;
-      const { hold, holdReason } = { ...status };
-
+    setModal(currentModal => {
       if (!hold) {
-        if (_includes([MODAL_FEEDER_PAUSED, MODAL_FEEDER_WAIT], modal.name)) {
-          this.action.closeModal();
+        if (_includes([MODAL_FEEDER_PAUSED, MODAL_FEEDER_WAIT], currentModal.name)) {
+          return {
+            name: MODAL_NONE,
+            params: {}
+          };
         }
-        return;
+        return currentModal;
       }
 
       const { err, data, msg } = { ...holdReason };
 
       if (err) {
-        this.action.openModal(MODAL_FEEDER_PAUSED, {
-          title: i18n._('Error'),
-          message: msg,
-        });
-        return;
+        return {
+          name: MODAL_FEEDER_PAUSED,
+          params: {
+            title: i18n._('Error'),
+            message: msg,
+          }
+        };
       }
 
       if (data === WAIT) {
-        this.action.openModal(MODAL_FEEDER_WAIT, {
-          title: '%wait',
-          message: msg,
-        });
-        return;
+        return {
+          name: MODAL_FEEDER_WAIT,
+          params: {
+            title: '%wait',
+            message: msg,
+          }
+        };
       }
 
       const title = {
@@ -174,59 +168,72 @@ class Workspace extends Component {
         'M190': i18n._('M190 Set Heated Bed Temperature')
       }[data] || data;
 
-      this.action.openModal(MODAL_FEEDER_PAUSED, {
-        title: title,
-        message: msg,
+      return {
+        name: MODAL_FEEDER_PAUSED,
+        params: {
+          title,
+          message: msg,
+        }
+      };
+    });
+  }, []);
+
+  const controllerEvents = useMemo(() => ({
+    connect: () => {
+      if (controller.connected) {
+        closeModal();
+      } else {
+        openModal(MODAL_SERVER_DISCONNECTED);
+      }
+    },
+    connect_error: () => {
+      if (controller.connected) {
+        closeModal();
+      } else {
+        openModal(MODAL_SERVER_DISCONNECTED);
+      }
+    },
+    disconnect: () => {
+      if (controller.connected) {
+        closeModal();
+      } else {
+        openModal(MODAL_SERVER_DISCONNECTED);
+      }
+    },
+    'feeder:status': handleFeederStatus,
+  }), [closeModal, handleFeederStatus, openModal]);
+
+  useEffect(() => {
+    Object.keys(controllerEvents).forEach(eventName => {
+      controller.addListener(eventName, controllerEvents[eventName]);
+    });
+
+    return () => {
+      Object.keys(controllerEvents).forEach(eventName => {
+        controller.removeListener(eventName, controllerEvents[eventName]);
       });
-    }
-  };
+    };
+  }, [controllerEvents]);
 
-  widgetEventHandler = {
-    onForkWidget: (widgetId) => {
-      // TODO
-    },
-    onRemoveWidget: (widgetId) => {
-      const inactiveWidgets = widgetManager.getInactiveWidgets();
-      this.setState({ inactiveCount: inactiveWidgets.length });
-    },
-    onDragStart: () => {
-      const { isDraggingWidget } = this.state;
-      if (!isDraggingWidget) {
-        this.setState({ isDraggingWidget: true });
-      }
-    },
-    onDragEnd: () => {
-      const { isDraggingWidget } = this.state;
-      if (isDraggingWidget) {
-        this.setState({ isDraggingWidget: false });
-      }
-    }
-  };
+  useEffect(() => {
+    mountedRef.current = true;
 
-  togglePrimaryContainer = () => {
-    const { showPrimaryContainer } = this.state;
-    this.setState({ showPrimaryContainer: !showPrimaryContainer });
+    return () => {
+      mountedRef.current = false;
+      stopWaiting();
+    };
+  }, []);
 
-    // Publish a 'resize' event
-    pubsub.publish('resize'); // Also see "widgets/Visualizer"
-  };
-
-  toggleSecondaryContainer = () => {
-    const { showSecondaryContainer } = this.state;
-    this.setState({ showSecondaryContainer: !showSecondaryContainer });
-
-    // Publish a 'resize' event
-    pubsub.publish('resize'); // Also see "widgets/Visualizer"
-  };
-
-  publishResizeEvent = () => {
-    const { showPrimaryContainer, showSecondaryContainer } = this.state;
+  const publishResizeEvent = useCallback(() => {
+    const {
+      showPrimaryContainer: showPrimary,
+      showSecondaryContainer: showSecondary,
+    } = layoutRef.current;
 
     { // Mobile-Friendly View
-      const { location } = this.props;
-      const disableHorizontalScroll = !(showPrimaryContainer && showSecondaryContainer);
+      const disableHorizontalScroll = !(showPrimary && showSecondary);
 
-      if (location.pathname === '/workspace' && disableHorizontalScroll) {
+      if (locationRef.current?.pathname === '/workspace' && disableHorizontalScroll) {
         // Disable horizontal scroll
         document.body.scrollLeft = 0;
         document.body.style.overflowX = 'hidden';
@@ -241,17 +248,59 @@ class Workspace extends Component {
     // are toggled. Publishing 'resize' lets the visualizer re-measure its
     // canvas against the new width.
     pubsub.publish('resize'); // Also see "widgets/Visualizer"
-  };
+  }, []);
 
-  onDrop = (files) => {
-    let file = files[0];
-    let reader = new FileReader();
+  useEffect(() => {
+    const previousPathname = previousPathnameRef.current;
+    previousPathnameRef.current = location?.pathname;
+
+    if (previousPathname !== location?.pathname) {
+      publishResizeEvent();
+    }
+  }, [location?.pathname, publishResizeEvent]);
+
+  const didMountLayoutRef = useRef(false);
+  useEffect(() => {
+    if (didMountLayoutRef.current) {
+      config.set('workspace.container.primary.show', showPrimaryContainer);
+      config.set('workspace.container.secondary.show', showSecondaryContainer);
+    } else {
+      didMountLayoutRef.current = true;
+    }
+
+    publishResizeEvent();
+  }, [publishResizeEvent, showPrimaryContainer, showSecondaryContainer]);
+
+  useEffect(() => {
+    const onResizeThrottled = _throttle(publishResizeEvent, 50);
+    const timeoutId = setTimeout(publishResizeEvent, 0);
+    window.addEventListener('resize', onResizeThrottled);
+
+    return () => {
+      window.removeEventListener('resize', onResizeThrottled);
+      onResizeThrottled.cancel();
+      clearTimeout(timeoutId);
+      document.body.style.overflowX = '';
+    };
+  }, [publishResizeEvent]);
+
+  const onDrop = useCallback((files) => {
+    const file = files[0];
+    if (!file || !mountedRef.current) {
+      return;
+    }
+
+    const reader = new FileReader();
 
     reader.onloadend = (event) => {
       const { result, error } = event.target;
 
       if (error) {
         log.error(error);
+        return;
+      }
+
+      if (!mountedRef.current) {
         return;
       }
 
@@ -265,25 +314,31 @@ class Workspace extends Component {
       ]));
 
       startWaiting();
-      this.setState({ isUploading: true });
+      setIsUploading(true);
 
       const meta = {
         name: file.name,
         content: result,
       };
 
-      api.loadGCode(meta)
-        .then((res) => {
-          const { name } = { ...res.body };
+      loadGCodeMutation.mutate({
+        meta,
+        context: controller.context,
+      }, {
+        onSuccess: response => {
+          const { name } = { ...(response?.body || response) };
           log.debug(`Loaded a G-code file: name=${name}`);
-        })
-        .catch((res) => {
+        },
+        onError: () => {
           log.error('Failed to upload G-code file');
-        })
-        .then(() => {
+        },
+        onSettled: () => {
           stopWaiting();
-          this.setState({ isUploading: false });
-        });
+          if (mountedRef.current) {
+            setIsUploading(false);
+          }
+        },
+      });
     };
 
     try {
@@ -291,9 +346,9 @@ class Workspace extends Component {
     } catch (err) {
       // Ignore error
     }
-  };
+  }, [loadGCodeMutation, mountedRef]);
 
-  updateWidgetsForPrimaryContainer = () => {
+  const updateWidgetsForPrimaryContainer = useCallback(() => {
     widgetManager.show(({ activeWidgets, inactiveWidgets }) => {
       const widgets = Object.keys(config.get('widgets', {}))
         .filter(widgetId => {
@@ -316,11 +371,11 @@ class Workspace extends Component {
       pubsub.publish('updateSecondaryWidgets', secondaryWidgets);
 
       // Update inactive count
-      this.setState({ inactiveCount: _size(inactiveWidgets) });
+      setInactiveCount(_size(inactiveWidgets));
     });
-  };
+  }, []);
 
-  updateWidgetsForSecondaryContainer = () => {
+  const updateWidgetsForSecondaryContainer = useCallback(() => {
     widgetManager.show(({ activeWidgets, inactiveWidgets }) => {
       const widgets = Object.keys(config.get('widgets', {}))
         .filter(widgetId => {
@@ -343,374 +398,346 @@ class Workspace extends Component {
       pubsub.publish('updatePrimaryWidgets', primaryWidgets);
 
       // Update inactive count
-      this.setState({ inactiveCount: _size(inactiveWidgets) });
+      setInactiveCount(_size(inactiveWidgets));
     });
-  };
+  }, []);
 
-  componentDidMount() {
-    this.addControllerEvents();
-    this.addResizeEventListener();
+  const togglePrimaryContainer = useCallback(() => {
+    setShowPrimaryContainer(value => !value);
+  }, []);
 
-    setTimeout(() => {
-      this.publishResizeEvent();
-    }, 0);
-  }
+  const toggleSecondaryContainer = useCallback(() => {
+    setShowSecondaryContainer(value => !value);
+  }, []);
 
-  componentWillUnmount() {
-    this.removeControllerEvents();
-    this.removeResizeEventListener();
-  }
+  const onForkWidget = useCallback((widgetId) => {
+    // TODO
+  }, []);
 
-  componentDidUpdate() {
-    config.set('workspace.container.primary.show', this.state.showPrimaryContainer);
-    config.set('workspace.container.secondary.show', this.state.showSecondaryContainer);
+  const onRemoveWidget = useCallback((widgetId) => {
+    const inactiveWidgets = widgetManager.getInactiveWidgets();
+    setInactiveCount(inactiveWidgets.length);
+  }, []);
 
-    this.publishResizeEvent();
-  }
+  const onDragStart = useCallback(() => {
+    setIsDraggingWidget(true);
+  }, []);
 
-  addControllerEvents() {
-    Object.keys(this.controllerEvents).forEach(eventName => {
-      const callback = this.controllerEvents[eventName];
-      controller.addListener(eventName, callback);
-    });
-  }
+  const onDragEnd = useCallback(() => {
+    setIsDraggingWidget(false);
+  }, []);
 
-  removeControllerEvents() {
-    Object.keys(this.controllerEvents).forEach(eventName => {
-      const callback = this.controllerEvents[eventName];
-      controller.removeListener(eventName, callback);
-    });
-  }
+  const hidePrimaryContainer = !showPrimaryContainer;
+  const hideSecondaryContainer = !showSecondaryContainer;
 
-  addResizeEventListener() {
-    this.onResizeThrottled = _throttle(this.publishResizeEvent, 50);
-    window.addEventListener('resize', this.onResizeThrottled);
-  }
+  return (
+    <Box className={`${className || ''} ${styles.workspace}`.trim()} {...props}>
+      {modal.name === MODAL_FEEDER_PAUSED && (
+        <FeederPaused
+          title={modal.params.title}
+          message={modal.params.message}
+          onClose={closeModal}
+        />
+      )}
+      {modal.name === MODAL_FEEDER_WAIT && (
+        <FeederWait
+          title={modal.params.title}
+          message={modal.params.message}
+          onClose={closeModal}
+        />
+      )}
+      {modal.name === MODAL_SERVER_DISCONNECTED &&
+      <ServerDisconnected />}
+      <Dropzone
+        disabled={controller.workflow.state !== WORKFLOW_STATE_IDLE}
+        noClick={true}
+        multiple={false}
+        onDrop={(acceptedFiles, fileRejections, event) => {
+          if (!isConnected) {
+            return;
+          }
+          if (controller.workflow.state !== WORKFLOW_STATE_IDLE) {
+            return;
+          }
+          if (isDraggingWidget) {
+            return;
+          }
 
-  removeResizeEventListener() {
-    window.removeEventListener('resize', this.onResizeThrottled);
-    this.onResizeThrottled = null;
-  }
-
-  render() {
-    const {
-      isConnected,
-      className,
-      ...props
-    } = this.props;
-    const {
-      modal,
-      isDraggingWidget,
-      showPrimaryContainer,
-      showSecondaryContainer,
-      inactiveCount
-    } = this.state;
-    const hidePrimaryContainer = !showPrimaryContainer;
-    const hideSecondaryContainer = !showSecondaryContainer;
-
-    return (
-      <div className={cx(className, styles.workspace)} {...props}>
-        {modal.name === MODAL_FEEDER_PAUSED && (
-          <FeederPaused
-            title={modal.params.title}
-            message={modal.params.message}
-            onClose={this.action.closeModal}
-          />
-        )}
-        {modal.name === MODAL_FEEDER_WAIT && (
-          <FeederWait
-            title={modal.params.title}
-            message={modal.params.message}
-            onClose={this.action.closeModal}
-          />
-        )}
-        {modal.name === MODAL_SERVER_DISCONNECTED &&
-          <ServerDisconnected />}
-        <Dropzone
-          disabled={controller.workflow.state !== WORKFLOW_STATE_IDLE}
-          noClick={true}
-          multiple={false}
-          onDrop={(acceptedFiles, fileRejections, event) => {
-            if (!isConnected) {
-              return;
-            }
-            if (controller.workflow.state !== WORKFLOW_STATE_IDLE) {
-              return;
-            }
-            if (isDraggingWidget) {
-              return;
-            }
-
-            this.onDrop(acceptedFiles);
-          }}
-        >
-          {({
-            getRootProps,
-            isDragActive,
-          }) => (
-            <Box {...getRootProps()}>
-              {isDragActive && (
-                <DropzoneOverlay disabled={!isConnected}>
-                  <Text
-                    color="#666"
-                    size="4xl"
-                    style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                    }}
-                  >
-                    {isConnected && (
-                      <>
-                        <FontAwesomeIcon icon="file-upload" size="2x" />
-                        <div>{i18n._('Drop file here')}</div>
-                      </>
-                    )}
-                    {!isConnected && (
-                      <>
-                        <FontAwesomeIcon icon="times-circle" color="#db3d44" size="2x" />
-                        <div>{i18n._('You cannot upload files to the workspace when the connection is not established.')}</div>
-                      </>
-                    )}
-                  </Text>
-                </DropzoneOverlay>
-              )}
-              {/* The app header is 48px tall — keep in sync with $navbar-height (styles/variables.styl). */}
-              <Box height="calc(100vh - 48px)">
-                <Flex height="calc(100vh - 48px)" minHeight="0">
-                  <Box
-                    flex="none"
-                    width="360px"
-                    minHeight="0"
-                    display={hidePrimaryContainer ? 'none' : 'flex'}
-                    flexDirection="column"
-                    position="relative"
-                    backgroundColor="#f6f7f8"
-                    borderRight="1px solid #ccc"
-                  >
-                    <Box px="3x" py="3x" flex="none">
-                      <Row>
-                        <Col width="auto">
-                          <Button
-                            aria-label="Hide left panel"
-                            sm
-                            onClick={this.togglePrimaryContainer}
-                          >
-                            <FontAwesomeIcon aria-hidden="true" icon="chevron-left" fixedWidth />
-                          </Button>
-                          <Space width={10} />
-                        </Col>
-                        <Col>
-                          <Button
-                            block
-                            sm
-                            onClick={this.updateWidgetsForPrimaryContainer}
-                          >
-                            <FontAwesomeIcon aria-hidden="true" icon="list-alt" />
-                            <Space width={8} />
-                            {i18n._('Manage Widgets ({{inactiveCount}})', {
-                              inactiveCount: inactiveCount
-                            })}
-                          </Button>
-                        </Col>
-                        <Col width="auto">
-                          <Space width={10} />
-                          <ButtonGroup sm>
-                            <Button
-                              aria-label="Collapse all left panel widgets"
-                              title={i18n._('Collapse All')}
-                              onClick={event => {
-                                this.primaryWidgets.collapseAll();
-                              }}
-                            >
-                              <FontAwesomeIcon aria-hidden="true" icon="chevron-up" fixedWidth />
-                            </Button>
-                            <Button
-                              aria-label="Expand all left panel widgets"
-                              title={i18n._('Expand All')}
-                              onClick={event => {
-                                this.primaryWidgets.expandAll();
-                              }}
-                            >
-                              <FontAwesomeIcon aria-hidden="true" icon="chevron-down" fixedWidth />
-                            </Button>
-                          </ButtonGroup>
-                        </Col>
-                      </Row>
-                    </Box>
-                    <Box
-                      flex="auto"
-                      height="100%"
-                      overflowY="auto"
-                      px="3x"
-                    >
-                      <PrimaryWidgets
-                        ref={node => {
-                          this.primaryWidgets = node;
-                        }}
-                        onForkWidget={this.widgetEventHandler.onForkWidget}
-                        onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
-                        onDragStart={this.widgetEventHandler.onDragStart}
-                        onDragEnd={this.widgetEventHandler.onDragEnd}
-                      />
-                    </Box>
-                  </Box>
-                  {hidePrimaryContainer && (
-                    <Box
-                      flex="none"
-                      width="50px"
-                      paddingTop="10px"
-                      textAlign="center"
-                      backgroundColor="#f6f7f8"
-                      borderRight="1px solid #ccc"
-                    >
-                      <Button
-                        aria-label="Show left panel"
-                        sm
-                        onClick={this.togglePrimaryContainer}
-                      >
-                        <FontAwesomeIcon aria-hidden="true" icon="chevron-right" fixedWidth />
-                      </Button>
-                    </Box>
+          onDrop(acceptedFiles);
+        }}
+      >
+        {({
+          getRootProps,
+          isDragActive,
+        }) => (
+          <Box {...getRootProps()}>
+            {isDragActive && (
+              <Flex
+                align="center"
+                bottom="0"
+                justify="center"
+                left="60px"
+                pointerEvents="none"
+                position="fixed"
+                right="0"
+                sx={{
+                  backgroundColor: 'background.medium',
+                  border: '4px dashed',
+                  borderColor: isConnected ? 'info.border' : 'border.secondary',
+                }}
+                textAlign="center"
+                top="48px"
+                zIndex="1000"
+              >
+                <Text
+                  color="text.secondary"
+                  size="4xl"
+                >
+                  {isConnected && (
+                    <>
+                      <FontAwesomeIcon icon="file-upload" size="2x" />
+                      <Box>{i18n._('Drop file here')}</Box>
+                    </>
                   )}
-                  <Box
-                    flex="auto"
-                    minHeight="0"
-                    minWidth="360px"
-                    position="relative"
-                    overflow="hidden"
-                  >
-                    <DefaultWidgets />
-                  </Box>
-                  {hideSecondaryContainer && (
-                    <Box
-                      flex="none"
-                      width="50px"
-                      paddingTop="10px"
-                      textAlign="center"
-                      backgroundColor="#f6f7f8"
-                      borderLeft="1px solid #ccc"
-                    >
+                  {!isConnected && (
+                    <>
+                      <Box color="error.icon">
+                        <FontAwesomeIcon icon="times-circle" size="2x" />
+                      </Box>
+                      <Box>{i18n._('You cannot upload files to the workspace when the connection is not established.')}</Box>
+                    </>
+                  )}
+                </Text>
+              </Flex>
+            )}
+            {/* The app header is 48px tall — keep in sync with $navbar-height (styles/variables.styl). */}
+            <Box height="calc(100vh - 48px)" overflowX="auto">
+              <Flex height="calc(100vh - 48px)" minHeight="0">
+                <Box
+                  flex="0 1 360px"
+                  width="360px"
+                  minWidth="320px"
+                  minHeight="0"
+                  display={hidePrimaryContainer ? 'none' : 'flex'}
+                  flexDirection="column"
+                  position="relative"
+                  backgroundColor="background.high"
+                  color="text.primary"
+                  borderRight="1px solid"
+                  borderColor="border.secondary"
+                >
+                  <Box px="3x" py="3x" flex="none">
+                    <Flex align="center" flexWrap="wrap" gap="2x">
                       <Button
-                        aria-label="Show right panel"
-                        sm
-                        onClick={this.toggleSecondaryContainer}
+                        aria-label={i18n._('Hide left panel')}
+                        onClick={togglePrimaryContainer}
+                        size="sm"
                       >
                         <FontAwesomeIcon aria-hidden="true" icon="chevron-left" fixedWidth />
                       </Button>
-                    </Box>
-                  )}
+                      <Button
+                        aria-label={i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount })}
+                        flex="1"
+                        minWidth="0"
+                        onClick={updateWidgetsForPrimaryContainer}
+                        size="sm"
+                      >
+                        <FontAwesomeIcon aria-hidden="true" icon="list-alt" />
+                        <Space width="2x" />
+                        <Box className={styles.panelActionLabel} minWidth="0" overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap">
+                          {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount })}
+                        </Box>
+                      </Button>
+                      <ButtonGroup size="sm">
+                        <Button
+                          aria-label={i18n._('Collapse all left panel widgets')}
+                          title={i18n._('Collapse All')}
+                          onClick={() => workspaceLayout.setWidgetsCollapsed(primaryWidgetIds, true)}
+                        >
+                          <FontAwesomeIcon aria-hidden="true" icon="chevron-up" fixedWidth />
+                        </Button>
+                        <Button
+                          aria-label={i18n._('Expand all left panel widgets')}
+                          title={i18n._('Expand All')}
+                          onClick={() => workspaceLayout.setWidgetsCollapsed(primaryWidgetIds, false)}
+                        >
+                          <FontAwesomeIcon aria-hidden="true" icon="chevron-down" fixedWidth />
+                        </Button>
+                      </ButtonGroup>
+                    </Flex>
+                  </Box>
+                  <Box
+                    flex="auto"
+                    height="100%"
+                    overflowX="auto"
+                    overflowY="auto"
+                    px="3x"
+                  >
+                    <PrimaryWidgets
+                      onForkWidget={onForkWidget}
+                      onRemoveWidget={onRemoveWidget}
+                      onDragStart={onDragStart}
+                      onDragEnd={onDragEnd}
+                    />
+                  </Box>
+                </Box>
+                {hidePrimaryContainer && (
                   <Box
                     flex="none"
-                    width="360px"
-                    minHeight="0"
-                    display={hideSecondaryContainer ? 'none' : 'flex'}
-                    flexDirection="column"
-                    position="relative"
-                    backgroundColor="#f6f7f8"
-                    borderLeft="1px solid #ccc"
+                    width="50px"
+                    paddingTop="10px"
+                    textAlign="center"
+                    backgroundColor="background.high"
+                    color="text.primary"
+                    borderRight="1px solid"
+                    borderColor="border.secondary"
                   >
-                    <Box px="3x" py="3x" flex="none">
-                      <Row>
-                        <Col width="auto">
-                          <ButtonGroup sm>
-                            <Button
-                              aria-label="Collapse all right panel widgets"
-                              title={i18n._('Collapse All')}
-                              onClick={event => {
-                                this.secondaryWidgets.collapseAll();
-                              }}
-                            >
-                              <FontAwesomeIcon aria-hidden="true" icon="chevron-up" fixedWidth />
-                            </Button>
-                            <Button
-                              aria-label="Expand all right panel widgets"
-                              title={i18n._('Expand All')}
-                              onClick={event => {
-                                this.secondaryWidgets.expandAll();
-                              }}
-                            >
-                              <FontAwesomeIcon aria-hidden="true" icon="chevron-down" fixedWidth />
-                            </Button>
-                          </ButtonGroup>
-                          <Space width={10} />
-                        </Col>
-                        <Col>
-                          <Button
-                            block
-                            sm
-                            onClick={this.updateWidgetsForSecondaryContainer}
-                          >
-                            <FontAwesomeIcon aria-hidden="true" icon="list-alt" />
-                            <Space width={8} />
-                            {i18n._('Manage Widgets ({{inactiveCount}})', {
-                              inactiveCount: inactiveCount
-                            })}
-                          </Button>
-                        </Col>
-                        <Col width="auto">
-                          <Space width={10} />
-                          <Button
-                            aria-label="Hide right panel"
-                            sm
-                            onClick={this.toggleSecondaryContainer}
-                          >
-                            <FontAwesomeIcon aria-hidden="true" icon="chevron-right" fixedWidth />
-                          </Button>
-                        </Col>
-                      </Row>
-                    </Box>
-                    <Box
-                      flex="auto"
-                      height="100%"
-                      overflowY="auto"
-                      px="3x"
+                    <Button
+                      aria-label={i18n._('Show left panel')}
+                      onClick={togglePrimaryContainer}
+                      size="sm"
                     >
-                      <SecondaryWidgets
-                        ref={node => {
-                          this.secondaryWidgets = node;
-                        }}
-                        onForkWidget={this.widgetEventHandler.onForkWidget}
-                        onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
-                        onDragStart={this.widgetEventHandler.onDragStart}
-                        onDragEnd={this.widgetEventHandler.onDragEnd}
-                      />
-                    </Box>
+                      <FontAwesomeIcon aria-hidden="true" icon="chevron-right" fixedWidth />
+                    </Button>
                   </Box>
-                </Flex>
-              </Box>
+                )}
+                <Box
+                  flex="auto"
+                  minHeight="0"
+                  minWidth="360px"
+                  position="relative"
+                  overflow="hidden"
+                >
+                  <DefaultWidgets />
+                </Box>
+                {hideSecondaryContainer && (
+                  <Box
+                    flex="none"
+                    width="50px"
+                    paddingTop="10px"
+                    textAlign="center"
+                    backgroundColor="background.high"
+                    color="text.primary"
+                    borderLeft="1px solid"
+                    borderColor="border.secondary"
+                  >
+                    <Button
+                      aria-label={i18n._('Show right panel')}
+                      onClick={toggleSecondaryContainer}
+                      size="sm"
+                    >
+                      <FontAwesomeIcon aria-hidden="true" icon="chevron-left" fixedWidth />
+                    </Button>
+                  </Box>
+                )}
+                <Box
+                  flex="0 1 360px"
+                  width="360px"
+                  minWidth="320px"
+                  minHeight="0"
+                  display={hideSecondaryContainer ? 'none' : 'flex'}
+                  flexDirection="column"
+                  position="relative"
+                  backgroundColor="background.high"
+                  color="text.primary"
+                  borderLeft="1px solid"
+                  borderColor="border.secondary"
+                >
+                  <Box px="3x" py="3x" flex="none">
+                    <Flex align="center" flexWrap="wrap" gap="2x">
+                      <ButtonGroup size="sm">
+                        <Button
+                          aria-label={i18n._('Collapse all right panel widgets')}
+                          title={i18n._('Collapse All')}
+                          onClick={() => workspaceLayout.setWidgetsCollapsed(secondaryWidgetIds, true)}
+                        >
+                          <FontAwesomeIcon aria-hidden="true" icon="chevron-up" fixedWidth />
+                        </Button>
+                        <Button
+                          aria-label={i18n._('Expand all right panel widgets')}
+                          title={i18n._('Expand All')}
+                          onClick={() => workspaceLayout.setWidgetsCollapsed(secondaryWidgetIds, false)}
+                        >
+                          <FontAwesomeIcon aria-hidden="true" icon="chevron-down" fixedWidth />
+                        </Button>
+                      </ButtonGroup>
+                      <Button
+                        aria-label={i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount })}
+                        flex="1"
+                        minWidth="0"
+                        onClick={updateWidgetsForSecondaryContainer}
+                        size="sm"
+                      >
+                        <FontAwesomeIcon aria-hidden="true" icon="list-alt" />
+                        <Space width="2x" />
+                        <Box className={styles.panelActionLabel} minWidth="0" overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap">
+                          {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount })}
+                        </Box>
+                      </Button>
+                      <Button
+                        aria-label={i18n._('Hide right panel')}
+                        onClick={toggleSecondaryContainer}
+                        size="sm"
+                      >
+                        <FontAwesomeIcon aria-hidden="true" icon="chevron-right" fixedWidth />
+                      </Button>
+                    </Flex>
+                  </Box>
+                  <Box
+                    flex="auto"
+                    height="100%"
+                    overflowX="auto"
+                    overflowY="auto"
+                    px="3x"
+                  >
+                    <SecondaryWidgets
+                      onForkWidget={onForkWidget}
+                      onRemoveWidget={onRemoveWidget}
+                      onDragStart={onDragStart}
+                      onDragEnd={onDragEnd}
+                    />
+                  </Box>
+                </Box>
+              </Flex>
             </Box>
-          )}
-        </Dropzone>
-      </div>
-    );
-  }
-}
+          </Box>
+        )}
+      </Dropzone>
+    </Box>
+  );
+};
 
-export default compose(
-  withRouter,
-  connect(store => {
-    const connectionState = _get(store, 'connection.state');
-    const isConnected = (connectionState === CONNECTION_STATE_CONNECTED);
+const WorkspaceWithLayout = props => {
+  const workspaceLayout = useWorkspaceLayout();
+  const { ids: primaryIds } = useWidgetGroup('primary');
+  const { ids: secondaryIds } = useWidgetGroup('secondary');
+  const availableControllers = controller.availableControllers;
 
-    return {
-      isConnected,
-    };
-  }),
-)(Workspace);
+  return (
+    <Workspace
+      {...props}
+      workspaceLayout={workspaceLayout}
+      primaryWidgetIds={selectVisibleWidgetIds(
+        primaryIds,
+        availableControllers,
+        WIDGET_REGISTRY
+      )}
+      secondaryWidgetIds={selectVisibleWidgetIds(
+        secondaryIds,
+        availableControllers,
+        WIDGET_REGISTRY
+      )}
+    />
+  );
+};
 
-const DropzoneOverlay = styled(
-  ({ disabled, ...props }) => <div {...props} />
-)`
-    position: fixed;
-    top: 48px; // app header height, keep in sync with $navbar-height (styles/variables.styl)
-    bottom: 0;
-    left: 60px;
-    right: 0;
-    z-index: 1000;
-    background-color: rgba(255, 255, 255, .7);
-    border: 4px dashed ${props => (props.disabled ? 'rgba(0, 0, 0, .2)' : '#1e90ff')};
-    text-align: center;
-    pointer-events: none;
-`;
+export { Workspace, WorkspaceWithLayout };
+
+export default connect(store => {
+  const connectionState = _get(store, 'connection.state');
+  const isConnected = (connectionState === CONNECTION_STATE_CONNECTED);
+
+  return {
+    isConnected,
+  };
+})(WorkspaceWithLayout);

@@ -1,16 +1,25 @@
 import {
+  Box,
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
   TextLabel,
 } from '@tonic-ui/react';
 import React from 'react';
-import { Form, Field, FormSpy } from 'react-final-form';
-import { Button } from '@app/components/Buttons';
-import Input from '@app/components/FormControl/Input';
-import FormGroup from '@app/components/FormGroup';
-import InlineError from '@app/components/InlineError';
-import Modal from '@app/components/Modal';
+import { FormProvider, useForm } from 'react-hook-form';
 import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
 import i18n from '@app/lib/i18n';
 
+/**
+ * @param {object} props
+ * @param {Function} props.onClose
+ */
 function SettingsModal({
   onClose,
 }) {
@@ -19,107 +28,72 @@ function SettingsModal({
     title: config.get('title'),
     url: config.get('url'),
   };
+  const methods = useForm({ defaultValues: initialValues, mode: 'onSubmit' });
+  const { register, formState: { errors, isSubmitting } } = methods;
+  const submit = (values) => {
+    try {
+      config.set('title', values.title);
+      config.set('url', values.url);
+      onClose();
+    } catch (error) {
+      methods.setError('root', { type: 'server', message: error.message });
+    }
+  };
 
   return (
     <Modal
-      disableOverlayClick
+      autoFocus
+      closeOnEsc
+      closeOnInteractOutside={false}
+      ensureFocus
+      isClosable
+      isOpen
       size="sm"
       onClose={onClose}
     >
-      <Form
-        initialValues={initialValues}
-        onSubmit={(values) => {
-          const { title, url } = values;
-          config.set('title', title);
-          config.set('url', url);
-          onClose();
-        }}
-        subscription={{}}
-      >
-        {({ form }) => {
-          const handleSubmit = () => {
-            form.submit();
-          };
-
-          return (
-            <>
-              <Modal.Header>
-                <Modal.Title>{i18n._('Settings')}</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <Field name="title">
-                  {({ input, meta }) => (
-                    <FormGroup>
-                      <TextLabel mb="2x">
-                        {i18n._('Title')}
-                      </TextLabel>
-                      <Input
-                        {...input}
-                        type="url"
-                        maxLength={256}
-                      />
-                      {(meta.error && meta.touched) && (
-                        <InlineError>{meta.error}</InlineError>
-                      )}
-                    </FormGroup>
-                  )}
-                </Field>
-                <Field name="url">
-                  {({ input, meta }) => (
-                    <FormGroup>
-                      <TextLabel mb="2x">
-                        {i18n._('URL')}
-                      </TextLabel>
-                      <Input
-                        {...input}
-                        type="url"
-                        placeholder="/widget/"
-                      />
-                      {(meta.error && meta.touched) && (
-                        <InlineError>{meta.error}</InlineError>
-                      )}
-                    </FormGroup>
-                  )}
-                </Field>
-              </Modal.Body>
-              <FormSpy
-                subscription={{
-                  values: true,
-                  invalid: true,
-                }}
-              >
-                {({ values, invalid }) => {
-                  const canSaveChanges = (() => {
-                    if (invalid) {
-                      return false;
-                    }
-
-                    return true;
-                  })();
-
-                  return (
-                    <Modal.Footer>
-                      <Button
-                        btnStyle="default"
-                        onClick={onClose}
-                      >
-                        {i18n._('Cancel')}
-                      </Button>
-                      <Button
-                        btnStyle="primary"
-                        disabled={!canSaveChanges}
-                        onClick={handleSubmit}
-                      >
-                        {i18n._('Save Changes')}
-                      </Button>
-                    </Modal.Footer>
-                  );
-                }}
-              </FormSpy>
-            </>
-          );
-        }}
-      </Form>
+      <ModalOverlay data-testid="settings-modal-overlay" />
+      <FormProvider {...methods}>
+        <ModalContent as="form" noValidate onSubmit={methods.handleSubmit(submit)}>
+          <ModalHeader>{i18n._('Settings')}</ModalHeader>
+          <ModalBody>
+            <Box mb="4x">
+              <TextLabel htmlFor="custom-settings-title" mb="2x">
+                {i18n._('Title')}
+              </TextLabel>
+              <Input
+                {...register('title')} id="custom-settings-title" type="url"
+                maxLength={256}
+              />
+            </Box>
+            <Box mb="4x">
+              <TextLabel htmlFor="custom-settings-url" mb="2x">
+                {i18n._('URL')}
+              </TextLabel>
+              <Input
+                {...register('url')} id="custom-settings-url" type="url"
+                placeholder="/widget/"
+              />
+            </Box>
+          </ModalBody>
+          <ModalFooter>
+            {errors.root && (
+              <Text fontSize="sm" lineHeight="sm" color="error.text">
+                {errors.root.message}
+              </Text>
+            )}
+            <Button onClick={onClose}>
+              {i18n._('Cancel')}
+            </Button>
+            <Button
+              variant="primary"
+              disabled={isSubmitting}
+              type="submit"
+            >
+              {i18n._('Save Changes')}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </FormProvider>
     </Modal>
   );
 }

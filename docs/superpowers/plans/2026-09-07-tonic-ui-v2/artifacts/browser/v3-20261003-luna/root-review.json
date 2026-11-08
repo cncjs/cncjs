@@ -1,0 +1,180 @@
+{
+  "reviewer": "root",
+  "status": "completed",
+  "revision": "fbea204268dd00a67a7f345fb367589ca1e1c79f",
+  "reviewedScreenshots": [
+    "screenshots/workspace-theme-dark-1440x900.png",
+    "screenshots/workspace-theme-light-1440x900.png",
+    "screenshots/workspace-theme-light-768x900.png",
+    "screenshots/administration-macros-drawer-dark-1440x900.png",
+    "screenshots/administration-macros-validation-dark-1440x900.png",
+    "screenshots/dialog-widget-manager-open-768x900.png",
+    "screenshots/workspace-panels-collapsed-canvas-768x900.png",
+    "screenshots/visualizer-probe-compensation-light-1440x900.png",
+    "screenshots/visualizer-probe-compensation-dark-1440x900.png",
+    "screenshots/controller-grbl-dark-1440x900.png",
+    "screenshots/controller-grbl-light-1440x900.png",
+    "screenshots/controller-marlin-dark-1440x900.png",
+    "screenshots/controller-marlin-light-1440x900.png",
+    "screenshots/controller-smoothie-dark-1440x900.png",
+    "screenshots/controller-smoothie-light-1440x900.png",
+    "screenshots/controller-tinyg-dark-1440x900.png",
+    "screenshots/controller-tinyg-light-1440x900.png",
+    "screenshots/controller-tinyg-dark-view-1440x900.png"
+  ],
+  "observations": [
+    "1440 theme colors and fixed-light Visualizer canvas visibly resolve correctly; panes and canvas fit viewport.",
+    "768 simultaneous side panes clip widget contents; prior R6 workspace-visualizer-theme-light-768x900.png shows same narrow pane behavior. This is an inherited responsive limitation, not evidence of new v3 regression.",
+    "Disabled Axes SVG task icons have weak dark contrast; prior R6 workspace-theme-dark-1440x900.png shows same behavior. Do not claim disabled-domain icons meet normal text contrast.",
+    "Post-table-fix settled dark Macro drawer and validation colors readable, all footer controls in view.",
+    "768 Widget Manager remains within viewport with visible footer and scrollable body; collapsed panels leave596\u00d7755 canvas with toolbar in view.",
+    "Final post-table-fix routes pass 15/15 with zero maximum-update-depth or unclassified application console errors; Console and Webcam pass after restoring persisted panel fixture state.",
+    "Fixed-canvas filename follows accent token and remains legible in both themes; inherited dark camera-toolbar static icons match the prior R6 screenshot.",
+    "All four controller bodies visibly use light/dark semantic colors; Marlin heater and TinyG power icons resolve currentColor in dark mode. Tall widget bodies are reviewed by scrolling; no claim that every body fits one viewport."
+  ],
+  "baselineComparators": [
+    "../r6-20261001-luna/workspace-visualizer-theme-light-768x900.png",
+    "../r6-20261001-luna/workspace-theme-dark-1440x900.png"
+  ],
+  "runnerReview": [
+    "Initial invalid contrast samples were rejected; final 24 measured samples are non-null and independently recomputed.",
+    "Final screenshots distinguish layout presence, viewport intersection and full containment, and wait for drawer geometry/opacity settlement.",
+    "Canvas dimensions and containment are executable assertions; the 768 simultaneous-pane clipping is explicitly inherited."
+  ],
+  "matrixEvidenceReview": {
+    "status": "accepted",
+    "cases": 7,
+    "normalTextSamples": 24,
+    "independentContrastRecalculation": "all match within0.02",
+    "lightRatio": 12.14,
+    "darkRatio": 11.78,
+    "canvasAndErrors": "positive dimensions and containment; zero page/request/HTTP errors"
+  },
+  "routeEvidenceReview": {
+    "status": "accepted",
+    "evidence": "routes-semantic-v3-after-table-fix.json",
+    "passed": 15,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "httpErrors": 0,
+    "unclassifiedApplicationConsoleErrors": 0,
+    "maximumUpdateDepth": 0,
+    "resourceMutationRequests": 0,
+    "anonymousSessionInitialization": 1
+  },
+  "navigationComparison": {
+    "status": "accepted",
+    "evidence": "admin-navigation-compare-v3-after-table-fix.json",
+    "directAndNativeCases": 2
+  },
+  "sourceBoundaries": {
+    "matrixRevision": "fce8ab51225fa6e2b36d45217b52a215f7ddeb03",
+    "routesAndFocusedRevision": "f050804ef6b485b0190f29557d79df43f53316b0",
+    "note": "Workspace matrix predates resource-table fix; retain original artifact metadata. Final route and focused captures use the committed fix."
+  },
+  "filenameAndBadgeEvidenceReview": {
+    "status": "accepted",
+    "evidence": "visualizer-probe-compensation-v3.json",
+    "cases": 2,
+    "fontSizePx": 24,
+    "foregroundAlpha": 0.96,
+    "elementOpacity": 0.5,
+    "actualCanvasBackground": "white",
+    "filenameContrast": 3.71,
+    "largeTextThreshold": 3,
+    "badgeContrast": {
+      "light": 6.411,
+      "dark": 9.573
+    },
+    "commandClassification": "one explicit comment-only sender_load per theme; no motion/run/jog or unclassified controller commands",
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "independentContrastRecalculation": 3.71
+  },
+  "controllerEvidenceReview": {
+    "status": "accepted",
+    "cases": 8,
+    "gates": 32,
+    "results": [
+      {
+        "file": "controller-grbl-dark-v3.json",
+        "theme": "dark",
+        "gates": 4,
+        "visibleTextSamples": 28,
+        "iconSamples": 5,
+        "bodyScreenshot": "controller-grbl-dark-1440x900.png",
+        "commands": 0
+      },
+      {
+        "file": "controller-grbl-light-v3.json",
+        "theme": "light",
+        "gates": 4,
+        "visibleTextSamples": 28,
+        "iconSamples": 5,
+        "bodyScreenshot": "controller-grbl-light-1440x900.png",
+        "commands": 0
+      },
+      {
+        "file": "controller-marlin-dark-v3.json",
+        "theme": "dark",
+        "gates": 4,
+        "visibleTextSamples": 27,
+        "iconSamples": 18,
+        "bodyScreenshot": "controller-marlin-dark-1440x900.png",
+        "commands": 0
+      },
+      {
+        "file": "controller-marlin-light-v3.json",
+        "theme": "light",
+        "gates": 4,
+        "visibleTextSamples": 27,
+        "iconSamples": 18,
+        "bodyScreenshot": "controller-marlin-light-1440x900.png",
+        "commands": 0
+      },
+      {
+        "file": "controller-smoothie-dark-v3.json",
+        "theme": "dark",
+        "gates": 4,
+        "visibleTextSamples": 39,
+        "iconSamples": 15,
+        "bodyScreenshot": "controller-smoothie-dark-1440x900.png",
+        "commands": 0
+      },
+      {
+        "file": "controller-smoothie-light-v3.json",
+        "theme": "light",
+        "gates": 4,
+        "visibleTextSamples": 39,
+        "iconSamples": 15,
+        "bodyScreenshot": "controller-smoothie-light-1440x900.png",
+        "commands": 0
+      },
+      {
+        "file": "controller-tinyg-dark-v3.json",
+        "theme": "dark",
+        "gates": 4,
+        "visibleTextSamples": 45,
+        "iconSamples": 7,
+        "bodyScreenshot": "controller-tinyg-dark-1440x900.png",
+        "commands": 0
+      },
+      {
+        "file": "controller-tinyg-light-v3.json",
+        "theme": "light",
+        "gates": 4,
+        "visibleTextSamples": 45,
+        "iconSamples": 7,
+        "bodyScreenshot": "controller-tinyg-light-1440x900.png",
+        "commands": 0
+      }
+    ],
+    "claims": "Incoming states/settings or live Grbl parser state, resolved text and icon colors, view controls. Not a blanket contrast claim for every leaf or a hardware protocol test."
+  },
+  "cleanupEvidenceReview": {
+    "status": "accepted",
+    "workerEvidence": "cleanup.json",
+    "independentRootEvidence": "root-runtime-review.json",
+    "localeRestoration": "locale-restoration.json"
+  }
+}

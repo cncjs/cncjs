@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Box,
@@ -6,16 +7,14 @@ import {
   Flex,
   Icon,
   Image,
-  Menu,
+  Dropdown,
+  DropdownToggle,
   MenuDivider,
   MenuGroup,
   MenuItem,
-  MenuList,
-  MenuToggle,
   Space,
   Text,
   useColorMode,
-  useColorStyle,
 } from '@tonic-ui/react';
 import {
   ArrowLeftIcon,
@@ -41,9 +40,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import FocusLock from 'react-focus-lock';
 import { useLocation, useNavigate } from 'react-router-dom';
-import IconButton from '@app/components/IconButton';
 import env from '@app/config/env';
 import layout from '@app/config/layout';
 import { mapRoutePathToPageTitle } from '@app/config/routes';
@@ -54,8 +51,11 @@ import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import log from '@app/lib/log';
 import * as user from '@app/lib/user';
+import { signoutAndClearSession } from '@app/queries/session';
 import config from '@app/store/config';
 import Avatar from './components/Avatar';
+import CommandsMenu from './components/CommandsMenu';
+import QuickAccessToolbar from './components/QuickAccessToolbar';
 import { ensureColorMode, getColorScheme, mapDisplayLanguageToLocaleString } from './utils';
 
 const supportedLanguages = ensureArray(env.LANGUAGES)
@@ -225,9 +225,9 @@ const LanguageMenuItems = forwardRef((props, ref) => {
 
 const MainMenuItems = forwardRef((props, ref) => {
   const [, navigateMenu] = useContext(MenuStateContext);
-  const [colorStyle] = useColorStyle();
   const location = useLocation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const isUserAccountEnabled = config.get('session.enabled');
   const userAccountName = config.get('session.name');
   const appearance = config.get('settings.appearance') ?? 'auto';
@@ -243,10 +243,10 @@ const MainMenuItems = forwardRef((props, ref) => {
         <>
           <Flex alignItems="center" columnGap="3x" px="3x">
             <Avatar
-              backgroundColor={colorStyle.background.tertiary}
-              color={colorStyle.color.secondary}
+              backgroundColor="background.medium"
+              color="text.secondary"
               _hover={{
-                color: colorStyle.color.primary,
+                color: 'text.primary',
               }}
             >
               <FontAwesomeIcon icon="user" style={{ width: 24, height: 24 }} />
@@ -344,12 +344,12 @@ const MainMenuItems = forwardRef((props, ref) => {
         <>
           <MenuDivider />
           <MenuItem
-            onClick={(event) => {
+            onClick={async (event) => {
               if (user.isAuthenticated()) {
                 log.debug('Destroy and cleanup the WebSocket connection');
                 controller.disconnect();
 
-                user.signout();
+                await signoutAndClearSession(queryClient);
 
                 // remember current location
                 const url = location.pathname;
@@ -377,7 +377,6 @@ const Header = forwardRef((
   },
   ref,
 ) => {
-  const [colorStyle] = useColorStyle();
   const location = useLocation();
   const [menu, setMenu] = useState('main');
   const shouldPreventDefaultOnLossFocus = useRef(false);
@@ -397,22 +396,39 @@ const Header = forwardRef((
       as="header"
       ref={ref}
       aria-label="Application header"
-      backgroundColor={colorStyle?.background?.secondary}
-      color={colorStyle?.color?.primary}
+      backgroundColor="background.high"
+      color="text.primary"
       justifyContent="space-between"
       {...rest}
     >
       <Flex
         alignItems="center"
         px="4x"
+        flex="none"
+        sx={{ '@media (max-width: 799px)': { px: '1x', '& [data-header-detail]': { display: 'none' } } }}
       >
-        <IconButton
+        <ButtonBase
+          aria-label={i18n._('Toggle navigation')}
+          border={1}
+          borderColor="transparent"
+          color="text.secondary"
+          lineHeight={1}
+          px="2x"
+          py="2x"
+          transition="all .2s"
           width="10x"
           height="10x"
           onClick={onToggle}
+          sx={{
+            '&:focus': { color: 'text.secondary' },
+            '&:hover': { color: 'text.accent' },
+            '&:focus:hover': { color: 'text.accent' },
+            '&:active': { color: 'text.secondary' },
+            '&:focus:active': { color: 'text.secondary' },
+          }}
         >
           <Icon as={MenuIcon} size="6x" />
-        </IconButton>
+        </ButtonBase>
         <Space minWidth="2x" />
         <ButtonBase
           aria-label={`${settings.productName} ${settings.version} - View release notes`}
@@ -421,7 +437,7 @@ const Header = forwardRef((
             window.open(url, '_blank');
           }}
           title={`${settings.productName} ${settings.version}`}
-          color={colorStyle?.color?.primary}
+          color="text.primary"
           px="2x"
           position="relative"
         >
@@ -436,6 +452,7 @@ const Header = forwardRef((
               height="8x"
             />
             <Text
+              data-header-detail
               fontWeight="semibold"
               fontSize="lg"
               lineHeight="lg"
@@ -445,7 +462,8 @@ const Header = forwardRef((
           </Flex>
         </ButtonBase>
         <Text
-          color={colorStyle?.color?.tertiary}
+          data-header-detail
+          color="text.tertiary"
           fontFamily="mono"
           fontSize="xs"
           lineHeight="1"
@@ -454,64 +472,90 @@ const Header = forwardRef((
         >
           {i18next.language}
         </Text>
-        <Divider orientation="vertical" height="5x" mx="2x" />
-        <Text>
+        <Divider data-header-detail orientation="vertical" height="5x" mx="2x" />
+        <Text data-header-detail>
           {mapRoutePathToPageTitle(location.pathname)}
         </Text>
       </Flex>
+      {location.pathname === '/workspace' && <QuickAccessToolbar />}
       <Flex
         alignItems="center"
         px="4x"
+        flex="none"
+        gap="2x"
       >
-        <Menu
+        <CommandsMenu />
+        <Dropdown
           placement="bottom-end"
           onOpen={() => {
             setMenu('main');
           }}
-        >
-          <MenuToggle>
-            <Avatar
-              backgroundColor={colorStyle.background.tertiary}
-              color={colorStyle.color.secondary}
-              _hover={{
-                color: colorStyle.color.primary,
-              }}
-            >
-              <FontAwesomeIcon icon="user" style={{ width: 24, height: 24 }} />
-            </Avatar>
-          </MenuToggle>
-          <FocusLock
-            persistentFocus={true}
-          >
-            <MenuList
-              onBlur={(event) => {
+          items={[
+            {
+              value: 'appearance',
+              type: 'custom',
+              content: (
+                <AppearanceMenuItems
+                  display={menu === 'appearance' ? 'block' : 'none'}
+                />
+              ),
+            },
+            {
+              value: 'language',
+              type: 'custom',
+              content: (
+                <LanguageMenuItems
+                  display={menu === 'language' ? 'block' : 'none'}
+                />
+              ),
+            },
+            {
+              value: 'main',
+              type: 'custom',
+              content: (
+                <MainMenuItems
+                  display={menu === 'main' ? 'block' : 'none'}
+                />
+              ),
+            },
+          ]}
+          renderItem={item => item?.content}
+          slotProps={{
+            content: {
+              onBlur: (event) => {
                 if (shouldPreventDefaultOnLossFocus.current) {
                   event.preventDefault();
 
                   // Restore the flag to its initial state
                   shouldPreventDefaultOnLossFocus.current = false;
                 }
-              }}
+              },
               // Create a scrollable area for the menu list
-              maxHeight={`calc(100vh - ${layout.header.height}px)`}
-              overflowY="auto"
+              maxHeight: `calc(100vh - ${layout.header.height}px)`,
+              overflowY: 'auto',
               // Use the intrinsic maximum width of the menu list
-              width="max-content"
-            >
-              <MenuStateContext.Provider value={menuStateContext}>
-                <AppearanceMenuItems
-                  display={menu === 'appearance' ? 'block' : 'none'}
-                />
-                <LanguageMenuItems
-                  display={menu === 'language' ? 'block' : 'none'}
-                />
-                <MainMenuItems
-                  display={menu === 'main' ? 'block' : 'none'}
-                />
-              </MenuStateContext.Provider>
-            </MenuList>
-          </FocusLock>
-        </Menu>
+              width: 'max-content',
+            },
+          }}
+          renderToggle={() => (
+            <DropdownToggle aria-label="Application menu">
+              <Avatar
+                backgroundColor="background.medium"
+                color="text.secondary"
+                _hover={{
+                  color: 'text.primary',
+                }}
+              >
+                <FontAwesomeIcon icon="user" style={{ width: 24, height: 24 }} />
+              </Avatar>
+            </DropdownToggle>
+          )}
+          renderContent={({ items, renderItems }) => (
+            <MenuStateContext.Provider value={menuStateContext}>
+              {renderItems(items)}
+            </MenuStateContext.Provider>
+          )}
+        />
       </Flex>
     </Flex>
   );

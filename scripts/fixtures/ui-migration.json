@@ -1,0 +1,881 @@
+[
+  {
+    "name": "alias transport import and component mutation",
+    "files": {
+      "src/app/pages/View.jsx": "import transport from '@app/api'; export const View = () => transport.loadGCode({});"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "relative API import",
+    "files": {
+      "src/app/pages/View.jsx": "import api from '../api'; export const View = () => api.mdi.fetch();"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "relative barrel re-export",
+    "files": {
+      "src/app/lib/bridge.js": "export { default as transport } from '../api';",
+      "src/app/pages/View.jsx": "import { transport } from '../lib/bridge'; transport.loadGCode({});"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "star barrel re-export",
+    "files": {
+      "src/app/lib/bridge.js": "export * from 'axios';",
+      "src/app/pages/View.jsx": "import { post } from '../lib/bridge'; post('/api/tool', {});"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "namespace barrel re-export",
+    "files": {
+      "src/app/lib/bridge.js": "export * as wire from 'axios';",
+      "src/app/pages/View.jsx": "import { wire } from '../lib/bridge'; wire.post('/api/tool', {});"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "CommonJS require and member alias",
+    "files": {
+      "src/app/pages/View.jsx": "const wire = require('@app/api'); const save = wire.loadGCode; save({});"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "CommonJS barrel export",
+    "files": {
+      "src/app/lib/bridge.js": "module.exports = require('axios');",
+      "src/app/pages/View.jsx": "const wire = require('../lib/bridge'); wire.get('/api/state');"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "dynamic import of transport",
+    "files": {
+      "src/app/pages/View.jsx": "async function View() { const wire = await import('@app/api'); wire.loadGCode({}); }"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "nonliteral module fails closed",
+    "files": {
+      "src/app/pages/View.jsx": "const wire = require(moduleName);"
+    },
+    "rules": [
+      "dynamic-module"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "aliased global fetch",
+    "files": {
+      "src/app/pages/View.jsx": "const request = window.fetch; request('/api/state');"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "XMLHttpRequest cannot bypass HTTP boundary",
+    "files": {
+      "src/app/pages/View.jsx": "new XMLHttpRequest();"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "shadowed fetch is local data",
+    "files": {
+      "src/app/pages/View.jsx": "const fetch = () => 1; fetch();"
+    },
+    "rules": [],
+    "policy": {}
+  },
+  {
+    "name": "named query module and UI hook",
+    "files": {
+      "src/app/queries/data.js": "import { useQuery } from '@tanstack/react-query'; import axios from 'axios'; export const useDataQuery = () => useQuery({ queryKey: ['data'], queryFn: () => axios.get('/api/state') });",
+      "src/app/pages/View.jsx": "import { useDataQuery } from '../queries/data'; export const View = () => useDataQuery();"
+    },
+    "rules": [],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/queries/data.js": {
+          "role": "query",
+          "reason": "Fixture resource query owner"
+        }
+      }
+    }
+  },
+  {
+    "name": "new queries filename has no wildcard exception",
+    "files": {
+      "src/app/queries/data.js": "import axios from 'axios'; export const useData = () => axios.get('/api/state');"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "query pure transport cannot be called directly by UI",
+    "files": {
+      "src/app/queries/data.js": "import axios from 'axios'; export const fetchData = () => axios.get('/api/state');",
+      "src/app/pages/View.jsx": "import { fetchData } from '../queries/data'; fetchData();"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/queries/data.js": {
+          "role": "query",
+          "reason": "Fixture resource query owner"
+        }
+      }
+    }
+  },
+  {
+    "name": "query re-export cannot launder raw transport",
+    "files": {
+      "src/app/queries/data.js": "export { default as wire } from 'axios';",
+      "src/app/pages/View.jsx": "import { wire } from '../queries/data'; wire.post('/api/state');"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/queries/data.js": {
+          "role": "query",
+          "reason": "Fixture resource query owner"
+        }
+      }
+    }
+  },
+  {
+    "name": "controller command remains realtime",
+    "files": {
+      "src/app/pages/View.jsx": "import controller from '@app/lib/controller'; controller.command('gcode', 'G0 X1'); controller.write('G1');"
+    },
+    "rules": [],
+    "policy": {}
+  },
+  {
+    "name": "allowed download member",
+    "files": {
+      "src/app/pages/View.jsx": "import api from '@app/api'; api.downloadGCode();"
+    },
+    "rules": [],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/pages/View.jsx": {
+          "role": "download",
+          "reason": "Browser fixture download",
+          "members": [
+            "downloadGCode"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "download exception cannot allow component mutation",
+    "files": {
+      "src/app/pages/View.jsx": "import api from '@app/api'; api.loadGCode({});"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/pages/View.jsx": {
+          "role": "download",
+          "reason": "Browser fixture download",
+          "members": [
+            "downloadGCode"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "download exception cannot let API object escape",
+    "files": {
+      "src/app/pages/View.jsx": "import api from '@app/api'; const wire = api; wire.loadGCode({});"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/pages/View.jsx": {
+          "role": "download",
+          "reason": "Browser fixture download",
+          "members": [
+            "downloadGCode"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "non-React bootstrap may use pure transport",
+    "files": {
+      "src/app/lib/bridge.js": "import axios from 'axios'; export const initialize = () => axios.get('/api/state');"
+    },
+    "rules": [],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/lib/bridge.js": {
+          "role": "transport",
+          "reason": "Pure bootstrap fixture",
+          "nonReact": true
+        }
+      }
+    }
+  },
+  {
+    "name": "non-React bootstrap cannot call React hooks",
+    "files": {
+      "src/app/lib/bridge.js": "import { useState as state } from 'react'; state();"
+    },
+    "rules": [
+      "non-react-hook"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/lib/bridge.js": {
+          "role": "transport",
+          "reason": "Pure bootstrap fixture",
+          "nonReact": true
+        }
+      }
+    }
+  },
+  {
+    "name": "non-React bootstrap cannot call Query hooks",
+    "files": {
+      "src/app/lib/bridge.js": "const { useQuery } = require('@tanstack/react-query'); useQuery({});"
+    },
+    "rules": [
+      "non-react-hook"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/lib/bridge.js": {
+          "role": "transport",
+          "reason": "Pure bootstrap fixture",
+          "nonReact": true
+        }
+      }
+    }
+  },
+  {
+    "name": "aliased React Component",
+    "files": {
+      "src/app/pages/View.jsx": "import { Component as Base } from 'react'; class View extends Base {}"
+    },
+    "rules": [
+      "react-class"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "aliased React namespace and class expression",
+    "files": {
+      "src/app/pages/View.jsx": "import * as R from 'react'; const View = class extends R.PureComponent {};"
+    },
+    "rules": [
+      "react-class"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "React base through relative barrel",
+    "files": {
+      "src/app/lib/bridge.js": "export { Component as Base } from 'react';",
+      "src/app/pages/View.jsx": "import { Base } from '../lib/bridge'; class View extends Base {}"
+    },
+    "rules": [
+      "react-class"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "CommonJS destructured React base",
+    "files": {
+      "src/app/pages/View.jsx": "const { Component: C } = require('react'); const Base = C; class View extends Base {}"
+    },
+    "rules": [
+      "react-class"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "indirect React inheritance",
+    "files": {
+      "src/app/lib/bridge.js": "import { Component } from 'react'; export class Base extends Component {}",
+      "src/app/pages/View.jsx": "import { Base } from '../lib/bridge'; class View extends Base {}"
+    },
+    "rules": [
+      "react-class"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "domain class exception cannot hide React inheritance",
+    "files": {
+      "src/app/lib/bridge.js": "import React from 'react'; class Resource extends React.Component {}"
+    },
+    "rules": [
+      "react-class"
+    ],
+    "policy": {
+      "domainClasses": {
+        "src/app/lib/bridge.js": [
+          {
+            "name": "Resource",
+            "reason": "Only a domain resource"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "named domain class remains permitted",
+    "files": {
+      "src/app/lib/bridge.js": "import events from 'events'; class Resource extends events.EventEmitter {}"
+    },
+    "rules": [],
+    "policy": {
+      "domainClasses": {
+        "src/app/lib/bridge.js": [
+          {
+            "name": "Resource",
+            "reason": "Domain event resource"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "unlisted class fails closed",
+    "files": {
+      "src/app/lib/bridge.js": "class Resource {}"
+    },
+    "rules": [
+      "unlisted-class"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "legacy factory through alias",
+    "files": {
+      "src/app/pages/View.jsx": "import create from 'create-react-class'; create({ render() { return null; } });"
+    },
+    "rules": [
+      "react-class",
+      "legacy-ui"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "React legacy createClass through namespace",
+    "files": {
+      "src/app/pages/View.jsx": "const R = require('react'); R.createClass({});"
+    },
+    "rules": [
+      "react-class"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "legacy family relative barrel",
+    "files": {
+      "src/app/lib/bridge.js": "export { default as Button } from '../components/Buttons';",
+      "src/app/pages/View.jsx": "import { Button } from '../lib/bridge';"
+    },
+    "rules": [
+      "legacy-ui"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "legacy package aliased import",
+    "files": {
+      "src/app/pages/View.jsx": "import styles from 'styled-components';"
+    },
+    "rules": [
+      "legacy-ui"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "forbidden instance method computed",
+    "files": {
+      "src/app/pages/View.jsx": "ref.current['collapse']();"
+    },
+    "rules": [
+      "instance-api"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "child instance settings value",
+    "files": {
+      "src/app/pages/View.jsx": "node.general.value; node.mdi.state;"
+    },
+    "rules": [
+      "instance-api"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "aliased findDOMNode",
+    "files": {
+      "src/app/pages/View.jsx": "import { findDOMNode as find } from 'react-dom'; find(ref);"
+    },
+    "rules": [
+      "instance-api"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "resource DOM refs are legal",
+    "files": {
+      "src/app/pages/View.jsx": "const ref = { current: null }; ref.current?.focus(); element.srcObject = null;"
+    },
+    "rules": [],
+    "policy": {}
+  },
+  {
+    "name": "obsolete fetch abstraction",
+    "files": {
+      "src/app/pages/View.jsx": "import useFetch from '@app/hooks/useFetch';"
+    },
+    "rules": [
+      "legacy-fetch"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "wildcard HTTP allowlist is rejected",
+    "files": {},
+    "rules": [
+      "invalid-allowlist"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/queries/*": {
+          "role": "query",
+          "reason": "Fixture resource query owner"
+        }
+      }
+    }
+  },
+  {
+    "name": "missing allowlist reason is rejected",
+    "files": {},
+    "rules": [
+      "invalid-allowlist"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/queries/data.js": {
+          "role": "query"
+        }
+      }
+    }
+  },
+  {
+    "name": "transport query exception cannot own JSX",
+    "files": {
+      "src/app/queries/data.js": "export const View = () => <div />;"
+    },
+    "rules": [
+      "boundary-presentation"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/queries/data.js": {
+          "role": "query",
+          "reason": "Fixture resource query owner"
+        }
+      }
+    }
+  },
+  {
+    "name": "invalid source fails closed",
+    "files": {
+      "src/app/pages/View.jsx": "export const broken = ;"
+    },
+    "rules": [
+      "parse-error"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "hook name cannot disguise raw HTTP without Query",
+    "files": {
+      "src/app/queries/data.js": "import axios from 'axios'; export const useData = () => axios.get('/api/state');",
+      "src/app/pages/View.jsx": "import { useData } from '../queries/data'; useData();"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/queries/data.js": {
+          "role": "query",
+          "reason": "Fixture query owner"
+        }
+      }
+    }
+  },
+  {
+    "name": "raw HTTP returned from query helper is forbidden in UI",
+    "files": {
+      "src/app/queries/data.js": "import axios from 'axios'; export function wire() { return axios; }",
+      "src/app/pages/View.jsx": "import { wire } from '../queries/data'; wire().post('/api/state');"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/queries/data.js": {
+          "role": "query",
+          "reason": "Fixture query owner"
+        }
+      }
+    }
+  },
+  {
+    "name": "object export cannot launder raw HTTP",
+    "files": {
+      "src/app/queries/data.js": "import axios from 'axios'; export default { wire: axios };",
+      "src/app/pages/View.jsx": "import object from '../queries/data'; object.wire.post('/api/state');"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/queries/data.js": {
+          "role": "query",
+          "reason": "Fixture query owner"
+        }
+      }
+    }
+  },
+  {
+    "name": "assigned alias cannot hide React base",
+    "files": {
+      "src/app/lib/bridge.js": "import React from 'react'; let Base; Base = React.Component; class Resource extends Base {}"
+    },
+    "rules": [
+      "react-class"
+    ],
+    "policy": {
+      "domainClasses": {
+        "src/app/lib/bridge.js": [
+          {
+            "name": "Resource",
+            "reason": "Only a domain resource"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "cyclic barrel still resolves transport",
+    "files": {
+      "src/app/lib/a.js": "export * from './b';",
+      "src/app/lib/b.js": "export * from './a'; export { default as wire } from 'axios';",
+      "src/app/pages/View.jsx": "import { wire } from '../lib/a'; wire.post('/api/state');"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "namespace React base with computed member",
+    "files": {
+      "src/app/lib/bridge.js": "import React from 'react'; const kind = 'Component'; class Resource extends React[kind] {}"
+    },
+    "rules": [
+      "react-class"
+    ],
+    "policy": {
+      "domainClasses": {
+        "src/app/lib/bridge.js": [
+          {
+            "name": "Resource",
+            "reason": "Only a domain resource"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "unknown boundary role is rejected",
+    "files": {},
+    "rules": [
+      "invalid-allowlist"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/lib/bridge.js": {
+          "role": "unknown",
+          "reason": "Cannot grant an unknown privilege"
+        }
+      }
+    }
+  },
+  {
+    "name": "unrestricted download exception is rejected",
+    "files": {},
+    "rules": [
+      "invalid-allowlist"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/pages/View.jsx": {
+          "role": "download",
+          "reason": "Needs exact members"
+        }
+      }
+    }
+  },
+  {
+    "name": "wrapped React superclass cannot use domain exception",
+    "files": {
+      "src/app/lib/bridge.js": "import { Component } from 'react'; class Resource extends wrap(Component) {}"
+    },
+    "rules": [
+      "react-class"
+    ],
+    "policy": {
+      "domainClasses": {
+        "src/app/lib/bridge.js": [
+          {
+            "name": "Resource",
+            "reason": "Only a domain resource"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "React superclass factory cannot use domain exception",
+    "files": {
+      "src/app/lib/bridge.js": "import React from 'react'; const factory = () => { return React.Component; }; class Resource extends factory() {}"
+    },
+    "rules": [
+      "react-class"
+    ],
+    "policy": {
+      "domainClasses": {
+        "src/app/lib/bridge.js": [
+          {
+            "name": "Resource",
+            "reason": "Only a domain resource"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "arrow getter cannot launder raw HTTP",
+    "files": {
+      "src/app/queries/data.js": "import axios from 'axios'; export const wire = () => axios;",
+      "src/app/pages/View.jsx": "import { wire } from '../queries/data'; wire().post('/api/state');"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/queries/data.js": {
+          "role": "query",
+          "reason": "Fixture resource query owner"
+        }
+      }
+    }
+  },
+  {
+    "name": "arrow superclass getter cannot use domain exception",
+    "files": {
+      "src/app/lib/bridge.js": "import React from 'react'; const factory = () => React.Component; class Resource extends factory() {}"
+    },
+    "rules": [
+      "react-class"
+    ],
+    "policy": {
+      "domainClasses": {
+        "src/app/lib/bridge.js": [
+          {
+            "name": "Resource",
+            "reason": "Only a domain resource"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "aliased obsolete fetch service is forbidden",
+    "files": {
+      "src/app/pages/View.jsx": "import { fetchMacrosService as old } from '../lib/service'; old();"
+    },
+    "rules": [
+      "legacy-fetch"
+    ],
+    "policy": {}
+  },
+  {
+    "name": "unused QueryClient hook cannot disguise a raw HTTP read",
+    "files": {
+      "src/app/queries/data.js": "import { useQueryClient } from '@tanstack/react-query'; import axios from 'axios'; export const useData = () => { useQueryClient(); return axios.get('/api/state'); };",
+      "src/app/pages/View.jsx": "import { useData } from '../queries/data'; useData();"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/queries/data.js": {
+          "role": "query",
+          "reason": "Fixture resource query owner"
+        }
+      }
+    }
+  },
+  {
+    "name": "pure query options may be consumed by Query",
+    "files": {
+      "src/app/queries/data.js": "import axios from 'axios'; export const dataOptions = () => ({ queryKey: ['data'], queryFn: () => axios.get('/api/state') });",
+      "src/app/pages/View.jsx": "import { useQuery } from '@tanstack/react-query'; import { dataOptions } from '../queries/data'; export const View = () => useQuery(dataOptions());"
+    },
+    "rules": [],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/queries/data.js": {
+          "role": "query",
+          "reason": "Pure query options owner"
+        }
+      }
+    }
+  },
+  {
+    "name": "calling queryFn directly from component is forbidden",
+    "files": {
+      "src/app/queries/data.js": "import axios from 'axios'; export const dataOptions = () => ({ queryKey: ['data'], queryFn: () => axios.get('/api/state') });",
+      "src/app/pages/View.jsx": "import { dataOptions } from '../queries/data'; dataOptions().queryFn();"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/queries/data.js": {
+          "role": "query",
+          "reason": "Pure query options owner"
+        }
+      }
+    }
+  },
+  {
+    "name": "eager HTTP cannot disguise itself as query options",
+    "files": {
+      "src/app/queries/data.js": "import axios from 'axios'; export const options = () => ({ queryKey: ['data'], queryFn: axios.get('/api/state') });",
+      "src/app/pages/View.jsx": "import { options } from '../queries/data'; options();"
+    },
+    "rules": [
+      "http-boundary"
+    ],
+    "policy": {
+      "httpBoundaries": {
+        "src/app/queries/data.js": {
+          "role": "query",
+          "reason": "Pure query options owner"
+        }
+      }
+    }
+  },
+  {
+    "name": "W3 rejects retired direct dependency react-animate-height",
+    "files": {
+      "src/app/pages/View.jsx": "export default function View() { return null; }",
+      "package.json": "{\"dependencies\": {\"react-animate-height\": \"1.0.0\"}}"
+    },
+    "policy": {},
+    "rules": [
+      "legacy-ui"
+    ]
+  },
+  {
+    "name": "W3 rejects retired direct dependency react-datepicker",
+    "files": {
+      "src/app/pages/View.jsx": "export default function View() { return null; }",
+      "package.json": "{\"dependencies\": {\"react-datepicker\": \"1.0.0\"}}"
+    },
+    "policy": {},
+    "rules": [
+      "legacy-ui"
+    ]
+  },
+  {
+    "name": "W3 rejects retired direct dependency react-facebook-loading",
+    "files": {
+      "src/app/pages/View.jsx": "export default function View() { return null; }",
+      "package.json": "{\"dependencies\": {\"react-facebook-loading\": \"1.0.0\"}}"
+    },
+    "policy": {},
+    "rules": [
+      "legacy-ui"
+    ]
+  },
+  {
+    "name": "W3 rejects retired direct dependency uncontrollable",
+    "files": {
+      "src/app/pages/View.jsx": "export default function View() { return null; }",
+      "package.json": "{\"dependencies\": {\"uncontrollable\": \"1.0.0\"}}"
+    },
+    "policy": {},
+    "rules": [
+      "legacy-ui"
+    ]
+  }
+]

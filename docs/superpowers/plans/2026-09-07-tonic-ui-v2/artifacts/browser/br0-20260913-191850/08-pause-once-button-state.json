@@ -1,0 +1,22 @@
+[
+  {
+    "aria": "Run",
+    "text": "",
+    "disabled": false
+  },
+  {
+    "aria": "Pause",
+    "text": "",
+    "disabled": true
+  },
+  {
+    "aria": "Stop",
+    "text": "",
+    "disabled": false
+  },
+  {
+    "aria": "Close G-code file",
+    "text": "",
+    "disabled": true
+  }
+]

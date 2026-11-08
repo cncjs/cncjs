@@ -1,431 +1,286 @@
+import { faCodeBranch, faCompress, faExpand } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Space,
-} from '@tonic-ui/react';
-import classNames from 'classnames';
+import { Box, Button, Dropdown, DropdownToggle, Space } from '@tonic-ui/react';
+import { AppIcon, ChevronDownIcon, ChevronUpIcon, CloseIcon, InfoIcon, MenuIcon, MoreIcon } from '@tonic-ui/react-icons';
 import { ensurePositiveNumber } from 'ensure-type';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Widget from '@app/components/Widget';
-import {
-  MARLIN,
-} from '@app/constants/controller';
-import i18n from '@app/lib/i18n';
+import widgetStyles from '@app/components/Widget/index.styl';
+import { MARLIN } from '@app/constants/controller';
 import controller from '@app/lib/controller';
+import i18n from '@app/lib/i18n';
 import WidgetConfig from '@app/widgets/shared/WidgetConfig';
 import WidgetConfigProvider from '@app/widgets/shared/WidgetConfigProvider';
-import Marlin from './Marlin';
 import Controller from './Controller';
-import {
-  MODAL_NONE,
-  MODAL_CONTROLLER
-} from './constants';
-import styles from './index.styl';
+import Marlin from './Marlin';
 
-class MarlinWidget extends Component {
-  static propTypes = {
-    widgetId: PropTypes.string.isRequired,
-    onFork: PropTypes.func.isRequired,
-    onRemove: PropTypes.func.isRequired,
-    sortable: PropTypes.object
-  };
+const widgetActionSx = {
+  alignSelf: 'stretch',
+  border: 0,
+  borderRadius: 0,
+  minHeight: 'auto',
+  backgroundColor: 'inherit',
+  color: 'inherit',
+  _hover: { backgroundColor: 'actions.hovered', color: 'inherit' },
+  _disabled: { backgroundColor: 'inherit', color: 'text.disabled' },
+};
 
-  // Public methods
-  collapse = () => {
-    this.setState({ minimized: true });
-  };
+/**
+ * @param {{
+ *   onFork: () => void,
+ *   onRemove: () => void,
+ *   onViewChange: (view: 'normal' | 'collapsed' | 'fullscreen') => void,
+ *   sortable: { filterClassName: string, handleClassName: string },
+ *   view: 'normal' | 'collapsed' | 'fullscreen',
+ *   widgetId: string,
+ * }} props
+ */
+function MarlinWidget({ onFork, onRemove, onViewChange, sortable, view, widgetId }) {
+  const config = useMemo(() => new WidgetConfig(widgetId), [widgetId]);
+  const [state, setState] = useState(() => getInitialState(config));
+  const [isControllerModalOpen, setIsControllerModalOpen] = useState(false);
 
-  expand = () => {
-    this.setState({ minimized: false });
-  };
-
-  config = new WidgetConfig(this.props.widgetId);
-
-  state = this.getInitialState();
-
-  toggleFullscreen = () => {
-    this.setState(state => ({
-      minimized: state.isFullscreen ? state.minimized : false,
-      isFullscreen: !state.isFullscreen,
-    }));
-  };
-
-  toggleMinimized = () => {
-    this.setState(state => ({
-      minimized: !state.minimized,
-    }));
-  };
-
-  actions = {
-    openModal: (name = MODAL_NONE, params = {}) => {
-      this.setState({
-        modal: {
-          name: name,
-          params: params
-        }
-      });
-    },
-    closeModal: () => {
-      this.setState({
-        modal: {
-          name: MODAL_NONE,
-          params: {}
-        }
-      });
-    },
-    updateModalParams: (params = {}) => {
-      this.setState({
-        modal: {
-          ...this.state.modal,
-          params: {
-            ...this.state.modal.params,
-            ...params
-          }
-        }
-      });
-    },
-    toggleHeaterControl: () => {
-      const expanded = this.state.panel.heaterControl.expanded;
-
-      this.setState({
-        panel: {
-          ...this.state.panel,
-          heaterControl: {
-            ...this.state.panel.heaterControl,
-            expanded: !expanded
-          }
-        }
-      });
-    },
-    toggleStatusReports: () => {
-      const expanded = this.state.panel.statusReports.expanded;
-
-      this.setState({
-        panel: {
-          ...this.state.panel,
-          statusReports: {
-            ...this.state.panel.statusReports,
-            expanded: !expanded
-          }
-        }
-      });
-    },
-    toggleModalGroups: () => {
-      const expanded = this.state.panel.modalGroups.expanded;
-
-      this.setState({
-        panel: {
-          ...this.state.panel,
-          modalGroups: {
-            ...this.state.panel.modalGroups,
-            expanded: !expanded
-          }
-        }
-      });
-    },
-    changeExtruderTemperature: (event) => {
-      const value = event.target.value;
-      if (typeof value === 'string' && value.trim() === '') {
-        this.setState(state => ({
-          heater: {
-            ...state.heater,
-            extruder: value
-          }
-        }));
-      } else {
-        this.setState(state => ({
-          heater: {
-            ...state.heater,
-            extruder: ensurePositiveNumber(value)
-          }
-        }));
-      }
-    },
-    changeHeatedBedTemperature: (event) => {
-      const value = event.target.value;
-      if (typeof value === 'string' && value.trim() === '') {
-        this.setState(state => ({
-          heater: {
-            ...state.heater,
-            heatedBed: value
-          }
-        }));
-      } else {
-        this.setState(state => ({
-          heater: {
-            ...state.heater,
-            heatedBed: ensurePositiveNumber(value)
-          }
-        }));
-      }
-    }
-  };
-
-  controllerEvents = {
-    'connection:open': () => {
-      this.setState({ connected: true });
-    },
-    'connection:change': (connectionState, connected) => {
+  useEffect(() => {
+    const onConnectionOpen = () => setState(current => ({ ...current, connected: true }));
+    const onConnectionChange = (connectionState, connected) => {
       if (!connected) {
-        const initialState = this.getInitialState();
-        this.setState({ ...initialState });
+        setState({ ...getInitialState(config), connected: false });
+        setIsControllerModalOpen(false);
         return;
       }
-      this.setState({ connected: true });
-    },
-    'controller:settings': (type, controllerSettings) => {
-      if (type === MARLIN) {
-        this.setState(state => ({
-          controller: {
-            ...state.controller,
-            type: type,
-            settings: controllerSettings
-          }
-        }));
+      setState(current => ({ ...current, connected: true }));
+    };
+    const onControllerSettings = (type, controllerSettings) => {
+      if (type !== MARLIN) {
+        return;
       }
-    },
-    'controller:state': (type, controllerState) => {
-      if (type === MARLIN) {
-        this.setState(state => ({
-          controller: {
-            ...state.controller,
-            type: type,
-            state: controllerState
-          }
-        }));
+      setState(current => ({
+        ...current,
+        controller: {
+          ...current.controller,
+          settings: { ...current.controller.settings, ...controllerSettings },
+          type,
+        },
+      }));
+    };
+    const onControllerState = (type, controllerState) => {
+      if (type !== MARLIN) {
+        return;
       }
+      setState(current => ({
+        ...current,
+        controller: {
+          ...current.controller,
+          state: { ...current.controller.state, ...controllerState },
+          type,
+        },
+      }));
+    };
+    const listeners = {
+      'connection:change': onConnectionChange,
+      'connection:open': onConnectionOpen,
+      'controller:settings': onControllerSettings,
+      'controller:state': onControllerState,
+    };
+
+    Object.entries(listeners).forEach(([eventName, listener]) => {
+      controller.addListener(eventName, listener);
+    });
+    return () => {
+      Object.entries(listeners).forEach(([eventName, listener]) => {
+        controller.removeListener(eventName, listener);
+      });
+    };
+  }, [config]);
+
+  const setPanelExpanded = useCallback((panelName, isExpanded) => {
+    setState(current => ({
+      ...current,
+      panel: {
+        ...current.panel,
+        [panelName]: { ...current.panel[panelName], expanded: isExpanded },
+      },
+    }));
+    config.set(`panel.${panelName}.expanded`, isExpanded);
+  }, [config]);
+
+  const changeHeaterTemperature = useCallback((heaterName, event) => {
+    const inputValue = event.target.value;
+    const value = typeof inputValue === 'string' && inputValue.trim() === ''
+      ? inputValue
+      : ensurePositiveNumber(inputValue);
+
+    setState(current => ({
+      ...current,
+      heater: { ...current.heater, [heaterName]: value },
+    }));
+    if (Number.isFinite(value)) {
+      config.set(`heater.${heaterName}`, value);
     }
+  }, [config]);
+
+  const isCollapsed = view === 'collapsed';
+  const isFullscreen = view === 'fullscreen';
+  const isReady = state.connected && state.controller.type === MARLIN;
+  const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
+  const actions = {
+    changeExtruderTemperature: event => changeHeaterTemperature('extruder', event),
+    changeHeatedBedTemperature: event => changeHeaterTemperature('heatedBed', event),
+    setPanelExpanded,
   };
 
-  componentDidMount() {
-    this.addControllerEvents();
-  }
-
-  componentWillUnmount() {
-    this.removeControllerEvents();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const {
-      minimized,
-      panel,
-      heater
-    } = this.state;
-
-    this.config.set('minimized', minimized);
-    this.config.set('panel.heaterControl.expanded', panel.heaterControl.expanded);
-    this.config.set('panel.statusReports.expanded', panel.statusReports.expanded);
-    this.config.set('panel.modalGroups.expanded', panel.modalGroups.expanded);
-    if (Number.isFinite(heater.extruder)) {
-      this.config.set('heater.extruder', heater.extruder);
-    }
-    if (Number.isFinite(heater.heatedBed)) {
-      this.config.set('heater.heatedBed', heater.heatedBed);
-    }
-  }
-
-  getInitialState() {
-    return {
-      minimized: this.config.get('minimized', false),
-      isFullscreen: false,
-      canClick: true, // Defaults to true
-      connected: !!controller.connection.ident,
-      controller: {
-        type: controller.type,
-        settings: controller.settings,
-        state: controller.state
-      },
-      modal: {
-        name: MODAL_NONE,
-        params: {}
-      },
-      panel: {
-        heaterControl: {
-          expanded: this.config.get('panel.heaterControl.expanded')
-        },
-        statusReports: {
-          expanded: this.config.get('panel.statusReports.expanded')
-        },
-        modalGroups: {
-          expanded: this.config.get('panel.modalGroups.expanded')
-        }
-      },
-      heater: {
-        extruder: this.config.get('heater.extruder', 0),
-        heatedBed: this.config.get('heater.heatedBed', 0)
-      }
-    };
-  }
-
-  addControllerEvents() {
-    Object.keys(this.controllerEvents).forEach(eventName => {
-      const callback = this.controllerEvents[eventName];
-      controller.addListener(eventName, callback);
-    });
-  }
-
-  removeControllerEvents() {
-    Object.keys(this.controllerEvents).forEach(eventName => {
-      const callback = this.controllerEvents[eventName];
-      controller.removeListener(eventName, callback);
-    });
-  }
-
-  canClick() {
-    const { connected } = this.state;
-    const { type } = this.state.controller;
-
-    if (!connected) {
-      return false;
-    }
-    if (type !== MARLIN) {
-      return false;
-    }
-
-    return true;
-  }
-
-  render() {
-    const { widgetId } = this.props;
-    const { minimized, isFullscreen } = this.state;
-    const isReady = this.state.connected && (this.state.controller.type === MARLIN);
-    const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
-    const state = {
-      ...this.state,
-      canClick: this.canClick()
-    };
-    const actions = {
-      ...this.actions
-    };
-
-    return (
-      <WidgetConfigProvider widgetId={widgetId}>
-        <Widget aria-label="Marlin widget" fullscreen={isFullscreen}>
-          <Widget.Header>
-            <Widget.Title>
-              <Widget.Sortable className={this.props.sortable.handleClassName}>
-                <FontAwesomeIcon icon="bars" fixedWidth />
-                <Space width={4} />
-              </Widget.Sortable>
-              {isForkedWidget &&
-                <FontAwesomeIcon icon="code-branch" fixedWidth />}
-              Marlin
-            </Widget.Title>
-            <Widget.Controls className={this.props.sortable.filterClassName}>
-              {isReady && (
-                <Widget.Button
-                  aria-label="Marlin controller info"
-                  onClick={(event) => {
-                    actions.openModal(MODAL_CONTROLLER);
-                  }}
-                >
-                  <i aria-hidden="true" className="fa fa-info" />
-                </Widget.Button>
-              )}
-              {isReady && (
-                <Widget.DropdownButton
-                  aria-label="Marlin commands"
-                  toggle={<i aria-hidden="true" className="fa fa-th-large" />}
-                >
-                  <Widget.DropdownMenuItem
-                    onSelect={() => controller.writeln('M105')}
-                    disabled={!state.canClick}
-                  >
-                    {i18n._('Get Extruder Temperature (M105)')}
-                  </Widget.DropdownMenuItem>
-                  <Widget.DropdownMenuItem
-                    onSelect={() => controller.writeln('M114')}
-                    disabled={!state.canClick}
-                  >
-                    {i18n._('Get Current Position (M114)')}
-                  </Widget.DropdownMenuItem>
-                  <Widget.DropdownMenuItem
-                    onSelect={() => controller.writeln('M115')}
-                    disabled={!state.canClick}
-                  >
-                    {i18n._('Get Firmware Version and Capabilities (M115)')}
-                  </Widget.DropdownMenuItem>
-                </Widget.DropdownButton>
-              )}
-              {isReady && (
-                <Widget.Button
-                  aria-label={minimized ? 'Expand' : 'Collapse'}
-                  aria-expanded={!minimized}
-                  disabled={isFullscreen}
-                  title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                  onClick={this.toggleMinimized}
-                >
-                  {minimized &&
-                    <FontAwesomeIcon icon="chevron-down" fixedWidth />}
-                  {!minimized &&
-                    <FontAwesomeIcon icon="chevron-up" fixedWidth />}
-                </Widget.Button>
-              )}
-              {isFullscreen && (
-                <Widget.Button
-                  title={i18n._('Exit Full Screen')}
-                  onClick={this.toggleFullscreen}
-                >
-                  <FontAwesomeIcon icon="compress" fixedWidth />
-                </Widget.Button>
-              )}
-              <Widget.DropdownButton
-                aria-label="More options"
-                title={i18n._('More')}
-                toggle={(<FontAwesomeIcon icon="ellipsis-v" fixedWidth />)}
-                onSelect={(eventKey) => {
-                  if (eventKey === 'fullscreen') {
-                    this.toggleFullscreen();
-                  } else if (eventKey === 'fork') {
-                    this.props.onFork();
-                  } else if (eventKey === 'remove') {
-                    this.props.onRemove();
-                  }
-                }}
-              >
-                <Widget.DropdownMenuItem eventKey="fullscreen" disabled={!isReady}>
-                  {!isFullscreen && (
-                    <FontAwesomeIcon icon="expand" fixedWidth />
-                  )}
-                  {isFullscreen && (
-                    <FontAwesomeIcon icon="compress" fixedWidth />
-                  )}
-                  <Space width={8} />
-                  {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
-                </Widget.DropdownMenuItem>
-                <Widget.DropdownMenuItem eventKey="fork">
-                  <FontAwesomeIcon icon="code-branch" fixedWidth />
-                  <Space width={8} />
-                  {i18n._('Fork Widget')}
-                </Widget.DropdownMenuItem>
-                <Widget.DropdownMenuItem eventKey="remove">
-                  <FontAwesomeIcon icon="times" fixedWidth />
-                  <Space width={8} />
-                  {i18n._('Remove Widget')}
-                </Widget.DropdownMenuItem>
-              </Widget.DropdownButton>
-            </Widget.Controls>
-          </Widget.Header>
-          {isReady && (
-            <Widget.Content
-              aria-hidden={minimized}
-              className={classNames(
-                styles['widget-content'],
-                { [styles.hidden]: minimized }
-              )}
-            >
-              {state.modal.name === MODAL_CONTROLLER &&
-                <Controller state={state} actions={actions} />}
-              <Marlin
-                state={state}
-                actions={actions}
+  return (
+    <WidgetConfigProvider widgetId={widgetId}>
+      <Widget aria-label="Marlin widget" fullscreen={isFullscreen}>
+        <Widget.Header>
+          <Widget.Title>
+            <Widget.Sortable className={sortable.handleClassName}>
+              <MenuIcon aria-hidden="true" size="1em" width="1.25em" />
+              <Space width="1x" />
+            </Widget.Sortable>
+            {isForkedWidget && <FontAwesomeIcon icon={faCodeBranch} fixedWidth aria-hidden="true" />}
+            Marlin
+          </Widget.Title>
+          <Widget.Controls className={sortable.filterClassName}>
+            {isReady && (
+              <Button variant="ghost" className={widgetStyles.widgetButton} sx={widgetActionSx} aria-label="Marlin controller info" onClick={() => setIsControllerModalOpen(true)}>
+                <InfoIcon aria-hidden="true" size="1em" />
+              </Button>
+            )}
+            {isReady && (
+              <Dropdown
+                style={{ display: 'flex', alignSelf: 'stretch' }}
+                items={[
+                  {
+                    label: i18n._('Get Extruder Temperature (M105)'),
+                    action: () => controller.writeln('M105'),
+                  },
+                  {
+                    label: i18n._('Get Current Position (M114)'),
+                    action: () => controller.writeln('M114'),
+                  },
+                  {
+                    label: i18n._('Get Firmware Version and Capabilities (M115)'),
+                    action: () => controller.writeln('M115'),
+                  },
+                ]}
+                onChange={(item) => item.action?.()}
+                renderToggle={() => (
+                  <DropdownToggle aria-label="Marlin commands" className={widgetStyles.widgetButton}>
+                    <AppIcon aria-hidden="true" size="1em" />
+                  </DropdownToggle>
+                )}
               />
-            </Widget.Content>
-          )}
-        </Widget>
-      </WidgetConfigProvider>
-    );
-  }
+            )}
+            {isReady && (
+              <Button
+                variant="ghost"
+                className={widgetStyles.widgetButton}
+                sx={widgetActionSx}
+                aria-label={isCollapsed ? 'Expand' : 'Collapse'}
+                aria-expanded={!isCollapsed}
+                disabled={isFullscreen}
+                title={isCollapsed ? i18n._('Expand') : i18n._('Collapse')}
+                onClick={() => onViewChange(isCollapsed ? 'normal' : 'collapsed')}
+              >
+                {isCollapsed ? <ChevronDownIcon aria-hidden="true" size="1em" width="1.25em" /> : <ChevronUpIcon aria-hidden="true" size="1em" width="1.25em" />}
+              </Button>
+            )}
+            {isFullscreen && (
+              <Button variant="ghost" className={widgetStyles.widgetButton} sx={widgetActionSx} title={i18n._('Exit Full Screen')} onClick={() => onViewChange('normal')}>
+                <FontAwesomeIcon icon={faCompress} fixedWidth aria-hidden="true" />
+              </Button>
+            )}
+            <Dropdown
+              style={{ display: 'flex', alignSelf: 'stretch' }}
+              items={[
+                {
+                  value: 'fullscreen',
+                  label: (
+                    <>
+                      <FontAwesomeIcon icon={isFullscreen ? faCompress : faExpand} fixedWidth aria-hidden="true" />
+                      <Space width="2x" />
+                      {isFullscreen ? i18n._('Exit Full Screen') : i18n._('Enter Full Screen')}
+                    </>
+                  ),
+                  props: { disabled: !isReady },
+                },
+                {
+                  value: 'fork',
+                  label: (
+                    <>
+                      <FontAwesomeIcon icon={faCodeBranch} fixedWidth aria-hidden="true" />
+                      <Space width="2x" />
+                      {i18n._('Fork Widget')}
+                    </>
+                  ),
+                },
+                {
+                  value: 'remove',
+                  label: (
+                    <>
+                      <CloseIcon aria-hidden="true" size="1em" width="1.25em" />
+                      <Space width="2x" />
+                      {i18n._('Remove Widget')}
+                    </>
+                  ),
+                },
+              ]}
+              onChange={({ value: eventKey }) => {
+                if (eventKey === 'fullscreen') {
+                  onViewChange(isFullscreen ? 'normal' : 'fullscreen');
+                } else if (eventKey === 'fork') {
+                  onFork();
+                } else if (eventKey === 'remove') {
+                  onRemove();
+                }
+              }}
+              renderToggle={() => (
+                <DropdownToggle aria-label="More options" title={i18n._('More')} className={widgetStyles.widgetButton}>
+                  <MoreIcon aria-hidden="true" size="1em" width="1.25em" />
+                </DropdownToggle>
+              )}
+            />
+          </Widget.Controls>
+        </Widget.Header>
+        {isReady && (
+          <Widget.Content aria-hidden={isCollapsed} sx={{ display: isCollapsed ? 'none' : 'block' }}>
+            <Box p="3x"><Marlin actions={actions} state={state} /></Box>
+          </Widget.Content>
+        )}
+      </Widget>
+      {isControllerModalOpen && (
+        <Controller
+          controllerSettings={state.controller.settings}
+          controllerState={state.controller.state}
+          onClose={() => setIsControllerModalOpen(false)}
+        />
+      )}
+    </WidgetConfigProvider>
+  );
+}
+
+/**
+ * @param {{ get: (path: string, defaultValue?: unknown) => unknown }} config
+ */
+function getInitialState(config) {
+  return {
+    connected: !!controller.connection.ident,
+    controller: {
+      settings: controller.settings || {},
+      state: controller.state || {},
+      type: controller.type,
+    },
+    heater: {
+      extruder: config.get('heater.extruder', 0),
+      heatedBed: config.get('heater.heatedBed', 0),
+    },
+    panel: {
+      heaterControl: { expanded: config.get('panel.heaterControl.expanded') },
+      modalGroups: { expanded: config.get('panel.modalGroups.expanded') },
+      statusReports: { expanded: config.get('panel.statusReports.expanded') },
+    },
+  };
 }
 
 export default MarlinWidget;

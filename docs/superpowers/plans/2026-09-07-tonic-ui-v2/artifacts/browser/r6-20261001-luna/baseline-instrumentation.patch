@@ -1,0 +1,44 @@
+--- a/src/app/widgets/Visualizer/Visualizer.jsx
++++ b/src/app/widgets/Visualizer/Visualizer.jsx
+@@ -55,0 +56,15 @@
++const R6_BASELINE_METRICS_ENABLED = process.env.NODE_ENV === 'development';
++
++const getR6BaselineMetrics = () => {
++  if (!R6_BASELINE_METRICS_ENABLED || typeof window === 'undefined') {
++    return null;
++  }
++  if (!window.__R6_BASELINE_METRICS__) {
++    window.__R6_BASELINE_METRICS__ = {
++      renderSamples: [],
++      loadSamples: [],
++      pendingLoad: null,
++    };
++  }
++  return window.__R6_BASELINE_METRICS__;
++};
+@@ -1022,0 +1038,2 @@
++      const baselineMetrics = getR6BaselineMetrics();
++      const startedAtMs = baselineMetrics ? performance.now() : 0;
+@@ -1023,0 +1041,13 @@
++      if (baselineMetrics) {
++        const renderedAtMs = performance.now();
++        baselineMetrics.renderSamples.push({ renderedAtMs, durationMs: renderedAtMs - startedAtMs });
++        if (baselineMetrics.pendingLoad) {
++          baselineMetrics.loadSamples.push({
++            startedAtMs: baselineMetrics.pendingLoad.startedAtMs,
++            renderedAtMs,
++            durationMs: renderedAtMs - baselineMetrics.pendingLoad.startedAtMs,
++            gcodeCharacters: baselineMetrics.pendingLoad.gcodeCharacters,
++          });
++          baselineMetrics.pendingLoad = null;
++        }
++      }
+@@ -1238,0 +1269,8 @@
++
++    const baselineMetrics = getR6BaselineMetrics();
++    if (baselineMetrics) {
++      baselineMetrics.pendingLoad = {
++        startedAtMs: performance.now(),
++        gcodeCharacters: typeof gcode === 'string' ? gcode.length : 0,
++      };
++    }

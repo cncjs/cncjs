@@ -2,18 +2,17 @@
     // default
     .widget-header,
     .widget-footer {
-        border-color: #ccc;
-        background-color: #fafafa;
-        color: #222;
+        // Current header colors come from Tonic v3 semantic tokens.
+        // Per-widget palette classes below retain their explicit overrides.
     }
     .widget-sortable,
     .widget-controls {
         background-color: inherit;
         a {
-            color: #838383;
+            color: var(--tonic-colors-text-secondary);
         }
         a:hover {
-            color: #505050;
+            color: var(--tonic-colors-text-primary);
         }
     }
 

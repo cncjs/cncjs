@@ -7,9 +7,10 @@ const useFetchEventsQuery = (options) => {
   const query = options?.meta?.query;
   return useQuery({
     queryKey: [...API_EVENTS_QUERY_KEY, query].filter(Boolean),
-    queryFn: async ({ queryKey, meta }) => {
-      const url = meta.query
-        ? 'api/events?' + meta.query
+    queryFn: async ({ meta }) => {
+      const query = meta?.query;
+      const url = query
+        ? 'api/events?' + query
         : 'api/events';
       const response = await axios.get(url);
       return response.data;

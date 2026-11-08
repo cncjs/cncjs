@@ -1,0 +1,165 @@
+➤ YN0000: ┌ Resolution step
+➤ YN0002: │ @tonic-ui/react-base@npm:2.0.4 [7c85d] doesn't provide @emotion/react (p23153), requested by @emotion/styled
+➤ YN0002: │ cncjs@workspace:. doesn't provide @testing-library/dom (pf56c4), requested by @testing-library/user-event
+➤ YN0060: │ cncjs@workspace:. provides babel-core (p34bc6) with version 7.0.0-bridge.0, which doesn't satisfy what consolidate requests
+➤ YN0060: │ cncjs@workspace:. provides react (p69267) with version 18.3.1, which doesn't satisfy what consolidate requests
+➤ YN0060: │ cncjs@workspace:. provides react (p792e5) with version 18.3.1, which doesn't satisfy what react-hot-loader requests
+➤ YN0060: │ cncjs@workspace:. provides react (p4f2dd) with version 18.3.1, which doesn't satisfy what react-tiny-virtual-list requests
+➤ YN0060: │ cncjs@workspace:. provides react (p00e31) with version 18.3.1, which doesn't satisfy what recompose requests
+➤ YN0060: │ cncjs@workspace:. provides react (p5ea18) with version 18.3.1, which doesn't satisfy what redux-devtools requests
+➤ YN0060: │ cncjs@workspace:. provides react-dom (pc6a8e) with version 18.3.1, which doesn't satisfy what consolidate requests
+➤ YN0060: │ cncjs@workspace:. provides react-dom (p70794) with version 18.3.1, which doesn't satisfy what react-hot-loader requests
+➤ YN0060: │ cncjs@workspace:. provides react-redux (pa0dd3) with version 8.0.7, which doesn't satisfy what redux-devtools requests
+➤ YN0002: │ cncjs@workspace:. doesn't provide scheduler (pcf213), requested by react-tracked
+➤ YN0060: │ cncjs@workspace:. provides stylint (p1d551) with version 2.0.0, which doesn't satisfy what stylint-loader requests
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide @react-three/fiber (pec093), requested by @react-spring/three
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide konva (p5fe80), requested by @react-spring/konva
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react (p3099c), requested by @react-spring/core
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react (pc44d5), requested by @react-spring/konva
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react (p288bd), requested by @react-spring/native
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react (pb5fdd), requested by @react-spring/three
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react (p603d2), requested by @react-spring/web
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react (pea741), requested by @react-spring/zdog
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react-dom (pb8433), requested by @react-spring/web
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react-dom (p2b8c0), requested by @react-spring/zdog
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react-konva (p82726), requested by @react-spring/konva
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react-native (p99088), requested by @react-spring/native
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react-zdog (pf4dce), requested by @react-spring/zdog
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide three (p22c55), requested by @react-spring/three
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide zdog (p51736), requested by @react-spring/zdog
+➤ YN0000: │ Some peer dependencies are incorrectly met; run yarn explain peer-requirements <hash> for details, where <hash> is the six-letter p-prefixed code
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Fetch step
+➤ YN0019: │ @emotion-stylis-npm-0.8.5-3e9db8959f-67ff595844.zip appears to be unused - removing
+➤ YN0019: │ @emotion-unitless-npm-0.7.5-14e1171640-f976e5345b.zip appears to be unused - removing
+➤ YN0019: │ @hypnosphi-create-react-context-npm-0.3.1-01f6252b38-d2f069a562.zip appears to be unused - removing
+➤ YN0019: │ @types-prop-types-npm-15.7.5-2aa48aa177-5b43b8b154.zip appears to be unused - removing
+➤ YN0019: │ @types-react-npm-18.0.27-931b59df28-600fdbc39a.zip appears to be unused - removing
+➤ YN0019: │ @emotion-unitless-npm-0.7.5-14e1171640-f976e5345b.zip appears to be unused - removing
+➤ YN0019: │ @hypnosphi-create-react-context-npm-0.3.1-01f6252b38-d2f069a562.zip appears to be unused - removing
+➤ YN0019: │ @types-prop-types-npm-15.7.5-2aa48aa177-5b43b8b154.zip appears to be unused - removing
+➤ YN0019: │ @types-react-npm-18.0.27-931b59df28-600fdbc39a.zip appears to be unused - removing
+➤ YN0019: │ @types-scheduler-npm-0.16.2-ba3a7d8c68-b6b4dcfeae.zip appears to be unused - removing
+➤ YN0019: │ @hypnosphi-create-react-context-npm-0.3.1-01f6252b38-d2f069a562.zip appears to be unused - removing
+➤ YN0019: │ @types-prop-types-npm-15.7.5-2aa48aa177-5b43b8b154.zip appears to be unused - removing
+➤ YN0019: │ @types-react-npm-18.0.27-931b59df28-600fdbc39a.zip appears to be unused - removing
+➤ YN0019: │ @types-scheduler-npm-0.16.2-ba3a7d8c68-b6b4dcfeae.zip appears to be unused - removing
+➤ YN0019: │ babel-plugin-styled-components-npm-2.3.0-a7c0fe5b4a-ef359611e2.zip appears to be unused - removing
+➤ YN0019: │ @types-prop-types-npm-15.7.5-2aa48aa177-5b43b8b154.zip appears to be unused - removing
+➤ YN0019: │ @types-react-npm-18.0.27-931b59df28-600fdbc39a.zip appears to be unused - removing
+➤ YN0019: │ @types-scheduler-npm-0.16.2-ba3a7d8c68-b6b4dcfeae.zip appears to be unused - removing
+➤ YN0019: │ babel-plugin-styled-components-npm-2.3.0-a7c0fe5b4a-ef359611e2.zip appears to be unused - removing
+➤ YN0019: │ camelize-npm-1.0.1-d86ebe085a-91d8611d09.zip appears to be unused - removing
+➤ YN0019: │ @types-react-npm-18.0.27-931b59df28-600fdbc39a.zip appears to be unused - removing
+➤ YN0019: │ @types-scheduler-npm-0.16.2-ba3a7d8c68-b6b4dcfeae.zip appears to be unused - removing
+➤ YN0019: │ babel-plugin-styled-components-npm-2.3.0-a7c0fe5b4a-ef359611e2.zip appears to be unused - removing
+➤ YN0019: │ camelize-npm-1.0.1-d86ebe085a-91d8611d09.zip appears to be unused - removing
+➤ YN0019: │ css-color-keywords-npm-1.0.0-fc176df58b-8f125e3ad4.zip appears to be unused - removing
+➤ YN0019: │ @types-scheduler-npm-0.16.2-ba3a7d8c68-b6b4dcfeae.zip appears to be unused - removing
+➤ YN0019: │ babel-plugin-styled-components-npm-2.3.0-a7c0fe5b4a-ef359611e2.zip appears to be unused - removing
+➤ YN0019: │ camelize-npm-1.0.1-d86ebe085a-91d8611d09.zip appears to be unused - removing
+➤ YN0019: │ css-color-keywords-npm-1.0.0-fc176df58b-8f125e3ad4.zip appears to be unused - removing
+➤ YN0019: │ css-to-react-native-npm-3.2.0-46e31a25e3-263be65e80.zip appears to be unused - removing
+➤ YN0019: │ babel-plugin-styled-components-npm-2.3.0-a7c0fe5b4a-ef359611e2.zip appears to be unused - removing
+➤ YN0019: │ camelize-npm-1.0.1-d86ebe085a-91d8611d09.zip appears to be unused - removing
+➤ YN0019: │ css-color-keywords-npm-1.0.0-fc176df58b-8f125e3ad4.zip appears to be unused - removing
+➤ YN0019: │ css-to-react-native-npm-3.2.0-46e31a25e3-263be65e80.zip appears to be unused - removing
+➤ YN0019: │ deep-equal-npm-1.1.2-3af5068c14-2d50f27fff.zip appears to be unused - removing
+➤ YN0019: │ camelize-npm-1.0.1-d86ebe085a-91d8611d09.zip appears to be unused - removing
+➤ YN0019: │ css-color-keywords-npm-1.0.0-fc176df58b-8f125e3ad4.zip appears to be unused - removing
+➤ YN0019: │ css-to-react-native-npm-3.2.0-46e31a25e3-263be65e80.zip appears to be unused - removing
+➤ YN0019: │ deep-equal-npm-1.1.2-3af5068c14-2d50f27fff.zip appears to be unused - removing
+➤ YN0019: │ gud-npm-1.0.0-9747ac46ec-3e2eb37cf7.zip appears to be unused - removing
+➤ YN0019: │ css-color-keywords-npm-1.0.0-fc176df58b-8f125e3ad4.zip appears to be unused - removing
+➤ YN0019: │ css-to-react-native-npm-3.2.0-46e31a25e3-263be65e80.zip appears to be unused - removing
+➤ YN0019: │ deep-equal-npm-1.1.2-3af5068c14-2d50f27fff.zip appears to be unused - removing
+➤ YN0019: │ gud-npm-1.0.0-9747ac46ec-3e2eb37cf7.zip appears to be unused - removing
+➤ YN0019: │ invariant-npm-2.2.4-717fbdb119-cc3182d793.zip appears to be unused - removing
+➤ YN0019: │ css-to-react-native-npm-3.2.0-46e31a25e3-263be65e80.zip appears to be unused - removing
+➤ YN0019: │ deep-equal-npm-1.1.2-3af5068c14-2d50f27fff.zip appears to be unused - removing
+➤ YN0019: │ gud-npm-1.0.0-9747ac46ec-3e2eb37cf7.zip appears to be unused - removing
+➤ YN0019: │ invariant-npm-2.2.4-717fbdb119-cc3182d793.zip appears to be unused - removing
+➤ YN0019: │ picomatch-npm-4.0.3-0a647b87cc-6817fb74eb.zip appears to be unused - removing
+➤ YN0019: │ deep-equal-npm-1.1.2-3af5068c14-2d50f27fff.zip appears to be unused - removing
+➤ YN0019: │ gud-npm-1.0.0-9747ac46ec-3e2eb37cf7.zip appears to be unused - removing
+➤ YN0019: │ invariant-npm-2.2.4-717fbdb119-cc3182d793.zip appears to be unused - removing
+➤ YN0019: │ picomatch-npm-4.0.3-0a647b87cc-6817fb74eb.zip appears to be unused - removing
+➤ YN0019: │ popper.js-npm-1.16.1-a99192bd83-c56ae5001e.zip appears to be unused - removing
+➤ YN0019: │ gud-npm-1.0.0-9747ac46ec-3e2eb37cf7.zip appears to be unused - removing
+➤ YN0019: │ invariant-npm-2.2.4-717fbdb119-cc3182d793.zip appears to be unused - removing
+➤ YN0019: │ picomatch-npm-4.0.3-0a647b87cc-6817fb74eb.zip appears to be unused - removing
+➤ YN0019: │ popper.js-npm-1.16.1-a99192bd83-c56ae5001e.zip appears to be unused - removing
+➤ YN0019: │ react-animate-height-npm-2.0.23-821206c434-280f504b38.zip appears to be unused - removing
+➤ YN0019: │ invariant-npm-2.2.4-717fbdb119-cc3182d793.zip appears to be unused - removing
+➤ YN0019: │ picomatch-npm-4.0.3-0a647b87cc-6817fb74eb.zip appears to be unused - removing
+➤ YN0019: │ popper.js-npm-1.16.1-a99192bd83-c56ae5001e.zip appears to be unused - removing
+➤ YN0019: │ react-animate-height-npm-2.0.23-821206c434-280f504b38.zip appears to be unused - removing
+➤ YN0019: │ react-datepicker-npm-1.8.0-e7539e1c81-f02dbacc4e.zip appears to be unused - removing
+➤ YN0019: │ picomatch-npm-4.0.3-0a647b87cc-6817fb74eb.zip appears to be unused - removing
+➤ YN0019: │ popper.js-npm-1.16.1-a99192bd83-c56ae5001e.zip appears to be unused - removing
+➤ YN0019: │ react-animate-height-npm-2.0.23-821206c434-280f504b38.zip appears to be unused - removing
+➤ YN0019: │ react-datepicker-npm-1.8.0-e7539e1c81-f02dbacc4e.zip appears to be unused - removing
+➤ YN0019: │ react-facebook-loading-npm-0.6.2-d81637f23e-5082c59c34.zip appears to be unused - removing
+➤ YN0019: │ popper.js-npm-1.16.1-a99192bd83-c56ae5001e.zip appears to be unused - removing
+➤ YN0019: │ react-animate-height-npm-2.0.23-821206c434-280f504b38.zip appears to be unused - removing
+➤ YN0019: │ react-datepicker-npm-1.8.0-e7539e1c81-f02dbacc4e.zip appears to be unused - removing
+➤ YN0019: │ react-facebook-loading-npm-0.6.2-d81637f23e-5082c59c34.zip appears to be unused - removing
+➤ YN0019: │ react-foreach-npm-0.1.1-4c2a168c7b-a07255a479.zip appears to be unused - removing
+➤ YN0019: │ react-animate-height-npm-2.0.23-821206c434-280f504b38.zip appears to be unused - removing
+➤ YN0019: │ react-datepicker-npm-1.8.0-e7539e1c81-f02dbacc4e.zip appears to be unused - removing
+➤ YN0019: │ react-facebook-loading-npm-0.6.2-d81637f23e-5082c59c34.zip appears to be unused - removing
+➤ YN0019: │ react-foreach-npm-0.1.1-4c2a168c7b-a07255a479.zip appears to be unused - removing
+➤ YN0019: │ react-infinite-tree-npm-0.7.1-cc05aa3b61-bcdaae6b7c.zip appears to be unused - removing
+➤ YN0019: │ react-datepicker-npm-1.8.0-e7539e1c81-f02dbacc4e.zip appears to be unused - removing
+➤ YN0019: │ react-facebook-loading-npm-0.6.2-d81637f23e-5082c59c34.zip appears to be unused - removing
+➤ YN0019: │ react-foreach-npm-0.1.1-4c2a168c7b-a07255a479.zip appears to be unused - removing
+➤ YN0019: │ react-infinite-tree-npm-0.7.1-cc05aa3b61-bcdaae6b7c.zip appears to be unused - removing
+➤ YN0019: │ react-onclickoutside-npm-6.12.2-61c80f0d9a-a0c7f4fbcf.zip appears to be unused - removing
+➤ YN0019: │ react-facebook-loading-npm-0.6.2-d81637f23e-5082c59c34.zip appears to be unused - removing
+➤ YN0019: │ react-foreach-npm-0.1.1-4c2a168c7b-a07255a479.zip appears to be unused - removing
+➤ YN0019: │ react-infinite-tree-npm-0.7.1-cc05aa3b61-bcdaae6b7c.zip appears to be unused - removing
+➤ YN0019: │ react-onclickoutside-npm-6.12.2-61c80f0d9a-a0c7f4fbcf.zip appears to be unused - removing
+➤ YN0019: │ react-popper-npm-1.3.11-7eb852583d-a0f5994f57.zip appears to be unused - removing
+➤ YN0019: │ react-foreach-npm-0.1.1-4c2a168c7b-a07255a479.zip appears to be unused - removing
+➤ YN0019: │ react-infinite-tree-npm-0.7.1-cc05aa3b61-bcdaae6b7c.zip appears to be unused - removing
+➤ YN0019: │ react-onclickoutside-npm-6.12.2-61c80f0d9a-a0c7f4fbcf.zip appears to be unused - removing
+➤ YN0019: │ react-popper-npm-1.3.11-7eb852583d-a0f5994f57.zip appears to be unused - removing
+➤ YN0019: │ react-repeatable-npm-2.0.1-a8ed362db0-706fb7b357.zip appears to be unused - removing
+➤ YN0019: │ react-infinite-tree-npm-0.7.1-cc05aa3b61-bcdaae6b7c.zip appears to be unused - removing
+➤ YN0019: │ react-onclickoutside-npm-6.12.2-61c80f0d9a-a0c7f4fbcf.zip appears to be unused - removing
+➤ YN0019: │ react-popper-npm-1.3.11-7eb852583d-a0f5994f57.zip appears to be unused - removing
+➤ YN0019: │ react-repeatable-npm-2.0.1-a8ed362db0-706fb7b357.zip appears to be unused - removing
+➤ YN0019: │ styled-components-npm-5.3.11-d45616b9af-10edd4dae3.zip appears to be unused - removing
+➤ YN0019: │ react-onclickoutside-npm-6.12.2-61c80f0d9a-a0c7f4fbcf.zip appears to be unused - removing
+➤ YN0019: │ react-popper-npm-1.3.11-7eb852583d-a0f5994f57.zip appears to be unused - removing
+➤ YN0019: │ react-repeatable-npm-2.0.1-a8ed362db0-706fb7b357.zip appears to be unused - removing
+➤ YN0019: │ styled-components-npm-5.3.11-d45616b9af-10edd4dae3.zip appears to be unused - removing
+➤ YN0019: │ typed-styles-npm-0.0.7-14151fdbae-36a6ad6bee.zip appears to be unused - removing
+➤ YN0019: │ react-popper-npm-1.3.11-7eb852583d-a0f5994f57.zip appears to be unused - removing
+➤ YN0019: │ react-repeatable-npm-2.0.1-a8ed362db0-706fb7b357.zip appears to be unused - removing
+➤ YN0019: │ styled-components-npm-5.3.11-d45616b9af-10edd4dae3.zip appears to be unused - removing
+➤ YN0019: │ typed-styles-npm-0.0.7-14151fdbae-36a6ad6bee.zip appears to be unused - removing
+➤ YN0019: │ uncontrollable-npm-7.2.1-85b30af5c9-3345c0c191.zip appears to be unused - removing
+➤ YN0019: │ react-repeatable-npm-2.0.1-a8ed362db0-706fb7b357.zip appears to be unused - removing
+➤ YN0019: │ styled-components-npm-5.3.11-d45616b9af-10edd4dae3.zip appears to be unused - removing
+➤ YN0019: │ typed-styles-npm-0.0.7-14151fdbae-36a6ad6bee.zip appears to be unused - removing
+➤ YN0019: │ uncontrollable-npm-7.2.1-85b30af5c9-3345c0c191.zip appears to be unused - removing
+➤ YN0019: │ warning-npm-4.0.3-291e921d6d-4f2cb6a957.zip appears to be unused - removing
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Link step
+➤ YN0004: │ @fortawesome/fontawesome-free@npm:6.2.1 lists build scripts, but all build scripts have been disabled.
+➤ YN0004: │ @fortawesome/fontawesome-svg-core@npm:6.2.1 lists build scripts, but all build scripts have been disabled.
+➤ YN0004: │ @fortawesome/free-brands-svg-icons@npm:6.2.1 lists build scripts, but all build scripts have been disabled.
+➤ YN0004: │ @fortawesome/free-regular-svg-icons@npm:6.2.1 lists build scripts, but all build scripts have been disabled.
+➤ YN0004: │ @fortawesome/free-solid-svg-icons@npm:6.2.1 lists build scripts, but all build scripts have been disabled.
+➤ YN0004: │ core-js@npm:3.26.1 lists build scripts, but all build scripts have been disabled.
+➤ YN0004: │ electron@npm:22.0.3 lists build scripts, but all build scripts have been disabled.
+➤ YN0004: │ pre-push@npm:0.1.4 lists build scripts, but all build scripts have been disabled.
+➤ YN0004: │ core-js@npm:3.38.0 lists build scripts, but all build scripts have been disabled.
+➤ YN0004: │ @fortawesome/fontawesome-common-types@npm:6.2.1 lists build scripts, but all build scripts have been disabled.
+➤ YN0004: │ spawn-sync@npm:1.0.15 lists build scripts, but all build scripts have been disabled.
+➤ YN0004: │ @react-spring/core@npm:9.1.2 [3d6d6] lists build scripts, but all build scripts have been disabled.
+➤ YN0004: │ @serialport/bindings-cpp@npm:10.8.0 lists build scripts, but all build scripts have been disabled.
+➤ YN0004: │ core-js-pure@npm:3.38.1 lists build scripts, but all build scripts have been disabled.
+➤ YN0000: └ Completed in 0s 285ms
+➤ YN0000: Done with warnings in 0s 661ms

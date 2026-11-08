@@ -1,0 +1,104 @@
+{
+  "scope": "Partial console classification using recorded browser evidence; does not close the complete console gate.",
+  "baseline": {
+    "commit": "0a90e31f90515d711379bad8729f96a068d90718",
+    "artifact": "baseline-visualizer-100k.json"
+  },
+  "currentArtifact": "workspace-console-webcam-r6.json",
+  "patterns": [
+    {
+      "pattern": "TransitionProps",
+      "classification": "present in historical baseline",
+      "interpretation": "Tonic ToastManager API deprecation",
+      "baselineCount": 1,
+      "currentCount": 1,
+      "baselineExample": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead.",
+      "currentExample": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "pattern": "_focusHover",
+      "classification": "present in historical baseline",
+      "interpretation": "Tonic focus pseudo-style deprecation",
+      "baselineCount": 1,
+      "currentCount": 1,
+      "baselineExample": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead.",
+      "currentExample": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "pattern": "_focusActive",
+      "classification": "present in historical baseline",
+      "interpretation": "Tonic focus pseudo-style deprecation",
+      "baselineCount": 1,
+      "currentCount": 1,
+      "baselineExample": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead.",
+      "currentExample": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "pattern": ":first-child",
+      "classification": "present in historical baseline",
+      "interpretation": "Emotion server-rendering selector advisory",
+      "baselineCount": 3,
+      "currentCount": 3,
+      "baselineExample": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+      "currentExample": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "pattern": "MaxListeners",
+      "classification": "present in historical baseline",
+      "interpretation": "11 configuration subscriptions exceed EventEmitter default threshold; this alone does not establish a leak",
+      "baselineCount": 1,
+      "currentCount": 1,
+      "baselineExample": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayout",
+      "currentExample": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMo"
+    },
+    {
+      "pattern": "addAttribute",
+      "classification": "present in historical baseline",
+      "interpretation": "Three.js compatibility API deprecation",
+      "baselineCount": 3,
+      "currentCount": 3,
+      "baselineExample": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute().",
+      "currentExample": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "pattern": "ReadPixels",
+      "classification": "present in historical baseline",
+      "interpretation": "SwiftShader driver warning during drawing readback",
+      "baselineCount": 4,
+      "currentCount": 3,
+      "baselineExample": "[.WebGL-0x1140050d800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+      "currentExample": "[.WebGL-0x10400449e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "pattern": "findDOMNode",
+      "classification": "present in historical baseline",
+      "interpretation": "React compatibility API deprecation",
+      "baselineCount": 1,
+      "currentCount": 1,
+      "baselineExample": "Warning: findDOMNode is deprecated and will be removed in the next major release. Instead, add a ref directly to the element you want to reference. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-find-node%s \n    at Visualizer (webpack-internal:///./widgets/Visualizer/Visualizer.jsx:139:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Content (webpack-internal:///.",
+      "currentExample": "Warning: findDOMNode is deprecated and will be removed in the next major release. Instead, add a ref directly to the element you want to reference. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-find-node"
+    }
+  ],
+  "pending": [
+    "Tonic Tooltip ref warning: equivalent baseline route/action comparison",
+    "Review latest final browser runs for new patterns"
+  ],
+  "fixedPatterns": [
+    {
+      "pattern": "validateDOMNesting button descendant",
+      "evidence": "macro-variable-menu-regression-r6.json",
+      "status": "source regressions and native Create/Update browser verification passed",
+      "browserEvidence": "macro-live-browser-r6.json"
+    }
+  ],
+  "profileVisibilityReview": {
+    "artifact": "profile-loaded-visibility-sequence-r6.json",
+    "status": "focused_browser_passed",
+    "checks": 5,
+    "interpretation": "Trusted Hide/Show Limits clicks with loaded G-code after profile switching update state and actual scene after two frames and500ms; center/pivot remain correct, zero command delta. Earlier broad-run failures were not reproduced. Harness timing/actionability is suspected; their precise cause is not proven because equivalent target timelines were not captured.",
+    "retainedFailures": [
+      "visualizer-functional-r6-verified11.json",
+      "visualizer-functional-r6-verified12.json"
+    ]
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "port": "8082",
+    "viewport": "1440x900",
+    "dpr": 1
+  },
+  "gate": {
+    "status": "passed",
+    "macroCreated": true,
+    "matchingTooltipWarningObserved": true,
+    "warningCount": 1
+  },
+  "matchedWarnings": [
+    {
+      "type": "error",
+      "text": "Warning: %s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)%s [object Object] \n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/TooltipTrigger.js:33:103)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/Tooltip.js:30:103)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/OverflowTooltip.js:23:23)\n    at cell (webpack-internal:///./pages/Administration/Macros/Macros.jsx:234:25)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/table/TableCell.js:30:103)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/table/TableRow.js:28:103)\n    at div\n    at eval (webpack-interna"
+    }
+  ],
+  "api": [
+    {
+      "method": "GET",
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "POST",
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "POST",
+      "status": 200,
+      "path": "/api/macros/delete"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "path": "/api/macros"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "path": "/api/macros"
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "cleanup": {
+    "removed": true
+  }
+}

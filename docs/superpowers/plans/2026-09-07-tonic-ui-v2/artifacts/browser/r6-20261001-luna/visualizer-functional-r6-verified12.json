@@ -1,0 +1,763 @@
+{
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true,
+    "viewportChangesDuringWorkspaceEntry": 0,
+    "webgl": {
+      "vendor": "Google Inc. (Google)",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+    }
+  },
+  "fixture": {
+    "path": "/tmp/cncjs-r6-20261001/pivot-rectangle.gcode",
+    "bytes": 86,
+    "expectedLines": 7,
+    "sha256": "a4226f3bbd40ff4a0f369926de69830409b75b76bac8bf0eb4afd52ae52f55ad",
+    "knownBounds": {
+      "min": {
+        "x": 10,
+        "y": 20,
+        "z": -2
+      },
+      "max": {
+        "x": 50,
+        "y": 60,
+        "z": 0
+      },
+      "center": {
+        "x": 30,
+        "y": 40,
+        "z": -1
+      }
+    }
+  },
+  "profiles": {
+    "profileA": "R6 pivot A 1790907636888",
+    "limitsA": {
+      "xmin": 0,
+      "xmax": 200,
+      "ymin": -100,
+      "ymax": 100,
+      "zmin": -50,
+      "zmax": 50
+    },
+    "profileB": "R6 pivot B 1790907636888",
+    "limitsB": {
+      "xmin": -100,
+      "xmax": 0,
+      "ymin": 50,
+      "ymax": 100,
+      "zmin": -50,
+      "zmax": 50
+    },
+    "cleanedUp": true
+  },
+  "gates": [
+    {
+      "name": "create-two-synthetic-machine-profiles",
+      "status": "passed",
+      "durationMs": 1731,
+      "profileA": "R6 pivot A 1790907636888",
+      "limitsA": {
+        "xmin": 0,
+        "xmax": 200,
+        "ymin": -100,
+        "ymax": 100,
+        "zmin": -50,
+        "zmax": 50
+      },
+      "profileB": "R6 pivot B 1790907636888",
+      "limitsB": {
+        "xmin": -100,
+        "xmax": 0,
+        "ymin": 50,
+        "ymax": 100,
+        "zmin": -50,
+        "zmax": 50
+      }
+    },
+    {
+      "name": "pivot-clear-profile-no-gcode",
+      "status": "passed",
+      "actual": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "expected": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "name": "pivot-profile-a-no-gcode",
+      "status": "passed",
+      "actual": {
+        "x": 100,
+        "y": 0,
+        "z": 0
+      },
+      "expected": {
+        "x": 100,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "name": "connect-simulator-and-select-profile-a",
+      "status": "passed",
+      "durationMs": 1556,
+      "alreadyConnected": false,
+      "selectedPort": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+      "connected": true,
+      "adminHiddenState": {
+        "id": 1,
+        "width": 1,
+        "height": 0,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "gcodeWorldCenterX": null,
+        "gcodeWorldCenterY": null,
+        "gcodeWorldCenterZ": null,
+        "cameraX": 0,
+        "cameraY": 0,
+        "cameraZ": 200,
+        "cameraRotationX": 0,
+        "cameraRotationY": 0,
+        "cameraRotationZ": 0,
+        "cameraTargetX": 0,
+        "cameraTargetY": 0,
+        "cameraTargetZ": 0,
+        "cameraDistance": 200,
+        "cameraZoom": 0,
+        "cameraFov": 35,
+        "projectionModeOrthographic": true,
+        "sceneLimitsVisible": true,
+        "sceneCoordinateSystemVisible": true,
+        "sceneGridLineNumbersVisible": true,
+        "sceneCuttingToolVisible": true,
+        "cameraPosition": "top",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 8,
+        "lastRenderAtMs": 954,
+        "lastRenderDurationMs": 0.9000000059604645,
+        "geometryCount": 251,
+        "textureCount": 243,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "gcodeWorldCenterX": null,
+        "gcodeWorldCenterY": null,
+        "gcodeWorldCenterZ": null,
+        "cameraX": 0,
+        "cameraY": 0,
+        "cameraZ": 200,
+        "cameraRotationX": 0,
+        "cameraRotationY": 0,
+        "cameraRotationZ": 0,
+        "cameraTargetX": 0,
+        "cameraTargetY": 0,
+        "cameraTargetZ": 0,
+        "cameraDistance": 200,
+        "cameraZoom": 0,
+        "cameraFov": 35,
+        "projectionModeOrthographic": true,
+        "sceneLimitsVisible": true,
+        "sceneCoordinateSystemVisible": true,
+        "sceneGridLineNumbersVisible": true,
+        "sceneCuttingToolVisible": true,
+        "cameraPosition": "top",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 9,
+        "lastRenderAtMs": 1819.800000011921,
+        "lastRenderDurationMs": 1.2000000178813934,
+        "geometryCount": 251,
+        "textureCount": 243,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "canvasBounds": {
+        "x": 432,
+        "y": 91,
+        "width": 648,
+        "height": 755
+      },
+      "graphics": {
+        "vendor": "Google Inc. (Google)",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "threeDTitle": "Disable 3D View",
+      "viewportUnchanged": true
+    },
+    {
+      "name": "pivot-profile-b-after-unload",
+      "status": "passed",
+      "actual": {
+        "x": -50,
+        "y": 75,
+        "z": 0
+      },
+      "expected": {
+        "x": -50,
+        "y": 75,
+        "z": 0
+      }
+    },
+    {
+      "name": "pivot-no-profile-no-gcode",
+      "status": "passed",
+      "actual": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "expected": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "name": "pivot-gcode-without-profile",
+      "status": "passed",
+      "actual": {
+        "x": 30,
+        "y": 40,
+        "z": -1
+      },
+      "expected": {
+        "x": 30,
+        "y": 40,
+        "z": -1
+      }
+    },
+    {
+      "name": "pivot-gcode-and-profile-transition-six-scenarios",
+      "status": "passed",
+      "durationMs": 1919,
+      "scenariosCovered": 6,
+      "profileChangeWhileLoadedPreservedGcodeCenter": true,
+      "worldMeshCenterAfterLoad": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "worldMeshCenterAfterProfileChange": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "gcodeBounds": {
+        "min": {
+          "x": 10,
+          "y": 20,
+          "z": -2
+        },
+        "max": {
+          "x": 50,
+          "y": 60,
+          "z": 0
+        },
+        "center": {
+          "x": 30,
+          "y": 40,
+          "z": -1
+        }
+      },
+      "cncCommandDelta": {
+        "read": 0,
+        "programState": 3,
+        "setup": 0,
+        "motion": 0,
+        "other": 0
+      }
+    },
+    {
+      "name": "coordinate-system-setting-with-no-profile",
+      "status": "passed",
+      "durationMs": 379,
+      "profile": "None",
+      "initial": {
+        "setting": true,
+        "actualSceneObject": true
+      },
+      "changed": {
+        "setting": false,
+        "actualSceneObject": false
+      },
+      "restored": {
+        "setting": true,
+        "actualSceneObject": true
+      },
+      "cncCommandDelta": {
+        "read": 0,
+        "programState": 0,
+        "setup": 0,
+        "motion": 0,
+        "other": 0
+      }
+    },
+    {
+      "name": "camera-positions-zoom-and-projection",
+      "status": "passed",
+      "durationMs": 1254,
+      "cameraResults": [
+        {
+          "label": "3D View",
+          "cameraPosition": "3d",
+          "actualPosition": {
+            "x": 200,
+            "y": -200,
+            "z": 200
+          },
+          "rotation": {
+            "x": 0.7853981633974486,
+            "y": 0.6154797086703876,
+            "z": 0.5235987755982988
+          }
+        },
+        {
+          "label": "Top View",
+          "cameraPosition": "top",
+          "actualPosition": {
+            "x": 0,
+            "y": 0,
+            "z": 200
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "label": "Front View",
+          "cameraPosition": "front",
+          "actualPosition": {
+            "x": 0,
+            "y": -200,
+            "z": 0
+          },
+          "rotation": {
+            "x": 1.5707963267948963,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "label": "Left Side View",
+          "cameraPosition": "left",
+          "actualPosition": {
+            "x": 200,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 1.5707963267948966,
+            "y": 1.5707963267948966,
+            "z": 0
+          }
+        },
+        {
+          "label": "Right Side View",
+          "cameraPosition": "right",
+          "actualPosition": {
+            "x": -200,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 1.5707963267948966,
+            "y": -1.5707963267948966,
+            "z": 0
+          }
+        },
+        {
+          "label": "Zoom In",
+          "distance": 200,
+          "zoom": 14.515200000000002
+        },
+        {
+          "label": "Zoom Out",
+          "distance": 200,
+          "zoom": 12.773376000000003
+        },
+        {
+          "label": "Zoom to Fit",
+          "fov": 35,
+          "zoom": 12.96
+        }
+      ],
+      "projections": [
+        {
+          "type": "orthographic",
+          "actual": true
+        },
+        {
+          "type": "perspective",
+          "actual": false
+        }
+      ],
+      "cncCommandDelta": {
+        "read": 0,
+        "programState": 0,
+        "setup": 0,
+        "motion": 0,
+        "other": 0
+      }
+    },
+    {
+      "name": "pivot-profile-a-with-gcode-before-view-toggles",
+      "status": "passed",
+      "actual": {
+        "x": 30,
+        "y": 40,
+        "z": -1
+      },
+      "expected": {
+        "x": 30,
+        "y": 40,
+        "z": -1
+      }
+    },
+    {
+      "name": "limits-grid-coordinate-system-and-tool-toggles",
+      "status": "failed",
+      "durationMs": 12828,
+      "error": "Error: View-toggle menu action did not update state: {\"menuLabel\":\"Hide Limits\",\"metricKey\":\"limitsVisible\",\"expected\":false,\"actual\":true,\"itemState\":{\"tagName\":\"BUTTON\",\"disabled\":false,\"ariaDisabled\":null,\"pointerEvents\":\"auto\",\"text\":\"Hide Limits\",\"rect\":{\"x\":930.671875,\"y\":367,\"width\":149.328125,\"height\":36}},\"waitError\":\"Error: Timed out waiting for engine limitsVisible=false; last state: {\\\"id\\\":1,\\\"width\\\":648,\\\"height\\\":755,\\\"pivotX\\\":30,\\\"pivotY\\\":40,\\\"pivotZ\\\":-1,\\\"gcodeWorldCenterX\\\":0,\\\"gcodeWorldCenterY\\\":0,\\\"gcodeWorldCenterZ\\\":0,\\\"cameraX\\\":-200,\\\"cameraY\\\":0,\\\"cameraZ\\\"\"}"
+    },
+    {
+      "name": "controller-driven-visualizer-unit-changes",
+      "status": "passed",
+      "durationMs": 1639,
+      "imperialUnits": "in",
+      "metricUnits": "mm",
+      "commands": [
+        "G20",
+        "G21"
+      ]
+    },
+    {
+      "name": "probe-area-ui-entry",
+      "status": "passed",
+      "durationMs": 2154,
+      "setupVisible": true,
+      "startValues": {
+        "Start X": "0",
+        "Start Y": "0",
+        "End X": "100",
+        "End Y": "100"
+      },
+      "values": {
+        "Start X": "12.5",
+        "Start Y": "10",
+        "End X": "112.5",
+        "End Y": "110"
+      },
+      "changedInputs": [
+        "Start X",
+        "Start Y",
+        "End X",
+        "End Y"
+      ],
+      "dragStart": {
+        "x": 807.8399999999999,
+        "y": 355.25
+      },
+      "dragEnd": {
+        "x": 837.8399999999999,
+        "y": 329.25
+      },
+      "eventTarget": {
+        "tag": "CANVAS",
+        "isCanvas": true
+      },
+      "canvasVisible": true,
+      "realCanvasDrag": true,
+      "expectedFixturePreparationCommandDelta": {
+        "read": 0,
+        "programState": 1,
+        "setup": 0,
+        "motion": 0,
+        "other": 0
+      },
+      "cncCommandDelta": {
+        "read": 0,
+        "programState": 0,
+        "setup": 0,
+        "motion": 0,
+        "other": 0
+      }
+    }
+  ],
+  "cncUnitCommands": [
+    "G20",
+    "G21"
+  ],
+  "cncCommandEventCount": 6,
+  "cncCommandNames": [
+    "sender_load",
+    "sender_unload",
+    "sender_load",
+    "gcode",
+    "gcode",
+    "sender_unload"
+  ],
+  "cncCommandDetails": [
+    {
+      "name": "sender_load",
+      "category": "programState",
+      "transport": "polling"
+    },
+    {
+      "name": "sender_unload",
+      "category": "programState",
+      "transport": "polling"
+    },
+    {
+      "name": "sender_load",
+      "category": "programState",
+      "transport": "polling"
+    },
+    {
+      "name": "gcode",
+      "category": "setup",
+      "code": "G20",
+      "transport": "polling"
+    },
+    {
+      "name": "gcode",
+      "category": "setup",
+      "code": "G21",
+      "transport": "polling"
+    },
+    {
+      "name": "sender_unload",
+      "category": "programState",
+      "transport": "polling"
+    }
+  ],
+  "cncOperationCounts": {
+    "read": 0,
+    "programState": 4,
+    "setup": 2,
+    "motion": 0,
+    "other": 0
+  },
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead.",
+      "location": {
+        "url": "",
+        "lineNumber": 8,
+        "columnNumber": 25
+      }
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling.",
+      "location": {
+        "url": "client/modules/logger/index.js",
+        "lineNumber": 580,
+        "columnNumber": 21
+      }
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n",
+      "location": {
+        "url": "client/modules/logger/index.js",
+        "lineNumber": 580,
+        "columnNumber": 21
+      }
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead.",
+      "location": {
+        "url": "",
+        "lineNumber": 8,
+        "columnNumber": 25
+      }
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead.",
+      "location": {
+        "url": "",
+        "lineNumber": 8,
+        "columnNumber": 25
+      }
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+      "location": {
+        "url": "",
+        "lineNumber": 8,
+        "columnNumber": 25
+      }
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+      "location": {
+        "url": "",
+        "lineNumber": 8,
+        "columnNumber": 25
+      }
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24925:9)\n    at commitPassiveMountEffects_begin (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24912:7)\n    at commitPassiveMountEffects (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24900:3)",
+      "location": {
+        "url": "../node_modules/events/events.js",
+        "lineNumber": 45,
+        "columnNumber": 39
+      }
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute().",
+      "location": {
+        "url": "node_modules/three/build/three.module.js",
+        "lineNumber": 50955,
+        "columnNumber": 10
+      }
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute().",
+      "location": {
+        "url": "node_modules/three/build/three.module.js",
+        "lineNumber": 50955,
+        "columnNumber": 10
+      }
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute().",
+      "location": {
+        "url": "node_modules/three/build/three.module.js",
+        "lineNumber": 50955,
+        "columnNumber": 10
+      }
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)%s [object Object] \n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/TooltipTrigger.js:33:103)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/Tooltip.js:30:103)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/tooltip/OverflowTooltip.js:23:23)\n    at cell (webpack-internal:///./pages/Administration/Machines/Machines.jsx:274:25)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/table/TableCell.js:30:103)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/table/TableRow.js:28:103)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/table/TableBody.js:29:103)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/scrollbar/ScrollView.js:19:18)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/scrollbar/Scrollbar.js:44:103)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/table/TableScrollbar.js:21:103)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/table/Table.js:27:103)\n    at ",
+      "location": {
+        "url": "",
+        "lineNumber": 8,
+        "columnNumber": 25
+      }
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10400449200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+      "location": {
+        "url": "/127.0.0.1:8080/#/workspace",
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\".",
+      "location": {
+        "url": "",
+        "lineNumber": 8,
+        "columnNumber": 25
+      }
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10400449200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+      "location": {
+        "url": "/127.0.0.1:8080/#/workspace",
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "type": "warning",
+      "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 18.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.\n\nPlease update the following components: %s VirtualList",
+      "location": {
+        "url": "node_modules/react-dom/cjs/react-dom.development.js",
+        "lineNumber": 85,
+        "columnNumber": 29
+      }
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10400449200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+      "location": {
+        "url": "/127.0.0.1:8080/#/workspace",
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x10400449200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+      "location": {
+        "url": "/127.0.0.1:8080/#/workspace",
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "type": "warning",
+      "text": "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently",
+      "location": {
+        "url": "node_modules/xterm/lib/xterm.js",
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "directGeometryCallStacks": []
+}

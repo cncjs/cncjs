@@ -1,0 +1,5328 @@
+{
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "151.0.7922.34",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true
+  },
+  "fixture": {
+    "path": "/tmp/cncjs-r6-20261001/synthetic-100k.gcode",
+    "bytes": 2379870,
+    "sha256": "cf7dae8dc539fe56490fb7678a5598503c87888f5b3af1738fc2d2233a9e7a06",
+    "expectedLines": 100000
+  },
+  "startedAt": "2026-10-01T16:12:07.922Z",
+  "simulator": {
+    "path": "/tmp/ttyGRBL",
+    "baudRate": 115200
+  },
+  "warmLoads": [
+    {
+      "phase": "warm",
+      "index": 1,
+      "uploadToRunEnabledMs": 530,
+      "runEnabledElapsedMs": 139,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 89.19999998807907,
+        "renderFrameCount": 9,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 1,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "top",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 10,
+        "lastRenderAtMs": 2253.9000000059605,
+        "lastRenderDurationMs": 0.5,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 20,
+        "lastRenderAtMs": 3428.2999999821186,
+        "lastRenderDurationMs": 1.5,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "warm",
+      "index": 2,
+      "uploadToRunEnabledMs": 422,
+      "runEnabledElapsedMs": 139,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 90.69999998807907,
+        "renderFrameCount": 21,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 2,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 22,
+        "lastRenderAtMs": 3774.5999999940395,
+        "lastRenderDurationMs": 0.30000001192092896,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 24,
+        "lastRenderAtMs": 4076,
+        "lastRenderDurationMs": 1.4000000059604645,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "warm",
+      "index": 3,
+      "uploadToRunEnabledMs": 489,
+      "runEnabledElapsedMs": 134,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 84.59999999403954,
+        "renderFrameCount": 25,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 3,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 26,
+        "lastRenderAtMs": 4467.4000000059605,
+        "lastRenderDurationMs": 0.30000001192092896,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 28,
+        "lastRenderAtMs": 4785.299999982119,
+        "lastRenderDurationMs": 1.2999999821186066,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "warm",
+      "index": 4,
+      "uploadToRunEnabledMs": 493,
+      "runEnabledElapsedMs": 139,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 109.90000000596046,
+        "renderFrameCount": 29,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 4,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 30,
+        "lastRenderAtMs": 5169.699999988079,
+        "lastRenderDurationMs": 0.4000000059604645,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 32,
+        "lastRenderAtMs": 5513.0999999940395,
+        "lastRenderDurationMs": 1.4000000059604645,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "warm",
+      "index": 5,
+      "uploadToRunEnabledMs": 427,
+      "runEnabledElapsedMs": 133,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 87.90000000596046,
+        "renderFrameCount": 33,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "metricLoadCount": 5,
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 34,
+        "lastRenderAtMs": 5858.5999999940395,
+        "lastRenderDurationMs": 0.30000001192092896,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 36,
+        "lastRenderAtMs": 6168.5999999940395,
+        "lastRenderDurationMs": 1.4000000059604645,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "sample": 1,
+      "action": "Front View",
+      "eventToRendererMs": 4.4,
+      "cameraPosition": "front",
+      "renderFrameCount": 13
+    },
+    {
+      "sample": 2,
+      "action": "Right Side View",
+      "eventToRendererMs": 4.7,
+      "cameraPosition": "right",
+      "renderFrameCount": 16
+    },
+    {
+      "sample": 3,
+      "action": "Left Side View",
+      "eventToRendererMs": 4.8,
+      "cameraPosition": "left",
+      "renderFrameCount": 18
+    }
+  ],
+  "interactionErrors": [
+    {
+      "sample": 4,
+      "error": "Error: locator.click: Error: strict mode violation: getByRole('region', { name: '3D Visualizer widget', exact: true }).getByRole('button', { name: '3D View', exact: true }) resolved to 2 elements:\n    1) <button type=\"button\" data-tonic=\"Button\" aria-label=\"3D View\" title=\"Disable 3D View\" class=\"css-x0bzf-Box eecupy40\">…</button> aka getByRole('button', { name: '3D View', description: 'Disable 3D View' })\n    2) <button type=\"button\" aria-label=\"3D View\" data-tonic=\"TooltipTrigger\" class=\"css-aai75d-Box eecupy40\" id=\"@tonic-ui/react:TooltipTrigger-:r2q:\">…</button> aka getByRole('button', { name: '3D View' }).nth(2)\n\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: '3D Visualizer widget', exact: true }).getByRole('button', { name: '3D View', exact: true })\u001b[22m\n"
+    }
+  ],
+  "resourceCycles": [
+    {
+      "phase": "resource",
+      "index": 1,
+      "uploadToRunEnabledMs": 422,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 88.19999998807907,
+        "renderFrameCount": 37,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 38,
+        "lastRenderAtMs": 6515,
+        "lastRenderDurationMs": 0.30000001192092896,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 40,
+        "lastRenderAtMs": 6834.799999982119,
+        "lastRenderDurationMs": 1.399999976158142,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 2,
+      "uploadToRunEnabledMs": 451,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 85.80000001192093,
+        "renderFrameCount": 41,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 42,
+        "lastRenderAtMs": 7213.799999982119,
+        "lastRenderDurationMs": 0.29999998211860657,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 44,
+        "lastRenderAtMs": 7512.799999982119,
+        "lastRenderDurationMs": 1.399999976158142,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 3,
+      "uploadToRunEnabledMs": 440,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 88.69999998807907,
+        "renderFrameCount": 45,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 46,
+        "lastRenderAtMs": 7881,
+        "lastRenderDurationMs": 0.30000001192092896,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 48,
+        "lastRenderAtMs": 8183.299999982119,
+        "lastRenderDurationMs": 1.2999999821186066,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 4,
+      "uploadToRunEnabledMs": 414,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 90.09999999403954,
+        "renderFrameCount": 49,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 50,
+        "lastRenderAtMs": 8525.40000000596,
+        "lastRenderDurationMs": 0.30000001192092896,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 52,
+        "lastRenderAtMs": 8825.40000000596,
+        "lastRenderDurationMs": 1.300000011920929,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 5,
+      "uploadToRunEnabledMs": 412,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 93.69999998807907,
+        "renderFrameCount": 53,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 54,
+        "lastRenderAtMs": 9170.59999999404,
+        "lastRenderDurationMs": 0.4000000059604645,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 56,
+        "lastRenderAtMs": 9479.09999999404,
+        "lastRenderDurationMs": 1.300000011920929,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 6,
+      "uploadToRunEnabledMs": 416,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 90.2000000178814,
+        "renderFrameCount": 57,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 58,
+        "lastRenderAtMs": 9962.40000000596,
+        "lastRenderDurationMs": 0.5,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 60,
+        "lastRenderAtMs": 10255.799999982119,
+        "lastRenderDurationMs": 1.2999999821186066,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 7,
+      "uploadToRunEnabledMs": 424,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 82.19999998807907,
+        "renderFrameCount": 61,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 62,
+        "lastRenderAtMs": 10602.09999999404,
+        "lastRenderDurationMs": 0.4000000059604645,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 64,
+        "lastRenderAtMs": 10908.40000000596,
+        "lastRenderDurationMs": 1.300000011920929,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 8,
+      "uploadToRunEnabledMs": 439,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 85.59999999403954,
+        "renderFrameCount": 65,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 66,
+        "lastRenderAtMs": 11270.5,
+        "lastRenderDurationMs": 0.30000001192092896,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 68,
+        "lastRenderAtMs": 11573.59999999404,
+        "lastRenderDurationMs": 1.4000000059604645,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 9,
+      "uploadToRunEnabledMs": 422,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 85.30000001192093,
+        "renderFrameCount": 69,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 70,
+        "lastRenderAtMs": 11920.5,
+        "lastRenderDurationMs": 0.4000000059604645,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 72,
+        "lastRenderAtMs": 12244.59999999404,
+        "lastRenderDurationMs": 1.300000011920929,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 10,
+      "uploadToRunEnabledMs": 472,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 85.39999997615814,
+        "renderFrameCount": 73,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 74,
+        "lastRenderAtMs": 12594.799999982119,
+        "lastRenderDurationMs": 0.3999999761581421,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 76,
+        "lastRenderAtMs": 12975,
+        "lastRenderDurationMs": 1.2000000178813934,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 11,
+      "uploadToRunEnabledMs": 441,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 87.40000000596046,
+        "renderFrameCount": 77,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 78,
+        "lastRenderAtMs": 13413.90000000596,
+        "lastRenderDurationMs": 0.30000001192092896,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 80,
+        "lastRenderAtMs": 13713.799999982119,
+        "lastRenderDurationMs": 1.0999999940395355,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 12,
+      "uploadToRunEnabledMs": 415,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 83.59999999403954,
+        "renderFrameCount": 81,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 82,
+        "lastRenderAtMs": 14051,
+        "lastRenderDurationMs": 0.30000001192092896,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 84,
+        "lastRenderAtMs": 14360.40000000596,
+        "lastRenderDurationMs": 1.300000011920929,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 13,
+      "uploadToRunEnabledMs": 411,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 86.09999999403954,
+        "renderFrameCount": 85,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 86,
+        "lastRenderAtMs": 14696.09999999404,
+        "lastRenderDurationMs": 0.4000000059604645,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 88,
+        "lastRenderAtMs": 14993.799999982119,
+        "lastRenderDurationMs": 1.0999999940395355,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 14,
+      "uploadToRunEnabledMs": 428,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 85.09999999403954,
+        "renderFrameCount": 89,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 90,
+        "lastRenderAtMs": 15350,
+        "lastRenderDurationMs": 0.30000001192092896,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 92,
+        "lastRenderAtMs": 15656,
+        "lastRenderDurationMs": 1.300000011920929,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 15,
+      "uploadToRunEnabledMs": 414,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 89.7999999821186,
+        "renderFrameCount": 93,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 94,
+        "lastRenderAtMs": 16002.59999999404,
+        "lastRenderDurationMs": 0.30000001192092896,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 96,
+        "lastRenderAtMs": 16298.699999988079,
+        "lastRenderDurationMs": 1.199999988079071,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 16,
+      "uploadToRunEnabledMs": 424,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 89.10000002384186,
+        "renderFrameCount": 97,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 98,
+        "lastRenderAtMs": 16648.79999998212,
+        "lastRenderDurationMs": 0.29999998211860657,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 100,
+        "lastRenderAtMs": 17049.5,
+        "lastRenderDurationMs": 1.0999999940395355,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 17,
+      "uploadToRunEnabledMs": 448,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 83.59999999403954,
+        "renderFrameCount": 101,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 102,
+        "lastRenderAtMs": 17419.79999998212,
+        "lastRenderDurationMs": 0.3999999761581421,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 104,
+        "lastRenderAtMs": 17735.69999998808,
+        "lastRenderDurationMs": 1.2999999821186066,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 18,
+      "uploadToRunEnabledMs": 411,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 84.59999999403954,
+        "renderFrameCount": 105,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 106,
+        "lastRenderAtMs": 18072.59999999404,
+        "lastRenderDurationMs": 0.19999998807907104,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 108,
+        "lastRenderAtMs": 18372.09999999404,
+        "lastRenderDurationMs": 1.0999999940395355,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 19,
+      "uploadToRunEnabledMs": 416,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 82.90000000596046,
+        "renderFrameCount": 109,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 110,
+        "lastRenderAtMs": 18716,
+        "lastRenderDurationMs": 0.4000000059604645,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 112,
+        "lastRenderAtMs": 19014.29999998212,
+        "lastRenderDurationMs": 1.199999988079071,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    },
+    {
+      "phase": "resource",
+      "index": 20,
+      "uploadToRunEnabledMs": 420,
+      "metricsLoadSample": {
+        "fixtureId": "synthetic-100k.gcode",
+        "durationMs": 88.7999999821186,
+        "renderFrameCount": 113,
+        "geometries": 248,
+        "textures": 10,
+        "engineId": 1
+      },
+      "loadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 49.95,
+        "pivotY": 49.95,
+        "pivotZ": 2.5,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": true,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 114,
+        "lastRenderAtMs": 19360.19999998808,
+        "lastRenderDurationMs": 0.29999998211860657,
+        "geometryCount": 248,
+        "textureCount": 10,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "unloadedEngine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 116,
+        "lastRenderAtMs": 19660.79999998212,
+        "lastRenderDurationMs": 1.199999988079071,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "heapLoaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "heapUnloaded": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      }
+    }
+  ],
+  "checkpoints": {
+    "5": {
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 56,
+        "lastRenderAtMs": 9479.09999999404,
+        "lastRenderDurationMs": 1.300000011920929,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "metrics": {
+        "createdTotal": 1,
+        "disposedTotal": 0,
+        "liveEngineCount": 1,
+        "loadCount": 10,
+        "loadSamples": [
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 89.19999998807907,
+            "renderFrameCount": 9,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 90.69999998807907,
+            "renderFrameCount": 21,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 84.59999999403954,
+            "renderFrameCount": 25,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 109.90000000596046,
+            "renderFrameCount": 29,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 87.90000000596046,
+            "renderFrameCount": 33,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 88.19999998807907,
+            "renderFrameCount": 37,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 85.80000001192093,
+            "renderFrameCount": 41,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 88.69999998807907,
+            "renderFrameCount": 45,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 90.09999999403954,
+            "renderFrameCount": 49,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 93.69999998807907,
+            "renderFrameCount": 53,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          }
+        ],
+        "renderSamples": [
+          {
+            "engineId": 1,
+            "renderedAtMs": 899.7999999821186,
+            "durationMs": 18.799999982118607,
+            "renderFrameCount": 1
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 924.4000000059605,
+            "durationMs": 9,
+            "renderFrameCount": 2
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 925.5999999940395,
+            "durationMs": 1.0999999940395355,
+            "renderFrameCount": 3
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 926.2999999821186,
+            "durationMs": 0.5999999940395355,
+            "renderFrameCount": 4
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 926.7999999821186,
+            "durationMs": 0.3999999761581421,
+            "renderFrameCount": 5
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 1316.4000000059605,
+            "durationMs": 1.2000000178813934,
+            "renderFrameCount": 6
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 1331.5999999940395,
+            "durationMs": 6.9000000059604645,
+            "renderFrameCount": 7
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 1436,
+            "durationMs": 0.9000000059604645,
+            "renderFrameCount": 8
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2253.2999999821186,
+            "durationMs": 7.299999982118607,
+            "renderFrameCount": 9
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2253.9000000059605,
+            "durationMs": 0.5,
+            "renderFrameCount": 10
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2601.0999999940395,
+            "durationMs": 0.5,
+            "renderFrameCount": 11
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2601.5999999940395,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 12
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2602,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 13
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2873.2999999821186,
+            "durationMs": 0.5,
+            "renderFrameCount": 14
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2874.0999999940395,
+            "durationMs": 0.699999988079071,
+            "renderFrameCount": 15
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2874.5,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 16
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3165.4000000059605,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 17
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3166.7999999821186,
+            "durationMs": 1.2999999821186066,
+            "renderFrameCount": 18
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3426.7999999821186,
+            "durationMs": 5.899999976158142,
+            "renderFrameCount": 19
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3428.2999999821186,
+            "durationMs": 1.5,
+            "renderFrameCount": 20
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3774.199999988079,
+            "durationMs": 6.5999999940395355,
+            "renderFrameCount": 21
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3774.5999999940395,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 22
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4074.5,
+            "durationMs": 5.800000011920929,
+            "renderFrameCount": 23
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4076,
+            "durationMs": 1.4000000059604645,
+            "renderFrameCount": 24
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4467,
+            "durationMs": 6.5999999940395355,
+            "renderFrameCount": 25
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4467.4000000059605,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 26
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4784,
+            "durationMs": 5.700000017881393,
+            "renderFrameCount": 27
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4785.299999982119,
+            "durationMs": 1.2999999821186066,
+            "renderFrameCount": 28
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5169.199999988079,
+            "durationMs": 25.5,
+            "renderFrameCount": 29
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5169.699999988079,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 30
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5511.699999988079,
+            "durationMs": 5.5999999940395355,
+            "renderFrameCount": 31
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5513.0999999940395,
+            "durationMs": 1.4000000059604645,
+            "renderFrameCount": 32
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5858.199999988079,
+            "durationMs": 6.199999988079071,
+            "renderFrameCount": 33
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5858.5999999940395,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 34
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6167.199999988079,
+            "durationMs": 5.5,
+            "renderFrameCount": 35
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6168.5999999940395,
+            "durationMs": 1.4000000059604645,
+            "renderFrameCount": 36
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6514.5999999940395,
+            "durationMs": 6.4000000059604645,
+            "renderFrameCount": 37
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6515,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 38
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6833.4000000059605,
+            "durationMs": 7.200000017881393,
+            "renderFrameCount": 39
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6834.799999982119,
+            "durationMs": 1.399999976158142,
+            "renderFrameCount": 40
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7213.5,
+            "durationMs": 6.300000011920929,
+            "renderFrameCount": 41
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7213.799999982119,
+            "durationMs": 0.29999998211860657,
+            "renderFrameCount": 42
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7511.299999982119,
+            "durationMs": 5.699999988079071,
+            "renderFrameCount": 43
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7512.799999982119,
+            "durationMs": 1.399999976158142,
+            "renderFrameCount": 44
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7880.5999999940395,
+            "durationMs": 6.0999999940395355,
+            "renderFrameCount": 45
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7881,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 46
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8182,
+            "durationMs": 7,
+            "renderFrameCount": 47
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8183.299999982119,
+            "durationMs": 1.2999999821186066,
+            "renderFrameCount": 48
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8525,
+            "durationMs": 6.200000017881393,
+            "renderFrameCount": 49
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8525.40000000596,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 50
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8824.09999999404,
+            "durationMs": 5.5999999940395355,
+            "renderFrameCount": 51
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8825.40000000596,
+            "durationMs": 1.300000011920929,
+            "renderFrameCount": 52
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9170.199999988079,
+            "durationMs": 6.0999999940395355,
+            "renderFrameCount": 53
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9170.59999999404,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 54
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9477.799999982119,
+            "durationMs": 6.799999982118607,
+            "renderFrameCount": 55
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9479.09999999404,
+            "durationMs": 1.300000011920929,
+            "renderFrameCount": 56
+          }
+        ],
+        "disposeSamples": [],
+        "canvasCreatedTotal": 1,
+        "canvasRemovedTotal": 0,
+        "liveCanvasCount": 1,
+        "engines": [
+          {
+            "id": 1,
+            "width": 648,
+            "height": 755,
+            "pivotX": 0,
+            "pivotY": 0,
+            "pivotZ": 0,
+            "cameraPosition": "left",
+            "cameraMode": "pan",
+            "projection": "orthographic",
+            "units": "mm",
+            "hasGCode": false,
+            "limitsVisible": true,
+            "coordinateSystemVisible": true,
+            "gridLineNumbersVisible": true,
+            "cuttingToolVisible": true,
+            "canvasAttached": true,
+            "renderFrameCount": 56,
+            "lastRenderAtMs": 9479.09999999404,
+            "lastRenderDurationMs": 1.300000011920929,
+            "geometryCount": 251,
+            "textureCount": 55,
+            "listenerAddCount": 6,
+            "listenerRemoveCount": 0,
+            "activeListenerCount": 6,
+            "rafRequestCount": 0,
+            "rafCompleteCount": 0,
+            "rafCancelCount": 0,
+            "activeRafCount": 0,
+            "pendingLoadId": null
+          }
+        ]
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "at": "2026-10-01T16:12:17.556Z"
+    },
+    "10": {
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 76,
+        "lastRenderAtMs": 12975,
+        "lastRenderDurationMs": 1.2000000178813934,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "metrics": {
+        "createdTotal": 1,
+        "disposedTotal": 0,
+        "liveEngineCount": 1,
+        "loadCount": 15,
+        "loadSamples": [
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 89.19999998807907,
+            "renderFrameCount": 9,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 90.69999998807907,
+            "renderFrameCount": 21,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 84.59999999403954,
+            "renderFrameCount": 25,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 109.90000000596046,
+            "renderFrameCount": 29,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 87.90000000596046,
+            "renderFrameCount": 33,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 88.19999998807907,
+            "renderFrameCount": 37,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 85.80000001192093,
+            "renderFrameCount": 41,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 88.69999998807907,
+            "renderFrameCount": 45,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 90.09999999403954,
+            "renderFrameCount": 49,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 93.69999998807907,
+            "renderFrameCount": 53,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 90.2000000178814,
+            "renderFrameCount": 57,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 82.19999998807907,
+            "renderFrameCount": 61,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 85.59999999403954,
+            "renderFrameCount": 65,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 85.30000001192093,
+            "renderFrameCount": 69,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 85.39999997615814,
+            "renderFrameCount": 73,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          }
+        ],
+        "renderSamples": [
+          {
+            "engineId": 1,
+            "renderedAtMs": 899.7999999821186,
+            "durationMs": 18.799999982118607,
+            "renderFrameCount": 1
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 924.4000000059605,
+            "durationMs": 9,
+            "renderFrameCount": 2
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 925.5999999940395,
+            "durationMs": 1.0999999940395355,
+            "renderFrameCount": 3
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 926.2999999821186,
+            "durationMs": 0.5999999940395355,
+            "renderFrameCount": 4
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 926.7999999821186,
+            "durationMs": 0.3999999761581421,
+            "renderFrameCount": 5
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 1316.4000000059605,
+            "durationMs": 1.2000000178813934,
+            "renderFrameCount": 6
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 1331.5999999940395,
+            "durationMs": 6.9000000059604645,
+            "renderFrameCount": 7
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 1436,
+            "durationMs": 0.9000000059604645,
+            "renderFrameCount": 8
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2253.2999999821186,
+            "durationMs": 7.299999982118607,
+            "renderFrameCount": 9
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2253.9000000059605,
+            "durationMs": 0.5,
+            "renderFrameCount": 10
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2601.0999999940395,
+            "durationMs": 0.5,
+            "renderFrameCount": 11
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2601.5999999940395,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 12
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2602,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 13
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2873.2999999821186,
+            "durationMs": 0.5,
+            "renderFrameCount": 14
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2874.0999999940395,
+            "durationMs": 0.699999988079071,
+            "renderFrameCount": 15
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2874.5,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 16
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3165.4000000059605,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 17
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3166.7999999821186,
+            "durationMs": 1.2999999821186066,
+            "renderFrameCount": 18
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3426.7999999821186,
+            "durationMs": 5.899999976158142,
+            "renderFrameCount": 19
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3428.2999999821186,
+            "durationMs": 1.5,
+            "renderFrameCount": 20
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3774.199999988079,
+            "durationMs": 6.5999999940395355,
+            "renderFrameCount": 21
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3774.5999999940395,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 22
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4074.5,
+            "durationMs": 5.800000011920929,
+            "renderFrameCount": 23
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4076,
+            "durationMs": 1.4000000059604645,
+            "renderFrameCount": 24
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4467,
+            "durationMs": 6.5999999940395355,
+            "renderFrameCount": 25
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4467.4000000059605,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 26
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4784,
+            "durationMs": 5.700000017881393,
+            "renderFrameCount": 27
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4785.299999982119,
+            "durationMs": 1.2999999821186066,
+            "renderFrameCount": 28
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5169.199999988079,
+            "durationMs": 25.5,
+            "renderFrameCount": 29
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5169.699999988079,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 30
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5511.699999988079,
+            "durationMs": 5.5999999940395355,
+            "renderFrameCount": 31
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5513.0999999940395,
+            "durationMs": 1.4000000059604645,
+            "renderFrameCount": 32
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5858.199999988079,
+            "durationMs": 6.199999988079071,
+            "renderFrameCount": 33
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5858.5999999940395,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 34
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6167.199999988079,
+            "durationMs": 5.5,
+            "renderFrameCount": 35
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6168.5999999940395,
+            "durationMs": 1.4000000059604645,
+            "renderFrameCount": 36
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6514.5999999940395,
+            "durationMs": 6.4000000059604645,
+            "renderFrameCount": 37
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6515,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 38
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6833.4000000059605,
+            "durationMs": 7.200000017881393,
+            "renderFrameCount": 39
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6834.799999982119,
+            "durationMs": 1.399999976158142,
+            "renderFrameCount": 40
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7213.5,
+            "durationMs": 6.300000011920929,
+            "renderFrameCount": 41
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7213.799999982119,
+            "durationMs": 0.29999998211860657,
+            "renderFrameCount": 42
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7511.299999982119,
+            "durationMs": 5.699999988079071,
+            "renderFrameCount": 43
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7512.799999982119,
+            "durationMs": 1.399999976158142,
+            "renderFrameCount": 44
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7880.5999999940395,
+            "durationMs": 6.0999999940395355,
+            "renderFrameCount": 45
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7881,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 46
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8182,
+            "durationMs": 7,
+            "renderFrameCount": 47
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8183.299999982119,
+            "durationMs": 1.2999999821186066,
+            "renderFrameCount": 48
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8525,
+            "durationMs": 6.200000017881393,
+            "renderFrameCount": 49
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8525.40000000596,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 50
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8824.09999999404,
+            "durationMs": 5.5999999940395355,
+            "renderFrameCount": 51
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8825.40000000596,
+            "durationMs": 1.300000011920929,
+            "renderFrameCount": 52
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9170.199999988079,
+            "durationMs": 6.0999999940395355,
+            "renderFrameCount": 53
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9170.59999999404,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 54
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9477.799999982119,
+            "durationMs": 6.799999982118607,
+            "renderFrameCount": 55
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9479.09999999404,
+            "durationMs": 1.300000011920929,
+            "renderFrameCount": 56
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9961.90000000596,
+            "durationMs": 7.4000000059604645,
+            "renderFrameCount": 57
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9962.40000000596,
+            "durationMs": 0.5,
+            "renderFrameCount": 58
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 10254.5,
+            "durationMs": 5.5999999940395355,
+            "renderFrameCount": 59
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 10255.799999982119,
+            "durationMs": 1.2999999821186066,
+            "renderFrameCount": 60
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 10601.699999988079,
+            "durationMs": 6.0999999940395355,
+            "renderFrameCount": 61
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 10602.09999999404,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 62
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 10907.09999999404,
+            "durationMs": 5.5,
+            "renderFrameCount": 63
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 10908.40000000596,
+            "durationMs": 1.300000011920929,
+            "renderFrameCount": 64
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 11270.09999999404,
+            "durationMs": 6.199999988079071,
+            "renderFrameCount": 65
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 11270.5,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 66
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 11572.199999988079,
+            "durationMs": 6.4000000059604645,
+            "renderFrameCount": 67
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 11573.59999999404,
+            "durationMs": 1.4000000059604645,
+            "renderFrameCount": 68
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 11920,
+            "durationMs": 7.0999999940395355,
+            "renderFrameCount": 69
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 11920.5,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 70
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 12243.199999988079,
+            "durationMs": 6.199999988079071,
+            "renderFrameCount": 71
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 12244.59999999404,
+            "durationMs": 1.300000011920929,
+            "renderFrameCount": 72
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 12594.299999982119,
+            "durationMs": 6.199999988079071,
+            "renderFrameCount": 73
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 12594.799999982119,
+            "durationMs": 0.3999999761581421,
+            "renderFrameCount": 74
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 12973.699999988079,
+            "durationMs": 5.4000000059604645,
+            "renderFrameCount": 75
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 12975,
+            "durationMs": 1.2000000178813934,
+            "renderFrameCount": 76
+          }
+        ],
+        "disposeSamples": [],
+        "canvasCreatedTotal": 1,
+        "canvasRemovedTotal": 0,
+        "liveCanvasCount": 1,
+        "engines": [
+          {
+            "id": 1,
+            "width": 648,
+            "height": 755,
+            "pivotX": 0,
+            "pivotY": 0,
+            "pivotZ": 0,
+            "cameraPosition": "left",
+            "cameraMode": "pan",
+            "projection": "orthographic",
+            "units": "mm",
+            "hasGCode": false,
+            "limitsVisible": true,
+            "coordinateSystemVisible": true,
+            "gridLineNumbersVisible": true,
+            "cuttingToolVisible": true,
+            "canvasAttached": true,
+            "renderFrameCount": 76,
+            "lastRenderAtMs": 12975,
+            "lastRenderDurationMs": 1.2000000178813934,
+            "geometryCount": 251,
+            "textureCount": 55,
+            "listenerAddCount": 6,
+            "listenerRemoveCount": 0,
+            "activeListenerCount": 6,
+            "rafRequestCount": 0,
+            "rafCompleteCount": 0,
+            "rafCancelCount": 0,
+            "activeRafCount": 0,
+            "pendingLoadId": null
+          }
+        ]
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "at": "2026-10-01T16:12:21.045Z"
+    },
+    "20": {
+      "engine": {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "pivotX": 0,
+        "pivotY": 0,
+        "pivotZ": 0,
+        "cameraPosition": "left",
+        "cameraMode": "pan",
+        "projection": "orthographic",
+        "units": "mm",
+        "hasGCode": false,
+        "limitsVisible": true,
+        "coordinateSystemVisible": true,
+        "gridLineNumbersVisible": true,
+        "cuttingToolVisible": true,
+        "canvasAttached": true,
+        "renderFrameCount": 116,
+        "lastRenderAtMs": 19660.79999998212,
+        "lastRenderDurationMs": 1.199999988079071,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      },
+      "metrics": {
+        "createdTotal": 1,
+        "disposedTotal": 0,
+        "liveEngineCount": 1,
+        "loadCount": 25,
+        "loadSamples": [
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 89.19999998807907,
+            "renderFrameCount": 9,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 90.69999998807907,
+            "renderFrameCount": 21,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 84.59999999403954,
+            "renderFrameCount": 25,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 109.90000000596046,
+            "renderFrameCount": 29,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 87.90000000596046,
+            "renderFrameCount": 33,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 88.19999998807907,
+            "renderFrameCount": 37,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 85.80000001192093,
+            "renderFrameCount": 41,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 88.69999998807907,
+            "renderFrameCount": 45,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 90.09999999403954,
+            "renderFrameCount": 49,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 93.69999998807907,
+            "renderFrameCount": 53,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 90.2000000178814,
+            "renderFrameCount": 57,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 82.19999998807907,
+            "renderFrameCount": 61,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 85.59999999403954,
+            "renderFrameCount": 65,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 85.30000001192093,
+            "renderFrameCount": 69,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 85.39999997615814,
+            "renderFrameCount": 73,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 87.40000000596046,
+            "renderFrameCount": 77,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 83.59999999403954,
+            "renderFrameCount": 81,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 86.09999999403954,
+            "renderFrameCount": 85,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 85.09999999403954,
+            "renderFrameCount": 89,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 89.7999999821186,
+            "renderFrameCount": 93,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 89.10000002384186,
+            "renderFrameCount": 97,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 83.59999999403954,
+            "renderFrameCount": 101,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 84.59999999403954,
+            "renderFrameCount": 105,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 82.90000000596046,
+            "renderFrameCount": 109,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          },
+          {
+            "fixtureId": "synthetic-100k.gcode",
+            "durationMs": 88.7999999821186,
+            "renderFrameCount": 113,
+            "geometries": 248,
+            "textures": 10,
+            "engineId": 1
+          }
+        ],
+        "renderSamples": [
+          {
+            "engineId": 1,
+            "renderedAtMs": 899.7999999821186,
+            "durationMs": 18.799999982118607,
+            "renderFrameCount": 1
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 924.4000000059605,
+            "durationMs": 9,
+            "renderFrameCount": 2
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 925.5999999940395,
+            "durationMs": 1.0999999940395355,
+            "renderFrameCount": 3
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 926.2999999821186,
+            "durationMs": 0.5999999940395355,
+            "renderFrameCount": 4
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 926.7999999821186,
+            "durationMs": 0.3999999761581421,
+            "renderFrameCount": 5
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 1316.4000000059605,
+            "durationMs": 1.2000000178813934,
+            "renderFrameCount": 6
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 1331.5999999940395,
+            "durationMs": 6.9000000059604645,
+            "renderFrameCount": 7
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 1436,
+            "durationMs": 0.9000000059604645,
+            "renderFrameCount": 8
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2253.2999999821186,
+            "durationMs": 7.299999982118607,
+            "renderFrameCount": 9
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2253.9000000059605,
+            "durationMs": 0.5,
+            "renderFrameCount": 10
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2601.0999999940395,
+            "durationMs": 0.5,
+            "renderFrameCount": 11
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2601.5999999940395,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 12
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2602,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 13
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2873.2999999821186,
+            "durationMs": 0.5,
+            "renderFrameCount": 14
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2874.0999999940395,
+            "durationMs": 0.699999988079071,
+            "renderFrameCount": 15
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 2874.5,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 16
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3165.4000000059605,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 17
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3166.7999999821186,
+            "durationMs": 1.2999999821186066,
+            "renderFrameCount": 18
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3426.7999999821186,
+            "durationMs": 5.899999976158142,
+            "renderFrameCount": 19
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3428.2999999821186,
+            "durationMs": 1.5,
+            "renderFrameCount": 20
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3774.199999988079,
+            "durationMs": 6.5999999940395355,
+            "renderFrameCount": 21
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 3774.5999999940395,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 22
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4074.5,
+            "durationMs": 5.800000011920929,
+            "renderFrameCount": 23
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4076,
+            "durationMs": 1.4000000059604645,
+            "renderFrameCount": 24
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4467,
+            "durationMs": 6.5999999940395355,
+            "renderFrameCount": 25
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4467.4000000059605,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 26
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4784,
+            "durationMs": 5.700000017881393,
+            "renderFrameCount": 27
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 4785.299999982119,
+            "durationMs": 1.2999999821186066,
+            "renderFrameCount": 28
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5169.199999988079,
+            "durationMs": 25.5,
+            "renderFrameCount": 29
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5169.699999988079,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 30
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5511.699999988079,
+            "durationMs": 5.5999999940395355,
+            "renderFrameCount": 31
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5513.0999999940395,
+            "durationMs": 1.4000000059604645,
+            "renderFrameCount": 32
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5858.199999988079,
+            "durationMs": 6.199999988079071,
+            "renderFrameCount": 33
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 5858.5999999940395,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 34
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6167.199999988079,
+            "durationMs": 5.5,
+            "renderFrameCount": 35
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6168.5999999940395,
+            "durationMs": 1.4000000059604645,
+            "renderFrameCount": 36
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6514.5999999940395,
+            "durationMs": 6.4000000059604645,
+            "renderFrameCount": 37
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6515,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 38
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6833.4000000059605,
+            "durationMs": 7.200000017881393,
+            "renderFrameCount": 39
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 6834.799999982119,
+            "durationMs": 1.399999976158142,
+            "renderFrameCount": 40
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7213.5,
+            "durationMs": 6.300000011920929,
+            "renderFrameCount": 41
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7213.799999982119,
+            "durationMs": 0.29999998211860657,
+            "renderFrameCount": 42
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7511.299999982119,
+            "durationMs": 5.699999988079071,
+            "renderFrameCount": 43
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7512.799999982119,
+            "durationMs": 1.399999976158142,
+            "renderFrameCount": 44
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7880.5999999940395,
+            "durationMs": 6.0999999940395355,
+            "renderFrameCount": 45
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 7881,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 46
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8182,
+            "durationMs": 7,
+            "renderFrameCount": 47
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8183.299999982119,
+            "durationMs": 1.2999999821186066,
+            "renderFrameCount": 48
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8525,
+            "durationMs": 6.200000017881393,
+            "renderFrameCount": 49
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8525.40000000596,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 50
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8824.09999999404,
+            "durationMs": 5.5999999940395355,
+            "renderFrameCount": 51
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 8825.40000000596,
+            "durationMs": 1.300000011920929,
+            "renderFrameCount": 52
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9170.199999988079,
+            "durationMs": 6.0999999940395355,
+            "renderFrameCount": 53
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9170.59999999404,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 54
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9477.799999982119,
+            "durationMs": 6.799999982118607,
+            "renderFrameCount": 55
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9479.09999999404,
+            "durationMs": 1.300000011920929,
+            "renderFrameCount": 56
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9961.90000000596,
+            "durationMs": 7.4000000059604645,
+            "renderFrameCount": 57
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 9962.40000000596,
+            "durationMs": 0.5,
+            "renderFrameCount": 58
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 10254.5,
+            "durationMs": 5.5999999940395355,
+            "renderFrameCount": 59
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 10255.799999982119,
+            "durationMs": 1.2999999821186066,
+            "renderFrameCount": 60
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 10601.699999988079,
+            "durationMs": 6.0999999940395355,
+            "renderFrameCount": 61
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 10602.09999999404,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 62
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 10907.09999999404,
+            "durationMs": 5.5,
+            "renderFrameCount": 63
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 10908.40000000596,
+            "durationMs": 1.300000011920929,
+            "renderFrameCount": 64
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 11270.09999999404,
+            "durationMs": 6.199999988079071,
+            "renderFrameCount": 65
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 11270.5,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 66
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 11572.199999988079,
+            "durationMs": 6.4000000059604645,
+            "renderFrameCount": 67
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 11573.59999999404,
+            "durationMs": 1.4000000059604645,
+            "renderFrameCount": 68
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 11920,
+            "durationMs": 7.0999999940395355,
+            "renderFrameCount": 69
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 11920.5,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 70
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 12243.199999988079,
+            "durationMs": 6.199999988079071,
+            "renderFrameCount": 71
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 12244.59999999404,
+            "durationMs": 1.300000011920929,
+            "renderFrameCount": 72
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 12594.299999982119,
+            "durationMs": 6.199999988079071,
+            "renderFrameCount": 73
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 12594.799999982119,
+            "durationMs": 0.3999999761581421,
+            "renderFrameCount": 74
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 12973.699999988079,
+            "durationMs": 5.4000000059604645,
+            "renderFrameCount": 75
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 12975,
+            "durationMs": 1.2000000178813934,
+            "renderFrameCount": 76
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 13413.40000000596,
+            "durationMs": 6.600000023841858,
+            "renderFrameCount": 77
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 13413.90000000596,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 78
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 13712.59999999404,
+            "durationMs": 6.800000011920929,
+            "renderFrameCount": 79
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 13713.799999982119,
+            "durationMs": 1.0999999940395355,
+            "renderFrameCount": 80
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 14050.59999999404,
+            "durationMs": 6.5,
+            "renderFrameCount": 81
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 14051,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 82
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 14359.09999999404,
+            "durationMs": 6,
+            "renderFrameCount": 83
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 14360.40000000596,
+            "durationMs": 1.300000011920929,
+            "renderFrameCount": 84
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 14695.59999999404,
+            "durationMs": 6.0999999940395355,
+            "renderFrameCount": 85
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 14696.09999999404,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 86
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 14992.59999999404,
+            "durationMs": 6.699999988079071,
+            "renderFrameCount": 87
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 14993.799999982119,
+            "durationMs": 1.0999999940395355,
+            "renderFrameCount": 88
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 15349.699999988079,
+            "durationMs": 6.0999999940395355,
+            "renderFrameCount": 89
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 15350,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 90
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 15654.699999988079,
+            "durationMs": 5.699999988079071,
+            "renderFrameCount": 91
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 15656,
+            "durationMs": 1.300000011920929,
+            "renderFrameCount": 92
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 16002.299999982119,
+            "durationMs": 6.0999999940395355,
+            "renderFrameCount": 93
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 16002.59999999404,
+            "durationMs": 0.30000001192092896,
+            "renderFrameCount": 94
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 16297.40000000596,
+            "durationMs": 6.9000000059604645,
+            "renderFrameCount": 95
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 16298.699999988079,
+            "durationMs": 1.199999988079071,
+            "renderFrameCount": 96
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 16648.40000000596,
+            "durationMs": 6.100000023841858,
+            "renderFrameCount": 97
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 16648.79999998212,
+            "durationMs": 0.29999998211860657,
+            "renderFrameCount": 98
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 17048.29999998212,
+            "durationMs": 5.399999976158142,
+            "renderFrameCount": 99
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 17049.5,
+            "durationMs": 1.0999999940395355,
+            "renderFrameCount": 100
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 17419.29999998212,
+            "durationMs": 6.5999999940395355,
+            "renderFrameCount": 101
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 17419.79999998212,
+            "durationMs": 0.3999999761581421,
+            "renderFrameCount": 102
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 17734.29999998212,
+            "durationMs": 5.5,
+            "renderFrameCount": 103
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 17735.69999998808,
+            "durationMs": 1.2999999821186066,
+            "renderFrameCount": 104
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 18072.29999998212,
+            "durationMs": 6.0999999940395355,
+            "renderFrameCount": 105
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 18072.59999999404,
+            "durationMs": 0.19999998807907104,
+            "renderFrameCount": 106
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 18370.90000000596,
+            "durationMs": 6.9000000059604645,
+            "renderFrameCount": 107
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 18372.09999999404,
+            "durationMs": 1.0999999940395355,
+            "renderFrameCount": 108
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 18715.59999999404,
+            "durationMs": 6.0999999940395355,
+            "renderFrameCount": 109
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 18716,
+            "durationMs": 0.4000000059604645,
+            "renderFrameCount": 110
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 19013,
+            "durationMs": 5.5,
+            "renderFrameCount": 111
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 19014.29999998212,
+            "durationMs": 1.199999988079071,
+            "renderFrameCount": 112
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 19359.79999998212,
+            "durationMs": 6.0999999940395355,
+            "renderFrameCount": 113
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 19360.19999998808,
+            "durationMs": 0.29999998211860657,
+            "renderFrameCount": 114
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 19659.59999999404,
+            "durationMs": 7,
+            "renderFrameCount": 115
+          },
+          {
+            "engineId": 1,
+            "renderedAtMs": 19660.79999998212,
+            "durationMs": 1.199999988079071,
+            "renderFrameCount": 116
+          }
+        ],
+        "disposeSamples": [],
+        "canvasCreatedTotal": 1,
+        "canvasRemovedTotal": 0,
+        "liveCanvasCount": 1,
+        "engines": [
+          {
+            "id": 1,
+            "width": 648,
+            "height": 755,
+            "pivotX": 0,
+            "pivotY": 0,
+            "pivotZ": 0,
+            "cameraPosition": "left",
+            "cameraMode": "pan",
+            "projection": "orthographic",
+            "units": "mm",
+            "hasGCode": false,
+            "limitsVisible": true,
+            "coordinateSystemVisible": true,
+            "gridLineNumbersVisible": true,
+            "cuttingToolVisible": true,
+            "canvasAttached": true,
+            "renderFrameCount": 116,
+            "lastRenderAtMs": 19660.79999998212,
+            "lastRenderDurationMs": 1.199999988079071,
+            "geometryCount": 251,
+            "textureCount": 55,
+            "listenerAddCount": 6,
+            "listenerRemoveCount": 0,
+            "activeListenerCount": 6,
+            "rafRequestCount": 0,
+            "rafCompleteCount": 0,
+            "rafCancelCount": 0,
+            "activeRafCount": 0,
+            "pendingLoadId": null
+          }
+        ]
+      },
+      "heap": {
+        "usedJSHeapSize": 212000000,
+        "totalJSHeapSize": 269000000
+      },
+      "at": "2026-10-01T16:12:27.741Z"
+    }
+  },
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayout"
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0051b400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0051b400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0051b400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppr"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x11c0051b400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "type": "warning",
+      "text": "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently"
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "connection": {
+    "autoWasChecked": true,
+    "selectedLabel": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+    "openVisible": true
+  },
+  "connectedAt": "2026-10-01T16:12:09.943Z",
+  "webgl": {
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "WebKit WebGL",
+    "vendor": "WebKit",
+    "width": 648,
+    "height": 755
+  },
+  "completedAt": "2026-10-01T16:12:27.975Z",
+  "status": "completed",
+  "finalSnapshot": {
+    "metrics": {
+      "createdTotal": 1,
+      "disposedTotal": 0,
+      "liveEngineCount": 1,
+      "loadCount": 25,
+      "loadSamples": [
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 89.19999998807907,
+          "renderFrameCount": 9,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 90.69999998807907,
+          "renderFrameCount": 21,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 84.59999999403954,
+          "renderFrameCount": 25,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 109.90000000596046,
+          "renderFrameCount": 29,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 87.90000000596046,
+          "renderFrameCount": 33,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 88.19999998807907,
+          "renderFrameCount": 37,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 85.80000001192093,
+          "renderFrameCount": 41,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 88.69999998807907,
+          "renderFrameCount": 45,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 90.09999999403954,
+          "renderFrameCount": 49,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 93.69999998807907,
+          "renderFrameCount": 53,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 90.2000000178814,
+          "renderFrameCount": 57,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 82.19999998807907,
+          "renderFrameCount": 61,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 85.59999999403954,
+          "renderFrameCount": 65,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 85.30000001192093,
+          "renderFrameCount": 69,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 85.39999997615814,
+          "renderFrameCount": 73,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 87.40000000596046,
+          "renderFrameCount": 77,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 83.59999999403954,
+          "renderFrameCount": 81,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 86.09999999403954,
+          "renderFrameCount": 85,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 85.09999999403954,
+          "renderFrameCount": 89,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 89.7999999821186,
+          "renderFrameCount": 93,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 89.10000002384186,
+          "renderFrameCount": 97,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 83.59999999403954,
+          "renderFrameCount": 101,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 84.59999999403954,
+          "renderFrameCount": 105,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 82.90000000596046,
+          "renderFrameCount": 109,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        },
+        {
+          "fixtureId": "synthetic-100k.gcode",
+          "durationMs": 88.7999999821186,
+          "renderFrameCount": 113,
+          "geometries": 248,
+          "textures": 10,
+          "engineId": 1
+        }
+      ],
+      "renderSamples": [
+        {
+          "engineId": 1,
+          "renderedAtMs": 899.7999999821186,
+          "durationMs": 18.799999982118607,
+          "renderFrameCount": 1
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 924.4000000059605,
+          "durationMs": 9,
+          "renderFrameCount": 2
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 925.5999999940395,
+          "durationMs": 1.0999999940395355,
+          "renderFrameCount": 3
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 926.2999999821186,
+          "durationMs": 0.5999999940395355,
+          "renderFrameCount": 4
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 926.7999999821186,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 5
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1316.4000000059605,
+          "durationMs": 1.2000000178813934,
+          "renderFrameCount": 6
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1331.5999999940395,
+          "durationMs": 6.9000000059604645,
+          "renderFrameCount": 7
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 1436,
+          "durationMs": 0.9000000059604645,
+          "renderFrameCount": 8
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2253.2999999821186,
+          "durationMs": 7.299999982118607,
+          "renderFrameCount": 9
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2253.9000000059605,
+          "durationMs": 0.5,
+          "renderFrameCount": 10
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2601.0999999940395,
+          "durationMs": 0.5,
+          "renderFrameCount": 11
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2601.5999999940395,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 12
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2602,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 13
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2873.2999999821186,
+          "durationMs": 0.5,
+          "renderFrameCount": 14
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2874.0999999940395,
+          "durationMs": 0.699999988079071,
+          "renderFrameCount": 15
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 2874.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 16
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3165.4000000059605,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 17
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3166.7999999821186,
+          "durationMs": 1.2999999821186066,
+          "renderFrameCount": 18
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3426.7999999821186,
+          "durationMs": 5.899999976158142,
+          "renderFrameCount": 19
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3428.2999999821186,
+          "durationMs": 1.5,
+          "renderFrameCount": 20
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3774.199999988079,
+          "durationMs": 6.5999999940395355,
+          "renderFrameCount": 21
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 3774.5999999940395,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 22
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4074.5,
+          "durationMs": 5.800000011920929,
+          "renderFrameCount": 23
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4076,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 24
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4467,
+          "durationMs": 6.5999999940395355,
+          "renderFrameCount": 25
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4467.4000000059605,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 26
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4784,
+          "durationMs": 5.700000017881393,
+          "renderFrameCount": 27
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 4785.299999982119,
+          "durationMs": 1.2999999821186066,
+          "renderFrameCount": 28
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5169.199999988079,
+          "durationMs": 25.5,
+          "renderFrameCount": 29
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5169.699999988079,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 30
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5511.699999988079,
+          "durationMs": 5.5999999940395355,
+          "renderFrameCount": 31
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5513.0999999940395,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 32
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5858.199999988079,
+          "durationMs": 6.199999988079071,
+          "renderFrameCount": 33
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 5858.5999999940395,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 34
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6167.199999988079,
+          "durationMs": 5.5,
+          "renderFrameCount": 35
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6168.5999999940395,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 36
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6514.5999999940395,
+          "durationMs": 6.4000000059604645,
+          "renderFrameCount": 37
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6515,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 38
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6833.4000000059605,
+          "durationMs": 7.200000017881393,
+          "renderFrameCount": 39
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 6834.799999982119,
+          "durationMs": 1.399999976158142,
+          "renderFrameCount": 40
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7213.5,
+          "durationMs": 6.300000011920929,
+          "renderFrameCount": 41
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7213.799999982119,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 42
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7511.299999982119,
+          "durationMs": 5.699999988079071,
+          "renderFrameCount": 43
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7512.799999982119,
+          "durationMs": 1.399999976158142,
+          "renderFrameCount": 44
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7880.5999999940395,
+          "durationMs": 6.0999999940395355,
+          "renderFrameCount": 45
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 7881,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 46
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8182,
+          "durationMs": 7,
+          "renderFrameCount": 47
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8183.299999982119,
+          "durationMs": 1.2999999821186066,
+          "renderFrameCount": 48
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8525,
+          "durationMs": 6.200000017881393,
+          "renderFrameCount": 49
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8525.40000000596,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 50
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8824.09999999404,
+          "durationMs": 5.5999999940395355,
+          "renderFrameCount": 51
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 8825.40000000596,
+          "durationMs": 1.300000011920929,
+          "renderFrameCount": 52
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9170.199999988079,
+          "durationMs": 6.0999999940395355,
+          "renderFrameCount": 53
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9170.59999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 54
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9477.799999982119,
+          "durationMs": 6.799999982118607,
+          "renderFrameCount": 55
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9479.09999999404,
+          "durationMs": 1.300000011920929,
+          "renderFrameCount": 56
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9961.90000000596,
+          "durationMs": 7.4000000059604645,
+          "renderFrameCount": 57
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 9962.40000000596,
+          "durationMs": 0.5,
+          "renderFrameCount": 58
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10254.5,
+          "durationMs": 5.5999999940395355,
+          "renderFrameCount": 59
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10255.799999982119,
+          "durationMs": 1.2999999821186066,
+          "renderFrameCount": 60
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10601.699999988079,
+          "durationMs": 6.0999999940395355,
+          "renderFrameCount": 61
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10602.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 62
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10907.09999999404,
+          "durationMs": 5.5,
+          "renderFrameCount": 63
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 10908.40000000596,
+          "durationMs": 1.300000011920929,
+          "renderFrameCount": 64
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11270.09999999404,
+          "durationMs": 6.199999988079071,
+          "renderFrameCount": 65
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11270.5,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 66
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11572.199999988079,
+          "durationMs": 6.4000000059604645,
+          "renderFrameCount": 67
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11573.59999999404,
+          "durationMs": 1.4000000059604645,
+          "renderFrameCount": 68
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11920,
+          "durationMs": 7.0999999940395355,
+          "renderFrameCount": 69
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 11920.5,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 70
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12243.199999988079,
+          "durationMs": 6.199999988079071,
+          "renderFrameCount": 71
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12244.59999999404,
+          "durationMs": 1.300000011920929,
+          "renderFrameCount": 72
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12594.299999982119,
+          "durationMs": 6.199999988079071,
+          "renderFrameCount": 73
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12594.799999982119,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 74
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12973.699999988079,
+          "durationMs": 5.4000000059604645,
+          "renderFrameCount": 75
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 12975,
+          "durationMs": 1.2000000178813934,
+          "renderFrameCount": 76
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13413.40000000596,
+          "durationMs": 6.600000023841858,
+          "renderFrameCount": 77
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13413.90000000596,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 78
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13712.59999999404,
+          "durationMs": 6.800000011920929,
+          "renderFrameCount": 79
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 13713.799999982119,
+          "durationMs": 1.0999999940395355,
+          "renderFrameCount": 80
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14050.59999999404,
+          "durationMs": 6.5,
+          "renderFrameCount": 81
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14051,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 82
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14359.09999999404,
+          "durationMs": 6,
+          "renderFrameCount": 83
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14360.40000000596,
+          "durationMs": 1.300000011920929,
+          "renderFrameCount": 84
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14695.59999999404,
+          "durationMs": 6.0999999940395355,
+          "renderFrameCount": 85
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14696.09999999404,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 86
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14992.59999999404,
+          "durationMs": 6.699999988079071,
+          "renderFrameCount": 87
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 14993.799999982119,
+          "durationMs": 1.0999999940395355,
+          "renderFrameCount": 88
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15349.699999988079,
+          "durationMs": 6.0999999940395355,
+          "renderFrameCount": 89
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15350,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 90
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15654.699999988079,
+          "durationMs": 5.699999988079071,
+          "renderFrameCount": 91
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 15656,
+          "durationMs": 1.300000011920929,
+          "renderFrameCount": 92
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16002.299999982119,
+          "durationMs": 6.0999999940395355,
+          "renderFrameCount": 93
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16002.59999999404,
+          "durationMs": 0.30000001192092896,
+          "renderFrameCount": 94
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16297.40000000596,
+          "durationMs": 6.9000000059604645,
+          "renderFrameCount": 95
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16298.699999988079,
+          "durationMs": 1.199999988079071,
+          "renderFrameCount": 96
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16648.40000000596,
+          "durationMs": 6.100000023841858,
+          "renderFrameCount": 97
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 16648.79999998212,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 98
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17048.29999998212,
+          "durationMs": 5.399999976158142,
+          "renderFrameCount": 99
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17049.5,
+          "durationMs": 1.0999999940395355,
+          "renderFrameCount": 100
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17419.29999998212,
+          "durationMs": 6.5999999940395355,
+          "renderFrameCount": 101
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17419.79999998212,
+          "durationMs": 0.3999999761581421,
+          "renderFrameCount": 102
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17734.29999998212,
+          "durationMs": 5.5,
+          "renderFrameCount": 103
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 17735.69999998808,
+          "durationMs": 1.2999999821186066,
+          "renderFrameCount": 104
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18072.29999998212,
+          "durationMs": 6.0999999940395355,
+          "renderFrameCount": 105
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18072.59999999404,
+          "durationMs": 0.19999998807907104,
+          "renderFrameCount": 106
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18370.90000000596,
+          "durationMs": 6.9000000059604645,
+          "renderFrameCount": 107
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18372.09999999404,
+          "durationMs": 1.0999999940395355,
+          "renderFrameCount": 108
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18715.59999999404,
+          "durationMs": 6.0999999940395355,
+          "renderFrameCount": 109
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 18716,
+          "durationMs": 0.4000000059604645,
+          "renderFrameCount": 110
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19013,
+          "durationMs": 5.5,
+          "renderFrameCount": 111
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19014.29999998212,
+          "durationMs": 1.199999988079071,
+          "renderFrameCount": 112
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19359.79999998212,
+          "durationMs": 6.0999999940395355,
+          "renderFrameCount": 113
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19360.19999998808,
+          "durationMs": 0.29999998211860657,
+          "renderFrameCount": 114
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19659.59999999404,
+          "durationMs": 7,
+          "renderFrameCount": 115
+        },
+        {
+          "engineId": 1,
+          "renderedAtMs": 19660.79999998212,
+          "durationMs": 1.199999988079071,
+          "renderFrameCount": 116
+        }
+      ],
+      "disposeSamples": [],
+      "canvasCreatedTotal": 1,
+      "canvasRemovedTotal": 0,
+      "liveCanvasCount": 1,
+      "engines": [
+        {
+          "id": 1,
+          "width": 648,
+          "height": 755,
+          "pivotX": 0,
+          "pivotY": 0,
+          "pivotZ": 0,
+          "cameraPosition": "left",
+          "cameraMode": "pan",
+          "projection": "orthographic",
+          "units": "mm",
+          "hasGCode": false,
+          "limitsVisible": true,
+          "coordinateSystemVisible": true,
+          "gridLineNumbersVisible": true,
+          "cuttingToolVisible": true,
+          "canvasAttached": true,
+          "renderFrameCount": 116,
+          "lastRenderAtMs": 19660.79999998212,
+          "lastRenderDurationMs": 1.199999988079071,
+          "geometryCount": 251,
+          "textureCount": 55,
+          "listenerAddCount": 6,
+          "listenerRemoveCount": 0,
+          "activeListenerCount": 6,
+          "rafRequestCount": 0,
+          "rafCompleteCount": 0,
+          "rafCancelCount": 0,
+          "activeRafCount": 0,
+          "pendingLoadId": null
+        }
+      ]
+    },
+    "heap": {
+      "usedJSHeapSize": 212000000,
+      "totalJSHeapSize": 269000000
+    }
+  },
+  "finishedAt": "2026-10-01T16:12:27.978Z"
+}

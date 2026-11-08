@@ -1,0 +1,26 @@
+{
+  "setup": {
+    "referenceManifest": "/tmp/cncjs-r6-20261001/fixture-manifest.json",
+    "activeConfig": "/tmp/cncjs-r6-20261001/config.cncrc",
+    "watchRoot": "/tmp/cncjs-r6-20261001/watch-tree",
+    "supplementalCopy": "cp -R /tmp/cncjs-r6-20261001/watch-siblings /tmp/cncjs-r6-20261001/watch-tree/r6-sibling-batch"
+  },
+  "hierarchy": {
+    "originalDirectories": 100,
+    "originalFiles": 4900,
+    "originalManifestSha256": "729a673851eef39865c5ffacdff8b340bf316289bec010af42702f1fa59b69ea",
+    "supplementalDirectory": "r6-sibling-batch",
+    "supplementalFiles": 5000,
+    "supplementalManifestSha256": "593fc640b767f0b2bdc4c1cd1c472eaa5405bfe53d51e966a2cb4e251facfcf1",
+    "combinedTopLevelDirectories": 101,
+    "combinedFiles": 9900,
+    "precreatedBeforeLifecycleRestart": true,
+    "lifecycleRestartReason": "DirectoryWatcher caches root entries at startup; the first 5000-sibling case was added after startup."
+  },
+  "naming": {
+    "originalDirectoryPattern": "dir-NNN",
+    "originalFilePattern": "fixture-NNNN.nc",
+    "supplementalDirectory": "r6-sibling-batch",
+    "supplementalFilePattern": "sibling-NNNN.nc"
+  }
+}

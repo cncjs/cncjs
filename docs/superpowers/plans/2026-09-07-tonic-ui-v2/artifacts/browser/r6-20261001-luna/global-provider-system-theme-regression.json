@@ -1,0 +1,40 @@
+{
+  "task": "R6 automatic appearance regression",
+  "source": "src/app/context.jsx",
+  "test": "src/app/__tests__/GlobalProvider.test.jsx",
+  "before": {
+    "command": "yarn test:frontend --runInBand --runTestsByPath src/app/__tests__/GlobalProvider.test.jsx",
+    "exitCode": 1,
+    "testsFailed": 2,
+    "failures": [
+      "Initially automatic appearance cannot resume following media after manual light.",
+      "Initially explicit light cannot stop following media after selecting automatic then light."
+    ]
+  },
+  "after": {
+    "command": "yarn test:frontend --runInBand --runTestsByPath src/app/__tests__/GlobalProvider.test.jsx",
+    "exitCode": 0,
+    "testsPassed": 2
+  },
+  "implementation": "Compare previous state within the functional setter; unchanged system preference returns the same state object.",
+  "scope": "Real Tonic color-mode provider with controlled matchMedia change events; config/runtime/Redux boundaries isolated, unrelated ToastManager omitted. Browser console warnings remain recorded by browser runners.",
+  "classification": "The stale captured-state callback is also present in comparator commit 0a90e31f90515d711379bad8729f96a068d90718; it is a pre-existing defect.",
+  "browserReproduction": "workspace-widget-views-r6-auto-theme-regression.json",
+  "browserVerification": {
+    "status": "passed",
+    "evidence": [
+      "workspace-widget-theme-settled-1440.json",
+      "workspace-widget-theme-settled-768.json"
+    ],
+    "states": [
+      "light",
+      "dark",
+      "auto-light",
+      "auto-dark"
+    ],
+    "settledContrast": {
+      "light": 15.908084190807749,
+      "dark": 6.484186114084169
+    }
+  }
+}

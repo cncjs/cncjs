@@ -1,0 +1,89 @@
+{
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "151.0.7922.34",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true
+  },
+  "metrics": {
+    "createdTotal": 1,
+    "disposedTotal": 0,
+    "liveEngineCount": 1,
+    "loadCount": 0,
+    "loadSamples": [],
+    "renderSamples": [
+      {
+        "engineId": 1,
+        "durationMs": 20.100000023841858,
+        "renderFrameCount": 1
+      },
+      {
+        "engineId": 1,
+        "durationMs": 10,
+        "renderFrameCount": 2
+      },
+      {
+        "engineId": 1,
+        "durationMs": 1.4000000059604645,
+        "renderFrameCount": 3
+      },
+      {
+        "engineId": 1,
+        "durationMs": 0.699999988079071,
+        "renderFrameCount": 4
+      },
+      {
+        "engineId": 1,
+        "durationMs": 0.5999999940395355,
+        "renderFrameCount": 5
+      },
+      {
+        "engineId": 1,
+        "durationMs": 1,
+        "renderFrameCount": 6
+      },
+      {
+        "engineId": 1,
+        "durationMs": 7.300000011920929,
+        "renderFrameCount": 7
+      },
+      {
+        "engineId": 1,
+        "durationMs": 0.8999999761581421,
+        "renderFrameCount": 8
+      }
+    ],
+    "disposeSamples": [],
+    "canvasCreatedTotal": 1,
+    "canvasRemovedTotal": 0,
+    "liveCanvasCount": 1,
+    "engines": [
+      {
+        "id": 1,
+        "width": 648,
+        "height": 755,
+        "canvasAttached": true,
+        "renderFrameCount": 8,
+        "lastRenderDurationMs": 0.8999999761581421,
+        "geometryCount": 251,
+        "textureCount": 55,
+        "listenerAddCount": 6,
+        "listenerRemoveCount": 0,
+        "activeListenerCount": 6,
+        "rafRequestCount": 0,
+        "rafCompleteCount": 0,
+        "rafCancelCount": 0,
+        "activeRafCount": 0,
+        "pendingLoadId": null
+      }
+    ]
+  },
+  "webgl": {
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "WebKit WebGL",
+    "vendor": "WebKit",
+    "width": 648,
+    "height": 755
+  }
+}

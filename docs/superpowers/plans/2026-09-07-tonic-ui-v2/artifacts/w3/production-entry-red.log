@@ -1,0 +1,49 @@
+  console.error
+    Error in `undefined`: Error: Line 17: Unexpected reserved word
+
+      38 |       path.resolve(__dirname, 'src/app/index.jsx'),
+      39 |     ],
+    > 40 |     vendor: findImports([
+         |             ^
+      41 |       'src/app/**/*.{js,jsx}',
+      42 |       '!src/app/**/*.development.js'
+      43 |     ], { flatten: true }),
+
+      at node_modules/find-imports/index.js:139:21
+          at Array.forEach (<anonymous>)
+      at findImports (node_modules/find-imports/index.js:83:15)
+      at Object.findImports (webpack.config.production.js:40:13)
+      at Object.require (__tests__/production-entry.test.js:1:19)
+
+FAIL __tests__/production-entry.test.js (5.487 s)
+  ✕ production vendor entry contains application dependencies without test harness imports (2 ms)
+
+  ● production vendor entry contains application dependencies without test harness imports
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 6
+
+    - Array []
+    + Array [
+    +   "@testing-library/react",
+    +   "@app/test/render",
+    +   "@testing-library/user-event",
+    +   "@testing-library/jest-dom",
+    + ]
+
+      3 | test('production vendor entry contains application dependencies without test harness imports', () => {
+      4 |   expect(entry.vendor).toContain('react');
+    > 5 |   expect(entry.vendor.filter(name => /^(?:@testing-library\/|@app\/test(?:\/|$)|app\/test(?:\/|$))/.test(name))).toEqual([]);
+        |                                                                                                                  ^
+      6 | });
+      7 |
+
+      at Object.toEqual (__tests__/production-entry.test.js:5:114)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        5.501 s
+Ran all test suites within paths "__tests__/production-entry.test.js".

@@ -1,0 +1,53 @@
+{
+  "recordedAt": "2026-10-02T13:56:30.001962+00:00",
+  "startHead": "c1671769",
+  "removedDirectDependencies": {
+    "react-animate-height": "No production JS/JSX consumers; retired animation family",
+    "react-datepicker": "No consumers; installed Tonic DatePicker export verified as replacement for future date controls",
+    "react-facebook-loading": "No component consumers; removed final vendor CSS import",
+    "uncontrollable": "No production consumers after controlled Tonic migrations"
+  },
+  "alreadyRemoved": [
+    "react-bootstrap-buttons",
+    "react-select",
+    "react-infinite-tree",
+    "react-repeatable",
+    "react-foreach",
+    "styled-components",
+    "create-react-class",
+    "xstate",
+    "@xstate/react"
+  ],
+  "retainedTransitive": {
+    "rc-trigger": "rc-tooltip requires5.3.4, transitively used by retained rc-slider; no direct manifest/import"
+  },
+  "retainedUIConsumers": {
+    "rc-slider": [
+      "src/app/widgets/Webcam/Webcam.jsx",
+      "src/app/widgets/Laser/LaserTest.jsx",
+      "src/app/widgets/Axes/Settings/ShuttleXpress.jsx",
+      "src/app/widgets/Axes/Settings/MDI/CreateRecord.jsx",
+      "src/app/widgets/Axes/Settings/MDI/UpdateRecord.jsx"
+    ],
+    "infinite-tree": "Visualizer Tree/WatchDirectory domain data tree, not react-infinite-tree wrapper",
+    "react-spring": "Connection progress/open animation still has consumer; no animation behavior changes",
+    "react-focus-lock": "Application header focus lock still has consumer",
+    "react-icon-base": "Marlin extruder/heated-bed icons still have consumers",
+    "recompose": "App imports only pure compose utility; no component class migration bypass",
+    "prop-types": "Existing untouched shell/tree declarations; no new/migrated propTypes introduced",
+    "@fortawesome/*": "Named CNC-specific icons where Tonic has no equivalent",
+    "@trendmicro/babel-config and eslint-config-trendmicro": "Build/lint tooling retained per plan"
+  },
+  "domainPolicy": "scripts/ui-migration-allowlist.json; five shared families and18non-React classes; import/alias/relative inheritance resolved by checker",
+  "spinnerChanges": [
+    "Visualizer Loading/Rendering",
+    "Visualizer tree loader and directory refresh/upload",
+    "Tool refresh",
+    "Macro initial loading",
+    "Autolevel indeterminate processing",
+    "Pre-bundle bootstrap markup via actual Tonic Spinner SSR"
+  ],
+  "determinateProgress": "Kept G-code/upload/probe percentages and controller/queue/temperature numeric progress bars",
+  "runtimeManifest": "No src/package.json changes needed; root removals are frontend-only",
+  "productionBuild": "CI only; independent validation workflow has read-only repository permissions and does not publish releases"
+}

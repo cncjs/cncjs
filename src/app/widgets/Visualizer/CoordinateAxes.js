@@ -1,4 +1,3 @@
-import colornames from 'colornames';
 import * as THREE from 'three';
 
 const buildAxis = (src, dst, color, dashed) => {
@@ -44,14 +43,14 @@ const buildAxis = (src, dst, color, dashed) => {
 class CoordinateAxes {
   group = new THREE.Object3D();
 
-  // @param {object} bounds  { xmin, xmax, ymin, ymax, zmin, zmax }
+  // @param {object} bounds  { minX, maxX, minY, maxY, minZ, maxZ, colors: { x, y, z } }
   //                         All values are in the same world units.
   //                         Positive directions are drawn solid, negative dashed.
-  constructor({ minX = 0, maxX, minY = 0, maxY, minZ = 0, maxZ }) {
+  constructor({ minX = 0, maxX, minY = 0, maxY, minZ = 0, maxZ, colors }) {
     const origin = new THREE.Vector3(0, 0, 0);
-    const red = colornames('red');
-    const green = colornames('green');
-    const blue = colornames('blue');
+    const red = colors.x;
+    const green = colors.y;
+    const blue = colors.z;
 
     if (maxX > 0) {
       this.group.add(buildAxis(origin, new THREE.Vector3(maxX, 0, 0), red, false)); // +X solid

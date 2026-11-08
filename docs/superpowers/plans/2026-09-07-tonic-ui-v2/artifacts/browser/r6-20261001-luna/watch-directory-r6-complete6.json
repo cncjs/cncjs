@@ -1,0 +1,161 @@
+{
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true
+  },
+  "fixture": {
+    "rootPath": "/tmp/cncjs-r6-20261001/watch-tree",
+    "siblingPath": "r6-sibling-batch",
+    "expected": {
+      "rootDirectories": 101,
+      "originalDirectories": 100,
+      "smallTreeFiles": 49,
+      "siblingFiles": 5000
+    },
+    "fixtureManifest": "watch-directory-fixtures-r6.json"
+  },
+  "results": [
+    {
+      "name": "synthetic-simulator-connection",
+      "status": "passed",
+      "durationMs": 588,
+      "alreadyConnected": false,
+      "selectedSimulator": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+      "connected": true
+    },
+    {
+      "name": "watch-root-5000-node-hierarchy",
+      "status": "passed",
+      "durationMs": 193,
+      "rootCount": 101,
+      "rootFirst": "dir-000",
+      "rootLast": "r6-sibling-batch",
+      "originalDirectoryCount": 100,
+      "firstDirectoryFileCount": 49,
+      "firstFile": "dir-000/fixture-0000.nc",
+      "lastFile": "dir-000/fixture-0048.nc",
+      "knownFixtureNodeTotal": 10001
+    },
+    {
+      "name": "watch-5000-sibling-directory",
+      "status": "failed",
+      "durationMs": 28075,
+      "error": "TimeoutError: locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: '3D Visualizer widget', exact: true }).getByText('sibling-4999.nc', { exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "name": "unload-synthetic-last-sibling-cleanup",
+      "status": "passed",
+      "loadedFileClosed": true
+    }
+  ],
+  "api": [
+    {
+      "method": "POST",
+      "path": "/api/watch/files",
+      "directory": ""
+    },
+    {
+      "status": 200,
+      "path": "/api/watch/files",
+      "directory": "",
+      "itemCount": 101
+    },
+    {
+      "method": "POST",
+      "path": "/api/watch/files",
+      "directory": "dir-000"
+    },
+    {
+      "status": 200,
+      "path": "/api/watch/files",
+      "directory": "dir-000",
+      "itemCount": 49
+    },
+    {
+      "method": "POST",
+      "path": "/api/watch/files",
+      "directory": "r6-sibling-batch"
+    },
+    {
+      "status": 200,
+      "path": "/api/watch/files",
+      "directory": "r6-sibling-batch",
+      "itemCount": 5000
+    }
+  ],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscrib"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x12c00447a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x12c00447a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x12c00447a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerive"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x12c00447a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": []
+}

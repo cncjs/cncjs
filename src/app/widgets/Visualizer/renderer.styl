@@ -3,11 +3,11 @@
 
     .selected&,
     .selected&:hover {
-        background: #deecfd;
+        background: var(--tonic-colors-actions-selected);
     }
 
     &:hover {
-        background: #f2fdff;
+        background: var(--tonic-colors-actions-hovered);
     }
     &:disabled,
     &[disabled] {
@@ -30,12 +30,12 @@
     width: 18px;
     text-align: center;
     cursor: pointer;
-    color: #666;
+    color: var(--tonic-colors-text-secondary);
     margin-left: -2px;
     margin-right: 2px;
 
     &:hover {
-        color: #333;
+        color: var(--tonic-colors-text-primary);
         text-decoration: none;
     }
 }

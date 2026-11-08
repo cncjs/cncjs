@@ -33,9 +33,9 @@ export function* init() {
       loading && loading.remove();
     }
 
-    { // Change backgrond color after loading complete
+    { // Use the page surface after loading completes
       const body = document.querySelector('body');
-      body.style.backgroundColor = '#222'; // sidebar background color
+      body.style.backgroundColor = 'var(--tonic-colors-background-low)';
     }
 
     yield put(appInitSuccess());

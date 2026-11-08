@@ -1,0 +1,162 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "channel": "bundled Chromium",
+    "viewport": "1440x900",
+    "dpr": 1
+  },
+  "transport": {
+    "method": "Socket.IO WebSocket connectToServer relay with synthetic incoming event frames at the network boundary",
+    "injected": [
+      {
+        "event": "controller:settings",
+        "controller": "Marlin",
+        "payloadBytes": 79,
+        "payloadSha256": "732e457a21307d2c92b4a9e69cbe72de134010aabc30dac25cccdee1e5e85d97"
+      },
+      {
+        "event": "controller:state",
+        "controller": "Marlin",
+        "payloadBytes": 231,
+        "payloadSha256": "6fda8f0646d6d2d872141d93607f9286782987d1bc39d05966fae532582e30ea"
+      },
+      {
+        "event": "controller:settings",
+        "controller": "Smoothie",
+        "payloadBytes": 104,
+        "payloadSha256": "dcf0fc048b48acc50a6a8bd2baf0f028c5149cc29973f7d053963f6725618c25"
+      },
+      {
+        "event": "controller:state",
+        "controller": "Smoothie",
+        "payloadBytes": 231,
+        "payloadSha256": "63dc02750bc58a4abb8f90ccf3997cdb023320dc36283ba726b4b0557a8a3527"
+      },
+      {
+        "event": "controller:settings",
+        "controller": "TinyG",
+        "payloadBytes": 71,
+        "payloadSha256": "0981a4a35f9758c9e8bb3add74e051ca3c93ae30c2809d5ae665d947b1647f2c"
+      },
+      {
+        "event": "controller:state",
+        "controller": "TinyG",
+        "payloadBytes": 143,
+        "payloadSha256": "2e7be2b09b272c09aa1a48aecbb7f8d2f109ceb83aef0dd9a717a0eda27ab598"
+      }
+    ],
+    "websocketOpened": 1,
+    "websocketClosed": 0
+  },
+  "gates": [
+    {
+      "name": "connect actual GRBL simulator through Connection widget",
+      "status": "passed",
+      "durationMs": 1111,
+      "alreadyConnected": false,
+      "selectedPort": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+      "websocketOpened": 1
+    },
+    {
+      "name": "Marlin controller replay updates body and controller state/settings modal",
+      "status": "failed",
+      "durationMs": 15004,
+      "error": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Marlin widget', exact: true }).getByRole('button', { name: 'Marlin controller info', exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "name": "Smoothie controller replay updates body and controller state/settings modal",
+      "status": "failed",
+      "durationMs": 15002,
+      "error": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Smoothie widget', exact: true }).getByRole('button', { name: 'Smoothie controller info', exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "name": "TinyG controller replay updates body and controller state/settings modal",
+      "status": "failed",
+      "durationMs": 15002,
+      "error": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'TinyG widget', exact: true }).getByRole('button', { name: 'TinyG controller info', exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "name": "disconnect simulator through Connection widget",
+      "status": "passed",
+      "durationMs": 258,
+      "disconnected": true
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:2"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x12400448600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x12400448600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x12400448600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently"
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x12400448600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    }
+  ],
+  "outgoingCommands": []
+}

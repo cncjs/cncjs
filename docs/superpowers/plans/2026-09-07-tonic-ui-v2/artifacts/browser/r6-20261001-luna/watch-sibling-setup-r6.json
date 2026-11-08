@@ -1,0 +1,18 @@
+{
+  "fixture": {
+    "source": "/tmp/cncjs-r6-20261001/watch-siblings",
+    "destination": "/tmp/cncjs-r6-20261001/watch-tree",
+    "count": 5000,
+    "naming": "sibling-NNNN.nc",
+    "content": "(synthetic R6 fixture NNNNN)\\nG21\\nG90\\nG1 X1 Y1 F600\\nM30\\n"
+  },
+  "method": "authenticated same-origin PUT /api/watch/file, bounded concurrent batches",
+  "responses": {
+    "firstWriteStatus": 200,
+    "firstObservedByWatcher": false,
+    "remainingWriteSuccesses": 0,
+    "finalRootEntryCount": null
+  },
+  "status": "failed",
+  "error": "Error: Directory watcher did not expose the first created sibling file"
+}

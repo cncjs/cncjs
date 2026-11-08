@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { useTheme } from '@tonic-ui/react';
 import React from 'react';
 import i18n from '@app/lib/i18n';
 import { METRIC_UNITS } from '@app/constants';
@@ -16,11 +16,17 @@ const WORKPIECE_TOP_Y = 68;
 const WORKPIECE_BOTTOM_Y = 88;
 const ARROW_END_Y = 115;
 
+/**
+ * @param {{clearanceZ?: number, startZ?: number, endZ?: number, feedrate?: number, units?: string}} props
+ */
 const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) => {
+  const theme = useTheme();
   const displayUnits = toDisplayUnits(units);
   const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
   return (
     <svg
+      role="img"
+      aria-label={i18n._('Z-axis probe diagram')}
       viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
       {...props}
     >
@@ -30,8 +36,8 @@ const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) 
         y={WORKPIECE_TOP_Y}
         width="220"
         height={WORKPIECE_BOTTOM_Y - WORKPIECE_TOP_Y}
-        fill="#e8d4a0"
-        stroke="#b8a070"
+        fill={theme.get('colors.warning._overlay')}
+        stroke={theme.get('colors.warning.border')}
         strokeWidth="1"
       />
 
@@ -42,7 +48,7 @@ const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) 
         textAnchor="start"
         dominantBaseline="central"
         fontSize="9"
-        fill="#8a7040"
+        fill={theme.get('colors.warning._onOverlay.text')}
       >
         {i18n._('Workpiece')}
       </text>
@@ -53,7 +59,7 @@ const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) 
         x2="225"
         y1={CLEARANCE_Y}
         y2={CLEARANCE_Y}
-        stroke="#339933"
+        stroke={theme.get('colors.success.icon')}
         strokeWidth="1"
         strokeDasharray="3,2"
       />
@@ -61,7 +67,7 @@ const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) 
         x={12}
         y={CLEARANCE_Y + 10}
         fontSize="9"
-        fill="#339933"
+        fill={theme.get('colors.success._onOverlay.text')}
       >
         {i18n._('Clearance Z: {{value}} {{- units}}', { value: clearanceZ, units: displayUnits })}
       </text>
@@ -72,16 +78,16 @@ const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) 
         y={TOOL_TOP_Y}
         width={PROBE_WIDTH}
         height={TIP_Y - TOOL_TOP_Y - 8}
-        fill="#888"
-        stroke="#555"
+        fill={theme.get('colors.text.secondary')}
+        stroke={theme.get('colors.text.primary')}
         strokeWidth="1"
       />
 
       {/* Probe tool tip (triangle) */}
       <polygon
         points={`${PROBE_X - PROBE_WIDTH / 2},${TIP_Y - 8} ${PROBE_X + PROBE_WIDTH / 2},${TIP_Y - 8} ${PROBE_X},${TIP_Y}`}
-        fill="#888"
-        stroke="#555"
+        fill={theme.get('colors.text.secondary')}
+        stroke={theme.get('colors.text.primary')}
         strokeWidth="1"
       />
 
@@ -90,7 +96,7 @@ const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) 
         x={PROBE_X + 16}
         y={TIP_Y}
         fontSize="9"
-        fill="#0066cc"
+        fill={theme.get('colors.info._onOverlay.text')}
       >
         {i18n._('Start Z: {{value}} {{- units}}', { value: startZ, units: displayUnits })}
       </text>
@@ -101,7 +107,7 @@ const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) 
         y1={TIP_Y + 4}
         x2={PROBE_X}
         y2={ARROW_END_Y - 6}
-        stroke="#cc0000"
+        stroke={theme.get('colors.error.text')}
         strokeWidth="1.5"
         strokeDasharray="4,3"
       />
@@ -109,7 +115,7 @@ const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) 
       {/* Arrow tip */}
       <polygon
         points={`${PROBE_X},${ARROW_END_Y} ${PROBE_X - 4},${ARROW_END_Y - 8} ${PROBE_X + 4},${ARROW_END_Y - 8}`}
-        fill="#cc0000"
+        fill={theme.get('colors.error.text')}
       />
 
       {/* End Z label */}
@@ -117,7 +123,7 @@ const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) 
         x={PROBE_X + 16}
         y={ARROW_END_Y + 2}
         fontSize="9"
-        fill="#cc0000"
+        fill={theme.get('colors.error.text')}
       >
         {i18n._('End Z: {{value}} {{- units}}', { value: endZ, units: displayUnits })}
       </text>
@@ -128,20 +134,12 @@ const ZProbeDiagram = ({ clearanceZ, startZ, endZ, feedrate, units, ...props }) 
         y={TIP_Y - 8}
         textAnchor="end"
         fontSize="9"
-        fill="#666"
+        fill={theme.get('colors.text.secondary')}
       >
         {i18n._('{{value}} {{- units}}', { value: feedrate, units: feedrateUnits })}
       </text>
     </svg>
   );
-};
-
-ZProbeDiagram.propTypes = {
-  clearanceZ: PropTypes.number,
-  startZ: PropTypes.number,
-  endZ: PropTypes.number,
-  feedrate: PropTypes.number,
-  units: PropTypes.string,
 };
 
 export default ZProbeDiagram;

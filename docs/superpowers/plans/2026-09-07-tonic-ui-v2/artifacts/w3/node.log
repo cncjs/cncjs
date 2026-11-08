@@ -1,0 +1,2866 @@
+PASS __tests__/app-template.test.js
+PASS src/server/controllers/Grbl/__tests__/GrblController.test.js
+PASS __tests__/ui-migration.test.js
+PASS src/server/__tests__/app.test.js
+  ● Console
+
+    console.info
+      🌐 i18next is made possible by our own product, Locize — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙
+
+      at I18n.init (node_modules/i18next/dist/cjs/i18next.js:1789:90)
+
+PASS src/server/controllers/TinyG/__tests__/TinyGController.test.js
+  ● Console
+
+    console.log
+      2026-10-02T13:51:49.195Z - warn controller:TinyG Warning: The "jogCancel" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.196Z - warn controller:TinyG Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.197Z - warn controller:TinyG Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.198Z - warn controller:TinyG Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.199Z - warn controller:TinyG Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.200Z - warn controller:TinyG Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.200Z - warn controller:TinyG Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.201Z - warn controller:TinyG Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.202Z - warn controller:TinyG Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.202Z - warn controller:TinyG Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.203Z - warn controller:TinyG Warning: The "rapidOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.203Z - warn controller:TinyG Warning: The "rapidOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.204Z - warn controller:TinyG Warning: The "rapidOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.205Z - warn controller:TinyG Warning: The "rapidOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.205Z - warn controller:TinyG Warning: The "rapidOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.206Z - warn controller:TinyG Warning: The "lasertest:on" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.206Z - warn controller:TinyG Warning: The "lasertest:on" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.207Z - warn controller:TinyG Warning: The "lasertest:off" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.211Z - warn controller:TinyG Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.212Z - warn controller:TinyG Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.213Z - warn controller:TinyG Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.213Z - warn controller:TinyG Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.214Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.215Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.215Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.216Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.216Z - warn controller:TinyG Warning: The "gcode:unload" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.217Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.217Z - warn controller:TinyG Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.218Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.218Z - warn controller:TinyG Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.218Z - warn controller:TinyG Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.219Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.219Z - warn controller:TinyG Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.220Z - warn controller:TinyG Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.220Z - warn controller:TinyG Warning: The "gcode:resume" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.221Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.221Z - warn controller:TinyG Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.222Z - warn controller:TinyG Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.222Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.222Z - warn controller:TinyG Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.223Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.223Z - warn controller:TinyG Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.224Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.224Z - warn controller:TinyG Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.225Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.225Z - warn controller:TinyG Warning: The "start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.225Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.226Z - warn controller:TinyG Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.226Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.227Z - warn controller:TinyG Warning: The "stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.227Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.227Z - warn controller:TinyG Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.228Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.228Z - warn controller:TinyG Warning: The "pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.229Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.229Z - warn controller:TinyG Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.230Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.231Z - warn controller:TinyG Warning: The "resume" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.232Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.232Z - warn controller:TinyG Warning: The "gcode:resume" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.233Z - warn controller:TinyG Warning: The "macro:run" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.234Z - warn controller:TinyG Warning: The "macro:run" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.234Z - error controller:TinyG Cannot find the macro: id=missing
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.235Z - warn controller:TinyG Warning: The "macro:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.235Z - warn controller:TinyG Warning: The "macro:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.236Z - error controller:TinyG Cannot find the macro: id=missing
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.236Z - warn controller:TinyG Warning: The "watchdir:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.237Z - warn controller:TinyG Warning: The "watchdir:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.243Z - info controller:TinyG [autolevel:start] Test probe: clearanceZ=5, startZ=1, endZ=-1, F=100
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.244Z - info controller:TinyG [autolevel:start] Start probing with 4 points
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.245Z - info controller:TinyG [autolevel:start] Starting probing with 4 points
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.246Z - info controller:TinyG [autolevel] Probing completed
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.247Z - info controller:TinyG [autolevel:start] Start probing with 4 points
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.247Z - info controller:TinyG [autolevel:start] Starting probing with 4 points
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.247Z - info controller:TinyG [autolevel:stop] Probe stopped and state cleared
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.250Z - info controller:TinyG [autolevel:load] Loaded 2 points from /var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-tinyg-probe-data.txt
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.251Z - error controller:TinyG [autolevel:load] Error loading probe data: Error: ENOENT: no such file or directory, open '/var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-tinyg-missing-probe-data.txt'
+          at open (node:internal/fs/promises:1345:25)
+          at Object.readFile (node:internal/fs/promises:1996:14)
+          at autolevel:loadFromFile (/Users/cheton/Code/cncjs/cncjs-cheton/src/server/controllers/TinyG/TinyGController.js:780:22) {
+        errno: -2,
+        code: 'ENOENT',
+        syscall: 'open',
+        path: '/var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-tinyg-missing-probe-data.txt'
+      }
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.252Z - info controller:TinyG [autolevel:saveToFile] Saved 2 points to /var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-tinyg-probe-save.txt
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.253Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.253Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.253Z - info controller:TinyG [autolevel:applyProbeCompensation] Probe compensation applied
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.254Z - error controller:TinyG Unknown command: nonexistent
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.255Z - error controller:TinyG Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.255Z - error controller:TinyG Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.255Z - error controller:TinyG Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.256Z - error controller:TinyG Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+PASS src/server/controllers/Smoothie/__tests__/SmoothieController.test.js
+  ● Console
+
+    console.log
+      2026-10-02T13:51:49.323Z - warn controller:Smoothie Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.324Z - warn controller:Smoothie Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.325Z - warn controller:Smoothie Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.325Z - warn controller:Smoothie Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.326Z - warn controller:Smoothie Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.327Z - warn controller:Smoothie Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.328Z - warn controller:Smoothie Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.328Z - warn controller:Smoothie Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.329Z - warn controller:Smoothie Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.330Z - warn controller:Smoothie Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.330Z - warn controller:Smoothie Warning: The "rapidOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.331Z - warn controller:Smoothie Warning: The "lasertest:on" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.332Z - warn controller:Smoothie Warning: The "lasertest:on" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.334Z - warn controller:Smoothie Warning: The "lasertest:off" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.335Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.336Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.337Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.337Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.338Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.338Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.339Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.339Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.340Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.340Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.340Z - warn controller:Smoothie Warning: The "gcode:resume" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.341Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.341Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.342Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.342Z - warn controller:Smoothie Warning: The "gcode:resume" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.343Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.343Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.343Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.343Z - warn controller:Smoothie Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.344Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.344Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.345Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.345Z - warn controller:Smoothie Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.346Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.346Z - warn controller:Smoothie Warning: The "gcode:unload" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.347Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.347Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.347Z - warn controller:Smoothie Warning: The "start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.348Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.348Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.349Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.349Z - warn controller:Smoothie Warning: The "stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.349Z - warn controller:Smoothie Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.350Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.350Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.350Z - warn controller:Smoothie Warning: The "pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.351Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.354Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.354Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.354Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.355Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.355Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.355Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.356Z - warn controller:Smoothie Warning: The "resume" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.356Z - warn controller:Smoothie Warning: The "gcode:resume" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.357Z - warn controller:Smoothie Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.358Z - warn controller:Smoothie Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.358Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.359Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.359Z - warn controller:Smoothie Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.360Z - warn controller:Smoothie Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.360Z - warn controller:Smoothie Warning: The "macro:run" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.361Z - warn controller:Smoothie Warning: The "macro:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.362Z - warn controller:Smoothie Warning: The "macro:run" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.362Z - error controller:Smoothie Cannot find the macro: id=missing
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.362Z - warn controller:Smoothie Warning: The "macro:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.363Z - error controller:Smoothie Cannot find the macro: id=missing
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.363Z - warn controller:Smoothie Warning: The "watchdir:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.364Z - warn controller:Smoothie Warning: The "watchdir:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.371Z - info controller:Smoothie [autolevel:start] Test probe: clearanceZ=5, startZ=2, endZ=-1, F=100
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.372Z - info controller:Smoothie [autolevel:start] Start probing with 4 points
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.372Z - info controller:Smoothie [autolevel:start] Starting probing with 4 points
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.374Z - info controller:Smoothie [autolevel] Probing completed
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.374Z - info controller:Smoothie [autolevel:stop] Probe stopped and state cleared
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.377Z - info controller:Smoothie [autolevel:load] Loaded 2 points from /var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-smoothie-probes-74998-1790949109375.txt
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.379Z - error controller:Smoothie [autolevel:load] Error loading probe data: Error: ENOENT: no such file or directory, open '/var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-smoothie-missing-probe-file.txt'
+          at open (node:internal/fs/promises:1345:25)
+          at Object.readFile (node:internal/fs/promises:1996:14)
+          at autolevel:loadFromFile (/Users/cheton/Code/cncjs/cncjs-cheton/src/server/controllers/Smoothie/SmoothieController.js:739:22) {
+        errno: -2,
+        code: 'ENOENT',
+        syscall: 'open',
+        path: '/var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-smoothie-missing-probe-file.txt'
+      }
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.380Z - info controller:Smoothie [autolevel:saveToFile] Saved 2 points to /var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-smoothie-save-74998-1790949109379.txt
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.381Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.381Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.382Z - info controller:Smoothie [autolevel:applyProbeCompensation] Probe compensation applied
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.382Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.382Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.383Z - error controller:Smoothie Unknown command: nonexistent
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.383Z - error controller:Smoothie Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.384Z - error controller:Smoothie Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.384Z - error controller:Smoothie Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.384Z - error controller:Smoothie Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.385Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+PASS src/server/controllers/Marlin/__tests__/MarlinController.test.js
+PASS __tests__/prettier-plugin-keep-inline.test.js
+PASS grbl-simulator/__tests__/grbl-simulator.test.js
+PASS src/server/lib/__tests__/autolevel.test.js
+  ● Console
+
+    console.log
+      2026-10-02T13:51:49.649Z - error autolevel Not enough probed positions for compensation (need at least 3)
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.650Z - error autolevel Not enough probed positions for compensation (need at least 3)
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.650Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 3 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.651Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.651Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.652Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.652Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.652Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.653Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.653Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.656Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.656Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.656Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 12 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.657Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.657Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.658Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.658Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 20.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.658Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.659Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.659Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.659Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.660Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.660Z - info autolevel Applying Z compensation (auto-detected grid: 20.00mm × 20.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.660Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.661Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.661Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.662Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 9 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.662Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.662Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 6 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.663Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.663Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 6 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.663Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.664Z - info autolevel Applying Z compensation (auto-detected grid: 3.00mm × 2.00mm, 3 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.664Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.664Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 9 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.665Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.665Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 0.00mm, 9 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.688Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.691Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 9 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.691Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.692Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 0.00mm, 9 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.692Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+PASS src/server/controllers/Grbl/__tests__/GrblRunner.test.js
+PASS src/server/lib/__tests__/webappengine.test.js
+PASS src/server/lib/__tests__/evaluate-assignment-expression.test.js
+  ● Console
+
+    console.log
+      2026-10-02T13:51:49.777Z - error evaluate-assignment-expression src="Not a valid expression", vars={}
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T13:51:49.778Z - error evaluate-assignment-expression Error { index: 4, lineNumber: 1, description: 'Unexpected identifier' }
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+PASS src/server/controllers/Smoothie/__tests__/SmoothieRunner.test.js
+PASS src/server/lib/__tests__/evaluate-expression.test.js
+PASS src/server/controllers/Marlin/__tests__/MarlinRunner.test.js
+PASS src/server/services/__tests__/DirectoryWatcherService.test.js
+PASS src/server/lib/__tests__/translate-expression.test.js
+  ● Console
+
+    console.log
+      2026-10-02T13:51:49.884Z - error evaluate-expression Error {
+        index: 1,
+        lineNumber: 1,
+        description: 'Unexpected end of input'
+      }
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+          at String.replace (<anonymous>)
+
+PASS src/server/controllers/TinyG/__tests__/TinyGRunner.test.js
+PASS src/server/lib/__tests__/Sender.test.js
+PASS src/server/controllers/utils/__tests__/gcode.test.js
+
+Test Suites: 21 passed, 21 total
+Tests:       640 passed, 640 total
+Snapshots:   0 total
+Time:        4.323 s, estimated 6 s
+Ran all test suites.
+
+Jest has detected the following 112 open handles potentially keeping Jest from exiting:
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:10:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:16:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:23:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:32:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:39:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:47:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:55:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:62:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:69:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:80:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:88:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:97:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:105:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:114:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:122:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:129:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:142:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:153:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:162:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:173:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:179:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:186:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:195:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:204:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:215:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:223:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:234:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:245:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:256:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:265:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:277:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:288:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:298:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:308:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:319:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:330:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:341:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:353:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:367:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:380:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:390:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:402:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:410:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:420:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:428:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:435:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:445:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:453:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:460:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:467:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:475:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:487:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:493:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:503:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:512:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:519:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:527:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:537:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:559:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:580:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:602:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:624:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:640:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:655:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:670:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:694:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:706:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:721:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:731:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:741:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:753:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:767:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:782:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:790:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:798:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:812:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:823:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:831:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:841:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:853:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:864:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:869:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:879:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:894:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:906:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:916:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:938:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:971:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:977:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:995:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1009:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1021:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1037:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1050:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1063:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1073:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1085:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1096:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1107:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1119:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1128:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1137:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1143:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1153:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1163:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1174:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1185:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1200:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1215:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1230:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1245:21)
+
+
+  ●  Timeout
+
+      344 |      */
+      345 |     startPlannerExecutor() {
+    > 346 |         setInterval(() => {
+          |         ^
+      347 |             this.executePlannerQueue();
+      348 |         }, 10); // Check every 10ms
+      349 |     }
+
+      at GrblSimulator.setInterval [as startPlannerExecutor] (grbl-simulator/grbl-simulator.js:346:9)
+      at new startPlannerExecutor (grbl-simulator/grbl-simulator.js:211:14)
+      at Object.<anonymous> (grbl-simulator/__tests__/grbl-simulator.test.js:1257:21)

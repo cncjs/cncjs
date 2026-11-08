@@ -1,0 +1,26 @@
+{
+  "sourceRevision": "d745478258dbfe9376c31b5ffe4e36e55aaab3ab",
+  "downloadedFrom": "https://github.com/cheton/cncjs/actions/runs/37016788462",
+  "checks": {
+    "tonicSpinner": true,
+    "animation": true,
+    "spinnerPlaceholderResolved": true,
+    "serverLanguagePreserved": true,
+    "legacyGifAbsent": true
+  },
+  "entries": {
+    "app/index.html": {
+      "bytes": 3248,
+      "sha256": "64d084585dd83a139eddcb5591e22149df7b74fe268e0dfa38fecca22538d5b2"
+    },
+    "server-cli.js": {
+      "bytes": 16130,
+      "sha256": "79d305dada055df9566cfa258c8f01cb7181d69e60132b8dd25c3854cd816928"
+    },
+    "package.json": {
+      "bytes": 1835,
+      "sha256": "75139c99f3bec4d8964870257642c5246bd33ae75281cafc5cff94b4d6254ff6"
+    }
+  },
+  "review": "Static inspection of downloaded CI package; no local production build"
+}

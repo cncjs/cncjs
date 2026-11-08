@@ -1,0 +1,80 @@
+[
+  {
+    "name": "run-once",
+    "elapsed_ms": 148,
+    "state": [
+      {
+        "aria": "Run",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "aria": "Pause",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "aria": "Stop",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "aria": "Close G-code file",
+        "text": "",
+        "disabled": true
+      }
+    ]
+  },
+  {
+    "name": "pause-once",
+    "elapsed_ms": 174,
+    "state": [
+      {
+        "aria": "Run",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "aria": "Pause",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "aria": "Stop",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "aria": "Close G-code file",
+        "text": "",
+        "disabled": true
+      }
+    ]
+  },
+  {
+    "name": "resume-once",
+    "elapsed_ms": 151,
+    "state": [
+      {
+        "aria": "Run",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "aria": "Pause",
+        "text": "",
+        "disabled": false
+      },
+      {
+        "aria": "Stop",
+        "text": "",
+        "disabled": true
+      },
+      {
+        "aria": "Close G-code file",
+        "text": "",
+        "disabled": true
+      }
+    ]
+  }
+]

@@ -44,9 +44,11 @@ jobs:
       run: npm install -g yarn
     - name: Install necessary dependencies and perform initial checks
       run: |
-        yarn up
-        yarn install
+        yarn install --immutable
         yarn lint
+        yarn test:ui-migration
+        yarn check:ui-migration
+        yarn test:frontend --runInBand
         yarn test
     - name: Run "build" script
       if: github.ref_type == 'tag'
@@ -151,9 +153,11 @@ jobs:
       run: npm install -g yarn
     - name: Install necessary dependencies and perform initial checks
       run: |
-        yarn up
-        yarn install
+        yarn install --immutable
         yarn lint
+        yarn test:ui-migration
+        yarn check:ui-migration
+        yarn test:frontend --runInBand
         yarn test
     - name: Run "build" script
       if: github.ref_type == 'tag'
@@ -238,9 +242,11 @@ jobs:
       run: npm install -g yarn
     - name: Install necessary dependencies and perform initial checks
       run: |
-        yarn up
-        yarn install
+        yarn install --immutable
         yarn lint
+        yarn test:ui-migration
+        yarn check:ui-migration
+        yarn test:frontend --runInBand
         yarn test
     - name: Run "build" script
       if: github.ref_type == 'tag'
@@ -322,9 +328,11 @@ jobs:
       run: npm install -g yarn
     - name: Install necessary dependencies and perform initial checks
       run: |
-        yarn up
-        yarn install
+        yarn install --immutable
         yarn lint
+        yarn test:ui-migration
+        yarn check:ui-migration
+        yarn test:frontend --runInBand
         yarn test
     - name: Run "build" script
       if: github.ref_type == 'tag'

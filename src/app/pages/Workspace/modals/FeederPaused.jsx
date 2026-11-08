@@ -1,72 +1,65 @@
-import chainedFunction from 'chained-function';
-import PropTypes from 'prop-types';
+import {
+  Alert,
+  Box,
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalOverlay,
+  Text,
+} from '@tonic-ui/react';
 import React from 'react';
-import { Button } from '@app/components/Buttons';
-import ModalTemplate from '@app/components/ModalTemplate';
-import Modal from '@app/components/Modal';
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 
-const FeederPaused = ({
-  title,
-  message,
-  onClose,
-}) => {
+/**
+ * @param {{ message?: string, onClose?: () => void, title?: string }} props
+ * @returns {JSX.Element}
+ */
+function FeederPaused({ title = '', message = '', onClose = () => {} }) {
+  const stop = () => {
+    controller.command('feeder_stop');
+    onClose();
+  };
+  const resume = () => {
+    controller.command('feeder_start');
+    onClose();
+  };
+
   return (
     <Modal
+      autoFocus
+      closeOnEsc={false}
+      closeOnInteractOutside={false}
+      ensureFocus
+      isClosable={false}
+      isOpen
+      onClose={onClose}
       size="xs"
-      disableOverlayClick
-      showCloseButton={false}
     >
-      <Modal.Body>
-        <ModalTemplate type="warning">
-          {({ PrimaryMessage, DescriptiveMessage }) => (
-            <>
-              <PrimaryMessage>
-                <h5>{title}</h5>
-                {message && (
-                  <p>{message}</p>
-                )}
-              </PrimaryMessage>
-              <DescriptiveMessage>
-                {i18n._('Click the Continue button to resume execution.')}
-              </DescriptiveMessage>
-            </>
-          )}
-        </ModalTemplate>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button
-          className="pull-left"
-          btnStyle="danger"
-          onClick={chainedFunction(
-            () => {
-              controller.command('feeder_stop');
-            },
-            onClose,
-          )}
-        >
-          {i18n._('Stop')}
-        </Button>
-        <Button
-          onClick={chainedFunction(
-            () => {
-              controller.command('feeder_start');
-            },
-            onClose,
-          )}
-        >
-          {i18n._('Continue')}
-        </Button>
-      </Modal.Footer>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalBody>
+          <Alert severity="warning">
+            <Box fontWeight="bold">
+              <Text as="h5">{title}</Text>
+              {message && <Text as="p">{message}</Text>}
+            </Box>
+            <Box>{i18n._('Click the Continue button to resume execution.')}</Box>
+          </Alert>
+        </ModalBody>
+        <ModalFooter justify="space-between">
+          <Button onClick={stop} variant="danger">
+            {i18n._('Stop')}
+          </Button>
+          <Button onClick={resume}>
+            {i18n._('Continue')}
+          </Button>
+        </ModalFooter>
+      </ModalContent>
     </Modal>
   );
-};
-
-FeederPaused.propTypes = {
-  title: PropTypes.string,
-  message: PropTypes.string,
-  onClose: PropTypes.func
-};
+}
 
 export default FeederPaused;

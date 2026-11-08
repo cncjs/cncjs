@@ -1,0 +1,186 @@
+{
+  "click": "NO_MODAL",
+  "modalGone": true,
+  "dom": {
+    "modalGone": true,
+    "selects": [],
+    "inputs": [
+      {
+        "i": 0,
+        "type": "text",
+        "value": "",
+        "accept": "",
+        "html": "<input id=\"react-select-2-input\" readonly=\"\" tabindex=\"0\" aria-autocomplete=\"list\" class=\"css-62g3xt-dummyInput\" value=\"\">"
+      },
+      {
+        "i": 1,
+        "type": "text",
+        "value": "",
+        "accept": "",
+        "html": "<input id=\"react-select-3-input\" readonly=\"\" tabindex=\"0\" aria-autocomplete=\"list\" class=\"css-62g3xt-dummyInput\" value=\"\">"
+      },
+      {
+        "i": 2,
+        "type": "checkbox",
+        "value": "on",
+        "accept": "",
+        "html": "<input type=\"checkbox\" class=\"components-Checkbox-index__input-checkbox--AGdQF\">"
+      },
+      {
+        "i": 3,
+        "type": "checkbox",
+        "value": "on",
+        "accept": "",
+        "html": "<input type=\"checkbox\" class=\"components-Checkbox-index__input-checkbox--AGdQF\">"
+      },
+      {
+        "i": 4,
+        "type": "checkbox",
+        "value": "on",
+        "accept": "",
+        "html": "<input type=\"checkbox\" class=\"components-Checkbox-index__input-checkbox--AGdQF\">"
+      },
+      {
+        "i": 5,
+        "type": "checkbox",
+        "value": "on",
+        "accept": "",
+        "html": "<input type=\"checkbox\" class=\"components-Checkbox-index__input-checkbox--AGdQF\" checked=\"\">"
+      },
+      {
+        "i": 6,
+        "type": "file",
+        "value": "",
+        "accept": "",
+        "html": "<input type=\"file\" style=\"display: none;\">"
+      },
+      {
+        "i": 7,
+        "type": "number",
+        "value": "10",
+        "accept": "",
+        "html": "<input name=\"probeDepth\" type=\"number\" min=\"0\" step=\"0.1\" class=\"components-InputGroup-index__input-group-item--AHXMh components-FormControl-index__form-control--eN8XQ components-FormControl-index__form-control-sm--YQB2c\" value=\"10\">"
+      },
+      {
+        "i": 8,
+        "type": "number",
+        "value": "20",
+        "accept": "",
+        "html": "<input name=\"probeFeedrate\" type=\"number\" min=\"0\" step=\"0.1\" class=\"components-InputGroup-index__input-group-item--AHXMh components-FormControl-index__form-control--eN8XQ components-FormControl-index__form-control-sm--YQB2c\" value=\"20\">"
+      },
+      {
+        "i": 9,
+        "type": "number",
+        "value": "10",
+        "accept": "",
+        "html": "<input name=\"touchPlateHeight\" type=\"number\" min=\"0\" step=\"0.1\" class=\"components-InputGroup-index__input-group-item--AHXMh components-FormControl-index__form-control--eN8XQ components-FormControl-index__form-control-sm--YQB2c\" value=\"10\">"
+      },
+      {
+        "i": 10,
+        "type": "number",
+        "value": "4",
+        "accept": "",
+        "html": "<input name=\"retractionDistance\" type=\"number\" min=\"0\" step=\"0.1\" class=\"components-InputGroup-index__input-group-item--AHXMh components-FormControl-index__form-control--eN8XQ components-FormControl-index__form-control-sm--YQB2c\" value=\"4\">"
+      },
+      {
+        "i": 11,
+        "type": "text",
+        "value": "",
+        "accept": "",
+        "html": "<input autocapitalize=\"none\" autocomplete=\"off\" autocorrect=\"off\" id=\"react-select-4-input\" spellcheck=\"false\" tabindex=\"0\" type=\"text\" aria-autocomplete=\"list\" value=\"\" style=\"box-sizing: content-box; width: 2px; background: 0px center; border: 0px; font-size: inherit; opacity: 1; outline: 0px; padding: 0px; color: inherit;\">"
+      },
+      {
+        "i": 12,
+        "type": "hidden",
+        "value": "",
+        "accept": "",
+        "html": "<input name=\"toolChangePolicy\" type=\"hidden\" value=\"\">"
+      },
+      {
+        "i": 13,
+        "type": "number",
+        "value": "0.000",
+        "accept": "",
+        "html": "<input type=\"number\" class=\"form-control\" value=\"0.000\">"
+      },
+      {
+        "i": 14,
+        "type": "number",
+        "value": "0.000",
+        "accept": "",
+        "html": "<input type=\"number\" class=\"form-control\" value=\"0.000\">"
+      },
+      {
+        "i": 15,
+        "type": "number",
+        "value": "0.000",
+        "accept": "",
+        "html": "<input type=\"number\" class=\"form-control\" value=\"0.000\">"
+      },
+      {
+        "i": 16,
+        "type": "number",
+        "value": "0.000",
+        "accept": "",
+        "html": "<input type=\"number\" class=\"form-control\" value=\"0.000\">"
+      },
+      {
+        "i": 17,
+        "type": "number",
+        "value": "0.000",
+        "accept": "",
+        "html": "<input type=\"number\" class=\"form-control\" value=\"0.000\">"
+      },
+      {
+        "i": 18,
+        "type": "number",
+        "value": "0.000",
+        "accept": "",
+        "html": "<input type=\"number\" class=\"form-control\" value=\"0.000\">"
+      },
+      {
+        "i": 19,
+        "type": "number",
+        "value": "0.185",
+        "accept": "",
+        "html": "<input type=\"number\" class=\"form-control\" min=\"0\" step=\"1\" value=\"0.185\">"
+      },
+      {
+        "i": 20,
+        "type": "number",
+        "value": "0",
+        "accept": "",
+        "html": "<input type=\"number\" class=\"form-control\" min=\"0\" step=\"1\" value=\"0\">"
+      },
+      {
+        "i": 21,
+        "type": "number",
+        "value": "0",
+        "accept": "",
+        "html": "<input type=\"number\" class=\"form-control\" min=\"0\" step=\"1\" value=\"0\">"
+      },
+      {
+        "i": 22,
+        "type": "number",
+        "value": "1000",
+        "accept": "",
+        "html": "<input type=\"number\" min=\"0\" step=\"1\" class=\"components-InputGroup-index__input-group-item--AHXMh components-FormControl-index__form-control--eN8XQ components-FormControl-index__form-control-sm--YQB2c\" value=\"1000\">"
+      },
+      {
+        "i": 23,
+        "type": "number",
+        "value": "0",
+        "accept": "",
+        "html": "<input aria-label=\"Test duration in milliseconds\" type=\"number\" min=\"0\" step=\"1\" class=\"components-InputGroup-index__input-group-item--AHXMh components-FormControl-index__form-control--eN8XQ components-FormControl-index__form-control-sm--YQB2c\" value=\"0\">"
+      },
+      {
+        "i": 24,
+        "type": "number",
+        "value": "1000",
+        "accept": "",
+        "html": "<input aria-label=\"Maximum S value\" type=\"number\" min=\"0\" step=\"1\" class=\"components-InputGroup-index__input-group-item--AHXMh components-FormControl-index__form-control--eN8XQ components-FormControl-index__form-control-sm--YQB2c\" value=\"1000\">"
+      }
+    ],
+    "body": "CNCjs\nEN\nWorkspace\nWorkspace\nAdministration\nManage Widgets (1)\nConnection\nGrbl\nMarlin\nSmoothie\nTinyG\nSerial Port\nWi-Fi\nSerial port\nChoose a port\nBaud rate\n115200\nSet DTR line status upon opening\nSet RTS line status upon opening\nUse RTS/CTS flow control\nConnect automatically\nOpen\nConsole\nNo serial connection\nGrbl\nMarlin\nSmoothie\nTinyG\nWebcam\nWebcam is off\nG54 (P1)\n3D View\nUpload G-code\nG-code\nG-code not loaded\nManage Widgets (1)\nAxes\nMDI\nAxis\tMachine Position\tWork Position\t\n\n\nX\nmm\n\t\n0.000\n\t\n0.000\n\t\n\n\nY\nmm\n\t\n0.000\n\t\n0.000\n\t\n\n\nZ\nmm\n\t\n0.000\n\t\n0.000\n\t\nY+\nZ+\nX-\nX0Y0\nX+\nZ0\nY-\nZ-\nG21 (mm)\n1mm\nxy\nZ 3mm\nZ 4mm\nxyz\nContinue\nPause\nFORCE\nHome XY\nG92 Z0\n100\n90\n80\n180\nG90\nG91\nG-code\nAxis\tMin\tMax\tDimension\nX\t0.000 in\t0.000 in\t0.000 in\nY\t0.000 in\t0.000 in\t0.000 in\nZ\t0.000 in\t0.000 in\t0.000 in\nSent\n–\nReceived\n–\nStart Time\n–\nElapsed Time\n–\nFinish Time\n–\nRemaining Time\n–\nMacro\nNew\nExport\nLoading...\nAutolevel\n🎯\nPROBE NEW SURFACE\nSet up the probe area and probe the work surface to generate height compensation data.\nStart New Probe\n🔧\nAPPLY COMPENSATION\nLoad a previously saved .probe file and apply it to your G-code.\nLoad Probe Data\nProbe\nProbe Axis\nZ\nX\nY\nProbe Command: G38.2\nG38.2\nG38.3\nG38.4\nG38.5\nProbe Depth\nin\nProbe Feedrate\nin/min\nTouch Plate Thickness\nin\nRetraction Distance\nin\nProbe Axis Z\nTool\nTool Change Policy\nSelect...\nTool Change Position\nX\nmm\nY\nmm\nZ\nmm\nTool Probe Position\nX\nmm\nY\nmm\nZ\nmm\nProbe Command\nG38.2G38.3G38.4G38.5\n\nG38.3 probe toward workpiece, stop on contact\n\nProbe Distance\nmm\nProbe Feedrate\nmm/min\nTouch Plate Height\nmm\nTool Probe Commands\nConnect to the controller to view the tool probe commands.\nSpindle\nCoolant\nM7\nM8\nM9\nSpindle\nM3\nM4\nM5\nSpindle Speed\nRPM\nLaser\nLaser Intensity Control\n0%\n-10%\n-1%\n1%\n10%\nLaser Test\nPower (%)\n\t\n0%\n\n\nTest duration\n\t\nms\n\n\nMaximum value\n\t\nS\nLaser TestLaser Off"
+  }
+}

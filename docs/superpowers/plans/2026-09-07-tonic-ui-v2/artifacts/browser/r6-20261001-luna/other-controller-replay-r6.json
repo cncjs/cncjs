@@ -1,0 +1,319 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "channel": "bundled Chromium",
+    "viewport": "1440x900",
+    "dpr": 1
+  },
+  "transport": {
+    "method": "Socket.IO Engine.IO v3 polling response relay with synthetic incoming controller events appended after the actual connection:open event",
+    "injected": [
+      {
+        "event": "controller:settings",
+        "controller": "Marlin",
+        "payloadBytes": 79,
+        "payloadSha256": "732e457a21307d2c92b4a9e69cbe72de134010aabc30dac25cccdee1e5e85d97",
+        "pollingGet": 5
+      },
+      {
+        "event": "controller:state",
+        "controller": "Marlin",
+        "payloadBytes": 231,
+        "payloadSha256": "6fda8f0646d6d2d872141d93607f9286782987d1bc39d05966fae532582e30ea",
+        "pollingGet": 5
+      },
+      {
+        "event": "controller:settings",
+        "controller": "Smoothie",
+        "payloadBytes": 104,
+        "payloadSha256": "dcf0fc048b48acc50a6a8bd2baf0f028c5149cc29973f7d053963f6725618c25",
+        "pollingGet": 5
+      },
+      {
+        "event": "controller:state",
+        "controller": "Smoothie",
+        "payloadBytes": 231,
+        "payloadSha256": "63dc02750bc58a4abb8f90ccf3997cdb023320dc36283ba726b4b0557a8a3527",
+        "pollingGet": 5
+      },
+      {
+        "event": "controller:settings",
+        "controller": "TinyG",
+        "payloadBytes": 71,
+        "payloadSha256": "0981a4a35f9758c9e8bb3add74e051ca3c93ae30c2809d5ae665d947b1647f2c",
+        "pollingGet": 5
+      },
+      {
+        "event": "controller:state",
+        "controller": "TinyG",
+        "payloadBytes": 143,
+        "payloadSha256": "2e7be2b09b272c09aa1a48aecbb7f8d2f109ceb83aef0dd9a717a0eda27ab598",
+        "pollingGet": 5
+      }
+    ],
+    "pollingGetCount": 10,
+    "websocketUpgradeClosed": 1,
+    "suppressedGrblControllerEvents": 0,
+    "incomingEvents": [
+      {
+        "pollingGet": 1,
+        "name": "startup",
+        "controller": null
+      },
+      {
+        "pollingGet": 4,
+        "name": "controller:type",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 5,
+        "name": "feeder:status",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "sender:status",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "workflow:state",
+        "controller": "idle"
+      },
+      {
+        "pollingGet": 5,
+        "name": "connection:open",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "connection:change",
+        "controller": null
+      },
+      {
+        "pollingGet": 5,
+        "name": "fixture:batch",
+        "controller": "Marlin",
+        "afterActualConnectionOpen": true
+      },
+      {
+        "pollingGet": 5,
+        "name": "fixture:batch",
+        "controller": "Smoothie",
+        "afterActualConnectionOpen": true
+      },
+      {
+        "pollingGet": 5,
+        "name": "fixture:batch",
+        "controller": "TinyG",
+        "afterActualConnectionOpen": true
+      },
+      {
+        "pollingGet": 6,
+        "name": "controller:settings",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 7,
+        "name": "Grbl:settings",
+        "controller": null
+      },
+      {
+        "pollingGet": 7,
+        "name": "controller:state",
+        "controller": "Grbl"
+      },
+      {
+        "pollingGet": 7,
+        "name": "Grbl:state",
+        "controller": null
+      },
+      {
+        "pollingGet": 8,
+        "name": "connection:close",
+        "controller": null
+      },
+      {
+        "pollingGet": 9,
+        "name": "connection:change",
+        "controller": null
+      }
+    ],
+    "suppressedEvents": []
+  },
+  "gates": [
+    {
+      "name": "connect actual GRBL simulator through Connection widget",
+      "status": "passed",
+      "durationMs": 592,
+      "alreadyConnected": false,
+      "selectedPort": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+      "actualConnectionOpenForwarded": true,
+      "fixtureEventsAppended": 6,
+      "pollingGetCount": 6,
+      "websocketUpgradeClosed": 1
+    },
+    {
+      "name": "Marlin controller replay updates body and controller state/settings modal",
+      "status": "passed",
+      "durationMs": 436,
+      "bodyExcerpt": "Marlin F 92% -10% -1% 1% 10% E 88% -10% -1% 1% 10% Heater Control Extruder °C Heated Bed °C Extruder Temperature 201°C / 220°C Heated Bed Temperature 59°C / 65°C Extruder Power 45 Heated Bed Power 17 Status Reports Modal Groups",
+      "expectedBodyText": [
+        "Extruder Temperature",
+        "201°C / 220°C"
+      ],
+      "stateFixtureIdVisible": true,
+      "settingsFixtureIdVisible": true,
+      "stateShapeKeys": [
+        "r6FixtureId",
+        "feedrate",
+        "spindle",
+        "ovF",
+        "ovS",
+        "extruder",
+        "heatedBed",
+        "modal"
+      ],
+      "settingsShapeKeys": [
+        "r6FixtureId",
+        "baudrate",
+        "max_feedrate"
+      ],
+      "outgoingCommandDelta": 0
+    },
+    {
+      "name": "Smoothie controller replay updates body and controller state/settings modal",
+      "status": "passed",
+      "durationMs": 326,
+      "bodyExcerpt": "Smoothie F 85% -10% -1% 1% 10% S 70% -10% -1% 1% 10% Status Reports State Run Feed Rate 4321 Spindle 12000 Tool Number 7 Modal Groups Motion Linear Move (G1) Coordinate P2 (G55) Plane – Distance – Feed Rate – Units Millimeters (G21) Program – Spindle – Coolant",
+      "expectedBodyText": [
+        "Run",
+        "4321"
+      ],
+      "stateFixtureIdVisible": true,
+      "settingsFixtureIdVisible": true,
+      "stateShapeKeys": [
+        "r6FixtureId",
+        "status",
+        "parserstate"
+      ],
+      "settingsShapeKeys": [
+        "r6FixtureId",
+        "firmware",
+        "acceleration"
+      ],
+      "outgoingCommandDelta": 0
+    },
+    {
+      "name": "TinyG controller replay updates body and controller state/settings modal",
+      "status": "passed",
+      "durationMs": 350,
+      "bodyExcerpt": "TinyG F 125% -10% -1% 1% 10% S 80% -10% -1% 1% 10% T 100% 100% 50% 25% Power Management Queue Reports Planner Buffer 21 Status Reports State Run Feed Rate 0 Velocity 0 Line 742 Modal Groups Motion Linear Move (G1) Coordinate P3 (G56) Plane – Distance – Feed Rate – Units Millimeters (G21) Path – Spindle – Coolant",
+      "expectedBodyText": [
+        "Planner Buffer",
+        "742"
+      ],
+      "stateFixtureIdVisible": true,
+      "settingsFixtureIdVisible": true,
+      "stateShapeKeys": [
+        "r6FixtureId",
+        "machineState",
+        "line",
+        "qr",
+        "pwr",
+        "modal"
+      ],
+      "settingsShapeKeys": [
+        "r6FixtureId",
+        "fv",
+        "mfo",
+        "mto",
+        "sso"
+      ],
+      "outgoingCommandDelta": 0
+    },
+    {
+      "name": "disconnect simulator through Connection widget",
+      "status": "passed",
+      "durationMs": 313,
+      "disconnected": true
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:2"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13c00448600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13c00448600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13c00448600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13c00448600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    }
+  ],
+  "outgoingCommands": []
+}

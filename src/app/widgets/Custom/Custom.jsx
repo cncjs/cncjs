@@ -3,15 +3,14 @@ import Uri from 'jsuri';
 import _get from 'lodash/get';
 import pubsub from 'pubsub-js';
 import React, { useEffect, useRef } from 'react';
-import styled from 'styled-components';
 import settings from '@app/config/settings';
 import Iframe from '@app/components/Iframe';
-import useEffectOnce from '@app/hooks/useEffectOnce';
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import config from '@app/store/config';
 import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
 import useWidgetEvent from '@app/widgets/shared/useWidgetEvent';
+import styles from './index.styl';
 
 function Custom({
   disabled,
@@ -20,6 +19,7 @@ function Custom({
   const widgetEmitter = useWidgetEvent();
   const url = widgetConfig.get('url');
   const iframeRef = useRef(null);
+  const messageListenersRef = useRef(null);
   const token = config.get('session.token');
 
   useEffect(() => {
@@ -46,10 +46,11 @@ function Custom({
 
     return () => {
       widgetEmitter.off('refresh', reload);
+      iframeRef.current = null;
     };
   }, [widgetEmitter, token, url]);
 
-  useEffectOnce(() => {
+  useEffect(() => {
     const postMessage = (type = '', payload) => {
       const iframe = iframeRef.current;
       const target = _get(iframe, 'contentWindow');
@@ -104,48 +105,65 @@ function Custom({
       }
     };
 
-    const tokens = [
-      pubsub.subscribe('message:connect', () => {
-        // Post a message to the iframe window
-        postMessage('change', {
-          controller: {
-            type: _get(controller, 'type'),
-          },
-          connection: {
-            type: _get(controller, 'connection.type'),
-            ident: _get(controller, 'connection.ident'),
-            options: _get(controller, 'connection.options'),
-          },
+    const subscribe = () => {
+      if (messageListenersRef.current) {
+        return;
+      }
+
+      const tokens = [
+        pubsub.subscribe('message:connect', () => {
+          // Post a message to the iframe window
+          postMessage('change', {
+            controller: {
+              type: _get(controller, 'type'),
+            },
+            connection: {
+              type: _get(controller, 'connection.type'),
+              ident: _get(controller, 'connection.ident'),
+              options: _get(controller, 'connection.options'),
+            },
+          });
+        }),
+        pubsub.subscribe('message:resize', (type, payload) => {
+          const { scrollHeight } = { ...payload };
+          resize({
+            height: scrollHeight,
+          });
+        }),
+      ];
+
+      messageListenersRef.current = () => {
+        tokens.forEach((listenerToken) => {
+          pubsub.unsubscribe(listenerToken);
         });
-      }),
-      pubsub.subscribe('message:resize', (type, payload) => {
-        const { scrollHeight } = { ...payload };
-        resize({
-          height: scrollHeight,
-        });
-      }),
-    ];
+        messageListenersRef.current = null;
+      };
+    };
+
+    subscribe();
 
     return () => {
-      tokens.forEach((token) => {
-        pubsub.unsubscribe(token);
-      });
+      messageListenersRef.current?.();
     };
-  });
+  }, [token]);
+
+  useEffect(() => () => {
+    iframeRef.current = null;
+  }, []);
 
   if (disabled) {
     return (
-      <InactiveContent>
+      <div className={styles.inactiveContent}>
         {i18n._('The widget is currently disabled')}
-      </InactiveContent>
+      </div>
     );
   }
 
   if (!url) {
     return (
-      <InactiveContent>
+      <div className={styles.inactiveContent}>
         {i18n._('URL not configured')}
-      </InactiveContent>
+      </div>
     );
   }
 
@@ -156,11 +174,9 @@ function Custom({
   return (
     <Iframe
       src={iframeSrc}
-      style={{
-        verticalAlign: 'top',
-      }}
-      onLoad={({ event, iframe }) => {
-        if (!(iframe && iframe.contentDocument)) {
+      className={styles.iframe}
+      onLoad={({ iframe }) => {
+        if (!iframe) {
           return;
         }
 
@@ -178,16 +194,20 @@ function Custom({
         observer.observe(target);
         */
       }}
-      onBeforeUnload={({ event }) => {
+      onBeforeUnload={() => {
         iframeRef.current = null;
+        messageListenersRef.current?.();
+      }}
+      onUnload={() => {
+        iframeRef.current = null;
+        messageListenersRef.current?.();
+      }}
+      onError={() => {
+        iframeRef.current = null;
+        messageListenersRef.current?.();
       }}
     />
   );
 }
 
 export default Custom;
-
-const InactiveContent = styled.div`
-    padding: 8px 12px;
-    opacity: .65;
-`;

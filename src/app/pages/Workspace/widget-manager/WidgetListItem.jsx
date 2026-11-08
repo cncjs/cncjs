@@ -1,102 +1,93 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import { Container, Row, Col } from '@app/components/GridSystem';
-import ToggleSwitch from '@app/components/ToggleSwitch';
+import {
+  Box,
+  Checkbox,
+  Flex,
+} from '@tonic-ui/react';
+import React from 'react';
 import i18n from '@app/lib/i18n';
 
-const Box = styled.div`
-    width: 100%;
-    background-color: #f5f6f7;
-    text-align: center;
-    padding: 12px;
-    border-bottom: 1px solid #f0f0f0;
-`;
-
-class WidgetListItem extends Component {
-  static propTypes = {
-    id: PropTypes.string,
-    caption: PropTypes.string,
-    details: PropTypes.string,
-    checked: PropTypes.bool,
-    disabled: PropTypes.bool,
-    onChange: PropTypes.func
-  };
-
-  state = {
-    checked: this.props.checked
-  };
-
-  handleChangeWidgetVisibility = (event) => {
-    const checked = !this.state.checked;
-    this.setState({ checked });
-    this.props.onChange({
-      id: this.props.id,
-      checked: checked,
+/**
+ * @param {{
+ *   caption?: string,
+ *   checked?: boolean,
+ *   details?: string,
+ *   disabled?: boolean,
+ *   id?: string,
+ *   onChange?: ({ id: string, checked: boolean }) => void,
+ * }} props
+ * @returns {JSX.Element}
+ */
+function WidgetListItem({
+  caption = '',
+  checked = false,
+  details = '',
+  disabled = false,
+  id = '',
+  onChange = () => {},
+}) {
+  const handleChange = (event) => {
+    onChange({
+      checked: event.target.checked,
+      id,
     });
   };
 
-  render() {
-    const { checked } = this.state;
-
-    return (
-      <Container
-        fluid
-        gutterWidth={24}
-        style={{
-          border: '1px solid #ddd',
-          height: '100%',
+  return (
+    <Box
+      sx={{
+        border: '1px solid',
+        borderColor: 'border.secondary',
+        height: '100%',
+      }}
+    >
+      <Box
+        mb="3x"
+        sx={{
+          backgroundColor: 'background.medium',
+          borderBottom: '1px solid',
+          borderColor: 'border.secondary',
+          padding: '12px',
+          textAlign: 'center',
         }}
       >
-        <Box mb="3x">
-          <Row>
-            <Box>
-              <FontAwesomeIcon
-                icon="list-alt"
-                style={{
-                  fontSize: 100,
-                  filter: checked ? 'drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.3))' : 'none',
-                  color: '#666',
-                  opacity: checked ? 1 : 0.6,
-                }}
-              />
-            </Box>
-          </Row>
-        </Box>
-        <Box mb="3x">
-          <Row>
-            <Col>
-              <div
-                style={{
-                  opacity: checked ? 1 : 0.6,
-                }}
-              >
-                <strong>{this.props.caption}</strong>
-              </div>
-            </Col>
-            <Col width="auto">
-              <ToggleSwitch
-                title={checked ? i18n._('On') : i18n._('Off')}
-                disabled={this.props.disabled}
-                checked={checked}
-                onChange={this.handleChangeWidgetVisibility}
-              />
-            </Col>
-          </Row>
-        </Box>
-        <Box mb="3x">
-          <div
+        <Flex justify="center" color="text.secondary">
+          <FontAwesomeIcon
+            icon="list-alt"
             style={{
+              filter: checked ? 'drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.3))' : 'none',
+              fontSize: 100,
               opacity: checked ? 1 : 0.6,
             }}
+          />
+        </Flex>
+      </Box>
+      <Box mb="3x" px="3x">
+        <Flex align="center" justify="space-between">
+          <Box
+            as="strong"
+            opacity={checked ? 1 : 0.6}
           >
-            {this.props.details}
-          </div>
-        </Box>
-      </Container>
-    );
-  }
+            {caption}
+          </Box>
+          <Checkbox
+            checked={checked}
+            disabled={disabled}
+            inputProps={{ 'aria-label': caption }}
+            title={checked ? i18n._('On') : i18n._('Off')}
+            onChange={handleChange}
+          />
+        </Flex>
+      </Box>
+      <Box
+        mb="3x"
+        opacity={checked ? 1 : 0.6}
+        px="3x"
+      >
+        {details}
+      </Box>
+    </Box>
+  );
 }
 
 export default WidgetListItem;

@@ -1,0 +1,938 @@
+{
+  "browser": {
+    "version": "153.0.8010.12",
+    "channel": "bundled Chromium",
+    "headless": true,
+    "viewportInitial": "1440x900",
+    "dpr": 1,
+    "renderer": "SwiftShader WebGL",
+    "camera": "Chromium synthetic camera device"
+  },
+  "gates": [
+    {
+      "name": "ensure synthetic Grbl connection",
+      "status": "passed",
+      "durationMs": 527,
+      "alreadyConnected": false,
+      "port": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator"
+    },
+    {
+      "name": "activate Custom and verify 16 framed widgets plus no-frame Visualizer",
+      "status": "passed",
+      "durationMs": 302,
+      "custom": {
+        "alreadyActive": false,
+        "enabledThroughManager": true
+      },
+      "frameCount": 16,
+      "regionNames": [
+        "Connection widget",
+        "Console widget",
+        "Custom widget",
+        "Grbl widget",
+        "Marlin widget",
+        "Smoothie widget",
+        "TinyG widget",
+        "Webcam widget",
+        "3D Visualizer widget",
+        "Autolevel Widget",
+        "Axes widget",
+        "G-code widget",
+        "Laser widget",
+        "Macro widget",
+        "Probe widget",
+        "Spindle widget",
+        "Tool widget"
+      ],
+      "visualizerHasNoFrame": true
+    },
+    {
+      "name": "Workspace and live Visualizer light/dark/auto at both R6 viewports",
+      "status": "passed",
+      "durationMs": 3093,
+      "viewports": [
+        {
+          "viewport": {
+            "width": 768,
+            "height": 900
+          },
+          "host": {
+            "width": 360,
+            "height": 755,
+            "drawingWidth": 360,
+            "drawingHeight": 755
+          },
+          "light": {
+            "sample": {
+              "headerBackground": "rgb(242, 242, 242)",
+              "headerColor": "rgba(0, 0, 0, 0.92)",
+              "controlColor": "rgb(0, 0, 0)",
+              "controlBackground": "rgb(224, 224, 224)",
+              "controlDisabled": false,
+              "controlText": "3D View",
+              "backgroundStack": [
+                {
+                  "tag": "DIV",
+                  "role": "region",
+                  "label": "3D Visualizer widget",
+                  "className": "components-Widget-index__widget--pzPdi components-Widget-index__widget-borderless--iOLgq css-1iq0n62-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "components-Widget-index__widget-header--+n-Y4 components-Widget-index__widget-header-fixed--6g3pa css-7drdk9-Box eecupy40",
+                  "background": "rgb(242, 242, 242)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-1q1kf82-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-7eha16-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-17cj8r2-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-1q1kf82-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "BUTTON",
+                  "role": null,
+                  "label": "3D View",
+                  "className": "css-x0bzf-Box eecupy40",
+                  "background": "rgb(224, 224, 224)",
+                  "opacity": 1
+                }
+              ],
+              "backgroundSample": {
+                "r": 224,
+                "g": 224,
+                "b": 224,
+                "a": 1
+              },
+              "controlTextContrast": 15.908084190807749,
+              "canvas": {
+                "width": 360,
+                "height": 755,
+                "drawingWidth": 360,
+                "drawingHeight": 755
+              },
+              "webgl": {
+                "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+                "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+              }
+            },
+            "camera": {
+              "label": "Front View",
+              "before": "top",
+              "after": "front"
+            }
+          },
+          "dark": {
+            "sample": {
+              "headerBackground": "rgb(33, 33, 33)",
+              "headerColor": "rgba(255, 255, 255, 0.92)",
+              "controlColor": "rgb(255, 255, 255)",
+              "controlBackground": "rgb(94, 94, 94)",
+              "controlDisabled": false,
+              "controlText": "3D View",
+              "backgroundStack": [
+                {
+                  "tag": "DIV",
+                  "role": "region",
+                  "label": "3D Visualizer widget",
+                  "className": "components-Widget-index__widget--pzPdi components-Widget-index__widget-borderless--iOLgq css-1iq0n62-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "components-Widget-index__widget-header--+n-Y4 components-Widget-index__widget-header-fixed--6g3pa css-15o1fgm-Box eecupy40",
+                  "background": "rgb(33, 33, 33)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-1q1kf82-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-7eha16-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-17cj8r2-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-1q1kf82-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "BUTTON",
+                  "role": null,
+                  "label": "3D View",
+                  "className": "css-55ajct-Box eecupy40",
+                  "background": "rgb(94, 94, 94)",
+                  "opacity": 1
+                }
+              ],
+              "backgroundSample": {
+                "r": 94,
+                "g": 94,
+                "b": 94,
+                "a": 1
+              },
+              "controlTextContrast": 6.484186114084169,
+              "canvas": {
+                "width": 360,
+                "height": 755,
+                "drawingWidth": 360,
+                "drawingHeight": 755
+              },
+              "webgl": {
+                "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+                "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+              }
+            },
+            "camera": {
+              "label": "Top View",
+              "before": "front",
+              "after": "top"
+            }
+          },
+          "autoLight": {
+            "sample": {
+              "headerBackground": "rgb(242, 242, 242)",
+              "headerColor": "rgba(0, 0, 0, 0.92)",
+              "controlColor": "rgb(0, 0, 0)",
+              "controlBackground": "rgb(224, 224, 224)",
+              "controlDisabled": false,
+              "controlText": "3D View",
+              "backgroundStack": [
+                {
+                  "tag": "DIV",
+                  "role": "region",
+                  "label": "3D Visualizer widget",
+                  "className": "components-Widget-index__widget--pzPdi components-Widget-index__widget-borderless--iOLgq css-1iq0n62-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "components-Widget-index__widget-header--+n-Y4 components-Widget-index__widget-header-fixed--6g3pa css-7drdk9-Box eecupy40",
+                  "background": "rgb(242, 242, 242)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-1q1kf82-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-7eha16-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-17cj8r2-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-1q1kf82-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "BUTTON",
+                  "role": null,
+                  "label": "3D View",
+                  "className": "css-x0bzf-Box eecupy40",
+                  "background": "rgb(224, 224, 224)",
+                  "opacity": 1
+                }
+              ],
+              "backgroundSample": {
+                "r": 224,
+                "g": 224,
+                "b": 224,
+                "a": 1
+              },
+              "controlTextContrast": 15.908084190807749,
+              "canvas": {
+                "width": 360,
+                "height": 755,
+                "drawingWidth": 360,
+                "drawingHeight": 755
+              },
+              "webgl": {
+                "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+                "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+              }
+            },
+            "camera": {
+              "label": "Front View",
+              "before": "top",
+              "after": "front"
+            }
+          },
+          "autoDark": {
+            "sample": {
+              "headerBackground": "rgb(33, 33, 33)",
+              "headerColor": "rgba(255, 255, 255, 0.92)",
+              "controlColor": "rgb(255, 255, 255)",
+              "controlBackground": "rgb(94, 94, 94)",
+              "controlDisabled": false,
+              "controlText": "3D View",
+              "backgroundStack": [
+                {
+                  "tag": "DIV",
+                  "role": "region",
+                  "label": "3D Visualizer widget",
+                  "className": "components-Widget-index__widget--pzPdi components-Widget-index__widget-borderless--iOLgq css-1iq0n62-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "components-Widget-index__widget-header--+n-Y4 components-Widget-index__widget-header-fixed--6g3pa css-15o1fgm-Box eecupy40",
+                  "background": "rgb(33, 33, 33)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-1q1kf82-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-7eha16-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-17cj8r2-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "DIV",
+                  "role": null,
+                  "label": null,
+                  "className": "css-1q1kf82-Box eecupy40",
+                  "background": "rgba(0, 0, 0, 0)",
+                  "opacity": 1
+                },
+                {
+                  "tag": "BUTTON",
+                  "role": null,
+                  "label": "3D View",
+                  "className": "css-55ajct-Box eecupy40",
+                  "background": "rgb(94, 94, 94)",
+                  "opacity": 1
+                }
+              ],
+              "backgroundSample": {
+                "r": 94,
+                "g": 94,
+                "b": 94,
+                "a": 1
+              },
+              "controlTextContrast": 6.484186114084169,
+              "canvas": {
+                "width": 360,
+                "height": 755,
+                "drawingWidth": 360,
+                "drawingHeight": 755
+              },
+              "webgl": {
+                "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+                "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+              }
+            },
+            "camera": {
+              "label": "Top View",
+              "before": "front",
+              "after": "top"
+            }
+          }
+        }
+      ],
+      "mediaPreferenceFollowed": true,
+      "screenshotCount": 4
+    }
+  ],
+  "expectedFrameNames": [
+    "Autolevel Widget",
+    "Axes widget",
+    "Connection widget",
+    "Console widget",
+    "Custom widget",
+    "G-code widget",
+    "Grbl widget",
+    "Laser widget",
+    "Macro widget",
+    "Marlin widget",
+    "Probe widget",
+    "Smoothie widget",
+    "Spindle widget",
+    "TinyG widget",
+    "Tool widget",
+    "Webcam widget"
+  ],
+  "screenshots": [],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING\n[eslint] \n/Users/cheton/Code/cncjs/cncjs-cheton/src/app/pages/Workspace/Workspace.jsx\n  92:9  warning  useState call is not destructured into value + setter pair  react/hook-use-state\n\n✖ 1 problem (0 errors, 1 warning)\n"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24925:9)\n    at commitPassiveMountEffects_begin (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24912:7)\n    at commitPassiveMountEffects (webpack-internal:///../../node_"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1040044c800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1040044c800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1040044c800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: Each child in a list should have a unique \"key\" prop.%s%s See https://reactjs.org/link/warning-keys for more information.%s \n\nCheck the render method of `SideNav`.  \n    at eval (webpack-internal:///./containers/app/SideNav.jsx:67:22)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)\n    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Layout (webpack-internal:///./containers/app/App.jsx:66:83)\n    at App (webpack-internal:///./containers/app/App.jsx:97:29)\n    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)\n    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)\n    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)\n    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)\n    "
+    },
+    {
+      "type": "error",
+      "text": "Drawer: 'closeOnOutsideClick' is deprecated and will be removed in the next major release. Use 'closeOnInteractOutside' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x1040044c800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "outgoingCommands": [],
+  "themeTrace": [
+    {
+      "viewport": 768,
+      "phase": "light",
+      "expected": "rgb(242, 242, 242)",
+      "actual": "rgb(242, 242, 242)",
+      "camera": {
+        "label": "Front View",
+        "before": "top",
+        "after": "front"
+      },
+      "settled": {
+        "animationCount": 0,
+        "color": "rgb(0, 0, 0)",
+        "background": "rgb(224, 224, 224)",
+        "disabled": false
+      },
+      "sample": {
+        "headerBackground": "rgb(242, 242, 242)",
+        "headerColor": "rgba(0, 0, 0, 0.92)",
+        "controlColor": "rgb(0, 0, 0)",
+        "controlBackground": "rgb(224, 224, 224)",
+        "controlDisabled": false,
+        "controlText": "3D View",
+        "backgroundStack": [
+          {
+            "tag": "DIV",
+            "role": "region",
+            "label": "3D Visualizer widget",
+            "className": "components-Widget-index__widget--pzPdi components-Widget-index__widget-borderless--iOLgq css-1iq0n62-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "components-Widget-index__widget-header--+n-Y4 components-Widget-index__widget-header-fixed--6g3pa css-7drdk9-Box eecupy40",
+            "background": "rgb(242, 242, 242)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-1q1kf82-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-7eha16-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-17cj8r2-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-1q1kf82-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "3D View",
+            "className": "css-x0bzf-Box eecupy40",
+            "background": "rgb(224, 224, 224)",
+            "opacity": 1
+          }
+        ],
+        "backgroundSample": {
+          "r": 224,
+          "g": 224,
+          "b": 224,
+          "a": 1
+        },
+        "controlTextContrast": 15.908084190807749,
+        "canvas": {
+          "width": 360,
+          "height": 755,
+          "drawingWidth": 360,
+          "drawingHeight": 755
+        },
+        "webgl": {
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+        }
+      }
+    },
+    {
+      "viewport": 768,
+      "phase": "dark",
+      "expected": "rgb(33, 33, 33)",
+      "actual": "rgb(33, 33, 33)",
+      "camera": {
+        "label": "Top View",
+        "before": "front",
+        "after": "top"
+      },
+      "settled": {
+        "animationCount": 0,
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(94, 94, 94)",
+        "disabled": false
+      },
+      "sample": {
+        "headerBackground": "rgb(33, 33, 33)",
+        "headerColor": "rgba(255, 255, 255, 0.92)",
+        "controlColor": "rgb(255, 255, 255)",
+        "controlBackground": "rgb(94, 94, 94)",
+        "controlDisabled": false,
+        "controlText": "3D View",
+        "backgroundStack": [
+          {
+            "tag": "DIV",
+            "role": "region",
+            "label": "3D Visualizer widget",
+            "className": "components-Widget-index__widget--pzPdi components-Widget-index__widget-borderless--iOLgq css-1iq0n62-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "components-Widget-index__widget-header--+n-Y4 components-Widget-index__widget-header-fixed--6g3pa css-15o1fgm-Box eecupy40",
+            "background": "rgb(33, 33, 33)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-1q1kf82-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-7eha16-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-17cj8r2-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-1q1kf82-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "3D View",
+            "className": "css-55ajct-Box eecupy40",
+            "background": "rgb(94, 94, 94)",
+            "opacity": 1
+          }
+        ],
+        "backgroundSample": {
+          "r": 94,
+          "g": 94,
+          "b": 94,
+          "a": 1
+        },
+        "controlTextContrast": 6.484186114084169,
+        "canvas": {
+          "width": 360,
+          "height": 755,
+          "drawingWidth": 360,
+          "drawingHeight": 755
+        },
+        "webgl": {
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+        }
+      }
+    },
+    {
+      "viewport": 768,
+      "phase": "auto-light",
+      "expected": "rgb(242, 242, 242)",
+      "actual": "rgb(242, 242, 242)",
+      "camera": {
+        "label": "Front View",
+        "before": "top",
+        "after": "front"
+      },
+      "settled": {
+        "animationCount": 0,
+        "color": "rgb(0, 0, 0)",
+        "background": "rgb(224, 224, 224)",
+        "disabled": false
+      },
+      "sample": {
+        "headerBackground": "rgb(242, 242, 242)",
+        "headerColor": "rgba(0, 0, 0, 0.92)",
+        "controlColor": "rgb(0, 0, 0)",
+        "controlBackground": "rgb(224, 224, 224)",
+        "controlDisabled": false,
+        "controlText": "3D View",
+        "backgroundStack": [
+          {
+            "tag": "DIV",
+            "role": "region",
+            "label": "3D Visualizer widget",
+            "className": "components-Widget-index__widget--pzPdi components-Widget-index__widget-borderless--iOLgq css-1iq0n62-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "components-Widget-index__widget-header--+n-Y4 components-Widget-index__widget-header-fixed--6g3pa css-7drdk9-Box eecupy40",
+            "background": "rgb(242, 242, 242)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-1q1kf82-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-7eha16-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-17cj8r2-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-1q1kf82-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "3D View",
+            "className": "css-x0bzf-Box eecupy40",
+            "background": "rgb(224, 224, 224)",
+            "opacity": 1
+          }
+        ],
+        "backgroundSample": {
+          "r": 224,
+          "g": 224,
+          "b": 224,
+          "a": 1
+        },
+        "controlTextContrast": 15.908084190807749,
+        "canvas": {
+          "width": 360,
+          "height": 755,
+          "drawingWidth": 360,
+          "drawingHeight": 755
+        },
+        "webgl": {
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+        }
+      }
+    },
+    {
+      "viewport": 768,
+      "phase": "auto-dark",
+      "expected": "rgb(33, 33, 33)",
+      "actual": "rgb(33, 33, 33)",
+      "camera": {
+        "label": "Top View",
+        "before": "front",
+        "after": "top"
+      },
+      "settled": {
+        "animationCount": 2,
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(94, 94, 94)",
+        "disabled": false
+      },
+      "sample": {
+        "headerBackground": "rgb(33, 33, 33)",
+        "headerColor": "rgba(255, 255, 255, 0.92)",
+        "controlColor": "rgb(255, 255, 255)",
+        "controlBackground": "rgb(94, 94, 94)",
+        "controlDisabled": false,
+        "controlText": "3D View",
+        "backgroundStack": [
+          {
+            "tag": "DIV",
+            "role": "region",
+            "label": "3D Visualizer widget",
+            "className": "components-Widget-index__widget--pzPdi components-Widget-index__widget-borderless--iOLgq css-1iq0n62-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "components-Widget-index__widget-header--+n-Y4 components-Widget-index__widget-header-fixed--6g3pa css-15o1fgm-Box eecupy40",
+            "background": "rgb(33, 33, 33)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-1q1kf82-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-7eha16-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-17cj8r2-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "DIV",
+            "role": null,
+            "label": null,
+            "className": "css-1q1kf82-Box eecupy40",
+            "background": "rgba(0, 0, 0, 0)",
+            "opacity": 1
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "label": "3D View",
+            "className": "css-55ajct-Box eecupy40",
+            "background": "rgb(94, 94, 94)",
+            "opacity": 1
+          }
+        ],
+        "backgroundSample": {
+          "r": 94,
+          "g": 94,
+          "b": 94,
+          "a": 1
+        },
+        "controlTextContrast": 6.484186114084169,
+        "canvas": {
+          "width": 360,
+          "height": 755,
+          "drawingWidth": 360,
+          "drawingHeight": 755
+        },
+        "webgl": {
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+        }
+      }
+    }
+  ],
+  "finishedAt": "2026-10-02T03:10:26.089Z"
+}

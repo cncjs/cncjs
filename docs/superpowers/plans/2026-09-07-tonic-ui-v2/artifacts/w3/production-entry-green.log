@@ -1,0 +1,27 @@
+PASS __tests__/production-entry.test.js
+  ● Console
+
+    console.error
+      Error in `undefined`: Error: Line 17: Unexpected reserved word
+
+      38 |       path.resolve(__dirname, 'src/app/index.jsx'),
+      39 |     ],
+    > 40 |     vendor: findImports([
+         |             ^
+      41 |       'src/app/**/*.{js,jsx}',
+      42 |       '!src/app/**/*.development.js',
+      43 |       '!src/app/**/__tests__/**',
+
+      at node_modules/find-imports/index.js:139:21
+          at Array.forEach (<anonymous>)
+      at findImports (node_modules/find-imports/index.js:83:15)
+      at Object.findImports (webpack.config.production.js:40:13)
+      at Object.require (__tests__/production-entry.test.js:1:19)
+
+PASS __tests__/app-template.test.js
+
+Test Suites: 2 passed, 2 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        4.708 s, estimated 7 s
+Ran all test suites within paths "__tests__/production-entry.test.js", "__tests__/app-template.test.js".

@@ -1,0 +1,32 @@
+{
+  "semanticTokens": [
+    "_shadow.medium",
+    "actions.enabled",
+    "actions.hovered",
+    "actions.selected",
+    "actions.selectedHovered",
+    "background._fixed.dark.low",
+    "background.high",
+    "background.highest",
+    "background.medium",
+    "border.secondary",
+    "error.icon",
+    "error.text",
+    "info.icon",
+    "text._fixed.dark.primary",
+    "text._fixed.light.primary",
+    "text.disabled",
+    "text.primary",
+    "text.secondary",
+    "text.tertiary",
+    "warning._onOverlay.text",
+    "warning.icon"
+  ],
+  "testedModes": [
+    "light",
+    "dark"
+  ],
+  "invalidTokens": [],
+  "unresolvedReferences": [],
+  "cssVariableCount": 2142
+}

@@ -1,0 +1,116 @@
+{
+  "sourceFiles": 360,
+  "classes": [
+    {
+      "file": "src/app/lib/CNCJSController.js",
+      "name": "CNCJSController",
+      "superClass": null,
+      "isReact": false
+    },
+    {
+      "file": "src/app/lib/combokeys.js",
+      "name": "Combokeys",
+      "superClass": "events.EventEmitter",
+      "isReact": false
+    },
+    {
+      "file": "src/app/lib/immutable-store.js",
+      "name": "ImmutableStore",
+      "superClass": "events.EventEmitter",
+      "isReact": false
+    },
+    {
+      "file": "src/app/lib/three/CombinedCamera.js",
+      "name": "CombinedCamera",
+      "superClass": "THREE.Camera",
+      "isReact": false
+    },
+    {
+      "file": "src/app/store/config/EventEmitterStore.js",
+      "name": "EventEmitterStore",
+      "superClass": "events.EventEmitter",
+      "isReact": false
+    },
+    {
+      "file": "src/app/widgets/Axes/ShuttleControl.js",
+      "name": "ShuttleControl",
+      "superClass": "events.EventEmitter",
+      "isReact": false
+    },
+    {
+      "file": "src/app/widgets/Console/History.js",
+      "name": "History",
+      "superClass": null,
+      "isReact": false
+    },
+    {
+      "file": "src/app/widgets/Visualizer/CoordinateAxes.js",
+      "name": "CoordinateAxes",
+      "superClass": null,
+      "isReact": false
+    },
+    {
+      "file": "src/app/widgets/Visualizer/Cuboid.js",
+      "name": "Cuboid",
+      "superClass": null,
+      "isReact": false
+    },
+    {
+      "file": "src/app/widgets/Visualizer/CuttingPointer.jsx",
+      "name": "CuttingPointer",
+      "superClass": null,
+      "isReact": false
+    },
+    {
+      "file": "src/app/widgets/Visualizer/GCodeVisualizer.js",
+      "name": "GCodeVisualizer",
+      "superClass": null,
+      "isReact": false
+    },
+    {
+      "file": "src/app/widgets/Visualizer/GridLine.js",
+      "name": "GridLine",
+      "superClass": null,
+      "isReact": false
+    },
+    {
+      "file": "src/app/widgets/Visualizer/PivotPoint3.js",
+      "name": "PivotPoint3",
+      "superClass": null,
+      "isReact": false
+    },
+    {
+      "file": "src/app/widgets/Visualizer/ProbeVisualization.js",
+      "name": "ProbeVisualization",
+      "superClass": null,
+      "isReact": false
+    },
+    {
+      "file": "src/app/widgets/Visualizer/TextSprite.js",
+      "name": "TextSprite",
+      "superClass": null,
+      "isReact": false
+    },
+    {
+      "file": "src/app/widgets/Visualizer/Viewport.js",
+      "name": "Viewport",
+      "superClass": null,
+      "isReact": false
+    },
+    {
+      "file": "src/app/widgets/Visualizer/VisualizerEngine.js",
+      "name": "VisualizerEngine",
+      "superClass": null,
+      "isReact": false
+    },
+    {
+      "file": "src/app/widgets/shared/WidgetConfig.js",
+      "name": "WidgetConfig",
+      "superClass": null,
+      "isReact": false
+    }
+  ],
+  "reactClasses": [],
+  "reactFactories": [],
+  "forbiddenImports": []
+}

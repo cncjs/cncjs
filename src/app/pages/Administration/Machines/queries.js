@@ -7,9 +7,10 @@ const useFetchMachinesQuery = (options) => {
   const query = options?.meta?.query;
   return useQuery({
     queryKey: [...API_MACHINES_QUERY_KEY, query].filter(Boolean),
-    queryFn: async ({ queryKey, meta }) => {
-      const url = meta.query
-        ? 'api/machines?' + meta.query
+    queryFn: async ({ meta }) => {
+      const query = meta?.query;
+      const url = query
+        ? 'api/machines?' + query
         : 'api/machines';
       const response = await axios.get(url);
       return response.data;

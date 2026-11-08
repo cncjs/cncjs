@@ -1,0 +1,1205 @@
+PASS __tests__/production-entry.test.js
+  ● Console
+
+    console.error
+      Error in `undefined`: Error: Line 17: Unexpected reserved word
+
+      38 |       path.resolve(__dirname, 'src/app/index.jsx'),
+      39 |     ],
+    > 40 |     vendor: findImports([
+         |             ^
+      41 |       'src/app/**/*.{js,jsx}',
+      42 |       '!src/app/**/*.development.js',
+      43 |       '!src/app/**/__tests__/**',
+
+      at node_modules/find-imports/index.js:139:21
+          at Array.forEach (<anonymous>)
+      at findImports (node_modules/find-imports/index.js:83:15)
+      at Object.findImports (webpack.config.production.js:40:13)
+      at Object.require (__tests__/production-entry.test.js:1:19)
+
+PASS src/server/controllers/Grbl/__tests__/GrblController.test.js
+PASS __tests__/ui-migration.test.js
+PASS src/server/__tests__/app.test.js
+  ● Console
+
+    console.info
+      🌐 i18next is made possible by our own product, Locize — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙
+
+      at I18n.init (node_modules/i18next/dist/cjs/i18next.js:1789:90)
+
+PASS src/server/controllers/TinyG/__tests__/TinyGController.test.js
+  ● Console
+
+    console.log
+      2026-10-02T14:08:52.829Z - warn controller:TinyG Warning: The "jogCancel" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.830Z - warn controller:TinyG Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.831Z - warn controller:TinyG Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.832Z - warn controller:TinyG Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.832Z - warn controller:TinyG Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.833Z - warn controller:TinyG Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.834Z - warn controller:TinyG Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.834Z - warn controller:TinyG Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.835Z - warn controller:TinyG Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.835Z - warn controller:TinyG Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.836Z - warn controller:TinyG Warning: The "rapidOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.837Z - warn controller:TinyG Warning: The "rapidOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.838Z - warn controller:TinyG Warning: The "rapidOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.838Z - warn controller:TinyG Warning: The "rapidOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.839Z - warn controller:TinyG Warning: The "rapidOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.839Z - warn controller:TinyG Warning: The "lasertest:on" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.840Z - warn controller:TinyG Warning: The "lasertest:on" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.841Z - warn controller:TinyG Warning: The "lasertest:off" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.842Z - warn controller:TinyG Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.842Z - warn controller:TinyG Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.846Z - warn controller:TinyG Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.847Z - warn controller:TinyG Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.848Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.848Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.849Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.850Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.850Z - warn controller:TinyG Warning: The "gcode:unload" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.850Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.851Z - warn controller:TinyG Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.851Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.852Z - warn controller:TinyG Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.852Z - warn controller:TinyG Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.853Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.853Z - warn controller:TinyG Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.853Z - warn controller:TinyG Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.853Z - warn controller:TinyG Warning: The "gcode:resume" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.854Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.854Z - warn controller:TinyG Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.854Z - warn controller:TinyG Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.855Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.855Z - warn controller:TinyG Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.856Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.856Z - warn controller:TinyG Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.857Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.857Z - warn controller:TinyG Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.858Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.858Z - warn controller:TinyG Warning: The "start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.858Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.859Z - warn controller:TinyG Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.859Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.860Z - warn controller:TinyG Warning: The "stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.860Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.860Z - warn controller:TinyG Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.861Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.861Z - warn controller:TinyG Warning: The "pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.863Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.863Z - warn controller:TinyG Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.864Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.864Z - warn controller:TinyG Warning: The "resume" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.864Z - warn controller:TinyG Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.865Z - warn controller:TinyG Warning: The "gcode:resume" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.866Z - warn controller:TinyG Warning: The "macro:run" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.866Z - warn controller:TinyG Warning: The "macro:run" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.867Z - error controller:TinyG Cannot find the macro: id=missing
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.867Z - warn controller:TinyG Warning: The "macro:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.868Z - warn controller:TinyG Warning: The "macro:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.868Z - error controller:TinyG Cannot find the macro: id=missing
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.869Z - warn controller:TinyG Warning: The "watchdir:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.869Z - warn controller:TinyG Warning: The "watchdir:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.875Z - info controller:TinyG [autolevel:start] Test probe: clearanceZ=5, startZ=1, endZ=-1, F=100
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.876Z - info controller:TinyG [autolevel:start] Start probing with 4 points
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.876Z - info controller:TinyG [autolevel:start] Starting probing with 4 points
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.877Z - info controller:TinyG [autolevel] Probing completed
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.878Z - info controller:TinyG [autolevel:start] Start probing with 4 points
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.878Z - info controller:TinyG [autolevel:start] Starting probing with 4 points
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.879Z - info controller:TinyG [autolevel:stop] Probe stopped and state cleared
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.881Z - info controller:TinyG [autolevel:load] Loaded 2 points from /var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-tinyg-probe-data.txt
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.882Z - error controller:TinyG [autolevel:load] Error loading probe data: Error: ENOENT: no such file or directory, open '/var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-tinyg-missing-probe-data.txt'
+          at open (node:internal/fs/promises:1345:25)
+          at Object.readFile (node:internal/fs/promises:1996:14)
+          at autolevel:loadFromFile (/Users/cheton/Code/cncjs/cncjs-cheton/src/server/controllers/TinyG/TinyGController.js:780:22) {
+        errno: -2,
+        code: 'ENOENT',
+        syscall: 'open',
+        path: '/var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-tinyg-missing-probe-data.txt'
+      }
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.883Z - info controller:TinyG [autolevel:saveToFile] Saved 2 points to /var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-tinyg-probe-save.txt
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.883Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.884Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.884Z - info controller:TinyG [autolevel:applyProbeCompensation] Probe compensation applied
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.885Z - error controller:TinyG Unknown command: nonexistent
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.885Z - error controller:TinyG Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.885Z - error controller:TinyG Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.886Z - error controller:TinyG Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.886Z - error controller:TinyG Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+PASS src/server/controllers/Smoothie/__tests__/SmoothieController.test.js
+  ● Console
+
+    console.log
+      2026-10-02T14:08:52.945Z - warn controller:Smoothie Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.946Z - warn controller:Smoothie Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.946Z - warn controller:Smoothie Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.947Z - warn controller:Smoothie Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.948Z - warn controller:Smoothie Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.949Z - warn controller:Smoothie Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.949Z - warn controller:Smoothie Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.950Z - warn controller:Smoothie Warning: The "spindleOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.950Z - warn controller:Smoothie Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.951Z - warn controller:Smoothie Warning: The "feedOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.952Z - warn controller:Smoothie Warning: The "rapidOverride" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.952Z - warn controller:Smoothie Warning: The "lasertest:on" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.953Z - warn controller:Smoothie Warning: The "lasertest:on" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.954Z - warn controller:Smoothie Warning: The "lasertest:off" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.956Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.957Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.958Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.958Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.959Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.959Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.959Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.960Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.960Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.961Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.961Z - warn controller:Smoothie Warning: The "gcode:resume" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.962Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.962Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.962Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.963Z - warn controller:Smoothie Warning: The "gcode:resume" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.963Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.963Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.964Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.964Z - warn controller:Smoothie Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.965Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.965Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.965Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.965Z - warn controller:Smoothie Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.966Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.966Z - warn controller:Smoothie Warning: The "gcode:unload" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.967Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.967Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.968Z - warn controller:Smoothie Warning: The "start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.968Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.969Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.969Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.969Z - warn controller:Smoothie Warning: The "stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.969Z - warn controller:Smoothie Warning: The "gcode:stop" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.970Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.970Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.971Z - warn controller:Smoothie Warning: The "pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.971Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.973Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.973Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.974Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.974Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.974Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.974Z - warn controller:Smoothie Warning: The "gcode:pause" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.975Z - warn controller:Smoothie Warning: The "resume" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.975Z - warn controller:Smoothie Warning: The "gcode:resume" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.976Z - warn controller:Smoothie Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.977Z - warn controller:Smoothie Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.977Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.977Z - warn controller:Smoothie Warning: The "gcode:start" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.978Z - warn controller:Smoothie Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.978Z - warn controller:Smoothie Warning: The "feeder:feed" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.979Z - warn controller:Smoothie Warning: The "macro:run" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.980Z - warn controller:Smoothie Warning: The "macro:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.980Z - warn controller:Smoothie Warning: The "macro:run" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.980Z - error controller:Smoothie Cannot find the macro: id=missing
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.981Z - warn controller:Smoothie Warning: The "macro:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.981Z - error controller:Smoothie Cannot find the macro: id=missing
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.982Z - warn controller:Smoothie Warning: The "watchdir:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.982Z - warn controller:Smoothie Warning: The "watchdir:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.988Z - info controller:Smoothie [autolevel:start] Test probe: clearanceZ=5, startZ=2, endZ=-1, F=100
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.989Z - info controller:Smoothie [autolevel:start] Start probing with 4 points
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.989Z - info controller:Smoothie [autolevel:start] Starting probing with 4 points
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.991Z - info controller:Smoothie [autolevel] Probing completed
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.991Z - info controller:Smoothie [autolevel:stop] Probe stopped and state cleared
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.994Z - info controller:Smoothie [autolevel:load] Loaded 2 points from /var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-smoothie-probes-82324-1790950132992.txt
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.995Z - error controller:Smoothie [autolevel:load] Error loading probe data: Error: ENOENT: no such file or directory, open '/var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-smoothie-missing-probe-file.txt'
+          at open (node:internal/fs/promises:1345:25)
+          at Object.readFile (node:internal/fs/promises:1996:14)
+          at autolevel:loadFromFile (/Users/cheton/Code/cncjs/cncjs-cheton/src/server/controllers/Smoothie/SmoothieController.js:739:22) {
+        errno: -2,
+        code: 'ENOENT',
+        syscall: 'open',
+        path: '/var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-smoothie-missing-probe-file.txt'
+      }
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.996Z - info controller:Smoothie [autolevel:saveToFile] Saved 2 points to /var/folders/lp/lxkd5g1n7636jh_9j0_lqrt40000gn/T/cncjs-smoothie-save-82324-1790950132996.txt
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.997Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.997Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.998Z - info controller:Smoothie [autolevel:applyProbeCompensation] Probe compensation applied
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.998Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.998Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.999Z - error controller:Smoothie Unknown command: nonexistent
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:52.999Z - error controller:Smoothie Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.000Z - error controller:Smoothie Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.000Z - error controller:Smoothie Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.000Z - error controller:Smoothie Unable to write data to the connection: type=undefined, options=undefined
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.001Z - warn controller:Smoothie Warning: The "gcode:load" command is deprecated and will be removed in a future release.
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+PASS __tests__/app-template.test.js
+PASS __tests__/prettier-plugin-keep-inline.test.js
+PASS src/server/controllers/Marlin/__tests__/MarlinController.test.js
+PASS src/server/lib/__tests__/autolevel.test.js
+  ● Console
+
+    console.log
+      2026-10-02T14:08:53.269Z - error autolevel Not enough probed positions for compensation (need at least 3)
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.269Z - error autolevel Not enough probed positions for compensation (need at least 3)
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.270Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 3 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.270Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.271Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.271Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.271Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.272Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.272Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.272Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.273Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.273Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.274Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 12 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.274Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.274Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.275Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.275Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 20.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.275Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.276Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.276Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.277Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.277Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.277Z - info autolevel Applying Z compensation (auto-detected grid: 20.00mm × 20.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.278Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.278Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 4 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.278Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.279Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 9 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.279Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.279Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 6 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.280Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.280Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 6 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.280Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.281Z - info autolevel Applying Z compensation (auto-detected grid: 3.00mm × 2.00mm, 3 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.281Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.283Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 9 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.283Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.284Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 0.00mm, 9 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.307Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.309Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 10.00mm, 9 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.309Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.309Z - info autolevel Applying Z compensation (auto-detected grid: 10.00mm × 0.00mm, 9 points)...
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.310Z - info autolevel Z compensation applied successfully
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+PASS grbl-simulator/__tests__/grbl-simulator.test.js
+PASS src/server/controllers/Grbl/__tests__/GrblRunner.test.js
+PASS src/server/lib/__tests__/webappengine.test.js
+PASS src/server/lib/__tests__/evaluate-assignment-expression.test.js
+  ● Console
+
+    console.log
+      2026-10-02T14:08:53.526Z - error evaluate-assignment-expression src="Not a valid expression", vars={}
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+    console.log
+      2026-10-02T14:08:53.527Z - error evaluate-assignment-expression Error { index: 4, lineNumber: 1, description: 'Unexpected identifier' }
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
+PASS src/server/controllers/Smoothie/__tests__/SmoothieRunner.test.js
+PASS src/server/controllers/Marlin/__tests__/MarlinRunner.test.js
+PASS src/server/services/__tests__/DirectoryWatcherService.test.js
+PASS src/server/lib/__tests__/translate-expression.test.js
+  ● Console
+
+    console.log
+      2026-10-02T14:08:53.603Z - error evaluate-expression Error {
+        index: 1,
+        lineNumber: 1,
+        description: 'Unexpected end of input'
+      }
+
+      at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+          at String.replace (<anonymous>)
+
+PASS src/server/lib/__tests__/evaluate-expression.test.js
+PASS src/server/controllers/TinyG/__tests__/TinyGRunner.test.js
+PASS src/server/lib/__tests__/Sender.test.js
+PASS src/server/controllers/utils/__tests__/gcode.test.js
+
+Test Suites: 22 passed, 22 total
+Tests:       641 passed, 641 total
+Snapshots:   0 total
+Time:        7.96 s, estimated 8 s
+Ran all test suites.

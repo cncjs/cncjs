@@ -1,0 +1,797 @@
+{
+  "task": "V3-V bounded visual semantic migration closure",
+  "status": "passed",
+  "completedAt": "2026-10-06T06:36:46.908Z",
+  "worker": {
+    "model": "gpt-6-luna",
+    "reasoningEffort": "xhigh",
+    "role": "browser worker"
+  },
+  "focusedEvidenceRevision": "fbea204268dd00a67a7f345fb367589ca1e1c79f",
+  "sourceContext": {
+    "revision": "fbea204268dd00a67a7f345fb367589ca1e1c79f",
+    "visualizerSourceSha256": "c428b8756176eb1b698529fe3e2c3e19df8330566416c8f8e7b0ee7b1060a043",
+    "tableSourceSha256": "ee8c70464d8752841d0b281aae953dcb098db7c0adbaf9e901e8fee8cfdb9ddb",
+    "dirtySourceFiles": [],
+    "dirtySourceFilesNote": "Root-owned locale scanner edits were present under src during the browser runs and were restored by root before finalization. Visualizer and resource-table sources matched committed fbea throughout focused capture.",
+    "dirtySourceFilesAtRun": [
+      "src/app/i18n/cs/resource.json",
+      "src/app/i18n/de/resource.json",
+      "src/app/i18n/en/resource.json",
+      "src/app/i18n/es/resource.json",
+      "src/app/i18n/fr/resource.json",
+      "src/app/i18n/hu/resource.json",
+      "src/app/i18n/it/resource.json",
+      "src/app/i18n/ja/resource.json",
+      "src/app/i18n/nb/resource.json",
+      "src/app/i18n/nl/resource.json",
+      "src/app/i18n/pt-br/resource.json",
+      "src/app/i18n/pt/resource.json",
+      "src/app/i18n/ru/resource.json",
+      "src/app/i18n/tr/resource.json",
+      "src/app/i18n/uk/resource.json",
+      "src/app/i18n/zh-cn/resource.json",
+      "src/app/i18n/zh-tw/resource.json"
+    ],
+    "dirtySourceFilesAtFinalization": []
+  },
+  "browser": {
+    "engine": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "headless": true,
+    "deviceScaleFactor": 1,
+    "hardware": {
+      "webglVendor": "Google Inc. (Google)",
+      "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+      "webgpuAvailable": true
+    }
+  },
+  "visualizerFilenameAndBadge": {
+    "status": "passed",
+    "caseCount": 2,
+    "cases": [
+      {
+        "theme": "light",
+        "status": "passed",
+        "assertions": {
+          "pubsubSubscriberPresent": true,
+          "fixtureNameVisible": true,
+          "syntheticGrblConnectedForUpload": true,
+          "visualizerHasLoadedCanvas": true,
+          "compensationBadgeOrTextFound": true,
+          "allSampledContrastResolved": true,
+          "gcodeNameLargeTextContrastAtLeast3": true,
+          "probeCompensationContrastAtLeast45": true,
+          "noUnexpectedRequestFailures": true,
+          "noPageErrors": true,
+          "onlyExpectedApiWrites": true,
+          "authorizedSenderLoadObserved": true,
+          "noMotionRunOrJogCommands": true,
+          "noUnclassifiedControllerCommands": true
+        },
+        "filenameWhiteCanvasSamples": [
+          {
+            "found": true,
+            "fontSizePx": 24,
+            "effectiveContrastRatio": 3.71,
+            "actualCanvasBackground": "rgb(255, 255, 255)"
+          }
+        ],
+        "probeCompensationBadge": {
+          "text": "Probe Compensation Applied",
+          "contrastRatio": 6.411,
+          "minimum": 4.5
+        },
+        "outgoingCommands": [
+          {
+            "name": "sender_load",
+            "classification": "authorized-fixture-load",
+            "fixtureName": "AL_part.gcode",
+            "commentOnly": true
+          }
+        ],
+        "apiWrites": [
+          {
+            "method": "POST",
+            "path": "/api/signin",
+            "action": "page.goto #/workspace"
+          }
+        ],
+        "screenshot": "screenshots/visualizer-probe-compensation-light-1440x900.png"
+      },
+      {
+        "theme": "dark",
+        "status": "passed",
+        "assertions": {
+          "pubsubSubscriberPresent": true,
+          "fixtureNameVisible": true,
+          "syntheticGrblConnectedForUpload": true,
+          "visualizerHasLoadedCanvas": true,
+          "compensationBadgeOrTextFound": true,
+          "allSampledContrastResolved": true,
+          "gcodeNameLargeTextContrastAtLeast3": true,
+          "probeCompensationContrastAtLeast45": true,
+          "noUnexpectedRequestFailures": true,
+          "noPageErrors": true,
+          "onlyExpectedApiWrites": true,
+          "authorizedSenderLoadObserved": true,
+          "noMotionRunOrJogCommands": true,
+          "noUnclassifiedControllerCommands": true
+        },
+        "filenameWhiteCanvasSamples": [
+          {
+            "found": true,
+            "fontSizePx": 24,
+            "effectiveContrastRatio": 3.71,
+            "actualCanvasBackground": "rgb(255, 255, 255)"
+          }
+        ],
+        "probeCompensationBadge": {
+          "text": "Probe Compensation Applied",
+          "contrastRatio": 9.573,
+          "minimum": 4.5
+        },
+        "outgoingCommands": [
+          {
+            "name": "sender_load",
+            "classification": "authorized-fixture-load",
+            "fixtureName": "AL_part.gcode",
+            "commentOnly": true
+          }
+        ],
+        "apiWrites": [
+          {
+            "method": "POST",
+            "path": "/api/signin",
+            "action": "page.goto #/workspace"
+          }
+        ],
+        "screenshot": "screenshots/visualizer-probe-compensation-dark-1440x900.png"
+      }
+    ],
+    "fixture": {
+      "name": "AL_part.gcode",
+      "commentOnly": true,
+      "contentLines": 1,
+      "uploadedThroughVisibleVisualizerControl": true,
+      "connectedController": "owned local Grbl simulator",
+      "authorizedCommand": "sender_load",
+      "uploadedButNeverRun": true,
+      "noMotionRunOrJog": true
+    },
+    "method": "Filename contrast uses the actual white WebGL canvas, computed color alpha, and element opacity; only the 24px Visualizer GCodeName sample counts. Probe Compensation Applied uses its own computed text/background. Sidebar duplicate filename and ancestor-background samples do not count."
+  },
+  "controllerThemeMatrix": {
+    "status": "passed",
+    "caseCount": 8,
+    "controllers": [
+      "Grbl",
+      "Marlin",
+      "Smoothie",
+      "TinyG"
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "gatesPassed": 32,
+    "gatesFailed": 0,
+    "cases": [
+      {
+        "controller": "Marlin",
+        "theme": "light",
+        "report": "controller-marlin-light-v3.json",
+        "status": "passed",
+        "gateCount": 4,
+        "gates": [
+          {
+            "name": "connect actual GRBL simulator through Connection widget",
+            "status": "passed"
+          },
+          {
+            "name": "Marlin controller replay updates body and controller state/settings modal",
+            "status": "passed"
+          },
+          {
+            "name": "Marlin connected widget collapse and fullscreen view actions",
+            "status": "passed"
+          },
+          {
+            "name": "disconnect simulator through Connection widget",
+            "status": "passed"
+          }
+        ],
+        "fixtureMode": "incoming marlin state/settings fixture",
+        "injectedFixtureControllers": [
+          "Marlin"
+        ],
+        "injectedFixtureEvents": 2,
+        "actualGrblStateSettingsEvents": [
+          "controller:settings",
+          "controller:state"
+        ],
+        "visibleBodyAndSemanticSamples": {
+          "textLeaves": 27,
+          "icons": 18,
+          "resolvedTextColors": true,
+          "resolvedIconColors": true,
+          "expectedValuesVisible": true
+        },
+        "stateAndSettingsShown": true,
+        "viewActionsPassed": true,
+        "outgoingCommandDelta": 0,
+        "screenshots": [
+          "controller-marlin-light-1440x900.png",
+          "controller-marlin-light-view-1440x900.png"
+        ],
+        "runnerPid": 93433,
+        "browser": {
+          "version": "153.0.8010.12",
+          "channel": "Playwright bundled Chromium",
+          "headless": true,
+          "viewport": "1440x900",
+          "dpr": 1,
+          "environment": {
+            "colorScheme": "light",
+            "devicePixelRatio": 1,
+            "webgl": {
+              "vendor": "Google Inc. (Google)",
+              "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "webgpuAvailable": true
+          }
+        }
+      },
+      {
+        "controller": "Marlin",
+        "theme": "dark",
+        "report": "controller-marlin-dark-v3.json",
+        "status": "passed",
+        "gateCount": 4,
+        "gates": [
+          {
+            "name": "connect actual GRBL simulator through Connection widget",
+            "status": "passed"
+          },
+          {
+            "name": "Marlin controller replay updates body and controller state/settings modal",
+            "status": "passed"
+          },
+          {
+            "name": "Marlin connected widget collapse and fullscreen view actions",
+            "status": "passed"
+          },
+          {
+            "name": "disconnect simulator through Connection widget",
+            "status": "passed"
+          }
+        ],
+        "fixtureMode": "incoming marlin state/settings fixture",
+        "injectedFixtureControllers": [
+          "Marlin"
+        ],
+        "injectedFixtureEvents": 2,
+        "actualGrblStateSettingsEvents": [
+          "controller:settings",
+          "controller:state"
+        ],
+        "visibleBodyAndSemanticSamples": {
+          "textLeaves": 27,
+          "icons": 18,
+          "resolvedTextColors": true,
+          "resolvedIconColors": true,
+          "expectedValuesVisible": true
+        },
+        "stateAndSettingsShown": true,
+        "viewActionsPassed": true,
+        "outgoingCommandDelta": 0,
+        "screenshots": [
+          "controller-marlin-dark-1440x900.png",
+          "controller-marlin-dark-view-1440x900.png"
+        ],
+        "runnerPid": 93935,
+        "browser": {
+          "version": "153.0.8010.12",
+          "channel": "Playwright bundled Chromium",
+          "headless": true,
+          "viewport": "1440x900",
+          "dpr": 1,
+          "environment": {
+            "colorScheme": "dark",
+            "devicePixelRatio": 1,
+            "webgl": {
+              "vendor": "Google Inc. (Google)",
+              "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "webgpuAvailable": true
+          }
+        }
+      },
+      {
+        "controller": "Grbl",
+        "theme": "light",
+        "report": "controller-grbl-light-v3.json",
+        "status": "passed",
+        "gateCount": 4,
+        "gates": [
+          {
+            "name": "connect actual GRBL simulator through Connection widget",
+            "status": "passed"
+          },
+          {
+            "name": "live Grbl simulator state/settings and semantic widget colors",
+            "status": "passed"
+          },
+          {
+            "name": "Grbl connected widget collapse and fullscreen view actions",
+            "status": "passed"
+          },
+          {
+            "name": "disconnect simulator through Connection widget",
+            "status": "passed"
+          }
+        ],
+        "fixtureMode": "actual owned synthetic Grbl simulator",
+        "injectedFixtureControllers": [],
+        "injectedFixtureEvents": 0,
+        "actualGrblStateSettingsEvents": [
+          "controller:settings",
+          "controller:state"
+        ],
+        "visibleBodyAndSemanticSamples": {
+          "textLeaves": 28,
+          "icons": 5,
+          "resolvedTextColors": true,
+          "resolvedIconColors": true,
+          "expectedValuesVisible": true
+        },
+        "stateAndSettingsShown": true,
+        "viewActionsPassed": true,
+        "outgoingCommandDelta": 0,
+        "screenshots": [
+          "controller-grbl-light-1440x900.png",
+          "controller-grbl-light-view-1440x900.png"
+        ],
+        "runnerPid": 93822,
+        "browser": {
+          "version": "153.0.8010.12",
+          "channel": "Playwright bundled Chromium",
+          "headless": true,
+          "viewport": "1440x900",
+          "dpr": 1,
+          "environment": {
+            "colorScheme": "light",
+            "devicePixelRatio": 1,
+            "webgl": {
+              "vendor": "Google Inc. (Google)",
+              "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "webgpuAvailable": true
+          }
+        }
+      },
+      {
+        "controller": "Grbl",
+        "theme": "dark",
+        "report": "controller-grbl-dark-v3.json",
+        "status": "passed",
+        "gateCount": 4,
+        "gates": [
+          {
+            "name": "connect actual GRBL simulator through Connection widget",
+            "status": "passed"
+          },
+          {
+            "name": "live Grbl simulator state/settings and semantic widget colors",
+            "status": "passed"
+          },
+          {
+            "name": "Grbl connected widget collapse and fullscreen view actions",
+            "status": "passed"
+          },
+          {
+            "name": "disconnect simulator through Connection widget",
+            "status": "passed"
+          }
+        ],
+        "fixtureMode": "actual owned synthetic Grbl simulator",
+        "injectedFixtureControllers": [],
+        "injectedFixtureEvents": 0,
+        "actualGrblStateSettingsEvents": [
+          "controller:settings",
+          "controller:state"
+        ],
+        "visibleBodyAndSemanticSamples": {
+          "textLeaves": 28,
+          "icons": 5,
+          "resolvedTextColors": true,
+          "resolvedIconColors": true,
+          "expectedValuesVisible": true
+        },
+        "stateAndSettingsShown": true,
+        "viewActionsPassed": true,
+        "outgoingCommandDelta": 0,
+        "screenshots": [
+          "controller-grbl-dark-1440x900.png",
+          "controller-grbl-dark-view-1440x900.png"
+        ],
+        "runnerPid": 94115,
+        "browser": {
+          "version": "153.0.8010.12",
+          "channel": "Playwright bundled Chromium",
+          "headless": true,
+          "viewport": "1440x900",
+          "dpr": 1,
+          "environment": {
+            "colorScheme": "dark",
+            "devicePixelRatio": 1,
+            "webgl": {
+              "vendor": "Google Inc. (Google)",
+              "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "webgpuAvailable": true
+          }
+        }
+      },
+      {
+        "controller": "Smoothie",
+        "theme": "light",
+        "report": "controller-smoothie-light-v3.json",
+        "status": "passed",
+        "gateCount": 4,
+        "gates": [
+          {
+            "name": "connect actual GRBL simulator through Connection widget",
+            "status": "passed"
+          },
+          {
+            "name": "Smoothie controller replay updates body and controller state/settings modal",
+            "status": "passed"
+          },
+          {
+            "name": "Smoothie connected widget collapse and fullscreen view actions",
+            "status": "passed"
+          },
+          {
+            "name": "disconnect simulator through Connection widget",
+            "status": "passed"
+          }
+        ],
+        "fixtureMode": "incoming smoothie state/settings fixture",
+        "injectedFixtureControllers": [
+          "Smoothie"
+        ],
+        "injectedFixtureEvents": 2,
+        "actualGrblStateSettingsEvents": [
+          "controller:settings",
+          "controller:state"
+        ],
+        "visibleBodyAndSemanticSamples": {
+          "textLeaves": 39,
+          "icons": 15,
+          "resolvedTextColors": true,
+          "resolvedIconColors": true,
+          "expectedValuesVisible": true
+        },
+        "stateAndSettingsShown": true,
+        "viewActionsPassed": true,
+        "outgoingCommandDelta": 0,
+        "screenshots": [
+          "controller-smoothie-light-1440x900.png",
+          "controller-smoothie-light-view-1440x900.png"
+        ],
+        "runnerPid": 94144,
+        "browser": {
+          "version": "153.0.8010.12",
+          "channel": "Playwright bundled Chromium",
+          "headless": true,
+          "viewport": "1440x900",
+          "dpr": 1,
+          "environment": {
+            "colorScheme": "light",
+            "devicePixelRatio": 1,
+            "webgl": {
+              "vendor": "Google Inc. (Google)",
+              "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "webgpuAvailable": true
+          }
+        }
+      },
+      {
+        "controller": "Smoothie",
+        "theme": "dark",
+        "report": "controller-smoothie-dark-v3.json",
+        "status": "passed",
+        "gateCount": 4,
+        "gates": [
+          {
+            "name": "connect actual GRBL simulator through Connection widget",
+            "status": "passed"
+          },
+          {
+            "name": "Smoothie controller replay updates body and controller state/settings modal",
+            "status": "passed"
+          },
+          {
+            "name": "Smoothie connected widget collapse and fullscreen view actions",
+            "status": "passed"
+          },
+          {
+            "name": "disconnect simulator through Connection widget",
+            "status": "passed"
+          }
+        ],
+        "fixtureMode": "incoming smoothie state/settings fixture",
+        "injectedFixtureControllers": [
+          "Smoothie"
+        ],
+        "injectedFixtureEvents": 2,
+        "actualGrblStateSettingsEvents": [
+          "controller:settings",
+          "controller:state"
+        ],
+        "visibleBodyAndSemanticSamples": {
+          "textLeaves": 39,
+          "icons": 15,
+          "resolvedTextColors": true,
+          "resolvedIconColors": true,
+          "expectedValuesVisible": true
+        },
+        "stateAndSettingsShown": true,
+        "viewActionsPassed": true,
+        "outgoingCommandDelta": 0,
+        "screenshots": [
+          "controller-smoothie-dark-1440x900.png",
+          "controller-smoothie-dark-view-1440x900.png"
+        ],
+        "runnerPid": 94172,
+        "browser": {
+          "version": "153.0.8010.12",
+          "channel": "Playwright bundled Chromium",
+          "headless": true,
+          "viewport": "1440x900",
+          "dpr": 1,
+          "environment": {
+            "colorScheme": "dark",
+            "devicePixelRatio": 1,
+            "webgl": {
+              "vendor": "Google Inc. (Google)",
+              "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "webgpuAvailable": true
+          }
+        }
+      },
+      {
+        "controller": "TinyG",
+        "theme": "light",
+        "report": "controller-tinyg-light-v3.json",
+        "status": "passed",
+        "gateCount": 4,
+        "gates": [
+          {
+            "name": "connect actual GRBL simulator through Connection widget",
+            "status": "passed"
+          },
+          {
+            "name": "TinyG controller replay updates body and controller state/settings modal",
+            "status": "passed"
+          },
+          {
+            "name": "TinyG connected widget collapse and fullscreen view actions",
+            "status": "passed"
+          },
+          {
+            "name": "disconnect simulator through Connection widget",
+            "status": "passed"
+          }
+        ],
+        "fixtureMode": "incoming tinyg state/settings fixture",
+        "injectedFixtureControllers": [
+          "TinyG"
+        ],
+        "injectedFixtureEvents": 2,
+        "actualGrblStateSettingsEvents": [
+          "controller:settings",
+          "controller:state"
+        ],
+        "visibleBodyAndSemanticSamples": {
+          "textLeaves": 45,
+          "icons": 7,
+          "resolvedTextColors": true,
+          "resolvedIconColors": true,
+          "expectedValuesVisible": true
+        },
+        "stateAndSettingsShown": true,
+        "viewActionsPassed": true,
+        "outgoingCommandDelta": 0,
+        "screenshots": [
+          "controller-tinyg-light-1440x900.png",
+          "controller-tinyg-light-view-1440x900.png"
+        ],
+        "runnerPid": 94200,
+        "browser": {
+          "version": "153.0.8010.12",
+          "channel": "Playwright bundled Chromium",
+          "headless": true,
+          "viewport": "1440x900",
+          "dpr": 1,
+          "environment": {
+            "colorScheme": "light",
+            "devicePixelRatio": 1,
+            "webgl": {
+              "vendor": "Google Inc. (Google)",
+              "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "webgpuAvailable": true
+          }
+        }
+      },
+      {
+        "controller": "TinyG",
+        "theme": "dark",
+        "report": "controller-tinyg-dark-v3.json",
+        "status": "passed",
+        "gateCount": 4,
+        "gates": [
+          {
+            "name": "connect actual GRBL simulator through Connection widget",
+            "status": "passed"
+          },
+          {
+            "name": "TinyG controller replay updates body and controller state/settings modal",
+            "status": "passed"
+          },
+          {
+            "name": "TinyG connected widget collapse and fullscreen view actions",
+            "status": "passed"
+          },
+          {
+            "name": "disconnect simulator through Connection widget",
+            "status": "passed"
+          }
+        ],
+        "fixtureMode": "incoming tinyg state/settings fixture",
+        "injectedFixtureControllers": [
+          "TinyG"
+        ],
+        "injectedFixtureEvents": 2,
+        "actualGrblStateSettingsEvents": [
+          "controller:settings",
+          "controller:state"
+        ],
+        "visibleBodyAndSemanticSamples": {
+          "textLeaves": 45,
+          "icons": 7,
+          "resolvedTextColors": true,
+          "resolvedIconColors": true,
+          "expectedValuesVisible": true
+        },
+        "stateAndSettingsShown": true,
+        "viewActionsPassed": true,
+        "outgoingCommandDelta": 0,
+        "screenshots": [
+          "controller-tinyg-dark-1440x900.png",
+          "controller-tinyg-dark-view-1440x900.png"
+        ],
+        "runnerPid": 94227,
+        "browser": {
+          "version": "153.0.8010.12",
+          "channel": "Playwright bundled Chromium",
+          "headless": true,
+          "viewport": "1440x900",
+          "dpr": 1,
+          "environment": {
+            "colorScheme": "dark",
+            "devicePixelRatio": 1,
+            "webgl": {
+              "vendor": "Google Inc. (Google)",
+              "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)"
+            },
+            "webgpuAvailable": true
+          }
+        }
+      }
+    ],
+    "protocolSafety": {
+      "outgoingCommandCount": 0,
+      "motionRunJogObserved": false,
+      "fixtureBatchesMatchedActiveController": true,
+      "grblUsedActualOwnedSimulatorStateSettingsEvents": true
+    }
+  },
+  "runtimeSignals": {
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "httpErrors": 0,
+    "maximumUpdateDepthOccurrences": 0,
+    "consoleIssues": {
+      "total": 130,
+      "playwrightSeverityCounts": {
+        "error": 52,
+        "warning": 78,
+        "other": 0
+      },
+      "classifiedByMessage": {
+        "Tonic UI focus-style deprecation warnings": 20,
+        "CSS SSR :first-child selector warnings": 32,
+        "WorkspaceLayoutProvider EventEmitter listener warning": 10,
+        "Three.js BufferGeometry addAttribute deprecation warnings": 30,
+        "Headless SwiftShader WebGL readback stall warnings": 36,
+        "React VirtualList lifecycle warning": 2
+      },
+      "unclassifiedCount": 0,
+      "unclassified": [],
+      "interpretation": "Entries were warning/deprecation messages, including 52 delivered at Playwright console type=error. Pageerror and requestfailure counts are zero. MaxListenersExceededWarning is retained as an application warning; SwiftShader readback stalls are renderer warnings."
+    },
+    "priorHistoricalFailure": {
+      "preserved": true,
+      "artifact": "routes-semantic-v3-failed-attempt-root-review.json",
+      "diagnosis": "Root traced prior Maximum update depth errors to TanStack resetPageIndex/onStateChange receiving a fresh empty array each render and fixed it with stable EMPTY_ROWS. No such message appeared in the fresh fbea focused cases."
+    }
+  },
+  "evidence": {
+    "acceptedScreenshotCount": 18,
+    "acceptedScreenshots": [
+      "screenshots/visualizer-probe-compensation-light-1440x900.png",
+      "screenshots/visualizer-probe-compensation-dark-1440x900.png",
+      "screenshots/controller-marlin-light-1440x900.png",
+      "screenshots/controller-marlin-light-view-1440x900.png",
+      "screenshots/controller-marlin-dark-1440x900.png",
+      "screenshots/controller-marlin-dark-view-1440x900.png",
+      "screenshots/controller-grbl-light-1440x900.png",
+      "screenshots/controller-grbl-light-view-1440x900.png",
+      "screenshots/controller-grbl-dark-1440x900.png",
+      "screenshots/controller-grbl-dark-view-1440x900.png",
+      "screenshots/controller-smoothie-light-1440x900.png",
+      "screenshots/controller-smoothie-light-view-1440x900.png",
+      "screenshots/controller-smoothie-dark-1440x900.png",
+      "screenshots/controller-smoothie-dark-view-1440x900.png",
+      "screenshots/controller-tinyg-light-1440x900.png",
+      "screenshots/controller-tinyg-light-view-1440x900.png",
+      "screenshots/controller-tinyg-dark-1440x900.png",
+      "screenshots/controller-tinyg-dark-view-1440x900.png"
+    ],
+    "failedHarnessAttempt": {
+      "report": "visualizer-probe-compensation-v3-fbea-contrast-oracle-attempt-failed.json",
+      "screenshots": [
+        "screenshots/visualizer-probe-compensation-light-fbea-oracle-attempt-failed.png",
+        "screenshots/visualizer-probe-compensation-dark-fbea-oracle-attempt-failed.png"
+      ],
+      "classification": "false negative: a 14px sidebar filename without canvas background was included; primary white-canvas filename measured 3.710:1 at 24px in both themes after corrected sampling"
+    },
+    "historicalAcceptedF050": {
+      "report": "visualizer-probe-compensation-v3-f050804-pre-filename-accent.json",
+      "screenshots": [
+        "screenshots/visualizer-probe-compensation-light-f050804.png",
+        "screenshots/visualizer-probe-compensation-dark-f050804.png"
+      ],
+      "note": "preserved as the pre-filename-accent historical checkpoint; latest accepted focused evidence is fbea"
+    }
+  },
+  "cleanup": {
+    "status": "passed",
+    "artifact": "cleanup.json"
+  },
+  "missingAcceptedScreenshots": [],
+  "scopeNote": "This closure is limited to the accepted fbea filename/badge rerun and four-controller light/dark 1440×900 cases. Earlier Workspace matrix and route/dialog evidence remains under its recorded historical revision; it was not rerun here.",
+  "securityRedaction": {
+    "status": "passed",
+    "scope": "owned browser artifact directory plus owned scratch text logs",
+    "filesWithRedactedSensitiveValues": [
+      "controller-grbl-light-v3-progress.json",
+      "controller-marlin-dark-v3-progress.json",
+      "controller-marlin-light-v3-progress.json",
+      "controller-smoothie-dark-v3-progress.json",
+      "controller-smoothie-light-v3-progress.json",
+      "controller-tinyg-dark-v3-progress.json",
+      "controller-tinyg-light-v3-progress.json",
+      "history/visualizer-probe-compensation-v3-senderload-failed.json.gz",
+      "marlin-replay-focused-v3-progress.json",
+      "visualizer-probe-compensation-v3-senderload-failed.json"
+    ],
+    "remainingUnredactedTokenOrJWTValues": 0,
+    "previousFailureStructurePreserved": true
+  }
+}

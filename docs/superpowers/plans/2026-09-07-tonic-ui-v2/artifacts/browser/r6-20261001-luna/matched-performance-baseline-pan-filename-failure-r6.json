@@ -1,0 +1,1671 @@
+{
+  "mode": "baseline",
+  "comparison": {
+    "matchedDrawingArea": {
+      "width": 648,
+      "height": 284
+    },
+    "setup": "Five prewarm loads/unloads, then five measured loads and 150 native interactions; same script/Chromium flags/theme/DPR."
+  },
+  "baseline": {
+    "sourceCommit": "0a90e31f90515d711379bad8729f96a068d90718",
+    "firstEngineExtractionCommit": "c7ed265f",
+    "devOnlyInstrumentation": "Visualizer.load start through first completed visible WebGLRenderer.render; native input timestamp through first subsequent renderer call",
+    "frontend": "http://127.0.0.1:8082",
+    "backend": "http://127.0.0.1:8000"
+  },
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "viewport": "1440x900",
+    "dpr": 1,
+    "headless": true,
+    "launchArgs": [
+      "--no-sandbox"
+    ],
+    "systemColorScheme": "light"
+  },
+  "fixture": {
+    "path": "/tmp/cncjs-r6-20261001/synthetic-100k.gcode",
+    "bytes": 2379870,
+    "sha256": "cf7dae8dc539fe56490fb7678a5598503c87888f5b3af1738fc2d2233a9e7a06",
+    "expectedLines": 100000
+  },
+  "startedAt": "2026-10-02T10:12:53.274Z",
+  "connection": {
+    "autoWasChecked": true,
+    "selectedLabel": "/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+    "connectionOpen": true
+  },
+  "webgl": {
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "WebKit WebGL",
+    "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "WebKit",
+    "width": 648,
+    "height": 284,
+    "cssWidth": 648,
+    "cssHeight": 284,
+    "hostWidth": 648,
+    "hostHeight": 284
+  },
+  "warmLoads": [
+    {
+      "index": 1,
+      "uploadToRunEnabledMs": 332,
+      "runEnabledElapsedMs": 234,
+      "metricsLoadSample": {
+        "startedAtMs": 4874.300000011921,
+        "renderedAtMs": 4949.9000000059605,
+        "durationMs": 75.59999999403954,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 32,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": 2,
+      "uploadToRunEnabledMs": 384,
+      "runEnabledElapsedMs": 255,
+      "metricsLoadSample": {
+        "startedAtMs": 8104.200000017881,
+        "renderedAtMs": 8179.0999999940395,
+        "durationMs": 74.89999997615814,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 78,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": 3,
+      "uploadToRunEnabledMs": 352,
+      "runEnabledElapsedMs": 249,
+      "metricsLoadSample": {
+        "startedAtMs": 8572.300000011921,
+        "renderedAtMs": 8641.40000000596,
+        "durationMs": 69.09999999403954,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 82,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": 4,
+      "uploadToRunEnabledMs": 340,
+      "runEnabledElapsedMs": 256,
+      "metricsLoadSample": {
+        "startedAtMs": 9016.09999999404,
+        "renderedAtMs": 9097.800000011921,
+        "durationMs": 81.7000000178814,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 86,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": 5,
+      "uploadToRunEnabledMs": 409,
+      "runEnabledElapsedMs": 290,
+      "metricsLoadSample": {
+        "startedAtMs": 9485,
+        "renderedAtMs": 9565.40000000596,
+        "durationMs": 80.40000000596046,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 90,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    }
+  ],
+  "interactions": [
+    {
+      "sample": 1,
+      "action": "Right Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4
+    },
+    {
+      "sample": 2,
+      "action": "Left Side View",
+      "eventType": "click",
+      "eventToRendererMs": 4.4
+    },
+    {
+      "sample": 3,
+      "action": "Zoom In",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.8
+    },
+    {
+      "sample": 4,
+      "action": "Zoom Out",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.8
+    },
+    {
+      "sample": 5,
+      "action": "Zoom to Fit",
+      "eventType": "mouseup",
+      "eventToRendererMs": 0.7
+    }
+  ],
+  "panSamples": [],
+  "interactionErrors": [
+    {
+      "sample": 6,
+      "error": "Error: ENOENT: no such file or directory, open '/Users/cheton/Code/cncjs/cncjs-cheton/docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/r6-20261001-luna/matched-getByRole('region', { name: '3D Visualizer widget', exact: true }).getByRole('button', { name: /Camera mode:/ })-pan-before.png'"
+    }
+  ],
+  "consoleIssues": [
+    {
+      "type": "error",
+      "text": "ToastManager: 'TransitionProps' is deprecated and will be removed in the next major release. Use 'slotProps.transition' instead."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] Warnings while compiling."
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 42:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 45:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 48:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 51:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 54:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/bootstrap.js 54:20-24\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 21:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 24:15-19\nexport 'race' (imported as 'race') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 25:16-19\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 26:19-23\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 28:19-24\nexport 'delay' (imported as 'delay') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 47:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 57:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 72:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/app/index.js 73:17-21\nexport 'fork' (imported as 'fork') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 203:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 206:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 223:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/controller/index.js 240:15-19\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 17:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 18:17-21\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 22:15-18\nexport 'all' (imported as 'all') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/index.js 23:17-21\nexport 'fork' (imported as 'fork') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 39:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 42:15-25\nexport 'takeLatest' (imported as 'takeLatest') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 56:15-19\nexport 'race' (imported as 'race') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 57:17-21\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 58:19-24\nexport 'delay' (imported as 'delay') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 72:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 86:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 103:15-19\nexport 'race' (imported as 'race') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 104:21-25\nexport 'call' (imported as 'call') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 105:19-24\nexport 'delay' (imported as 'delay') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 119:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./sagas/serialport/index.js 133:15-18\nexport 'put' (imported as 'put') was not found in 'redux-saga/effects' (module has no exports)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./store/redux/configureStore.development.js 51:26-29\nexport 'END' (imported as 'END') was not found in 'redux-saga' (possible exports: default)"
+    },
+    {
+      "type": "warning",
+      "text": "[webpack-dev-server] WARNING in ./store/redux/configureStore.production.js 15:26-29\nexport 'END' (imported as 'END') was not found in 'redux-saga' (possible exports: default)"
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Button \n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)\n    at Col (webpack-internal:///./components/GridSystem/Col.jsx:91:5)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)\n    at Row (webpack-internal:///./components/GridSystem/Row.jsx:46:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)\n    at div\n    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:142:5)\n    at WorkspaceWithLayout (webpack-internal:///./pages/Workspace/Workspace.jsx:732:97)\n    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)\n    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)\n    at WorkspaceLayoutProvider (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:98:23)\n    at WorkspaceRoot\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at main\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm."
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s ButtonGroup \n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)\n    at Col (webpack-internal:///./components/GridSystem/Col.jsx:91:5)\n    at div\n    at Resolver (webpack-internal:///./components/GridSystem/Resolver.jsx:37:5)\n    at Row (webpack-internal:///./components/GridSystem/Row.jsx:46:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)\n    at div\n    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:142:5)\n    at WorkspaceWithLayout (webpack-internal:///./pages/Workspace/Workspace.jsx:732:97)\n    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)\n    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)\n    at WorkspaceLayoutProvider (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:98:23)\n    at WorkspaceRoot\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at main\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.develo"
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Widget \n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)\n    at ConnectionWidget (webpack-internal:///./widgets/Connection/index.jsx:30:23)\n    at WidgetWithLayout (webpack-internal:///./pages/Workspace/Widget.jsx:29:24)\n    at WidgetHost (webpack-internal:///./pages/Workspace/Widget.jsx:53:24)\n    at div\n    at div\n    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)\n    at PrimaryWidgets (webpack-internal:///./pages/Workspace/PrimaryWidgets.jsx:66:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)\n    at div\n    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:142:5)\n    at WorkspaceWithLayout (webpack-internal:///./pages/Workspace/Workspace.jsx:732:97)\n    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)\n    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)\n    at WorkspaceLayoutProvider (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:98:23)\n    at WorkspaceRoot\n    at div\n    a"
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s Header \n    at Header (webpack-internal:///./components/Widget/Header.jsx:33:20)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)\n    at ConnectionWidget (webpack-internal:///./widgets/Connection/index.jsx:30:23)\n    at WidgetWithLayout (webpack-internal:///./pages/Workspace/Widget.jsx:29:24)\n    at WidgetHost (webpack-internal:///./pages/Workspace/Widget.jsx:53:24)\n    at div\n    at div\n    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)\n    at PrimaryWidgets (webpack-internal:///./pages/Workspace/PrimaryWidgets.jsx:66:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)\n    at div\n    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:142:5)\n    at WorkspaceWithLayout (webpack-internal:///./pages/Workspace/Workspace.jsx:732:97)\n    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)\n    at ComponentWith"
+    },
+    {
+      "type": "error",
+      "text": "Warning: Each child in a list should have a unique \"key\" prop.%s%s See https://reactjs.org/link/warning-keys for more information.%s \n\nCheck the render method of `Dropdown`.  \n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)\n    at UncontrolledComponent (webpack-internal:///../../node_modules/uncontrollable/lib/esm/uncontrollable.js:45:37)\n    at DropdownButton (webpack-internal:///./components/Widget/DropdownButton.jsx:45:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Controls (webpack-internal:///./components/Widget/Controls.jsx:26:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Header (webpack-internal:///./components/Widget/Header.jsx:33:20)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)\n    at ConnectionWidget (webpack-internal:///./widgets/Connection/index.jsx:30:23)\n    at WidgetWithLayout (webpack-internal:///./pages/Workspace/Widget.jsx:29:24)\n    at WidgetHost (webpack-internal:///./pages/Workspace/Widget.jsx:53:24)\n    at div\n    at div\n    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)\n    at PrimaryWidgets (webpack-internal:///./pages/Workspace/PrimaryWidgets.jsx:66:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-intern"
+    },
+    {
+      "type": "error",
+      "text": "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s DropdownMenu dropdownmenu \n    at div\n    at div\n    at MenuItem (webpack-internal:///./components/Dropdown/MenuItem.jsx:48:5)\n    at div\n    at RootCloseWrapper (webpack-internal:///./components/RootCloseWrapper/RootCloseWrapper.jsx:48:5)\n    at DropdownMenu (webpack-internal:///./components/Dropdown/DropdownMenu.jsx:55:5)\n    at div\n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)\n    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)\n    at UncontrolledComponent (webpack-internal:///../../node_modules/uncontrollable/lib/esm/uncontrollable.js:45:37)\n    at DropdownButton (webpack-internal:///./components/Widget/DropdownButton.jsx:45:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Controls (webpack-internal:///./components/Widget/Controls.jsx:26:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Header (webpack-internal:///./components/Widget/Header.jsx:33:20)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)\n    at ConnectionWidget (webpack-internal:///./widgets/Connection/index.jsx:30:23)\n    at WidgetWithLayout (webpack-internal:///./pages/Workspace/Widget.jsx:29:24)\n    at WidgetHost (webpack-internal:///./pages/Workspace/Widget.jsx:53:24)\n    at div\n    at div\n    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)\n    at PrimaryWidgets (webpack-internal:///./pages/Workspace/PrimaryWidgets.jsx:66:24)\n    at div\n   "
+    },
+    {
+      "type": "error",
+      "text": "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s dropdownOpen dropdownopen \n    at div\n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)\n    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)\n    at UncontrolledComponent (webpack-internal:///../../node_modules/uncontrollable/lib/esm/uncontrollable.js:45:37)\n    at DropdownButton (webpack-internal:///./components/Widget/DropdownButton.jsx:45:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Controls (webpack-internal:///./components/Widget/Controls.jsx:26:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Header (webpack-internal:///./components/Widget/Header.jsx:33:20)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)\n    at ConnectionWidget (webpack-internal:///./widgets/Connection/index.jsx:30:23)\n    at WidgetWithLayout (webpack-internal:///./pages/Workspace/Widget.jsx:29:24)\n    at WidgetHost (webpack-internal:///./pages/Workspace/Widget.jsx:53:24)\n    at div\n    at div\n    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)\n    at PrimaryWidgets (webpack-internal:///./pages/Workspace/PrimaryWidgets.jsx:66:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpa"
+    },
+    {
+      "type": "error",
+      "text": "Warning: %s: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.%s LoadingIndicator \n    at LoadingIndicator (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:1070:25)\n    at div\n    at render\n    at IndicatorsContainer (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:886:24)\n    at div\n    at render\n    at Control (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:1127:24)\n    at div\n    at render\n    at SelectContainer (webpack-internal:///../../node_modules/react-select/dist/index-4b37608a.browser.esm.js:827:24)\n    at Select (webpack-internal:///../../node_modules/react-select/dist/Select-5d18b8d9.browser.esm.js:1079:91)\n    at StateManager (webpack-internal:///../../node_modules/react-select/dist/stateManager-2f2b6f5b.browser.esm.js:43:92)\n    at div\n    at Field (webpack-internal:///../../node_modules/react-final-form/dist/react-final-form.es.js:706:26)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Field (webpack-internal:///../../node_modules/react-final-form/dist/react-final-form.es.js:706:26)\n    at ReactFinalForm (webpack-internal:///../../node_modules/react-final-form/dist/react-final-form.es.js:166:20)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Connection (webpack-internal:///./widgets/Connection/Connection.jsx:331:93)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n "
+    },
+    {
+      "type": "error",
+      "text": "Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s \n\nCheck the render method of `VisualizerWidget`. \n    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)\n    at VisualizerWidget (webpack-internal:///./widgets/Visualizer/index.jsx:210:5)\n    at WidgetHost (webpack-internal:///./pages/Workspace/Widget.jsx:53:24)\n    at div\n    at div\n    at DefaultWidgets (webpack-internal:///./pages/Workspace/DefaultWidgets.jsx:35:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)\n    at div\n    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:142:5)\n    at WorkspaceWithLayout (webpack-internal:///./pages/Workspace/Workspace.jsx:732:97)\n    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)\n    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)\n    at WorkspaceLayoutProvider (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:98:23)\n    at WorkspaceRoot\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-e"
+    },
+    {
+      "type": "error",
+      "text": "Warning: Received `%s` for a non-boolean attribute `%s`.\n\nIf you want to write it to the DOM, pass a string instead: %s=\"%s\" or %s={value.toString()}.%s true compact compact true compact \n    at button\n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n    at div\n    at div\n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)\n    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)\n    at UncontrolledComponent (webpack-internal:///../../node_modules/uncontrollable/lib/esm/uncontrollable.js:45:37)\n    at th\n    at tr\n    at thead\n    at table\n    at div\n    at P (webpack-internal:///../../node_modules/styled-components/dist/styled-components.browser.esm.js:30:19658)\n    at DisplayPanel (webpack-internal:///./widgets/Axes/DisplayPanel.jsx:179:67)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Axes\n    at AxesProvider (webpack-internal:///./widgets/Axes/context.jsx:24:20)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)\n    at AxesWidgetContent (webpack-internal:///./widgets/Axes/index.jsx:167:23)\n    at AxesWidget (webpack-internal:///./widgets/Axes/index.jsx:722:76)\n    at WidgetWithLayout (webpack-internal:///./pages/Workspace/Widget.jsx:29:24)\n    at WidgetHost (webpack-internal:///./pages/Workspace/Widget.jsx:53:24)\n    at div\n    at div\n    at Sortable (webpack-internal:///../../node_modules/react-sortablejs/lib/Sortable.js:61:5)\n    at SecondaryWidgets (webpack-internal://"
+    },
+    {
+      "type": "error",
+      "text": "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s dropdownToggle dropdowntoggle \n    at button\n    at Button (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:131:24)\n    at DropdownToggle (webpack-internal:///./components/Dropdown/DropdownToggle.jsx:44:5)\n    at div\n    at div\n    at ButtonGroup (webpack-internal:///../../node_modules/react-bootstrap-buttons/lib/index.js:286:22)\n    at Dropdown (webpack-internal:///./components/Dropdown/Dropdown.jsx:73:5)\n    at UncontrolledComponent (webpack-internal:///../../node_modules/uncontrollable/lib/esm/uncontrollable.js:45:37)\n    at th\n    at tr\n    at thead\n    at table\n    at div\n    at P (webpack-internal:///../../node_modules/styled-components/dist/styled-components.browser.esm.js:30:19658)\n    at DisplayPanel (webpack-internal:///./widgets/Axes/DisplayPanel.jsx:179:67)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Axes\n    at AxesProvider (webpack-internal:///./widgets/Axes/context.jsx:24:20)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)\n    at AxesWidgetContent (webpack-internal:///./widgets/Axes/index.jsx:167:23)\n    at AxesWidget (webpack-internal:///./widgets/Axes/index.jsx:722:76)\n    at WidgetWithLayout (webpack-internal:///./pages/Workspace/Widget.jsx:29:24)\n    at WidgetHost (webpack-internal:///./pages/Workspace/Widget.jsx:53:24)\n    at div\n    at div\n    at Sortable (webpack-interna"
+    },
+    {
+      "type": "error",
+      "text": "Warning: Invalid values for props %s on <%s> tag. Either remove them from the element, or pass a string or number value to keep them in the DOM. For details, see https://reactjs.org/link/attribute-behavior %s `navigate`, `dispatch` div \n    at div\n    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:142:5)\n    at WorkspaceWithLayout (webpack-internal:///./pages/Workspace/Workspace.jsx:732:97)\n    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)\n    at ComponentWithRouterProp (webpack-internal:///./components/withRouter/index.jsx:21:81)\n    at WorkspaceLayoutProvider (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:98:23)\n    at WorkspaceRoot\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at main\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///./containers/app/MainPage.jsx:64:83)\n    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Layout (webpack-internal:///./containers/app/App.jsx:66:83)\n    at App (webpack-internal:///./containers/app/App.jsx:97:29)\n    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)\n    at Router (webpack-internal:///../../node_modules/react-router/index.js:854:15)\n    at HashRouter (webpack-internal:///../../node_modules/react-router-dom/index.js:152:5)\n    at Provider (webpack-internal:///./components/Card/CardProvider.jsx:31:26)\n    at Provider (webpack-internal:///./components/GridSystem/Provider.jsx:45:5)\n    at Provider (webpack-internal:///../../node_modules/react-redux/es/components/Provider.js:16:3)\n    at PortalManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/portal/PortalManager.js:29:103)\n    at ToastManager (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/toast/ToastManager.js:69:103)\n    at ColorStyleProvider (web"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "error",
+      "text": "Warning: findDOMNode is deprecated and will be removed in the next major release. Instead, add a ref directly to the element you want to reference. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-find-node%s \n    at Visualizer (webpack-internal:///./widgets/Visualizer/Visualizer.jsx:139:5)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Content (webpack-internal:///./components/Widget/Content.jsx:26:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at Widget (webpack-internal:///./components/Widget/Widget.jsx:33:25)\n    at o.Provider (webpack-internal:///../../node_modules/use-context-selector/dist/index.modern.js:14:429)\n    at Provider (webpack-internal:///../../node_modules/react-tracked/dist/index.modern.js:11:2441)\n    at WidgetConfigProvider (webpack-internal:///./widgets/shared/WidgetConfigProvider.jsx:85:29)\n    at VisualizerWidget (webpack-internal:///./widgets/Visualizer/index.jsx:210:5)\n    at WidgetHost (webpack-internal:///./pages/Workspace/Widget.jsx:53:24)\n    at div\n    at div\n    at DefaultWidgets (webpack-internal:///./pages/Workspace/DefaultWidgets.jsx:35:24)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react/dist/esm/flex/Flex.js:19:103)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/react-dropzone/dist/es/index.js:63:23)\n    at div\n    at Workspace (webpack-internal:///./pages/Workspace/Workspace.jsx:142:5)\n    at WorkspaceWithLayout (webpack-internal:///./pages/Workspace/Workspace.jsx:732:97)\n    at ConnectFunction (webpack-internal:///../../node_modules/react-redux/es/components/connect.js:240:114)\n    at ComponentWithRouterProp ("
+    },
+    {
+      "type": "error",
+      "text": "THREE.DirectGeometry: Faceless geometries are not supported."
+    },
+    {
+      "type": "warning",
+      "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:23184:26)\n    at commitPassiveMountOnFiber (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24960:13)\n    at commitPassiveMountEffects_complete (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24925:9)\n    at commitPassiveMountEffects_begin (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24912:7)\n    at commitPassiveMountEffects (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:24900:3)"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administration/Machines/queries.js:26:70)\n    at _next (webpack-internal:///./pages/Administration/Machines/queries.js:27:163)\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:299)\n    at new Promise (<anonymous>)\n    at Object.eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:90)\n    at Object.queryFn (webpack-internal:///./pages/Administration/Machines/queries.js:62:25)"
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13400443800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13400443800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13400443800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x13400443800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "type": "error",
+      "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+    },
+    {
+      "type": "warning",
+      "text": "Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move data fetching code or side effects to componentDidUpdate.\n* If you're updating state whenever props change, refactor your code to use memoization techniques or move it to static getDerivedStateFromProps. Learn more at: https://reactjs.org/link/derived-state\n* Rename componentWillReceiveProps to UNSAFE_componentWillReceiveProps to suppress this warning in non-strict mode. In React 18.x, only the UNSAFE_ name will work. To rename all deprecated lifecycles to their new names, you can run `npx react-codemod rename-unsafe-lifecycles` in your project source folder.\n\nPlease update the following components: %s VirtualList"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administration/Machines/queries.js:26:70)\n    at _next (webpack-internal:///./pages/Administration/Machines/queries.js:27:163)\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:299)\n    at new Promise (<anonymous>)\n    at Object.eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:90)\n    at Object.queryFn (webpack-internal:///./pages/Administration/Machines/queries.js:62:25)"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administration/Machines/queries.js:26:70)\n    at _next (webpack-internal:///./pages/Administration/Machines/queries.js:27:163)\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:299)\n    at new Promise (<anonymous>)\n    at Object.eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:90)\n    at Object.queryFn (webpack-internal:///./pages/Administration/Machines/queries.js:62:25)"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administration/Machines/queries.js:26:70)\n    at _next (webpack-internal:///./pages/Administration/Machines/queries.js:27:163)\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:299)\n    at new Promise (<anonymous>)\n    at Object.eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:90)\n    at Object.queryFn (webpack-internal:///./pages/Administration/Machines/queries.js:62:25)"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administration/Machines/queries.js:26:70)\n    at _next (webpack-internal:///./pages/Administration/Machines/queries.js:27:163)\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:299)\n    at new Promise (<anonymous>)\n    at Object.eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:90)\n    at Object.queryFn (webpack-internal:///./pages/Administration/Machines/queries.js:62:25)"
+    },
+    {
+      "type": "warning",
+      "text": "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administration/Machines/queries.js:26:70)\n    at _next (webpack-internal:///./pages/Administration/Machines/queries.js:27:163)\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:299)\n    at new Promise (<anonymous>)\n    at Object.eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:90)\n    at Object.queryFn (webpack-internal:///./pages/Administration/Machines/queries.js:62:25)"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administration/Machines/queries.js:26:70)\n    at _next (webpack-internal:///./pages/Administration/Machines/queries.js:27:163)\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:299)\n    at new Promise (<anonymous>)\n    at Object.eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:90)\n    at Object.queryFn (webpack-internal:///./pages/Administration/Machines/queries.js:62:25)"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administration/Machines/queries.js:26:70)\n    at _next (webpack-internal:///./pages/Administration/Machines/queries.js:27:163)\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:299)\n    at new Promise (<anonymous>)\n    at Object.eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:90)\n    at Object.queryFn (webpack-internal:///./pages/Administration/Machines/queries.js:62:25)"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administration/Machines/queries.js:26:70)\n    at _next (webpack-internal:///./pages/Administration/Machines/queries.js:27:163)\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:299)\n    at new Promise (<anonymous>)\n    at Object.eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:90)\n    at Object.queryFn (webpack-internal:///./pages/Administration/Machines/queries.js:62:25)"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administration/Machines/queries.js:26:70)\n    at _next (webpack-internal:///./pages/Administration/Machines/queries.js:27:163)\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:299)\n    at new Promise (<anonymous>)\n    at Object.eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:90)\n    at Object.queryFn (webpack-internal:///./pages/Administration/Machines/queries.js:62:25)"
+    },
+    {
+      "type": "error",
+      "text": "TypeError: Cannot read properties of undefined (reading 'query')\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:49:26)\n    at tryCatch (webpack-internal:///./pages/Administration/Machines/queries.js:25:1062)\n    at Generator.eval (webpack-internal:///./pages/Administration/Machines/queries.js:25:3008)\n    at Generator.eval [as next] (webpack-internal:///./pages/Administration/Machines/queries.js:25:1699)\n    at asyncGeneratorStep (webpack-internal:///./pages/Administration/Machines/queries.js:26:70)\n    at _next (webpack-internal:///./pages/Administration/Machines/queries.js:27:163)\n    at eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:299)\n    at new Promise (<anonymous>)\n    at Object.eval (webpack-internal:///./pages/Administration/Machines/queries.js:27:90)\n    at Object.queryFn (webpack-internal:///./pages/Administration/Machines/queries.js:62:25)"
+    }
+  ],
+  "pageErrors": [],
+  "apiResponses": [
+    {
+      "method": "POST",
+      "path": "/api/signin",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/state",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/mdi",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tool",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/macros",
+      "status": 200
+    }
+  ],
+  "requestFailures": [],
+  "cncCommands": [
+    {
+      "event": "command",
+      "name": "sender_load",
+      "transport": "polling",
+      "payloadBytes": 2479914,
+      "payloadSha256": "d3d171408a55548a467ad89b33522f338a5f209fdfcbce517fe13b153b215b95"
+    },
+    {
+      "event": "command",
+      "name": "sender_unload",
+      "transport": "polling",
+      "payloadBytes": 0,
+      "payloadSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "event": "command",
+      "name": "sender_load",
+      "transport": "polling",
+      "payloadBytes": 2479914,
+      "payloadSha256": "d3d171408a55548a467ad89b33522f338a5f209fdfcbce517fe13b153b215b95"
+    },
+    {
+      "event": "command",
+      "name": "sender_unload",
+      "transport": "polling",
+      "payloadBytes": 0,
+      "payloadSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "event": "command",
+      "name": "sender_load",
+      "transport": "polling",
+      "payloadBytes": 2479914,
+      "payloadSha256": "d3d171408a55548a467ad89b33522f338a5f209fdfcbce517fe13b153b215b95"
+    },
+    {
+      "event": "command",
+      "name": "sender_unload",
+      "transport": "polling",
+      "payloadBytes": 0,
+      "payloadSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "event": "command",
+      "name": "sender_load",
+      "transport": "polling",
+      "payloadBytes": 2479914,
+      "payloadSha256": "d3d171408a55548a467ad89b33522f338a5f209fdfcbce517fe13b153b215b95"
+    },
+    {
+      "event": "command",
+      "name": "sender_unload",
+      "transport": "polling",
+      "payloadBytes": 0,
+      "payloadSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "event": "command",
+      "name": "sender_load",
+      "transport": "polling",
+      "payloadBytes": 2479914,
+      "payloadSha256": "d3d171408a55548a467ad89b33522f338a5f209fdfcbce517fe13b153b215b95"
+    },
+    {
+      "event": "command",
+      "name": "sender_unload",
+      "transport": "polling",
+      "payloadBytes": 0,
+      "payloadSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "event": "command",
+      "name": "sender_load",
+      "transport": "polling",
+      "payloadBytes": 2479914,
+      "payloadSha256": "d3d171408a55548a467ad89b33522f338a5f209fdfcbce517fe13b153b215b95"
+    },
+    {
+      "event": "command",
+      "name": "sender_unload",
+      "transport": "polling",
+      "payloadBytes": 0,
+      "payloadSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "event": "command",
+      "name": "sender_load",
+      "transport": "polling",
+      "payloadBytes": 2479914,
+      "payloadSha256": "d3d171408a55548a467ad89b33522f338a5f209fdfcbce517fe13b153b215b95"
+    },
+    {
+      "event": "command",
+      "name": "sender_unload",
+      "transport": "polling",
+      "payloadBytes": 0,
+      "payloadSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "event": "command",
+      "name": "sender_load",
+      "transport": "polling",
+      "payloadBytes": 2479914,
+      "payloadSha256": "d3d171408a55548a467ad89b33522f338a5f209fdfcbce517fe13b153b215b95"
+    },
+    {
+      "event": "command",
+      "name": "sender_unload",
+      "transport": "polling",
+      "payloadBytes": 0,
+      "payloadSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "event": "command",
+      "name": "sender_load",
+      "transport": "polling",
+      "payloadBytes": 2479914,
+      "payloadSha256": "d3d171408a55548a467ad89b33522f338a5f209fdfcbce517fe13b153b215b95"
+    },
+    {
+      "event": "command",
+      "name": "sender_unload",
+      "transport": "polling",
+      "payloadBytes": 0,
+      "payloadSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "event": "command",
+      "name": "sender_load",
+      "transport": "polling",
+      "payloadBytes": 2479914,
+      "payloadSha256": "d3d171408a55548a467ad89b33522f338a5f209fdfcbce517fe13b153b215b95"
+    },
+    {
+      "event": "command",
+      "name": "sender_unload",
+      "transport": "polling",
+      "payloadBytes": 0,
+      "payloadSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "resourceCheckpoints": {},
+  "prewarmLoads": [
+    {
+      "index": "prewarm-1",
+      "uploadToRunEnabledMs": 424,
+      "runEnabledElapsedMs": 336,
+      "metricsLoadSample": {
+        "startedAtMs": 2504.800000011921,
+        "renderedAtMs": 2583.9000000059605,
+        "durationMs": 79.09999999403954,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 12,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": "prewarm-2",
+      "uploadToRunEnabledMs": 326,
+      "runEnabledElapsedMs": 259,
+      "metricsLoadSample": {
+        "startedAtMs": 3021.300000011921,
+        "renderedAtMs": 3103.2000000178814,
+        "durationMs": 81.90000000596046,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 16,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": "prewarm-3",
+      "uploadToRunEnabledMs": 329,
+      "runEnabledElapsedMs": 144,
+      "metricsLoadSample": {
+        "startedAtMs": 3455.5,
+        "renderedAtMs": 3529.800000011921,
+        "durationMs": 74.30000001192093,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 20,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": "prewarm-4",
+      "uploadToRunEnabledMs": 369,
+      "runEnabledElapsedMs": 241,
+      "metricsLoadSample": {
+        "startedAtMs": 3942.4000000059605,
+        "renderedAtMs": 4019.5999999940395,
+        "durationMs": 77.19999998807907,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 24,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    },
+    {
+      "index": "prewarm-5",
+      "uploadToRunEnabledMs": 338,
+      "runEnabledElapsedMs": 231,
+      "metricsLoadSample": {
+        "startedAtMs": 4406.9000000059605,
+        "renderedAtMs": 4479.700000017881,
+        "durationMs": 72.80000001192093,
+        "gcodeCharacters": 2379908
+      },
+      "renderSampleCount": 28,
+      "engine": {
+        "width": 648,
+        "height": 284
+      }
+    }
+  ],
+  "appAppearance": {
+    "systemPrefersDark": false,
+    "htmlClass": "",
+    "bodyClass": "",
+    "header": {
+      "tag": "HEADER",
+      "role": null,
+      "name": "Application header",
+      "backgroundColor": "rgb(242, 242, 242)",
+      "color": "rgba(0, 0, 0, 0.92)",
+      "colorScheme": "light"
+    },
+    "headerButton": {
+      "tag": "BUTTON",
+      "role": null,
+      "name": null,
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "color": "rgba(0, 0, 0, 0.65)",
+      "colorScheme": "light"
+    },
+    "connection": {
+      "tag": "DIV",
+      "role": "region",
+      "name": "Connection widget",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "color": "rgba(0, 0, 0, 0.92)",
+      "colorScheme": "light"
+    },
+    "connectionTitle": {
+      "tag": "DIV",
+      "role": null,
+      "name": null,
+      "backgroundColor": "rgb(246, 247, 248)",
+      "color": "rgb(34, 34, 34)",
+      "colorScheme": "light"
+    }
+  },
+  "diagnostics": {
+    "longTaskSupported": true,
+    "longTasks": [
+      {
+        "phase": "startup",
+        "startTime": 441.09999999403954,
+        "durationMs": 303
+      },
+      {
+        "phase": "startup",
+        "startTime": 778.7000000178814,
+        "durationMs": 151
+      },
+      {
+        "phase": "startup",
+        "startTime": 933.8000000119209,
+        "durationMs": 230
+      },
+      {
+        "phase": "startup",
+        "startTime": 1341,
+        "durationMs": 80
+      },
+      {
+        "phase": "startup",
+        "startTime": 1488.9000000059605,
+        "durationMs": 55
+      },
+      {
+        "phase": "startup",
+        "startTime": 2235.0999999940395,
+        "durationMs": 73
+      },
+      {
+        "phase": "load-prewarm-1",
+        "startTime": 2491.5999999940395,
+        "durationMs": 79
+      },
+      {
+        "phase": "load-prewarm-1",
+        "startTime": 2586,
+        "durationMs": 160
+      },
+      {
+        "phase": "load-prewarm-2",
+        "startTime": 3009,
+        "durationMs": 74
+      },
+      {
+        "phase": "load-prewarm-3",
+        "startTime": 3441.9000000059605,
+        "durationMs": 72
+      },
+      {
+        "phase": "load-prewarm-4",
+        "startTime": 3929.300000011921,
+        "durationMs": 75
+      },
+      {
+        "phase": "load-prewarm-5",
+        "startTime": 4393.300000011921,
+        "durationMs": 70
+      },
+      {
+        "phase": "load-1",
+        "startTime": 4859.700000017881,
+        "durationMs": 72
+      },
+      {
+        "phase": "interaction-2",
+        "startTime": 5417.9000000059605,
+        "durationMs": 95
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 6021.700000017881,
+        "durationMs": 149
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 6171.800000011921,
+        "durationMs": 50
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 6222.800000011921,
+        "durationMs": 98
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 6420.5999999940395,
+        "durationMs": 50
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 6471.5,
+        "durationMs": 99
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 6571,
+        "durationMs": 51
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 6622.200000017881,
+        "durationMs": 50
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 6672.300000011921,
+        "durationMs": 100
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 6822.300000011921,
+        "durationMs": 50
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 6873.200000017881,
+        "durationMs": 98
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 7022.0999999940395,
+        "durationMs": 49
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 7072.0999999940395,
+        "durationMs": 96
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 7217.800000011921,
+        "durationMs": 50
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 7267.9000000059605,
+        "durationMs": 98
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 7464.9000000059605,
+        "durationMs": 99
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 7564.300000011921,
+        "durationMs": 50
+      },
+      {
+        "phase": "interaction-6",
+        "startTime": 7615.4000000059605,
+        "durationMs": 98
+      },
+      {
+        "phase": "load-2",
+        "startTime": 8093.200000017881,
+        "durationMs": 75
+      },
+      {
+        "phase": "load-3",
+        "startTime": 8561,
+        "durationMs": 70
+      },
+      {
+        "phase": "load-4",
+        "startTime": 9004.59999999404,
+        "durationMs": 72
+      },
+      {
+        "phase": "load-5",
+        "startTime": 9471,
+        "durationMs": 71
+      }
+    ],
+    "phases": [
+      {
+        "name": "startup",
+        "atMs": 0
+      },
+      {
+        "name": "load-prewarm-1",
+        "atMs": 2340.2000000178814
+      },
+      {
+        "name": "unload",
+        "atMs": 2769.7000000178814
+      },
+      {
+        "name": "load-prewarm-2",
+        "atMs": 2881.4000000059605
+      },
+      {
+        "name": "unload",
+        "atMs": 3210
+      },
+      {
+        "name": "load-prewarm-3",
+        "atMs": 3314.9000000059605
+      },
+      {
+        "name": "unload",
+        "atMs": 3647.300000011921
+      },
+      {
+        "name": "load-prewarm-4",
+        "atMs": 3765.4000000059605
+      },
+      {
+        "name": "unload",
+        "atMs": 4137.5
+      },
+      {
+        "name": "load-prewarm-5",
+        "atMs": 4262.200000017881
+      },
+      {
+        "name": "unload",
+        "atMs": 4603.300000011921
+      },
+      {
+        "name": "load-1",
+        "atMs": 4730.800000011921
+      },
+      {
+        "name": "interaction-1",
+        "atMs": 5066
+      },
+      {
+        "name": "interaction-2",
+        "atMs": 5326.9000000059605
+      },
+      {
+        "name": "interaction-3",
+        "atMs": 5518.200000017881
+      },
+      {
+        "name": "interaction-4",
+        "atMs": 5649.200000017881
+      },
+      {
+        "name": "interaction-5",
+        "atMs": 5783.200000017881
+      },
+      {
+        "name": "interaction-6",
+        "atMs": 5914.800000011921
+      },
+      {
+        "name": "unload",
+        "atMs": 7775.5999999940395
+      },
+      {
+        "name": "load-2",
+        "atMs": 7901.800000011921
+      },
+      {
+        "name": "unload",
+        "atMs": 8290.200000017881
+      },
+      {
+        "name": "load-3",
+        "atMs": 8393.5
+      },
+      {
+        "name": "unload",
+        "atMs": 8751.300000011921
+      },
+      {
+        "name": "load-4",
+        "atMs": 8863.200000017881
+      },
+      {
+        "name": "unload",
+        "atMs": 9207
+      },
+      {
+        "name": "load-5",
+        "atMs": 9318.40000000596
+      },
+      {
+        "name": "unload",
+        "atMs": 9731.300000011921
+      },
+      {
+        "name": "final-settle",
+        "atMs": 9833.5
+      }
+    ]
+  },
+  "summary": {
+    "prewarmLoads": 5,
+    "warmLoads": 5,
+    "rendererDurationMs": {
+      "p50": 0.5,
+      "p95": 4.29,
+      "samples": 52
+    },
+    "measuredLongTasks": {
+      "count": 23,
+      "maxMs": 149,
+      "totalMs": 1790,
+      "samples": [
+        {
+          "phase": "load-1",
+          "startTime": 4859.700000017881,
+          "durationMs": 72
+        },
+        {
+          "phase": "interaction-2",
+          "startTime": 5417.9000000059605,
+          "durationMs": 95
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 6021.700000017881,
+          "durationMs": 149
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 6171.800000011921,
+          "durationMs": 50
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 6222.800000011921,
+          "durationMs": 98
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 6420.5999999940395,
+          "durationMs": 50
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 6471.5,
+          "durationMs": 99
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 6571,
+          "durationMs": 51
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 6622.200000017881,
+          "durationMs": 50
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 6672.300000011921,
+          "durationMs": 100
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 6822.300000011921,
+          "durationMs": 50
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 6873.200000017881,
+          "durationMs": 98
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 7022.0999999940395,
+          "durationMs": 49
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 7072.0999999940395,
+          "durationMs": 96
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 7217.800000011921,
+          "durationMs": 50
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 7267.9000000059605,
+          "durationMs": 98
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 7464.9000000059605,
+          "durationMs": 99
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 7564.300000011921,
+          "durationMs": 50
+        },
+        {
+          "phase": "interaction-6",
+          "startTime": 7615.4000000059605,
+          "durationMs": 98
+        },
+        {
+          "phase": "load-2",
+          "startTime": 8093.200000017881,
+          "durationMs": 75
+        },
+        {
+          "phase": "load-3",
+          "startTime": 8561,
+          "durationMs": 70
+        },
+        {
+          "phase": "load-4",
+          "startTime": 9004.59999999404,
+          "durationMs": 72
+        },
+        {
+          "phase": "load-5",
+          "startTime": 9471,
+          "durationMs": 71
+        }
+      ]
+    },
+    "loadToFirstRendererMs": {
+      "p50": 75.6,
+      "p95": 81.44,
+      "max": 81.7000000178814
+    },
+    "uploadToRunEnabledMs": {
+      "p50": 352,
+      "p95": 404,
+      "max": 409
+    },
+    "interactions": 5,
+    "inputToFirstRendererMs": {
+      "p50": 0.8,
+      "p95": 4.32,
+      "max": 4.4
+    },
+    "panSamples": 0,
+    "panInputToRendererMs": {
+      "p50": null,
+      "p95": null,
+      "max": null
+    },
+    "canvasSize": {
+      "width": 648,
+      "height": 284
+    }
+  },
+  "completedAt": "2026-10-02T10:13:03.367Z",
+  "status": "partial",
+  "finalBaselineMetrics": {
+    "renderSamples": [
+      {
+        "renderedAtMs": 920.5,
+        "durationMs": 16.69999998807907
+      },
+      {
+        "renderedAtMs": 1183.800000011921,
+        "durationMs": 6.800000011920929
+      },
+      {
+        "renderedAtMs": 1273.9000000059605,
+        "durationMs": 2.199999988079071
+      },
+      {
+        "renderedAtMs": 1377.5999999940395,
+        "durationMs": 1
+      },
+      {
+        "renderedAtMs": 2099.300000011921,
+        "durationMs": 0.800000011920929
+      },
+      {
+        "renderedAtMs": 2123.2000000178814,
+        "durationMs": 0.800000011920929
+      },
+      {
+        "renderedAtMs": 2134.0999999940395,
+        "durationMs": 0.699999988079071
+      },
+      {
+        "renderedAtMs": 2231.7000000178814,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 2234.4000000059605,
+        "durationMs": 2.699999988079071
+      },
+      {
+        "renderedAtMs": 2234.800000011921,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 2583.9000000059605,
+        "durationMs": 5.5999999940395355
+      },
+      {
+        "renderedAtMs": 2584.5,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 2846.5999999940395,
+        "durationMs": 4.399999976158142
+      },
+      {
+        "renderedAtMs": 2849.9000000059605,
+        "durationMs": 3.199999988079071
+      },
+      {
+        "renderedAtMs": 3103.2000000178814,
+        "durationMs": 4.300000011920929
+      },
+      {
+        "renderedAtMs": 3103.7000000178814,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 3276.300000011921,
+        "durationMs": 3.5999999940395355
+      },
+      {
+        "renderedAtMs": 3279.5,
+        "durationMs": 3.0999999940395355
+      },
+      {
+        "renderedAtMs": 3529.800000011921,
+        "durationMs": 8.800000011920929
+      },
+      {
+        "renderedAtMs": 3530.300000011921,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 3727.9000000059605,
+        "durationMs": 3.5
+      },
+      {
+        "renderedAtMs": 3731.0999999940395,
+        "durationMs": 3.199999988079071
+      },
+      {
+        "renderedAtMs": 4019.5999999940395,
+        "durationMs": 4.5999999940395355
+      },
+      {
+        "renderedAtMs": 4020,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 4227.4000000059605,
+        "durationMs": 3.699999988079071
+      },
+      {
+        "renderedAtMs": 4230.5999999940395,
+        "durationMs": 3.199999988079071
+      },
+      {
+        "renderedAtMs": 4479.700000017881,
+        "durationMs": 4.200000017881393
+      },
+      {
+        "renderedAtMs": 4480,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 4694.5999999940395,
+        "durationMs": 3.399999976158142
+      },
+      {
+        "renderedAtMs": 4697.700000017881,
+        "durationMs": 3
+      },
+      {
+        "renderedAtMs": 4949.9000000059605,
+        "durationMs": 4.4000000059604645
+      },
+      {
+        "renderedAtMs": 4950.200000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 5145.300000011921,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 5146.800000011921,
+        "durationMs": 1.5
+      },
+      {
+        "renderedAtMs": 5147.200000017881,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 5415.9000000059605,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 5417.0999999940395,
+        "durationMs": 1.199999988079071
+      },
+      {
+        "renderedAtMs": 5595.5999999940395,
+        "durationMs": 0.699999988079071
+      },
+      {
+        "renderedAtMs": 5728.800000011921,
+        "durationMs": 0.7000000178813934
+      },
+      {
+        "renderedAtMs": 5861.4000000059605,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 6009.800000011921,
+        "durationMs": 0.9000000059604645
+      },
+      {
+        "renderedAtMs": 6022.5999999940395,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 6023.200000017881,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 6172.700000017881,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 6223.5,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 6223.800000011921,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 6322,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 6371.200000017881,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 6421.4000000059605,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 6472.4000000059605,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 6472.700000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 6571.700000017881,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 6622.700000017881,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 6673,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 6673.300000011921,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 6773.200000017881,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 6822.9000000059605,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 6873.9000000059605,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 6874.300000011921,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 6972.5999999940395,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 7022.5999999940395,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 7072.9000000059605,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 7073.200000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 7168.9000000059605,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 7218.4000000059605,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 7268.700000017881,
+        "durationMs": 0.6000000238418579
+      },
+      {
+        "renderedAtMs": 7269,
+        "durationMs": 0.29999998211860657
+      },
+      {
+        "renderedAtMs": 7366.800000011921,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 7416.200000017881,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 7465.5,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 7465.9000000059605,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 7564.9000000059605,
+        "durationMs": 0.5999999940395355
+      },
+      {
+        "renderedAtMs": 7615.300000011921,
+        "durationMs": 0.5
+      },
+      {
+        "renderedAtMs": 7615.800000011921,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 7863.5,
+        "durationMs": 3.5
+      },
+      {
+        "renderedAtMs": 7866.700000017881,
+        "durationMs": 3.100000023841858
+      },
+      {
+        "renderedAtMs": 8179.0999999940395,
+        "durationMs": 4.5999999940395355
+      },
+      {
+        "renderedAtMs": 8179.4000000059605,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 8358.59999999404,
+        "durationMs": 3.199999988079071
+      },
+      {
+        "renderedAtMs": 8361.5,
+        "durationMs": 2.7999999821186066
+      },
+      {
+        "renderedAtMs": 8641.40000000596,
+        "durationMs": 4.0999999940395355
+      },
+      {
+        "renderedAtMs": 8641.800000011921,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 8826.40000000596,
+        "durationMs": 3.199999988079071
+      },
+      {
+        "renderedAtMs": 8829.40000000596,
+        "durationMs": 2.9000000059604645
+      },
+      {
+        "renderedAtMs": 9097.800000011921,
+        "durationMs": 4.200000017881393
+      },
+      {
+        "renderedAtMs": 9098.200000017881,
+        "durationMs": 0.30000001192092896
+      },
+      {
+        "renderedAtMs": 9276.09999999404,
+        "durationMs": 3.199999988079071
+      },
+      {
+        "renderedAtMs": 9279,
+        "durationMs": 2.9000000059604645
+      },
+      {
+        "renderedAtMs": 9565.40000000596,
+        "durationMs": 5.5
+      },
+      {
+        "renderedAtMs": 9565.800000011921,
+        "durationMs": 0.4000000059604645
+      },
+      {
+        "renderedAtMs": 9792.5,
+        "durationMs": 3.7999999821186066
+      },
+      {
+        "renderedAtMs": 9795.5,
+        "durationMs": 3
+      }
+    ],
+    "loadSamples": [
+      {
+        "startedAtMs": 2504.800000011921,
+        "renderedAtMs": 2583.9000000059605,
+        "durationMs": 79.09999999403954,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 3021.300000011921,
+        "renderedAtMs": 3103.2000000178814,
+        "durationMs": 81.90000000596046,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 3455.5,
+        "renderedAtMs": 3529.800000011921,
+        "durationMs": 74.30000001192093,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 3942.4000000059605,
+        "renderedAtMs": 4019.5999999940395,
+        "durationMs": 77.19999998807907,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 4406.9000000059605,
+        "renderedAtMs": 4479.700000017881,
+        "durationMs": 72.80000001192093,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 4874.300000011921,
+        "renderedAtMs": 4949.9000000059605,
+        "durationMs": 75.59999999403954,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 8104.200000017881,
+        "renderedAtMs": 8179.0999999940395,
+        "durationMs": 74.89999997615814,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 8572.300000011921,
+        "renderedAtMs": 8641.40000000596,
+        "durationMs": 69.09999999403954,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 9016.09999999404,
+        "renderedAtMs": 9097.800000011921,
+        "durationMs": 81.7000000178814,
+        "gcodeCharacters": 2379908
+      },
+      {
+        "startedAtMs": 9485,
+        "renderedAtMs": 9565.40000000596,
+        "durationMs": 80.40000000596046,
+        "gcodeCharacters": 2379908
+      }
+    ],
+    "pendingLoad": null
+  },
+  "finishedAt": "2026-10-02T10:13:03.408Z"
+}

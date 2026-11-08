@@ -9,7 +9,6 @@ import {
   MenuList,
   Scrollbar,
   Text,
-  useColorStyle,
 } from '@tonic-ui/react';
 import { ensureArray, ensureString } from 'ensure-type';
 import React, { forwardRef, useState } from 'react';
@@ -24,7 +23,6 @@ const MiniNav = forwardRef((
   },
   ref,
 ) => {
-  const [colorStyle] = useColorStyle();
   const navigate = useNavigate();
   const location = useLocation();
   const [hoveredItem, setHoveredItem] = useState(null);
@@ -35,9 +33,10 @@ const MiniNav = forwardRef((
         as="nav"
         ref={ref}
         sx={{
-          backgroundColor: colorStyle?.background?.primary,
-          color: colorStyle?.color?.primary,
-          boxShadow: `1px 0 0 0 ${colorStyle.divider}`,
+          backgroundColor: 'background.highest',
+          color: 'text.primary',
+          borderRight: '1px solid',
+          borderColor: 'border.secondary',
         }}
         {...rest}
       >
@@ -91,7 +90,7 @@ const MiniNav = forwardRef((
                   py="2x"
                   alignItems="center"
                   columnGap="4x"
-                  color={colorStyle.color.secondary}
+                  color="text.secondary"
                 >
                   {route.icon && (
                     <Icon as={route.icon} size="6x" />
@@ -153,9 +152,10 @@ const MiniNav = forwardRef((
       as="nav"
       ref={ref}
       sx={{
-        backgroundColor: colorStyle?.background?.primary,
-        color: colorStyle?.color?.primary,
-        boxShadow: `1px 0 0 0 ${colorStyle.divider}`,
+        backgroundColor: 'background.highest',
+        color: 'text.primary',
+        borderRight: '1px solid',
+        borderColor: 'border.secondary',
       }}
       {...rest}
     >
@@ -211,7 +211,7 @@ const MiniNav = forwardRef((
             </Flex>
             {(childRoutes.length > 0) && (
               <Box
-                boxShadow={colorStyle?.shadow?.thin}
+                boxShadow="low.main"
                 cursor="default"
                 position="absolute"
                 top={0}
@@ -233,9 +233,8 @@ const MiniNav = forwardRef((
                       }
 
                       if (isDivider) {
-                        const childKey = `menu-divider-${childIndex}`;
                         return (
-                          <MenuDivider key={childKey} />
+                          <MenuDivider key={`menu-divider-${childIndex}`} />
                         );
                       }
 

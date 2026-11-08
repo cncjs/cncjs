@@ -1,0 +1,146 @@
+{
+  "task": "V3-GV connected and disconnected Workspace file-drop prompt states in light/dark",
+  "revision": "5e8757b4277ec3c15d8e44ab7d8771512facb739",
+  "sourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "expectedSourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "model": {
+    "name": "gpt-6-luna",
+    "reasoningEffort": "xhigh",
+    "basis": "user-selected active task/session assignment"
+  },
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "headless": true,
+    "viewport": "1440x900",
+    "deviceScaleFactor": 1
+  },
+  "runnerPid": 61625,
+  "states": [
+    {
+      "connected": false,
+      "theme": "light",
+      "expectedText": "You cannot upload files to the workspace when the connection is not established.",
+      "overlay": {
+        "found": true,
+        "text": "You cannot upload files to the workspace when the connection is not established.",
+        "background": "rgb(245, 245, 245)",
+        "border": "rgb(169, 169, 169)",
+        "borderWidth": "4px",
+        "textColor": "color(srgb 0 0 0 / 0.64)",
+        "iconColor": "rgb(227, 38, 49)",
+        "iconFill": "rgb(0, 0, 0)",
+        "rect": {
+          "x": 60,
+          "y": 48,
+          "width": 1380,
+          "height": 852
+        }
+      },
+      "screenshot": "screenshots/guide-file-drop-disconnected-light-1440x900.png"
+    },
+    {
+      "connected": false,
+      "theme": "dark",
+      "expectedText": "You cannot upload files to the workspace when the connection is not established.",
+      "overlay": {
+        "found": true,
+        "text": "You cannot upload files to the workspace when the connection is not established.",
+        "background": "rgb(18, 18, 18)",
+        "border": "rgb(82, 82, 82)",
+        "borderWidth": "4px",
+        "textColor": "color(srgb 1 1 1 / 0.64)",
+        "iconColor": "rgb(227, 38, 49)",
+        "iconFill": "rgb(0, 0, 0)",
+        "rect": {
+          "x": 60,
+          "y": 48,
+          "width": 1380,
+          "height": 852
+        }
+      },
+      "screenshot": "screenshots/guide-file-drop-disconnected-dark-1440x900.png"
+    },
+    {
+      "connected": true,
+      "theme": "light",
+      "expectedText": "Drop file here",
+      "overlay": {
+        "found": true,
+        "text": "Drop file here",
+        "background": "rgb(245, 245, 245)",
+        "border": "rgb(1, 80, 225)",
+        "borderWidth": "4px",
+        "textColor": "color(srgb 0 0 0 / 0.64)",
+        "iconColor": "color(srgb 0 0 0 / 0.64)",
+        "iconFill": "rgb(0, 0, 0)",
+        "rect": {
+          "x": 60,
+          "y": 48,
+          "width": 1380,
+          "height": 852
+        }
+      },
+      "screenshot": "screenshots/guide-file-drop-connected-light-1440x900.png"
+    },
+    {
+      "connected": true,
+      "theme": "dark",
+      "expectedText": "Drop file here",
+      "overlay": {
+        "found": true,
+        "text": "Drop file here",
+        "background": "rgb(18, 18, 18)",
+        "border": "rgb(76, 136, 252)",
+        "borderWidth": "4px",
+        "textColor": "color(srgb 1 1 1 / 0.64)",
+        "iconColor": "color(srgb 1 1 1 / 0.64)",
+        "iconFill": "rgb(0, 0, 0)",
+        "rect": {
+          "x": 60,
+          "y": 48,
+          "width": 1380,
+          "height": 852
+        }
+      },
+      "screenshot": "screenshots/guide-file-drop-connected-dark-1440x900.png"
+    }
+  ],
+  "screenshots": [
+    "screenshots/guide-file-drop-disconnected-light-1440x900.png",
+    "screenshots/guide-file-drop-disconnected-dark-1440x900.png",
+    "screenshots/guide-file-drop-connected-light-1440x900.png",
+    "screenshots/guide-file-drop-connected-dark-1440x900.png"
+  ],
+  "events": {
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpErrors": [],
+    "apiWrites": [
+      {
+        "method": "POST",
+        "path": "/api/signin"
+      }
+    ]
+  },
+  "fixture": {
+    "name": "visual-drag-fixture.gcode",
+    "content": "; visual drag fixture only\n",
+    "commentOnly": true,
+    "dropEventFired": false,
+    "fileUploaded": false
+  },
+  "connection": {
+    "opened": true,
+    "controller": "Grbl",
+    "configuredPort": "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/ttyGRBL",
+    "commandsInstrumented": false,
+    "commandButtonsClicked": false,
+    "selectedPort": "/tmp/cncjs-v3-guide-20261006-luna-0e46609d/ttyGRBL\nManufacturer: Grbl Simulator",
+    "lifecycleOnly": true,
+    "closed": true
+  },
+  "status": "passed",
+  "completedAt": "2026-10-06T13:45:51.621Z",
+  "browserClosed": true
+}

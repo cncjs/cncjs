@@ -1,75 +1,90 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  Space,
+  Alert,
+  Box,
+  Button,
+  Flex,
+  Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalOverlay,
 } from '@tonic-ui/react';
 import React, { useEffect, useState } from 'react';
-import i18n from '@app/lib/i18n';
-import Anchor from '@app/components/Anchor';
-import { Button } from '@app/components/Buttons';
-import Modal from '@app/components/Modal';
-import ModalTemplate from '@app/components/ModalTemplate';
 import settings from '@app/config/settings';
+import i18n from '@app/lib/i18n';
 import config from '@app/store/config';
 
-function CorruptedWorkspaceSettingsModal(props) {
+const reloadPage = () => {
+  window.location.reload(true);
+};
+
+/**
+ * @returns {JSX.Element}
+ */
+function CorruptedWorkspaceSettingsModal() {
   const [url, setUrl] = useState();
   const filename = `${settings.name}-${settings.version}.json`;
 
   useEffect(() => {
+    let active = true;
+
     (async () => {
       const content = await config.toJSONString();
-      setUrl('data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+      if (active) {
+        setUrl(`data:text/plain;charset=utf-8,${encodeURIComponent(content)}`);
+      }
     })();
+
+    return () => {
+      active = false;
+    };
   }, []);
+
+  const restoreDefaults = async () => {
+    config.restoreDefault();
+    await config.persist();
+    reloadPage();
+  };
 
   return (
     <Modal
-      {...props}
-      disableOverlayClick
-      showCloseButton={false}
+      autoFocus
+      closeOnEsc={false}
+      closeOnInteractOutside={false}
+      ensureFocus
+      isClosable={false}
+      isOpen
+      onClose={() => {}}
     >
-      <Modal.Body>
-        <ModalTemplate type="error">
-          {({ PrimaryMessage, DescriptiveMessage }) => (
-            <>
-              <PrimaryMessage>
-                {i18n._('Corrupted workspace settings')}
-              </PrimaryMessage>
-              <DescriptiveMessage>
-                {i18n._('The workspace settings have become corrupted or invalid. Click Restore Defaults to restore default settings and continue.')}
-                <br />
-                <div>
-                  <Anchor
-                    href={url}
-                    download={filename}
-                  >
-                    <FontAwesomeIcon icon="download" />
-                    <Space width={8} />
-                    {i18n._('Download workspace settings')}
-                  </Anchor>
-                </div>
-              </DescriptiveMessage>
-            </>
-          )}
-        </ModalTemplate>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button
-          btnStyle="danger"
-          onClick={async () => {
-            // Reset default settings
-            config.restoreDefault();
-
-            // Persist data locally
-            await config.persist();
-
-            // Reload the current page from the server
-            window.location.reload(true);
-          }}
-        >
-          {i18n._('Restore Defaults')}
-        </Button>
-      </Modal.Footer>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalBody>
+          <Alert severity="error">
+            <Box fontWeight="bold">{i18n._('Corrupted workspace settings')}</Box>
+            <Box>
+              {i18n._('The workspace settings have become corrupted or invalid. Click Restore Defaults to restore default settings and continue.')}
+              <Flex
+                as={Link}
+                align="center"
+                download={filename}
+                gap="2x"
+                href={url}
+                mt="2x"
+              >
+                <FontAwesomeIcon aria-hidden="true" icon="download" />
+                {i18n._('Download workspace settings')}
+              </Flex>
+            </Box>
+          </Alert>
+        </ModalBody>
+        <ModalFooter>
+          <Button onClick={restoreDefaults} variant="danger">
+            {i18n._('Restore Defaults')}
+          </Button>
+        </ModalFooter>
+      </ModalContent>
     </Modal>
   );
 }

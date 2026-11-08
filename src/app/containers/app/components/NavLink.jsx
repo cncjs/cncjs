@@ -1,7 +1,5 @@
 import {
   Link,
-  useColorMode,
-  useColorStyle,
 } from '@tonic-ui/react';
 import React, { forwardRef } from 'react';
 
@@ -12,15 +10,13 @@ const NavLink = forwardRef((
   },
   ref
 ) => {
-  const [colorMode] = useColorMode();
-  const [colorStyle] = useColorStyle({ colorMode });
-  const color = colorStyle?.color?.primary;
-  const activeBackgroundColor = colorStyle?.background.secondary;
-  const activeColor = colorStyle?.color?.primary;
-  const hoverBackgroundColor = colorStyle?.background.secondary;
-  const hoverColor = colorStyle?.color?.primary;
-  const selectedBackgroundColor = colorStyle.background.tertiary;
-  const selectedColor = colorStyle?.color?.emphasis;
+  const color = 'text.primary';
+  const activeBackgroundColor = 'actions.active';
+  const activeColor = 'text.accent';
+  const hoverBackgroundColor = 'actions.hovered';
+  const hoverColor = 'text.accent';
+  const selectedBackgroundColor = 'actions.current';
+  const selectedColor = 'text.accent';
 
   return (
     <Link

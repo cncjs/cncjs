@@ -1,14 +1,25 @@
-import styled from 'styled-components';
-import Card from '@app/components/Card';
+import { Box } from '@tonic-ui/react';
+import React from 'react';
 
-const OverrideReadout = styled(Card)`
-    display: inline-block;
-    font-size: .75rem;
-    font-weight: bold;
-    width: 45px;
-    padding: .25rem;
-    text-align: right;
-    background-color: rgba(0, 0, 0, 0.05);
-`;
+/**
+ * @param {{ children: React.ReactNode }} props
+ */
+function OverrideReadout({ children }) {
+  return (
+    <Box
+      sx={{
+        backgroundColor: 'actions.hovered',
+        display: 'inline-block',
+        fontSize: '.75rem',
+        fontWeight: 'bold',
+        padding: '.25rem',
+        textAlign: 'right',
+        width: '45px',
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
 
 export default OverrideReadout;

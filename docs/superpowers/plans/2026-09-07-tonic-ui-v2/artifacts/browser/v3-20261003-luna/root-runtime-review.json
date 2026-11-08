@@ -1,0 +1,25 @@
+{
+  "reviewer": "root",
+  "status": "accepted",
+  "ownedPidsAbsent": [
+    34632,
+    34633,
+    34657,
+    34723
+  ],
+  "closedTcpListeners": [
+    8000,
+    8080,
+    60565
+  ],
+  "ttyAbsent": "/tmp/ttyGRBL",
+  "isolatedConfigRecordCounts": {
+    "users": 0,
+    "commands": 0,
+    "events": 0,
+    "machines": 0,
+    "macros": 0
+  },
+  "sourceLocaleRestoration": "locale-restoration.json",
+  "scope": "Only current V3-V owned processes; historical R6/user processes untouched."
+}

@@ -1,0 +1,13 @@
+{
+  "arrowParens": "avoid",
+  "bracketSpacing": true,
+  "endOfLine": "lf",
+  "keepInlineCalls": ["i18n._"],
+  "keepInlineJSXElements": ["I18n", "Trans"],
+  "plugins": ["./prettier-plugin-keep-inline.js"],
+  "printWidth": 150,
+  "semi": true,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "all"
+}

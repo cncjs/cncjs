@@ -1,0 +1,179 @@
+{
+  "task": "V3-GV four-controller light/dark visual matrix",
+  "revision": "5e8757b4277ec3c15d8e44ab7d8771512facb739",
+  "sourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "expectedSourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "model": {
+    "name": "gpt-6-luna",
+    "reasoningEffort": "xhigh",
+    "basis": "user-selected active task/session assignment; model environment variables are not exposed"
+  },
+  "fixtureIsolation": "one active controller fixture per fresh browser context; actual local synthetic Grbl connection only for connection lifecycle; no hardware",
+  "status": "passed",
+  "cases": [
+    {
+      "key": "grbl-light",
+      "type": "Grbl",
+      "theme": "light",
+      "report": "controller-grbl-light.json",
+      "status": "passed",
+      "gateCount": 4,
+      "passedGates": 4,
+      "failedGates": [],
+      "screenshotCount": 1,
+      "screenshots": [
+        "controller-grbl-light-1440x900.png"
+      ],
+      "outgoingCommands": [],
+      "outgoingCommandCount": 0,
+      "pageErrorCount": 0,
+      "requestFailureCount": 0,
+      "fixtureTypesActive": true,
+      "runnerExitCode": "reused-current-task-evidence"
+    },
+    {
+      "key": "grbl-dark",
+      "type": "Grbl",
+      "theme": "dark",
+      "report": "controller-grbl-dark.json",
+      "status": "passed",
+      "gateCount": 4,
+      "passedGates": 4,
+      "failedGates": [],
+      "screenshotCount": 1,
+      "screenshots": [
+        "controller-grbl-dark-1440x900.png"
+      ],
+      "outgoingCommands": [],
+      "outgoingCommandCount": 0,
+      "pageErrorCount": 0,
+      "requestFailureCount": 0,
+      "fixtureTypesActive": true,
+      "runnerExitCode": 0
+    },
+    {
+      "key": "marlin-light",
+      "type": "Marlin",
+      "theme": "light",
+      "report": "controller-marlin-light.json",
+      "status": "passed",
+      "gateCount": 4,
+      "passedGates": 4,
+      "failedGates": [],
+      "screenshotCount": 1,
+      "screenshots": [
+        "controller-marlin-light-1440x900.png"
+      ],
+      "outgoingCommands": [],
+      "outgoingCommandCount": 0,
+      "pageErrorCount": 0,
+      "requestFailureCount": 0,
+      "fixtureTypesActive": false,
+      "runnerExitCode": 0
+    },
+    {
+      "key": "marlin-dark",
+      "type": "Marlin",
+      "theme": "dark",
+      "report": "controller-marlin-dark.json",
+      "status": "passed",
+      "gateCount": 4,
+      "passedGates": 4,
+      "failedGates": [],
+      "screenshotCount": 1,
+      "screenshots": [
+        "controller-marlin-dark-1440x900.png"
+      ],
+      "outgoingCommands": [],
+      "outgoingCommandCount": 0,
+      "pageErrorCount": 0,
+      "requestFailureCount": 0,
+      "fixtureTypesActive": false,
+      "runnerExitCode": 0
+    },
+    {
+      "key": "smoothie-light",
+      "type": "Smoothie",
+      "theme": "light",
+      "report": "controller-smoothie-light.json",
+      "status": "passed",
+      "gateCount": 4,
+      "passedGates": 4,
+      "failedGates": [],
+      "screenshotCount": 1,
+      "screenshots": [
+        "controller-smoothie-light-1440x900.png"
+      ],
+      "outgoingCommands": [],
+      "outgoingCommandCount": 0,
+      "pageErrorCount": 0,
+      "requestFailureCount": 0,
+      "fixtureTypesActive": false,
+      "runnerExitCode": 0
+    },
+    {
+      "key": "smoothie-dark",
+      "type": "Smoothie",
+      "theme": "dark",
+      "report": "controller-smoothie-dark.json",
+      "status": "passed",
+      "gateCount": 4,
+      "passedGates": 4,
+      "failedGates": [],
+      "screenshotCount": 1,
+      "screenshots": [
+        "controller-smoothie-dark-1440x900.png"
+      ],
+      "outgoingCommands": [],
+      "outgoingCommandCount": 0,
+      "pageErrorCount": 0,
+      "requestFailureCount": 0,
+      "fixtureTypesActive": false,
+      "runnerExitCode": 0
+    },
+    {
+      "key": "tinyg-light",
+      "type": "TinyG",
+      "theme": "light",
+      "report": "controller-tinyg-light.json",
+      "status": "passed",
+      "gateCount": 4,
+      "passedGates": 4,
+      "failedGates": [],
+      "screenshotCount": 1,
+      "screenshots": [
+        "controller-tinyg-light-1440x900.png"
+      ],
+      "outgoingCommands": [],
+      "outgoingCommandCount": 0,
+      "pageErrorCount": 0,
+      "requestFailureCount": 0,
+      "fixtureTypesActive": false,
+      "runnerExitCode": 0
+    },
+    {
+      "key": "tinyg-dark",
+      "type": "TinyG",
+      "theme": "dark",
+      "report": "controller-tinyg-dark.json",
+      "status": "passed",
+      "gateCount": 4,
+      "passedGates": 4,
+      "failedGates": [],
+      "screenshotCount": 1,
+      "screenshots": [
+        "controller-tinyg-dark-1440x900.png"
+      ],
+      "outgoingCommands": [],
+      "outgoingCommandCount": 0,
+      "pageErrorCount": 0,
+      "requestFailureCount": 0,
+      "fixtureTypesActive": false,
+      "runnerExitCode": 0
+    }
+  ],
+  "startedAt": "2026-10-06T08:28:30.820Z",
+  "current": null,
+  "updatedAt": "2026-10-06T08:29:08.449Z",
+  "completedAt": "2026-10-06T08:29:08.449Z"
+}

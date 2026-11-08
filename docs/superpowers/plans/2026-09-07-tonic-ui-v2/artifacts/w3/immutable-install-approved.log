@@ -1,0 +1,37 @@
+➤ YN0000: ┌ Resolution step
+➤ YN0002: │ @tonic-ui/react-base@npm:2.0.4 [7c85d] doesn't provide @emotion/react (p23153), requested by @emotion/styled
+➤ YN0002: │ cncjs@workspace:. doesn't provide @testing-library/dom (pf56c4), requested by @testing-library/user-event
+➤ YN0060: │ cncjs@workspace:. provides babel-core (p34bc6) with version 7.0.0-bridge.0, which doesn't satisfy what consolidate requests
+➤ YN0060: │ cncjs@workspace:. provides react (p69267) with version 18.3.1, which doesn't satisfy what consolidate requests
+➤ YN0060: │ cncjs@workspace:. provides react (p792e5) with version 18.3.1, which doesn't satisfy what react-hot-loader requests
+➤ YN0060: │ cncjs@workspace:. provides react (p4f2dd) with version 18.3.1, which doesn't satisfy what react-tiny-virtual-list requests
+➤ YN0060: │ cncjs@workspace:. provides react (p00e31) with version 18.3.1, which doesn't satisfy what recompose requests
+➤ YN0060: │ cncjs@workspace:. provides react (p5ea18) with version 18.3.1, which doesn't satisfy what redux-devtools requests
+➤ YN0060: │ cncjs@workspace:. provides react-dom (pc6a8e) with version 18.3.1, which doesn't satisfy what consolidate requests
+➤ YN0060: │ cncjs@workspace:. provides react-dom (p70794) with version 18.3.1, which doesn't satisfy what react-hot-loader requests
+➤ YN0060: │ cncjs@workspace:. provides react-redux (pa0dd3) with version 8.0.7, which doesn't satisfy what redux-devtools requests
+➤ YN0002: │ cncjs@workspace:. doesn't provide scheduler (pcf213), requested by react-tracked
+➤ YN0060: │ cncjs@workspace:. provides stylint (p1d551) with version 2.0.0, which doesn't satisfy what stylint-loader requests
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide @react-three/fiber (pec093), requested by @react-spring/three
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide konva (p5fe80), requested by @react-spring/konva
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react (p3099c), requested by @react-spring/core
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react (pc44d5), requested by @react-spring/konva
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react (p288bd), requested by @react-spring/native
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react (pb5fdd), requested by @react-spring/three
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react (p603d2), requested by @react-spring/web
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react (pea741), requested by @react-spring/zdog
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react-dom (pb8433), requested by @react-spring/web
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react-dom (p2b8c0), requested by @react-spring/zdog
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react-konva (p82726), requested by @react-spring/konva
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react-native (p99088), requested by @react-spring/native
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide react-zdog (pf4dce), requested by @react-spring/zdog
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide three (p22c55), requested by @react-spring/three
+➤ YN0002: │ react-spring@npm:9.1.2 doesn't provide zdog (p51736), requested by @react-spring/zdog
+➤ YN0000: │ Some peer dependencies are incorrectly met; run yarn explain peer-requirements <hash> for details, where <hash> is the six-letter p-prefixed code
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Fetch step
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Link step
+➤ YN0007: │ pre-push@npm:0.1.4 must be built because it never has been before or the last one failed
+➤ YN0000: └ Completed in 0s 469ms
+➤ YN0000: Done with warnings in 0s 877ms

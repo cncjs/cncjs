@@ -1,0 +1,53 @@
+const { chromium } = require('/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules/playwright');
+const fs = require('fs');
+const path = require('path');
+
+const ART = path.resolve('docs/superpowers/plans/2026-09-07-tonic-ui-v2/artifacts/browser/br0-20260913-194320-30867');
+const LARGE = path.resolve('src/app/test/fixtures/browser/br0-large-100000.gcode');
+const logPath = path.join(ART, 'browser.log');
+const log = (event, data = {}) => { const x = { ts: new Date().toISOString(), event, ...data }; fs.appendFileSync(logPath, JSON.stringify(x) + '\n'); console.log(JSON.stringify(x)); };
+const save = (name, data) => fs.writeFileSync(path.join(ART, name), data);
+const state = async (page) => page.locator('button').evaluateAll(xs => xs.map(x => ({ text: x.innerText, aria: x.getAttribute('aria-label'), title: x.title, disabled: x.disabled })));
+const snap = async (page, name) => { save(name + '.html', await page.content()); save(name + '.aria.txt', await page.locator('body').ariaSnapshot({ timeout: 10000 }).catch(e => 'ARIA_ERROR ' + e)); await page.screenshot({ path: path.join(ART, name + '.png'), fullPage: true }); log('snapshot', { name, url: page.url() }); };
+const attempt = async (page, name, fn) => { const t = Date.now(); try { const r = await fn(); log('pass', { name, elapsed_ms: Date.now() - t, result: r }); return { ok: true, result: r }; } catch (e) { log('fail', { name, elapsed_ms: Date.now() - t, error: String(e), stack: e.stack }); return { ok: false, error: String(e) }; } };
+
+(async () => {
+  const profile = fs.mkdtempSync('/tmp/cncjs-br0-profile-');
+  const browser = await chromium.launch({ executablePath: '/Users/cheton_wu/Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing', headless: true, args: ['--no-sandbox'] });
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1, colorScheme: 'light' });
+  const page = await context.newPage();
+  const consoles = [], pageErrors = [], httpErrors = [], requests = [];
+  page.on('console', m => consoles.push({ type: m.type(), text: m.text() }));
+  page.on('pageerror', e => pageErrors.push(String(e)));
+  page.on('request', r => { if (r.method() !== 'GET') requests.push({ method: r.method(), url: r.url(), ts: Date.now() }); });
+  page.on('response', r => { if (r.status() >= 400) httpErrors.push({ status: r.status(), url: r.url() }); });
+  log('runtime', { profile, browser_version: browser.version(), executable: '/Users/cheton_wu/Library/Caches/ms-playwright/.../Google Chrome for Testing', viewport: await page.viewportSize(), dpr: await page.evaluate(() => devicePixelRatio), gpu: 'default', theme: 'light' });
+  page.setDefaultTimeout(15000);
+  await page.goto('http://127.0.0.1:8080/#/workspace', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForTimeout(3000);
+  await snap(page, '01-workspace');
+  await page.locator('#react-select-2-input').click();
+  await snap(page, '02-port-open-menu');
+  await page.locator('#react-select-2-input').press('ArrowDown');
+  await page.locator('#react-select-2-input').press('Enter');
+  await snap(page, '03-port-selected');
+  await page.getByRole('button', { name: /^Open$/i }).click();
+  await page.waitForTimeout(2500);
+  await snap(page, '04-connected');
+  save('04-connected-buttons.json', JSON.stringify(await state(page), null, 2));
+
+  const files = page.locator('input[type=file]');
+  log('file-inputs', { count: await files.count() });
+  const upload = async (label) => { const t = Date.now(); await files.first().setInputFiles(LARGE); await page.waitForTimeout(1500); await snap(page, label); return Date.now() - t; };
+  const up = await attempt(page, 'upload-large', () => upload('05-large-uploaded'));
+  save('05-large-buttons.json', JSON.stringify(await state(page), null, 2));
+  await attempt(page, 'run-pause-stop', async () => { await page.getByRole('button', { name: /^Run$/ }).click(); await page.waitForTimeout(100); save('06-running-buttons.json', JSON.stringify(await state(page), null, 2)); await page.getByRole('button', { name: /^Pause$/ }).click(); await page.waitForTimeout(300); save('07-paused-buttons.json', JSON.stringify(await state(page), null, 2)); await snap(page, '07-paused-before-stop'); await page.getByRole('button', { name: /^Stop$/ }).click(); await page.waitForTimeout(500); save('08-after-stop-buttons.json', JSON.stringify(await state(page), null, 2)); await snap(page, '08-after-stop'); });
+  await attempt(page, 'run-pause-resume', async () => { await page.getByRole('button', { name: /^Run$/ }).click(); await page.waitForTimeout(100); await page.getByRole('button', { name: /^Pause$/ }).click(); await page.waitForTimeout(300); save('09-paused-for-resume-buttons.json', JSON.stringify(await state(page), null, 2)); await page.getByRole('button', { name: /^Resume$/ }).click().catch(async () => { await page.getByRole('button', { name: /^Run$/ }).click(); }); await page.waitForTimeout(400); await snap(page, '10-after-resume'); save('10-after-resume-buttons.json', JSON.stringify(await state(page), null, 2)); });
+  await attempt(page, 'jog-press-release', async () => { const before = requests.length; const b = page.getByRole('button', { name: 'Move X positive', exact: true }); await b.dispatchEvent('pointerdown'); await page.waitForTimeout(300); const during = requests.slice(before); await b.dispatchEvent('pointerup'); await page.waitForTimeout(1000); const after = requests.slice(before); save('11-jog-requests.json', JSON.stringify({ during, after_release: after, request_count_300ms: during.length, request_count_1s_after_release: after.length }, null, 2)); await snap(page, '11-jog-release'); });
+  await attempt(page, 'disconnect', async () => { await page.getByRole('button', { name: /^Close$/i }).click(); await page.waitForTimeout(700); save('12-disconnected-buttons.json', JSON.stringify(await state(page), null, 2)); await snap(page, '12-disconnected'); });
+  await attempt(page, 'watch-directory', async () => { await page.getByRole('button', { name: 'Upload G-code' }).click(); await page.getByText(/Watch Directory|Browse/, { exact: false }).first().click(); await page.waitForTimeout(500); await snap(page, '13-watch-directory'); });
+  save('console-events.json', JSON.stringify(consoles, null, 2)); save('page-errors.json', JSON.stringify(pageErrors, null, 2)); save('http-errors.json', JSON.stringify(httpErrors, null, 2)); save('non-get-requests.json', JSON.stringify(requests, null, 2));
+  save('14-macro-not-run.txt', 'Macro operation: NOT RUN. No feasible safe macro action was identified within this bounded retry; no claim made.\n');
+  log('complete', { upload: up, console_count: consoles.length, page_error_count: pageErrors.length, http_error_count: httpErrors.length, request_count: requests.length });
+  await browser.close();
+})().catch(e => { log('fatal', { error: String(e), stack: e.stack }); process.exitCode = 1; });

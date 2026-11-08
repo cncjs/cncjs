@@ -1,0 +1,97 @@
+{
+  "browser": "151.0.7922.34",
+  "status": "completed",
+  "beforeClick": {
+    "text": "Choose a port",
+    "optionCount": 0,
+    "bodyHasPort": false,
+    "portContainer": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "id": "",
+        "className": " css-2b097c-container",
+        "text": "Choose a port"
+      },
+      {
+        "tag": "DIV",
+        "role": null,
+        "id": "",
+        "className": "connection-serial-port__control css-yk16xz-control",
+        "text": "Choose a port"
+      },
+      {
+        "tag": "DIV",
+        "role": null,
+        "id": "",
+        "className": "connection-serial-port__value-container css-g1d714-ValueContainer",
+        "text": "Choose a port"
+      },
+      {
+        "tag": "DIV",
+        "role": null,
+        "id": "",
+        "className": "connection-serial-port__placeholder css-1wa3eu0-placeholder",
+        "text": "Choose a port"
+      },
+      {
+        "tag": "INPUT",
+        "role": null,
+        "id": "connection-serial-port",
+        "className": "css-62g3xt-dummyInput",
+        "text": ""
+      },
+      {
+        "tag": "DIV",
+        "role": null,
+        "id": "",
+        "className": "connection-serial-port__indicators css-1hb7zxy-IndicatorsContainer",
+        "text": ""
+      },
+      {
+        "tag": "SPAN",
+        "role": null,
+        "id": "",
+        "className": "connection-serial-port__indicator-separator css-1okebmr-indicatorSeparator",
+        "text": ""
+      },
+      {
+        "tag": "DIV",
+        "role": null,
+        "id": "",
+        "className": "connection-serial-port__indicator connection-serial-port__dropdown-indicator css-tlfecz-indicatorContainer",
+        "text": ""
+      },
+      {
+        "tag": "svg",
+        "role": null,
+        "id": "",
+        "className": "",
+        "text": ""
+      },
+      {
+        "tag": "path",
+        "role": null,
+        "id": "",
+        "className": "",
+        "text": ""
+      }
+    ]
+  },
+  "afterClick": {
+    "optionCount": 0,
+    "options": [],
+    "portText": "   option /dev/tty.debug-console focused, 0 of 3. 3 results available. Use Up and Down to choose options, press Enter to select the currently focused option, press Escape to exit the menu, press Tab to select the option and exit the menu.\nChoose a port\n/dev/tty.debug-console\n/dev/tty.Bluetooth-Incoming-Port\n/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+    "menuText": [
+      "Enter Full Screen",
+      "Enter Full Screen",
+      "Enter Full Screen",
+      "Choose a port",
+      "/dev/tty.debug-console\n/dev/tty.Bluetooth-Incoming-Port\n/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+      "/dev/tty.debug-console\n/dev/tty.Bluetooth-Incoming-Port\n/tmp/ttyGRBL\nManufacturer: Grbl Simulator",
+      "RefreshSelect AllCopy SelectionClear SelectionEnter Full ScreenFork WidgetRemove Widget",
+      "Refresh"
+    ]
+  },
+  "finishedAt": "2026-10-01T16:57:39.640Z"
+}

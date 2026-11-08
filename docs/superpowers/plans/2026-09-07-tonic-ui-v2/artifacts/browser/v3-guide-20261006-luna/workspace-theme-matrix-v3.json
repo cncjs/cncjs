@@ -1,0 +1,3773 @@
+{
+  "task": "V3-GV official-guide Workspace theme matrix",
+  "revision": "5e8757b4277ec3c15d8e44ab7d8771512facb739",
+  "sourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "expectedSourceDiffSha256": "f2d53df88181497311cbe2d154d32bf33bc7df23b787fb7c2e759c821f8401e9",
+  "model": {
+    "name": "gpt-6-luna",
+    "reasoningEffort": "xhigh",
+    "basis": "user-selected active task/session assignment; model environment variables are not exposed"
+  },
+  "browser": {
+    "name": "Playwright bundled Chromium",
+    "version": "153.0.8010.12",
+    "headless": true,
+    "deviceScaleFactor": 1,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
+    "platform": "MacIntel",
+    "webgl": {
+      "supported": true,
+      "vendor": "Google Inc. (Google)",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+    }
+  },
+  "states": [
+    {
+      "mode": "light",
+      "viewport": "1440x900",
+      "screenshot": "screenshots/workspace-theme-light-1440x900.png",
+      "detail": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "dpr": 1,
+        "prefersDark": false,
+        "document": {
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "overflowX": false
+        },
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 48,
+          "right": 1440,
+          "bottom": 48
+        },
+        "main": {
+          "x": 72,
+          "y": 0,
+          "width": 1368,
+          "height": 900,
+          "right": 1440,
+          "bottom": 900
+        },
+        "bodyColors": {
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(238, 238, 238)"
+        },
+        "mainColors": {
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(238, 238, 238)"
+        },
+        "headerColors": {
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(248, 248, 248)"
+        },
+        "tokenValues": {
+          "--tonic-colors-text-primary": "color-mix(in srgb, #000000 80%, transparent)",
+          "--tonic-colors-background-highest": "#fcfcfc",
+          "--tonic-colors-border-secondary": "#a9a9a9"
+        },
+        "computedStyleContainsRawToken": false,
+        "contrastSamples": [
+          {
+            "label": "Connection",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Axes",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Console",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Webcam",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          }
+        ],
+        "widgetRegions": [
+          {
+            "name": "Connection widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 96,
+              "width": 335,
+              "height": 527,
+              "right": 419,
+              "bottom": 623
+            }
+          },
+          {
+            "name": "Console widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 631,
+              "width": 335,
+              "height": 75,
+              "right": 419,
+              "bottom": 706
+            }
+          },
+          {
+            "name": "Grbl widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 714,
+              "width": 335,
+              "height": 38,
+              "right": 419,
+              "bottom": 752
+            }
+          },
+          {
+            "name": "Marlin widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 760,
+              "width": 335,
+              "height": 38,
+              "right": 419,
+              "bottom": 798
+            }
+          },
+          {
+            "name": "Smoothie widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 806,
+              "width": 335,
+              "height": 38,
+              "right": 419,
+              "bottom": 844
+            }
+          },
+          {
+            "name": "TinyG widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 852,
+              "width": 335,
+              "height": 38,
+              "right": 419,
+              "bottom": 890
+            }
+          },
+          {
+            "name": "Webcam widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 898,
+              "width": 335,
+              "height": 236,
+              "right": 419,
+              "bottom": 1134
+            }
+          },
+          {
+            "name": "3D Visualizer widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 432,
+              "y": 48,
+              "width": 648,
+              "height": 852,
+              "right": 1080,
+              "bottom": 900
+            }
+          },
+          {
+            "name": "Axes widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 1093,
+              "y": 96,
+              "width": 335,
+              "height": 436,
+              "right": 1428,
+              "bottom": 532
+            }
+          },
+          {
+            "name": "G-code widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 1093,
+              "y": 540,
+              "width": 335,
+              "height": 83,
+              "right": 1428,
+              "bottom": 623
+            }
+          },
+          {
+            "name": "Macro widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 1093,
+              "y": 631,
+              "width": 335,
+              "height": 124,
+              "right": 1428,
+              "bottom": 755
+            }
+          },
+          {
+            "name": "Autolevel Widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 763,
+              "width": 335,
+              "height": 349,
+              "right": 1428,
+              "bottom": 1112
+            }
+          },
+          {
+            "name": "Probe widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 1120,
+              "width": 335,
+              "height": 535,
+              "right": 1428,
+              "bottom": 1655
+            }
+          },
+          {
+            "name": "Tool widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 1663,
+              "width": 335,
+              "height": 79,
+              "right": 1428,
+              "bottom": 1742
+            }
+          },
+          {
+            "name": "Spindle widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 1750,
+              "width": 335,
+              "height": 268,
+              "right": 1428,
+              "bottom": 2018
+            }
+          },
+          {
+            "name": "Laser widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 2026,
+              "width": 335,
+              "height": 343,
+              "right": 1428,
+              "bottom": 2369
+            }
+          }
+        ],
+        "canvas": {
+          "rect": {
+            "x": 432,
+            "y": 91,
+            "width": 648,
+            "height": 755,
+            "right": 1080,
+            "bottom": 846
+          },
+          "drawingBuffer": {
+            "width": 648,
+            "height": 755
+          },
+          "host": {
+            "x": 432,
+            "y": 91,
+            "width": 648,
+            "height": 755,
+            "right": 1080,
+            "bottom": 846
+          },
+          "hostClientSize": {
+            "width": 648,
+            "height": 755
+          },
+          "fitsHost": true,
+          "gpu": {
+            "context": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendorMasked": "WebKit",
+            "rendererMasked": "WebKit WebGL"
+          }
+        },
+        "workspaceSideBorders": {
+          "primaryRight": {
+            "width": "1px",
+            "color": "rgb(169, 169, 169)",
+            "rect": {
+              "x": 72,
+              "y": 48,
+              "width": 360,
+              "height": 852,
+              "right": 432,
+              "bottom": 900
+            }
+          },
+          "secondaryLeft": {
+            "width": "1px",
+            "color": "rgb(169, 169, 169)",
+            "rect": {
+              "x": 1080,
+              "y": 48,
+              "width": 360,
+              "height": 852,
+              "right": 1440,
+              "bottom": 900
+            }
+          }
+        }
+      },
+      "status": "passed",
+      "failures": []
+    },
+    {
+      "mode": "dark",
+      "viewport": "1440x900",
+      "screenshot": "screenshots/workspace-theme-dark-1440x900.png",
+      "detail": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "dpr": 1,
+        "prefersDark": false,
+        "document": {
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "overflowX": false
+        },
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 48,
+          "right": 1440,
+          "bottom": 48
+        },
+        "main": {
+          "x": 72,
+          "y": 0,
+          "width": 1368,
+          "height": 900,
+          "right": 1440,
+          "bottom": 900
+        },
+        "bodyColors": {
+          "color": "color(srgb 1 1 1 / 0.8)",
+          "background": "rgb(7, 7, 7)"
+        },
+        "mainColors": {
+          "color": "color(srgb 1 1 1 / 0.8)",
+          "background": "rgb(7, 7, 7)"
+        },
+        "headerColors": {
+          "color": "color(srgb 1 1 1 / 0.8)",
+          "background": "rgb(22, 22, 22)"
+        },
+        "tokenValues": {
+          "--tonic-colors-text-primary": "color-mix(in srgb, #ffffff 80%, transparent)",
+          "--tonic-colors-background-highest": "#1b1b1b",
+          "--tonic-colors-border-secondary": "#525252"
+        },
+        "computedStyleContainsRawToken": false,
+        "contrastSamples": [
+          {
+            "label": "Connection",
+            "found": true,
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(22, 22, 22)",
+            "contrast": 11.78,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Axes",
+            "found": true,
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(22, 22, 22)",
+            "contrast": 11.78,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Console",
+            "found": true,
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(22, 22, 22)",
+            "contrast": 11.78,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Webcam",
+            "found": true,
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(22, 22, 22)",
+            "contrast": 11.78,
+            "fontSizePx": 16
+          }
+        ],
+        "widgetRegions": [
+          {
+            "name": "Connection widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 96,
+              "width": 335,
+              "height": 527,
+              "right": 419,
+              "bottom": 623
+            }
+          },
+          {
+            "name": "Console widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 631,
+              "width": 335,
+              "height": 75,
+              "right": 419,
+              "bottom": 706
+            }
+          },
+          {
+            "name": "Grbl widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 714,
+              "width": 335,
+              "height": 38,
+              "right": 419,
+              "bottom": 752
+            }
+          },
+          {
+            "name": "Marlin widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 760,
+              "width": 335,
+              "height": 38,
+              "right": 419,
+              "bottom": 798
+            }
+          },
+          {
+            "name": "Smoothie widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 806,
+              "width": 335,
+              "height": 38,
+              "right": 419,
+              "bottom": 844
+            }
+          },
+          {
+            "name": "TinyG widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 852,
+              "width": 335,
+              "height": 38,
+              "right": 419,
+              "bottom": 890
+            }
+          },
+          {
+            "name": "Webcam widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 898,
+              "width": 335,
+              "height": 236,
+              "right": 419,
+              "bottom": 1134
+            }
+          },
+          {
+            "name": "3D Visualizer widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 432,
+              "y": 48,
+              "width": 648,
+              "height": 852,
+              "right": 1080,
+              "bottom": 900
+            }
+          },
+          {
+            "name": "Axes widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 1093,
+              "y": 96,
+              "width": 335,
+              "height": 436,
+              "right": 1428,
+              "bottom": 532
+            }
+          },
+          {
+            "name": "G-code widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 1093,
+              "y": 540,
+              "width": 335,
+              "height": 83,
+              "right": 1428,
+              "bottom": 623
+            }
+          },
+          {
+            "name": "Macro widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 1093,
+              "y": 631,
+              "width": 335,
+              "height": 124,
+              "right": 1428,
+              "bottom": 755
+            }
+          },
+          {
+            "name": "Autolevel Widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 763,
+              "width": 335,
+              "height": 349,
+              "right": 1428,
+              "bottom": 1112
+            }
+          },
+          {
+            "name": "Probe widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 1120,
+              "width": 335,
+              "height": 535,
+              "right": 1428,
+              "bottom": 1655
+            }
+          },
+          {
+            "name": "Tool widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 1663,
+              "width": 335,
+              "height": 79,
+              "right": 1428,
+              "bottom": 1742
+            }
+          },
+          {
+            "name": "Spindle widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 1750,
+              "width": 335,
+              "height": 268,
+              "right": 1428,
+              "bottom": 2018
+            }
+          },
+          {
+            "name": "Laser widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 2026,
+              "width": 335,
+              "height": 343,
+              "right": 1428,
+              "bottom": 2369
+            }
+          }
+        ],
+        "canvas": {
+          "rect": {
+            "x": 432,
+            "y": 91,
+            "width": 648,
+            "height": 755,
+            "right": 1080,
+            "bottom": 846
+          },
+          "drawingBuffer": {
+            "width": 648,
+            "height": 755
+          },
+          "host": {
+            "x": 432,
+            "y": 91,
+            "width": 648,
+            "height": 755,
+            "right": 1080,
+            "bottom": 846
+          },
+          "hostClientSize": {
+            "width": 648,
+            "height": 755
+          },
+          "fitsHost": true,
+          "gpu": {
+            "context": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendorMasked": "WebKit",
+            "rendererMasked": "WebKit WebGL"
+          }
+        },
+        "workspaceSideBorders": {
+          "primaryRight": {
+            "width": "1px",
+            "color": "rgb(82, 82, 82)",
+            "rect": {
+              "x": 72,
+              "y": 48,
+              "width": 360,
+              "height": 852,
+              "right": 432,
+              "bottom": 900
+            }
+          },
+          "secondaryLeft": {
+            "width": "1px",
+            "color": "rgb(82, 82, 82)",
+            "rect": {
+              "x": 1080,
+              "y": 48,
+              "width": 360,
+              "height": 852,
+              "right": 1440,
+              "bottom": 900
+            }
+          }
+        }
+      },
+      "status": "passed",
+      "failures": []
+    },
+    {
+      "mode": "auto",
+      "viewport": "1440x900",
+      "screenshot": "screenshots/workspace-theme-auto-1440x900.png",
+      "detail": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "dpr": 1,
+        "prefersDark": false,
+        "document": {
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "overflowX": false
+        },
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 48,
+          "right": 1440,
+          "bottom": 48
+        },
+        "main": {
+          "x": 72,
+          "y": 0,
+          "width": 1368,
+          "height": 900,
+          "right": 1440,
+          "bottom": 900
+        },
+        "bodyColors": {
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(238, 238, 238)"
+        },
+        "mainColors": {
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(238, 238, 238)"
+        },
+        "headerColors": {
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(248, 248, 248)"
+        },
+        "tokenValues": {
+          "--tonic-colors-text-primary": "color-mix(in srgb, #000000 80%, transparent)",
+          "--tonic-colors-background-highest": "#fcfcfc",
+          "--tonic-colors-border-secondary": "#a9a9a9"
+        },
+        "computedStyleContainsRawToken": false,
+        "contrastSamples": [
+          {
+            "label": "Connection",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Axes",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Console",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Webcam",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          }
+        ],
+        "widgetRegions": [
+          {
+            "name": "Connection widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 96,
+              "width": 335,
+              "height": 527,
+              "right": 419,
+              "bottom": 623
+            }
+          },
+          {
+            "name": "Console widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 631,
+              "width": 335,
+              "height": 75,
+              "right": 419,
+              "bottom": 706
+            }
+          },
+          {
+            "name": "Grbl widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 714,
+              "width": 335,
+              "height": 38,
+              "right": 419,
+              "bottom": 752
+            }
+          },
+          {
+            "name": "Marlin widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 760,
+              "width": 335,
+              "height": 38,
+              "right": 419,
+              "bottom": 798
+            }
+          },
+          {
+            "name": "Smoothie widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 806,
+              "width": 335,
+              "height": 38,
+              "right": 419,
+              "bottom": 844
+            }
+          },
+          {
+            "name": "TinyG widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 852,
+              "width": 335,
+              "height": 38,
+              "right": 419,
+              "bottom": 890
+            }
+          },
+          {
+            "name": "Webcam widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 898,
+              "width": 335,
+              "height": 236,
+              "right": 419,
+              "bottom": 1134
+            }
+          },
+          {
+            "name": "3D Visualizer widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 432,
+              "y": 48,
+              "width": 648,
+              "height": 852,
+              "right": 1080,
+              "bottom": 900
+            }
+          },
+          {
+            "name": "Axes widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 1093,
+              "y": 96,
+              "width": 335,
+              "height": 436,
+              "right": 1428,
+              "bottom": 532
+            }
+          },
+          {
+            "name": "G-code widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 1093,
+              "y": 540,
+              "width": 335,
+              "height": 83,
+              "right": 1428,
+              "bottom": 623
+            }
+          },
+          {
+            "name": "Macro widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 1093,
+              "y": 631,
+              "width": 335,
+              "height": 124,
+              "right": 1428,
+              "bottom": 755
+            }
+          },
+          {
+            "name": "Autolevel Widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 763,
+              "width": 335,
+              "height": 349,
+              "right": 1428,
+              "bottom": 1112
+            }
+          },
+          {
+            "name": "Probe widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 1120,
+              "width": 335,
+              "height": 535,
+              "right": 1428,
+              "bottom": 1655
+            }
+          },
+          {
+            "name": "Tool widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 1663,
+              "width": 335,
+              "height": 79,
+              "right": 1428,
+              "bottom": 1742
+            }
+          },
+          {
+            "name": "Spindle widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 1750,
+              "width": 335,
+              "height": 268,
+              "right": 1428,
+              "bottom": 2018
+            }
+          },
+          {
+            "name": "Laser widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 1093,
+              "y": 2026,
+              "width": 335,
+              "height": 343,
+              "right": 1428,
+              "bottom": 2369
+            }
+          }
+        ],
+        "canvas": {
+          "rect": {
+            "x": 432,
+            "y": 91,
+            "width": 648,
+            "height": 755,
+            "right": 1080,
+            "bottom": 846
+          },
+          "drawingBuffer": {
+            "width": 648,
+            "height": 755
+          },
+          "host": {
+            "x": 432,
+            "y": 91,
+            "width": 648,
+            "height": 755,
+            "right": 1080,
+            "bottom": 846
+          },
+          "hostClientSize": {
+            "width": 648,
+            "height": 755
+          },
+          "fitsHost": true,
+          "gpu": {
+            "context": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendorMasked": "WebKit",
+            "rendererMasked": "WebKit WebGL"
+          }
+        },
+        "workspaceSideBorders": {
+          "primaryRight": {
+            "width": "1px",
+            "color": "rgb(169, 169, 169)",
+            "rect": {
+              "x": 72,
+              "y": 48,
+              "width": 360,
+              "height": 852,
+              "right": 432,
+              "bottom": 900
+            }
+          },
+          "secondaryLeft": {
+            "width": "1px",
+            "color": "rgb(169, 169, 169)",
+            "rect": {
+              "x": 1080,
+              "y": 48,
+              "width": 360,
+              "height": 852,
+              "right": 1440,
+              "bottom": 900
+            }
+          }
+        }
+      },
+      "status": "passed",
+      "failures": []
+    },
+    {
+      "mode": "light",
+      "viewport": "768x900",
+      "screenshot": "screenshots/workspace-theme-light-768x900.png",
+      "detail": {
+        "viewport": {
+          "width": 768,
+          "height": 900
+        },
+        "dpr": 1,
+        "prefersDark": false,
+        "document": {
+          "scrollWidth": 768,
+          "clientWidth": 768,
+          "overflowX": false
+        },
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 768,
+          "height": 48,
+          "right": 768,
+          "bottom": 48
+        },
+        "main": {
+          "x": 72,
+          "y": 0,
+          "width": 696,
+          "height": 900,
+          "right": 768,
+          "bottom": 900
+        },
+        "bodyColors": {
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(238, 238, 238)"
+        },
+        "mainColors": {
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(238, 238, 238)"
+        },
+        "headerColors": {
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(248, 248, 248)"
+        },
+        "tokenValues": {
+          "--tonic-colors-text-primary": "color-mix(in srgb, #000000 80%, transparent)",
+          "--tonic-colors-background-highest": "#fcfcfc",
+          "--tonic-colors-border-secondary": "#a9a9a9"
+        },
+        "computedStyleContainsRawToken": false,
+        "contrastSamples": [
+          {
+            "label": "Connection",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Axes",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Console",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Webcam",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          }
+        ],
+        "widgetRegions": [
+          {
+            "name": "Connection widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 128,
+              "width": 143,
+              "height": 667,
+              "right": 227,
+              "bottom": 795
+            }
+          },
+          {
+            "name": "Console widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 803,
+              "width": 143,
+              "height": 95,
+              "right": 227,
+              "bottom": 898
+            }
+          },
+          {
+            "name": "Grbl widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 906,
+              "width": 143,
+              "height": 38,
+              "right": 227,
+              "bottom": 944
+            }
+          },
+          {
+            "name": "Marlin widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 952,
+              "width": 143,
+              "height": 38,
+              "right": 227,
+              "bottom": 990
+            }
+          },
+          {
+            "name": "Smoothie widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 998,
+              "width": 143,
+              "height": 38,
+              "right": 227,
+              "bottom": 1036
+            }
+          },
+          {
+            "name": "TinyG widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 1044,
+              "width": 143,
+              "height": 38,
+              "right": 227,
+              "bottom": 1082
+            }
+          },
+          {
+            "name": "Webcam widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 1090,
+              "width": 143,
+              "height": 268,
+              "right": 227,
+              "bottom": 1358
+            }
+          },
+          {
+            "name": "3D Visualizer widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 240,
+              "y": 48,
+              "width": 360,
+              "height": 852,
+              "right": 600,
+              "bottom": 900
+            }
+          },
+          {
+            "name": "Axes widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 613,
+              "y": 128,
+              "width": 143,
+              "height": 436,
+              "right": 756,
+              "bottom": 564
+            }
+          },
+          {
+            "name": "G-code widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 613,
+              "y": 572,
+              "width": 143,
+              "height": 103,
+              "right": 756,
+              "bottom": 675
+            }
+          },
+          {
+            "name": "Macro widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 613,
+              "y": 683,
+              "width": 143,
+              "height": 176,
+              "right": 756,
+              "bottom": 859
+            }
+          },
+          {
+            "name": "Autolevel Widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 867,
+              "width": 143,
+              "height": 577,
+              "right": 756,
+              "bottom": 1444
+            }
+          },
+          {
+            "name": "Probe widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 1452,
+              "width": 143,
+              "height": 615,
+              "right": 756,
+              "bottom": 2067
+            }
+          },
+          {
+            "name": "Tool widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 2075,
+              "width": 143,
+              "height": 99,
+              "right": 756,
+              "bottom": 2174
+            }
+          },
+          {
+            "name": "Spindle widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 2182,
+              "width": 143,
+              "height": 268,
+              "right": 756,
+              "bottom": 2450
+            }
+          },
+          {
+            "name": "Laser widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 2458,
+              "width": 143,
+              "height": 409,
+              "right": 756,
+              "bottom": 2867
+            }
+          }
+        ],
+        "canvas": {
+          "rect": {
+            "x": 240,
+            "y": 91,
+            "width": 360,
+            "height": 755,
+            "right": 600,
+            "bottom": 846
+          },
+          "drawingBuffer": {
+            "width": 360,
+            "height": 755
+          },
+          "host": {
+            "x": 240,
+            "y": 91,
+            "width": 360,
+            "height": 755,
+            "right": 600,
+            "bottom": 846
+          },
+          "hostClientSize": {
+            "width": 360,
+            "height": 755
+          },
+          "fitsHost": true,
+          "gpu": {
+            "context": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendorMasked": "WebKit",
+            "rendererMasked": "WebKit WebGL"
+          }
+        },
+        "workspaceSideBorders": {
+          "primaryRight": {
+            "width": "1px",
+            "color": "rgb(169, 169, 169)",
+            "rect": {
+              "x": 72,
+              "y": 48,
+              "width": 168,
+              "height": 852,
+              "right": 240,
+              "bottom": 900
+            }
+          },
+          "secondaryLeft": {
+            "width": "1px",
+            "color": "rgb(169, 169, 169)",
+            "rect": {
+              "x": 600,
+              "y": 48,
+              "width": 168,
+              "height": 852,
+              "right": 768,
+              "bottom": 900
+            }
+          }
+        }
+      },
+      "status": "passed",
+      "failures": []
+    },
+    {
+      "mode": "dark",
+      "viewport": "768x900",
+      "screenshot": "screenshots/workspace-theme-dark-768x900.png",
+      "detail": {
+        "viewport": {
+          "width": 768,
+          "height": 900
+        },
+        "dpr": 1,
+        "prefersDark": false,
+        "document": {
+          "scrollWidth": 768,
+          "clientWidth": 768,
+          "overflowX": false
+        },
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 768,
+          "height": 48,
+          "right": 768,
+          "bottom": 48
+        },
+        "main": {
+          "x": 72,
+          "y": 0,
+          "width": 696,
+          "height": 900,
+          "right": 768,
+          "bottom": 900
+        },
+        "bodyColors": {
+          "color": "color(srgb 1 1 1 / 0.8)",
+          "background": "rgb(7, 7, 7)"
+        },
+        "mainColors": {
+          "color": "color(srgb 1 1 1 / 0.8)",
+          "background": "rgb(7, 7, 7)"
+        },
+        "headerColors": {
+          "color": "color(srgb 1 1 1 / 0.8)",
+          "background": "rgb(22, 22, 22)"
+        },
+        "tokenValues": {
+          "--tonic-colors-text-primary": "color-mix(in srgb, #ffffff 80%, transparent)",
+          "--tonic-colors-background-highest": "#1b1b1b",
+          "--tonic-colors-border-secondary": "#525252"
+        },
+        "computedStyleContainsRawToken": false,
+        "contrastSamples": [
+          {
+            "label": "Connection",
+            "found": true,
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(22, 22, 22)",
+            "contrast": 11.78,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Axes",
+            "found": true,
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(22, 22, 22)",
+            "contrast": 11.78,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Console",
+            "found": true,
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(22, 22, 22)",
+            "contrast": 11.78,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Webcam",
+            "found": true,
+            "color": "color(srgb 1 1 1 / 0.8)",
+            "background": "rgb(22, 22, 22)",
+            "contrast": 11.78,
+            "fontSizePx": 16
+          }
+        ],
+        "widgetRegions": [
+          {
+            "name": "Connection widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 128,
+              "width": 143,
+              "height": 667,
+              "right": 227,
+              "bottom": 795
+            }
+          },
+          {
+            "name": "Console widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 803,
+              "width": 143,
+              "height": 95,
+              "right": 227,
+              "bottom": 898
+            }
+          },
+          {
+            "name": "Grbl widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 906,
+              "width": 143,
+              "height": 38,
+              "right": 227,
+              "bottom": 944
+            }
+          },
+          {
+            "name": "Marlin widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 952,
+              "width": 143,
+              "height": 38,
+              "right": 227,
+              "bottom": 990
+            }
+          },
+          {
+            "name": "Smoothie widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 998,
+              "width": 143,
+              "height": 38,
+              "right": 227,
+              "bottom": 1036
+            }
+          },
+          {
+            "name": "TinyG widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 1044,
+              "width": 143,
+              "height": 38,
+              "right": 227,
+              "bottom": 1082
+            }
+          },
+          {
+            "name": "Webcam widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 1090,
+              "width": 143,
+              "height": 268,
+              "right": 227,
+              "bottom": 1358
+            }
+          },
+          {
+            "name": "3D Visualizer widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 240,
+              "y": 48,
+              "width": 360,
+              "height": 852,
+              "right": 600,
+              "bottom": 900
+            }
+          },
+          {
+            "name": "Axes widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 613,
+              "y": 128,
+              "width": 143,
+              "height": 436,
+              "right": 756,
+              "bottom": 564
+            }
+          },
+          {
+            "name": "G-code widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 613,
+              "y": 572,
+              "width": 143,
+              "height": 103,
+              "right": 756,
+              "bottom": 675
+            }
+          },
+          {
+            "name": "Macro widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 613,
+              "y": 683,
+              "width": 143,
+              "height": 176,
+              "right": 756,
+              "bottom": 859
+            }
+          },
+          {
+            "name": "Autolevel Widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 867,
+              "width": 143,
+              "height": 577,
+              "right": 756,
+              "bottom": 1444
+            }
+          },
+          {
+            "name": "Probe widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 1452,
+              "width": 143,
+              "height": 615,
+              "right": 756,
+              "bottom": 2067
+            }
+          },
+          {
+            "name": "Tool widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 2075,
+              "width": 143,
+              "height": 99,
+              "right": 756,
+              "bottom": 2174
+            }
+          },
+          {
+            "name": "Spindle widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 2182,
+              "width": 143,
+              "height": 268,
+              "right": 756,
+              "bottom": 2450
+            }
+          },
+          {
+            "name": "Laser widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 2458,
+              "width": 143,
+              "height": 409,
+              "right": 756,
+              "bottom": 2867
+            }
+          }
+        ],
+        "canvas": {
+          "rect": {
+            "x": 240,
+            "y": 91,
+            "width": 360,
+            "height": 755,
+            "right": 600,
+            "bottom": 846
+          },
+          "drawingBuffer": {
+            "width": 360,
+            "height": 755
+          },
+          "host": {
+            "x": 240,
+            "y": 91,
+            "width": 360,
+            "height": 755,
+            "right": 600,
+            "bottom": 846
+          },
+          "hostClientSize": {
+            "width": 360,
+            "height": 755
+          },
+          "fitsHost": true,
+          "gpu": {
+            "context": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendorMasked": "WebKit",
+            "rendererMasked": "WebKit WebGL"
+          }
+        },
+        "workspaceSideBorders": {
+          "primaryRight": {
+            "width": "1px",
+            "color": "rgb(82, 82, 82)",
+            "rect": {
+              "x": 72,
+              "y": 48,
+              "width": 168,
+              "height": 852,
+              "right": 240,
+              "bottom": 900
+            }
+          },
+          "secondaryLeft": {
+            "width": "1px",
+            "color": "rgb(82, 82, 82)",
+            "rect": {
+              "x": 600,
+              "y": 48,
+              "width": 168,
+              "height": 852,
+              "right": 768,
+              "bottom": 900
+            }
+          }
+        }
+      },
+      "status": "passed",
+      "failures": []
+    },
+    {
+      "mode": "auto",
+      "viewport": "768x900",
+      "screenshot": "screenshots/workspace-theme-auto-768x900.png",
+      "detail": {
+        "viewport": {
+          "width": 768,
+          "height": 900
+        },
+        "dpr": 1,
+        "prefersDark": false,
+        "document": {
+          "scrollWidth": 768,
+          "clientWidth": 768,
+          "overflowX": false
+        },
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 768,
+          "height": 48,
+          "right": 768,
+          "bottom": 48
+        },
+        "main": {
+          "x": 72,
+          "y": 0,
+          "width": 696,
+          "height": 900,
+          "right": 768,
+          "bottom": 900
+        },
+        "bodyColors": {
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(238, 238, 238)"
+        },
+        "mainColors": {
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(238, 238, 238)"
+        },
+        "headerColors": {
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(248, 248, 248)"
+        },
+        "tokenValues": {
+          "--tonic-colors-text-primary": "color-mix(in srgb, #000000 80%, transparent)",
+          "--tonic-colors-background-highest": "#fcfcfc",
+          "--tonic-colors-border-secondary": "#a9a9a9"
+        },
+        "computedStyleContainsRawToken": false,
+        "contrastSamples": [
+          {
+            "label": "Connection",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Axes",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Console",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          },
+          {
+            "label": "Webcam",
+            "found": true,
+            "color": "color(srgb 0 0 0 / 0.8)",
+            "background": "rgb(248, 248, 248)",
+            "contrast": 12.14,
+            "fontSizePx": 16
+          }
+        ],
+        "widgetRegions": [
+          {
+            "name": "Connection widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 128,
+              "width": 143,
+              "height": 667,
+              "right": 227,
+              "bottom": 795
+            }
+          },
+          {
+            "name": "Console widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 84,
+              "y": 803,
+              "width": 143,
+              "height": 95,
+              "right": 227,
+              "bottom": 898
+            }
+          },
+          {
+            "name": "Grbl widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 906,
+              "width": 143,
+              "height": 38,
+              "right": 227,
+              "bottom": 944
+            }
+          },
+          {
+            "name": "Marlin widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 952,
+              "width": 143,
+              "height": 38,
+              "right": 227,
+              "bottom": 990
+            }
+          },
+          {
+            "name": "Smoothie widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 998,
+              "width": 143,
+              "height": 38,
+              "right": 227,
+              "bottom": 1036
+            }
+          },
+          {
+            "name": "TinyG widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 1044,
+              "width": 143,
+              "height": 38,
+              "right": 227,
+              "bottom": 1082
+            }
+          },
+          {
+            "name": "Webcam widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 84,
+              "y": 1090,
+              "width": 143,
+              "height": 268,
+              "right": 227,
+              "bottom": 1358
+            }
+          },
+          {
+            "name": "3D Visualizer widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 240,
+              "y": 48,
+              "width": 360,
+              "height": 852,
+              "right": 600,
+              "bottom": 900
+            }
+          },
+          {
+            "name": "Axes widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 613,
+              "y": 128,
+              "width": 143,
+              "height": 436,
+              "right": 756,
+              "bottom": 564
+            }
+          },
+          {
+            "name": "G-code widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 613,
+              "y": 572,
+              "width": 143,
+              "height": 103,
+              "right": 756,
+              "bottom": 675
+            }
+          },
+          {
+            "name": "Macro widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": true,
+            "rect": {
+              "x": 613,
+              "y": 683,
+              "width": 143,
+              "height": 176,
+              "right": 756,
+              "bottom": 859
+            }
+          },
+          {
+            "name": "Autolevel Widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": true,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 867,
+              "width": 143,
+              "height": 577,
+              "right": 756,
+              "bottom": 1444
+            }
+          },
+          {
+            "name": "Probe widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 1452,
+              "width": 143,
+              "height": 615,
+              "right": 756,
+              "bottom": 2067
+            }
+          },
+          {
+            "name": "Tool widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 2075,
+              "width": 143,
+              "height": 99,
+              "right": 756,
+              "bottom": 2174
+            }
+          },
+          {
+            "name": "Spindle widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 2182,
+              "width": 143,
+              "height": 268,
+              "right": 756,
+              "bottom": 2450
+            }
+          },
+          {
+            "name": "Laser widget",
+            "exists": true,
+            "cssVisible": true,
+            "intersectsViewport": false,
+            "fullyInViewport": false,
+            "rect": {
+              "x": 613,
+              "y": 2458,
+              "width": 143,
+              "height": 409,
+              "right": 756,
+              "bottom": 2867
+            }
+          }
+        ],
+        "canvas": {
+          "rect": {
+            "x": 240,
+            "y": 91,
+            "width": 360,
+            "height": 755,
+            "right": 600,
+            "bottom": 846
+          },
+          "drawingBuffer": {
+            "width": 360,
+            "height": 755
+          },
+          "host": {
+            "x": 240,
+            "y": 91,
+            "width": 360,
+            "height": 755,
+            "right": 600,
+            "bottom": 846
+          },
+          "hostClientSize": {
+            "width": 360,
+            "height": 755
+          },
+          "fitsHost": true,
+          "gpu": {
+            "context": "webgl2",
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendorMasked": "WebKit",
+            "rendererMasked": "WebKit WebGL"
+          }
+        },
+        "workspaceSideBorders": {
+          "primaryRight": {
+            "width": "1px",
+            "color": "rgb(169, 169, 169)",
+            "rect": {
+              "x": 72,
+              "y": 48,
+              "width": 168,
+              "height": 852,
+              "right": 240,
+              "bottom": 900
+            }
+          },
+          "secondaryLeft": {
+            "width": "1px",
+            "color": "rgb(169, 169, 169)",
+            "rect": {
+              "x": 600,
+              "y": 48,
+              "width": 168,
+              "height": 852,
+              "right": 768,
+              "bottom": 900
+            }
+          }
+        }
+      },
+      "status": "passed",
+      "failures": []
+    }
+  ],
+  "autoLive": {
+    "status": "passed",
+    "sequence": [
+      "light",
+      "dark",
+      "light"
+    ],
+    "light": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "dpr": 1,
+      "prefersDark": false,
+      "document": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "overflowX": false
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 48,
+        "right": 1440,
+        "bottom": 48
+      },
+      "main": {
+        "x": 72,
+        "y": 0,
+        "width": 1368,
+        "height": 900,
+        "right": 1440,
+        "bottom": 900
+      },
+      "bodyColors": {
+        "color": "color(srgb 0 0 0 / 0.8)",
+        "background": "rgb(238, 238, 238)"
+      },
+      "mainColors": {
+        "color": "color(srgb 0 0 0 / 0.8)",
+        "background": "rgb(238, 238, 238)"
+      },
+      "headerColors": {
+        "color": "color(srgb 0 0 0 / 0.8)",
+        "background": "rgb(248, 248, 248)"
+      },
+      "tokenValues": {
+        "--tonic-colors-text-primary": "color-mix(in srgb, #000000 80%, transparent)",
+        "--tonic-colors-background-highest": "#fcfcfc",
+        "--tonic-colors-border-secondary": "#a9a9a9"
+      },
+      "computedStyleContainsRawToken": false,
+      "contrastSamples": [
+        {
+          "label": "Connection",
+          "found": true,
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(248, 248, 248)",
+          "contrast": 12.14,
+          "fontSizePx": 16
+        },
+        {
+          "label": "Axes",
+          "found": true,
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(248, 248, 248)",
+          "contrast": 12.14,
+          "fontSizePx": 16
+        },
+        {
+          "label": "Console",
+          "found": true,
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(248, 248, 248)",
+          "contrast": 12.14,
+          "fontSizePx": 16
+        },
+        {
+          "label": "Webcam",
+          "found": true,
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(248, 248, 248)",
+          "contrast": 12.14,
+          "fontSizePx": 16
+        }
+      ],
+      "widgetRegions": [
+        {
+          "name": "Connection widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 96,
+            "width": 335,
+            "height": 527,
+            "right": 419,
+            "bottom": 623
+          }
+        },
+        {
+          "name": "Console widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 631,
+            "width": 335,
+            "height": 75,
+            "right": 419,
+            "bottom": 706
+          }
+        },
+        {
+          "name": "Grbl widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 714,
+            "width": 335,
+            "height": 38,
+            "right": 419,
+            "bottom": 752
+          }
+        },
+        {
+          "name": "Marlin widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 760,
+            "width": 335,
+            "height": 38,
+            "right": 419,
+            "bottom": 798
+          }
+        },
+        {
+          "name": "Smoothie widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 806,
+            "width": 335,
+            "height": 38,
+            "right": 419,
+            "bottom": 844
+          }
+        },
+        {
+          "name": "TinyG widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 852,
+            "width": 335,
+            "height": 38,
+            "right": 419,
+            "bottom": 890
+          }
+        },
+        {
+          "name": "Webcam widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 84,
+            "y": 898,
+            "width": 335,
+            "height": 236,
+            "right": 419,
+            "bottom": 1134
+          }
+        },
+        {
+          "name": "3D Visualizer widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 432,
+            "y": 48,
+            "width": 648,
+            "height": 852,
+            "right": 1080,
+            "bottom": 900
+          }
+        },
+        {
+          "name": "Axes widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 1093,
+            "y": 96,
+            "width": 335,
+            "height": 436,
+            "right": 1428,
+            "bottom": 532
+          }
+        },
+        {
+          "name": "G-code widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 1093,
+            "y": 540,
+            "width": 335,
+            "height": 83,
+            "right": 1428,
+            "bottom": 623
+          }
+        },
+        {
+          "name": "Macro widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 1093,
+            "y": 631,
+            "width": 335,
+            "height": 124,
+            "right": 1428,
+            "bottom": 755
+          }
+        },
+        {
+          "name": "Autolevel Widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 763,
+            "width": 335,
+            "height": 349,
+            "right": 1428,
+            "bottom": 1112
+          }
+        },
+        {
+          "name": "Probe widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": false,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 1120,
+            "width": 335,
+            "height": 535,
+            "right": 1428,
+            "bottom": 1655
+          }
+        },
+        {
+          "name": "Tool widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": false,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 1663,
+            "width": 335,
+            "height": 79,
+            "right": 1428,
+            "bottom": 1742
+          }
+        },
+        {
+          "name": "Spindle widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": false,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 1750,
+            "width": 335,
+            "height": 268,
+            "right": 1428,
+            "bottom": 2018
+          }
+        },
+        {
+          "name": "Laser widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": false,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 2026,
+            "width": 335,
+            "height": 343,
+            "right": 1428,
+            "bottom": 2369
+          }
+        }
+      ],
+      "canvas": {
+        "rect": {
+          "x": 432,
+          "y": 91,
+          "width": 648,
+          "height": 755,
+          "right": 1080,
+          "bottom": 846
+        },
+        "drawingBuffer": {
+          "width": 648,
+          "height": 755
+        },
+        "host": {
+          "x": 432,
+          "y": 91,
+          "width": 648,
+          "height": 755,
+          "right": 1080,
+          "bottom": 846
+        },
+        "hostClientSize": {
+          "width": 648,
+          "height": 755
+        },
+        "fitsHost": true,
+        "gpu": {
+          "context": "webgl2",
+          "vendor": "Google Inc. (Google)",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+          "vendorMasked": "WebKit",
+          "rendererMasked": "WebKit WebGL"
+        }
+      },
+      "workspaceSideBorders": {
+        "primaryRight": {
+          "width": "1px",
+          "color": "rgb(169, 169, 169)",
+          "rect": {
+            "x": 72,
+            "y": 48,
+            "width": 360,
+            "height": 852,
+            "right": 432,
+            "bottom": 900
+          }
+        },
+        "secondaryLeft": {
+          "width": "1px",
+          "color": "rgb(169, 169, 169)",
+          "rect": {
+            "x": 1080,
+            "y": 48,
+            "width": 360,
+            "height": 852,
+            "right": 1440,
+            "bottom": 900
+          }
+        }
+      }
+    },
+    "dark": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "dpr": 1,
+      "prefersDark": true,
+      "document": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "overflowX": false
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 48,
+        "right": 1440,
+        "bottom": 48
+      },
+      "main": {
+        "x": 72,
+        "y": 0,
+        "width": 1368,
+        "height": 900,
+        "right": 1440,
+        "bottom": 900
+      },
+      "bodyColors": {
+        "color": "color(srgb 1 1 1 / 0.8)",
+        "background": "rgb(7, 7, 7)"
+      },
+      "mainColors": {
+        "color": "color(srgb 1 1 1 / 0.8)",
+        "background": "rgb(7, 7, 7)"
+      },
+      "headerColors": {
+        "color": "color(srgb 1 1 1 / 0.8)",
+        "background": "rgb(22, 22, 22)"
+      },
+      "tokenValues": {
+        "--tonic-colors-text-primary": "color-mix(in srgb, #ffffff 80%, transparent)",
+        "--tonic-colors-background-highest": "#1b1b1b",
+        "--tonic-colors-border-secondary": "#525252"
+      },
+      "computedStyleContainsRawToken": false,
+      "contrastSamples": [
+        {
+          "label": "Connection",
+          "found": true,
+          "color": "color(srgb 1 1 1 / 0.8)",
+          "background": "rgb(22, 22, 22)",
+          "contrast": 11.78,
+          "fontSizePx": 16
+        },
+        {
+          "label": "Axes",
+          "found": true,
+          "color": "color(srgb 1 1 1 / 0.8)",
+          "background": "rgb(22, 22, 22)",
+          "contrast": 11.78,
+          "fontSizePx": 16
+        },
+        {
+          "label": "Console",
+          "found": true,
+          "color": "color(srgb 1 1 1 / 0.8)",
+          "background": "rgb(22, 22, 22)",
+          "contrast": 11.78,
+          "fontSizePx": 16
+        },
+        {
+          "label": "Webcam",
+          "found": true,
+          "color": "color(srgb 1 1 1 / 0.8)",
+          "background": "rgb(22, 22, 22)",
+          "contrast": 11.78,
+          "fontSizePx": 16
+        }
+      ],
+      "widgetRegions": [
+        {
+          "name": "Connection widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 96,
+            "width": 335,
+            "height": 527,
+            "right": 419,
+            "bottom": 623
+          }
+        },
+        {
+          "name": "Console widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 631,
+            "width": 335,
+            "height": 75,
+            "right": 419,
+            "bottom": 706
+          }
+        },
+        {
+          "name": "Grbl widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 714,
+            "width": 335,
+            "height": 38,
+            "right": 419,
+            "bottom": 752
+          }
+        },
+        {
+          "name": "Marlin widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 760,
+            "width": 335,
+            "height": 38,
+            "right": 419,
+            "bottom": 798
+          }
+        },
+        {
+          "name": "Smoothie widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 806,
+            "width": 335,
+            "height": 38,
+            "right": 419,
+            "bottom": 844
+          }
+        },
+        {
+          "name": "TinyG widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 852,
+            "width": 335,
+            "height": 38,
+            "right": 419,
+            "bottom": 890
+          }
+        },
+        {
+          "name": "Webcam widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 84,
+            "y": 898,
+            "width": 335,
+            "height": 236,
+            "right": 419,
+            "bottom": 1134
+          }
+        },
+        {
+          "name": "3D Visualizer widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 432,
+            "y": 48,
+            "width": 648,
+            "height": 852,
+            "right": 1080,
+            "bottom": 900
+          }
+        },
+        {
+          "name": "Axes widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 1093,
+            "y": 96,
+            "width": 335,
+            "height": 436,
+            "right": 1428,
+            "bottom": 532
+          }
+        },
+        {
+          "name": "G-code widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 1093,
+            "y": 540,
+            "width": 335,
+            "height": 83,
+            "right": 1428,
+            "bottom": 623
+          }
+        },
+        {
+          "name": "Macro widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 1093,
+            "y": 631,
+            "width": 335,
+            "height": 124,
+            "right": 1428,
+            "bottom": 755
+          }
+        },
+        {
+          "name": "Autolevel Widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 763,
+            "width": 335,
+            "height": 349,
+            "right": 1428,
+            "bottom": 1112
+          }
+        },
+        {
+          "name": "Probe widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": false,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 1120,
+            "width": 335,
+            "height": 535,
+            "right": 1428,
+            "bottom": 1655
+          }
+        },
+        {
+          "name": "Tool widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": false,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 1663,
+            "width": 335,
+            "height": 79,
+            "right": 1428,
+            "bottom": 1742
+          }
+        },
+        {
+          "name": "Spindle widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": false,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 1750,
+            "width": 335,
+            "height": 268,
+            "right": 1428,
+            "bottom": 2018
+          }
+        },
+        {
+          "name": "Laser widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": false,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 2026,
+            "width": 335,
+            "height": 343,
+            "right": 1428,
+            "bottom": 2369
+          }
+        }
+      ],
+      "canvas": {
+        "rect": {
+          "x": 432,
+          "y": 91,
+          "width": 648,
+          "height": 755,
+          "right": 1080,
+          "bottom": 846
+        },
+        "drawingBuffer": {
+          "width": 648,
+          "height": 755
+        },
+        "host": {
+          "x": 432,
+          "y": 91,
+          "width": 648,
+          "height": 755,
+          "right": 1080,
+          "bottom": 846
+        },
+        "hostClientSize": {
+          "width": 648,
+          "height": 755
+        },
+        "fitsHost": true,
+        "gpu": {
+          "context": "webgl2",
+          "vendor": "Google Inc. (Google)",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+          "vendorMasked": "WebKit",
+          "rendererMasked": "WebKit WebGL"
+        }
+      },
+      "workspaceSideBorders": {
+        "primaryRight": {
+          "width": "1px",
+          "color": "rgb(82, 82, 82)",
+          "rect": {
+            "x": 72,
+            "y": 48,
+            "width": 360,
+            "height": 852,
+            "right": 432,
+            "bottom": 900
+          }
+        },
+        "secondaryLeft": {
+          "width": "1px",
+          "color": "rgb(82, 82, 82)",
+          "rect": {
+            "x": 1080,
+            "y": 48,
+            "width": 360,
+            "height": 852,
+            "right": 1440,
+            "bottom": 900
+          }
+        }
+      }
+    },
+    "restored": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "dpr": 1,
+      "prefersDark": false,
+      "document": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "overflowX": false
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 48,
+        "right": 1440,
+        "bottom": 48
+      },
+      "main": {
+        "x": 72,
+        "y": 0,
+        "width": 1368,
+        "height": 900,
+        "right": 1440,
+        "bottom": 900
+      },
+      "bodyColors": {
+        "color": "color(srgb 0 0 0 / 0.8)",
+        "background": "rgb(238, 238, 238)"
+      },
+      "mainColors": {
+        "color": "color(srgb 0 0 0 / 0.8)",
+        "background": "rgb(238, 238, 238)"
+      },
+      "headerColors": {
+        "color": "color(srgb 0 0 0 / 0.8)",
+        "background": "rgb(248, 248, 248)"
+      },
+      "tokenValues": {
+        "--tonic-colors-text-primary": "color-mix(in srgb, #000000 80%, transparent)",
+        "--tonic-colors-background-highest": "#fcfcfc",
+        "--tonic-colors-border-secondary": "#a9a9a9"
+      },
+      "computedStyleContainsRawToken": false,
+      "contrastSamples": [
+        {
+          "label": "Connection",
+          "found": true,
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(248, 248, 248)",
+          "contrast": 12.14,
+          "fontSizePx": 16
+        },
+        {
+          "label": "Axes",
+          "found": true,
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(248, 248, 248)",
+          "contrast": 12.14,
+          "fontSizePx": 16
+        },
+        {
+          "label": "Console",
+          "found": true,
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(248, 248, 248)",
+          "contrast": 12.14,
+          "fontSizePx": 16
+        },
+        {
+          "label": "Webcam",
+          "found": true,
+          "color": "color(srgb 0 0 0 / 0.8)",
+          "background": "rgb(248, 248, 248)",
+          "contrast": 12.14,
+          "fontSizePx": 16
+        }
+      ],
+      "widgetRegions": [
+        {
+          "name": "Connection widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 96,
+            "width": 335,
+            "height": 527,
+            "right": 419,
+            "bottom": 623
+          }
+        },
+        {
+          "name": "Console widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 631,
+            "width": 335,
+            "height": 75,
+            "right": 419,
+            "bottom": 706
+          }
+        },
+        {
+          "name": "Grbl widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 714,
+            "width": 335,
+            "height": 38,
+            "right": 419,
+            "bottom": 752
+          }
+        },
+        {
+          "name": "Marlin widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 760,
+            "width": 335,
+            "height": 38,
+            "right": 419,
+            "bottom": 798
+          }
+        },
+        {
+          "name": "Smoothie widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 806,
+            "width": 335,
+            "height": 38,
+            "right": 419,
+            "bottom": 844
+          }
+        },
+        {
+          "name": "TinyG widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 84,
+            "y": 852,
+            "width": 335,
+            "height": 38,
+            "right": 419,
+            "bottom": 890
+          }
+        },
+        {
+          "name": "Webcam widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 84,
+            "y": 898,
+            "width": 335,
+            "height": 236,
+            "right": 419,
+            "bottom": 1134
+          }
+        },
+        {
+          "name": "3D Visualizer widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 432,
+            "y": 48,
+            "width": 648,
+            "height": 852,
+            "right": 1080,
+            "bottom": 900
+          }
+        },
+        {
+          "name": "Axes widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 1093,
+            "y": 96,
+            "width": 335,
+            "height": 436,
+            "right": 1428,
+            "bottom": 532
+          }
+        },
+        {
+          "name": "G-code widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 1093,
+            "y": 540,
+            "width": 335,
+            "height": 83,
+            "right": 1428,
+            "bottom": 623
+          }
+        },
+        {
+          "name": "Macro widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": true,
+          "rect": {
+            "x": 1093,
+            "y": 631,
+            "width": 335,
+            "height": 124,
+            "right": 1428,
+            "bottom": 755
+          }
+        },
+        {
+          "name": "Autolevel Widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": true,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 763,
+            "width": 335,
+            "height": 349,
+            "right": 1428,
+            "bottom": 1112
+          }
+        },
+        {
+          "name": "Probe widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": false,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 1120,
+            "width": 335,
+            "height": 535,
+            "right": 1428,
+            "bottom": 1655
+          }
+        },
+        {
+          "name": "Tool widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": false,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 1663,
+            "width": 335,
+            "height": 79,
+            "right": 1428,
+            "bottom": 1742
+          }
+        },
+        {
+          "name": "Spindle widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": false,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 1750,
+            "width": 335,
+            "height": 268,
+            "right": 1428,
+            "bottom": 2018
+          }
+        },
+        {
+          "name": "Laser widget",
+          "exists": true,
+          "cssVisible": true,
+          "intersectsViewport": false,
+          "fullyInViewport": false,
+          "rect": {
+            "x": 1093,
+            "y": 2026,
+            "width": 335,
+            "height": 343,
+            "right": 1428,
+            "bottom": 2369
+          }
+        }
+      ],
+      "canvas": {
+        "rect": {
+          "x": 432,
+          "y": 91,
+          "width": 648,
+          "height": 755,
+          "right": 1080,
+          "bottom": 846
+        },
+        "drawingBuffer": {
+          "width": 648,
+          "height": 755
+        },
+        "host": {
+          "x": 432,
+          "y": 91,
+          "width": 648,
+          "height": 755,
+          "right": 1080,
+          "bottom": 846
+        },
+        "hostClientSize": {
+          "width": 648,
+          "height": 755
+        },
+        "fitsHost": true,
+        "gpu": {
+          "context": "webgl2",
+          "vendor": "Google Inc. (Google)",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+          "vendorMasked": "WebKit",
+          "rendererMasked": "WebKit WebGL"
+        }
+      },
+      "workspaceSideBorders": {
+        "primaryRight": {
+          "width": "1px",
+          "color": "rgb(169, 169, 169)",
+          "rect": {
+            "x": 72,
+            "y": 48,
+            "width": 360,
+            "height": 852,
+            "right": 432,
+            "bottom": 900
+          }
+        },
+        "secondaryLeft": {
+          "width": "1px",
+          "color": "rgb(169, 169, 169)",
+          "rect": {
+            "x": 1080,
+            "y": 48,
+            "width": 360,
+            "height": 852,
+            "right": 1440,
+            "bottom": 900
+          }
+        }
+      }
+    },
+    "screenshots": [
+      "screenshots/workspace-auto-live-light-1440x900.png",
+      "screenshots/workspace-auto-live-dark-1440x900.png",
+      "screenshots/workspace-auto-live-restored-light-1440x900.png"
+    ],
+    "failures": []
+  },
+  "events": {
+    "console": [
+      {
+        "type": "info",
+        "text": "[webpack-dev-server] Server started: Hot Module Replacement enabled, Live Reloading disabled, Progress enabled, Overlay enabled."
+      },
+      {
+        "type": "log",
+        "text": "[HMR] Waiting for update signal from WDS..."
+      },
+      {
+        "type": "info",
+        "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+      },
+      {
+        "type": "info",
+        "text": "🌐 i18next is made possible by our own product, Locize — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙"
+      },
+      {
+        "type": "startGroupCollapsed",
+        "text": "%c action %cee84a72b-f05a-40db-a075-c50bf9612130:APP_INIT %c@ 16:17:10.905 color: gray; font-weight: lighter; color: inherit; color: gray; font-weight: lighter;"
+      },
+      {
+        "type": "log",
+        "text": "%c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object}"
+      },
+      {
+        "type": "log",
+        "text": "%c action     color: #03A9F4; font-weight: bold {payload: Object, type: ee84a72b-f05a-40db-a075-c50bf9612130:APP_INIT}"
+      },
+      {
+        "type": "log",
+        "text": "%c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object}"
+      },
+      {
+        "type": "endGroup",
+        "text": "console.groupEnd"
+      },
+      {
+        "type": "startGroupCollapsed",
+        "text": "%c action %cee84a72b-f05a-40db-a075-c50bf9612130:APP_INIT_SUCCESS %c@ 16:17:10.953 color: gray; font-weight: lighter; color: inherit; color: gray; font-weight: lighter;"
+      },
+      {
+        "type": "log",
+        "text": "%c prev state color: #9E9E9E; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object}"
+      },
+      {
+        "type": "log",
+        "text": "%c action     color: #03A9F4; font-weight: bold {payload: Object, type: ee84a72b-f05a-40db-a075-c50bf9612130:APP_INIT_SUCCESS}"
+      },
+      {
+        "type": "log",
+        "text": "%c next state color: #4CAF50; font-weight: bold {container: Object, connection: Object, controller: Object, serialport: Object, routing: Object}"
+      },
+      {
+        "type": "endGroup",
+        "text": "console.groupEnd"
+      },
+      {
+        "type": "error",
+        "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+      },
+      {
+        "type": "error",
+        "text": "The pseudo class \":first-child\" is potentially unsafe when doing server-side rendering. Try changing it to \":first-of-type\"."
+      },
+      {
+        "type": "warning",
+        "text": "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 change listeners added. Use emitter.setMaxListeners() to increase limit\n    at _addListener (webpack-internal:///../../node_modules/events/events.js:211:15)\n    at EventEmitterStore.addListener (webpack-internal:///../../node_modules/events/events.js:227:10)\n    at subscribeToConfig (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:58:10)\n    at eval (webpack-internal:///./pages/Workspace/WorkspaceLayoutProvider.jsx:105:12)\n    at subscribeToStore (webpack-internal:///../../node_modules/react-dom/cjs/react-dom.development.js:16139:10)\n    at commitHookEffectListMount (webpack-internal:///../../node_m"
+      },
+      {
+        "type": "warning",
+        "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+      },
+      {
+        "type": "warning",
+        "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+      },
+      {
+        "type": "warning",
+        "text": "THREE.BufferGeometry: .addAttribute() has been renamed to .setAttribute()."
+      },
+      {
+        "type": "warning",
+        "text": "[.WebGL-0x12400450400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "type": "warning",
+        "text": "[.WebGL-0x12400450400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "type": "warning",
+        "text": "[.WebGL-0x12400450400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "type": "error",
+        "text": "Warning: Each child in a list should have a unique \"key\" prop.%s%s See https://reactjs.org/link/warning-keys for more information.%s \n\nCheck the render method of `SideNav`.  \n    at eval (webpack-internal:///./containers/app/SideNav.jsx:58:22)\n    at div\n    at eval (webpack-internal:///../../node_modules/@emotion/react/dist/emotion-element-489459f2.browser.development.esm.js:55:66)\n    at eval (webpack-internal:///../../node_modules/@tonic-ui/react-base/dist/esm/box/index.js:18:66)\n    at eval (webpack-internal:///./containers/app/MainPage.jsx:62:90)\n    at Routes (webpack-internal:///../../node_modules/react-router/index.js:920:5)\n    at div\n    at eval (webpack-internal:///../../node_modu"
+      },
+      {
+        "type": "warning",
+        "text": "[.WebGL-0x12400450400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+      }
+    ],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpErrors": []
+  },
+  "status": "passed",
+  "targetScreenshots": [
+    {
+      "name": "Webcam widget",
+      "screenshot": "screenshots/workspace-widget-target-webcam-widget-1440x900.png",
+      "status": "passed",
+      "detail": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "rect": {
+          "x": 84,
+          "y": 664,
+          "width": 335,
+          "height": 236,
+          "right": 419,
+          "bottom": 900
+        },
+        "intersectsViewport": true,
+        "fullyInViewport": true,
+        "textExcerpt": "Webcam\nWebcam is off"
+      }
+    },
+    {
+      "name": "Autolevel Widget",
+      "screenshot": "screenshots/workspace-widget-target-autolevel-widget-1440x900.png",
+      "status": "passed",
+      "detail": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "rect": {
+          "x": 1093,
+          "y": 551,
+          "width": 335,
+          "height": 349,
+          "right": 1428,
+          "bottom": 900
+        },
+        "intersectsViewport": true,
+        "fullyInViewport": false,
+        "textExcerpt": "Autolevel\n🎯\nPROBE NEW SURFACE\nSet up the probe area and probe the work surface to generate height compensation data.\nStart New Probe\n🔧\nAPPLY COMPENSATION\nLoad a previously saved "
+      }
+    },
+    {
+      "name": "Probe widget",
+      "screenshot": "screenshots/workspace-widget-target-probe-widget-1440x900.png",
+      "status": "passed",
+      "detail": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "rect": {
+          "x": 1093,
+          "y": 230,
+          "width": 335,
+          "height": 535,
+          "right": 1428,
+          "bottom": 765
+        },
+        "intersectsViewport": true,
+        "fullyInViewport": true,
+        "textExcerpt": "Probe\nProbe Axis\nZ\nX\nY\nProbe Command: G38.2\nG38.2\nG38.3\nG38.4\nG38.5\nProbe Depth\nin\nProbe Feedrate\nin/min\nTouch Plate Thickness\nin\nRetraction Distance\nin\nProbe Axis Z"
+      }
+    },
+    {
+      "name": "Tool widget",
+      "screenshot": "screenshots/workspace-widget-target-tool-widget-1440x900.png",
+      "status": "passed",
+      "detail": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "rect": {
+          "x": 1093,
+          "y": 773,
+          "width": 335,
+          "height": 79,
+          "right": 1428,
+          "bottom": 852
+        },
+        "intersectsViewport": true,
+        "fullyInViewport": true,
+        "textExcerpt": "Tool\nNo available tool configuration"
+      }
+    },
+    {
+      "name": "Spindle widget",
+      "screenshot": "screenshots/workspace-widget-target-spindle-widget-1440x900.png",
+      "status": "passed",
+      "detail": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "rect": {
+          "x": 1093,
+          "y": 632,
+          "width": 335,
+          "height": 268,
+          "right": 1428,
+          "bottom": 900
+        },
+        "intersectsViewport": true,
+        "fullyInViewport": false,
+        "textExcerpt": "Spindle\nCoolant\nM7\nM8\nM9\nSpindle\nM3\nM4\nM5\nSpindle Speed\nRPM"
+      }
+    },
+    {
+      "name": "Laser widget",
+      "screenshot": "screenshots/workspace-widget-target-laser-widget-1440x900.png",
+      "status": "passed",
+      "detail": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "rect": {
+          "x": 1093,
+          "y": 557,
+          "width": 335,
+          "height": 343,
+          "right": 1428,
+          "bottom": 900
+        },
+        "intersectsViewport": true,
+        "fullyInViewport": false,
+        "textExcerpt": "Laser\nLaser Intensity Control\n0%\n-10%\n-1%\n1%\n10%\nLaser Test\n−\nPower (%)\n0%\nTest duration\nms\nMaximum value\nS\nLaser Test\nLaser Off"
+      }
+    }
+  ],
+  "completedAt": "2026-10-06T08:17:17.267Z"
+}

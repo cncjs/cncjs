@@ -3,11 +3,18 @@
         position: relative;
         padding: 5px 0;
         text-align: center;
-        width: 1%;
+        width: 10%;
 
         .axis {
             font-size: 24px;
         }
+    }
+    .position-heading {
+        padding: 4px 2px;
+        text-align: center;
+        vertical-align: bottom;
+        white-space: normal;
+        line-height: 1.2;
     }
 
     .machine-position,
@@ -15,32 +22,33 @@
         position: relative;
         white-space: nowrap;
         padding: 0;
-        width: 48%;
+        width: 40%;
     }
 
     .action {
-        width: 1%;
+        width: 10%;
         padding: 0;
         text-align: center;
 
         button.action-dropdown {
-            min-width: auto;
+            min-width: 24px;
+            min-height: 32px;
             border-radius: 0;
 
             > * {
-                color: #666;
+                color: var(--tonic-colors-text-secondary);
             }
 
             &:disabled:hover {
                 background-color: inherit;
                 > * {
-                    color: #666;
+                    color: var(--tonic-colors-text-secondary);
                 }
             }
             &:hover {
-                background-color: #e6e6e6;
+                background-color: var(--tonic-colors-actions-hovered);
                 > * {
-                    color: #333;
+                    color: var(--tonic-colors-text-primary);
                 }
             }
         }

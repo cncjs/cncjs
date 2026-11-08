@@ -1,0 +1,810 @@
+### Page
+- Page URL: http://127.0.0.1:8080/#/workspace
+- Page Title: CNCjs 2.0.0-dev
+- Console: 1 errors, 106 warnings
+### Snapshot
+```yaml
+- generic [ref=e7]:
+  - banner "Application header" [ref=e8]:
+    - generic [ref=e9]:
+      - button [ref=e10] [cursor=pointer]
+      - button "CNCjs 2.0.0-dev - View release notes" [ref=e13] [cursor=pointer]:
+        - generic [ref=e14]: CNCjs
+      - generic [ref=e16]: en
+      - generic [ref=e18]: Workspace
+    - button [ref=e21] [cursor=pointer]:
+      - img [ref=e23]: 
+  - navigation [ref=e25]:
+    - generic [ref=e26]: Workspace
+    - generic [ref=e31] [cursor=pointer]: Administration
+  - main [ref=e36]:
+    - generic [ref=e41]:
+      - generic [ref=e42]:
+        - generic [ref=e44]:
+          - button "Hide left panel" [ref=e46] [cursor=pointer]:
+            - img [ref=e47]: 
+          - button "Manage Widgets (1)" [ref=e50] [cursor=pointer]:
+            - img [ref=e51]: 
+            - text: Manage Widgets (1)
+          - generic [ref=e54]:
+            - button "Collapse all left panel widgets" [ref=e55] [cursor=pointer]:
+              - img [ref=e56]: 
+            - button "Expand all left panel widgets" [ref=e58] [cursor=pointer]:
+              - img [ref=e59]: 
+        - generic [ref=e62]:
+          - region "Connection widget" [ref=e64]:
+            - generic [ref=e65]:
+              - generic [ref=e66]:
+                - button [ref=e68]:
+                  - img [ref=e69]: 
+                - text: Connection
+              - toolbar "Widget controls" [ref=e71]:
+                - button "Collapse" [expanded] [ref=e72] [cursor=pointer]:
+                  - img [ref=e73]: 
+                - generic [ref=e75]:
+                  - button "More options" [ref=e77] [cursor=pointer]:
+                    - img [ref=e78]: 
+                  - text: 
+            - generic [ref=e81]:
+              - generic [ref=e83]:
+                - button "Grbl" [disabled]
+                - button "Marlin" [disabled] [ref=e84]
+                - button "Smoothie" [disabled] [ref=e85]
+                - button "TinyG" [disabled] [ref=e86]
+              - generic [ref=e88]:
+                - button "Serial Port" [disabled]:
+                  - img: 
+                  - text: Serial Port
+                - button "Wi-Fi" [disabled] [ref=e89]:
+                  - img [ref=e90]: 
+                  - text: Wi-Fi
+              - generic [ref=e92]:
+                - generic [ref=e93]: Serial port
+                - generic [ref=e94]:
+                  - generic [ref=e95]:
+                    - generic:
+                      - generic:
+                        - generic: option /tmp/ttyGRBL, selected.
+                        - generic: 0 results available. Select is focused , press Down to open the menu,
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img: 
+                            - text: /tmp/ttyGRBL
+                          - textbox [disabled]
+                  - img [ref=e106]: 
+              - generic [ref=e108]:
+                - generic [ref=e109]: Baud rate
+                - generic [ref=e110]:
+                  - generic [ref=e111]:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: "115200"
+                          - textbox [disabled]
+                  - img [ref=e122]: 
+              - generic [ref=e124]: Set DTR line status upon opening
+              - generic [ref=e126]: Set RTS line status upon opening
+              - generic [ref=e128]: Use RTS/CTS flow control
+              - generic [ref=e130]: Connect automatically
+              - button "Close" [ref=e1010] [cursor=pointer]:
+                - img [ref=e1011]: 
+                - text: Close
+          - region "Console widget" [ref=e136]:
+            - generic [ref=e137]:
+              - generic [ref=e138]:
+                - button [ref=e140]:
+                  - img [ref=e141]: 
+                - text: Console
+              - toolbar "Widget controls" [ref=e143]:
+                - button "Clear console" [ref=e144] [cursor=pointer]:
+                  - img [ref=e145]: 
+                - button "Collapse" [expanded] [ref=e147] [cursor=pointer]:
+                  - img [ref=e148]: 
+                - button "Enter full screen" [ref=e150] [cursor=pointer]:
+                  - img [ref=e151]: 
+                - generic [ref=e153]:
+                  - button "More options" [ref=e155] [cursor=pointer]:
+                    - img [ref=e156]: 
+                  - text:      
+            - log "Console output" [ref=e1013]:
+              - textbox "Terminal input" [active] [ref=e1019]
+          - region "Grbl widget" [ref=e161]:
+            - generic [ref=e162]:
+              - generic [ref=e163]:
+                - button [ref=e165]:
+                  - img [ref=e166]: 
+                - text: Grbl
+              - toolbar "Widget controls" [ref=e168]:
+                - button "Grbl controller info" [ref=e1024] [cursor=pointer]:
+                  - generic [ref=e1025]: 
+                - button "Grbl commands" [ref=e1028] [cursor=pointer]:
+                  - generic [ref=e1029]: 
+                - button "Collapse" [expanded] [ref=e1030] [cursor=pointer]:
+                  - img [ref=e1031]: 
+                - generic [ref=e169]:
+                  - button "More options" [ref=e171] [cursor=pointer]:
+                    - img [ref=e172]: 
+                  - text:   
+            - generic [ref=e1034]:
+              - generic [ref=e1035]:
+                - generic [ref=e1036]:
+                  - generic [ref=e1037]: F
+                  - generic [ref=e1038]: 100%
+                  - generic [ref=e1039]:
+                    - button "-10%" [ref=e1040] [cursor=pointer]:
+                      - img [ref=e1041]: 
+                    - button "-1%" [ref=e1044] [cursor=pointer]:
+                      - img [ref=e1045]: 
+                    - button "1%" [ref=e1048] [cursor=pointer]:
+                      - img [ref=e1049]: 
+                    - button "10%" [ref=e1052] [cursor=pointer]:
+                      - img [ref=e1053]: 
+                  - generic "Reset feed rate override" [ref=e1056]:
+                    - img [ref=e1057]: 
+                - generic [ref=e1059]:
+                  - generic [ref=e1060]: S
+                  - generic [ref=e1061]: 100%
+                  - generic [ref=e1062]:
+                    - button "-10%" [ref=e1063] [cursor=pointer]:
+                      - img [ref=e1064]: 
+                    - button "-1%" [ref=e1067] [cursor=pointer]:
+                      - img [ref=e1068]: 
+                    - button "1%" [ref=e1071] [cursor=pointer]:
+                      - img [ref=e1072]: 
+                    - button "10%" [ref=e1075] [cursor=pointer]:
+                      - img [ref=e1076]: 
+                  - generic "Reset spindle override" [ref=e1079]:
+                    - img [ref=e1080]: 
+                - generic [ref=e1082]:
+                  - generic [ref=e1083]: R
+                  - generic [ref=e1084]: 100%
+                  - generic [ref=e1085]:
+                    - button "25%" [ref=e1086] [cursor=pointer]
+                    - button "50%" [ref=e1088] [cursor=pointer]
+                    - button "100%" [ref=e1090] [cursor=pointer]
+                  - img [ref=e1092]: 
+              - generic [ref=e1094]:
+                - generic [ref=e1096]:
+                  - button "Status Reports" [expanded] [ref=e1097]:
+                    - generic [ref=e1099]:
+                      - generic [ref=e1100]: Status Reports
+                      - img [ref=e1102]: 
+                  - generic [ref=e1107]:
+                    - generic [ref=e1108]:
+                      - generic "State" [ref=e1110]
+                      - generic [ref=e1111]: Idle
+                    - generic [ref=e1113]:
+                      - generic "Feed Rate" [ref=e1115]
+                      - generic [ref=e1116]: "0"
+                    - generic [ref=e1118]:
+                      - generic "Spindle" [ref=e1120]
+                      - generic [ref=e1121]: "0"
+                    - generic [ref=e1123]:
+                      - generic "Tool Number" [ref=e1125]
+                      - generic [ref=e1126]: –
+                - generic [ref=e1129]:
+                  - button "Modal Groups" [expanded] [ref=e1130]:
+                    - generic [ref=e1132]:
+                      - generic [ref=e1133]: Modal Groups
+                      - img [ref=e1135]: 
+                  - generic [ref=e1140]:
+                    - generic [ref=e1141]:
+                      - generic "Motion" [ref=e1143]
+                      - generic [ref=e1144]: Rapid Move (G0)
+                    - generic [ref=e1146]:
+                      - generic "Coordinate" [ref=e1148]
+                      - generic [ref=e1149]: P1 (G54)
+                    - generic [ref=e1151]:
+                      - generic "Plane" [ref=e1153]
+                      - generic [ref=e1154]: XY Plane (G17)
+                    - generic [ref=e1156]:
+                      - generic "Distance" [ref=e1158]
+                      - generic [ref=e1159]: Absolute (G90)
+                    - generic [ref=e1161]:
+                      - generic "Feed Rate" [ref=e1163]
+                      - generic [ref=e1164]: Units/Min (G94)
+                    - generic [ref=e1166]:
+                      - generic "Units" [ref=e1168]
+                      - generic [ref=e1169]: Millimeters (G21)
+                    - generic [ref=e1171]:
+                      - generic "Program" [ref=e1173]
+                      - generic [ref=e1174]: Program Stop (M0)
+                    - generic [ref=e1176]:
+                      - generic "Spindle" [ref=e1178]
+                      - generic [ref=e1179]: Spindle Off (M5)
+                    - generic [ref=e1181]:
+                      - generic "Coolant" [ref=e1183]
+                      - generic "Coolant Off (M9)" [ref=e1186]
+          - region "Marlin widget" [ref=e175]:
+            - generic [ref=e176]:
+              - generic [ref=e177]:
+                - button [ref=e179]:
+                  - img [ref=e180]: 
+                - text: Marlin
+              - toolbar "Widget controls" [ref=e182]:
+                - generic [ref=e183]:
+                  - button "More options" [ref=e185] [cursor=pointer]:
+                    - img [ref=e186]: 
+                  - text:   
+          - region "Smoothie widget" [ref=e189]:
+            - generic [ref=e190]:
+              - generic [ref=e191]:
+                - button [ref=e193]:
+                  - img [ref=e194]: 
+                - text: Smoothie
+              - toolbar "Widget controls" [ref=e196]:
+                - generic [ref=e197]:
+                  - button "More options" [ref=e199] [cursor=pointer]:
+                    - img [ref=e200]: 
+                  - text:   
+          - region "TinyG widget" [ref=e203]:
+            - generic [ref=e204]:
+              - generic [ref=e205]:
+                - button [ref=e207]:
+                  - img [ref=e208]: 
+                - text: TinyG
+              - toolbar "Widget controls" [ref=e210]:
+                - generic [ref=e211]:
+                  - button "More options" [ref=e213] [cursor=pointer]:
+                    - img [ref=e214]: 
+                  - text:   
+          - region "Webcam widget" [ref=e217]:
+            - generic [ref=e218]:
+              - generic [ref=e219]:
+                - button [ref=e221]:
+                  - img [ref=e222]: 
+                - text: Webcam
+              - toolbar "Widget controls" [ref=e224]:
+                - button "Enable Webcam" [ref=e225] [cursor=pointer]:
+                  - img [ref=e226]: 
+                - button "Refresh webcam":
+                  - img: 
+                - button "Collapse" [expanded] [ref=e228] [cursor=pointer]:
+                  - img [ref=e229]: 
+                - generic [ref=e231]:
+                  - button "More options" [ref=e233] [cursor=pointer]:
+                    - img [ref=e234]: 
+                  - text:    
+            - generic [ref=e236]: Webcam is off
+      - region "3D Visualizer widget" [ref=e242]:
+        - generic [ref=e244]:
+          - generic [ref=e1187]: Grbl
+          - generic [ref=e1188]: Idle
+          - generic [ref=e245]:
+            - button "G54 (P1)" [ref=e248] [cursor=pointer]
+            - generic [ref=e250]:
+              - generic [ref=e251]:
+                - button "3D View options" [ref=e252] [cursor=pointer]:
+                  - generic [ref=e253]: 
+                  - text: 3D View
+                - button [ref=e254] [cursor=pointer]
+              - text:      
+        - generic [ref=e256]:
+          - generic [ref=e258]:
+            - generic [ref=e259]:
+              - button "Upload G-code" [ref=e260] [cursor=pointer]
+              - generic [ref=e261]:
+                - button [ref=e263] [cursor=pointer]:
+                  - generic [ref=e264]: 
+                - text: 
+            - generic [ref=e266]:
+              - button "Run" [disabled] [ref=e267]:
+                - generic [ref=e268]: 
+              - button "Pause" [disabled] [ref=e269]:
+                - generic [ref=e270]: 
+              - button "Stop" [disabled] [ref=e271]:
+                - generic [ref=e272]: 
+              - button "Close G-code file" [disabled] [ref=e273]:
+                - generic [ref=e274]: 
+          - generic [ref=e275]:
+            - generic [ref=e276]: G-code
+            - generic [ref=e277]: G-code not loaded
+      - generic [ref=e284]:
+        - generic [ref=e286]:
+          - generic [ref=e288]:
+            - button "Collapse all right panel widgets" [ref=e289] [cursor=pointer]:
+              - img [ref=e290]: 
+            - button "Expand all right panel widgets" [ref=e292] [cursor=pointer]:
+              - img [ref=e293]: 
+          - button "Manage Widgets (1)" [ref=e296] [cursor=pointer]:
+            - img [ref=e297]: 
+            - text: Manage Widgets (1)
+          - button "Hide right panel" [ref=e300] [cursor=pointer]:
+            - img [ref=e301]: 
+        - generic [ref=e304]:
+          - region "Axes widget" [ref=e306]:
+            - generic [ref=e307]:
+              - generic [ref=e308]:
+                - button [ref=e310]:
+                  - img [ref=e311]: 
+                - text: Axes
+              - toolbar "Widget controls" [ref=e313]:
+                - button "Toggle keypad jogging" [ref=e1189] [cursor=pointer]:
+                  - img [ref=e1190]: 
+                - button "Toggle manual data input mode" [ref=e314] [cursor=pointer]: MDI
+                - button "Collapse" [expanded] [ref=e315] [cursor=pointer]:
+                  - img [ref=e316]: 
+                - generic [ref=e318]:
+                  - button "More options" [ref=e320] [cursor=pointer]:
+                    - img [ref=e321]: 
+                  - text:    
+            - generic [ref=e324]:
+              - table [ref=e326]:
+                - rowgroup [ref=e327]:
+                  - row [ref=e328]:
+                    - columnheader "Axis" [ref=e329]
+                    - columnheader "Machine Position" [ref=e330]
+                    - columnheader "Work Position" [ref=e331]
+                    - columnheader [ref=e332]:
+                      - button "Select work coordinate system" [ref=e335] [cursor=pointer]:
+                        - generic [ref=e336]: 
+                - rowgroup [ref=e337]:
+                  - row [ref=e338]:
+                    - cell "X mm" [ref=e339]:
+                      - generic [ref=e340]: X
+                      - generic [ref=e341]: mm
+                    - 'cell "0.000 Go to zero: X Home: X" [ref=e342]':
+                      - generic [ref=e343]: "0.000"
+                      - generic [ref=e345]:
+                        - 'button "Go to zero: X" [disabled] [ref=e346]'
+                        - 'button "Home: X" [ref=e347] [cursor=pointer]'
+                    - cell "0.000 Move X backward Move X forward Zero out X work offsets Set X work offsets" [ref=e348]:
+                      - generic [ref=e349]: "0.000"
+                      - generic [ref=e351]:
+                        - button "Move X backward" [ref=e352] [cursor=pointer]
+                        - button "Move X forward" [ref=e353] [cursor=pointer]
+                        - button "Zero out X work offsets" [ref=e354] [cursor=pointer]
+                        - button "Set X work offsets" [ref=e355] [cursor=pointer]
+                    - cell [ref=e356]:
+                      - button "X axis actions" [ref=e359] [cursor=pointer]:
+                        - generic [ref=e360]: 
+                  - row [ref=e361]:
+                    - cell "Y mm" [ref=e362]:
+                      - generic [ref=e363]: "Y"
+                      - generic [ref=e364]: mm
+                    - 'cell "0.000 Go to zero: Y Home: Y" [ref=e365]':
+                      - generic [ref=e366]: "0.000"
+                      - generic [ref=e368]:
+                        - 'button "Go to zero: Y" [disabled] [ref=e369]'
+                        - 'button "Home: Y" [ref=e370] [cursor=pointer]'
+                    - cell "0.000 Move Y backward Move Y forward Zero out Y work offsets Set Y work offsets" [ref=e371]:
+                      - generic [ref=e372]: "0.000"
+                      - generic [ref=e374]:
+                        - button "Move Y backward" [ref=e375] [cursor=pointer]
+                        - button "Move Y forward" [ref=e376] [cursor=pointer]
+                        - button "Zero out Y work offsets" [ref=e377] [cursor=pointer]
+                        - button "Set Y work offsets" [ref=e378] [cursor=pointer]
+                    - cell [ref=e379]:
+                      - button "Y axis actions" [ref=e382] [cursor=pointer]:
+                        - generic [ref=e383]: 
+                  - row [ref=e384]:
+                    - cell "Z mm" [ref=e385]:
+                      - generic [ref=e386]: Z
+                      - generic [ref=e387]: mm
+                    - 'cell "0.000 Go to zero: Z Home: Z" [ref=e388]':
+                      - generic [ref=e389]: "0.000"
+                      - generic [ref=e391]:
+                        - 'button "Go to zero: Z" [disabled] [ref=e392]'
+                        - 'button "Home: Z" [ref=e393] [cursor=pointer]'
+                    - cell "0.000 Move Z backward Move Z forward Zero out Z work offsets Set Z work offsets" [ref=e394]:
+                      - generic [ref=e395]: "0.000"
+                      - generic [ref=e397]:
+                        - button "Move Z backward" [ref=e398] [cursor=pointer]
+                        - button "Move Z forward" [ref=e399] [cursor=pointer]
+                        - button "Zero out Z work offsets" [ref=e400] [cursor=pointer]
+                        - button "Set Z work offsets" [ref=e401] [cursor=pointer]
+                    - cell [ref=e402]:
+                      - button "Z axis actions" [ref=e405] [cursor=pointer]:
+                        - generic [ref=e406]: 
+              - generic [ref=e408]:
+                - generic [ref=e409]:
+                  - generic [ref=e411]:
+                    - button "Move X negative Y positive" [ref=e414] [cursor=pointer]:
+                      - generic [ref=e415]: 
+                    - button "Move Y positive" [ref=e418] [cursor=pointer]:
+                      - generic [ref=e419]: "Y"
+                      - generic [ref=e420]: +
+                    - button "Move X positive Y positive" [ref=e423] [cursor=pointer]:
+                      - generic [ref=e424]: 
+                    - button "Move Z positive" [ref=e427] [cursor=pointer]:
+                      - generic [ref=e428]: Z
+                      - generic [ref=e429]: +
+                  - generic [ref=e431]:
+                    - button "Move X negative" [ref=e434] [cursor=pointer]:
+                      - generic [ref=e435]: X
+                      - generic [ref=e436]: "-"
+                    - button "X 0 Y 0" [ref=e439] [cursor=pointer]:
+                      - generic [ref=e440]: X
+                      - generic: "0"
+                      - generic [ref=e441]: "Y"
+                      - generic: "0"
+                    - button "Move X positive" [ref=e444] [cursor=pointer]:
+                      - generic [ref=e445]: X
+                      - generic [ref=e446]: +
+                    - button "Z 0" [ref=e449] [cursor=pointer]:
+                      - generic [ref=e450]: Z
+                      - generic: "0"
+                  - generic [ref=e452]:
+                    - button "Move X negative Y negative" [ref=e455] [cursor=pointer]:
+                      - generic [ref=e456]: 
+                    - button "Move Y negative" [ref=e459] [cursor=pointer]:
+                      - generic [ref=e460]: "Y"
+                      - generic [ref=e461]: "-"
+                    - button "Move X positive Y negative" [ref=e464] [cursor=pointer]:
+                      - generic [ref=e465]: 
+                    - button "Move Z negative" [ref=e468] [cursor=pointer]:
+                      - generic [ref=e469]: Z
+                      - generic [ref=e470]: "-"
+                - generic [ref=e471]:
+                  - button "G21 (mm)" [ref=e475] [cursor=pointer]
+                  - button [ref=e480] [cursor=pointer]:
+                    - text: "1"
+                    - subscript [ref=e481]: mm
+                  - generic [ref=e484]:
+                    - button "Decrease step size" [ref=e486] [cursor=pointer]:
+                      - generic [ref=e487]: 
+                    - button "Increase step size" [ref=e489] [cursor=pointer]:
+                      - generic [ref=e490]: +
+              - generic [ref=e491]:
+                - button "xy" [ref=e493] [cursor=pointer]
+                - button "Z 3mm" [ref=e495] [cursor=pointer]
+                - button "Z 4mm" [ref=e497] [cursor=pointer]
+                - button "xyz" [ref=e499] [cursor=pointer]
+                - button "Continue" [ref=e501] [cursor=pointer]
+                - button "Pause" [ref=e503] [cursor=pointer]
+                - button "FORCE" [ref=e505] [cursor=pointer]
+                - button "Home XY" [ref=e507] [cursor=pointer]
+                - button "G92 Z0" [ref=e509] [cursor=pointer]
+                - button "100" [ref=e511] [cursor=pointer]
+                - button "90" [ref=e513] [cursor=pointer]
+                - button "80" [ref=e515] [cursor=pointer]
+                - button "180" [ref=e517] [cursor=pointer]
+                - button "G90" [ref=e519] [cursor=pointer]
+                - button "G91" [ref=e521] [cursor=pointer]
+          - region "G-code widget" [ref=e523]:
+            - generic [ref=e524]:
+              - generic [ref=e525]:
+                - button [ref=e527]:
+                  - img [ref=e528]: 
+                - text: G-code
+              - toolbar "Widget controls" [ref=e530]:
+                - button "Collapse" [expanded] [ref=e531] [cursor=pointer]:
+                  - img [ref=e532]: 
+                - generic [ref=e534]:
+                  - button "More options" [ref=e536] [cursor=pointer]:
+                    - img [ref=e537]: 
+                  - text:   
+            - generic [ref=e541]:
+              - generic [ref=e543]:
+                - generic [ref=e544]:
+                  - generic [ref=e545]: Axis
+                  - generic [ref=e546]: Min
+                  - generic [ref=e547]: Max
+                  - generic [ref=e548]: Dimension
+                - generic [ref=e549]:
+                  - generic [ref=e550]: X
+                  - generic [ref=e551]: 0.000 mm
+                  - generic [ref=e552]: 0.000 mm
+                  - generic [ref=e553]: 0.000 mm
+                - generic [ref=e554]:
+                  - generic [ref=e555]: "Y"
+                  - generic [ref=e556]: 0.000 mm
+                  - generic [ref=e557]: 0.000 mm
+                  - generic [ref=e558]: 0.000 mm
+                - generic [ref=e559]:
+                  - generic [ref=e560]: Z
+                  - generic [ref=e561]: 0.000 mm
+                  - generic [ref=e562]: 0.000 mm
+                  - generic [ref=e563]: 0.000 mm
+              - generic [ref=e564]:
+                - generic [ref=e565]:
+                  - generic [ref=e566]: Sent
+                  - generic [ref=e567]: –
+                - generic [ref=e568]:
+                  - generic [ref=e569]: Received
+                  - generic [ref=e570]: –
+              - generic [ref=e571]:
+                - generic [ref=e572]:
+                  - generic [ref=e573]: Start Time
+                  - generic [ref=e574]: –
+                - generic [ref=e575]:
+                  - generic [ref=e576]: Elapsed Time
+                  - generic [ref=e577]: –
+              - generic [ref=e578]:
+                - generic [ref=e579]:
+                  - generic [ref=e580]: Finish Time
+                  - generic [ref=e581]: –
+                - generic [ref=e582]:
+                  - generic [ref=e583]: Remaining Time
+                  - generic [ref=e584]: –
+          - region "Macro widget" [ref=e586]:
+            - generic [ref=e587]:
+              - generic [ref=e588]:
+                - button [ref=e590]:
+                  - img [ref=e591]: 
+                - text: Macro
+              - toolbar "Widget controls" [ref=e593]:
+                - button "Collapse" [expanded] [ref=e594] [cursor=pointer]:
+                  - img [ref=e595]: 
+                - generic [ref=e597]:
+                  - button "More options" [ref=e599] [cursor=pointer]:
+                    - img [ref=e600]: 
+                  - text:   
+            - generic [ref=e603]:
+              - generic [ref=e604]:
+                - button "New macro" [ref=e606] [cursor=pointer]:
+                  - img [ref=e607]: +
+                  - text: New
+                - generic [ref=e609]:
+                  - button "Export" [ref=e610] [cursor=pointer]:
+                    - img [ref=e611]: 
+                    - text: Export
+                  - button "Refresh" [ref=e613] [cursor=pointer]:
+                    - img [ref=e614]: 
+              - generic [ref=e616]: Loading...
+          - region [ref=e619]:
+            - generic [ref=e620]:
+              - generic [ref=e621]:
+                - button "" [ref=e623]
+                - text: Autolevel
+              - toolbar "Widget controls" [ref=e625]:
+                - button "" [ref=e626] [cursor=pointer]
+                - generic [ref=e628]:
+                  - button "" [ref=e630] [cursor=pointer]
+                  - text:   
+            - generic [ref=e634]:
+              - generic [ref=e635]:
+                - generic [ref=e636]:
+                  - img "Target" [ref=e637]: 🎯
+                  - text: PROBE NEW SURFACE
+                - generic [ref=e638]: Set up the probe area and probe the work surface to generate height compensation data.
+                - button "Start New Probe" [ref=e639] [cursor=pointer]
+              - generic [ref=e640]:
+                - generic [ref=e641]:
+                  - img "Wrench" [ref=e642]: 🔧
+                  - text: APPLY COMPENSATION
+                - generic [ref=e643]: Load a previously saved .probe file and apply it to your G-code.
+                - button "Load Probe Data" [ref=e644] [cursor=pointer]
+          - region "Probe widget" [ref=e646]:
+            - generic [ref=e647]:
+              - generic [ref=e648]:
+                - button [ref=e650]:
+                  - img [ref=e651]: 
+                - text: Probe
+              - toolbar "Widget controls" [ref=e653]:
+                - button "Collapse" [expanded] [ref=e654] [cursor=pointer]:
+                  - img [ref=e655]: 
+                - generic [ref=e657]:
+                  - button "More options" [ref=e659] [cursor=pointer]:
+                    - img [ref=e660]: 
+                  - text:   
+            - generic [ref=e663]:
+              - generic [ref=e665]:
+                - generic [ref=e666]: Probe Axis
+                - generic [ref=e668]:
+                  - button "Z" [ref=e669] [cursor=pointer]
+                  - button "X" [ref=e670] [cursor=pointer]
+                  - button "Y" [ref=e671] [cursor=pointer]
+              - generic [ref=e673]:
+                - generic [ref=e674]:
+                  - generic [ref=e675]: "Probe Command: G38.2"
+                  - generic [ref=e677]:
+                    - img [ref=e678]: 
+                    - img [ref=e680]: 
+                - generic [ref=e684]:
+                  - button "G38.2" [ref=e685] [cursor=pointer]
+                  - button "G38.3" [ref=e686] [cursor=pointer]
+                  - button "G38.4" [ref=e687] [cursor=pointer]
+                  - button "G38.5" [ref=e688] [cursor=pointer]
+              - generic [ref=e689]:
+                - generic [ref=e690]: Probe Depth
+                - generic [ref=e691]:
+                  - spinbutton [ref=e692]: "10"
+                  - generic [ref=e693]: mm
+              - generic [ref=e695]:
+                - generic [ref=e696]: Probe Feedrate
+                - generic [ref=e697]:
+                  - spinbutton [ref=e698]: "20"
+                  - generic [ref=e699]: mm/min
+              - generic [ref=e701]:
+                - generic [ref=e702]: Touch Plate Thickness
+                - generic [ref=e703]:
+                  - spinbutton [ref=e704]: "10"
+                  - generic [ref=e705]: mm
+              - generic [ref=e707]:
+                - generic [ref=e708]: Retraction Distance
+                - generic [ref=e709]:
+                  - spinbutton [ref=e710]: "4"
+                  - generic [ref=e711]: mm
+              - button "Probe Axis Z" [ref=e714] [cursor=pointer]
+          - region "Tool widget" [ref=e716]:
+            - generic [ref=e717]:
+              - generic [ref=e718]:
+                - button [ref=e720]:
+                  - generic [ref=e721]: 
+                - text: Tool
+              - toolbar "Widget controls" [ref=e722]:
+                - button "Refresh tool configuration" [ref=e723] [cursor=pointer]:
+                  - generic [ref=e724]: 
+                - button "Collapse" [expanded] [ref=e725] [cursor=pointer]:
+                  - generic [ref=e726]: 
+                - generic [ref=e727]:
+                  - button "More options" [ref=e729] [cursor=pointer]:
+                    - generic [ref=e730]: 
+                  - text:  
+            - generic [ref=e732]:
+              - generic [ref=e733]:
+                - text: Tool Change Policy
+                - generic [ref=e736]:
+                  - generic [ref=e737]: Select...
+                  - textbox [ref=e740]
+              - generic [ref=e746]:
+                - generic [ref=e747]:
+                  - text: Tool Change Position
+                  - generic [ref=e748]:
+                    - generic [ref=e749]:
+                      - generic [ref=e750]:
+                        - generic [ref=e751]: X
+                        - spinbutton [ref=e752]: "0.000"
+                        - generic [ref=e753]: mm
+                      - button "Use the current machine position as the tool change position." [ref=e754]
+                    - generic [ref=e755]:
+                      - generic [ref=e756]:
+                        - generic [ref=e757]: "Y"
+                        - spinbutton [ref=e758]: "0.000"
+                        - generic [ref=e759]: mm
+                      - button "Use the current machine position as the tool change position." [ref=e760]
+                    - generic [ref=e761]:
+                      - generic [ref=e762]:
+                        - generic [ref=e763]: Z
+                        - spinbutton [ref=e764]: "0.000"
+                        - generic [ref=e765]: mm
+                      - button "Use the current machine position as the tool change position." [ref=e766]
+                - generic [ref=e767]:
+                  - text: Tool Probe Position
+                  - generic [ref=e768]:
+                    - generic [ref=e769]:
+                      - generic [ref=e770]:
+                        - generic [ref=e771]: X
+                        - spinbutton [ref=e772]: "0.000"
+                        - generic [ref=e773]: mm
+                      - button "Use the current machine position as the tool probe position." [ref=e774]
+                    - generic [ref=e775]:
+                      - generic [ref=e776]:
+                        - generic [ref=e777]: "Y"
+                        - spinbutton [ref=e778]: "0.000"
+                        - generic [ref=e779]: mm
+                      - button "Use the current machine position as the tool probe position." [ref=e780]
+                    - generic [ref=e781]:
+                      - generic [ref=e782]:
+                        - generic [ref=e783]: Z
+                        - spinbutton [ref=e784]: "0.000"
+                        - generic [ref=e785]: mm
+                      - button "Use the current machine position as the tool probe position." [ref=e786]
+                - generic [ref=e787]:
+                  - generic [ref=e788]:
+                    - text: Probe Command
+                    - toolbar [ref=e789]:
+                      - generic [ref=e790]:
+                        - button "G38.2" [ref=e791]
+                        - button "G38.3" [ref=e792]
+                        - button "G38.4" [ref=e793]
+                        - button "G38.5" [ref=e794]
+                    - paragraph [ref=e795]: G38.3 probe toward workpiece, stop on contact
+                  - generic [ref=e796]:
+                    - generic [ref=e798]:
+                      - text: Probe Distance
+                      - generic [ref=e799]:
+                        - spinbutton [ref=e800]: "0.185"
+                        - generic [ref=e801]: mm
+                    - generic [ref=e803]:
+                      - text: Probe Feedrate
+                      - generic [ref=e804]:
+                        - spinbutton [ref=e805]: "0"
+                        - text: mm/min
+                  - generic [ref=e808]:
+                    - text: Touch Plate Height
+                    - generic [ref=e809]:
+                      - spinbutton [ref=e810]: "0"
+                      - text: mm
+                  - generic [ref=e811]:
+                    - generic [ref=e812]:
+                      - generic [ref=e813]: Tool Probe Commands
+                      - button "" [ref=e1193] [cursor=pointer]
+                    - generic [ref=e1195]: ; Probe the tool G91 [tool_probe_command] F[tool_probe_feedrate] Z[tool_probe_z - mposz - tool_probe_distance] ; Pause for 1 second %wait 1 ; Set tool length offset G43.1 Z[posz - touch_plate_height]
+          - region "Spindle widget" [ref=e816]:
+            - generic [ref=e817]:
+              - generic [ref=e818]:
+                - button [ref=e820]:
+                  - img [ref=e821]: 
+                - text: Spindle
+              - toolbar "Widget controls" [ref=e823]:
+                - button "Collapse" [expanded] [ref=e824] [cursor=pointer]:
+                  - img [ref=e825]: 
+                - generic [ref=e827]:
+                  - button "More options" [ref=e829] [cursor=pointer]:
+                    - img [ref=e830]: 
+                  - text:   
+            - generic [ref=e834]:
+              - generic [ref=e835]:
+                - generic [ref=e836]: Coolant
+                - generic [ref=e839]:
+                  - button "M7" [ref=e840] [cursor=pointer]
+                  - button "M8" [ref=e841] [cursor=pointer]
+                  - button "M9" [ref=e842] [cursor=pointer]:
+                    - img [ref=e843]: 
+                    - text: M9
+              - generic [ref=e845]:
+                - generic [ref=e846]: Spindle
+                - generic [ref=e849]:
+                  - button "M3" [ref=e850] [cursor=pointer]:
+                    - img [ref=e851]: 
+                    - text: M3
+                  - button "M4" [ref=e853] [cursor=pointer]:
+                    - img [ref=e854]: 
+                    - text: M4
+                  - button "M5" [ref=e856] [cursor=pointer]:
+                    - img [ref=e857]: 
+                    - text: M5
+              - generic [ref=e859]:
+                - generic [ref=e860]: Spindle Speed
+                - generic [ref=e863]:
+                  - spinbutton [ref=e864]: "1000"
+                  - generic [ref=e865]: RPM
+          - region "Laser widget" [ref=e868]:
+            - generic [ref=e869]:
+              - generic [ref=e870]:
+                - button [ref=e872]:
+                  - img [ref=e873]: 
+                - text: Laser
+              - toolbar "Widget controls" [ref=e875]:
+                - button "Collapse" [expanded] [ref=e876] [cursor=pointer]:
+                  - img [ref=e877]: 
+                - generic [ref=e879]:
+                  - button "More options" [ref=e881] [cursor=pointer]:
+                    - img [ref=e882]: 
+                  - text:   
+            - generic [ref=e885]:
+              - generic [ref=e886]:
+                - generic [ref=e887]: Laser Intensity Control
+                - generic [ref=e888]:
+                  - img [ref=e889]: 
+                  - generic [ref=e891]: 100%
+                  - generic [ref=e892]:
+                    - button "-10%" [ref=e893] [cursor=pointer]:
+                      - img [ref=e894]: 
+                    - button "-1%" [ref=e897] [cursor=pointer]:
+                      - img [ref=e898]: 
+                    - button "1%" [ref=e901] [cursor=pointer]:
+                      - img [ref=e902]: 
+                    - button "10%" [ref=e905] [cursor=pointer]:
+                      - img [ref=e906]: 
+                  - generic "Reset" [ref=e909]:
+                    - img [ref=e910]: 
+              - generic [ref=e913]:
+                - button "Laser Test" [expanded] [ref=e914]:
+                  - generic [ref=e916]:
+                    - generic [ref=e917]: Laser Test
+                    - img [ref=e919]: 
+                - generic [ref=e923]:
+                  - generic [ref=e925]:
+                    - generic [ref=e926]:
+                      - generic "Power (%)" [ref=e928]
+                      - generic [ref=e929]:
+                        - generic [ref=e930]: 0%
+                        - slider [ref=e934]
+                    - generic [ref=e935]:
+                      - generic "Test duration" [ref=e937]
+                      - generic [ref=e939]:
+                        - spinbutton "Test duration in milliseconds" [ref=e940]: "0"
+                        - generic [ref=e941]: ms
+                    - generic [ref=e943]:
+                      - generic "Maximum value" [ref=e945]
+                      - generic [ref=e947]:
+                        - generic [ref=e948]: S
+                        - spinbutton "Maximum S value" [ref=e950]: "1000"
+                  - generic [ref=e951]:
+                    - button "Laser Test" [ref=e952] [cursor=pointer]
+                    - button "Laser Off" [ref=e953] [cursor=pointer]
+```

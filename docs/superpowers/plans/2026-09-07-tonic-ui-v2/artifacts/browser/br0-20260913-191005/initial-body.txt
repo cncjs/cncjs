@@ -1,0 +1,162 @@
+CNCjs
+EN
+Workspace
+Workspace
+Administration
+Manage Widgets (1)
+Connection
+Grbl
+Marlin
+Smoothie
+TinyG
+Serial Port
+Wi-Fi
+Serial port
+Choose a port
+Baud rate
+115200
+Set DTR line status upon opening
+Set RTS line status upon opening
+Use RTS/CTS flow control
+Connect automatically
+Open
+Console
+No serial connection
+Grbl
+Marlin
+Smoothie
+TinyG
+Webcam
+Webcam is off
+G54 (P1)
+3D View
+Upload G-code
+Manage Widgets (1)
+Axes
+MDI
+Axis	Machine Position	Work Position	
+
+
+X
+mm
+	
+0.000
+	
+0.000
+	
+
+
+Y
+mm
+	
+0.000
+	
+0.000
+	
+
+
+Z
+mm
+	
+0.000
+	
+0.000
+	
+Y+
+Z+
+X-
+X0Y0
+X+
+Z0
+Y-
+Z-
+G21 (mm)
+1mm
+G-code
+Axis	Min	Max	Dimension
+X	0.000 in	0.000 in	0.000 in
+Y	0.000 in	0.000 in	0.000 in
+Z	0.000 in	0.000 in	0.000 in
+Sent
+–
+Received
+–
+Start Time
+–
+Elapsed Time
+–
+Finish Time
+–
+Remaining Time
+–
+Macro
+New
+Export
+Loading...
+Autolevel
+🎯
+PROBE NEW SURFACE
+Set up the probe area and probe the work surface to generate height compensation data.
+Start New Probe
+🔧
+APPLY COMPENSATION
+Load a previously saved .probe file and apply it to your G-code.
+Load Probe Data
+Probe
+Probe Axis
+Z
+X
+Y
+Probe Command: G38.2
+G38.2
+G38.3
+G38.4
+G38.5
+Probe Depth
+in
+Probe Feedrate
+in/min
+Touch Plate Thickness
+in
+Retraction Distance
+in
+Probe Axis Z
+Tool
+Tool Change Policy
+Select...
+
+This option skips the M6 command and pauses controller operations, giving you full manual control over the tool change process.
+
+Spindle
+Coolant
+M7
+M8
+M9
+Spindle
+M3
+M4
+M5
+Spindle Speed
+RPM
+Laser
+Laser Intensity Control
+0%
+-10%
+-1%
+1%
+10%
+Laser Test
+Power (%)
+	
+0%
+
+
+Test duration
+	
+ms
+
+
+Maximum value
+	
+S
+Laser TestLaser Off

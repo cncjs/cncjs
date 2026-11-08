@@ -1,136 +1,153 @@
+import { faCodeBranch, faCompress, faExpand } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  Button,
+  Dropdown,
+  DropdownToggle,
   Space,
 } from '@tonic-ui/react';
+import { ChevronDownIcon, ChevronUpIcon, MenuIcon, MoreIcon } from '@tonic-ui/react-icons';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import Widget from '@app/components/Widget';
+import widgetStyles from '@app/components/Widget/index.styl';
 import i18n from '@app/lib/i18n';
-import WidgetConfig from '@app/widgets/shared/WidgetConfig';
 import WidgetConfigProvider from '@app/widgets/shared/WidgetConfigProvider';
 import Connection from './Connection';
 
-class ConnectionWidget extends Component {
-  static propTypes = {
-    widgetId: PropTypes.string.isRequired,
-    onFork: PropTypes.func.isRequired,
-    onRemove: PropTypes.func.isRequired,
-    sortable: PropTypes.object
-  };
+function ConnectionWidget({
+  widgetId,
+  view,
+  onViewChange,
+  sortable,
+}) {
+  const isCollapsed = view === 'collapsed';
+  const isFullscreen = view === 'fullscreen';
+  const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
 
-  // Public methods
-  collapse = () => {
-    this.setState({ minimized: true });
-  };
-
-  expand = () => {
-    this.setState({ minimized: false });
-  };
-
-  config = new WidgetConfig(this.props.widgetId);
-
-  state = this.getInitialState();
-
-  toggleFullscreen = () => {
-    this.setState(state => ({
-      minimized: state.isFullscreen ? state.minimized : false,
-      isFullscreen: !state.isFullscreen,
-    }));
-  };
-
-  toggleMinimized = () => {
-    this.setState(state => ({
-      minimized: !state.minimized,
-    }));
-  };
-
-  componentDidUpdate(prevProps, prevState) {
-    this.config.set('minimized', this.state.minimized);
-  }
-
-  getInitialState() {
-    return {
-      minimized: this.config.get('minimized', false),
-      isFullscreen: false,
-    };
-  }
-
-  render() {
-    const { widgetId } = this.props;
-    const { minimized, isFullscreen } = this.state;
-    const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
-
-    return (
-      <WidgetConfigProvider widgetId={widgetId}>
-        <Widget aria-label="Connection widget" fullscreen={isFullscreen}>
-          <Widget.Header>
-            <Widget.Title>
-              <Widget.Sortable className={this.props.sortable.handleClassName}>
-                <FontAwesomeIcon icon="bars" fixedWidth />
-                <Space width={4} />
-              </Widget.Sortable>
-              {isForkedWidget &&
-              <FontAwesomeIcon icon="code-branch" fixedWidth />}
-              {i18n._('Connection')}
-            </Widget.Title>
-            <Widget.Controls className={this.props.sortable.filterClassName}>
-              <Widget.Button
-                aria-label={minimized ? 'Expand' : 'Collapse'}
-                aria-expanded={!minimized}
-                disabled={isFullscreen}
-                title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                onClick={this.toggleMinimized}
-              >
-                {minimized &&
-                <FontAwesomeIcon icon="chevron-down" fixedWidth />}
-                {!minimized &&
-                <FontAwesomeIcon icon="chevron-up" fixedWidth />}
-              </Widget.Button>
-              {isFullscreen && (
-                <Widget.Button
-                  title={i18n._('Exit Full Screen')}
-                  onClick={this.toggleFullscreen}
-                >
-                  <FontAwesomeIcon icon="compress" fixedWidth />
-                </Widget.Button>
-              )}
-              <Widget.DropdownButton
-                aria-label="More options"
-                title={i18n._('More')}
-                toggle={(
-                  <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
-                )}
-                onSelect={(eventKey) => {
-                  if (eventKey === 'fullscreen') {
-                    this.toggleFullscreen();
-                  }
+  return (
+    <WidgetConfigProvider widgetId={widgetId}>
+      <Widget aria-label="Connection widget" fullscreen={isFullscreen}>
+        <Widget.Header>
+          <Widget.Title>
+            <Widget.Sortable className={sortable.handleClassName}>
+              <MenuIcon aria-hidden="true" size="1em" width="1.25em" />
+              <Space width="1x" />
+            </Widget.Sortable>
+            {isForkedWidget &&
+            <FontAwesomeIcon icon={faCodeBranch} fixedWidth aria-hidden="true" />}
+            {i18n._('Connection')}
+          </Widget.Title>
+          <Widget.Controls className={sortable.filterClassName}>
+            <Button
+              className={widgetStyles.widgetButton}
+              sx={{
+                border: 0,
+                minHeight: 0,
+                borderRadius: 0,
+                backgroundColor: 'inherit',
+                color: 'inherit',
+                _hover: { backgroundColor: 'actions.hovered', color: 'inherit' },
+                _active: { backgroundColor: 'actions.hovered', color: 'inherit' },
+                _disabled: { backgroundColor: 'inherit', color: 'text.disabled' },
+              }}
+              aria-label={isCollapsed ? 'Expand' : 'Collapse'}
+              aria-expanded={!isCollapsed}
+              disabled={isFullscreen}
+              onClickCapture={(event) => {
+                if (isFullscreen) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }
+              }}
+              title={isCollapsed ? i18n._('Expand') : i18n._('Collapse')}
+              onClick={(event) => {
+                if (isFullscreen) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  return;
+                }
+                onViewChange(isCollapsed ? 'normal' : 'collapsed');
+              }}
+            >
+              {isCollapsed &&
+                <ChevronDownIcon aria-hidden="true" size="1em" width="1.25em" />}
+              {!isCollapsed &&
+                <ChevronUpIcon aria-hidden="true" size="1em" width="1.25em" />}
+            </Button>
+            {isFullscreen && (
+              <Button
+                className={widgetStyles.widgetButton}
+                sx={{
+                  border: 0,
+                  minHeight: 0,
+                  borderRadius: 0,
+                  backgroundColor: 'inherit',
+                  color: 'inherit',
+                  _hover: { backgroundColor: 'actions.hovered', color: 'inherit' },
+                  _active: { backgroundColor: 'actions.hovered', color: 'inherit' },
+                  _disabled: { backgroundColor: 'inherit', color: 'text.disabled' },
                 }}
+                title={i18n._('Exit Full Screen')}
+                onClick={() => onViewChange(isFullscreen ? 'normal' : 'fullscreen')}
               >
-                <Widget.DropdownMenuItem eventKey="fullscreen">
-                  {!isFullscreen && (
-                    <FontAwesomeIcon icon="expand" fixedWidth />
-                  )}
-                  {isFullscreen && (
-                    <FontAwesomeIcon icon="compress" fixedWidth />
-                  )}
-                  <Space width={8} />
-                  {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
-                </Widget.DropdownMenuItem>
-              </Widget.DropdownButton>
-            </Widget.Controls>
-          </Widget.Header>
-          <Widget.Content
-            aria-hidden={minimized}
-            style={{
-              display: (minimized ? 'none' : 'block'),
-            }}
-          >
-            <Connection />
-          </Widget.Content>
-        </Widget>
-      </WidgetConfigProvider>
-    );
-  }
+                <FontAwesomeIcon icon={faCompress} fixedWidth aria-hidden="true" />
+              </Button>
+            )}
+            <Dropdown
+              style={{ display: 'flex', alignSelf: 'stretch' }}
+              items={[
+                {
+                  value: 'fullscreen',
+                  label: (
+                    <>
+                      {!isFullscreen && (
+                        <FontAwesomeIcon icon={faExpand} fixedWidth aria-hidden="true" />
+                      )}
+                      {isFullscreen && (
+                        <FontAwesomeIcon icon={faCompress} fixedWidth aria-hidden="true" />
+                      )}
+                      <Space width="2x" />
+                      {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
+                    </>
+                  ),
+                },
+              ]}
+              onChange={({ value: eventKey }) => {
+                if (eventKey === 'fullscreen') {
+                  onViewChange(isFullscreen ? 'normal' : 'fullscreen');
+                }
+              }}
+              renderToggle={() => (
+                <DropdownToggle
+                  className={widgetStyles.widgetButton}
+                  aria-label="More options"
+                  title={i18n._('More')}
+                >
+                  <MoreIcon aria-hidden="true" size="1em" width="1.25em" />
+                </DropdownToggle>
+              )}
+            />
+          </Widget.Controls>
+        </Widget.Header>
+        <Widget.Content
+          aria-hidden={isCollapsed}
+          style={{
+            display: (isCollapsed ? 'none' : 'block'),
+          }}
+        >
+          <Connection />
+        </Widget.Content>
+      </Widget>
+    </WidgetConfigProvider>
+  );
 }
+
+ConnectionWidget.propTypes = {
+  widgetId: PropTypes.string.isRequired,
+  view: PropTypes.oneOf(['normal', 'collapsed', 'fullscreen']).isRequired,
+  onViewChange: PropTypes.func.isRequired,
+  sortable: PropTypes.object
+};
 
 export default ConnectionWidget;

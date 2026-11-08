@@ -1,0 +1,151 @@
+{
+  "status": "passed_with_recorded_limitations",
+  "artifacts": [
+    "matched-performance-baseline-r6.json",
+    "matched-performance-current-r6.json"
+  ],
+  "conditions": {
+    "browserEqual": true,
+    "fixtureEqual": true,
+    "webglEqual": true,
+    "headerAppearanceEqual": true,
+    "paletteDifference": "Connection title background changed from rgb(246,247,248) to rgb(242,242,242); both resolved light."
+  },
+  "metrics": {
+    "loadToFirstRendererMs": {
+      "baseline": {
+        "p50": 77.5,
+        "p95": 108.54,
+        "max": 116.10000002384186
+      },
+      "current": {
+        "p50": 85.6,
+        "p95": 136.46,
+        "max": 148.2000000178814
+      },
+      "medianChangePercent": 10.45
+    },
+    "rendererDurationMs": {
+      "baseline": {
+        "p50": 0.5,
+        "p95": 0.8,
+        "samples": 819
+      },
+      "current": {
+        "p50": 0.5,
+        "p95": 0.8,
+        "samples": 794
+      },
+      "medianChangePercent": 0.0
+    },
+    "inputToFirstRendererMs": {
+      "baseline": {
+        "p50": 3.95,
+        "p95": 4.5,
+        "max": 5.4
+      },
+      "current": {
+        "p50": 4.05,
+        "p95": 5.11,
+        "max": 5.9
+      },
+      "medianChangePercent": 2.53
+    },
+    "panInputToRendererMs": {
+      "baseline": {
+        "p50": 0.8,
+        "p95": 1,
+        "max": 1
+      },
+      "current": {
+        "p50": 0.9,
+        "p95": 1,
+        "max": 1
+      },
+      "medianChangePercent": 12.5
+    }
+  },
+  "measuredSampleIntegrity": {
+    "currentRetainedRenderSamples": 937,
+    "ringCapacity": 1000,
+    "oldestTimestampMs": 852.8000000119209,
+    "firstMeasuredLoadTimestampMs": 5851.5,
+    "interpretation": "All 937 samples remain, including startup before measured loads; measured-phase filter keeps 794 renderer samples and excludes later resource cycles."
+  },
+  "longTasks": {
+    "baseline": {
+      "count": 375,
+      "maxMs": 153,
+      "totalMs": 32089
+    },
+    "current": {
+      "count": 355,
+      "maxMs": 163,
+      "totalMs": 31183
+    }
+  },
+  "resourceCheckpoints": {
+    "5": {
+      "geometryCount": 251,
+      "textureCount": 188,
+      "activeListenerCount": 6,
+      "activeRafCount": 0,
+      "canvasAttached": true,
+      "hasGCode": false
+    },
+    "10": {
+      "geometryCount": 251,
+      "textureCount": 188,
+      "activeListenerCount": 6,
+      "activeRafCount": 0,
+      "canvasAttached": true,
+      "hasGCode": false
+    },
+    "20": {
+      "geometryCount": 251,
+      "textureCount": 188,
+      "activeListenerCount": 6,
+      "activeRafCount": 0,
+      "canvasAttached": true,
+      "hasGCode": false
+    }
+  },
+  "limitations": [
+    "Five measured loads make p95 a rough tail estimate; current load p95 rises 25.7%.",
+    "Sequential local development runs with software WebGL are not production hardware benchmarks.",
+    "Supplemental uploadToRunEnabledMs includes diagnostics; native end-to-end upload latency was not isolated."
+  ],
+  "reviewerGate": {
+    "medianRegressionAbove20Percent": false,
+    "newLongStallClassObserved": false,
+    "interpretation": "Load-to-first-render median +10.45%, renderer-call median unchanged, native input-to-render median +2.53%; longtask count/total decrease, maximum153\u2192163ms. Both runs show the same pan/readback stall class. Five-load p95 and supplemental wall-clock diagnostics remain limitations."
+  },
+  "supplementalTiming": {
+    "historicalField": "uploadToRunEnabledMs",
+    "actualInterval": "Upload action start through Run enabled polling, metric polling/serialization, and Close locator wait. Includes harness work; not pure readiness.",
+    "baselineRunEnabledPollingWaitMs": [
+      240,
+      252,
+      263,
+      205,
+      234
+    ],
+    "currentRunEnabledPollingWaitMs": [
+      386,
+      130,
+      141,
+      130,
+      182
+    ],
+    "interpretation": "Polling waits have medians240/141ms but begin after filechooser/setFiles completes, so they do not establish end-to-end upload latency."
+  },
+  "texturePlateau": {
+    "interpretation": "188 uploaded textures after camera interactions remains unchanged at checkpoints5/10/20. Higher than earlier load-only55; camera angles expose additional label sprites. This explanation is an inference from renderer upload/frustum-culling behavior and observed73-before-interactions\u2192188-after-interactions.",
+    "sourceEvidence": [
+      "src/app/widgets/Visualizer/VisualizerEngine.js:createCoordinateSystem/createGridLineNumbers",
+      "src/app/widgets/Visualizer/TextSprite.js:canvas texture per label",
+      "node_modules/three/src/renderers/webgl/WebGLTextures.js:initTexture increments memory on first upload",
+      "node_modules/three/src/renderers/WebGLRenderer.js:frustum.intersectsSprite"
+    ]
+  }
+}

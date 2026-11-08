@@ -1,58 +1,45 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import { Box } from '@tonic-ui/react';
 
-function Fraction(props) {
-  const { numerator, denominator } = props;
-
+/**
+ * @param {{numerator?: number, denominator?: number}} props
+ * @returns {JSX.Element}
+ */
+function Fraction({ numerator, denominator }) {
   return (
-    <span
-      style={{
+    <Box
+      aria-label={`${numerator}/${denominator}`}
+      sx={{
         whiteSpace: 'nowrap',
-        display: 'inline-block',
+        display: 'inline-flex',
+        flexDirection: 'column',
         verticalAlign: '-0.5em',
         fontSize: '85%',
-        textAlign: 'center'
+        textAlign: 'center',
       }}
     >
-      <span
-        style={{
+      <Box
+        sx={{
           display: 'block',
           lineHeight: '1em',
-          margin: '0 0.1em'
+          margin: '0 0.1em',
         }}
       >
         {numerator}
-      </span>
-      <span
-        style={{
-          position: 'absolute',
-          left: -10000,
-          top: 'auto',
-          width: 1,
-          height: 1,
-          overflow: 'hidden'
-        }}
-      >
-        /
-      </span>
-      <span
-        style={{
+      </Box>
+      <Box
+        sx={{
           borderTop: '1px solid',
           display: 'block',
           lineHeight: '1em',
           margin: '0 0.1em',
-          minWidth: 16
+          minWidth: 16,
         }}
       >
         {denominator}
-      </span>
-    </span>
+      </Box>
+    </Box>
   );
 }
-
-Fraction.propTypes = {
-  numerator: PropTypes.number,
-  denominator: PropTypes.number
-};
 
 export default Fraction;

@@ -1,0 +1,279 @@
+  console.warn
+    [Tonic UI] The "cssVariables" option in createTheme() no longer accepts a boolean value.
+
+    To enable CSS variables, you should pass "useCSSVariables" to TonicProvider:
+      <TonicProvider theme={theme} useCSSVariables>
+
+    To customize CSS variable configuration, pass a configuration object:
+      createTheme({ cssVariables: { prefix: "tonic", rootSelector: ":root" } })
+
+      75 |             defaultValue: colorStyle,
+      76 |           }}
+    > 77 |           theme={createTheme({
+         |                             ^
+      78 |             cssVariables: true, // Enable CSS theme variables
+      79 |           })}
+      80 |           useCSSBaseline={true}
+
+      at createTheme (node_modules/@tonic-ui/react/dist/cjs/theme/createTheme.js:51:13)
+      at GlobalProvider (src/app/context.jsx:77:29)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+      at mountIndeterminateComponent (node_modules/react-dom/cjs/react-dom.development.js:20103:13)
+      at beginWork (node_modules/react-dom/cjs/react-dom.development.js:21626:16)
+      at beginWork$1 (node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+      at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25777:74)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:180:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:271:10)
+      at Object.<anonymous> (src/app/__tests__/GlobalProvider.test.jsx:85:9)
+
+  console.warn
+    [Tonic UI] The "cssVariables" option in createTheme() no longer accepts a boolean value.
+
+    To enable CSS variables, you should pass "useCSSVariables" to TonicProvider:
+      <TonicProvider theme={theme} useCSSVariables>
+
+    To customize CSS variable configuration, pass a configuration object:
+      createTheme({ cssVariables: { prefix: "tonic", rootSelector: ":root" } })
+
+      75 |             defaultValue: colorStyle,
+      76 |           }}
+    > 77 |           theme={createTheme({
+         |                             ^
+      78 |             cssVariables: true, // Enable CSS theme variables
+      79 |           })}
+      80 |           useCSSBaseline={true}
+
+      at createTheme (node_modules/@tonic-ui/react/dist/cjs/theme/createTheme.js:51:13)
+      at GlobalProvider (src/app/context.jsx:77:29)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom.development.js:19617:20)
+      at beginWork (node_modules/react-dom/cjs/react-dom.development.js:21640:16)
+      at beginWork$1 (node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26124:20)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.eventWrapper (node_modules/@testing-library/react/dist/pure.js:107:28)
+      at fireEvent (node_modules/@testing-library/dom/dist/events.js:12:35)
+      at fireEvent.<computed> [as click] (node_modules/@testing-library/dom/dist/events.js:110:36)
+      at fireEvent.<computed> [as click] (node_modules/@testing-library/react/dist/fire-event.js:15:52)
+      at Object.click (src/app/__tests__/GlobalProvider.test.jsx:87:13)
+
+  console.warn
+    [Tonic UI] The "cssVariables" option in createTheme() no longer accepts a boolean value.
+
+    To enable CSS variables, you should pass "useCSSVariables" to TonicProvider:
+      <TonicProvider theme={theme} useCSSVariables>
+
+    To customize CSS variable configuration, pass a configuration object:
+      createTheme({ cssVariables: { prefix: "tonic", rootSelector: ":root" } })
+
+      75 |             defaultValue: colorStyle,
+      76 |           }}
+    > 77 |           theme={createTheme({
+         |                             ^
+      78 |             cssVariables: true, // Enable CSS theme variables
+      79 |           })}
+      80 |           useCSSBaseline={true}
+
+      at createTheme (node_modules/@tonic-ui/react/dist/cjs/theme/createTheme.js:51:13)
+      at GlobalProvider (src/app/context.jsx:77:29)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom.development.js:19617:20)
+      at beginWork (node_modules/react-dom/cjs/react-dom.development.js:21640:16)
+      at beginWork$1 (node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26124:20)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.eventWrapper (node_modules/@testing-library/react/dist/pure.js:107:28)
+      at fireEvent (node_modules/@testing-library/dom/dist/events.js:12:35)
+      at fireEvent.<computed> [as click] (node_modules/@testing-library/dom/dist/events.js:110:36)
+      at fireEvent.<computed> [as click] (node_modules/@testing-library/react/dist/fire-event.js:15:52)
+      at Object.click (src/app/__tests__/GlobalProvider.test.jsx:88:13)
+
+  console.warn
+    [Tonic UI] The "cssVariables" option in createTheme() no longer accepts a boolean value.
+
+    To enable CSS variables, you should pass "useCSSVariables" to TonicProvider:
+      <TonicProvider theme={theme} useCSSVariables>
+
+    To customize CSS variable configuration, pass a configuration object:
+      createTheme({ cssVariables: { prefix: "tonic", rootSelector: ":root" } })
+
+      75 |             defaultValue: colorStyle,
+      76 |           }}
+    > 77 |           theme={createTheme({
+         |                             ^
+      78 |             cssVariables: true, // Enable CSS theme variables
+      79 |           })}
+      80 |           useCSSBaseline={true}
+
+      at createTheme (node_modules/@tonic-ui/react/dist/cjs/theme/createTheme.js:51:13)
+      at GlobalProvider (src/app/context.jsx:77:29)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+      at mountIndeterminateComponent (node_modules/react-dom/cjs/react-dom.development.js:20103:13)
+      at beginWork (node_modules/react-dom/cjs/react-dom.development.js:21626:16)
+      at beginWork$1 (node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+      at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25777:74)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:180:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:271:10)
+      at Object.<anonymous> (src/app/__tests__/GlobalProvider.test.jsx:97:9)
+
+  console.warn
+    [Tonic UI] The "cssVariables" option in createTheme() no longer accepts a boolean value.
+
+    To enable CSS variables, you should pass "useCSSVariables" to TonicProvider:
+      <TonicProvider theme={theme} useCSSVariables>
+
+    To customize CSS variable configuration, pass a configuration object:
+      createTheme({ cssVariables: { prefix: "tonic", rootSelector: ":root" } })
+
+      75 |             defaultValue: colorStyle,
+      76 |           }}
+    > 77 |           theme={createTheme({
+         |                             ^
+      78 |             cssVariables: true, // Enable CSS theme variables
+      79 |           })}
+      80 |           useCSSBaseline={true}
+
+      at createTheme (node_modules/@tonic-ui/react/dist/cjs/theme/createTheme.js:51:13)
+      at GlobalProvider (src/app/context.jsx:77:29)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom.development.js:19617:20)
+      at beginWork (node_modules/react-dom/cjs/react-dom.development.js:21640:16)
+      at beginWork$1 (node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26124:20)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.eventWrapper (node_modules/@testing-library/react/dist/pure.js:107:28)
+      at fireEvent (node_modules/@testing-library/dom/dist/events.js:12:35)
+      at fireEvent.<computed> [as click] (node_modules/@testing-library/dom/dist/events.js:110:36)
+      at fireEvent.<computed> [as click] (node_modules/@testing-library/react/dist/fire-event.js:15:52)
+      at Object.click (src/app/__tests__/GlobalProvider.test.jsx:99:13)
+
+  console.warn
+    [Tonic UI] The "cssVariables" option in createTheme() no longer accepts a boolean value.
+
+    To enable CSS variables, you should pass "useCSSVariables" to TonicProvider:
+      <TonicProvider theme={theme} useCSSVariables>
+
+    To customize CSS variable configuration, pass a configuration object:
+      createTheme({ cssVariables: { prefix: "tonic", rootSelector: ":root" } })
+
+      75 |             defaultValue: colorStyle,
+      76 |           }}
+    > 77 |           theme={createTheme({
+         |                             ^
+      78 |             cssVariables: true, // Enable CSS theme variables
+      79 |           })}
+      80 |           useCSSBaseline={true}
+
+      at createTheme (node_modules/@tonic-ui/react/dist/cjs/theme/createTheme.js:51:13)
+      at GlobalProvider (src/app/context.jsx:77:29)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom.development.js:19617:20)
+      at beginWork (node_modules/react-dom/cjs/react-dom.development.js:21640:16)
+      at beginWork$1 (node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26124:20)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.eventWrapper (node_modules/@testing-library/react/dist/pure.js:107:28)
+      at fireEvent (node_modules/@testing-library/dom/dist/events.js:12:35)
+      at fireEvent.<computed> [as click] (node_modules/@testing-library/dom/dist/events.js:110:36)
+      at fireEvent.<computed> [as click] (node_modules/@testing-library/react/dist/fire-event.js:15:52)
+      at Object.click (src/app/__tests__/GlobalProvider.test.jsx:103:13)
+
+  console.warn
+    [Tonic UI] The "cssVariables" option in createTheme() no longer accepts a boolean value.
+
+    To enable CSS variables, you should pass "useCSSVariables" to TonicProvider:
+      <TonicProvider theme={theme} useCSSVariables>
+
+    To customize CSS variable configuration, pass a configuration object:
+      createTheme({ cssVariables: { prefix: "tonic", rootSelector: ":root" } })
+
+      75 |             defaultValue: colorStyle,
+      76 |           }}
+    > 77 |           theme={createTheme({
+         |                             ^
+      78 |             cssVariables: true, // Enable CSS theme variables
+      79 |           })}
+      80 |           useCSSBaseline={true}
+
+      at createTheme (node_modules/@tonic-ui/react/dist/cjs/theme/createTheme.js:51:13)
+      at GlobalProvider (src/app/context.jsx:77:29)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+      at mountIndeterminateComponent (node_modules/react-dom/cjs/react-dom.development.js:20103:13)
+      at beginWork (node_modules/react-dom/cjs/react-dom.development.js:21626:16)
+      at beginWork$1 (node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+      at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25777:74)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:180:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:271:10)
+      at Object.<anonymous> (src/app/__tests__/GlobalProvider.test.jsx:122:9)
+
+FAIL src/app/__tests__/GlobalProvider.test.jsx
+  ✓ returns to the live system theme after leaving an initially automatic appearance (68 ms)
+  ✓ stops following the system when returning to an initially explicit appearance (36 ms)
+  ✕ provides CSS variable definitions for semantic tokens and both color modes (12 ms)
+
+  ● provides CSS variable definitions for semantic tokens and both color modes
+
+    expect(element).toHaveTextContent()
+
+    Expected element to have text content:
+      true
+    Received:
+      undefined
+
+      122 |   render(<GlobalProvider><SemanticThemeProbe /></GlobalProvider>);
+      123 |
+    > 124 |   expect(screen.getByTestId('semantic-theme')).toHaveTextContent('true');
+          |                                                ^
+      125 |   const rules = Array.from(document.styleSheets).flatMap(sheet => (
+      126 |     Array.from(sheet.cssRules).map(rule => rule.cssText)
+      127 |   )).join('\n');
+
+      at Object.toHaveTextContent (src/app/__tests__/GlobalProvider.test.jsx:124:48)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 2 passed, 3 total
+Snapshots:   0 total
+Time:        0.934 s, estimated 1 s
+Ran all test suites matching /src\/app\/__tests__\/GlobalProvider.test.jsx/i.

@@ -1,0 +1,257 @@
+{
+  "purpose": "Lossless sanitized diagnostic/earlier-checkpoint and progress history; original names resolve to gzip paths. Never counted as current final passed cases. Shared screenshot paths may retain a later capture; historical JSON preserves original diagnostic data, not a claim of immutable prior images.",
+  "files": [
+    {
+      "logicalPath": "routes-semantic-v3-progress.json",
+      "storedPath": "history/routes-semantic-v3-progress.json.gz",
+      "sha256": "019765a7e1d28f0aae419cab91f4003381a56b5d1f75b146b5c707f4e463caa4",
+      "bytes": 1158448,
+      "compressedBytes": 34938
+    },
+    {
+      "logicalPath": "visualizer-probe-compensation-v3-senderload-failed.json",
+      "storedPath": "history/visualizer-probe-compensation-v3-senderload-failed.json.gz",
+      "sha256": "0fbd7da90371a8ea802a4bec2d8f482749e02ca8fd32de1f01bc94f93b6cd4bc",
+      "bytes": 77730,
+      "compressedBytes": 7256
+    },
+    {
+      "logicalPath": "visualizer-probe-compensation-v3-fbea-contrast-oracle-attempt-failed.json",
+      "storedPath": "history/visualizer-probe-compensation-v3-fbea-contrast-oracle-attempt-failed.json.gz",
+      "sha256": "39b39dae58f78473e0867ae46ef6b8b02e8b5f2b4db50e32afb8bd7df3219062",
+      "bytes": 106011,
+      "compressedBytes": 11146
+    },
+    {
+      "logicalPath": "visualizer-probe-compensation-v3-pubsub-only-failed.json",
+      "storedPath": "history/visualizer-probe-compensation-v3-pubsub-only-failed.json.gz",
+      "sha256": "4b572739083e58740393d2e15e5345a05ff8015457cd076d19b52790128b49c1",
+      "bytes": 19228,
+      "compressedBytes": 1925
+    },
+    {
+      "logicalPath": "routes-semantic-v3-panels-collapsed-run-failed.json",
+      "storedPath": "history/routes-semantic-v3-panels-collapsed-run-failed.json.gz",
+      "sha256": "4a489efe771a3842f343516d5a169debfd92547677a0cd8e89da60f0a9541c19",
+      "bytes": 1335261,
+      "compressedBytes": 43790
+    },
+    {
+      "logicalPath": "routes-semantic-v3-postfix-partial-update-depth.json",
+      "storedPath": "history/routes-semantic-v3-postfix-partial-update-depth.json.gz",
+      "sha256": "67999a25244cc4606c8c906ef125b90fee5440e9a45390285145f174b4feb0e3",
+      "bytes": 1155353,
+      "compressedBytes": 34477
+    },
+    {
+      "logicalPath": "routes-semantic-v3-interrupted-animation-finish-attempt.json",
+      "storedPath": "history/routes-semantic-v3-interrupted-animation-finish-attempt.json.gz",
+      "sha256": "7e99c4390e87de5d6d8a4772f8255cc5f101ba2dde37b149a33fea022d511125",
+      "bytes": 548830,
+      "compressedBytes": 8263
+    },
+    {
+      "logicalPath": "routes-semantic-v3-postfix-latest-partial.json",
+      "storedPath": "history/routes-semantic-v3-postfix-latest-partial.json.gz",
+      "sha256": "a3cd8e70ae64e31f33cbd0e5150609e05e7955e9595e2996160428c5e8328678",
+      "bytes": 1157188,
+      "compressedBytes": 34764
+    },
+    {
+      "logicalPath": "marlin-replay-focused-v3-progress.json",
+      "storedPath": "history/marlin-replay-focused-v3-progress.json.gz",
+      "sha256": "42d1ea47c59fa3571fb37a37519eb78ba8c8372d9e2c118ba4723502600cbec6",
+      "bytes": 14693,
+      "compressedBytes": 2917
+    },
+    {
+      "logicalPath": "visualizer-probe-compensation-v3-simulator-ui-harness-failed.json",
+      "storedPath": "history/visualizer-probe-compensation-v3-simulator-ui-harness-failed.json.gz",
+      "sha256": "82ab9b6ff1fd22bf9d2ce5801fd339164243e628c07f6d740c96808cc7b7cadf",
+      "bytes": 77997,
+      "compressedBytes": 7972
+    },
+    {
+      "logicalPath": "admin-navigation-compare-v3-harness-failed.json",
+      "storedPath": "history/admin-navigation-compare-v3-harness-failed.json.gz",
+      "sha256": "9d8174571109fd8ac8fc63f5772daa572f4ff88022467837f8f84fa918e7b9fe",
+      "bytes": 657235,
+      "compressedBytes": 38553
+    },
+    {
+      "logicalPath": "animation-diagnostic-v3-progress.json",
+      "storedPath": "history/animation-diagnostic-v3-progress.json.gz",
+      "sha256": "80ecd1a48d826f0af345c85e027a447dbd938d6118fc1899e38016da2d2cbfd3",
+      "bytes": 6151362,
+      "compressedBytes": 143324
+    },
+    {
+      "logicalPath": "visualizer-probe-compensation-v3-f050804-pre-filename-accent.json",
+      "storedPath": "history/visualizer-probe-compensation-v3-f050804-pre-filename-accent.json.gz",
+      "sha256": "309939b105a06939a13fa53e07ed8b62653de6c0fb7764720e5fd23f6f2fb82c",
+      "bytes": 96086,
+      "compressedBytes": 9945
+    },
+    {
+      "logicalPath": "routes-semantic-v3-partial-animation-diagnostic-attempt.json",
+      "storedPath": "history/routes-semantic-v3-partial-animation-diagnostic-attempt.json.gz",
+      "sha256": "8a640823654be650714b2796482a18f3128a0e2f6b4d13f19106d3f7fc0d6b34",
+      "bytes": 216656,
+      "compressedBytes": 4719
+    },
+    {
+      "logicalPath": "controller-grbl-dark-v3-progress.json",
+      "storedPath": "history/controller-grbl-dark-v3-progress.json.gz",
+      "sha256": "417f91608d2c55d33f948329e02dd1a92f6cf0ec6077b2f61ecb0c9404cfbb76",
+      "bytes": 15842,
+      "compressedBytes": 2854
+    },
+    {
+      "logicalPath": "animation-diagnostic-v3-isolated-sequences.json",
+      "storedPath": "history/animation-diagnostic-v3-isolated-sequences.json.gz",
+      "sha256": "8d0545a5d790c0cc01ffca45e33ae7eb85fbe9b2e3f00e8ddfff186eea57a0ba",
+      "bytes": 4449727,
+      "compressedBytes": 106510
+    },
+    {
+      "logicalPath": "routes-semantic-v3-after-table-fix-progress.json",
+      "storedPath": "history/routes-semantic-v3-after-table-fix-progress.json.gz",
+      "sha256": "02a8d3838cc057162906d1f20c5d288a6d3b41085e314af64de989fb4360b427",
+      "bytes": 1858185,
+      "compressedBytes": 50322
+    },
+    {
+      "logicalPath": "routes-semantic-v3.json",
+      "storedPath": "history/routes-semantic-v3.json.gz",
+      "sha256": "4fc90ea6acd3b6b47ea1c0e28ebd5aff09a7c14bf86f30b790872795ee0ad85f",
+      "bytes": 1525078,
+      "compressedBytes": 45668
+    },
+    {
+      "logicalPath": "workspace-theme-matrix-progress.json",
+      "storedPath": "history/workspace-theme-matrix-progress.json.gz",
+      "sha256": "3b72e92b4463e2c92f331dc5b8bc2f7343c98a4af7e7c99dbeae77ebbf0bc1ea",
+      "bytes": 101949,
+      "compressedBytes": 5820
+    },
+    {
+      "logicalPath": "controller-tinyg-light-v3-progress.json",
+      "storedPath": "history/controller-tinyg-light-v3-progress.json.gz",
+      "sha256": "24d4c9417005040087d7491bd4eafd1c1b27a15e9800c9d708cd3859c2c53255",
+      "bytes": 29271,
+      "compressedBytes": 3901
+    },
+    {
+      "logicalPath": "routes-semantic-v3-partial-failed-attempt-root-review.json",
+      "storedPath": "history/routes-semantic-v3-partial-failed-attempt-root-review.json.gz",
+      "sha256": "8c971ec0bbe2eb48add051e38981e372610f29300eb25bfe22098dda11a34edf",
+      "bytes": 106600,
+      "compressedBytes": 4052
+    },
+    {
+      "logicalPath": "controller-tinyg-dark-v3-progress.json",
+      "storedPath": "history/controller-tinyg-dark-v3-progress.json.gz",
+      "sha256": "f7e4d7fad3f0ad9d01fb0ad69964c47cc78ccc070d269423038dff63f18c426d",
+      "bytes": 28932,
+      "compressedBytes": 3888
+    },
+    {
+      "logicalPath": "controller-smoothie-light-v3-progress.json",
+      "storedPath": "history/controller-smoothie-light-v3-progress.json.gz",
+      "sha256": "e04dd3451ebe8b8ee16c5388141886a6da45a5cfabe729d8ff50fc51f19d25d3",
+      "bytes": 30478,
+      "compressedBytes": 3907
+    },
+    {
+      "logicalPath": "routes-semantic-v3-failed-attempt-root-review.json",
+      "storedPath": "history/routes-semantic-v3-failed-attempt-root-review.json.gz",
+      "sha256": "70d472cfbf7e89883d544b9cb8f7ff5e918c0d3349f8e834f50f7b2c57aba065",
+      "bytes": 718898,
+      "compressedBytes": 8770
+    },
+    {
+      "logicalPath": "controller-marlin-light-v3-progress.json",
+      "storedPath": "history/controller-marlin-light-v3-progress.json.gz",
+      "sha256": "de74b5aabb2850aeb69772a32ca588fb06c91c8540da8adb27e385f7b4697d78",
+      "bytes": 28103,
+      "compressedBytes": 3811
+    },
+    {
+      "logicalPath": "routes-semantic-v3-panels-collapsed-run-progress-failed.json",
+      "storedPath": "history/routes-semantic-v3-panels-collapsed-run-progress-failed.json.gz",
+      "sha256": "755b1e9f15c5c57c4bffa39c8125ea0457379c0fa005a4b4611edd3624b7cddc",
+      "bytes": 984324,
+      "compressedBytes": 33999
+    },
+    {
+      "logicalPath": "animation-diagnostic-v3.json",
+      "storedPath": "history/animation-diagnostic-v3.json.gz",
+      "sha256": "990b5f47a6284204b77ca90f5584d4b370c537f9d1667be3d1c848e5f7dbc0dd",
+      "bytes": 6151427,
+      "compressedBytes": 143328
+    },
+    {
+      "logicalPath": "controller-marlin-dark-v3-progress.json",
+      "storedPath": "history/controller-marlin-dark-v3-progress.json.gz",
+      "sha256": "1889b48db9f83ac5a4a603edf87764f3c2a538450157bdeaf2891fc7d25e1086",
+      "bytes": 27977,
+      "compressedBytes": 3799
+    },
+    {
+      "logicalPath": "visualizer-probe-compensation-v3-progress.json",
+      "storedPath": "history/visualizer-probe-compensation-v3-progress.json.gz",
+      "sha256": "320e62bf3e0d0103d07ba6988d56fac1fb31855f8eab135553aadac49fcb127f",
+      "bytes": 3273,
+      "compressedBytes": 1160
+    },
+    {
+      "logicalPath": "controller-smoothie-dark-v3-progress.json",
+      "storedPath": "history/controller-smoothie-dark-v3-progress.json.gz",
+      "sha256": "1b028915b05b856bf335adf4a965e71485ab8de8c6aa22d0cc83b1eaf9fe1587",
+      "bytes": 30400,
+      "compressedBytes": 3898
+    },
+    {
+      "logicalPath": "routes-semantic-v3-interrupted-attempt.json",
+      "storedPath": "history/routes-semantic-v3-interrupted-attempt.json.gz",
+      "sha256": "70d472cfbf7e89883d544b9cb8f7ff5e918c0d3349f8e834f50f7b2c57aba065",
+      "bytes": 718898,
+      "compressedBytes": 8770
+    },
+    {
+      "logicalPath": "admin-navigation-compare-v3-precommit-success.json",
+      "storedPath": "history/admin-navigation-compare-v3-precommit-success.json.gz",
+      "sha256": "30bd6a5f9bf0ffeb2e930e5d41c3249527f6de86d7e1085d167b402d6d4fd688",
+      "bytes": 369858,
+      "compressedBytes": 13133
+    },
+    {
+      "logicalPath": "visualizer-probe-compensation-v3-senderload-first-attempt-failed.json",
+      "storedPath": "history/visualizer-probe-compensation-v3-senderload-first-attempt-failed.json.gz",
+      "sha256": "4b5aed50385e15412e6a3400efdce4e73b1427a175701f40418ad94c75dd8769",
+      "bytes": 1525,
+      "compressedBytes": 688
+    },
+    {
+      "logicalPath": "routes-semantic-v3-postfix-loop-complete-partial.json",
+      "storedPath": "history/routes-semantic-v3-postfix-loop-complete-partial.json.gz",
+      "sha256": "c2b77cbc19cf5d9241306383ae3faceeb729cad399c71af410e9b8e5010465e4",
+      "bytes": 1156756,
+      "compressedBytes": 34624
+    },
+    {
+      "logicalPath": "workspace-theme-matrix-v3-before-root-fix.json",
+      "storedPath": "history/workspace-theme-matrix-v3-before-root-fix.json.gz",
+      "sha256": "c5594f5ab6f0ffc416ff90b35c2be2a20bb83e5fd29a359ea950165793f0c3e2",
+      "bytes": 102178,
+      "compressedBytes": 5872
+    },
+    {
+      "logicalPath": "controller-grbl-light-v3-progress.json",
+      "storedPath": "history/controller-grbl-light-v3-progress.json.gz",
+      "sha256": "dddeb7889e19a56c384ced11de212d29ed4a408c48857e83198dd0b4cbf386c1",
+      "bytes": 16485,
+      "compressedBytes": 3114
+    }
+  ]
+}

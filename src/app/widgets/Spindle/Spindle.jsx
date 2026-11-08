@@ -1,20 +1,21 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  Box,
+  Button,
+  ButtonGroup,
+  Flex,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupAppend,
   Space,
   TextLabel,
 } from '@tonic-ui/react';
 import { ensureArray, ensurePositiveNumber } from 'ensure-type';
 import _get from 'lodash/get';
 import _includes from 'lodash/includes';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Form, Field } from 'react-final-form';
-import { Button, ButtonGroup } from '@app/components/Buttons';
-import Input from '@app/components/FormControl/Input';
-import FormGroup from '@app/components/FormGroup';
-import { Container, Row, Col } from '@app/components/GridSystem';
-import ImageIcon from '@app/components/ImageIcon';
-import InputGroup from '@app/components/InputGroup';
 import {
   CONNECTION_STATE_CONNECTED,
 } from '@app/constants/connection';
@@ -29,8 +30,11 @@ import {
 import controller from '@app/lib/controller';
 import i18n from '@app/lib/i18n';
 import useWidgetConfig from '@app/widgets/shared/useWidgetConfig';
-import iconFan from './images/fan.svg';
 
+/**
+ * @param {{ isActionable: boolean, mistCoolant: boolean, floodCoolant: boolean, spindle: string }} props
+ * @returns {JSX.Element}
+ */
 function Spindle({
   isActionable,
   mistCoolant,
@@ -38,183 +42,144 @@ function Spindle({
   spindle,
 }) {
   const config = useWidgetConfig();
-  const initialValues = {
-    speed: ensurePositiveNumber(config.get('speed', 1000)),
-  };
+  const [speedDraft, setSpeedDraft] = useState(() => (
+    String(ensurePositiveNumber(config.get('speed', 1000)))
+  ));
   const isDisabled = !isActionable;
+  const numericSpeed = speedDraft === '' ? null : Number(speedDraft);
+  const hasValidSpeed = (
+    numericSpeed !== null &&
+    Number.isFinite(numericSpeed) &&
+    numericSpeed >= 0
+  );
+  const sendSpindleCommand = command => {
+    if (!hasValidSpeed) {
+      return;
+    }
+
+    const payload = numericSpeed > 0 ? `${command} S${numericSpeed}` : command;
+    controller.command('gcode', payload);
+  };
 
   return (
-    <Form
-      initialValues={initialValues}
-      onSubmit={(values) => {
-        // No submit handler required
-      }}
-      subscription={{}}
-    >
-      {({ form }) => (
-        <Container fluid>
-          <FormGroup>
-            <TextLabel mb="2x">
-              {i18n._('Coolant')}
-            </TextLabel>
-            <Row>
-              <Col width={8}>
-                <ButtonGroup
-                  sm
-                  style={{ width: '100%' }}
-                >
-                  <Button
-                    onClick={() => {
-                      controller.command('gcode', 'M7');
-                    }}
-                    title={i18n._('Mist Coolant On (M7)', { ns: 'gcode' })}
-                    disabled={isDisabled}
-                  >
-                    <ImageIcon
-                      src={iconFan}
-                      spin={mistCoolant}
-                      style={{
-                        width: '16px',
-                        height: '16px',
-                      }}
-                    />
-                    <Space width={8} />
-                    M7
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      controller.command('gcode', 'M8');
-                    }}
-                    title={i18n._('Flood Coolant On (M8)', { ns: 'gcode' })}
-                    disabled={isDisabled}
-                  >
-                    <ImageIcon
-                      src={iconFan}
-                      spin={floodCoolant}
-                      style={{
-                        width: '16px',
-                        height: '16px',
-                      }}
-                    />
-                    <Space width={8} />
-                    M8
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      controller.command('gcode', 'M9');
-                    }}
-                    title={i18n._('Coolant Off (M9)', { ns: 'gcode' })}
-                    disabled={isDisabled}
-                  >
-                    <FontAwesomeIcon icon="power-off" fixedWidth />
-                    <Space width={8} />
-                    M9
-                  </Button>
-                </ButtonGroup>
-              </Col>
-            </Row>
-          </FormGroup>
-          <FormGroup>
-            <TextLabel mb="2x">
-              {i18n._('Spindle')}
-            </TextLabel>
-            <Row>
-              <Col width={8}>
-                <Field name="speed">
-                  {({ input }) => {
-                    const invalidSpeed = !Number.isFinite(input.value);
-                    const isM3Disabled = isDisabled || invalidSpeed;
-                    const isM4Disabled = isDisabled || invalidSpeed;
-
-                    return (
-                      <ButtonGroup
-                        sm
-                        style={{ width: '100%' }}
-                      >
-                        <Button
-                          disabled={isM3Disabled}
-                          onClick={() => {
-                            const speed = config.get('speed');
-                            if (speed > 0) {
-                              controller.command('gcode', 'M3 S' + speed);
-                            } else {
-                              controller.command('gcode', 'M3');
-                            }
-                          }}
-                          title={i18n._('Spindle On, CW (M3)', { ns: 'gcode' })}
-                        >
-                          <FontAwesomeIcon icon="redo-alt" spin={spindle === 'M3'} fixedWidth />
-                          <Space width={8} />
-                          M3
-                        </Button>
-                        <Button
-                          disabled={isM4Disabled}
-                          onClick={() => {
-                            const speed = config.get('speed');
-                            if (speed > 0) {
-                              controller.command('gcode', 'M4 S' + speed);
-                            } else {
-                              controller.command('gcode', 'M4');
-                            }
-                          }}
-                          title={i18n._('Spindle On, CCW (M4)', { ns: 'gcode' })}
-                        >
-                          <FontAwesomeIcon icon="undo-alt" spinReverse={spindle === 'M4'} fixedWidth />
-                          <Space width={8} />
-                          M4
-                        </Button>
-                        <Button
-                          onClick={() => controller.command('gcode', 'M5')}
-                          title={i18n._('Spindle Off (M5)', { ns: 'gcode' })}
-                          disabled={isDisabled}
-                        >
-                          <FontAwesomeIcon icon="power-off" fixedWidth />
-                          <Space width={8} />
-                          M5
-                        </Button>
-                      </ButtonGroup>
-                    );
-                  }}
-                </Field>
-              </Col>
-            </Row>
-          </FormGroup>
-          <FormGroup>
-            <TextLabel mb="2x">
-              {i18n._('Spindle Speed')}
-            </TextLabel>
-            <Row>
-              <Col width={8}>
-                <Field name="speed">
-                  {({ input, meta }) => (
-                    <InputGroup sm>
-                      <Input
-                        type="number"
-                        value={input.value}
-                        min={0}
-                        step={1}
-                        onChange={(event) => {
-                          const value = event.target.value;
-                          input.onChange(value);
-
-                          const speed = ensurePositiveNumber(value);
-                          config.set('speed', speed);
-                        }}
-                      />
-                      <InputGroup.Append>
-                        <InputGroup.Text>
-                          {i18n._('RPM')}
-                        </InputGroup.Text>
-                      </InputGroup.Append>
-                    </InputGroup>
-                  )}
-                </Field>
-              </Col>
-            </Row>
-          </FormGroup>
-        </Container>
-      )}
-    </Form>
+    <Box width="100%">
+      <Box mb="4x">
+        <TextLabel mb="2x">
+          {i18n._('Coolant')}
+        </TextLabel>
+        <Flex>
+          <Box width="66.66666667%">
+            <ButtonGroup
+              size="sm"
+              style={{ width: '100%' }}
+            >
+              <Button
+                onClick={() => {
+                  controller.command('gcode', 'M7');
+                }}
+                title={i18n._('Mist Coolant On (M7)', { ns: 'gcode' })}
+                disabled={isDisabled}
+              >
+                <FontAwesomeIcon icon="fan" spin={mistCoolant} fixedWidth />
+                <Space width="2x" />
+                M7
+              </Button>
+              <Button
+                onClick={() => {
+                  controller.command('gcode', 'M8');
+                }}
+                title={i18n._('Flood Coolant On (M8)', { ns: 'gcode' })}
+                disabled={isDisabled}
+              >
+                <FontAwesomeIcon icon="fan" spin={floodCoolant} fixedWidth />
+                <Space width="2x" />
+                M8
+              </Button>
+              <Button
+                onClick={() => {
+                  controller.command('gcode', 'M9');
+                }}
+                title={i18n._('Coolant Off (M9)', { ns: 'gcode' })}
+                disabled={isDisabled}
+              >
+                <FontAwesomeIcon icon="power-off" fixedWidth />
+                <Space width="2x" />
+                M9
+              </Button>
+            </ButtonGroup>
+          </Box>
+        </Flex>
+      </Box>
+      <Box mb="4x">
+        <TextLabel mb="2x">
+          {i18n._('Spindle')}
+        </TextLabel>
+        <Flex>
+          <Box width="66.66666667%">
+            <ButtonGroup
+              size="sm"
+              style={{ width: '100%' }}
+            >
+              <Button
+                disabled={isDisabled || !hasValidSpeed}
+                onClick={() => sendSpindleCommand('M3')}
+                title={i18n._('Spindle On, CW (M3)', { ns: 'gcode' })}
+              >
+                <FontAwesomeIcon icon="redo-alt" spin={spindle === 'M3'} fixedWidth />
+                <Space width="2x" />
+                M3
+              </Button>
+              <Button
+                disabled={isDisabled || !hasValidSpeed}
+                onClick={() => sendSpindleCommand('M4')}
+                title={i18n._('Spindle On, CCW (M4)', { ns: 'gcode' })}
+              >
+                <FontAwesomeIcon icon="undo-alt" spinReverse={spindle === 'M4'} fixedWidth />
+                <Space width="2x" />
+                M4
+              </Button>
+              <Button
+                onClick={() => controller.command('gcode', 'M5')}
+                title={i18n._('Spindle Off (M5)', { ns: 'gcode' })}
+                disabled={isDisabled}
+              >
+                <FontAwesomeIcon icon="power-off" fixedWidth />
+                <Space width="2x" />
+                M5
+              </Button>
+            </ButtonGroup>
+          </Box>
+        </Flex>
+      </Box>
+      <Box mb="4x">
+        <TextLabel mb="2x">
+          {i18n._('Spindle Speed')}
+        </TextLabel>
+        <Flex>
+          <Box width="66.66666667%">
+            <InputGroup>
+              <Input
+                aria-label={i18n._('Spindle Speed')}
+                flex="1"
+                minWidth="0"
+                type="number"
+                value={speedDraft}
+                min={0}
+                step={1}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setSpeedDraft(value);
+                  config.set('speed', ensurePositiveNumber(value));
+                }}
+              />
+              <InputGroupAppend>
+                <InputGroupAddon>{i18n._('RPM')}</InputGroupAddon>
+              </InputGroupAppend>
+            </InputGroup>
+          </Box>
+        </Flex>
+      </Box>
+    </Box>
   );
 }
 

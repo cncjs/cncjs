@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { GlobalProvider } from '@app/context';
 
 export default (Component, node = null) => new Promise((resolve, reject) => {
@@ -10,9 +10,9 @@ export default (Component, node = null) => new Promise((resolve, reject) => {
     defaultNode = document.createElement('div');
     defaultNode.setAttribute('data-portal', '');
     document && document.body && document.body.appendChild(defaultNode);
-    root = ReactDOM.createRoot(defaultNode);
+    root = createRoot(defaultNode);
   } else {
-    root = ReactDOM.createRoot(node);
+    root = createRoot(node);
   }
 
   root.render(

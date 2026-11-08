@@ -1,0 +1,57 @@
+2026-10-02T14:23:38.7335310Z FAIL src/app/pages/Administration/__tests__/ResourceLists.test.jsx (103.333 s)
+2026-10-02T14:23:38.8075750Z   ● Console
+2026-10-02T14:23:38.8077100Z
+2026-10-02T14:23:38.8080700Z     console.error
+2026-10-02T14:23:38.8179370Z       Warning: '_focusHover' is deprecated and will be removed in the next major release. Use '_focus: { '&:hover': { } }' instead.
+2026-10-02T14:23:38.8180980Z
+2026-10-02T14:23:38.8186390Z       23 | export const renderAppUI = (ui, options = {}) => {
+2026-10-02T14:23:38.8251090Z       24 |   const client = createTestQueryClient();
+2026-10-02T14:23:38.8257680Z     > 25 |   const result = render(ui, { wrapper: createTestWrapper(client), ...options });
+2026-10-02T14:23:38.8261750Z          |                        ^
+2026-10-02T14:23:38.8264440Z       26 |   return {
+2026-10-02T14:23:38.8267260Z       27 |     ...result,
+2026-10-02T14:23:38.8270570Z       28 |     queryClient: client,
+2026-10-02T14:23:38.8272750Z
+2026-10-02T14:23:38.8275430Z       at Object.warnDeprecatedProps (node_modules/@tonic-ui/utils/dist/cjs/shared.js:218:11)
+2026-10-02T14:23:38.8280250Z       at node_modules/@tonic-ui/styled-system/dist/cjs/pseudo.js:77:15
+2026-10-02T14:23:38.8506580Z       at node_modules/@tonic-ui/styled-system/dist/cjs/sx.js:49:36
+2026-10-02T14:23:38.8509030Z       at node_modules/@tonic-ui/styled-system/dist/cjs/sx.js:112:48
+2026-10-02T14:23:38.8511560Z       at handleInterpolation (node_modules/@emotion/serialize/dist/emotion-serialize.cjs.js:119:24)
+2026-10-02T14:23:38.8524780Z       at handleInterpolation (node_modules/@emotion/serialize/dist/emotion-serialize.cjs.js:121:18)
+2026-10-02T14:23:38.8527040Z       at Object.serializeStyles (node_modules/@emotion/serialize/dist/emotion-serialize.cjs.js:219:15)
+2026-10-02T14:23:38.8530830Z       at node_modules/@emotion/styled/base/dist/emotion-styled-base.browser.cjs.js:141:34
+2026-10-02T14:23:38.8533860Z       at node_modules/@emotion/react/dist/emotion-element-25f9958c.browser.cjs.js:57:12
+2026-10-02T14:23:38.8537370Z       at renderWithHooks (node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+2026-10-02T14:23:38.8543530Z       at updateForwardRef (node_modules/react-dom/cjs/react-dom.development.js:19245:20)
+2026-10-02T14:23:38.8545130Z       at beginWork (node_modules/react-dom/cjs/react-dom.development.js:21675:16)
+2026-10-02T14:23:38.8548100Z       at beginWork$1 (node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+2026-10-02T14:23:38.8555350Z       at performUnitOfWork (node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+2026-10-02T14:23:38.8557000Z       at workLoopSync (node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+2026-10-02T14:23:38.8561390Z       at renderRootSync (node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+2026-10-02T14:23:38.8564240Z       at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25777:74)
+2026-10-02T14:23:38.8566270Z       at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+2026-10-02T14:23:38.8567840Z       at act (node_modules/react/cjs/react.development.js:2582:11)
+2026-10-02T14:23:38.8569430Z       at node_modules/@testing-library/react/dist/act-compat.js:47:25
+2026-10-02T14:23:38.8578820Z       at renderRoot (node_modules/@testing-library/react/dist/pure.js:180:26)
+2026-10-02T14:23:38.8582520Z       at render (node_modules/@testing-library/react/dist/pure.js:271:10)
+2026-10-02T14:23:38.8583670Z       at renderAppUI (src/app/test/render.jsx:25:24)
+2026-10-02T14:23:38.8584850Z       at src/app/pages/Administration/__tests__/ResourceLists.test.jsx:49:27
+2026-10-02T14:23:38.8585600Z
+2026-10-02T14:23:38.8585800Z     console.error
+2026-10-02T14:23:38.8587290Z       Warning: '_focusActive' is deprecated and will be removed in the next major release. Use '_focus: { '&:active': { } }' instead.
+2026-10-02T14:23:38.8588500Z
+2026-10-02T14:23:38.8589950Z       23 | export const renderAppUI = (ui, options = {}) => {
+2026-10-02T14:23:38.8591880Z       24 |   const client = createTestQueryClient();
+2026-10-02T14:23:38.8594470Z     > 25 |   const result = render(ui, { wrapper: createTestWrapper(client), ...options });
+2026-10-02T14:23:38.8596500Z          |                        ^
+2026-10-02T14:23:38.8597400Z       26 |   return {
+2026-10-02T14:23:38.8598300Z       27 |     ...result,
+2026-10-02T14:23:38.8599360Z       28 |     queryClient: client,
+2026-10-02T14:23:38.8599950Z
+2026-10-02T14:23:38.8600780Z       at Object.warnDeprecatedProps (node_modules/@tonic-ui/utils/dist/cjs/shared.js:218:11)
+2026-10-02T14:23:38.8602440Z       at node_modules/@tonic-ui/styled-system/dist/cjs/pseudo.js:62:15
+2026-10-02T14:23:38.8604210Z       at node_modules/@tonic-ui/styled-system/dist/cjs/sx.js:49:36
+2026-10-02T14:23:38.8607140Z       at node_modules/@tonic-ui/styled-system/dist/cjs/sx.js:112:48
+2026-10-02T14:23:38.8609370Z       at handleInterpolation (node_modules/@emotion/serialize/dist/emotion-serialize.cjs.js:119:24)
+2026-10-02T14:23:38.8612090Z       at handleInterpolation (node_modules/@emotion/serialize/dist/emotion-serialize.cjs.js:121:18)
+2026-10-02T14:23:38.8614970Z       at Object.serializeStyles (node_modules/@emotion/serialize/dist/emotion-serialize.cjs.js:219:15)

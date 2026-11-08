@@ -1,121 +1,108 @@
 import {
+  Box,
+  Dropdown,
+  DropdownButton,
   TextLabel,
 } from '@tonic-ui/react';
 import Slider from 'rc-slider';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import i18n from '@app/lib/i18n';
-import FormGroup from '@app/components/FormGroup';
+import sliderStyles from './sliderStyles';
 
 const FEEDRATE_RANGE = [100, 2500];
 const FEEDRATE_STEP = 50;
 const OVERSHOOT_RANGE = [1, 1.5];
 const OVERSHOOT_STEP = 0.01;
+const HERTZ_OPTIONS = [
+  [60, '60 Times per Second'],
+  [45, '45 Times per Second'],
+  [30, '30 Times per Second'],
+  [15, '15 Times per Second'],
+  [10, '10 Times per Second'],
+  [5, '5 Times per Second'],
+  [2, '2 Times per Second'],
+  [1, 'Once Every Second'],
+];
 
-class ShuttleXpress extends Component {
-  static propTypes = {
-    feedrateMin: PropTypes.number,
-    feedrateMax: PropTypes.number,
-    hertz: PropTypes.number,
-    overshoot: PropTypes.number
-  };
+/**
+ * @param {{
+ *   value: {
+ *     feedrateMin: number,
+ *     feedrateMax: number,
+ *     hertz: number,
+ *     overshoot: number
+ *   },
+ *   onChange: (value: object) => void
+ * }} props
+ * @returns {JSX.Element}
+ */
+function ShuttleXpress({ value, onChange }) {
+  const update = nextValue => onChange({ ...value, ...nextValue });
+  const hertzOptions = HERTZ_OPTIONS.map(([hertz, label]) => ({ value: hertz, label: i18n._(label) }));
 
-  state = this.getInitialState();
-
-  onChangeFeedrateSlider = (value) => {
-    const [min, max] = value;
-
-    this.setState({
-      feedrateMin: min,
-      feedrateMax: max
-    });
-  };
-
-  onChangeHertz = (event) => {
-    const { value } = event.target;
-    const hertz = Number(value);
-    this.setState({ hertz });
-  };
-
-  onChangeOvershootSlider = (value) => {
-    const overshoot = value;
-    this.setState({ overshoot });
-  };
-
-  getInitialState() {
-    const {
-      feedrateMin,
-      feedrateMax,
-      hertz,
-      overshoot
-    } = this.props;
-
-    return { feedrateMin, feedrateMax, hertz, overshoot };
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const {
-      feedrateMin,
-      feedrateMax,
-      hertz,
-      overshoot
-    } = nextProps;
-
-    this.setState({ feedrateMin, feedrateMax, hertz, overshoot });
-  }
-
-  render() {
-    const { feedrateMin, feedrateMax, hertz, overshoot } = this.state;
-
-    return (
-      <div>
-        <FormGroup>
-          <TextLabel mb="2x">
-            {i18n._('Feed Rate Range: {{min}} - {{max}} mm/min', { min: feedrateMin, max: feedrateMax })}
-          </TextLabel>
+  return (
+    <Box>
+      <Box mb="4x">
+        <TextLabel mb="2x">
+          {i18n._('Feed Rate Range: {{min}} - {{max}} mm/min', {
+            min: value.feedrateMin,
+            max: value.feedrateMax,
+          })}
+        </TextLabel>
+        <Box sx={sliderStyles}>
           <Slider.Range
+            ariaLabelGroupForHandles={[
+              i18n._('Minimum feed rate'),
+              i18n._('Maximum feed rate'),
+            ]}
             allowCross={false}
-            defaultValue={[feedrateMin, feedrateMax]}
+            value={[value.feedrateMin, value.feedrateMax]}
             min={FEEDRATE_RANGE[0]}
             max={FEEDRATE_RANGE[1]}
             step={FEEDRATE_STEP}
-            onChange={this.onChangeFeedrateSlider}
+            onChange={([feedrateMin, feedrateMax]) => update({ feedrateMin, feedrateMax })}
           />
-        </FormGroup>
-        <FormGroup>
-          <TextLabel mb="2x">
-            {i18n._('Repeat Rate: {{hertz}}Hz', { hertz: hertz })}
-          </TextLabel>
-          <select
-            className="form-control"
-            defaultValue={hertz}
-            onChange={this.onChangeHertz}
-          >
-            <option value="60">{i18n._('60 Times per Second')}</option>
-            <option value="45">{i18n._('45 Times per Second')}</option>
-            <option value="30">{i18n._('30 Times per Second')}</option>
-            <option value="15">{i18n._('15 Times per Second')}</option>
-            <option value="10">{i18n._('10 Times per Second')}</option>
-            <option value="5">{i18n._('5 Times per Second')}</option>
-            <option value="2">{i18n._('2 Times per Second')}</option>
-            <option value="1">{i18n._('Once Every Second')}</option>
-          </select>
-        </FormGroup>
-        <FormGroup>
-          <TextLabel mb="2x">
-            {i18n._('Distance Overshoot: {{overshoot}}x', { overshoot: overshoot })}
-          </TextLabel>
+        </Box>
+      </Box>
+      <Box mb="4x">
+        <TextLabel mb="2x">
+          {i18n._('Repeat Rate: {{hertz}}Hz', { hertz: value.hertz })}
+        </TextLabel>
+        <Dropdown
+          matchWidth
+          items={hertzOptions}
+          value={hertzOptions.find(option => option.value === value.hertz) || null}
+          renderItem={option => option?.label ?? ''}
+          renderToggle={({ renderItem, value: selected }) => (
+            <DropdownButton
+              aria-label={i18n._('Repeat Rate')}
+              width="100%"
+              variant="secondary"
+              justifyContent="space-between"
+            >
+              {renderItem(selected)}
+            </DropdownButton>
+          )}
+          onChange={option => update({ hertz: Number(option?.value) })}
+        />
+      </Box>
+      <Box>
+        <TextLabel mb="2x">
+          {i18n._('Distance Overshoot: {{overshoot}}x', { overshoot: value.overshoot })}
+        </TextLabel>
+        <Box sx={sliderStyles}>
           <Slider
-            defaultValue={overshoot}
+            ariaLabelForHandle={i18n._('Distance Overshoot')}
+            value={value.overshoot}
             min={OVERSHOOT_RANGE[0]}
             max={OVERSHOOT_RANGE[1]}
             step={OVERSHOOT_STEP}
-            onChange={this.onChangeOvershootSlider}
+            onChange={overshoot => update({ overshoot })}
           />
-        </FormGroup>
-      </div>
-    );
-  }
+        </Box>
+      </Box>
+    </Box>
+  );
 }
 
 export default ShuttleXpress;

@@ -1,0 +1,55 @@
+{
+  "status": "in_progress",
+  "blocking": true,
+  "first_failure": {
+    "assertion": "Run once, Pause once, Resume once, Stop once",
+    "reason": "br0-small.gcode completed before the bounded Stop click; Stop was disabled",
+    "evidence": ["09-workflow-failure.html", "09-workflow-failure.aria.txt", "09-workflow-failure.png", "workflow.json"]
+  },
+  "assertions": {
+    "anonymous_workspace": "pass",
+    "viewport_1440x900": "pass",
+    "viewport_768x900": "pass",
+    "react_select_port_existing_dom_keyboard_surface": "pass",
+    "port_/tmp/ttyGRBL": "pass",
+    "grbl_115200": "pass",
+    "open_auto_connect_welcome_idle": "pass",
+    "small_gcode_upload": "pass",
+    "parser_split_type_error": "pass_not_observed",
+    "date_fns_gcodestats_overlay": "pass_not_observed",
+    "new_page_error": "pass_not_observed",
+    "run_once": "pass",
+    "pause_once": "pass",
+    "resume_once": "pass",
+    "stop_once": "fail_not_captured",
+    "jog_press_release_no_resend": "not_run",
+    "disconnect_disabled_controls": "not_run",
+    "large_100000_line_fixture": "not_run",
+    "watch_5000_node_case": "not_run"
+  },
+  "warnings": [
+    "Node fs.Stats deprecation warning",
+    "NO_COLOR ignored because FORCE_COLOR is set",
+    "url.parse behavior deprecation warning",
+    "server hostname tw-cheton-m4 could not resolve",
+    "favicon.ico was absent"
+  ],
+  "browser": {
+    "surface": "direct Playwright fallback",
+    "in_app_browser": "unavailable: no iab instance",
+    "executable": "/Users/cheton_wu/Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+    "version": "151.0.7922.34",
+    "headless": true,
+    "dpr": 1,
+    "color_scheme": "light",
+    "gpu": "disabled",
+    "viewports": [[1440, 900], [768, 900]]
+  },
+  "cleanup": {
+    "lifecycle_stopped": true,
+    "browser_processes_stopped": true,
+    "port_8000_absent": true,
+    "port_8080_absent": true,
+    "ttyGRBL_absent": true
+  }
+}

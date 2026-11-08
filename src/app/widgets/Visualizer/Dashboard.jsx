@@ -1,175 +1,168 @@
-import { Flex } from '@tonic-ui/react';
-import cx from 'classnames';
+import {
+  Box,
+  Flex,
+  Image,
+  LinearProgress,
+  LinkButton,
+  Text,
+} from '@tonic-ui/react';
 import { ensurePositiveNumber } from 'ensure-type';
 import escape from 'lodash/escape';
-import get from 'lodash/get';
 import throttle from 'lodash/throttle';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import VirtualList from 'react-tiny-virtual-list';
 import api from '@app/api';
-import Anchor from '@app/components/Anchor';
-import Panel from '@app/components/Panel';
-import ProgressBar from '@app/components/ProgressBar';
 import i18n from '@app/lib/i18n';
 import { formatBytes } from '@app/lib/numeral';
 import styles from './dashboard.styl';
 
-class Dashboard extends Component {
-  static propTypes = {
-    show: PropTypes.bool,
-    state: PropTypes.object
-  };
+/**
+ * @param {{ show?: boolean, state?: object }} props
+ */
+function Dashboard({ show = false, state = {} }) {
+  const viewerRef = useRef(null);
+  const [visibleHeight, setVisibleHeight] = useState(0);
+  const content = state.gcode?.content || '';
+  const total = state.gcode?.total || 0;
+  const lines = useMemo(() => content
+    .split('\n')
+    .filter(line => line.trim().length > 0), [content]);
 
-  node = {
-    virtualList: null
-  };
-
-  state = {
-    virtualList: {
-      visibleHeight: 0
-    }
-  };
-
-  lines = [];
-
-  renderItem = ({ index, style }) => (
-    <div key={index} style={style}>
-      <div className={styles.line}>
-        <span className={cx(styles.label, styles.labelDefault)}>
-          {index + 1}
-        </span>
-        {escape(this.lines[index])}
-      </div>
-    </div>
-  );
-
-  resizeVirtualList = throttle(() => {
-    if (!this.node.virtualList) {
+  const resizeVirtualList = useMemo(() => throttle(() => {
+    const element = viewerRef.current;
+    if (!element) {
       return;
     }
 
-    const el = ReactDOM.findDOMNode(this.node.virtualList);
-    const clientHeight = ensurePositiveNumber(el.clientHeight);
-
+    const clientHeight = ensurePositiveNumber(element.clientHeight);
     if (clientHeight > 0) {
-      this.setState(state => ({
-        virtualList: {
-          ...state.virtualList,
-          visibleHeight: el.clientHeight
-        }
-      }));
+      setVisibleHeight(clientHeight);
     }
-  }, 32); // 60hz
+  }, 32), []);
 
-  componentDidMount() {
-    this.resizeVirtualList();
-    window.addEventListener('resize', this.resizeVirtualList);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.resizeVirtualList);
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.state.gcode.content !== this.props.state.gcode.content) {
-      this.lines = get(nextProps, 'state.gcode.content', '')
-        .split('\n')
-        .filter(line => line.trim().length > 0);
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if ((this.props.show !== prevProps.show) && this.props.show) {
-      this.resizeVirtualList();
-    }
-  }
-
-  render() {
-    const { show, state } = this.props;
-    const style = {
-      display: show ? 'block' : 'none'
+  useEffect(() => {
+    resizeVirtualList();
+    window.addEventListener('resize', resizeVirtualList);
+    return () => {
+      window.removeEventListener('resize', resizeVirtualList);
+      resizeVirtualList.cancel();
     };
-    const filename = state.gcode.name || 'noname.nc';
-    const filesize = state.gcode.ready ? formatBytes(state.gcode.size, 0) : '';
-    const { sent = 0, total = 0 } = state.gcode;
-    const { virtualList } = this.state;
-    const rowHeight = 20;
+  }, [resizeVirtualList]);
 
-    return (
-      <Panel
-        className={cx(styles.dashboard)}
-        style={style}
+  useEffect(() => {
+    if (show) {
+      resizeVirtualList();
+    }
+  }, [resizeVirtualList, show, lines.length, total]);
+
+  const renderItem = useCallback(({ index, style }) => (
+    <Box key={index} style={style}>
+      <Box className={styles.line}>
+        <Box as="span" className={`${styles.label} ${styles.labelDefault}`}>
+          {index + 1}
+        </Box>
+        {escape(lines[index])}
+      </Box>
+    </Box>
+  ), [lines]);
+
+  const gcode = state.gcode || {};
+  const filename = gcode.name || 'noname.nc';
+  const filesize = gcode.ready ? formatBytes(gcode.size, 0) : '';
+  const sent = gcode.sent || 0;
+
+  return (
+    <Box
+      aria-label={i18n._('G-code dashboard')}
+      className={styles.dashboard}
+      position="absolute"
+      top={0}
+      right="10px"
+      bottom="10px"
+      left="10px"
+      display={show ? 'flex' : 'none'}
+      flexDirection="column"
+      backgroundColor="background.highest"
+      border={1}
+      borderColor="border.secondary"
+    >
+      <Box
+        flex="none"
+        px="2x"
+        py="1x"
+        borderBottom={1}
+        borderColor="border.secondary"
+        color="text.primary"
       >
-        <Panel.Heading style={{ height: 30 }}>
-          {i18n._('G-code')}
-        </Panel.Heading>
-        <Panel.Body
-          style={{ height: 'calc(100% - 30px)' }}
-        >
-          <Flex justifyContent="space-between" style={{ marginBottom: 10 }}>
-            <div style={{ whiteSpace: 'nowrap' }}>
-              {state.gcode.ready && (
-                <Anchor
-                  onClick={() => {
-                    api.downloadGCode();
-                  }}
-                >
-                  <strong>{filename}</strong>
-                </Anchor>
-              )}
-              {!state.gcode.ready && i18n._('G-code not loaded')}
-            </div>
-            <div style={{ whiteSpace: 'nowrap' }}>
-              {filesize}
-            </div>
-          </Flex>
-          <div style={{ marginBottom: 10 }}>
-            <ProgressBar
-              variant="info"
-              min={0}
-              max={total}
-              now={sent}
-              label={total > 0 && (
-                <span className={styles.progressbarLabel}>
-                  {sent}&nbsp;/&nbsp;{total}
-                </span>
-              )}
-            />
-          </div>
-          <div
-            ref={node => {
-              this.node.virtualList = node;
-            }}
-            className={cx(
-              styles.gcodeViewer,
-              { [styles.gcodeViewerDisabled]: this.lines.length === 0 }
-            )}
-          >
-            {this.lines.length > 0 && (
-              <VirtualList
-                width="100%"
-                height={virtualList.visibleHeight}
-                style={{
-                  padding: '0 5px'
+        {i18n._('G-code')}
+      </Box>
+      <Box display="flex" flexDirection="column" flex="1" minHeight="0" padding="10px">
+        <Flex flex="none" justifyContent="space-between" mb="2x">
+          <Box as="span" whiteSpace="nowrap">
+            {gcode.ready && (
+              <LinkButton
+                onClick={() => {
+                  api.downloadGCode();
                 }}
-                itemCount={this.lines.length}
-                itemSize={rowHeight}
-                renderItem={this.renderItem}
-                scrollToIndex={sent}
-              />
+                variant="inline"
+              >
+                <Box as="strong">{filename}</Box>
+              </LinkButton>
             )}
-            {this.lines.length === 0 && (
-              <div className={styles.absoluteCenter}>
-                <img src="images/logo-square-256x256.png" alt="" />
-              </div>
-            )}
-          </div>
-        </Panel.Body>
-      </Panel>
-    );
-  }
+            {!gcode.ready && i18n._('G-code not loaded')}
+          </Box>
+          <Box as="span" whiteSpace="nowrap">
+            {filesize}
+          </Box>
+        </Flex>
+        <Box position="relative" flex="none" mb="10px">
+          <LinearProgress
+            aria-label={i18n._('G-code progress')}
+            height="20px"
+            borderRadius="4px"
+            color="#5bc0de"
+            min={0}
+            max={Math.max(total, 1)}
+            value={sent}
+            variant="determinate"
+          />
+          {total > 0 && (
+            <Text position="absolute" inset="0" fontSize="sm" lineHeight="20px" textAlign="center" color="text.primary">
+              {sent}&nbsp;/&nbsp;{total}
+            </Text>
+          )}
+        </Box>
+        <Box
+          ref={viewerRef}
+          className={styles.gcodeViewer}
+          position="relative"
+          flex="1"
+          minHeight="0"
+          border={1}
+          borderColor="border.secondary"
+          backgroundColor={lines.length === 0 ? 'background.high' : 'background.highest'}
+          overflow="hidden"
+        >
+          {lines.length > 0 && (
+            <VirtualList
+              width="100%"
+              height={visibleHeight}
+              style={{ padding: '0 5px' }}
+              itemCount={lines.length}
+              itemSize={20}
+              renderItem={renderItem}
+              scrollToIndex={sent}
+            />
+          )}
+          {lines.length === 0 && (
+            <Box className={styles.absoluteCenter}>
+              <Image src="images/logo-square-256x256.png" alt="" />
+            </Box>
+          )}
+        </Box>
+      </Box>
+    </Box>
+  );
 }
 
 export default Dashboard;
