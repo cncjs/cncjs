@@ -166,6 +166,19 @@ series([
     }, false);
   }
 
+  { // Register service worker so the app can be installed as a PWA
+    // Register immediately: the bundle runs after the window load event has already fired,
+    // so /window.addEventListener('load', () => {}) is not necessary here.
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').catch(() => {
+          // Non-fatal: the app works normally without a service worker
+          console.warn('non-fatal: failed loading PWA service worker.');
+        });
+    } else {
+        console.warn('non-fatal: service worker not supported.');
+    }
+  }
+
   { // Hide loading
     const loading = document.getElementById('loading');
     loading && loading.remove();

@@ -10,6 +10,7 @@ const webpack = require('webpack');
 const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
 const pkg = require('./src/package.json');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 dotenv.config({
   path: path.resolve('webpack.config.production.env'),
@@ -157,6 +158,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: 'index.hbs',
       template: path.resolve(__dirname, 'index.hbs'),
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'sw.js', to: 'sw.js' },
+        { from: 'manifest.webmanifest', to: 'manifest.webmanifest' },
+      ],
     })
   ],
   resolve: {
