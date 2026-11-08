@@ -4,7 +4,7 @@
   "description": "Web-based interface for CNC controllers running Grbl, Marlin, Smoothieware, or TinyG",
   "start_url": "./",
   "scope": "./",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "landscape",
   "background_color": "#222222",
   "theme_color": "#222222",
