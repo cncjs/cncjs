@@ -6,7 +6,6 @@ import chalk from 'chalk';
 import compress from 'compression';
 import cookieParser from 'cookie-parser';
 import multiparty from 'connect-multiparty';
-import connectRestreamer from 'connect-restreamer';
 import consolidate from 'consolidate';
 import { ensureArray } from 'ensure-type';
 import errorhandler from 'errorhandler';
@@ -35,6 +34,7 @@ import urljoin from './lib/urljoin';
 import logger from './lib/logger';
 import settings from './config/settings';
 import * as accessControl from './lib/access-control';
+import restreamParsedBody from './lib/restream-parsed-body';
 import { createPublicApiRouter, createProtectedApiRouter } from './routes/api';
 import { createExceptionRouter } from './routes/exception';
 import { createPublicViewRouter } from './routes/view';
@@ -233,7 +233,10 @@ const appMain = () => {
   // https://github.com/dominictarr/connect-restreamer
   // connect's bodyParser has a problem when using it with a proxy.
   // It gobbles up all the body events, so that the proxy doesn't see anything!
-  app.use(connectRestreamer());
+  //
+  // Re-streaming is limited to bodies a parser consumed: an unread request is
+  // already a stream, and re-emitting it corrupts and truncates it.
+  app.use(restreamParsedBody());
 
   // https://github.com/expressjs/method-override
   app.use(methodOverride());

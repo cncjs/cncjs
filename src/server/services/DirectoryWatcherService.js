@@ -1,8 +1,9 @@
 import chalk from 'chalk';
+import crypto from 'crypto';
 import events from 'events';
 import fs from 'fs';
 import path from 'path';
-import { pipeline, Transform } from 'stream';
+import { pipeline, Readable, Transform } from 'stream';
 import watch from 'watch';
 import logger from '../lib/logger';
 
@@ -130,14 +131,21 @@ class DirectoryWatcherService extends events.EventEmitter {
     fs.readFile(filepath, 'utf8', callback);
   }
 
+  // Written through the same staging mechanism as an upload, not written
+  // straight to the destination name.
+  //
+  // `fs.writeFile()` opens the destination, so a destination that is a symbolic
+  // link is followed, and a destination that is a hard link shares its inode
+  // with a file outside the watch directory — either way the bytes land in a
+  // file the caller never named. Staging inside the root and renaming into
+  // place replaces only the directory entry inside the root.
   writeFile(file, data, callback) {
     if (!this.root) {
       callback(new Error('Watch directory is not configured'));
       return;
     }
 
-    const filepath = path.join(this.root, path.basename(file));
-    fs.writeFile(filepath, data, 'utf8', callback);
+    this.writeStream(file, Readable.from([data]), {}, callback);
   }
 
   // Stream a readable (e.g. a request body) into the watch directory without
@@ -161,32 +169,49 @@ class DirectoryWatcherService extends events.EventEmitter {
     // Strip any directory components to prevent writing outside of the watched directory
     const filename = path.basename(file);
     const target = path.join(this.root, filename);
-    const temp = path.join(this.root, `.${filename}.${process.pid}.${Date.now()}.tmp`);
+    // The staging name is unguessable, and it is claimed exclusively. A name
+    // built from the pid and the clock can be prepared in advance by anything
+    // that can write into the watch directory — a symbolic link at that path
+    // would send this upload outside the root. `open(..., 'wx')` refuses to
+    // claim a path that already exists, so a pre-planted path is left alone and
+    // the upload fails instead.
+    const temp = path.join(this.root, `.${filename}.${crypto.randomBytes(16).toString('hex')}.tmp`);
 
-    pipeline(
-      readable,
-      createLimitStream(maxFileSize),
-      fs.createWriteStream(temp),
-      (err) => {
-        if (err) {
-          fs.unlink(temp, () => {
-            callback(err);
-          });
-          return;
-        }
+    fs.open(temp, 'wx', 0o666, (openErr, fd) => {
+      if (openErr) {
+        callback(openErr);
+        return;
+      }
 
-        fs.rename(temp, target, (renameErr) => {
-          if (renameErr) {
+      pipeline(
+        readable,
+        createLimitStream(maxFileSize),
+        fs.createWriteStream(temp, { fd, autoClose: true }),
+        (err) => {
+          // `pipeline()` closes every stream it opened before reporting a
+          // failure, so the staging file below is no longer being written to,
+          // and it is the only file this call created. The target keeps the
+          // contents it already had.
+          if (err) {
             fs.unlink(temp, () => {
-              callback(renameErr);
+              callback(err);
             });
             return;
           }
 
-          callback(null);
-        });
-      }
-    );
+          fs.rename(temp, target, (renameErr) => {
+            if (renameErr) {
+              fs.unlink(temp, () => {
+                callback(renameErr);
+              });
+              return;
+            }
+
+            callback(null);
+          });
+        }
+      );
+    });
   }
 
   // Claim `toPath` for `fromPath`'s contents without overwriting anything.

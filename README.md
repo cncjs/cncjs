@@ -72,17 +72,24 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 
 ## Supported Node.js Versions
 
+The minimum versions below are the first releases of each line with the fix for
+[CVE-2026-111497](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases)
+(Node2Shell, an out-of-bounds write in the bundled Brotli decoder that can permit
+remote code execution). Node.js 20 reached end-of-life on 2026-04-30 and does not
+receive that fix.
+
  Version | Supported Level
 :------- |:---------------
- <= 10   | Not supported
- 12      | Supported
- >= 14   | Recommended
+ <= 20   | Not supported
+ 22.23.4 or higher | Supported
+ 24.22.1 or higher | Recommended
+ 26.12.1 or higher | Supported
 
 ## Getting Started
 
 ### Node.js Installation
 
-Node.js 14 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
+Node.js 24.22.1 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
 ```
 git clone https://github.com/creationix/nvm.git ~/.nvm
 cd ~/.nvm
@@ -99,8 +106,8 @@ export NVM_DIR="$HOME/.nvm"
 
 Once installed, you can select Node.js versions with:
 ```
-nvm install 14
-nvm use 14
+nvm install 24
+nvm use 24
 ```
 
 It's also recommended that you upgrade npm to the latest version. To upgrade, run:
