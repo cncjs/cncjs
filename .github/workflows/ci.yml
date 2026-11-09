@@ -59,6 +59,47 @@ jobs:
     - name: Build Linux binaries
       run: |
         yarn run build:linux
+    - name: Check packaged artifacts
+      shell: bash
+      run: |
+        # node-gyp-build resolves build/Release before prebuilds, so a binary
+        # compiled on the runner ends up in every arch package: wrong ELF arch
+        # for arm, and the runner's glibc floor for x64.
+        for dir in output/linux-unpacked output/linux-arm64-unpacked output/linux-armv7l-unpacked; do
+          if [ ! -d "$dir" ]; then
+            echo "• FAIL: $dir missing after build"
+            exit 1
+          fi
+          found=$(find "$dir/resources/app/node_modules" -path "*/build/Release/*.node")
+          if [ -n "$found" ]; then
+            echo "• FAIL: runner-compiled native module in $dir: $found"
+            exit 1
+          fi
+        done
+        # Load the native addon with the shipped Electron, not the runner's Node.js.
+        ELECTRON_RUN_AS_NODE=1 "$PWD/output/linux-unpacked/cncjs-app" -e '
+          const path = require("path");
+          const { SerialPort } = require(path.join(process.argv[1], "node_modules", "serialport"));
+          SerialPort.list().then(
+            (ports) => console.log("• packaged Electron loaded serialport (" + ports.length + " ports)"),
+            (error) => { console.log("• FAIL: packaged Electron cannot use serialport: " + error.message); process.exit(1); }
+          );
+        ' "$PWD/output/linux-unpacked/resources/app"
+        # Query package metadata; this does not verify payload integrity or
+        # installation compatibility with older RPM versions.
+        if command -v rpm >/dev/null 2>&1; then
+            echo "• rpm version: $(rpm --version)"
+            for f in output/*.rpm; do
+                if [ -f "$f" ]; then
+                    name=$(rpm -qp --queryformat '%{NAME}-%{VERSION}' "$f" 2>/dev/null)
+                    case "$name" in
+                        cncjs-app-*) echo "• $f parses as ${name}" ;;
+                        *) echo "• FAIL: $f is not a readable cncjs-app rpm (got ${name:-none})"
+                           exit 1 ;;
+                    esac
+                fi
+            done
+        fi
     - name: Prepare release assets
       shell: bash
       run: |
