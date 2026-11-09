@@ -64,6 +64,23 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 * [cncjs-shopfloor-tablet](https://github.com/cncjs/cncjs-shopfloor-tablet) - A simplified UI for cncjs optimized for tablet computers in a production (shop floor) environment.<br>
     ![cncjs-shopfloor-tablet](https://user-images.githubusercontent.com/4861133/33970662-4a8244b2-e018-11e7-92ab-5a379e3de461.PNG)
 
+## Desktop App Architectures
+
+| Platform | Architectures |
+| :------- | :------------ |
+| Linux | x64, ARM64, armv7l (short-term support) |
+| macOS | x64, ARM64 |
+| Windows | x64 |
+
+For new ARM installations, use ARM64 hardware and a 64-bit operating system.
+A 64-bit CPU running a 32-bit operating system cannot run the ARM64 desktop app.
+On Debian-based systems, check that `dpkg --print-architecture` reports `arm64`
+and `getconf LONG_BIT` reports `64` before installing the ARM64 package.
+
+Linux armv7l desktop packages remain available with Electron 22 for now.
+The Electron upgrade and the end of armv7l desktop support will be handled
+separately; this does not change the architecture policy for the Node.js server.
+
 ## Browser Support
 
 ![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png)<br>Chrome | ![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png)<br>Edge | ![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png)<br>Firefox | ![IE](https://raw.github.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png)<br>IE | ![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png)<br>Opera | ![Safari](https://raw.github.com/alrra/browser-logos/master/src/safari/safari_48x48.png)<br>Safari

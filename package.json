@@ -32,7 +32,6 @@
     "electron": "electron",
     "electron-builder": "electron-builder",
     "electron-builder:debug": "cross-env DEBUG=electron-builder electron-builder",
-    "electron-rebuild": "electron-rebuild",
     "github-release": "github-release",
     "package-sync": "node scripts/package-sync.js",
     "build:macos": "bash -c 'scripts/electron-builder.sh --macos --x64 --arm64'",
@@ -65,13 +64,14 @@
     "appId": "org.cncjs",
     "asar": false,
     "asarUnpack": [],
+    "npmRebuild": false,
     "productName": "CNCjs",
     "directories": {
       "buildResources": "electron-build",
       "output": "output",
       "app": "dist/cncjs"
     },
-    "publish": [],
+    "publish": null,
     "mac": {
       "category": "public.app-category.productivity",
       "target": [
@@ -110,6 +110,11 @@
         "AppImage",
         "deb",
         "rpm"
+      ]
+    },
+    "rpm": {
+      "fpm": [
+        "--rpm-rpmbuild-define=_rpmformat 4"
       ]
     }
   },
@@ -282,7 +287,6 @@
     "@babel/preset-react": "^7.25.9",
     "@babel/register": "^7.25.9",
     "@changesets/cli": "^2.31.0",
-    "@electron/rebuild": "^3.7.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.15",
     "babel-core": "~7.0.0-bridge.0",
     "babel-eslint": "~10.0.1",
@@ -298,7 +302,7 @@
     "del-cli": "~3.0.1",
     "dotenv": "~7.0.0",
     "electron": "~22.0.3",
-    "electron-builder": "~23.6.0",
+    "electron-builder": "^26.18.1",
     "eslint": "^8.0.0",
     "eslint-config-trendmicro": "^3.2.0",
     "eslint-import-resolver-node": "^0.3.9",
