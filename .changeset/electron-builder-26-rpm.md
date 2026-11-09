@@ -10,12 +10,7 @@ Three related config changes:
 
 - `rpm.fpm` pins `--rpm-rpmbuild-define=_rpmformat 4`. rpm 6 defaults to the v6 package format (`%_rpmformat 6`), which rpm 4.x readers only parse partially.
 - `publish` is set to `null` instead of `[]`. An empty array still counts as "publish", and electron-builder 26 falls back to the GitHub publisher when it detects CI, which fails without `GH_TOKEN` and would otherwise create an extra release.
-- `npmRebuild` is set to `false`, and the `electron-rebuild` step is removed from `scripts/electron-builder.sh`. `node-gyp-build` loads `build/Release` before `prebuilds`, so the x86_64 `bindings.node` compiled on the runner shipped inside every package, including the arm ones, where it cannot be loaded. serialport's own N-API prebuilds (`linux-x64`, `linux-arm64`, `linux-arm`, `darwin-x64+arm64`, `win32-x64`, `win32-ia32`) are now packaged and selected by the machine's platform/arch at runtime.
-
-Keep armv7l desktop packages for short-term compatibility. Electron 22's Linux
-armv7l runtime reports `arm_version: "default"`, so `src/main.js` sets `ARM_VERSION=7`
-before the server is launched, only in that runtime and only when no override is
-present. Other architectures and plain Node.js keep their existing selection behavior.
+- `npmRebuild` is set to `false`, and the `electron-rebuild` step is removed from `scripts/electron-builder.sh`. `node-gyp-build` loads `build/Release` before `prebuilds`, so the x86_64 `bindings.node` compiled on the runner shipped inside every package, including the arm ones, where it cannot be loaded. serialport's own N-API prebuilds (`linux-x64`, `linux-arm64`, `darwin-x64+arm64`, `win32-x64`, `win32-ia32`) are now packaged and selected by the machine's platform/arch at runtime.
 
 The Linux build job now checks its own output: no runner-compiled native module may
 appear in any unpacked package, the shipped Electron binary (not the runner's

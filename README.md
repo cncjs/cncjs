@@ -68,7 +68,7 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 
 | Platform | Architectures |
 | :------- | :------------ |
-| Linux | x64, ARM64, armv7l (short-term support) |
+| Linux | x64, ARM64 |
 | macOS | x64, ARM64 |
 | Windows | x64 |
 
@@ -77,11 +77,9 @@ A 64-bit CPU running a 32-bit operating system cannot run the ARM64 desktop app.
 On Debian-based systems, check that `dpkg --print-architecture` reports `arm64`
 and `getconf LONG_BIT` reports `64` before installing the ARM64 package.
 
-Linux armv7l desktop packages remain available with Electron 22 for now.
-Electron 22 bundles a Node.js runtime that does not carry the CVE-2026-111497
-fix. The Electron upgrade and the end of armv7l desktop support are tracked in
-[#1031](https://github.com/cncjs/cncjs/issues/1031); this does not change the
-architecture policy for the Node.js server.
+Linux armv7l (32-bit ARM) desktop packages are no longer built. Node.js 24 and 26
+publish no armv7l binaries, so a 24 or 26 runtime has no 32-bit ARM build. The
+Docker image `cncjs/cncjs` is published for `linux/amd64` and `linux/arm64`.
 
 ## Browser Support
 
@@ -99,19 +97,18 @@ receive that fix.
 
 | Version | Supported Level |
 | :------ |:--------------- |
-| <= 20   | Not supported   |
-| 21, 23, 25 | Not supported |
-| 22.23.4 or higher | Supported   |
+| < 24    | Not supported   |
 | 24.22.1 or higher | Recommended   |
 | 26.12.1 or higher | Supported     |
 
-The 21, 23, and 25 lines reached end-of-life before the fix was published, so no
-release of them carries it. Each supported line keeps receiving fixes in patch
+Only the 24 and 26 lines are built and tested here. 20 reached end-of-life before
+the fix was published, and 22 is no longer a supported line now that the 32-bit
+ARM packages are gone. Each supported line keeps receiving fixes in patch
 releases, so `24.22.1 or higher` includes `24.22.2` and every later `24.x`.
 Install the newest patch release.
 
-The desktop app runs inside Electron 22, which bundles its own Node.js runtime.
-The versions above do not apply to it.
+The desktop app bundles its own Node.js runtime. The versions above do not apply
+to it.
 
 ## Getting Started
 

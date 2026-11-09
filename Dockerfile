@@ -1,5 +1,5 @@
 # BUILD STAGE
-FROM debian:bullseye as build-stage
+FROM debian:trixie as build-stage
 
 ENV BUILD_DIR /tmp/build
 ENV NVM_DIR /root/.nvm
@@ -33,7 +33,7 @@ WORKDIR $BUILD_DIR/cncjs
 RUN npm install -g yarn && yarn --production
 
 # FINAL STAGE
-FROM debian:bullseye
+FROM debian:trixie
 
 ENV NVM_DIR /root/.nvm
 ENV NODE_VERSION v24.22.2
